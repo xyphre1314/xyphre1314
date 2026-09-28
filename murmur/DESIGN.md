@@ -28,51 +28,42 @@
 - **Logo: The Flock.** Three dots rising on a diagonal, shrinking as they go: a typing indicator taking off. It reads as "someone's about to say something" at 16px and as a murmuration at billboard size.
   - Icon: `assets/icon.svg`
   - Wordmark: `assets/wordmark.svg` (lowercase *murmur*, Newsreader 600, −3% tracking, the flock as a trailing flourish)
-  - App icon: `assets/app-icon.svg` (ink squircle, saffron flock, soft dusk glow)
-- **Signature motif: the flock + dusk glow.** Dots that gather and disperse. It shows up as the logo, the thread spine (a dotted line, never solid), the loading state, the hero murmuration, the publish reward (dots take flight), and the streak row. The dusk glow is a single soft saffron radial light that sits behind whatever you're focused on.
+  - App icon: `assets/app-icon.svg` (ink squircle, indigo flock, soft indigo glow)
+- **Signature motif: the flock + dusk glow.** Dots that gather and disperse. It shows up as the logo, the thread spine (a dotted line, never solid), the loading state, the hero murmuration, the publish reward (dots take flight), and the streak row. The glow is a single soft indigo radial light that sits behind whatever you're focused on.
 
 ## (c) Design system
 
-### Type
+### Type (v2: Wispr Flow-inspired)
 
 | Role | Face | Why |
 |---|---|---|
-| Display | **Newsreader** (opsz 6–72, roman + italic) | Built for on-screen editorial reading. At optical size 72 it gets sharp and opinionated; the italic is our "voice" moment (*loud*). It says "writing" without saying "blog". |
-| UI + writing | **Geist** | High x-height, open apertures, crisp at 13px, calm at 17px. Neutral enough that your words are the loudest thing on screen. |
-| Mono | **Geist Mono** | Counts, shortcuts, timestamps, stats. Tabular by design, so numbers don't jiggle while you type. |
+| Display | **EB Garamond**, regular weight, 40–128px | Classical and literary. Authority comes from size, not weight. The italic is the voice moment (*loud*). It says "writing" before you read a word. |
+| UI + writing | **Figtree** | Friendly geometric sans, open and readable at 13–18px. Soft enough to sit next to Garamond without fighting it. |
+| Mono | **Geist Mono** | Counts, shortcuts, timestamps, stats. Tabular, so numbers don't jiggle while you type. |
 
-Scale (px): 11 · 12 · 13 · 14 · 15 · 17 (editor) · 20 · 24 · 32 · 44 · 64 · 88
+- Display: tracking −0.02 to −0.03em, line-height 0.96–1.05, weight 400. Big numbers (KPIs, prices, scores) use Garamond lining figures.
+- Editor: Figtree 18/1.6. UI: 13–15px.
+- Labels: Geist Mono 11px uppercase, +0.08em.
 
-- Display ≥ 44px: tracking −0.035em, line-height 1.02
-- Headings 20–32px: tracking −0.02em, line-height 1.2
-- UI 13–15px: tracking −0.005em, line-height 1.5
-- Editor 17px: line-height 1.65, 62ch max
-- Labels 11px: uppercase, +0.08em tracking, Geist Mono
-- Tabular numbers everywhere a number can change. Curly quotes, real ellipses and apostrophes in all copy. `hanging-punctuation` on display text, with a manual optical indent for opening quotes.
+### Color (v2: Linear-inspired)
 
-### Color
-
-Neutrals do 90% of the work. They carry a slight warm bias toward the accent so greys feel chosen, not default.
+Cool, near-neutral greys and one indigo accent. The landing page and onboarding are always dark, like Linear's site, with one light "paper" chapter (the Wispr-style alternation). The app follows light/dark.
 
 | Token | Light | Dark |
 |---|---|---|
-| `--bg` | `#F7F6F3` | `#0C0B0A` |
-| `--surface` | `#FFFFFF` | `#141311` |
-| `--surface-2` | `#F0EEEA` | `#1B1A17` |
-| `--border` | `rgba(24,20,12,.09)` | `rgba(255,244,228,.08)` |
-| `--text-1` | `#16140F` | `#F4F2ED` |
-| `--text-2` | `#5A554B` | `#A9A399` |
-| `--text-3` | `#736D62` | `#878075` |
-| `--accent` (Saffron) | `#F5A30B` | `#FFB224` |
-| `--accent-text` | `#9A5B00` | `#FFC65C` |
-| `--accent-ink` | `#221400` | `#221400` |
-| `--success` | `#17915A` | `#3DD68C` |
-| `--warn` | `#C77700` | `#FFB224` |
-| `--error` | `#D93D42` | `#FF6369` |
+| `--bg` | `#F7F7F8` | `#08090A` |
+| `--surface` / panel | `#FFFFFF` | `#101113` / `#0F1012` |
+| `--surface-2` | `#F2F2F4` | `#16171A` |
+| `--border` | `rgba(17,18,24,.08)` | `rgba(255,255,255,.07)` |
+| `--text-1` | `#111216` | `#F7F8F8` |
+| `--text-2` | `#51545C` | `#A3A7AF` |
+| `--text-3` | `#6B6F78` | `#80858E` |
+| `--accent` (Indigo) | `#5E6AD2` | `#6E78E6` |
+| `--accent-text` | `#4C57C2` | `#9AA2FF` |
+| `--success` / `--warn` / `--error` | `#1F8F5F` / `#C26A12` / `#D63F3F` | `#4CC38A` / `#F2A14A` / `#F26D6D` |
+| Paper chapter | `#F5F4F0` | n/a |
 
-Saffron is used sparingly: the primary button, the caret, the focus ring, the hook score, the glow. Never as a background wash.
-
-Depth: 1px borders + layered shadows + a top inner highlight in dark mode + a fine grain overlay (3–5%). No gradients except the dusk glow.
+Depth comes from 1px borders, an inset main panel (Linear's app shell), soft indigo glows behind heroes, and gradient-to-transparent headline text. No grain and no blur-banding glows.
 
 ### Spacing, radii, icons
 
@@ -80,16 +71,13 @@ Depth: 1px borders + layered shadows + a top inner highlight in dark mode + a fi
 - Radii: 6 (chips) · 10 (buttons, inputs) · 14 (cards) · 20 (modals) · 28 (hero surfaces) · 999 (pills)
 - Icons: 20px grid, 1.5px stroke, round caps and joins, one family, drawn in-house.
 
-### Motion
+### Motion (Linear × Wispr × Notion)
 
-- Springs everywhere, generated at boot into CSS `linear()` easings (real physics, interruptible because they're transitions).
-  - `--spring`: stiffness 380, damping 30 → ~300ms, 2% overshoot. Default for UI.
-  - `--spring-snap`: stiffness 520, damping 24 → ~340ms, visible overshoot. Thread splits, rewards.
-- Micro (hover, color): 120–150ms ease-out. Panels: 220–320ms spring.
-- Buttery caret: a custom caret that glides between positions (70ms) and blinks only when idle.
-- Char ring morphs from ring → countdown number in the last 20 characters; saffron at 20 left, red past the limit.
-- Chrome fades while you type, returns on mouse move.
-- `prefers-reduced-motion`: springs become 1ms, flock goes static, no parallax.
+- **Linear:** blur-and-rise reveals on scroll (only below the fold, so the first frame is always complete), the hero headline arriving word by word, and view transitions that cross-fade the main panel between routes while the sidebar stays put.
+- **Wispr:** soft, organic easing (`cubic-bezier(.16,1,.3,1)`) and generous durations for big moments (0.6–1s).
+- **Notion:** snappy, springy micro-interactions: buttons and chips press to 0.965, switches squash, the nav highlight glides between items, and the hook ring counts up.
+- Springs are generated at boot into CSS `linear()` easings. Toasts morph one at a time. Ghost text appears after a 1.1s pause and never repeats generic suggestions.
+- `prefers-reduced-motion` turns everything into 1ms fades with no reveals.
 
 ## (d) Screens
 

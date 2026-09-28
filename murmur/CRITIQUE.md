@@ -61,3 +61,41 @@ v1 was built, then tested the way a user would use it: every route, every flow, 
 - AI is a deterministic local mock behind the `AI` object. Swap it for a model endpoint one function at a time.
 - Publishing, analytics and OCR/transcription are simulated.
 - Fonts load from Google Fonts. Offline, the service worker serves whatever it has cached.
+
+---
+
+# Round 2: from 5 to 10
+
+Owner feedback: temporary text overlapping in the app, scroll animation glitches on the homepage, not smooth enough, weak brand colors, a name that doesn't land. Direction: colors like Linear, type and branding like Wispr Flow, motion drawing on Linear, Wispr and Notion.
+
+## Bugs found and fixed
+
+| Symptom | Root cause | Fix |
+|---|---|---|
+| Text overlapping while scrolling "How it works" | Scenes cross-faded at the same time, so two scenes' text was visible at once | The outgoing scene hides first, then the incoming one fades in with a blur, with no overlap |
+| Grey "temporary text" in the editor | A rotating idea sentence plus a "Tab" hint sat in the empty editor, and ghost suggestions popped up after nearly every sentence | Static placeholder ("What's worth saying today?"). Ghost text waits 1.1s and shows a generic suggestion at most once per post |
+| A caret left behind in another post | The new blink keyframes overrode the hidden state | The caret drops its blink class whenever it's hidden |
+| Toasts piling up over content | Up to 3 stacked | One toast at a time. A new one replaces the old |
+| Tooltips popping over your writing | They fired on hover even mid-typing | Suppressed while typing and inside the editor, with a longer delay |
+| Janky scrolling | A full-screen SVG grain overlay repainting on scroll, and a blurred glow that banded into rings | Both removed |
+| Layout jumping on the homepage | The demo resized itself while autotyping | Fixed-height demo layout |
+| "Stronger hook" could lower the score | No floor check | It declines politely when nothing beats your current hook |
+| Big gaps between posts on phones | The hidden toolbar still reserved its space | It collapses on touch until you tap into a post |
+
+## Redesign
+
+- **Color:** Linear-style cool neutrals with one indigo accent. The landing page and onboarding are always dark. The app has an inset main panel with 1px borders.
+- **Type:** EB Garamond display at regular weight, large sizes (Wispr), Figtree for UI and writing. Numbers such as KPIs, prices and scores are set in Garamond.
+- **Branding:** a light "paper" chapter in the middle of the dark landing page (before/after and testimonials), matching Wispr's cream/dark alternation.
+- **Motion:**
+  - The hero headline arrives word by word with a blur.
+  - Blur-rise reveals only on elements below the fold.
+  - View transitions between app screens.
+  - A nav highlight that glides between items.
+  - Spring presses on every button, chip, tool and switch.
+  - Animated hook rings.
+  - A cursor-follow glow on feature cards.
+
+## Name
+
+Murmur is being replaced. 142 candidates and a ranked top 10 with domain checks are in `NAMES.md`. Recommendation: **Wren**.
