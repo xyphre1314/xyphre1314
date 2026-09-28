@@ -3,12 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Murmur</title>
-<meta name="description" content="The quiet place to write loud posts. Murmur learns your voice, hands you ideas, and schedules threads for X, Threads, LinkedIn and Bluesky.">
+<title>Hookworthy</title>
+<meta name="description" content="Write posts people stop for. Hookworthy learns your voice, hands you ideas, grades every hook, and schedules threads for X, Threads, LinkedIn and Bluesky.">
+<meta property="og:site_name" content="Hookworthy">
+<meta property="og:title" content="Hookworthy: write posts people stop for">
+<meta property="og:url" content="https://hookworthy.com">
 <meta name="theme-color" content="#F7F7F8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#08090A" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2308090A'/%3E%3Ccircle cx='10.5' cy='21.5' r='4' fill='%239AA2FF'/%3E%3Ccircle cx='18.5' cy='13.5' r='2.8' fill='%239AA2FF'/%3E%3Ccircle cx='24.5' cy='7.5' r='1.9' fill='%239AA2FF'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2308090A'/%3E%3Cg transform='translate(4 4)' fill='none' stroke='%239AA2FF' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M15 7.6V15a5 5 0 0 1-10 0v-3.4'/%3E%3Cpath d='M5 11.6l2.6 2.4'/%3E%3C/g%3E%3Ccircle cx='19' cy='8.6' r='2.4' fill='%239AA2FF'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="assets/app-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -291,10 +294,10 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .logo{ display:inline-flex; align-items:center; gap:8px; color:var(--text-1); }
 .logo svg.mark{ width:22px; height:22px; }
 .logo .word{ font:500 23px/1 var(--font-display); letter-spacing:-.02em; transform:translateY(-1px); }
-.mark .d1,.mark .d2,.mark .d3{ fill:var(--accent); transform-box:fill-box; transform-origin:center; transition:transform var(--d-snap) var(--spring-snap); }
-.logo:hover .mark .d1{ transform:translate(1px,-2px); }
-.logo:hover .mark .d2{ transform:translate(2px,-3px); transition-delay:30ms; }
-.logo:hover .mark .d3{ transform:translate(3px,-4px); transition-delay:60ms; }
+.mark .hk{ fill:none; stroke:var(--accent); stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+.mark .eye{ fill:var(--accent); }
+.logo .mark{ transform-origin:62% 20%; transition:transform var(--d-snap) var(--spring-snap); }
+.logo:hover .mark{ transform:rotate(-12deg) translateY(-1px); }
 
 /* ==========================================================================
    APP SHELL: Linear-style inset panel
@@ -994,7 +997,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .brand-tile.paper{ background:#F5F4F0; color:#111216; }
 .brand-tile .cap{ position:absolute; left:16px; bottom:14px; font:500 var(--t-11)/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase; opacity:.5; }
 .appicon{ width:128px; height:128px; border-radius:30px; background:radial-gradient(80% 80% at 30% 80%,rgba(110,120,230,.5),transparent 70%),linear-gradient(160deg,#1C1D22,#08090A); display:grid; place-items:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.06); }
-.appicon .mark .d1,.appicon .mark .d2,.appicon .mark .d3{ fill:#fff; }
+.appicon .mark .hk{ stroke:#C7CBFF; } .appicon .mark .eye{ fill:#C7CBFF; }
 .swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; }
 .sw{ border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px var(--border); background:var(--surface); }
 .sw i{ display:block; height:64px; box-shadow:inset 0 -1px 0 var(--border); }
@@ -1217,8 +1220,8 @@ const fmtTime = t => { const [h, m] = t.split(':').map(Number); return `${((h + 
 const ago = ts => { const s = (Date.now() - ts) / 1000; if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + 'm ago'; if (s < 86400) return Math.floor(s / 3600) + 'h ago'; return Math.floor(s / 86400) + 'd ago'; };
 
 const store = {
-  get(k, d) { try { const v = localStorage.getItem('murmur:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem('murmur:' + k, JSON.stringify(v)); } catch (e) { /* storage blocked: app keeps working in memory */ } }
+  get(k, d) { try { const v = localStorage.getItem('hookworthy:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('hookworthy:' + k, JSON.stringify(v)); } catch (e) { /* storage blocked: app keeps working in memory */ } }
 };
 
 /* ---------- springs: real physics baked into CSS linear() ---------- */
@@ -1622,8 +1625,8 @@ function parseLink(url) {
 /* ==========================================================================
    UI KIT
    ========================================================================== */
-const LOGO_MARK = `<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle class="d1" cx="7" cy="16.5" r="3.6"/><circle class="d2" cx="13.6" cy="10" r="2.5"/><circle class="d3" cx="18.8" cy="4.9" r="1.6"/></svg>`;
-const LOGO = `${LOGO_MARK}<span class="word">murmur</span>`;
+const LOGO_MARK = `<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle class="eye" cx="15" cy="4.6" r="2.4"/><path class="hk" d="M15 7.6V15a5 5 0 0 1-10 0v-3.4"/><path class="hk" d="M5 11.6l2.6 2.4"/></svg>`;
+const LOGO = `${LOGO_MARK}<span class="word">hookworthy</span>`;
 const PLAT = { x: { name: 'X', limit: 280, icon: 'x' }, threads: { name: 'Threads', limit: 500, icon: 'threads' }, linkedin: { name: 'LinkedIn', limit: 3000, icon: 'li' }, bsky: { name: 'Bluesky', limit: 300, icon: 'bsky' } };
 const avatar = (u = S.user, cls = '') => `<span class="avatar ${cls}" style="--h:${u.hue}">${esc((u.name || u.handle || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase())}</span>`;
 
@@ -1795,7 +1798,7 @@ function route() {
     ROUTES[name]({ same }); scrollTo(0, 0); initNavPill();
   };
   if (same && document.startViewTransition && !REDUCED) document.startViewTransition(render); else render();
-  document.title = { home: 'Murmur', start: 'Murmur · Find your voice', write: 'Write · Murmur', ideas: 'Ideas · Murmur', hooks: 'Hooks · Murmur', queue: 'Queue · Murmur', insights: 'Insights · Murmur', voice: 'Voice · Murmur', brand: 'Brand · Murmur', upgrade: 'Murmur Pro' }[name];
+  document.title = { home: 'Hookworthy', start: 'Hookworthy · Find your voice', write: 'Write · Hookworthy', ideas: 'Ideas · Hookworthy', hooks: 'Hooks · Hookworthy', queue: 'Queue · Hookworthy', insights: 'Insights · Hookworthy', voice: 'Voice · Hookworthy', brand: 'Brand · Hookworthy', upgrade: 'Hookworthy Pro' }[name];
 }
 addEventListener('hashchange', route);
 
@@ -1820,7 +1823,7 @@ function shell(active, inner) {
   const used = Math.min(S.ai.used, S.ai.limit);
   return `<div class="shell">
   <aside class="side" aria-label="Sidebar">
-    <div class="top"><a class="logo" href="#home" aria-label="Murmur home">${LOGO}</a>
+    <div class="top"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
       <button class="btn ghost icon-only sm" data-act="theme" data-tip="Switch theme" data-kbd="${SHIFT} T" aria-label="Switch theme">${ic(isDark() ? 'sun' : 'moon')}</button></div>
     <button class="searchbtn" data-act="palette">${ic('search', 'sm')}<span>Jump to…</span>${kbd(MOD, 'K')}</button>
     <nav class="nav" aria-label="Main">
@@ -1836,7 +1839,7 @@ function shell(active, inner) {
       <div class="row" style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;font-size:13px">Free plan</span><a href="#upgrade" class="pill accent">Go Pro</a></div>
       <div class="meter"><i style="width:${used / S.ai.limit * 100}%"></i></div>
       <span class="pc-count faint" style="font-size:12px">${S.ai.limit - used} of ${S.ai.limit} riffs left today</span>
-    </div>` : `<div class="plan-card"><span style="font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px">${ic('riff', 'sm')} Murmur Pro</span><span class="faint" style="font-size:12px">Unlimited riffs. Go make noise.</span></div>`}
+    </div>` : `<div class="plan-card"><span style="font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px">${ic('riff', 'sm')} Hookworthy Pro</span><span class="faint" style="font-size:12px">Unlimited riffs. Go make noise.</span></div>`}
     <button class="me" data-act="account" aria-haspopup="menu">${avatar()}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.user.name)}</b><span class="faint" style="font-size:12px">@${esc(S.user.handle)}</span></span>${ic('more', 'sm')}</button>
   </aside>
   <main class="main" id="main"><div class="view" id="view">${inner}</div></main>
@@ -1926,7 +1929,7 @@ function hl(s, marks) { const set = new Set(marks); return [...s].map((ch, i) =>
 function openPalette(initial = '') {
   if (MODALS.some(m => m.el.classList.contains('cmdk'))) return;
   const cmds = paletteCommands(); let active = 0, shown = [];
-  const m = modal(`<div class="cmdk-in">${ic('search')}<input id="cmdk-q" autofocus placeholder="Type a command, an idea, or a hook…" aria-label="Search commands" autocomplete="off" spellcheck="false" value="${esc(initial)}">${kbd('Esc')}</div><div class="cmdk-list" role="listbox" id="cmdk-list"></div><div class="cmdk-f"><span>${kbd('↑', '↓')} move</span><span>${kbd('↵')} run</span><span style="margin-left:auto">${ic('riff', 'xs')} Murmur</span></div>`, { box: 'cmdk', label: 'Command palette' });
+  const m = modal(`<div class="cmdk-in">${ic('search')}<input id="cmdk-q" autofocus placeholder="Type a command, an idea, or a hook…" aria-label="Search commands" autocomplete="off" spellcheck="false" value="${esc(initial)}">${kbd('Esc')}</div><div class="cmdk-list" role="listbox" id="cmdk-list"></div><div class="cmdk-f"><span>${kbd('↑', '↓')} move</span><span>${kbd('↵')} run</span><span style="margin-left:auto">${ic('riff', 'xs')} Hookworthy</span></div>`, { box: 'cmdk', label: 'Command palette' });
   const inp = $('#cmdk-q', m.el), list = $('#cmdk-list', m.el);
   function draw() {
     const q = inp.value.trim();
@@ -2410,7 +2413,7 @@ function outOfRiffs() {
 }
 function showUpsell(a, b) {
   if (S.plan !== 'free' || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
-  const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Murmur Pro');
+  const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hookworthy Pro');
   el.innerHTML = `<div class="label accent">That one’s a keeper</div><div class="jump"><span class="from">${a}</span>${ic('arrow', 'lg')}<span class="to">${b}</span></div><p class="muted">Your hook just jumped ${b - a} points. Pro does this all day: unlimited riffs, your full voice model, and auto-plugs that ride the wave.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
   document.body.append(el); burstFrom($('.to', el));
   el.addEventListener('click', e => { if (e.target.closest('[data-up],a')) closeUpsell(); });
@@ -2428,7 +2431,7 @@ function renderPreviewHead() {
 function renderPreviewBody() {
   const b = $('#pv-b'); if (!b) return; if (b.contains(document.activeElement) && document.activeElement.tagName === 'TEXTAREA') return;
   const on = Object.keys(PLAT).filter(k => S.platforms[k]); const tab = S.preview.tab;
-  if (!on.length) { b.className = 'preview-b'; b.innerHTML = `<div class="empty">${ic('send', 'lg')}<p>Pick at least one platform up top.<br>Murmur can’t post to the void. Yet.</p></div>`; return; }
+  if (!on.length) { b.className = 'preview-b'; b.innerHTML = `<div class="empty">${ic('send', 'lg')}<p>Pick at least one platform up top.<br>Hookworthy can’t post to the void. Yet.</p></div>`; return; }
   b.className = 'preview-b' + (tab === 'all' ? ' all' : '');
   b.innerHTML = tab === 'all' ? on.map(k => pvCard(k, true)).join('') : pvCard(tab, false);
 }
@@ -2439,7 +2442,7 @@ function pvCard(k, compact) {
     const txt = S.draft.li ?? tws.map(t => t.text.trim()).filter(Boolean).join('\n\n');
     const long = txt.split('\n').length > 3 || txt.length > 210; const m0 = tws.find(t => t.media.length);
     return `<div class="pv"><div class="pv-tag"><span>${pic('li')} LinkedIn</span><span>${S.draft.li != null ? 'Custom version' : 'One post, stitched'}</span></div>
-    <div class="pvl"><div class="hd">${avatar(u)}<div><b>${esc(u.name)}</b><span>${esc(u.niche)} · writing on Murmur</span><span>now · ${ic('globe', 'xs')}</span></div></div>
+    <div class="pvl"><div class="hd">${avatar(u)}<div><b>${esc(u.name)}</b><span>${esc(u.niche)} · writing on Hookworthy</span><span>now · ${ic('globe', 'xs')}</span></div></div>
     <div class="tx ${long && !UI.liMore ? 'clamp' : ''}">${txt ? esc(txt) : '<span class="faint">Your post shows up here.</span>'}</div>${long ? `<button class="more" data-cact="limore">${UI.liMore ? 'see less' : '…see more'}</button>` : ''}
     ${m0 ? mediaHTML(m0).replace(/<button class="rm"[\s\S]*?<\/button>/g, '') : ''}
     <div class="acts"><span>${ic('heart')} Like</span><span>${ic('reply')} Comment</span><span>${ic('repost')} Repost</span><span>${ic('send')} Send</span></div></div>
@@ -2475,7 +2478,7 @@ function draftProblems() {
   const tws = S.draft.tweets; if (isEmptyDraft()) return 'Nothing to post yet. Even one line works.';
   if (!Object.values(S.platforms).some(Boolean)) return 'Pick at least one platform first.';
   const lim = effLimit(); const bad = tws.findIndex(t => [...t.text].length > lim);
-  if (bad >= 0) return `Post ${bad + 1} is ${[...tws[bad].text].length - lim} characters over. Trim it, or let Murmur split it.`;
+  if (bad >= 0) return `Post ${bad + 1} is ${[...tws[bad].text].length - lim} characters over. Trim it, or let Hookworthy split it.`;
   if (tws.some(t => t.poll && t.poll.options.filter(o => o.trim()).length < 2)) return 'Polls need at least two choices.';
   return null;
 }
@@ -2533,7 +2536,7 @@ function publishNow(btn) {
   const b = btn || $('[data-cact="schedule"]'); b && b.classList.add('is-loading'); const names = platList();
   setTimeout(() => {
     b && burstFrom(b); const d = new Date(); commitDraft({ day: dayKey(d), time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`, status: 'published' });
-    route(); toast(`Published to ${esc(names)}. The flock is flying.`, { icon: 'send', tone: 'accent', action: 'Write another', onAction: () => focusTweet(0) });
+    route(); toast(`Published to ${esc(names)}. Hook, meet world.`, { icon: 'send', tone: 'accent', action: 'Write another', onAction: () => focusTweet(0) });
   }, 650);
 }
 function newPost() {
@@ -2685,7 +2688,7 @@ function murmuration(canvas, { count = 130, gather = null, accentEvery = 11, alp
 const BA_AFTER = 'Double your price.\n\nSignups went up 31% when we did. Customers value things more when they cost more. Pricing is a signal, not a number.';
 const DEMO_FLAT = 'i think pricing is really important for startups and you should probably charge more than you think because customers actually value things more when they cost more';
 const TESTIMONIALS = [
-  ['Priya Nair', 'priyabuilds', 'Founder, Ledgerly', 'I used to stare at the empty box for twenty minutes. Now I open Murmur and there are six posts I actually want to write.', 190],
+  ['Priya Nair', 'priyabuilds', 'Founder, Ledgerly', 'I used to stare at the empty box for twenty minutes. Now I open Hookworthy and there are six posts I actually want to write.', 190],
   ['Tomás Ruiz', 'tomasdraws', 'Product designer', 'The hook grader is brutal and correct. My replies roughly tripled in a month, and I stopped guessing why.', 12],
   ['Hannah Cole', 'hcolewrites', 'Newsletter, 40k readers', 'It writes like me on a good day. Not like a robot on any day. That’s the whole review.', 330],
   ['Dev Mehta', 'devships', 'Indie hacker', '⌘K, type, Tab, ⌘↵. I schedule a week of posts in the time it takes my coffee to cool.', 250],
@@ -2723,7 +2726,7 @@ ROUTES.home = () => {
   const words = (str, start = 0) => str.split(' ').map((w, i) => `<span class="w" style="--i:${start + i}">${w}${' '}</span>`).join('');
   $('#root').innerHTML = `<div class="land force-dark">
   <header class="l-nav" id="lnav">
-    <a class="logo" href="#home" aria-label="Murmur home">${LOGO}</a>
+    <a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
     <nav class="links" aria-label="Sections"><a href="#home" data-scroll="features">Product</a><a href="#home" data-scroll="story">How it works</a><a href="#home" data-scroll="pricing">Pricing</a><a href="#brand">Brand</a></nav>
     <div class="grow"></div>
     <a class="btn ghost sm login" href="#write">Log in</a>
@@ -2733,8 +2736,8 @@ ROUTES.home = () => {
     <canvas id="heroCanvas" aria-hidden="true"></canvas>
     <div class="wrap hero-in intro">
       <a class="eyebrow" href="#home" data-scroll="features"><span class="pill">New</span>Voice profiles that don’t sound like a robot${ic('arrow', 'xs')}</a>
-      <h1 class="display">${words('The quiet place to write')}<span class="w" style="--i:5"><em>loud</em> </span>${words('posts.', 6)}</h1>
-      <p class="sub">Murmur learns how you write, hands you ideas before you ask, and turns one good thought into a week of posts for X, Threads, LinkedIn and Bluesky.</p>
+      <h1 class="display">${words('Write posts people')}<span class="w" style="--i:3"><em>stop</em> </span>${words('for.', 4)}</h1>
+      <p class="sub">Hookworthy learns how you write, grades every first line, hands you ideas before you ask, and turns one good thought into a week of posts for X, Threads, LinkedIn and Bluesky.</p>
       <form class="hero-handle" id="hero-form" novalidate><span class="at">@</span><input id="hero-h" placeholder="yourhandle" aria-label="Your handle" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">See my posts${ic('arrow', 'sm')}</button></form>
       <div class="hero-note"><span>${ic('check')}Free plan, forever</span><span>${ic('check')}No card</span><span>${ic('check')}First draft in 30 seconds</span></div>
     </div>
@@ -2752,13 +2755,13 @@ ROUTES.home = () => {
       </div>
     </div>
   </section>
-  <section class="wrap logos reveal"><span class="label">On Murmur this week</span><div class="stats-row">${[['41,208', 'posts written'], ['3.1×', 'median hook score lift'], ['12s', 'from idea to first draft']].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('')}</div></section>
+  <section class="wrap logos reveal"><span class="label">On Hookworthy this week</span><div class="stats-row">${[['41,208', 'posts written'], ['3.1×', 'median hook score lift'], ['12s', 'from idea to first draft']].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('')}</div></section>
 
   <section class="wrap l-sec" id="story">
     <div class="l-sec-h reveal"><span class="label accent">How it works</span><h2 class="display grad">From shower thought to scheduled, in one sitting.</h2><p>Four moves. No tabs, no copy-paste, no blank page.</p></div>
     <div class="story">
       <div class="story-steps">
-        ${[['01 · Capture', 'Ideas land anywhere.', 'Paste a link and get five angles. Drop a screenshot or a voice memo. Press I from anywhere to catch a thought before it leaves.'], ['02 · Draft', 'Tab through the blank page.', 'Murmur suggests the next line in your voice, quietly, in grey. Take it with Tab or keep typing. Hit Enter twice and your thought becomes a thread.'], ['03 · Sharpen', 'Every edit, word by word.', 'Punchier, shorter, stronger hook, more contrarian. See exactly what changed and keep only the words you like. Your hook score updates as you go.'], ['04 · Ship', 'Post when your people are up.', 'Murmur knows when your replies peak. Drop posts into the best slots, cross-post with per-platform tweaks, and let auto-plug do the follow-up.']].map(([k, h3, p], i) => `<div class="story-step ${i === 0 ? 'on' : ''}" data-step="${i}"><span class="label">${k}</span><h3>${h3}</h3><p>${p}</p></div>`).join('')}
+        ${[['01 · Capture', 'Ideas land anywhere.', 'Paste a link and get five angles. Drop a screenshot or a voice memo. Press I from anywhere to catch a thought before it leaves.'], ['02 · Draft', 'Tab through the blank page.', 'Hookworthy suggests the next line in your voice, quietly, in grey. Take it with Tab or keep typing. Hit Enter twice and your thought becomes a thread.'], ['03 · Sharpen', 'Every edit, word by word.', 'Punchier, shorter, stronger hook, more contrarian. See exactly what changed and keep only the words you like. Your hook score updates as you go.'], ['04 · Ship', 'Post when your people are up.', 'Hookworthy knows when your replies peak. Drop posts into the best slots, cross-post with per-platform tweaks, and let auto-plug do the follow-up.']].map(([k, h3, p], i) => `<div class="story-step ${i === 0 ? 'on' : ''}" data-step="${i}"><span class="label">${k}</span><h3>${h3}</h3><p>${p}</p></div>`).join('')}
       </div>
       <div class="story-stage" aria-hidden="true">
         <div class="stage-scene on" data-scene="0"><div class="mini" style="display:flex;gap:10px;align-items:center">${ic('link', 'sm')}<span class="mono" style="font-size:12px">example.com/startups-die-from-indigestion</span></div>${anglesFor({ title: 'Startups die from indigestion', topic: 'startup growth' }).slice(0, 4).map((a, i) => `<div class="mini ${i === 0 ? 'hl' : ''}"><span class="label" style="display:block;margin-bottom:4px">${a.k}</span>${esc(a.t)}</div>`).join('')}</div>
@@ -2803,10 +2806,10 @@ ROUTES.home = () => {
   </section>
 
   <section class="final" id="final"><canvas id="finalCanvas" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;z-index:-1"></canvas>
-    <h2 class="display grad reveal">Your next post is already in here.</h2>
+    <h2 class="display grad reveal">Your next hook is already in here.</h2>
     <div class="hero-cta reveal" style="--rd:120ms"><a class="btn ink xl" href="#start">Start writing, free${ic('arrow')}</a><button class="btn xl ghost" data-act="palette">${kbd(MOD, 'K')}<span>Look around</span></button></div>
   </section>
-  <footer class="foot"><a class="logo" href="#home">${LOGO}</a><nav><a href="#write">App</a><a href="#brand">Brand</a><a href="#upgrade">Pricing</a><a href="#home" data-act="shortcuts">Shortcuts</a></nav><span>© ${new Date().getFullYear()} Murmur. Made with a lot of deleted drafts.</span></footer>
+  <footer class="foot"><a class="logo" href="#home">${LOGO}</a><nav><a href="#write">App</a><a href="#brand">Brand</a><a href="#upgrade">Pricing</a><a href="#home" data-act="shortcuts">Shortcuts</a></nav><span>© ${new Date().getFullYear()} Hookworthy. Made with a lot of deleted drafts.</span></footer>
 </div>`;
   initLanding();
 };
@@ -3181,7 +3184,7 @@ function qMenu(c) {
   openMenu(c, [{ header: slotLabel(q.day, q.time) },
     { label: 'Edit in composer', icon: 'write', run: () => { S.queue = S.queue.filter(x => x !== q); save(); writeFrom(q.tweets); S.draft.slot = { day: q.day, time: q.time }; } },
     next ? { label: 'Move to next golden slot', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No golden slots left', icon: 'target', disabled: true },
-    { label: 'Publish now', icon: 'send', run: () => { q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Published. The flock is flying.', { icon: 'send', tone: 'accent' }); } },
+    { label: 'Publish now', icon: 'send', run: () => { q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Published. Hook, meet world.', { icon: 'send', tone: 'accent' }); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; S.queue.push({ ...q, id: uid(), day: s.day, time: s.time }); save(); drawCal(); drawQSide(); toast(`Duplicated to ${slotLabel(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
     { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); save(); drawCal(); drawQSide(); toast('Deleted from the queue.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); drawCal(); drawQSide(); } }); } }
   ], { width: 250 });
@@ -3270,7 +3273,7 @@ function drawInsights() {
   <div class="grid-3 sec" style="margin-top:16px">
     <div class="card ins-card"><span class="label">Threads</span><p class="big">4–6 posts beat longer threads by <em>41%</em>.</p><p>Past six, readers drop off fast. You averaged 8.</p><button class="btn sm" data-nact="thread" style="justify-self:start">Draft a 5-post thread</button></div>
     <div class="card ins-card"><span class="label">Specifics</span><p class="big">A number in line one gets <em>2.1×</em> the views.</p><p>Only 1 in 5 of your hooks has one. Easy win.</p><button class="btn sm" data-nact="number" style="justify-self:start">Open the hook grader</button></div>
-    <div class="card ins-card"><span class="label">Voice</span><p class="big">Your lowercase posts get <em>18%</em> more replies.</p><p>They read as more personal. Murmur keeps your casing.</p><button class="btn sm" data-nact="lower" style="justify-self:start">Tune your voice</button></div>
+    <div class="card ins-card"><span class="label">Voice</span><p class="big">Your lowercase posts get <em>18%</em> more replies.</p><p>They read as more personal. Hookworthy keeps your casing.</p><button class="btn sm" data-nact="lower" style="justify-self:start">Tune your voice</button></div>
   </div>
   <div class="card chart-card sec" style="margin-top:16px" id="top-posts"><div class="chart-h"><h3 class="h3">Top posts</h3></div>${TOP_POSTS.map((p, i) => `<div class="top-post"><span class="rk">${String(i + 1).padStart(2, '0')}</span><div><p>${esc(p.text.split('\n')[0])}</p><div class="st"><span>${fmtK(p.views)} views</span><span>${fmtK(p.likes)} likes</span><span>${fmtK(p.replies)} replies</span><span>${p.kind}</span></div></div><button class="btn sm" data-nact="remix" data-id="${p.id}">${ic('layers', 'sm')} Remix</button></div>`).join('')}</div>`;
   lineChart($('#line'), d);
@@ -3308,7 +3311,7 @@ function lineChart(host, data) {
    VOICE
    ========================================================================== */
 ROUTES.voice = () => {
-  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Voice</h1><p>Murmur writes like you because it read you. Tune it here and every riff follows.</p></div><button class="btn" id="retrain">${ic('repost', 'sm')} Retrain on latest posts</button></div>
+  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Voice</h1><p>Hookworthy writes like you because it read you. Tune it here and every riff follows.</p></div><button class="btn" id="retrain">${ic('repost', 'sm')} Retrain on latest posts</button></div>
   <div class="voice-hero">
     <div class="card pad" style="display:grid;gap:14px;align-content:start"><span class="label">You sound</span><div>${[['Direct', '82% of your openers are one sentence'], ['Dry', 'You joke in 1 of 5 posts, never with emoji'], ['Generous', '61% of your top posts give the playbook away']].map(([t, s]) => `<div class="trait"><b>${t}</b><span>${s}</span></div>`).join('')}</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">${[['11', 'words per sentence'], ['1.6', 'sentences per line'], ['0.3', 'emoji per post'], ['0', 'hashtags, ever']].map(([v, l]) => `<div><b class="mono" style="font-size:20px">${v}</b><div class="faint" style="font-size:12px;line-height:1.3;margin-top:4px">${l}</div></div>`).join('')}</div></div>
@@ -3317,7 +3320,7 @@ ROUTES.voice = () => {
       <div class="sample" id="v-sample" aria-live="polite"></div><span class="faint" style="font-size:12px">Same idea, your settings. Riffs use these too.</span></div>
   </div>
   <div class="grid-2 sec">
-    <div class="card pad" style="display:grid;gap:12px;align-content:start"><span class="label">Words you lean on</span><div class="words">${[['shipping', 48], ['users', 64], ['honestly', 31], ['boring', 22], ['month', 29], ['the fix', 17], ['small', 26], ['simple', 19]].map(([w, n]) => `<span class="w">${w}<small>${n}</small></span>`).join('')}</div><p class="faint" style="font-size:13px">Murmur uses these naturally, never more than you would.</p></div>
+    <div class="card pad" style="display:grid;gap:12px;align-content:start"><span class="label">Words you lean on</span><div class="words">${[['shipping', 48], ['users', 64], ['honestly', 31], ['boring', 22], ['month', 29], ['the fix', 17], ['small', 26], ['simple', 19]].map(([w, n]) => `<span class="w">${w}<small>${n}</small></span>`).join('')}</div><p class="faint" style="font-size:13px">Hookworthy uses these naturally, never more than you would.</p></div>
     <div class="card pad" style="display:grid;gap:12px;align-content:start"><span class="label">Never says</span><div class="words" id="never"></div><form id="never-f" style="display:flex;gap:8px"><input class="input" id="never-in" placeholder="Add a word or phrase" aria-label="Add a banned word" maxlength="40"><button class="btn" type="submit">Ban it</button></form></div>
   </div></div>`);
   const drawNever = () => { $('#never').innerHTML = S.voice.never.map((w, i) => `<span class="w no">${esc(w)}<button data-nv="${i}" aria-label="Allow ${esc(w)}" data-tip="Allow again">${ic('x', 'xs')}</button></span>`).join('') || '<span class="faint" style="font-size:13px">No banned words. Brave.</span>'; };
@@ -3326,7 +3329,7 @@ ROUTES.voice = () => {
   const v = $('#view'); const deb = debounce(sample, 60);
   v.addEventListener('input', e => { const k = e.target.dataset.v; if (!k) return; S.voice[k] = +e.target.value; e.target.style.setProperty('--p', e.target.value + '%'); $(`#v-${k}-n`).textContent = e.target.value; save(); deb(); });
   v.addEventListener('click', e => { const b = e.target.closest('[data-nv]'); if (b) { const [w] = S.voice.never.splice(+b.dataset.nv, 1); save(); drawNever(); toast(`“${esc(w)}” is allowed again.`, { icon: 'check' }); } });
-  $('#never-f').onsubmit = e => { e.preventDefault(); const i = $('#never-in'); const w = i.value.trim(); if (!w) { i.setAttribute('aria-invalid', 'true'); i.focus(); return; } i.removeAttribute('aria-invalid'); if (S.voice.never.includes(w.toLowerCase())) { toast('Already banned.', { icon: 'check' }); return; } S.voice.never.push(w.toLowerCase()); save(); i.value = ''; drawNever(); toast(`Murmur will never say “${esc(w)}”.`, { icon: 'zapoff', tone: 'accent' }); };
+  $('#never-f').onsubmit = e => { e.preventDefault(); const i = $('#never-in'); const w = i.value.trim(); if (!w) { i.setAttribute('aria-invalid', 'true'); i.focus(); return; } i.removeAttribute('aria-invalid'); if (S.voice.never.includes(w.toLowerCase())) { toast('Already banned.', { icon: 'check' }); return; } S.voice.never.push(w.toLowerCase()); save(); i.value = ''; drawNever(); toast(`Hookworthy will never say “${esc(w)}”.`, { icon: 'zapoff', tone: 'accent' }); };
   $('#retrain').onclick = e => { const b = e.currentTarget; b.classList.add('is-loading'); setTimeout(() => { b.classList.remove('is-loading'); S.voice.spice = Math.min(100, S.voice.spice + 4); save(); route(); toast('Retrained on 214 posts. You got 4% spicier.', { icon: 'voice', tone: 'accent' }); }, 1400); };
 };
 
@@ -3335,7 +3338,7 @@ ROUTES.voice = () => {
    ========================================================================== */
 ROUTES.upgrade = () => {
   const n = S.ai.used; const h = hookScore(S.draft.tweets[0].text).score;
-  mount('', `<div class="up-wrap"><div class="up-hero"><span class="label accent">Murmur Pro</span><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited riffs in your voice, auto-plugs that ride the wave, and insights that tell you what to write next.</p>
+  mount('', `<div class="up-wrap"><div class="up-hero"><span class="label accent">Hookworthy Pro</span><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited riffs in your voice, auto-plugs that ride the wave, and insights that tell you what to write next.</p>
     ${n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free riffs today${h ? ` · your current hook scores ${h}` : ''}</p>` : ''}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
     <div class="plans" id="up-plans">${plansHTML(true)}</div>
@@ -3351,14 +3354,14 @@ ROUTES.upgrade = () => {
 ROUTES.brand = () => {
   const tokens = ['--bg', '--surface', '--surface-2', '--border-strong', '--text-1', '--text-2', '--text-3', '--accent', '--accent-text', '--success', '--warn', '--error'];
   const cs = getComputedStyle(document.documentElement);
-  mount('brand', `<div class="page"><div class="page-h"><div><h1 class="display">Brand &amp; system</h1><p>The quiet place to write loud posts. Calm, sharp, warm. Here’s everything it’s made of.</p></div></div>
+  mount('brand', `<div class="page"><div class="page-h"><div><h1 class="display">Brand &amp; system</h1><p>Write posts people stop for. Calm, sharp, warm. Here’s everything it’s made of.</p></div></div>
   <div class="brand-hero">
     <div class="brand-tile ink"><div class="appicon">${LOGO_MARK.replace('class="mark"', 'class="mark" style="width:72px;height:72px"')}</div><span class="cap">App icon</span></div>
     <div class="brand-tile paper" style="--text-1:#16140F"><span class="logo" style="color:#16140F;transform:scale(2.4)">${LOGO}</span><span class="cap">Wordmark</span></div>
   </div>
-  <section class="sec"><div class="sec-h"><h2 class="h2">The Flock</h2><span class="faint" style="font-size:13px">Three dots taking off: a typing indicator with somewhere to be.</span></div>
-    <div class="card pad" style="display:flex;gap:40px;align-items:flex-end;flex-wrap:wrap">${[16, 24, 32, 64, 128].map(s => `<div style="display:grid;gap:8px;justify-items:center"><svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><circle cx="7" cy="16.5" r="3.6" fill="var(--accent)"/><circle cx="13.6" cy="10" r="2.5" fill="var(--accent)"/><circle cx="18.8" cy="4.9" r="1.6" fill="var(--accent)"/></svg><span class="mono faint" style="font-size:11px">${s}px</span></div>`).join('')}
-    <div style="display:grid;gap:8px;justify-items:center;margin-left:auto"><button class="btn" id="play-reward">${ic('play', 'sm')} Play the reward</button><span class="faint" style="font-size:11px">The motif, in motion</span></div></div></section>
+  <section class="sec"><div class="sec-h"><h2 class="h2">The Hook</h2><span class="faint" style="font-size:13px">One stroke and an eye. It reads at 16px and on a billboard.</span></div>
+    <div class="card pad" style="display:flex;gap:40px;align-items:flex-end;flex-wrap:wrap">${[16, 24, 32, 64, 128].map(s => `<div style="display:grid;gap:8px;justify-items:center"><svg class="mark" viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><circle class="eye" cx="15" cy="4.6" r="2.4"/><path class="hk" d="M15 7.6V15a5 5 0 0 1-10 0v-3.4"/><path class="hk" d="M5 11.6l2.6 2.4"/></svg><span class="mono faint" style="font-size:11px">${s}px</span></div>`).join('')}
+    <div style="display:grid;gap:8px;justify-items:center;margin-left:auto"><button class="btn" id="play-reward">${ic('play', 'sm')} Play the reward</button><span class="faint" style="font-size:11px">The publish reward</span></div></div></section>
   <section class="sec"><div class="sec-h"><h2 class="h2">Color</h2><span class="faint" style="font-size:13px">Neutrals do 90% of the work. Indigo is the one loud thing. Showing ${isDark() ? 'dark' : 'light'} values.</span></div>
     <div class="swatches">${tokens.map(t => `<div class="sw"><i style="background:var(${t})"></i><div><b style="font-size:13px">${t.replace('--', '')}</b><code>${cs.getPropertyValue(t).trim()}</code></div></div>`).join('')}</div></section>
   <section class="sec"><div class="sec-h"><h2 class="h2">Type</h2></div><div class="card pad typespec">
@@ -3379,7 +3382,7 @@ ROUTES.brand = () => {
   $('#view').addEventListener('click', e => {
     const b = e.target.closest('[data-bact]'); if (!b) return;
     if (b.dataset.bact === 'toast') toast('Scheduled for Tue 8:40am. Go touch grass.', { icon: 'clock', tone: 'accent', action: 'Undo', onAction: () => toast('Undone.', { icon: 'undo' }) });
-    if (b.dataset.bact === 'modal') modal(`${modalHead('A modal', 'Springs in, fades out, traps focus, closes on Esc.')}<div class="modal-b"><p class="muted">Every overlay in Murmur uses this one. Try Tab, then Esc.</p></div><div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" data-close>Got it</button></div>`, { label: 'Example modal' });
+    if (b.dataset.bact === 'modal') modal(`${modalHead('A modal', 'Springs in, fades out, traps focus, closes on Esc.')}<div class="modal-b"><p class="muted">Every overlay in Hookworthy uses this one. Try Tab, then Esc.</p></div><div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" data-close>Got it</button></div>`, { label: 'Example modal' });
     if (b.dataset.bact === 'menu') openMenu(b, [{ label: 'Publish now', icon: 'send', kbd: [MOD, SHIFT, '↵'], run: () => toast('Menus run real actions.', { icon: 'check' }) }, { label: 'Schedule…', icon: 'clock', kbd: [MOD, '↵'], run: () => toast('Arrow keys work too.', { icon: 'check' }) }, '-', { label: 'Delete', icon: 'trash', run: () => toast('Nothing was deleted. It’s a demo.', { icon: 'trash' }) }]);
   });
 };

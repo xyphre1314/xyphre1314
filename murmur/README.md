@@ -1,6 +1,6 @@
-# Murmur
+# Hookworthy
 
-**The quiet place to write loud posts.** A writing and scheduling app for X, Threads, LinkedIn and Bluesky. It's a single HTML file and PWA-ready.
+**Write posts people stop for.** A writing and scheduling app for X, Threads, LinkedIn and Bluesky. It's a single HTML file and PWA-ready.
 
 ## Run it
 
@@ -16,7 +16,7 @@ Opening `index.html` directly also works. Serving over HTTP turns on the service
 
 | Route | What it is |
 |---|---|
-| `#home` | Landing page: live composer demo over a murmuration, scroll story, before/after, pricing |
+| `#home` | Landing page: live composer demo, scroll story, before/after, pricing |
 | `#start` | Onboarding: paste your @, get your voice and five posts in about 4 seconds |
 | `#write` | Composer: thread editor, ghost text (Tab), riffs with a word-level diff, hook score, live previews, media, GIFs, polls, drag to reorder |
 | `#ideas` | Capture (link → five angles, screenshot, voice memo), idea engine, inbox, remix top posts |
@@ -34,6 +34,7 @@ Press `⌘K` / `Ctrl K` for the palette and `?` for all shortcuts.
 - `index.html`: the whole app. Design tokens are documented at the top of the `<style>` block.
 - `DESIGN.md`: name, brand, voice, type, color, spacing, motion and screen list.
 - `CRITIQUE.md`: the review and what it changed.
+- `NAMES.md`: the naming search and domain checks (hookworthy.com).
 - `assets/`: icon, wordmark, app icon (SVG and PNG).
 - `manifest.webmanifest`, `sw.js`: PWA.
 

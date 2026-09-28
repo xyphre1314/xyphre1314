@@ -1,5 +1,5 @@
-// Murmur service worker: cache-first for the app shell, network-first for fonts.
-const CACHE = 'murmur-v1';
+// Hookworthy service worker: cache-first for the app shell, network-first for fonts.
+const CACHE = 'hookworthy-v1';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/icon.svg', './assets/app-icon.svg', './assets/app-icon.png'];
 
 self.addEventListener('install', e => {

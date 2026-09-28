@@ -1,22 +1,17 @@
-# Murmur: brand and design system
+# Hookworthy: brand and design system
 
-> The quiet place to write loud posts.
+> Write posts people stop for.
 
 ## (a) Name
 
-| Option | Why it could work | Why it lost |
-|---|---|---|
-| **Murmur** ✅ | A *murmuration* is thousands of birds moving as one shape. That's a thread: small posts that move as one idea. Also: calm tool, loud result. | Nothing. It's ownable, short, and pronounceable in every market. |
-| Riff | Energetic, musical, "remix" built in | Sounds like a music app. Hard to trademark. |
-| Tern | A seabird; "take a turn"; 4 letters | Too cryptic, reads as a typo of "term". |
-| Inkling | Ideas-first, warm | Long, twee, sounds like a kids' brand. |
-| Cadence | Rhythm of posting, scheduling | Generic SaaS; dozens of companies already use it. |
+**Pick: Hookworthy** (hookworthy.com, standard price). The hook is the first line, the only part most people read. "Worthy" is the promise: every post earns the stop. The name says what the product does and doubles as a verb-ish tagline: *write hookworthy.*
 
-**Pick: Murmur.**
+The full search (5 rounds, 250+ candidates, domain checks) is in `NAMES.md`.
 
 ## (b) Brand identity
 
-- **Promise:** The quiet place to write loud posts.
+- **Promise:** Write posts people stop for.
+- **Tagline:** Write hookworthy.
 - **Personality:** Calm. Sharp. Warm.
 - **Voice rules**
   1. Short sentences. One idea each.
@@ -25,11 +20,11 @@
   4. Banned words: unlock, supercharge, leverage, elevate, seamless, game-changer, delve, "AI-powered".
   5. Celebrate quietly. One exclamation mark per screen, max. Usually zero.
   6. Errors say what happened and what to do next. No "Oops", no apologies.
-- **Logo: The Flock.** Three dots rising on a diagonal, shrinking as they go: a typing indicator taking off. It reads as "someone's about to say something" at 16px and as a murmuration at billboard size.
+- **Logo: The Hook.** A single rounded stroke with a solid eye: a fishhook drawn like a pen line. It reads at 16px and on a billboard. On hover it tilts back, as if something just bit.
   - Icon: `assets/icon.svg`
-  - Wordmark: `assets/wordmark.svg` (lowercase *murmur*, Newsreader 600, −3% tracking, the flock as a trailing flourish)
-  - App icon: `assets/app-icon.svg` (ink squircle, indigo flock, soft indigo glow)
-- **Signature motif: the flock + dusk glow.** Dots that gather and disperse. It shows up as the logo, the thread spine (a dotted line, never solid), the loading state, the hero murmuration, the publish reward (dots take flight), and the streak row. The glow is a single soft indigo radial light that sits behind whatever you're focused on.
+  - Wordmark: `assets/wordmark.svg` (lowercase *hookworthy*, EB Garamond 500, −2% tracking, the hook leading)
+  - App icon: `assets/app-icon.svg` (ink squircle, lilac hook, soft indigo glow)
+- **Signature motif: the hook + indigo glow.** The hook marks the first line everywhere: the hook score ring, the hook grader, the publish toast ("Hook, meet world."). The glow is a single soft indigo radial light behind whatever you're focused on. The landing page's particle field stays as ambient "attention" gathering around the composer.
 
 ## (c) Design system
 
@@ -81,7 +76,7 @@ Depth comes from 1px borders, an inset main panel (Linear's app shell), soft ind
 
 ## (d) Screens
 
-1. **Landing** – hero with a live composer demo over a murmuration, scroll story (capture → draft → sharpen → ship), before/after rewrite slider, features, social proof, pricing, repeated CTA.
+1. **Landing** – hero with a live composer demo over a field of attention, scroll story (capture → draft → sharpen → ship), before/after rewrite slider, features, social proof, pricing, repeated CTA.
 2. **Onboarding** – paste your @ → 3-second read → your voice + five posts you could write today.
 3. **Composer** – thread editor, ghost text, AI riffs with word-level diff, hook score, live previews for X / Threads / LinkedIn / Bluesky, media, GIFs, polls, drag to reorder, schedule.
 4. **Ideas** – capture bar (text, links, screenshots, voice memos), idea engine, inbox, remix top posts.

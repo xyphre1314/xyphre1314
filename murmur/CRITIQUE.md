@@ -1,4 +1,4 @@
-# Murmur: hard critique, and what changed
+# Hookworthy (formerly Murmur): hard critique, and what changed
 
 v1 was built, then tested the way a user would use it: every route, every flow, light and dark, iPhone SE through desktop, in a real Chromium. Every finding below was seen in a screenshot or a test run. Nothing on this list is a guess.
 
@@ -98,4 +98,10 @@ Owner feedback: temporary text overlapping in the app, scroll animation glitches
 
 ## Name
 
-Murmur is being replaced. 142 candidates and a ranked top 10 with domain checks are in `NAMES.md`. Recommendation: **Wren**.
+Murmur is gone. After five naming rounds (see `NAMES.md`) the pick is **Hookworthy**: hookworthy.com, .app and .xyz are all unregistered and standard price.
+
+What changed with the rebrand:
+- Logo: the three-dot flock became The Hook, a single stroke with an eye. It is used for the favicon, app icon, wordmark and in-app logo.
+- Hero: "Write posts people *stop* for." The final CTA is "Your next hook is already in here."
+- Publish reward copy: "Hook, meet world."
+- PWA name, meta/OG tags, service-worker cache and localStorage prefix all say `hookworthy`.
