@@ -1,6 +1,43 @@
 # Name exploration
 
-## Round 4: verified standard-price domains (current shortlist)
+## Round 5: final ranking (current)
+
+**Method**
+1. **Research.** Competitors are Hypefury, Tweet Hunter, Buffer, Publer, Postory and Taplio. The space is crowded with *post-*, *tweet-* and *hype-* names, so those are out. Lexicon Branding (Sonos, Vercel, Windsurf) names from unexpected worlds ("misleading briefs") and uses sound symbolism: *v* feels vibrant, *b*/*t* reliable.
+2. **Generated 127 names** with five methods:
+   - Typefully-style puns
+   - Misleading briefs (sailing, stage, perfume, guitar pedals)
+   - Sound-symbolic coinages
+   - Songbirds
+   - Blends of earlier favorites
+
+   These were merged with every earlier round, about 900 candidates in total.
+3. **Screened 381 domains by DNS** (`.com`/`.app`/`.xyz`): 92 were unregistered. The 27 best were then confirmed one by one with GoDaddy as **Standard**, not Premium. hearhear.xyz, scrollstopper.xyz and cliffhanger.xyz failed.
+
+**Scoring** (1–5 each, max 30): **Meaning** (fits hooks, voice, being heard) · **Wit** (story, a smile) · **Sound** (rhythm, feel) · **Radio test** (hear it once, spell it right) · **Distinct** (vs competitors and existing apps) · **Domain** (.com=5, .app=3, .xyz=2; more TLDs = better).
+
+**Why these beat "Typefully":** Typefully is a great pun, but it names the *activity* (typing). The best names below name the *outcome*: posts people stop for, a voice people hear. Outcomes are what people pay for.
+
+| # | Name | Score | Why it wins | Verified Standard |
+|---|---|---|---|---|
+| 1 | **Hookworthy** ⭐ | 29 | Typefully's exact move (a pun on "noteworthy", like "beautifully"), aimed at the thing that matters: a hook worth stopping for. Passes the radio test, and it's the benefit in one word. Tagline: *Write hookworthy.* | hookworthy.com, .app, .xyz |
+| 2 | **Loudspoken** | 28 | The opposite of soft-spoken. It's about confidence and identity, not tools. A perfect story for people scared to post: *For the soft-spoken.* No `.com`. | loudspoken.app, .xyz |
+| 3 | **Linethinker** | 27 | "Hook, line and *thinker*." Witty, instantly memorable, and it says this is a place to think, not just type. A bit long. | linethinker.com, .app, .xyz |
+| 4 | **Lilthouse** | 25 | *Lilt* (the music in a voice) plus *lighthouse* (a beacon). Charming, but people may type "lighthouse". | lilthouse.com, .app, .xyz |
+| 5 | **Harksong** | 25 | "Hark!" (listen) plus song. Poetic and unique, very Wispr. | harksong.com, .app, .xyz |
+| 6 | **Flocksong** | 24 | Many posts moving as one, and it matches the current dot logo. The *Flock-* prefix is crowded (Flock, Flocknote). | flocksong.com, .app, .xyz |
+| 7 | **Wellposted** | 24 | "Well-posted" means well-informed, and also means you post well. A clever double meaning. No `.com`. | wellposted.app, .xyz |
+| 8 | **Harkwren** | 24 | "Hark, a wren!" The wren is the tiny bird with the huge song. A great story, harder to spell. | harkwren.com, .app |
+| 9 | **Loudwren** | 24 | The same small-but-loud story, easier to spell. | loudwren.app, .xyz |
+| 10 | **Hookwright** | 24 | A maker of hooks, like a playwright. Crafty and clear, less warm. | hookwright.com, .app, .xyz |
+
+Honorable mentions (verified Standard): Wordsworthy (.xyz, a Wordsworth + worthy pun), Goodtake (.xyz, X slang), Ledelight (.app, lede + delight), Headturner (.xyz), Plumelight (.com), Linesong and Nibsong (.com).
+
+Quick web check found no existing products using the top names. Trademarks were not formally checked. Run a USPTO search before buying.
+
+---
+
+## Round 4
 
 Every domain below passed two checks on Sep 28, 2026:
 1. **DNS:** the registry returns NXDOMAIN, meaning nobody has registered it. This catches parked names that are for sale.
