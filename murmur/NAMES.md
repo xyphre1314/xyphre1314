@@ -1,6 +1,33 @@
 # Name exploration
 
-## Round 2 (current shortlist)
+## Round 3: `.com` only (current shortlist)
+
+This is a website first, so the name should own `name.com`, exactly. Almost every real word is taken at `.com`, so I checked about 110 crafted names. Of those, 36 were open. These are the best 10.
+
+Checked with GoDaddy on Sep 28, 2026. GoDaddy didn't return prices. Single-word `.com`s like hearken.com are often premium, aftermarket-priced domains, so confirm the price at checkout. Trademarks were not checked.
+
+| # | Name | The idea | `.com` |
+|---|---|---|---|
+| 1 | **Hookline** ⭐ | "Hook, line and sinker." Your first line is the hook that reels them in. Says what the product does, with a wink. | hookline.com |
+| 2 | **Hearken** | Old word for "listen closely", Hark's more elegant sibling. Literary, very Wispr. (Possibly premium-priced.) | hearken.com |
+| 3 | **Loud Ink** | Two short words that carry the whole promise: the quiet place to write loud posts. | loudink.com |
+| 4 | **Hookwright** | A maker of hooks, like a playwright makes plays. Craft and clarity. | hookwright.com |
+| 5 | **Saylight** | "Say it in a good light." Soft, warm, human. | saylight.com |
+| 6 | **Linesmith** | A smith of lines, a forge for your best sentences. | linesmith.com |
+| 7 | **Harkly** | A playful, ownable take on "hark" (listen!). | harkly.com |
+| 8 | **Voicesmith** | The tool that forges posts in your voice. | voicesmith.com |
+| 9 | **Hookly** | Friendly and short. Hooks, made easy. | hookly.com |
+| 10 | **Quiet Ink** | The calm side of the promise, editorial and premium. | quietink.com |
+
+Also open: nightjar.com, lyrra.com, scrivio.com, hookhouse.com, quillhouse.com, hooklight.com, flockwrite.com, hushpost.com, quoteable.com.
+
+Taken at .com: Hark and every Hark variant except harkly, Magpie variants, Talewind, Songthread, Hookcraft, Postcraft, Wordnest, Hooksmith, Threadly, Firstline, Loudquill.
+
+**Pick: Hookline.** It's instantly clear, it's witty, it's the product's core feature (the hook), and the exact `.com` is open. If hearken.com is standard-priced, Hearken is the more premium, brand-y alternative.
+
+---
+
+## Round 2
 
 Round 1 leaned on plain dictionary words (Quill, Nib, Wren). They're pleasant but forgettable, and almost all are taken. Round 2 uses the strategies behind names like Granola, Arc, Cursor and Raycast:
 - **Outcome names:** what you get from the product.
