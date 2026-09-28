@@ -1,5 +1,37 @@
 # Name exploration
 
+## Round 2 (current shortlist)
+
+Round 1 leaned on plain dictionary words (Quill, Nib, Wren). They're pleasant but forgettable, and almost all are taken. Round 2 uses the strategies behind names like Granola, Arc, Cursor and Raycast:
+- **Outcome names:** what you get from the product.
+- **Metaphors from another world:** birds, music, stagecraft.
+- **Crafted compounds:** made-up words people can own.
+
+Domains were checked with GoDaddy on Sep 28, 2026. Trademarks were not checked.
+
+| # | Name | The idea | Domain open |
+|---|---|---|---|
+| 1 | **Hark** ⭐ | Old English for "listen!". It's literally the job of a hook: make people stop and pay attention. 4 letters, confident, beautiful in serif. Tagline: *Make them listen.* | hark.app |
+| 2 | **Magpie** | Collects shiny things (your idea inbox) and loves to chatter (posting). Warm, witty, very Granola. | magpie.app |
+| 3 | **Hookwright** | A maker of hooks, the way a playwright makes plays. Says exactly what it does, with craft. | hookwright.com |
+| 4 | **Timbre** | The quality that makes your voice unmistakably yours. Fits the voice-cloning promise. | timbre.app |
+| 5 | **Unmute** | For everyone who's scared to post. The CTA writes itself: *Unmute yourself.* | useunmute.com |
+| 6 | **Cadenza** | The solo where the performer gets to shine. Premium and musical. | cadenza.app |
+| 7 | **Mynah** | The bird that learns to talk exactly like you: AI in your voice, plus the bird-app heritage. | usemynah.com |
+| 8 | **Idiom** | Your way of saying things. Short and smart. | idiom.app |
+| 9 | **Aloud** | Write the way you'd say it aloud. Soft and human, very Wispr. | aloud.app |
+| 10 | **Talebird** | A bird that tells tales, a wink at where posting started. | talebird.app |
+
+Also good: Loudhouse (loudhouse.app), Quotable (getquotable.com), Crest (crest.app).
+
+Taken or blocked: Heard, Setlist, Sayso, Speakeasy, Open Mic, Hooky, Clarion, Herald, Spiel, Parlance, Diction, Lyric, Quoted, Hookline, Oneliner, Wordwright.
+
+**Pick: Hark.** It's the most distinctive, it names the product's core promise, and `hark.app` is open. Runner-up: **Magpie**, for a warmer, more playful brand.
+
+---
+
+## Round 1
+
 A replacement for "Murmur". I wrote 142 candidates, grouped by where they come from, and then picked a top 10.
 
 ## Top 10 (ranked)
