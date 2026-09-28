@@ -1,6 +1,33 @@
 # Name exploration
 
-## Round 3: `.com` only (current shortlist)
+## Round 4: verified standard-price domains (current shortlist)
+
+Every domain below passed two checks on Sep 28, 2026:
+1. **DNS:** the registry returns NXDOMAIN, meaning nobody has registered it. This catches parked names that are for sale.
+2. **GoDaddy single-domain check:** the exact match is `available=true`, `inventoryType=Standard`, `purchasable=true`.
+
+Screened: about 150 real words on `.app`/`.xyz` and about 560 crafted `.com` names. Almost every real word is registered, even on `.app`/`.xyz`. Trademarks were not checked.
+
+| # | Name | The idea | Verified Standard |
+|---|---|---|---|
+| 1 | **Flocksong** ⭐ | The song a flock makes together, many small posts moving as one. It keeps the current flock-of-dots logo, so the brand carries straight over. | flocksong.com, flocksong.app |
+| 2 | **Lilthouse** | *Lilt*, the rise and fall of a voice, plus *lighthouse*, a beacon people steer toward. A lighthouse for your voice. | lilthouse.com, lilthouse.app |
+| 3 | **Hookworthy** | Like "noteworthy", but for hooks. Says the benefit in one word. | hookworthy.com |
+| 4 | **Harksong** | "Hark!" (listen) plus song. Makes people stop and listen. | harksong.com |
+| 5 | **Hookwright** | A maker of hooks, the way a playwright makes plays. | hookwright.com |
+| 6 | **Linesong** | Lines that sing. | linesong.com |
+| 7 | **Nibsong** | The pen tip that sings. Small and charming. | nibsong.com |
+| 8 | **Inksong** | Writing that sings. The `.com` is reserved, so `.xyz` only. | inksong.xyz |
+
+Failed verification: inksong.com, ledeline.com, herald.app, crier.xyz, encore.xyz, muse.xyz, nib.app. These are registry-reserved and not purchasable.
+
+**Pick: Flocksong.** It has both the `.com` and the `.app`, and the logo and motion system already tell its story. **Hookworthy** is the clearest alternative, **Lilthouse** the most charming.
+
+> Earlier rounds are kept below for history, but they're superseded. Several domains they listed as "open" are registered resale (aftermarket) or premium names: hookline.com, loudink.com, saylight.com, quillhouse.com, hearken.com (premium), hark.app, magpie.app and others.
+
+---
+
+## Round 3
 
 This is a website first, so the name should own `name.com`, exactly. Almost every real word is taken at `.com`, so I checked about 110 crafted names. Of those, 36 were open. These are the best 10.
 
