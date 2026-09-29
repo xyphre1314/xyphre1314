@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="assets/app-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600;700&family=Inter:wght@400;600&display=swap">
 <style>
 /* ==========================================================================
    DESIGN TOKENS  (v2)
@@ -886,298 +886,424 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .timer{ font:500 var(--t-12)/1 var(--font-mono); color:var(--text-3); display:inline-flex; gap:6px; align-items:center; }
 
 /* ==========================================================================
-   LANDING: "The Thumb-Stop". The page is built from the feed's own grammar.
-   A graphite stream of other people's posts runs past in motion blur; the
-   creator's post is the only sharp, bright object. Weak first lines get
-   scrolled past; strong ones stop the feed.
+   PLATFORM POSTS: renders that match each app's real feed UI.
+   X, Threads, LinkedIn and Bluesky, light and dark. Used by the homepage and
+   by the composer's "In the feed" preview, so what you see is what ships.
    ========================================================================== */
-.land{ --ink:#0B0C0E; --ink-2:#111215; --ink-3:#17181C; --noise:#1A1B1F; --noise-tx:#6A6D75; --noise-dim:#44464D; --paper:#F7F7F8; --paper-ink:#111214;
-  background:var(--ink); color:var(--text-1); overflow-x:clip; }
-.land ::selection{ background:rgba(255,255,255,.22); color:#fff; }
-.land .wrap{ max-width:1240px; margin:0 auto; padding-inline:clamp(16px,3.6vw,40px); }
-.land .display{ font-family:var(--font-display); font-weight:400; letter-spacing:-.028em; line-height:.98; text-wrap:balance; margin:0; }
+.pf{ --pf-sys:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; text-align:left; -webkit-font-smoothing:antialiased; }
+.pf img{ display:block; }
+.pf .av{ border-radius:50%; object-fit:cover; background:#CFD9DE; flex:none; }
+.pf .av.ini{ display:grid; place-items:center; color:#fff; font:700 15px/1 var(--pf-sys); background:linear-gradient(135deg,#8B98A5,#536471); }
+.av.ini{ position:relative; overflow:hidden; }
+.av .avp{ position:absolute; inset:0; border-radius:inherit; background:url(https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/c1690549-793f-4b50-a3f1-19e873c4626c.jpg) no-repeat 0 0 / 100% 1800%; }
+.pf .md .mdp{ display:block; width:100%; height:100%; background:url(https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/a814989f-cac9-40ac-9293-0314cc05ec44.jpg) no-repeat 0 0 / 100% 600%; }
+.pf .ic{ width:18.75px; height:18.75px; fill:none; stroke:currentColor; stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+
+/* ---------------- X ---------------- */
+.xp{ --x-bg:#FFFFFF; --x-tx:#0F1419; --x-2:#536471; --x-line:#EFF3F4; --x-media:#CFD9DE; --x-blue:#1D9BF0; --x-hover:rgba(15,20,25,.03);
+  display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 8px; padding:12px 16px 4px; background:var(--x-bg); color:var(--x-tx); font:400 15px/20px var(--pf-sys); border-bottom:1px solid var(--x-line); }
+.xp.dark{ --x-bg:#000000; --x-tx:#E7E9EA; --x-2:#71767B; --x-line:#2F3336; --x-media:#2F3336; --x-hover:rgba(231,233,234,.03); }
+.xp .av{ width:40px; height:40px; }
+.xp .hd{ display:flex; align-items:center; gap:4px; min-width:0; line-height:20px; }
+.xp .hd .n{ font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.xp .hd .h, .xp .hd .t, .xp .hd .xdot{ color:var(--x-2); white-space:nowrap; }
+.xp .hd .h{ overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.xp .hd .more{ margin-left:auto; color:var(--x-2); display:grid; place-items:center; width:18.75px; }
+.xp .vb{ width:18.75px; height:18.75px; flex:none; }
+.xp .tx{ margin-top:2px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.xp .tx a, .xp .tx .lnk{ color:var(--x-blue); }
+.xp .tx .showmore{ display:block; color:var(--x-blue); margin-top:2px; }
+.xp .md{ margin-top:12px; border-radius:16px; overflow:hidden; border:1px solid var(--x-media); aspect-ratio:800/474; background:var(--x-media); }
+.xp .md img{ width:100%; height:100%; object-fit:cover; }
+.xp .acts{ display:flex; justify-content:space-between; align-items:center; max-width:425px; margin:12px 0 0 -8px; height:32px; color:var(--x-2); font-size:13px; line-height:16px; }
+.xp .acts .a{ display:inline-flex; align-items:center; gap:2px; min-width:0; }
+.xp .acts .a .b{ display:grid; place-items:center; width:34px; height:34px; border-radius:50%; transition:background .2s,color .2s; }
+.xp .acts .a span.c{ padding:0 4px 0 1px; font-variant-numeric:tabular-nums; }
+.xp .acts .a.rp:hover{ color:#1D9BF0; } .xp .acts .a.rp:hover .b{ background:rgba(29,155,240,.1); }
+.xp .acts .a.rt:hover{ color:#00BA7C; } .xp .acts .a.rt:hover .b{ background:rgba(0,186,124,.1); }
+.xp .acts .a.lk:hover{ color:#F91880; } .xp .acts .a.lk:hover .b{ background:rgba(249,24,128,.1); }
+.xp .acts .a.lk.on{ color:#F91880; } .xp .acts .a.lk.on .ic{ fill:#F91880; stroke:#F91880; }
+.xp .acts .a.vw:hover{ color:#1D9BF0; } .xp .acts .a.vw:hover .b{ background:rgba(29,155,240,.1); }
+.xp .acts .tail{ display:flex; gap:0; }
+.xp.xthr{ border-bottom:0; padding-bottom:0; }
+.xp .rail{ display:grid; justify-items:center; grid-template-rows:40px 1fr; }
+.xp .rail i{ width:2px; margin-top:4px; background:var(--x-media); border-radius:2px; }
+.xp.cc{ border:1px solid var(--x-line); border-radius:16px; }
+
+/* ---------------- Threads ---------------- */
+.thp{ --t-bg:#FFFFFF; --t-tx:#000000; --t-2:#999999; --t-line:rgba(0,0,0,.15); --t-rail:rgba(0,0,0,.15);
+  display:grid; grid-template-columns:48px minmax(0,1fr); gap:0 0; padding:12px 16px 10px; background:var(--t-bg); color:var(--t-tx); font:400 15px/21px var(--pf-sys); border-bottom:1px solid var(--t-line); }
+.thp.dark{ --t-bg:#101010; --t-tx:#F3F5F7; --t-2:#777777; --t-line:rgba(243,245,247,.15); --t-rail:rgba(243,245,247,.15); }
+.thp .av{ width:36px; height:36px; margin-top:4px; }
+.thp .hd{ display:flex; align-items:center; gap:6px; }
+.thp .hd .n{ font-weight:600; }
+.thp .hd .t{ color:var(--t-2); }
+.thp .hd .more{ margin-left:auto; color:var(--t-tx); }
+.thp .tx{ margin-top:1px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.thp .md{ margin-top:10px; border-radius:8px; overflow:hidden; aspect-ratio:800/474; max-width:340px; border:0.5px solid var(--t-line); }
+.thp .md img{ width:100%; height:100%; object-fit:cover; }
+.thp .acts{ display:flex; gap:4px; margin:8px 0 0 -8px; color:var(--t-tx); font-size:13px; }
+.thp .acts .a{ display:inline-flex; align-items:center; gap:4px; height:36px; padding:0 8px; border-radius:18px; }
+.thp .acts .ic{ width:20px; height:20px; stroke-width:1.9; }
+.thp .acts .c{ color:var(--t-tx); opacity:.85; font-variant-numeric:tabular-nums; }
+.thp .rail{ display:grid; justify-items:center; grid-template-rows:36px 1fr; }
+.thp .rail i{ width:2px; margin-top:6px; background:var(--t-rail); border-radius:2px; }
+
+/* ---------------- LinkedIn ---------------- */
+.lip{ --l-bg:#FFFFFF; --l-tx:rgba(0,0,0,.9); --l-2:rgba(0,0,0,.6); --l-line:#E8E8E8; --l-blue:#0A66C2; --l-page:#F4F2EE;
+  background:var(--l-bg); color:var(--l-tx); font:400 14px/20px var(--pf-sys); border-radius:8px; box-shadow:0 0 0 1px rgba(140,140,140,.2); overflow:hidden; }
+.lip.dark{ --l-bg:#1B1F23; --l-tx:rgba(255,255,255,.9); --l-2:rgba(255,255,255,.6); --l-line:#38434F; --l-blue:#71B7FB; box-shadow:0 0 0 1px rgba(255,255,255,.1); }
+.lip .hd{ display:grid; grid-template-columns:48px minmax(0,1fr) auto; gap:8px; padding:12px 16px 0; align-items:start; }
+.lip .av{ width:48px; height:48px; }
+.lip .who{ min-width:0; }
+.lip .who b{ display:flex; align-items:center; gap:4px; font-size:14px; line-height:20px; font-weight:600; }
+.lip .who b .deg{ font-weight:400; color:var(--l-2); }
+.lip .who span{ display:block; font-size:12px; line-height:16px; color:var(--l-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lip .follow{ display:inline-flex; align-items:center; gap:4px; color:var(--l-blue); font-weight:600; font-size:16px; padding:4px 8px; border-radius:4px; }
+.lip .tx{ position:relative; padding:8px 16px 0; white-space:pre-wrap; overflow-wrap:anywhere; }
+.lip .tx.clamp{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.lip .seemore{ display:block; text-align:right; padding:0 16px; margin-top:-20px; position:relative; color:var(--l-2); font-size:14px; line-height:20px; }
+.lip .seemore span{ background:var(--l-bg); padding-left:6px; box-shadow:-18px 0 12px var(--l-bg); }
+.lip .md{ margin-top:8px; aspect-ratio:800/474; background:var(--l-line); }
+.lip .md img{ width:100%; height:100%; object-fit:cover; }
+.lip .soc{ display:flex; justify-content:space-between; align-items:center; padding:8px 16px; font-size:12px; color:var(--l-2); }
+.lip .rx{ display:inline-flex; align-items:center; gap:4px; }
+.lip .rx .ico{ display:inline-flex; }
+.lip .rx .ico svg{ width:16px; height:16px; margin-right:-3px; border-radius:50%; box-shadow:0 0 0 1.5px var(--l-bg); }
+.lip .bar{ display:flex; justify-content:space-around; border-top:1px solid var(--l-line); margin:0 16px; padding:4px 0; }
+.lip .bar{ min-height:48px; }
+.lip .bar span{ display:inline-flex; align-items:center; gap:6px; padding:12px 8px; font-weight:600; color:var(--l-2); font-size:14px; border-radius:4px; }
+.lip .bar .ic{ width:20px; height:20px; }
+
+/* ---------------- Bluesky ---------------- */
+.bsp{ --b-bg:#FFFFFF; --b-tx:#000000; --b-2:#405168; --b-ic:#667B99; --b-line:#DCE2EA; --b-blue:#006AFF;
+  display:grid; grid-template-columns:42px minmax(0,1fr); gap:0 10px; padding:12px 15px 6px 18px; background:var(--b-bg); color:var(--b-tx); font:400 15px/1.3 Inter,var(--pf-sys); font-variant:no-contextual; border-bottom:1px solid var(--b-line); }
+.bsp.dark{ --b-bg:#000000; --b-tx:#FFFFFF; --b-2:#A5B2C5; --b-ic:#667B99; --b-line:#232E3E; }
+.bsp .av{ width:42px; height:42px; }
+.bsp .hd{ display:flex; align-items:baseline; gap:4px; min-width:0; }
+.bsp .hd .n{ font-weight:600; white-space:nowrap; }
+.bsp .hd .h, .bsp .hd .t{ color:var(--b-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bsp .tx{ margin-top:2px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.bsp .md{ margin-top:10px; border-radius:8px; overflow:hidden; aspect-ratio:800/474; }
+.bsp .md img{ width:100%; height:100%; object-fit:cover; }
+.bsp .acts{ display:flex; justify-content:space-between; max-width:340px; margin-top:8px; color:var(--b-ic); font-size:13.1px; }
+.bsp .acts .a{ display:inline-flex; align-items:center; gap:4px; height:30px; }
+.bsp .acts .ic{ width:18px; height:18px; }
+
+/* ---------------- phone frame + app chrome ---------------- */
+.phone{ position:relative; width:var(--pw,320px); aspect-ratio:9/19.3; border-radius:calc(var(--pw,320px) * .16); padding:calc(var(--pw,320px) * .035); background:linear-gradient(145deg,#2A2B2E,#0C0C0D); box-shadow:inset 0 0 0 1.5px #3A3B3F, 0 40px 80px -30px rgba(0,0,0,.55), 0 12px 30px -12px rgba(0,0,0,.35); flex:none; }
+.phone .scr{ position:relative; height:100%; border-radius:calc(var(--pw,320px) * .125); overflow:hidden; background:#fff; display:flex; flex-direction:column; container-type:inline-size; }
+.phone .scr.dark{ background:#000; }
+.phone .island{ position:absolute; top:9px; left:50%; width:30%; height:24px; margin-left:-15%; border-radius:20px; background:#000; z-index:5; }
+.phone .sb{ display:flex; justify-content:space-between; align-items:center; height:44px; padding:10px 26px 0 30px; font:600 14px/1 var(--pf-sys); color:#000; flex:none; }
+.phone .scr.dark .sb{ color:#fff; }
+.phone .sb .ind{ display:flex; gap:5px; align-items:center; }
+.phone .sb svg{ height:11px; width:auto; fill:currentColor; }
+.phone .apph{ display:grid; grid-template-columns:32px 1fr 32px; align-items:center; height:44px; padding:0 14px; flex:none; }
+.phone .apph .av{ width:30px; height:30px; }
+.phone .apph .logo{ justify-self:center; width:22px; height:22px; }
+.phone .tabs{ display:grid; grid-template-columns:1fr 1fr; height:44px; border-bottom:1px solid #EFF3F4; font:500 14px/1 var(--pf-sys); color:#536471; flex:none; }
+.phone .scr.dark .tabs{ border-color:#2F3336; color:#71767B; }
+.phone .tabs span{ display:grid; place-items:center; position:relative; }
+.phone .tabs span.on{ font-weight:700; color:#0F1419; }
+.phone .scr.dark .tabs span.on{ color:#E7E9EA; }
+.phone .tabs span.on::after{ content:""; position:absolute; bottom:0; width:56px; height:4px; border-radius:9999px; background:#1D9BF0; }
+.phone .feed{ flex:1; overflow:hidden; position:relative; }
+.phone .feed .xp .acts{ max-width:none; }
+.phone .feed .lip{ border-radius:0; box-shadow:none; border-bottom:6px solid var(--l-page); font-size:13px; line-height:18px; }
+.phone .scr.dark .feed .lip{ border-bottom-color:#000; }
+.phone .tb{ display:flex; justify-content:space-around; align-items:center; height:52px; border-top:1px solid #EFF3F4; color:#0F1419; flex:none; padding-bottom:10px; }
+.phone .scr.dark .tb{ border-color:#2F3336; color:#E7E9EA; }
+.phone .tb .ic{ width:22px; height:22px; stroke-width:1.9; }
+.phone .fab{ position:absolute; right:14px; bottom:74px; width:52px; height:52px; border-radius:50%; background:#1D9BF0; color:#fff; display:grid; place-items:center; box-shadow:0 6px 16px -4px rgba(0,0,0,.3); }
+.phone .fab .ic{ width:22px; height:22px; stroke-width:2.2; }
+.phone .home-ind{ position:absolute; bottom:7px; left:50%; width:34%; height:5px; margin-left:-17%; border-radius:5px; background:#000; opacity:.85; }
+.phone .scr.dark .home-ind{ background:#fff; }
+.phone .me-post{ position:relative; }
+.phone .me-post::before{ content:""; position:absolute; inset:0; box-shadow:inset 3px 0 0 #1D9BF0; pointer-events:none; opacity:0; transition:opacity .4s; }
+.phone .me-post.hl::before{ opacity:1; }
+
+/* ==========================================================================
+   HOMEPAGE: "Keynote for creators"
+   Apple's chaptered storytelling, Linear's precision, Arc's warmth.
+   Light canvas, one dark keynote chapter, real-looking feeds everywhere.
+   The yellow marker is the only brand color: it marks the hook.
+   ========================================================================== */
+.hw{ --c-bg:#F5F5F3; --c-bg-2:#EDEDEA; --c-ink:#0C0C0E; --c-2:#55565C; --c-3:#8A8B91; --c-line:rgba(12,12,14,.08); --c-card:#FFFFFF; --c-dark:#09090A; --c-dark-2:#141416; --c-mark:#FFE14D;
+  --f-disp:'Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; --f-hand:'Caveat','Bradley Hand',cursive;
+  --ease-o:cubic-bezier(.22,1,.36,1); --ease-io:cubic-bezier(.65,0,.35,1);
+  background:var(--c-bg); color:var(--c-ink); font:400 16px/1.55 var(--f-disp); overflow-x:clip; -webkit-font-smoothing:antialiased; }
+.hw ::selection{ background:var(--c-mark); color:var(--c-ink); }
+.hw .wrap{ max-width:1200px; margin:0 auto; padding-inline:clamp(16px,4vw,40px); }
+.hw h1, .hw h2, .hw h3{ margin:0; font-family:var(--f-disp); font-weight:600; letter-spacing:-.045em; text-wrap:balance; }
+.hw p{ margin:0; }
+.hw .mk{ background:linear-gradient(transparent 58%, var(--c-mark) 58%, var(--c-mark) 92%, transparent 92%) no-repeat 0 0 / var(--mkw,100%) 100%; padding:0 .06em; margin:0 -.06em; border-radius:2px; }
+.hw .mk.draw{ --mkw:0%; animation:mkdraw .9s .75s var(--ease-o) forwards; }
+@keyframes mkdraw{ to{ --mkw:100%; } }
+@property --mkw{ syntax:'<percentage>'; inherits:false; initial-value:100%; }
+.hw .hand{ position:absolute; font:500 23px/1.05 var(--f-hand); color:var(--c-2); pointer-events:none; white-space:nowrap; }
+.hw .hand svg{ display:block; overflow:visible; }
+.hw .hand path{ fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:var(--len,200); stroke-dashoffset:var(--len,200); animation:draw 1s 1.4s var(--ease-o) forwards; }
+@keyframes draw{ to{ stroke-dashoffset:0; } }
 
 /* nav */
-.l-nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:22px; height:62px; padding:0 max(16px,calc((100vw - 1240px)/2 + 40px)); background:color-mix(in srgb,var(--ink) 70%,transparent); backdrop-filter:blur(14px) saturate(1.3); -webkit-backdrop-filter:blur(14px) saturate(1.3); border-bottom:1px solid transparent; transition:border-color .3s,background .3s; }
-.l-nav.scrolled{ border-bottom-color:rgba(255,255,255,.06); background:color-mix(in srgb,var(--ink) 88%,transparent); }
-.l-nav .links{ display:flex; gap:2px; margin-left:10px; }
-.l-nav .links a{ padding:7px 11px; border-radius:8px; color:var(--text-2); font-size:var(--t-14); transition:color var(--d-micro),background var(--d-micro); }
-.l-nav .links a:hover{ color:var(--text-1); background:rgba(255,255,255,.05); }
-.l-nav .grow{ flex:1; }
+.hw-nav{ position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:28px; height:60px; padding:0 max(16px,calc((100vw - 1200px)/2 + 40px)); background:color-mix(in srgb,var(--c-bg) 72%,transparent); backdrop-filter:saturate(1.6) blur(16px); -webkit-backdrop-filter:saturate(1.6) blur(16px); border-bottom:1px solid transparent; transition:background .35s,border-color .35s,color .35s; }
+.hw-nav.scrolled{ border-bottom-color:var(--c-line); }
+.hw-nav.on-dark{ background:color-mix(in srgb,var(--c-dark) 70%,transparent); color:#F5F5F3; border-bottom-color:rgba(255,255,255,.06); }
+.hw-nav .logo{ color:inherit; }
+.hw-nav .logo .mark .cm{ stroke:currentColor; }
+.hw-nav .links{ display:flex; gap:4px; }
+.hw-nav .links a{ padding:7px 11px; border-radius:99px; font-size:14px; color:inherit; opacity:.66; transition:opacity .2s,background .2s; }
+.hw-nav .links a:hover{ opacity:1; background:rgba(127,127,127,.1); }
+.hw-nav .grow{ flex:1; }
+.hw-nav .in{ font-size:14px; opacity:.7; padding:7px 10px; }
+.hw-nav .in:hover{ opacity:1; }
+.hw .hbtn{ display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 18px; border-radius:99px; font:600 15px/1 var(--f-disp); letter-spacing:-.01em; background:var(--c-ink); color:#fff; transition:transform .2s var(--ease-o),box-shadow .2s,background .2s; box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 8px 20px -10px rgba(0,0,0,.6); }
+.hw .hbtn:hover{ transform:translateY(-1px); box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 14px 28px -12px rgba(0,0,0,.6); }
+.hw .hbtn:active{ transform:scale(.97); }
+.hw .hbtn.lg{ height:52px; padding:0 24px; font-size:16.5px; }
+.hw .hbtn.light{ background:#F5F5F3; color:var(--c-ink); }
+.hw .hbtn .icon{ width:16px; height:16px; }
+.hw .ghost{ display:inline-flex; align-items:center; gap:10px; height:52px; padding:0 8px; font:500 16px/1 var(--f-disp); color:var(--c-ink); }
+.hw .ghost .play{ display:grid; place-items:center; width:32px; height:32px; border-radius:50%; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 4px 12px -6px rgba(0,0,0,.3); transition:transform .25s var(--ease-o); }
+.hw .ghost:hover .play{ transform:scale(1.08); }
+.hw-nav.on-dark .hbtn{ background:#F5F5F3; color:var(--c-ink); }
+.hw .hbtn:focus-visible, .hw .ghost:focus-visible, .hw-nav a:focus-visible{ outline:2px solid var(--c-ink); outline-offset:3px; }
+.hw-nav.on-dark a:focus-visible{ outline-color:#fff; }
 
-/* ---------- hero: three columns around a live feed ---------- */
-.lp-hero{ position:relative; display:grid; grid-template-columns:minmax(0,1.08fr) minmax(340px,490px) minmax(0,.7fr); gap:clamp(24px,3.4vw,56px); align-items:center; min-height:min(900px,calc(100dvh - 62px)); padding-block:24px 40px; }
-.lp-copy{ display:grid; grid-template-columns:minmax(0,1fr); gap:26px; align-content:center; max-width:30rem; min-width:0; }
-.lp-copy h1{ font-size:clamp(50px,5.4vw,82px); }
-.lp-copy .sub{ color:var(--text-2); font-size:clamp(16px,1.25vw,18.5px); line-height:1.55; max-width:40ch; text-wrap:pretty; }
-.lp-cta{ display:grid; grid-template-columns:minmax(0,1fr); gap:12px; }
-.lp-handle{ display:flex; align-items:center; gap:4px; height:52px; padding:5px 5px 5px 16px; border-radius:14px; background:rgba(255,255,255,.04); box-shadow:inset 0 0 0 1px rgba(255,255,255,.11); width:min(420px,100%); transition:box-shadow var(--d-fast),background var(--d-fast); }
-.lp-handle:focus-within{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 0 0 4px rgba(255,255,255,.07); background:rgba(255,255,255,.06); }
-.lp-handle .at{ font:500 var(--t-17)/1 var(--font-mono); color:var(--text-3); }
-.lp-handle input{ flex:1; min-width:0; height:100%; border:0; background:transparent; font-size:var(--t-17); color:var(--text-1); }
-.lp-handle input::placeholder{ color:var(--text-3); }
-.lp-fine{ font-size:var(--t-13); color:var(--text-3); }
+/* ---------- hero ---------- */
+.hw-hero{ position:relative; padding-top:clamp(40px,7vh,84px); isolation:isolate; }
+.hw-hero .top{ position:relative; display:grid; justify-items:center; text-align:center; gap:22px; }
+.hw-hero h1{ font-size:clamp(52px,8.2vw,124px); line-height:.94; letter-spacing:-.058em; max-width:12ch; }
+.hw-hero h1 .w{ display:inline-block; white-space:pre; animation:wordin .9s var(--ease-o) both; animation-delay:calc(.05s + var(--i) * .06s); }
+@keyframes wordin{ from{ opacity:0; transform:translateY(.28em); filter:blur(12px); } }
+.hw-hero .sub{ max-width:38rem; font-size:clamp(17px,1.45vw,20px); line-height:1.5; color:var(--c-2); letter-spacing:-.01em; animation:wordin 1s .35s var(--ease-o) both; }
+.hw-hero .cta{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; justify-content:center; animation:wordin 1s .45s var(--ease-o) both; }
+.hw-hero .n1{ left:calc(50% - 350px); top:calc(100% - 64px); transform:rotate(-6deg); }
+.hw-hero .n2{ left:calc(50% + 300px); top:calc(100% - 118px); transform:rotate(5deg); }
 
-/* the feed */
-.land .fs{ position:relative; height:min(820px,calc(100dvh - 110px)); min-height:560px; border-radius:26px; overflow:hidden; isolation:isolate;
-  -webkit-mask-image:linear-gradient(transparent 0, #000 16%, #000 84%, transparent 100%); mask-image:linear-gradient(transparent 0, #000 16%, #000 84%, transparent 100%); }
-.land .fs-track{ position:absolute; left:0; right:0; top:0; display:grid; gap:10px; will-change:transform,filter; }
-.land .fp{ display:grid; grid-template-columns:36px minmax(0,1fr); gap:12px; padding:15px 16px 13px; border-radius:18px; background:var(--noise); box-shadow:inset 0 0 0 1px rgba(255,255,255,.035); color:var(--noise-tx); font-size:15px; line-height:1.45; }
-.land .fp .av{ width:36px; height:36px; border-radius:50%; background:#26282D; }
-.land .fp .nm{ display:flex; gap:8px; align-items:center; margin-bottom:5px; }
-.land .fp .nm i{ display:block; height:9px; border-radius:9px; background:#2B2D33; }
-.land .fp .nm i:first-child{ width:84px; } .land .fp .nm i:last-child{ width:52px; background:#232429; }
-.land .fp .tx{ color:var(--noise-tx); }
-.land .fp .ac{ display:flex; gap:26px; margin-top:10px; color:var(--noise-dim); }
-.land .fp .ac .icon{ width:14px; height:14px; }
-.land .fs-slot{ border-radius:18px; }
+/* the ring: posts on the inside of a cylinder, like a feed seen from within */
+.c3d{ position:relative; height:clamp(420px,52vh,540px); margin-top:clamp(28px,5vh,56px); perspective:1100px; perspective-origin:50% 42%; cursor:grab; touch-action:pan-y; user-select:none; -webkit-user-select:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent); mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent); }
+.c3d.drag{ cursor:grabbing; }
+.c3d .stage{ position:absolute; left:50%; top:0; width:0; height:100%; transform-style:preserve-3d; }
+.c3d .cc{ position:absolute; left:-160px; top:40px; width:320px; transform-style:preserve-3d; will-change:transform; backface-visibility:hidden; border-radius:18px; }
+.c3d .cc .xp{ width:400px; zoom:.8; border-radius:22px; border:0; box-shadow:0 0 0 1px rgba(12,12,14,.06),0 30px 50px -30px rgba(12,12,14,.35),0 6px 14px -8px rgba(12,12,14,.12); padding:14px 16px 6px; }
+.c3d .cc .xp .md{ aspect-ratio:800/474; }
+.c3d .cc .xp .acts{ max-width:none; }
+.c3d .cc .hchip{ position:absolute; left:50%; top:-42px; transform:translate(-50%,6px) scale(.9); opacity:0; display:inline-flex; align-items:center; gap:8px; height:32px; padding:0 12px 0 6px; border-radius:99px; background:var(--c-ink); color:#fff; font:600 13px/1 var(--f-disp); white-space:nowrap; box-shadow:0 10px 24px -10px rgba(0,0,0,.6); transition:opacity .35s,transform .45s var(--ease-o); z-index:2; }
+.c3d .cc .hchip b{ display:grid; place-items:center; min-width:22px; height:22px; padding:0 5px; border-radius:99px; background:var(--c-mark); color:var(--c-ink); font:600 12px/1 var(--font-mono); }
+.c3d .cc.stop .hchip{ opacity:1; transform:translate(-50%,0) scale(1); }
+.c3d .cc .xp .tx .first{ background:linear-gradient(transparent 60%, rgba(255,225,77,.85) 60%, rgba(255,225,77,.85) 94%, transparent 94%) no-repeat 0 0 / 0% 100%; transition:background-size .7s .15s var(--ease-o); }
+.c3d .cc.stop .xp .tx .first{ background-size:100% 100%; }
+.ring-cap{ text-align:center; font-size:12.5px; color:var(--c-3); margin-top:6px; }
 
-/* the creator's post: the only sharp, bright thing on the page */
-.land .fs-me{ position:absolute; left:10px; right:10px; top:50%; z-index:2; transform:translateY(-50%); display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 13px; padding:18px 18px 14px; border-radius:20px; background:var(--paper); color:var(--paper-ink);
-  box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 30px 70px -20px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.2); transition:box-shadow .5s var(--ease-out); }
-.land .fs-me .avatar{ width:40px; height:40px; font-size:15px; background:#111214; color:#fff; box-shadow:none; }
-.land .fs-me .hd{ display:flex; align-items:center; gap:7px; font-size:14.5px; min-width:0; }
-.land .fs-me .hd b{ font-weight:700; }
-.land .fs-me .hd span{ color:#6B6E76; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.land .fs-me .hd .grow{ flex:1; }
-.land .fs-me .score{ display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px 0 8px; border-radius:99px; background:#EDEDEF; font:500 12.5px/1 var(--font-mono); color:#111214; transition:background .3s,color .3s; font-variant-numeric:tabular-nums; }
-.land .fs-me .score i{ width:7px; height:7px; border-radius:50%; background:#C24141; transition:background .3s; }
-.land .fs-me.stopped .score{ background:#111214; color:#fff; }
-.land .fs-me.stopped .score i{ background:#4CC38A; }
-.land .fs-me .first{ position:relative; grid-column:2; margin-top:4px; }
-.land .fs-me textarea{ display:block; width:100%; resize:none; border:0; outline:0; background:transparent; padding:0; font:600 clamp(18px,1.55vw,21px)/1.35 var(--font-ui); letter-spacing:-.012em; color:#111214; caret-color:#111214; overflow:hidden; transition:opacity .25s,filter .25s; }
-.land .fs-me textarea::placeholder{ color:#9A9CA3; }
-.land .fs-me textarea:focus-visible{ box-shadow:none; outline:2px solid rgba(17,18,20,.14); outline-offset:5px; border-radius:6px; }
-.land .fs-me textarea.swap{ opacity:0; filter:blur(4px); }
-.land .fs-me .uline{ position:absolute; left:0; bottom:-3px; height:2px; width:var(--uw,60%); border-radius:2px; background:#111214; transform:scaleX(0); transform-origin:left; transition:transform .7s var(--ease-out); }
-.land .fs-me.stopped .uline{ transform:scaleX(1); transition-delay:.15s; }
-.land .fs-me .rest{ grid-column:2; margin:10px 0 0; font:400 15px/1.5 var(--font-ui); color:#44464D; }
-.land .fs-me .rest .more{ color:#8B8E95; white-space:nowrap; }
-.land .fs-me .mg{ display:none; grid-column:1 / -1; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid #E7E7EA; }
-.land .fs-me .mg p{ margin:0; font-size:14px; line-height:1.45; color:#33353B; }
-.land .fs-me .mbars{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
-.land .fs-me .mbars span{ display:grid; gap:5px; }
-.land .fs-me .mbars i{ display:block; height:4px; border-radius:4px; background:linear-gradient(90deg,#111214 var(--mv,0%),#E4E4E7 var(--mv,0%)); }
-.land .fs-me .mbars b{ font:500 11px/1 var(--font-ui); color:#6B6E76; }
-.land .fs-me .tools{ grid-column:2; display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid #E7E7EA; }
-.land .fs-me .tools button{ display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 11px; border-radius:9px; font:500 13px/1 var(--font-ui); color:#33353B; background:#EFEFF1; transition:background var(--d-micro),transform var(--d-spring) var(--spring-snap); }
-.land .fs-me .tools button:hover{ background:#E3E3E6; }
-.land .fs-me .tools button:active{ transform:scale(.95); }
-.land .fs-me .tools button:focus-visible{ outline:2px solid #111214; outline-offset:2px; }
-.land .fs-me .tools .icon{ width:14px; height:14px; }
-.land .fs-me .tools .hint{ margin-left:auto; font:500 12.5px/1 var(--font-ui); color:#8B8E95; }
+/* ---------- chapters ---------- */
+.hw-sec{ padding-top:clamp(110px,14vw,190px); }
+.hw .hw-h{ display:grid; gap:18px; max-width:52rem; margin-bottom:clamp(40px,5vw,64px); }
+.hw .hw-h.c{ margin-inline:auto; text-align:center; justify-items:center; }
+.hw-h h2{ font-size:clamp(42px,5.6vw,80px); line-height:.98; }
+.hw-h p{ font-size:clamp(17px,1.4vw,20px); color:var(--c-2); max-width:36rem; letter-spacing:-.01em; }
+.rv{ transition:opacity .9s var(--ease-o),transform .9s var(--ease-o),filter .9s var(--ease-o); transition-delay:var(--d,0s); }
+.rv.armed{ opacity:0; transform:translateY(28px); filter:blur(10px); }
 
-/* the grade readout (a crop of the real hook grader) */
-.land .lp-grade{ display:grid; gap:18px; align-content:center; max-width:19rem; justify-self:end; width:100%; }
-.land .lp-grade .n{ display:flex; align-items:baseline; gap:10px; }
-.land .lp-grade .n b{ font:400 clamp(84px,8vw,124px)/.8 var(--font-display); letter-spacing:-.04em; font-variant-numeric:lining-nums tabular-nums; min-width:1.2ch; }
-.land .lp-grade .n span{ font:500 13px/1.3 var(--font-ui); color:var(--text-3); }
-.land .lp-grade dl{ display:grid; grid-template-columns:auto minmax(0,1fr) 28px; gap:9px 12px; align-items:center; margin:0; font-size:13px; }
-.land .lp-grade dt{ color:var(--text-2); }
-.land .lp-grade dd{ margin:0; height:4px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden; }
-.land .lp-grade dd i{ display:block; height:100%; width:calc(var(--v) * 1%); background:var(--text-1); border-radius:4px; transition:width .7s var(--ease-out); }
-.land .lp-grade .v{ font:500 12px/1 var(--font-mono); color:var(--text-3); text-align:right; font-variant-numeric:tabular-nums; }
-.land .lp-grade .why{ font-size:14.5px; line-height:1.5; color:var(--text-1); min-height:3em; }
-.land .lp-grade .state{ display:flex; align-items:center; gap:10px; padding-top:14px; border-top:1px solid rgba(255,255,255,.08); font:500 13.5px/1.35 var(--font-ui); color:var(--text-3); font-variant-numeric:tabular-nums; }
-.land .lp-grade .state i{ width:8px; height:8px; border-radius:50%; background:#F26D6D; box-shadow:0 0 0 4px rgba(242,109,109,.14); flex:none; transition:background .3s,box-shadow .3s; }
-.land .lp-grade.stopped .state i{ background:#4CC38A; box-shadow:0 0 0 4px rgba(76,195,138,.16); }
-.land .lp-grade.stopped .state{ color:var(--text-1); }
-.land .lp-grade .state span{ text-wrap:balance; }
-.land .lp-grade .speed{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:center; font-size:11.5px; color:var(--text-3); }
-.land .lp-grade .speed .tr{ height:6px; border-radius:6px; background:rgba(255,255,255,.08); overflow:hidden; }
-.land .lp-grade .speed i{ display:block; height:100%; width:0; border-radius:6px; background:#F26D6D; transition:background .3s; }
-.land .lp-grade.stopped .speed i{ background:#4CC38A; }
+/* ---------- the keynote: a draft becomes a hook (pinned, scroll-scrubbed) ---------- */
+.story{ position:relative; height:520vh; background:var(--c-dark); color:#F5F5F3; margin-top:clamp(90px,11vw,150px); }
+.story .pin{ position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden; display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr); align-items:center; gap:clamp(24px,4vw,64px); padding-inline:max(16px,calc((100vw - 1200px)/2 + 40px)); }
+.story .pin::before{ content:""; position:absolute; inset:0; background:radial-gradient(60% 50% at 70% 50%,rgba(255,255,255,.06),transparent 70%); pointer-events:none; }
+.story .caps{ position:relative; height:260px; }
+.story .cap{ position:absolute; inset:0; display:grid; align-content:center; gap:16px; opacity:0; transform:translateY(24px); filter:blur(8px); transition:opacity .5s var(--ease-o),transform .6s var(--ease-o),filter .5s var(--ease-o); }
+.story .cap.on{ opacity:1; transform:none; filter:none; }
+.story .cap h3{ font-size:clamp(34px,3.6vw,56px); line-height:1; letter-spacing:-.045em; }
+.story .cap p{ font-size:18px; color:#A2A3A9; max-width:26rem; }
+.story .prog{ position:absolute; left:0; bottom:-40px; display:flex; gap:6px; }
+.story .prog i{ width:28px; height:3px; border-radius:3px; background:rgba(255,255,255,.14); overflow:hidden; position:relative; }
+.story .prog i b{ position:absolute; inset:0; background:#F5F5F3; transform-origin:left; transform:scaleX(var(--p,0)); }
+.story .stage{ position:relative; height:min(640px,82vh); }
+.win{ position:absolute; left:0; top:50%; width:min(620px,100%); transform:translateY(-50%); border-radius:18px; background:#141416; box-shadow:0 0 0 1px rgba(255,255,255,.08),0 60px 120px -40px rgba(0,0,0,.9); overflow:hidden; transition:transform .7s var(--ease-o),opacity .5s; }
+.win .bar{ display:flex; align-items:center; gap:7px; height:40px; padding:0 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+.win .bar i{ width:11px; height:11px; border-radius:50%; background:#2B2C30; }
+.win .bar span{ margin-left:auto; margin-right:auto; font:500 12px/1 var(--font-mono); color:#6E6F75; }
+.win .body{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 12px; padding:22px 22px 18px; }
+.win .avatar{ width:40px; height:40px; }
+.win .who{ font:600 15px/20px var(--f-disp); }
+.win .who span{ color:#6E6F75; font-weight:400; }
+.win .draft{ grid-column:2; min-height:120px; margin-top:6px; font:400 clamp(18px,1.6vw,21px)/1.5 var(--f-disp); letter-spacing:-.01em; color:#F5F5F3; white-space:pre-wrap; }
+.win .draft .stcaret{ display:inline-block; width:2px; height:1.15em; margin-left:1px; vertical-align:-3px; background:#F5F5F3; animation:blinkc 1s steps(1) infinite; }
+@keyframes blinkc{ 50%{ opacity:0; } }
+.win .draft .hedge{ text-decoration:underline wavy #F26D6D 1.5px; text-underline-offset:5px; }
+.win .draft del{ color:#F29C9C; background:rgba(242,109,109,.14); text-decoration-color:rgba(242,109,109,.8); border-radius:4px; }
+.win .draft ins{ color:#BDF0D5; background:rgba(76,195,138,.18); text-decoration:none; border-radius:4px; }
+.win .foot{ grid-column:2; display:flex; align-items:center; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,.06); flex-wrap:wrap; }
+.win .score{ display:inline-flex; align-items:center; gap:10px; height:34px; padding:0 12px 0 6px; border-radius:99px; background:#1D1E21; font:500 13px/1 var(--f-disp); color:#C9CACF; }
+.win .score b{ display:grid; place-items:center; width:26px; height:26px; border-radius:50%; font:600 12px/1 var(--font-mono); color:#0C0C0E; background:#F26D6D; transition:background .4s; font-variant-numeric:tabular-nums; }
+.win .score.good b{ background:#4CC38A; }
+.win .why{ font-size:13.5px; color:#8C8D93; flex:1; min-width:12rem; }
+.win .sched{ margin-left:auto; display:inline-flex; align-items:center; gap:8px; height:34px; padding:0 14px; border-radius:99px; background:#F5F5F3; color:#0C0C0E; font:600 13.5px/1 var(--f-disp); opacity:.35; transition:opacity .4s; }
+.win .sched.on{ opacity:1; }
+.story .phonewrap{ position:absolute; right:0; top:50%; transform:translate(40px,-50%) rotate(4deg); opacity:0; transition:transform .9s var(--ease-o),opacity .6s; }
+.story .phonewrap.on{ transform:translate(0,-50%) rotate(0); opacity:1; }
+.story .sttoast{ position:absolute; right:-10px; top:14%; display:flex; align-items:center; gap:10px; padding:10px 14px 10px 10px; border-radius:16px; background:rgba(30,30,33,.9); backdrop-filter:blur(12px); box-shadow:0 0 0 1px rgba(255,255,255,.08),0 20px 40px -20px rgba(0,0,0,.8); font-size:13.5px; opacity:0; transform:translateY(10px) scale(.96); transition:opacity .4s,transform .5s var(--ease-o); z-index:3; }
+.story .sttoast.on{ opacity:1; transform:none; }
+.story .sttoast .ti{ width:30px; height:30px; border-radius:8px; background:#1D9BF0; display:grid; place-items:center; color:#fff; }
+.story .sttoast b{ display:block; font-weight:600; }
+.story .sttoast span{ color:#A2A3A9; }
 
-/* ---------- section rhythm ---------- */
-.lp-sec{ padding-top:clamp(96px,12vw,168px); }
-.lp-h{ display:grid; gap:18px; max-width:46rem; margin-bottom:clamp(40px,5vw,64px); }
-.lp-h .display{ font-size:clamp(40px,5vw,72px); }
-.lp-h p{ color:var(--text-2); font-size:clamp(16px,1.3vw,18.5px); line-height:1.55; max-width:52ch; text-wrap:pretty; }
+/* ---------- relatable wall: marquee of posts ---------- */
+.wall{ display:grid; gap:16px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); }
+.wall .row{ display:flex; gap:16px; width:max-content; animation:marq var(--dur,70s) linear infinite; }
+.wall .row.rev{ animation-direction:reverse; }
+.wall:hover .row{ animation-play-state:paused; }
+@keyframes marq{ to{ transform:translateX(-50%); } }
+.wall .xp, .wall .thp, .wall .bsp{ width:360px; flex:none; border-radius:16px; border:0; box-shadow:0 0 0 1px var(--c-line),0 16px 30px -24px rgba(0,0,0,.35); }
+.wall .lip{ width:380px; flex:none; }
+.wall-foot{ text-align:center; margin-top:40px; font-size:clamp(20px,2vw,26px); letter-spacing:-.02em; font-weight:500; }
+.wall-foot .mk{ font-weight:600; }
+.fict{ text-align:center; font-size:12.5px; color:var(--c-3); margin-top:14px; }
 
-/* motion grammar: things arrive the way a feed stops, fast then settled */
-.stopin.armed{ opacity:0; transform:translateY(64px); filter:blur(8px); }
-.stopin.in{ opacity:1; transform:none; filter:none; transition:transform .9s cubic-bezier(.12,.9,.18,1),filter .6s cubic-bezier(.12,.9,.18,1),opacity .35s linear; transition-delay:var(--rd,0s); }
+/* ---------- four feeds ---------- */
+.four2{ display:flex; justify-content:center; gap:clamp(14px,2vw,28px); align-items:flex-end; }
+.four2 .ph{ display:grid; justify-items:center; gap:14px; }
+.four2 .ph span{ font-size:13.5px; color:var(--c-2); display:inline-flex; gap:7px; align-items:center; }
+.four2 .ph span svg{ width:14px; height:14px; }
+.four2 .ph:nth-child(2), .four2 .ph:nth-child(3){ transform:translateY(-24px); }
+.four2 .phone{ transition:transform .6s var(--ease-o); }
+.four2 .phone:hover{ transform:translateY(-6px); }
+.four-ctl{ display:flex; justify-content:center; gap:10px; margin-top:34px; flex-wrap:wrap; }
+.seg2{ display:inline-flex; padding:3px; border-radius:99px; background:var(--c-bg-2); }
+.seg2 button{ height:34px; padding:0 16px; border-radius:99px; font:500 14px/1 var(--f-disp); color:var(--c-2); transition:background .25s,color .25s,box-shadow .25s; }
+.seg2 button[aria-selected="true"]{ background:var(--c-card); color:var(--c-ink); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+.seg2 button:focus-visible{ outline:2px solid var(--c-ink); outline-offset:2px; }
 
-/* ---------- the grader wall ---------- */
-.land .lp-grader{ display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:clamp(32px,5vw,80px); align-items:start; }
-.land .lp-grader .lp-h{ position:sticky; top:120px; margin:0; }
-.land .gw{ display:grid; gap:10px; }
-.land .gw-row{ display:grid; grid-template-columns:56px minmax(0,1fr) auto; gap:4px 16px; align-items:center; padding:18px 18px 18px 14px; border-radius:18px; background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); transition:background .4s,box-shadow .4s; }
-.land .gw-row .sc{ grid-row:span 2; display:grid; place-items:center; width:48px; height:48px; border-radius:14px; background:rgba(242,109,109,.1); color:#F29C9C; font:500 17px/1 var(--font-mono); font-variant-numeric:tabular-nums; transition:background .4s,color .4s; }
-.land .gw-row .ln{ font:600 clamp(16px,1.35vw,18px)/1.4 var(--font-ui); letter-spacing:-.01em; min-width:0; }
-.land .gw-row .ln del + ins, .land .crop .dif del + ins{ margin-left:.1em; }
-.land .gw-row .ln del{ color:var(--text-3); text-decoration-color:#F26D6D; background:rgba(242,109,109,.1); border-radius:4px; }
-.land .gw-row .ln ins{ text-decoration:none; background:rgba(76,195,138,.16); color:#BDF0D5; border-radius:4px; }
-.land .gw-row .why{ grid-column:2; font-size:13.5px; color:var(--text-3); line-height:1.45; }
-.land .gw-row .fix{ grid-row:1 / span 2; grid-column:3; }
-.land .gw-row.good{ background:#15171A; box-shadow:inset 0 0 0 1px rgba(255,255,255,.14); }
-.land .gw-row.good .sc{ background:rgba(76,195,138,.12); color:#8FE0B6; }
-.land .gw-row.good .why{ color:var(--text-2); }
-.land .gw-foot{ display:flex; gap:12px; align-items:center; margin-top:8px; color:var(--text-3); font-size:13.5px; }
+/* ---------- the fold ---------- */
+.fold{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,4vw,64px); align-items:center; }
+.fold .ed{ display:grid; gap:12px; }
+.fold textarea{ width:100%; min-height:160px; resize:vertical; padding:18px 20px; border-radius:18px; border:0; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 20px 40px -30px rgba(0,0,0,.35); font:400 17px/1.5 var(--f-disp); color:var(--c-ink); letter-spacing:-.01em; }
+.fold textarea:focus{ outline:none; box-shadow:0 0 0 2px var(--c-ink),0 20px 40px -30px rgba(0,0,0,.35); }
+.fold .fmeter{ display:flex; justify-content:space-between; font-size:13.5px; color:var(--c-2); }
+.fold .fmeter b{ font:500 13px/1 var(--font-mono); color:var(--c-ink); }
+.fold .cards{ display:grid; gap:14px; }
+.fold .lbl{ font-size:13px; color:var(--c-2); margin-bottom:6px; display:flex; justify-content:space-between; }
+.fold .lip .tx.clamp{ -webkit-line-clamp:var(--lines,3); }
 
-/* ---------- a morning with hookworthy ---------- */
-.land .day{ display:grid; gap:clamp(56px,7vw,110px); }
-.land .moment{ display:grid; grid-template-columns:120px minmax(0,.8fr) minmax(0,1.2fr); gap:clamp(20px,3vw,48px); align-items:start; }
-.land .moment > div:not(.crop){ padding-top:4px; }
-.land .moment .t{ align-self:start; padding-top:10px; font:500 13.5px/1.3 var(--font-ui); color:var(--text-3); font-variant-numeric:tabular-nums; }
-.land .moment .t b{ display:block; font:400 34px/1 var(--font-display); color:var(--text-1); letter-spacing:-.02em; margin-bottom:6px; }
-.land .moment h3{ font:400 clamp(30px,3vw,44px)/1.02 var(--font-display); letter-spacing:-.022em; margin:0 0 12px; text-wrap:balance; }
-.land .moment p{ color:var(--text-2); font-size:16.5px; line-height:1.55; max-width:40ch; }
-.land .crop{ position:relative; border-radius:22px; background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 40px 80px -40px rgba(0,0,0,.9); padding:clamp(18px,2.4vw,30px); overflow:hidden; display:grid; gap:12px; min-width:0; }
-.land .crop .row{ display:flex; align-items:center; gap:10px; }
-.land .crop .mini{ padding:14px 16px; border-radius:14px; background:var(--ink-3); box-shadow:inset 0 0 0 1px rgba(255,255,255,.05); font-size:15px; line-height:1.5; min-width:0; }
-.land .crop .mini.sel{ background:#1E2024; box-shadow:inset 0 0 0 1px rgba(255,255,255,.3); }
-.land .crop .k{ display:block; margin-bottom:4px; font:600 12px/1.2 var(--font-ui); color:var(--text-3); }
-.land .crop .memo{ display:flex; align-items:center; gap:12px; }
-.land .crop .wave{ display:flex; align-items:center; gap:3px; height:28px; flex:1; }
-.land .crop .wave i{ width:3px; border-radius:3px; background:var(--text-2); height:calc(var(--h) * 1%); }
-.land .crop .ghost{ font:400 clamp(17px,1.6vw,21px)/1.6 var(--font-ui); }
-.land .crop .ghost .g{ color:var(--text-3); }
-.land .crop .ghost kbd{ display:inline-grid; place-items:center; height:22px; padding:0 7px; margin-left:4px; border-radius:6px; font:500 11px/1 var(--font-mono); color:var(--text-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); vertical-align:2px; }
-.land .crop .dif{ font:500 clamp(17px,1.6vw,21px)/1.65 var(--font-ui); }
-.land .crop .dif del{ color:#F29C9C; background:rgba(242,109,109,.12); text-decoration-color:rgba(242,109,109,.8); border-radius:4px; }
-.land .crop .dif ins{ color:#BDF0D5; background:rgba(76,195,138,.16); text-decoration:none; border-radius:4px; }
-.land .crop .acts{ display:flex; gap:8px; align-items:center; }
-.land .crop .b{ height:32px; padding:0 13px; border-radius:9px; font:600 13px/32px var(--font-ui); background:rgba(255,255,255,.06); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); color:var(--text-1); }
-.land .crop .b.p{ background:#F3F3F4; color:#111214; box-shadow:none; }
-.land .crop .delta{ margin-left:auto; font:500 13px/1 var(--font-mono); color:var(--text-2); font-variant-numeric:tabular-nums; }
-.land .crop .delta b{ color:#8FE0B6; font-weight:500; }
-.land .week{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; }
-.land .week div{ position:relative; min-height:130px; border-radius:12px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); padding:9px 8px; font:500 11px/1.2 var(--font-mono); color:var(--text-3); display:grid; align-content:start; gap:6px; }
-.land .week div.best{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.5); color:var(--text-1); }
-.land .week .q{ height:30px; border-radius:7px; background:rgba(255,255,255,.07); }
-.land .week .q.me{ background:#F3F3F4; }
-.land .week .dot{ position:absolute; left:50%; bottom:14px; width:8px; height:8px; margin-left:-4px; border-radius:50%; background:#F3F3F4; box-shadow:0 0 0 5px rgba(255,255,255,.08),0 0 18px rgba(255,255,255,.4); }
-.land .crop .insight{ font:400 clamp(24px,2.4vw,34px)/1.15 var(--font-display); letter-spacing:-.02em; }
-.land .bars{ display:grid; gap:9px; }
-.land .bars div{ display:grid; grid-template-columns:90px minmax(0,1fr) 44px; gap:12px; align-items:center; font-size:13.5px; color:var(--text-2); }
-.land .bars span.tr{ height:8px; border-radius:8px; background:rgba(255,255,255,.06); overflow:hidden; }
-.land .bars span.tr i{ display:block; height:100%; border-radius:8px; background:var(--text-1); width:var(--w); }
-.land .bars div:not(:first-child) span.tr i{ background:rgba(255,255,255,.3); }
-.land .bars b{ font:500 12.5px/1 var(--font-mono); text-align:right; color:var(--text-1); font-weight:500; }
+/* ---------- voice (dark) ---------- */
+.voice2{ background:var(--c-dark); color:#F5F5F3; border-radius:clamp(24px,3vw,40px); margin:clamp(110px,14vw,190px) clamp(8px,1vw,14px) 0; padding:clamp(72px,9vw,120px) 0; }
+.voice2 .hw-h p{ color:#A2A3A9; }
+.voice2 .grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,4vw,64px); align-items:center; }
+.voice2 .ctl{ display:grid; gap:22px; }
+.voice2 .sl{ display:grid; gap:10px; }
+.voice2 .sl .ends{ display:flex; justify-content:space-between; font-size:14px; color:#8C8D93; }
+.voice2 input[type=range]{ width:100%; accent-color:#F5F5F3; }
+.voice2 .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.voice2 .chips span{ display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; border-radius:99px; background:#1D1E21; font-size:13.5px; color:#C9CACF; }
+.voice2 .chips span s{ color:#8C8D93; }
+.voice2 .xp{ border-radius:18px; border:0; box-shadow:0 0 0 1px #2F3336,0 40px 80px -40px rgba(0,0,0,.9); transition:opacity .25s; }
+
+/* ---------- week ---------- */
+.wk{ position:relative; border-radius:24px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 40px 80px -50px rgba(0,0,0,.35); padding:clamp(16px,2.4vw,28px); overflow:hidden; }
+.wk .days{ display:grid; grid-template-columns:64px repeat(7,minmax(0,1fr)); gap:6px; }
+.wk .dh{ font:500 12.5px/1 var(--f-disp); color:var(--c-2); padding:6px 4px 10px; }
+.wk .dh b{ display:block; font:600 22px/1.1 var(--f-disp); color:var(--c-ink); letter-spacing:-.03em; margin-top:4px; }
+.wk .tl{ font:500 11.5px/1 var(--font-mono); color:var(--c-3); padding-top:8px; }
+.wk .wslot{ position:relative; min-height:78px; border-radius:12px; background:var(--c-bg); box-shadow:inset 0 0 0 1px var(--c-line); overflow:hidden; }
+.wk .wslot .wheat{ position:absolute; inset:0; background:radial-gradient(90% 90% at 50% 50%,rgba(255,225,77,calc(var(--h,0) * .7)),transparent 80%); }
+.wk .wslot .qc{ position:absolute; left:6px; right:6px; top:6px; padding:7px 8px; border-radius:9px; background:var(--c-ink); color:#F5F5F3; font:500 11.5px/1.3 var(--f-disp); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; transform:translateY(-140%) rotate(-4deg); opacity:0; }
+.wk.in .wslot .qc{ animation:drop .75s var(--dd,0s) cubic-bezier(.3,1.35,.45,1) forwards; }
+@keyframes drop{ to{ transform:none; opacity:1; } }
+.wk .best{ position:absolute; right:8px; bottom:8px; font:500 10.5px/1 var(--font-mono); color:var(--c-ink); background:var(--c-mark); padding:4px 6px; border-radius:6px; }
+.wk-legend{ display:flex; gap:18px; flex-wrap:wrap; margin-top:16px; font-size:13.5px; color:var(--c-2); }
+.wk-legend i{ display:inline-block; width:12px; height:12px; border-radius:4px; background:var(--c-mark); margin-right:6px; vertical-align:-1px; }
 
 /* ---------- creators ---------- */
-.land .who{ display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:clamp(28px,4vw,64px); align-items:start; }
-.land .who-tabs{ display:grid; gap:8px; }
-.land .who-tab{ display:grid; gap:6px; text-align:left; padding:20px 22px; border-radius:18px; color:var(--text-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); transition:background .3s,box-shadow .3s,color .3s; }
-.land .who-tab b{ font:400 28px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--text-1); }
-.land .who-tab span{ font-size:14.5px; line-height:1.5; }
-.land .who-tab ul{ display:none; margin:8px 0 0; padding:0; list-style:none; gap:8px; font-size:14.5px; color:var(--text-1); }
-.land .who-tab li{ display:flex; gap:10px; align-items:baseline; }
-.land .who-tab li .icon{ width:14px; height:14px; flex:none; color:#8FE0B6; transform:translateY(2px); }
-.land .who-tab[aria-selected="true"]{ background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); }
-.land .who-tab[aria-selected="true"] ul{ display:grid; }
-.land .who-tab:hover:not([aria-selected="true"]){ background:rgba(255,255,255,.025); }
-.land .who-tab:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
-.land .who-stage{ position:sticky; top:100px; min-height:460px; }
-.land .who-stage .crop{ animation:settle .7s cubic-bezier(.12,.9,.18,1) both; }
-@keyframes settle{ from{ transform:translateY(28px); filter:blur(6px); opacity:0; } }
-.land .ws{ display:grid; gap:4px; }
-.land .ws-row{ display:grid; grid-template-columns:28px minmax(0,1fr) auto; gap:12px; align-items:center; padding:10px 12px; border-radius:12px; font-size:14.5px; }
-.land .ws-row.on{ background:var(--ink-3); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
-.land .ws-row small{ display:block; color:var(--text-3); font-size:12.5px; }
-.land .ws-row .avatar{ width:28px; height:28px; font-size:11px; }
-.land .st{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px; border-radius:99px; font:500 12px/1 var(--font-ui); font-variant-numeric:tabular-nums; background:rgba(255,255,255,.06); color:var(--text-2); white-space:nowrap; }
-.land .st i{ width:6px; height:6px; border-radius:50%; background:currentColor; }
-.land .st.need{ color:#F2C38A; background:rgba(242,161,74,.1); } .land .st.ok{ color:#8FE0B6; background:rgba(76,195,138,.1); } .land .st.sch{ color:var(--text-1); }
-.land .ql{ display:grid; gap:6px; }
-.land .ql div{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 14px; border-radius:12px; background:var(--ink-3); font-size:14.5px; }
-.land .ql div span:first-child{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.land .slider{ display:grid; gap:8px; }
-.land .slider .ends{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-3); }
-.land .slider input{ width:100%; accent-color:#F3F3F4; }
-.land .chg{ display:grid; gap:6px; font:500 13px/1.5 var(--font-mono); color:var(--text-2); padding:14px 16px; border-radius:12px; background:var(--ink-3); }
-.land .chg b{ color:var(--text-1); font-weight:500; }
+.cr{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.cr .c{ display:grid; gap:16px; align-content:start; padding:28px; border-radius:24px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line); }
+.cr .c h3{ font-size:28px; letter-spacing:-.035em; }
+.cr .c p{ color:var(--c-2); }
+.cr .c ul{ list-style:none; padding:0; margin:0; display:grid; gap:10px; font-size:15px; }
+.cr .c li{ display:flex; gap:10px; align-items:baseline; }
+.cr .c li::before{ content:""; flex:none; width:6px; height:6px; border-radius:50%; background:var(--c-ink); transform:translateY(-2px); }
+.cr .c .pics{ display:flex; }
+.cr .c .pics .av{ width:36px; height:36px; box-shadow:0 0 0 3px var(--c-card); margin-right:-8px; }
 
-/* ---------- light chapter: one post, four feeds ---------- */
-.lp-light{ margin:clamp(96px,12vw,168px) clamp(8px,1vw,14px) 0; padding:clamp(72px,9vw,128px) 0; border-radius:clamp(24px,3vw,36px); background:#F4F4F5; color:#111214; }
-.lp-light .lp-h p{ color:#55585F; }
-.land .four{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; align-items:start; }
-.land .four .pv{ margin:0; }
-.land .four-h{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+/* ---------- pricing (shared with #upgrade) ---------- */
+.pl-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; align-items:stretch; }
+.pl{ display:grid; grid-template-rows:auto auto 1fr auto; gap:22px; padding:28px; border-radius:24px; background:var(--surface,#fff); color:var(--text-1,#0C0C0E); box-shadow:0 0 0 1px var(--border,rgba(12,12,14,.08)); }
+.hw .pl{ background:var(--c-card); color:var(--c-ink); box-shadow:0 0 0 1px var(--c-line); }
+.pl.pro{ background:#0C0C0E; color:#F5F5F3; box-shadow:0 30px 60px -30px rgba(0,0,0,.6); }
+.pl .nm b{ display:block; font:600 26px/1.1 var(--font-ui); letter-spacing:-.03em; }
+.pl .nm span{ font-size:14.5px; opacity:.66; }
+.pl .pr{ display:flex; align-items:baseline; gap:8px; }
+.pl .pr b{ font:600 56px/.9 var(--font-ui); letter-spacing:-.05em; font-variant-numeric:tabular-nums; }
+.pl .pr span{ font-size:13.5px; opacity:.6; }
+.pl ul{ list-style:none; margin:0; padding:0; display:grid; gap:10px; align-content:start; font-size:14.5px; }
+.pl li{ display:flex; gap:10px; align-items:baseline; }
+.pl li .icon{ width:14px; height:14px; flex:none; transform:translateY(2px); opacity:.6; }
+.pl .btn{ width:100%; }
+.pl.pro .btn.primary{ background:#F5F5F3; color:#0C0C0E; box-shadow:none; }
+.bill2{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
 
-/* ---------- pricing ---------- */
-.land .lp-plans{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; align-items:stretch; }
-.land .lp-plan{ display:grid; grid-template-rows:auto auto 1fr auto; gap:22px; padding:28px; border-radius:22px; background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); }
-.land .lp-plan.pro{ background:#F4F4F5; color:#111214; box-shadow:none; }
-.land .lp-plan .nm{ display:grid; gap:6px; }
-.land .lp-plan .nm b{ font:400 32px/1 var(--font-display); letter-spacing:-.02em; }
-.land .lp-plan .nm span{ font-size:14.5px; color:var(--text-2); }
-.land .lp-plan.pro .nm span{ color:#55585F; }
-.land .lp-plan .pr{ display:flex; align-items:baseline; gap:8px; }
-.land .lp-plan .pr b{ font:400 60px/.9 var(--font-display); letter-spacing:-.03em; font-variant-numeric:lining-nums; }
-.land .lp-plan .pr span{ font-size:13.5px; color:var(--text-3); }
-.land .lp-plan.pro .pr span{ color:#6B6E76; }
-.land .lp-plan ul{ list-style:none; margin:0; padding:0; display:grid; gap:10px; align-content:start; font-size:14.5px; }
-.land .lp-plan li{ display:flex; gap:10px; align-items:baseline; }
-.land .lp-plan li .icon{ width:14px; height:14px; flex:none; transform:translateY(2px); color:var(--text-3); }
-.land .lp-plan.pro li .icon{ color:#111214; }
-.land .lp-plan .btn{ width:100%; }
-.land .lp-plan.pro .btn.primary{ background:#111214; color:#fff; box-shadow:none; }
-.land .bill{ display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; margin-top:4px; }
-#bill-seg{ flex:none; }
+/* ---------- final ---------- */
+.fin{ position:relative; padding:clamp(120px,15vw,200px) 0 clamp(40px,6vw,80px); text-align:center; overflow:hidden; }
+.fin h2{ font-size:clamp(52px,8vw,120px); line-height:.94; letter-spacing:-.058em; max-width:13ch; margin:0 auto; }
+.fin p{ margin:22px auto 0; max-width:34rem; color:var(--c-2); font-size:clamp(17px,1.4vw,20px); }
+.fin .cta{ display:flex; gap:14px; justify-content:center; margin-top:32px; flex-wrap:wrap; }
+.fin .c3d{ margin-top:48px; }
+.hw-foot{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; padding:28px max(16px,calc((100vw - 1200px)/2 + 40px)); border-top:1px solid var(--c-line); color:var(--c-3); font-size:13.5px; }
+.hw-foot nav{ display:flex; gap:18px; flex-wrap:wrap; }
+.hw-foot a:hover{ color:var(--c-ink); }
 
-/* ---------- final: the feed stops on your next post ---------- */
-.lp-final{ position:relative; margin-top:clamp(48px,7vw,96px); padding:clamp(110px,14vw,190px) 0 clamp(90px,10vw,140px); overflow:hidden; isolation:isolate; }
-.ghostfeed{ position:absolute; inset:0; z-index:-1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding-inline:max(16px,calc((100vw - 1240px)/2)); opacity:.5; overflow:hidden; -webkit-mask-image:linear-gradient(transparent 0,transparent 14%,#000 40%,#000 80%,transparent),radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); -webkit-mask-composite:source-in; mask-image:linear-gradient(transparent 0,transparent 14%,#000 40%,#000 80%,transparent),radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); mask-composite:intersect; }
+/* ---------- responsive ---------- */
+@media (max-width:1060px){
+  .story .pin{ grid-template-columns:minmax(0,1fr); grid-template-rows:auto 1fr; align-content:center; padding-top:70px; gap:12px; }
+  .story .caps{ height:150px; }
+  .story .cap h3{ font-size:clamp(28px,6vw,40px); }
+  .story .cap p{ font-size:15.5px; }
+  .story .prog{ bottom:-18px; }
+  .story .stage{ height:min(560px,62vh); }
+  .story .phonewrap{ right:50%; transform:translate(50%,-40%) rotate(4deg); }
+  .story .phonewrap.on{ transform:translate(50%,-50%); }
+  .story .win{ width:100%; }
+  .four2{ flex-wrap:wrap; }
+  .four2 .ph:nth-child(2), .four2 .ph:nth-child(3){ transform:none; }
+  .fold, .voice2 .grid{ grid-template-columns:minmax(0,1fr); }
+  .cr, .pl-grid{ grid-template-columns:minmax(0,1fr); max-width:560px; }
+}
+@media (max-width:760px){
+  .hw-nav .links, .hw-nav .in{ display:none; }
+  .hw .hand{ display:none; }
+  .c3d{ perspective:800px; height:440px; }
+  .c3d .cc{ width:280px; left:-140px; }
+  .c3d .cc .xp{ zoom:.7; }
+  .wall .xp, .wall .thp, .wall .bsp{ width:300px; }
+  .wall .lip{ width:310px; }
+  .wk .days{ grid-template-columns:40px repeat(7,minmax(0,1fr)); gap:3px; }
+  .wk .wslot{ min-height:62px; }
+  .wk .wslot .qc{ font-size:9.5px; padding:4px; left:2px; right:2px; top:2px; }
+  .wk .dh b{ font-size:16px; }
+  .story .win .body{ padding:16px; grid-template-columns:32px minmax(0,1fr); gap:0 10px; }
+  .story .win .avatar{ width:32px; height:32px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .hw-hero h1 .w, .hw-hero .sub, .hw-hero .cta{ animation:none; }
+  .hw .mk.draw{ animation:none; --mkw:100%; }
+  .hw .hand path{ animation:none; stroke-dashoffset:0; }
+  .wall .row{ animation:none; }
+  .rv.armed{ opacity:1; transform:none; filter:none; }
+  .wk .wslot .qc{ transform:none; opacity:1; }
+}
+
+/* onboarding + legacy: a drifting feed of other people's posts */
+.ghostfeed{ position:absolute; inset:0; z-index:-1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding-inline:max(16px,calc((100vw - 1240px)/2)); opacity:.5; overflow:hidden; -webkit-mask-image:radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); mask-image:radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); }
 .ghostfeed .col{ display:grid; gap:10px; align-content:start; animation:drift 60s linear infinite; }
 .ghostfeed .col:nth-child(2){ animation-duration:48s; animation-direction:reverse; }
 @keyframes drift{ to{ transform:translateY(-50%); } }
-.lp-final .card{ position:relative; width:min(640px,calc(100% - 32px)); margin:0 auto; padding:clamp(28px,4vw,48px); border-radius:28px; background:var(--paper); color:var(--paper-ink); display:grid; gap:22px; box-shadow:0 60px 120px -40px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.2); }
-.lp-final h2{ font-size:clamp(44px,6vw,80px); color:#111214; }
-.lp-final p{ color:#55585F; font-size:17px; line-height:1.55; max-width:42ch; }
-.lp-final .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-.lp-final .avatar,.land .fs-me .avatar{ background:#111214; color:#fff; box-shadow:none; }
-.land .four .pvl .acts{ flex-wrap:wrap; gap:8px 14px; }
-.lp-final .btn.ink{ background:#111214; color:#fff; }
-.lp-final .btn.ghost{ color:#111214; box-shadow:inset 0 0 0 1px rgba(17,18,20,.16); }
-
-.foot{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; padding:28px max(16px,calc((100vw - 1240px)/2 + 40px)); border-top:1px solid rgba(255,255,255,.06); color:var(--text-3); font-size:var(--t-13); }
-.foot nav{ display:flex; gap:18px; flex-wrap:wrap; }
-.foot a{ transition:color var(--d-micro); } .foot a:hover{ color:var(--text-1); }
-
-/* ---------- landing responsive ---------- */
-@media (max-width:1120px){
-  .lp-hero{ grid-template-columns:minmax(0,1fr) minmax(340px,480px); }
-  .land .lp-grade{ grid-column:1 / -1; max-width:none; justify-self:stretch; grid-template-columns:auto minmax(0,1fr); align-items:center; column-gap:40px; }
-  .land .lp-grade .n{ grid-row:span 3; }
-  .land .four{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-}
-@media (max-width:900px){
-  .land .lp-grade{ display:none; }
-  .land .fs-me .mg{ display:grid; }
-  .lp-hero{ grid-template-columns:minmax(0,1fr); min-height:0; padding-top:36px; gap:28px; }
-  .lp-copy{ max-width:none; }
-  .land .fs{ height:min(640px,78dvh); min-height:480px; }
-  .land .lp-grade{ grid-template-columns:minmax(0,1fr); }
-  .land .lp-grade .n{ grid-row:auto; }
-  .land .lp-grader,.land .who{ grid-template-columns:minmax(0,1fr); }
-  .land .lp-grader .lp-h,.land .who-stage{ position:static; }
-  .land .moment{ grid-template-columns:92px minmax(0,1fr); gap:16px 12px; }
-  .land .moment .t{ white-space:nowrap; }
-  .land .moment .crop{ grid-column:1 / -1; }
-  .land .moment .t{ padding-top:6px; font-size:12px; }
-  .land .moment .t b{ font-size:24px; margin-bottom:4px; }
-  .land .lp-plans{ grid-template-columns:minmax(0,1fr); max-width:520px; }
-  .ghostfeed{ grid-template-columns:minmax(0,1fr); }
-  .ghostfeed .col:not(:first-child){ display:none; }
-}
-@media (max-width:760px){
-  .land .four{ grid-template-columns:minmax(0,1fr); }
-  .land .gw-row{ grid-template-columns:48px minmax(0,1fr); padding:14px; }
-  .land .gw-row .sc{ width:42px; height:42px; font-size:15px; }
-  .land .gw-row .fix{ grid-column:2; grid-row:auto; justify-self:start; margin-top:6px; }
-  .land .week div{ min-height:96px; font-size:10px; padding:7px 5px; }
-  .land .fs-me .tools .hint{ display:none; }
-  .land .fs-me .tools{ gap:5px; }
-  .land .fs-me{ padding:15px 14px 12px; grid-template-columns:34px minmax(0,1fr); gap:0 11px; }
-  .land .fs-me .avatar{ width:34px; height:34px; }
-}
-@media (max-width:420px){ .land .fs-me .tools .tl{ display:none; } .land .fs-me .tools button{ width:36px; justify-content:center; padding:0; } }
-@media (prefers-reduced-motion:reduce){
-  .stopin.armed{ opacity:1; transform:none; filter:none; }
-  .ghostfeed .col{ animation:none; }
-}
+.ghostfeed .fp{ display:grid; grid-template-columns:36px minmax(0,1fr); gap:12px; padding:15px 16px 13px; border-radius:18px; background:#1A1B1F; box-shadow:inset 0 0 0 1px rgba(255,255,255,.035); color:#6A6D75; font-size:15px; line-height:1.45; }
+.ghostfeed .fp .av{ width:36px; height:36px; border-radius:50%; }
+.ghostfeed .fp .nm{ display:flex; gap:8px; align-items:center; margin-bottom:5px; }
+.ghostfeed .fp .nm i{ display:block; height:9px; border-radius:9px; background:#2B2D33; }
+.ghostfeed .fp .nm i:first-child{ width:84px; } .ghostfeed .fp .nm i:last-child{ width:52px; background:#232429; }
+@media (max-width:900px){ .ghostfeed{ grid-template-columns:minmax(0,1fr); } .ghostfeed .col:not(:first-child){ display:none; } }
+@media (prefers-reduced-motion:reduce){ .ghostfeed .col{ animation:none; } }
 
 /* brand page */
 .brand-hero{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -1202,7 +1328,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 /* ==========================================================================
    RESPONSIVE
    ========================================================================== */
-@media (pointer: coarse){ .land .kbds,.editor-foot,.add-tw .kbds,.searchbtn .kbds,.cmdk-f,.btn .kbds,.diff-hint{ display:none; }
+@media (pointer: coarse){ .hw .kbds,.editor-foot,.add-tw .kbds,.searchbtn .kbds,.cmdk-f,.btn .kbds,.diff-hint{ display:none; }
   .tw-tools{ height:0; margin-top:0; overflow:hidden; transition:height var(--d-spring) var(--ease-out),margin var(--d-spring) var(--ease-out),opacity var(--d-fast); }
   .tw:focus-within .tw-tools,.tw.has-meta .tw-tools{ height:30px; margin-top:6px; } }
 @media (max-width:1180px){
@@ -2821,48 +2947,191 @@ ROUTES.write = () => {
 };
 
 /* ==========================================================================
-   LANDING: "The Thumb-Stop"
-   The hero is a live feed. Other people's posts stream past in motion blur;
-   yours is pinned in the middle. Its first line is graded as you type: under
-   70 the feed keeps scrolling past you, 70 and up it brakes and parks.
+   PLATFORM POSTS: data + renderers
+   People are fictional creators with generated portraits. Their posts are
+   written for this demo; nothing here quotes a real account.
    ========================================================================== */
-const FEED_NOISE = [
-  'Excited to share that I’ve started a new position as…',
-  'Consistency is key. That’s the tweet.',
-  'Here are 10 AI tools you can’t afford to miss 🧵',
-  'gm to everyone building something today',
-  'Unpopular opinion: hard work still matters.',
-  'What’s everyone working on this weekend?',
-  'I’ve been thinking a lot about leadership lately and I wanted to share a few thoughts…',
-  'Day 47 of posting every day until something happens.',
-  'Reminder: you don’t need permission to start.',
-  'Just shipped a small update. Would love your feedback!',
-  'The best time to start was yesterday. The second best time…',
-  'Hot take: most meetings could be emails.',
-  'Agree?',
-  'Some thoughts on productivity (a thread)'
+const PEOPLE = [
+  { n: 'Maya Chen', h: 'mayabuilds', v: 0, bio: 'Founder, Tally Notes', img: 0 },
+  { n: 'Arjun Mehta', h: 'arjunships', v: 0, bio: 'Solo dev · building in public', img: 1 },
+  { n: 'Sofía Álvarez', h: 'sofiadesigns', v: 0, bio: 'Product designer', img: 2 },
+  { n: 'Kwame Mensah', h: 'kwametalks', v: 0, bio: 'Podcast host, Late Starters', img: 3 },
+  { n: 'Hannah Brooks', h: 'hannahwrites', v: 0, bio: 'Newsletter, 40k readers', img: 4 },
+  { n: 'Leo Park', h: 'leoparkdev', v: 0, bio: 'Staff engineer', img: 5 },
+  { n: 'Amara Okafor', h: 'amaragrows', v: 0, bio: 'Head of marketing', img: 6 },
+  { n: 'Jonas Weber', h: 'jonasruns', v: 0, bio: 'Run coach', img: 7 },
+  { n: 'Chloé Martin', h: 'chloedraws', v: 0, bio: 'Illustrator', img: 8 },
+  { n: 'Ryan Cole', h: 'ryangrowth', v: 0, bio: 'Growth at a Series A', img: 9 },
+  { n: 'Zara Ahmed', h: 'msahmedteaches', v: 0, bio: 'Teacher & writer', img: 10 },
+  { n: 'Marcus Reid', h: 'marcusreid', v: 0, bio: 'CEO, Northwind', img: 11 },
+  { n: 'Elin Lindqvist', h: 'elinpm', v: 0, bio: 'Product manager', img: 12 },
+  { n: 'Kenji Sato', h: 'kenjishoots', v: 0, bio: 'Photographer', img: 13 },
+  { n: 'Diego Santos', h: 'diegocodes', v: 0, bio: 'Indie hacker', img: 14 },
+  { n: 'Aisha Bello', h: 'aishab', v: 0, bio: 'Student · 1 year of posting daily', img: 15 },
+  { n: 'Noah Fischer', h: 'noahghostwrites', v: 0, bio: 'Ghostwriter for 6 founders', img: 16 },
+  { n: 'Tobi Adeyemi', h: 'tobiadeyemi', v: 0, bio: 'Founder, Ledgerly', img: 17 }
 ];
-const HERO_WEAK = 'i think pricing is really important for startups';
-const HERO_STRONG = 'Double your price. Signups went up 31%.';
-const GRADER_ROWS = [
-  ['So I wanted to share some thoughts on hiring', 'We hired 9 people last year. 3 were mistakes. Here’s the pattern.', 'Opening with “So” spends your best line on a warm-up.', 'A number and a confession. People read on to find out which 3.'],
-  ['Honestly, I think consistency is really important', 'I posted daily for 90 days. Consistency was the wrong lesson.', '“Honestly, I think” hedges twice before saying anything.', 'A real streak, then a twist. The reader wants the actual lesson.'],
-  ['Excited to announce our new feature!', 'We deleted our most-requested feature. Signups went up 18%.', 'Every launch post opens this way. Nothing here is yours yet.', 'A move nobody expects, with a result attached. Hard to scroll past.'],
-  ['Some tips for writing better landing pages', 'Your landing page has 1 job. Most do 4. Here’s why that’s wrong:', '“Some tips” promises homework, not a payoff.', 'Sets up a pattern, then promises to break it. The colon pulls you in.'],
-  ['Here is a thread about pricing', 'Stop pricing like a coward. Here’s the math:', 'It announces a thread instead of starting one.', 'Pokes at a habit, then promises proof. Tension plus an open loop.']
-];
-const STOP_AT = 70;
-const noisePost = (t, i) => `<div class="fp" aria-hidden="true"><span class="av" style="background:hsl(${(i * 47) % 360} 6% ${16 + (i % 3) * 2}%)"></span><div style="min-width:0"><div class="nm"><i></i><i></i></div><div class="tx">${esc(t)}</div><div class="ac">${ic('reply')}${ic('repost')}${ic('heart')}${ic('views')}</div></div></div>`;
-const ghostFeedHTML = () => `<div class="ghostfeed" aria-hidden="true">${[0, 1, 2].map(c => { const items = FEED_NOISE.filter((_, i) => i % 3 === c); return `<div class="col">${[...items, ...items, ...items, ...items].map((t, i) => noisePost(t, i + c)).join('')}</div>`; }).join('')}</div>`;
-const PART_NAMES = { clarity: 'Clarity', curiosity: 'Curiosity', specificity: 'Specifics', tension: 'Tension', brevity: 'Length' };
+/* generated portraits + photos live in two sprite sheets (see .avp / .mdp in CSS):
+   avatars: 18 frames of 144x144, photos: 6 frames of 800x474, stacked vertically */
+const AV_N = 18, PH_N = 6;
+const PHOTO = { desk: 0, whiteboard: 1, run: 2, cafe: 3, team: 4, notes: 5 };
+const sprY = (i, n) => `${(i / (n - 1) * 100).toFixed(4)}%`;
 
+/* posts that stop the scroll: shown in the hero carousel */
+const HOOK_POSTS = [
+  { p: 0, t: 'We doubled our price. Signups went up 31%.\n\nHere’s the email we sent customers, word for word:', m: 'whiteboard', c: [184, 612, 4100, 381000], ago: '2h', score: 91 },
+  { p: 5, t: 'I deleted 1,400 lines of code today and the app got faster.\n\nNobody tells you the best pull requests are negative.', c: [96, 240, 2900, 188000], ago: '5h', score: 86 },
+  { p: 4, t: 'I wrote a newsletter every Sunday for 3 years.\n\nThe issue that grew it the most took 20 minutes. Here’s why:', c: [141, 388, 3300, 240000], ago: '1d', score: 88 },
+  { p: 7, t: 'Ran 5km every morning for 365 days.\n\nThe hardest part was never the running.', m: 'run', c: [212, 530, 8800, 612000], ago: '9h', score: 84 },
+  { p: 3, t: 'My podcast had 11 listeners for 8 months.\n\nThen I changed one thing about the first 30 seconds.', c: [77, 190, 2400, 150000], ago: '3h', score: 89 },
+  { p: 6, t: 'Stop writing “Excited to announce.”\n\nNobody is excited. Say what changed.', c: [320, 1100, 9700, 704000], ago: 'Sep 24', score: 93 },
+  { p: 11, t: 'I’ve hired 300 people.\n\nThe best interview question is four words: “What did you cut?”', c: [410, 1600, 12000, 1100000], ago: 'Sep 22', score: 92 },
+  { p: 14, t: 'Shipped my side project at 2am.\n\n3 signups. One was me testing. Still counts.', m: 'desk', c: [58, 44, 1700, 61000], ago: '6h', score: 82 },
+  { p: 16, t: 'I ghostwrite for 6 founders.\n\nEvery single one opens drafts with “So.” Here’s the fix:', c: [133, 402, 5200, 330000], ago: '1d', score: 87 },
+  { p: 17, t: 'We let customers vote on our roadmap for a year.\n\nWorst decision we made. Here’s what we do now:', m: 'team', c: [260, 700, 6100, 498000], ago: 'Sep 20', score: 90 },
+  { p: 2, t: 'Redesigned onboarding from 7 screens to 2.\n\nActivation went from 21% to 38%.', m: 'notes', c: [88, 310, 3600, 205000], ago: '4h', score: 88 },
+  { p: 1, t: 'Built in public for 12 months.\n\n$0 → $4.2k MRR. Every number, every mistake: 🧵', c: [190, 450, 5400, 402000], ago: '2d', score: 90 },
+  { p: 12, t: 'A PM’s job in one sentence:\n\nsay no politely, with data, before lunch.', c: [64, 220, 2800, 170000], ago: '8h', score: 83 },
+  { p: 10, t: 'I teach 140 teenagers. The best writing advice I give them works on LinkedIn too:\n\ncut your first sentence.', c: [150, 620, 7400, 520000], ago: '1d', score: 85 },
+  { p: 15, t: 'i posted every day for 30 days as a broke college student.\n\nhere’s everything that happened 🧵', m: 'cafe', c: [96, 210, 3100, 260000], ago: '5d', score: 86 },
+  { p: 9, t: 'Your landing page has 1 job.\n\nMost do 4. Here’s why that’s wrong:', c: [120, 380, 4400, 300000], ago: '7h', score: 90 }
+];
+
+/* the feeling every creator knows: shown on the relatable wall */
+const VOID_POSTS = [
+  { p: 14, t: 'spent 3 hours on a thread.\n4 likes. one of them is my mom.', c: [12, 3, 89, 6200], ago: '1h' },
+  { p: 9, t: 'impressions down 80% this week. did the algorithm change or did I', c: [31, 5, 140, 9800], ago: '3h' },
+  { p: 4, t: 'me at 11:47pm: I’ll just write one post\nthe post box: What is happening?!\nme: nothing. nothing is happening', c: [22, 14, 310, 18000], ago: '11:47 PM' },
+  { p: 0, t: 'rewrote the first line 14 times. posted the first version.', c: [9, 2, 76, 4100], ago: '2d' },
+  { p: 6, t: 'LinkedIn: “Excited to announce” “Humbled to share” “Thrilled to”\n\nis anyone just… okay?', c: [48, 30, 620, 41000], ago: '5h' },
+  { p: 16, t: 'the “…see more” fold is where good posts go to die', c: [18, 11, 240, 15000], ago: '1d' },
+  { p: 15, t: 'posted into the void again. the void did not reply.', c: [4, 0, 23, 900], ago: '40m' },
+  { p: 5, t: 'wrote “I think” four times in one tweet. deleted it. posted nothing.', c: [14, 6, 180, 11000], ago: '6h' },
+  { p: 7, t: 'consistency is key they said\n\nkey to what. burnout?', c: [27, 9, 350, 20000], ago: '9h' },
+  { p: 1, t: 'day 47 of building in public. today I built nothing, publicly.', c: [16, 4, 210, 12000], ago: '2h' },
+  { p: 2, t: 'every time I schedule a post for 9am I wake up at 8:58 to watch it flop live', c: [21, 7, 290, 16000], ago: '1d' },
+  { p: 8, t: 'my drafts folder is a museum of posts I was too scared to publish', c: [35, 22, 540, 30000], ago: '4h' }
+];
+
+/* X count format: 1,204 · 12.4K · 124K · 1.2M */
+const fmtN = n => { n = Math.round(n); return n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : n >= 1e5 ? Math.round(n / 1e3) + 'K' : n >= 1e4 ? (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K' : n.toLocaleString('en-US'); };
+const pfIc = {
+  reply: '<svg class="ic" viewBox="0 0 24 24"><path d="M1.8 10.3c0-4.4 3.6-8 8-8h4.3c4.5 0 8.1 3.7 8.1 8.1 0 3-1.6 5.7-4.2 7.1l-8.1 4.5v-3.7h-.1c-4.4.1-8-3.4-8-8z"/></svg>',
+  repost: '<svg class="ic" viewBox="0 0 24 24"><path d="M4.5 3.9 1 7.5M4.5 3.9 8 7.5M4.5 3.9V16c0 1.4 1.1 2.5 2.5 2.5H13M19.5 20.1 23 16.5M19.5 20.1 16 16.5M19.5 20.1V8c0-1.4-1.1-2.5-2.5-2.5H11"/></svg>',
+  like: '<svg class="ic" viewBox="0 0 24 24"><path d="M12 20.6c-.4 0-8.9-4.8-9.9-10.7-.6-3.4 1.7-6.4 5-6.4 2.2 0 3.9 1.3 4.9 3 1-1.7 2.7-3 4.9-3 3.3 0 5.6 3 5 6.4-1 5.9-9.5 10.7-9.9 10.7z"/></svg>',
+  views: '<svg class="ic" viewBox="0 0 24 24"><path d="M4 21V10M10 21V3M16 21V8M22 21v-5"/></svg>',
+  bookmark: '<svg class="ic" viewBox="0 0 24 24"><path d="M5.5 3.5h13v17.5L12 16.5 5.5 21z"/></svg>',
+  share: '<svg class="ic" viewBox="0 0 24 24"><path d="M12 2.6v13M7 7.3l5-4.7 5 4.7M3.5 14.5V19c0 1.4 1.1 2.5 2.5 2.5h12c1.4 0 2.5-1.1 2.5-2.5v-4.5"/></svg>',
+  more: '<svg class="ic" viewBox="0 0 24 24" style="stroke:none;fill:currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>',
+  comment: '<svg class="ic" viewBox="0 0 24 24"><path d="M20.7 16.2A9.3 9.3 0 1 0 17 20l4.2 1.2z"/></svg>',
+  send: '<svg class="ic" viewBox="0 0 24 24"><path d="M21.5 3 3 10.2l7.3 3 3 7.3zM10.3 13.2 21.5 3"/></svg>',
+  thumb: '<svg class="ic" viewBox="0 0 24 24"><path d="M7 21H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h3m0 10V11m0 10h10.3a2 2 0 0 0 2-1.6l1.3-7A2 2 0 0 0 18.6 10H14V5.5A2.5 2.5 0 0 0 11.5 3L7 11"/></svg>',
+  home: '<svg class="ic" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg>',
+  search: '<svg class="ic" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7"/><path d="m21 21-5.5-5.5"/></svg>',
+  bell: '<svg class="ic" viewBox="0 0 24 24"><path d="M18 16V11a6 6 0 1 0-12 0v5l-2 2.5h16zM9.5 21h5"/></svg>',
+  mail: '<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>',
+  people: '<svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18.5 14.8c1.7.7 2.8 2.4 3 5.2"/></svg>',
+  plus: '<svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  feather: '<svg class="ic" viewBox="0 0 24 24"><path d="M20.2 3.8c-5.2.3-10.6 3.4-12.7 9.4L5 21M7.5 13.2h6.3M9.7 9.2h7.5M20.2 3.8c-.3 6.8-3.6 11.4-10 12.6"/></svg>',
+  globe: '<svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.5 5.6 3.5 9s-1 6.4-3.5 9c-2.5-2.6-3.5-5.6-3.5-9s1-6.4 3.5-9z"/></svg>'
+};
+/* X-style verified badge: a scalloped rosette with a check */
+const VBADGE = (() => {
+  let d = ''; const N = 12;
+  for (let i = 0; i <= N * 2; i++) { const a = Math.PI * i / N - Math.PI / 2; const r = i % 2 ? 10.9 : 12; d += `${i ? 'L' : 'M'}${(12 + r * Math.cos(a)).toFixed(2)} ${(12 + r * Math.sin(a)).toFixed(2)}`; }
+  return `<svg class="vb" viewBox="0 0 24 24" aria-label="Verified account"><path d="${d}Z" fill="#1D9BF0" stroke="#1D9BF0" stroke-width="2.2" stroke-linejoin="round"/><path d="m7.6 12.3 3 3 5.9-6.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+})();
+const X_LOGO = '<svg class="logo" viewBox="0 0 24 24"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.8 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg>';
+
+function pfAv(p, cls = '') {
+  const ini = esc((p && p.n || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2));
+  const i = p && p.img, pic = Number.isInteger(i) && i < AV_N ? `<i class="avp" style="background-position:0 ${sprY(i, AV_N)}"></i>` : '';
+  return `<span class="av ini ${cls}" aria-hidden="true">${ini}${pic}</span>`;
+}
+function pfText(t) { return esc(t).replace(/(🧵|👇)/g, '$1').replace(/(^|\s)([#@][\w]+)/g, '$1<span class="lnk">$2</span>'); }
+function pfMedia(m) { const k = m in PHOTO ? PHOTO[m] : -1; return k < 0 ? '' : `<div class="md"><i class="mdp" style="background-position:0 ${sprY(k, PH_N)}"></i></div>`; }
+
+/* X / Twitter */
+function xPost(post, { dark = false, liked = false, cls = '', counts = true, rail = false, you = null } = {}) {
+  const p = you || PEOPLE[post.p]; const c = post.c || [0, 0, 0, 0];
+  const n = (k, v) => counts && v ? `<span class="c" data-k="${k}">${fmtN(v)}</span>` : `<span class="c" data-k="${k}"></span>`;
+  return `<article class="pf xp ${dark ? 'dark' : ''} ${rail ? 'xthr' : ''} ${cls}">
+    ${rail ? `<div class="rail">${pfAv(p)}<i></i></div>` : pfAv(p)}
+    <div style="min-width:0">
+      <div class="hd"><span class="n">${esc(p.n)}</span>${p.v ? VBADGE : ''}<span class="h">@${esc(p.h)}</span><span class="xdot">·</span><span class="t">${esc(post.ago || 'now')}</span><span class="more">${pfIc.more}</span></div>
+      <div class="tx">${pfText(post.t)}</div>${pfMedia(post.m)}
+      <div class="acts"><span class="a rp"><span class="b">${pfIc.reply}</span>${n('r', c[0])}</span><span class="a rt"><span class="b">${pfIc.repost}</span>${n('rt', c[1])}</span><span class="a lk ${liked ? 'on' : ''}"><span class="b">${pfIc.like}</span>${n('l', c[2])}</span><span class="a vw"><span class="b">${pfIc.views}</span>${n('v', c[3])}</span><span class="tail"><span class="a"><span class="b">${pfIc.bookmark}</span></span><span class="a"><span class="b">${pfIc.share}</span></span></span></div>
+    </div></article>`;
+}
+/* Threads */
+function thPost(post, { dark = false, rail = false, you = null } = {}) {
+  const p = you || PEOPLE[post.p]; const c = post.c || [0, 0, 0, 0];
+  return `<article class="pf thp ${dark ? 'dark' : ''}">${rail ? `<div class="rail">${pfAv(p)}<i></i></div>` : pfAv(p)}<div style="min-width:0">
+    <div class="hd"><span class="n">${esc(p.h)}</span><span class="t">${esc(post.ago || 'now')}</span><span class="more">${pfIc.more}</span></div>
+    <div class="tx">${pfText(post.t)}</div>${pfMedia(post.m)}
+    <div class="acts"><span class="a">${pfIc.like}<span class="c">${c[2] ? fmtN(c[2] * .4) : ''}</span></span><span class="a">${pfIc.comment}<span class="c">${c[0] ? fmtN(c[0] * .5) : ''}</span></span><span class="a">${pfIc.repost}<span class="c">${c[1] ? fmtN(c[1] * .3) : ''}</span></span><span class="a">${pfIc.send}</span></div></div></article>`;
+}
+/* LinkedIn */
+const LI_RX = '<span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#378FE9"/><path d="M5 12V8h1.5v4zm2.5 0V7.6L9.3 4.5c.6 0 1 .4 1 1V7h1.6c.5 0 .9.5.8 1l-.6 3.2c-.1.5-.5.8-1 .8z" fill="#fff"/></svg><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#6DAE4F"/><path d="M5 11.5 7 5l1.4 4L10 6l1 5.5z" fill="#fff"/></svg><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#DF704D"/><path d="M8 12S4 9.7 4 7a2 2 0 0 1 4-.9A2 2 0 0 1 12 7c0 2.7-4 5-4 5z" fill="#fff"/></svg></span>';
+function liPost(post, { dark = false, you = null, expanded = false } = {}) {
+  const p = you || PEOPLE[post.p]; const c = post.c || [0, 0, 0, 0]; const long = post.t.length > 210 || post.t.split('\n').length > 3;
+  return `<article class="pf lip ${dark ? 'dark' : ''}"><div class="hd">${pfAv(p)}<div class="who"><b>${esc(p.n)} <span class="deg">· 2nd</span></b><span>${esc(p.bio || 'Creator')}</span><span>${esc(post.ago || 'now')} · ${pfIc.globe}</span></div><span class="follow">+ Follow</span></div>
+    <div class="tx ${long && !expanded ? 'clamp' : ''}">${pfText(post.t)}</div>${long && !expanded ? '<span class="seemore"><span>…more</span></span>' : ''}${pfMedia(post.m)}
+    <div class="soc"><span class="rx">${LI_RX}<span>${c[2] ? fmtN(c[2] * .3) : ''}</span></span><span>${c[0] ? `${fmtN(c[0] * .4)} comments · ${fmtN(c[1] * .2)} reposts` : ''}</span></div>
+    <div class="bar"><span>${pfIc.thumb}Like</span><span>${pfIc.comment}Comment</span><span>${pfIc.repost}Repost</span><span>${pfIc.send}Send</span></div></article>`;
+}
+/* Bluesky */
+function bsPost(post, { dark = false, you = null } = {}) {
+  const p = you || PEOPLE[post.p]; const c = post.c || [0, 0, 0, 0];
+  return `<article class="pf bsp ${dark ? 'dark' : ''}">${pfAv(p)}<div style="min-width:0">
+    <div class="hd"><span class="n">${esc(p.n)}</span><span class="h">@${esc(p.h)}.bsky.social</span><span class="t">· ${esc(post.ago || 'now')}</span></div>
+    <div class="tx">${pfText(post.t)}</div>${pfMedia(post.m)}
+    <div class="acts"><span class="a">${pfIc.reply}${c[0] ? fmtN(c[0] * .3) : ''}</span><span class="a">${pfIc.repost}${c[1] ? fmtN(c[1] * .3) : ''}</span><span class="a">${pfIc.like}${c[2] ? fmtN(c[2] * .25) : ''}</span><span class="a">${pfIc.more}</span></div></div></article>`;
+}
+const PF_RENDER = { x: xPost, threads: thPost, linkedin: liPost, bsky: bsPost };
+
+/* a phone showing a platform's feed, with your post in it */
+const SB = '<span class="ind"><svg viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg viewBox="0 0 16 11"><path d="M8 2.6c2.2 0 4.2.8 5.8 2.2l1.2-1.3A10.3 10.3 0 0 0 8 .8 10.3 10.3 0 0 0 1 3.5l1.2 1.3A8.5 8.5 0 0 1 8 2.6zm0 3.6c1.2 0 2.3.4 3.2 1.2l1.2-1.3A6.6 6.6 0 0 0 8 4.4 6.6 6.6 0 0 0 3.6 6.1l1.2 1.3c.9-.8 2-1.2 3.2-1.2zM8 11l2-2.2a3 3 0 0 0-4 0z"/></svg><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="17" height="8" rx="2"/><rect x="23.5" y="4" width="2" height="4" rx="1" opacity=".45"/></svg></span>';
+function phoneFeed(kind, { dark = false, you, mine, others = [], w = 320, id = '' } = {}) {
+  const z = (w / 390).toFixed(3);
+  const R = PF_RENDER[kind];
+  const head = kind === 'x' ? `<div class="apph">${pfAv(you)}${X_LOGO}<span></span></div><div class="tabs"><span class="on">For you</span><span>Following</span></div>`
+    : kind === 'threads' ? `<div class="apph"><span></span><svg class="logo" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 11.2c-.3-2.6-2-4-4.4-4-2.2 0-3.7 1.2-4.1 3M16.5 11.2c.2 3.3-1.4 5-3.9 5-1.8 0-3.2-1-3.2-2.6 0-2 2-2.8 4.6-2.7 3 .1 4.9 1.5 4.9 3.9 0 3-2.6 5.2-6.5 5.2-5 0-7.8-3.3-7.8-8S7.3 3 12.3 3c3.6 0 6 1.7 7.1 4.6"/></svg><span></span></div>`
+    : kind === 'linkedin' ? `<div class="apph" style="grid-template-columns:32px 1fr 32px;gap:8px">${pfAv(you)}<span style="height:30px;border-radius:4px;background:${dark ? '#38434F' : '#EDF3F8'};display:flex;align-items:center;gap:6px;padding:0 10px;font:400 13px var(--pf-sys);color:${dark ? '#B0B7BF' : '#56687A'}">${pfIc.search.replace('class="ic"', 'class="ic" style="width:15px;height:15px"')}Search</span><span></span></div>`
+    : `<div class="apph"><span></span><svg class="logo" viewBox="0 0 24 24"><path fill="#1083FE" d="M6.3 4.1C8.6 5.8 11 9.3 12 11.2c1-1.9 3.4-5.4 5.7-7.1 1.6-1.2 4.3-2.2 4.3.9 0 .6-.4 5.2-.6 5.9-.7 2.6-3.3 3.2-5.6 2.8 4 .7 5 3 2.8 5.3-4.2 4.3-6-1.1-6.5-2.5l-.1-.4-.1.4c-.5 1.4-2.3 6.8-6.5 2.5-2.2-2.3-1.2-4.6 2.8-5.3-2.3.4-4.9-.2-5.6-2.8-.2-.7-.6-5.3-.6-5.9 0-3.1 2.7-2.1 4.3-.9z"/></svg><span></span></div><div class="tabs"><span class="on">Discover</span><span>Following</span></div>`;
+  const tb = kind === 'linkedin' ? [pfIc.home, pfIc.people, pfIc.plus, pfIc.bell, pfIc.mail] : kind === 'threads' ? [pfIc.home, pfIc.search, pfIc.plus, pfIc.like, pfIc.people] : [pfIc.home, pfIc.search, pfIc.people, pfIc.bell, pfIc.mail];
+  const opts = { dark };
+  return `<div class="phone" style="--pw:390px;zoom:${z}" ${id ? `id="${id}"` : ''} aria-hidden="true"><div class="scr ${dark ? 'dark' : ''}"><span class="island"></span>
+    <div class="sb"><span>9:41</span>${SB}</div>${head}
+    <div class="feed" ${kind === 'linkedin' ? `style="background:${dark ? '#000' : '#F4F2EE'}"` : ''}>${others.slice(0, 1).map(o => R(o, opts)).join('')}<div class="me-post">${R(mine, { ...opts, you })}</div>${others.slice(1).map(o => R(o, opts)).join('')}</div>
+    <div class="tb">${tb.join('')}</div>${kind === 'x' ? `<span class="fab">${pfIc.feather}</span>` : ''}<span class="home-ind"></span></div></div>`;
+}
+
+/* ==========================================================================
+   HOMEPAGE: "Keynote for creators"
+   Hero: posts from fictional creators on the inside of a slowly turning
+   cylinder. Every few seconds the ring brakes and one post stops at the
+   front, first line marked, hook score shown.
+   Then a pinned, scroll-scrubbed keynote follows one post from an 11pm
+   thought to a Tuesday 8:41am notification.
+   ========================================================================== */
+/* ----- shared bits other routes use (onboarding feed, pricing, voice) ----- */
+const FEED_NOISE = [
+  'Excited to share that I’ve started a new position as…', 'Consistency is key. That’s the tweet.', 'Here are 10 AI tools you can’t afford to miss 🧵',
+  'gm to everyone building something today', 'Unpopular opinion: hard work still matters.', 'What’s everyone working on this weekend?',
+  'I’ve been thinking a lot about leadership lately and I wanted to share a few thoughts…', 'Day 47 of posting every day until something happens.',
+  'Reminder: you don’t need permission to start.', 'Just shipped a small update. Would love your feedback!', 'The best time to start was yesterday. The second best time…',
+  'Hot take: most meetings could be emails.', 'Agree?', 'Some thoughts on productivity (a thread)'
+];
+const noisePost = (t, i) => `<div class="fp" aria-hidden="true"><span class="av" style="background:hsl(${(i * 47) % 360} 6% ${16 + (i % 3) * 2}%)"></span><div style="min-width:0"><div class="nm"><i></i><i></i></div><div class="tx">${esc(t)}</div></div></div>`;
+const ghostFeedHTML = () => `<div class="ghostfeed" aria-hidden="true">${[0, 1, 2].map(c => { const items = FEED_NOISE.filter((_, i) => i % 3 === c); return `<div class="col">${[...items, ...items, ...items, ...items].map((t, i) => noisePost(t, i + c)).join('')}</div>`; }).join('')}</div>`;
 function plansHTML(yearly) {
   const P = [
     { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score on every post', '5 rewrites a day', 'Unlimited drafts and ideas', 'One account per platform', 'Up to 10 scheduled posts'] },
     { k: 'pro', name: 'Pro', price: yearly ? 12 : 16, blurb: 'For posting most days.', cta: 'Try Pro free for 7 days', hero: true, feats: ['Unlimited rewrites in your voice', 'Voice profile that keeps learning', 'Auto-plug and auto-repost', 'Per-platform versions', 'Insights that say why', 'Unlimited queue'] },
     { k: 'studio', name: 'Studio', price: yearly ? 29 : 36, blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Five client voices', 'Approvals before anything ships', 'Shared idea inbox', 'Support from humans'] }
   ];
-  return P.map(p => `<div class="lp-plan ${p.hero ? 'pro' : ''}">
+  return P.map(p => `<div class="pl ${p.hero ? 'pro' : ''}">
     <div class="nm"><b>${p.name}</b><span>${p.blurb}</span></div>
     <div class="pr"><b>$${p.price}</b><span>${p.price ? `per month${yearly ? ', billed yearly' : ''}` : 'forever'}</span></div>
     <ul>${p.feats.map(f => `<li>${ic('check')}<span>${f}</span></li>`).join('')}</ul>
@@ -2889,292 +3158,285 @@ const VOICE_SAMPLES = [
 ];
 const voiceSample = (spice, polish, length = 0) => { const row = VOICE_SAMPLES[spice < 35 ? 0 : spice < 68 ? 1 : 2]; let s = row[polish < 50 ? 0 : 1]; if (length > 55) s += polish < 50 ? '\n\nthe lesson: every option you add is a decision you’re asking someone else to make.' : '\n\nThe lesson: every option you add is a decision you’re asking a customer to make for you.'; return s; };
 
-/* reveals: only elements below the fold are armed, so the first frame is always complete */
+/* reveals: armed only below the fold, so the first frame is always complete */
 let REVEAL_IO = null;
 function armReveals(root) {
   if (REDUCED || !('IntersectionObserver' in window)) return;
   REVEAL_IO && REVEAL_IO.disconnect();
-  REVEAL_IO = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); en.target.classList.remove('armed'); REVEAL_IO.unobserve(en.target); } }), { rootMargin: '0px 0px -6% 0px', threshold: .06 });
-  $$('.stopin', root).forEach(el => { if (el.getBoundingClientRect().top > innerHeight * .95) { el.classList.add('armed'); REVEAL_IO.observe(el); } });
+  REVEAL_IO = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { en.target.classList.remove('armed'); REVEAL_IO.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+  $$('.rv', root).forEach(el => { if (el.getBoundingClientRect().top > innerHeight * .92) { el.classList.add('armed'); REVEAL_IO.observe(el); } });
 }
 
-function diffMarkup(a, b) {
-  const ch = diffWords(a, b); const same = ch.filter(c => c.eq !== undefined).join ? ch.filter(c => c.eq !== undefined).map(c => c.eq).join('').trim().split(/\s+/).filter(Boolean).length : 0;
-  if (same / Math.max(1, b.split(/\s+/).length) < .4) return `<del>${esc(a)}</del> <ins>${esc(b)}</ins>`;
-  return ch.map(c => c.eq !== undefined ? esc(c.eq) : `${c.del ? `<del>${esc(c.del)}</del>` : ''}${c.del && c.ins ? ' ' : ''}${c.ins ? `<ins>${esc(c.ins)}</ins>` : ''}`).join(''); }
+/* ----- the ring ----- */
+function ringHTML(posts) {
+  return `<div class="stage">${posts.map((post, i) => {
+    const html = xPost(post).replace('<div class="tx">', '<div class="tx"><span class="first">').replace(/(<span class="first">[^\n<]*)/, '$1</span>');
+    return `<div class="cc" data-i="${i}"><span class="hchip"><b>${post.score || hookScore(post.t).score}</b>Hook score · stopped the scroll</span>${html}</div>`;
+  }).join('')}</div>`;
+}
+function ringInit(el, { speed = 13, radius = 820, depth = 60 } = {}) {
+  const cards = $$('.cc', el); const N = cards.length; const step = 360 / N;
+  let R = radius, base = 0, v = REDUCED ? 0 : -speed, mode = 'run', stop = null, hold = 0, drag = null, last = 0, raf = 0, visible = true, boost = 0, nextStop = 3.2, stopped = -1;
+  const norm = a => ((a % 360) + 540) % 360 - 180;
+  const size = () => { R = innerWidth < 760 ? radius * .82 : radius; };
+  const paint = () => {
+    for (let i = 0; i < N; i++) {
+      const a = norm(base + i * step), c = cards[i];
+      if (Math.abs(a) > 70) { if (c.style.visibility !== 'hidden') c.style.visibility = 'hidden'; continue; }
+      if (c.style.visibility) c.style.visibility = '';
+      const r = a * Math.PI / 180, x = R * Math.sin(r), z = R * (1 - Math.cos(r)) - depth;
+      c.style.transform = `translate3d(${x.toFixed(1)}px,0,${z.toFixed(1)}px) rotateY(${(-a).toFixed(2)}deg)`;
+      c.style.zIndex = String(1000 - Math.round(Math.abs(a) * 10));
+    }
+  };
+  const setStop = i => { if (stopped === i) return; cards.forEach((c, k) => c.classList.toggle('stop', k === i)); stopped = i; };
+  const pickStop = () => {
+    let best = -1, bd = 1e9;
+    for (let i = 0; i < N; i++) { const d = ((base + i * step) % 360 + 360) % 360; if (d > 10 && d < bd) { bd = d; best = i; } }
+    const T = 1.35; stop = { i: best, from: base, d: bd, t: 0, T, m0: Math.abs(v) * T };
+    mode = 'brake';
+  };
+  const tick = now => {
+    const dt = Math.min(.05, (now - (last || now)) / 1000); last = now;
+    if (mode === 'run') {
+      v += (-speed - v) * Math.min(1, dt * 1.6); base += (v - boost) * dt; boost *= Math.pow(.04, dt);
+      nextStop -= dt; if (nextStop <= 0 && !drag) pickStop();
+    } else if (mode === 'brake') {
+      stop.t += dt; const t = Math.min(1, stop.t / stop.T), t2 = t * t, t3 = t2 * t;
+      const p = (t3 - 2 * t2 + t) * stop.m0 + (-2 * t3 + 3 * t2) * stop.d;
+      base = stop.from - p;
+      if (t >= 1) { mode = 'hold'; hold = 2.4; v = 0; setStop(stop.i); }
+    } else if (mode === 'hold') {
+      hold -= dt; if (hold <= 0) { mode = 'run'; v = 0; nextStop = 3.6; setStop(-1); }
+    } else if (mode === 'drag' || mode === 'coast') {
+      if (mode === 'coast') { base += drag.vel * dt; drag.vel *= Math.pow(.08, dt); if (Math.abs(drag.vel) < 4) { mode = 'run'; v = drag.vel; drag = null; nextStop = 2.4; } }
+    }
+    paint();
+    raf = visible && !document.hidden ? requestAnimationFrame(tick) : 0;
+  };
+  const start = () => { if (!raf && !REDUCED) { last = 0; raf = requestAnimationFrame(tick); } };
+  /* drag to spin */
+  el.addEventListener('pointerdown', e => { if (REDUCED) return; drag = { x: e.clientX, b: base, vel: 0, lx: e.clientX, lt: performance.now() }; mode = 'drag'; setStop(-1); el.classList.add('drag'); el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', e => { if (!drag || mode !== 'drag') return; const k = step / (R * step * Math.PI / 180); base = drag.b + (e.clientX - drag.x) * k; const now = performance.now(), dtm = Math.max(1, now - drag.lt); drag.vel = (e.clientX - drag.lx) * k / (dtm / 1000); drag.lx = e.clientX; drag.lt = now; });
+  const up = () => { if (!drag) return; el.classList.remove('drag'); mode = 'coast'; drag.vel = clamp(drag.vel, -240, 240); };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  /* scroll speed nudges the ring */
+  let sy = scrollY; const onScroll = () => { const d = scrollY - sy; sy = scrollY; boost = clamp(boost + d * .35, -120, 120); };
+  addEventListener('scroll', onScroll, { passive: true });
+  const io = new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) start(); }, { threshold: 0 }); io.observe(el);
+  const vis = () => { if (!document.hidden) start(); }; document.addEventListener('visibilitychange', vis);
+  const rs = () => { size(); paint(); }; addEventListener('resize', rs);
+  size(); if (REDUCED) { base = 0; paint(); setStop(0); } else { paint(); start(); }
+  return () => { cancelAnimationFrame(raf); io.disconnect(); removeEventListener('scroll', onScroll); removeEventListener('resize', rs); document.removeEventListener('visibilitychange', vis); };
+}
+
+/* ----- the keynote story ----- */
+const ST_DRAFT = 'so i think pricing is really important for startups and honestly you should probably charge more than you think';
+const ST_FINAL = 'Double your price. Signups went up 31% when we did.';
+const ST_CAPS = [
+  ['11:04 PM. Maya has a thought.', 'Half-formed and typed fast, the way every good post starts.'],
+  ['Hookworthy reads the first line.', 'Three hedges, no number, nothing to stop for. It says so, in one sentence.'],
+  ['Then rewrites it in her voice.', 'Every change shown word by word. She keeps what sounds like her.'],
+  ['Queued for when her people are up.', 'Tuesday, 8:40 AM. That’s when her replies peak.'],
+  ['Tuesday, 8:41 AM.', 'They stop. They read. They reply.']
+];
+function storyInit(root) {
+  const sec = $('#story', root); if (!sec) return () => {};
+  const caps = $$('.cap', sec), bars = $$('.prog i b', sec), draft = $('#st-draft', sec), sc = $('#st-score', sec), why = $('#st-why', sec), sched = $('#st-sched', sec), win = $('.win', sec), ph = $('.phonewrap', sec), toastEl = $('.sttoast', sec);
+  const hedges = /\b(i think|really|honestly|probably)\b/gi;
+  const s0 = hookScore(ST_DRAFT).score, s1 = hookScore(ST_FINAL).score;
+  const target = [412, 1290, 9800, 612000];
+  let lastKey = '';
+  const phase = p => p < .18 ? 0 : p < .36 ? 1 : p < .58 ? 2 : p < .76 ? 3 : 4;
+  const render = p => {
+    const ph0 = phase(p); caps.forEach((c, i) => c.classList.toggle('on', i === ph0));
+    const bounds = [0, .18, .36, .58, .76, 1]; bars.forEach((b, i) => b.style.setProperty('--p', clamp((p - bounds[i]) / (bounds[i + 1] - bounds[i]), 0, 1)));
+    let html, score, good = false, whyT = '';
+    if (ph0 === 0) { const n = Math.round(ST_DRAFT.length * clamp(p / .16, 0, 1)); html = esc(ST_DRAFT.slice(0, n)) + '<span class="stcaret"></span>'; score = null; whyT = 'Drafting…'; }
+    else if (ph0 === 1) { html = esc(ST_DRAFT).replace(hedges, m => `<span class="hedge">${m}</span>`); score = s0; whyT = '“i think”, “honestly” and “probably” hedge the claim. No number.'; }
+    else if (ph0 === 2) {
+      const a = clamp((p - .36) / .08, 0, 1), b = clamp((p - .45) / .12, 0, 1);
+      if (b <= 0) { let n = 0; const lim = Math.ceil(a * 4); html = esc(ST_DRAFT).replace(hedges, m => ++n <= lim ? `<del>${m}</del>` : `<span class="hedge">${m}</span>`); }
+      else { const n = Math.round(ST_FINAL.length * b); html = `<del>${esc(ST_DRAFT)}</del>\n<ins>${esc(ST_FINAL.slice(0, n))}</ins>${b < 1 ? '<span class="stcaret"></span>' : ''}`; }
+      score = Math.round(s0 + (s1 - s0) * b); good = score >= 70; whyT = b <= 0 ? 'Cutting the hedges first.' : good ? 'A concrete number and a clear claim. That stops a scroll.' : 'Rewriting in her voice…';
+    } else { html = esc(ST_FINAL); score = s1; good = true; whyT = 'A concrete number and a clear claim. That stops a scroll.'; }
+    const key = ph0 + '|' + html.length + '|' + score;
+    if (key !== lastKey) { draft.innerHTML = html; lastKey = key; }
+    sc.parentElement.hidden = score == null; if (score != null) { sc.textContent = score; sc.parentElement.classList.toggle('good', good); }
+    why.textContent = whyT;
+    sched.classList.toggle('on', ph0 >= 3);
+    ph.classList.toggle('on', ph0 >= 3);
+    win.style.transform = ph0 >= 3 && innerWidth > 1060 ? 'translate(-6%,-50%) scale(.9)' : '';
+    win.style.opacity = ph0 >= 3 && innerWidth <= 1060 ? '0' : '1';
+    const live = clamp((p - .78) / .2, 0, 1), e = 1 - Math.pow(1 - live, 3);
+    $$('.me-post .xp .c', sec).forEach((c, i) => { c.textContent = live > 0 ? fmtN(target[i] * e) : ''; });
+    $('.me-post', sec).classList.toggle('hl', ph0 >= 3);
+    toastEl.classList.toggle('on', live > .15);
+  };
+  if (REDUCED) { render(1); return () => {}; }
+  let raf = 0;
+  const onScroll = () => { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; const r = sec.getBoundingClientRect(); const p = clamp(-r.top / (r.height - innerHeight), 0, 1); render(p); }); };
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+  return () => { removeEventListener('scroll', onScroll); removeEventListener('resize', onScroll); cancelAnimationFrame(raf); };
+}
+
+const HAND_ARROW_L = '<svg width="74" height="40" viewBox="0 0 74 40"><path d="M2 8c14-6 34-4 50 8 6 5 10 11 14 19M58 30l8 6 2-10" style="--len:110"/></svg>';
+const HAND_ARROW_R = '<svg width="90" height="60" viewBox="0 0 90 60"><path d="M86 4C70 2 44 8 30 22 22 30 18 40 16 52M8 44l8 10 8-9" style="--len:130"/></svg>';
+const MAYA = PEOPLE[0];
+const FOUR_POST = { t: 'Double your price.\n\nSignups went up 31% when we did. Customers value what costs more, and the ones who stay are the ones you want.\n\nHere’s the email we sent, word for word ↓', c: [184, 612, 4100, 381000], ago: '2m', m: 'whiteboard' };
+const FOLD_DEFAULT = 'I almost quit my startup in March.\n\nNot because of money. Because I stopped believing the thing we were building mattered.\n\nHere’s what changed my mind, and what I’d tell any founder sitting where I was:';
 
 ROUTES.home = () => {
-  const noiseA = FEED_NOISE.slice(0, 7).map(noisePost).join(''), noiseB = FEED_NOISE.slice(7).map((t, i) => noisePost(t, i + 7)).join('');
-  const angles = anglesFor({ title: 'Startups die from indigestion', topic: 'startup growth' }).slice(0, 3);
-  $('#root').innerHTML = `<div class="land force-dark">
-  <header class="l-nav" id="lnav">
+  const W = (s, i0 = 0) => s.split(' ').map((w, i) => `<span class="w" style="--i:${i0 + i}">${w} </span>`).join('');
+  const wallA = VOID_POSTS.slice(0, 6), wallB = VOID_POSTS.slice(6);
+  const wallRow = (list, kind) => { const cards = list.map((p, i) => (kind === 'mix' ? [xPost, thPost, xPost, bsPost, xPost, thPost][i % 6] : xPost)(p)).join(''); return cards + cards; };
+  const others = [VOID_POSTS[1], VOID_POSTS[6], VOID_POSTS[3]];
+  $('#root').innerHTML = `<div class="hw">
+  <header class="hw-nav" id="hwnav">
     <a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
-    <nav class="links" aria-label="Sections"><a href="#home" data-scroll="grader">The hook</a><a href="#home" data-scroll="day">How it works</a><a href="#home" data-scroll="who">Who it’s for</a><a href="#home" data-scroll="pricing">Pricing</a></nav>
-    <div class="grow"></div>
-    <a class="btn ghost sm login" href="#write">Log in</a>
-    <a class="btn ink sm" href="#start">Start writing</a>
+    <nav class="links" aria-label="Sections"><a href="#home" data-scroll="story">How it works</a><a href="#home" data-scroll="four">Platforms</a><a href="#home" data-scroll="creators">Creators</a><a href="#home" data-scroll="pricing">Pricing</a></nav>
+    <span class="grow"></span><a class="in" href="#write">Log in</a><a class="hbtn" href="#start">Start free</a>
   </header>
 
-  <section class="wrap lp-hero" aria-label="Try the hook grader">
-    <div class="lp-copy">
-      <h1 class="display">Write posts people stop for.</h1>
-      <p class="sub">The feed decides in one line. Hookworthy grades that line as you type, rewrites it in your voice when you ask, and schedules the post for X, Threads, LinkedIn and Bluesky.</p>
-      <div class="lp-cta">
-        <form class="lp-handle" id="hero-form" novalidate><span class="at">@</span><input id="hero-h" placeholder="yourhandle" aria-label="Your handle" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">Start writing${ic('arrow', 'sm')}</button></form>
-        <span class="lp-fine">Free forever for one account per platform. No card.</span>
-      </div>
+  <section class="hw-hero" aria-label="Hookworthy">
+    <div class="wrap top">
+      <h1>${W('Write posts people')}<span class="w" style="--i:3"><span class="mk draw">stop</span> </span>${W('for.', 4)}</h1>
+      <p class="sub">Hookworthy grades your first line as you type, rewrites it in your voice, and schedules it for X, Threads, LinkedIn and Bluesky.</p>
+      <div class="cta"><a class="hbtn lg" href="#start">Start writing, free ${ic('arrow', 'sm')}</a><a class="ghost" href="#home" data-scroll="story"><span class="play">${ic('play', 'sm')}</span>Watch a draft become a hook</a></div>
+      <span class="hand n1" aria-hidden="true">no card, no catch${HAND_ARROW_L}</span>
+      <span class="hand n2" aria-hidden="true">${HAND_ARROW_R}the ones that stop</span>
     </div>
-
-    <div class="fs" id="fs">
-      <div class="fs-track" id="fs-track">${noiseA}<div class="fs-slot" id="fs-slot" aria-hidden="true"></div>${noiseB}${noiseA}<div class="fs-slot" aria-hidden="true"></div>${noiseB}</div>
-      <article class="fs-me" id="fs-me" aria-label="Your post">
-        ${avatar({ name: 'You', hue: 0 })}
-        <div class="hd"><b>You</b><span id="fs-handle">@you · now</span><span class="grow"></span><span class="score" id="fs-score" aria-live="polite"><i></i><span>0</span></span></div>
-        <div class="first"><textarea id="fs-t" rows="1" aria-label="Your first line. Type to grade it." maxlength="200" spellcheck="false">${esc(HERO_WEAK)}</textarea><i class="uline"></i></div>
-        <p class="rest" id="fs-rest"></p>
-        <div class="mg" aria-hidden="true"><p id="m-why"></p><div class="mbars">${Object.keys(PART_NAMES).map(k => `<span><i data-mp="${k}"></i><b>${PART_NAMES[k]}</b></span>`).join('')}</div></div>
-        <div class="tools"><button type="button" data-hero="hook" aria-label="Stronger hook">${ic('hook')}<span class="tl">Stronger hook</span></button><button type="button" data-hero="punchier" aria-label="Punchier">${ic('bolt')}<span class="tl">Punchier</span></button><button type="button" data-hero="reset" aria-label="Start over">${ic('undo')}</button><span class="hint">or type your own line</span></div>
-      </article>
-    </div>
-
-    <aside class="lp-grade" id="lp-grade" aria-label="Hook score">
-      <div class="n"><b id="g-n">0</b><span>hook<br>score</span></div>
-      <dl id="g-parts">${Object.keys(PART_NAMES).map(k => `<dt>${PART_NAMES[k]}</dt><dd><i data-p="${k}" style="--v:0"></i></dd><span class="v" data-v="${k}">0</span>`).join('')}</dl>
-      <p class="why" id="g-why"></p>
-      <div class="state"><i></i><span id="g-state">Scrolled past</span></div>
-      <div class="speed" aria-hidden="true"><span>stopped</span><span class="tr"><i id="g-speed"></i></span><span>scrolled past</span></div>
-    </aside>
+    <div class="c3d" id="ring" role="img" aria-label="A turning wall of example posts. Every few seconds one stops and shows its hook score.">${ringHTML(HOOK_POSTS)}</div>
+    <p class="ring-cap">Drag to spin. Illustrative posts from fictional creators.</p>
   </section>
 
-  <section class="wrap lp-sec" id="grader">
-    <div class="lp-grader">
-      <div class="lp-h stopin">
-        <h2 class="display">Most people read one line. Then they decide.</h2>
-        <p>Every first line gets a score out of 100 for clarity, curiosity, specifics, tension and length, plus one sentence on what to fix. Tap a line to see the fix.</p>
+  <section class="story" id="story" aria-label="How a draft becomes a hook">
+    <div class="pin">
+      <div style="position:relative">
+        <div class="caps">${ST_CAPS.map(([h, p], i) => `<div class="cap ${i === 0 ? 'on' : ''}"><h3>${h}</h3><p>${p}</p></div>`).join('')}</div>
+        <div class="prog" aria-hidden="true">${ST_CAPS.map(() => '<i><b></b></i>').join('')}</div>
       </div>
-      <div class="gw" id="gw">${GRADER_ROWS.map(([w, , why], i) => { const h = hookScore(w); return `<div class="gw-row stopin" style="--rd:${i * 60}ms" data-gw="${i}"><span class="sc">${h.score}</span><span class="ln">${esc(w)}</span><span class="why">${esc(why)}</span><button class="btn sm fix" data-gwfix="${i}">Fix it</button></div>`; }).join('')}
-        <div class="gw-foot"><button class="btn ghost sm" data-gwfix="all">${ic('hook', 'sm')} Fix all five</button><span>Scores come from the same grader you get in the app.</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="wrap lp-sec" id="day">
-    <div class="lp-h stopin">
-      <h2 class="display">One idea, before your coffee cools.</h2>
-      <p>How a post gets made in Hookworthy, from a thought on a walk to a slot your audience is awake for.</p>
-    </div>
-    <div class="day">
-      <div class="moment stopin">
-        <span class="t"><b>7:48</b>on a walk</span>
-        <div><h3>Catch it before it leaves.</h3><p>Record a voice memo, paste a link or drop a screenshot. Every capture becomes an idea with angles you could post today.</p></div>
-        <div class="crop">
-          <div class="mini memo">${ic('mic')}<span class="wave">${Array.from({ length: 34 }, (_, i) => `<i style="--h:${20 + Math.round(Math.abs(Math.sin(i * 1.7) * 70 + Math.sin(i * .6) * 12))}"></i>`).join('')}</span><span class="mono" style="font-size:12px;color:var(--text-3)">0:41</span></div>
-          ${angles.map((a, i) => `<div class="mini ${i === 0 ? 'sel' : ''}"><span class="k">${esc(a.k)}</span>${esc(a.t)}</div>`).join('')}
+      <div class="stage">
+        <div class="win" aria-hidden="true">
+          <div class="bar"><i></i><i></i><i></i><span>Hookworthy · Draft</span></div>
+          <div class="body">${pfAv(MAYA, 'avatar')}<div class="who">${esc(MAYA.n)} <span>@${esc(MAYA.h)}</span></div>
+            <div class="draft" id="st-draft"></div>
+            <div class="foot"><span class="score" hidden><b id="st-score">0</b>Hook</span><span class="why" id="st-why"></span><span class="sched" id="st-sched">${ic('clock', 'sm')} Tue 8:40 AM</span></div>
+          </div>
         </div>
-      </div>
-      <div class="moment stopin">
-        <span class="t"><b>8:02</b>first draft</span>
-        <div><h3>Tab through the blank page.</h3><p>Suggestions appear in grey, in your voice, and only when you pause. Take one with Tab or keep typing. Press Enter twice and it becomes a thread.</p></div>
-        <div class="crop"><div class="ghost">Nobody tells you the hardest part of a side project is month three.<span class="g"> Not the start. Not the launch. Month three.</span><kbd>Tab</kbd></div><div class="row" style="justify-content:space-between;color:var(--text-3);font-size:13px"><span>Learns from your last 200 posts</span><span class="st sch"><i></i>your voice</span></div></div>
-      </div>
-      <div class="moment stopin">
-        <span class="t"><b>8:09</b>sharpen</span>
-        <div><h3>Every change, word by word.</h3><p>Ask for punchier, shorter or a stronger hook. You see exactly what changed and keep only the words you like. Nothing is swapped behind your back.</p></div>
-        <div class="crop"><div class="dif">${diffMarkup('I think pricing is really important and you should charge more.', 'Charge more. Pricing is a signal, not a number.')}</div><div class="acts"><span class="b p">Keep</span><span class="b">Undo</span><span class="delta">hook 41 → <b>88</b></span></div></div>
-      </div>
-      <div class="moment stopin">
-        <span class="t"><b>8:14</b>queue</span>
-        <div><h3>Posted when your people are up.</h3><p>Hookworthy learns when your replies peak and lights up those slots. Drag posts between days. Auto-plug adds your link once a post takes off.</p></div>
-        <div class="crop"><div class="week">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => `<div class="${i === 1 ? 'best' : ''}">${d}${i === 1 ? ' 8:40' : ''}${[0, 3].includes(i) ? '<span class="q"></span>' : ''}${i === 1 ? '<span class="q me"></span><span class="dot"></span>' : ''}</div>`).join('')}</div><div class="row" style="justify-content:space-between;font-size:13.5px;color:var(--text-2)"><span>Tue 8:40 is when your replies peak</span><span class="st ok"><i></i>scheduled</span></div></div>
-      </div>
-      <div class="moment stopin">
-        <span class="t"><b>Thu</b>looking back</span>
-        <div><h3>Numbers that tell you why.</h3><p>Insights come as sentences, not spreadsheets, with a button to write the next one.</p></div>
-        <div class="crop"><p class="insight">Your contrarian hooks got 3.2× the replies this month.</p><div class="bars">${[['Contrarian', 3.2], ['Story', 2.1], ['List', 1.6], ['Question', 1.2]].map(([k, v]) => `<div><span>${k}</span><span class="tr"><i style="--w:${v / 3.2 * 100}%"></i></span><b>${v}×</b></div>`).join('')}</div><span style="font-size:12px;color:var(--text-3)">Example account. Yours fills in after your first ten posts.</span></div>
+        <div class="phonewrap">${phoneFeed('x', { you: MAYA, mine: { t: ST_FINAL, c: [0, 0, 0, 0], ago: '1m' }, others, w: 300 })}</div>
+        <div class="sttoast" aria-hidden="true"><span class="ti">${pfIc.like.replace('class="ic"', 'class="ic" style="width:16px;height:16px"')}</span><div><b>Your post is doing numbers</b><span>9,800 likes in the first hour</span></div></div>
       </div>
     </div>
   </section>
 
-  <section class="wrap lp-sec" id="who">
-    <div class="lp-h stopin">
-      <h2 class="display">For creators, by creators.</h2>
-      <p>Built by people who post every week, for the three ways creators actually work.</p>
+  <section class="hw-sec" id="void">
+    <div class="wrap hw-h c rv"><h2>We’ve all posted into the void.</h2><p>Three hours on a thread, four likes, one of them your mom. Every creator knows the feeling.</p></div>
+    <div class="wall rv" aria-label="Example posts about the struggle of posting">
+      <div class="row" style="--dur:80s">${wallRow(wallA, 'x')}</div>
+      <div class="row rev" style="--dur:95s">${wallRow(wallB, 'mix')}</div>
     </div>
-    <div class="who">
-      <div class="who-tabs" role="tablist" aria-label="Who it’s for">
-        ${[['solo', 'Solo creators', 'Writers, educators and makers growing an audience.', ['A voice profile trained on your own posts', 'Ideas from your niche every morning', 'A streak that counts scheduled posts']],
-          ['founder', 'Founders', 'Building in public between everything else.', ['Paste release notes, get three posts', 'A LinkedIn version that respects the fold', 'Slots picked from when your buyers reply']],
-          ['ghost', 'Ghostwriters and teams', 'Writing in more than one voice.', ['A separate voice for every client', 'Approvals before anything ships', 'One shared inbox for everyone’s ideas']]]
-          .map(([k, t, s, li], i) => `<button class="who-tab" role="tab" id="who-${k}" aria-selected="${i === 0}" aria-controls="who-stage" data-who="${k}"><b>${t}</b><span>${s}</span><ul>${li.map(x => `<li>${ic('check')}<span>${x}</span></li>`).join('')}</ul></button>`).join('')}
+    <p class="wall-foot rv">Hookworthy fixes the part you control: <span class="mk">the first line.</span></p>
+    <p class="fict">Illustrative posts. The creators are fictional.</p>
+  </section>
+
+  <section class="hw-sec wrap" id="four">
+    <div class="hw-h c rv"><h2>One post. Four feeds.</h2><p>Split for X, stitched for LinkedIn’s fold, trimmed for Bluesky. See it exactly the way your audience will, before it ships.</p></div>
+    <div class="four2 rv" id="four2"></div>
+    <div class="four-ctl"><div class="seg2" id="four-theme" role="tablist" aria-label="Theme"><button role="tab" aria-selected="true" data-ft="light">Light</button><button role="tab" aria-selected="false" data-ft="dark">Dark</button></div></div>
+  </section>
+
+  <section class="hw-sec wrap" id="fold">
+    <div class="fold">
+      <div class="ed rv"><div class="hw-h" style="margin-bottom:10px"><h2>Your hook lives above the fold.</h2><p>LinkedIn shows about three lines, then “…more”. Type below and watch exactly where your post gets cut.</p></div>
+        <label for="fold-t" class="lbl"><span>Your LinkedIn post</span><span id="fold-sc"></span></label>
+        <textarea id="fold-t" spellcheck="false">${esc(FOLD_DEFAULT)}</textarea>
+        <div class="fmeter"><span>Before the fold on mobile</span><b id="fold-n"></b></div>
       </div>
-      <div class="who-stage" id="who-stage" role="tabpanel" aria-live="polite"></div>
+      <div class="cards rv" style="--d:.1s"><div class="lbl"><span>How it looks in the feed</span><span>LinkedIn · light</span></div><div id="fold-card"></div></div>
     </div>
   </section>
 
-  <div class="lp-light force-light">
-    <section class="wrap" id="four">
-      <div class="four-h"><div class="lp-h stopin" style="margin:0"><h2 class="display">One post. Four feeds.</h2><p>Each platform gets its own version: split for X, stitched for LinkedIn’s “see more” fold, trimmed for Bluesky. Edit one without touching the others.</p></div>
-        <div class="seg" id="four-seg" role="tablist" aria-label="Post type"><button role="tab" aria-selected="true" data-four="thread">Thread</button><button role="tab" aria-selected="false" data-four="single">Single post</button></div></div>
-      <div class="four stopin" id="four-g"></div>
-    </section>
+  <div class="voice2" id="voice">
+    <div class="wrap">
+      <div class="hw-h rv"><h2>Sounds like you on a good day.</h2><p>Hookworthy learns from your own posts, not the internet’s. Slide the tone and watch the same idea change. Your never-say list stays never.</p></div>
+      <div class="grid">
+        <div class="ctl rv">
+          <div class="sl"><label for="hv-spice" class="ends"><span>Calm</span><span>Spicy</span></label><input type="range" id="hv-spice" min="0" max="100" value="60"></div>
+          <div class="sl"><label for="hv-pol" class="ends"><span>lowercase, loose</span><span>Polished</span></label><input type="range" id="hv-pol" min="0" max="100" value="30"></div>
+          <div class="chips">${['game-changer', 'delve', 'unlock', 'synergy', 'excited to announce'].map(w => `<span><s>${w}</s> never</span>`).join('')}</div>
+        </div>
+        <div class="rv" style="--d:.1s" id="hv-out"></div>
+      </div>
+    </div>
   </div>
 
-  <section class="wrap lp-sec" id="pricing">
-    <div class="lp-h stopin"><h2 class="display">Free to start. Paid when it pays.</h2><p>Pro is for posting most days. Studio is for writing in other people’s voices.</p>
-      <div class="bill"><div class="seg" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly</button></div><span class="lp-fine">Yearly saves 25%. Prices are placeholders in this demo.</span></div></div>
-    <div class="lp-plans stopin" id="plans">${plansHTML(true)}</div>
+  <section class="hw-sec wrap" id="week">
+    <div class="hw-h rv"><h2>Posted while you sleep. Timed for when they don’t.</h2><p>Your golden hours come from when your last 90 days of posts got replies. Drop a post anywhere and it snaps to the best slot.</p></div>
+    <div class="wk rv" id="wk"></div>
+    <div class="wk-legend"><span><i></i>When your people reply</span><span>Illustrative week</span></div>
   </section>
 
-  <section class="lp-final" id="final">
-    ${ghostFeedHTML()}
-    <div class="card stopin">
-      ${avatar({ name: 'You', hue: 0 })}
-      <h2 class="display">Your next post goes here.</h2>
-      <p>Bring one half-formed thought. Leave with a first line that stops the scroll, in your voice, scheduled for when your people are up.</p>
-      <div class="row"><a class="btn ink xl" href="#start">Start writing, free${ic('arrow')}</a><button class="btn xl ghost" data-act="palette">${kbd(MOD, 'K')}<span>Look around</span></button></div>
-    </div>
+  <section class="hw-sec wrap" id="creators">
+    <div class="hw-h rv"><h2>For creators, by creators.</h2><p>Built by people who post every week, for the three ways creators actually work.</p></div>
+    <div class="cr">${[[[0, 4, 7], 'Solo creators', 'Writers, educators and makers growing an audience.', ['A voice trained on your own posts', 'Ideas from your niche every morning', 'A streak that counts scheduled posts']],
+      [[17, 1, 11], 'Founders', 'Building in public between everything else.', ['Paste release notes, get three posts', 'A LinkedIn version that respects the fold', 'Slots picked from when buyers reply']],
+      [[16, 6, 12], 'Ghostwriters and teams', 'Writing in more than one voice.', ['A separate voice for every client', 'Approvals before anything ships', 'One shared inbox for everyone’s ideas']]]
+      .map(([ps, h, p, li], i) => `<div class="c rv" style="--d:${i * .08}s"><div class="pics">${ps.map(k => pfAv(PEOPLE[k])).join('')}</div><h3>${h}</h3><p>${p}</p><ul>${li.map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('')}</div>
   </section>
-  <footer class="foot"><a class="logo" href="#home">${LOGO}</a><nav><a href="#write">App</a><a href="#brand">Brand</a><a href="#upgrade">Pricing</a><a href="#home" data-act="shortcuts">Shortcuts</a></nav><span>© ${new Date().getFullYear()} Hookworthy. For creators, by creators.</span></footer>
+
+  <section class="hw-sec wrap" id="pricing">
+    <div class="hw-h rv"><h2>Free to start. Paid when it pays.</h2><p>Pro is for posting most days. Studio is for writing in other people’s voices. Prices are placeholders in this demo.</p>
+      <div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly, save 25%</button></div></div></div>
+    <div class="pl-grid rv" id="plans">${plansHTML(true)}</div>
+  </section>
+
+  <section class="fin" id="final">
+    <div class="wrap"><h2 class="rv">Your next post could <span class="mk">stop</span> the feed.</h2><p class="rv">Bring one half-formed thought. Leave with a first line people stop for, in your voice, scheduled for when they’re up.</p>
+      <div class="cta rv"><a class="hbtn lg" href="#start">Start writing, free ${ic('arrow', 'sm')}</a><button class="ghost" data-act="palette"><span class="play">${ic('search', 'sm')}</span>Look around first</button></div></div>
+    <div class="c3d" id="ring2" aria-hidden="true">${ringHTML([...HOOK_POSTS].reverse())}</div>
+  </section>
+  <footer class="hw-foot"><a class="logo" href="#home">${LOGO}</a><nav><a href="#write">App</a><a href="#brand">Brand</a><a href="#upgrade">Pricing</a><a href="#home" data-act="shortcuts">Shortcuts</a></nav><span>© ${new Date().getFullYear()} Hookworthy. For creators, by creators. Personas shown are fictional.</span></footer>
 </div>`;
-  initLanding();
+  initHome();
 };
 
-function initLanding() {
-  const nav = $('#lnav'); const onScroll = () => nav && nav.classList.toggle('scrolled', scrollY > 8);
-  addEventListener('scroll', onScroll, { passive: true }); onDispose(() => removeEventListener('scroll', onScroll));
-  armReveals($('#root')); onDispose(() => REVEAL_IO && REVEAL_IO.disconnect());
+function initHome() {
+  const root = $('#root');
+  const nav = $('#hwnav'); const dark = [$('#story'), $('#voice')];
+  const onScroll = () => { nav.classList.toggle('scrolled', scrollY > 8); const y = 30; nav.classList.toggle('on-dark', dark.some(d => { const r = d.getBoundingClientRect(); return r.top <= y && r.bottom > y; })); };
+  addEventListener('scroll', onScroll, { passive: true }); onDispose(() => removeEventListener('scroll', onScroll)); onScroll();
   $$('[data-scroll]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = document.getElementById(a.dataset.scroll); t && t.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' }); }));
-  $('#hero-form').addEventListener('submit', e => { e.preventDefault(); const v = $('#hero-h').value.trim().replace(/^@/, ''); ONB.handle = v; ONB.auto = /^[A-Za-z0-9_.]{2,30}$/.test(v); go('start'); });
-  $('#hero-h').addEventListener('input', e => { const v = e.target.value.trim().replace(/^@/, ''); $('#fs-handle').textContent = `@${v || 'you'} · now`; });
-  syncSeg($('#bill-seg')); syncSeg($('#four-seg'));
-  $('#bill-seg').addEventListener('click', e => { const b = e.target.closest('[data-bill]'); if (!b) return; $$('[data-bill]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#bill-seg')); $('#plans').innerHTML = plansHTML(b.dataset.bill === 'y'); });
-
-  /* ---------- the feed ---------- */
-  const fs = $('#fs'), track = $('#fs-track'), me = $('#fs-me'), ta = $('#fs-t'), slots = $$('.fs-slot', track), grade = $('#lp-grade');
-  let y = 0, v = 0, target = 1600, mode = 'run', brake = null, last = 0, lastTxt = 0, raf = 0, visible = true, loopL = 0, slotTop = 0;
-  const measure = () => {
-    slots.forEach(s => s.style.height = me.offsetHeight + 'px');
-    loopL = slots[1].offsetTop - slots[0].offsetTop; slotTop = slots[0].offsetTop;
+  armReveals(root); onDispose(() => REVEAL_IO && REVEAL_IO.disconnect());
+  onDispose(ringInit($('#ring')));
+  onDispose(ringInit($('#ring2'), { speed: 9 }));
+  onDispose(storyInit(root));
+  /* four feeds */
+  const drawFour = theme => { const d = theme === 'dark'; $('#four2').innerHTML = [['x', 'X', 'p-x', '280 per post'], ['threads', 'Threads', 'p-threads', '500 per post'], ['linkedin', 'LinkedIn', 'p-li', 'cut at …more'], ['bsky', 'Bluesky', 'p-bsky', '300 per post']].map(([k, n, icn, lim]) => `<div class="ph">${phoneFeed(k, { dark: d, you: MAYA, mine: k === 'linkedin' ? FOUR_POST : { ...FOUR_POST, t: k === 'bsky' ? 'Double your price.\n\nSignups went up 31% when we did. Customers value what costs more.' : 'Double your price.\n\nSignups went up 31% when we did. Here’s the email we sent, word for word ↓' }, others: [HOOK_POSTS[k === "x" ? 5 : 11], HOOK_POSTS[3]], w: 270 })}<span><svg viewBox="0 0 24 24"><use href="#${icn}"/></svg>${n} · ${lim}</span></div>`).join(''); };
+  drawFour('light');
+  $('#four-theme').addEventListener('click', e => { const b = e.target.closest('[data-ft]'); if (!b) return; $$('[data-ft]').forEach(x => x.setAttribute('aria-selected', x === b)); drawFour(b.dataset.ft); });
+  /* the fold */
+  const ft = $('#fold-t');
+  const drawFold = () => {
+    const t = ft.value; const lines = t.split('\n'); let shown = '', ln = 0;
+    for (const l of lines) { const wraps = Math.max(1, Math.ceil(l.length / 46)); if (ln + wraps > 3) { shown += l.slice(0, Math.max(0, (3 - ln) * 46)); break; } shown += l + '\n'; ln += wraps; if (ln >= 3) break; }
+    const n = [...shown.trim()].length; $('#fold-n').textContent = `${n} characters`;
+    const h = hookScore(t); $('#fold-sc').textContent = `Hook ${h.score}`;
+    $('#fold-card').innerHTML = liPost({ t: t || ' ', c: [86, 12, 1284, 0], ago: '2h' }, { you: MAYA }).replace('<article', '<article style="max-width:420px"');
   };
-  const parkY = () => { const pinTop = fs.clientHeight / 2 - me.offsetHeight / 2; return ((slotTop - pinTop) % loopL + loopL) % loopL; };
-  const paintTrack = () => { track.style.transform = `translate3d(0,${-y}px,0)`; track.style.filter = v > 30 ? `blur(${Math.min(7, v / 240).toFixed(2)}px)` : 'none'; };
-  const stateText = () => { if (!fs.isConnected) return; $('#g-speed').style.width = Math.min(100, v / 17) + '%'; $('#g-state').textContent = mode === 'parked' ? 'Stopped. They’re reading it.' : mode === 'brake' ? 'Slowing down…' : `Scrolled past at ${Math.round(v).toLocaleString()} px/s`; };
-  const tick = now => {
-    if (!fs.isConnected) { raf = 0; return; }
-    const dt = Math.min(.05, (now - (last || now)) / 1000); last = now;
-    if (mode === 'run') { v += (target - v) * Math.min(1, dt * 2.2); y += v * dt; }
-    else if (mode === 'brake') { brake.t += dt; const p = Math.min(1, brake.t / brake.T); y = brake.y0 + brake.d * (1 - Math.pow(1 - p, 3)); v = (3 * brake.d / brake.T) * Math.pow(1 - p, 2); if (p >= 1) { mode = 'parked'; v = 0; setStopped(true); } }
-    if (loopL) y = ((y % loopL) + loopL) % loopL;
-    paintTrack(); if (now - lastTxt > 120) { lastTxt = now; stateText(); }
-    raf = mode === 'parked' || !visible ? 0 : requestAnimationFrame(tick);
-  };
-  const start = () => { if (!raf && visible && mode !== 'parked') { last = 0; raf = requestAnimationFrame(tick); } };
-  const setStopped = on => { me.classList.toggle('stopped', on); grade.classList.toggle('stopped', on); stateText(); };
-  const toPark = () => {
-    if (mode === 'parked' || mode === 'brake') return;
-    if (REDUCED) { y = parkY(); v = 0; mode = 'parked'; paintTrack(); setStopped(true); return; }
-    const goal = parkY(); let d = ((goal - y) % loopL + loopL) % loopL; const vv = Math.max(v, 400); if (d < vv * .45) d += loopL;
-    brake = { y0: y, d, T: Math.min(2.6, 3 * d / vv), t: 0 }; mode = 'brake'; start();
-  };
-  const toRun = spd => { target = spd; if (mode === 'parked' || mode === 'brake') { if (mode === 'parked') v = 0; mode = 'run'; setStopped(false); } if (REDUCED) return; start(); };
-
-  const grow = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
-  const paint = () => {
-    if (!ta.isConnected) return;
-    grow(); measure();
-    const h = hookScore(ta.value); $('#fs-score span').textContent = h.score; $('#g-n').textContent = h.score; $('#g-why').textContent = h.reason; $('#m-why').textContent = h.reason;
-    Object.keys(PART_NAMES).forEach(k => $(`[data-mp="${k}"]`).style.setProperty('--mv', h.parts[k] + '%'));
-    const line = ta.value.trim(); const body = !line ? '' : (line === HERO_WEAK || line === HERO_STRONG) ? 'Signups went up 31% when we did. Customers value what costs more. Pricing is a signal, not a number.' : expandIdea(line, 'Story').slice(1, 4).join(' ');
-    $('#fs-rest').innerHTML = body ? `${esc(body.length > 118 ? body.slice(0, body.lastIndexOf(' ', 112)) + '…' : body)} <span class="more">show more</span>` : '<span class="more">The rest of your post goes here.</span>';
-    Object.keys(PART_NAMES).forEach(k => { $(`[data-p="${k}"]`).style.setProperty('--v', h.parts[k]); $(`[data-v="${k}"]`).textContent = h.parts[k]; });
-    const probe = document.createElement('span'); probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font:' + getComputedStyle(ta).font; probe.textContent = ta.value.split('\n')[0] || ' '; document.body.appendChild(probe); me.style.setProperty('--uw', Math.min(ta.clientWidth, probe.offsetWidth) + 'px'); probe.remove();
-    if (h.score >= STOP_AT) toPark(); else if (REDUCED) { mode = 'run'; v = 0; setStopped(false); stateText(); } else toRun(h.score < 50 ? 1700 : 950);
-    if (mode === 'parked') { y = parkY(); paintTrack(); }
-  };
-  const setLine = (text, animate = true) => {
-    if (!animate || REDUCED) { ta.value = text; paint(); return; }
-    ta.classList.add('swap'); setTimeout(() => { ta.value = text; ta.classList.remove('swap'); paint(); }, 240);
-  };
-  ta.addEventListener('input', () => { stopAuto(); paint(); });
-  ta.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
-  $('.tools', me).addEventListener('click', e => {
-    const b = e.target.closest('[data-hero]'); if (!b) return; stopAuto(); const k = b.dataset.hero;
-    if (k === 'reset') { setLine(HERO_WEAK); return; }
-    if (!ta.value.trim()) { ta.focus(); toast('Type a first line first. Anything.', { icon: 'write' }); return; }
-    riffNonce++; const before = ta.value; let after = AI[k](before).split('\n')[0];
-    if (before.trim() === HERO_WEAK) after = HERO_STRONG;
-    if (after === before || hookScore(after).score < hookScore(before).score) { toast('That line is already tight. Try your own.', { icon: 'check' }); return; }
-    setLine(after);
-  });
-  const io = new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) start(); }, { threshold: 0 });
-  io.observe(fs);
-  const onVis = () => { visible = !document.hidden; if (visible) start(); };
-  document.addEventListener('visibilitychange', onVis);
-  const onResize = () => { measure(); if (mode === 'parked') { y = parkY(); paintTrack(); } };
-  addEventListener('resize', onResize);
-  onDispose(() => { cancelAnimationFrame(raf); io.disconnect(); document.removeEventListener('visibilitychange', onVis); removeEventListener('resize', onResize); });
-  paint(); start();
-  /* autoplay once: the weak line scrolls past, then gets rewritten and the feed stops */
-  let auto = REDUCED ? null : setTimeout(() => { auto = null; setLine(HERO_STRONG); }, 2600);
-  function stopAuto() { if (auto) { clearTimeout(auto); auto = null; } }
-  onDispose(stopAuto);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if ($('#fs-t')) paint(); });
-
-  /* ---------- the grader wall ---------- */
-  const fixRow = (i, delay = 0) => setTimeout(() => {
-    const row = $(`[data-gw="${i}"]`); if (!row || row.classList.contains('good')) return;
-    const [w, s, , why] = GRADER_ROWS[i]; const h = hookScore(s);
-    $('.ln', row).innerHTML = diffMarkup(w, s); $('.why', row).textContent = why;
-    const sc = $('.sc', row); let n = +sc.textContent; const t0 = performance.now(), from = n;
-    const count = t => { const p = Math.min(1, (t - t0) / 700); sc.textContent = Math.round(from + (h.score - from) * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(count); };
-    requestAnimationFrame(count); row.classList.add('good');
-    const btn = $('.fix', row); btn.textContent = 'Undo'; btn.dataset.gwfix = 'u' + i;
-    setTimeout(() => { if (row.classList.contains('good')) $('.ln', row).textContent = s; }, 2200);
-  }, delay);
-  const unfix = i => { const row = $(`[data-gw="${i}"]`); const [w, , why] = GRADER_ROWS[i]; const h = hookScore(w); row.classList.remove('good'); $('.ln', row).textContent = w; $('.why', row).textContent = why; $('.sc', row).textContent = h.score; const btn = $('.fix', row); btn.textContent = 'Fix it'; btn.dataset.gwfix = i; };
-  $('#gw').addEventListener('click', e => {
-    const b = e.target.closest('[data-gwfix]'); const row = e.target.closest('.gw-row');
-    const k = b ? b.dataset.gwfix : row ? (row.classList.contains('good') ? 'u' + row.dataset.gw : row.dataset.gw) : null; if (k == null) return;
-    if (k === 'all') { GRADER_ROWS.forEach((_, i) => fixRow(i, i * 140)); return; }
-    if (k[0] === 'u') unfix(+k.slice(1)); else fixRow(+k);
-  });
-
-  /* ---------- who it's for ---------- */
-  const stage = $('#who-stage');
-  const WHO = {
-    solo: () => `<div class="crop"><div class="row" style="justify-content:space-between"><b style="font-weight:600">Your voice</b><span class="st sch"><i></i>trained on 214 posts</span></div>
-      <div class="slider"><label for="who-spice" class="ends"><span>Calm</span><span>Spicy</span></label><input type="range" id="who-spice" min="0" max="100" value="60"></div>
-      <div class="mini" id="who-sample" style="font-size:16px;min-height:84px;white-space:pre-wrap"></div>
-      <div class="row" style="flex-wrap:wrap;gap:6px">${['game-changer', 'delve', 'synergy', 'unlock'].map(w => `<span class="st"><i></i>never say “${w}”</span>`).join('')}</div></div>`,
-    founder: () => `<div class="crop"><div class="chg"><span>release notes · v2.4</span><b>+ Pricing page now has one plan</b><b>+ Trials start without a card</b><span>− Removed the “compare plans” table</span></div>
-      ${['We deleted our pricing table. Trials without a card went live the same day.', 'Three plans was a hedge. We shipped one. Here’s what changed in week one:', 'Small release, big lesson: every option is a decision you ask a buyer to make.'].map((t, i) => `<div class="mini ${i === 1 ? 'sel' : ''}"><span class="k">${['Story', 'Contrarian', 'Lesson'][i]} · hook ${hookScore(t).score}</span>${esc(t)}</div>`).join('')}</div>`,
-    ghost: () => `<div class="crop"><div class="ws">${[['You', 'personal', 210, false], ['Ledgerly', 'client · Priya’s voice', 20, true], ['Northwind', 'client · company voice', 150, false]].map(([n, s, h, on]) => `<div class="ws-row ${on ? 'on' : ''}">${avatar({ name: n, hue: h })}<span>${n}<small>${s}</small></span>${on ? kbd(MOD, '2') : ''}</div>`).join('')}</div>
-      <div class="ql">${[['We hired 9 people last year. 3 were mistakes.', 'need', 'Needs approval'], ['Stop pricing like a coward. Here’s the math:', 'ok', 'Approved'], ['Your landing page has 1 job. Most do 4.', 'sch', 'Tue 8:40']].map(([t, c, l]) => `<div><span>${esc(t)}</span><span class="st ${c}"><i></i>${l}</span></div>`).join('')}</div>
-      <span style="font-size:12px;color:var(--text-3)">Example workspace. Names are placeholders.</span></div>`
-  };
-  const showWho = k => {
-    stage.innerHTML = WHO[k](); stage.setAttribute('aria-labelledby', 'who-' + k);
-    const sp = $('#who-spice', stage); if (sp) { const draw = () => { $('#who-sample').textContent = voiceSample(+sp.value, 70); }; sp.addEventListener('input', draw); draw(); }
-  };
-  $('.who-tabs').addEventListener('click', e => { const b = e.target.closest('[data-who]'); if (!b) return; $$('[data-who]').forEach(x => x.setAttribute('aria-selected', x === b)); showWho(b.dataset.who); });
-  $('.who-tabs').addEventListener('keydown', e => { if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return; e.preventDefault(); const tabs = $$('[data-who]'); const i = tabs.indexOf(document.activeElement); const n = tabs[(i + (e.key === 'ArrowDown' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); n.click(); });
-  showWho('solo');
-
-  /* ---------- one post, four feeds ---------- */
-  const FOUR = {
-    thread: ['Double your price.', 'Signups went up 31% when we did. Customers value what costs more.', 'Pricing is a signal, not a number. Here’s how we tested it:'],
-    single: ['Double your price. Signups went up 31% when we did. Pricing is a signal, not a number.']
-  };
-  const drawFour = kind => {
-    const saved = S.draft, savedUser = S.user, savedMore = UI.liMore;
-    S.user = { name: 'You', handle: ($('#hero-h').value.trim().replace(/^@/, '') || 'you'), hue: 0, niche: 'Founder' };
-    S.draft = { tweets: FOUR[kind].map(t => ({ text: t, media: [], poll: null })), li: null }; UI.liMore = false;
-    $('#four-g').innerHTML = ['x', 'threads', 'linkedin', 'bsky'].map(k => pvCard(k, false).replace(/<div class="pv-edit"[\s\S]*<\/div><\/div>$/, '</div>')).join('');
-    S.draft = saved; S.user = savedUser; UI.liMore = savedMore;
-  };
-  drawFour('thread');
-  $('#four-seg').addEventListener('click', e => { const b = e.target.closest('[data-four]'); if (!b) return; $$('[data-four]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#four-seg')); drawFour(b.dataset.four); });
-  $('#four-g').addEventListener('click', e => { if (e.target.closest('[data-cact="limore"]')) toast('That’s LinkedIn’s fold. Your hook has to earn the click.', { icon: 'hook' }); });
+  ft.addEventListener('input', drawFold); drawFold();
+  /* voice */
+  const hv = () => { const s = +$('#hv-spice').value, pol = +$('#hv-pol').value; $('#hv-out').innerHTML = xPost({ t: voiceSample(s, pol, 60), c: [64, 210, 2900, 188000], ago: '2h' }, { dark: true, you: MAYA }); };
+  $('#hv-spice').addEventListener('input', hv); $('#hv-pol').addEventListener('input', hv); hv();
+  /* week */
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], times = ['8:40', '12:15', '17:30', '20:45'];
+  const heat = (d, t) => clamp((t === 0 ? .75 : t === 1 ? .5 : t === 2 ? .45 : .2) + (d === 1 && t === 0 ? .25 : 0) + (d === 3 && t === 1 ? .3 : 0) + (d >= 5 ? -.25 : 0), 0, 1);
+  const q = { '1-0': 'Double your price. Signups went up 31%.', '0-2': 'Stop writing “Excited to announce.”', '3-1': 'I deleted 1,400 lines of code today.', '2-0': 'My podcast had 11 listeners for 8 months.', '4-2': 'Your landing page has 1 job.' };
+  const wk = $('#wk'); const d0 = new Date(); const mon = new Date(d0.getTime() - ((d0.getDay() + 6) % 7) * DAY);
+  wk.innerHTML = `<div class="days"><span></span>${days.map((d, i) => `<div class="dh">${d}<b>${new Date(mon.getTime() + i * DAY).getDate()}</b></div>`).join('')}${times.map((t, ti) => `<div class="tl">${t}</div>${days.map((_, di) => { const k = `${di}-${ti}`; return `<div class="wslot"><span class="wheat" style="--h:${heat(di, ti).toFixed(2)}"></span>${q[k] ? `<span class="qc" style="--dd:${(Object.keys(q).indexOf(k) * .12).toFixed(2)}s">${esc(q[k])}</span>` : ''}${di === 1 && ti === 0 ? '<span class="best">replies peak</span>' : ''}</div>`; }).join('')}`).join('')}</div>`;
+  if (REDUCED || !('IntersectionObserver' in window)) wk.classList.add('in'); else { const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { wk.classList.add('in'); io.disconnect(); } }, { threshold: .35 }); io.observe(wk); onDispose(() => io.disconnect()); }
+  /* billing */
+  $('#bill-seg').addEventListener('click', e => { const b = e.target.closest('[data-bill]'); if (!b) return; $$('#bill-seg [data-bill]').forEach(x => x.setAttribute('aria-selected', x === b)); $('#plans').innerHTML = plansHTML(b.dataset.bill === 'y'); });
 }
 
 /* ==========================================================================
@@ -3626,7 +3888,7 @@ ROUTES.upgrade = () => {
   mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited riffs in your voice, auto-plugs that ride the wave, and insights that tell you what to write next.</p>
     ${n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free riffs today${h ? ` · your current hook scores ${h}` : ''}</p>` : ''}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
-    <div class="plans" id="up-plans">${plansHTML(true)}</div>
+    <div class="pl-grid" id="up-plans" style="margin-top:32px">${plansHTML(true)}</div>
     <div class="faq"><h2 class="h2" style="margin-bottom:12px">Questions, answered plainly</h2>${[['Is the free plan actually free?', 'Yes. Five riffs a day, hook scores on everything, unlimited drafts and ideas. No trial clock, no card.'], ['Does the AI sound like ChatGPT?', 'No. It learns from your posts, follows your tone sliders, and never uses words you’ve banned. If it writes something you wouldn’t, that’s a bug and we want to hear about it.'], ['Can I cancel anytime?', 'Two clicks, no call, no guilt trip. Your drafts and ideas stay yours on the free plan.'], ['Which platforms?', 'X, Threads, LinkedIn and Bluesky today. Each gets its own preview and its own version when you need one.'], ['Do you post without asking?', 'Never. Auto-plug and auto-repost only run on posts you scheduled, and you can switch them off per post.']].map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
     <p class="faint" style="text-align:center;margin-top:40px;font-size:13px">Cancel in two clicks. We’ll even say thanks.</p></div>`);
   syncSeg($('#up-bill'));
