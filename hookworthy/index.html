@@ -3042,9 +3042,10 @@ const PEOPLE = [
 const AV_N = 18, PH_N = 6;
 const PHOTO = { desk: 0, whiteboard: 1, run: 2, cafe: 3, team: 4, notes: 5 };
 const sprY = (i, n) => `${(i / (n - 1) * 100).toFixed(4)}%`;
-const SPRITES = { av: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/c1690549-793f-4b50-a3f1-19e873c4626c.jpg', ph: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/a814989f-cac9-40ac-9293-0314cc05ec44.jpg' };
-/* if a sheet can't load (offline, blocked), photos collapse and portraits fall back to initials: never an empty slab */
-Object.entries(SPRITES).forEach(([k, u]) => { document.documentElement.style.setProperty(`--spr-${k}`, `url("${u}")`); const im = new Image(); im.onerror = () => document.documentElement.classList.add('no-spr'); im.src = u; });
+/* local sheets ship with the app (assets/people/); the CDN copy is only a fallback */
+const SPRITES = { av: ['assets/people/avatars.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/c1690549-793f-4b50-a3f1-19e873c4626c.jpg'], ph: ['assets/people/photos.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/a814989f-cac9-40ac-9293-0314cc05ec44.jpg'] };
+/* if no copy loads (offline, blocked), photos collapse and portraits fall back to initials: never an empty slab */
+Object.entries(SPRITES).forEach(([k, urls]) => { const tryAt = i => { if (i >= urls.length) { document.documentElement.classList.add('no-spr'); return; } const im = new Image(); im.onload = () => document.documentElement.style.setProperty(`--spr-${k}`, `url("${urls[i]}")`); im.onerror = () => tryAt(i + 1); im.src = urls[i]; }; tryAt(0); });
 
 /* posts that stop the scroll: shown in the hero carousel */
 const HOOK_POSTS = [
