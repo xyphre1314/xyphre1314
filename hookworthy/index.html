@@ -308,10 +308,11 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
    LOGO
    ========================================================================== */
 .logo{ display:inline-flex; align-items:center; gap:8px; color:var(--text-1); }
-.logo svg.mark{ width:24px; height:24px; overflow:visible; }
+.logo svg.mark{ width:26px; height:26px; overflow:visible; }
 .logo .word{ font:650 20px/1 var(--font-display); letter-spacing:-.05em; transform:translateY(-1px); }
 .mark .sw{ fill:var(--marker); transform-origin:3px 16px; transform-box:view-box; }
-.mark .ct{ fill:currentColor; }
+.mark .tile{ fill:#0C0C0E; } .mark .ct{ fill:#F5F5F3; }
+:root[data-theme="dark"] .logo .mark .tile, .hw-nav.on-dark .logo .mark .tile{ stroke:rgba(255,255,255,.14); stroke-width:1.5px; }
 /* the mark draws itself once on load, and again on hover: swipe, then two caret blinks */
 .logo .mark .sw{ animation:swipe .7s .15s var(--ease-out) both; }
 .logo .mark .ct{ animation:caret 1.1s .75s steps(1) 2 both; }
@@ -440,6 +441,7 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 
 .editor-col{ min-width:0; position:relative; overflow-x:clip; }
 .editor{ max-width:640px; margin:0 auto; padding:40px 32px 50vh; position:relative; }
+@media (max-width:760px){ .editor{ display:flex; flex-direction:column; } .editor .starters{ order:3; margin-top:28px; } .editor .add-tw{ order:2; } .c-top .plats-l{ display:none; } }
 .glow{ display:none; }
 
 .starters{ position:relative; z-index:1; margin-bottom:32px; }
@@ -496,7 +498,7 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 .sharpen{ position:absolute; z-index:40; display:flex; align-items:center; gap:2px; padding:4px; border-radius:99px; background:var(--text-1); color:var(--bg); box-shadow:0 12px 30px -10px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.06); white-space:nowrap; font:500 var(--t-13)/1 var(--font-ui); opacity:0; transform:translateY(6px) scale(.97); transform-origin:50% 100%; transition:opacity .16s var(--ease-out),transform .28s var(--spring-snap); pointer-events:none; }
 .sharpen.on{ opacity:1; transform:none; pointer-events:auto; }
 .sharpen .sh-t{ display:inline-flex; align-items:center; gap:6px; padding:0 8px 0 6px; font-weight:600; }
-.sharpen .sh-t .mark{ width:16px; height:16px; } .sharpen .sh-t .mark .ct{ fill:currentColor; }
+.sharpen .sh-t .mark{ width:18px; height:18px; } .sharpen .sh-t .mark .tile{ fill:transparent; }
 .sharpen button{ height:28px; padding:0 10px; border-radius:99px; color:inherit; opacity:.78; transition:background var(--d-micro),opacity var(--d-micro); }
 .sharpen button:hover, .sharpen button:focus-visible{ opacity:1; background:color-mix(in srgb,var(--bg) 14%,transparent); outline:none; }
 .sharpen .n{ min-width:40px; text-align:center; font:500 var(--t-12)/1 var(--font-mono); font-variant-numeric:tabular-nums; opacity:.7; }
@@ -672,7 +674,8 @@ body.typing .preview{ opacity:.7; }
 .trends{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:16px; }
 .trend{ display:grid; gap:4px; align-content:start; padding:14px 16px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); }
 .trend b{ font-weight:600; letter-spacing:-.01em; } .trend .d{ font:600 var(--t-13)/1 var(--font-mono); color:var(--success); } .trend small{ color:var(--text-3); font-size:var(--t-12); }
-.trend.early{ box-shadow:0 0 0 1.5px var(--text-1); background:linear-gradient(180deg,color-mix(in srgb,var(--marker) 16%,var(--surface)),var(--surface) 60%); }
+.trend.early{ box-shadow:0 0 0 1.5px var(--text-1); }
+.trend.early b{ background:linear-gradient(transparent 60%,var(--marker) 60%,var(--marker) 92%,transparent 92%); justify-self:start; }
 .trend .btn{ justify-self:start; margin-top:8px; }
 .radar-list{ display:grid; gap:14px; margin-top:18px; }
 .rp{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); border-radius:18px; background:var(--surface); box-shadow:0 0 0 1px var(--border); overflow:hidden; animation:rise .5s var(--d,0s) var(--ease-out) both; }
@@ -732,19 +735,19 @@ body.typing .preview{ opacity:.7; }
 .hooklib{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
 .hk{ padding:16px; display:grid; gap:14px; align-content:space-between; }
 .hk .t{ font:600 var(--t-20)/1.3 var(--font-display); letter-spacing:-.01em; }
-.hk .t i{ font-style:italic; color:var(--accent-text); }
+.hk .t i{ font-style:normal; background:var(--marker-soft); border-radius:3px; padding:0 2px; }
 .hk .f{ display:flex; align-items:center; justify-content:space-between; }
 
 .cal-h{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
 .cal-h .range{ font:600 var(--t-15)/1 var(--font-ui); letter-spacing:-.01em; margin-left:8px; }
 .cal-wrap{ display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:18px; align-items:start; }
-.cal{ display:grid; grid-template-columns:58px repeat(7,minmax(0,1fr)); border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); overflow:hidden; }
+.cal{ display:grid; grid-template-columns:70px repeat(7,minmax(0,1fr)); border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); overflow:hidden; }
 .cal .dh{ padding:12px 10px 10px; border-bottom:1px solid var(--border); border-left:1px solid var(--border); display:grid; gap:3px; }
 .cal .dh:first-child{ border-left:0; }
 .cal .dh .dn{ font:500 var(--t-12)/1 var(--font-ui); color:var(--text-3); }
 .cal .dh .dd{ font:600 var(--t-24)/1 var(--font-display); letter-spacing:-.02em; font-variant-numeric:lining-nums; }
 .cal .dh.today .dd,.cal .dh.today .dn{ color:var(--accent-text); }
-.cal .tl{ padding:10px 8px; font:500 var(--t-11)/1 var(--font-mono); color:var(--text-3); text-align:right; border-top:1px solid var(--border); }
+.cal .tl{ white-space:nowrap; padding:10px 8px; font:500 var(--t-11)/1 var(--font-mono); color:var(--text-3); text-align:right; border-top:1px solid var(--border); }
 .slot{ position:relative; min-height:92px; padding:6px; border-top:1px solid var(--border); border-left:1px solid var(--border); transition:background var(--d-micro); }
 .slot.past{ background:color-mix(in srgb,var(--surface-2) 55%,transparent); }
 .slot.best{ padding-top:16px; }
@@ -769,9 +772,9 @@ body.typing .preview{ opacity:.7; }
 .setting{ display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center; }
 .setting small{ grid-column:1; color:var(--text-3); font-size:var(--t-12); line-height:1.4; }
 .upnext{ display:grid; gap:2px; }
-.upnext button{ display:grid; grid-template-columns:58px 1fr; gap:10px; padding:8px; border-radius:8px; text-align:left; font-size:var(--t-13); transition:background var(--d-micro); }
+.upnext button{ display:grid; grid-template-columns:auto 1fr; gap:10px; padding:8px; border-radius:8px; text-align:left; font-size:var(--t-13); transition:background var(--d-micro); }
 .upnext button:hover{ background:var(--surface-2); }
-.upnext .when{ font:500 var(--t-11)/1.35 var(--font-mono); color:var(--text-3); white-space:nowrap; }
+.upnext .when{ font:500 var(--t-12)/1.35 var(--font-ui); font-variant-numeric:tabular-nums; color:var(--text-3); white-space:nowrap; min-width:64px; }
 .upnext p{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .agenda{ display:none; }
 .ag-day{ display:grid; gap:8px; padding:14px 0; border-bottom:1px solid var(--border); }
@@ -1111,6 +1114,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   --f-disp:'Geist','Geist Fallback',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; --f-hand:'Caveat','Bradley Hand',cursive;
   --ease-o:cubic-bezier(.22,1,.36,1); --ease-io:cubic-bezier(.65,0,.35,1);
   background:var(--c-bg); color:var(--c-ink); font:400 16px/1.55 var(--f-disp); overflow-x:clip; -webkit-font-smoothing:antialiased; }
+.hw p, .hw h2, .hw h3{ text-wrap:pretty; }
 .hw ::selection{ background:var(--c-mark); color:var(--c-ink); }
 .hw .wrap{ max-width:1200px; margin:0 auto; padding-inline:clamp(16px,4vw,40px); }
 .hw h1, .hw h2, .hw h3{ margin:0; font-family:var(--f-disp); font-weight:600; letter-spacing:-.045em; text-wrap:balance; }
@@ -1258,24 +1262,28 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .dm-bar i{ width:11px; height:11px; border-radius:50%; background:#E2E2DE; }
 .dm-bar span{ margin:0 auto; font-size:12.5px; color:var(--c-3); }
 .dm-snd{ width:28px; height:28px; border-radius:99px; display:grid; place-items:center; color:var(--c-3); } .dm-snd .icon{ width:15px; height:15px; }
-.dm-win.snd .dm-snd{ color:var(--c-ink); background:var(--c-mark); }
-.dm-body{ display:grid; grid-template-columns:190px minmax(0,1fr); height:540px; }
-.dm-side{ display:flex; flex-direction:column; gap:3px; padding:14px 10px; background:#F7F7F5; border-right:1px solid var(--c-line); }
-.dm-side .logo{ padding:0 6px 12px; } .dm-side .logo .word{ font-size:17px; } .dm-side .logo svg.mark{ width:20px; height:20px; }
-.dm-new{ display:flex; align-items:center; justify-content:center; gap:6px; height:32px; border-radius:99px; background:var(--c-ink); color:#fff; font-weight:600; font-size:13px; margin-bottom:8px; }
-.dm-nav{ display:flex; align-items:center; gap:9px; height:30px; padding:0 9px; border-radius:7px; color:var(--c-2); font-size:13px; font-weight:500; transition:background .3s,color .3s; }
-.dm-nav .icon{ width:16px; height:16px; } .dm-nav.on{ background:#ECECE8; color:var(--c-ink); }
+.dm-win.snd .dm-snd{ color:#fff; background:var(--c-ink); }
+.dm-body{ display:grid; grid-template-columns:200px minmax(0,1fr) 290px; height:560px; background:var(--panel); }
+.dm-side{ display:flex; flex-direction:column; gap:2px; padding:12px 10px 10px; background:var(--bg); border-right:1px solid var(--border); }
+.dm-side .logo{ padding:2px 6px 12px; } .dm-side .logo .word{ font-size:18px; } .dm-side .logo svg.mark{ width:21px; height:21px; }
+.dm-side .newpost{ width:100%; --bh:34px; margin:0 0 8px; }
+.dm-side .searchbtn{ margin-bottom:10px; } .dm-side .spacer{ flex:1; } .dm-side .me{ margin:0; } .dm-side .me .av{ width:28px; height:28px; font-size:11px; }
+.dm-side .nav a{ cursor:default; }
+.dm-top{ position:relative; }
+.dm-top .plats-l, .c-top .plats-l{ font-size:var(--t-12); color:var(--text-3); margin-right:2px; }
+.dm-tools{ opacity:1; }
+.dm-pv{ border-left:1px solid var(--border); background:var(--bg-elev); display:flex; flex-direction:column; min-width:0; }
+.dm-pvh{ display:flex; justify-content:space-between; align-items:center; height:52px; padding:0 14px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text-3); }
+.dm-pvh span:first-child{ display:inline-flex; gap:6px; align-items:center; color:var(--text-1); font-weight:500; } .dm-pvh svg{ width:13px; height:13px; }
+.dm-pvb{ padding:14px 12px; } .dm-pvb .xp{ zoom:.82; border:0; border-radius:16px; box-shadow:0 0 0 1px var(--border); }
+.dm-pvb .dm-pvimg{ aspect-ratio:auto; } .dm-pvb .dm-chart{ zoom:.9; }
+.dm-pvempty{ font-size:13px; color:var(--text-3); padding:8px 4px; }
 .dm-main{ position:relative; padding:0 0 20px; overflow:hidden; }
-.dm-top{ display:flex; align-items:center; gap:10px; height:48px; padding:0 16px; border-bottom:1px solid var(--c-line); }
-.dm-saved{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--c-3); margin-right:auto; } .dm-saved i{ width:6px; height:6px; border-radius:50%; background:#1F8F5F; }
-.dm-plats{ display:flex; gap:4px; } .dm-plats span{ width:26px; height:26px; border-radius:99px; display:grid; place-items:center; box-shadow:inset 0 0 0 1px var(--c-line); } .dm-plats svg{ width:13px; height:13px; }
-.dm-sched{ display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 14px; border-radius:99px; background:var(--c-ink); color:#fff; font-weight:600; font-size:13px; transition:transform .15s; }
-.dm-sched .icon{ width:14px; height:14px; }
 .dm-post{ position:relative; display:grid; grid-template-columns:40px minmax(0,1fr); gap:12px; max-width:600px; margin:34px auto 0; padding:0 24px; }
 .dm-post .av{ width:40px; height:40px; border-radius:50%; font-size:14px; }
 .dm-pb{ position:relative; min-width:0; }
 .dm-who{ display:flex; gap:6px; font-size:13.5px; } .dm-who b{ font-weight:600; } .dm-who span{ color:var(--c-3); }
-.dm-tx{ margin-top:4px; font-size:19px; line-height:1.55; letter-spacing:-.01em; }
+.dm-tx{ position:relative; margin-top:4px; font-size:19px; line-height:1.55; letter-spacing:-.01em; }
 .dm-tx .s{ border-radius:3px; transition:background .35s; }
 .dm-tx .s.sel{ background:var(--c-mark); animation:dmsel .6s ease-out both; }
 @keyframes dmsel{ from{ background-size:0 100%; } }
@@ -1284,16 +1292,11 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .dm-tx.good .l1{ background:linear-gradient(transparent 58%,rgba(255,225,77,.6) 58%,rgba(255,225,77,.6) 94%,transparent 94%) no-repeat 0 0 / 100% 100%; -webkit-box-decoration-break:clone; box-decoration-break:clone; animation:dmhl .6s ease-out both; }
 @keyframes dmhl{ from{ background-size:0% 100%; } }
 .dm-tx mark.br{ background:rgba(255,225,77,.45); color:inherit; border-radius:3px; padding:0 2px; } .dm-tx mark.br.fill{ background:rgba(255,225,77,.2); box-shadow:inset 0 -2px 0 var(--c-mark); }
-.dm-tools{ display:flex; align-items:center; gap:14px; margin-top:14px; color:var(--c-3); font-size:13px; font-weight:500; }
-.dm-tools > span{ display:inline-flex; align-items:center; gap:5px; } .dm-tools .icon{ width:16px; height:16px; } .dm-rw{ color:var(--c-ink); }
-.dm-hook{ margin-left:auto; gap:7px!important; height:26px; padding:0 10px 0 3px; border-radius:99px; box-shadow:inset 0 0 0 1px var(--c-line); color:var(--c-2); }
-.dm-hook b{ display:grid; place-items:center; min-width:22px; height:20px; padding:0 5px; border-radius:99px; background:#EFEFEC; font:600 11px/1 var(--font-mono); color:var(--c-2); transition:background .3s; }
-.dm-hook.hi b{ background:var(--c-mark); color:var(--c-ink); }
-.dm-sharp{ position:absolute; top:-10px; left:30px; display:flex; align-items:center; gap:2px; padding:4px; border-radius:99px; background:var(--c-ink); color:#F5F5F3; font:500 13px/1 var(--f-disp); white-space:nowrap; box-shadow:0 14px 30px -10px rgba(0,0,0,.45); opacity:0; transform:translateY(6px) scale(.96); transition:opacity .2s,transform .35s cubic-bezier(.3,1.45,.4,1); }
+.dm-sharp{ position:absolute; top:calc(100% + 8px); left:-6px; display:flex; align-items:center; gap:2px; padding:4px; border-radius:99px; background:var(--c-ink); color:#F5F5F3; font:500 13px/1 var(--f-disp); white-space:nowrap; box-shadow:0 14px 30px -10px rgba(0,0,0,.45); opacity:0; transform:translateY(6px) scale(.96); transition:opacity .2s,transform .35s cubic-bezier(.3,1.45,.4,1); }
 .dm-sharp.on{ opacity:1; transform:none; }
-.dm-sharp .sh-t{ display:inline-flex; align-items:center; gap:6px; padding:0 8px 0 6px; font-weight:600; } .dm-sharp .mark{ width:15px; height:15px; } .dm-sharp .mark .ct{ fill:currentColor; } .dm-sharp .mark .sw{ fill:var(--c-mark); }
+.dm-sharp .sh-t{ display:inline-flex; align-items:center; gap:6px; padding:0 8px 0 6px; font-weight:600; } .dm-sharp .mark{ width:17px; height:17px; } .dm-sharp .mark .tile{ fill:transparent; } .dm-sharp .mark .sw{ fill:var(--c-mark); }
 .dm-sharp button{ height:28px; padding:0 10px; border-radius:99px; color:inherit; background:none; opacity:.8; font:inherit; }
-.dm-sharp .n{ min-width:40px; text-align:center; font:500 12px/1 var(--font-mono); opacity:.7; }
+.dm-sharp .icon{ width:14px; height:14px; } .dm-sharp .n{ min-width:40px; text-align:center; font:500 12px/1 var(--font-mono); opacity:.7; }
 .dm-sharp .keep{ background:var(--c-mark); color:var(--c-ink); opacity:1; font-weight:600; }
 .dm-press{ transform:scale(.94)!important; transition:transform .12s!important; }
 .dm-cur{ position:absolute; left:0; top:0; z-index:20; width:22px; height:22px; margin:-3px 0 0 -4px; transition:transform .7s cubic-bezier(.45,.05,.2,1); pointer-events:none; filter:drop-shadow(0 3px 5px rgba(0,0,0,.25)); }
@@ -1314,7 +1317,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .dm-img{ margin-top:12px; border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px var(--c-line); animation:dmdrop .6s cubic-bezier(.3,1.3,.4,1) both; }
 @keyframes dmdrop{ from{ opacity:0; transform:translateY(-14px) scale(.96); } }
 .dm-rad{ padding:22px 24px; display:grid; gap:12px; }
-.dm-trend{ display:grid; gap:3px; width:260px; padding:12px 14px; border-radius:14px; box-shadow:0 0 0 1.5px var(--c-ink); background:linear-gradient(180deg,rgba(255,225,77,.18),#fff 70%); }
+.dm-trend{ display:grid; gap:3px; width:260px; padding:12px 14px; border-radius:14px; box-shadow:0 0 0 1.5px var(--c-ink); background:#fff; }
 .dm-trend b{ font-weight:600; } .dm-trend span{ font:600 12.5px/1 var(--font-mono); color:#1F8F5F; } .dm-trend small{ font-size:12px; color:var(--c-3); }
 .dm-trend.pulse{ animation:dmpulse 1s ease-out; } @keyframes dmpulse{ 40%{ transform:scale(1.04); } }
 .dm-rp{ display:grid; grid-template-columns:minmax(0,1fr) 250px; border-radius:16px; overflow:hidden; box-shadow:0 0 0 1px var(--c-line); }
@@ -1326,7 +1329,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .dm-day{ display:grid; gap:6px; align-content:start; min-height:120px; padding:8px; border-radius:12px; background:#F5F5F3; box-shadow:inset 0 0 0 1px var(--c-line); font-size:11.5px; }
 .dm-day small{ color:var(--c-3); font-weight:500; } .dm-day.peak{ box-shadow:inset 0 0 0 1.5px var(--c-ink); }
 .dm-day .qc{ padding:6px 7px; border-radius:8px; background:var(--c-ink); color:#fff; font-weight:500; line-height:1.3; }
-.dm-day .qc.new{ background:var(--c-mark); color:var(--c-ink); font-weight:600; animation:dmdrop .7s cubic-bezier(.3,1.35,.45,1) both; }
+.dm-day .qc.new{ background:#fff; color:var(--c-ink); font-weight:600; box-shadow:inset 0 0 0 1.5px var(--c-ink); background-image:linear-gradient(transparent 62%,rgba(255,225,77,.7) 62%); animation:dmdrop .7s cubic-bezier(.3,1.35,.45,1) both; }
 .dm-modal.sm{ width:min(360px,80%); margin-left:max(-180px,-40%); }
 .dm-time{ display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:12px; box-shadow:inset 0 0 0 1px var(--c-line); }
 .dm-time i{ width:14px; height:14px; border-radius:50%; box-shadow:inset 0 0 0 1.5px var(--c-3); } .dm-time.on{ box-shadow:inset 0 0 0 1.5px var(--c-ink); } .dm-time.on i{ box-shadow:inset 0 0 0 4.5px var(--c-ink); }
@@ -1334,7 +1337,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .dm-cap{ text-align:center; margin-top:18px; font-size:15px; color:var(--c-2); min-height:1.5em; transition:opacity .3s; }
 @media (max-width:760px){
   .dm-tabs{ grid-template-columns:repeat(4,max-content); overflow-x:auto; gap:18px; } .dm-tabs button{ font-size:14px; }
-  .dm-body{ grid-template-columns:minmax(0,1fr); height:400px; } .dm-side{ display:none; }
+  .dm-body{ grid-template-columns:minmax(0,1fr); height:auto; min-height:360px; } .dm-side, .dm-pv{ display:none; } .dm-top .plats-l{ display:none; }
   .dm-tx{ font-size:16px; } .dm-plats{ display:none; } .dm-rp{ grid-template-columns:minmax(0,1fr); } .dm-why{ display:none; }
   .dm-sharp{ left:0; } .dm-sharp button:not(.bd):not(.keep):not(.nx):not(.pv){ display:none; }
   .dm-week{ grid-template-columns:repeat(3,minmax(0,1fr)); } .dm-day:nth-child(n+4){ display:none; }
@@ -1405,7 +1408,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .wk-legend .pk{ display:inline-block; width:12px; height:12px; border-radius:4px; box-shadow:inset 0 0 0 1.5px var(--c-ink); margin-right:8px; vertical-align:-1px; }
 
 /* ---------- creators ---------- */
-.crx{ border-radius:28px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 40px 80px -50px rgba(0,0,0,.3); padding:clamp(16px,2.6vw,32px); }
+.crx{ padding:0; }
 .crx-tabs{ display:flex; justify-content:center; margin-bottom:clamp(20px,3vw,36px); }
 .crx-p{ display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:clamp(24px,4vw,64px); align-items:start; }
 .crx-p[hidden]{ display:none; }
@@ -1537,7 +1540,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .brand-tile.paper{ background:#F5F4F0; color:#111216; }
 .brand-tile .cap{ position:absolute; left:16px; bottom:14px; font:500 var(--t-12)/1 var(--font-ui); opacity:.55; }
 .appicon{ width:128px; height:128px; border-radius:30px; background:radial-gradient(120% 70% at 30% 0%,rgba(255,255,255,.2),transparent 60%),linear-gradient(160deg,#4A4C53,#141518); display:grid; place-items:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.06); }
-.appicon .mark .ct{ fill:#F5F5F3; }
+.appicon .mark .tile{ fill:transparent; }
 .swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; }
 .sw{ border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px var(--border); background:var(--surface); }
 .sw i{ display:block; height:64px; box-shadow:inset 0 -1px 0 var(--border); }
@@ -1769,6 +1772,7 @@ function springEase(stiffness, damping, mass = 1) {
 
 /* ---------- state ---------- */
 const NICHES = {
+  'Crypto & trading': ['risk management', 'your worst trade', 'position sizing', 'revenge trading', 'on-chain data', 'journaling trades', 'stablecoins', 'bear markets', 'FOMO', 'taking profits'],
   'Building in public': ['pricing', 'your first 100 users', 'shipping weekly', 'burnout', 'cold DMs', 'landing pages', 'churn', 'your first hire', 'saying no', 'side projects'],
   'Design': ['design systems', 'portfolio reviews', 'critique', 'spacing', 'onboarding flows', 'typography', 'design debt', 'handoff', 'empty states', 'taste'],
   'Engineering': ['code review', 'tech debt', 'on-call', 'rewrites', 'testing', 'shipping on Fridays', 'naming things', 'estimates', 'senior engineers', 'side projects'],
@@ -2166,7 +2170,7 @@ function parseLink(url) {
    UI KIT
    ========================================================================== */
 /* the mark: a marker swipe with the caret at its end. You just wrote a first line worth highlighting. */
-const LOGO_MARK = `<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path class="sw" d="M3 21.5 6 10.5h19l-3 11z"/><rect class="ct" x="24.2" y="5" width="3.4" height="22" rx="1.7"/></svg>`;
+const LOGO_MARK = `<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="8"/><g transform="translate(3.2 3.2) scale(.8)"><path class="sw" d="M3 21.5 6 10.5h19l-3 11z"/><rect class="ct" x="24.2" y="5" width="3.4" height="22" rx="1.7"/></g></svg>`;
 const LOGO = `${LOGO_MARK}<span class="word">hookworthy</span>`;
 const PLAT = { x: { name: 'X', limit: 280, icon: 'x' }, threads: { name: 'Threads', limit: 500, icon: 'threads' }, linkedin: { name: 'LinkedIn', limit: 3000, icon: 'li' }, bsky: { name: 'Bluesky', limit: 300, icon: 'bsky' } };
 const avatar = (u = S.user, cls = '') => `<span class="avatar ${cls}" style="--h:${u.hue}">${esc((u.name || u.handle || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase())}</span>`;
@@ -2641,7 +2645,7 @@ function composerHTML() {
       <div class="status" aria-live="polite"><span class="dot"></span><span class="txt" id="save-state">Draft saved</span></div>
       ${S.ws !== 'me' ? `<button class="ws-pill" data-act="ws" aria-haspopup="menu">${avatar(WS())}<span>Writing as <b>${esc(WS().name)}</b></span></button>` : ''}
       <div class="grow"></div>
-      <div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>
+      <span class="plats-l">Post to</span><div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>
       <button class="btn ghost icon-only" data-cact="preview" data-tip="Previews" data-kbd="${MOD} \\" aria-label="Toggle previews">${ic('panel')}</button>
       <button class="btn ghost icon-only" data-cact="schedmenu" data-tip="More" aria-label="More ways to publish" aria-haspopup="menu">${ic('more')}</button>
       <button class="btn primary" data-cact="schedule" data-tip="Pick a time" data-kbd="${MOD} ↵">${ic('clock', 'sm')}<span>Schedule</span></button>
@@ -2650,7 +2654,7 @@ function composerHTML() {
       <div class="glow" aria-hidden="true"></div>
       <section class="starters fade-typing" id="starters" ${empty ? '' : 'hidden'} aria-label="Ideas to start from"></section>
       <div class="thread" id="thread" role="list"></div>
-      <button class="add-tw fade-typing" data-cact="add"><span class="plus"><span>${ic('plus', 'sm')}</span></span>Add to thread${kbd('↵', '↵')}</button>
+      <button class="add-tw fade-typing" data-cact="add"><span class="plus"><span>${ic('plus', 'sm')}</span></span>Add to thread</button>
     </div>
   </div>
   <aside class="preview" id="preview" aria-label="Your post in the feed"><div class="preview-h" id="pv-h"></div><div class="preview-b" id="pv-b"></div></aside>
@@ -2745,7 +2749,7 @@ function placeCaret(ta) {
 }
 function paintRing(tEl) {
   const ring = $('.ring', tEl); const ta = $('.tw-input', tEl); if (!ring) return;
-  const len = [...ta.value].length, lim = effLimit(), C = 59.69, rem = lim - len;
+  const len = [...ta.value].length, lim = effLimit(), C = 59.69, rem = lim - len; ring.style.visibility = len ? '' : 'hidden';
   $('.val', ring).style.strokeDashoffset = C * (1 - Math.min(len / lim, 1));
   const state = rem < 0 ? 'over' : rem <= 20 ? 'warn' : '';
   if ((ring.dataset.s || '') !== state) { ring.classList.remove('pulse'); void ring.offsetWidth; if (state) ring.classList.add('pulse'); }
@@ -2756,7 +2760,7 @@ function paintRing(tEl) {
 }
 function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
-  const h = hookScore(t0.text); const sc = $('.sc', b);
+  const h = hookScore(t0.text); const sc = $('.sc', b); b.style.visibility = t0.text.trim() ? '' : 'hidden';
   if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
   b.classList.toggle('hi', h.score >= 70);
@@ -3046,8 +3050,10 @@ function sharpenPlace() {
   const el = SH.el, ta = SH.ta; if (!el || !ta) return; const wrap = ta.parentElement, mir = wrap.firstElementChild;
   /* measure where the selection starts: a throwaway mirror pass, then the real paint puts it back */
   const at = SH.st ? SH.st.s : ta.selectionStart; const keep = mir.innerHTML; mir.innerHTML = esc(ta.value.slice(0, at)) + '<span class="ss"></span>';
-  const ss = $('.ss', mir), x = ss.offsetLeft, y = ss.offsetTop; mir.innerHTML = keep;
-  const w = el.offsetWidth, W = wrap.offsetWidth; el.style.left = clamp(x - 12, -8, W - w + 8) + 'px'; el.style.top = (y - el.offsetHeight - 8) + 'px';
+  const ss = $('.ss', mir), x = ss.offsetLeft, y = ss.offsetTop;
+  /* on the first line the bar would sit on the author's name, so it drops below the selection instead */
+  const end = SH.st ? SH.st.s + SH.st.vars[SH.st.i].length : ta.selectionEnd; mir.innerHTML = esc(ta.value.slice(0, end)) + '<span class="ss"></span>'; const ye = $('.ss', mir).offsetTop + $('.ss', mir).offsetHeight; mir.innerHTML = keep;
+  const w = el.offsetWidth, W = wrap.offsetWidth; el.style.left = clamp(x - 12, -8, W - w + 8) + 'px'; el.style.top = (y < 8 ? ye + 8 : y - el.offsetHeight - 8) + 'px';
 }
 function sharpenCheck(ta) {
   if (SH.st) return;
@@ -3068,7 +3074,7 @@ function sharpenShow(i) {
   const st = SH.st, ta = SH.ta; st.i = (i + st.vars.length) % st.vars.length; const v = st.vars[st.i];
   ta.value = st.before.slice(0, st.s) + v + st.before.slice(st.e); ta.setSelectionRange(st.s, st.s + v.length);
   UI.sharp = { id: st.id, s: st.s, len: v.length }; paintField(ta);
-  SH.el.innerHTML = `<span class="sh-t">${LOGO_MARK}${SHARP.find(m => m.k === st.k).label}</span>${st.vars.length > 1 ? `<button data-shn="-1" aria-label="Previous take">‹</button><span class="n">${st.i + 1} / ${st.vars.length}</span><button data-shn="1" aria-label="Next take">›</button>` : ''}<button class="keep" data-shk>Keep ${kbd('↵')}</button><button data-shx aria-label="Cancel">${ic('x', 'sm')}</button>`;
+  SH.el.innerHTML = `<span class="sh-t">${LOGO_MARK}${SHARP.find(m => m.k === st.k).label}</span>${st.vars.length > 1 ? `<button data-shn="-1" aria-label="Previous take">${ic('left', 'sm')}</button><span class="n">${st.i + 1} / ${st.vars.length}</span><button data-shn="1" aria-label="Next take">${ic('right', 'sm')}</button>` : ''}<button class="keep" data-shk>Keep ${kbd('↵')}</button><button data-shx aria-label="Cancel">${ic('x', 'sm')}</button>`;
   requestAnimationFrame(sharpenPlace);
 }
 function sharpenCancel() { const st = SH.st; if (!st) return; SH.st = null; UI.sharp = null; const ta = SH.ta; if (ta && document.contains(ta)) { ta.value = st.before; ta.setSelectionRange(st.s, st.e); paintField(ta); } }
@@ -3429,7 +3435,9 @@ const HOOK_POSTS = [
   { p: 12, t: 'A PM’s job in one sentence:\n\nsay no politely, with data, before lunch.', c: [64, 220, 2800, 170000], ago: '8h', score: 83 },
   { p: 10, t: 'I teach 140 teenagers. The best writing advice I give them works on LinkedIn too:\n\ncut your first sentence.', c: [150, 620, 7400, 520000], ago: '1d', score: 85 },
   { p: 15, t: 'i posted every day for 30 days as a broke college student.\n\nhere’s everything that happened 🧵', m: 'cafe', c: [96, 210, 3100, 260000], ago: '5d', score: 86 },
-  { p: 9, t: 'Your landing page has 1 job.\n\nMost do 4. Here’s why that’s wrong:', c: [120, 380, 4400, 300000], ago: '7h', score: 90 }
+  { p: 9, t: 'Your landing page has 1 job.\n\nMost do 4. Here’s why that’s wrong:', c: [120, 380, 4400, 300000], ago: '7h', score: 90 },
+  { p: 18, t: 'I lost $41,000 on one trade in 2021.\n\nIt was the best money I ever spent. Here’s the rule it taught me:', c: [640, 2100, 18400, 1400000], ago: '3h', score: 92 },
+  { p: 20, t: 'my trading journal this week:\n\nmon: +3%\ntue: +2%\nwed: -9% (revenge trade)\n\nstop revenge trading. that’s the tweet.', c: [390, 1600, 22000, 1900000], ago: '1d', score: 87 }
 ];
 
 /* the feeling every creator knows: shown on the relatable wall */
@@ -3445,7 +3453,9 @@ const VOID_POSTS = [
   { p: 7, t: 'consistency is key they said\n\nkey to what. burnout?', c: [27, 9, 350, 20000], ago: '9h' },
   { p: 1, t: 'day 47 of building in public. today I built nothing, publicly.', c: [16, 4, 210, 12000], ago: '2h' },
   { p: 2, t: 'every time I schedule a post for 9am I wake up at 8:58 to watch it flop live', c: [21, 7, 290, 16000], ago: '1d' },
-  { p: 8, t: 'my drafts folder is a museum of posts I was too scared to publish', c: [35, 22, 540, 30000], ago: '4h' }
+  { p: 8, t: 'my drafts folder is a museum of posts I was too scared to publish', c: [35, 22, 540, 30000], ago: '4h' },
+  { p: 19, t: 'posted my ETH thesis at 3am. woke up to 2 likes and a bot.', c: [11, 2, 64, 3100], ago: '8h' },
+  { p: 21, t: 'called the top perfectly.\n\nin my drafts.', c: [44, 18, 720, 39000], ago: '1d' }
 ];
 
 /* X count format: 1,204 · 12.4K · 124K · 1.2M */
@@ -3616,8 +3626,11 @@ function demoHTML() {
   return `<div class="dm-tabs" role="tablist" aria-label="Product demo">${DEMO_SCENES.map((s, i) => `<button role="tab" data-dm="${i}" aria-selected="${i === 0}"><span>${s.t}</span><i><b></b></i></button>`).join('')}</div>
   <div class="dm-win" aria-hidden="true">
     <div class="dm-bar"><i></i><i></i><i></i><span>hookworthy.com</span><button class="dm-snd" data-dmsnd aria-label="Play demo sounds" tabindex="-1">${ic('volume', 'sm')}</button></div>
-    <div class="dm-body"><aside class="dm-side"><span class="logo">${LOGO}</span><span class="dm-new">${ic('plus', 'sm')} New post</span>${[['write', 'Write'], ['ideas', 'Ideas'], ['cal', 'Queue'], ['chart', 'Insights']].map(([i, l]) => `<span class="dm-nav" data-n="${l}">${ic(i)}${l}</span>`).join('')}</aside>
-      <main class="dm-main" id="dm-main"></main></div>
+    <div class="dm-body"><aside class="dm-side"><span class="logo">${LOGO}</span><span class="btn primary newpost">${ic('plus', 'sm')}<span>New post</span></span><span class="searchbtn">${ic('search', 'sm')}<span>Search</span>${kbd(MOD, 'K')}</span>
+        <nav class="nav">${NAV.map(it => `<a class="dm-nav" data-n="${it.label}" tabindex="-1">${ic(it.icon)}<span>${it.label}</span></a>`).join('')}</nav><span class="spacer"></span>
+        <span class="me">${pfAv(PEOPLE[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">Maya Chen</b><span class="faint" style="font-size:12px">@mayabuilds</span></span></span></aside>
+      <main class="dm-main" id="dm-main"></main>
+      <aside class="dm-pv"><div class="dm-pvh"><span>${pic('x')} Preview</span><span>In the feed</span></div><div class="dm-pvb" id="dm-pvb"></div></aside></div>
     <span class="dm-cur"><svg viewBox="0 0 24 24"><path d="M5 3.2 19 12l-6.2 1.6L9.6 19.6z" fill="#0C0C0E" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
   </div>
   <p class="dm-cap" id="dm-cap">${DEMO_SCENES[0].d}</p>`;
@@ -3632,25 +3645,30 @@ function demoInit(root) {
   const move = async (el, id, fx, fy, ms = 700) => { const [x, y] = pos(el, fx, fy); cur.style.transitionDuration = ms + 'ms'; cur.style.transform = `translate(${x}px,${y}px)`; await wait(ms + 60, id); };
   const click = async (el, id) => { cur.classList.add('down'); el.classList.add('dm-press'); sfx('tick'); await wait(140, id); cur.classList.remove('down'); el.classList.remove('dm-press'); await wait(120, id); };
   const type = async (el, text, id, cps = 38) => { for (let i = 1; i <= text.length; i++) { el.textContent = text.slice(0, i); await wait(1000 / cps, id); } };
-  const post = (inner, extra = '') => `<div class="dm-post">${pfAv(PEOPLE[0])}<div class="dm-pb"><div class="dm-who"><b>Maya Chen</b><span>@mayabuilds</span></div><div class="dm-tx"><span class="l1">${inner.split('<br>')[0]}</span>${inner.includes('<br>') ? '<br>' + inner.split('<br>').slice(1).join('<br>') : ''}</div>${extra}<div class="dm-tools"><span>${ic('image', 'sm')}</span><span class="dm-vis">${ic('spark', 'sm')}</span><span class="dm-rw">${ic('riff', 'sm')} Rewrite</span><span class="dm-hook"><b>48</b>Hook</span></div></div></div>`;
-  const top = btn => `<div class="dm-top"><span class="dm-saved"><i></i>Draft saved</span><span class="dm-plats">${['x', 'threads', 'li', 'bsky'].map(p => `<span>${pic(p)}</span>`).join('')}</span><span class="dm-sched">${ic('clock', 'sm')} ${btn || 'Schedule'}</span></div>`;
-  const nav = n => $$('.dm-nav', sec).forEach(x => x.classList.toggle('on', x.dataset.n === n));
+  /* the same components the app renders: status, Post to toggles, preview toggle, Schedule; tools row; hook chip */
+  const post = (inner, extra = '') => `<div class="dm-post">${pfAv(PEOPLE[0])}<div class="dm-pb"><div class="dm-who"><b>Maya Chen</b><span>@mayabuilds</span></div><div class="dm-tx"><span class="l1">${inner.split('<br>')[0]}</span>${inner.includes('<br>') ? '<br>' + inner.split('<br>').slice(1).join('<br>') : ''}</div>${extra}<div class="tw-tools dm-tools"><span class="tool">${ic('image')}</span><span class="tool gif-t"><span>GIF</span></span><span class="tool dm-vis">${ic('spark')}</span><span class="tools-sep"></span><span class="tool riff">${ic('riff')}<span>Rewrite</span></span><div class="tw-meta"><span class="hook dm-hook"><span class="sc"><span>48</span></span><span>Hook</span></span></div></div></div></div>`;
+  const top = btn => `<div class="c-top dm-top"><div class="status"><span class="dot"></span><span class="txt">Draft saved</span></div><div class="grow"></div><span class="plats-l">Post to</span><div class="plats">${[['x', 1], ['threads', 1], ['li', 0], ['bsky', 1]].map(([p, on]) => `<span class="plat" aria-pressed="${!!on}">${pic(p)}</span>`).join('')}</div><span class="btn ghost icon-only">${ic('more')}</span><span class="btn primary dm-sched">${ic('clock', 'sm')}<span>${btn || 'Schedule'}</span></span></div>`;
+  const nav = n => $$('.dm-nav', sec).forEach(x => x.toggleAttribute('aria-current', x.dataset.n === n));
+  const pvb = $('#dm-pvb', sec);
+  const preview = () => { const t = $('.dm-tx', main); if (!t) { pvb.innerHTML = '<p class="dm-pvempty">Your post shows up here, the way X will show it.</p>'; return; } const img = $('.dm-img', main); const c = t.cloneNode(true); $$('.dm-sharp', c).forEach(x => x.remove()); pvb.innerHTML = xPost({ p: 0, t: c.innerText.trim(), c: [0, 0, 0, 0], ago: 'now', mh: img ? `<div class="md dm-pvimg">${img.innerHTML}</div>` : '' }); };
+  let pvT = 0; const mo = new MutationObserver(() => { clearTimeout(pvT); pvT = setTimeout(preview, 90); }); mo.observe(main, { childList: true, subtree: true, characterData: true });
+  const setHook = (h, v) => { $('.sc span', h).textContent = v; };
   const scenes = {
     async sharpen(id) {
       nav('Write');
       main.innerHTML = top() + post('<span class="a">I think </span><span class="s">we should really try to talk to customers</span><span class="b"> before building anything.</span>');
       const s = $('.s', main), hook = $('.dm-hook', main); await wait(500, id);
       await move(s, id, 0, .5); cur.classList.add('down'); s.classList.add('sel'); await wait(650, id); cur.classList.remove('down');
-      const bar = document.createElement('div'); bar.className = 'dm-sharp'; bar.innerHTML = `<span class="sh-t">${LOGO_MARK}Sharpen</span><button>Punchier</button><button>Shorter</button><button class="bd">Bolder</button><button>More human</button>`; $('.dm-pb', main).append(bar);
+      const bar = document.createElement('div'); bar.className = 'dm-sharp'; bar.innerHTML = `<span class="sh-t">${LOGO_MARK}Sharpen</span><button>Punchier</button><button>Shorter</button><button class="bd">Bolder</button><button>More human</button>`; $('.dm-tx', main).append(bar);
       requestAnimationFrame(() => bar.classList.add('on')); await wait(500, id);
       await move($('.bd', bar), id); await click($('.bd', bar), id);
       const takes = ['Talk to customers', 'We must talk to customers', 'Talk to ten customers first'];
-      bar.innerHTML = `<span class="sh-t">${LOGO_MARK}Bolder</span><button class="pv">‹</button><span class="n">1 / 3</span><button class="nx">›</button><button class="keep">Keep</button>`;
+      bar.innerHTML = `<span class="sh-t">${LOGO_MARK}Bolder</span><button class="pv">${ic('left', 'sm')}</button><span class="n">1 / 3</span><button class="nx">${ic('right', 'sm')}</button><button class="keep">Keep</button>`;
       s.textContent = takes[0]; s.classList.add('swap'); $('.a', main).textContent = ''; sfx('tap'); await wait(900, id);
       await move($('.nx', bar), id); await click($('.nx', bar), id); s.textContent = takes[1]; $('.n', bar).textContent = '2 / 3'; await wait(700, id);
       await click($('.nx', bar), id); s.textContent = takes[2]; $('.n', bar).textContent = '3 / 3'; $('.b', main).textContent = ' before you build anything.'; await wait(800, id);
       await move($('.keep', bar), id); await click($('.keep', bar), id); bar.classList.remove('on'); s.classList.remove('sel', 'swap'); s.classList.add('kept'); sfx('swap');
-      s.classList.remove('kept'); $('.dm-tx', main).classList.add('good'); hook.classList.add('hi'); for (let v = 48; v <= 84; v += 3) { $('b', hook).textContent = v; await wait(28, id); } sfx('hook');
+      s.classList.remove('kept'); $('.dm-tx', main).classList.add('good'); hook.classList.add('hi'); for (let v = 48; v <= 84; v += 3) { setHook(hook, v); await wait(28, id); } sfx('hook');
       await wait(1600, id);
     },
     async visual(id) {
@@ -3672,12 +3690,12 @@ function demoInit(root) {
       main.innerHTML = top() + post('I lost <mark class="br">[amount]</mark> on <mark class="br">[mistake]</mark>.<br><br>It was the best money I ever spent. Here’s the rule it taught me:');
       await wait(600, id); const b1 = $('.br', main); await move(b1, id); await click(b1, id); b1.classList.add('fill'); await type(b1, '$3,000', id); await wait(300, id);
       const b2 = $$('.br', main)[1]; await move(b2, id); await click(b2, id); b2.classList.add('fill'); await type(b2, 'one “sure thing” memecoin', id); sfx('hook');
-      const hook = $('.dm-hook', main); hook.classList.add('hi'); $('b', hook).textContent = 86; $('.dm-tx', main).classList.add('good'); await wait(1700, id);
+      const hook = $('.dm-hook', main); hook.classList.add('hi'); setHook(hook, 86); $('.dm-tx', main).classList.add('good'); await wait(1700, id);
     },
     async schedule(id) {
       nav('Write');
       main.innerHTML = top() + post('We doubled our price. Signups went up 31%.') + `<div class="dm-week">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d, i) => `<div class="dm-day ${i === 1 ? 'peak' : ''}"><small>${d}</small>${i === 0 ? '<span class="qc">Stop writing “Excited to announce.”</span>' : ''}${i === 3 ? '<span class="qc">I deleted 1,400 lines…</span>' : ''}</div>`).join('')}</div>`;
-      $('.dm-tx', main).classList.add('good'); const hook = $('.dm-hook', main); hook.classList.add('hi'); $('b', hook).textContent = 91;
+      $('.dm-tx', main).classList.add('good'); const hook = $('.dm-hook', main); hook.classList.add('hi'); setHook(hook, 91);
       await wait(600, id); const sb = $('.dm-sched', main); await move(sb, id); await click(sb, id);
       const m = document.createElement('div'); m.className = 'dm-modal sm'; m.innerHTML = `<b>Schedule</b>${[['Tue 8:40 AM', 'Your replies peak here', 1], ['Wed 5:30 PM', 'The commute scroll', 0], ['Pick a time', 'Your call', 0]].map(([a, b, on]) => `<div class="dm-time ${on ? 'on' : ''}"><i></i><span><b>${a}</b><small>${b}</small></span></div>`).join('')}<span class="dm-add">Schedule for Tue 8:40 AM</span>`;
       main.append(m); requestAnimationFrame(() => m.classList.add('on')); await wait(1100, id);
@@ -3695,7 +3713,7 @@ function demoInit(root) {
   sec.addEventListener('click', e => { const t = e.target.closest('[data-dm]'); if (t) { play(+t.dataset.dm); return; } if (e.target.closest('[data-dmsnd]')) { sound = !sound; win.classList.toggle('snd', sound); if (sound) SFX.play('tap'); } });
   const io = new IntersectionObserver(([en]) => { const v = en.isIntersecting; if (v && !visible) play(idx); if (!v) run++; visible = v; }, { threshold: .35 });
   if (REDUCED) { play(0); } else io.observe(win);
-  return () => { alive = false; run++; io.disconnect(); };
+  return () => { alive = false; run++; io.disconnect(); mo.disconnect(); };
 }
 
 /* ----- the ring ----- */
@@ -3819,9 +3837,9 @@ function storyInit(root) {
 
 /* creators section: three ways people actually post, each shown with the real post UI */
 const CREATOR_TYPES = [
-  { k: 'solo', p: 15, h: 'From the void to the For You tab.', d: 'Aisha posted every day for a year. Same effort, different first lines.',
+  { k: 'solo', p: 20, h: 'From the void to the For You tab.', d: 'Jay journals every trade and posts most days. Same effort, different first lines.',
     li: ['A voice trained on your own posts', 'A hook score before you post, not after', 'A streak that counts scheduled posts'],
-    demo: () => `<div class="crx-ba"><span class="crx-lbl">August</span>${xPost({ ...VOID_POSTS[6], ago: 'Aug 12' })}<span class="crx-lbl">Six weeks later</span>${xPost({ ...HOOK_POSTS[14], ago: 'Sep 24' }, { liked: true })}</div>` },
+    demo: () => `<div class="crx-ba"><span class="crx-lbl">August</span>${xPost({ p: 20, t: 'another red day. not posting about it.', c: [2, 0, 9, 410], ago: 'Aug 12' })}<span class="crx-lbl">Six weeks later</span>${xPost({ ...HOOK_POSTS[17], ago: 'Sep 24' }, { liked: true })}</div>` },
   { k: 'founder', p: 17, h: 'Release notes in. Three posts out.', d: 'Tobi pastes the changelog on Friday. Hookworthy finds the story in it and fits it to every feed.',
     li: ['Paste notes, get a post per platform', 'A LinkedIn version that respects the fold', 'Slots picked from when buyers reply'],
     demo: () => `<div class="crx-flow"><div class="crx-notes"><b>Ledgerly 2.4</b><span>Fri, Sep 26</span><ul><li>Removed roadmap voting. We now ship from customer calls.</li><li>CSV export for invoices</li><li>Sync is 38% faster</li></ul></div><div class="crx-arrow" aria-hidden="true">${pfIc.send}</div><div class="crx-outs">${xPost({ ...HOOK_POSTS[9], m: null, ago: 'now', c: [0, 0, 0, 0] })}${liPost({ p: 17, t: 'We let customers vote on our roadmap for a year.\n\nIt was the worst product decision we made. The loudest 5% set the agenda, and the quiet 95% churned.\n\nHere is what we do now, and what it did to retention:', c: [0, 0, 0, 0], ago: 'now' })}</div></div>` },
@@ -3892,7 +3910,7 @@ ROUTES.home = () => {
   </section>
 
   <section class="hw-sec wrap" id="demo">
-    <div class="hw-h c rv"><h2>Four moves. No thinking required.</h2><p>This is the app, being used. Nothing here is a mockup of a mockup.</p></div>
+    <div class="hw-h c rv"><h2>Four moves.<br>No thinking required.</h2><p>The four things you’ll do every day, played out with the same buttons you’ll press in the app.</p></div>
     ${demoHTML()}
   </section>
 
@@ -3934,7 +3952,7 @@ ROUTES.home = () => {
   </section>
 
   <section class="hw-sec wrap" id="creators">
-    <div class="hw-h rv"><h2>For creators, by creators.</h2><p>Built by people who post every week, for the three ways creators actually work.</p></div>
+    <div class="hw-h rv"><h2>Three ways creators actually work.</h2><p>Pick the one that sounds like you. Each tab shows the post, the problem, and what changed.</p></div>
     <div class="crx rv">
       <div class="crx-tabs"><div class="seg2" role="tablist" aria-label="How you work" id="cr-seg"><button role="tab" aria-selected="true" data-cr="solo">Solo creators</button><button role="tab" aria-selected="false" data-cr="founder">Founders</button><button role="tab" aria-selected="false" data-cr="ghost">Ghostwriters</button></div></div>
       ${CREATOR_TYPES.map((c, i) => `<div class="crx-p ${i ? '' : 'on'}" data-crp="${c.k}" role="tabpanel" ${i ? 'hidden' : ''}>
@@ -4184,7 +4202,7 @@ const RADAR = {
     ] }
 };
 const RAD = { niche: null };
-function radarNicheFor() { const n = (S.user.niche || '').toLowerCase(); return /crypto|trad|defi|bitcoin|finance/.test(n) ? 'crypto' : /design/.test(n) ? 'design' : 'bip'; }
+function radarNicheFor() { const n = (S.user.niche || '').toLowerCase(); return /crypto|trad|defi|bitcoin/.test(n) ? 'crypto' : /design/.test(n) ? 'design' : 'bip'; }
 function radarHTML() {
   const k = RAD.niche || (RAD.niche = radarNicheFor()), R = RADAR[k];
   return `<div class="radar">
@@ -4407,7 +4425,7 @@ function drawQSide() {
   const n = streakCount(); const postedToday = !!S.streak[dayKey(Date.now())];
   el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
   <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Momentum</span><span class="mono" style="font-size:12px">${n} day${n === 1 ? '' : 's'}</span></div><div class="streak">${streakHTML()}</div><span class="faint" style="font-size:12px">${postedToday ? 'Posted today. Scheduled posts count too.' : n ? `Post or schedule today to make it ${n + 1}.` : 'One post starts a streak. Scheduled posts count.'}</span></div>
-  <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(/ (?=\S+$)/, '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
+  <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(/ (?=\d{1,2}:\d{2} [AP]M$)/, '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
   <div class="card"><span class="label">Autopilot</span>
     <div class="setting"><span>Follow-up reply</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Follow-up reply"></button><small>At ${S.settings.plugAt} likes, reply with:</small></div>
     <input class="input" id="plug-t" value="${esc(S.settings.plugText)}" aria-label="Plug text">

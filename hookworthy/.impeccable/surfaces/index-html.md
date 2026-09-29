@@ -1,5 +1,5 @@
 ---
-version: 2
+version: 3
 slug: "index-html"
 primary_target: "index.html"
 related_targets: ["DESIGN.md"]
@@ -21,20 +21,21 @@ THESIS: If Apple, Linear and Arc built a Typefully competitor, the homepage woul
 
 OWN-WORLD:
 - Canvas and chapters: a light canvas (#F5F5F3) with two dark chapters (#09090A), the story and the voice section.
-- Type: Geist 600 with tight tracking for display, Geist for UI. Caveat is used for at most two margin notes, and EB Garamond only for the wordmark.
-- Accent: one yellow highlighter (#FFE14D), used only under a hook.
+- Type: Geist 600 with tight tracking for display, Geist for UI. Caveat is used for at most two margin notes, and Geist for the wordmark (Garamond retired in v3).
+- Accent: one yellow highlighter (#FFE14D), only ever under words worth stopping for (a hook that scores 70+, a key headline phrase, a selection). Never a fill.
 - Materials: real platform UI (system type, real spacing, count formats), true-scale phones, and photoreal portraits and photos.
 - Motion: tied to the reader. The ring brakes on a hook, the story scrubs with scroll, and the wall drifts only when you scroll.
 
-STORY:
+STORY (v3 adds #demo after the wall):
 1. The hero ring stops on a post and marks its first line.
 2. The pinned story follows one post from an 11:47pm draft to a Tuesday 8:41am notification.
 3. "We've all posted into the void" makes the visitor feel seen.
+3b. #demo: four moves, played out in the app's own UI.
 4. One post in four feeds.
 5. The LinkedIn fold.
 6. Your voice.
 7. The week that fills itself.
-8. Three real ways creators work: solo, founder and ghostwriter, each shown with platform posts.
+8. Three ways creators work: solo, founder and ghostwriter, each shown with platform posts.
 9. Pricing, then a final call to action with a second ring.
 
 FIRST VIEWPORT: A centered headline, "Write posts people stop for.", at up to 124px, with the marker on "stop", one sentence of sub copy, and an ink pill CTA plus a "Watch a draft become a hook" link. Two Caveat notes sit in the margins. Below them, a 3D ring of real-looking X posts turns slowly. Every few seconds it brakes, the front post comes forward, the neighbours step back, its first line is highlighted and a "Hook score · stopped the scroll" chip appears.
@@ -42,3 +43,9 @@ FIRST VIEWPORT: A centered headline, "Write posts people stop for.", at up to 12
 FORM: The keynote chapter (Apple product-page grammar) × platform-true replicas (the posts are the illustration). The seed is replaced by the owner's delegation (see above).
 
 FINISH: unreviewed and undocumented is unfinished. This round ends with the finish review and verdict, DESIGN.md "Keynote for creators", and recorded asset provenance: portraits and photos were generated in Higgsfield (gpt_image_2_5, project "Hookworthy homepage assets") and served as two sprite sheets.
+
+## v3 additions (this round)
+- Logo: The First Line (marker swipe with caret). One token set shared by site and app. Pill buttons. Geist only.
+- #demo chapter: a Notion-style product window built from the app's own classes (sidebar, Post to toggles, hook chip, preview pane). Four scenes (Sharpen, Visuals, Niche radar, Schedule) play while on screen, sound is opt-in, and the copy claims no more than "the same buttons you'll press".
+- App features: Sharpen (select text, flip through three takes, keep one), Visuals (quote card, before/after chart, post screenshot, framed screenshot), Niche radar (trends plus why posts popped plus a reusable structure), synthesized UI sound, and one hook threshold (70).
+- Audience: crypto and trading writers are first-class (see PRODUCT.md).

@@ -267,6 +267,9 @@ The spark-image tool opens four kinds of visual, each rendered to canvas in-brow
 
 Each comes in 16:9, 1:1 or 4:5, and is added as an image with alt text.
 
+### Primary audience
+Most users write about crypto and trading. The product shows them first-class: the first niche in onboarding, trader posts in the hero ring and the relatable wall, a trader as the solo creator story, and Niche radar defaulting to trading. Other niches keep equal craft.
+
 ### Niche radar (Ideas tab)
 Choose a niche, then:
 - **Trends:** three trends, with the one you're early on outlined in ink and given a "Post on it first" button.
@@ -312,7 +315,7 @@ Sounds are on by default in the app and can be switched off in the account menu.
 ## Brand and Voice
 
 - **Name:** Hookworthy. **Promise:** Write posts people stop for.
-- **Logo: The First Line.** A marker swipe (a skewed yellow bar) with a text caret standing at its end. It means you just wrote a line worth highlighting. On load and on hover the swipe draws in and the caret blinks twice. The wordmark is lowercase *hookworthy* in Geist 650 at −0.05em. The app icon is the mark on an ink squircle. Files: `assets/icon.svg`, `assets/wordmark.svg`, `assets/app-icon.svg` / `.png`.
+- **Logo: The First Line.** A marker swipe (a skewed yellow bar) with a text caret standing at its end, always set on an 8px-radius ink tile so the yellow reads on any ground (the swipe alone is only 1.2:1 on the canvas). Inside dark pills (Sharpen) the tile drops away and the swipe and caret stand alone. It means you just wrote a line worth highlighting. On load and on hover the swipe draws in and the caret blinks twice. The wordmark is lowercase *hookworthy* in Geist 650 at −0.05em. The app icon is the mark on an ink squircle. Files: `assets/icon.svg`, `assets/wordmark.svg`, `assets/app-icon.svg` / `.png`.
 - **Glossary (say it this way):**
 
   | Say | Don't say |

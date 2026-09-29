@@ -10,6 +10,7 @@ web
 
 Creators who write in public, for creators by creators. Confirmed by the owner as "all of them equally":
 
+- **Crypto and trading writers (largest group, per the owner)**: traders, on-chain analysts and educators posting market takes, trade journals and lessons on X first. Their pains are timing (being early on a narrative), standing out in a crowded niche, and turning charts and P&L into posts without looking like shills. Onboarding lists Crypto & trading first, and Niche radar opens on it.
 - **Solo audience builders**: writers, educators, indie makers growing a following on X, Threads, LinkedIn and Bluesky.
 - **Founders who post**: operators building in public for their company.
 - **Ghostwriters and small teams**: people writing for clients, who need more than one voice, account and approval step.
