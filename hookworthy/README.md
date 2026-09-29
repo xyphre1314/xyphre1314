@@ -16,12 +16,12 @@ Opening `index.html` directly also works. Serving over HTTP turns on the service
 
 | Route | What it is |
 |---|---|
-| `#home` | Landing page: live composer demo, scroll story, before/after, pricing |
+| `#home` | Landing page: a live feed that stops when your first line is good enough, the hook grader wall, a creator's morning, who it's for, one post in four feeds, pricing |
 | `#start` | Onboarding: paste your @, get your voice and five posts in about 4 seconds |
 | `#write` | Composer: thread editor, ghost text (Tab), riffs with a word-level diff, hook score, live previews, media, GIFs, polls, drag to reorder |
 | `#ideas` | Capture (link → five angles, screenshot, voice memo), idea engine, inbox, remix top posts |
 | `#hooks` | Hook grader plus a 36-hook library |
-| `#queue` | Week calendar with drag between slots, golden slots, autopilot. Agenda view on phones |
+| `#queue` | Week calendar with drag between slots, golden slots, approvals for client posts, momentum, autopilot. Agenda view on phones |
 | `#insights` | Insight-first analytics |
 | `#voice` | Voice profile, tone sliders, never-say list |
 | `#upgrade` | Pricing |
@@ -35,6 +35,7 @@ Press `⌘K` / `Ctrl K` for the palette and `?` for all shortcuts.
 - `DESIGN.md`: name, brand, voice, type, color, spacing, motion and screen list.
 - `CRITIQUE.md`: the review and what it changed.
 - `brand/logo-directions.html`: six logo and brand directions to pick from.
+- `PRODUCT.md`: who it's for and what it must never claim.
 - `NAMES.md`: the naming search and domain checks (hookworthy.com).
 - `assets/`: icon, wordmark, app icon (SVG and PNG).
 - `manifest.webmanifest`, `sw.js`: PWA.

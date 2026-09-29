@@ -115,3 +115,25 @@ Owner picked direction B from `brand/logo-directions.html`: minimal like Linear 
 - Glows behind the hero, demo, story and final CTA are neutral white light instead of indigo.
 - App icon: a graphite gradient tile with a white cursor and a glass edge.
 - Fixed while switching: switch knobs and spinners on accent backgrounds used hard-coded white, which would have vanished on the near-white dark-mode accent. They now use `--accent-ink`. The logo's SVG class was renamed from `.hk` to `.cm` because it collided with the hook-card `.hk` class.
+
+## Round 4: The Thumb-Stop
+
+Scored 5/10 before this round: first impression 6, distinctiveness 3, creator voice 5, trust 3, craft 7. The full critique and the three directions considered are in the redesign directions page. The owner picked **The Thumb-Stop** with product crops as the illustration style.
+
+What was wrong, and what changed:
+
+| Problem | Fix |
+|---|---|
+| The landing page was the default AI template: centred serif, glow, product frame, stat row, bento, testimonials, three price cards. | Rebuilt from the feed's own grammar. The hero is a live feed: other people's posts stream past with speed-linked blur and yours is pinned in the middle. Its first line is graded as you type. Under 70 the feed keeps scrolling past you; at 70+ it brakes and parks. |
+| Fabricated proof (“41,208 posts”, “3.1× lift”, six named testimonials). | All removed. Example data is labelled as example data. Prices are labelled as placeholders. |
+| The scroll story was four screens of mostly empty black. | Replaced by “One idea, before your coffee cools”: five moments in a creator's morning, each with a real crop of the product beside it. Nothing waits on a sticky scene. |
+| “Everything Typefully does.” | Gone. No competitor names. |
+| Hook puns (“Pro when you're hooked”, “Hook, meet world”). | Rewritten in creator shop talk (“Stay close for the first replies.”). |
+| Ghostwriters and founders were an afterthought. | New “For creators, by creators” section with a tab each for solo creators, founders and ghostwriters. The app gained client voices (⌘1–3 switcher), a “Writing as” pill, approvals (“To approve” / “Approved”) in the queue with approve and send-back actions, and a “Waiting for approval” list. |
+| Bento cards half empty. | No bento. Every visual is a product crop at a size where it can be read. |
+| Gradient headline text. | Removed from the system (also flagged by the detector). |
+| Sidebar crowded with a streak widget and plan meter. | The sidebar keeps navigation, a voice switcher and one line for the free plan. Momentum moved into the Queue, where cadence is planned. |
+| The preview pane was a detached card. | It's now “In the feed”: your draft sits between faded posts from other people, the way it will actually be seen. |
+| Particles standing in for a point of view. | The murmuration engine is deleted. Onboarding uses the same drifting ghost feed as the landing page. |
+
+Also fixed while building: landing-only class names (`.chg`, `.st`, `.bars`) collided with app components (riff diff, onboarding steps, hook grader bars). All landing selectors are now scoped under `.land`.

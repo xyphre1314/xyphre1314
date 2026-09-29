@@ -143,7 +143,6 @@ a{ color:inherit; text-decoration:none; }
 .label{ font:500 var(--t-11)/1.2 var(--font-mono); text-transform:uppercase; letter-spacing:.08em; color:var(--text-3); }
 .muted{ color:var(--text-2); } .faint{ color:var(--text-3); } .accent{ color:var(--accent-text); }
 p{ margin:0; }
-.grad{ background:linear-gradient(180deg,var(--text-1) 30%,color-mix(in srgb,var(--text-1) 55%,transparent)); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
 kbd,.kbd{ display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 5px; font:500 var(--t-11)/1 var(--font-mono); color:var(--text-2); background:var(--surface-2); border:1px solid var(--border); border-radius:5px; letter-spacing:0; }
 .kbds{ display:inline-flex; gap:3px; }
@@ -239,11 +238,6 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .pill.error{ color:var(--error); background:var(--error-soft); box-shadow:none; }
 .dot{ width:6px; height:6px; border-radius:50%; background:currentColor; display:inline-block; flex:none; }
 
-.flock-loader{ display:inline-flex; align-items:flex-end; gap:4px; height:16px; }
-.flock-loader i{ width:6px; height:6px; border-radius:50%; background:var(--accent); animation:flockhop .9s var(--ease-out) infinite; }
-.flock-loader i:nth-child(2){ width:5px; height:5px; animation-delay:.12s; }
-.flock-loader i:nth-child(3){ width:4px; height:4px; animation-delay:.24s; }
-@keyframes flockhop{ 0%,100%{ transform:translateY(0); opacity:.4 } 40%{ transform:translateY(-6px); opacity:1 } }
 
 /* tooltip */
 #tip{ position:fixed; z-index:1000; pointer-events:none; display:flex; align-items:center; gap:8px; padding:5px 6px 5px 9px; border-radius:8px; background:#1B1C20; color:#F1F2F4; font:500 var(--t-12)/1.2 var(--font-ui); box-shadow:0 0 0 1px rgba(255,255,255,.08),0 10px 30px -8px rgba(0,0,0,.5); opacity:0; transform:translateY(3px) scale(.97); transform-origin:var(--tip-origin,50% 100%); transition:opacity 100ms var(--ease-out),transform var(--d-spring) var(--spring); max-width:280px; }
@@ -356,6 +350,39 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 body.typing .side{ opacity:.25; }
 body.typing .fade-typing{ opacity:0; pointer-events:none; }
 .fade-typing{ transition:opacity .45s var(--ease-out); }
+
+/* workspace switcher + plan line */
+.ws-btn{ display:flex; align-items:center; gap:9px; width:100%; padding:7px 8px; margin:0 0 8px; border-radius:10px; text-align:left; box-shadow:inset 0 0 0 1px var(--border); background:var(--surface); transition:box-shadow var(--d-micro),background var(--d-micro); }
+.ws-btn:hover{ box-shadow:inset 0 0 0 1px var(--border-strong); }
+.ws-btn:focus-visible{ box-shadow:var(--focus); }
+.ws-btn .avatar{ width:26px; height:26px; }
+.ws-btn .ws-t{ flex:1; min-width:0; display:grid; }
+.ws-btn b{ font:600 13px/1.25 var(--font-ui); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ws-btn small{ font-size:11.5px; color:var(--text-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ws-btn > .icon{ color:var(--text-3); }
+.side-plan{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:9px 10px; border-radius:10px; font-size:12px; color:var(--text-3); box-shadow:inset 0 0 0 1px var(--border); transition:color var(--d-micro),box-shadow var(--d-micro); }
+.side-plan .go{ font-weight:600; color:var(--text-1); white-space:nowrap; }
+.side-plan .pc-count{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.side-plan:hover{ color:var(--text-2); box-shadow:inset 0 0 0 1px var(--border-strong); }
+.ws-pill{ display:inline-flex; align-items:center; gap:7px; height:28px; padding:0 10px 0 4px; border-radius:99px; font-size:12.5px; color:var(--text-2); background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); margin-left:10px; }
+.ws-pill .avatar{ width:20px; height:20px; font-size:9px; }
+.ws-pill b{ color:var(--text-1); font-weight:600; }
+/* queue tags */
+.qtags{ display:flex; gap:4px; flex-wrap:wrap; margin-top:6px; }
+.qt{ display:inline-flex; align-items:center; gap:5px; height:18px; padding:0 6px; border-radius:6px; font:500 10.5px/1 var(--font-mono); background:var(--surface-3); color:var(--text-2); white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
+.qt i{ width:5px; height:5px; border-radius:50%; background:currentColor; }
+.qt.needs{ color:var(--warn); background:var(--warn-soft); } .qt.ok{ color:var(--success); background:var(--success-soft); }
+/* the draft, in the feed: other people's posts sit around yours, faded */
+.pv-noise{ display:grid; gap:0; opacity:.5; }
+.pv-noise .n{ display:grid; grid-template-columns:32px minmax(0,1fr); gap:10px; padding:12px 16px; border-bottom:1px solid var(--border); font-size:13.5px; color:var(--text-3); }
+.pv-noise .av{ width:32px; height:32px; border-radius:50%; background:var(--surface-3); }
+.pv-noise .nm{ display:block; width:90px; height:8px; border-radius:8px; background:var(--surface-3); margin:4px 0 7px; }
+.pv-noise p{ margin:0; }
+.preview-b > .pv-noise:first-child{ -webkit-mask-image:linear-gradient(transparent,#000 70%); mask-image:linear-gradient(transparent,#000 70%); }
+.preview-b > .pv-noise:last-child{ -webkit-mask-image:linear-gradient(#000 30%,transparent); mask-image:linear-gradient(#000 30%,transparent); }
+.preview-b > .pv{ box-shadow:0 0 0 1px var(--border-strong),0 18px 40px -18px rgba(0,0,0,.35); }
+.onb{ isolation:isolate; }
+.onb .ghostfeed{ opacity:.35; }
 
 /* ==========================================================================
    COMPOSER
@@ -644,7 +671,7 @@ body.typing .preview{ opacity:.7; }
 .cal .dh.today .dd,.cal .dh.today .dn{ color:var(--accent-text); }
 .cal .tl{ padding:10px 8px; font:500 var(--t-11)/1 var(--font-mono); color:var(--text-3); text-align:right; border-top:1px solid var(--border); }
 .slot{ position:relative; min-height:92px; padding:6px; border-top:1px solid var(--border); border-left:1px solid var(--border); transition:background var(--d-micro); }
-.slot.past{ background:repeating-linear-gradient(135deg,transparent 0 6px,var(--surface-2) 6px 7px); }
+.slot.past{ background:color-mix(in srgb,var(--surface-2) 55%,transparent); }
 .slot.best{ padding-top:16px; }
 .slot.best::before{ content:""; position:absolute; top:6px; left:50%; margin-left:-3px; width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px var(--accent-soft),0 0 10px var(--accent-glow); }
 .slot.over{ background:var(--accent-soft); box-shadow:inset 0 0 0 1.5px var(--accent); }
@@ -676,7 +703,7 @@ body.typing .preview{ opacity:.7; }
 .ag-day h3{ display:flex; align-items:baseline; gap:8px; margin:0; font:400 var(--t-24)/1.1 var(--font-display); }
 .ag-day h3 span{ font:500 var(--t-11)/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--text-3); }
 .ag-day.today h3,.ag-day.today h3 span{ color:var(--accent-text); }
-.ag-open{ display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border-radius:12px; box-shadow:inset 0 0 0 1px var(--border); color:var(--text-2); font-size:var(--t-13); text-align:left; background:repeating-linear-gradient(135deg,transparent 0 8px,var(--surface-2) 8px 9px); }
+.ag-open{ display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border-radius:12px; box-shadow:inset 0 0 0 1px var(--border); color:var(--text-2); font-size:var(--t-13); text-align:left; background:var(--bg-elev); }
 .ag-open .dot{ color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
 .ag-open b{ margin-left:auto; color:var(--text-1); font-weight:500; display:inline-flex; gap:4px; align-items:center; }
 .agenda .qcard{ cursor:pointer; font-size:var(--t-14); padding:12px; }
@@ -842,7 +869,6 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .reading .st.done .ck{ background:var(--accent); box-shadow:none; color:var(--accent-ink); animation:none; transform:scale(1); }
 .reading .st .ck .icon{ width:12px; height:12px; stroke-width:2.4; opacity:0; transform:scale(.4); transition:all var(--d-spring) var(--spring-snap); }
 .reading .st.done .ck .icon{ opacity:1; transform:none; }
-#flockCanvas,#heroCanvas{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 .onb-result{ width:min(1000px,100%); display:grid; gap:28px; position:relative; z-index:1; }
 .onb-result > *{ animation:rise var(--d-slow) var(--ease-out) both; }
 .onb-result > *:nth-child(2){ animation-delay:80ms } .onb-result > *:nth-child(3){ animation-delay:160ms }
@@ -855,141 +881,277 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .timer{ font:500 var(--t-12)/1 var(--font-mono); color:var(--text-3); display:inline-flex; gap:6px; align-items:center; }
 
 /* ==========================================================================
-   LANDING (always dark, Linear-style, with one light "paper" chapter)
+   LANDING: "The Thumb-Stop". The page is built from the feed's own grammar.
+   A graphite stream of other people's posts runs past in motion blur; the
+   creator's post is the only sharp, bright object. Weak first lines get
+   scrolled past; strong ones stop the feed.
    ========================================================================== */
-.land{ background:var(--bg); color:var(--text-1); overflow-x:clip; }
-.l-nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:24px; height:60px; padding:0 max(20px,calc((100vw - 1160px)/2)); background:rgba(8,9,10,.6); backdrop-filter:blur(12px) saturate(1.4); -webkit-backdrop-filter:blur(12px) saturate(1.4); border-bottom:1px solid transparent; transition:border-color var(--d-fast),background var(--d-fast); }
-.l-nav.scrolled{ border-bottom-color:var(--border); background:rgba(8,9,10,.78); }
-.l-nav .links{ display:flex; gap:2px; margin-left:12px; }
-.l-nav .links a{ padding:7px 10px; border-radius:8px; color:var(--text-2); font-size:var(--t-14); transition:color var(--d-micro),background var(--d-micro); }
+.land{ --ink:#0B0C0E; --ink-2:#111215; --ink-3:#17181C; --noise:#1A1B1F; --noise-tx:#6A6D75; --noise-dim:#44464D; --paper:#F7F7F8; --paper-ink:#111214;
+  background:var(--ink); color:var(--text-1); overflow-x:clip; }
+.land ::selection{ background:rgba(255,255,255,.22); color:#fff; }
+.land .wrap{ max-width:1240px; margin:0 auto; padding-inline:clamp(16px,3.6vw,40px); }
+.land .display{ font-family:var(--font-display); font-weight:400; letter-spacing:-.028em; line-height:.98; text-wrap:balance; margin:0; }
+
+/* nav */
+.l-nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:22px; height:62px; padding:0 max(16px,calc((100vw - 1240px)/2 + 40px)); background:color-mix(in srgb,var(--ink) 70%,transparent); backdrop-filter:blur(14px) saturate(1.3); -webkit-backdrop-filter:blur(14px) saturate(1.3); border-bottom:1px solid transparent; transition:border-color .3s,background .3s; }
+.l-nav.scrolled{ border-bottom-color:rgba(255,255,255,.06); background:color-mix(in srgb,var(--ink) 88%,transparent); }
+.l-nav .links{ display:flex; gap:2px; margin-left:10px; }
+.l-nav .links a{ padding:7px 11px; border-radius:8px; color:var(--text-2); font-size:var(--t-14); transition:color var(--d-micro),background var(--d-micro); }
 .l-nav .links a:hover{ color:var(--text-1); background:rgba(255,255,255,.05); }
 .l-nav .grow{ flex:1; }
-.wrap{ max-width:1160px; margin:0 auto; padding-inline:24px; }
-.hero{ position:relative; padding:88px 0 40px; isolation:isolate; }
-.hero::before{ content:""; position:absolute; z-index:-1; left:50%; top:-240px; width:1200px; height:760px; margin-left:-600px; background:radial-gradient(closest-side,rgba(255,255,255,0.092),rgba(255,255,255,0.025) 60%,transparent); pointer-events:none; }
-.hero-in{ position:relative; z-index:1; display:grid; grid-template-columns:minmax(0,1fr); justify-items:center; text-align:center; gap:24px; }
-.hero-in > *{ max-width:100%; }
-.hero .eyebrow{ display:inline-flex; align-items:center; gap:8px; height:30px; padding:0 12px 0 5px; border-radius:99px; background:rgba(255,255,255,.04); box-shadow:inset 0 0 0 1px var(--border-strong); font-size:var(--t-13); color:var(--text-2); max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:background var(--d-micro),color var(--d-micro); }
-.hero .eyebrow:hover{ background:rgba(255,255,255,.07); color:var(--text-1); }
-.hero .eyebrow .pill{ height:21px; background:var(--accent); color:var(--accent-ink); }
-.hero h1{ font-size:clamp(54px,9vw,128px); margin:0; max-width:11ch; line-height:.96; letter-spacing:-.03em; }
-.hero h1 .w{ display:inline-block; white-space:pre; padding-bottom:.12em; margin-bottom:-.12em; background:linear-gradient(180deg,#FFFFFF 25%,rgba(247,248,248,.6)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-.hero h1 em{ -webkit-text-fill-color:var(--accent-text); }
-.hero h1 em{ color:var(--accent-text); }
-.hero .sub{ max-width:54ch; font-size:clamp(16px,1.6vw,19px); line-height:1.55; color:var(--text-2); text-wrap:pretty; }
-.hero-cta{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; }
-.hero-handle{ display:flex; align-items:center; gap:4px; height:52px; padding:5px 5px 5px 16px; border-radius:14px; background:rgba(255,255,255,.04); box-shadow:inset 0 0 0 1px var(--border-strong),0 20px 50px -20px rgba(0,0,0,.8); transition:box-shadow var(--d-fast),background var(--d-fast); width:min(440px,100%); }
-.hero-handle:focus-within{ box-shadow:inset 0 0 0 1px var(--accent),0 0 0 5px var(--accent-soft); background:rgba(255,255,255,.06); }
-.hero-handle .at{ font:500 var(--t-17)/1 var(--font-mono); color:var(--text-3); }
-.hero-handle input{ flex:1; min-width:0; height:100%; border:0; background:transparent; font-size:var(--t-17); }
-.hero-note{ font-size:var(--t-13); color:var(--text-3); display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
-.hero-note span{ display:inline-flex; gap:6px; align-items:center; }
-.hero-note .icon{ width:14px; height:14px; color:var(--success); }
 
-/* load-in choreography (runs once, from a visible end state) */
-.intro > *{ animation:rise .9s var(--ease-out) both; }
-.intro > *:nth-child(1){ animation-delay:.05s } .intro > *:nth-child(3){ animation-delay:.35s } .intro > *:nth-child(4){ animation-delay:.45s } .intro > *:nth-child(5){ animation-delay:.55s }
-.intro h1{ animation:none; }
-.intro h1 .w{ animation:wordin .9s var(--ease-out) both; animation-delay:calc(.12s + var(--i) * .06s); }
-@keyframes wordin{ from{ opacity:0; transform:translateY(.35em); filter:blur(10px); } }
+/* ---------- hero: three columns around a live feed ---------- */
+.lp-hero{ position:relative; display:grid; grid-template-columns:minmax(0,1.08fr) minmax(340px,490px) minmax(0,.7fr); gap:clamp(24px,3.4vw,56px); align-items:center; min-height:min(900px,calc(100dvh - 62px)); padding-block:24px 40px; }
+.lp-copy{ display:grid; grid-template-columns:minmax(0,1fr); gap:26px; align-content:center; max-width:30rem; min-width:0; }
+.lp-copy h1{ font-size:clamp(50px,5.4vw,82px); }
+.lp-copy .sub{ color:var(--text-2); font-size:clamp(16px,1.25vw,18.5px); line-height:1.55; max-width:40ch; text-wrap:pretty; }
+.lp-cta{ display:grid; grid-template-columns:minmax(0,1fr); gap:12px; }
+.lp-handle{ display:flex; align-items:center; gap:4px; height:52px; padding:5px 5px 5px 16px; border-radius:14px; background:rgba(255,255,255,.04); box-shadow:inset 0 0 0 1px rgba(255,255,255,.11); width:min(420px,100%); transition:box-shadow var(--d-fast),background var(--d-fast); }
+.lp-handle:focus-within{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 0 0 4px rgba(255,255,255,.07); background:rgba(255,255,255,.06); }
+.lp-handle .at{ font:500 var(--t-17)/1 var(--font-mono); color:var(--text-3); }
+.lp-handle input{ flex:1; min-width:0; height:100%; border:0; background:transparent; font-size:var(--t-17); color:var(--text-1); }
+.lp-handle input::placeholder{ color:var(--text-3); }
+.lp-fine{ font-size:var(--t-13); color:var(--text-3); }
 
-.demo-wrap{ position:relative; margin:64px auto 0; max-width:1060px; }
-.demo-wrap::before{ content:""; position:absolute; inset:-1px; border-radius:22px; background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.06) 30%,rgba(255,255,255,.02)); z-index:0; }
-.demo-wrap::after{ content:""; position:absolute; left:10%; right:10%; top:-40px; height:120px; background:radial-gradient(closest-side,rgba(255,255,255,0.147),transparent); filter:blur(20px); z-index:-1; }
-.demo{ position:relative; z-index:1; margin:1px; border-radius:21px; background:#0D0E10; overflow:hidden; display:grid; grid-template-columns:1.15fr 1fr; animation:rise 1.1s .6s var(--ease-out) both; }
-.demo-bar{ grid-column:1/-1; display:flex; align-items:center; gap:8px; height:42px; padding:0 14px; border-bottom:1px solid var(--border); }
-.demo-bar .dots{ display:flex; gap:6px; }
-.demo-bar .dots i{ width:10px; height:10px; border-radius:50%; background:var(--surface-3); }
-.demo-bar .ttl{ margin:0 auto; font:500 var(--t-12)/1 var(--font-mono); color:var(--text-3); }
-.demo-ed{ padding:24px 24px 18px; display:grid; grid-template-rows:1fr auto auto; gap:14px; text-align:left; border-right:1px solid var(--border); min-height:360px; }
-.demo-ed .row{ display:flex; gap:12px; min-height:176px; }
-.demo-ed .field-wrap{ flex:1; }
-.demo-ed .tw-input{ min-height:170px; }
-.demo-tools{ display:flex; gap:6px; flex-wrap:wrap; }
-.demo-pv{ padding:20px; background:rgba(0,0,0,.2); display:grid; grid-template-rows:auto 1fr; gap:12px; align-content:start; text-align:left; }
-.demo-meta{ display:flex; align-items:center; gap:10px; min-height:26px; }
-.demo-meta p{ font-size:13px; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.demo-foot{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
-#demo-reason{ min-height:20px; }
+/* the feed */
+.land .fs{ position:relative; height:min(820px,calc(100dvh - 110px)); min-height:560px; border-radius:26px; overflow:hidden; isolation:isolate;
+  -webkit-mask-image:linear-gradient(transparent 0, #000 16%, #000 84%, transparent 100%); mask-image:linear-gradient(transparent 0, #000 16%, #000 84%, transparent 100%); }
+.land .fs-track{ position:absolute; left:0; right:0; top:0; display:grid; gap:10px; will-change:transform,filter; }
+.land .fp{ display:grid; grid-template-columns:36px minmax(0,1fr); gap:12px; padding:15px 16px 13px; border-radius:18px; background:var(--noise); box-shadow:inset 0 0 0 1px rgba(255,255,255,.035); color:var(--noise-tx); font-size:15px; line-height:1.45; }
+.land .fp .av{ width:36px; height:36px; border-radius:50%; background:#26282D; }
+.land .fp .nm{ display:flex; gap:8px; align-items:center; margin-bottom:5px; }
+.land .fp .nm i{ display:block; height:9px; border-radius:9px; background:#2B2D33; }
+.land .fp .nm i:first-child{ width:84px; } .land .fp .nm i:last-child{ width:52px; background:#232429; }
+.land .fp .tx{ color:var(--noise-tx); }
+.land .fp .ac{ display:flex; gap:26px; margin-top:10px; color:var(--noise-dim); }
+.land .fp .ac .icon{ width:14px; height:14px; }
+.land .fs-slot{ border-radius:18px; }
 
-.logos{ margin:88px auto 0; display:grid; justify-items:center; gap:22px; text-align:center; }
-.stats-row{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; width:min(760px,100%); }
-.stat{ display:grid; gap:6px; justify-items:center; }
-.stat b{ font:400 clamp(40px,5vw,60px)/1 var(--font-display); letter-spacing:-.03em; font-variant-numeric:lining-nums tabular-nums; }
-.stat span{ color:var(--text-2); font-size:var(--t-14); }
+/* the creator's post: the only sharp, bright thing on the page */
+.land .fs-me{ position:absolute; left:10px; right:10px; top:50%; z-index:2; transform:translateY(-50%); display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 13px; padding:18px 18px 14px; border-radius:20px; background:var(--paper); color:var(--paper-ink);
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 30px 70px -20px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.2); transition:box-shadow .5s var(--ease-out); }
+.land .fs-me .avatar{ width:40px; height:40px; font-size:15px; background:#111214; color:#fff; box-shadow:none; }
+.land .fs-me .hd{ display:flex; align-items:center; gap:7px; font-size:14.5px; min-width:0; }
+.land .fs-me .hd b{ font-weight:700; }
+.land .fs-me .hd span{ color:#6B6E76; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.land .fs-me .hd .grow{ flex:1; }
+.land .fs-me .score{ display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px 0 8px; border-radius:99px; background:#EDEDEF; font:500 12.5px/1 var(--font-mono); color:#111214; transition:background .3s,color .3s; font-variant-numeric:tabular-nums; }
+.land .fs-me .score i{ width:7px; height:7px; border-radius:50%; background:#C24141; transition:background .3s; }
+.land .fs-me.stopped .score{ background:#111214; color:#fff; }
+.land .fs-me.stopped .score i{ background:#4CC38A; }
+.land .fs-me .first{ position:relative; grid-column:2; margin-top:4px; }
+.land .fs-me textarea{ display:block; width:100%; resize:none; border:0; outline:0; background:transparent; padding:0; font:600 clamp(18px,1.55vw,21px)/1.35 var(--font-ui); letter-spacing:-.012em; color:#111214; caret-color:#111214; overflow:hidden; transition:opacity .25s,filter .25s; }
+.land .fs-me textarea::placeholder{ color:#9A9CA3; }
+.land .fs-me textarea:focus-visible{ box-shadow:none; outline:2px solid rgba(17,18,20,.14); outline-offset:5px; border-radius:6px; }
+.land .fs-me textarea.swap{ opacity:0; filter:blur(4px); }
+.land .fs-me .uline{ position:absolute; left:0; bottom:-3px; height:2px; width:var(--uw,60%); border-radius:2px; background:#111214; transform:scaleX(0); transform-origin:left; transition:transform .7s var(--ease-out); }
+.land .fs-me.stopped .uline{ transform:scaleX(1); transition-delay:.15s; }
+.land .fs-me .rest{ grid-column:2; display:grid; gap:7px; margin-top:13px; }
+.land .fs-me .rest i{ display:block; height:8px; border-radius:8px; background:#E4E4E7; }
+.land .fs-me .tools{ grid-column:2; display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid #E7E7EA; }
+.land .fs-me .tools button{ display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 11px; border-radius:9px; font:500 13px/1 var(--font-ui); color:#33353B; background:#EFEFF1; transition:background var(--d-micro),transform var(--d-spring) var(--spring-snap); }
+.land .fs-me .tools button:hover{ background:#E3E3E6; }
+.land .fs-me .tools button:active{ transform:scale(.95); }
+.land .fs-me .tools button:focus-visible{ outline:2px solid #111214; outline-offset:2px; }
+.land .fs-me .tools .icon{ width:14px; height:14px; }
+.land .fs-me .tools .hint{ margin-left:auto; font:500 11.5px/1 var(--font-mono); color:#8B8E95; }
 
-.l-sec{ padding:140px 0 0; }
-.l-sec-h{ display:grid; gap:16px; max-width:760px; margin-bottom:56px; }
-.l-sec-h.center{ margin-inline:auto; text-align:center; justify-items:center; }
-.l-sec-h .display{ font-size:clamp(42px,5.6vw,76px); }
-.l-sec-h p{ color:var(--text-2); font-size:var(--t-18); line-height:1.55; max-width:52ch; }
+/* the grade readout (a crop of the real hook grader) */
+.land .lp-grade{ display:grid; gap:18px; align-content:center; max-width:19rem; justify-self:end; width:100%; }
+.land .lp-grade .n{ display:flex; align-items:baseline; gap:10px; }
+.land .lp-grade .n b{ font:400 clamp(84px,8vw,124px)/.8 var(--font-display); letter-spacing:-.04em; font-variant-numeric:lining-nums tabular-nums; min-width:1.2ch; }
+.land .lp-grade .n span{ font:500 12px/1.3 var(--font-mono); color:var(--text-3); }
+.land .lp-grade dl{ display:grid; grid-template-columns:auto minmax(0,1fr) 28px; gap:9px 12px; align-items:center; margin:0; font-size:13px; }
+.land .lp-grade dt{ color:var(--text-2); }
+.land .lp-grade dd{ margin:0; height:4px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden; }
+.land .lp-grade dd i{ display:block; height:100%; width:calc(var(--v) * 1%); background:var(--text-1); border-radius:4px; transition:width .7s var(--ease-out); }
+.land .lp-grade .v{ font:500 12px/1 var(--font-mono); color:var(--text-3); text-align:right; font-variant-numeric:tabular-nums; }
+.land .lp-grade .why{ font-size:14.5px; line-height:1.5; color:var(--text-1); min-height:3em; }
+.land .lp-grade .state{ display:flex; align-items:center; gap:10px; padding-top:14px; border-top:1px solid rgba(255,255,255,.08); font:500 12.5px/1.3 var(--font-mono); color:var(--text-3); font-variant-numeric:tabular-nums; }
+.land .lp-grade .state i{ width:8px; height:8px; border-radius:50%; background:#F26D6D; box-shadow:0 0 0 4px rgba(242,109,109,.14); flex:none; transition:background .3s,box-shadow .3s; }
+.land .lp-grade.stopped .state i{ background:#4CC38A; box-shadow:0 0 0 4px rgba(76,195,138,.16); }
+.land .lp-grade.stopped .state{ color:var(--text-1); }
 
-.story{ display:grid; grid-template-columns:1fr 1.1fr; gap:72px; align-items:start; }
-.story-step{ min-height:64vh; display:grid; align-content:center; gap:12px; padding:24px 0; opacity:.28; filter:blur(1px); transition:opacity .5s var(--ease-out),filter .5s var(--ease-out); }
-.story-step.on{ opacity:1; filter:none; }
-.story-step .label{ color:var(--accent-text); }
-.story-step h3{ font:400 clamp(32px,3.8vw,48px)/1.05 var(--font-display); letter-spacing:-.02em; margin:0; }
-.story-step p{ color:var(--text-2); font-size:var(--t-17); line-height:1.55; max-width:44ch; }
-.story-stage{ position:sticky; top:calc(50vh - 220px); height:440px; border-radius:22px; background:#0D0E10; box-shadow:0 0 0 1px var(--border-strong),0 40px 80px -30px rgba(0,0,0,.9); overflow:hidden; }
-.story-stage::before{ content:""; position:absolute; inset:0; background:radial-gradient(70% 60% at 50% 0%,rgba(255,255,255,0.05),transparent); pointer-events:none; }
-.stage-scene{ position:absolute; inset:0; padding:32px; display:grid; align-content:center; gap:10px; opacity:0; visibility:hidden; transform:translateY(10px); filter:blur(6px); transition:opacity .22s var(--ease-out),transform .22s var(--ease-out),filter .22s var(--ease-out),visibility 0s .22s; pointer-events:none; }
-.stage-scene.on{ opacity:1; visibility:visible; transform:none; filter:none; pointer-events:auto; transition:opacity .45s .18s var(--ease-out),transform .6s .18s var(--ease-out),filter .45s .18s var(--ease-out),visibility 0s; }
-.stage-scene .mini{ padding:13px 15px; border-radius:12px; background:rgba(255,255,255,.03); box-shadow:inset 0 0 0 1px var(--border); font-size:var(--t-15); line-height:1.5; }
-.stage-scene .mini.hl{ box-shadow:inset 0 0 0 1px var(--accent),0 0 0 5px var(--accent-soft); background:var(--accent-soft); }
-.stage-scene.on .mini{ animation:rise .6s var(--ease-out) both; }
-.stage-scene.on .mini:nth-child(2){ animation-delay:.26s } .stage-scene.on .mini:nth-child(3){ animation-delay:.34s } .stage-scene.on .mini:nth-child(4){ animation-delay:.42s } .stage-scene.on .mini:nth-child(5){ animation-delay:.5s }
-.type-demo{ font:400 var(--t-17)/1.65 var(--font-ui); }
-.type-demo .g{ color:var(--text-3); }
-.mini-cal{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
-.mini-cal div{ height:64px; border-radius:10px; background:rgba(255,255,255,.02); box-shadow:inset 0 0 0 1px var(--border); padding:6px; font:500 10px/1.2 var(--font-mono); color:var(--text-3); position:relative; }
-.mini-cal div.f::after{ content:""; position:absolute; left:6px; right:6px; bottom:6px; height:22px; border-radius:6px; background:var(--accent-soft); box-shadow:inset 2px 0 0 var(--accent); }
+/* ---------- section rhythm ---------- */
+.lp-sec{ padding-top:clamp(96px,12vw,168px); }
+.lp-h{ display:grid; gap:18px; max-width:46rem; margin-bottom:clamp(40px,5vw,64px); }
+.lp-h .display{ font-size:clamp(40px,5vw,72px); }
+.lp-h p{ color:var(--text-2); font-size:clamp(16px,1.3vw,18.5px); line-height:1.55; max-width:52ch; text-wrap:pretty; }
 
-/* light "paper" chapter (the Wispr-style alternation) */
-.paper-sec{ margin:140px 12px 0; padding:120px 0; background:#F5F4F0; color:#111216; border-radius:32px; }
-.paper-sec + .paper-sec{ margin-top:0; padding-top:0; border-radius:0; }
-.paper-sec.end{ border-radius:0 0 32px 32px; padding-bottom:120px; }
-.paper-sec .l-sec-h p{ color:#51545C; }
+/* motion grammar: things arrive the way a feed stops, fast then settled */
+.stopin.armed{ opacity:0; transform:translateY(64px); filter:blur(8px); }
+.stopin.in{ opacity:1; transform:none; filter:none; transition:transform .9s cubic-bezier(.12,.9,.18,1),filter .6s cubic-bezier(.12,.9,.18,1),opacity .35s linear; transition-delay:var(--rd,0s); }
 
-.ba{ position:relative; border-radius:22px; overflow:hidden; background:var(--surface); box-shadow:0 0 0 1px var(--border),0 30px 60px -30px rgba(0,0,0,.25); user-select:none; touch-action:pan-y; }
-.ba-side{ padding:44px clamp(20px,5vw,56px) 80px; display:grid; gap:16px; align-content:start; min-height:360px; }
-.ba > .ba-side{ padding-right:calc(50% + 32px); }
-.ba-side .txt{ font:400 clamp(17px,2vw,21px)/1.55 var(--font-ui); white-space:pre-wrap; }
-.ba-after{ position:absolute; inset:0; background:#FBFBFA; clip-path:inset(0 0 0 var(--x,50%)); transition:clip-path 60ms linear; }
-.ba-after .ba-side{ padding-left:calc(50% + 32px); }
-.ba-after .ba-side .txt{ font-family:var(--font-display); font-size:clamp(20px,2.4vw,26px); line-height:1.35; letter-spacing:-.01em; }
-.ba-handle{ position:absolute; top:0; bottom:0; left:var(--x,50%); width:2px; margin-left:-1px; background:var(--accent); cursor:ew-resize; }
-.ba-handle button{ position:absolute; top:50%; left:50%; width:42px; height:42px; margin:-21px 0 0 -21px; border-radius:50%; background:var(--accent); color:var(--accent-ink); display:grid; place-items:center; box-shadow:0 8px 24px -6px var(--accent-glow),0 0 0 6px color-mix(in srgb,var(--accent) 18%,transparent); cursor:ew-resize; touch-action:none; transition:transform var(--d-spring) var(--spring-snap); }
-.ba-handle button:hover{ transform:scale(1.08); } .ba-handle button:active{ transform:scale(.94); }
-.ba-score{ display:inline-flex; align-items:center; gap:8px; }
+/* ---------- the grader wall ---------- */
+.land .lp-grader{ display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:clamp(32px,5vw,80px); align-items:start; }
+.land .lp-grader .lp-h{ position:sticky; top:120px; margin:0; }
+.land .gw{ display:grid; gap:10px; }
+.land .gw-row{ display:grid; grid-template-columns:56px minmax(0,1fr) auto; gap:4px 16px; align-items:center; padding:18px 18px 18px 14px; border-radius:18px; background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); transition:background .4s,box-shadow .4s; }
+.land .gw-row .sc{ grid-row:span 2; display:grid; place-items:center; width:48px; height:48px; border-radius:14px; background:rgba(242,109,109,.1); color:#F29C9C; font:500 17px/1 var(--font-mono); font-variant-numeric:tabular-nums; transition:background .4s,color .4s; }
+.land .gw-row .ln{ font:600 clamp(16px,1.35vw,18px)/1.4 var(--font-ui); letter-spacing:-.01em; min-width:0; }
+.land .gw-row .ln del{ color:var(--text-3); text-decoration-color:#F26D6D; background:rgba(242,109,109,.1); border-radius:4px; }
+.land .gw-row .ln ins{ text-decoration:none; background:rgba(76,195,138,.16); color:#BDF0D5; border-radius:4px; }
+.land .gw-row .why{ grid-column:2; font-size:13.5px; color:var(--text-3); line-height:1.45; }
+.land .gw-row .fix{ grid-row:1 / span 2; grid-column:3; }
+.land .gw-row.good{ background:#15171A; box-shadow:inset 0 0 0 1px rgba(255,255,255,.14); }
+.land .gw-row.good .sc{ background:rgba(76,195,138,.12); color:#8FE0B6; }
+.land .gw-row.good .why{ color:var(--text-2); }
+.land .gw-foot{ display:flex; gap:12px; align-items:center; margin-top:8px; color:var(--text-3); font-size:13.5px; }
 
-.feats{ display:grid; grid-template-columns:repeat(6,1fr); gap:14px; }
-.feat{ grid-column:span 2; padding:26px; border-radius:22px; background:#0D0E10; box-shadow:inset 0 0 0 1px var(--border); display:grid; gap:10px; align-content:start; overflow:hidden; position:relative; min-height:280px; transition:box-shadow var(--d-fast); }
-.feat::before{ content:""; position:absolute; inset:0; background:radial-gradient(400px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.10),transparent 60%); opacity:0; transition:opacity var(--d-fast); pointer-events:none; }
-.feat:hover::before{ opacity:1; }
-.feat:hover{ box-shadow:inset 0 0 0 1px var(--border-strong); }
-.feat.wide{ grid-column:span 3; }
-.feat h3{ font:400 var(--t-24)/1.2 var(--font-display); letter-spacing:-.015em; margin:0; }
-.feat p{ color:var(--text-2); font-size:var(--t-14); line-height:1.55; }
-.feat .viz{ margin-top:auto; padding-top:16px; position:relative; }
+/* ---------- a morning with hookworthy ---------- */
+.land .day{ display:grid; gap:clamp(56px,7vw,110px); }
+.land .moment{ display:grid; grid-template-columns:120px minmax(0,.8fr) minmax(0,1.2fr); gap:clamp(20px,3vw,48px); align-items:start; }
+.land .moment > div:not(.crop){ padding-top:4px; }
+.land .moment .t{ align-self:start; padding-top:10px; font:500 13px/1.3 var(--font-mono); color:var(--text-3); font-variant-numeric:tabular-nums; }
+.land .moment .t b{ display:block; font:400 34px/1 var(--font-display); color:var(--text-1); letter-spacing:-.02em; margin-bottom:6px; }
+.land .moment h3{ font:400 clamp(30px,3vw,44px)/1.02 var(--font-display); letter-spacing:-.022em; margin:0 0 12px; text-wrap:balance; }
+.land .moment p{ color:var(--text-2); font-size:16.5px; line-height:1.55; max-width:40ch; }
+.land .crop{ position:relative; border-radius:22px; background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 40px 80px -40px rgba(0,0,0,.9); padding:clamp(18px,2.4vw,30px); overflow:hidden; display:grid; gap:12px; min-width:0; }
+.land .crop .row{ display:flex; align-items:center; gap:10px; }
+.land .crop .mini{ padding:14px 16px; border-radius:14px; background:var(--ink-3); box-shadow:inset 0 0 0 1px rgba(255,255,255,.05); font-size:15px; line-height:1.5; min-width:0; }
+.land .crop .mini.sel{ background:#1E2024; box-shadow:inset 0 0 0 1px rgba(255,255,255,.3); }
+.land .crop .k{ display:block; margin-bottom:4px; font:500 11px/1 var(--font-mono); color:var(--text-3); }
+.land .crop .memo{ display:flex; align-items:center; gap:12px; }
+.land .crop .wave{ display:flex; align-items:center; gap:3px; height:28px; flex:1; }
+.land .crop .wave i{ width:3px; border-radius:3px; background:var(--text-2); height:calc(var(--h) * 1%); }
+.land .crop .ghost{ font:400 clamp(17px,1.6vw,21px)/1.6 var(--font-ui); }
+.land .crop .ghost .g{ color:var(--text-3); }
+.land .crop .ghost kbd{ display:inline-grid; place-items:center; height:22px; padding:0 7px; margin-left:4px; border-radius:6px; font:500 11px/1 var(--font-mono); color:var(--text-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); vertical-align:2px; }
+.land .crop .dif{ font:500 clamp(17px,1.6vw,21px)/1.65 var(--font-ui); }
+.land .crop .dif del{ color:#F29C9C; background:rgba(242,109,109,.12); text-decoration-color:rgba(242,109,109,.8); border-radius:4px; }
+.land .crop .dif ins{ color:#BDF0D5; background:rgba(76,195,138,.16); text-decoration:none; border-radius:4px; }
+.land .crop .acts{ display:flex; gap:8px; align-items:center; }
+.land .crop .b{ height:32px; padding:0 13px; border-radius:9px; font:600 13px/32px var(--font-ui); background:rgba(255,255,255,.06); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); color:var(--text-1); }
+.land .crop .b.p{ background:#F3F3F4; color:#111214; box-shadow:none; }
+.land .crop .delta{ margin-left:auto; font:500 13px/1 var(--font-mono); color:var(--text-2); font-variant-numeric:tabular-nums; }
+.land .crop .delta b{ color:#8FE0B6; font-weight:500; }
+.land .week{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; }
+.land .week div{ position:relative; min-height:130px; border-radius:12px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); padding:9px 8px; font:500 11px/1.2 var(--font-mono); color:var(--text-3); display:grid; align-content:start; gap:6px; }
+.land .week div.best{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.5); color:var(--text-1); }
+.land .week .q{ height:30px; border-radius:7px; background:rgba(255,255,255,.07); }
+.land .week .q.me{ background:#F3F3F4; }
+.land .week .dot{ position:absolute; left:50%; bottom:14px; width:8px; height:8px; margin-left:-4px; border-radius:50%; background:#F3F3F4; box-shadow:0 0 0 5px rgba(255,255,255,.08),0 0 18px rgba(255,255,255,.4); }
+.land .crop .insight{ font:400 clamp(24px,2.4vw,34px)/1.15 var(--font-display); letter-spacing:-.02em; }
+.land .bars{ display:grid; gap:9px; }
+.land .bars div{ display:grid; grid-template-columns:90px minmax(0,1fr) 44px; gap:12px; align-items:center; font-size:13.5px; color:var(--text-2); }
+.land .bars span.tr{ height:8px; border-radius:8px; background:rgba(255,255,255,.06); overflow:hidden; }
+.land .bars span.tr i{ display:block; height:100%; border-radius:8px; background:var(--text-1); width:var(--w); }
+.land .bars div:not(:first-child) span.tr i{ background:rgba(255,255,255,.3); }
+.land .bars b{ font:500 12.5px/1 var(--font-mono); text-align:right; color:var(--text-1); font-weight:500; }
 
-.walls{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:start; }
-.quote{ margin:0; padding:22px; border-radius:20px; background:#FFFFFF; box-shadow:0 0 0 1px rgba(17,18,24,.07),0 10px 30px -18px rgba(0,0,0,.2); display:grid; gap:16px; }
-.quote p{ font:400 var(--t-20)/1.4 var(--font-display); letter-spacing:-.005em; }
-.quote .who{ display:flex; gap:10px; align-items:center; font-size:var(--t-13); }
-.quote .who b{ display:block; font-weight:600; }
-.quote .who span{ color:#6B6F78; }
+/* ---------- creators ---------- */
+.land .who{ display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:clamp(28px,4vw,64px); align-items:start; }
+.land .who-tabs{ display:grid; gap:8px; }
+.land .who-tab{ display:grid; gap:6px; text-align:left; padding:20px 22px; border-radius:18px; color:var(--text-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); transition:background .3s,box-shadow .3s,color .3s; }
+.land .who-tab b{ font:400 28px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--text-1); }
+.land .who-tab span{ font-size:14.5px; line-height:1.5; }
+.land .who-tab ul{ display:none; margin:8px 0 0; padding:0; list-style:none; gap:8px; font-size:14.5px; color:var(--text-1); }
+.land .who-tab li{ display:flex; gap:10px; align-items:baseline; }
+.land .who-tab li .icon{ width:14px; height:14px; flex:none; color:#8FE0B6; transform:translateY(2px); }
+.land .who-tab[aria-selected="true"]{ background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); }
+.land .who-tab[aria-selected="true"] ul{ display:grid; }
+.land .who-tab:hover:not([aria-selected="true"]){ background:rgba(255,255,255,.025); }
+.land .who-tab:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
+.land .who-stage{ position:sticky; top:100px; min-height:460px; }
+.land .who-stage .crop{ animation:settle .7s cubic-bezier(.12,.9,.18,1) both; }
+@keyframes settle{ from{ transform:translateY(28px); filter:blur(6px); opacity:0; } }
+.land .ws{ display:grid; gap:4px; }
+.land .ws-row{ display:grid; grid-template-columns:28px minmax(0,1fr) auto; gap:12px; align-items:center; padding:10px 12px; border-radius:12px; font-size:14.5px; }
+.land .ws-row.on{ background:var(--ink-3); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+.land .ws-row small{ display:block; color:var(--text-3); font-size:12.5px; }
+.land .ws-row .avatar{ width:28px; height:28px; font-size:11px; }
+.land .st{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px; border-radius:99px; font:500 11.5px/1 var(--font-mono); background:rgba(255,255,255,.06); color:var(--text-2); white-space:nowrap; }
+.land .st i{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+.land .st.need{ color:#F2C38A; background:rgba(242,161,74,.1); } .land .st.ok{ color:#8FE0B6; background:rgba(76,195,138,.1); } .land .st.sch{ color:var(--text-1); }
+.land .ql{ display:grid; gap:6px; }
+.land .ql div{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 14px; border-radius:12px; background:var(--ink-3); font-size:14.5px; }
+.land .ql div span:first-child{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.land .slider{ display:grid; gap:8px; }
+.land .slider .ends{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-3); }
+.land .slider input{ width:100%; accent-color:#F3F3F4; }
+.land .chg{ display:grid; gap:6px; font:500 13px/1.5 var(--font-mono); color:var(--text-2); padding:14px 16px; border-radius:12px; background:var(--ink-3); }
+.land .chg b{ color:var(--text-1); font-weight:500; }
 
-.final{ position:relative; padding:160px 24px 140px; text-align:center; overflow:hidden; isolation:isolate; }
-.final::before{ content:""; position:absolute; z-index:-1; left:50%; bottom:-300px; width:1200px; height:700px; margin-left:-600px; background:radial-gradient(closest-side,rgba(255,255,255,0.092),transparent); }
-.final .display{ font-size:clamp(50px,8vw,112px); max-width:13ch; margin:0 auto; position:relative; line-height:.98; }
-.final .hero-cta{ margin-top:36px; position:relative; }
-.foot{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; padding:28px max(20px,calc((100vw - 1160px)/2)); border-top:1px solid var(--border); color:var(--text-3); font-size:var(--t-13); }
-.foot nav{ display:flex; gap:16px; flex-wrap:wrap; }
+/* ---------- light chapter: one post, four feeds ---------- */
+.lp-light{ margin:clamp(96px,12vw,168px) clamp(8px,1vw,14px) 0; padding:clamp(72px,9vw,128px) 0; border-radius:clamp(24px,3vw,36px); background:#F4F4F5; color:#111214; }
+.lp-light .lp-h p{ color:#55585F; }
+.land .four{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; align-items:start; }
+.land .four .pv{ margin:0; }
+.land .four-h{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+
+/* ---------- pricing ---------- */
+.land .lp-plans{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; align-items:stretch; }
+.land .lp-plan{ display:grid; grid-template-rows:auto auto 1fr auto; gap:22px; padding:28px; border-radius:22px; background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); }
+.land .lp-plan.pro{ background:#F4F4F5; color:#111214; box-shadow:none; }
+.land .lp-plan .nm{ display:grid; gap:6px; }
+.land .lp-plan .nm b{ font:400 32px/1 var(--font-display); letter-spacing:-.02em; }
+.land .lp-plan .nm span{ font-size:14.5px; color:var(--text-2); }
+.land .lp-plan.pro .nm span{ color:#55585F; }
+.land .lp-plan .pr{ display:flex; align-items:baseline; gap:8px; }
+.land .lp-plan .pr b{ font:400 60px/.9 var(--font-display); letter-spacing:-.03em; font-variant-numeric:lining-nums; }
+.land .lp-plan .pr span{ font-size:13.5px; color:var(--text-3); }
+.land .lp-plan.pro .pr span{ color:#6B6E76; }
+.land .lp-plan ul{ list-style:none; margin:0; padding:0; display:grid; gap:10px; align-content:start; font-size:14.5px; }
+.land .lp-plan li{ display:flex; gap:10px; align-items:baseline; }
+.land .lp-plan li .icon{ width:14px; height:14px; flex:none; transform:translateY(2px); color:var(--text-3); }
+.land .lp-plan.pro li .icon{ color:#111214; }
+.land .lp-plan .btn{ width:100%; }
+.land .lp-plan.pro .btn.primary{ background:#111214; color:#fff; box-shadow:none; }
+.land .bill{ display:flex; gap:12px; align-items:center; margin-top:4px; }
+
+/* ---------- final: the feed stops on your next post ---------- */
+.lp-final{ position:relative; padding:clamp(110px,14vw,190px) 0 clamp(90px,10vw,140px); overflow:hidden; isolation:isolate; }
+.ghostfeed{ position:absolute; inset:0; z-index:-1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding-inline:max(16px,calc((100vw - 1240px)/2)); opacity:.5; -webkit-mask-image:radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); mask-image:radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); }
+.ghostfeed .col{ display:grid; gap:10px; align-content:start; animation:drift 60s linear infinite; }
+.ghostfeed .col:nth-child(2){ animation-duration:48s; animation-direction:reverse; }
+@keyframes drift{ to{ transform:translateY(-50%); } }
+.lp-final .card{ position:relative; width:min(640px,calc(100% - 32px)); margin:0 auto; padding:clamp(28px,4vw,48px); border-radius:28px; background:var(--paper); color:var(--paper-ink); display:grid; gap:22px; box-shadow:0 60px 120px -40px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.2); }
+.lp-final h2{ font-size:clamp(44px,6vw,80px); color:#111214; }
+.lp-final p{ color:#55585F; font-size:17px; line-height:1.55; max-width:42ch; }
+.lp-final .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.lp-final .avatar,.land .fs-me .avatar{ background:#111214; color:#fff; box-shadow:none; }
+.land .four .pvl .acts{ flex-wrap:wrap; gap:8px 14px; }
+.lp-final .btn.ink{ background:#111214; color:#fff; }
+.lp-final .btn.ghost{ color:#111214; box-shadow:inset 0 0 0 1px rgba(17,18,20,.16); }
+
+.foot{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; padding:28px max(16px,calc((100vw - 1240px)/2 + 40px)); border-top:1px solid rgba(255,255,255,.06); color:var(--text-3); font-size:var(--t-13); }
+.foot nav{ display:flex; gap:18px; flex-wrap:wrap; }
 .foot a{ transition:color var(--d-micro); } .foot a:hover{ color:var(--text-1); }
 
-/* scroll reveal: elements start visible; JS only arms those below the fold */
-.reveal.armed{ opacity:0; transform:translateY(18px); filter:blur(5px); }
-.reveal.in{ opacity:1; transform:none; filter:none; transition:opacity .55s var(--ease-out),transform .75s var(--ease-out),filter .45s var(--ease-out); transition-delay:var(--rd,0s); }
+/* ---------- landing responsive ---------- */
+@media (max-width:1120px){
+  .lp-hero{ grid-template-columns:minmax(0,1fr) minmax(340px,480px); }
+  .land .lp-grade{ grid-column:1 / -1; max-width:none; justify-self:stretch; grid-template-columns:auto minmax(0,1fr); align-items:center; column-gap:40px; }
+  .land .lp-grade .n{ grid-row:span 3; }
+  .land .four{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:900px){
+  .lp-hero{ grid-template-columns:minmax(0,1fr); min-height:0; padding-top:36px; gap:28px; }
+  .lp-copy{ max-width:none; }
+  .land .fs{ height:min(640px,78dvh); min-height:480px; }
+  .land .lp-grade{ grid-template-columns:minmax(0,1fr); }
+  .land .lp-grade .n{ grid-row:auto; }
+  .land .lp-grader,.land .who{ grid-template-columns:minmax(0,1fr); }
+  .land .lp-grader .lp-h,.land .who-stage{ position:static; }
+  .land .moment{ grid-template-columns:minmax(0,1fr); gap:16px; }
+  .land .moment .t{ padding:0; display:flex; gap:10px; align-items:baseline; }
+  .land .moment .t b{ margin:0; font-size:26px; }
+  .land .lp-plans{ grid-template-columns:minmax(0,1fr); max-width:520px; }
+  .ghostfeed{ grid-template-columns:minmax(0,1fr); }
+  .ghostfeed .col:not(:first-child){ display:none; }
+}
+@media (max-width:760px){
+  .land .four{ grid-template-columns:minmax(0,1fr); }
+  .land .gw-row{ grid-template-columns:48px minmax(0,1fr); padding:14px; }
+  .land .gw-row .sc{ width:42px; height:42px; font-size:15px; }
+  .land .gw-row .fix{ grid-column:2; grid-row:auto; justify-self:start; margin-top:6px; }
+  .land .week div{ min-height:96px; font-size:10px; padding:7px 5px; }
+  .land .fs-me .tools .hint{ display:none; }
+}
+@media (prefers-reduced-motion:reduce){
+  .stopin.armed{ opacity:1; transform:none; filter:none; }
+  .ghostfeed .col{ animation:none; }
+}
 
 /* brand page */
 .brand-hero{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -1037,14 +1199,6 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .grid-3{ grid-template-columns:1fr 1fr; }
   .kpis{ grid-template-columns:1fr 1fr; }
   .voice-hero,.brand-hero{ grid-template-columns:1fr; }
-  .plans{ grid-template-columns:1fr; max-width:480px; margin-inline:auto; }
-  .story{ grid-template-columns:1fr; gap:24px; }
-  .story-stage{ position:sticky; top:76px; height:340px; z-index:2; }
-  .story-step{ min-height:52vh; }
-  .demo{ grid-template-columns:1fr; }
-  .demo-ed{ border-right:0; border-bottom:1px solid var(--border); }
-  .feat,.feat.wide{ grid-column:span 3; }
-  .walls{ grid-template-columns:1fr 1fr; }
   .onb-result .grid{ grid-template-columns:1fr; }
   .voice-card{ position:static; }
   .grader{ grid-template-columns:1fr; }
@@ -1077,13 +1231,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .agenda{ display:block; }
   .tw-meta .predict{ display:none; }
   .hbar{ grid-template-columns:80px 1fr 40px; }
-  .feats,.walls{ grid-template-columns:1fr; }
-  .feat,.feat.wide{ grid-column:1/-1; min-height:0; }
   .l-nav .links,.l-nav .login{ display:none; }
-  .hero{ padding-top:48px; }
-  .l-sec{ padding-top:96px; }
-  .paper-sec{ margin:96px 8px 0; padding:72px 0; border-radius:24px; }
-  .paper-sec.end{ padding-bottom:72px; border-radius:0 0 24px 24px; }
   .shortcuts{ grid-template-columns:1fr; }
   .up-wrap{ padding:32px 16px 110px; }
   .insight-hero{ padding:22px; }
@@ -1093,16 +1241,12 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   #toasts{ bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
   .upsell{ right:16px; bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
   .gifs{ grid-template-columns:1fr 1fr; }
-  .ba-after{ position:relative; clip-path:none; border-top:1px solid rgba(17,18,24,.08); }
-  .ba > .ba-side,.ba-after .ba-side{ padding:28px 20px; min-height:0; }
-  .ba-handle{ display:none; }
   .hide-sm{ display:none; }
   .inbox-row .acts{ opacity:1; }
   .split-btn .btn:first-child span{ display:none; }
   .split-btn .btn:first-child{ width:34px; padding:0; }
   #onb-plat span{ display:none; }
   #hk-q{ width:100%!important; }
-  .demo-ed{ min-height:0; }
 }
 </style>
 </head>
@@ -1266,14 +1410,16 @@ const TOP_POSTS = [
 
 function seedQueue() {
   const w = startOfWeek(new Date());
-  const mk = (d, time, text, extra = {}) => ({ id: uid(), day: dayKey(new Date(w.getTime() + d * DAY)), time, text, tweets: [text], platforms: { x: true, threads: true, linkedin: d % 2 === 0, bsky: true }, status: 'scheduled', ...extra });
+  const mk = (d, time, text, extra = {}) => ({ id: uid(), day: dayKey(new Date(w.getTime() + d * DAY)), time, text, tweets: [text], platforms: { x: true, threads: true, linkedin: d % 2 === 0, bsky: true }, status: 'scheduled', ws: 'me', ...extra });
   return [
     mk(0, '08:40', 'Most “growth hacks” are just being early to something boring.'),
     mk(1, '08:40', 'The pricing page experiment that doubled our trials: we removed two plans.', { autoPlug: true }),
     mk(2, '17:30', '5 things I stopped doing this year that made me more productive than any app ever did:'),
     mk(3, '12:15', 'Your first 100 users won’t come from launch day. They’ll come from 100 conversations.'),
     mk(4, '08:40', 'Hot take: “build in public” works best when you share the boring weeks too.'),
-    mk(5, '12:15', 'Saturday reminder: the side project doesn’t need to be a startup. It can just be fun.')
+    mk(5, '12:15', 'Saturday reminder: the side project doesn’t need to be a startup. It can just be fun.'),
+    mk(2, '12:15', 'We hired 9 people last year. 3 were mistakes. Here’s the pattern.', { ws: 'ledgerly', approval: 'needs' }),
+    mk(4, '17:30', 'Stop pricing like a coward. Here’s the math:', { ws: 'northwind', approval: 'ok' })
   ];
 }
 function seedStreak() {
@@ -1284,9 +1430,15 @@ function seedStreak() {
 }
 const now0 = Date.now();
 const DEFAULT_STATE = {
-  v: 3,
+  v: 4,
   theme: null,
   user: { name: 'Sam Okafor', handle: 'samwrites', hue: 28, niche: 'Building in public' },
+  ws: 'me',
+  workspaces: [
+    { id: 'me', name: 'Sam Okafor', handle: 'samwrites', kind: 'Personal', hue: 28 },
+    { id: 'ledgerly', name: 'Ledgerly', handle: 'ledgerlyhq', kind: 'Client · Priya’s voice', hue: 190, approvals: true, niche: 'Startups & founders' },
+    { id: 'northwind', name: 'Northwind', handle: 'northwindco', kind: 'Client · company voice', hue: 150, approvals: true, niche: 'Marketing' }
+  ],
   plan: 'free',
   ai: { used: 0, day: dayKey(Date.now()), limit: 5 },
   upsellShown: false,
@@ -1311,6 +1463,14 @@ if (S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date.now()), 
 const save = debounce(() => store.set('state', S), 250);
 
 const newTweet = (text = '') => ({ id: uid(), text, media: [], poll: null });
+/* workspaces: your own voice plus client voices (ghostwriters, teams) */
+const WS = () => S.workspaces.find(w => w.id === S.ws) || S.workspaces[0];
+function switchWs(id) {
+  if (id === S.ws) return; const me = S.workspaces[0];
+  if (S.ws === 'me') Object.assign(me, { name: S.user.name, handle: S.user.handle, hue: S.user.hue, niche: S.user.niche });
+  S.ws = id; const w = WS(); S.user = { ...S.user, name: w.name, handle: w.handle, hue: w.hue, niche: w.niche || me.niche || S.user.niche }; save(); route();
+  toast(w.id === 'me' ? 'Back to your own voice.' : `Writing as ${w.name}. Posts wait for approval before they go out.`, { icon: 'voice', tone: 'accent' });
+}
 function freshDraft(texts) { return { id: uid(), tweets: (texts && texts.length ? texts : ['']).map(t => newTweet(t)), created: Date.now(), slot: null }; }
 if (!S.draft) S.draft = freshDraft();
 
@@ -1777,8 +1937,7 @@ function spendAI() { if (S.plan === 'free') S.ai.used++; save(); refreshPlanCard
 function refreshPlanCard() {
   const c = $('.plan-card'); if (!c) return;
   const used = Math.min(S.ai.used, S.ai.limit);
-  $('.meter i', c).style.width = (used / S.ai.limit * 100) + '%';
-  $('.pc-count', c).textContent = `${S.ai.limit - used} of ${S.ai.limit} riffs left today`;
+  $('.pc-count', c).textContent = `${S.ai.limit - used} of ${S.ai.limit} rewrites left today`;
 }
 
 /* ==========================================================================
@@ -1820,28 +1979,19 @@ function streakHTML() {
 }
 function shell(active, inner) {
   const counts = { ideas: S.ideas.length, queue: S.queue.filter(q => q.status === 'scheduled').length };
-  const n = streakCount(); const postedToday = !!S.streak[dayKey(Date.now())];
-  const used = Math.min(S.ai.used, S.ai.limit);
+  const used = Math.min(S.ai.used, S.ai.limit); const w = WS();
   return `<div class="shell">
   <aside class="side" aria-label="Sidebar">
     <div class="top"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
       <button class="btn ghost icon-only sm" data-act="theme" data-tip="Switch theme" data-kbd="${SHIFT} T" aria-label="Switch theme">${ic(isDark() ? 'sun' : 'moon')}</button></div>
+    <button class="ws-btn" data-act="ws" aria-haspopup="menu" data-tip="Switch voice" data-kbd="${MOD} 1–3">${avatar(w)}<span class="ws-t"><b>${esc(w.name)}</b><small>${esc(w.kind)}</small></span>${ic('down', 'sm')}</button>
     <button class="searchbtn" data-act="palette">${ic('search', 'sm')}<span>Jump to…</span>${kbd(MOD, 'K')}</button>
     <nav class="nav" aria-label="Main">
       ${NAV.map(it => it.hdr ? `<div class="nav-l label">${it.hdr}</div>` : `<a href="#${it.k}" ${active === it.k ? 'aria-current="page"' : ''} data-tip="${it.label}" data-kbd="G ${it.key}">${ic(it.icon)}<span>${it.label}</span>${counts[it.k] ? `<span class="count">${counts[it.k]}</span>` : ''}</a>`).join('')}
     </nav>
     <div class="spacer"></div>
-    <div class="momentum" data-tip="${postedToday ? 'You posted today. Rest easy.' : 'Post anything today to keep it going'}">
-      <div class="row"><span class="label">Momentum</span><span class="mono" style="font-size:12px">${n} day${n === 1 ? '' : 's'}</span></div>
-      <div class="streak">${streakHTML()}</div>
-      <div class="faint" style="font-size:12px">${postedToday ? 'Posted today. Quietly impressive.' : n ? `Post today to make it ${n + 1}.` : 'One post starts a streak.'}</div>
-    </div>
-    ${S.plan === 'free' ? `<div class="plan-card">
-      <div class="row" style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;font-size:13px">Free plan</span><a href="#upgrade" class="pill accent">Go Pro</a></div>
-      <div class="meter"><i style="width:${used / S.ai.limit * 100}%"></i></div>
-      <span class="pc-count faint" style="font-size:12px">${S.ai.limit - used} of ${S.ai.limit} riffs left today</span>
-    </div>` : `<div class="plan-card"><span style="font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px">${ic('riff', 'sm')} Hookworthy Pro</span><span class="faint" style="font-size:12px">Unlimited riffs. Go make noise.</span></div>`}
-    <button class="me" data-act="account" aria-haspopup="menu">${avatar()}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.user.name)}</b><span class="faint" style="font-size:12px">@${esc(S.user.handle)}</span></span>${ic('more', 'sm')}</button>
+    ${S.plan === 'free' ? `<a class="side-plan plan-card" href="#upgrade" data-tip="Unlimited rewrites on Pro"><span class="pc-count">${S.ai.limit - used} of ${S.ai.limit} rewrites left today</span><span class="go">Go Pro</span></a>` : ''}
+    <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.ws === 'me' ? S.user.name : S.workspaces[0].name)}</b><span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span></span>${ic('more', 'sm')}</button>
   </aside>
   <main class="main" id="main"><div class="view" id="view">${inner}</div></main>
   <nav class="tabbar" aria-label="Main">
@@ -1864,6 +2014,12 @@ const ACT = {
   palette: () => openPalette(),
   capture: () => openCapture(),
   shortcuts: () => openShortcuts(),
+  ws: el => openMenu(el, [
+    { header: 'Write as' },
+    ...S.workspaces.map((w, i) => ({ label: w.name, icon: w.id === S.ws ? 'check' : (w.id === 'me' ? 'write' : 'voice'), hint: w.kind, kbd: [MOD, String(i + 1)], run: () => switchWs(w.id) })),
+    '-',
+    { label: 'Add a client voice', icon: 'plus', run: () => S.plan === 'studio' ? toast('New client voices start from their handle, like onboarding. The demo stops here.', { icon: 'voice' }) : (go('upgrade'), toast('Client voices come with Studio.', { icon: 'voice' })) }
+  ], { width: 260 }),
   account: el => openMenu(el, [
     { header: `@${S.user.handle}` },
     { label: 'Voice profile', icon: 'voice', run: () => go('voice') },
@@ -2010,6 +2166,7 @@ let gPending = 0;
 const isTyping = e => { const t = e.target; return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable); };
 document.addEventListener('keydown', e => {
   const mod = e.metaKey || e.ctrlKey;
+  if (mod && /^[1-3]$/.test(e.key) && CURRENT && CURRENT !== 'home' && CURRENT !== 'start' && S.workspaces[+e.key - 1]) { e.preventDefault(); switchWs(S.workspaces[+e.key - 1].id); return; }
   if (mod && e.key.toLowerCase() === 'k') { e.preventDefault(); if (MODALS.length && MODALS[MODALS.length - 1].el.classList.contains('cmdk')) MODALS[MODALS.length - 1].close(); else openPalette(); return; }
   if (e.key === 'Escape') {
     if (MENU) { closeMenu(); return; }
@@ -2076,6 +2233,7 @@ function composerHTML() {
   <div class="editor-col">
     <div class="c-top fade-typing">
       <div class="status" aria-live="polite"><span class="dot"></span><span class="txt" id="save-state">Draft saved</span></div>
+      ${S.ws !== 'me' ? `<button class="ws-pill" data-act="ws" aria-haspopup="menu">${avatar(WS())}<span>Writing as <b>${esc(WS().name)}</b></span></button>` : ''}
       <div class="grow"></div>
       <div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>
       <button class="btn ghost icon-only" data-cact="preview" data-tip="Previews" data-kbd="${MOD} \\" aria-label="Toggle previews">${ic('panel')}</button>
@@ -2089,7 +2247,7 @@ function composerHTML() {
       <div class="editor-foot fade-typing"><span>${kbd('↵', '↵')} new post</span><span>${kbd(SHIFT, '↵')} line break</span><span>${kbd('Tab')} take a suggestion</span><span>${kbd(MOD, 'J')} riff</span><span>${kbd(ALT, '↑')} reorder</span></div>
     </div>
   </div>
-  <aside class="preview" id="preview" aria-label="Live preview"><div class="preview-h" id="pv-h"></div><div class="preview-b" id="pv-b"></div></aside>
+  <aside class="preview" id="preview" aria-label="Your post in the feed"><div class="preview-h" id="pv-h"></div><div class="preview-b" id="pv-b"></div></aside>
 </div>`;
 }
 function startersHTML() {
@@ -2426,7 +2584,7 @@ const schedulePreview = (() => { let raf = 0; return () => { cancelAnimationFram
 function renderPreviewHead() {
   const h = $('#pv-h'); if (!h) return; const on = Object.keys(PLAT).filter(k => S.platforms[k]);
   let tab = S.preview.tab; if (tab !== 'all' && !on.includes(tab)) tab = S.preview.tab = on[0] || 'x';
-  h.innerHTML = `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}" data-tip="${k === 'all' ? 'All platforms' : PLAT[k].name}">${k === 'all' ? 'All' : pic(PLAT[k].icon, 'icon sm')}</button>`).join('')}</div><span class="label">Live preview</span><button class="btn ghost icon-only sm pv-close" data-cact="preview" aria-label="Close preview">${ic('x')}</button>`;
+  h.innerHTML = `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}" data-tip="${k === 'all' ? 'All platforms' : PLAT[k].name}">${k === 'all' ? 'All' : pic(PLAT[k].icon, 'icon sm')}</button>`).join('')}</div><span class="label">In the feed</span><button class="btn ghost icon-only sm pv-close" data-cact="preview" aria-label="Close preview">${ic('x')}</button>`;
   requestAnimationFrame(() => syncSeg($('.seg', h)));
 }
 function renderPreviewBody() {
@@ -2434,8 +2592,10 @@ function renderPreviewBody() {
   const on = Object.keys(PLAT).filter(k => S.platforms[k]); const tab = S.preview.tab;
   if (!on.length) { b.className = 'preview-b'; b.innerHTML = `<div class="empty">${ic('send', 'lg')}<p>Pick at least one platform up top.<br>Hookworthy can’t post to the void. Yet.</p></div>`; return; }
   b.className = 'preview-b' + (tab === 'all' ? ' all' : '');
-  b.innerHTML = tab === 'all' ? on.map(k => pvCard(k, true)).join('') : pvCard(tab, false);
+  b.innerHTML = tab === 'all' ? on.map(k => pvCard(k, true)).join('') : `${pvNoise(0)}${pvCard(tab, false)}${pvNoise(1)}`;
 }
+const PV_NOISE = [['Consistency is key. That’s the tweet.', 'Here are 10 tools you can’t afford to miss'], ['Excited to share some personal news…', 'What’s everyone working on this weekend?']];
+function pvNoise(i) { return `<div class="pv-noise" aria-hidden="true">${PV_NOISE[i].map(t => `<div class="n"><i class="av"></i><div><i class="nm"></i><p>${esc(t)}</p></div></div>`).join('')}</div>`; }
 function overText(t, lim) { const a = [...t]; if (a.length <= lim) return esc(t); return esc(a.slice(0, lim).join('')) + `<span class="over">${esc(a.slice(lim).join(''))}</span>`; }
 function pvCard(k, compact) {
   const p = PLAT[k], u = S.user; const tws = S.draft.tweets; const h = hookScore(tws[0].text); const pr = predict(h.score, tws[0].text) || { views: 0, replies: 0 };
@@ -2486,7 +2646,7 @@ function draftProblems() {
 const platList = () => Object.keys(PLAT).filter(k => S.platforms[k]).map(k => PLAT[k].name).join(', ').replace(/, ([^,]*)$/, ' and $1');
 function commitDraft({ day, time, status = 'scheduled' }) {
   const tws = S.draft.tweets.filter(t => t.text.trim() || t.media.length);
-  S.queue.push({ id: uid(), day, time, text: tws[0].text, tweets: tws.map(t => t.text), platforms: { ...S.platforms }, status, autoPlug: S.settings.autoPlug, autoRepost: S.settings.autoRepost });
+  S.queue.push({ id: uid(), day, time, text: tws[0].text, tweets: tws.map(t => t.text), platforms: { ...S.platforms }, status, autoPlug: S.settings.autoPlug, autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
   S.streak[dayKey(Date.now())] = 1;
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; UI.hook = false; save();
 }
@@ -2537,7 +2697,7 @@ function publishNow(btn) {
   const b = btn || $('[data-cact="schedule"]'); b && b.classList.add('is-loading'); const names = platList();
   setTimeout(() => {
     b && burstFrom(b); const d = new Date(); commitDraft({ day: dayKey(d), time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`, status: 'published' });
-    route(); toast(`Published to ${esc(names)}. Hook, meet world.`, { icon: 'send', tone: 'accent', action: 'Write another', onAction: () => focusTweet(0) });
+    route(); toast(`Published to ${esc(names)}. Stay close for the first replies.`, { icon: 'send', tone: 'accent', action: 'Write another', onAction: () => focusTweet(0) });
   }, 650);
 }
 function newPost() {
@@ -2635,185 +2795,66 @@ ROUTES.write = () => {
 };
 
 /* ==========================================================================
-   MURMURATION (hero + onboarding canvas): boids that part around your cursor
+   LANDING: "The Thumb-Stop"
+   The hero is a live feed. Other people's posts stream past in motion blur;
+   yours is pinned in the middle. Its first line is graded as you type: under
+   70 the feed keeps scrolling past you, 70 and up it brakes and parks.
    ========================================================================== */
-function murmuration(canvas, { count = 130, gather = null, accentEvery = 11, alpha = .5 } = {}) {
-  const ctx = canvas.getContext('2d'); let W = 0, H = 0, dpr = Math.min(2, devicePixelRatio || 1), raf = 0, running = true, visible = true;
-  const cs = getComputedStyle(document.documentElement);
-  const col = () => { const cs = getComputedStyle(canvas); return { ink: cs.getPropertyValue('--text-3').trim() || '#80858E', acc: cs.getPropertyValue('--accent-text').trim() || '#F4F4F5' }; };
-  let C = col();
-  const mouse = { x: -1e4, y: -1e4 };
-  function size() { const r = canvas.getBoundingClientRect(); W = r.width; H = r.height; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
-  size();
-  const n = innerWidth < 700 ? Math.round(count * .55) : count;
-  const B = Array.from({ length: n }, (_, i) => ({ x: Math.random() * W, y: Math.random() * H * .8, vx: Math.random() * 2 - 1, vy: Math.random() * 2 - 1, r: i % accentEvery === 0 ? 2.2 : Math.random() * 1.2 + 1, a: i % accentEvery === 0 }));
-  let t = 0;
-  function step() {
-    t += 1;
-    const cx = W * .5 + Math.sin(t / 240) * W * .32, cy = H * .38 + Math.cos(t / 310) * H * .18;
-    for (const b of B) {
-      let ax = 0, ay = 0, cx2 = 0, cy2 = 0, vx = 0, vy = 0, sx = 0, sy = 0, k = 0;
-      for (const o of B) {
-        if (o === b) continue; const dx = o.x - b.x, dy = o.y - b.y, d2 = dx * dx + dy * dy;
-        if (d2 < 3600) { k++; cx2 += o.x; cy2 += o.y; vx += o.vx; vy += o.vy; if (d2 < 260) { sx -= dx / (d2 + 1) * 14; sy -= dy / (d2 + 1) * 14; } }
-      }
-      if (k) { ax += (cx2 / k - b.x) * .0009 + (vx / k - b.vx) * .045 + sx * .06; ay += (cy2 / k - b.y) * .0009 + (vy / k - b.vy) * .045 + sy * .06; }
-      const gx = gather ? gather.x * W : cx, gy = gather ? gather.y * H : cy;
-      ax += (gx - b.x) * (gather ? .00055 : .00016); ay += (gy - b.y) * (gather ? .00055 : .00016);
-      const mdx = b.x - mouse.x, mdy = b.y - mouse.y, md = mdx * mdx + mdy * mdy;
-      if (md < 14000) { ax += mdx / Math.sqrt(md + 1) * .5; ay += mdy / Math.sqrt(md + 1) * .5; }
-      b.vx += ax; b.vy += ay; const sp = Math.hypot(b.vx, b.vy), max = gather ? 2.4 : 1.7;
-      if (sp > max) { b.vx *= max / sp; b.vy *= max / sp; } if (sp < .4) { b.vx *= 1.1; b.vy *= 1.1; }
-      b.x += b.vx; b.y += b.vy;
-      if (b.x < -20) b.x = W + 20; if (b.x > W + 20) b.x = -20; if (b.y < -20) b.y = H + 20; if (b.y > H + 20) b.y = -20;
-    }
-  }
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    for (const b of B) { ctx.globalAlpha = b.a ? .9 : alpha; ctx.fillStyle = b.a ? C.acc : C.ink; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.283); ctx.fill(); }
-  }
-  function loop() { if (!running) return; if (visible && !document.hidden) { step(); draw(); } raf = requestAnimationFrame(loop); }
-  if (REDUCED) { for (let i = 0; i < 200; i++) step(); draw(); } else loop();
-  const onMove = e => { const r = canvas.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; };
-  const onLeave = () => { mouse.x = mouse.y = -1e4; };
-  const host = canvas.parentElement; host.addEventListener('pointermove', onMove); host.addEventListener('pointerleave', onLeave);
-  const io = new IntersectionObserver(([en]) => { visible = en.isIntersecting; }); io.observe(canvas);
-  const onResize = debounce(size, 150); addEventListener('resize', onResize);
-  const mo = new MutationObserver(() => { C = col(); if (REDUCED) draw(); }); mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  return { stop() { running = false; cancelAnimationFrame(raf); io.disconnect(); mo.disconnect(); removeEventListener('resize', onResize); host.removeEventListener('pointermove', onMove); host.removeEventListener('pointerleave', onLeave); }, setGather(g) { gather = g; } };
-}
-
-/* ==========================================================================
-   LANDING
-   ========================================================================== */
-const BA_AFTER = 'Double your price.\n\nSignups went up 31% when we did. Customers value things more when they cost more. Pricing is a signal, not a number.';
-const DEMO_FLAT = 'i think pricing is really important for startups and you should probably charge more than you think because customers actually value things more when they cost more';
-const TESTIMONIALS = [
-  ['Priya Nair', 'priyabuilds', 'Founder, Ledgerly', 'I used to stare at the empty box for twenty minutes. Now I open Hookworthy and there are six posts I actually want to write.', 190],
-  ['Tomás Ruiz', 'tomasdraws', 'Product designer', 'The hook grader is brutal and correct. My replies roughly tripled in a month, and I stopped guessing why.', 12],
-  ['Hannah Cole', 'hcolewrites', 'Newsletter, 40k readers', 'It writes like me on a good day. Not like a robot on any day. That’s the whole review.', 330],
-  ['Dev Mehta', 'devships', 'Indie hacker', '⌘K, type, Tab, ⌘↵. I schedule a week of posts in the time it takes my coffee to cool.', 250],
-  ['Ama Owusu', 'amawrites', 'Creator, 120k followers', 'First tool where the upgrade screen showed up after I was already impressed. Upgraded on the spot.', 150],
-  ['Lukas Brandt', 'lukasb', 'Head of Marketing, Vesper', 'The LinkedIn tweak alone gives me an hour back every week. Same idea, native on every platform.', 60]
+const FEED_NOISE = [
+  'Excited to share that I’ve started a new position as…',
+  'Consistency is key. That’s the tweet.',
+  'Here are 10 AI tools you can’t afford to miss 🧵',
+  'gm to everyone building something today',
+  'Unpopular opinion: hard work still matters.',
+  'What’s everyone working on this weekend?',
+  'I’ve been thinking a lot about leadership lately and I wanted to share a few thoughts…',
+  'Day 47 of posting every day until something happens.',
+  'Reminder: you don’t need permission to start.',
+  'Just shipped a small update. Would love your feedback!',
+  'The best time to start was yesterday. The second best time…',
+  'Hot take: most meetings could be emails.',
+  'Agree?',
+  'Some thoughts on productivity (a thread)'
 ];
+const HERO_WEAK = 'i think pricing is really important for startups';
+const HERO_STRONG = 'Double your price. Signups went up 31%.';
+const GRADER_ROWS = [
+  ['So I wanted to share some thoughts on hiring', 'We hired 9 people last year. 3 were mistakes. Here’s the pattern.'],
+  ['Honestly, I think consistency is really important', 'I posted daily for 90 days. Consistency was the wrong lesson.'],
+  ['Excited to announce our new feature!', 'We deleted our most-requested feature. Signups went up 18%.'],
+  ['Some tips for writing better landing pages', 'Your landing page has 1 job. Most do 4. Here’s why that’s wrong:'],
+  ['Here is a thread about pricing', 'Stop pricing like a coward. Here’s the math:']
+];
+const STOP_AT = 70;
+const noisePost = (t, i) => `<div class="fp" aria-hidden="true"><span class="av" style="background:hsl(${(i * 47) % 360} 6% ${16 + (i % 3) * 2}%)"></span><div style="min-width:0"><div class="nm"><i></i><i></i></div><div class="tx">${esc(t)}</div><div class="ac">${ic('reply')}${ic('repost')}${ic('heart')}${ic('views')}</div></div></div>`;
+const ghostFeedHTML = () => `<div class="ghostfeed" aria-hidden="true">${[0, 1, 2].map(c => { const items = FEED_NOISE.filter((_, i) => i % 3 === c); return `<div class="col">${[...items, ...items, ...items, ...items].map((t, i) => noisePost(t, i + c)).join('')}</div>`; }).join('')}</div>`;
+const PART_NAMES = { clarity: 'Clarity', curiosity: 'Curiosity', specificity: 'Specifics', tension: 'Tension', brevity: 'Length' };
+
 function plansHTML(yearly) {
   const P = [
-    { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['5 AI riffs a day', 'Hook score on every post', 'Unlimited drafts and ideas', '1 account per platform', 'Queue up to 10 posts'] },
-    { k: 'pro', name: 'Pro', price: yearly ? 12 : 16, blurb: 'For people who post like they mean it.', cta: 'Try Pro free for 7 days', hero: true, feats: ['Unlimited riffs in your voice', 'Full voice model, retrained weekly', 'Auto-plug and auto-repost', 'Cross-post with per-platform tweaks', 'Insights that tell you why', 'Unlimited queue'] },
-    { k: 'studio', name: 'Studio', price: yearly ? 29 : 36, blurb: 'For teams and ghostwriters.', cta: 'Start with Studio', feats: ['Everything in Pro', '5 voices, one per client', 'Approvals and comments', 'Shared idea inbox', 'Priority support from humans'] }
+    { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score on every post', '5 rewrites a day', 'Unlimited drafts and ideas', 'One account per platform', 'Up to 10 scheduled posts'] },
+    { k: 'pro', name: 'Pro', price: yearly ? 12 : 16, blurb: 'For posting most days.', cta: 'Try Pro free for 7 days', hero: true, feats: ['Unlimited rewrites in your voice', 'Voice profile that keeps learning', 'Auto-plug and auto-repost', 'Per-platform versions', 'Insights that say why', 'Unlimited queue'] },
+    { k: 'studio', name: 'Studio', price: yearly ? 29 : 36, blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Five client voices', 'Approvals before anything ships', 'Shared idea inbox', 'Support from humans'] }
   ];
-  return P.map(p => `<div class="plan ${p.hero ? 'featured' : ''}">${p.hero ? '<span class="pill accent tag">Most writers pick this</span>' : ''}
-    <div style="display:grid;gap:6px"><span class="h3">${p.name}</span><span class="muted" style="font-size:14px">${p.blurb}</span></div>
-    <div class="price"><b>$${p.price}</b><span class="muted">${p.price ? `/ month${yearly ? ', billed yearly' : ''}` : 'forever'}</span></div>
-    <ul>${p.feats.map(f => `<li>${ic('check')}<span>${f}</span></li>`).join('')}</ul><span class="grow"></span>
-    <button class="btn ${p.hero ? 'primary' : ''} lg" data-plan="${p.k}" style="width:100%">${p.cta}</button></div>`).join('');
+  return P.map(p => `<div class="lp-plan ${p.hero ? 'pro' : ''}">
+    <div class="nm"><b>${p.name}</b><span>${p.blurb}</span></div>
+    <div class="pr"><b>$${p.price}</b><span>${p.price ? `per month${yearly ? ', billed yearly' : ''}` : 'forever'}</span></div>
+    <ul>${p.feats.map(f => `<li>${ic('check')}<span>${f}</span></li>`).join('')}</ul>
+    <button class="btn ${p.hero ? 'primary' : ''} lg" data-plan="${p.k}">${p.cta}</button></div>`).join('');
 }
 function choosePlan(k, btn) {
   if (k === 'free') { go(S.onboarded ? 'write' : 'start'); return; }
-  if (S.plan === k) { toast(`You’re already on ${cap(k)}. Good taste.`, { icon: 'check' }); return; }
+  if (S.plan === k) { toast(`You’re already on ${cap(k)}.`, { icon: 'check' }); return; }
   btn.classList.add('is-loading');
   setTimeout(() => {
     btn.classList.remove('is-loading'); S.plan = k; save(); burstFrom(btn);
     modal(`<div class="modal-b" style="text-align:center;display:grid;gap:14px;justify-items:center;padding:36px 28px">
       <div class="appicon" style="width:72px;height:72px;border-radius:18px">${LOGO_MARK.replace('class="mark"', 'class="mark" style="width:40px;height:40px"')}</div>
-      <h2 class="display" style="font-size:40px">You’re ${cap(k)}.</h2><p class="muted" style="max-width:36ch">Unlimited riffs, your full voice model, and auto-plugs are on. This is a demo, so no card was needed and nothing was charged.</p>
-      <button class="btn primary lg" data-close style="margin-top:6px">Go make noise</button></div>`, { center: true, label: 'Upgraded', onClose: () => go('write') });
+      <h2 class="display" style="font-size:40px">You’re on ${cap(k)}.</h2><p class="muted" style="max-width:36ch">${k === 'studio' ? 'Client voices, approvals and the shared inbox are on.' : 'Unlimited rewrites and your full voice profile are on.'} This is a demo, so nothing was charged.</p>
+      <button class="btn primary lg" data-close style="margin-top:6px">Back to writing</button></div>`, { center: true, label: 'Plan changed', onClose: () => go('write') });
   }, 800);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-plan]'); if (b) choosePlan(b.dataset.plan, b); });
-
-ROUTES.home = () => {
-  const h = hookScore(DEMO_FLAT); const ha = hookScore(BA_AFTER);
-  const words = (str, start = 0) => str.split(' ').map((w, i) => `<span class="w" style="--i:${start + i}">${w}${' '}</span>`).join('');
-  $('#root').innerHTML = `<div class="land force-dark">
-  <header class="l-nav" id="lnav">
-    <a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
-    <nav class="links" aria-label="Sections"><a href="#home" data-scroll="features">Product</a><a href="#home" data-scroll="story">How it works</a><a href="#home" data-scroll="pricing">Pricing</a><a href="#brand">Brand</a></nav>
-    <div class="grow"></div>
-    <a class="btn ghost sm login" href="#write">Log in</a>
-    <a class="btn ink sm" href="#start">Start writing</a>
-  </header>
-  <section class="hero">
-    <canvas id="heroCanvas" aria-hidden="true"></canvas>
-    <div class="wrap hero-in intro">
-      <a class="eyebrow" href="#home" data-scroll="features"><span class="pill">New</span>Voice profiles that don’t sound like a robot${ic('arrow', 'xs')}</a>
-      <h1 class="display">${words('Write posts people')}<span class="w" style="--i:3"><em>stop</em> </span>${words('for.', 4)}</h1>
-      <p class="sub">Hookworthy learns how you write, grades every first line, hands you ideas before you ask, and turns one good thought into a week of posts for X, Threads, LinkedIn and Bluesky.</p>
-      <form class="hero-handle" id="hero-form" novalidate><span class="at">@</span><input id="hero-h" placeholder="yourhandle" aria-label="Your handle" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">See my posts${ic('arrow', 'sm')}</button></form>
-      <div class="hero-note"><span>${ic('check')}Free plan, forever</span><span>${ic('check')}No card</span><span>${ic('check')}First draft in 30 seconds</span></div>
-    </div>
-    <div class="wrap">
-      <div class="demo-wrap">
-      <div class="demo" id="demo" aria-label="Try the composer">
-        <div class="demo-bar"><span class="dots"><i></i><i></i><i></i></span><span class="ttl">Try it. This is the real editor.</span></div>
-        <div class="demo-ed">
-          <div class="row">${avatar({ name: 'You', hue: 235 })}<div class="field-wrap" id="demo-fw"><div class="tw-mirror" aria-hidden="true"></div><div class="caret" aria-hidden="true" style="opacity:0"></div><textarea class="tw-input" id="demo-t" rows="3" aria-label="Demo post">${esc(DEMO_FLAT)}</textarea><div class="diff-b" id="demo-diff" hidden style="padding:2px 0 0"></div></div></div>
-          <div class="demo-meta"><button class="hook" id="demo-hook" data-tip="Hook score, graded live"><span class="sc" style="--v:${h.score}"><span>${h.score}</span></span><span>Hook</span></button><span class="ring" id="demo-ring"><svg viewBox="0 0 24 24"><circle class="trk" cx="12" cy="12" r="9.5"/><circle class="val" cx="12" cy="12" r="9.5" stroke-dasharray="59.69" stroke-dashoffset="59.69"/></svg><b></b></span><p class="faint" id="demo-reason"><span>${esc(h.reason)}</span></p></div>
-          <div class="demo-tools">${['punchier', 'hook', 'contrarian', 'grammar'].map(k => { const r = RIFFS.find(x => x.k === k); return `<button class="chip" data-demo="${k}">${ic(r.icon)}${r.label}</button>`; }).join('')}<button class="chip" data-demo="reset" data-tip="Start over" aria-label="Start over">${ic('undo')}</button></div>
-        </div>
-        <div class="demo-pv"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Live preview</span><div class="seg" id="demo-seg" role="tablist" aria-label="Preview platform"><button role="tab" aria-selected="true" data-dpv="x" aria-label="X">${pic('x', 'icon sm')}</button><button role="tab" aria-selected="false" data-dpv="threads" aria-label="Threads">${pic('threads', 'icon sm')}</button><button role="tab" aria-selected="false" data-dpv="linkedin" aria-label="LinkedIn">${pic('li', 'icon sm')}</button><button role="tab" aria-selected="false" data-dpv="bsky" aria-label="Bluesky">${pic('bsky', 'icon sm')}</button></div></div><div id="demo-pv"></div></div>
-      </div>
-      </div>
-    </div>
-  </section>
-  <section class="wrap logos reveal"><span class="label">On Hookworthy this week</span><div class="stats-row">${[['41,208', 'posts written'], ['3.1×', 'median hook score lift'], ['12s', 'from idea to first draft']].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('')}</div></section>
-
-  <section class="wrap l-sec" id="story">
-    <div class="l-sec-h reveal"><span class="label accent">How it works</span><h2 class="display grad">From shower thought to scheduled, in one sitting.</h2><p>Four moves. No tabs, no copy-paste, no blank page.</p></div>
-    <div class="story">
-      <div class="story-steps">
-        ${[['01 · Capture', 'Ideas land anywhere.', 'Paste a link and get five angles. Drop a screenshot or a voice memo. Press I from anywhere to catch a thought before it leaves.'], ['02 · Draft', 'Tab through the blank page.', 'Hookworthy suggests the next line in your voice, quietly, in grey. Take it with Tab or keep typing. Hit Enter twice and your thought becomes a thread.'], ['03 · Sharpen', 'Every edit, word by word.', 'Punchier, shorter, stronger hook, more contrarian. See exactly what changed and keep only the words you like. Your hook score updates as you go.'], ['04 · Ship', 'Post when your people are up.', 'Hookworthy knows when your replies peak. Drop posts into the best slots, cross-post with per-platform tweaks, and let auto-plug do the follow-up.']].map(([k, h3, p], i) => `<div class="story-step ${i === 0 ? 'on' : ''}" data-step="${i}"><span class="label">${k}</span><h3>${h3}</h3><p>${p}</p></div>`).join('')}
-      </div>
-      <div class="story-stage" aria-hidden="true">
-        <div class="stage-scene on" data-scene="0"><div class="mini" style="display:flex;gap:10px;align-items:center">${ic('link', 'sm')}<span class="mono" style="font-size:12px">example.com/startups-die-from-indigestion</span></div>${anglesFor({ title: 'Startups die from indigestion', topic: 'startup growth' }).slice(0, 4).map((a, i) => `<div class="mini ${i === 0 ? 'hl' : ''}"><span class="label" style="display:block;margin-bottom:4px">${a.k}</span>${esc(a.t)}</div>`).join('')}</div>
-        <div class="stage-scene" data-scene="1"><div class="mini type-demo">Nobody tells you the hardest part of a side project is month 3.<span class="g"> Not the start. Not the launch. Month 3.</span> <kbd>Tab</kbd></div><div class="mini" style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span class="faint" style="font-size:13px">Suggestions learn from your last 200 posts</span><span class="pill accent">Your voice</span></div></div>
-        <div class="stage-scene" data-scene="2"><div class="mini" style="font-size:16px;line-height:1.7">${diffWords('I think pricing is really important and you should charge more.', 'Charge more. Pricing is a signal, not a number.').map(c => c.eq !== undefined ? esc(c.eq) : `${c.del ? `<del style="color:var(--text-3);background:var(--del);border-radius:4px;text-decoration-color:var(--error)">${esc(c.del)}</del>` : ''}${c.ins ? `<ins style="background:var(--ins);text-decoration:none;border-radius:4px">${esc(c.ins)}</ins>` : ''}`).join('')}</div><div class="mini" style="display:flex;justify-content:space-between;align-items:center"><span>Hook score</span><span class="delta up" style="font-size:15px">41 → 88</span></div></div>
-        <div class="stage-scene" data-scene="3"><div class="mini-cal">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d, i) => `<div class="${[1, 2, 3].includes(i) ? 'f' : ''}">${d}</div>`).join('')}</div><div class="mini hl" style="display:flex;gap:10px;align-items:center">${ic('clock', 'sm')}<span>Scheduled for <b>Tue 8:40am</b>. Your replies peak here.</span></div><div class="mini" style="display:flex;gap:10px;align-items:center">${ic('repost', 'sm')}<span>Auto-plug at 100 likes · repost in 12h</span></div></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="paper-sec force-light">
-    <section class="wrap" id="before-after">
-      <div class="l-sec-h center reveal"><span class="label accent">Before / after</span><h2 class="display">Same thought. <em>Better</em> post.</h2><p>Nothing was invented. It’s your idea with the filler taken out and a hook put in.</p></div>
-      <div class="ba reveal" id="ba" style="--x:50%">
-        <div class="ba-side"><span class="label">Before</span><div class="txt">${esc(DEMO_FLAT)}</div><span class="ba-score"><span class="hook"><span class="sc" style="--v:${h.score}"><span>${h.score}</span></span><span>Hook</span></span><span class="faint" style="font-size:13px">${esc(h.reason)}</span></span></div>
-        <div class="ba-after"><div class="ba-side"><span class="label accent">After · in your voice</span><div class="txt">${esc(BA_AFTER)}</div><span class="ba-score"><span class="hook hi"><span class="sc" style="--v:${ha.score}"><span>${ha.score}</span></span><span>Hook</span></span><span class="faint" style="font-size:13px">Clear claim, no filler, real friction.</span></span></div></div>
-        <div class="ba-handle"><button id="ba-h" role="slider" aria-label="Compare before and after" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">${ic('lr')}</button></div>
-      </div>
-    </section>
-    <section class="wrap" id="love" style="margin-top:140px">
-      <div class="l-sec-h center reveal"><span class="label accent">Word of mouth</span><h2 class="display">People are talking.<br><em>Quietly.</em> Then loudly.</h2></div>
-      <div class="walls">${TESTIMONIALS.map(([n, hnd, role, q, hue], i) => `<figure class="quote reveal" style="--rd:${(i % 3) * 80}ms"><p>“${esc(q)}”</p><figcaption class="who">${avatar({ name: n, hue })}<span><b>${esc(n)}</b><span>@${esc(hnd)} · ${esc(role)}</span></span></figcaption></figure>`).join('')}</div>
-    </section>
-  </div>
-
-  <section class="wrap l-sec" id="features">
-    <div class="l-sec-h reveal"><span class="label accent">What’s inside</span><h2 class="display grad">Everything Typefully does. Then the parts it doesn’t.</h2></div>
-    <div class="feats">
-      <div class="feat wide reveal"><span class="label">Idea engine</span><h3>Never a blank page. Ever.</h3><p>Hooks, prompts and angles from your niche and your best posts, fresh every time you open the app.</p><div class="viz" id="feat-ideas" style="display:grid;gap:8px"></div></div>
-      <div class="feat wide reveal" style="--rd:80ms"><span class="label">Voice profile</span><h3>Sounds like you. Spicier, if you want.</h3><p>Trained on your posts, not the internet’s. Slide the tone and watch the same idea change.</p><div class="viz" style="display:grid;gap:10px"><input type="range" class="range" id="feat-spice" min="0" max="100" value="55" aria-label="Spice" style="--p:55%"><div class="ends faint" style="display:flex;justify-content:space-between;font-size:12px"><span>Calm</span><span>Spicy</span></div><div class="sample" id="feat-sample" style="min-height:0;font-size:15px"></div></div></div>
-      <div class="feat reveal"><span class="label">Hook grader</span><h3>A score with a reason.</h3><p>Every first line graded on clarity, curiosity, specificity, tension and length.</p><div class="viz"><div class="bigscore">${bigScore(88)}<span class="muted" style="font-size:13px">“A concrete number and an open loop.”</span></div></div></div>
-      <div class="feat reveal" style="--rd:80ms"><span class="label">Repurpose</span><h3>One post, four native versions.</h3><p>A thread for X, a stitched story for LinkedIn, the right length for Bluesky.</p><div class="viz" style="display:flex;gap:8px;color:var(--text-2)">${['x', 'threads', 'li', 'bsky'].map(k => `<span class="plat" style="width:44px;height:44px;opacity:1;box-shadow:inset 0 0 0 1px var(--border-strong);border-radius:12px">${pic(k)}</span>`).join('')}</div></div>
-      <div class="feat reveal" style="--rd:160ms"><span class="label">Momentum</span><h3>A streak that doesn’t nag.</h3><p>Quiet squares, no confetti, no guilt. Scheduling counts. Life happens.</p><div class="viz"><div class="streak">${streakHTML()}</div></div></div>
-      <div class="feat wide reveal"><span class="label">Queue</span><h3>Your week, at a glance.</h3><p>Drag posts between slots. Glowing dots mark when your audience actually shows up.</p><div class="viz"><div class="mini-cal">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d, i) => `<div class="${i % 2 ? 'f' : ''}">${d}</div>`).join('')}</div></div></div>
-      <div class="feat wide reveal" style="--rd:80ms"><span class="label">Insights</span><h3>Analytics that talk back.</h3><p>Not a spreadsheet. A sentence: <em class="serif" style="font-size:18px">“Your contrarian hooks get 3.2× the replies.”</em> Then a button to write one.</p><div class="viz"><div class="hbars">${[['Contrarian', 3.2], ['Story', 2.1], ['Listicle', 1.6]].map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}"><span>${k}</span><div class="track"><div class="fillb" style="width:${v / 3.2 * 100}%"></div></div><span class="num">${v}×</span></div>`).join('')}</div></div></div>
-    </div>
-  </section>
-
-  <section class="wrap l-sec" id="pricing">
-    <div class="l-sec-h center reveal"><span class="label accent">Pricing</span><h2 class="display grad">Generous free. Pro when you’re hooked.</h2><div class="seg" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
-    <div class="plans reveal" id="plans">${plansHTML(true)}</div>
-  </section>
-
-  <section class="final" id="final"><canvas id="finalCanvas" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;z-index:-1"></canvas>
-    <h2 class="display grad reveal">Your next hook is already in here.</h2>
-    <div class="hero-cta reveal" style="--rd:120ms"><a class="btn ink xl" href="#start">Start writing, free${ic('arrow')}</a><button class="btn xl ghost" data-act="palette">${kbd(MOD, 'K')}<span>Look around</span></button></div>
-  </section>
-  <footer class="foot"><a class="logo" href="#home">${LOGO}</a><nav><a href="#write">App</a><a href="#brand">Brand</a><a href="#upgrade">Pricing</a><a href="#home" data-act="shortcuts">Shortcuts</a></nav><span>© ${new Date().getFullYear()} Hookworthy. Made with a lot of deleted drafts.</span></footer>
-</div>`;
-  initLanding();
-};
 function bigScore(v) { const C = 2 * Math.PI * 32; return `<svg viewBox="0 0 72 72" aria-hidden="true"><circle class="trk" cx="36" cy="36" r="32"/><circle class="val" cx="36" cy="36" r="32" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C * (1 - v / 100)).toFixed(2)}"/></svg><b>${v}</b>`; }
 const VOICE_SAMPLES = [
   ['shipped the pricing page today. kept it simple. we’ll see.', 'We shipped the new pricing page today. It’s simpler, and we’ll see how it performs.'],
@@ -2822,83 +2863,284 @@ const VOICE_SAMPLES = [
 ];
 const voiceSample = (spice, polish, length = 0) => { const row = VOICE_SAMPLES[spice < 35 ? 0 : spice < 68 ? 1 : 2]; let s = row[polish < 50 ? 0 : 1]; if (length > 55) s += polish < 50 ? '\n\nthe lesson: every option you add is a decision you’re asking someone else to make.' : '\n\nThe lesson: every option you add is a decision you’re asking a customer to make for you.'; return s; };
 
-/* scroll reveals: only elements below the fold are armed, so the first frame is always complete */
+/* reveals: only elements below the fold are armed, so the first frame is always complete */
 let REVEAL_IO = null;
 function armReveals(root) {
   if (REDUCED || !('IntersectionObserver' in window)) return;
   REVEAL_IO && REVEAL_IO.disconnect();
-  REVEAL_IO = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); en.target.classList.remove('armed'); REVEAL_IO.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });
-  $$('.reveal', root).forEach(el => { if (el.getBoundingClientRect().top > innerHeight * .92) { el.classList.add('armed'); REVEAL_IO.observe(el); } });
+  REVEAL_IO = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); en.target.classList.remove('armed'); REVEAL_IO.unobserve(en.target); } }), { rootMargin: '0px 0px -6% 0px', threshold: .06 });
+  $$('.stopin', root).forEach(el => { if (el.getBoundingClientRect().top > innerHeight * .95) { el.classList.add('armed'); REVEAL_IO.observe(el); } });
 }
+
+function diffMarkup(a, b) { return diffWords(a, b).map(c => c.eq !== undefined ? esc(c.eq) : `${c.del ? `<del>${esc(c.del)}</del>` : ''}${c.ins ? `<ins>${esc(c.ins)}</ins>` : ''}`).join(''); }
+
+ROUTES.home = () => {
+  const noiseA = FEED_NOISE.slice(0, 7).map(noisePost).join(''), noiseB = FEED_NOISE.slice(7).map((t, i) => noisePost(t, i + 7)).join('');
+  const angles = anglesFor({ title: 'Startups die from indigestion', topic: 'startup growth' }).slice(0, 3);
+  $('#root').innerHTML = `<div class="land force-dark">
+  <header class="l-nav" id="lnav">
+    <a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
+    <nav class="links" aria-label="Sections"><a href="#home" data-scroll="grader">The hook</a><a href="#home" data-scroll="day">How it works</a><a href="#home" data-scroll="who">Who it’s for</a><a href="#home" data-scroll="pricing">Pricing</a></nav>
+    <div class="grow"></div>
+    <a class="btn ghost sm login" href="#write">Log in</a>
+    <a class="btn ink sm" href="#start">Start writing</a>
+  </header>
+
+  <section class="wrap lp-hero" aria-label="Try the hook grader">
+    <div class="lp-copy">
+      <h1 class="display">Write posts people stop for.</h1>
+      <p class="sub">The feed decides in one line. Hookworthy grades that line as you type, rewrites it in your voice when you ask, and schedules the post for X, Threads, LinkedIn and Bluesky.</p>
+      <div class="lp-cta">
+        <form class="lp-handle" id="hero-form" novalidate><span class="at">@</span><input id="hero-h" placeholder="yourhandle" aria-label="Your handle" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">Start writing${ic('arrow', 'sm')}</button></form>
+        <span class="lp-fine">Free forever for one account per platform. No card.</span>
+      </div>
+    </div>
+
+    <div class="fs" id="fs">
+      <div class="fs-track" id="fs-track">${noiseA}<div class="fs-slot" id="fs-slot" aria-hidden="true"></div>${noiseB}${noiseA}<div class="fs-slot" aria-hidden="true"></div>${noiseB}</div>
+      <article class="fs-me" id="fs-me" aria-label="Your post">
+        ${avatar({ name: 'You', hue: 0 })}
+        <div class="hd"><b>You</b><span id="fs-handle">@you · now</span><span class="grow"></span><span class="score" id="fs-score" aria-live="polite"><i></i><span>0</span></span></div>
+        <div class="first"><textarea id="fs-t" rows="1" aria-label="Your first line. Type to grade it." maxlength="200" spellcheck="false">${esc(HERO_WEAK)}</textarea><i class="uline"></i></div>
+        <div class="rest" aria-hidden="true"><i style="width:94%"></i><i style="width:78%"></i><i style="width:52%"></i></div>
+        <div class="tools"><button type="button" data-hero="hook">${ic('hook')}Stronger hook</button><button type="button" data-hero="punchier">${ic('bolt')}Punchier</button><button type="button" data-hero="reset" aria-label="Start over">${ic('undo')}</button><span class="hint">type your own line</span></div>
+      </article>
+    </div>
+
+    <aside class="lp-grade" id="lp-grade" aria-label="Hook score">
+      <div class="n"><b id="g-n">0</b><span>hook<br>score</span></div>
+      <dl id="g-parts">${Object.keys(PART_NAMES).map(k => `<dt>${PART_NAMES[k]}</dt><dd><i data-p="${k}" style="--v:0"></i></dd><span class="v" data-v="${k}">0</span>`).join('')}</dl>
+      <p class="why" id="g-why"></p>
+      <div class="state"><i></i><span id="g-state">Scrolled past</span></div>
+    </aside>
+  </section>
+
+  <section class="wrap lp-sec" id="grader">
+    <div class="lp-grader">
+      <div class="lp-h stopin">
+        <h2 class="display">Most people read one line. Then they decide.</h2>
+        <p>Every first line gets a score out of 100 for clarity, curiosity, specifics, tension and length, plus one sentence on what to fix. Tap a line to see the fix.</p>
+      </div>
+      <div class="gw" id="gw">${GRADER_ROWS.map(([w], i) => { const h = hookScore(w); return `<div class="gw-row stopin" style="--rd:${i * 60}ms" data-gw="${i}"><span class="sc">${h.score}</span><span class="ln">${esc(w)}</span><span class="why">${esc(h.reason)}</span><button class="btn sm fix" data-gwfix="${i}">Fix it</button></div>`; }).join('')}
+        <div class="gw-foot"><button class="btn ghost sm" data-gwfix="all">${ic('hook', 'sm')} Fix all five</button><span>Scores come from the same grader you get in the app.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" id="day">
+    <div class="lp-h stopin">
+      <h2 class="display">One idea, before your coffee cools.</h2>
+      <p>How a post gets made in Hookworthy, from a thought on a walk to a slot your audience is awake for.</p>
+    </div>
+    <div class="day">
+      <div class="moment stopin">
+        <span class="t"><b>7:48</b>on a walk</span>
+        <div><h3>Catch it before it leaves.</h3><p>Record a voice memo, paste a link or drop a screenshot. Every capture becomes an idea with angles you could post today.</p></div>
+        <div class="crop">
+          <div class="mini memo">${ic('mic')}<span class="wave">${Array.from({ length: 34 }, (_, i) => `<i style="--h:${20 + Math.round(Math.abs(Math.sin(i * 1.7) * 70 + Math.sin(i * .6) * 12))}"></i>`).join('')}</span><span class="mono" style="font-size:12px;color:var(--text-3)">0:41</span></div>
+          ${angles.map((a, i) => `<div class="mini ${i === 0 ? 'sel' : ''}"><span class="k">${esc(a.k)}</span>${esc(a.t)}</div>`).join('')}
+        </div>
+      </div>
+      <div class="moment stopin">
+        <span class="t"><b>8:02</b>first draft</span>
+        <div><h3>Tab through the blank page.</h3><p>Suggestions appear in grey, in your voice, and only when you pause. Take one with Tab or keep typing. Press Enter twice and it becomes a thread.</p></div>
+        <div class="crop"><div class="ghost">Nobody tells you the hardest part of a side project is month three.<span class="g"> Not the start. Not the launch. Month three.</span><kbd>Tab</kbd></div><div class="row" style="justify-content:space-between;color:var(--text-3);font-size:13px"><span>Learns from your last 200 posts</span><span class="st sch"><i></i>your voice</span></div></div>
+      </div>
+      <div class="moment stopin">
+        <span class="t"><b>8:09</b>sharpen</span>
+        <div><h3>Every change, word by word.</h3><p>Ask for punchier, shorter or a stronger hook. You see exactly what changed and keep only the words you like. Nothing is swapped behind your back.</p></div>
+        <div class="crop"><div class="dif">${diffMarkup('I think pricing is really important and you should charge more.', 'Charge more. Pricing is a signal, not a number.')}</div><div class="acts"><span class="b p">Keep</span><span class="b">Undo</span><span class="delta">hook 41 → <b>88</b></span></div></div>
+      </div>
+      <div class="moment stopin">
+        <span class="t"><b>8:14</b>queue</span>
+        <div><h3>Posted when your people are up.</h3><p>Hookworthy learns when your replies peak and lights up those slots. Drag posts between days. Auto-plug adds your link once a post takes off.</p></div>
+        <div class="crop"><div class="week">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => `<div class="${i === 1 ? 'best' : ''}">${d}${i === 1 ? ' 8:40' : ''}${[0, 3].includes(i) ? '<span class="q"></span>' : ''}${i === 1 ? '<span class="q me"></span><span class="dot"></span>' : ''}</div>`).join('')}</div><div class="row" style="justify-content:space-between;font-size:13.5px;color:var(--text-2)"><span>Tue 8:40 is when your replies peak</span><span class="st ok"><i></i>scheduled</span></div></div>
+      </div>
+      <div class="moment stopin">
+        <span class="t"><b>Thu</b>looking back</span>
+        <div><h3>Numbers that tell you why.</h3><p>Insights come as sentences, not spreadsheets, with a button to write the next one.</p></div>
+        <div class="crop"><p class="insight">Your contrarian hooks got 3.2× the replies this month.</p><div class="bars">${[['Contrarian', 3.2], ['Story', 2.1], ['List', 1.6], ['Question', 1.2]].map(([k, v]) => `<div><span>${k}</span><span class="tr"><i style="--w:${v / 3.2 * 100}%"></i></span><b>${v}×</b></div>`).join('')}</div><span style="font-size:12px;color:var(--text-3)">Example account. Yours fills in after your first ten posts.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap lp-sec" id="who">
+    <div class="lp-h stopin">
+      <h2 class="display">For creators, by creators.</h2>
+      <p>Built by people who post every week, for the three ways creators actually work.</p>
+    </div>
+    <div class="who">
+      <div class="who-tabs" role="tablist" aria-label="Who it’s for">
+        ${[['solo', 'Solo creators', 'Writers, educators and makers growing an audience.', ['A voice profile trained on your own posts', 'Ideas from your niche every morning', 'A streak that counts scheduled posts']],
+          ['founder', 'Founders', 'Building in public between everything else.', ['Paste release notes, get three posts', 'A LinkedIn version that respects the fold', 'Slots picked from when your buyers reply']],
+          ['ghost', 'Ghostwriters and teams', 'Writing in more than one voice.', ['A separate voice for every client', 'Approvals before anything ships', 'One shared inbox for everyone’s ideas']]]
+          .map(([k, t, s, li], i) => `<button class="who-tab" role="tab" id="who-${k}" aria-selected="${i === 0}" aria-controls="who-stage" data-who="${k}"><b>${t}</b><span>${s}</span><ul>${li.map(x => `<li>${ic('check')}<span>${x}</span></li>`).join('')}</ul></button>`).join('')}
+      </div>
+      <div class="who-stage" id="who-stage" role="tabpanel" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <div class="lp-light force-light">
+    <section class="wrap" id="four">
+      <div class="four-h"><div class="lp-h stopin" style="margin:0"><h2 class="display">One post. Four feeds.</h2><p>Each platform gets its own version: split for X, stitched for LinkedIn’s “see more” fold, trimmed for Bluesky. Edit one without touching the others.</p></div>
+        <div class="seg" id="four-seg" role="tablist" aria-label="Post type"><button role="tab" aria-selected="true" data-four="thread">Thread</button><button role="tab" aria-selected="false" data-four="single">Single post</button></div></div>
+      <div class="four stopin" id="four-g"></div>
+    </section>
+  </div>
+
+  <section class="wrap lp-sec" id="pricing">
+    <div class="lp-h stopin"><h2 class="display">Free to start. Paid when it pays.</h2><p>Pro is for posting most days. Studio is for writing in other people’s voices.</p>
+      <div class="bill"><div class="seg" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly</button></div><span class="lp-fine">Yearly saves 25%. Prices are placeholders in this demo.</span></div></div>
+    <div class="lp-plans stopin" id="plans">${plansHTML(true)}</div>
+  </section>
+
+  <section class="lp-final" id="final">
+    ${ghostFeedHTML()}
+    <div class="card stopin">
+      ${avatar({ name: 'You', hue: 0 })}
+      <h2 class="display">Your next post goes here.</h2>
+      <p>Bring one half-formed thought. Leave with a first line that stops the scroll, in your voice, scheduled for when your people are up.</p>
+      <div class="row"><a class="btn ink xl" href="#start">Start writing, free${ic('arrow')}</a><button class="btn xl ghost" data-act="palette">${kbd(MOD, 'K')}<span>Look around</span></button></div>
+    </div>
+  </section>
+  <footer class="foot"><a class="logo" href="#home">${LOGO}</a><nav><a href="#write">App</a><a href="#brand">Brand</a><a href="#upgrade">Pricing</a><a href="#home" data-act="shortcuts">Shortcuts</a></nav><span>© ${new Date().getFullYear()} Hookworthy. For creators, by creators.</span></footer>
+</div>`;
+  initLanding();
+};
+
 function initLanding() {
   const nav = $('#lnav'); const onScroll = () => nav && nav.classList.toggle('scrolled', scrollY > 8);
   addEventListener('scroll', onScroll, { passive: true }); onDispose(() => removeEventListener('scroll', onScroll));
-  const fl = murmuration($('#heroCanvas'), { count: 120, alpha: .35 }); onDispose(fl.stop);
-  const fl2 = murmuration($('#finalCanvas'), { count: 100, gather: { x: .5, y: .45 }, alpha: .3 }); onDispose(fl2.stop);
   armReveals($('#root')); onDispose(() => REVEAL_IO && REVEAL_IO.disconnect());
-  $$('.feat').forEach(f => f.addEventListener('pointermove', e => { const r = f.getBoundingClientRect(); f.style.setProperty('--mx', (e.clientX - r.left) + 'px'); f.style.setProperty('--my', (e.clientY - r.top) + 'px'); }));
   $$('[data-scroll]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = document.getElementById(a.dataset.scroll); t && t.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' }); }));
   $('#hero-form').addEventListener('submit', e => { e.preventDefault(); const v = $('#hero-h').value.trim().replace(/^@/, ''); ONB.handle = v; ONB.auto = /^[A-Za-z0-9_.]{2,30}$/.test(v); go('start'); });
-  syncSeg($('#demo-seg')); syncSeg($('#bill-seg'));
+  $('#hero-h').addEventListener('input', e => { const v = e.target.value.trim().replace(/^@/, ''); $('#fs-handle').textContent = `@${v || 'you'} · now`; });
+  syncSeg($('#bill-seg')); syncSeg($('#four-seg'));
   $('#bill-seg').addEventListener('click', e => { const b = e.target.closest('[data-bill]'); if (!b) return; $$('[data-bill]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#bill-seg')); $('#plans').innerHTML = plansHTML(b.dataset.bill === 'y'); });
-  /* live demo */
-  const ta = $('#demo-t'), ed = $('.demo-ed'); if (FINE && !REDUCED) ed.classList.add('fancy-caret');
-  let dTab = 'x', busy = false, auto = null;
-  const paint = () => {
-    const v = ta.value; const mir = ta.parentElement.firstElementChild; const p = ta.selectionEnd;
-    mir.innerHTML = esc(v.slice(0, p)) + '<span class="cm"></span>' + esc(v.slice(p)) + '​';
-    ta.style.height = 'auto'; ta.style.height = Math.max(ta.scrollHeight, mir.offsetHeight) + 'px';
-    placeCaret(ta);
-    const h = hookScore(v); const sc = $('#demo-hook .sc'); sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score; $('#demo-hook').classList.toggle('hi', h.score >= 75);
-    $('#demo-reason span').textContent = h.reason;
-    const len = [...v].length, rem = 280 - len, ring = $('#demo-ring'); $('.val', ring).style.strokeDashoffset = 59.69 * (1 - Math.min(1, len / 280));
-    ring.classList.toggle('warn', rem <= 20 && rem >= 0); ring.classList.toggle('over', rem < 0); $('b', ring).textContent = rem <= 20 ? rem : '';
-    const u = { name: 'You', handle: 'you', hue: 200, niche: 'Writer' };
-    const saved = S.draft, savedUser = S.user; S.user = { ...u }; S.draft = { tweets: [{ text: v, media: [], poll: null }], li: null };
-    $('#demo-pv').innerHTML = pvCard(dTab, false).replace(/<div class="pv-edit"[\s\S]*<\/div><\/div>$/, '</div>');
-    S.draft = saved; S.user = savedUser;
+
+  /* ---------- the feed ---------- */
+  const fs = $('#fs'), track = $('#fs-track'), me = $('#fs-me'), ta = $('#fs-t'), slots = $$('.fs-slot', track), grade = $('#lp-grade');
+  let y = 0, v = 0, target = 1600, mode = 'run', brake = null, last = 0, lastTxt = 0, raf = 0, visible = true, loopL = 0, slotTop = 0;
+  const measure = () => {
+    slots.forEach(s => s.style.height = me.offsetHeight + 'px');
+    loopL = slots[1].offsetTop - slots[0].offsetTop; slotTop = slots[0].offsetTop;
   };
-  paint();
-  ['input', 'keyup', 'click', 'focus', 'blur'].forEach(ev => ta.addEventListener(ev, () => { if (ev === 'input' || ev === 'focus') stopAuto(); requestAnimationFrame(paint); }));
-  $('#demo-pv').addEventListener('click', e => { if (e.target.closest('[data-cact="limore"]')) { UI.liMore = !UI.liMore; paint(); } });
-  $('#demo-seg').addEventListener('click', e => { const b = e.target.closest('[data-dpv]'); if (!b) return; dTab = b.dataset.dpv; $$('[data-dpv]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#demo-seg')); paint(); });
-  function riffDemo(kind, done) {
-    if (busy) return; const before = ta.value; if (!before.trim()) { ta.focus(); toast('Type something first. Anything.', { icon: 'write' }); return; }
-    riffNonce++; const after = AI[kind](before); if (after === before) { toast('Already tight. Nothing worth changing.', { icon: 'check' }); return; }
-    busy = true; const chunks = diffWords(before, after); const box = $('#demo-diff'); box.hidden = false; ta.hidden = true; ta.parentElement.firstElementChild.hidden = true; $('.caret', ta.parentElement).style.opacity = 0;
-    let k = 0; const step = Math.max(1, Math.ceil(chunks.length / 30));
-    const render = () => { box.innerHTML = chunks.slice(0, k).map(c => c.eq !== undefined ? esc(c.eq) : `<span class="chg">${c.del ? markSeg('del', c.del) : ''}${c.ins ? markSeg('ins', c.ins) : ''}</span>`).join(''); box.classList.toggle('writing', k < chunks.length); };
-    (function t() { k = Math.min(chunks.length, k + step); render(); if (k < chunks.length) setTimeout(t, REDUCED ? 0 : 22); else setTimeout(() => { box.hidden = true; ta.hidden = false; ta.parentElement.firstElementChild.hidden = false; ta.value = after; busy = false; paint(); const sc = $('#demo-hook'); burstFrom(sc); done && done(); }, REDUCED ? 300 : 1300); })();
-  }
-  $('.demo-tools').addEventListener('click', e => { const b = e.target.closest('[data-demo]'); if (!b) return; stopAuto(); if (b.dataset.demo === 'reset') { ta.value = DEMO_FLAT; paint(); return; } riffDemo(b.dataset.demo); });
-  function stopAuto() { if (auto) { clearTimeout(auto.t); auto = null; } }
-  /* autoplay once: type the flat draft, then write a stronger hook */
-  if (!REDUCED) {
-    auto = { t: 0 }; let i = 0;
-    const typeIt = () => { if (!auto) return; ta.value = DEMO_FLAT.slice(0, ++i); paint(); if (i < DEMO_FLAT.length) auto.t = setTimeout(typeIt, 14 + Math.random() * 22); else auto.t = setTimeout(() => { if (!auto) return; auto = null; riffDemo('punchier', () => setTimeout(() => riffDemo('hook'), 900)); }, 900); };
-    const io = new IntersectionObserver(([en]) => { if (en.isIntersecting && auto && !auto.started) { auto.started = true; auto.t = setTimeout(typeIt, 700); } }, { threshold: .4 });
-    io.observe($('#demo')); onDispose(() => { io.disconnect(); stopAuto(); });
-  }
-  /* scroll story */
-  const steps = $$('.story-step');
-  const io2 = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { const k = en.target.dataset.step; steps.forEach(s => s.classList.toggle('on', s === en.target)); $$('.stage-scene').forEach(s => s.classList.toggle('on', s.dataset.scene === k)); } }), { rootMargin: '-45% 0px -45% 0px' });
-  steps.forEach(s => io2.observe(s)); onDispose(() => io2.disconnect());
-  /* before/after */
-  const ba = $('#ba'), hb = $('#ba-h'); let dragging = false;
-  const setX = p => { p = clamp(p, 4, 96); ba.style.setProperty('--x', p + '%'); hb.setAttribute('aria-valuenow', Math.round(p)); };
-  const fromEvt = e => { const r = ba.getBoundingClientRect(); setX((e.clientX - r.left) / r.width * 100); };
-  hb.addEventListener('pointerdown', e => { dragging = true; hb.setPointerCapture(e.pointerId); });
-  hb.addEventListener('pointermove', e => dragging && fromEvt(e));
-  hb.addEventListener('pointerup', () => { dragging = false; });
-  ba.addEventListener('click', e => { if (e.target.closest('#ba-h')) return; fromEvt(e); });
-  hb.addEventListener('keydown', e => { const v = +hb.getAttribute('aria-valuenow'); if (e.key === 'ArrowLeft') { e.preventDefault(); setX(v - 5); } if (e.key === 'ArrowRight') { e.preventDefault(); setX(v + 5); } });
-  /* feature viz */
-  const fi = $('#feat-ideas'); let seed = 3;
-  const drawIdeas = () => { fi.innerHTML = genIdeas(3, seed++).map((x, i) => `<div class="mini" style="padding:10px 12px;border-radius:12px;background:var(--bg-elev);box-shadow:0 0 0 1px var(--border);font-size:14px;display:flex;justify-content:space-between;gap:10px;align-items:center;animation:rise var(--d-snap) ${i * 60}ms var(--spring) both"><span>${esc(x.text)}</span><span class="pill">${x.kind}</span></div>`).join(''); };
-  drawIdeas(); const it = setInterval(() => { if (!document.hidden) drawIdeas(); }, 4200); onDispose(() => clearInterval(it));
-  const sp = $('#feat-spice'), smp = $('#feat-sample');
-  const drawS = () => { sp.style.setProperty('--p', sp.value + '%'); smp.textContent = voiceSample(+sp.value, 60); };
-  sp.addEventListener('input', drawS); drawS();
+  const parkY = () => { const pinTop = fs.clientHeight / 2 - me.offsetHeight / 2; return ((slotTop - pinTop) % loopL + loopL) % loopL; };
+  const paintTrack = () => { track.style.transform = `translate3d(0,${-y}px,0)`; track.style.filter = v > 30 ? `blur(${Math.min(7, v / 240).toFixed(2)}px)` : 'none'; };
+  const stateText = () => { if (!fs.isConnected) return; $('#g-state').textContent = mode === 'parked' ? 'Stopped. They’re reading it.' : mode === 'brake' ? 'Slowing down…' : `Scrolled past at ${Math.round(v).toLocaleString()} px/s`; };
+  const tick = now => {
+    if (!fs.isConnected) { raf = 0; return; }
+    const dt = Math.min(.05, (now - (last || now)) / 1000); last = now;
+    if (mode === 'run') { v += (target - v) * Math.min(1, dt * 2.2); y += v * dt; }
+    else if (mode === 'brake') { brake.t += dt; const p = Math.min(1, brake.t / brake.T); y = brake.y0 + brake.d * (1 - Math.pow(1 - p, 3)); v = (3 * brake.d / brake.T) * Math.pow(1 - p, 2); if (p >= 1) { mode = 'parked'; v = 0; setStopped(true); } }
+    if (loopL) y = ((y % loopL) + loopL) % loopL;
+    paintTrack(); if (now - lastTxt > 120) { lastTxt = now; stateText(); }
+    raf = mode === 'parked' || !visible ? 0 : requestAnimationFrame(tick);
+  };
+  const start = () => { if (!raf && visible && mode !== 'parked') { last = 0; raf = requestAnimationFrame(tick); } };
+  const setStopped = on => { me.classList.toggle('stopped', on); grade.classList.toggle('stopped', on); stateText(); };
+  const toPark = () => {
+    if (mode === 'parked' || mode === 'brake') return;
+    if (REDUCED) { y = parkY(); v = 0; mode = 'parked'; paintTrack(); setStopped(true); return; }
+    const goal = parkY(); let d = ((goal - y) % loopL + loopL) % loopL; const vv = Math.max(v, 400); if (d < vv * .45) d += loopL;
+    brake = { y0: y, d, T: Math.min(2.6, 3 * d / vv), t: 0 }; mode = 'brake'; start();
+  };
+  const toRun = spd => { target = spd; if (mode === 'parked' || mode === 'brake') { if (mode === 'parked') v = 0; mode = 'run'; setStopped(false); } if (REDUCED) return; start(); };
+
+  const grow = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+  const paint = () => {
+    if (!ta.isConnected) return;
+    grow(); measure();
+    const h = hookScore(ta.value); $('#fs-score span').textContent = h.score; $('#g-n').textContent = h.score; $('#g-why').textContent = h.reason;
+    Object.keys(PART_NAMES).forEach(k => { $(`[data-p="${k}"]`).style.setProperty('--v', h.parts[k]); $(`[data-v="${k}"]`).textContent = h.parts[k]; });
+    const probe = document.createElement('span'); probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font:' + getComputedStyle(ta).font; probe.textContent = ta.value.split('\n')[0] || ' '; document.body.appendChild(probe); me.style.setProperty('--uw', Math.min(ta.clientWidth, probe.offsetWidth) + 'px'); probe.remove();
+    if (h.score >= STOP_AT) toPark(); else if (REDUCED) { mode = 'run'; v = 0; setStopped(false); stateText(); } else toRun(h.score < 50 ? 1700 : 950);
+    if (mode === 'parked') { y = parkY(); paintTrack(); }
+  };
+  const setLine = (text, animate = true) => {
+    if (!animate || REDUCED) { ta.value = text; paint(); return; }
+    ta.classList.add('swap'); setTimeout(() => { ta.value = text; ta.classList.remove('swap'); paint(); }, 240);
+  };
+  ta.addEventListener('input', () => { stopAuto(); paint(); });
+  ta.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+  $('.tools', me).addEventListener('click', e => {
+    const b = e.target.closest('[data-hero]'); if (!b) return; stopAuto(); const k = b.dataset.hero;
+    if (k === 'reset') { setLine(HERO_WEAK); return; }
+    if (!ta.value.trim()) { ta.focus(); toast('Type a first line first. Anything.', { icon: 'write' }); return; }
+    riffNonce++; const before = ta.value; let after = AI[k](before).split('\n')[0];
+    if (before.trim() === HERO_WEAK) after = HERO_STRONG;
+    if (after === before || hookScore(after).score < hookScore(before).score) { toast('That line is already tight. Try your own.', { icon: 'check' }); return; }
+    setLine(after);
+  });
+  const io = new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) start(); }, { threshold: 0 });
+  io.observe(fs);
+  const onVis = () => { visible = !document.hidden; if (visible) start(); };
+  document.addEventListener('visibilitychange', onVis);
+  const onResize = () => { measure(); if (mode === 'parked') { y = parkY(); paintTrack(); } };
+  addEventListener('resize', onResize);
+  onDispose(() => { cancelAnimationFrame(raf); io.disconnect(); document.removeEventListener('visibilitychange', onVis); removeEventListener('resize', onResize); });
+  paint(); start();
+  /* autoplay once: the weak line scrolls past, then gets rewritten and the feed stops */
+  let auto = REDUCED ? null : setTimeout(() => { auto = null; setLine(HERO_STRONG); }, 2600);
+  function stopAuto() { if (auto) { clearTimeout(auto); auto = null; } }
+  onDispose(stopAuto);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if ($('#fs-t')) paint(); });
+
+  /* ---------- the grader wall ---------- */
+  const fixRow = (i, delay = 0) => setTimeout(() => {
+    const row = $(`[data-gw="${i}"]`); if (!row || row.classList.contains('good')) return;
+    const [w, s] = GRADER_ROWS[i]; const h = hookScore(s);
+    $('.ln', row).innerHTML = diffMarkup(w, s); $('.why', row).textContent = h.reason;
+    const sc = $('.sc', row); let n = +sc.textContent; const t0 = performance.now(), from = n;
+    const count = t => { const p = Math.min(1, (t - t0) / 700); sc.textContent = Math.round(from + (h.score - from) * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(count); };
+    requestAnimationFrame(count); row.classList.add('good');
+    const btn = $('.fix', row); btn.textContent = 'Undo'; btn.dataset.gwfix = 'u' + i;
+    setTimeout(() => { if (row.classList.contains('good')) $('.ln', row).textContent = s; }, 2200);
+  }, delay);
+  const unfix = i => { const row = $(`[data-gw="${i}"]`); const [w] = GRADER_ROWS[i]; const h = hookScore(w); row.classList.remove('good'); $('.ln', row).textContent = w; $('.why', row).textContent = h.reason; $('.sc', row).textContent = h.score; const btn = $('.fix', row); btn.textContent = 'Fix it'; btn.dataset.gwfix = i; };
+  $('#gw').addEventListener('click', e => {
+    const b = e.target.closest('[data-gwfix]'); const row = e.target.closest('.gw-row');
+    const k = b ? b.dataset.gwfix : row ? (row.classList.contains('good') ? 'u' + row.dataset.gw : row.dataset.gw) : null; if (k == null) return;
+    if (k === 'all') { GRADER_ROWS.forEach((_, i) => fixRow(i, i * 140)); return; }
+    if (k[0] === 'u') unfix(+k.slice(1)); else fixRow(+k);
+  });
+
+  /* ---------- who it's for ---------- */
+  const stage = $('#who-stage');
+  const WHO = {
+    solo: () => `<div class="crop"><div class="row" style="justify-content:space-between"><b style="font-weight:600">Your voice</b><span class="st sch"><i></i>trained on 214 posts</span></div>
+      <div class="slider"><label for="who-spice" class="ends"><span>Calm</span><span>Spicy</span></label><input type="range" id="who-spice" min="0" max="100" value="60"></div>
+      <div class="mini" id="who-sample" style="font-size:16px;min-height:84px;white-space:pre-wrap"></div>
+      <div class="row" style="flex-wrap:wrap;gap:6px">${['game-changer', 'delve', 'synergy', 'unlock'].map(w => `<span class="st"><i></i>never say “${w}”</span>`).join('')}</div></div>`,
+    founder: () => `<div class="crop"><div class="chg"><span>release notes · v2.4</span><b>+ Pricing page now has one plan</b><b>+ Trials start without a card</b><span>− Removed the “compare plans” table</span></div>
+      ${['We deleted our pricing table. Trials without a card went live the same day.', 'Three plans was a hedge. We shipped one. Here’s what changed in week one:', 'Small release, big lesson: every option is a decision you ask a buyer to make.'].map((t, i) => `<div class="mini ${i === 1 ? 'sel' : ''}"><span class="k">${['Story', 'Contrarian', 'Lesson'][i]} · hook ${hookScore(t).score}</span>${esc(t)}</div>`).join('')}</div>`,
+    ghost: () => `<div class="crop"><div class="ws">${[['You', 'personal', 210, false], ['Ledgerly', 'client · Priya’s voice', 20, true], ['Northwind', 'client · company voice', 150, false]].map(([n, s, h, on]) => `<div class="ws-row ${on ? 'on' : ''}">${avatar({ name: n, hue: h })}<span>${n}<small>${s}</small></span>${on ? kbd(MOD, '2') : ''}</div>`).join('')}</div>
+      <div class="ql">${[['We hired 9 people last year. 3 were mistakes.', 'need', 'Needs approval'], ['Stop pricing like a coward. Here’s the math:', 'ok', 'Approved'], ['Your landing page has 1 job. Most do 4.', 'sch', 'Tue 8:40']].map(([t, c, l]) => `<div><span>${esc(t)}</span><span class="st ${c}"><i></i>${l}</span></div>`).join('')}</div>
+      <span style="font-size:12px;color:var(--text-3)">Example workspace. Names are placeholders.</span></div>`
+  };
+  const showWho = k => {
+    stage.innerHTML = WHO[k](); stage.setAttribute('aria-labelledby', 'who-' + k);
+    const sp = $('#who-spice', stage); if (sp) { const draw = () => { $('#who-sample').textContent = voiceSample(+sp.value, 70); }; sp.addEventListener('input', draw); draw(); }
+  };
+  $('.who-tabs').addEventListener('click', e => { const b = e.target.closest('[data-who]'); if (!b) return; $$('[data-who]').forEach(x => x.setAttribute('aria-selected', x === b)); showWho(b.dataset.who); });
+  $('.who-tabs').addEventListener('keydown', e => { if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return; e.preventDefault(); const tabs = $$('[data-who]'); const i = tabs.indexOf(document.activeElement); const n = tabs[(i + (e.key === 'ArrowDown' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); n.click(); });
+  showWho('solo');
+
+  /* ---------- one post, four feeds ---------- */
+  const FOUR = {
+    thread: ['Double your price.', 'Signups went up 31% when we did. Customers value what costs more.', 'Pricing is a signal, not a number. Here’s how we tested it:'],
+    single: ['Double your price. Signups went up 31% when we did. Pricing is a signal, not a number.']
+  };
+  const drawFour = kind => {
+    const saved = S.draft, savedUser = S.user, savedMore = UI.liMore;
+    S.user = { name: 'You', handle: ($('#hero-h').value.trim().replace(/^@/, '') || 'you'), hue: 0, niche: 'Founder' };
+    S.draft = { tweets: FOUR[kind].map(t => ({ text: t, media: [], poll: null })), li: null }; UI.liMore = false;
+    $('#four-g').innerHTML = ['x', 'threads', 'linkedin', 'bsky'].map(k => pvCard(k, false).replace(/<div class="pv-edit"[\s\S]*<\/div><\/div>$/, '</div>')).join('');
+    S.draft = saved; S.user = savedUser; UI.liMore = savedMore;
+  };
+  drawFour('thread');
+  $('#four-seg').addEventListener('click', e => { const b = e.target.closest('[data-four]'); if (!b) return; $$('[data-four]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#four-seg')); drawFour(b.dataset.four); });
+  $('#four-g').addEventListener('click', e => { if (e.target.closest('[data-cact="limore"]')) toast('That’s LinkedIn’s fold. Your hook has to earn the click.', { icon: 'hook' }); });
 }
 
 /* ==========================================================================
@@ -2913,7 +3155,6 @@ ROUTES.start = () => {
 function onbStep1() {
   const niches = Object.keys(NICHES); const cur = ONB.niche || S.user.niche;
   $('#onb').innerHTML = `<div class="onb-card">
-    <span class="label accent">30-second setup</span>
     <h1 class="display">Let’s find <em>your</em> voice.</h1>
     <p class="muted" style="font-size:17px;max-width:46ch">Paste your handle. We’ll read your recent posts and hand you five you could write today.</p>
     <div class="seg" id="onb-plat" role="tablist" aria-label="Platform">${['x', 'threads', 'li', 'bsky'].map(k => `<button role="tab" data-p="${k}" aria-selected="${ONB.plat === k}">${pic(k, 'icon sm')}<span>${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}</span></button>`).join('')}</div>
@@ -2938,8 +3179,8 @@ function onbStep1() {
 function onbStep2() {
   ONB.t0 = ONB.t0 || Date.now();
   const steps = ONB.handle ? [`Reading @${ONB.handle}’s last 200 posts`, 'Learning how you open', 'Finding what your people save', 'Writing your first five'] : [`Mapping ${ONB.niche.toLowerCase()}`, 'Picking hooks that work there', 'Tuning a starter voice', 'Writing your first five'];
-  $('#onb').innerHTML = `<canvas id="flockCanvas" aria-hidden="true"></canvas><div class="onb-card" style="position:relative"><div class="flock-loader" aria-hidden="true"><i></i><i></i><i></i></div><h2 class="display" style="font-size:clamp(34px,5vw,48px)">Reading the room…</h2><div class="reading" role="status" aria-live="polite">${steps.map((s, i) => `<div class="st" data-i="${i}"><span class="ck">${ic('check')}</span><span>${esc(s)}</span></div>`).join('')}</div><button class="btn ghost sm" id="onb-skip">Skip the suspense</button></div>`;
-  const fl = murmuration($('#flockCanvas'), { count: 120, gather: { x: .5, y: .5 }, alpha: .45 }); onDispose(fl.stop);
+  $('#onb').innerHTML = `${ghostFeedHTML()}<div class="onb-card" style="position:relative"><h2 class="display" style="font-size:clamp(34px,5vw,48px)">Reading the room…</h2><div class="reading" role="status" aria-live="polite">${steps.map((s, i) => `<div class="st" data-i="${i}"><span class="ck">${ic('check')}</span><span>${esc(s)}</span></div>`).join('')}</div><button class="btn ghost sm" id="onb-skip">Skip the suspense</button></div>`;
+  const fl = { stop() {} };
   let i = 0; const els = $$('.reading .st'); let t;
   const next = () => { if (i > 0) { els[i - 1].classList.remove('on'); els[i - 1].classList.add('done'); } if (i < els.length) { els[i].classList.add('on'); i++; t = setTimeout(next, REDUCED ? 150 : 640); } else t = setTimeout(() => { fl.stop(); onbStep3(); }, 380); };
   next(); onDispose(() => clearTimeout(t));
@@ -2947,12 +3188,12 @@ function onbStep2() {
 }
 function onbStep3() {
   const handle = ONB.handle || S.user.handle; const name = ONB.handle ? ONB.handle.replace(/[._]+/g, ' ').replace(/\d+/g, '').trim().split(' ').map(cap).join(' ') || cap(ONB.handle) : S.user.name;
-  S.user = { ...S.user, handle, name, niche: ONB.niche, hue: hash(handle) % 360 }; S.onboarded = true; save();
+  S.user = { ...S.user, handle, name, niche: ONB.niche, hue: hash(handle) % 360 }; S.onboarded = true; S.ws = 'me'; Object.assign(S.workspaces[0], { name, handle, hue: S.user.hue, niche: ONB.niche }); save();
   PH_IDEAS = genIdeas(6, hash(handle) % 1000);
   const ideas = genIdeas(5, hash(handle + ONB.niche) % 9999);
   const secs = Math.max(4, Math.round((Date.now() - ONB.t0) / 1000));
   $('#onb').innerHTML = `<div class="onb-result">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><span class="label accent">Ready</span><h1 class="display" style="font-size:clamp(36px,5vw,56px)">Here’s how you sound, ${esc(name.split(' ')[0])}.</h1></div><span class="timer" data-tip="From paste to posts">${ic('clock', 'xs')} 00:${String(Math.min(59, secs)).padStart(2, '0')} from paste to posts</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><h1 class="display" style="font-size:clamp(36px,5vw,56px)">Here’s how you sound, ${esc(name.split(' ')[0])}.</h1></div><span class="timer" data-tip="From paste to posts">${ic('clock', 'xs')} 00:${String(Math.min(59, secs)).padStart(2, '0')} from paste to posts</span></div>
     <div class="grid">
       <div class="card voice-card">
         <div style="display:flex;gap:12px;align-items:center">${avatar(S.user, 'lg')}<div><b>${esc(name)}</b><div class="faint" style="font-size:13px">@${esc(handle)} · ${esc(ONB.niche)}</div></div></div>
@@ -3169,6 +3410,10 @@ ROUTES.queue = () => {
   v.addEventListener('drop', e => { const s = e.target.closest('.slot'); if (!s || !dragId) return; e.preventDefault(); moveQ(dragId, s.dataset.day, s.dataset.time); dragId = null; });
   v.addEventListener('keydown', e => { const c = e.target.closest('.qcard'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); qMenu(c); } });
 };
+function qTags(q) {
+  const w = q.ws && q.ws !== 'me' ? S.workspaces.find(x => x.id === q.ws) : null; if (!w && !q.approval) return '';
+  return `<span class="qtags">${w ? `<span class="qt">${esc(w.name)}</span>` : ''}${q.approval ? `<span class="qt ${q.approval}"><i></i>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span>` : ''}</span>`;
+}
 function moveQ(id, day, time) {
   const q = S.queue.find(x => x.id === id); if (!q) return;
   if (slotDate(day, time).getTime() < Date.now()) { toast('That slot is in the past. Time only goes one way.', { tone: 'err', icon: 'clock' }); return; }
@@ -3182,10 +3427,11 @@ function qMenu(c) {
   const q = S.queue.find(x => x.id === c.dataset.id); if (!q) return;
   if (q.status === 'published') { openMenu(c, [{ header: 'Published' }, { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
   const next = nextSlots(1)[0];
-  openMenu(c, [{ header: slotLabel(q.day, q.time) },
+  const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { q.approval = 'ok'; save(); drawCal(); drawQSide(); toast('Approved. It goes out on schedule.', { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
+  openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
     { label: 'Edit in composer', icon: 'write', run: () => { S.queue = S.queue.filter(x => x !== q); save(); writeFrom(q.tweets); S.draft.slot = { day: q.day, time: q.time }; } },
     next ? { label: 'Move to next golden slot', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No golden slots left', icon: 'target', disabled: true },
-    { label: 'Publish now', icon: 'send', run: () => { q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Published. Hook, meet world.', { icon: 'send', tone: 'accent' }); } },
+    { label: 'Publish now', icon: 'send', run: () => { q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Published. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; S.queue.push({ ...q, id: uid(), day: s.day, time: s.time }); save(); drawCal(); drawQSide(); toast(`Duplicated to ${slotLabel(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
     { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); save(); drawCal(); drawQSide(); toast('Deleted from the queue.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); drawCal(); drawQSide(); } }); } }
   ], { width: 250 });
@@ -3201,11 +3447,11 @@ function drawCal() {
     days.forEach(d => {
       const day = dayKey(d); const past = slotDate(day, t).getTime() < now; const best = BEST[dowIdx(d)] && BEST[dowIdx(d)][t];
       const items = S.queue.filter(q => q.day === day && (q.status === 'scheduled' ? q.time === t : rowOf(q.time) === r));
-      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${items.map(q => `<button class="qcard ${q.status}" data-id="${q.id}" draggable="${q.status === 'scheduled'}" aria-label="${esc(q.text)}. ${q.status === 'published' ? 'Published' : 'Scheduled ' + slotLabel(q.day, q.time)}"><p>${esc(q.text)}</p><span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`).join('')}${!items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
+      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${items.map(q => `<button class="qcard ${q.status}" data-id="${q.id}" draggable="${q.status === 'scheduled'}" aria-label="${esc(q.text)}. ${q.status === 'published' ? 'Published' : 'Scheduled ' + slotLabel(q.day, q.time)}"><p>${esc(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`).join('')}${!items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
     });
   });
   cal.innerHTML = html;
-  const qc = q => `<button class="qcard ${q.status}" data-id="${q.id}" aria-label="${esc(q.text)}"><p>${esc(q.text)}</p><span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
+  const qc = q => `<button class="qcard ${q.status}" data-id="${q.id}" aria-label="${esc(q.text)}"><p>${esc(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
   const ag = $('#agenda'); if (ag) ag.innerHTML = days.map(d => {
     const day = dayKey(d); const items = S.queue.filter(q => q.day === day).sort((a, b) => a.time.localeCompare(b.time));
     const open = Object.keys(BEST[dowIdx(d)] || {}).filter(t => slotDate(day, t).getTime() > now && !taken(day, t));
@@ -3225,7 +3471,11 @@ function fillGaps() {
 }
 function drawQSide() {
   const el = $('#q-side'); if (!el) return; const up = S.queue.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now()).sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)).slice(0, 5);
-  el.innerHTML = `<div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(' ', '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
+  const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled');
+  const n = streakCount(); const postedToday = !!S.streak[dayKey(Date.now())];
+  el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
+  <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Momentum</span><span class="mono" style="font-size:12px">${n} day${n === 1 ? '' : 's'}</span></div><div class="streak">${streakHTML()}</div><span class="faint" style="font-size:12px">${postedToday ? 'Posted today. Scheduled posts count too.' : n ? `Post or schedule today to make it ${n + 1}.` : 'One post starts a streak. Scheduled posts count.'}</span></div>
+  <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(' ', '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
   <div class="card"><span class="label">Autopilot</span>
     <div class="setting"><span>Auto-plug</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Auto-plug"></button><small>At ${S.settings.plugAt} likes, reply with:</small></div>
     <input class="input" id="plug-t" value="${esc(S.settings.plugText)}" aria-label="Plug text">
@@ -3266,7 +3516,7 @@ function drawInsights() {
   const d = series(RANGE); const total = d.reduce((a, b) => a + b, 0); const f = RANGE / 30;
   const kpis = [['Impressions', fmtK(total), '+18%', 1], ['Engagement', (3.1 + (RANGE === 7 ? .4 : 0)).toFixed(1) + '%', '+0.6 pts', 1], ['New followers', fmtK(Math.round(412 * f)), '+9%', 1], ['Replies', fmtK(Math.round(1284 * f)), '−4%', 0]];
   const types = [['Contrarian', 3.2], ['Story', 2.1], ['Listicle', 1.6], ['How-to', 1.4], ['Question', 1.1], ['Announcement', .7]];
-  $('#ins').innerHTML = `<div class="insight-hero"><span class="label accent">Biggest signal · last ${RANGE} days</span><h2 class="display" style="margin-top:12px">Your contrarian hooks get <span class="n">3.2×</span> the replies.</h2><p>Lines that push back on common advice pulled 3.2× the replies of everything else. You wrote ${Math.max(1, Math.round(4 * f))} of them. Your audience wants more.</p><div class="acts"><button class="btn primary" data-nact="contra">${ic('swap', 'sm')} Write a contrarian post</button><button class="btn" data-nact="posts">See the posts</button></div></div>
+  $('#ins').innerHTML = `<div class="insight-hero"><h2 class="display">Your contrarian hooks get <span class="n">3.2×</span> the replies.</h2><p>Lines that push back on common advice pulled 3.2× the replies of everything else. You wrote ${Math.max(1, Math.round(4 * f))} of them. Your audience wants more.</p><div class="acts"><button class="btn primary" data-nact="contra">${ic('swap', 'sm')} Write a contrarian post</button><button class="btn" data-nact="posts">See the posts</button></div></div>
   <div class="kpis">${kpis.map(([k, v, dl, up]) => `<div class="card kpi"><span class="label">${k}</span><b>${v}</b><span class="delta ${up ? 'up' : 'down'}">${dl} vs previous ${RANGE} days</span></div>`).join('')}</div>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Impressions</h3><p class="faint" style="font-size:13px;margin-top:2px">Tuesday spikes are your 8:40am posts landing.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Impressions</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(Date.now() - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">Replies by hook type</h3><p class="faint" style="font-size:13px;margin-top:2px">Relative to your average post</p></div></div><div class="hbars">${types.map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k}: ${v}× your average replies"><span>${k}</span><div class="track"><div class="fillb" style="width:${v / 3.2 * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${v}×</span></div>`).join('')}</div></div>
@@ -3339,7 +3589,7 @@ ROUTES.voice = () => {
    ========================================================================== */
 ROUTES.upgrade = () => {
   const n = S.ai.used; const h = hookScore(S.draft.tweets[0].text).score;
-  mount('', `<div class="up-wrap"><div class="up-hero"><span class="label accent">Hookworthy Pro</span><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited riffs in your voice, auto-plugs that ride the wave, and insights that tell you what to write next.</p>
+  mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited riffs in your voice, auto-plugs that ride the wave, and insights that tell you what to write next.</p>
     ${n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free riffs today${h ? ` · your current hook scores ${h}` : ''}</p>` : ''}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
     <div class="plans" id="up-plans">${plansHTML(true)}</div>
@@ -3355,7 +3605,7 @@ ROUTES.upgrade = () => {
 ROUTES.brand = () => {
   const tokens = ['--bg', '--surface', '--surface-2', '--border-strong', '--text-1', '--text-2', '--text-3', '--accent', '--accent-text', '--success', '--warn', '--error'];
   const cs = getComputedStyle(document.documentElement);
-  mount('brand', `<div class="page"><div class="page-h"><div><h1 class="display">Brand &amp; system</h1><p>Write posts people stop for. Calm, sharp, warm. Here’s everything it’s made of.</p></div></div>
+  mount('brand', `<div class="page"><div class="page-h"><div><h1 class="display">Brand &amp; system</h1><p>Built from the feed’s own grammar: other posts blur past, yours stops. Graphite, one ink accent, a serif that reads like a headline. Here’s everything it’s made of.</p></div></div>
   <div class="brand-hero">
     <div class="brand-tile ink"><div class="appicon">${LOGO_MARK.replace('class="mark"', 'class="mark" style="width:72px;height:72px"')}</div><span class="cap">App icon</span></div>
     <div class="brand-tile paper" style="--text-1:#16140F"><span class="logo" style="color:#16140F;transform:scale(2.4)">${LOGO}</span><span class="cap">Wordmark</span></div>
@@ -3374,7 +3624,7 @@ ROUTES.brand = () => {
   <section class="sec"><div class="sec-h"><h2 class="h2">Components, every state</h2></div><div class="card pad" style="display:grid;gap:28px">
     <div class="state-grid">${['Default', 'Hover', 'Focus', 'Active', 'Disabled', 'Loading'].map((s, i) => `<div><span class="label">${s}</span><button class="btn primary ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Schedule</button><button class="btn ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Save idea</button></div>`).join('')}</div>
     <div class="state-grid">${[['Default', ''], ['Focus', 'box-shadow:0 0 0 1px var(--accent),0 0 0 4px var(--accent-soft)'], ['Error', ''], ['Disabled', '']].map(([s, st], i) => `<div><span class="label">${s}</span><input class="input" tabindex="-1" value="${i ? '@samwrites' : ''}" placeholder="yourhandle" style="${st}" ${i === 2 ? 'aria-invalid="true"' : ''} ${i === 3 ? 'disabled' : ''} aria-label="Example input ${s}">${i === 2 ? '<span class="field-err">Handles use letters, numbers, dots and underscores.</span>' : ''}</div>`).join('')}</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="chip" aria-pressed="false" tabindex="-1">Chip</button><button class="chip" aria-pressed="true" tabindex="-1">Selected</button><span class="pill">Pill</span><span class="pill accent">Accent</span><span class="pill success">Published</span><span class="pill error">Over limit</span><button class="switch" role="switch" aria-checked="true" id="demo-sw" aria-label="Example switch"></button><span class="hook hi"><span class="sc" style="--v:88"><span>88</span></span><span>Hook</span></span><span class="flock-loader"><i></i><i></i><i></i></span></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="chip" aria-pressed="false" tabindex="-1">Chip</button><button class="chip" aria-pressed="true" tabindex="-1">Selected</button><span class="pill">Pill</span><span class="pill accent">Accent</span><span class="pill success">Published</span><span class="pill error">Over limit</span><button class="switch" role="switch" aria-checked="true" id="demo-sw" aria-label="Example switch"></button><span class="hook hi"><span class="sc" style="--v:88"><span>88</span></span><span>Hook</span></span><button class="btn primary sm is-loading" tabindex="-1">Loading</button></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-bact="toast">Show a toast</button><button class="btn" data-bact="modal">Open a modal</button><button class="btn" data-bact="menu" aria-haspopup="menu">Open a menu${ic('down', 'sm')}</button><button class="btn" data-tip="Tooltips show shortcuts too" data-kbd="${MOD} K">Hover for a tooltip</button><button class="btn" data-act="palette">${kbd(MOD, 'K')} Palette</button></div></div></section>
   <section class="sec"><div class="sec-h"><h2 class="h2">Voice rules</h2></div><div class="grid-3">${[['Short sentences.', 'One idea each. If it needs a comma splice, it needs two sentences.'], ['Specific beats clever.', 'Numbers over adjectives. “Trials up 22%” beats “amazing growth”.'], ['Friend who edits.', 'Direct, a little dry, always on your side.'], ['Celebrate quietly.', 'One exclamation mark per screen, max. Usually zero.'], ['Errors help.', 'Say what happened and what to do. No “Oops”.'], ['Banned words.', 'Unlock, supercharge, leverage, elevate, seamless, game-changer, delve.']].map(([a, b]) => `<div class="card pad" style="display:grid;gap:6px"><b>${a}</b><p class="muted" style="font-size:14px">${b}</p></div>`).join('')}</div></section>
   </div>`);
