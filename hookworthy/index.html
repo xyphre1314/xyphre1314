@@ -8,10 +8,10 @@
 <meta property="og:site_name" content="Hookworthy">
 <meta property="og:title" content="Hookworthy: write posts people stop for">
 <meta property="og:url" content="https://hookworthy.com">
-<meta name="theme-color" content="#F7F7F8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#08090A" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F5F5F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#09090A" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='.35' y2='1'%3E%3Cstop offset='0' stop-color='%234A4C53'/%3E%3Cstop offset='1' stop-color='%23141518'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cg transform='translate(4 4)' fill='none' stroke='%23fff' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.2 3.6h7.6'/%3E%3Cpath d='M14 3.6V15a4.6 4.6 0 0 1-9.2 0v-2.6'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230C0C0E'/%3E%3Cg transform='translate%283.2 3.2%29 scale%28.8%29'%3E%3Cpath d='M3 21.5 6 10.5h19l-3 11z' fill='%23FFE14D'/%3E%3Crect x='24.2' y='5' width='3.4' height='22' rx='1.7' fill='%23F5F5F3'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="assets/app-icon.png">
 <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -19,8 +19,6 @@
 @font-face{ font-family:"Geist"; src:url(fonts/Geist-Variable.woff2) format("woff2"); font-weight:100 900; font-display:swap; }
 @font-face{ font-family:"Geist Mono"; src:url(fonts/GeistMono-Variable.woff2) format("woff2"); font-weight:100 900; font-display:swap; }
 @font-face{ font-family:"Caveat"; src:url(fonts/Caveat-500.woff2) format("woff2"); font-weight:500; font-display:swap; }
-@font-face{ font-family:"EB Garamond"; src:url(fonts/EBGaramond-500.woff2) format("woff2"); font-weight:500; font-display:swap; }
-@font-face{ font-family:"EB Garamond"; src:url(fonts/EBGaramond-400-italic.woff2) format("woff2"); font-weight:400; font-style:italic; font-display:swap; }
 @font-face{ font-family:"Inter"; src:url(fonts/Inter-400.woff2) format("woff2"); font-weight:400; font-display:swap; }
 @font-face{ font-family:"Inter"; src:url(fonts/Inter-600.woff2) format("woff2"); font-weight:600; font-display:swap; }
 @font-face{ font-family:"Geist Fallback"; src:local("Arial"),local("Helvetica"),local("Liberation Sans"); ascent-override:95.94%; descent-override:28.16%; line-gap-override:0%; size-adjust:104.76%; }
@@ -30,12 +28,11 @@
          near-black on light, near-white on dark. Hue is reserved for meaning
          (green good, amber warning, red error).
    Type: one family. Geist 600 with tight tracking for display, Geist for UI and
-         writing, Geist Mono for numbers and keys. EB Garamond is the wordmark only.
+         writing (and the wordmark), Geist Mono for numbers and keys, Caveat for margin notes.
    Light tokens live on :root and .force-light; dark tokens on [data-theme=dark],
    .force-dark and the prefers-color-scheme block. Springs are generated at boot.
    ========================================================================== */
 :root, .force-light{
-  --font-brand:"EB Garamond","Iowan Old Style","Palatino Linotype",Georgia,serif;
   --font-display:"Geist","Geist Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-ui:"Geist","Geist Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-mono:"Geist Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
@@ -44,11 +41,12 @@
   --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px; --s10:40px; --s12:48px; --s16:64px; --s24:96px; --s32:128px;
   --r-xs:6px; --r-sm:8px; --r-md:10px; --r-lg:14px; --r-xl:18px; --r-2xl:24px; --r-pill:999px;
 
-  --bg:#F7F7F8; --bg-elev:#FBFBFC; --surface:#FFFFFF; --surface-2:#F2F2F4; --surface-3:#E7E7EB;
-  --border:rgba(17,18,24,.08); --border-strong:rgba(17,18,24,.14);
-  --text-1:#111216; --text-2:#51545C; --text-3:#6B6F78; --text-inv:#FFFFFF;
-  --accent:#17181B; --accent-hover:#2C2D32; --accent-text:#17181B; --accent-ink:#FFFFFF;
-  --accent-soft:rgba(23,24,27,.07); --accent-glow:rgba(23,24,27,.22);
+  --bg:#F5F5F3; --bg-elev:#F9F9F7; --surface:#FFFFFF; --surface-2:#EFEFEC; --surface-3:#E4E4E0;
+  --border:rgba(12,12,14,.08); --border-strong:rgba(12,12,14,.14);
+  --text-1:#0C0C0E; --text-2:#55565C; --text-3:#6E6F75; --text-inv:#FFFFFF;
+  --accent:#0C0C0E; --accent-hover:#27272B; --accent-text:#0C0C0E; --accent-ink:#FFFFFF;
+  --accent-soft:rgba(12,12,14,.06); --accent-glow:rgba(12,12,14,.22);
+  --marker:#FFE14D; --marker-soft:rgba(255,225,77,.45); --marker-ink:#0C0C0E;
   --success:#1F8F5F; --success-soft:rgba(31,143,95,.10);
   --warn:#C26A12; --warn-soft:rgba(194,106,18,.10);
   --error:#D63F3F; --error-soft:rgba(214,63,63,.09);
@@ -72,10 +70,11 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#08090A; --bg-elev:#0C0D0E; --surface:#101113; --surface-2:#16171A; --surface-3:#1E1F23;
+    --bg:#09090A; --bg-elev:#0E0E10; --surface:#141416; --surface-2:#1B1B1E; --surface-3:#242428;
     --border:rgba(255,255,255,.07); --border-strong:rgba(255,255,255,.12);
-    --text-1:#F7F8F8; --text-2:#A3A7AF; --text-3:#80858E; --text-inv:#08090A;
-    --accent:#F4F4F5; --accent-hover:#FFFFFF; --accent-text:#F4F4F5; --accent-ink:#0B0C0E;
+    --text-1:#F5F5F3; --text-2:#A2A3A9; --text-3:#85868C; --text-inv:#09090A;
+    --accent:#F5F5F3; --accent-hover:#FFFFFF; --accent-text:#F5F5F3; --accent-ink:#0C0C0E;
+    --marker:#FFE14D; --marker-soft:rgba(255,225,77,.28); --marker-ink:#0C0C0E;
     --accent-soft:rgba(255,255,255,.09); --accent-glow:rgba(255,255,255,.14);
     --success:#4CC38A; --success-soft:rgba(76,195,138,.12);
     --warn:#F2A14A; --warn-soft:rgba(242,161,74,.12);
@@ -87,15 +86,16 @@
     --sh-2:0 2px 8px rgba(0,0,0,.4);
     --sh-3:0 16px 40px -8px rgba(0,0,0,.7),0 0 0 1px var(--border),inset 0 1px 0 rgba(255,255,255,.04);
     --sh-4:0 30px 80px -12px rgba(0,0,0,.85),0 0 0 1px var(--border-strong),inset 0 1px 0 rgba(255,255,255,.05);
-    --panel:#0F1012;
+    --panel:#111113;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"], .force-dark{
-  --bg:#08090A; --bg-elev:#0C0D0E; --surface:#101113; --surface-2:#16171A; --surface-3:#1E1F23;
+  --bg:#09090A; --bg-elev:#0E0E10; --surface:#141416; --surface-2:#1B1B1E; --surface-3:#242428;
   --border:rgba(255,255,255,.07); --border-strong:rgba(255,255,255,.12);
-  --text-1:#F7F8F8; --text-2:#A3A7AF; --text-3:#80858E; --text-inv:#08090A;
-  --accent:#F4F4F5; --accent-hover:#FFFFFF; --accent-text:#F4F4F5; --accent-ink:#0B0C0E;
+  --text-1:#F5F5F3; --text-2:#A2A3A9; --text-3:#85868C; --text-inv:#09090A;
+  --accent:#F5F5F3; --accent-hover:#FFFFFF; --accent-text:#F5F5F3; --accent-ink:#0C0C0E;
+  --marker:#FFE14D; --marker-soft:rgba(255,225,77,.28); --marker-ink:#0C0C0E;
   --accent-soft:rgba(255,255,255,.09); --accent-glow:rgba(255,255,255,.14);
   --success:#4CC38A; --success-soft:rgba(76,195,138,.12);
   --warn:#F2A14A; --warn-soft:rgba(242,161,74,.12);
@@ -107,7 +107,7 @@
   --sh-2:0 2px 8px rgba(0,0,0,.4);
   --sh-3:0 16px 40px -8px rgba(0,0,0,.7),0 0 0 1px var(--border),inset 0 1px 0 rgba(255,255,255,.04);
   --sh-4:0 30px 80px -12px rgba(0,0,0,.85),0 0 0 1px var(--border-strong),inset 0 1px 0 rgba(255,255,255,.05);
-  --panel:#0F1012;
+  --panel:#111113;
   color-scheme:dark;
 }
 @media (prefers-reduced-motion: reduce){
@@ -126,8 +126,8 @@ body{
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility;
   overflow-x:hidden;
 }
-body.on-dark{ background:#08090A; }
-::selection{ background:var(--accent-soft); color:inherit; }
+body.on-dark{ background:#09090A; }
+::selection{ background:var(--marker); color:var(--marker-ink); }
 .force-dark ::selection{ background:rgba(255,255,255,.2); }
 img{ max-width:100%; display:block; }
 button,input,textarea,select{ font:inherit; color:inherit; letter-spacing:inherit; }
@@ -143,11 +143,11 @@ a{ color:inherit; text-decoration:none; }
 .icon{ width:20px; height:20px; flex:none; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
 .icon.sm{ width:16px; height:16px; } .icon.xs{ width:14px; height:14px; } .icon.lg{ width:24px; height:24px; }
 .display{ margin:0; font-family:var(--font-display); font-weight:600; letter-spacing:-.035em; line-height:1.02; text-wrap:balance; hanging-punctuation:first last; font-feature-settings:"liga","dlig","onum"; }
-.display em{ font-style:normal; color:var(--text-2); }
+.display em, .display .mk{ font-style:normal; background:linear-gradient(transparent 58%,var(--marker) 58%,var(--marker) 90%,transparent 90%) no-repeat 0 0 / 100% 100%; padding:0 .06em; margin:0 -.03em; -webkit-box-decoration-break:clone; box-decoration-break:clone; animation:mkin .8s .25s var(--ease-out) both; }
+@keyframes mkin{ from{ background-size:0% 100%; } }
 .h1{ font:600 var(--t-32)/1.15 var(--font-ui); letter-spacing:-.025em; text-wrap:balance; margin:0; }
 .h2{ font:600 var(--t-20)/1.25 var(--font-ui); letter-spacing:-.018em; text-wrap:balance; margin:0; }
 .h3{ font:600 var(--t-15)/1.35 var(--font-ui); letter-spacing:-.012em; margin:0; }
-.serif{ font-family:var(--font-brand); }
 .label{ font:500 var(--t-12)/1.2 var(--font-ui); letter-spacing:0; color:var(--text-3); }
 .muted{ color:var(--text-2); } .faint{ color:var(--text-3); } .accent{ color:var(--accent-text); }
 p{ margin:0; }
@@ -161,7 +161,7 @@ kbd,.kbd{ display:inline-flex; align-items:center; justify-content:center; min-w
    ========================================================================== */
 .btn{
   --bh:34px; position:relative; display:inline-flex; align-items:center; justify-content:center; gap:7px;
-  height:var(--bh); padding:0 13px; border-radius:var(--r-md);
+  height:var(--bh); padding:0 14px; border-radius:var(--r-pill);
   font:500 var(--t-14)/1 var(--font-ui); letter-spacing:-.01em; white-space:nowrap;
   color:var(--text-1); background:var(--surface); box-shadow:0 0 0 1px var(--border-strong),var(--sh-1);
   transition:background var(--d-micro) var(--ease-out),box-shadow var(--d-micro) var(--ease-out),transform var(--d-spring) var(--spring-snap),color var(--d-micro),opacity var(--d-micro);
@@ -169,15 +169,15 @@ kbd,.kbd{ display:inline-flex; align-items:center; justify-content:center; min-w
 }
 .btn:hover{ background:var(--surface-2); }
 .btn:active{ transform:scale(.965); transition-duration:80ms; }
-.btn:focus-visible{ box-shadow:var(--focus); border-radius:var(--r-md); }
+.btn:focus-visible{ box-shadow:var(--focus); }
 .btn[disabled],.btn.is-disabled{ opacity:.4; pointer-events:none; }
 .btn .icon{ margin-inline:-2px; }
-.btn.sm{ --bh:28px; padding:0 10px; font-size:var(--t-13); border-radius:var(--r-sm); gap:6px; }
-.btn.lg{ --bh:42px; padding:0 18px; font-size:var(--t-15); border-radius:12px; }
-.btn.xl{ --bh:50px; padding:0 24px; font-size:var(--t-17); border-radius:14px; }
+.btn.sm{ --bh:28px; padding:0 11px; font-size:var(--t-13); gap:6px; }
+.btn.lg{ --bh:42px; padding:0 20px; font-size:var(--t-15); }
+.btn.xl{ --bh:50px; padding:0 26px; font-size:var(--t-17); }
 .btn.icon-only{ width:var(--bh); padding:0; }
-.btn.primary{ color:var(--accent-ink); background:var(--accent); box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 0 1px color-mix(in srgb,var(--accent) 80%,#000),0 4px 14px -4px var(--accent-glow); }
-.btn.primary:hover{ background:var(--accent-hover); box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px color-mix(in srgb,var(--accent) 80%,#000),0 8px 22px -6px var(--accent-glow); }
+.btn.primary{ color:var(--accent-ink); background:var(--accent); font-weight:600; box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 4px 14px -6px var(--accent-glow); }
+.btn.primary:hover{ background:var(--accent-hover); transform:translateY(-1px); box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 12px 24px -10px var(--accent-glow); }
 .btn.primary:focus-visible{ box-shadow:var(--focus); }
 .btn.ink{ color:var(--text-inv); background:var(--text-1); box-shadow:0 1px 2px rgba(0,0,0,.2),inset 0 -1px 0 rgba(0,0,0,.1); }
 .btn.ink:hover{ background:color-mix(in srgb,var(--text-1) 88%,var(--bg)); }
@@ -273,6 +273,18 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .scrim.closing .modal,.scrim.closing .cmdk{ animation:modalout 150ms var(--ease-out) both; }
 .modal-h{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 20px 0; }
 .modal-b{ padding:16px 20px 20px; }
+.vis-modal{ width:min(860px,100%); }
+.vis-b{ display:grid; grid-template-columns:220px minmax(0,1fr); gap:14px 18px; }
+.vis-kinds{ grid-row:span 2; display:grid; gap:6px; align-content:start; }
+.vk{ display:grid; gap:3px; text-align:left; padding:11px 12px; border-radius:12px; box-shadow:inset 0 0 0 1px var(--border); transition:box-shadow var(--d-micro),background var(--d-micro); }
+.vk b{ font-weight:600; font-size:var(--t-14); } .vk small{ font-size:var(--t-12); color:var(--text-3); }
+.vk:hover{ background:var(--surface-2); }
+.vk[aria-selected="true"]{ box-shadow:inset 0 0 0 1.5px var(--text-1); background:var(--surface); }
+.vis-stage{ position:relative; border-radius:14px; background:var(--surface-2); padding:14px; display:grid; place-items:center; min-height:260px; transition:box-shadow var(--d-micro); }
+.vis-stage canvas{ display:block; max-width:100%; max-height:52vh; width:auto; height:auto; border-radius:10px; box-shadow:0 10px 30px -18px rgba(0,0,0,.45); }
+.vis-stage.drop{ cursor:pointer; } .vis-stage.over{ box-shadow:inset 0 0 0 2px var(--text-1); }
+.vis-opts{ display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; }
+@media (max-width:760px){ .vis-b{ grid-template-columns:minmax(0,1fr); } .vis-kinds{ grid-row:auto; grid-template-columns:1fr 1fr; } }
 .modal-f{ display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:var(--bg-elev); }
 .force-dark .modal-f,:root[data-theme="dark"] .modal-f{ background:rgba(0,0,0,.15); }
 @keyframes fade{ from{ opacity:0 } }
@@ -296,11 +308,17 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
    LOGO
    ========================================================================== */
 .logo{ display:inline-flex; align-items:center; gap:8px; color:var(--text-1); }
-.logo svg.mark{ width:22px; height:22px; }
-.logo .word{ font:500 23px/1 var(--font-brand); letter-spacing:-.02em; transform:translateY(-1px); }
-.mark .cm{ fill:none; stroke:var(--text-1); stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
-.logo .mark{ transform-origin:58% 16%; transition:transform var(--d-snap) var(--spring-snap); }
-.logo:hover .mark{ transform:rotate(-12deg) translateY(-1px); }
+.logo svg.mark{ width:24px; height:24px; overflow:visible; }
+.logo .word{ font:650 20px/1 var(--font-display); letter-spacing:-.05em; transform:translateY(-1px); }
+.mark .sw{ fill:var(--marker); transform-origin:3px 16px; transform-box:view-box; }
+.mark .ct{ fill:currentColor; }
+/* the mark draws itself once on load, and again on hover: swipe, then two caret blinks */
+.logo .mark .sw{ animation:swipe .7s .15s var(--ease-out) both; }
+.logo .mark .ct{ animation:caret 1.1s .75s steps(1) 2 both; }
+.logo:hover .mark .sw{ animation:swipe .55s var(--ease-out) both; }
+.logo:hover .mark .ct{ animation:caret .9s .45s steps(1) 2 both; }
+@keyframes swipe{ from{ transform:scaleX(0); } }
+@keyframes caret{ 50%{ opacity:0; } }
 
 /* ==========================================================================
    APP SHELL: Linear-style inset panel
@@ -323,6 +341,12 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .nav a:focus-visible{ box-shadow:var(--focus); }
 .nav .hover-pill{ position:absolute; z-index:0; left:0; right:0; top:0; height:30px; border-radius:7px; background:var(--surface-2); opacity:0; transition:transform var(--d-spring) var(--spring),opacity var(--d-fast) var(--ease-out); pointer-events:none; }
 .side .spacer{ flex:1; }
+.side .newpost{ width:100%; --bh:36px; margin:0 0 8px; justify-content:center; }
+.side .newpost .icon{ width:15px; height:15px; }
+.side-drafts{ display:grid; gap:1px; margin-top:6px; }
+.side-drafts .sd{ display:block; width:100%; height:30px; padding:0 9px; border-radius:7px; text-align:left; font-size:var(--t-13); color:var(--text-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:background var(--d-micro),color var(--d-micro); }
+.side-drafts .sd:hover{ background:var(--surface-2); color:var(--text-1); }
+.side-drafts .sd:focus-visible{ box-shadow:var(--focus); }
 .momentum{ padding:11px; border-radius:12px; background:var(--surface); box-shadow:0 0 0 1px var(--border); display:grid; gap:9px; }
 .momentum .row{ display:flex; align-items:center; justify-content:space-between; }
 .streak{ display:grid; grid-template-columns:repeat(14,1fr); gap:3px; }
@@ -390,7 +414,8 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 .qt.needs{ color:var(--warn); background:var(--warn-soft); } .qt.ok{ color:var(--success); background:var(--success-soft); }
 .preview-b > .pv{ box-shadow:0 0 0 1px var(--border-strong),0 18px 40px -18px rgba(0,0,0,.35); }
 .onb{ isolation:isolate; }
-.onb .ghostfeed{ opacity:.35; }
+.onb .ghostfeed{ opacity:.55; }
+.ghostfeed .xp{ border:0; border-radius:16px; box-shadow:0 0 0 1px var(--border); }
 
 /* ==========================================================================
    COMPOSER
@@ -464,6 +489,23 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 .tw-mirror .ghost-hint{ display:inline-flex; vertical-align:2px; margin-left:6px; opacity:.9; animation:ghostin .4s .1s var(--ease-out) both; }
 .tw-mirror .ghost-hint kbd{ height:17px; font-size:10px; color:var(--text-3); }
 .tw-mirror .ph{ color:var(--text-3); }
+.tw-mirror .hl{ background:linear-gradient(transparent 60%,var(--marker-soft) 60%,var(--marker-soft) 94%,transparent 94%) no-repeat 0 0 / 100% 100%; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+.tw-mirror .sv{ background:var(--marker-soft); border-radius:3px; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+.tw-mirror .sv.draw{ animation:svflash .9s var(--ease-out) both; }
+@keyframes svflash{ from{ background:var(--marker); } to{ background:transparent; } }
+.sharpen{ position:absolute; z-index:40; display:flex; align-items:center; gap:2px; padding:4px; border-radius:99px; background:var(--text-1); color:var(--bg); box-shadow:0 12px 30px -10px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.06); white-space:nowrap; font:500 var(--t-13)/1 var(--font-ui); opacity:0; transform:translateY(6px) scale(.97); transform-origin:50% 100%; transition:opacity .16s var(--ease-out),transform .28s var(--spring-snap); pointer-events:none; }
+.sharpen.on{ opacity:1; transform:none; pointer-events:auto; }
+.sharpen .sh-t{ display:inline-flex; align-items:center; gap:6px; padding:0 8px 0 6px; font-weight:600; }
+.sharpen .sh-t .mark{ width:16px; height:16px; } .sharpen .sh-t .mark .ct{ fill:currentColor; }
+.sharpen button{ height:28px; padding:0 10px; border-radius:99px; color:inherit; opacity:.78; transition:background var(--d-micro),opacity var(--d-micro); }
+.sharpen button:hover, .sharpen button:focus-visible{ opacity:1; background:color-mix(in srgb,var(--bg) 14%,transparent); outline:none; }
+.sharpen .n{ min-width:40px; text-align:center; font:500 var(--t-12)/1 var(--font-mono); font-variant-numeric:tabular-nums; opacity:.7; }
+.sharpen .keep{ opacity:1; background:var(--marker); color:var(--marker-ink); font-weight:600; display:inline-flex; gap:6px; align-items:center; }
+.sharpen .keep:hover{ background:var(--marker); filter:brightness(1.05); }
+.sharpen .keep kbd{ background:rgba(0,0,0,.1); border:0; color:inherit; }
+.sharpen .icon{ width:14px; height:14px; }
+.tw-mirror .hl.draw{ animation:hlsweep .6s var(--ease-out) both; }
+@keyframes hlsweep{ from{ background-size:0% 100%; } }
 @keyframes ghostin{ from{ opacity:0; filter:blur(3px); } }
 .caret{ position:absolute; z-index:2; top:0; left:0; width:2px; border-radius:2px; background:var(--accent); pointer-events:none; transition:transform 90ms var(--ease-out),opacity 80ms; will-change:transform; }
 .caret.blink{ animation:blink 1.1s var(--ease-in-out) infinite .55s; }
@@ -478,7 +520,7 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 .media-grid .rm{ position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; color:#fff; background:rgba(0,0,0,.6); backdrop-filter:blur(6px); opacity:0; transition:opacity var(--d-micro),transform var(--d-spring) var(--spring-snap); }
 .media-grid .m:hover .rm,.media-grid .rm:focus-visible{ opacity:1; }
 .media-grid .rm:active{ transform:scale(.9); }
-.gif{ width:100%; height:100%; display:grid; place-items:center; font:italic 400 28px/1 var(--font-brand); color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.25); background-size:300% 300%; animation:gifmove 3s ease-in-out infinite alternate; }
+.gif{ width:100%; height:100%; display:grid; place-items:center; font:700 26px/1 var(--font-display); letter-spacing:-.04em; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.25); background-size:300% 300%; animation:gifmove 3s ease-in-out infinite alternate; }
 .gif small{ position:absolute; left:8px; bottom:8px; font:600 10px/1 var(--font-mono); letter-spacing:.06em; padding:3px 5px; border-radius:4px; background:rgba(0,0,0,.5); text-shadow:none; font-style:normal; }
 @keyframes gifmove{ to{ background-position:100% 100%; } }
 
@@ -519,10 +561,10 @@ body.typing .tw-tools{ opacity:0!important; }
 .hook{ display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 9px 0 3px; border-radius:99px; background:var(--surface); box-shadow:0 0 0 1px var(--border-strong); font:500 var(--t-12)/1 var(--font-ui); color:var(--text-2); transition:box-shadow var(--d-micro),color var(--d-micro),transform var(--d-spring) var(--spring-snap); }
 .hook:hover{ color:var(--text-1); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 50%,transparent); }
 .hook:active{ transform:scale(.95); }
-.hook .sc{ width:20px; height:20px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--accent) calc(var(--v) * 1%),var(--surface-3) 0); position:relative; transition:--v var(--d-slow) var(--ease-out); }
-.hook .sc::before{ content:""; position:absolute; inset:2.5px; border-radius:50%; background:var(--surface); }
-.hook .sc span{ position:relative; color:var(--text-1); font:600 8.5px/1 var(--font-mono); letter-spacing:-.03em; }
-.hook.hi .sc span{ color:var(--accent-text); }
+.hook .sc{ min-width:22px; height:20px; padding:0 5px; border-radius:99px; display:grid; place-items:center; background:var(--surface-2); transition:background var(--d-spring) var(--ease-out),transform var(--d-spring) var(--spring-snap); }
+.hook .sc span{ color:var(--text-2); font:600 11px/1 var(--font-mono); font-variant-numeric:tabular-nums; }
+.hook.hi .sc{ background:var(--marker); } .hook.hi .sc span{ color:var(--marker-ink); }
+.hook.hi{ box-shadow:0 0 0 1px color-mix(in srgb,var(--marker) 70%,var(--border-strong)); }
 @property --v{ syntax:'<number>'; inherits:true; initial-value:0; }
 .hook-reason{ margin-top:10px; padding:14px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:var(--t-13); color:var(--text-2); animation:rise var(--d-spring) var(--ease-out) both; }
 .force-dark .hook-reason,:root[data-theme="dark"] .hook-reason{ background:var(--surface-2); }
@@ -617,6 +659,27 @@ body.typing .preview{ opacity:.7; }
 .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
 .sec{ margin-top:44px; }
+.idea-tabs{ margin-top:28px; display:flex; }
+.radar{ margin-top:20px; }
+.radar-h{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+.trends{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:16px; }
+.trend{ display:grid; gap:4px; align-content:start; padding:14px 16px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); }
+.trend b{ font-weight:600; letter-spacing:-.01em; } .trend .d{ font:600 var(--t-13)/1 var(--font-mono); color:var(--success); } .trend small{ color:var(--text-3); font-size:var(--t-12); }
+.trend.early{ box-shadow:0 0 0 1.5px var(--text-1); background:linear-gradient(180deg,color-mix(in srgb,var(--marker) 16%,var(--surface)),var(--surface) 60%); }
+.trend .btn{ justify-self:start; margin-top:8px; }
+.radar-list{ display:grid; gap:14px; margin-top:18px; }
+.rp{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); border-radius:18px; background:var(--surface); box-shadow:0 0 0 1px var(--border); overflow:hidden; animation:rise .5s var(--d,0s) var(--ease-out) both; }
+.rp-post .xp{ border:0; height:100%; }
+.rp-why{ padding:18px 20px; display:grid; gap:12px; align-content:start; border-left:1px solid var(--border); background:var(--bg-elev); }
+.rp-why h3{ font:600 var(--t-15)/1.2 var(--font-ui); letter-spacing:-.01em; }
+.rp-why ul{ list-style:none; margin:0; padding:0; display:grid; gap:8px; font-size:var(--t-13); color:var(--text-2); }
+.rp-why li{ display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:baseline; }
+.rp-why .tag{ font:600 11px/1 var(--font-ui); padding:4px 7px; border-radius:6px; background:var(--surface-3); color:var(--text-1); white-space:nowrap; }
+.rp-pat p{ margin-top:6px; font-size:var(--t-13); line-height:1.5; white-space:pre-line; color:var(--text-1); }
+.rp-pat mark{ background:var(--marker-soft); color:inherit; padding:0 3px; border-radius:3px; }
+.rp-a{ display:flex; gap:8px; flex-wrap:wrap; }
+@media (max-width:900px){ .rp{ grid-template-columns:minmax(0,1fr); } .rp-why{ border-left:0; border-top:1px solid var(--border); } .trends{ grid-template-columns:minmax(0,1fr); } }
+
 .sec-h{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
 .sec-h > *{ min-width:0; max-width:100%; }
 .idea{ padding:16px; display:grid; gap:14px; align-content:space-between; text-align:left; }
@@ -715,9 +778,8 @@ body.typing .preview{ opacity:.7; }
 .agenda .qcard p{ -webkit-line-clamp:4; }
 
 .insight-hero{ padding:36px; border-radius:20px; position:relative; overflow:hidden; background:var(--surface); box-shadow:0 0 0 1px var(--border); }
-.insight-hero::before{ content:""; position:absolute; inset:0; background:radial-gradient(60% 90% at 90% 0%,var(--accent-soft),transparent 70%); pointer-events:none; }
 .insight-hero .display{ font-size:clamp(38px,5vw,60px); max-width:17ch; position:relative; }
-.insight-hero .display .n{ color:var(--accent-text); font-style:italic; }
+.insight-hero .display .n{ font-style:normal; }
 .insight-hero p{ margin-top:14px; color:var(--text-2); max-width:56ch; position:relative; font-size:var(--t-15); }
 .insight-hero .acts{ margin-top:22px; display:flex; gap:8px; position:relative; flex-wrap:wrap; }
 .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px; }
@@ -856,7 +918,6 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
    ONBOARDING (always dark: continuous with the landing page)
    ========================================================================== */
 .onb{ min-height:100vh; min-height:100dvh; display:grid; grid-template-rows:auto 1fr; background:var(--bg); color:var(--text-1); position:relative; overflow:hidden; }
-.onb::before{ content:""; position:absolute; left:50%; top:-30%; width:1100px; height:700px; margin-left:-550px; background:radial-gradient(closest-side,rgba(255,255,255,0.076),transparent); pointer-events:none; }
 .onb-top{ display:flex; justify-content:space-between; align-items:center; padding:20px 28px; position:relative; z-index:1; }
 .onb-stage{ display:grid; place-items:center; padding:24px 16px 64px; position:relative; }
 .onb-card{ width:min(640px,100%); display:grid; grid-template-columns:minmax(0,1fr); gap:24px; text-align:center; justify-items:center; }
@@ -899,7 +960,8 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .pf .av.ini{ display:grid; place-items:center; color:#fff; font:700 15px/1 var(--pf-sys); background:linear-gradient(135deg,#8B98A5,#536471); }
 .av.ini{ position:relative; overflow:hidden; }
 .av .avp{ position:absolute; inset:0; border-radius:inherit; background:var(--spr-av) no-repeat 0 0 / 100% 1800%; }
-.no-spr .pf .md, .no-spr .avp{ display:none; }
+.no-spr .pf .md, .no-spr .avp:not(.avp2), .no-spr2 .avp2{ display:none; }
+.av .avp2{ background:var(--spr-av2) no-repeat 0 0 / 100% 600%; }
 .pf .md .mdp{ display:block; width:100%; height:100%; background:var(--spr-ph) no-repeat 0 0 / 100% 600%; }
 .pf .ic{ width:18.75px; height:18.75px; fill:none; stroke:currentColor; stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round; flex:none; }
 
@@ -1038,7 +1100,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
    Light canvas, one dark keynote chapter, real-looking feeds everywhere.
    The yellow marker is the only brand color: it marks the hook.
    ========================================================================== */
-.hw{ --c-bg:#F5F5F3; --c-bg-2:#EDEDEA; --c-ink:#0C0C0E; --c-2:#55565C; --c-3:#8A8B91; --c-line:rgba(12,12,14,.08); --c-card:#FFFFFF; --c-dark:#09090A; --c-dark-2:#141416; --c-mark:#FFE14D;
+.hw{ --c-bg:#F5F5F3; --c-bg-2:#EFEFEC; --c-ink:#0C0C0E; --c-2:#55565C; --c-3:#6E6F75; --c-line:rgba(12,12,14,.08); --c-card:#FFFFFF; --c-dark:#09090A; --c-dark-2:#141416; --c-mark:#FFE14D;
   --f-disp:'Geist','Geist Fallback',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; --f-hand:'Caveat','Bradley Hand',cursive;
   --ease-o:cubic-bezier(.22,1,.36,1); --ease-io:cubic-bezier(.65,0,.35,1);
   background:var(--c-bg); color:var(--c-ink); font:400 16px/1.55 var(--f-disp); overflow-x:clip; -webkit-font-smoothing:antialiased; }
@@ -1060,7 +1122,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw-nav.scrolled{ border-bottom-color:var(--c-line); }
 .hw-nav.on-dark{ background:color-mix(in srgb,var(--c-dark) 70%,transparent); color:#F5F5F3; border-bottom-color:rgba(255,255,255,.06); }
 .hw-nav .logo{ color:inherit; }
-.hw-nav .logo .mark .cm{ stroke:currentColor; }
+
 .hw-nav .links{ display:flex; gap:4px; }
 .hw-nav .links a{ padding:7px 11px; border-radius:99px; font-size:14px; color:inherit; opacity:.66; transition:opacity .2s,background .2s; }
 .hw-nav .links a:hover{ opacity:1; background:rgba(127,127,127,.1); }
@@ -1374,7 +1436,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .brand-tile.paper{ background:#F5F4F0; color:#111216; }
 .brand-tile .cap{ position:absolute; left:16px; bottom:14px; font:500 var(--t-12)/1 var(--font-ui); opacity:.55; }
 .appicon{ width:128px; height:128px; border-radius:30px; background:radial-gradient(120% 70% at 30% 0%,rgba(255,255,255,.2),transparent 60%),linear-gradient(160deg,#4A4C53,#141518); display:grid; place-items:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.06); }
-.appicon .mark .cm{ stroke:#FFFFFF; }
+.appicon .mark .ct{ fill:#F5F5F3; }
 .swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; }
 .sw{ border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px var(--border); background:var(--surface); }
 .sw i{ display:block; height:64px; box-shadow:inset 0 -1px 0 var(--border); }
@@ -1477,6 +1539,8 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
     <symbol id="i-plus" viewBox="0 0 20 20"><path d="M10 4.5v11M4.5 10h11"/></symbol>
     <symbol id="i-image" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="12" rx="2.5"/><circle cx="7.5" cy="8.3" r="1.3"/><path d="M17 12.5l-3.5-3.5L6 16"/></symbol>
     <symbol id="i-poll" viewBox="0 0 20 20"><path d="M4 5.5h7M4 10h12M4 14.5h4.5"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 20 20"><path d="M3.5 5.5A2 2 0 0 1 5.5 3.5h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2z"/><path d="m3.8 13.6 3.6-3.6 2.6 2.6 2-2 4.2 4.2"/><path d="M13 5.2l.55 1.25 1.25.55-1.25.55L13 8.8l-.55-1.25L11.2 7l1.25-.55z" fill="currentColor"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 20 20"><path d="M3.5 8v4h3l4 3.5v-11L6.5 8z"/><path d="M13.5 7.2a4 4 0 0 1 0 5.6M15.6 5a7 7 0 0 1 0 10"/></symbol>
     <symbol id="i-riff" viewBox="0 0 20 20"><circle cx="5.8" cy="14.2" r="2.6" fill="currentColor" stroke="none"/><circle cx="11" cy="9" r="1.9" fill="currentColor" stroke="none"/><circle cx="15.2" cy="4.8" r="1.25" fill="currentColor" stroke="none"/></symbol>
     <symbol id="i-drag" viewBox="0 0 20 20"><g fill="currentColor" stroke="none"><circle cx="7.5" cy="5" r="1.2"/><circle cx="12.5" cy="5" r="1.2"/><circle cx="7.5" cy="10" r="1.2"/><circle cx="12.5" cy="10" r="1.2"/><circle cx="7.5" cy="15" r="1.2"/><circle cx="12.5" cy="15" r="1.2"/></g></symbol>
     <symbol id="i-x" viewBox="0 0 20 20"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></symbol>
@@ -2000,7 +2064,8 @@ function parseLink(url) {
 /* ==========================================================================
    UI KIT
    ========================================================================== */
-const LOGO_MARK = `<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path class="cm" d="M10.2 3.6h7.6"/><path class="cm" d="M14 3.6V15a4.6 4.6 0 0 1-9.2 0v-2.6"/></svg>`;
+/* the mark: a marker swipe with the caret at its end. You just wrote a first line worth highlighting. */
+const LOGO_MARK = `<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path class="sw" d="M3 21.5 6 10.5h19l-3 11z"/><rect class="ct" x="24.2" y="5" width="3.4" height="22" rx="1.7"/></svg>`;
 const LOGO = `${LOGO_MARK}<span class="word">hookworthy</span>`;
 const PLAT = { x: { name: 'X', limit: 280, icon: 'x' }, threads: { name: 'Threads', limit: 500, icon: 'threads' }, linkedin: { name: 'LinkedIn', limit: 3000, icon: 'li' }, bsky: { name: 'Bluesky', limit: 300, icon: 'bsky' } };
 const avatar = (u = S.user, cls = '') => `<span class="avatar ${cls}" style="--h:${u.hue}">${esc((u.name || u.handle || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase())}</span>`;
@@ -2136,11 +2201,33 @@ function burst(x, y) {
 }
 const burstFrom = el => { if (!el) return; const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2); };
 
+/* sound: tiny synthesized cues, never samples. Quiet by design, off with one click. */
+const SFX = (() => {
+  let ctx = null;
+  const on = () => !(typeof S !== 'undefined' && S.settings && S.settings.sound === false);
+  const ac = () => { if (!ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; ctx = new C(); } if (ctx.state === 'suspended') ctx.resume(); return ctx; };
+  const tone = (f, t0, dur, { type = 'sine', vol = .05, glide = 0 } = {}) => {
+    const c = ac(); if (!c) return; const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + t0;
+    o.type = type; o.frequency.setValueAtTime(f, t); if (glide) o.frequency.exponentialRampToValueAtTime(f * glide, t + dur);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .02);
+  };
+  const cues = {
+    tick: () => tone(1800, 0, .03, { type: 'triangle', vol: .025 }),                       /* toggles, tabs */
+    tap: () => tone(660, 0, .06, { vol: .04, glide: 1.25 }),                                  /* primary buttons */
+    hook: () => { tone(880, 0, .12, { vol: .05 }); tone(1320, .07, .16, { vol: .045 }); },     /* first line crosses 70 */
+    swap: () => { tone(520, 0, .08, { type: 'triangle', vol: .04, glide: 1.5 }); tone(990, .06, .12, { vol: .035 }); }, /* rewrite accepted */
+    done: () => { [523.3, 659.3, 784, 1046.5].forEach((f, i) => tone(f, i * .075, .32, { vol: .045 })); }                 /* scheduled, published */
+  };
+  return { play: k => { try { if (on() && cues[k]) cues[k](); } catch (e) { } } };
+})();
+function toggleSound() { S.settings.sound = S.settings.sound === false; save(); if (S.settings.sound) SFX.play('tap'); toast(S.settings.sound ? 'Sounds on. Quiet ones, promise.' : 'Sounds off.', { icon: 'volume', ms: 1600 }); }
+
 /* theme */
 const isDark = () => { const d = document.documentElement.dataset.theme; return d ? d === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; };
 function applyTheme() { if (S.theme) document.documentElement.dataset.theme = S.theme; }
 function toggleTheme() {
-  const dark = isDark(); S.theme = dark ? 'light' : 'dark'; applyTheme(); save();
+  const dark = isDark(); S.theme = dark ? 'light' : 'dark'; applyTheme(); save(); SFX.play('tick');
   schedulePreview();
   $$('[data-act="theme"]').forEach(b => b.innerHTML = ic(isDark() ? 'sun' : 'moon'));
   toast(dark ? 'Lights on.' : 'Lights off. Easier on the eyes at 1am.', { icon: dark ? 'sun' : 'moon', tone: 'accent', ms: 2000 });
@@ -2164,18 +2251,18 @@ function go(name) { if (location.hash.replace('#', '') === name) route(); else l
 function route() {
   const h = location.hash.replace(/^#\/?/, '') || 'home';
   const name = ROUTES[h] ? h : 'home';
-  closeMenu(); while (MODALS.length) MODALS[MODALS.length - 1].close(); Tip.hide();
+  closeMenu(); while (MODALS.length) MODALS[MODALS.length - 1].close(); Tip.hide(); closeUpsell();
   document.body.classList.remove('typing');
   const same = CURRENT && CURRENT !== 'home' && CURRENT !== 'start' && name !== 'home' && name !== 'start';
   const render = () => {
     DISPOSE.forEach(f => { try { f(); } catch (e) { } }); DISPOSE = [];
-    CURRENT = name; document.body.classList.toggle('on-dark', name === 'home' || name === 'start');
+    CURRENT = name;
     ROUTES[name]({ same }); scrollTo(0, 0); initNavPill();
   };
   if (!CURRENT || !document.startViewTransition || REDUCED) render();
   else if (same) document.startViewTransition(render);
   else { const r = document.documentElement; r.dataset.vt = 'cross'; document.startViewTransition(render).finished.finally(() => delete r.dataset.vt); }
-  document.title = { home: 'Hookworthy', start: 'Hookworthy · Find your voice', write: 'Write · Hookworthy', ideas: 'Ideas · Hookworthy', hooks: 'Hooks · Hookworthy', queue: 'Queue · Hookworthy', insights: 'Insights · Hookworthy', voice: 'Voice · Hookworthy', brand: 'Brand · Hookworthy', upgrade: 'Hookworthy Pro' }[name];
+  document.title = { home: 'Hookworthy', start: 'Hookworthy · Find your voice', write: 'Write · Hookworthy', ideas: 'Ideas · Hookworthy', hooks: 'Hook formulas · Hookworthy', queue: 'Queue · Hookworthy', insights: 'Insights · Hookworthy', voice: 'Your voice · Hookworthy', brand: 'Design system · Hookworthy', upgrade: 'Hookworthy Pro' }[name];
 }
 addEventListener('hashchange', route);
 
@@ -2184,10 +2271,7 @@ const NAV = [
   { k: 'ideas', label: 'Ideas', icon: 'ideas', key: 'I' },
   { k: 'queue', label: 'Queue', icon: 'cal', key: 'Q' },
   { k: 'insights', label: 'Insights', icon: 'chart', key: 'A' },
-  { hdr: 'Library' },
-  { k: 'hooks', label: 'Hooks', icon: 'hook', key: 'H' },
-  { k: 'voice', label: 'Voice', icon: 'voice', key: 'V' },
-  { k: 'brand', label: 'Brand & system', icon: 'palette', key: 'B' }
+  { k: 'voice', label: 'Your voice', icon: 'voice', key: 'V' }
 ];
 function streakCount() { let n = 0; for (let i = 0; i < 400; i++) { const k = dayKey(Date.now() - i * DAY); if (S.streak[k]) n++; else if (i === 0) continue; else break; } return n; }
 function streakHTML() {
@@ -2199,13 +2283,13 @@ function shell(active, inner) {
   const used = Math.min(S.ai.used, S.ai.limit); const w = WS();
   return `<div class="shell">
   <aside class="side" aria-label="Sidebar">
-    <div class="top"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
-      <button class="btn ghost icon-only sm" data-act="theme" data-tip="Switch theme" data-kbd="${SHIFT} T" aria-label="Switch theme">${ic(isDark() ? 'sun' : 'moon')}</button></div>
-    <button class="ws-btn" data-act="ws" aria-haspopup="menu" data-tip="Switch voice" data-kbd="${MOD} 1–3">${avatar(w)}<span class="ws-t"><b>${esc(w.name)}</b><small>${esc(w.kind)}</small></span>${ic('down', 'sm')}</button>
-    <button class="searchbtn" data-act="palette">${ic('search', 'sm')}<span>Jump to…</span>${kbd(MOD, 'K')}</button>
+    <div class="top"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a></div>
+    <button class="btn primary newpost" data-act="newpost" data-tip="New post" data-kbd="C">${ic('plus', 'sm')}<span>New post</span></button>
+    <button class="searchbtn" data-act="palette">${ic('search', 'sm')}<span>Search</span>${kbd(MOD, 'K')}</button>
     <nav class="nav" aria-label="Main">
-      ${NAV.map(it => it.hdr ? `<div class="nav-l label">${it.hdr}</div>` : `<a href="#${it.k}" ${active === it.k ? 'aria-current="page"' : ''} data-tip="${it.label}" data-kbd="G ${it.key}">${ic(it.icon)}<span>${it.label}</span>${counts[it.k] ? `<span class="count">${counts[it.k]}</span>` : ''}</a>`).join('')}
+      ${NAV.map(it => `<a href="#${it.k}" ${active === it.k || (it.k === 'ideas' && active === 'hooks') ? 'aria-current="page"' : ''} data-tip="${it.label}" data-kbd="G ${it.key}">${ic(it.icon)}<span>${it.label}</span>${counts[it.k] ? `<span class="count">${counts[it.k]}</span>` : ''}</a>`).join('')}
     </nav>
+    ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}</div>` : ''}
     <div class="spacer"></div>
     ${S.plan === 'free' ? `<a class="side-plan plan-card" href="#upgrade" data-tip="Unlimited rewrites on Pro"><span class="pc-count">${S.ai.limit - used} of ${S.ai.limit} rewrites left today</span><span class="go">Go Pro</span></a>` : ''}
     <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.ws === 'me' ? S.user.name : S.workspaces[0].name)}</b><span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span></span>${ic('more', 'sm')}</button>
@@ -2237,21 +2321,25 @@ const ACT = {
     '-',
     { label: 'Add a client voice', icon: 'plus', run: () => S.plan === 'studio' ? toast('New client voices start from their handle, like onboarding. The demo stops here.', { icon: 'voice' }) : (go('upgrade'), toast('Client voices come with Studio.', { icon: 'voice' })) }
   ], { width: 260 }),
+  newpost: () => newPost(),
+  opendraft: el => openDraft(+el.dataset.i),
   account: el => openMenu(el, [
+    ...(S.workspaces.length > 1 ? [{ header: 'Write as' }, ...S.workspaces.map((w, i) => ({ label: w.name, icon: w.id === S.ws ? 'check' : (w.id === 'me' ? 'write' : 'voice'), hint: w.kind, kbd: [MOD, String(i + 1)], run: () => switchWs(w.id) })), '-'] : []),
     { header: `@${S.user.handle}` },
-    { label: 'Voice profile', icon: 'voice', run: () => go('voice') },
+    { label: 'Your voice', icon: 'voice', run: () => go('voice') },
     { label: S.plan === 'free' ? 'Upgrade to Pro' : 'Manage plan', icon: 'riff', run: () => go('upgrade') },
     { label: 'Keyboard shortcuts', icon: 'kbd', kbd: ['?'], run: openShortcuts },
     { label: 'Switch theme', icon: isDark() ? 'sun' : 'moon', kbd: [SHIFT, 'T'], run: toggleTheme },
     '-',
+    { label: S.settings.sound === false ? 'Turn sounds on' : 'Turn sounds off', icon: 'volume', run: toggleSound },
+    { label: 'Design system', icon: 'palette', run: () => go('brand') },
     { label: 'Replay onboarding', icon: 'play', run: () => go('start') },
     { label: 'Reset demo data', icon: 'undo', run: resetDemo },
     { label: 'Log out', icon: 'arrow', run: () => { go('home'); toast('Logged out. Your drafts stay put.', { icon: 'check' }); } }
   ], { width: 240 }),
   mobilemore: el => openMenu(el, [
-    { label: 'Hooks', icon: 'hook', run: () => go('hooks') },
-    { label: 'Voice', icon: 'voice', run: () => go('voice') },
-    { label: 'Brand & system', icon: 'palette', run: () => go('brand') },
+    { label: 'Your voice', icon: 'voice', run: () => go('voice') },
+    { label: 'Hook formulas', icon: 'hook', run: () => go('hooks') },
     { label: 'Capture an idea', icon: 'plus', run: openCapture },
     { label: 'Search', icon: 'search', run: () => openPalette() },
     { label: 'Switch theme', icon: isDark() ? 'sun' : 'moon', run: toggleTheme },
@@ -2286,7 +2374,7 @@ function paletteCommands() {
     { g: 'Actions', label: 'View landing page', icon: 'arrow', run: () => go('home') },
     { g: 'Actions', label: 'Reset demo data', icon: 'undo', run: resetDemo }
   ];
-  const riffs = RIFFS.map(r => ({ g: 'Riff on your draft', label: r.label, icon: r.icon, kbd: [ALT, r.key], run: () => { go('write'); setTimeout(() => runRiff(0, r.k), 80); } }));
+  const riffs = RIFFS.map(r => ({ g: 'Rewrite your draft', label: r.label, icon: r.icon, kbd: [ALT, r.key], run: () => { go('write'); setTimeout(() => runRiff(0, r.k), 80); } }));
   const ideas = S.ideas.map(i => ({ g: 'From your inbox', label: i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), icon: { link: 'link', note: 'ideas', voice: 'mic', shot: 'shot' }[i.src] || 'ideas', run: () => writeFrom(expandIdea(i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), 'How-to')) }));
   const hooks = HOOKS.slice(0, 40).map(h => ({ g: 'Hook library', label: h.t.replace(/\[|\]/g, ''), icon: 'hook', run: () => useHook(h.t) }));
   return [...acts, ...nav, ...riffs, ...ideas, ...hooks];
@@ -2336,7 +2424,7 @@ function openShortcuts() {
     ${row('Go to Write', ['G', 'W'])}${row('Go to Ideas', ['G', 'I'])}${row('Go to Queue', ['G', 'Q'])}${row('Go to Insights', ['G', 'A'])}${row('Go to Hooks', ['G', 'H'])}${row('Go to Voice', ['G', 'V'])}
     <h4 class="label">Composer</h4>
     ${row('Accept suggestion', ['Tab'])}${row('New post in thread', ['↵', '↵'])}
-    ${row('Riff menu', [MOD, 'J'])}${row('Run riff 1–7', [ALT, '1–7'])}
+    ${row('Rewrite menu', [MOD, 'J'])}${row('Run rewrite 1–7', [ALT, '1–7'])}
     ${row('Move post up / down', [ALT, '↑ ↓'])}${row('Merge into previous', ['⌫'])}
     ${row('Schedule', [MOD, '↵'])}${row('Publish now', [MOD, SHIFT, '↵'])}
     ${row('Toggle previews', [MOD, '\\'])}${row('Shuffle ideas', ['R'])}
@@ -2454,14 +2542,14 @@ function composerHTML() {
       <div class="grow"></div>
       <div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>
       <button class="btn ghost icon-only" data-cact="preview" data-tip="Previews" data-kbd="${MOD} \\" aria-label="Toggle previews">${ic('panel')}</button>
-      <div class="split-btn"><button class="btn primary" data-cact="schedule" data-tip="Schedule" data-kbd="${MOD} ↵">${ic('clock', 'sm')}<span>Schedule</span></button><button class="btn primary" data-cact="schedmenu" aria-label="More ways to publish" aria-haspopup="menu">${ic('down', 'sm')}</button></div>
+      <button class="btn ghost icon-only" data-cact="schedmenu" data-tip="More" aria-label="More ways to publish" aria-haspopup="menu">${ic('more')}</button>
+      <button class="btn primary" data-cact="schedule" data-tip="Pick a time" data-kbd="${MOD} ↵">${ic('clock', 'sm')}<span>Schedule</span></button>
     </div>
     <div class="editor">
       <div class="glow" aria-hidden="true"></div>
       <section class="starters fade-typing" id="starters" ${empty ? '' : 'hidden'} aria-label="Ideas to start from"></section>
       <div class="thread" id="thread" role="list"></div>
       <button class="add-tw fade-typing" data-cact="add"><span class="plus"><span>${ic('plus', 'sm')}</span></span>Add to thread${kbd('↵', '↵')}</button>
-      <div class="editor-foot fade-typing"><span>${kbd('↵', '↵')} new post</span><span>${kbd(SHIFT, '↵')} line break</span><span>${kbd('Tab')} take a suggestion</span><span>${kbd(MOD, 'J')} riff</span><span>${kbd(ALT, '↑')} reorder</span></div>
     </div>
   </div>
   <aside class="preview" id="preview" aria-label="Your post in the feed"><div class="preview-h" id="pv-h"></div><div class="preview-b" id="pv-b"></div></aside>
@@ -2508,12 +2596,13 @@ function tweetHTML(tw, i, n) {
     <div class="tw-tools">
       <label class="tool" data-tip="Add images" tabindex="0">${ic('image')}<input type="file" accept="image/*" multiple hidden data-media></label>
       <button class="tool gif-t" data-cact="gif" data-tip="Add a GIF"><span>GIF</span></button>
+      <button class="tool" data-cact="visual" data-tip="Make a visual">${ic('spark')}</button>
       <button class="tool" data-cact="poll" data-tip="Add a poll">${ic('poll')}</button>
       <span class="tools-sep"></span>
-      <button class="tool riff" data-cact="riff" data-tip="Riff on this post" data-kbd="${MOD} J" aria-expanded="${UI.riff === tw.id}">${ic('riff')}<span>Riff</span></button>
+      <button class="tool riff" data-cact="riff" data-tip="Rewrite this post" data-kbd="${MOD} J" aria-expanded="${UI.riff === tw.id}">${ic('riff')}<span>Rewrite</span></button>
       ${n > 1 ? `<button class="tool" data-cact="remove" data-tip="Remove this post">${ic('trash')}</button>` : ''}
       <div class="tw-meta">
-        ${i === 0 ? `<span class="predict" id="predict"></span><button class="hook" data-cact="hookinfo" data-tip="Why this score?" aria-expanded="${UI.hook}"><span class="sc" style="--v:0"><span>0</span></span><span>Hook</span></button>` : ''}
+        ${i === 0 ? `<button class="hook" data-cact="hookinfo" data-tip="Why this score?" aria-expanded="${UI.hook}"><span class="sc" style="--v:0"><span>0</span></span><span>Hook</span></button>` : ''}
         <span class="ring" data-tip="0 characters"><svg viewBox="0 0 24 24"><circle class="trk" cx="12" cy="12" r="9.5"/><circle class="val" cx="12" cy="12" r="9.5" stroke-dasharray="59.69" stroke-dashoffset="59.69"/></svg><b></b></span>
       </div>
     </div>
@@ -2532,7 +2621,13 @@ function paintField(ta) {
     html = `<span class="cm"></span>${ph}`;
   } else {
     const p = ta.selectionEnd; const g = UI.ghost && UI.ghost.id === id ? UI.ghost.text : '';
-    html = esc(v.slice(0, p)) + '<span class="cm"></span>' + esc(v.slice(p)) + (g ? `<span class="ghost">${esc(g)}</span><span class="ghost-hint">${kbd('Tab')}</span>` : '') + '​';
+    /* a first line that scores 70+ gets the brand's marker under it, the same stroke as the logo and the homepage */
+    const good = i === 0 && hookScore(v).score >= 70, fe = v.indexOf('\n') < 0 ? v.length : v.indexOf('\n');
+    const since = Date.now() - (UI.hlAt || 0), hl = `<span class="hl${since < 700 ? ' draw" style="animation-delay:-' + since + 'ms' : ''}">`;
+    const CM = '<span class="cm"></span>', seg = (a, b) => esc(v.slice(a, b));
+    const sh = UI.sharp && UI.sharp.id === id ? UI.sharp : null;
+    const body = sh ? `${seg(0, sh.s)}<span class="sv${sh.flash ? ' draw' : ''}">${seg(sh.s, sh.s + sh.len)}</span>${CM}${seg(sh.s + sh.len)}` : !good ? seg(0, p) + CM + seg(p) : p <= fe ? `${hl}${seg(0, p)}${CM}${seg(p, fe)}</span>${seg(fe)}` : `${hl}${seg(0, fe)}</span>${seg(fe, p)}${CM}${seg(p)}`;
+    html = body + (g ? `<span class="ghost">${esc(g)}</span><span class="ghost-hint">${kbd('Tab')}</span>` : '') + '​';
   }
   mir.innerHTML = html;
   ta.style.height = 'auto'; ta.style.height = Math.max(ta.scrollHeight, mir.offsetHeight) + 'px';
@@ -2561,6 +2656,7 @@ function paintRing(tEl) {
 function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
   const h = hookScore(t0.text); const sc = $('.sc', b);
+  if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
   b.classList.toggle('hi', h.score >= 75);
   const pr = predict(h.score, t0.text); const p = $('#predict');
@@ -2574,8 +2670,8 @@ function hookReasonHTML() {
   return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%"><div style="display:flex;gap:10px;align-items:flex-start">${ic(h.tone === 'good' ? 'check' : 'target', 'sm')}<p><b>${h.score}/100.</b> ${esc(h.reason)}</p></div><div class="bars">${bars}</div>${h.score < 76 && S.draft.tweets[0].text.trim() ? `<div><button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button></div>` : ''}</div></div>`;
 }
 function riffbarHTML(id) {
-  return `<div class="riffbar" role="toolbar" aria-label="Riffs">${RIFFS.map(r => `<button class="chip" data-cact="dorriff" data-k="${r.k}" data-tip="${r.k === 'translate' ? 'Keeps your tone and slang' : r.label}" data-kbd="${ALT} ${r.key}">${ic(r.icon)}${r.label}${r.k === 'translate' ? ic('down', 'xs') : ''}</button>`).join('')}
-  <a class="chip" href="#voice" data-tip="Riffs follow your voice profile">${ic('sliders')}Voice · ${S.voice.spice > 60 ? 'spicy' : S.voice.spice < 35 ? 'calm' : 'balanced'}</a></div>`;
+  return `<div class="riffbar" role="toolbar" aria-label="Rewrite options">${RIFFS.map(r => `<button class="chip" data-cact="dorriff" data-k="${r.k}" data-tip="${r.k === 'translate' ? 'Keeps your tone and slang' : r.label}" data-kbd="${ALT} ${r.key}">${ic(r.icon)}${r.label}${r.k === 'translate' ? ic('down', 'xs') : ''}</button>`).join('')}
+  <a class="chip" href="#voice" data-tip="Rewrites follow your voice">${ic('sliders')}Voice · ${S.voice.spice > 60 ? 'spicy' : S.voice.spice < 35 ? 'calm' : 'balanced'}</a></div>`;
 }
 function diffHTML() {
   const d = UI.diff; const n = d.chunks.filter(c => c.eq === undefined).length; const on = d.chunks.filter(c => c.eq === undefined && c.on).length;
@@ -2624,7 +2720,7 @@ function insertAfter(i, texts, focus) {
 const scheduleGhost = debounce(ta => {
   if (document.activeElement !== ta || ta.selectionEnd !== ta.value.length || UI.diff) return;
   const id = ta.closest('.tw').dataset.id; const g = ghostFor(ta.value, id);
-  if (g) { UI.ghost = { id, text: g }; if (NEXT_SENT.some(n => g.includes(n))) UI.ghostUsed.add(id); paintField(ta); }
+  if (g && !SH.st && ta.selectionStart === ta.selectionEnd) { UI.ghost = { id, text: g }; if (NEXT_SENT.some(n => g.includes(n))) UI.ghostUsed.add(id); paintField(ta); }
 }, 1100);
 function acceptGhost(ta) {
   const id = ta.closest('.tw').dataset.id; const g = UI.ghost.text; UI.ghost = null; UI.ghostUsed.add(id);
@@ -2734,12 +2830,161 @@ function addFiles(i, files) {
   if (imgs.length > room) toast(`Added ${room}. Four images max per post.`, { icon: 'image' });
 }
 function refreshMedia(id) { const el = $(`.tw[data-id="${id}"]`); if (!el) return; const tw = tById(id); $('.media-slot', el).innerHTML = mediaHTML(tw); $('.poll-slot', el).innerHTML = pollHTML(tw); schedulePreview(); markSaving(); }
+/* ---------- Visuals: turn a line into an image people stop on ----------
+   Quote cards, a before/after chart from the numbers you wrote, a clean screenshot of the post
+   (for cross-posting to LinkedIn), and a frame for any screenshot you drop in. All drawn in the browser. */
+const VIS = { kind: 'quote', style: 'paper', size: 'wide', frameImg: null };
+const VIS_SIZES = { wide: [1200, 675], square: [1080, 1080], tall: [1080, 1350] };
+const VIS_BG = { paper: ['#F5F5F3', '#0C0C0E', '#6E6F75'], ink: ['#0C0C0E', '#F5F5F3', '#A2A3A9'], marker: ['#FFE14D', '#0C0C0E', '#5A4E12'] };
+const numPair = t => { const m = t.match(/(\$?\d[\d,.]*\s?(?:%|k|K|m|M|x)?)\s*(?:→|->|to)\s*(\$?\d[\d,.]*\s?(?:%|k|K|m|M|x)?)/); if (!m) return null; const v = x => parseFloat(x.replace(/[$,\s]/g, '')) * (/k/i.test(x) ? 1e3 : /m/i.test(x) ? 1e6 : 1); const a = v(m[1]), b = v(m[2]); return isFinite(a) && isFinite(b) && (a || b) ? { a, b, la: m[1].trim(), lb: m[2].trim() } : null; };
+function visWrap(ctx, text, maxW) { const out = []; text.split('\n').forEach(par => { let line = ''; par.split(/\s+/).forEach(w => { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; }); out.push(line); }); return out; }
+function visRound(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function visAvatar(ctx, x, y, r, u) { ctx.save(); ctx.beginPath(); ctx.arc(x + r, y + r, r, 0, 7); ctx.fillStyle = `hsl(${u.hue || 28} 58% 50%)`; ctx.fill(); ctx.fillStyle = '#fff'; ctx.font = `700 ${r * .8}px Geist, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText((u.name || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase(), x + r, y + r + 1); ctx.restore(); }
+function visDraw(cv, text) {
+  const [W, H] = VIS_SIZES[VIS.size]; cv.width = W; cv.height = H; const ctx = cv.getContext('2d'); const [bg, fg, mu] = VIS_BG[VIS.style]; const u = S.user, P = Math.round(W * .08);
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H); ctx.textBaseline = 'alphabetic';
+  const foot = () => { visAvatar(ctx, P, H - P - 56, 28, u); ctx.fillStyle = fg; ctx.font = '600 28px Geist, sans-serif'; ctx.fillText(u.name, P + 72, H - P - 24); const nw = ctx.measureText(u.name).width; ctx.fillStyle = mu; ctx.font = '400 24px Geist, sans-serif'; ctx.fillText('@' + u.handle, P + 72 + nw + 12, H - P - 24); };
+  if (VIS.kind === 'quote') {
+    const t = text.trim() || 'Your first line goes here.'; let size = 78, lines;
+    do { ctx.font = `600 ${size}px Geist, sans-serif`; lines = visWrap(ctx, t, W - P * 2 - 16); size -= 4; } while (lines.length * size * 1.18 > H - P * 2 - 120 && size > 30);
+    size += 4; const lh = size * 1.22; let y = P + size * 1.05;
+    lines.forEach((l, i) => { ctx.font = `600 ${size}px Geist, sans-serif`; if (i === 0 && VIS.style !== 'marker') { const w = ctx.measureText(l).width; ctx.fillStyle = '#FFE14D'; ctx.beginPath(); ctx.moveTo(P - 12, y + size * .24); ctx.lineTo(P - 12 + size * .14, y - size * .86); ctx.lineTo(P + w + 16, y - size * .86); ctx.lineTo(P + w + 16 - size * .14, y + size * .24); ctx.fill(); ctx.fillStyle = '#0C0C0E'; } else ctx.fillStyle = fg; ctx.fillText(l, P, y); y += lh; });
+    foot();
+  } else if (VIS.kind === 'chart') {
+    const n = numPair(text); const title = (text.split('\n')[0] || '').slice(0, 90);
+    ctx.fillStyle = fg; ctx.font = '600 44px Geist, sans-serif'; visWrap(ctx, title || 'Before and after', W - P * 2 - 190).slice(0, 2).forEach((l, i) => ctx.fillText(l, P, P + 44 + i * 54));
+    if (!n) { ctx.fillStyle = mu; ctx.font = '400 30px Geist, sans-serif'; ctx.fillText('Write two numbers, like “21% → 38%”, and they’ll chart here.', P, H / 2 + 20); }
+    else {
+      const top = P + 150, bot = H - P - 40, mx = Math.max(n.a, n.b), bw = Math.min(260, (W - P * 2) / 3), gap = bw * .6, x0 = W / 2 - bw - gap / 2;
+      [[n.a, n.la, 'Before', x0, VIS.style === 'ink' ? '#3A3A3F' : 'rgba(12,12,14,.16)'], [n.b, n.lb, 'After', x0 + bw + gap, VIS.style === 'marker' ? '#0C0C0E' : '#FFE14D']].forEach(([v, lab, cp, x, col]) => {
+        const h = Math.max(8, (bot - top - 60) * v / mx); visRound(ctx, x, bot - h, bw, h, 16); ctx.fillStyle = col; ctx.fill();
+        ctx.fillStyle = fg; ctx.textAlign = 'center'; ctx.font = '700 56px Geist, sans-serif'; ctx.fillText(lab, x + bw / 2, bot - h - 20); ctx.font = '500 26px Geist, sans-serif'; ctx.fillStyle = mu; ctx.fillText(cp, x + bw / 2, bot + 40); ctx.textAlign = 'left'; });
+      const d = n.a ? Math.round((n.b - n.a) / n.a * 100) : 0; if (d) { const lbl = `${d > 0 ? '+' : ''}${d}%`; ctx.font = '700 30px Geist, sans-serif'; const w = ctx.measureText(lbl).width + 36; visRound(ctx, W - P - w, P + 8, w, 52, 26); ctx.fillStyle = fg; ctx.fill(); ctx.fillStyle = bg; ctx.fillText(lbl, W - P - w + 18, P + 45); }
+    }
+  } else if (VIS.kind === 'post') {
+    const cw = W - P * 2; ctx.font = '400 34px Geist, sans-serif'; const lines = visWrap(ctx, text.trim() || 'Your post shows up here.', cw - 64).slice(0, Math.floor((H - P * 2 - 230) / 46)); const ch = 170 + lines.length * 46 + 60, cy = (H - ch) / 2;
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.18)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 18; visRound(ctx, P, cy, cw, ch, 28); ctx.fillStyle = VIS.style === 'ink' ? '#000' : '#fff'; ctx.fill(); ctx.restore();
+    const tx = VIS.style === 'ink' ? '#E7E9EA' : '#0F1419', t2 = VIS.style === 'ink' ? '#71767B' : '#536471';
+    visAvatar(ctx, P + 32, cy + 32, 34, u); ctx.fillStyle = tx; ctx.font = '700 30px Geist, sans-serif'; ctx.fillText(u.name, P + 116, cy + 62); ctx.fillStyle = t2; ctx.font = '400 26px Geist, sans-serif'; ctx.fillText('@' + u.handle, P + 116, cy + 96);
+    ctx.fillStyle = tx; ctx.font = '400 34px Geist, sans-serif'; lines.forEach((l, i) => ctx.fillText(l, P + 32, cy + 160 + i * 46));
+    ctx.fillStyle = t2; ctx.font = '400 24px Geist, sans-serif'; ctx.fillText(new Date().toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' }) + ' · ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), P + 32, cy + ch - 34);
+  } else if (VIS.kind === 'frame') {
+    const im = VIS.frameImg;
+    if (!im) { ctx.fillStyle = mu; ctx.font = '500 32px Geist, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Drop a screenshot here, or click to choose one.', W / 2, H / 2); ctx.textAlign = 'left'; return; }
+    const pad = P * .9, r = Math.min((W - pad * 2) / im.width, (H - pad * 2) / im.height), w = im.width * r, h = im.height * r, x = (W - w) / 2, y = (H - h) / 2;
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.28)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 24; visRound(ctx, x, y, w, h, 22); ctx.fillStyle = '#fff'; ctx.fill(); ctx.restore();
+    ctx.save(); visRound(ctx, x, y, w, h, 22); ctx.clip(); ctx.drawImage(im, x, y, w, h); ctx.restore();
+  }
+}
+function openVisual(i) {
+  const tw = S.draft.tweets[i]; if (!tw) return; const ta = $(`.tw[data-id="${tw.id}"] .tw-input`);
+  const sel = ta && ta.selectionEnd > ta.selectionStart ? ta.value.slice(ta.selectionStart, ta.selectionEnd) : '';
+  const all = () => S.draft.tweets.map(t => t.text).join('\n');
+  if (!sel && VIS.kind !== 'frame') VIS.kind = numPair(all()) ? 'chart' : 'quote';
+  const text = () => VIS.kind === 'quote' ? (sel || tw.text.split('\n')[0]) : VIS.kind === 'post' ? tw.text : all();
+  const seg = (k, opts) => `<div class="seg vis-seg" role="tablist" data-vk="${k}">${opts.map(([v, l]) => `<button role="tab" data-v="${v}" aria-selected="${VIS[k] === v}">${l}</button>`).join('')}</div>`;
+  const m = modal(`${modalHead('Make a visual', 'Posts with an image get stopped on more. Pick one and it lands in this post.')}
+  <div class="modal-b vis-b">
+    <div class="vis-kinds" role="tablist">${[['quote', 'Quote card', 'Your line, set big'], ['chart', 'Before / after', 'From the numbers you wrote'], ['post', 'Post screenshot', 'For LinkedIn and Threads'], ['frame', 'Frame a screenshot', 'Make any screenshot look good']].map(([k, l, d]) => `<button class="vk" data-kind="${k}" aria-selected="${VIS.kind === k}"><b>${l}</b><small>${d}</small></button>`).join('')}</div>
+    <div class="vis-stage" id="vis-stage"><canvas id="vis-cv" aria-label="Preview of the image"></canvas><input type="file" accept="image/*" id="vis-file" hidden></div>
+    <div class="vis-opts">${seg('style', [['paper', 'Paper'], ['ink', 'Ink'], ['marker', 'Marker']])}${seg('size', [['wide', '16:9'], ['square', '1:1'], ['tall', '4:5']])}</div>
+  </div>
+  <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="vis-add">${ic('image', 'sm')} Add to post</button></div>`, { label: 'Make a visual', box: 'modal vis-modal' });
+  const el = m.el, cv = $('#vis-cv', el);
+  const draw = () => { visDraw(cv, text()); $('#vis-stage', el).classList.toggle('drop', VIS.kind === 'frame'); };
+  (document.fonts ? document.fonts.load('600 40px Geist') : Promise.resolve()).then(draw, draw);
+  el.addEventListener('click', e => {
+    const k = e.target.closest('.vk'); if (k) { VIS.kind = k.dataset.kind; $$('.vk', el).forEach(x => x.setAttribute('aria-selected', x === k)); SFX.play('tick'); draw(); if (VIS.kind === 'frame' && !VIS.frameImg) $('#vis-file', el).click(); return; }
+    const o = e.target.closest('.vis-seg [data-v]'); if (o) { const g = o.parentElement.dataset.vk; VIS[g] = o.dataset.v; $$('[data-v]', o.parentElement).forEach(x => x.setAttribute('aria-selected', x === o)); SFX.play('tick'); draw(); return; }
+    if (e.target.closest('#vis-stage') && VIS.kind === 'frame') $('#vis-file', el).click();
+  });
+  const load = f => { if (!f || !f.type.startsWith('image/')) return; const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { VIS.frameImg = im; draw(); }; im.src = r.result; }; r.readAsDataURL(f); };
+  $('#vis-file', el).addEventListener('change', e => load(e.target.files[0]));
+  const st = $('#vis-stage', el); st.addEventListener('dragover', e => { e.preventDefault(); st.classList.add('over'); }); st.addEventListener('dragleave', () => st.classList.remove('over')); st.addEventListener('drop', e => { e.preventDefault(); st.classList.remove('over'); VIS.kind = 'frame'; $$('.vk', el).forEach(x => x.setAttribute('aria-selected', x.dataset.kind === 'frame')); load(e.dataTransfer.files[0]); });
+  $('#vis-add', el).onclick = () => {
+    if (tw.poll) { toast('Polls and images don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; }
+    if (tw.media.length >= 4) { toast('Four images max per post.', { icon: 'image', tone: 'err' }); return; }
+    if (VIS.kind === 'frame' && !VIS.frameImg) { $('#vis-file', el).click(); return; }
+    tw.media.push({ type: 'img', src: cv.toDataURL('image/png'), alt: { quote: 'Quote card: ', chart: 'Chart: ', post: 'Screenshot of the post: ', frame: 'Screenshot' }[VIS.kind] + (VIS.kind === 'frame' ? '' : text().slice(0, 120)) });
+    refreshMedia(tw.id); m.close(); SFX.play('swap'); toast('Visual added.', { icon: 'image', tone: 'accent' });
+  };
+}
+
 function openGifs(i) {
   const tw = S.draft.tweets[i];
   const m = modal(`${modalHead('Add a GIF', 'A small library of moods. No cringe, we checked.')}<div class="modal-b" style="display:grid;gap:12px"><input class="input" id="gif-q" autofocus placeholder="Search moods: ship, fine, hmm…" aria-label="Search GIFs"><div class="gifs" id="gif-grid"></div></div>`, { label: 'Add a GIF' });
   const draw = q => { const list = GIFS.filter(g => !q || g.label.includes(q.toLowerCase()) || g.id.includes(q.toLowerCase())); $('#gif-grid', m.el).innerHTML = list.length ? list.map(g => `<button data-g="${g.id}" aria-label="${esc(g.label)}">${gifTile(g.id)}</button>`).join('') : `<p class="muted" style="grid-column:1/-1;padding:20px;text-align:center">No mood called “${esc(q)}”. Try “ship”.</p>`; };
   draw(''); $('#gif-q', m.el).oninput = e => draw(e.target.value.trim());
   $('#gif-grid', m.el).onclick = e => { const b = e.target.closest('[data-g]'); if (!b) return; if (tw.media.length >= 4) { toast('Four media max per post.', { tone: 'err', icon: 'image' }); return; } if (tw.poll) { toast('Polls and GIFs don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; } tw.media.push({ type: 'gif', id: b.dataset.g }); refreshMedia(tw.id); m.close(); };
+}
+
+/* ---------- Sharpen: select any words, flip through three takes on just those words ----------
+   Rewrites the part you mean and leaves the rest alone. Free, instant, previewed in place. */
+const SHARP = [{ k: 'punchier', label: 'Punchier' }, { k: 'shorter', label: 'Shorter' }, { k: 'clearer', label: 'Clearer' }, { k: 'bolder', label: 'Bolder' }, { k: 'human', label: 'More human' }];
+const PLAIN = [[/\butili[sz]e\b/gi, 'use'], [/\bleverage\b/gi, 'use'], [/\bin order to\b/gi, 'to'], [/\bfacilitate\b/gi, 'help'], [/\bprior to\b/gi, 'before'], [/\bsubsequently\b/gi, 'then'], [/\ba number of\b/gi, 'some'], [/\bat this point in time\b/gi, 'now'], [/\bdue to the fact that\b/gi, 'because'], [/\bcommence\b/gi, 'start'], [/\bendeavou?r\b/gi, 'try'], [/\boptimi[sz]e\b/gi, 'improve'], [/\bin terms of\b/gi, 'for'], [/\bwith regards? to\b/gi, 'about'], [/\bis able to\b/gi, 'can'], [/\bthe majority of\b/gi, 'most']];
+const CONTRACTIONS = [[/\bdo not\b/gi, 'don’t'], [/\bdoes not\b/gi, 'doesn’t'], [/\bI am\b/g, 'I’m'], [/\bit is\b/gi, 'it’s'], [/\bwe are\b/gi, 'we’re'], [/\byou are\b/gi, 'you’re'], [/\bcannot\b/gi, 'can’t'], [/\bwill not\b/gi, 'won’t'], [/\bI have\b/g, 'I’ve'], [/\bthat is\b/gi, 'that’s'], [/\bthey are\b/gi, 'they’re'], [/\bis not\b/gi, 'isn’t']];
+const QUAL = /\b(i think|i feel like|i believe|maybe|perhaps|probably|kind of|sort of|a bit|somewhat|arguably|in my opinion|it seems like|honestly|really|just)\s+/gi;
+const subAll = (t, list) => list.reduce((x, [r, w]) => x.replace(r, m => /^[A-Z]/.test(m) ? cap(w) : w), t);
+function sharpVariants(k, frag) {
+  const lead = frag.match(/^\s*/)[0], trail = frag.match(/\s*$/)[0], core = frag.trim(); if (!core) return [];
+  const bare = x => tidy(x.replace(QUAL, '')).trim(), clause = x => (x.split(/[,;:—–]\s*/)[0] || x).trim();
+  const v = {
+    punchier: () => [AI.punchier(core), bare(AI.punchier(core)).replace(/,\s+/g, '. '), clause(bare(core))],
+    shorter: () => [AI.shorter(core), bare(subAll(core, PLAIN)).replace(/\b(that|very|actually|basically|literally|totally)\s+/gi, ''), clause(core)],
+    clearer: () => [subAll(core, PLAIN), subAll(bare(core), PLAIN), subAll(core, PLAIN).replace(/\s*\([^)]*\)/g, '')],
+    bolder: () => [bare(core), bare(core).replace(/\bshould\b/gi, 'must').replace(/\bcould\b/gi, 'will').replace(/\btry to\b/gi, ''), `${bare(core).replace(/[.!?]*$/, '')}. Full stop.`],
+    human: () => [subAll(core, CONTRACTIONS), `Here’s the thing: ${subAll(core, CONTRACTIONS).replace(/^./, c => c.toLowerCase())}`, subAll(core, CONTRACTIONS).replace(/^./, c => c.toLowerCase())]
+  }[k]();
+  const endsP = /[.!?:…]$/.test(core), low = /^[a-z]/.test(core);
+  const fit = x => { x = tidy(x).trim(); if (!endsP) x = x.replace(/\.+$/, ''); if (low && k !== 'human') x = x.replace(/^./, c => c.toLowerCase()); return x; };
+  return [...new Set(v.map(fit))].filter(x => x && x !== core).slice(0, 3).map(x => lead + x + trail);
+}
+const SH = { el: null, ta: null, st: null };
+function sharpenHide() { if (SH.st) sharpenCancel(); if (SH.el) { const el = SH.el; el.classList.remove('on'); setTimeout(() => { if (!el.classList.contains('on')) el.remove(); }, 180); SH.el = null; } }
+function sharpenPlace() {
+  const el = SH.el, ta = SH.ta; if (!el || !ta) return; const wrap = ta.parentElement, mir = wrap.firstElementChild;
+  /* measure where the selection starts: a throwaway mirror pass, then the real paint puts it back */
+  const at = SH.st ? SH.st.s : ta.selectionStart; const keep = mir.innerHTML; mir.innerHTML = esc(ta.value.slice(0, at)) + '<span class="ss"></span>';
+  const ss = $('.ss', mir), x = ss.offsetLeft, y = ss.offsetTop; mir.innerHTML = keep;
+  const w = el.offsetWidth, W = wrap.offsetWidth; el.style.left = clamp(x - 12, -8, W - w + 8) + 'px'; el.style.top = (y - el.offsetHeight - 8) + 'px';
+}
+function sharpenCheck(ta) {
+  if (SH.st) return;
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  if (document.activeElement !== ta || e - s < 3 || !ta.value.slice(s, e).trim()) { if (SH.el) sharpenHide(); return; }
+  if (!SH.el || SH.el.parentElement !== ta.parentElement) { if (SH.el) SH.el.remove(); SH.el = document.createElement('div'); SH.el.className = 'sharpen'; SH.el.setAttribute('role', 'toolbar'); SH.el.setAttribute('aria-label', 'Sharpen the selected words'); ta.parentElement.append(SH.el); }
+  SH.ta = ta;
+  SH.el.innerHTML = `<span class="sh-t">${LOGO_MARK}Sharpen</span>${SHARP.map((m, i) => `<button data-sh="${m.k}" data-tip="${m.label}" data-kbd="${ALT} ${i + 1}">${m.label}</button>`).join('')}`;
+  requestAnimationFrame(() => { sharpenPlace(); SH.el && SH.el.classList.add('on'); });
+}
+function sharpenRun(k) {
+  const ta = SH.ta; if (!ta) return; const s = ta.selectionStart, e = ta.selectionEnd, before = ta.value;
+  const vars = sharpVariants(k, before.slice(s, e));
+  if (!vars.length) { toast('Already sharp. Nothing worth cutting there.', { icon: 'check', ms: 1800 }); return; }
+  UI.ghost = null; SH.st = { id: ta.closest('.tw').dataset.id, s, e, before, vars, i: 0, k }; sharpenShow(0); SFX.play('tap');
+}
+function sharpenShow(i) {
+  const st = SH.st, ta = SH.ta; st.i = (i + st.vars.length) % st.vars.length; const v = st.vars[st.i];
+  ta.value = st.before.slice(0, st.s) + v + st.before.slice(st.e); ta.setSelectionRange(st.s, st.s + v.length);
+  UI.sharp = { id: st.id, s: st.s, len: v.length }; paintField(ta);
+  SH.el.innerHTML = `<span class="sh-t">${LOGO_MARK}${SHARP.find(m => m.k === st.k).label}</span>${st.vars.length > 1 ? `<button data-shn="-1" aria-label="Previous take">‹</button><span class="n">${st.i + 1} / ${st.vars.length}</span><button data-shn="1" aria-label="Next take">›</button>` : ''}<button class="keep" data-shk>Keep ${kbd('↵')}</button><button data-shx aria-label="Cancel">${ic('x', 'sm')}</button>`;
+  requestAnimationFrame(sharpenPlace);
+}
+function sharpenCancel() { const st = SH.st; if (!st) return; SH.st = null; UI.sharp = null; const ta = SH.ta; if (ta && document.contains(ta)) { ta.value = st.before; ta.setSelectionRange(st.s, st.e); paintField(ta); } }
+function sharpenKeep() {
+  const st = SH.st, ta = SH.ta; if (!st) return; SH.st = null; const tw = tById(st.id);
+  const len = st.vars[st.i].length; UI.sharp = { id: st.id, s: st.s, len, flash: Date.now() };
+  ta.setSelectionRange(st.s + len, st.s + len); ta.dispatchEvent(new Event('input', { bubbles: true }));
+  SFX.play('swap'); sharpenHide();
+  setTimeout(() => { if (UI.sharp && UI.sharp.flash) { UI.sharp = null; document.contains(ta) && paintField(ta); } }, 950);
+  toast('Sharpened.', { icon: 'riff', tone: 'accent', ms: 2600, action: 'Undo', onAction: () => { if (!tw) return; tw.text = st.before; renderThread({ focusId: tw.id }); markSaving(); } });
+}
+function sharpenKey(e) {
+  if (!SH.st) { if (SH.el && e.altKey && /^Digit[1-5]$/.test(e.code)) { e.preventDefault(); e.stopPropagation(); sharpenRun(SHARP[+e.code.slice(5) - 1].k); } return; }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); e.stopPropagation(); sharpenShow(SH.st.i + (e.key === 'ArrowRight' ? 1 : -1)); SFX.play('tick'); }
+  else if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); sharpenKeep(); }
+  else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); sharpenCancel(); sharpenHide(); }
+  else if (!['Shift', 'Alt', 'Control', 'Meta'].includes(e.key)) { sharpenKeep(); }
 }
 
 /* riffs */
@@ -2750,7 +2995,7 @@ function openTranslate(anchor, i) {
 function runRiff(i, kind, lang) {
   if (CURRENT !== 'write') return;
   const tw = S.draft.tweets[i]; if (!tw) return;
-  if (!tw.text.trim()) { toast('Write a line first. Riffs need something to riff on.', { icon: 'riff', tone: 'accent' }); focusTweet(i); return; }
+  if (!tw.text.trim()) { toast('Write a line first. There’s nothing to rewrite yet.', { icon: 'riff', tone: 'accent' }); focusTweet(i); return; }
   if (aiLeft() <= 0) { outOfRiffs(); return; }
   riffNonce++;
   const before = tw.text; const after = kind === 'translate' ? AI.translate(before, lang) : AI[kind](before);
@@ -2772,7 +3017,7 @@ function runRiff(i, kind, lang) {
 function closeDiff(accept) {
   const d = UI.diff; if (!d) return; UI.diff = null; const i = tIndex(d.id); const tw = S.draft.tweets[i];
   if (!accept || !tw) { renderExtras(d.id); focusTweet(i, 'end'); return; }
-  const before = d.before, after = composeDiff(d.chunks); tw.text = after;
+  const before = d.before, after = composeDiff(d.chunks); tw.text = after; SFX.play('swap');
   const lim = effLimit();
   if ([...after].length > lim && S.settings.split) { const parts = splitText(after, lim); tw.text = parts[0]; insertAfter(i, parts.slice(1), { focusId: tw.id, pos: 'end' }); }
   else renderThread({ focusId: tw.id, pos: 'end' });
@@ -2782,16 +3027,16 @@ function closeDiff(accept) {
 }
 function outOfRiffs() {
   closeUpsell();
-  const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Out of free riffs');
+  const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Out of free rewrites');
   const freebie = !S.ai.freebie;
-  el.innerHTML = `<h3 class="h2">That’s today’s free riffs.</h3><p class="muted" style="margin-top:8px">They refill at midnight. Pro riffs are unlimited, and so are your ideas.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See Pro</a>${freebie ? '<button class="btn" data-up="free">One more, on us</button>' : ''}<button class="btn ghost" data-up="x">Not now</button></div>`;
+  el.innerHTML = `<h3 class="h2">That’s today’s free rewrites.</h3><p class="muted" style="margin-top:8px">They refill at midnight. Pro rewrites are unlimited, and so are your ideas.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See Pro</a>${freebie ? '<button class="btn" data-up="free">One more, on us</button>' : ''}<button class="btn ghost" data-up="x">Not now</button></div>`;
   document.body.append(el);
   el.addEventListener('click', e => { const b = e.target.closest('[data-up]'); if (e.target.closest('a')) closeUpsell(); if (!b) return; if (b.dataset.up === 'free') { S.ai.freebie = 1; S.ai.used = Math.max(0, S.ai.used - 1); save(); refreshPlanCard(); toast('One on the house. Make it count.', { icon: 'gift', tone: 'accent' }); } closeUpsell(); });
 }
 function showUpsell(a, b) {
   if (S.plan !== 'free' || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
   const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hookworthy Pro');
-  el.innerHTML = `<div class="jump"><span class="from">${a}</span>${ic('arrow', 'lg')}<span class="to">${b}</span></div><p class="muted">Your hook just jumped ${b - a} points. Pro does this all day: unlimited riffs, your full voice model, and auto-plugs that ride the wave.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
+  el.innerHTML = `<div class="jump"><span class="from">${a}</span>${ic('arrow', 'lg')}<span class="to">${b}</span></div><p class="muted">Your hook just jumped ${b - a} points. Pro does this all day: unlimited rewrites, your full voice model, and an automatic follow-up reply when a post takes off.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
   document.body.append(el); burstFrom($('.to', el));
   el.addEventListener('click', e => { if (e.target.closest('[data-up],a')) closeUpsell(); });
 }
@@ -2865,7 +3110,7 @@ const platList = () => Object.keys(PLAT).filter(k => S.platforms[k]).map(k => PL
 function commitDraft({ day, time, status = 'scheduled' }) {
   const tws = S.draft.tweets.filter(t => t.text.trim() || t.media.length);
   S.queue.push({ id: uid(), day, time, text: tws[0].text, tweets: tws.map(t => t.text), platforms: { ...S.platforms }, status, autoPlug: S.settings.autoPlug, autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
-  S.streak[dayKey(Date.now())] = 1;
+  S.streak[dayKey(Date.now())] = 1; SFX.play('done');
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; UI.hook = false; save();
 }
 function openSchedule() {
@@ -2881,7 +3126,7 @@ function openSchedule() {
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${dayKey(Date.now() + DAY)}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="09:00" aria-label="Time"></div>
     </div>
     <div style="display:grid;gap:14px"><span class="label">While you’re away</span>
-      <div class="setting"><span>Auto-plug</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Auto-plug"></button><small>At ${S.settings.plugAt} likes, reply with: “${esc(S.settings.plugText)}”</small></div>
+      <div class="setting"><span>Follow-up reply</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Follow-up reply"></button><small>At ${S.settings.plugAt} likes, reply with: “${esc(S.settings.plugText)}”</small></div>
       <div class="setting"><span>Auto-repost</span><button class="switch" role="switch" aria-checked="${S.settings.autoRepost}" data-sw="autoRepost" aria-label="Auto-repost"></button><small>Repost once after ${S.settings.repostAfter} hours for the other time zone.</small></div>
     </div>
   </div>
@@ -2918,8 +3163,16 @@ function publishNow(btn) {
     route(); toast(`Published to ${esc(names)}. Stay close for the first replies.`, { icon: 'send', tone: 'accent', action: 'Write another', onAction: () => focusTweet(0) });
   }, 650);
 }
+function openDraft(i) {
+  const d = S.drafts[i]; if (!d) return;
+  S.drafts.splice(i, 1); if (!isEmptyDraft()) S.drafts.unshift(S.draft);
+  S.draft = d; UI.diff = null; UI.riff = null; save();
+  if (CURRENT === 'write') route(); else go('write');
+  setTimeout(() => focusTweet(0, 'end'), 80);
+}
 function newPost() {
-  if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 20); toast(`Last draft saved. Find it with ${MOD} K.`, { icon: 'archive' }); }
+  SFX.play('tap');
+  if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 20); toast('Saved to Drafts.', { icon: 'archive' }); }
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; save();
   if (CURRENT === 'write') { route(); } else go('write');
   setTimeout(() => focusTweet(0), 80);
@@ -2944,7 +3197,7 @@ function composerClick(e) {
   if (el.dataset.pv) { S.preview.tab = el.dataset.pv; save(); $$('[data-pv]').forEach(b => b.setAttribute('aria-selected', b === el)); syncSeg(el.parentElement); renderPreviewBody(); return; }
   const tEl = el.closest('.tw'); const id = tEl && tEl.dataset.id; const i = id ? tIndex(id) : -1; const a = el.dataset.cact;
   switch (a) {
-    case 'plat': { const k = el.dataset.k; S.platforms[k] = !S.platforms[k]; el.setAttribute('aria-pressed', S.platforms[k]); el.dataset.tip = `${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${PLAT[k].name}`; save(); renderPreviewHead(); renderPreviewBody(); $$('#thread .tw').forEach(paintRing); toast(`${PLAT[k].name} ${S.platforms[k] ? 'added to this post' : 'removed from this post'}.`, { icon: 'check', ms: 1600 }); break; }
+    case 'plat': { const k = el.dataset.k; S.platforms[k] = !S.platforms[k]; SFX.play('tick'); el.setAttribute('aria-pressed', S.platforms[k]); el.dataset.tip = `${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${PLAT[k].name}`; save(); renderPreviewHead(); renderPreviewBody(); $$('#thread .tw').forEach(paintRing); toast(`${PLAT[k].name} ${S.platforms[k] ? 'added to this post' : 'removed from this post'}.`, { icon: 'check', ms: 1600 }); break; }
     case 'preview': togglePreview(); break;
     case 'schedule': openSchedule(); break;
     case 'schedmenu': openMenu(el, [
@@ -2959,6 +3212,7 @@ function composerClick(e) {
     case 'shuffle': shuffleStarters(); break;
     case 'starter': writeFrom(expandIdea(el.dataset.t, el.dataset.kind, el.dataset.topic)); toast('Drafted in your voice. Now make it yours.', { icon: 'riff', tone: 'accent' }); break;
     case 'gif': openGifs(i); break;
+    case 'visual': openVisual(i); break;
     case 'poll': { const tw = S.draft.tweets[i]; if (tw.poll) { tw.poll = null; } else { if (tw.media.length) { toast('Polls and images don’t mix on X. Remove the image first.', { icon: 'poll', tone: 'err' }); break; } tw.poll = { options: ['', ''], days: 1 }; } refreshMedia(id); const f = $(`.tw[data-id="${id}"] [data-poll="0"]`); f && f.focus(); break; }
     case 'polladd': { const tw = S.draft.tweets[i]; tw.poll.options.push(''); refreshMedia(id); $(`.tw[data-id="${id}"] [data-poll="${tw.poll.options.length - 1}"]`).focus(); break; }
     case 'pollrm': S.draft.tweets[i].poll = null; refreshMedia(id); break;
@@ -2993,10 +3247,14 @@ ROUTES.write = () => {
   th.addEventListener('change', e => { if (e.target.matches('[data-media]')) { addFiles(tIndex(e.target.closest('.tw').dataset.id), e.target.files); e.target.value = ''; } if (e.target.matches('[data-polldays]')) { tById(e.target.closest('.tw').dataset.id).poll.days = +e.target.value; markSaving(); } });
   th.addEventListener('keydown', e => { if (e.target.matches('label.tool') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); $('input', e.target).click(); return; } onKey(e); });
   const repaint = e => { if (e.target.classList && e.target.classList.contains('tw-input')) requestAnimationFrame(() => placeCaretOrPaint(e.target)); };
-  const placeCaretOrPaint = ta => { if (UI.ghost && ta.selectionEnd !== ta.value.length) { UI.ghost = null; } paintField(ta); };
+  const placeCaretOrPaint = ta => { if (UI.ghost && ta.selectionEnd !== ta.value.length) { UI.ghost = null; } if (!SH.st) paintField(ta); sharpenCheck(ta); };
+  const shClick = e => { const b = e.target.closest('.sharpen button'); if (!b) return; e.preventDefault(); if (b.dataset.sh) sharpenRun(b.dataset.sh); else if (b.dataset.shn) { sharpenShow(SH.st.i + +b.dataset.shn); SFX.play('tick'); } else if ('shk' in b.dataset) sharpenKeep(); else if ('shx' in b.dataset) { sharpenCancel(); sharpenHide(); } };
+  th.addEventListener('mousedown', e => { if (e.target.closest('.sharpen')) e.preventDefault(); });
+  th.addEventListener('click', shClick);
+  document.addEventListener('keydown', sharpenKey, true); onDispose(() => { document.removeEventListener('keydown', sharpenKey, true); SH.st = null; UI.sharp = null; if (SH.el) SH.el.remove(); SH.el = null; });
   ['keyup', 'click', 'focusin', 'select'].forEach(ev => th.addEventListener(ev, repaint));
-  th.addEventListener('focusout', e => { if (e.target.classList.contains('tw-input')) { UI.ghost = null; const ta = e.target; setTimeout(() => { if (document.contains(ta)) paintField(ta); }, 0); setTyping(false); } });
-  const selch = () => { const a = document.activeElement; if (a && a.classList.contains('tw-input')) placeCaret(a); };
+  th.addEventListener('focusout', e => { if (e.target.classList.contains('tw-input')) { if (SH.st) sharpenKeep(); else setTimeout(() => { if (document.activeElement !== SH.ta) sharpenHide(); }, 0); UI.ghost = null; const ta = e.target; setTimeout(() => { if (document.contains(ta)) paintField(ta); }, 0); setTyping(false); } });
+  const selch = () => { const a = document.activeElement; if (a && a.classList.contains('tw-input')) { placeCaret(a); if (!SH.st) sharpenCheck(a); } };
   document.addEventListener('selectionchange', selch); onDispose(() => document.removeEventListener('selectionchange', selch));
   th.addEventListener('pointerdown', e => { const h = e.target.closest('.handle'); if (h) startDrag(e, h); });
   th.addEventListener('paste', e => { const f = e.clipboardData && e.clipboardData.files; if (f && f.length && e.target.classList.contains('tw-input')) { e.preventDefault(); addFiles(tIndex(e.target.closest('.tw').dataset.id), f); } });
@@ -3035,17 +3293,23 @@ const PEOPLE = [
   { n: 'Diego Santos', h: 'diegocodes', v: 0, bio: 'Indie hacker', img: 14 },
   { n: 'Aisha Bello', h: 'aishab', v: 0, bio: 'Student · 1 year of posting daily', img: 15 },
   { n: 'Noah Fischer', h: 'noahghostwrites', v: 0, bio: 'Ghostwriter for 6 founders', img: 16 },
-  { n: 'Tobi Adeyemi', h: 'tobiadeyemi', v: 0, bio: 'Founder, Ledgerly', img: 17 }
+  { n: 'Tobi Adeyemi', h: 'tobiadeyemi', v: 0, bio: 'Founder, Ledgerly', img: 17 },
+  { n: 'Theo Marchetti', h: 'theocharts', v: 0, bio: 'Swing trader, 7 years', img: 18 },
+  { n: 'Priya Nair', h: 'priyaonchain', v: 0, bio: 'On-chain analyst', img: 19 },
+  { n: 'Jay Kim', h: 'jaytradesdaily', v: 0, bio: 'Day trader, journals everything', img: 20 },
+  { n: 'Lena Vogt', h: 'lenavogt', v: 0, bio: 'Macro + BTC newsletter', img: 21 },
+  { n: 'Dami Oyelaran', h: 'damidefi', v: 0, bio: 'DeFi security researcher', img: 22 },
+  { n: 'Camila Reyes', h: 'camilateaches', v: 0, bio: 'Teaches trading to beginners', img: 23 }
 ];
 /* generated portraits + photos live in two sprite sheets (see .avp / .mdp in CSS):
    avatars: 18 frames of 144x144, photos: 6 frames of 800x474, stacked vertically */
-const AV_N = 18, PH_N = 6;
+const AV_N = 18, AV2_N = 6, PH_N = 6;
 const PHOTO = { desk: 0, whiteboard: 1, run: 2, cafe: 3, team: 4, notes: 5 };
 const sprY = (i, n) => `${(i / (n - 1) * 100).toFixed(4)}%`;
 /* local sheets ship with the app (assets/people/); the CDN copy is only a fallback */
-const SPRITES = { av: ['assets/people/avatars.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/c1690549-793f-4b50-a3f1-19e873c4626c.jpg'], ph: ['assets/people/photos.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/a814989f-cac9-40ac-9293-0314cc05ec44.jpg'] };
+const SPRITES = { av2: ['assets/people/avatars-2.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/003effcf-184c-4ed9-a04c-f2b897f71a6b.jpg'], av: ['assets/people/avatars.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/c1690549-793f-4b50-a3f1-19e873c4626c.jpg'], ph: ['assets/people/photos.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/a814989f-cac9-40ac-9293-0314cc05ec44.jpg'] };
 /* if no copy loads (offline, blocked), photos collapse and portraits fall back to initials: never an empty slab */
-Object.entries(SPRITES).forEach(([k, urls]) => { const tryAt = i => { if (i >= urls.length) { document.documentElement.classList.add('no-spr'); return; } const im = new Image(); im.onload = () => document.documentElement.style.setProperty(`--spr-${k}`, `url("${urls[i]}")`); im.onerror = () => tryAt(i + 1); im.src = urls[i]; }; tryAt(0); });
+Object.entries(SPRITES).forEach(([k, urls]) => { const tryAt = i => { if (i >= urls.length) { document.documentElement.classList.add(k === 'av2' ? 'no-spr2' : 'no-spr'); return; } const im = new Image(); im.onload = () => document.documentElement.style.setProperty(`--spr-${k}`, `url("${urls[i]}")`); im.onerror = () => tryAt(i + 1); im.src = urls[i]; }; tryAt(0); });
 
 /* posts that stop the scroll: shown in the hero carousel */
 const HOOK_POSTS = [
@@ -3115,7 +3379,7 @@ const X_LOGO = '<svg class="logo" viewBox="0 0 24 24"><path fill="currentColor" 
 
 function pfAv(p, cls = '') {
   const ini = esc((p && p.n || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2));
-  const i = p && p.img, pic = Number.isInteger(i) && i < AV_N ? `<i class="avp" style="background-position:0 ${sprY(i, AV_N)}"></i>` : '';
+  const i = p && p.img, pic = !Number.isInteger(i) ? '' : i < AV_N ? `<i class="avp" style="background-position:0 ${sprY(i, AV_N)}"></i>` : i < AV_N + AV2_N ? `<i class="avp avp2" style="background-position:0 ${sprY(i - AV_N, AV2_N)}"></i>` : '';
   const tint = p && p.hue != null && !pic ? ` style="background:linear-gradient(135deg,hsl(${p.hue} 62% 58%),hsl(${(p.hue + 24) % 360} 58% 42%))"` : '';
   return `<span class="av ini ${cls}"${tint} aria-hidden="true">${ini}${pic}</span>`;
 }
@@ -3195,11 +3459,12 @@ const FEED_NOISE = [
   'Hot take: most meetings could be emails.', 'Agree?', 'Some thoughts on productivity (a thread)'
 ];
 const noisePost = (t, i) => `<div class="fp" aria-hidden="true"><span class="av" style="background:hsl(${(i * 47) % 360} 6% ${16 + (i % 3) * 2}%)"></span><div style="min-width:0"><div class="nm"><i></i><i></i></div><div class="tx">${esc(t)}</div></div></div>`;
-const ghostFeedHTML = () => `<div class="ghostfeed" aria-hidden="true">${[0, 1, 2].map(c => { const items = FEED_NOISE.filter((_, i) => i % 3 === c); return `<div class="col">${[...items, ...items, ...items, ...items].map((t, i) => noisePost(t, i + c)).join('')}</div>`; }).join('')}</div>`;
+/* onboarding backdrop: the same real-looking feed as the homepage, drifting and faded */
+const ghostFeedHTML = () => { const all = [...VOID_POSTS, ...HOOK_POSTS.map(q => ({ ...q, m: null }))]; return `<div class="ghostfeed" aria-hidden="true">${[0, 1, 2].map(c => { const items = all.filter((_, i) => i % 3 === c); return `<div class="col">${[...items, ...items].map(q => xPost(q, { dark: isDark() })).join('')}</div>`; }).join('')}</div>`; };
 function plansHTML(yearly) {
   const P = [
     { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score on every post', '5 rewrites a day', 'Unlimited drafts and ideas', 'One account per platform', 'Up to 10 scheduled posts'] },
-    { k: 'pro', name: 'Pro', price: yearly ? 12 : 16, blurb: 'For posting most days.', cta: 'Try Pro free for 7 days', hero: true, feats: ['Unlimited rewrites in your voice', 'Voice profile that keeps learning', 'Auto-plug and auto-repost', 'Per-platform versions', 'Insights that say why', 'Unlimited queue'] },
+    { k: 'pro', name: 'Pro', price: yearly ? 12 : 16, blurb: 'For posting most days.', cta: 'Try Pro free for 7 days', hero: true, feats: ['Unlimited rewrites in your voice', 'Voice profile that keeps learning', 'Follow-up replies and reposts', 'Per-platform versions', 'Insights that say why', 'Unlimited queue'] },
     { k: 'studio', name: 'Studio', price: yearly ? 29 : 36, blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Five client voices', 'Approvals before anything ships', 'Shared idea inbox', 'Support from humans'] }
   ];
   return P.map(p => `<div class="pl ${p.hero ? 'pro' : ''}">
@@ -3463,7 +3728,7 @@ ROUTES.home = () => {
   </div>
 
   <section class="hw-sec wrap" id="week">
-    <div class="hw-h rv"><h2>Posted while you sleep. Timed for when they don’t.</h2><p>Your golden hours come from when your last 90 days of posts got replies. Drop a post anywhere and it snaps to the best slot.</p></div>
+    <div class="hw-h rv"><h2>Posted while you sleep. Timed for when they don’t.</h2><p>Your best times come from when your last 90 days of posts got replies. Drop a post anywhere and it snaps to the best slot.</p></div>
     <div class="wk rv" id="wk"></div>
     <div class="wk-legend"><span><i></i>Quiet to busy: when your people reply</span><span><b class="pk"></b>Tuesday 8:40 is your peak</span><span>Illustrative week</span></div>
   </section>
@@ -3556,13 +3821,13 @@ function initHome() {
 const ONB = { handle: '', plat: 'x', niche: null, t0: 0 };
 ROUTES.start = () => {
   ONB.t0 = 0;
-  $('#root').innerHTML = `<div class="onb force-dark"><div class="onb-top"><a class="logo" href="#home">${LOGO}</a><a class="btn ghost sm" href="#write">Skip to the app${ic('arrow', 'sm')}</a></div><div class="onb-stage" id="onb" style="position:relative"></div></div>`;
+  $('#root').innerHTML = `<div class="onb"><div class="onb-top"><a class="logo" href="#home">${LOGO}</a><a class="btn ghost sm" href="#write">Skip to the app${ic('arrow', 'sm')}</a></div><div class="onb-stage" id="onb" style="position:relative"></div></div>`;
   if (ONB.auto) { ONB.auto = false; ONB.niche = ONB.niche || S.user.niche; ONB.t0 = Date.now(); onbStep2(); } else onbStep1();
 };
 function onbStep1() {
   const niches = Object.keys(NICHES); const cur = ONB.niche || S.user.niche;
   $('#onb').innerHTML = `<div class="onb-card">
-    <h1 class="display">Let’s find <em>your</em> voice.</h1>
+    <h1 class="display">Let’s find your <em>voice.</em></h1>
     <p class="muted" style="font-size:17px;max-width:46ch">Paste your handle. We’ll read your recent posts and hand you five you could write today.</p>
     <div class="seg" id="onb-plat" role="tablist" aria-label="Platform">${['x', 'threads', 'li', 'bsky'].map(k => `<button role="tab" data-p="${k}" aria-selected="${ONB.plat === k}">${pic(k, 'icon sm')}<span>${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}</span></button>`).join('')}</div>
     <form class="handle-in" id="onb-f" novalidate><span class="at">@</span><input id="onb-h" autofocus placeholder="yourhandle" value="${esc(ONB.handle)}" aria-label="Your handle" aria-describedby="onb-err" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">Read my posts${ic('arrow', 'sm')}</button></form>
@@ -3646,13 +3911,19 @@ ROUTES.ideas = () => {
       </div>
     </div>
     <div id="angles"></div>
-    <section class="sec"><div class="sec-h"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><h2 class="h2">Today’s engine</h2><span class="pill">${esc(S.user.niche)}</span></div>
+    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'For you'], ['radar', 'Niche radar'], ['inbox', `Inbox · ${S.ideas.length}`], ['hooks', 'Hook formulas']].map(([k, l]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}">${l}</button>`).join('')}</div></div>
+    <div id="tab-you" ${(UI.ideaTab || 'you') === 'you' ? '' : 'hidden'}>
+    <section class="sec"><div class="sec-h"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><h2 class="h2">Ideas for you</h2><span class="pill">${esc(S.user.niche)}</span></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="seg" id="eng-seg" role="tablist" aria-label="Filter ideas">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity'].map(k => `<button role="tab" data-ek="${k}" aria-selected="${ENGINE.kind === k}">${k}</button>`).join('')}</div><button class="btn sm" data-iact="shuffle" data-tip="Shuffle" data-kbd="R">${ic('shuffle', 'sm')}</button></div></div>
       <div class="grid-3" id="engine"></div></section>
-    <section class="sec"><div class="sec-h"><h2 class="h2">Inbox <span class="faint mono" style="font-size:14px" id="inbox-n">${S.ideas.length}</span></h2></div><div class="inbox" id="inbox"></div></section>
+    </div>
+    <div id="tab-radar" ${UI.ideaTab === 'radar' ? '' : 'hidden'}>${UI.ideaTab === 'radar' ? radarHTML() : ''}</div>
+    <div id="tab-inbox" ${UI.ideaTab === 'inbox' ? '' : 'hidden'}><section class="sec" style="margin-top:20px"><div class="sec-h"><h2 class="h2">Inbox <span class="faint mono" style="font-size:14px" id="inbox-n">${S.ideas.length}</span></h2></div><div class="inbox" id="inbox"></div></section></div>
+    <div id="tab-you2" ${(UI.ideaTab || 'you') === 'you' ? '' : 'hidden'}>
     <section class="sec"><div class="sec-h"><div><h2 class="h2">Remix your greatest hits</h2><p class="muted" style="margin-top:4px">Your best posts, back for a second run in a new shape.</p></div></div><div style="display:grid;gap:10px" id="remix">${TOP_POSTS.slice(0, 4).map(p => `<div class="card remix-row" data-tp="${p.id}"><div><p>${esc(p.text)}</p><div class="stats"><span>${fmtK(p.views)} views</span><span>${fmtK(p.likes)} likes</span><span>${fmtK(p.replies)} replies</span><span class="pill" style="height:18px">${p.kind}</span></div></div><button class="btn" data-iact="remix" aria-haspopup="menu">${ic('layers', 'sm')} Remix${ic('down', 'xs')}</button></div>`).join('')}</div></section>
+    </div>
   </div>`);
-  drawEngine(); drawInbox(); syncSeg($('#eng-seg'));
+  drawEngine(); drawInbox(); syncSeg($('#eng-seg')); syncSeg($('#idea-seg'));
   const view = $('#view'), inp = $('#cap-in');
   const updateHint = () => { const link = /^https?:\/\/\S+$/i.test(inp.value.trim()); $('#cap-go').textContent = link ? 'Find angles' : 'Save idea'; };
   inp.addEventListener('input', updateHint);
@@ -3667,6 +3938,10 @@ ROUTES.ideas = () => {
   cap.addEventListener('drop', e => { e.preventDefault(); const d = $('.drop-hint', cap); d && d.remove(); const f = e.dataTransfer.files[0]; if (!f) { const t = e.dataTransfer.getData('text'); if (t) { inp.value = t; updateHint(); } return; } if (f.type.startsWith('image/')) fromScreenshot(f); else if (f.type.startsWith('audio/')) fromVoice(f.name, 42); else toast('Images and audio only. Or paste the text.', { tone: 'err', icon: 'upload' }); });
   view.addEventListener('keydown', e => { if (e.target.matches('label[tabindex]') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); $('input', e.target).click(); } });
   view.addEventListener('click', e => {
+    const it = e.target.closest('[data-it]'); if (it) { const k = it.dataset.it; if (k === 'hooks') { go('hooks'); return; } UI.ideaTab = k; $$('[data-it]').forEach(b => b.setAttribute('aria-selected', b === it)); syncSeg($('#idea-seg')); SFX.play('tick');
+      ['you', 'you2', 'radar', 'inbox'].forEach(t => { const el = $('#tab-' + t); if (el) el.hidden = !(t === k || (k === 'you' && t === 'you2')); });
+      if (k === 'radar' && !$('#tab-radar').innerHTML.trim()) $('#tab-radar').innerHTML = radarHTML(); return; }
+    if (radarClick(e)) return;
     const tab = e.target.closest('[data-ek]'); if (tab) { ENGINE.kind = tab.dataset.ek; $$('[data-ek]').forEach(b => b.setAttribute('aria-selected', b === tab)); syncSeg($('#eng-seg')); drawEngine(); return; }
     const b = e.target.closest('[data-iact]'); if (!b) return; const a = b.dataset.iact;
     if (a === 'shuffle') shuffleEngine();
@@ -3683,6 +3958,55 @@ ROUTES.ideas = () => {
   onDispose(() => { if (REC.rec) { try { REC.rec.stop(); } catch (e) { } } });
 };
 function shuffleEngine() { ENGINE.seed++; drawEngine(); }
+/* ---------- Niche radar: what popped in your niche this week, and why ----------
+   Illustrative accounts. Each post comes with the reasons it spread and a structure you can reuse. */
+const RADAR = {
+  crypto: { label: 'Crypto trading', trends: [['ETH ETF inflows', '+212%', 'You’re early: 38 posts so far', 1], ['Stablecoin yields', '+41%', '640 posts this week', 0], ['Memecoin fatigue', '+64%', 'Crowded: 1.2K posts', 0]],
+    posts: [
+      { p: 18, t: 'I lost $41,000 on one trade in 2021.\n\nIt was the best money I ever spent. Here’s the rule it taught me:', c: [640, 2100, 18400, 1400000], ago: '3h', why: [['Relatable', 'Admits a real loss with a real number. People trust scars more than wins.'], ['Hook', 'A specific dollar figure, then a twist in line two.'], ['Format', 'The rule lands in post two, so people open the thread.']], pat: 'I lost {amount} on {mistake}.\n\nIt was the best money I ever spent. Here’s the rule it taught me:' },
+      { p: 19, t: 'ETH ETF inflows just flipped positive 5 days in a row.\n\nLast time that happened, here’s what price did over the next 30 days:', c: [212, 980, 7400, 520000], ago: '5h', why: [['Early', 'Posted three hours before the story trended. The first chart gets the quote-posts.'], ['Proof', 'The chart does the arguing, so the text can stay short.'], ['Timing', '8:10am ET, twenty minutes before the US open.']], pat: '{Signal} just happened {n} days in a row.\n\nLast time, here’s what followed over the next 30 days:' },
+      { p: 20, t: 'my trading journal this week:\n\nmon: +3%\ntue: +2%\nwed: -9% (revenge trade)\n\nstop revenge trading. that’s the tweet.', c: [390, 1600, 22000, 1900000], ago: '1d', why: [['Relatable', 'Everyone has a Wednesday. The loss is the point.'], ['Voice', 'Lowercase journal format. Reads unfiltered, not produced.'], ['Shareable', 'Short enough to screenshot, which is how it spread.']], pat: 'my {thing} this week:\n\nmon: {win}\ntue: {win}\nwed: {loss} ({mistake})\n\n{lesson}. that’s the tweet.' },
+      { p: 21, t: 'Everyone is watching the Fed.\n\nThe number that actually moved Bitcoin this month was stablecoin supply. Here’s how to read it in 60 seconds:', c: [180, 740, 5200, 410000], ago: '2d', why: [['Contrarian', 'Pulls attention from the obvious story to the overlooked one.'], ['Promise', '“In 60 seconds” is a small, clear payoff.'], ['Authority', 'Calm macro voice. No rockets, no hype words.']], pat: 'Everyone is watching {obvious thing}.\n\nThe thing that actually moved {outcome} was {overlooked thing}. Here’s how to read it in 60 seconds:' },
+      { p: 22, t: 'I read every audit from the 10 biggest DeFi exploits this year.\n\nSeven had the same bug. It’s not the one you think.', c: [260, 1100, 9100, 760000], ago: '2d', why: [['Effort', 'Signals work nobody else did: “I read every…”.'], ['Curiosity', 'Withholds the answer and flips your guess.'], ['Specific', 'Ten exploits, seven with the bug. Numbers make it credible.']], pat: 'I read every {source} from {set}.\n\n{n} had the same {pattern}. It’s not the one you think.' },
+      { p: 23, t: 'Beginners ask me which coin to buy.\n\nWrong question. Here are the 3 questions I make every student answer first:', c: [150, 520, 4800, 300000], ago: '3d', why: [['Reframe', '“Wrong question” turns a common ask into a lesson.'], ['List', 'Three items: easy to save, easy to finish.'], ['Audience', 'Speaks to beginners without talking down.']], pat: '{Audience} ask me {common question}.\n\nWrong question. Here are the 3 I make everyone answer first:' }
+    ] },
+  bip: { label: 'Building in public', trends: [['Pricing experiments', '+88%', 'You’re early: 51 posts so far', 1], ['AI wrappers', '+23%', 'Crowded: 3.4K posts', 0], ['Solo SaaS revenue', '+37%', '900 posts this week', 0]],
+    posts: [
+      { p: 1, t: 'Built in public for 12 months.\n\n$0 → $4.2k MRR. Every number, every mistake: 🧵', c: [190, 450, 5400, 402000], ago: '6h', why: [['Proof', 'Before and after in one line.'], ['Promise', '“Every number, every mistake” promises honesty.'], ['Format', 'A thread with receipts, and people love receipts.']], pat: '{Did thing} for {time}.\n\n{before} → {after}. Every number, every mistake: 🧵' },
+      { p: 14, t: 'Shipped my side project at 2am.\n\n3 signups. One was me testing. Still counts.', m: 'desk', c: [58, 44, 1700, 61000], ago: '1d', why: [['Relatable', 'Small numbers, big honesty.'], ['Humor', 'The self-own is the hook.'], ['Timing', 'Posted at 2am, when other builders are up too.']], pat: '{Shipped thing} at {time}.\n\n{small number} {result}. {self-own}. Still counts.' },
+      { p: 17, t: 'We let customers vote on our roadmap for a year.\n\nWorst decision we made. Here’s what we do now:', m: 'team', c: [260, 700, 6100, 498000], ago: '2d', why: [['Contrarian', 'Attacks a popular practice.'], ['Stakes', '“Worst decision” promises a real cost.'], ['Payoff', 'Ends on a promise of the fix.']], pat: 'We {popular practice} for {time}.\n\nWorst decision we made. Here’s what we do now:' }
+    ] },
+  design: { label: 'Design', trends: [['Onboarding teardowns', '+56%', 'You’re early: 22 posts so far', 1], ['Liquid glass', '+140%', 'Crowded: 5.1K posts', 0], ['Type pairing', '+18%', '300 posts this week', 0]],
+    posts: [
+      { p: 2, t: 'Redesigned onboarding from 7 screens to 2.\n\nActivation went from 21% to 38%.', m: 'notes', c: [88, 310, 3600, 205000], ago: '4h', why: [['Proof', 'Two numbers, one result.'], ['Brevity', 'The whole story in two lines.'], ['Visual', 'The before/after image does the rest.']], pat: '{Changed thing} from {before} to {after}.\n\n{Metric} went from {x} to {y}.' },
+      { p: 8, t: 'Clients never pay for pixels.\n\nThey pay for the 30 seconds it takes you to say “this, not that”.', c: [120, 540, 4900, 280000], ago: '1d', why: [['Reframe', 'Redefines what the work is.'], ['Rhythm', 'Short setup, sharp turn.'], ['Quotable', 'Built to be quote-posted.']], pat: '{Clients} never pay for {obvious thing}.\n\nThey pay for {real thing}.' }
+    ] }
+};
+const RAD = { niche: null };
+function radarNicheFor() { const n = (S.user.niche || '').toLowerCase(); return /crypto|trad|defi|bitcoin|finance/.test(n) ? 'crypto' : /design/.test(n) ? 'design' : 'bip'; }
+function radarHTML() {
+  const k = RAD.niche || (RAD.niche = radarNicheFor()), R = RADAR[k];
+  return `<div class="radar">
+    <div class="radar-h"><div class="seg" id="rad-seg" role="tablist" aria-label="Niche">${Object.entries(RADAR).map(([kk, r]) => `<button role="tab" data-rn="${kk}" aria-selected="${kk === k}">${r.label}</button>`).join('')}</div>
+      <span class="faint" style="font-size:12.5px">Scanned 2,140 posts from 40 accounts in your niche this week.</span></div>
+    <div class="trends">${R.trends.map(([t, d, n, early]) => `<div class="trend ${early ? 'early' : ''}"><b>${esc(t)}</b><span class="d">${d}</span><small>${esc(n)}</small>${early ? `<button class="btn primary sm" data-rd="trend" data-t="${esc(t)}">Post on it first</button>` : ''}</div>`).join('')}</div>
+    <div class="radar-list">${R.posts.map((q, i) => `<article class="rp" style="--d:${i * .05}s">
+      <div class="rp-post">${xPost({ ...q, m: q.m || null })}</div>
+      <div class="rp-why"><h3>Why it popped</h3><ul>${q.why.map(([tag, w]) => `<li><span class="tag">${tag}</span>${esc(w)}</li>`).join('')}</ul>
+        <div class="rp-pat"><span class="label">Structure you can reuse</span><p>${esc(q.pat).replace(/\{([^}]+)\}/g, '<mark>$1</mark>')}</p></div>
+        <div class="rp-a"><button class="btn primary sm" data-rd="take" data-i="${i}">${ic('write', 'sm')} Write your take</button><button class="btn ghost sm" data-rd="save" data-i="${i}">${ic('inbox', 'sm')} Save</button></div></div>
+    </article>`).join('')}</div>
+    <p class="fict" style="margin-top:18px">Illustrative accounts and numbers. Connect your niche to see real ones.</p>
+  </div>`;
+}
+function radarClick(e) {
+  const t = e.target.closest('[data-rn]'); if (t) { RAD.niche = t.dataset.rn; $('#tab-radar').innerHTML = radarHTML(); SFX.play('tick'); return true; }
+  const b = e.target.closest('[data-rd]'); if (!b) return false; const R = RADAR[RAD.niche];
+  if (b.dataset.rd === 'take') { const q = R.posts[+b.dataset.i]; writeFrom([q.pat.replace(/\{([^}]+)\}/g, '[$1]')]); toast('Structure loaded. Fill the brackets with your story.', { icon: 'write', tone: 'accent' }); }
+  if (b.dataset.rd === 'save') { const q = R.posts[+b.dataset.i]; addIdea({ src: 'note', text: `Structure: ${q.pat.replace(/\n+/g, ' ')}` }, true); b.innerHTML = ic('check', 'sm'); b.disabled = true; toast('Saved to your inbox.', { icon: 'inbox' }); }
+  if (b.dataset.rd === 'trend') { writeFrom([`${b.dataset.t}: here’s what nobody’s saying yet.`]); toast('You’re early on this one. Say it before it’s crowded.', { icon: 'bolt', tone: 'accent' }); }
+  return true;
+}
 function drawEngine() {
   const el = $('#engine'); if (!el) return; let list = genIdeas(24, ENGINE.seed);
   if (ENGINE.kind !== 'All') list = list.filter(x => x.kind === ENGINE.kind);
@@ -3758,7 +4082,7 @@ let HOOKF = { k: 'All', q: '' };
 ROUTES.hooks = () => {
   const start = S.graderText || 'I think pricing is really important for early startups.';
   mount('hooks', `<div class="page">
-    <div class="page-h"><div><h1 class="display">Hooks</h1><p>Your first line does 80% of the work. Grade it, then steal from the best.</p></div></div>
+    <div class="page-h"><div><h1 class="display">Hook formulas</h1><p>Your first line does 80% of the work. Grade it, then borrow a structure that works.</p></div></div>
     <div class="card grader"><div style="display:grid;grid-template-rows:1fr auto"><textarea id="grader-t" aria-label="Hook to grade" placeholder="Type a first line…">${esc(start)}</textarea><div style="display:flex;gap:8px;padding:0 18px 18px;flex-wrap:wrap"><button class="btn primary" data-hact="improve">${ic('hook', 'sm')} Write a stronger one</button><button class="btn" data-hact="send">${ic('write', 'sm')} Send to composer</button></div></div>
       <div class="grader-side" aria-live="polite"><div class="bigscore" id="g-score"></div><p id="g-reason" class="muted" style="font-size:14px"></p><div class="bars" id="g-bars"></div></div></div>
     <section class="sec"><div class="sec-h"><div class="seg" id="hk-seg" role="tablist" aria-label="Hook types">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity', 'Proof', 'Question'].map(k => `<button role="tab" data-hk="${k}" aria-selected="${HOOKF.k === k}">${k}</button>`).join('')}</div><input class="input" id="hk-q" placeholder="Search hooks" aria-label="Search hooks" style="width:220px" value="${esc(HOOKF.q)}"></div><div class="hooklib" id="hooklib"></div></section>
@@ -3791,8 +4115,8 @@ function drawHooks() {
    ========================================================================== */
 let WEEK = 0;
 ROUTES.queue = () => {
-  mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-qact="fill">${ic('target', 'sm')} Fill golden slots</button><button class="btn primary" data-qact="new" data-tip="New post" data-kbd="C">${ic('write', 'sm')} New post</button></div></div>
-  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span><span class="grow" style="flex:1"></span><span class="faint" style="font-size:12px;display:inline-flex;gap:6px;align-items:center"><span class="dot" style="color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span> Golden slot: your people are up</span></div>
+  mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-qact="fill">${ic('target', 'sm')} Fill my best times</button></div></div>
+  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span><span class="grow" style="flex:1"></span><span class="faint" style="font-size:12px;display:inline-flex;gap:6px;align-items:center"><span class="dot" style="color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span> Best time: your people are online</span></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal"></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide();
   const v = $('#view');
@@ -3805,7 +4129,7 @@ ROUTES.queue = () => {
       return;
     }
     const c = e.target.closest('.qcard'); if (c) qMenu(c);
-    const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); toast(`${k === 'autoPlug' ? 'Auto-plug' : 'Auto-repost'} ${S.settings[k] ? 'on' : 'off'}.`, { icon: 'check', ms: 1600 }); }
+    const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); toast(`${k === 'autoPlug' ? 'Follow-up reply' : 'Auto-repost'} ${S.settings[k] ? 'on' : 'off'}.`, { icon: 'check', ms: 1600 }); }
     const u = e.target.closest('[data-up-id]'); if (u) { const q = S.queue.find(x => x.id === u.dataset.upId); WEEK = Math.round((startOfWeek(fromKey(q.day)) - startOfWeek(new Date())) / (7 * DAY)); drawCal(); const card = $(`.qcard[data-id="${q.id}"]`); card && (card.classList.add('landed'), card.focus()); }
   });
   v.addEventListener('change', e => { if (e.target.id === 'plug-t') { S.settings.plugText = e.target.value; save(); toast('Plug saved.', { icon: 'check', ms: 1400 }); } if (e.target.id === 'rep-h') { S.settings.repostAfter = +e.target.value; save(); } });
@@ -3837,7 +4161,7 @@ function qMenu(c) {
   const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { q.approval = 'ok'; save(); drawCal(); drawQSide(); toast('Approved. It goes out on schedule.', { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
   openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
     { label: 'Edit in composer', icon: 'write', run: () => { S.queue = S.queue.filter(x => x !== q); save(); writeFrom(q.tweets); S.draft.slot = { day: q.day, time: q.time }; } },
-    next ? { label: 'Move to next golden slot', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No golden slots left', icon: 'target', disabled: true },
+    next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No best times left', icon: 'target', disabled: true },
     { label: 'Publish now', icon: 'send', run: () => { q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Published. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; S.queue.push({ ...q, id: uid(), day: s.day, time: s.time }); save(); drawCal(); drawQSide(); toast(`Duplicated to ${slotLabel(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
     { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); save(); drawCal(); drawQSide(); toast('Deleted from the queue.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); drawCal(); drawQSide(); } }); } }
@@ -3866,15 +4190,15 @@ function drawCal() {
   }).join('');
   const wk = S.queue.filter(q => { const d = fromKey(q.day); return d >= w0 && d < new Date(w0.getTime() + 7 * DAY) && q.status === 'scheduled'; }).length;
   const open = gapSlots().length;
-  $('#q-sub').textContent = `${wk} post${wk === 1 ? '' : 's'} scheduled this week. ${open ? `${open} golden slot${open === 1 ? '' : 's'} still open.` : 'Every golden slot is covered. Nice.'}`;
+  $('#q-sub').textContent = `${wk} post${wk === 1 ? '' : 's'} scheduled this week. ${open ? `${open} best time${open === 1 ? '' : 's'} still open.` : 'Every best time this week is covered.'}`;
 }
 function gapSlots() { const w0 = startOfWeek(new Date()); const out = []; for (let i = 0; i < 7; i++) { const d = new Date(w0.getTime() + i * DAY); const day = dayKey(d); for (const t of Object.keys(BEST[dowIdx(d)] || {})) if (slotDate(day, t).getTime() > Date.now() && !taken(day, t)) out.push({ day, time: t }); } return out; }
 function fillGaps() {
-  const gaps = gapSlots(); if (!gaps.length) { toast('Every golden slot this week is already covered.', { icon: 'check' }); return; }
+  const gaps = gapSlots(); if (!gaps.length) { toast('Every best time this week is already covered.', { icon: 'check' }); return; }
   const src = S.ideas.length ? S.ideas.map(i => cleanIdea(i.text)) : genIdeas(gaps.length, Date.now() % 999).map(x => x.text);
   gaps.forEach((g, i) => { const t = src[i % src.length]; const tw = expandIdea(t, ['Story', 'Listicle', 'Contrarian'][i % 3]); S.queue.push({ id: uid(), day: g.day, time: g.time, text: tw[0], tweets: tw, platforms: { ...S.platforms }, status: 'scheduled', draftFill: true }); });
   save(); WEEK = 0; drawCal(); drawQSide(); $$('.qcard').forEach(c => c.classList.add('landed'));
-  toast(`Filled ${gaps.length} golden slot${gaps.length > 1 ? 's' : ''} from your ideas. Give them a read before they go.`, { icon: 'target', tone: 'accent', ms: 5000 });
+  toast(`Filled ${gaps.length} best time${gaps.length > 1 ? 's' : ''} from your ideas. Give them a read before they go.`, { icon: 'target', tone: 'accent', ms: 5000 });
 }
 function drawQSide() {
   const el = $('#q-side'); if (!el) return; const up = S.queue.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now()).sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)).slice(0, 5);
@@ -3884,11 +4208,11 @@ function drawQSide() {
   <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Momentum</span><span class="mono" style="font-size:12px">${n} day${n === 1 ? '' : 's'}</span></div><div class="streak">${streakHTML()}</div><span class="faint" style="font-size:12px">${postedToday ? 'Posted today. Scheduled posts count too.' : n ? `Post or schedule today to make it ${n + 1}.` : 'One post starts a streak. Scheduled posts count.'}</span></div>
   <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(/ (?=\S+$)/, '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
   <div class="card"><span class="label">Autopilot</span>
-    <div class="setting"><span>Auto-plug</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Auto-plug"></button><small>At ${S.settings.plugAt} likes, reply with:</small></div>
+    <div class="setting"><span>Follow-up reply</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Follow-up reply"></button><small>At ${S.settings.plugAt} likes, reply with:</small></div>
     <input class="input" id="plug-t" value="${esc(S.settings.plugText)}" aria-label="Plug text">
     <div class="setting"><span>Auto-repost</span><button class="switch" role="switch" aria-checked="${S.settings.autoRepost}" data-sw="autoRepost" aria-label="Auto-repost"></button><small>Once, for the other time zone.</small></div>
     <select class="input" id="rep-h" aria-label="Repost after">${[6, 12, 24].map(h => `<option value="${h}" ${S.settings.repostAfter === h ? 'selected' : ''}>After ${h} hours</option>`).join('')}</select></div>
-  <div class="card"><span class="label">Why these times</span><p class="muted" style="font-size:13px">Golden slots come from when your last 90 days of posts got replies in the first hour. They update weekly.</p><a class="btn sm" href="#insights">${ic('chart', 'sm')} See the heatmap</a></div>`;
+  <div class="card"><span class="label">Why these times</span><p class="muted" style="font-size:13px">Best times come from when your last 90 days of posts got replies in the first hour. They update weekly.</p><a class="btn sm" href="#insights">${ic('chart', 'sm')} See the heatmap</a></div>`;
 }
 
 /* ==========================================================================
@@ -3923,7 +4247,7 @@ function drawInsights() {
   const d = series(RANGE); const total = d.reduce((a, b) => a + b, 0); const f = RANGE / 30;
   const kpis = [['Impressions', fmtK(total), '+18%', 1], ['Engagement', (3.1 + (RANGE === 7 ? .4 : 0)).toFixed(1) + '%', '+0.6 pts', 1], ['New followers', fmtK(Math.round(412 * f)), '+9%', 1], ['Replies', fmtK(Math.round(1284 * f)), '−4%', 0]];
   const types = [['Contrarian', 3.2], ['Story', 2.1], ['Listicle', 1.6], ['How-to', 1.4], ['Question', 1.1], ['Announcement', .7]];
-  $('#ins').innerHTML = `<div class="insight-hero"><h2 class="display">Your contrarian hooks get <span class="n">3.2×</span> the replies.</h2><p>Lines that push back on common advice pulled 3.2× the replies of everything else. You wrote ${Math.max(1, Math.round(4 * f))} of them. Your audience wants more.</p><div class="acts"><button class="btn primary" data-nact="contra">${ic('swap', 'sm')} Write a contrarian post</button><button class="btn" data-nact="posts">See the posts</button></div></div>
+  $('#ins').innerHTML = `<div class="insight-hero"><h2 class="display">Your contrarian hooks get <em>3.2× the replies.</em></h2><p>Lines that push back on common advice pulled 3.2× the replies of everything else. You wrote ${Math.max(1, Math.round(4 * f))} of them. Your audience wants more.</p><div class="acts"><button class="btn primary" data-nact="contra">${ic('swap', 'sm')} Write a contrarian post</button><button class="btn" data-nact="posts">See the posts</button></div></div>
   <p class="kpi-line">Over the last ${RANGE} days: ${kpis.map(([k, v, dl, up], i) => `${i === kpis.length - 1 ? 'and ' : ''}<b>${v}</b> ${k.toLowerCase()} <span class="delta ${up ? 'up' : 'down'}">${dl}</span>`).join(', ')}, compared with the ${RANGE} days before.</p>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Impressions</h3><p class="faint" style="font-size:13px;margin-top:2px">Tuesday spikes are your 8:40am posts landing.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Impressions</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(Date.now() - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">Replies by hook type</h3><p class="faint" style="font-size:13px;margin-top:2px">Relative to your average post</p></div></div><div class="hbars">${types.map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k}: ${v}× your average replies"><span>${k}</span><div class="track"><div class="fillb" style="width:${v / 3.2 * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${v}×</span></div>`).join('')}</div></div>
@@ -3969,13 +4293,13 @@ function lineChart(host, data) {
    VOICE
    ========================================================================== */
 ROUTES.voice = () => {
-  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Voice</h1><p>Hookworthy writes like you because it read you. Tune it here and every riff follows.</p></div><button class="btn" id="retrain">${ic('repost', 'sm')} Retrain on latest posts</button></div>
+  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>Hookworthy writes like you because it read you. Tune it here and every rewrite follows.</p></div><button class="btn" id="retrain">${ic('repost', 'sm')} Retrain on latest posts</button></div>
   <div class="voice-hero">
     <div class="card pad" style="display:grid;gap:14px;align-content:start"><span class="label">You sound</span><div>${[['Direct', '82% of your openers are one sentence'], ['Dry', 'You joke in 1 of 5 posts, never with emoji'], ['Generous', '61% of your top posts give the playbook away']].map(([t, s]) => `<div class="trait"><b>${t}</b><span>${s}</span></div>`).join('')}</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">${[['11', 'words per sentence'], ['1.6', 'sentences per line'], ['0.3', 'emoji per post'], ['0', 'hashtags, ever']].map(([v, l]) => `<div><b class="mono" style="font-size:20px">${v}</b><div class="faint" style="font-size:12px;line-height:1.3;margin-top:4px">${l}</div></div>`).join('')}</div></div>
     <div class="card pad" style="display:grid;gap:18px;align-content:start"><span class="label">Tone</span>
       ${[['spice', 'Calm', 'Spicy'], ['polish', 'Casual', 'Polished'], ['length', 'Short', 'Rich']].map(([k, a, b]) => `<div class="slider-row"><div class="ends"><span>${a}</span><span class="mono" id="v-${k}-n">${S.voice[k]}</span><span>${b}</span></div><input type="range" class="range" min="0" max="100" value="${S.voice[k]}" data-v="${k}" aria-label="${a} to ${b}" style="--p:${S.voice[k]}%"></div>`).join('')}
-      <div class="sample" id="v-sample" aria-live="polite"></div><span class="faint" style="font-size:12px">Same idea, your settings. Riffs use these too.</span></div>
+      <div class="sample" id="v-sample" aria-live="polite"></div><span class="faint" style="font-size:12px">Same idea, your settings. Rewrites use these too.</span></div>
   </div>
   <div class="grid-2 sec">
     <div class="card pad" style="display:grid;gap:12px;align-content:start"><span class="label">Words you lean on</span><div class="words">${[['shipping', 48], ['users', 64], ['honestly', 31], ['boring', 22], ['month', 29], ['the fix', 17], ['small', 26], ['simple', 19]].map(([w, n]) => `<span class="w">${w}<small>${n}</small></span>`).join('')}</div><p class="faint" style="font-size:13px">Hookworthy uses these naturally, never more than you would.</p></div>
@@ -3996,11 +4320,11 @@ ROUTES.voice = () => {
    ========================================================================== */
 ROUTES.upgrade = () => {
   const n = S.ai.used; const h = hookScore(S.draft.tweets[0].text).score;
-  mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited riffs in your voice, auto-plugs that ride the wave, and insights that tell you what to write next.</p>
-    ${n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free riffs today${h ? ` · your current hook scores ${h}` : ''}</p>` : ''}
+  mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited rewrites in your voice, a follow-up reply when a post takes off, and insights that tell you what to write next.</p>
+    ${n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free rewrites today${h ? ` · your current hook scores ${h}` : ''}</p>` : ''}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
     <div class="pl-grid" id="up-plans" style="margin-top:32px">${plansHTML(true)}</div>
-    <div class="faq"><h2 class="h2" style="margin-bottom:12px">Questions, answered plainly</h2>${[['Is the free plan actually free?', 'Yes. Five riffs a day, hook scores on everything, unlimited drafts and ideas. No trial clock, no card.'], ['Does the AI sound like ChatGPT?', 'No. It learns from your posts, follows your tone sliders, and never uses words you’ve banned. If it writes something you wouldn’t, that’s a bug and we want to hear about it.'], ['Can I cancel anytime?', 'Two clicks, no call, no guilt trip. Your drafts and ideas stay yours on the free plan.'], ['Which platforms?', 'X, Threads, LinkedIn and Bluesky today. Each gets its own preview and its own version when you need one.'], ['Do you post without asking?', 'Never. Auto-plug and auto-repost only run on posts you scheduled, and you can switch them off per post.']].map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
+    <div class="faq"><h2 class="h2" style="margin-bottom:12px">Questions, answered plainly</h2>${[['Is the free plan actually free?', 'Yes. Five rewrites a day, hook scores on everything, unlimited drafts and ideas. No trial clock, no card.'], ['Does the AI sound like ChatGPT?', 'No. It learns from your posts, follows your tone sliders, and never uses words you’ve banned. If it writes something you wouldn’t, that’s a bug and we want to hear about it.'], ['Can I cancel anytime?', 'Two clicks, no call, no guilt trip. Your drafts and ideas stay yours on the free plan.'], ['Which platforms?', 'X, Threads, LinkedIn and Bluesky today. Each gets its own preview and its own version when you need one.'], ['Do you post without asking?', 'Never. Follow-up replies and reposts only run on posts you scheduled, and you can switch them off per post.']].map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
     <p class="faint" style="text-align:center;margin-top:40px;font-size:13px">Cancel in two clicks. We’ll even say thanks.</p></div>`);
   syncSeg($('#up-bill'));
   $('#up-bill').addEventListener('click', e => { const b = e.target.closest('[data-bill]'); if (!b) return; $$('#up-bill [data-bill]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#up-bill')); $('#up-plans').innerHTML = plansHTML(b.dataset.bill === 'y'); });
@@ -4012,7 +4336,7 @@ ROUTES.upgrade = () => {
 ROUTES.brand = () => {
   const tokens = ['--bg', '--surface', '--surface-2', '--border-strong', '--text-1', '--text-2', '--text-3', '--accent', '--accent-text', '--success', '--warn', '--error'];
   const cs = getComputedStyle(document.documentElement);
-  mount('brand', `<div class="page"><div class="page-h"><div><h1 class="display">Brand &amp; system</h1><p>Built from the feed’s own grammar: other posts blur past, yours stops. Graphite, one ink accent, a serif that reads like a headline. Here’s everything it’s made of.</p></div></div>
+  mount('brand', `<div class="page"><div class="page-h"><div><h1 class="display">Design system</h1><p>One canvas, one ink, one marker. The marker only ever sits under the words worth stopping for: a hook, a key phrase, your best line.</p></div></div>
   <div class="brand-hero">
     <div class="brand-tile ink"><div class="appicon">${LOGO_MARK.replace('class="mark"', 'class="mark" style="width:72px;height:72px"')}</div><span class="cap">App icon</span></div>
     <div class="brand-tile paper" style="--text-1:#16140F"><span class="logo" style="color:#16140F;transform:scale(2.4)">${LOGO}</span><span class="cap">Wordmark</span></div>
@@ -4026,7 +4350,7 @@ ROUTES.brand = () => {
     <div class="r"><span class="label">Display<br>Geist 600</span><span class="display" style="font-size:56px">Say it well.</span></div>
     <div class="r"><span class="label">Heading<br>Geist 600</span><span class="h1">Posts that sound like you on a good day</span></div>
     <div class="r"><span class="label">Editor<br>Geist 18/1.6</span><span style="font-size:18px;line-height:1.6;max-width:62ch">Nobody tells you the hardest part of a side project is month three. Not the start. Not the launch. Month three.</span></div>
-    <div class="r"><span class="label">UI<br>Geist 14</span><span>Schedule for Tue 8:40am · Auto-plug at 100 likes</span></div>
+    <div class="r"><span class="label">UI<br>Geist 14</span><span>Schedule for Tue 8:40am · Follow-up reply at 100 likes</span></div>
     <div class="r"><span class="label">Mono<br>Geist Mono</span><span class="mono">0123456789 · 12.4k views · ⌘K</span></div></div></section>
   <section class="sec"><div class="sec-h"><h2 class="h2">Components, every state</h2></div><div class="card pad" style="display:grid;gap:28px">
     <div class="state-grid">${['Default', 'Hover', 'Focus', 'Active', 'Disabled', 'Loading'].map((s, i) => `<div><span class="label">${s}</span><button class="btn primary ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Schedule</button><button class="btn ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Save idea</button></div>`).join('')}</div>
