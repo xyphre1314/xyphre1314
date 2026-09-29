@@ -1,5 +1,5 @@
 // Hookworthy service worker: cache-first for the app shell, network-first for fonts.
-const CACHE = 'hookworthy-v9';
+const CACHE = 'hookworthy-v10';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/icon.svg', './assets/app-icon.svg', './assets/app-icon.png', './fonts/GeistMono-Variable.woff2', './fonts/EBGaramond-Regular.woff2', './fonts/EBGaramond-Italic.woff2', './fonts/Figtree-Regular.woff2', './fonts/Caveat-500.woff2', './fonts/Inter-400.woff2', './fonts/Inter-600.woff2', './assets/people/avatars.jpg', './assets/people/photos.jpg', './assets/people/avatars-2.jpg'];
 
 self.addEventListener('install', e => {

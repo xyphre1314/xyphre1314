@@ -45,7 +45,7 @@ Constraints:
 
 - Name: **Hookworthy** (hookworthy.com). Promise: "Write posts people stop for."
 - Voice: creator to creator. Direct, a little dry, on your side. Short sentences. Specific beats clever. No hype words (unlock, supercharge, leverage, elevate, seamless, game-changer, delve, "AI-powered").
-- Owner-stated visual preferences (latest round): colors minimal like Linear and Arc, not bare like Craft; type in the spirit of Wispr Flow. Rounds 7–9: the owner rejected yellow, icon logos and generic SaaS blue, then pointed at Wispr Flow as the reference ("their colors and typography, but blue"). Current brand ("Harbor & Cream"): wordmark hook*worthy* in EB Garamond; EB Garamond display (32px+) with Figtree UI; cream canvas, ink text, periwinkle bordered buttons, harbor-blue and ink section blocks.
+- Owner-stated visual preferences (latest round): colors minimal like Linear and Arc, not bare like Craft; type in the spirit of Wispr Flow. Rounds 7–9: the owner rejected yellow, icon logos and generic SaaS blue, then pointed at Wispr Flow as the reference ("their colors and typography, but blue"). Then (round 10) "that blue is horrible": brand color became a switchable palette (20 options, rainbows included), default Lilac & Plum, with a Wispr-style near-black dark mode. Structure: wordmark hook*worthy* in EB Garamond; EB Garamond display (32px+) with Figtree UI; cream canvas, ink text, pastel bordered buttons, colored section blocks.
 - Illustration: owner asked to see three styles (editor's pen marks, product as illustration, generative) with examples before choosing.
 
 ## Evidence on Hand

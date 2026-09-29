@@ -1,5 +1,5 @@
 ---
-version: 6
+version: 7
 slug: "index-html"
 primary_target: "index.html"
 related_targets: ["DESIGN.md"]
@@ -70,3 +70,8 @@ FINISH: unreviewed and undocumented is unfinished. This round ends with the fini
 - Research: Wispr tokens (cream #FFFFEB, ink #1A1A1A, lavender #F0D7FF, forest #034F46, ember #FFA946; EB Garamond 400 ≥32px + Figtree).
 - System: cream + ink + periwinkle bordered buttons + harbor blocks; EB Garamond roman/italic headlines; Figtree UI; uppercase eyebrows; announcement bar; floating bordered nav; squiggle underline; washes and glows removed; mono removed from sentences.
 - Applied to homepage, demo, every app route, onboarding, pricing, design-system page, quote cards, icons, favicon, manifest.
+
+## v7 (round 10)
+- Palette system (five CSS variables + runtime squiggle), 20 palettes including 6 rainbow, default Lilac & Plum, picker in Appearance and ⌘K.
+- Wispr-style dark: #1A1A1A, cream #FFFFEB text, pastel buttons.
+- Block text uses cream alphas so every palette passes contrast.

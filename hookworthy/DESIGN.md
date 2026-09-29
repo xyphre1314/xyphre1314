@@ -155,34 +155,60 @@ components:
 
 ## Overview
 
-**Creative North Star: "Harbor & Cream"** (round 9)
+**Creative North Star: "Cream & Blocks"** (round 10; round 9 was "Harbor & Cream")
 
 Wispr Flow's editorial calm, translated to blue for people who write in public. A cream page, classic Garamond headlines split into roman and *italic* halves, a friendly sans for everything you click, and color that arrives in big confident blocks (a harbor-blue chapter, an ink chapter, one harbor pricing card) instead of gradients and glows. Research basis: Wispr's own tokens (cream #FFFFEB, ink #1A1A1A, lavender #F0D7FF for actions, forest #034F46 for sections, ember #FFA946 for active states; EB Garamond 400 at 32px+, Figtree for UI; 128px section padding).
 
 **Key Characteristics:**
 - Cream canvas (#FEFDF1), ink text (#1A1A1A), no pure white and no pure black.
 - EB Garamond 400 only at 32px and above, roman with an italic second half. Figtree for UI and body.
-- Primary actions are periwinkle (#DDE5FF) with a 1.5px ink border and a 10px radius, never solid saturated blue.
-- Harbor blue (#0B3A66) and ink (#1A1A1A) as full-bleed rounded blocks; uppercase letter-spaced eyebrows above headlines; a hand-drawn periwinkle squiggle instead of a highlighter.
+- Primary actions are the palette pastel (Lilac #EADCFF by default) with a 1.5px ink border and a 10px radius, never a solid saturated fill.
+- Palette blocks (Plum #3B1F5C by default) and ink (#1A1A1A) as full-bleed rounded blocks; uppercase letter-spaced eyebrows above headlines; a hand-drawn periwinkle squiggle instead of a highlighter.
 - Platform-true posts, fictional creators labelled once per section.
 
 ## Colors
 
-### Brand
-- **Cream** (#FEFDF1) page, **Cream 2** (#F2F0E3) sunk areas, **Card** (#FFFFF8).
-- **Ink** (#1A1A1A) text, borders on primary buttons, the second dark block. **Ink 2** #4D4C46, **Ink 3** #65645C.
-- **Periwinkle** (#DDE5FF): primary buttons (with ink border), the pale selection and highlight, the Pro card's button. It is Wispr's lavender moved to blue.
-- **Harbor** (#0B3A66, raised #0E4577): the announcement bar, the story chapter, the final call, the Pro plan, the app icon, ink-style quote cards.
-- **Link blue** (#1E4FC2): links, focus rings, the caret, switches, the hook chip at 70+ and chart lines.
-- **Ember** (#FF9F43): rare active-state spark (progress, "live").
-- **Squiggle** (#7F9CF0): the hand-drawn underline under emphasized words.
-- **Pastels** (unchanged, each with an AA ink): label post kinds and the reasons a post spread.
+### Palettes (round 10)
+The structure never changes: cream canvas, ink text, EB Garamond + Figtree, bordered pastel buttons, color arriving in big blocks. What changes is a **palette**: five variables that every surface reads (homepage, app, visuals, squiggle).
 
-### Dark (app)
-Warm charcoal, not black: bg #1C1C1B, surface #252523, raised #2C2C29, text #F6F4E6 / #B4B2A6 / #98968B, periwinkle #BCCBFF for primary buttons (ink text, no border), links #A9BDFF.
+- `--pa` action pastel: primary buttons (with a 1.5px ink border on light), the selection tint, the hero highlight.
+- `--pl` / `--pl-d` link color on light / on dark: links, caret, switches, the hook chip at 70+, chart lines. Must pass 4.5:1 on cream and with white text; the dark variant 4.5:1 on #1A1A1A and #2A2A2A.
+- `--pb1..3` + `--ppro` blocks: story chapter, voice chapter, final call, Pro plan (single-hue palettes repeat one color; rainbow palettes give each its own). Cream text must pass 4.5:1 on each.
+- `--psp` spark: rare active states.
+- squiggle: one color, or a gradient for rainbow palettes (generated as SVG at runtime).
+
+Default: **Lilac & Plum**. Switch in the app under Appearance → Palette, or ⌘K → Change palette. Choice is stored per device.
+
+| Palette | Group | Action | Link (light / dark) | Blocks | Spark |
+|---|---|---|---|---|---|
+| Lilac & Pine | Soft pairs | #EBDDFF | #5B3FB8 / #C6B3FF | #1F4D3A #1A1A1A | #FF9F43 |
+| Lilac & Plum | Soft pairs | #EADCFF | #6A2FA0 / #CDB2FF | #3B1F5C #1A1A1A | #FF9F6B |
+| Sage & Pine | Soft pairs | #DCEFD7 | #23704A / #9FDDB4 | #1F4D3A #1A1A1A | #F2A93B |
+| Peach & Espresso | Soft pairs | #FFE0CC | #B24A1B / #FFB48F | #3A2418 #1A1A1A | #FF7A45 |
+| Blush & Wine | Soft pairs | #FFDCE4 | #A8264C / #FF9FB6 | #5A1A2E #1A1A1A | #FF8A65 |
+| Mint & Deep Teal | Soft pairs | #CFF3E6 | #0E7263 / #8FE0CB | #0F4C4A #1A1A1A | #FF9E7A |
+| Coral & Navy | Soft pairs | #FFD6CC | #C23B22 / #FFA08C | #1C2541 #1A1A1A | #FF6F59 |
+| Matcha & Cocoa | Soft pairs | #E4EFC7 | #4E6E12 / #C2DE7E | #3B2A20 #1A1A1A | #E8913A |
+| Rose & Forest | Soft pairs | #FAD4DC | #B0305A / #FF9DB8 | #0E3B2E #1A1A1A | #E85D75 |
+| Iris & Ink | Soft pairs | #E2DDFF | #4B3BD1 / #B8AEFF | #1A1A1A #262626 #2A2356 | #7C6CFF |
+| Tangerine & Charcoal | Soft pairs | #FFDDBF | #B34A00 / #FFAA66 | #232323 #1A1A1A | #FF7A1A |
+| Sky & Midnight | Soft pairs | #D6EAFF | #1D5FB8 / #9CC8FF | #13294B #1A1A1A | #FFB86B |
+| Clay & Moss | Earthy | #F4DDCF | #9A4524 / #F0A785 | #3E4A2C #2B211B #7A3B25 | #D98C4A |
+| Seafoam & Harbor | Earthy | #D3F0EC | #0B6E75 / #86D9D6 | #0B3C49 #1A1A1A | #FF9F43 |
+| Rainbow Pastel | Rainbow | #E6DEFF | #5B3FB8 / #C6B3FF | #3B2A6B #0F4C4A #7A2E4A #1E3D6B | #FF9F43 |
+| Aurora | Rainbow | #D6F2EA | #0B6E4F / #8EE0C2 | #0B4A3A #2A2466 #0E4A7A #5A2366 | #FF8FB1 |
+| Sunset | Rainbow | #FFDCCB | #B4441F / #FFA98A | #5B2A86 #1A1A1A #B23A48 #B8471C | #FFB547 |
+| Riso Print | Rainbow | #FFD6EA | #C21F7A / #FF96C8 | #0B4F9C #1A1A1A #00794A #C21F7A | #FF48B0 |
+| Crayon Box | Rainbow | #FFE3D6 | #B8323D / #FF8F8F | #1D4E6B #1A1A1A #8A2B3A #1F6F66 | #F4A261 |
+| Prism | Rainbow | #E0E7FF | #3D3FC4 / #AEB6FF | #2B1B5E #12344D #6A1B4D #1B4D3E | #FFB86B |
+
+### Neutrals
+- Light: cream #FEFDF1, card #FFFFF8, sunk #F2F0E3, ink #1A1A1A / #4D4C46 / #65645C.
+- **Dark (Wispr-style):** near-black #1A1A1A (Wispr's own dark), surfaces #232323 / #2B2B2B / #353535, cream text #FFFFEB / #CFCDBB / #B3B1A0, hairlines rgba(255,255,235,.09). Primary buttons keep the palette pastel with ink text, exactly like Wispr's lavender on black.
+- Text on colored blocks is cream at 84–100% opacity, never a fixed grey, so it reads on every palette.
 
 ### Retired
-Round 8's saturated cobalt (#2355F0), sky canvas, navy dark mode, pastel washes and glows.
+Round 9's harbor blue (#0B3A66) and periwinkle as the only brand colors; round 8's cobalt, sky canvas, navy dark mode and washes.
 
 ### Semantic (app)
 - **Success** (#1F8F5F), **Warn** (#C26A12), **Error** (#D63F3F): state only.

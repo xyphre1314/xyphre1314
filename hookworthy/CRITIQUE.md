@@ -215,3 +215,13 @@ Critique of round 8 (owner: "looks really bad"):
 7. Insights mixed serif, sans, mono and red/green in one sentence.
 
 Fixes, grounded in Wispr Flow's actual tokens: cream canvas and ink text; EB Garamond 400 only at 32px+, roman + italic; Figtree for UI; periwinkle buttons with an ink border and a 10px radius; harbor blue and ink as big rounded blocks; eyebrows; announcement bar; floating bordered nav; squiggle underline; no washes or glows; sans numerals in sentences; wordmark hook*worthy*; warm charcoal dark mode.
+
+## Round 10: palettes and a Wispr dark mode
+
+Owner: "that blue is horrible", wants 15–20 options including rainbows, and a dark mode that feels like Wispr.
+
+- Brand color is now a palette of five variables read by every surface. 20 palettes ship (12 soft pairs, 2 earthy, 6 rainbow), each validated for contrast on buttons, links and blocks in light and dark; switchable live in the app.
+- Default moved from harbor blue to Lilac & Plum.
+- Dark mode rebuilt on Wispr's dark: #1A1A1A, cream text, pastel buttons with ink text.
+- Every homepage text on a colored block moved from fixed greys (tuned to one blue) to cream alphas, which is what made the rainbow palettes readable.
+- Board of all 20, with real screenshots, published as an artifact.
