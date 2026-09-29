@@ -541,6 +541,13 @@ body.typing .tw-tools{ opacity:0!important; }
 .tool.riff{ color:var(--accent-text); }
 .tool.riff:hover{ background:var(--accent-soft); }
 .tools-sep{ width:1px; height:14px; background:var(--border-strong); margin:0 6px; }
+@media (max-width:760px){
+  .c-top .status .txt{ display:none; }
+  .c-top .plats .plat{ width:30px; }
+  .tw-tools{ gap:0; } .tools-sep{ margin:0 2px; } .tool{ padding:0 5px; min-width:26px; }
+  .tw-tools .tool[data-cact="remove"], .tw-tools .tool[data-cact="poll"]{ display:none; }
+  .tw-meta .hook > span:last-child{ display:none; } .tw-meta .hook{ padding:0 3px; }
+}
 .tw-meta{ margin-left:auto; display:flex; align-items:center; gap:10px; }
 .predict{ font:500 var(--t-11)/1 var(--font-mono); color:var(--text-3); white-space:nowrap; }
 
@@ -1239,6 +1246,100 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .story .sttoast strong{ display:block; font-weight:600; }
 .story .sttoast > div > span{ display:block; color:#1c1c1e; }
 
+/* ---------- live demo (Notion-style) ---------- */
+.dm-tabs{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; max-width:880px; margin:0 auto 18px; }
+.dm-tabs button{ display:grid; gap:10px; padding:10px 4px 0; text-align:left; font:600 15px/1 var(--f-disp); letter-spacing:-.01em; color:var(--c-3); transition:color .3s; }
+.dm-tabs button[aria-selected="true"]{ color:var(--c-ink); }
+.dm-tabs i{ display:block; height:3px; border-radius:3px; background:var(--c-line); overflow:hidden; }
+.dm-tabs b{ display:block; height:100%; background:var(--c-ink); transform-origin:left; transform:scaleX(var(--p,0)); }
+.dm-tabs button.done b{ transform:scaleX(1); opacity:.25; }
+.dm-win{ position:relative; max-width:1080px; margin:0 auto; border-radius:22px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 50px 100px -50px rgba(0,0,0,.45),0 20px 40px -30px rgba(0,0,0,.25); overflow:hidden; font:400 14px/1.45 var(--f-disp); color:var(--c-ink); }
+.dm-bar{ display:flex; align-items:center; gap:7px; height:40px; padding:0 14px; border-bottom:1px solid var(--c-line); background:#FAFAF8; }
+.dm-bar i{ width:11px; height:11px; border-radius:50%; background:#E2E2DE; }
+.dm-bar span{ margin:0 auto; font-size:12.5px; color:var(--c-3); }
+.dm-snd{ width:28px; height:28px; border-radius:99px; display:grid; place-items:center; color:var(--c-3); } .dm-snd .icon{ width:15px; height:15px; }
+.dm-win.snd .dm-snd{ color:var(--c-ink); background:var(--c-mark); }
+.dm-body{ display:grid; grid-template-columns:190px minmax(0,1fr); height:540px; }
+.dm-side{ display:flex; flex-direction:column; gap:3px; padding:14px 10px; background:#F7F7F5; border-right:1px solid var(--c-line); }
+.dm-side .logo{ padding:0 6px 12px; } .dm-side .logo .word{ font-size:17px; } .dm-side .logo svg.mark{ width:20px; height:20px; }
+.dm-new{ display:flex; align-items:center; justify-content:center; gap:6px; height:32px; border-radius:99px; background:var(--c-ink); color:#fff; font-weight:600; font-size:13px; margin-bottom:8px; }
+.dm-nav{ display:flex; align-items:center; gap:9px; height:30px; padding:0 9px; border-radius:7px; color:var(--c-2); font-size:13px; font-weight:500; transition:background .3s,color .3s; }
+.dm-nav .icon{ width:16px; height:16px; } .dm-nav.on{ background:#ECECE8; color:var(--c-ink); }
+.dm-main{ position:relative; padding:0 0 20px; overflow:hidden; }
+.dm-top{ display:flex; align-items:center; gap:10px; height:48px; padding:0 16px; border-bottom:1px solid var(--c-line); }
+.dm-saved{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--c-3); margin-right:auto; } .dm-saved i{ width:6px; height:6px; border-radius:50%; background:#1F8F5F; }
+.dm-plats{ display:flex; gap:4px; } .dm-plats span{ width:26px; height:26px; border-radius:99px; display:grid; place-items:center; box-shadow:inset 0 0 0 1px var(--c-line); } .dm-plats svg{ width:13px; height:13px; }
+.dm-sched{ display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 14px; border-radius:99px; background:var(--c-ink); color:#fff; font-weight:600; font-size:13px; transition:transform .15s; }
+.dm-sched .icon{ width:14px; height:14px; }
+.dm-post{ position:relative; display:grid; grid-template-columns:40px minmax(0,1fr); gap:12px; max-width:600px; margin:34px auto 0; padding:0 24px; }
+.dm-post .av{ width:40px; height:40px; border-radius:50%; font-size:14px; }
+.dm-pb{ position:relative; min-width:0; }
+.dm-who{ display:flex; gap:6px; font-size:13.5px; } .dm-who b{ font-weight:600; } .dm-who span{ color:var(--c-3); }
+.dm-tx{ margin-top:4px; font-size:19px; line-height:1.55; letter-spacing:-.01em; }
+.dm-tx .s{ border-radius:3px; transition:background .35s; }
+.dm-tx .s.sel{ background:var(--c-mark); animation:dmsel .6s ease-out both; }
+@keyframes dmsel{ from{ background-size:0 100%; } }
+.dm-tx .s.swap{ animation:dmswap .35s ease-out; } @keyframes dmswap{ from{ opacity:.2; filter:blur(3px); } }
+.dm-tx .s.kept{ animation:dmflash 1s ease-out both; } @keyframes dmflash{ from{ background:var(--c-mark); } to{ background:transparent; } }
+.dm-tx.good .l1{ background:linear-gradient(transparent 58%,rgba(255,225,77,.6) 58%,rgba(255,225,77,.6) 94%,transparent 94%) no-repeat 0 0 / 100% 100%; -webkit-box-decoration-break:clone; box-decoration-break:clone; animation:dmhl .6s ease-out both; }
+@keyframes dmhl{ from{ background-size:0% 100%; } }
+.dm-tx mark.br{ background:rgba(255,225,77,.45); color:inherit; border-radius:3px; padding:0 2px; } .dm-tx mark.br.fill{ background:rgba(255,225,77,.2); box-shadow:inset 0 -2px 0 var(--c-mark); }
+.dm-tools{ display:flex; align-items:center; gap:14px; margin-top:14px; color:var(--c-3); font-size:13px; font-weight:500; }
+.dm-tools > span{ display:inline-flex; align-items:center; gap:5px; } .dm-tools .icon{ width:16px; height:16px; } .dm-rw{ color:var(--c-ink); }
+.dm-hook{ margin-left:auto; gap:7px!important; height:26px; padding:0 10px 0 3px; border-radius:99px; box-shadow:inset 0 0 0 1px var(--c-line); color:var(--c-2); }
+.dm-hook b{ display:grid; place-items:center; min-width:22px; height:20px; padding:0 5px; border-radius:99px; background:#EFEFEC; font:600 11px/1 var(--font-mono); color:var(--c-2); transition:background .3s; }
+.dm-hook.hi b{ background:var(--c-mark); color:var(--c-ink); }
+.dm-sharp{ position:absolute; top:-10px; left:30px; display:flex; align-items:center; gap:2px; padding:4px; border-radius:99px; background:var(--c-ink); color:#F5F5F3; font:500 13px/1 var(--f-disp); white-space:nowrap; box-shadow:0 14px 30px -10px rgba(0,0,0,.45); opacity:0; transform:translateY(6px) scale(.96); transition:opacity .2s,transform .35s cubic-bezier(.3,1.45,.4,1); }
+.dm-sharp.on{ opacity:1; transform:none; }
+.dm-sharp .sh-t{ display:inline-flex; align-items:center; gap:6px; padding:0 8px 0 6px; font-weight:600; } .dm-sharp .mark{ width:15px; height:15px; } .dm-sharp .mark .ct{ fill:currentColor; } .dm-sharp .mark .sw{ fill:var(--c-mark); }
+.dm-sharp button{ height:28px; padding:0 10px; border-radius:99px; color:inherit; background:none; opacity:.8; font:inherit; }
+.dm-sharp .n{ min-width:40px; text-align:center; font:500 12px/1 var(--font-mono); opacity:.7; }
+.dm-sharp .keep{ background:var(--c-mark); color:var(--c-ink); opacity:1; font-weight:600; }
+.dm-press{ transform:scale(.94)!important; transition:transform .12s!important; }
+.dm-cur{ position:absolute; left:0; top:0; z-index:20; width:22px; height:22px; margin:-3px 0 0 -4px; transition:transform .7s cubic-bezier(.45,.05,.2,1); pointer-events:none; filter:drop-shadow(0 3px 5px rgba(0,0,0,.25)); }
+.dm-cur svg{ width:100%; height:100%; transition:transform .12s; } .dm-cur.down svg{ transform:scale(.82); }
+.dm-modal{ position:absolute; left:50%; top:62px; width:min(520px,86%); margin-left:max(-260px,-43%); display:grid; gap:12px; padding:18px; border-radius:18px; background:#fff; box-shadow:0 0 0 1px var(--c-line),0 30px 70px -20px rgba(0,0,0,.4); opacity:0; transform:translateY(10px) scale(.97); transition:opacity .25s,transform .4s cubic-bezier(.3,1.3,.4,1); z-index:5; }
+.dm-modal.on{ opacity:1; transform:none; }
+.dm-modal > b{ font-weight:600; font-size:15px; }
+.dm-kinds{ display:flex; gap:6px; } .dm-kinds span{ padding:7px 10px; border-radius:10px; font-size:12.5px; box-shadow:inset 0 0 0 1px var(--c-line); color:var(--c-2); } .dm-kinds .on{ box-shadow:inset 0 0 0 1.5px var(--c-ink); color:var(--c-ink); font-weight:600; }
+.dm-chart{ position:relative; display:grid; gap:10px; padding:18px; border-radius:12px; background:#F5F5F3; }
+.dm-chart .t{ font-weight:600; } .dm-chart .pill{ position:absolute; right:14px; top:14px; padding:4px 9px; border-radius:99px; background:var(--c-ink); color:#fff; font:600 12px/1 var(--f-disp); }
+.dm-chart .bars{ display:flex; justify-content:center; align-items:flex-end; gap:40px; height:150px; }
+.dm-chart .bars div{ display:grid; justify-items:center; gap:6px; } .dm-chart em{ font-style:normal; font-weight:700; font-size:20px; }
+.dm-chart .bars i{ display:block; width:74px; height:calc(var(--h) * 110px); border-radius:8px; background:rgba(12,12,14,.14); animation:dmgrow .8s .2s cubic-bezier(.2,.9,.25,1) both; transform-origin:bottom; }
+.dm-chart .bars i.y{ background:var(--c-mark); } .dm-chart small{ font-size:11.5px; color:var(--c-3); }
+@keyframes dmgrow{ from{ transform:scaleY(0); } }
+.dm-chart.sm{ padding:12px; } .dm-chart.sm .bars{ height:110px; } .dm-chart.sm .bars i{ width:56px; height:calc(var(--h) * 80px); }
+.dm-add{ justify-self:end; display:inline-flex; align-items:center; height:34px; padding:0 16px; border-radius:99px; background:var(--c-ink); color:#fff; font-weight:600; font-size:13px; }
+.dm-img{ margin-top:12px; border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px var(--c-line); animation:dmdrop .6s cubic-bezier(.3,1.3,.4,1) both; }
+@keyframes dmdrop{ from{ opacity:0; transform:translateY(-14px) scale(.96); } }
+.dm-rad{ padding:22px 24px; display:grid; gap:12px; }
+.dm-trend{ display:grid; gap:3px; width:260px; padding:12px 14px; border-radius:14px; box-shadow:0 0 0 1.5px var(--c-ink); background:linear-gradient(180deg,rgba(255,225,77,.18),#fff 70%); }
+.dm-trend b{ font-weight:600; } .dm-trend span{ font:600 12.5px/1 var(--font-mono); color:#1F8F5F; } .dm-trend small{ font-size:12px; color:var(--c-3); }
+.dm-trend.pulse{ animation:dmpulse 1s ease-out; } @keyframes dmpulse{ 40%{ transform:scale(1.04); } }
+.dm-rp{ display:grid; grid-template-columns:minmax(0,1fr) 250px; border-radius:16px; overflow:hidden; box-shadow:0 0 0 1px var(--c-line); }
+.dm-rp .xp{ border:0; zoom:.86; }
+.dm-why{ display:grid; gap:8px; align-content:start; padding:14px; background:#FAFAF8; border-left:1px solid var(--c-line); font-size:12.5px; color:var(--c-2); }
+.dm-why b{ color:var(--c-ink); font-weight:600; font-size:13.5px; } .dm-why p{ margin:0; } .dm-why p span{ font-weight:600; color:var(--c-ink); margin-right:6px; padding:2px 6px; border-radius:5px; background:#EAEAE6; font-size:11px; }
+.dm-take{ justify-self:start; display:inline-flex; align-items:center; gap:6px; margin-top:6px; height:30px; padding:0 12px; border-radius:99px; background:var(--c-ink); color:#fff; font-weight:600; font-size:12.5px; }
+.dm-week{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; max-width:600px; margin:28px auto 0; padding:0 24px; }
+.dm-day{ display:grid; gap:6px; align-content:start; min-height:120px; padding:8px; border-radius:12px; background:#F5F5F3; box-shadow:inset 0 0 0 1px var(--c-line); font-size:11.5px; }
+.dm-day small{ color:var(--c-3); font-weight:500; } .dm-day.peak{ box-shadow:inset 0 0 0 1.5px var(--c-ink); }
+.dm-day .qc{ padding:6px 7px; border-radius:8px; background:var(--c-ink); color:#fff; font-weight:500; line-height:1.3; }
+.dm-day .qc.new{ background:var(--c-mark); color:var(--c-ink); font-weight:600; animation:dmdrop .7s cubic-bezier(.3,1.35,.45,1) both; }
+.dm-modal.sm{ width:min(360px,80%); margin-left:max(-180px,-40%); }
+.dm-time{ display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:12px; box-shadow:inset 0 0 0 1px var(--c-line); }
+.dm-time i{ width:14px; height:14px; border-radius:50%; box-shadow:inset 0 0 0 1.5px var(--c-3); } .dm-time.on{ box-shadow:inset 0 0 0 1.5px var(--c-ink); } .dm-time.on i{ box-shadow:inset 0 0 0 4.5px var(--c-ink); }
+.dm-time b{ display:block; font-weight:600; font-size:13px; } .dm-time small{ font-size:11.5px; color:var(--c-3); }
+.dm-cap{ text-align:center; margin-top:18px; font-size:15px; color:var(--c-2); min-height:1.5em; transition:opacity .3s; }
+@media (max-width:760px){
+  .dm-tabs{ grid-template-columns:repeat(4,max-content); overflow-x:auto; gap:18px; } .dm-tabs button{ font-size:14px; }
+  .dm-body{ grid-template-columns:minmax(0,1fr); height:400px; } .dm-side{ display:none; }
+  .dm-tx{ font-size:16px; } .dm-plats{ display:none; } .dm-rp{ grid-template-columns:minmax(0,1fr); } .dm-why{ display:none; }
+  .dm-sharp{ left:0; } .dm-sharp button:not(.bd):not(.keep):not(.nx):not(.pv){ display:none; }
+  .dm-week{ grid-template-columns:repeat(3,minmax(0,1fr)); } .dm-day:nth-child(n+4){ display:none; }
+}
+
 /* ---------- relatable wall: two rows that drift with your scroll ---------- */
 .wall{ display:grid; gap:16px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); }
 .wall .row{ display:flex; align-items:flex-start; gap:16px; width:max-content; will-change:transform; transition:transform .9s cubic-bezier(.16,.84,.3,1); }
@@ -1811,7 +1912,7 @@ function hookScore(raw) {
   if (fillers.length) { reason = `“${fillers[0]}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; }
   else if (warm) { reason = `Opening with “${cap(warm[0])}” spends your best real estate on a warm-up.`; tone = 'fix'; }
   else if (parts.brevity < 45) { reason = 'Long first line. Land the point in under 100 characters.'; tone = 'fix'; }
-  else if (score >= 76) {
+  else if (score >= 70) {
     const s = [];
     if (parts.specificity >= 65) s.push('a concrete number');
     if (parts.curiosity >= 60) s.push('an open loop');
@@ -2658,7 +2759,7 @@ function paintHook() {
   const h = hookScore(t0.text); const sc = $('.sc', b);
   if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
-  b.classList.toggle('hi', h.score >= 75);
+  b.classList.toggle('hi', h.score >= 70);
   const pr = predict(h.score, t0.text); const p = $('#predict');
   if (p) p.textContent = pr ? `~${fmtK(pr.views)} views · ${Math.round(pr.replies)} replies` : '';
   if (p) p.dataset.tip = 'Predicted from your last 90 days';
@@ -3463,8 +3564,8 @@ const noisePost = (t, i) => `<div class="fp" aria-hidden="true"><span class="av"
 const ghostFeedHTML = () => { const all = [...VOID_POSTS, ...HOOK_POSTS.map(q => ({ ...q, m: null }))]; return `<div class="ghostfeed" aria-hidden="true">${[0, 1, 2].map(c => { const items = all.filter((_, i) => i % 3 === c); return `<div class="col">${[...items, ...items].map(q => xPost(q, { dark: isDark() })).join('')}</div>`; }).join('')}</div>`; };
 function plansHTML(yearly) {
   const P = [
-    { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score on every post', '5 rewrites a day', 'Unlimited drafts and ideas', 'One account per platform', 'Up to 10 scheduled posts'] },
-    { k: 'pro', name: 'Pro', price: yearly ? 12 : 16, blurb: 'For posting most days.', cta: 'Try Pro free for 7 days', hero: true, feats: ['Unlimited rewrites in your voice', 'Voice profile that keeps learning', 'Follow-up replies and reposts', 'Per-platform versions', 'Insights that say why', 'Unlimited queue'] },
+    { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score on every post', 'Sharpen any sentence, unlimited', '5 full rewrites a day', 'Quote cards and charts', 'Up to 10 scheduled posts'] },
+    { k: 'pro', name: 'Pro', price: yearly ? 12 : 16, blurb: 'For posting most days.', cta: 'Try Pro free for 7 days', hero: true, feats: ['Unlimited rewrites in your voice', 'Niche radar: why posts popped', 'Voice profile that keeps learning', 'Follow-up replies and reposts', 'Insights that say why', 'Unlimited queue'] },
     { k: 'studio', name: 'Studio', price: yearly ? 29 : 36, blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Five client voices', 'Approvals before anything ships', 'Shared idea inbox', 'Support from humans'] }
   ];
   return P.map(p => `<div class="pl ${p.hero ? 'pro' : ''}">
@@ -3501,6 +3602,100 @@ function armReveals(root) {
   REVEAL_IO && REVEAL_IO.disconnect();
   REVEAL_IO = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { en.target.classList.remove('armed'); REVEAL_IO.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });
   $$('.rv', root).forEach(el => { if (el.getBoundingClientRect().top > innerHeight * .92) { el.classList.add('armed'); REVEAL_IO.observe(el); } });
+}
+
+/* ---------- live demo: the app, being used. Four scenes, a real cursor, the real UI changing ----------
+   Scenes play while the window is on screen and advance on their own; the tabs double as a timeline. */
+const DEMO_SCENES = [
+  { k: 'sharpen', t: 'Sharpen', d: 'Select the words that feel weak. Flip through three takes. Keep one.' },
+  { k: 'visual', t: 'Visuals', d: 'Your numbers, charted. Your line, on a card. One click into the post.' },
+  { k: 'radar', t: 'Niche radar', d: 'See what popped in your niche this week, and why. Then write your take.' },
+  { k: 'schedule', t: 'Schedule', d: 'Pick the time your people actually reply. It lands in your week.' }
+];
+function demoHTML() {
+  return `<div class="dm-tabs" role="tablist" aria-label="Product demo">${DEMO_SCENES.map((s, i) => `<button role="tab" data-dm="${i}" aria-selected="${i === 0}"><span>${s.t}</span><i><b></b></i></button>`).join('')}</div>
+  <div class="dm-win" aria-hidden="true">
+    <div class="dm-bar"><i></i><i></i><i></i><span>hookworthy.com</span><button class="dm-snd" data-dmsnd aria-label="Play demo sounds" tabindex="-1">${ic('volume', 'sm')}</button></div>
+    <div class="dm-body"><aside class="dm-side"><span class="logo">${LOGO}</span><span class="dm-new">${ic('plus', 'sm')} New post</span>${[['write', 'Write'], ['ideas', 'Ideas'], ['cal', 'Queue'], ['chart', 'Insights']].map(([i, l]) => `<span class="dm-nav" data-n="${l}">${ic(i)}${l}</span>`).join('')}</aside>
+      <main class="dm-main" id="dm-main"></main></div>
+    <span class="dm-cur"><svg viewBox="0 0 24 24"><path d="M5 3.2 19 12l-6.2 1.6L9.6 19.6z" fill="#0C0C0E" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+  </div>
+  <p class="dm-cap" id="dm-cap">${DEMO_SCENES[0].d}</p>`;
+}
+function demoInit(root) {
+  const sec = $('#demo', root); if (!sec) return () => {};
+  const win = $('.dm-win', sec), main = $('#dm-main', sec), cur = $('.dm-cur', sec), cap = $('#dm-cap', sec), tabs = $$('[data-dm]', sec);
+  let run = 0, idx = 0, visible = false, sound = false, alive = true;
+  const sfx = k => { if (sound) SFX.play(k); };
+  const wait = (ms, id) => new Promise((res, rej) => setTimeout(() => (id === run && alive ? res() : rej('stop')), REDUCED ? 0 : ms));
+  const pos = (el, fx = .5, fy = .5) => { const a = el.getBoundingClientRect(), w = win.getBoundingClientRect(); return [a.left - w.left + a.width * fx, a.top - w.top + a.height * fy]; };
+  const move = async (el, id, fx, fy, ms = 700) => { const [x, y] = pos(el, fx, fy); cur.style.transitionDuration = ms + 'ms'; cur.style.transform = `translate(${x}px,${y}px)`; await wait(ms + 60, id); };
+  const click = async (el, id) => { cur.classList.add('down'); el.classList.add('dm-press'); sfx('tick'); await wait(140, id); cur.classList.remove('down'); el.classList.remove('dm-press'); await wait(120, id); };
+  const type = async (el, text, id, cps = 38) => { for (let i = 1; i <= text.length; i++) { el.textContent = text.slice(0, i); await wait(1000 / cps, id); } };
+  const post = (inner, extra = '') => `<div class="dm-post">${pfAv(PEOPLE[0])}<div class="dm-pb"><div class="dm-who"><b>Maya Chen</b><span>@mayabuilds</span></div><div class="dm-tx"><span class="l1">${inner.split('<br>')[0]}</span>${inner.includes('<br>') ? '<br>' + inner.split('<br>').slice(1).join('<br>') : ''}</div>${extra}<div class="dm-tools"><span>${ic('image', 'sm')}</span><span class="dm-vis">${ic('spark', 'sm')}</span><span class="dm-rw">${ic('riff', 'sm')} Rewrite</span><span class="dm-hook"><b>48</b>Hook</span></div></div></div>`;
+  const top = btn => `<div class="dm-top"><span class="dm-saved"><i></i>Draft saved</span><span class="dm-plats">${['x', 'threads', 'li', 'bsky'].map(p => `<span>${pic(p)}</span>`).join('')}</span><span class="dm-sched">${ic('clock', 'sm')} ${btn || 'Schedule'}</span></div>`;
+  const nav = n => $$('.dm-nav', sec).forEach(x => x.classList.toggle('on', x.dataset.n === n));
+  const scenes = {
+    async sharpen(id) {
+      nav('Write');
+      main.innerHTML = top() + post('<span class="a">I think </span><span class="s">we should really try to talk to customers</span><span class="b"> before building anything.</span>');
+      const s = $('.s', main), hook = $('.dm-hook', main); await wait(500, id);
+      await move(s, id, 0, .5); cur.classList.add('down'); s.classList.add('sel'); await wait(650, id); cur.classList.remove('down');
+      const bar = document.createElement('div'); bar.className = 'dm-sharp'; bar.innerHTML = `<span class="sh-t">${LOGO_MARK}Sharpen</span><button>Punchier</button><button>Shorter</button><button class="bd">Bolder</button><button>More human</button>`; $('.dm-pb', main).append(bar);
+      requestAnimationFrame(() => bar.classList.add('on')); await wait(500, id);
+      await move($('.bd', bar), id); await click($('.bd', bar), id);
+      const takes = ['Talk to customers', 'We must talk to customers', 'Talk to ten customers first'];
+      bar.innerHTML = `<span class="sh-t">${LOGO_MARK}Bolder</span><button class="pv">‹</button><span class="n">1 / 3</span><button class="nx">›</button><button class="keep">Keep</button>`;
+      s.textContent = takes[0]; s.classList.add('swap'); $('.a', main).textContent = ''; sfx('tap'); await wait(900, id);
+      await move($('.nx', bar), id); await click($('.nx', bar), id); s.textContent = takes[1]; $('.n', bar).textContent = '2 / 3'; await wait(700, id);
+      await click($('.nx', bar), id); s.textContent = takes[2]; $('.n', bar).textContent = '3 / 3'; $('.b', main).textContent = ' before you build anything.'; await wait(800, id);
+      await move($('.keep', bar), id); await click($('.keep', bar), id); bar.classList.remove('on'); s.classList.remove('sel', 'swap'); s.classList.add('kept'); sfx('swap');
+      s.classList.remove('kept'); $('.dm-tx', main).classList.add('good'); hook.classList.add('hi'); for (let v = 48; v <= 84; v += 3) { $('b', hook).textContent = v; await wait(28, id); } sfx('hook');
+      await wait(1600, id);
+    },
+    async visual(id) {
+      nav('Write');
+      main.innerHTML = top() + post('Redesigned onboarding from 7 screens to 2. Activation went from 21% → 38%.');
+      await wait(500, id); const v = $('.dm-vis', main); await move(v, id); await click(v, id);
+      const m = document.createElement('div'); m.className = 'dm-modal'; m.innerHTML = `<b>Make a visual</b><div class="dm-kinds"><span>Quote card</span><span class="on">Before / after</span><span>Post screenshot</span></div><div class="dm-chart"><span class="t">Activation</span><div class="bars"><div><em>21%</em><i style="--h:.42"></i><small>Before</small></div><div><em>38%</em><i class="y" style="--h:.76"></i><small>After</small></div></div><span class="pill">+81%</span></div><span class="dm-add">Add to post</span>`;
+      main.append(m); requestAnimationFrame(() => m.classList.add('on')); await wait(1500, id);
+      await move($('.dm-add', m), id); await click($('.dm-add', m), id); m.classList.remove('on'); sfx('swap');
+      $('.dm-pb .dm-tx', main).insertAdjacentHTML('afterend', `<div class="dm-img"><div class="dm-chart sm"><span class="t">Activation</span><div class="bars"><div><em>21%</em><i style="--h:.42"></i></div><div><em>38%</em><i class="y" style="--h:.76"></i></div></div><span class="pill">+81%</span></div></div>`);
+      await wait(1900, id);
+    },
+    async radar(id) {
+      nav('Ideas');
+      const q = RADAR.crypto.posts[0];
+      main.innerHTML = `<div class="dm-rad"><div class="dm-trend"><b>ETH ETF inflows</b><span>+212%</span><small>You’re early: 38 posts so far</small></div><div class="dm-rp">${xPost(q)}<div class="dm-why"><b>Why it popped</b><p><span>Relatable</span>Admits a real loss with a real number.</p><p><span>Hook</span>A specific figure, then a twist.</p><span class="dm-take">${ic('write', 'sm')} Write your take</span></div></div></div>`;
+      await wait(900, id); await move($('.dm-trend', main), id, .3, .5, 800); $('.dm-trend', main).classList.add('pulse'); await wait(900, id);
+      await move($('.dm-take', main), id); await click($('.dm-take', main), id); nav('Write');
+      main.innerHTML = top() + post('I lost <mark class="br">[amount]</mark> on <mark class="br">[mistake]</mark>.<br><br>It was the best money I ever spent. Here’s the rule it taught me:');
+      await wait(600, id); const b1 = $('.br', main); await move(b1, id); await click(b1, id); b1.classList.add('fill'); await type(b1, '$3,000', id); await wait(300, id);
+      const b2 = $$('.br', main)[1]; await move(b2, id); await click(b2, id); b2.classList.add('fill'); await type(b2, 'one “sure thing” memecoin', id); sfx('hook');
+      const hook = $('.dm-hook', main); hook.classList.add('hi'); $('b', hook).textContent = 86; $('.dm-tx', main).classList.add('good'); await wait(1700, id);
+    },
+    async schedule(id) {
+      nav('Write');
+      main.innerHTML = top() + post('We doubled our price. Signups went up 31%.') + `<div class="dm-week">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d, i) => `<div class="dm-day ${i === 1 ? 'peak' : ''}"><small>${d}</small>${i === 0 ? '<span class="qc">Stop writing “Excited to announce.”</span>' : ''}${i === 3 ? '<span class="qc">I deleted 1,400 lines…</span>' : ''}</div>`).join('')}</div>`;
+      $('.dm-tx', main).classList.add('good'); const hook = $('.dm-hook', main); hook.classList.add('hi'); $('b', hook).textContent = 91;
+      await wait(600, id); const sb = $('.dm-sched', main); await move(sb, id); await click(sb, id);
+      const m = document.createElement('div'); m.className = 'dm-modal sm'; m.innerHTML = `<b>Schedule</b>${[['Tue 8:40 AM', 'Your replies peak here', 1], ['Wed 5:30 PM', 'The commute scroll', 0], ['Pick a time', 'Your call', 0]].map(([a, b, on]) => `<div class="dm-time ${on ? 'on' : ''}"><i></i><span><b>${a}</b><small>${b}</small></span></div>`).join('')}<span class="dm-add">Schedule for Tue 8:40 AM</span>`;
+      main.append(m); requestAnimationFrame(() => m.classList.add('on')); await wait(1100, id);
+      await move($('.dm-add', m), id); await click($('.dm-add', m), id); m.classList.remove('on'); sfx('done');
+      $('.dm-day.peak', main).insertAdjacentHTML('beforeend', '<span class="qc new">We doubled our price.</span>'); $('.dm-sched', main).innerHTML = `${ic('check', 'sm')} Tue 8:40 AM`;
+      burstFrom($('.dm-day.peak', main)); await wait(2200, id);
+    }
+  };
+  const play = async i => {
+    const id = ++run; idx = i; tabs.forEach((t, k) => { t.setAttribute('aria-selected', k === i); t.classList.remove('done'); t.style.setProperty('--p', 0); if (k < i) t.classList.add('done'); });
+    cap.textContent = DEMO_SCENES[i].d; cur.style.transitionDuration = '0ms'; cur.style.transform = 'translate(70%,80%)';
+    const t0 = performance.now(), bar = tabs[i]; let prog = 0; const tick = () => { if (id !== run) return; prog = Math.min(.97, (performance.now() - t0) / 9000); bar.style.setProperty('--p', prog); requestAnimationFrame(tick); }; tick();
+    try { await scenes[DEMO_SCENES[i].k](id); bar.style.setProperty('--p', 1); await wait(300, id); play((i + 1) % DEMO_SCENES.length); } catch (e) { }
+  };
+  sec.addEventListener('click', e => { const t = e.target.closest('[data-dm]'); if (t) { play(+t.dataset.dm); return; } if (e.target.closest('[data-dmsnd]')) { sound = !sound; win.classList.toggle('snd', sound); if (sound) SFX.play('tap'); } });
+  const io = new IntersectionObserver(([en]) => { const v = en.isIntersecting; if (v && !visible) play(idx); if (!v) run++; visible = v; }, { threshold: .35 });
+  if (REDUCED) { play(0); } else io.observe(win);
+  return () => { alive = false; run++; io.disconnect(); };
 }
 
 /* ----- the ring ----- */
@@ -3696,6 +3891,11 @@ ROUTES.home = () => {
     <p class="fict">Illustrative posts. The creators are fictional.</p>
   </section>
 
+  <section class="hw-sec wrap" id="demo">
+    <div class="hw-h c rv"><h2>Four moves. No thinking required.</h2><p>This is the app, being used. Nothing here is a mockup of a mockup.</p></div>
+    ${demoHTML()}
+  </section>
+
   <section class="hw-sec wrap" id="four">
     <div class="hw-h c rv"><h2>One post. Four feeds.</h2><p>Split for X, stitched for LinkedIn’s fold, trimmed for Bluesky. See it exactly the way your audience will, before it ships.</p></div>
     <div class="four2 rv" id="four2"></div>
@@ -3770,6 +3970,7 @@ function initHome() {
   onDispose(ringInit($('#ring')));
   onDispose(ringInit($('#ring2'), { speed: 9 }));
   onDispose(storyInit(root));
+  onDispose(demoInit(root));
   /* the story chapter opens from an inset sheet to full bleed as it arrives */
   const story = $('#story', root); let sr = 0;
   const openStory = () => { sr = 0; const t = story.getBoundingClientRect().top; story.style.setProperty('--in', clamp(1 - t / innerHeight, 0, 1).toFixed(3)); };
@@ -3888,7 +4089,7 @@ function onbStep3() {
 }
 function onbIdeas(ideas) {
   return ideas.map((x, i) => { const body = expandIdea(x.text, x.kind, x.topic).slice(0, 2).join('\n\n'); const s = hookScore(x.text).score;
-    return `<div class="card pidea" style="animation-delay:${i * 70}ms" data-t="${esc(x.text)}" data-k="${esc(x.kind)}" data-topic="${esc(x.topic)}"><div><p>${esc(body)}</p><div class="f"><span class="pill">${esc(x.kind)}</span><span class="hook ${s >= 75 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span><span>Hook</span></span></div></div><div style="display:flex;gap:6px"><button class="btn sm" data-oi="save" data-tip="Save to Ideas">${ic('inbox', 'sm')}</button><button class="btn sm primary" data-oi="open">Write it${ic('arrow', 'sm')}</button></div></div>`; }).join('');
+    return `<div class="card pidea" style="animation-delay:${i * 70}ms" data-t="${esc(x.text)}" data-k="${esc(x.kind)}" data-topic="${esc(x.topic)}"><div><p>${esc(body)}</p><div class="f"><span class="pill">${esc(x.kind)}</span><span class="hook ${s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span><span>Hook</span></span></div></div><div style="display:flex;gap:6px"><button class="btn sm" data-oi="save" data-tip="Save to Ideas">${ic('inbox', 'sm')}</button><button class="btn sm primary" data-oi="open">Write it${ic('arrow', 'sm')}</button></div></div>`; }).join('');
 }
 
 /* ==========================================================================
@@ -4012,7 +4213,7 @@ function drawEngine() {
   if (ENGINE.kind !== 'All') list = list.filter(x => x.kind === ENGINE.kind);
   list = list.slice(0, 6);
   if (!list.length) { el.innerHTML = `<div class="empty" style="grid-column:1/-1">No ${ENGINE.kind.toLowerCase()} ideas in this batch. <button class="btn sm" data-iact="shuffle">${ic('shuffle', 'sm')} Shuffle</button></div>`; return; }
-  el.innerHTML = list.map((x, i) => { const s = hookScore(x.text).score; return `<div class="card idea hoverable" style="animation:rise var(--d-snap) ${i * 40}ms var(--spring) both" data-t="${esc(x.text)}" data-k="${esc(x.kind)}"><p class="t">${esc(x.text)}</p><div class="f"><span style="display:flex;gap:6px;align-items:center"><span class="pill">${esc(x.kind)}</span><span class="hook ${s >= 75 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span></span></span><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="save" data-tip="Save to inbox" aria-label="Save to inbox">${ic('inbox', 'sm')}</button><button class="btn sm" data-iact="write">Write${ic('arrow', 'xs')}</button></span></div></div>`; }).join('');
+  el.innerHTML = list.map((x, i) => { const s = hookScore(x.text).score; return `<div class="card idea hoverable" style="animation:rise var(--d-snap) ${i * 40}ms var(--spring) both" data-t="${esc(x.text)}" data-k="${esc(x.kind)}"><p class="t">${esc(x.text)}</p><div class="f"><span style="display:flex;gap:6px;align-items:center"><span class="pill">${esc(x.kind)}</span><span class="hook ${s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span></span></span><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="save" data-tip="Save to inbox" aria-label="Save to inbox">${ic('inbox', 'sm')}</button><button class="btn sm" data-iact="write">Write${ic('arrow', 'xs')}</button></span></div></div>`; }).join('');
 }
 function drawInbox() {
   const el = $('#inbox'); if (!el) return; const n = $('#inbox-n'); if (n) n.textContent = S.ideas.length;
@@ -4089,7 +4290,7 @@ ROUTES.hooks = () => {
   </div>`);
   const t = $('#grader-t'); const draw = () => {
     const h = hookScore(t.value); S.graderText = t.value; save();
-    $('#g-score').innerHTML = `${bigScore(h.score)}<div><div class="label">Hook score</div><div class="faint" style="font-size:13px;margin-top:4px">${h.score >= 76 ? 'Scroll-stopper' : h.score >= 55 ? 'Getting there' : h.score ? 'Needs work' : 'Waiting for words'}</div></div>`;
+    $('#g-score').innerHTML = `${bigScore(h.score)}<div><div class="label">Hook score</div><div class="faint" style="font-size:13px;margin-top:4px">${h.score >= 70 ? 'Scroll-stopper' : h.score >= 55 ? 'Getting there' : h.score ? 'Needs work' : 'Waiting for words'}</div></div>`;
     $('#g-reason').textContent = h.reason;
     $('#g-bars').innerHTML = Object.entries(h.parts).map(([k, v]) => `<div class="bar-row"><span>${cap(k)}</span><div class="meter"><i style="width:${v}%"></i></div><span class="num">${v}</span></div>`).join('');
   };
