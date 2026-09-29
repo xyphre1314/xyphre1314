@@ -1,29 +1,44 @@
 ---
-version: 1
+version: 2
 slug: "index-html"
 primary_target: "index.html"
-related_targets: []
+related_targets: ["DESIGN.md"]
 ---
 
 # Surface brief: Hookworthy site + app (index.html)
 
-Scope: the landing page (Persuade) and the app routes (Operate) in one file. Onboarding sits between them and follows the landing world.
+Scope: the homepage (Persuade) and the app routes (Operate), both in one file. Onboarding sits between them.
 Audience: every creator who writes in public: solo audience builders, founders who post, ghostwriters and small teams.
-Action: land on the page, type a first line, watch it stop the feed, start writing free.
-Proof available: the product itself (live hook score, diff, previews, queue). No users, numbers or quotes exist; none may be invented.
-Constraints: single file, no build, everything works, WCAG AA, reduced motion. Owner pins: minimal Linear/Arc color, Wispr-style serif+sans type, product-as-illustration leads.
-Chosen: Direction B, "The Thumb-Stop", illustration by product crops. Roll ran degraded (roll service blocked by network policy); assigned index 4 (Writers' Room) was presented and the owner chose B.
+Action: land, feel seen ("we've all posted into the void"), watch a draft become a hook, start writing free.
+Proof available: the product itself (hook score, rewrite, platform previews, queue). No real users, numbers or quotes exist. Creators on the page are fictional with generated portraits, and every section with people says so.
+Constraints: single file, no build step, WCAG AA, reduced motion. Fonts self-hosted (Geist, Geist Mono).
+
+Direction source for this round (v2, "Keynote for creators"): the owner asked for a 10/10 overhaul and delegated the look: "do what you think best… always look at Linear, Arc, Apple. Design this like how they would." No concept roll ran. That delegation stands in for the roll, and this contract replaces the v1 Thumb-Stop contract (seed 811fdc76), which is retired.
 
 ## Direction contract
 
-THESIS: A feed is a machine for ignoring things. The page and app are built from the feed's own grammar, and the one idea they own is the stop: weak first lines get scrolled past, strong ones halt the stream. Refuses the category default of centred headline + glowing product frame + bento + testimonials.
+THESIS: If Apple, Linear and Arc built a Typefully competitor, the homepage would be a keynote about one moment: the first line that makes someone stop scrolling. Each chapter makes one point with one live demo. The product's subject is other apps, so every post is rendered exactly as X, Threads, LinkedIn and Bluesky render it. The page refuses the category default (gradient hero, fake dashboard, bento grid, logo wall, testimonials).
 
-OWN-WORLD: Graphite feed. Near-black stream (#0B0C0E) of low-contrast grey post skeletons in motion blur; the creator's post is the only sharp, bright object (#F7F7F8 card, ink text). One ink accent, no hue except semantic green/red on diffs and deltas. Type: EB Garamond display at feed-breaking scale, never italic-gradient; Figtree as the native post face; Geist Mono for counts, timestamps, scores. Illustration = real product parts (score ring, diff, preview, week) cropped big.
+OWN-WORLD:
+- Canvas and chapters: a light canvas (#F5F5F3) with two dark chapters (#09090A), the story and the voice section.
+- Type: Geist 600 with tight tracking for display, Geist for UI. Caveat is used for at most two margin notes, and EB Garamond only for the wordmark.
+- Accent: one yellow highlighter (#FFE14D), used only under a hook.
+- Materials: real platform UI (system type, real spacing, count formats), true-scale phones, and photoreal portraits and photos.
+- Motion: tied to the reader. The ring brakes on a hook, the story scrubs with scroll, and the wall drifts only when you scroll.
 
-STORY: Visitor sees their kind of line get scrolled past, types their own, watches the grade climb and the feed stop on it; then sees how capture, drafting, sharpening, scheduling and learning each produce a post that stops; sees it works for solo creators, founders and ghostwriters; starts free.
+STORY:
+1. The hero ring stops on a post and marks its first line.
+2. The pinned story follows one post from an 11:47pm draft to a Tuesday 8:41am notification.
+3. "We've all posted into the void" makes the visitor feel seen.
+4. One post in four feeds.
+5. The LinkedIn fold.
+6. Your voice.
+7. The week that fills itself.
+8. Three real ways creators work: solo, founder and ghostwriter, each shown with platform posts.
+9. Pricing, then a final call to action with a second ring.
 
-FIRST VIEWPORT: Full-bleed dark. Centre column (about 520px) is a live feed that streams upward with speed-linked blur. Pinned in its centre, the creator's post: an editable first line with a hook score chip. Left column: the headline "Write the post they stop for." at ~88px and a one-line sub; primary "Start writing, free" plus @handle field below. Right column: the grade readout (score, three reasons, stop meter). Score under 60 keeps the feed moving; 70+ brakes it to a stop and underlines the hook.
+FIRST VIEWPORT: A centered headline, "Write posts people stop for.", at up to 124px, with the marker on "stop", one sentence of sub copy, and an ink pill CTA plus a "Watch a draft become a hook" link. Two Caveat notes sit in the margins. Below them, a 3D ring of real-looking X posts turns slowly. Every few seconds it brakes, the front post comes forward, the neighbours step back, its first line is highlighted and a "Hook score · stopped the scroll" chip appears.
 
-FORM: The feed as interface (candidate 2 of my grounded list: 1 Writers' Room, 2 Thumb-Stop, 3 swipe file, 4 index cards/writers' room board, 5 on-air rundown, 6 Notes app, 7 copy desk). Seed key 811fdc76.
+FORM: The keynote chapter (Apple product-page grammar) × platform-true replicas (the posts are the illustration). The seed is replaced by the owner's delegation (see above).
 
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+FINISH: unreviewed and undocumented is unfinished. This round ends with the finish review and verdict, DESIGN.md "Keynote for creators", and recorded asset provenance: portraits and photos were generated in Higgsfield (gpt_image_2_5, project "Hookworthy homepage assets") and served as two sprite sheets.
