@@ -3379,8 +3379,8 @@ ROUTES.home = () => {
   const wallA = VOID_POSTS.slice(0, 6), wallB = VOID_POSTS.slice(6);
   const wallRow = (list, kind) => { const cards = list.map((p, i) => (kind === 'mix' ? [xPost, thPost, xPost, bsPost, xPost, thPost][i % 6] : xPost)(p)).join(''); return cards; };
   const others = [VOID_POSTS[1], VOID_POSTS[6], VOID_POSTS[3]];
-  /* the story phone is as large as the pinned viewport allows: 300pt on small screens, up to 360pt on desktop */
-  const stW = innerWidth >= 1100 ? clamp(Math.round((innerHeight - 120) * 9 / 19.3), 300, 360) : 300;
+  /* the story phone is as large as the pinned viewport allows, and always whole: up to 360pt on desktop, fit to the stage on phones */
+  const stW = innerWidth >= 1100 ? clamp(Math.round((innerHeight - 120) * 9 / 19.3), 300, 360) : innerWidth < 760 ? clamp(Math.round(Math.min(560, innerHeight * .62) * 9 / 19.3), 220, 300) : 300;
   $('#root').innerHTML = `<div class="hw">
   <header class="hw-nav" id="hwnav">
     <a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
@@ -3415,7 +3415,7 @@ ROUTES.home = () => {
           </div>
         </div>
         <div class="phonewrap" style="--pw2:${stW / 2}px">${phoneFeed('x', { you: MAYA, mine: { t: ST_FINAL, c: [0, 0, 0, 0], ago: '1m' }, others, w: stW })}
-          <div class="sttoast" aria-hidden="true"><span class="ti">${X_LOGO}</span><div><p><b>X</b><span>now</span></p><strong>Your post is doing numbers</strong><span>9,800 likes in the first hour.</span></div></div></div>
+          <div class="sttoast" aria-hidden="true" style="zoom:${(stW / 300).toFixed(3)}"><span class="ti">${X_LOGO}</span><div><p><b>X</b><span>now</span></p><strong>Your post is doing numbers</strong><span>9,800 likes in the first hour.</span></div></div></div>
       </div>
     </div>
   </section>
