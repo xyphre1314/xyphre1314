@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-29T05:14:52.989977Z",
+  "title": "Design System: Hookworthy",
+  "extensions": {
+    "colorMeta": {
+      "feed-ink": {
+        "role": "neutral",
+        "displayName": "Feed Ink",
+        "canonical": "#0B0C0E",
+        "tonalRamp": [
+          "#0B0C0E",
+          "#111215",
+          "#17181C",
+          "#1A1B1F",
+          "#26282D"
+        ]
+      },
+      "post-paper": {
+        "role": "neutral",
+        "displayName": "Post Paper",
+        "canonical": "#F7F7F8",
+        "tonalRamp": [
+          "#FFFFFF",
+          "#F7F7F8",
+          "#EFEFF1",
+          "#E4E4E7"
+        ]
+      },
+      "accent-ink-light": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "#17181B"
+      },
+      "accent-ink-dark": {
+        "role": "primary",
+        "displayName": "Ink (dark)",
+        "canonical": "#F4F4F5"
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Stopped green",
+        "canonical": "#1F8F5F"
+      },
+      "warn": {
+        "role": "semantic",
+        "displayName": "Waiting amber",
+        "canonical": "#C26A12"
+      },
+      "error": {
+        "role": "semantic",
+        "displayName": "Scrolled-past red",
+        "canonical": "#D63F3F"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Landing hero only."
+      },
+      "post-first-line": {
+        "displayName": "Post first line",
+        "purpose": "The hook inside the creator's post."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Numbers, times, scores, keys only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "creator-post",
+        "value": "0 1px 0 rgba(255,255,255,.6) inset, 0 30px 70px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.2)",
+        "purpose": "The one bright post on the feed."
+      },
+      {
+        "name": "product-crop",
+        "value": "inset 0 0 0 1px rgba(255,255,255,.07), 0 40px 80px -40px rgba(0,0,0,.9)",
+        "purpose": "Staged product crops on the feed ground."
+      }
+    ],
+    "motion": [
+      {
+        "name": "feed-brake",
+        "value": "ease-out cubic over T = 3d/v (max 2.6s)",
+        "purpose": "Feed decelerates onto the slot aligned with the creator's post when the hook scores 70+."
+      },
+      {
+        "name": "feed-blur",
+        "value": "blur(min(7px, v/240))",
+        "purpose": "Speed-linked motion blur on the stream."
+      },
+      {
+        "name": "stop-in",
+        "value": "transform .9s cubic-bezier(.12,.9,.18,1), filter .6s, opacity .35s linear",
+        "purpose": "Below-the-fold content settles the way a feed stops."
+      },
+      {
+        "name": "spring-snap",
+        "value": "cubic-bezier(.3,1.45,.4,1)",
+        "purpose": "Presses, switches and small snaps."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "hero-2col",
+        "value": "1120px"
+      },
+      {
+        "name": "stack",
+        "value": "900px"
+      },
+      {
+        "name": "phone",
+        "value": "760px"
+      },
+      {
+        "name": "narrow",
+        "value": "420px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Creator post",
+      "kind": "custom",
+      "refersTo": "creator-post",
+      "description": "The single bright post pinned in the feed; first line is graded live.",
+      "html": "<article class=\"ds-post\"><span class=\"ds-av\">Y</span><div><div class=\"ds-hd\"><b>You</b><span>@you \u00b7 now</span><span class=\"ds-sc\">84</span></div><p class=\"ds-first\">Double your price. Signups went up 31%.</p><p class=\"ds-rest\">Customers value what costs more. <span>show more</span></p></div></article>",
+      "css": ".ds-post{display:grid;grid-template-columns:40px 1fr;gap:13px;padding:18px;border-radius:18px;background:#F7F7F8;color:#111214;font-family:Figtree,system-ui,sans-serif;box-shadow:0 30px 70px -20px rgba(0,0,0,.9)}.ds-av{width:40px;height:40px;border-radius:50%;background:#111214;color:#fff;display:grid;place-items:center;font-weight:600}.ds-hd{display:flex;gap:7px;align-items:center;font-size:14.5px}.ds-hd span{color:#6B6E76}.ds-sc{margin-left:auto;padding:4px 10px;border-radius:99px;background:#111214;color:#fff!important;font:500 12.5px 'Geist Mono',monospace}.ds-first{margin:6px 0 0;font:600 20px/1.35 Figtree,sans-serif;text-decoration:underline 2px;text-underline-offset:6px}.ds-rest{margin:10px 0 0;color:#44464D;font-size:15px}.ds-rest span{color:#8B8E95}"
+    },
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary-light",
+      "description": "Ink button; flips to near-white on dark.",
+      "html": "<button class=\"ds-btn\">Start writing</button>",
+      "css": ".ds-btn{height:36px;padding:0 16px;border-radius:10px;border:0;background:#17181B;color:#fff;font:600 14px Figtree,sans-serif}.ds-btn:active{transform:scale(.965)}"
+    },
+    {
+      "name": "Status chip",
+      "kind": "chip",
+      "description": "Scheduled / waiting / approved.",
+      "html": "<span class=\"ds-st need\"><i></i>Needs approval</span>",
+      "css": ".ds-st{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:99px;font:500 12px Figtree,sans-serif;color:#F2C38A;background:rgba(242,161,74,.1)}.ds-st i{width:6px;height:6px;border-radius:50%;background:currentColor}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Thumb-Stop",
+    "overview": "A feed is a machine for ignoring things. Hookworthy shows the creator's work the way their audience meets it: in a dim, moving stream where their post is the only sharp, bright object, and where a first line scoring 70+ stops the feed.",
+    "keyCharacteristics": [
+      "Graphite feed ground, one bright creator post",
+      "The stop must be earned (score 70+)",
+      "Serif headlines, sans for everything typed, mono for numbers only",
+      "Product crops as illustration",
+      "Hue only for meaning"
+    ],
+    "rules": [
+      {
+        "name": "The One Bright Post Rule",
+        "body": "On dark feed surfaces only the creator's post is bright.",
+        "section": "colors"
+      },
+      {
+        "name": "The Meaning-Only Hue Rule",
+        "body": "No brand hue; green/amber/red only report state; avatars are ink.",
+        "section": "colors"
+      },
+      {
+        "name": "The Numbers-Only Mono Rule",
+        "body": "Geist Mono only for counts, times, scores and keys.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sharp-Is-Near Rule",
+        "body": "Blur and dimness mean distance; never blur the creator's own content.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Show the creator's work inside a feed context",
+      "Use real product crops as illustration",
+      "Label example data",
+      "Keep grader reasons specific"
+    ],
+    "donts": [
+      "Invent users, counts or testimonials",
+      "Use gradient text, glows, particles or glass",
+      "Put kickers above headings",
+      "Set sentences in mono",
+      "Give avatars or UI a brand hue",
+      "Use hook puns in product copy"
+    ]
+  }
+}

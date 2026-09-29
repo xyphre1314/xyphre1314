@@ -326,7 +326,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .meter i{ display:block; height:100%; background:var(--accent); border-radius:4px; transition:width var(--d-slow) var(--ease-out); }
 .me{ display:flex; align-items:center; gap:9px; padding:6px; margin-top:6px; border-radius:9px; width:100%; text-align:left; transition:background var(--d-micro); }
 .me:hover{ background:var(--surface-2); }
-.avatar{ width:26px; height:26px; border-radius:50%; flex:none; display:grid; place-items:center; font:600 11px/1 var(--font-ui); color:#fff; background:linear-gradient(140deg,hsl(var(--h,235) 62% 64%),hsl(calc(var(--h,235) + 40) 55% 42%)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.14); }
+.avatar{ width:26px; height:26px; border-radius:50%; flex:none; display:grid; place-items:center; font:600 11px/1 var(--font-ui); color:var(--accent-ink); background:var(--accent); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
 .avatar.lg{ width:40px; height:40px; font-size:15px; } .avatar.xl{ width:56px; height:56px; font-size:20px; }
 
 .main{ min-width:0; position:relative; margin:8px 8px 8px 0; border-radius:14px; background:var(--panel); box-shadow:0 0 0 1px var(--border),var(--sh-1); min-height:calc(100dvh - 16px); overflow:clip; view-transition-name:main; }
@@ -532,6 +532,7 @@ body.typing .tw-tools{ opacity:0!important; }
 .diff-b .chg{ cursor:pointer; border-radius:4px; transition:background var(--d-micro); }
 .diff-b .chg del{ text-decoration:line-through; text-decoration-color:var(--error); color:var(--text-3); background:var(--del); border-radius:4px; padding:0 1px; }
 .diff-b .chg ins{ text-decoration:none; background:var(--ins); border-radius:4px; padding:0 1px; }
+.diff-b .chg:not(.off) del + ins{ margin-left:.28em; }
 .diff-b .chg.off ins{ display:none; }
 .diff-b .chg.off del{ text-decoration:none; color:var(--text-1); background:none; border-bottom:1.5px dashed var(--text-3); border-radius:0; }
 .diff-b .chg:not(.off) del{ font-size:.92em; }
@@ -620,7 +621,8 @@ body.typing .preview{ opacity:.7; }
 .idea .f{ display:flex; align-items:center; gap:8px; justify-content:space-between; }
 .angles{ display:grid; gap:8px; margin-top:14px; }
 .angle{ display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; padding:12px 12px 12px 16px; animation:rise var(--d-snap) var(--ease-out) both; }
-.angle .k{ font:500 var(--t-11)/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); width:86px; }
+.angle .k{ font:600 var(--t-12)/1.2 var(--font-ui); color:var(--text-3); width:86px; }
+.starters-t{ font:500 var(--t-13)/1.3 var(--font-ui); color:var(--text-3); }
 .angle p{ font-size:var(--t-15); line-height:1.45; }
 .inbox{ display:grid; }
 .inbox-row{ display:grid; grid-template-columns:32px 1fr auto; gap:12px; align-items:center; padding:11px 10px; border-radius:10px; transition:background var(--d-micro); }
@@ -684,7 +686,7 @@ body.typing .preview{ opacity:.7; }
 .qcard.landed{ animation:land var(--d-snap) var(--spring-snap); }
 @keyframes land{ from{ transform:scale(.92); } }
 .qcard p{ overflow-wrap:anywhere; min-width:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; color:var(--text-1); }
-.qcard .qm{ display:flex; align-items:center; justify-content:space-between; color:var(--text-3); font-family:var(--font-mono); font-size:10.5px; }
+.qcard .qm{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:2px 6px; color:var(--text-3); font-family:var(--font-mono); font-size:10.5px; }
 .qcard .qp{ display:flex; gap:3px; }
 .qcard .qp svg{ width:11px; height:11px; }
 .qcard.published{ opacity:.6; }
@@ -696,7 +698,7 @@ body.typing .preview{ opacity:.7; }
 .upnext{ display:grid; gap:2px; }
 .upnext button{ display:grid; grid-template-columns:58px 1fr; gap:10px; padding:8px; border-radius:8px; text-align:left; font-size:var(--t-13); transition:background var(--d-micro); }
 .upnext button:hover{ background:var(--surface-2); }
-.upnext .when{ font:500 var(--t-11)/1.35 var(--font-mono); color:var(--text-3); }
+.upnext .when{ font:500 var(--t-11)/1.35 var(--font-mono); color:var(--text-3); white-space:nowrap; }
 .upnext p{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .agenda{ display:none; }
 .ag-day{ display:grid; gap:8px; padding:14px 0; border-bottom:1px solid var(--border); }
@@ -716,6 +718,9 @@ body.typing .preview{ opacity:.7; }
 .insight-hero p{ margin-top:14px; color:var(--text-2); max-width:56ch; position:relative; font-size:var(--t-15); }
 .insight-hero .acts{ margin-top:22px; display:flex; gap:8px; position:relative; flex-wrap:wrap; }
 .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px; }
+.kpi-line{ margin:18px 0 0; font-size:var(--t-17); line-height:1.7; color:var(--text-2); max-width:72ch; }
+.kpi-line b{ font-weight:600; color:var(--text-1); font-variant-numeric:tabular-nums; }
+.kpi-line .delta{ font:500 var(--t-13)/1 var(--font-mono); }
 .kpi{ padding:16px; display:grid; gap:8px; }
 .kpi b{ font:400 var(--t-40)/1 var(--font-display); letter-spacing:-.02em; font-variant-numeric:lining-nums tabular-nums; }
 .kpi .delta{ font-size:var(--t-12); }
@@ -946,31 +951,41 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .land .fs-me textarea.swap{ opacity:0; filter:blur(4px); }
 .land .fs-me .uline{ position:absolute; left:0; bottom:-3px; height:2px; width:var(--uw,60%); border-radius:2px; background:#111214; transform:scaleX(0); transform-origin:left; transition:transform .7s var(--ease-out); }
 .land .fs-me.stopped .uline{ transform:scaleX(1); transition-delay:.15s; }
-.land .fs-me .rest{ grid-column:2; display:grid; gap:7px; margin-top:13px; }
-.land .fs-me .rest i{ display:block; height:8px; border-radius:8px; background:#E4E4E7; }
+.land .fs-me .rest{ grid-column:2; margin:10px 0 0; font:400 15px/1.5 var(--font-ui); color:#44464D; }
+.land .fs-me .rest .more{ color:#8B8E95; white-space:nowrap; }
+.land .fs-me .mg{ display:none; grid-column:1 / -1; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid #E7E7EA; }
+.land .fs-me .mg p{ margin:0; font-size:14px; line-height:1.45; color:#33353B; }
+.land .fs-me .mbars{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+.land .fs-me .mbars span{ display:grid; gap:5px; }
+.land .fs-me .mbars i{ display:block; height:4px; border-radius:4px; background:linear-gradient(90deg,#111214 var(--mv,0%),#E4E4E7 var(--mv,0%)); }
+.land .fs-me .mbars b{ font:500 11px/1 var(--font-ui); color:#6B6E76; }
 .land .fs-me .tools{ grid-column:2; display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid #E7E7EA; }
 .land .fs-me .tools button{ display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 11px; border-radius:9px; font:500 13px/1 var(--font-ui); color:#33353B; background:#EFEFF1; transition:background var(--d-micro),transform var(--d-spring) var(--spring-snap); }
 .land .fs-me .tools button:hover{ background:#E3E3E6; }
 .land .fs-me .tools button:active{ transform:scale(.95); }
 .land .fs-me .tools button:focus-visible{ outline:2px solid #111214; outline-offset:2px; }
 .land .fs-me .tools .icon{ width:14px; height:14px; }
-.land .fs-me .tools .hint{ margin-left:auto; font:500 11.5px/1 var(--font-mono); color:#8B8E95; }
+.land .fs-me .tools .hint{ margin-left:auto; font:500 12.5px/1 var(--font-ui); color:#8B8E95; }
 
 /* the grade readout (a crop of the real hook grader) */
 .land .lp-grade{ display:grid; gap:18px; align-content:center; max-width:19rem; justify-self:end; width:100%; }
 .land .lp-grade .n{ display:flex; align-items:baseline; gap:10px; }
 .land .lp-grade .n b{ font:400 clamp(84px,8vw,124px)/.8 var(--font-display); letter-spacing:-.04em; font-variant-numeric:lining-nums tabular-nums; min-width:1.2ch; }
-.land .lp-grade .n span{ font:500 12px/1.3 var(--font-mono); color:var(--text-3); }
+.land .lp-grade .n span{ font:500 13px/1.3 var(--font-ui); color:var(--text-3); }
 .land .lp-grade dl{ display:grid; grid-template-columns:auto minmax(0,1fr) 28px; gap:9px 12px; align-items:center; margin:0; font-size:13px; }
 .land .lp-grade dt{ color:var(--text-2); }
 .land .lp-grade dd{ margin:0; height:4px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden; }
 .land .lp-grade dd i{ display:block; height:100%; width:calc(var(--v) * 1%); background:var(--text-1); border-radius:4px; transition:width .7s var(--ease-out); }
 .land .lp-grade .v{ font:500 12px/1 var(--font-mono); color:var(--text-3); text-align:right; font-variant-numeric:tabular-nums; }
 .land .lp-grade .why{ font-size:14.5px; line-height:1.5; color:var(--text-1); min-height:3em; }
-.land .lp-grade .state{ display:flex; align-items:center; gap:10px; padding-top:14px; border-top:1px solid rgba(255,255,255,.08); font:500 12.5px/1.3 var(--font-mono); color:var(--text-3); font-variant-numeric:tabular-nums; }
+.land .lp-grade .state{ display:flex; align-items:center; gap:10px; padding-top:14px; border-top:1px solid rgba(255,255,255,.08); font:500 13.5px/1.35 var(--font-ui); color:var(--text-3); font-variant-numeric:tabular-nums; }
 .land .lp-grade .state i{ width:8px; height:8px; border-radius:50%; background:#F26D6D; box-shadow:0 0 0 4px rgba(242,109,109,.14); flex:none; transition:background .3s,box-shadow .3s; }
 .land .lp-grade.stopped .state i{ background:#4CC38A; box-shadow:0 0 0 4px rgba(76,195,138,.16); }
 .land .lp-grade.stopped .state{ color:var(--text-1); }
+.land .lp-grade .state span{ text-wrap:balance; }
+.land .lp-grade .speed{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:center; font-size:11.5px; color:var(--text-3); }
+.land .lp-grade .speed .tr{ height:6px; border-radius:6px; background:rgba(255,255,255,.08); overflow:hidden; }
+.land .lp-grade .speed i{ display:block; height:100%; width:0; border-radius:6px; background:linear-gradient(90deg,#4CC38A,#F2A14A 55%,#F26D6D); }
 
 /* ---------- section rhythm ---------- */
 .lp-sec{ padding-top:clamp(96px,12vw,168px); }
@@ -989,6 +1004,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .land .gw-row{ display:grid; grid-template-columns:56px minmax(0,1fr) auto; gap:4px 16px; align-items:center; padding:18px 18px 18px 14px; border-radius:18px; background:var(--ink-2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); transition:background .4s,box-shadow .4s; }
 .land .gw-row .sc{ grid-row:span 2; display:grid; place-items:center; width:48px; height:48px; border-radius:14px; background:rgba(242,109,109,.1); color:#F29C9C; font:500 17px/1 var(--font-mono); font-variant-numeric:tabular-nums; transition:background .4s,color .4s; }
 .land .gw-row .ln{ font:600 clamp(16px,1.35vw,18px)/1.4 var(--font-ui); letter-spacing:-.01em; min-width:0; }
+.land .gw-row .ln del + ins, .land .crop .dif del + ins{ margin-left:.1em; }
 .land .gw-row .ln del{ color:var(--text-3); text-decoration-color:#F26D6D; background:rgba(242,109,109,.1); border-radius:4px; }
 .land .gw-row .ln ins{ text-decoration:none; background:rgba(76,195,138,.16); color:#BDF0D5; border-radius:4px; }
 .land .gw-row .why{ grid-column:2; font-size:13.5px; color:var(--text-3); line-height:1.45; }
@@ -1002,7 +1018,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .land .day{ display:grid; gap:clamp(56px,7vw,110px); }
 .land .moment{ display:grid; grid-template-columns:120px minmax(0,.8fr) minmax(0,1.2fr); gap:clamp(20px,3vw,48px); align-items:start; }
 .land .moment > div:not(.crop){ padding-top:4px; }
-.land .moment .t{ align-self:start; padding-top:10px; font:500 13px/1.3 var(--font-mono); color:var(--text-3); font-variant-numeric:tabular-nums; }
+.land .moment .t{ align-self:start; padding-top:10px; font:500 13.5px/1.3 var(--font-ui); color:var(--text-3); font-variant-numeric:tabular-nums; }
 .land .moment .t b{ display:block; font:400 34px/1 var(--font-display); color:var(--text-1); letter-spacing:-.02em; margin-bottom:6px; }
 .land .moment h3{ font:400 clamp(30px,3vw,44px)/1.02 var(--font-display); letter-spacing:-.022em; margin:0 0 12px; text-wrap:balance; }
 .land .moment p{ color:var(--text-2); font-size:16.5px; line-height:1.55; max-width:40ch; }
@@ -1010,7 +1026,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .land .crop .row{ display:flex; align-items:center; gap:10px; }
 .land .crop .mini{ padding:14px 16px; border-radius:14px; background:var(--ink-3); box-shadow:inset 0 0 0 1px rgba(255,255,255,.05); font-size:15px; line-height:1.5; min-width:0; }
 .land .crop .mini.sel{ background:#1E2024; box-shadow:inset 0 0 0 1px rgba(255,255,255,.3); }
-.land .crop .k{ display:block; margin-bottom:4px; font:500 11px/1 var(--font-mono); color:var(--text-3); }
+.land .crop .k{ display:block; margin-bottom:4px; font:600 12px/1.2 var(--font-ui); color:var(--text-3); }
 .land .crop .memo{ display:flex; align-items:center; gap:12px; }
 .land .crop .wave{ display:flex; align-items:center; gap:3px; height:28px; flex:1; }
 .land .crop .wave i{ width:3px; border-radius:3px; background:var(--text-2); height:calc(var(--h) * 1%); }
@@ -1060,7 +1076,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .land .ws-row.on{ background:var(--ink-3); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
 .land .ws-row small{ display:block; color:var(--text-3); font-size:12.5px; }
 .land .ws-row .avatar{ width:28px; height:28px; font-size:11px; }
-.land .st{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px; border-radius:99px; font:500 11.5px/1 var(--font-mono); background:rgba(255,255,255,.06); color:var(--text-2); white-space:nowrap; }
+.land .st{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px; border-radius:99px; font:500 12px/1 var(--font-ui); font-variant-numeric:tabular-nums; background:rgba(255,255,255,.06); color:var(--text-2); white-space:nowrap; }
 .land .st i{ width:6px; height:6px; border-radius:50%; background:currentColor; }
 .land .st.need{ color:#F2C38A; background:rgba(242,161,74,.1); } .land .st.ok{ color:#8FE0B6; background:rgba(76,195,138,.1); } .land .st.sch{ color:var(--text-1); }
 .land .ql{ display:grid; gap:6px; }
@@ -1097,11 +1113,12 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .land .lp-plan.pro li .icon{ color:#111214; }
 .land .lp-plan .btn{ width:100%; }
 .land .lp-plan.pro .btn.primary{ background:#111214; color:#fff; box-shadow:none; }
-.land .bill{ display:flex; gap:12px; align-items:center; margin-top:4px; }
+.land .bill{ display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; margin-top:4px; }
+#bill-seg{ flex:none; }
 
 /* ---------- final: the feed stops on your next post ---------- */
 .lp-final{ position:relative; padding:clamp(110px,14vw,190px) 0 clamp(90px,10vw,140px); overflow:hidden; isolation:isolate; }
-.ghostfeed{ position:absolute; inset:0; z-index:-1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding-inline:max(16px,calc((100vw - 1240px)/2)); opacity:.5; -webkit-mask-image:radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); mask-image:radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); }
+.ghostfeed{ position:absolute; inset:0; z-index:-1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding-inline:max(16px,calc((100vw - 1240px)/2)); opacity:.5; overflow:hidden; -webkit-mask-image:linear-gradient(transparent,#000 22%,#000 80%,transparent),radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); -webkit-mask-composite:source-in; mask-image:linear-gradient(transparent,#000 22%,#000 80%,transparent),radial-gradient(60% 60% at 50% 50%,transparent 0,transparent 30%,#000 80%); mask-composite:intersect; }
 .ghostfeed .col{ display:grid; gap:10px; align-content:start; animation:drift 60s linear infinite; }
 .ghostfeed .col:nth-child(2){ animation-duration:48s; animation-direction:reverse; }
 @keyframes drift{ to{ transform:translateY(-50%); } }
@@ -1126,6 +1143,8 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .land .four{ grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media (max-width:900px){
+  .land .lp-grade{ display:none; }
+  .land .fs-me .mg{ display:grid; }
   .lp-hero{ grid-template-columns:minmax(0,1fr); min-height:0; padding-top:36px; gap:28px; }
   .lp-copy{ max-width:none; }
   .land .fs{ height:min(640px,78dvh); min-height:480px; }
@@ -1133,9 +1152,10 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .land .lp-grade .n{ grid-row:auto; }
   .land .lp-grader,.land .who{ grid-template-columns:minmax(0,1fr); }
   .land .lp-grader .lp-h,.land .who-stage{ position:static; }
-  .land .moment{ grid-template-columns:minmax(0,1fr); gap:16px; }
-  .land .moment .t{ padding:0; display:flex; gap:10px; align-items:baseline; }
-  .land .moment .t b{ margin:0; font-size:26px; }
+  .land .moment{ grid-template-columns:64px minmax(0,1fr); gap:16px 14px; }
+  .land .moment .crop{ grid-column:1 / -1; }
+  .land .moment .t{ padding-top:6px; font-size:12px; }
+  .land .moment .t b{ font-size:24px; margin-bottom:4px; }
   .land .lp-plans{ grid-template-columns:minmax(0,1fr); max-width:520px; }
   .ghostfeed{ grid-template-columns:minmax(0,1fr); }
   .ghostfeed .col:not(:first-child){ display:none; }
@@ -1147,7 +1167,11 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .land .gw-row .fix{ grid-column:2; grid-row:auto; justify-self:start; margin-top:6px; }
   .land .week div{ min-height:96px; font-size:10px; padding:7px 5px; }
   .land .fs-me .tools .hint{ display:none; }
+  .land .fs-me .tools{ gap:5px; }
+  .land .fs-me{ padding:15px 14px 12px; grid-template-columns:34px minmax(0,1fr); gap:0 11px; }
+  .land .fs-me .avatar{ width:34px; height:34px; }
 }
+@media (max-width:420px){ .land .fs-me .tools .tl{ display:none; } .land .fs-me .tools button{ width:36px; justify-content:center; padding:0; } }
 @media (prefers-reduced-motion:reduce){
   .stopin.armed{ opacity:1; transform:none; filter:none; }
   .ghostfeed .col{ animation:none; }
@@ -1176,7 +1200,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 /* ==========================================================================
    RESPONSIVE
    ========================================================================== */
-@media (pointer: coarse){ .editor-foot,.add-tw .kbds,.searchbtn .kbds,.cmdk-f,.btn .kbds,.diff-hint{ display:none; }
+@media (pointer: coarse){ .land .kbds,.editor-foot,.add-tw .kbds,.searchbtn .kbds,.cmdk-f,.btn .kbds,.diff-hint{ display:none; }
   .tw-tools{ height:0; margin-top:0; overflow:hidden; transition:height var(--d-spring) var(--ease-out),margin var(--d-spring) var(--ease-out),opacity var(--d-fast); }
   .tw:focus-within .tw-tools,.tw.has-meta .tw-tools{ height:30px; margin-top:6px; } }
 @media (max-width:1180px){
@@ -1218,7 +1242,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .page-h .display{ font-size:var(--t-40); }
   .editor{ padding:24px 16px 50vh; }
   .c-top{ padding:0 10px; gap:6px; }
-  .c-top .status span.txt{ display:none; }
+  .c-top .status span.txt{ font-size:12px; }
   .handle{ display:none; }
   .tw{ grid-template-columns:30px minmax(0,1fr); gap:0 10px; }
   .tw-gutter .avatar,.tw-gutter .idx{ width:30px; height:30px; }
@@ -2252,7 +2276,7 @@ function composerHTML() {
 }
 function startersHTML() {
   const ideas = genIdeas(3, S.starterSeed);
-  return `<div class="starters-h"><span class="label">Nothing on your mind? Borrow one.</span><button class="btn ghost sm" data-cact="shuffle" data-tip="New ideas" data-kbd="R">${ic('shuffle', 'sm')} Shuffle</button></div>
+  return `<div class="starters-h"><span class="starters-t">Nothing on your mind? Borrow one.</span><button class="btn ghost sm" data-cact="shuffle" data-tip="New ideas" data-kbd="R">${ic('shuffle', 'sm')} Shuffle</button></div>
   <div class="starter-list">${ideas.map(i => `<button class="starter" data-cact="starter" data-t="${esc(i.text)}" data-kind="${esc(i.kind)}" data-topic="${esc(i.topic)}"><p>${esc(i.text)}</p><span class="meta"><span class="pill">${esc(i.kind)}</span><span class="faint" style="font-size:12px;display:inline-flex;gap:4px;align-items:center">Draft it ${ic('arrow', 'xs')}</span></span></button>`).join('')}</div>`;
 }
 function mediaHTML(tw) {
@@ -2566,14 +2590,14 @@ function outOfRiffs() {
   closeUpsell();
   const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Out of free riffs');
   const freebie = !S.ai.freebie;
-  el.innerHTML = `<div class="label accent">Five for five</div><h3 class="h2" style="margin-top:10px">That’s today’s free riffs.</h3><p class="muted" style="margin-top:8px">They refill at midnight. Pro riffs are unlimited, and so are your ideas.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See Pro</a>${freebie ? '<button class="btn" data-up="free">One more, on us</button>' : ''}<button class="btn ghost" data-up="x">Not now</button></div>`;
+  el.innerHTML = `<h3 class="h2">That’s today’s free riffs.</h3><p class="muted" style="margin-top:8px">They refill at midnight. Pro riffs are unlimited, and so are your ideas.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See Pro</a>${freebie ? '<button class="btn" data-up="free">One more, on us</button>' : ''}<button class="btn ghost" data-up="x">Not now</button></div>`;
   document.body.append(el);
   el.addEventListener('click', e => { const b = e.target.closest('[data-up]'); if (e.target.closest('a')) closeUpsell(); if (!b) return; if (b.dataset.up === 'free') { S.ai.freebie = 1; S.ai.used = Math.max(0, S.ai.used - 1); save(); refreshPlanCard(); toast('One on the house. Make it count.', { icon: 'gift', tone: 'accent' }); } closeUpsell(); });
 }
 function showUpsell(a, b) {
   if (S.plan !== 'free' || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
   const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hookworthy Pro');
-  el.innerHTML = `<div class="label accent">That one’s a keeper</div><div class="jump"><span class="from">${a}</span>${ic('arrow', 'lg')}<span class="to">${b}</span></div><p class="muted">Your hook just jumped ${b - a} points. Pro does this all day: unlimited riffs, your full voice model, and auto-plugs that ride the wave.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
+  el.innerHTML = `<div class="jump"><span class="from">${a}</span>${ic('arrow', 'lg')}<span class="to">${b}</span></div><p class="muted">Your hook just jumped ${b - a} points. Pro does this all day: unlimited riffs, your full voice model, and auto-plugs that ride the wave.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
   document.body.append(el); burstFrom($('.to', el));
   el.addEventListener('click', e => { if (e.target.closest('[data-up],a')) closeUpsell(); });
 }
@@ -2701,7 +2725,7 @@ function publishNow(btn) {
   }, 650);
 }
 function newPost() {
-  if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 20); toast('Last draft saved. Find it with ⌘K.', { icon: 'archive' }); }
+  if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 20); toast(`Last draft saved. Find it with ${MOD} K.`, { icon: 'archive' }); }
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; save();
   if (CURRENT === 'write') { route(); } else go('write');
   setTimeout(() => focusTweet(0), 80);
@@ -2819,11 +2843,11 @@ const FEED_NOISE = [
 const HERO_WEAK = 'i think pricing is really important for startups';
 const HERO_STRONG = 'Double your price. Signups went up 31%.';
 const GRADER_ROWS = [
-  ['So I wanted to share some thoughts on hiring', 'We hired 9 people last year. 3 were mistakes. Here’s the pattern.'],
-  ['Honestly, I think consistency is really important', 'I posted daily for 90 days. Consistency was the wrong lesson.'],
-  ['Excited to announce our new feature!', 'We deleted our most-requested feature. Signups went up 18%.'],
-  ['Some tips for writing better landing pages', 'Your landing page has 1 job. Most do 4. Here’s why that’s wrong:'],
-  ['Here is a thread about pricing', 'Stop pricing like a coward. Here’s the math:']
+  ['So I wanted to share some thoughts on hiring', 'We hired 9 people last year. 3 were mistakes. Here’s the pattern.', 'Opening with “So” spends your best line on a warm-up.', 'A number and a confession. People read on to find out which 3.'],
+  ['Honestly, I think consistency is really important', 'I posted daily for 90 days. Consistency was the wrong lesson.', '“Honestly, I think” hedges twice before saying anything.', 'A real streak, then a twist. The reader wants the actual lesson.'],
+  ['Excited to announce our new feature!', 'We deleted our most-requested feature. Signups went up 18%.', 'Every launch post opens this way. Nothing here is yours yet.', 'A move nobody expects, with a result attached. Hard to scroll past.'],
+  ['Some tips for writing better landing pages', 'Your landing page has 1 job. Most do 4. Here’s why that’s wrong:', '“Some tips” promises homework, not a payoff.', 'Sets up a pattern, then promises to break it. The colon pulls you in.'],
+  ['Here is a thread about pricing', 'Stop pricing like a coward. Here’s the math:', 'It announces a thread instead of starting one.', 'Pokes at a habit, then promises proof. Tension plus an open loop.']
 ];
 const STOP_AT = 70;
 const noisePost = (t, i) => `<div class="fp" aria-hidden="true"><span class="av" style="background:hsl(${(i * 47) % 360} 6% ${16 + (i % 3) * 2}%)"></span><div style="min-width:0"><div class="nm"><i></i><i></i></div><div class="tx">${esc(t)}</div><div class="ac">${ic('reply')}${ic('repost')}${ic('heart')}${ic('views')}</div></div></div>`;
@@ -2872,7 +2896,10 @@ function armReveals(root) {
   $$('.stopin', root).forEach(el => { if (el.getBoundingClientRect().top > innerHeight * .95) { el.classList.add('armed'); REVEAL_IO.observe(el); } });
 }
 
-function diffMarkup(a, b) { return diffWords(a, b).map(c => c.eq !== undefined ? esc(c.eq) : `${c.del ? `<del>${esc(c.del)}</del>` : ''}${c.ins ? `<ins>${esc(c.ins)}</ins>` : ''}`).join(''); }
+function diffMarkup(a, b) {
+  const ch = diffWords(a, b); const same = ch.filter(c => c.eq !== undefined).join ? ch.filter(c => c.eq !== undefined).map(c => c.eq).join('').trim().split(/\s+/).filter(Boolean).length : 0;
+  if (same / Math.max(1, b.split(/\s+/).length) < .4) return `<del>${esc(a)}</del> <ins>${esc(b)}</ins>`;
+  return ch.map(c => c.eq !== undefined ? esc(c.eq) : `${c.del ? `<del>${esc(c.del)}</del>` : ''}${c.del && c.ins ? ' ' : ''}${c.ins ? `<ins>${esc(c.ins)}</ins>` : ''}`).join(''); }
 
 ROUTES.home = () => {
   const noiseA = FEED_NOISE.slice(0, 7).map(noisePost).join(''), noiseB = FEED_NOISE.slice(7).map((t, i) => noisePost(t, i + 7)).join('');
@@ -2902,8 +2929,9 @@ ROUTES.home = () => {
         ${avatar({ name: 'You', hue: 0 })}
         <div class="hd"><b>You</b><span id="fs-handle">@you · now</span><span class="grow"></span><span class="score" id="fs-score" aria-live="polite"><i></i><span>0</span></span></div>
         <div class="first"><textarea id="fs-t" rows="1" aria-label="Your first line. Type to grade it." maxlength="200" spellcheck="false">${esc(HERO_WEAK)}</textarea><i class="uline"></i></div>
-        <div class="rest" aria-hidden="true"><i style="width:94%"></i><i style="width:78%"></i><i style="width:52%"></i></div>
-        <div class="tools"><button type="button" data-hero="hook">${ic('hook')}Stronger hook</button><button type="button" data-hero="punchier">${ic('bolt')}Punchier</button><button type="button" data-hero="reset" aria-label="Start over">${ic('undo')}</button><span class="hint">type your own line</span></div>
+        <p class="rest" id="fs-rest"></p>
+        <div class="mg" aria-hidden="true"><p id="m-why"></p><div class="mbars">${Object.keys(PART_NAMES).map(k => `<span><i data-mp="${k}"></i><b>${PART_NAMES[k]}</b></span>`).join('')}</div></div>
+        <div class="tools"><button type="button" data-hero="hook" aria-label="Stronger hook">${ic('hook')}<span class="tl">Stronger hook</span></button><button type="button" data-hero="punchier" aria-label="Punchier">${ic('bolt')}<span class="tl">Punchier</span></button><button type="button" data-hero="reset" aria-label="Start over">${ic('undo')}</button><span class="hint">or type your own line</span></div>
       </article>
     </div>
 
@@ -2912,6 +2940,7 @@ ROUTES.home = () => {
       <dl id="g-parts">${Object.keys(PART_NAMES).map(k => `<dt>${PART_NAMES[k]}</dt><dd><i data-p="${k}" style="--v:0"></i></dd><span class="v" data-v="${k}">0</span>`).join('')}</dl>
       <p class="why" id="g-why"></p>
       <div class="state"><i></i><span id="g-state">Scrolled past</span></div>
+      <div class="speed" aria-hidden="true"><span>stopped</span><span class="tr"><i id="g-speed"></i></span><span>scrolled past</span></div>
     </aside>
   </section>
 
@@ -2921,7 +2950,7 @@ ROUTES.home = () => {
         <h2 class="display">Most people read one line. Then they decide.</h2>
         <p>Every first line gets a score out of 100 for clarity, curiosity, specifics, tension and length, plus one sentence on what to fix. Tap a line to see the fix.</p>
       </div>
-      <div class="gw" id="gw">${GRADER_ROWS.map(([w], i) => { const h = hookScore(w); return `<div class="gw-row stopin" style="--rd:${i * 60}ms" data-gw="${i}"><span class="sc">${h.score}</span><span class="ln">${esc(w)}</span><span class="why">${esc(h.reason)}</span><button class="btn sm fix" data-gwfix="${i}">Fix it</button></div>`; }).join('')}
+      <div class="gw" id="gw">${GRADER_ROWS.map(([w, , why], i) => { const h = hookScore(w); return `<div class="gw-row stopin" style="--rd:${i * 60}ms" data-gw="${i}"><span class="sc">${h.score}</span><span class="ln">${esc(w)}</span><span class="why">${esc(why)}</span><button class="btn sm fix" data-gwfix="${i}">Fix it</button></div>`; }).join('')}
         <div class="gw-foot"><button class="btn ghost sm" data-gwfix="all">${ic('hook', 'sm')} Fix all five</button><span>Scores come from the same grader you get in the app.</span></div>
       </div>
     </div>
@@ -3027,7 +3056,7 @@ function initLanding() {
   };
   const parkY = () => { const pinTop = fs.clientHeight / 2 - me.offsetHeight / 2; return ((slotTop - pinTop) % loopL + loopL) % loopL; };
   const paintTrack = () => { track.style.transform = `translate3d(0,${-y}px,0)`; track.style.filter = v > 30 ? `blur(${Math.min(7, v / 240).toFixed(2)}px)` : 'none'; };
-  const stateText = () => { if (!fs.isConnected) return; $('#g-state').textContent = mode === 'parked' ? 'Stopped. They’re reading it.' : mode === 'brake' ? 'Slowing down…' : `Scrolled past at ${Math.round(v).toLocaleString()} px/s`; };
+  const stateText = () => { if (!fs.isConnected) return; $('#g-speed').style.width = Math.min(100, v / 17) + '%'; $('#g-state').textContent = mode === 'parked' ? 'Stopped. They’re reading it.' : mode === 'brake' ? 'Slowing down…' : `Scrolled past at ${Math.round(v).toLocaleString()} px/s`; };
   const tick = now => {
     if (!fs.isConnected) { raf = 0; return; }
     const dt = Math.min(.05, (now - (last || now)) / 1000); last = now;
@@ -3051,7 +3080,10 @@ function initLanding() {
   const paint = () => {
     if (!ta.isConnected) return;
     grow(); measure();
-    const h = hookScore(ta.value); $('#fs-score span').textContent = h.score; $('#g-n').textContent = h.score; $('#g-why').textContent = h.reason;
+    const h = hookScore(ta.value); $('#fs-score span').textContent = h.score; $('#g-n').textContent = h.score; $('#g-why').textContent = h.reason; $('#m-why').textContent = h.reason;
+    Object.keys(PART_NAMES).forEach(k => $(`[data-mp="${k}"]`).style.setProperty('--mv', h.parts[k] + '%'));
+    const line = ta.value.trim(); const body = !line ? '' : (line === HERO_WEAK || line === HERO_STRONG) ? 'Signups went up 31% when we did. Customers value what costs more. Pricing is a signal, not a number.' : expandIdea(line, 'Story').slice(1, 4).join(' ');
+    $('#fs-rest').innerHTML = body ? `${esc(body.length > 118 ? body.slice(0, body.lastIndexOf(' ', 112)) + '…' : body)} <span class="more">show more</span>` : '<span class="more">The rest of your post goes here.</span>';
     Object.keys(PART_NAMES).forEach(k => { $(`[data-p="${k}"]`).style.setProperty('--v', h.parts[k]); $(`[data-v="${k}"]`).textContent = h.parts[k]; });
     const probe = document.createElement('span'); probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font:' + getComputedStyle(ta).font; probe.textContent = ta.value.split('\n')[0] || ' '; document.body.appendChild(probe); me.style.setProperty('--uw', Math.min(ta.clientWidth, probe.offsetWidth) + 'px'); probe.remove();
     if (h.score >= STOP_AT) toPark(); else if (REDUCED) { mode = 'run'; v = 0; setStopped(false); stateText(); } else toRun(h.score < 50 ? 1700 : 950);
@@ -3089,15 +3121,15 @@ function initLanding() {
   /* ---------- the grader wall ---------- */
   const fixRow = (i, delay = 0) => setTimeout(() => {
     const row = $(`[data-gw="${i}"]`); if (!row || row.classList.contains('good')) return;
-    const [w, s] = GRADER_ROWS[i]; const h = hookScore(s);
-    $('.ln', row).innerHTML = diffMarkup(w, s); $('.why', row).textContent = h.reason;
+    const [w, s, , why] = GRADER_ROWS[i]; const h = hookScore(s);
+    $('.ln', row).innerHTML = diffMarkup(w, s); $('.why', row).textContent = why;
     const sc = $('.sc', row); let n = +sc.textContent; const t0 = performance.now(), from = n;
     const count = t => { const p = Math.min(1, (t - t0) / 700); sc.textContent = Math.round(from + (h.score - from) * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(count); };
     requestAnimationFrame(count); row.classList.add('good');
     const btn = $('.fix', row); btn.textContent = 'Undo'; btn.dataset.gwfix = 'u' + i;
     setTimeout(() => { if (row.classList.contains('good')) $('.ln', row).textContent = s; }, 2200);
   }, delay);
-  const unfix = i => { const row = $(`[data-gw="${i}"]`); const [w] = GRADER_ROWS[i]; const h = hookScore(w); row.classList.remove('good'); $('.ln', row).textContent = w; $('.why', row).textContent = h.reason; $('.sc', row).textContent = h.score; const btn = $('.fix', row); btn.textContent = 'Fix it'; btn.dataset.gwfix = i; };
+  const unfix = i => { const row = $(`[data-gw="${i}"]`); const [w, , why] = GRADER_ROWS[i]; const h = hookScore(w); row.classList.remove('good'); $('.ln', row).textContent = w; $('.why', row).textContent = why; $('.sc', row).textContent = h.score; const btn = $('.fix', row); btn.textContent = 'Fix it'; btn.dataset.gwfix = i; };
   $('#gw').addEventListener('click', e => {
     const b = e.target.closest('[data-gwfix]'); const row = e.target.closest('.gw-row');
     const k = b ? b.dataset.gwfix : row ? (row.classList.contains('good') ? 'u' + row.dataset.gw : row.dataset.gw) : null; if (k == null) return;
@@ -3291,7 +3323,7 @@ function drawInbox() {
 }
 function showAngles(src, kind) {
   const list = anglesFor(src); const el = $('#angles'); if (!el) return;
-  el.innerHTML = `<div class="sec" style="margin-top:24px"><div class="sec-h"><div><span class="label accent">${ic(SRC_ICON[kind] || 'link', 'xs')} ${esc(SRC_NAME[kind] || 'Link')}</span><h2 class="h2" style="margin-top:6px">Five ways to post “${esc(src.title)}”</h2></div><button class="btn ghost sm" data-iact="angles-close">${ic('x', 'sm')} Close</button></div>
+  el.innerHTML = `<div class="sec" style="margin-top:24px"><div class="sec-h"><div><h2 class="h2">Five ways to post “${esc(src.title)}”</h2></div><button class="btn ghost sm" data-iact="angles-close">${ic('x', 'sm')} Close</button></div>
   <div class="angles">${list.map((a, i) => `<div class="card angle" style="animation-delay:${i * 60}ms" data-t="${esc(a.t)}"><span class="k">${a.k}</span><p>${esc(a.t)}</p><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="angle-save" data-tip="Save" aria-label="Save">${ic('inbox', 'sm')}</button><button class="btn sm primary" data-iact="angle-write">Write this${ic('arrow', 'xs')}</button></span></div>`).join('')}</div></div>`;
   el.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
 }
@@ -3475,7 +3507,7 @@ function drawQSide() {
   const n = streakCount(); const postedToday = !!S.streak[dayKey(Date.now())];
   el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
   <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Momentum</span><span class="mono" style="font-size:12px">${n} day${n === 1 ? '' : 's'}</span></div><div class="streak">${streakHTML()}</div><span class="faint" style="font-size:12px">${postedToday ? 'Posted today. Scheduled posts count too.' : n ? `Post or schedule today to make it ${n + 1}.` : 'One post starts a streak. Scheduled posts count.'}</span></div>
-  <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(' ', '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
+  <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(/ (?=\S+$)/, '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
   <div class="card"><span class="label">Autopilot</span>
     <div class="setting"><span>Auto-plug</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Auto-plug"></button><small>At ${S.settings.plugAt} likes, reply with:</small></div>
     <input class="input" id="plug-t" value="${esc(S.settings.plugText)}" aria-label="Plug text">
@@ -3517,14 +3549,14 @@ function drawInsights() {
   const kpis = [['Impressions', fmtK(total), '+18%', 1], ['Engagement', (3.1 + (RANGE === 7 ? .4 : 0)).toFixed(1) + '%', '+0.6 pts', 1], ['New followers', fmtK(Math.round(412 * f)), '+9%', 1], ['Replies', fmtK(Math.round(1284 * f)), '−4%', 0]];
   const types = [['Contrarian', 3.2], ['Story', 2.1], ['Listicle', 1.6], ['How-to', 1.4], ['Question', 1.1], ['Announcement', .7]];
   $('#ins').innerHTML = `<div class="insight-hero"><h2 class="display">Your contrarian hooks get <span class="n">3.2×</span> the replies.</h2><p>Lines that push back on common advice pulled 3.2× the replies of everything else. You wrote ${Math.max(1, Math.round(4 * f))} of them. Your audience wants more.</p><div class="acts"><button class="btn primary" data-nact="contra">${ic('swap', 'sm')} Write a contrarian post</button><button class="btn" data-nact="posts">See the posts</button></div></div>
-  <div class="kpis">${kpis.map(([k, v, dl, up]) => `<div class="card kpi"><span class="label">${k}</span><b>${v}</b><span class="delta ${up ? 'up' : 'down'}">${dl} vs previous ${RANGE} days</span></div>`).join('')}</div>
+  <p class="kpi-line">Over the last ${RANGE} days: ${kpis.map(([k, v, dl, up], i) => `${i === kpis.length - 1 ? 'and ' : ''}<b>${v}</b> ${k.toLowerCase()} <span class="delta ${up ? 'up' : 'down'}">${dl}</span>`).join(', ')}, compared with the ${RANGE} days before.</p>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Impressions</h3><p class="faint" style="font-size:13px;margin-top:2px">Tuesday spikes are your 8:40am posts landing.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Impressions</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(Date.now() - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">Replies by hook type</h3><p class="faint" style="font-size:13px;margin-top:2px">Relative to your average post</p></div></div><div class="hbars">${types.map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k}: ${v}× your average replies"><span>${k}</span><div class="track"><div class="fillb" style="width:${v / 3.2 * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${v}×</span></div>`).join('')}</div></div>
   <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your people reply</h3><p class="faint" style="font-size:13px;margin-top:2px">First-hour replies, darker is more</p></div></div>${heatmap()}</div></div>
   <div class="grid-3 sec" style="margin-top:16px">
-    <div class="card ins-card"><span class="label">Threads</span><p class="big">4–6 posts beat longer threads by <em>41%</em>.</p><p>Past six, readers drop off fast. You averaged 8.</p><button class="btn sm" data-nact="thread" style="justify-self:start">Draft a 5-post thread</button></div>
-    <div class="card ins-card"><span class="label">Specifics</span><p class="big">A number in line one gets <em>2.1×</em> the views.</p><p>Only 1 in 5 of your hooks has one. Easy win.</p><button class="btn sm" data-nact="number" style="justify-self:start">Open the hook grader</button></div>
-    <div class="card ins-card"><span class="label">Voice</span><p class="big">Your lowercase posts get <em>18%</em> more replies.</p><p>They read as more personal. Hookworthy keeps your casing.</p><button class="btn sm" data-nact="lower" style="justify-self:start">Tune your voice</button></div>
+    <div class="card ins-card"><p class="big">4–6 posts beat longer threads by <em>41%</em>.</p><p>Past six, readers drop off fast. You averaged 8.</p><button class="btn sm" data-nact="thread" style="justify-self:start">Draft a 5-post thread</button></div>
+    <div class="card ins-card"><p class="big">A number in line one gets <em>2.1×</em> the views.</p><p>Only 1 in 5 of your hooks has one. Easy win.</p><button class="btn sm" data-nact="number" style="justify-self:start">Open the hook grader</button></div>
+    <div class="card ins-card"><p class="big">Your lowercase posts get <em>18%</em> more replies.</p><p>They read as more personal. Hookworthy keeps your casing.</p><button class="btn sm" data-nact="lower" style="justify-self:start">Tune your voice</button></div>
   </div>
   <div class="card chart-card sec" style="margin-top:16px" id="top-posts"><div class="chart-h"><h3 class="h3">Top posts</h3></div>${TOP_POSTS.map((p, i) => `<div class="top-post"><span class="rk">${String(i + 1).padStart(2, '0')}</span><div><p>${esc(p.text.split('\n')[0])}</p><div class="st"><span>${fmtK(p.views)} views</span><span>${fmtK(p.likes)} likes</span><span>${fmtK(p.replies)} replies</span><span>${p.kind}</span></div></div><button class="btn sm" data-nact="remix" data-id="${p.id}">${ic('layers', 'sm')} Remix</button></div>`).join('')}</div>`;
   lineChart($('#line'), d);

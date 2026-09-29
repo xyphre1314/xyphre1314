@@ -1,89 +1,267 @@
-# Hookworthy: brand and design system
+---
+name: Hookworthy
+description: Write posts people stop for.
+colors:
+  feed-ink: "#0B0C0E"
+  feed-ink-raised: "#111215"
+  feed-ink-crop: "#17181C"
+  feed-noise: "#1A1B1F"
+  feed-noise-text: "#6A6D75"
+  post-paper: "#F7F7F8"
+  post-ink: "#111214"
+  app-bg-light: "#F7F7F8"
+  app-surface-light: "#FFFFFF"
+  app-surface-2-light: "#F2F2F4"
+  app-text-1-light: "#111216"
+  app-text-2-light: "#51545C"
+  app-text-3-light: "#6B6F78"
+  app-bg-dark: "#08090A"
+  app-surface-dark: "#101113"
+  app-surface-2-dark: "#16171A"
+  app-text-1-dark: "#F7F8F8"
+  app-text-2-dark: "#A3A7AF"
+  app-text-3-dark: "#80858E"
+  accent-ink-light: "#17181B"
+  accent-ink-dark: "#F4F4F5"
+  success: "#1F8F5F"
+  success-dark: "#4CC38A"
+  warn: "#C26A12"
+  warn-dark: "#F2A14A"
+  error: "#D63F3F"
+  error-dark: "#F26D6D"
+typography:
+  display:
+    fontFamily: "EB Garamond, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(50px, 5.4vw, 82px)"
+    fontWeight: 400
+    lineHeight: 0.98
+    letterSpacing: "-0.028em"
+  headline:
+    fontFamily: "EB Garamond, Georgia, serif"
+    fontSize: "clamp(40px, 5vw, 72px)"
+    fontWeight: 400
+    lineHeight: 0.98
+    letterSpacing: "-0.028em"
+  title:
+    fontFamily: "EB Garamond, Georgia, serif"
+    fontSize: "clamp(30px, 3vw, 44px)"
+    fontWeight: 400
+    lineHeight: 1.02
+    letterSpacing: "-0.022em"
+  post-first-line:
+    fontFamily: "Figtree, system-ui, sans-serif"
+    fontSize: "clamp(18px, 1.55vw, 21px)"
+    fontWeight: 600
+    lineHeight: 1.35
+    letterSpacing: "-0.012em"
+  body:
+    fontFamily: "Figtree, system-ui, sans-serif"
+    fontSize: "16.5px"
+    fontWeight: 400
+    lineHeight: 1.55
+  ui:
+    fontFamily: "Figtree, system-ui, sans-serif"
+    fontSize: "14px"
+    fontWeight: 500
+    lineHeight: 1.5
+  data:
+    fontFamily: "Geist Mono, SF Mono, Menlo, monospace"
+    fontSize: "12.5px"
+    fontWeight: 500
+    lineHeight: 1
+    fontFeature: "tnum"
+rounded:
+  chip: "6px"
+  control: "10px"
+  card: "14px"
+  post: "18px"
+  crop: "22px"
+  feed: "26px"
+  pill: "999px"
+spacing:
+  "1": "4px"
+  "2": "8px"
+  "3": "12px"
+  "4": "16px"
+  "5": "20px"
+  "6": "24px"
+  "8": "32px"
+  "10": "40px"
+  "12": "48px"
+  "16": "64px"
+  "24": "96px"
+  section: "clamp(96px, 12vw, 168px)"
+components:
+  button-primary-light:
+    backgroundColor: "{colors.accent-ink-light}"
+    textColor: "{colors.app-surface-light}"
+    rounded: "{rounded.control}"
+    padding: "0 16px"
+    height: "36px"
+  button-primary-dark:
+    backgroundColor: "{colors.accent-ink-dark}"
+    textColor: "{colors.app-bg-dark}"
+    rounded: "{rounded.control}"
+    padding: "0 16px"
+    height: "36px"
+  creator-post:
+    backgroundColor: "{colors.post-paper}"
+    textColor: "{colors.post-ink}"
+    rounded: "{rounded.post}"
+    padding: "18px 18px 14px"
+  noise-post:
+    backgroundColor: "{colors.feed-noise}"
+    textColor: "{colors.feed-noise-text}"
+    rounded: "{rounded.post}"
+    padding: "15px 16px 13px"
+  product-crop:
+    backgroundColor: "{colors.feed-ink-raised}"
+    textColor: "{colors.app-text-1-dark}"
+    rounded: "{rounded.crop}"
+    padding: "clamp(18px, 2.4vw, 30px)"
+  avatar-light:
+    backgroundColor: "{colors.accent-ink-light}"
+    textColor: "{colors.app-surface-light}"
+    rounded: "{rounded.pill}"
+    size: "26px"
+---
 
-> Write posts people stop for.
+# Design System: Hookworthy
 
-## (a) Name
+## Overview
 
-**Pick: Hookworthy** (hookworthy.com, standard price). The hook is the first line, the only part most people read. "Worthy" is the promise: every post earns the stop. The name says what the product does and doubles as a verb-ish tagline: *write hookworthy.*
+**Creative North Star: "The Thumb-Stop"**
 
-The full search (5 rounds, 250+ candidates, domain checks) is in `NAMES.md`.
+A feed is a machine for ignoring things. Hookworthy is built from the feed's own grammar and owns one moment inside it: the stop. Everywhere the product shows your work, it shows it the way your audience will meet it: in a stream of other people's posts, dim and moving, with yours as the only sharp, bright object. On the landing page the stream is live. Other posts blur past with speed-linked motion blur. Your pinned post's first line is graded as you type: under 70 the feed keeps scrolling past you, and at 70 or above it brakes, parks around your post and underlines the hook.
 
-## (b) Brand identity
+The palette is graphite with no brand hue: a near-black feed ground, one ink accent that flips between near-black and near-white, and hue kept for meaning only (green good, amber waiting, red weak or wrong). Type pairs a classical serif at feed-breaking scale (EB Garamond, never italic-gradient) with Figtree as the native face of posts and interface, and Geist Mono for numbers only. Illustration is the product itself: real pieces of the interface (hook score, word diff, week strip, voice slider, insight bars, workspace switcher) cropped big and staged on the feed ground. It's for creators, by creators. Every surface should read as a tool someone who posts every week would build.
 
+The owner's pins: colors minimal like Linear and Arc but not bare like Craft; type in the spirit of Wispr Flow; product crops as the illustration style.
+
+**Key Characteristics:**
+- Graphite feed ground with one bright creator post.
+- A stop that has to be earned: score 70+ brakes the feed.
+- Serif headlines at headline scale, sans for everything a creator types.
+- Product crops instead of drawings, glows or particles.
+- Hue only when it means something.
+
+## Colors
+
+Graphite neutrals with an ink accent. Color never decorates.
+
+### Primary
+- **Ink** (#17181B light / #F4F4F5 dark): the accent. Primary buttons, selected states, the hook underline, the stop-meter track, avatars. On-accent text flips with it (`--accent-ink`: #FFFFFF on light, #0B0C0E on dark).
+
+### Neutral
+- **Feed Ink** (#0B0C0E): the landing and onboarding ground. The feed lives here.
+- **Raised Ink** (#111215) and **Crop Ink** (#17181C): product crops and the cards inside them.
+- **Noise** (#1A1B1F, text #6A6D75): other people's posts. Low contrast on purpose; they are aria-hidden decoration.
+- **Post Paper** (#F7F7F8, text #111214): the creator's post. The brightest thing on any dark screen.
+- **App neutrals**: light bg #F7F7F8, surface #FFFFFF, surface-2 #F2F2F4, text #111216 / #51545C / #6B6F78; dark bg #08090A, surface #101113, surface-2 #16171A, text #F7F8F8 / #A3A7AF / #80858E.
+
+### Semantic
+- **Success** (#1F8F5F / #4CC38A): stopped, approved, inserted words, rising deltas.
+- **Warn** (#C26A12 / #F2A14A): waiting for approval.
+- **Error** (#D63F3F / #F26D6D): scrolled past, deleted words, falling deltas.
+
+### Named Rules
+**The One Bright Post Rule.** On any dark feed surface, only the creator's post is bright. Everything else stays in the graphite range.
+**The Meaning-Only Hue Rule.** No brand hue. Green, amber and red appear only when they report a state. Avatars are ink, not colored gradients.
+
+## Typography
+
+**Display Font:** EB Garamond (with Iowan Old Style, Palatino, Georgia)
+**Body Font:** Figtree (with system-ui)
+**Data Font:** Geist Mono (with SF Mono, Menlo)
+
+**Character:** a headline serif that reads like the top of a front page, next to the rounded, open sans that posts are actually written in.
+
+### Hierarchy
+- **Display** (400, clamp(50px, 5.4vw, 82px), 0.98): the landing hero only.
+- **Headline** (400, clamp(40px, 5vw, 72px), 0.98): landing section heads and the final call to action. App page titles use 56px.
+- **Title** (400, clamp(30px, 3vw, 44px), 1.02): moment heads, creator-type tabs (28px), plan names (32px).
+- **Post first line** (Figtree 600, clamp(18px, 1.55vw, 21px), 1.35): the hook inside the creator's post.
+- **Body** (Figtree 400, 16.5px, 1.55, max ~52ch): section intros and moment copy.
+- **UI** (Figtree 500, 13–15px): controls, captions, status lines, keys such as "Hot take".
+- **Data** (Geist Mono 500, 11–13px, tabular): scores, times, counts, deltas.
+
+### Named Rules
+**The Numbers-Only Mono Rule.** Geist Mono is for counts, times, scores and keyboard keys. Sentences, captions and labels are never set in mono.
+**The No-Gradient Rule.** Headline text is solid. Emphasis comes from size, never gradient fills.
+
+## Layout
+
+The landing page is a 1240px container with a clamp(16px, 3.6vw, 40px) gutter.
+
+The hero is three columns: copy (1.08fr), the feed (340–490px) and the grade readout (0.7fr). Below 1120px the readout drops under the first two columns. Below 900px it folds into the creator's post itself: the reason plus five mini bars.
+
+Sections run on a clamp(96px, 12vw, 168px) rhythm. Content sections pair a headline block with a product crop, either as a sticky left column (grader wall, who it's for) or as a timed row. A timed row has a gutter with the time of day (Garamond 34px), the copy, and the crop.
+
+One light chapter ("One post. Four feeds.") breaks the dark run with an inset rounded panel.
+
+The app keeps a 232px sidebar and an inset main panel. The sidebar holds, in order: the voice switcher, search, navigation, one plan line, and the account.
+
+## Elevation & Depth
+
+Depth comes from brightness first and shadow second. The creator's post sits on a long, soft shadow (`0 30px 70px -20px rgba(0,0,0,.9)`) with a 1px light inner rim. Product crops use an inset 1px hairline (`rgba(255,255,255,.07)`) and a deep ambient drop (`0 40px 80px -40px rgba(0,0,0,.9)`). Motion blur on the feed is the main depth cue: moving things are behind, the sharp thing is in front. There are no glows and no glass.
+
+### Named Rules
+**The Sharp-Is-Near Rule.** Blur and dimness mean distance. Never blur or dim the creator's own content.
+
+## Shapes
+
+Radius grows with size: 6 for chips, 10 for controls, 14 for app cards, 18 for posts, 22 for product crops, 26 for the feed window, and pill-shaped for status chips and avatars. Posts are always rounded rectangles with an avatar column. The feed window is masked top and bottom so the stream appears to come from above and leave below.
+
+## Components
+
+### The creator's post (signature)
+Paper card, ink text, 40px ink avatar, name and handle, and a score chip that turns ink with a green dot when stopped. It holds an editable first line (Figtree 600) with a 2px ink underline that draws in on stop, two lines of real body text ending in "show more", and a tool row (Stronger hook, Punchier, Undo). The tools go icon-only under 420px.
+
+### The feed stream
+Noise posts in a vertical track. Speed eases toward the target set by the score: 1700 px/s under 50, 950 px/s under 70. Blur is `min(7px, v/240)`. At 70 or above the track brakes with an ease-out-cubic curve onto the slot that aligns with the pinned post. With reduced motion it parks instantly.
+
+### Grade readout
+A Garamond score at 84–124px, five labelled sub-score bars, one sentence of reason, a status line in Figtree, and a speed meter from green (stopped) to red (scrolled past).
+
+### Product crop
+Raised-ink panel with a hairline, holding real UI: word diffs (red deletions, green insertions, with a whole-phrase swap when little text survives), week strips, voice sliders, bars, and approval chips.
+
+### Buttons
+Primary is ink with on-accent text, 10px radius and a spring press (scale .965). Ghost has a hairline. On the dark landing the primary inverts to near-white.
+
+### Status chips
+Pill, 24px, Figtree 12px, with a 6px dot. Neutral for scheduled, amber for waiting on approval, green for approved.
+
+### Voice switcher
+Sidebar button with an ink avatar, name and kind (Personal, Client · Priya's voice). Its menu lists every voice with ⌘1–3 and "Add a client voice". A "Writing as" pill appears in the composer when a client voice is active.
+
+## Do's and Don'ts
+
+### Do:
+- **Do** show the creator's work inside a feed context (the landing hero, the "In the feed" preview, the final call to action).
+- **Do** use real product crops for every illustration, at a size where the text is readable.
+- **Do** label example data ("Example account", "Names are placeholders", "Prices are placeholders").
+- **Do** keep reasons specific to the line being graded. One sentence, no repeats across rows.
+- **Do** respect reduced motion: the feed parks, reveals are off.
+
+### Don't:
+- **Don't** invent users, counts, testimonials or press. No evidence exists yet.
+- **Don't** use gradient text, glows, particles or glass as decoration.
+- **Don't** put kicker or eyebrow labels above headings.
+- **Don't** set sentences in mono.
+- **Don't** give avatars or UI a brand hue.
+- **Don't** use hook puns in product copy ("Hook, meet world"). Talk like a creator: "Stay close for the first replies."
+
+## Brand and Voice
+
+- **Name:** Hookworthy (hookworthy.com). The naming search is in `NAMES.md`.
 - **Promise:** Write posts people stop for.
-- **Tagline:** Write hookworthy.
-- **Personality:** Calm. Sharp. Warm.
+- **Logo: The Cursor.** A text I-beam whose foot curls into a hook, drawn in one stroke weight with round caps. Icon `assets/icon.svg`, wordmark `assets/wordmark.svg` (lowercase *hookworthy* in EB Garamond 500), app icon `assets/app-icon.svg` (graphite gradient squircle with a white cursor). Other directions are in `brand/logo-directions.html`.
 - **Voice rules**
-  1. Short sentences. One idea each.
-  2. Talk like a friend who edits for a living: direct, a little dry, always on your side.
-  3. Specific beats clever. Numbers beat adjectives.
+  1. Creator to creator. Talk shop, not marketing.
+  2. Short sentences, one idea each.
+  3. Specific beats clever; numbers beat adjectives.
   4. Banned words: unlock, supercharge, leverage, elevate, seamless, game-changer, delve, "AI-powered".
-  5. Celebrate quietly. One exclamation mark per screen, max. Usually zero.
-  6. Errors say what happened and what to do next. No "Oops", no apologies.
-- **Logo: The Cursor** (direction B, "Graphite"). A text I-beam whose foot curls into a hook: writing first, catching second. One stroke weight, round caps, no fill. It reads at 16px and on a billboard. On hover it tilts back. Other directions considered: `brand/logo-directions.html`.
-  - Icon: `assets/icon.svg`
-  - Wordmark: `assets/wordmark.svg` (lowercase *hookworthy*, EB Garamond 500, −2% tracking, the cursor leading)
-  - App icon: `assets/app-icon.svg` (graphite gradient squircle `#4A4C53 → #141518`, white cursor, a soft top sheen and a glass edge: the Arc-style touch)
-- **Signature motif: the cursor + soft light.** The cursor marks where writing happens: the logo, the editor caret, the hook score ring. Glows behind heroes are neutral white light, never tinted. The landing page's particle field stays as ambient "attention" gathering around the composer.
+  5. Errors say what happened and what to do next.
 
-## (c) Design system
-
-### Type (v2: Wispr Flow-inspired)
-
-| Role | Face | Why |
-|---|---|---|
-| Display | **EB Garamond**, regular weight, 40–128px | Classical and literary. Authority comes from size, not weight. The italic is the voice moment (*loud*). It says "writing" before you read a word. |
-| UI + writing | **Figtree** | Friendly geometric sans, open and readable at 13–18px. Soft enough to sit next to Garamond without fighting it. |
-| Mono | **Geist Mono** | Counts, shortcuts, timestamps, stats. Tabular, so numbers don't jiggle while you type. |
-
-- Display: tracking −0.02 to −0.03em, line-height 0.96–1.05, weight 400. Big numbers (KPIs, prices, scores) use Garamond lining figures.
-- Editor: Figtree 18/1.6. UI: 13–15px.
-- Labels: Geist Mono 11px uppercase, +0.08em.
-
-### Color (v2: Linear-inspired)
-
-Cool, near-neutral greys (Linear) and no brand hue. The accent is ink: near-black on light, near-white on dark. Hue is reserved for meaning: green for good, amber for warnings, red for errors. The landing page and onboarding are always dark, like Linear's site, with one light "paper" chapter (the Wispr-style alternation). The app follows light/dark.
-
-| Token | Light | Dark |
-|---|---|---|
-| `--bg` | `#F7F7F8` | `#08090A` |
-| `--surface` / panel | `#FFFFFF` | `#101113` / `#0F1012` |
-| `--surface-2` | `#F2F2F4` | `#16171A` |
-| `--border` | `rgba(17,18,24,.08)` | `rgba(255,255,255,.07)` |
-| `--text-1` | `#111216` | `#F7F8F8` |
-| `--text-2` | `#51545C` | `#A3A7AF` |
-| `--text-3` | `#6B6F78` | `#80858E` |
-| `--accent` (Ink) | `#17181B` | `#F4F4F5` |
-| `--accent-text` / `--accent-ink` | `#17181B` / `#FFFFFF` | `#F4F4F5` / `#0B0C0E` |
-| `--success` / `--warn` / `--error` | `#1F8F5F` / `#C26A12` / `#D63F3F` | `#4CC38A` / `#F2A14A` / `#F26D6D` |
-| Paper chapter | `#F5F4F0` | n/a |
-
-Depth comes from 1px borders, an inset main panel (Linear's app shell), soft neutral light behind heroes, and gradient-to-transparent headline text. No grain and no blur-banding glows.
-
-### Spacing, radii, icons
-
-- 4pt base, 8pt rhythm: 4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64 · 96 · 128
-- Radii: 6 (chips) · 10 (buttons, inputs) · 14 (cards) · 20 (modals) · 28 (hero surfaces) · 999 (pills)
-- Icons: 20px grid, 1.5px stroke, round caps and joins, one family, drawn in-house.
-
-### Motion (Linear × Wispr × Notion)
-
-- **Linear:** blur-and-rise reveals on scroll (only below the fold, so the first frame is always complete), the hero headline arriving word by word, and view transitions that cross-fade the main panel between routes while the sidebar stays put.
-- **Wispr:** soft, organic easing (`cubic-bezier(.16,1,.3,1)`) and generous durations for big moments (0.6–1s).
-- **Notion:** snappy, springy micro-interactions: buttons and chips press to 0.965, switches squash, the nav highlight glides between items, and the hook ring counts up.
-- Springs are generated at boot into CSS `linear()` easings. Toasts morph one at a time. Ghost text appears after a 1.1s pause and never repeats generic suggestions.
-- `prefers-reduced-motion` turns everything into 1ms fades with no reveals.
-
-## (d) Screens
-
-1. **Landing** – hero with a live composer demo over a field of attention, scroll story (capture → draft → sharpen → ship), before/after rewrite slider, features, social proof, pricing, repeated CTA.
-2. **Onboarding** – paste your @ → 3-second read → your voice + five posts you could write today.
-3. **Composer** – thread editor, ghost text, AI riffs with word-level diff, hook score, live previews for X / Threads / LinkedIn / Bluesky, media, GIFs, polls, drag to reorder, schedule.
-4. **Ideas** – capture bar (text, links, screenshots, voice memos), idea engine, inbox, remix top posts.
-5. **Hooks** – hook grader + hook library.
-6. **Queue** – week calendar, drag between slots, best-time glow, auto-plug, auto-repost, gap filler.
-7. **Insights** – insight-first analytics with charts that explain themselves.
-8. **Voice** – voice profile, tone sliders, never-say list.
-9. **Upgrade** – pricing that looks as good as the product.
-10. **Brand** – logo, color, type, motion and every component state.
-11. Overlays – ⌘K palette, quick capture, shortcuts sheet, schedule sheet, GIF picker, toasts, publish reward.
+Not canonized (defects the build still carries): section-group labels in the app's cards ("Up next", "Autopilot") are UI group titles, not kickers, and stay. Nothing else is knowingly carried.
