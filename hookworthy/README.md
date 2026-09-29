@@ -34,6 +34,7 @@ Press `⌘K` / `Ctrl K` for the palette and `?` for all shortcuts.
 - `index.html`: the whole app. Design tokens are documented at the top of the `<style>` block.
 - `DESIGN.md`: name, brand, voice, type, color, spacing, motion and screen list.
 - `CRITIQUE.md`: the review and what it changed.
+- `brand/logo-directions.html`: six logo and brand directions to pick from.
 - `NAMES.md`: the naming search and domain checks (hookworthy.com).
 - `assets/`: icon, wordmark, app icon (SVG and PNG).
 - `manifest.webmanifest`, `sw.js`: PWA.
