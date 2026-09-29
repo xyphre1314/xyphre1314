@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#F5F5F3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#09090A" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230C0C0E'/%3E%3Cg transform='translate%283.2 3.2%29 scale%28.8%29'%3E%3Cpath d='M3 21.5 6 10.5h19l-3 11z' fill='%23FFE14D'/%3E%3Crect x='24.2' y='5' width='3.4' height='22' rx='1.7' fill='%23F5F5F3'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230C0C0E'/%3E%3Cg transform='translate%283.2 3.2%29 scale%28.8%29'%3E%3Cpath d='M3 21.5 6 10.5h19l-3 11z' fill='%23FFE14D'/%3E%3Crect x='23.6' y='4' width='4.4' height='24' rx='2.2' fill='%23F5F5F3'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="assets/app-icon.png">
 <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -319,7 +319,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .logo:hover .mark .sw{ animation:swipe .55s var(--ease-out) both; }
 .logo:hover .mark .ct{ animation:caret .9s .45s steps(1) 2 both; }
 @keyframes swipe{ from{ transform:scaleX(0); } }
-@keyframes caret{ 50%{ opacity:0; } }
+@keyframes caret{ 50%{ opacity:.35; } }
 
 /* ==========================================================================
    APP SHELL: Linear-style inset panel
@@ -441,7 +441,7 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 
 .editor-col{ min-width:0; position:relative; overflow-x:clip; }
 .editor{ max-width:640px; margin:0 auto; padding:40px 32px 50vh; position:relative; }
-@media (max-width:760px){ .editor{ display:flex; flex-direction:column; } .editor .starters{ order:3; margin-top:28px; } .editor .add-tw{ order:2; } .c-top .plats-l{ display:none; } }
+@media (max-width:760px){ .editor{ display:flex; flex-direction:column; } .editor .starters{ order:3; margin-top:28px; } .editor .add-tw{ order:2; } }
 .glow{ display:none; }
 
 .starters{ position:relative; z-index:1; margin-bottom:32px; }
@@ -544,7 +544,10 @@ body.typing .tw-tools{ opacity:0!important; }
 .tool.riff:hover{ background:var(--accent-soft); }
 .tools-sep{ width:1px; height:14px; background:var(--border-strong); margin:0 6px; }
 @media (max-width:760px){
-  .c-top .status .txt{ display:none; }
+  .c-top .status .txt{ font-size:12px; white-space:nowrap; }
+  .c-top{ gap:6px; padding:0 10px 0 14px; } .c-top .plats-l{ white-space:nowrap; }
+  .c-top [data-cact="schedmenu"]{ display:none; }
+  .c-top [data-cact="schedule"] span{ display:none; } .c-top [data-cact="schedule"]{ width:var(--bh); padding:0; }
   .c-top .plats .plat{ width:30px; }
   .tw-tools{ gap:0; } .tools-sep{ margin:0 2px; } .tool{ padding:0 5px; min-width:26px; }
   .tw-tools .tool[data-cact="remove"], .tw-tools .tool[data-cact="poll"]{ display:none; }
@@ -1271,7 +1274,8 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .dm-side .nav a{ cursor:default; }
 .dm-top{ position:relative; }
 .dm-top .plats-l, .c-top .plats-l{ font-size:var(--t-12); color:var(--text-3); margin-right:2px; }
-.dm-tools{ opacity:1; }
+.dm-tools{ opacity:1; transition:opacity .2s; }
+.dm-tx:has(.dm-sharp.on) + .dm-tools{ opacity:0; }
 .dm-pv{ border-left:1px solid var(--border); background:var(--bg-elev); display:flex; flex-direction:column; min-width:0; }
 .dm-pvh{ display:flex; justify-content:space-between; align-items:center; height:52px; padding:0 14px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text-3); }
 .dm-pvh span:first-child{ display:inline-flex; gap:6px; align-items:center; color:var(--text-1); font-weight:500; } .dm-pvh svg{ width:13px; height:13px; }
@@ -2170,7 +2174,7 @@ function parseLink(url) {
    UI KIT
    ========================================================================== */
 /* the mark: a marker swipe with the caret at its end. You just wrote a first line worth highlighting. */
-const LOGO_MARK = `<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="8"/><g transform="translate(3.2 3.2) scale(.8)"><path class="sw" d="M3 21.5 6 10.5h19l-3 11z"/><rect class="ct" x="24.2" y="5" width="3.4" height="22" rx="1.7"/></g></svg>`;
+const LOGO_MARK = `<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="8"/><g transform="translate(3.2 3.2) scale(.8)"><path class="sw" d="M3 21.5 6 10.5h19l-3 11z"/><rect class="ct" x="23.6" y="4" width="4.4" height="24" rx="2.2"/></g></svg>`;
 const LOGO = `${LOGO_MARK}<span class="word">hookworthy</span>`;
 const PLAT = { x: { name: 'X', limit: 280, icon: 'x' }, threads: { name: 'Threads', limit: 500, icon: 'threads' }, linkedin: { name: 'LinkedIn', limit: 3000, icon: 'li' }, bsky: { name: 'Bluesky', limit: 300, icon: 'bsky' } };
 const avatar = (u = S.user, cls = '') => `<span class="avatar ${cls}" style="--h:${u.hue}">${esc((u.name || u.handle || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase())}</span>`;
@@ -3154,7 +3158,7 @@ const schedulePreview = (() => { let raf = 0; return () => { cancelAnimationFram
 function renderPreviewHead() {
   const h = $('#pv-h'); if (!h) return; const on = Object.keys(PLAT).filter(k => S.platforms[k]);
   let tab = S.preview.tab; if (tab !== 'all' && !on.includes(tab)) tab = S.preview.tab = on[0] || 'x';
-  h.innerHTML = `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}" data-tip="${k === 'all' ? 'All platforms' : PLAT[k].name}">${k === 'all' ? 'All' : pic(PLAT[k].icon, 'icon sm')}</button>`).join('')}</div><span class="label">In the feed</span><button class="btn ghost icon-only sm pv-close" data-cact="preview" aria-label="Close preview">${ic('x')}</button>`;
+  h.innerHTML = `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}">${k === 'all' ? 'All' : PLAT[k].name}</button>`).join('')}</div><span class="label">Preview</span><button class="btn ghost icon-only sm pv-close" data-cact="preview" aria-label="Close preview">${ic('x')}</button>`;
   requestAnimationFrame(() => syncSeg($('.seg', h)));
 }
 function renderPreviewBody() {
