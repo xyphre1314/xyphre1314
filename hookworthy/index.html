@@ -345,6 +345,14 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 ::view-transition-group(sidebar){ animation:none; }
 @keyframes vt-out{ to{ opacity:0; filter:blur(3px); } }
 @keyframes vt-in{ from{ opacity:0; transform:translateY(8px); filter:blur(3px); } }
+/* crossing between the homepage and the app: the page settles in like a sheet */
+:root[data-vt="cross"]::view-transition-old(root){ animation:vt-cross-out 220ms var(--ease-out) both; }
+:root[data-vt="cross"]::view-transition-new(root){ animation:vt-cross-in 480ms var(--ease-out) both; }
+:root[data-vt="cross"]::view-transition-group(sidebar){ animation:none; }
+:root[data-vt="cross"]::view-transition-new(sidebar){ animation:vt-cross-in 420ms var(--ease-out) both; }
+:root[data-vt="cross"]::view-transition-new(main){ animation:vt-cross-in 520ms 60ms var(--ease-out) both; }
+@keyframes vt-cross-out{ to{ opacity:0; transform:scale(.985); } }
+@keyframes vt-cross-in{ from{ opacity:0; transform:translateY(14px) scale(1.01); filter:blur(6px); } }
 
 /* focus mode while typing */
 body.typing .side{ opacity:.25; }
@@ -372,14 +380,6 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 .qt{ display:inline-flex; align-items:center; gap:5px; height:18px; padding:0 6px; border-radius:6px; font:500 10.5px/1 var(--font-mono); background:var(--surface-3); color:var(--text-2); white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
 .qt i{ width:5px; height:5px; border-radius:50%; background:currentColor; }
 .qt.needs{ color:var(--warn); background:var(--warn-soft); } .qt.ok{ color:var(--success); background:var(--success-soft); }
-/* the draft, in the feed: other people's posts sit around yours, faded */
-.pv-noise{ display:grid; gap:0; opacity:.5; }
-.pv-noise .n{ display:grid; grid-template-columns:32px minmax(0,1fr); gap:10px; padding:12px 16px; border-bottom:1px solid var(--border); font-size:13.5px; color:var(--text-3); }
-.pv-noise .av{ width:32px; height:32px; border-radius:50%; background:var(--surface-3); }
-.pv-noise .nm{ display:block; width:90px; height:8px; border-radius:8px; background:var(--surface-3); margin:4px 0 7px; }
-.pv-noise p{ margin:0; }
-.preview-b > .pv-noise:first-child{ -webkit-mask-image:linear-gradient(transparent,#000 70%); mask-image:linear-gradient(transparent,#000 70%); }
-.preview-b > .pv-noise:last-child{ -webkit-mask-image:linear-gradient(#000 30%,transparent); mask-image:linear-gradient(#000 30%,transparent); }
 .preview-b > .pv{ box-shadow:0 0 0 1px var(--border-strong),0 18px 40px -18px rgba(0,0,0,.35); }
 .onb{ isolation:isolate; }
 .onb .ghostfeed{ opacity:.35; }
@@ -504,6 +504,7 @@ body.typing .tw-tools{ opacity:0!important; }
 .ring b{ position:relative; font:500 10px/1 var(--font-mono); font-variant-numeric:tabular-nums; opacity:0; transform:scale(.6); transition:opacity var(--d-fast),transform var(--d-spring) var(--spring-snap); }
 .ring.warn b,.ring.over b{ opacity:1; transform:none; }
 .ring.warn b{ color:var(--warn); } .ring.over b{ color:var(--error); }
+.ring.far svg{ opacity:0; transform:rotate(-90deg) scale(.5); }
 .ring.pulse{ animation:ringpulse .42s var(--spring-snap); }
 @keyframes ringpulse{ 50%{ transform:scale(1.2); } }
 
@@ -561,42 +562,36 @@ body.typing .preview{ opacity:.7; }
 .preview-b{ flex:1; overflow:auto; padding:16px 16px 40px; overscroll-behavior:contain; }
 .preview-b.all{ display:grid; gap:16px; align-content:start; }
 .pv-close{ display:none; }
-.pv{ border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border),var(--sh-1); overflow:hidden; }
+.pv{ border-radius:16px; background:var(--surface); box-shadow:0 0 0 1px var(--border),var(--sh-1); overflow:hidden; }
+/* the draft, in the feed: the platform's own surface, real neighbours above and below */
+.pv-feed{ position:relative; background:#fff; }
+.pv.dark .pv-feed{ background:#000; }
+.pv-threads.dark .pv-feed{ background:#101010; }
+.pv-linkedin .pv-feed{ background:#F4F2EE; display:grid; gap:8px; padding:8px 0; }
+.pv-linkedin.dark .pv-feed{ background:#000; }
+.pv-linkedin .lip{ border-radius:0; box-shadow:none; }
+.pv-near{ overflow:hidden; pointer-events:none; opacity:.6; }
+.pv-near.up{ max-height:128px; display:flex; flex-direction:column; justify-content:flex-end; -webkit-mask-image:linear-gradient(transparent,#000 90%); mask-image:linear-gradient(transparent,#000 90%); }
+.pv-near.dn{ max-height:110px; -webkit-mask-image:linear-gradient(#000 10%,transparent); mask-image:linear-gradient(#000 10%,transparent); }
+.pv-mine{ position:relative; animation:rise var(--d-snap) var(--ease-out) both; }
+.pv-mine .xp:last-child,.pv-mine .thp:last-child,.pv-mine .bsp:last-child{ border-bottom-color:transparent; }
+.pf .tx .over{ background:rgba(244,33,46,.2); border-radius:2px; }
+.pf .pv-ph{ opacity:.45; }
+.pf .media-grid{ margin-top:12px; border-radius:16px; box-shadow:0 0 0 1px rgba(128,128,128,.25); }
+.lip .media-grid{ border-radius:0; box-shadow:none; margin-top:8px; }
+.pf .poll-pv{ margin-top:12px; display:grid; gap:8px; }
+.pf .poll-pv div{ height:32px; border-radius:9999px; box-shadow:inset 0 0 0 1px #1D9BF0; display:flex; align-items:center; justify-content:center; font-weight:700; color:#1D9BF0; font-size:15px; }
+.pf .poll-pv span{ font-size:13px; opacity:.6; }
+.lip .more{ color:var(--l-2); padding:4px; }
+.pv-more{ display:grid; grid-template-columns:40px 1fr; gap:8px; align-items:center; padding:4px 16px 12px; background:#fff; color:#1D9BF0; font:400 15px/20px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+.pv-more .av{ width:32px; height:32px; justify-self:center; font-size:12px; }
+.pv-more.dark{ background:#000; }
+.pv-threads .pv-more,.pv-bsky .pv-more{ color:inherit; opacity:.6; }
+.pv-proj{ margin:0; padding:9px 12px; border-top:1px solid var(--border); font:400 var(--t-12)/1.4 var(--font-ui); color:var(--text-3); }
 .pv-tag{ display:flex; align-items:center; justify-content:space-between; padding:9px 12px; border-bottom:1px solid var(--border); font:500 var(--t-12)/1 var(--font-ui); color:var(--text-3); }
 .pv-tag span{ display:inline-flex; align-items:center; gap:6px; }
 .pv-tag svg{ width:13px; height:13px; }
 .pv-warn{ color:var(--error); font-family:var(--font-mono); font-size:11px; }
-.pvx{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:15px; line-height:20px; letter-spacing:0; color:var(--text-1); }
-.pvx .post{ display:grid; grid-template-columns:40px 1fr; gap:12px; padding:12px 14px 0; position:relative; }
-.pvx .post .l{ display:flex; flex-direction:column; align-items:center; }
-.pvx .post .l .avatar{ width:40px; height:40px; font-size:14px; }
-.pvx .post .l .line{ width:2px; flex:1; background:var(--surface-3); margin-top:4px; min-height:8px; }
-.pvx .post:last-child .l .line{ display:none; }
-.pvx .hd{ display:flex; gap:4px; align-items:center; white-space:nowrap; overflow:hidden; }
-.pvx .hd b{ font-weight:700; } .pvx .hd span{ color:var(--text-3); overflow:hidden; text-overflow:ellipsis; }
-.pvx .tx{ white-space:pre-wrap; overflow-wrap:anywhere; margin-top:2px; }
-.pvx .tx .over{ background:var(--error-soft); color:var(--error); border-radius:2px; }
-.pvx .acts{ display:flex; justify-content:space-between; max-width:300px; padding:10px 0 12px; color:var(--text-3); font-size:13px; }
-.pvx .acts span{ display:inline-flex; align-items:center; gap:4px; }
-.pvx .acts svg{ width:16px; height:16px; }
-.pvx .media-grid{ border-radius:14px; }
-.pvx .poll-pv{ margin-top:10px; display:grid; gap:6px; }
-.pvx .poll-pv div{ height:30px; border-radius:6px; box-shadow:inset 0 0 0 1px var(--border-strong); display:flex; align-items:center; justify-content:center; font-weight:600; color:#1d9bf0; font-size:14px; }
-.pvx.threads .post .l .avatar{ width:36px; height:36px; }
-.pvx.threads .acts{ justify-content:flex-start; gap:18px; }
-.pvx.bsky .acts{ max-width:260px; }
-.pvl{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:14px; line-height:20px; color:var(--text-1); padding:12px 16px 4px; }
-.pvl .hd{ display:grid; grid-template-columns:48px 1fr; gap:8px; align-items:center; margin-bottom:10px; }
-.pvl .hd .avatar{ width:48px; height:48px; }
-.pvl .hd b{ display:block; font-weight:600; }
-.pvl .hd div > span{ display:block; color:var(--text-3); font-size:12px; line-height:16px; }
-.pvl .tx{ white-space:pre-wrap; overflow-wrap:anywhere; }
-.pvl .tx.clamp{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-.pvl .more{ color:var(--text-3); font-weight:600; }
-.pvl .more:hover{ text-decoration:underline; color:var(--text-2); }
-.pvl .acts{ display:flex; justify-content:space-around; border-top:1px solid var(--border); margin-top:10px; padding:8px 0; color:var(--text-2); font-weight:600; font-size:13px; }
-.pvl .acts span{ display:inline-flex; align-items:center; gap:6px; }
-.pvl .acts svg{ width:16px; height:16px; }
 .pv-edit{ padding:10px 12px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:var(--t-12); color:var(--text-3); }
 .pv-edit textarea{ width:100%; min-height:140px; }
 
@@ -946,6 +941,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .thp .acts .a{ display:inline-flex; align-items:center; gap:4px; height:36px; padding:0 8px; border-radius:18px; }
 .thp .acts .ic{ width:20px; height:20px; stroke-width:1.9; }
 .thp .acts .c{ color:var(--t-tx); opacity:.85; font-variant-numeric:tabular-nums; }
+.thp.thr{ border-bottom:0; padding-bottom:0; }
 .thp .rail{ display:grid; justify-items:center; grid-template-rows:36px 1fr; }
 .thp .rail i{ width:2px; margin-top:6px; background:var(--t-rail); border-radius:2px; }
 
@@ -961,7 +957,8 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .lip .who span{ display:block; font-size:12px; line-height:16px; color:var(--l-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .lip .follow{ display:inline-flex; align-items:center; gap:4px; color:var(--l-blue); font-weight:600; font-size:16px; padding:4px 8px; border-radius:4px; }
 .lip .tx{ position:relative; padding:8px 16px 0; white-space:pre-wrap; overflow-wrap:anywhere; }
-.lip .tx.clamp{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+/* clamp by height, not line-clamp: LinkedIn shows no ellipsis of its own, only the …more button */
+.lip .tx.clamp{ max-height:calc(8px + 20px * var(--lines,3)); overflow:hidden; }
 .lip .seemore{ display:block; text-align:right; padding:0 16px; margin-top:-20px; position:relative; color:var(--l-2); font-size:14px; line-height:20px; }
 .lip .seemore span{ background:var(--l-bg); padding-left:6px; box-shadow:-18px 0 12px var(--l-bg); }
 .lip .md{ margin-top:8px; aspect-ratio:800/474; background:var(--l-line); }
@@ -983,6 +980,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .bsp .hd{ display:flex; align-items:baseline; gap:4px; min-width:0; }
 .bsp .hd .n{ font-weight:600; white-space:nowrap; }
 .bsp .hd .h, .bsp .hd .t{ color:var(--b-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bsp .hd .n, .bsp .hd .t{ flex:none; } .bsp .hd .h{ min-width:0; }
 .bsp .tx{ margin-top:2px; white-space:pre-wrap; overflow-wrap:anywhere; }
 .bsp .md{ margin-top:10px; border-radius:8px; overflow:hidden; aspect-ratio:800/474; }
 .bsp .md img{ width:100%; height:100%; object-fit:cover; }
@@ -1014,7 +1012,9 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .phone .scr.dark .feed .lip{ border-bottom-color:#000; }
 .phone .tb{ display:flex; justify-content:space-around; align-items:center; height:52px; border-top:1px solid #EFF3F4; color:#0F1419; flex:none; padding-bottom:10px; }
 .phone .scr.dark .tb{ border-color:#2F3336; color:#E7E9EA; }
+.phone .ic{ fill:none; stroke:currentColor; stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round; }
 .phone .tb .ic{ width:22px; height:22px; stroke-width:1.9; }
+.phone .apph .av{ border-radius:50%; display:grid; place-items:center; color:#fff; font:700 12px/1 -apple-system,BlinkMacSystemFont,sans-serif; background:linear-gradient(135deg,#8B98A5,#536471); }
 .phone .fab{ position:absolute; right:14px; bottom:74px; width:52px; height:52px; border-radius:50%; background:#1D9BF0; color:#fff; display:grid; place-items:center; box-shadow:0 6px 16px -4px rgba(0,0,0,.3); }
 .phone .fab .ic{ width:22px; height:22px; stroke-width:2.2; }
 .phone .home-ind{ position:absolute; bottom:7px; left:50%; width:34%; height:5px; margin-left:-17%; border-radius:5px; background:#000; opacity:.85; }
@@ -1143,11 +1143,14 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .win .sched.on{ opacity:1; }
 .story .phonewrap{ position:absolute; right:0; top:50%; transform:translate(40px,-50%) rotate(4deg); opacity:0; transition:transform .9s var(--ease-o),opacity .6s; }
 .story .phonewrap.on{ transform:translate(0,-50%) rotate(0); opacity:1; }
-.story .sttoast{ position:absolute; right:-10px; top:14%; display:flex; align-items:center; gap:10px; padding:10px 14px 10px 10px; border-radius:16px; background:rgba(30,30,33,.9); backdrop-filter:blur(12px); box-shadow:0 0 0 1px rgba(255,255,255,.08),0 20px 40px -20px rgba(0,0,0,.8); font-size:13.5px; opacity:0; transform:translateY(10px) scale(.96); transition:opacity .4s,transform .5s var(--ease-o); z-index:3; }
+.story .sttoast{ position:absolute; left:14px; right:14px; top:50px; display:grid; grid-template-columns:34px 1fr; gap:10px; align-items:center; padding:11px 14px 12px 11px; border-radius:22px; background:rgba(246,246,248,.82); -webkit-backdrop-filter:blur(18px) saturate(1.6); backdrop-filter:blur(18px) saturate(1.6); box-shadow:0 12px 30px -12px rgba(0,0,0,.45),0 0 0 .5px rgba(0,0,0,.08); color:#000; font:400 13px/17px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; opacity:0; transform:translateY(-18px) scale(.94); transition:opacity .35s,transform .6s var(--ease-o); z-index:3; }
 .story .sttoast.on{ opacity:1; transform:none; }
-.story .sttoast .ti{ width:30px; height:30px; border-radius:8px; background:#1D9BF0; display:grid; place-items:center; color:#fff; }
-.story .sttoast b{ display:block; font-weight:600; }
-.story .sttoast span{ color:#A2A3A9; }
+.story .sttoast .ti{ width:34px; height:34px; border-radius:8px; background:#000; display:grid; place-items:center; color:#fff; }
+.story .sttoast .ti .logo{ width:17px; height:17px; } .story .sttoast .ti .logo path{ fill:#fff; }
+.story .sttoast p{ display:flex; justify-content:space-between; margin:0; }
+.story .sttoast p b{ font-weight:600; font-size:12.5px; } .story .sttoast p span{ color:rgba(60,60,67,.6); font-size:12.5px; }
+.story .sttoast strong{ display:block; font-weight:600; }
+.story .sttoast > div > span{ display:block; color:#1c1c1e; }
 
 /* ---------- relatable wall: marquee of posts ---------- */
 .wall{ display:grid; gap:16px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); }
@@ -1184,7 +1187,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .fold .fmeter b{ font:500 13px/1 var(--font-mono); color:var(--c-ink); }
 .fold .cards{ display:grid; gap:14px; }
 .fold .lbl{ font-size:13px; color:var(--c-2); margin-bottom:6px; display:flex; justify-content:space-between; }
-.fold .lip .tx.clamp{ -webkit-line-clamp:var(--lines,3); }
+
 
 /* ---------- voice (dark) ---------- */
 .voice2{ background:var(--c-dark); color:#F5F5F3; border-radius:clamp(24px,3vw,40px); margin:clamp(110px,14vw,190px) clamp(8px,1vw,14px) 0; padding:clamp(72px,9vw,120px) 0; }
@@ -2079,6 +2082,7 @@ const isDark = () => { const d = document.documentElement.dataset.theme; return 
 function applyTheme() { if (S.theme) document.documentElement.dataset.theme = S.theme; }
 function toggleTheme() {
   const dark = isDark(); S.theme = dark ? 'light' : 'dark'; applyTheme(); save();
+  schedulePreview();
   $$('[data-act="theme"]').forEach(b => b.innerHTML = ic(isDark() ? 'sun' : 'moon'));
   toast(dark ? 'Lights on.' : 'Lights off. Easier on the eyes at 1am.', { icon: dark ? 'sun' : 'moon', tone: 'accent', ms: 2000 });
 }
@@ -2109,7 +2113,9 @@ function route() {
     CURRENT = name; document.body.classList.toggle('on-dark', name === 'home' || name === 'start');
     ROUTES[name]({ same }); scrollTo(0, 0); initNavPill();
   };
-  if (same && document.startViewTransition && !REDUCED) document.startViewTransition(render); else render();
+  if (!CURRENT || !document.startViewTransition || REDUCED) render();
+  else if (same) document.startViewTransition(render);
+  else { const r = document.documentElement; r.dataset.vt = 'cross'; document.startViewTransition(render).finished.finally(() => delete r.dataset.vt); }
   document.title = { home: 'Hookworthy', start: 'Hookworthy · Find your voice', write: 'Write · Hookworthy', ideas: 'Ideas · Hookworthy', hooks: 'Hooks · Hookworthy', queue: 'Queue · Hookworthy', insights: 'Insights · Hookworthy', voice: 'Voice · Hookworthy', brand: 'Brand · Hookworthy', upgrade: 'Hookworthy Pro' }[name];
 }
 addEventListener('hashchange', route);
@@ -2489,6 +2495,7 @@ function paintRing(tEl) {
   const state = rem < 0 ? 'over' : rem <= 20 ? 'warn' : '';
   if ((ring.dataset.s || '') !== state) { ring.classList.remove('pulse'); void ring.offsetWidth; if (state) ring.classList.add('pulse'); }
   ring.dataset.s = state; ring.classList.toggle('warn', state === 'warn'); ring.classList.toggle('over', state === 'over');
+  ring.classList.toggle('far', rem <= -10);
   $('b', ring).textContent = state ? rem : '';
   ring.dataset.tip = `${len} / ${lim} characters`;
 }
@@ -2744,34 +2751,34 @@ function renderPreviewBody() {
   const on = Object.keys(PLAT).filter(k => S.platforms[k]); const tab = S.preview.tab;
   if (!on.length) { b.className = 'preview-b'; b.innerHTML = `<div class="empty">${ic('send', 'lg')}<p>Pick at least one platform up top.<br>Hookworthy can’t post to the void. Yet.</p></div>`; return; }
   b.className = 'preview-b' + (tab === 'all' ? ' all' : '');
-  b.innerHTML = tab === 'all' ? on.map(k => pvCard(k, true)).join('') : `${pvNoise(0)}${pvCard(tab, false)}${pvNoise(1)}`;
+  b.innerHTML = tab === 'all' ? on.map(k => pvCard(k, true)).join('') : pvCard(tab, false);
 }
-const PV_NOISE = [['Consistency is key. That’s the tweet.', 'Here are 10 tools you can’t afford to miss'], ['Excited to share some personal news…', 'What’s everyone working on this weekend?']];
-function pvNoise(i) { return `<div class="pv-noise" aria-hidden="true">${PV_NOISE[i].map(t => `<div class="n"><i class="av"></i><div><i class="nm"></i><p>${esc(t)}</p></div></div>`).join('')}</div>`; }
-function overText(t, lim) { const a = [...t]; if (a.length <= lim) return esc(t); return esc(a.slice(0, lim).join('')) + `<span class="over">${esc(a.slice(lim).join(''))}</span>`; }
+const pvYou = () => { const u = S.user; return { n: u.name, h: u.handle, v: 0, bio: `${u.niche} · writing on Hookworthy`, hue: u.hue }; };
+function overText(t, lim) { const a = [...t]; if (a.length <= lim) return pfText(t); return pfText(a.slice(0, lim).join('')) + `<span class="over">${esc(a.slice(lim).join(''))}</span>`; }
+/* feed neighbours: real-looking posts from other creators sit above and below yours */
+const PV_NEAR = { x: [3, 8], threads: [1, 10], linkedin: [4, 5], bsky: [0, 9] };
 function pvCard(k, compact) {
-  const p = PLAT[k], u = S.user; const tws = S.draft.tweets; const h = hookScore(tws[0].text); const pr = predict(h.score, tws[0].text) || { views: 0, replies: 0 };
+  const p = PLAT[k], tws = S.draft.tweets, dark = isDark(), you = pvYou(), R = PF_RENDER[k];
+  const h = hookScore(tws[0].text); const pr = predict(h.score, tws[0].text) || { views: 0, replies: 0 };
+  const cnt = sc => { const v = pr.views * sc, r = pr.replies * sc; return v ? [r, v * .006, v * .021, v] : [0, 0, 0, 0]; };
+  const umedia = t => t.media.length ? mediaHTML(t).replace(/<button class="rm"[\s\S]*?<\/button>/g, '') : '';
+  const upoll = t => t.poll ? `<div class="poll-pv">${t.poll.options.filter(Boolean).map(o => `<div>${esc(o)}</div>`).join('') || '<div>Choice 1</div><div>Choice 2</div>'}<span>0 votes · ${t.poll.days} day${t.poll.days > 1 ? 's' : ''} left</span></div>` : '';
+  const ph = i => `<span class="pv-ph">${i === 0 ? 'Your first line shows up here.' : 'Next post…'}</span>`;
+  let body, tag;
   if (k === 'linkedin') {
-    const txt = S.draft.li ?? tws.map(t => t.text.trim()).filter(Boolean).join('\n\n');
-    const long = txt.split('\n').length > 3 || txt.length > 210; const m0 = tws.find(t => t.media.length);
-    return `<div class="pv"><div class="pv-tag"><span>${pic('li')} LinkedIn</span><span>${S.draft.li != null ? 'Custom version' : 'One post, stitched'}</span></div>
-    <div class="pvl"><div class="hd">${avatar(u)}<div><b>${esc(u.name)}</b><span>${esc(u.niche)} · writing on Hookworthy</span><span>now · ${ic('globe', 'xs')}</span></div></div>
-    <div class="tx ${long && !UI.liMore ? 'clamp' : ''}">${txt ? esc(txt) : '<span class="faint">Your post shows up here.</span>'}</div>${long ? `<button class="more" data-cact="limore">${UI.liMore ? 'see less' : '…see more'}</button>` : ''}
-    ${m0 ? mediaHTML(m0).replace(/<button class="rm"[\s\S]*?<\/button>/g, '') : ''}
-    <div class="acts"><span>${ic('heart')} Like</span><span>${ic('reply')} Comment</span><span>${ic('repost')} Repost</span><span>${ic('send')} Send</span></div></div>
-    ${S.draft.li != null ? `<div class="pv-edit" style="display:grid"><textarea class="input" id="li-edit" aria-label="LinkedIn version">${esc(S.draft.li)}</textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span>Edits here only change LinkedIn.</span><button class="btn ghost sm" data-cact="lireset">${ic('undo', 'sm')} Follow thread</button></div></div>` : `<div class="pv-edit"><span>Stitched from your thread.</span><button class="btn sm" data-cact="litweak">${ic('riff', 'sm')} Tweak for LinkedIn</button></div>`}</div>`;
+    const txt = S.draft.li ?? tws.map(t => t.text.trim()).filter(Boolean).join('\n\n'); const m0 = tws.find(t => t.media.length);
+    const post = { t: txt || ' ', html: txt ? pfText(txt) : ph(0), mh: m0 ? umedia(m0) : '', c: cnt(1).map(x => x * 1.4), ago: 'now' };
+    body = R(post, { dark, you, expanded: UI.liMore }).replace('<span class="seemore">', '<span class="seemore" data-cact="limore" role="button" tabindex="0" aria-label="Show the whole post">');
+    tag = `<span>${pic('li')} ${esc(you.n)}</span><span>${S.draft.li != null ? 'Custom version' : 'One post, stitched'}</span>`;
+    body += S.draft.li != null ? `<div class="pv-edit" style="display:grid"><textarea class="input" id="li-edit" aria-label="LinkedIn version">${esc(S.draft.li)}</textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span>Edits here only change LinkedIn.</span><button class="btn ghost sm" data-cact="lireset">${ic('undo', 'sm')} Follow thread</button></div></div>` : `<div class="pv-edit"><span>Stitched from your thread.</span><button class="btn sm" data-cact="litweak">${ic('riff', 'sm')} Tweak for LinkedIn</button></div>`;
+  } else {
+    const list = compact ? tws.slice(0, 1) : tws; const overN = tws.filter(t => [...t.text].length > p.limit).length;
+    body = list.map((t, i) => R({ t: t.text, html: t.text ? overText(t.text, p.limit) : ph(i), mh: umedia(t) + upoll(t), c: cnt(i === 0 ? 1 : .32 / i), ago: 'now' }, { dark, you, rail: i < list.length - 1 })).join('');
+    if (compact && tws.length > 1) body += `<div class="pf pv-more ${dark ? 'dark' : ''}">${pfAv(you)}<span>Show ${tws.length - 1} more repl${tws.length > 2 ? 'ies' : 'y'}</span></div>`;
+    tag = `<span>${pic(p.icon)} @${esc(you.h)}${k === 'bsky' ? '.bsky.social' : ''}</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${tws.length > 1 ? `Thread of ${tws.length}` : `${p.limit} characters`}</span>`}`;
   }
-  const list = compact ? tws.slice(0, 2) : tws; const overN = tws.filter(t => [...t.text].length > p.limit).length;
-  const cls = k === 'threads' ? 'threads' : k === 'bsky' ? 'bsky' : '';
-  const posts = list.map((t, i) => {
-    const sc = i === 0 ? 1 : .32 / i; const v = pr.views * sc, rp = pr.replies * sc;
-    const acts = k === 'x' ? `<span>${ic('reply')} ${fmtK(rp)}</span><span>${ic('repost')} ${fmtK(v * .006)}</span><span>${ic('heart')} ${fmtK(v * .021)}</span><span>${ic('views')} ${fmtK(v)}</span><span>${ic('bookmark')}</span>`
-      : k === 'threads' ? `<span>${ic('heart')}</span><span>${ic('reply')}</span><span>${ic('repost')}</span><span>${ic('send')}</span>`
-        : `<span>${ic('reply')} ${fmtK(rp)}</span><span>${ic('repost')} ${fmtK(v * .005)}</span><span>${ic('heart')} ${fmtK(v * .018)}</span><span>${ic('more')}</span>`;
-    return `<div class="post"><div class="l">${avatar(u)}<span class="line"></span></div><div style="min-width:0"><div class="hd"><b>${esc(k === 'threads' ? u.handle : u.name)}</b>${k === 'threads' ? '<span>now</span>' : `<span>@${esc(u.handle)}${k === 'bsky' ? '.bsky.social' : ''} · now</span>`}</div>
-    <div class="tx">${t.text ? overText(t.text, p.limit) : `<span class="faint">${i === 0 ? 'Your first line shows up here.' : 'Next post…'}</span>`}</div>${mediaHTML(t).replace(/<button class="rm"[\s\S]*?<\/button>/g, '')}${t.poll ? `<div class="poll-pv">${t.poll.options.filter(Boolean).map(o => `<div>${esc(o)}</div>`).join('')}</div>` : ''}<div class="acts">${acts}</div></div></div>`;
-  }).join('');
-  return `<div class="pv"><div class="pv-tag"><span>${pic(p.icon)} ${p.limit} per post</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${tws.length} post${tws.length > 1 ? 's' : ''}${compact && tws.length > 2 ? ` · showing 2` : ''}</span>`}</div><div class="pvx ${cls}">${posts}</div></div>`;
+  const near = compact ? ['', ''] : PV_NEAR[k].map(i => R(VOID_POSTS[i], { dark }));
+  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${!compact && pr.views ? `<p class="pv-proj">Counts are projected at 24 hours from your last 90 days.</p>` : ''}</div>`;
 }
 function liVersion() {
   let t = S.draft.tweets.map(x => x.text.trim()).filter(Boolean).join('\n\n');
@@ -3046,7 +3053,8 @@ const X_LOGO = '<svg class="logo" viewBox="0 0 24 24"><path fill="currentColor" 
 function pfAv(p, cls = '') {
   const ini = esc((p && p.n || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2));
   const i = p && p.img, pic = Number.isInteger(i) && i < AV_N ? `<i class="avp" style="background-position:0 ${sprY(i, AV_N)}"></i>` : '';
-  return `<span class="av ini ${cls}" aria-hidden="true">${ini}${pic}</span>`;
+  const tint = p && p.hue != null && !pic ? ` style="background:linear-gradient(135deg,hsl(${p.hue} 62% 58%),hsl(${(p.hue + 24) % 360} 58% 42%))"` : '';
+  return `<span class="av ini ${cls}"${tint} aria-hidden="true">${ini}${pic}</span>`;
 }
 function pfText(t) { return esc(t).replace(/(🧵|👇)/g, '$1').replace(/(^|\s)([#@][\w]+)/g, '$1<span class="lnk">$2</span>'); }
 function pfMedia(m) { const k = m in PHOTO ? PHOTO[m] : -1; return k < 0 ? '' : `<div class="md"><i class="mdp" style="background-position:0 ${sprY(k, PH_N)}"></i></div>`; }
@@ -3059,24 +3067,24 @@ function xPost(post, { dark = false, liked = false, cls = '', counts = true, rai
     ${rail ? `<div class="rail">${pfAv(p)}<i></i></div>` : pfAv(p)}
     <div style="min-width:0">
       <div class="hd"><span class="n">${esc(p.n)}</span>${p.v ? VBADGE : ''}<span class="h">@${esc(p.h)}</span><span class="xdot">·</span><span class="t">${esc(post.ago || 'now')}</span><span class="more">${pfIc.more}</span></div>
-      <div class="tx">${pfText(post.t)}</div>${pfMedia(post.m)}
+      <div class="tx">${post.html ?? pfText(post.t)}</div>${post.mh ?? pfMedia(post.m)}
       <div class="acts"><span class="a rp"><span class="b">${pfIc.reply}</span>${n('r', c[0])}</span><span class="a rt"><span class="b">${pfIc.repost}</span>${n('rt', c[1])}</span><span class="a lk ${liked ? 'on' : ''}"><span class="b">${pfIc.like}</span>${n('l', c[2])}</span><span class="a vw"><span class="b">${pfIc.views}</span>${n('v', c[3])}</span><span class="tail"><span class="a"><span class="b">${pfIc.bookmark}</span></span><span class="a"><span class="b">${pfIc.share}</span></span></span></div>
     </div></article>`;
 }
 /* Threads */
 function thPost(post, { dark = false, rail = false, you = null } = {}) {
   const p = you || PEOPLE[post.p]; const c = post.c || [0, 0, 0, 0];
-  return `<article class="pf thp ${dark ? 'dark' : ''}">${rail ? `<div class="rail">${pfAv(p)}<i></i></div>` : pfAv(p)}<div style="min-width:0">
+  return `<article class="pf thp ${dark ? 'dark' : ''} ${rail ? 'thr' : ''}">${rail ? `<div class="rail">${pfAv(p)}<i></i></div>` : pfAv(p)}<div style="min-width:0">
     <div class="hd"><span class="n">${esc(p.h)}</span><span class="t">${esc(post.ago || 'now')}</span><span class="more">${pfIc.more}</span></div>
-    <div class="tx">${pfText(post.t)}</div>${pfMedia(post.m)}
+    <div class="tx">${post.html ?? pfText(post.t)}</div>${post.mh ?? pfMedia(post.m)}
     <div class="acts"><span class="a">${pfIc.like}<span class="c">${c[2] ? fmtN(c[2] * .4) : ''}</span></span><span class="a">${pfIc.comment}<span class="c">${c[0] ? fmtN(c[0] * .5) : ''}</span></span><span class="a">${pfIc.repost}<span class="c">${c[1] ? fmtN(c[1] * .3) : ''}</span></span><span class="a">${pfIc.send}</span></div></div></article>`;
 }
 /* LinkedIn */
 const LI_RX = '<span class="ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#378FE9"/><path d="M5 12V8h1.5v4zm2.5 0V7.6L9.3 4.5c.6 0 1 .4 1 1V7h1.6c.5 0 .9.5.8 1l-.6 3.2c-.1.5-.5.8-1 .8z" fill="#fff"/></svg><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#6DAE4F"/><path d="M5 11.5 7 5l1.4 4L10 6l1 5.5z" fill="#fff"/></svg><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#DF704D"/><path d="M8 12S4 9.7 4 7a2 2 0 0 1 4-.9A2 2 0 0 1 12 7c0 2.7-4 5-4 5z" fill="#fff"/></svg></span>';
 function liPost(post, { dark = false, you = null, expanded = false } = {}) {
   const p = you || PEOPLE[post.p]; const c = post.c || [0, 0, 0, 0]; const long = post.t.length > 210 || post.t.split('\n').length > 3;
-  return `<article class="pf lip ${dark ? 'dark' : ''}"><div class="hd">${pfAv(p)}<div class="who"><b>${esc(p.n)} <span class="deg">· 2nd</span></b><span>${esc(p.bio || 'Creator')}</span><span>${esc(post.ago || 'now')} · ${pfIc.globe}</span></div><span class="follow">+ Follow</span></div>
-    <div class="tx ${long && !expanded ? 'clamp' : ''}">${pfText(post.t)}</div>${long && !expanded ? '<span class="seemore"><span>…more</span></span>' : ''}${pfMedia(post.m)}
+  return `<article class="pf lip ${dark ? 'dark' : ''}"><div class="hd">${pfAv(p)}<div class="who"><b>${esc(p.n)} <span class="deg">· ${you ? 'You' : '2nd'}</span></b><span>${esc(p.bio || 'Creator')}</span><span>${esc(post.ago || 'now')} · ${pfIc.globe}</span></div>${you ? `<span class="more">${pfIc.more}</span>` : '<span class="follow">+ Follow</span>'}</div>
+    <div class="tx ${long && !expanded ? 'clamp' : ''}">${post.html ?? pfText(post.t)}</div>${long && !expanded ? '<span class="seemore"><span>…more</span></span>' : ''}${post.mh ?? pfMedia(post.m)}
     <div class="soc"><span class="rx">${LI_RX}<span>${c[2] ? fmtN(c[2] * .3) : ''}</span></span><span>${c[0] ? `${fmtN(c[0] * .4)} comments · ${fmtN(c[1] * .2)} reposts` : ''}</span></div>
     <div class="bar"><span>${pfIc.thumb}Like</span><span>${pfIc.comment}Comment</span><span>${pfIc.repost}Repost</span><span>${pfIc.send}Send</span></div></article>`;
 }
@@ -3085,7 +3093,7 @@ function bsPost(post, { dark = false, you = null } = {}) {
   const p = you || PEOPLE[post.p]; const c = post.c || [0, 0, 0, 0];
   return `<article class="pf bsp ${dark ? 'dark' : ''}">${pfAv(p)}<div style="min-width:0">
     <div class="hd"><span class="n">${esc(p.n)}</span><span class="h">@${esc(p.h)}.bsky.social</span><span class="t">· ${esc(post.ago || 'now')}</span></div>
-    <div class="tx">${pfText(post.t)}</div>${pfMedia(post.m)}
+    <div class="tx">${post.html ?? pfText(post.t)}</div>${post.mh ?? pfMedia(post.m)}
     <div class="acts"><span class="a">${pfIc.reply}${c[0] ? fmtN(c[0] * .3) : ''}</span><span class="a">${pfIc.repost}${c[1] ? fmtN(c[1] * .3) : ''}</span><span class="a">${pfIc.like}${c[2] ? fmtN(c[2] * .25) : ''}</span><span class="a">${pfIc.more}</span></div></div></article>`;
 }
 const PF_RENDER = { x: xPost, threads: thPost, linkedin: liPost, bsky: bsPost };
@@ -3324,8 +3332,8 @@ ROUTES.home = () => {
             <div class="foot"><span class="score" hidden><b id="st-score">0</b>Hook</span><span class="why" id="st-why"></span><span class="sched" id="st-sched">${ic('clock', 'sm')} Tue 8:40 AM</span></div>
           </div>
         </div>
-        <div class="phonewrap">${phoneFeed('x', { you: MAYA, mine: { t: ST_FINAL, c: [0, 0, 0, 0], ago: '1m' }, others, w: 300 })}</div>
-        <div class="sttoast" aria-hidden="true"><span class="ti">${pfIc.like.replace('class="ic"', 'class="ic" style="width:16px;height:16px"')}</span><div><b>Your post is doing numbers</b><span>9,800 likes in the first hour</span></div></div>
+        <div class="phonewrap">${phoneFeed('x', { you: MAYA, mine: { t: ST_FINAL, c: [0, 0, 0, 0], ago: '1m' }, others, w: 300 })}
+          <div class="sttoast" aria-hidden="true"><span class="ti">${X_LOGO}</span><div><p><b>X</b><span>now</span></p><strong>Your post is doing numbers</strong><span>9,800 likes in the first hour.</span></div></div></div>
       </div>
     </div>
   </section>
