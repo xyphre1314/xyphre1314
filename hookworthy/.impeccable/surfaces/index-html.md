@@ -1,5 +1,5 @@
 ---
-version: 3
+version: 4
 slug: "index-html"
 primary_target: "index.html"
 related_targets: ["DESIGN.md"]
@@ -22,7 +22,7 @@ THESIS: If Apple, Linear and Arc built a Typefully competitor, the homepage woul
 OWN-WORLD:
 - Canvas and chapters: a light canvas (#F5F5F3) with two dark chapters (#09090A), the story and the voice section.
 - Type: Geist 600 with tight tracking for display, Geist for UI. Caveat is used for at most two margin notes, and Geist for the wordmark (Garamond retired in v3).
-- Accent: one yellow highlighter (#FFE14D), only ever under words worth stopping for (a hook that scores 70+, a key headline phrase, a selection). Never a fill.
+- Accent (v4): Flow blue (#2B59D9 / #8AAAFF), solid for the one main button and on-states, a soft tint under words worth stopping for. Canvas Paper #F7F5EF with Dusk #1B1B1A chapters. Yellow retired.
 - Materials: real platform UI (system type, real spacing, count formats), true-scale phones, and photoreal portraits and photos.
 - Motion: tied to the reader. The ring brakes on a hook, the story scrubs with scroll, and the wall drifts only when you scroll.
 
@@ -49,3 +49,10 @@ FINISH: unreviewed and undocumented is unfinished. This round ends with the fini
 - #demo chapter: a Notion-style product window built from the app's own classes (sidebar, Post to toggles, hook chip, preview pane). Four scenes (Sharpen, Visuals, Niche radar, Schedule) play while on screen, sound is opt-in, and the copy claims no more than "the same buttons you'll press".
 - App features: Sharpen (select text, flip through three takes, keep one), Visuals (quote card, before/after chart, post screenshot, framed screenshot), Niche radar (trends plus why posts popped plus a reusable structure), synthesized UI sound, and one hook threshold (70).
 - Audience: crypto and trading writers are first-class (see PRODUCT.md).
+
+## v4 changes (round 7)
+- Owner feedback: logo "sucks", yellow "sucks", couldn't find how to close the preview, unclear Hooks and Inbox, wants Cursor/Perplexity/Claude-style neutrals, then Wispr Flow's palette in blue.
+- Brand: the h mark, Flow blue accent (switchable: Tide, Ember, Iris, Graphite), Dusk and Paper themes, pastel wash behind the hero. Options board published as an artifact; owner can swap by name.
+- UX: labelled Preview toggle plus a Hide button in the panel; Ideas tabs are Fresh angles / What’s working / Saved; hook formulas moved into the hook panel.
+- Writing: Before-you-post checks (blanks, links, repeats, hashtags, alt text, numbering, dangling endings, @ starts, duplicates, double spaces) and Focus mode with typewriter scrolling.
+- Voice: toasts, empty states and placeholders rewritten to sound like a coworker.

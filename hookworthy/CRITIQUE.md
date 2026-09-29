@@ -174,3 +174,19 @@ Before this round the owner said the app felt different from the homepage showca
 | Main audience invisible | Crypto and trading writers are now first-class: first onboarding niche, trader posts in the ring and wall, a trader as the solo creator, and six new trader portraits. |
 
 Independent finish review: disposition **fix** with 8 items, then two verdict passes. Every item is resolved except one, which is blocked on the owner: the trader portrait sheet `assets/people/avatars-2.jpg` must be added to the repo (it is hosted on a CDN this container cannot reach). Until then those six faces show initials.
+
+## Round 7: owner review, brand and clarity
+
+What the owner said, and what changed:
+
+| Problem | Fix |
+|---|---|
+| The logo (marker swipe + caret) felt weak next to Typefully | New mark: a lowercase h whose last stroke flicks up into a hook, on one tile. Reads at 16px. Three options on the board. |
+| The yellow felt cheap | Yellow retired. Flow blue accent (Wispr Flow–style palette, in blue), soft tint as the highlighter. Four alternates in Appearance. |
+| Too black / too white | Dusk (#1B1B1A warm charcoal) and Paper (#F7F5EF ivory). |
+| Couldn't find how to close the preview | Top bar toggle now says “Preview” and shows pressed; the panel has a visible “Hide”; ⌘\\ works while typing (it didn't before). |
+| “Do we need Hooks? What's Inbox?” | Hook formulas moved into the hook panel, offered when your line scores under 70. Inbox renamed Saved; tabs are Fresh angles / What’s working / Saved, each with a one-line purpose. |
+| Writing should feel better | Focus mode (⌘.) with typewriter scrolling; Before-you-post checks for the details people miss; formulas add above your line instead of replacing it. |
+| Copy felt like a system | Toasts, empty states and placeholders rewritten to sound like a coworker. |
+
+Detector: colored glows removed (accent-glow is neutral now); advisories were DESIGN.md drift, fixed by updating the tokens.

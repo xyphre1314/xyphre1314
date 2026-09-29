@@ -2,29 +2,30 @@
 name: Hookworthy
 description: Write posts people stop for.
 colors:
-  canvas: "#F5F5F3"
-  canvas-2: "#EDEDEA"
-  ink: "#0C0C0E"
-  ink-2: "#55565C"
-  ink-3: "#8A8B91"
-  card: "#FFFFFF"
-  chapter-dark: "#09090A"
-  chapter-dark-2: "#141416"
-  marker: "#FFE14D"
-  app-bg-light: "#F7F7F8"
-  app-surface-light: "#FFFFFF"
-  app-surface-2-light: "#F2F2F4"
-  app-text-1-light: "#111216"
-  app-text-2-light: "#51545C"
-  app-text-3-light: "#6B6F78"
-  app-bg-dark: "#08090A"
-  app-surface-dark: "#101113"
-  app-surface-2-dark: "#16171A"
-  app-text-1-dark: "#F7F8F8"
-  app-text-2-dark: "#A3A7AF"
-  app-text-3-dark: "#80858E"
-  accent-ink-light: "#17181B"
-  accent-ink-dark: "#F4F4F5"
+  canvas: "#F7F5EF"
+  canvas-2: "#EFECE4"
+  ink: "#17171A"
+  ink-2: "#5A5853"
+  ink-3: "#6A6862"
+  card: "#FFFEFA"
+  chapter-dark: "#1B1B1A"
+  chapter-dark-2: "#242423"
+  accent: "#2B59D9"
+  accent-dark: "#8AAAFF"
+  accent-ink-dark: "#0F1630"
+  marker: "#D9E2F8"
+  app-bg-light: "#F7F5EF"
+  app-surface-light: "#FFFEFA"
+  app-surface-2-light: "#EFECE4"
+  app-text-1-light: "#17171A"
+  app-text-2-light: "#5A5853"
+  app-text-3-light: "#6A6862"
+  app-bg-dark: "#1B1B1A"
+  app-surface-dark: "#242423"
+  app-surface-2-dark: "#2B2B29"
+  app-text-1-dark: "#ECEBE6"
+  app-text-2-dark: "#ABA9A2"
+  app-text-3-dark: "#96948D"
   success: "#1F8F5F"
   warn: "#C26A12"
   error: "#D63F3F"
@@ -153,27 +154,29 @@ components:
 
 **Creative North Star: "Keynote for creators"**
 
-If Apple, Linear and Arc built a writing tool for people who post, the homepage would be a keynote: one idea per chapter, the product as the only illustration, and motion that explains instead of decorates. Apple gives the chaptered storytelling and the pinned, scroll-scrubbed demo. Linear gives the precision: one family, tight tracking, hairlines, nothing loud. Arc gives the warmth: a light canvas, hand-drawn notes in the margins, and a yellow marker that feels like a person, not a brand.
+If Apple, Linear and Arc built a writing tool for people who post, the homepage would be a keynote: one idea per chapter, the product as the only illustration, and motion that explains instead of decorates. Apple gives the chaptered storytelling and the pinned, scroll-scrubbed demo. Linear gives the precision: one family, tight tracking, hairlines, nothing loud. Arc and Wispr Flow give the warmth: an ivory canvas, soft pastel washes, hand-drawn notes in the margins, and one calm blue that marks what matters.
 
 The product's subject is other apps. So every post on every surface is rendered the way X, Threads, LinkedIn and Bluesky actually render it: real type, real spacing, real counts, real avatars. The creators are fictional (photoreal generated portraits), and the page says so once per section. The hook, the first line, is the one thing the design marks.
 
 **Key Characteristics:**
 - Light canvas with two dark chapters (the story and the voice section).
 - Geist everywhere, at 600 with tight tracking for display.
-- One brand color, a highlighter yellow, and it only ever marks a hook.
+- One brand color, Flow blue. Solid for the one main button and the mark; a soft tint under a hook.
 - Platform-true posts in place of drawings, and phones at true 390pt scale.
 - Motion is tied to the reader: the ring brakes on a hook, the story scrubs with scroll, the wall drifts only when you scroll.
 
 ## Colors
 
 ### Brand
-- **Marker** (#FFE14D): the highlighter under a first line. It marks the stopped post in the hero ring, the word "stop" in the headline, and text selection. It is never a button, border or background.
+- **Flow blue** (#2B59D9 on Paper, #8AAAFF on Dusk): the accent. It fills the one primary button per screen, the logo tile, the caret, the hook chip once it clears 70, and on/selected states.
+- **Tint** (accent at ~20% on the surface, #D9E2F8 on Paper): the highlighter. It sits under a first line that scores 70+, the word "stop" in the headline, text selection, and a Sharpen take. Text on it stays ink.
+- **Other accents** (owner's choice, Appearance menu): Tide #13786F / #4FC2B7, Ember #C24E26 / #F08A5E, Iris #5A4FD4 / #A39BFF, Graphite #17171A / #ECEBE6. Everything above follows whichever is picked.
 
-### Neutral
-- **Canvas** (#F5F5F3) and **Canvas 2** (#EDEDEA): the homepage ground, warm off-white.
-- **Ink** (#0C0C0E), **Ink 2** (#55565C), **Ink 3** (#8A8B91): text and primary buttons.
-- **Chapter Dark** (#09090A, raised #141416): the two dark chapters, inset with a 40px radius.
-- **App neutrals**: light bg #F7F7F8, surface #FFFFFF, text #111216 / #51545C / #6B6F78; dark bg #08090A, surface #101113, text #F7F8F8 / #A3A7AF / #80858E. The accent is ink itself (#17181B light, #F4F4F5 dark).
+### Neutral (two themes)
+- **Paper** (light, not white): bg #F7F5EF, surface #FFFEFA, sunk #EFECE4, text #17171A / #5A5853 / #6A6862. Ivory with a little warmth, in the spirit of Wispr Flow and Claude.
+- **Dusk** (dark, not black): bg #1B1B1A, surface #242423, raised #2B2B29, text #ECEBE6 / #ABA9A2 / #96948D. A warm charcoal, closer to Claude or Cursor at night than to pure black.
+- **Homepage:** Paper canvas, with the two dark chapters in Dusk, inset with a 40px radius. The hero sits on a soft pastel wash (blue, periwinkle, a touch of peach) blurred behind the headline.
+- System picks the theme by default; Dusk or Paper can be pinned from Appearance (or ⇧T).
 
 ### Semantic (app)
 - **Success** (#1F8F5F), **Warn** (#C26A12), **Error** (#D63F3F): state only.
@@ -186,8 +189,8 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 - **Bluesky**: secondary #405168, icons #667B99, divider #DCE2EA.
 
 ### Named Rules
-**The One Marker Rule.** Yellow is a highlighter, never a fill. It sits under the words worth stopping for: a first line that scores 70 or more, the one key phrase in a headline, the text you've selected, a take you're about to keep. It never colors a button (except Keep, the moment you accept a sharper line), a border or a background. If yellow is doing anything else, remove it.
-**The One Threshold Rule.** 70 is the only number that matters. At 70 or more, the hook chip turns yellow, the marker sweeps under the first line, and a small sound plays. Below 70, nothing celebrates.
+**The One Accent Rule.** The accent is solid in exactly two jobs (the one main button on a screen, and on/selected states) and a soft tint in one (the highlighter under words worth stopping for). Everything else is neutral. If two solid blue things compete on one screen, one of them is wrong.
+**The One Threshold Rule.** 70 is the only number that matters. At 70 or more, the hook chip fills with the accent, the tint sweeps under the first line, and a small sound plays. Below 70, nothing celebrates.
 **The Replica Rule.** Platform colors never leave a platform replica, and Hookworthy colors never enter one.
 
 ## Typography
@@ -206,7 +209,7 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 
 ### Named Rules
 **The Numbers-Only Mono Rule.** Mono is for counts, times, scores and keys, never sentences.
-**The No-Gradient Rule.** Text is solid. Emphasis comes from the marker or from size.
+**The No-Gradient Rule.** Text is solid. Emphasis comes from the tint or from size.
 
 ## Layout
 
@@ -256,11 +259,11 @@ The homepage primary is an ink pill (48px) with a white label and an arrow that 
 It follows X: a quiet ring that grows at 20 remaining, turns to warning then error, shows the count, and hides the circle at 10 over.
 
 ### Sharpen (selection rewrite)
-Select three or more characters in a post and an ink pill appears above where the selection starts. It offers Punchier, Shorter, Clearer, Bolder and More human (⌥1–5). Picking one previews the first of three takes in place on a marker-soft background. You flip takes with ‹ › or the arrow keys, keep with ↵ (the yellow Keep button), and cancel with Esc. Kept text flashes marker and fades. Sharpen is free and unlimited, because it only touches the words you chose.
+Select three or more characters in a post and an ink pill appears above where the selection starts. It offers Punchier, Shorter, Clearer, Bolder and More human (⌥1–5). Picking one previews the first of three takes in place on a marker-soft background. You flip takes with ‹ › or the arrow keys, keep with ↵ (the accent Keep button), and cancel with Esc. Kept text flashes the tint and fades. Sharpen is free and unlimited, because it only touches the words you chose.
 
 ### Visuals
 The spark-image tool opens four kinds of visual, each rendered to canvas in-browser:
-- **Quote card:** your line on Paper, Ink or Marker, with the first line swiped yellow.
+- **Quote card:** your line on Paper, Ink or Tint, with the first line highlighted in the accent.
 - **Before / after:** a chart parsed from "21% → 38%" or "from X to Y" in your post.
 - **Post screenshot:** an X-style card for cross-posting.
 - **Frame a screenshot:** drop an image and get padding, a radius and a shadow.
@@ -268,9 +271,9 @@ The spark-image tool opens four kinds of visual, each rendered to canvas in-brow
 Each comes in 16:9, 1:1 or 4:5, and is added as an image with alt text.
 
 ### Primary audience
-Most users write about crypto and trading. The product shows them first-class: the first niche in onboarding, trader posts in the hero ring and the relatable wall, a trader as the solo creator story, and Niche radar defaulting to trading. Other niches keep equal craft.
+Most users write about crypto and trading. The product shows them first-class: the first niche in onboarding, trader posts in the hero ring and the relatable wall, a trader as the solo creator story, and What’s working defaulting to trading. Other niches keep equal craft.
 
-### Niche radar (Ideas tab)
+### What’s working (Ideas tab, formerly Niche radar)
 Choose a niche, then:
 - **Trends:** three trends, with the one you're early on outlined in ink and given a "Post on it first" button.
 - **Popped posts:** real-looking posts from accounts in your niche, each with three reasons it spread (early, hook, relatable, timing, format, proof) and the structure written out with placeholders marked.
@@ -293,7 +296,18 @@ Sounds are on by default in the app and can be switched off in the account menu.
 
 ### App shell
 - **Sidebar:** logo, a New post pill, Search (⌘K), then Write, Ideas, Queue, Insights and Your voice. Your five most recent drafts sit below, and the account button (which also switches client voices) is at the bottom. There are no section headers.
-- **Composer top bar:** status, Post to, the preview toggle, ··· and Schedule.
+- **Composer top bar:** status, a “N things to check” pill when there is something to look at, Post to, Focus, a labelled Preview toggle (pressed when open), ··· and Schedule. The preview panel has its own **Hide** button top right, and ⌘\\ works from inside the editor.
+- **Ideas:** three tabs that say what they are: **Fresh angles** (ideas for you and remixes), **What’s working** (niche trends and why posts popped) and **Saved** (links, notes, screenshots and voice memos you parked; formerly Inbox).
+- **Hook formulas** are no longer a tab. When your first line scores under 70, the hook panel offers three formulas; picking one adds it above your line with the first blank selected. The full library stays reachable from ⌘K.
+
+### Before you post (checks)
+The small stuff people only notice once it’s live, checked on every keystroke and shown in the schedule sheet and the top-bar pill: leftover blanks ([brackets], TK, TODO), a link in the first post on X or LinkedIn (fix: move it to a reply), a word used three times, more than two hashtags, images without a description (fix: describe it), thread numbering that doesn’t match (fix: renumber), a thread ending on a colon or ellipsis, a post starting with @ on X, a first line that repeats something already queued, and double spaces (fix: tidy up). Checks never block posting.
+
+### Focus mode
+⌘. (or the target button) hides the sidebar, preview and chrome, centers the editor and keeps the line you’re on at eye height (typewriter scrolling). Esc or ⌘. brings everything back. Desktop only.
+
+### Appearance
+The account menu’s Appearance item picks Dusk, Paper or Match my system, and the accent (Flow blue, Tide, Ember, Iris, Graphite).
 - **Post tools:** image, GIF, visual, poll | Rewrite … hook chip, character ring.
 
 ## Do's and Don'ts
@@ -310,12 +324,12 @@ Sounds are on by default in the app and can be switched off in the account menu.
 - **Don't** use gradient text, glows or decorative glass.
 - **Don't** put kickers or eyebrows above headings.
 - **Don't** set sentences in mono.
-- **Don't** use yellow for anything but a hook.
+- **Don't** use the accent as decoration, or for more than one solid thing per screen. No colored glows.
 
 ## Brand and Voice
 
 - **Name:** Hookworthy. **Promise:** Write posts people stop for.
-- **Logo: The First Line.** A marker swipe (a skewed yellow bar) with a text caret standing at its end, always set on an 8px-radius ink tile so the yellow reads on any ground (the swipe alone is only 1.2:1 on the canvas). Inside dark pills (Sharpen) the tile drops away and the swipe and caret stand alone. It means you just wrote a line worth highlighting. On load and on hover the swipe draws in and the caret blinks twice. The wordmark is lowercase *hookworthy* in Geist 650 at −0.05em. The app icon is the mark on an ink squircle. Files: `assets/icon.svg`, `assets/wordmark.svg`, `assets/app-icon.svg` / `.png`.
+- **Logo: The h.** A lowercase h whose last stroke flicks up into a hook, drawn as one round 3.3px stroke on a 9px-radius accent tile. It reads as a letter at 16px and as a hook up close, and it competes with Typefully on the same terms: one letter, one tile. On load and on hover the stroke draws itself. The wordmark is lowercase *hookworthy* in Geist 650 at −0.05em. The app icon is the h on a blue squircle. Files: `assets/icon.svg`, `assets/wordmark.svg`, `assets/app-icon.svg` / `.png`. The options board (three marks, five accents) lives at the brand artifact.
 - **Glossary (say it this way):**
 
   | Say | Don't say |
@@ -324,10 +338,12 @@ Sounds are on by default in the app and can be switched off in the account menu.
   | Sharpen | AI edit |
   | Best time | Golden slot |
   | Follow-up reply | Auto-plug |
-  | Ideas for you | Engine |
+  | Fresh angles | Engine, Ideas for you |
+  | What’s working | Niche radar |
+  | Saved | Inbox |
   | Your voice | Voice profile |
   | Hook formulas | Hook library |
   | Drafts | Archive |
 
 - **Time format:** 8:40 AM, with a space and capitals, as on X.
-- **Voice:** creator to creator; short sentences; numbers beat adjectives; no "unlock / supercharge / leverage / elevate / seamless / AI-powered".
+- **Voice:** a coworker who writes too: warm, plain, a little dry. Say what happened and what to do next (“Gone from the queue.”, “Added on top. Your old line is right below it.”), never “Operation successful”. Creator to creator; short sentences; numbers beat adjectives; no "unlock / supercharge / leverage / elevate / seamless / AI-powered".
