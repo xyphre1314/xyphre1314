@@ -49,30 +49,30 @@ colors:
   bluesky-divider: "#DCE2EA"
 typography:
   display:
-    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Geist, Geist Fallback, ui-sans-serif, system-ui, sans-serif"
     fontSize: "clamp(56px, 9vw, 132px)"
     fontWeight: 600
     lineHeight: 0.92
     letterSpacing: "-0.055em"
   headline:
-    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Geist, Geist Fallback, ui-sans-serif, system-ui, sans-serif"
     fontSize: "clamp(40px, 6vw, 84px)"
     fontWeight: 600
     lineHeight: 0.98
     letterSpacing: "-0.045em"
   title:
-    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Geist, Geist Fallback, ui-sans-serif, system-ui, sans-serif"
     fontSize: "clamp(24px, 2.4vw, 32px)"
     fontWeight: 600
     lineHeight: 1.1
     letterSpacing: "-0.03em"
   body:
-    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Geist, Geist Fallback, ui-sans-serif, system-ui, sans-serif"
     fontSize: "clamp(17px, 1.5vw, 21px)"
     fontWeight: 400
     lineHeight: 1.5
   ui:
-    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Geist, Geist Fallback, ui-sans-serif, system-ui, sans-serif"
     fontSize: "14px"
     fontWeight: 500
     lineHeight: 1.5
@@ -191,7 +191,7 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 
 ## Typography
 
-**Family:** Geist (display, headings, UI, body), Geist Mono for numbers and keys, Caveat for margin notes, EB Garamond for the wordmark only.
+**Family:** Geist (display, headings, UI, body), Geist Mono for numbers and keys, Caveat for margin notes, EB Garamond for the wordmark only. Every face is self-hosted in `fonts/` (OFL). **Geist Fallback** is Arial with Geist's metrics (size-adjust 104.76%, ascent 95.94%, descent 28.16%), so a slow font never reflows a line.
 **Replicas:** each platform's own stack (system UI for X, Threads and LinkedIn; Inter for Bluesky).
 
 ### Hierarchy
@@ -212,13 +212,14 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. Chapters are spaced clamp(110px, 14vw, 190px) apart. Each chapter has one centered headline, one sentence and one demo.
 
 1. **Hero**: headline, sub, two CTAs, two hand notes, then the 3D ring of X posts. The ring is a CSS cylinder of 320px cards (real X posts rendered at 400px and scaled). It turns slowly, brakes on a Hermite curve, and marks the front card's first line and hook score. It supports drag with inertia and pauses off-screen.
-2. **Story** (520vh, pinned, dark): one post goes from an 11:47pm draft, to hedges struck through, to a rewrite in her voice, to scheduled for Tue 8:40, to a phone with the X feed, a live count-up and an iOS notification.
+2. **Story** (520vh, pinned, dark): the chapter opens from an inset rounded sheet to full bleed as it arrives. One post goes from an 11:47pm draft (type up to 36px, pushed in), to hedges struck through, to a rewrite in her voice, to scheduled for Tue 8:40. Then the draft leaves and a viewport-sized phone takes the stage, with the X feed, a live count-up and an iOS notification.
 3. **Void wall**: two rows of relatable posts that drift with scroll.
 4. **Four feeds**: X, Threads, LinkedIn and Bluesky phones at true 390pt scale (`zoom`), with a light/dark toggle.
 5. **The fold**: type a LinkedIn post and watch the "…more" cut.
 6. **Voice** (dark): sliders rewrite an X post live.
-7. **Week**: heatmap with posts landing on golden slots.
-8. **Creators**, **Pricing**, **Final CTA** (a second ring).
+7. **Week**: posts drop onto golden slots over a neutral ink heat ramp (quiet to busy). The peak slot has a 1.5px ink outline. On phones the week swipes.
+8. **Creators**: tabs for solo, founder and ghostwriter, each a demo built from platform posts (before and after, release notes to posts, voice switcher with approval).
+9. **Pricing**, then the **Final CTA** (a second ring).
 
 The app keeps its 232px sidebar and inset main panel. The composer's "In the feed" panel renders your draft with the same platform components, between two real neighbour posts, in the app's theme.
 
@@ -258,7 +259,7 @@ It follows X: a quiet ring that grows at 20 remaining, turns to warning then err
 ### Do:
 - **Do** render every post as its platform does, with a portrait, name, handle, time and counts.
 - **Do** label fictional creators once per section ("Illustrative posts. The creators are fictional.").
-- **Do** tie motion to the reader's scroll or to a meaningful stop.
+- **Do** tie motion to the reader's scroll or to a meaningful stop. Each chapter has its own move: the headline wipes up from its baseline, demos rise with a slight tilt, phones stagger, and the wall only drifts.
 - **Do** respect reduced motion: the ring stops, the story shows its end state, and the wall stays still.
 
 ### Don't:

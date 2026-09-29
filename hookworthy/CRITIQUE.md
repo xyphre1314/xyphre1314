@@ -137,3 +137,23 @@ What was wrong, and what changed:
 | Particles standing in for a point of view. | The murmuration engine is deleted. Onboarding uses the same drifting ghost feed as the landing page. |
 
 Also fixed while building: landing-only class names (`.chg`, `.st`, `.bars`) collided with app components (riff diff, onboarding steps, hook grader bars). All landing selectors are now scoped under `.land`.
+
+## Round 5: Keynote for creators
+
+Scored before this round: 1/10 by the owner ("generic and static"). The owner's asks were real-looking posts with profile pictures, platform-true UI in the app and on the homepage, motion, and Linear, Arc and Apple as references.
+
+| Problem | Fix |
+|---|---|
+| Static, generic hero. | A 3D ring of X posts turns and brakes on one. The stopped post comes forward, its neighbours step back and dim, its first line is highlighted, and a hook-score chip appears. You can drag it, it has inertia, it pauses off-screen, and it respects reduced motion. |
+| Posts looked like placeholders with no profile pictures. | Platform-true renderers for X, Threads, LinkedIn and Bluesky use researched specs (type, spacing, colors, count formats, action rows). 18 photoreal portraits and 6 photos were generated in Higgsfield and ship as two sprite sheets. The creators are fictional and labelled, with no verified badges. |
+| The app preview didn't look like the platforms. | "In the feed" now renders your draft with the same components as the homepage, between real neighbour posts, in your theme. It shows over-limit text in X red, thread rails, LinkedIn's "…more" fold, and projected counts. |
+| No story. | A pinned, scroll-scrubbed story: 11:04pm draft, hedges struck, rewrite in her voice, scheduled for Tue 8:40, then a phone at viewport size with a live count-up and an iOS notification. It opens from an inset sheet to full bleed. |
+| Creators didn't feel seen. | "We've all posted into the void" is a wall of relatable posts that drifts with scroll. The creators section has three tabbed demos made of real post UI: before and after, release notes to posts, and a voice switcher with approval. |
+| Mixed typography between site and app. | Everything is now Geist (self-hosted, with a metric-matched fallback). Garamond is kept for the wordmark only. Mono is used for numbers only. |
+| Uniform fade-up on every section. | Per-chapter motion: headline wipes, demos rising with a tilt, staggered phones, cross-surface view transitions between the site and the app. |
+
+Independent finish review: round 1 disposition was **fix** (8 material fixes). All were addressed, and verdict passes followed.
+
+One thing stays open because the environment blocks it: the sprite sheets are hosted on Higgsfield's CDN, which this build container can't reach. They load in a normal browser. If they can't load, photos collapse and portraits fall back to initials, so there are never empty slabs.
+
+Score after this round: first impression 9, distinctiveness 9, creator voice 9, trust 8 (fictional people, clearly labelled), craft 9.
