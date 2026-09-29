@@ -1,5 +1,5 @@
 ---
-version: 4
+version: 5
 slug: "index-html"
 primary_target: "index.html"
 related_targets: ["DESIGN.md"]
@@ -56,3 +56,11 @@ FINISH: unreviewed and undocumented is unfinished. This round ends with the fini
 - UX: labelled Preview toggle plus a Hide button in the panel; Ideas tabs are Fresh angles / What’s working / Saved; hook formulas moved into the hook panel.
 - Writing: Before-you-post checks (blanks, links, repeats, hashtags, alt text, numbering, dangling endings, @ starts, duplicates, double spaces) and Focus mode with typewriter scrolling.
 - Voice: toasts, empty states and placeholders rewritten to sound like a coworker.
+
+## v5 changes (round 8, "Bluebird")
+- Owner: some colors unreadable (Pro pricing card, a dark pill in the X replica), wants a type-only logo, Wispr Flow–style colors and typography in blue, applied everywhere.
+- Logo: wordmark only (Instrument Serif italic). Icon files use an italic h on cobalt only where a square is required.
+- Type: Instrument Serif display across homepage, app titles, section heads, prices, big numbers and quote cards; Geist for UI.
+- Color: cobalt/sky/navy + five AA-checked pastels; Sky and Midnight themes; colored washes; navy chapters with cobalt/violet glows; cobalt Pro card. Accent picker removed.
+- Bugs: `.rp` class collision (radar card vs X reply button) renamed to `.rpost`; upgrade page used homepage-only tokens (now explicit); light status colors darkened for AA.
+- Verification: automated contrast audit over 13 app states × 2 themes + 15 homepage scroll positions. Only exemptions: disabled/loading demo states on the design-system page.

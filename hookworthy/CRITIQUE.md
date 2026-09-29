@@ -190,3 +190,15 @@ What the owner said, and what changed:
 | Copy felt like a system | Toasts, empty states and placeholders rewritten to sound like a coworker. |
 
 Detector: colored glows removed (accent-glow is neutral now); advisories were DESIGN.md drift, fixed by updating the tokens.
+
+## Round 8: "Bluebird" (readability, type-only logo, Wispr-style blue)
+
+| Owner said | Fix |
+|---|---|
+| Some colors are very hard to see (Pro card, dark pill on a post) | Pro card read tokens that only exist on the homepage, so its text inherited dark ink on a dark card; it's now an explicit cobalt card with white text. The dark pill was a class collision: the radar card and X's reply button were both `.rp`. Renamed. Then an automated contrast audit across every route and key state in both themes found and fixed status chips, deltas and the nav over dark chapters. |
+| Use a typography logo | *hookworthy* in Instrument Serif italic. No symbol in the UI. |
+| More colorful, Wispr Flow–like, but blue; the last one looked ugly | Sky canvas, navy ink, cobalt action, five pastels with AA inks for post kinds and reasons, soft washes, navy chapters with cobalt/violet light. |
+| Their kind of typography | Instrument Serif display with italic emphasis, Geist for UI. Also on quote cards, prices and big numbers. |
+| Apply it everywhere | Homepage, demo, app (all routes), onboarding, upgrade, design-system page, visuals canvas, icons, favicon, manifest, docs. |
+
+Open advisory: the detector flags navy-tinted shadows as a "colored glow". They are elevation shadows tinted to the palette at low alpha, kept on purpose.

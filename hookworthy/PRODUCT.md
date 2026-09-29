@@ -34,7 +34,7 @@ A scheduler with a writing coach built in, not a scheduler with a text box. The 
 
 ## Capabilities and Constraints
 
-Built in the prototype (`index.html`, all mocked locally): landing page, onboarding from an @handle, composer with threads, ghost text (Tab), riffs with word diff, hook score, live previews for four platforms, media/GIF/poll, idea capture and engine, hook grader (formulas offered inside the hook panel), pre-post checks, focus mode, appearance (theme + accent), queue calendar with best-time slots, insights, voice profile, pricing, brand page, ⌘K palette.
+Built in the prototype (`index.html`, all mocked locally): landing page, onboarding from an @handle, composer with threads, ghost text (Tab), riffs with word diff, hook score, live previews for four platforms, media/GIF/poll, idea capture and engine, hook grader (formulas offered inside the hook panel), pre-post checks, focus mode, appearance (Sky / Midnight), queue calendar with best-time slots, insights, voice profile, pricing, brand page, ⌘K palette.
 
 Constraints:
 - Single-file HTML/CSS/JS, PWA-ready, no build step. Everything must work, no dead buttons.
@@ -45,7 +45,7 @@ Constraints:
 
 - Name: **Hookworthy** (hookworthy.com). Promise: "Write posts people stop for."
 - Voice: creator to creator. Direct, a little dry, on your side. Short sentences. Specific beats clever. No hype words (unlock, supercharge, leverage, elevate, seamless, game-changer, delve, "AI-powered").
-- Owner-stated visual preferences (latest round): colors minimal like Linear and Arc, not bare like Craft; type in the spirit of Wispr Flow. Round 7: the owner rejected the yellow and the swipe logo and asked for Cursor/Perplexity/Claude-like neutrals (dark but not black, light but not white), then "colors like Wispr Flow, similar palette but blue". Current brand: the h mark (a lowercase h whose last stroke flicks into a hook) on a Flow blue tile; Dusk and Paper themes; accent switchable in the app.
+- Owner-stated visual preferences (latest round): colors minimal like Linear and Arc, not bare like Craft; type in the spirit of Wispr Flow. Round 7–8: the owner rejected the yellow and the icon logos, then asked for Wispr Flow–style colors and type in a blue palette, applied everywhere. Current brand ("Bluebird"): a typographic logo (hookworthy in Instrument Serif italic), Instrument Serif display with Geist UI, cobalt + sky + navy with five pastels, Sky and Midnight themes.
 - Illustration: owner asked to see three styles (editor's pen marks, product as illustration, generative) with examples before choosing.
 
 ## Evidence on Hand
