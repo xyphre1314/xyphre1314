@@ -157,3 +157,20 @@ Independent finish review: round 1 disposition was **fix** (8 material fixes). A
 One thing stays open because the environment blocks it: the sprite sheets are hosted on Higgsfield's CDN, which this build container can't reach. They load in a normal browser. If they can't load, photos collapse and portraits fall back to initials, so there are never empty slabs.
 
 Score after this round: first impression 9, distinctiveness 9, creator voice 9, trust 8 (fictional people, clearly labelled), craft 9.
+
+## Round 6: One brand, simpler app, new tools
+
+Before this round the owner said the app felt different from the homepage showcase and too busy. The self-critique found two visual worlds (dark onboarding, cool-grey app, warm homepage), a logo that read as the letter J, a Garamond wordmark in a Geist system, 7 nav items, a crowded composer, jargon (Riff, Golden slots, Auto-plug, Engine) and a homepage with no one actually using the product.
+
+| Problem | Fix |
+|---|---|
+| Site and app looked like two products | One token set: canvas #F5F5F3, ink, one yellow marker, pill buttons, Geist only (Garamond removed). Onboarding moved onto the same light canvas with real-looking feed posts behind it. |
+| Weak logo | The First Line: a marker swipe with a caret at its end, on an ink tile. Favicon, app icon and wordmark all updated. It animates on load and hover. |
+| App too busy | The sidebar is now a New post pill, Search, 5 nav items, recent Drafts and one account/voice button. The composer has a labelled Post to, Schedule, and ···. The hook chip and ring appear only once there's text. The shortcut footer is gone. |
+| Jargon | Renamed as Rewrite, Best time, Follow-up reply, Ideas for you, Your voice, Hook formulas. Times read 8:40 AM everywhere. |
+| No "people using it" on the homepage | #demo: a Notion-style window built from the app's own components with a live preview. Four scenes (Sharpen, Visuals, Niche radar, Schedule) play with a cursor, loop while on screen, and have opt-in sound. |
+| Creator pains unaddressed | Sharpen (select words, flip three takes, keep one), Visuals (quote card, before/after chart from your numbers, post screenshot, framed screenshot), Niche radar (trends, why posts popped, reusable structure, write your take). |
+| No sensory feedback | Synthesized UI sounds for tick, tap, hook ≥70, keep and scheduled. The marker sweeps under a first line at 70+, the single threshold everywhere. |
+| Main audience invisible | Crypto and trading writers are now first-class: first onboarding niche, trader posts in the ring and wall, a trader as the solo creator, and six new trader portraits. |
+
+Independent finish review: disposition **fix** with 8 items, then two verdict passes. Every item is resolved except one, which is blocked on the owner: the trader portrait sheet `assets/people/avatars-2.jpg` must be added to the repo (it is hosted on a CDN this container cannot reach). Until then those six faces show initials.
