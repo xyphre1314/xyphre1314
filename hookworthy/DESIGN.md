@@ -2,35 +2,33 @@
 name: Hookworthy
 description: Write posts people stop for.
 colors:
-  canvas: "#F2F5FB"
-  canvas-2: "#E9EEF8"
-  ink: "#0B1A3A"
-  ink-2: "#46536F"
-  ink-3: "#5B6887"
-  card: "#FCFDFF"
-  chapter-dark: "#0B1A3A"
-  chapter-dark-2: "#132552"
-  accent: "#2355F0"
-  accent-dark: "#86A8FF"
-  accent-ink-dark: "#0A1330"
-  marker: "#CFDFFF"
+  cream: "#FEFDF1"
+  cream-2: "#F2F0E3"
+  card: "#FFFFF8"
+  ink: "#1A1A1A"
+  ink-2: "#4D4C46"
+  ink-3: "#65645C"
+  periwinkle: "#DDE5FF"
+  harbor: "#0B3A66"
+  harbor-2: "#0E4577"
+  link-blue: "#1E4FC2"
+  ember: "#FF9F43"
+  squiggle: "#7F9CF0"
   pastel-blue: "#D6E4FF"
   pastel-periwinkle: "#DFDBFF"
   pastel-aqua: "#CDEFEA"
   pastel-peach: "#FFE0D2"
   pastel-mint: "#D5F2DC"
-  app-bg-light: "#F2F5FB"
-  app-surface-light: "#FCFDFF"
-  app-surface-2-light: "#E9EEF8"
-  app-text-1-light: "#0B1A3A"
-  app-text-2-light: "#46536F"
-  app-text-3-light: "#5B6887"
-  app-bg-dark: "#0E1424"
-  app-surface-dark: "#161E33"
-  app-surface-2-dark: "#1C2640"
-  app-text-1-dark: "#E9EEFB"
-  app-text-2-dark: "#A9B4D0"
-  app-text-3-dark: "#8E9AB9"
+  dark-bg: "#1C1C1B"
+  dark-surface: "#252523"
+  dark-raised: "#2C2C29"
+  dark-text-1: "#F6F4E6"
+  dark-text-2: "#B4B2A6"
+  dark-text-3: "#98968B"
+  dark-periwinkle: "#BCCBFF"
+  accent: "#1E4FC2"
+  marker: "#DDE5FF"
+  app-surface-light: "#FFFFF8"
   success: "#16704A"
   warn: "#9A4F0A"
   error: "#B42A34"
@@ -55,30 +53,30 @@ colors:
   bluesky-divider: "#DCE2EA"
 typography:
   display:
-    fontFamily: "Instrument Serif, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontFamily: "EB Garamond, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(58px, 9vw, 138px)"
     fontWeight: 400
     lineHeight: 0.92
     letterSpacing: "-0.022em"
   headline:
-    fontFamily: "Instrument Serif, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontFamily: "EB Garamond, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(40px, 6vw, 84px)"
     fontWeight: 400
     lineHeight: 0.98
     letterSpacing: "-0.045em"
   title:
-    fontFamily: "Geist, Geist Fallback, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif"
     fontSize: "clamp(24px, 2.4vw, 32px)"
     fontWeight: 600
     lineHeight: 1.1
     letterSpacing: "-0.03em"
   body:
-    fontFamily: "Geist, Geist Fallback, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif"
     fontSize: "clamp(17px, 1.5vw, 21px)"
     fontWeight: 400
     lineHeight: 1.5
   ui:
-    fontFamily: "Geist, Geist Fallback, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif"
     fontSize: "14px"
     fontWeight: 500
     lineHeight: 1.5
@@ -94,7 +92,7 @@ typography:
     lineHeight: 1
     fontFeature: "tnum"
   wordmark:
-    fontFamily: "Geist, Geist Fallback, sans-serif"
+    fontFamily: "Figtree, ui-sans-serif, sans-serif"
     fontSize: "20px"
     fontWeight: 650
     lineHeight: 1
@@ -157,34 +155,34 @@ components:
 
 ## Overview
 
-**Creative North Star: "Keynote for creators"**
+**Creative North Star: "Harbor & Cream"** (round 9)
 
-If Apple, Linear and Arc built a writing tool for people who post, the homepage would be a keynote: one idea per chapter, the product as the only illustration, and motion that explains instead of decorates. Apple gives the chaptered storytelling and the pinned, scroll-scrubbed demo. Linear gives the precision: one family, tight tracking, hairlines, nothing loud. Arc and Wispr Flow give the warmth: an ivory canvas, soft pastel washes, hand-drawn notes in the margins, and one calm blue that marks what matters.
-
-The product's subject is other apps. So every post on every surface is rendered the way X, Threads, LinkedIn and Bluesky actually render it: real type, real spacing, real counts, real avatars. The creators are fictional (photoreal generated portraits), and the page says so once per section. The hook, the first line, is the one thing the design marks.
+Wispr Flow's editorial calm, translated to blue for people who write in public. A cream page, classic Garamond headlines split into roman and *italic* halves, a friendly sans for everything you click, and color that arrives in big confident blocks (a harbor-blue chapter, an ink chapter, one harbor pricing card) instead of gradients and glows. Research basis: Wispr's own tokens (cream #FFFFEB, ink #1A1A1A, lavender #F0D7FF for actions, forest #034F46 for sections, ember #FFA946 for active states; EB Garamond 400 at 32px+, Figtree for UI; 128px section padding).
 
 **Key Characteristics:**
-- Light canvas with two dark chapters (the story and the voice section).
-- Instrument Serif for the big moments (headlines, page titles, prices, the wordmark), with italics for emphasis. Geist for everything you click and read in bulk.
-- A colorful blue family: cobalt for action, sky for highlights, navy for ink and dark chapters, and five pastels that label kinds of posts.
-- Platform-true posts in place of drawings, and phones at true 390pt scale.
-- Motion is tied to the reader: the ring brakes on a hook, the story scrubs with scroll, the wall drifts only when you scroll.
+- Cream canvas (#FEFDF1), ink text (#1A1A1A), no pure white and no pure black.
+- EB Garamond 400 only at 32px and above, roman with an italic second half. Figtree for UI and body.
+- Primary actions are periwinkle (#DDE5FF) with a 1.5px ink border and a 10px radius, never solid saturated blue.
+- Harbor blue (#0B3A66) and ink (#1A1A1A) as full-bleed rounded blocks; uppercase letter-spaced eyebrows above headlines; a hand-drawn periwinkle squiggle instead of a highlighter.
+- Platform-true posts, fictional creators labelled once per section.
 
 ## Colors
 
-### Brand (round 8: "Bluebird")
-- **Cobalt** (#2355F0 on Sky, #86A8FF on Midnight): the one main button per screen, on/selected states, the caret, the hook chip once it clears 70.
-- **Sky tint** (#CFDFFF, rgba(134,168,255,.24) on Midnight): the highlighter under a first line that scores 70+, the word "stop", text selection, a Sharpen take. Text on it stays ink.
-- **Navy** (#0B1A3A): ink on light, and the homepage's dark chapters (story, voice), which carry cobalt and violet glows.
-- **Pastels** (each with an ink that passes AA on it): blue #D6E4FF / #16358F, periwinkle #DFDBFF / #3A2F96, aqua #CDEFEA / #0D5550, peach #FFE0D2 / #83341A, mint #D5F2DC / #1C5B2E. They label kinds of post (Contrarian peach, Story and Question periwinkle, Listicle and How-to aqua, Curiosity blue, Lesson and Proof mint) and the reasons a post spread. On Midnight they become 15–18% tints with light inks.
-- **Wash**: soft radial blooms of blue, violet, aqua and a touch of peach behind the homepage hero and the top of every app page.
-- The accent picker from round 7 is gone: one blue brand, used everywhere.
+### Brand
+- **Cream** (#FEFDF1) page, **Cream 2** (#F2F0E3) sunk areas, **Card** (#FFFFF8).
+- **Ink** (#1A1A1A) text, borders on primary buttons, the second dark block. **Ink 2** #4D4C46, **Ink 3** #65645C.
+- **Periwinkle** (#DDE5FF): primary buttons (with ink border), the pale selection and highlight, the Pro card's button. It is Wispr's lavender moved to blue.
+- **Harbor** (#0B3A66, raised #0E4577): the announcement bar, the story chapter, the final call, the Pro plan, the app icon, ink-style quote cards.
+- **Link blue** (#1E4FC2): links, focus rings, the caret, switches, the hook chip at 70+ and chart lines.
+- **Ember** (#FF9F43): rare active-state spark (progress, "live").
+- **Squiggle** (#7F9CF0): the hand-drawn underline under emphasized words.
+- **Pastels** (unchanged, each with an AA ink): label post kinds and the reasons a post spread.
 
-### Neutral (two themes)
-- **Sky** (light, not white): bg #F2F5FB, surface #FCFDFF, sunk #E9EEF8, text #0B1A3A / #46536F / #5B6887.
-- **Midnight** (dark, not black): bg #0E1424, surface #161E33, raised #1C2640, text #E9EEFB / #A9B4D0 / #8E9AB9. A deep navy, closer to a night sky than to black.
-- **Homepage:** Sky canvas, navy chapters inset with a 40px radius, and the Pro plan as the one cobalt card.
-- System picks the theme by default; Sky or Midnight can be pinned from Appearance (or ⇧T).
+### Dark (app)
+Warm charcoal, not black: bg #1C1C1B, surface #252523, raised #2C2C29, text #F6F4E6 / #B4B2A6 / #98968B, periwinkle #BCCBFF for primary buttons (ink text, no border), links #A9BDFF.
+
+### Retired
+Round 8's saturated cobalt (#2355F0), sky canvas, navy dark mode, pastel washes and glows.
 
 ### Semantic (app)
 - **Success** (#1F8F5F), **Warn** (#C26A12), **Error** (#D63F3F): state only.
@@ -203,13 +201,13 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 
 ## Typography
 
-**Family:** Instrument Serif (400, roman and italic) for display: homepage headlines, app page titles and section heads, plan names and prices, big numbers, quote cards, and the wordmark. Geist for UI and body. Geist Mono for numbers and keys, Caveat for margin notes on the homepage. Nothing else. Every face is self-hosted in `fonts/` (OFL). **Geist Fallback** is Arial with Geist's metrics (size-adjust 104.76%, ascent 95.94%, descent 28.16%), so a slow font never reflows a line.
+**Family:** EB Garamond (400; 500 in the wordmark), roman and italic, for display at 32px and up: homepage headlines, app page titles, plan names and prices, big numbers, quote cards. Figtree (400 body, 600 buttons, nav and badges) for everything below 32px. Geist Mono for numbers and keys, Caveat for margin notes on the homepage. Nothing else. Every face is self-hosted in `fonts/` (OFL). **Geist Fallback** is Arial with Geist's metrics (size-adjust 104.76%, ascent 95.94%, descent 28.16%), so a slow font never reflows a line.
 **Replicas:** each platform's own stack (system UI for X, Threads and LinkedIn; Inter for Bluesky).
 
 ### Hierarchy
-- **Display** (Instrument Serif 400, clamp(58px, 9vw, 138px), 0.92, -0.022em): hero and final call; emphasis is italic plus the sky tint.
-- **Headline** (Instrument Serif 400, clamp(46px, 6.2vw, 92px), 0.96): one per chapter. App page titles use the same face.
-- **Title** (Instrument Serif 400, 27–38px): section heads (.h1, .h2), plan names; Geist 600 for card titles (h3).
+- **Display** (EB Garamond 400, clamp(56px, 8.4vw, 128px), 0.98, -0.018em): hero and final call. The second half is italic, one word gets the squiggle.
+- **Headline** (EB Garamond 400, clamp(46px, 6.2vw, 92px), 1.02): one per chapter, roman then italic, under an uppercase Figtree eyebrow (12.5px, .14em).
+- **Title** (EB Garamond 400, 32–56px): app page titles, plan names, prices. Section heads below 32px are Figtree 600 19px.
 - **Body** (400, 17–21px, max ~56ch): chapter intros.
 - **UI** (500, 13–15px): controls, captions.
 - **Hand** (Caveat 500, 20–24px, rotated 2–4°): at most two margin notes in the hero, with drawn arrows.
@@ -315,7 +313,7 @@ The small stuff people only notice once it’s live, checked on every keystroke 
 ⌘. (or the target button) hides the sidebar, preview and chrome, centers the editor and keeps the line you’re on at eye height (typewriter scrolling). Esc or ⌘. brings everything back. Desktop only.
 
 ### Appearance
-The account menu’s Appearance item picks Sky, Midnight or Match my system.
+The account menu’s Appearance item picks Sky, Dark or Match my system.
 - **Post tools:** image, GIF, visual, poll | Rewrite … hook chip, character ring.
 
 ## Do's and Don'ts
@@ -330,14 +328,14 @@ The account menu’s Appearance item picks Sky, Midnight or Match my system.
 - **Don't** use real people's names, faces or posts without permission, or put verified badges on fictional accounts.
 - **Don't** auto-scroll content (no marquees) or use side-stripe accents.
 - **Don't** use gradient text, glows or decorative glass.
-- **Don't** put kickers or eyebrows above headings.
+- **Do** put one uppercase eyebrow above each homepage headline (Wispr's pattern).
 - **Don't** set sentences in mono.
 - **Don't** use the accent as decoration, or for more than one solid thing per screen. No colored glows.
 
 ## Brand and Voice
 
 - **Name:** Hookworthy. **Promise:** Write posts people stop for.
-- **Logo: the wordmark.** *hookworthy* in Instrument Serif italic, lowercase, ink on light and near-white on dark. No symbol. Where a square icon is unavoidable (favicon, app icon, PWA), an italic serif *h* sits on a cobalt tile (a gradient with a violet bloom for the app icon). Files: `assets/wordmark.svg` (outlined), `assets/icon.svg`, `assets/app-icon.svg` / `.png`.
+- **Logo: the wordmark.** hook*worthy*: EB Garamond 500, lowercase, "hook" roman and "worthy" italic, the same move every headline makes. No symbol in the UI. Where a square is unavoidable (favicon, app icon), a roman Garamond h in cream on a harbor tile. Files: `assets/wordmark.svg` (outlined), `assets/icon.svg`, `assets/app-icon.svg` / `.png`.
 - **Glossary (say it this way):**
 
   | Say | Don't say |

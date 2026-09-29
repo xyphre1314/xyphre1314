@@ -202,3 +202,16 @@ Detector: colored glows removed (accent-glow is neutral now); advisories were DE
 | Apply it everywhere | Homepage, demo, app (all routes), onboarding, upgrade, design-system page, visuals canvas, icons, favicon, manifest, docs. |
 
 Open advisory: the detector flags navy-tinted shadows as a "colored glow". They are elevation shadows tinted to the palette at low alpha, kept on purpose.
+
+## Round 9: hard critique, then "Harbor & Cream"
+
+Critique of round 8 (owner: "looks really bad"):
+1. Generic SaaS blue (#2355F0 ≈ Tailwind blue-600) on logo, buttons, charts, avatars and toggles: no ownership, no hierarchy.
+2. Three or four solid blue pills per screen shouting at once.
+3. Pastel washes and glows read as "AI gradient", not design.
+4. Navy-on-navy dark mode: flat, low separation.
+5. Instrument Serif is condensed; short titles looked squeezed, and it fought Geist's technical tone.
+6. Homepage chapters were all one template with no color rhythm; the app was card soup.
+7. Insights mixed serif, sans, mono and red/green in one sentence.
+
+Fixes, grounded in Wispr Flow's actual tokens: cream canvas and ink text; EB Garamond 400 only at 32px+, roman + italic; Figtree for UI; periwinkle buttons with an ink border and a 10px radius; harbor blue and ink as big rounded blocks; eyebrows; announcement bar; floating bordered nav; squiggle underline; no washes or glows; sans numerals in sentences; wordmark hook*worthy*; warm charcoal dark mode.
