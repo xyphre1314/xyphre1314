@@ -150,7 +150,7 @@ The owner's pins: colors minimal like Linear and Arc but not bare like Craft; ty
 Graphite neutrals with an ink accent. Color never decorates.
 
 ### Primary
-- **Ink** (#17181B light / #F4F4F5 dark): the accent. Primary buttons, selected states, the hook underline, the stop-meter track, avatars. On-accent text flips with it (`--accent-ink`: #FFFFFF on light, #0B0C0E on dark).
+- **Ink** (#17181B light / #F4F4F5 dark): the accent. Primary buttons, selected states, the hook underline, avatars. On-accent text flips with it (`--accent-ink`: #FFFFFF on light, #0B0C0E on dark).
 
 ### Neutral
 - **Feed Ink** (#0B0C0E): the landing and onboarding ground. The feed lives here.
@@ -221,7 +221,7 @@ Paper card, ink text, 40px ink avatar, name and handle, and a score chip that tu
 Noise posts in a vertical track. Speed eases toward the target set by the score: 1700 px/s under 50, 950 px/s under 70. Blur is `min(7px, v/240)`. At 70 or above the track brakes with an ease-out-cubic curve onto the slot that aligns with the pinned post. With reduced motion it parks instantly.
 
 ### Grade readout
-A Garamond score at 84–124px, five labelled sub-score bars, one sentence of reason, a status line in Figtree, and a speed meter from green (stopped) to red (scrolled past).
+A Garamond score at 84–124px, five labelled sub-score bars, one sentence of reason, a status line in Figtree, and a speed meter: a solid red fill that grows with feed speed while you're being scrolled past, empty with a green end state once the feed stops.
 
 ### Product crop
 Raised-ink panel with a hairline, holding real UI: word diffs (red deletions, green insertions, with a whole-phrase swap when little text survives), week strips, voice sliders, bars, and approval chips.
