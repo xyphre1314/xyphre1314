@@ -242,6 +242,7 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 ### Named Rules
 **The Numbers-Only Mono Rule.** Mono is for counts, times, scores and keys, never sentences.
 **The No-Gradient Rule.** Text is solid. Emphasis comes from the tint or from size.
+**The Tracking Rule.** Negative letter-spacing only on Garamond at 32px and up. Figtree is always 0 (uppercase eyebrows get +.14em). Body text runs at 1.5 or looser.
 
 ## Layout
 
@@ -253,7 +254,7 @@ The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. Chapters a
 4. **Four feeds**: X, Threads, LinkedIn and Bluesky phones at true 390pt scale (`zoom`), with a light/dark toggle.
 5. **The fold**: type a LinkedIn post and watch the "…more" cut.
 6. **Voice** (dark): sliders rewrite an X post live.
-7. **Week**: posts drop onto golden slots over a neutral ink heat ramp (quiet to busy). The peak slot has a 1.5px ink outline. On phones the week swipes.
+7. **Week**: the app's own Queue calendar (`calGridHTML`, non-interactive) with a sample week; one post lands on the best slot as it scrolls in. On phones the week swipes. The demo's Schedule tab uses the same calendar and the real schedule sheet.
 8. **Creators**: tabs for solo, founder and ghostwriter, each a demo built from platform posts (before and after, release notes to posts, voice switcher with approval).
 9. **Pricing**, then the **Final CTA** (a second ring).
 

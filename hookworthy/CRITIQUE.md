@@ -225,3 +225,17 @@ Owner: "that blue is horrible", wants 15–20 options including rainbows, and a 
 - Dark mode rebuilt on Wispr's dark: #1A1A1A, cream text, pastel buttons with ink text.
 - Every homepage text on a colored block moved from fixed greys (tuned to one blue) to cream alphas, which is what made the rainbow palettes readable.
 - Board of all 20, with real screenshots, published as an artifact.
+
+## Round 11: visual QA sweep
+
+Owner found tight text, a homepage week that didn't match the Queue, a clipped LinkedIn card, and ghost text when opening drafts. None were intentional.
+
+- Figtree no longer has negative tracking anywhere; only the Garamond display sizes keep it. Headline line-heights opened to 1.02–1.06 with more room before the sub.
+- Demo caption: 17px at 1.5, 40rem wide. The demo preview keeps the editor's line breaks.
+- One calendar: `calGridHTML` and `qcardHTML` render the app Queue, the homepage week and the demo's Schedule scene, so all three match. The demo now opens the real schedule sheet, then lands the card in the Queue.
+- LinkedIn card uses a container query: its action bar stacks icon over label under 420px, so nothing clips in narrow columns.
+- Composer preview becomes a bottom sheet at 1180px (was 980), so the top bar never crowds at 1024.
+- Ideas grid auto-fills columns at min 272px.
+- Sidebar view transition no longer cross-fades, which caused the ghost text on draft clicks.
+- Checked with a clip/overlap detector and screenshots at 390, 1024, 1280, 1440, 1536 and 1920; remaining flags are intentional (scrolling chip rows and weeks on phones, mid-animation rewrites, clamped previews).
+
