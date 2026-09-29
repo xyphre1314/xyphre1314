@@ -1740,7 +1740,7 @@ const fromKey = k => { const [y, m, d] = k.split('-').map(Number); return new Da
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const startOfWeek = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); const k = (x.getDay() + 6) % 7; x.setDate(x.getDate() - k); return x; };
-const fmtTime = t => { const [h, m] = t.split(':').map(Number); return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`; };
+const fmtTime = t => { const [h, m] = t.split(':').map(Number); return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
 const ago = ts => { const s = (Date.now() - ts) / 1000; if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + 'm ago'; if (s < 86400) return Math.floor(s / 3600) + 'h ago'; return Math.floor(s / 86400) + 'd ago'; };
 
 const store = {
@@ -3016,7 +3016,7 @@ function openGifs(i) {
   const m = modal(`${modalHead('Add a GIF', 'A small library of moods. No cringe, we checked.')}<div class="modal-b" style="display:grid;gap:12px"><input class="input" id="gif-q" autofocus placeholder="Search moods: ship, fine, hmm…" aria-label="Search GIFs"><div class="gifs" id="gif-grid"></div></div>`, { label: 'Add a GIF' });
   const draw = q => { const list = GIFS.filter(g => !q || g.label.includes(q.toLowerCase()) || g.id.includes(q.toLowerCase())); $('#gif-grid', m.el).innerHTML = list.length ? list.map(g => `<button data-g="${g.id}" aria-label="${esc(g.label)}">${gifTile(g.id)}</button>`).join('') : `<p class="muted" style="grid-column:1/-1;padding:20px;text-align:center">No mood called “${esc(q)}”. Try “ship”.</p>`; };
   draw(''); $('#gif-q', m.el).oninput = e => draw(e.target.value.trim());
-  $('#gif-grid', m.el).onclick = e => { const b = e.target.closest('[data-g]'); if (!b) return; if (tw.media.length >= 4) { toast('Four media max per post.', { tone: 'err', icon: 'image' }); return; } if (tw.poll) { toast('Polls and GIFs don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; } tw.media.push({ type: 'gif', id: b.dataset.g }); refreshMedia(tw.id); m.close(); };
+  $('#gif-grid', m.el).onclick = e => { const b = e.target.closest('[data-g]'); if (!b) return; if (tw.media.length >= 4) { toast('Four images max per post.', { tone: 'err', icon: 'image' }); return; } if (tw.poll) { toast('Polls and GIFs don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; } tw.media.push({ type: 'gif', id: b.dataset.g }); refreshMedia(tw.id); m.close(); };
 }
 
 /* ---------- Sharpen: select any words, flip through three takes on just those words ----------
@@ -3436,7 +3436,7 @@ const HOOK_POSTS = [
 const VOID_POSTS = [
   { p: 14, t: 'spent 3 hours on a thread.\n4 likes. one of them is my mom.', c: [12, 3, 89, 6200], ago: '1h' },
   { p: 9, t: 'impressions down 80% this week. did the algorithm change or did I', c: [31, 5, 140, 9800], ago: '3h' },
-  { p: 4, t: 'me at 11:47pm: I’ll just write one post\nthe post box: What is happening?!\nme: nothing. nothing is happening', c: [22, 14, 310, 18000], ago: '11:47 PM' },
+  { p: 4, t: 'me at 11:47 PM: I’ll just write one post\nthe post box: What is happening?!\nme: nothing. nothing is happening', c: [22, 14, 310, 18000], ago: '11:47 PM' },
   { p: 0, t: 'rewrote the first line 14 times. posted the first version.', c: [9, 2, 76, 4100], ago: '2d' },
   { p: 6, t: 'LinkedIn: “Excited to announce” “Humbled to share” “Thrilled to”\n\nis anyone just… okay?', c: [48, 30, 620, 41000], ago: '5h' },
   { p: 16, t: 'the “…see more” fold is where good posts go to die', c: [18, 11, 240, 15000], ago: '1d' },
@@ -3549,7 +3549,7 @@ function phoneFeed(kind, { dark = false, you, mine, others = [], w = 320, id = '
    cylinder. Every few seconds the ring brakes and one post stops at the
    front, first line marked, hook score shown.
    Then a pinned, scroll-scrubbed keynote follows one post from an 11pm
-   thought to a Tuesday 8:41am notification.
+   thought to a Tuesday 8:41 AM notification.
    ========================================================================== */
 /* ----- shared bits other routes use (onboarding feed, pricing, voice) ----- */
 const FEED_NOISE = [
@@ -4165,7 +4165,7 @@ const RADAR = {
   crypto: { label: 'Crypto trading', trends: [['ETH ETF inflows', '+212%', 'You’re early: 38 posts so far', 1], ['Stablecoin yields', '+41%', '640 posts this week', 0], ['Memecoin fatigue', '+64%', 'Crowded: 1.2K posts', 0]],
     posts: [
       { p: 18, t: 'I lost $41,000 on one trade in 2021.\n\nIt was the best money I ever spent. Here’s the rule it taught me:', c: [640, 2100, 18400, 1400000], ago: '3h', why: [['Relatable', 'Admits a real loss with a real number. People trust scars more than wins.'], ['Hook', 'A specific dollar figure, then a twist in line two.'], ['Format', 'The rule lands in post two, so people open the thread.']], pat: 'I lost {amount} on {mistake}.\n\nIt was the best money I ever spent. Here’s the rule it taught me:' },
-      { p: 19, t: 'ETH ETF inflows just flipped positive 5 days in a row.\n\nLast time that happened, here’s what price did over the next 30 days:', c: [212, 980, 7400, 520000], ago: '5h', why: [['Early', 'Posted three hours before the story trended. The first chart gets the quote-posts.'], ['Proof', 'The chart does the arguing, so the text can stay short.'], ['Timing', '8:10am ET, twenty minutes before the US open.']], pat: '{Signal} just happened {n} days in a row.\n\nLast time, here’s what followed over the next 30 days:' },
+      { p: 19, t: 'ETH ETF inflows just flipped positive 5 days in a row.\n\nLast time that happened, here’s what price did over the next 30 days:', c: [212, 980, 7400, 520000], ago: '5h', why: [['Early', 'Posted three hours before the story trended. The first chart gets the quote-posts.'], ['Proof', 'The chart does the arguing, so the text can stay short.'], ['Timing', '8:10 AM ET, twenty minutes before the US open.']], pat: '{Signal} just happened {n} days in a row.\n\nLast time, here’s what followed over the next 30 days:' },
       { p: 20, t: 'my trading journal this week:\n\nmon: +3%\ntue: +2%\nwed: -9% (revenge trade)\n\nstop revenge trading. that’s the tweet.', c: [390, 1600, 22000, 1900000], ago: '1d', why: [['Relatable', 'Everyone has a Wednesday. The loss is the point.'], ['Voice', 'Lowercase journal format. Reads unfiltered, not produced.'], ['Shareable', 'Short enough to screenshot, which is how it spread.']], pat: 'my {thing} this week:\n\nmon: {win}\ntue: {win}\nwed: {loss} ({mistake})\n\n{lesson}. that’s the tweet.' },
       { p: 21, t: 'Everyone is watching the Fed.\n\nThe number that actually moved Bitcoin this month was stablecoin supply. Here’s how to read it in 60 seconds:', c: [180, 740, 5200, 410000], ago: '2d', why: [['Contrarian', 'Pulls attention from the obvious story to the overlooked one.'], ['Promise', '“In 60 seconds” is a small, clear payoff.'], ['Authority', 'Calm macro voice. No rockets, no hype words.']], pat: 'Everyone is watching {obvious thing}.\n\nThe thing that actually moved {outcome} was {overlooked thing}. Here’s how to read it in 60 seconds:' },
       { p: 22, t: 'I read every audit from the 10 biggest DeFi exploits this year.\n\nSeven had the same bug. It’s not the one you think.', c: [260, 1100, 9100, 760000], ago: '2d', why: [['Effort', 'Signals work nobody else did: “I read every…”.'], ['Curiosity', 'Withholds the answer and flips your guess.'], ['Specific', 'Ten exploits, seven with the bug. Numbers make it credible.']], pat: 'I read every {source} from {set}.\n\n{n} had the same {pattern}. It’s not the one you think.' },
@@ -4333,7 +4333,7 @@ ROUTES.queue = () => {
     const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); toast(`${k === 'autoPlug' ? 'Follow-up reply' : 'Auto-repost'} ${S.settings[k] ? 'on' : 'off'}.`, { icon: 'check', ms: 1600 }); }
     const u = e.target.closest('[data-up-id]'); if (u) { const q = S.queue.find(x => x.id === u.dataset.upId); WEEK = Math.round((startOfWeek(fromKey(q.day)) - startOfWeek(new Date())) / (7 * DAY)); drawCal(); const card = $(`.qcard[data-id="${q.id}"]`); card && (card.classList.add('landed'), card.focus()); }
   });
-  v.addEventListener('change', e => { if (e.target.id === 'plug-t') { S.settings.plugText = e.target.value; save(); toast('Plug saved.', { icon: 'check', ms: 1400 }); } if (e.target.id === 'rep-h') { S.settings.repostAfter = +e.target.value; save(); } });
+  v.addEventListener('change', e => { if (e.target.id === 'plug-t') { S.settings.plugText = e.target.value; save(); toast('Follow-up reply saved.', { icon: 'check', ms: 1400 }); } if (e.target.id === 'rep-h') { S.settings.repostAfter = +e.target.value; save(); } });
   /* drag between slots */
   let dragId = null;
   v.addEventListener('dragstart', e => { const c = e.target.closest('.qcard'); if (!c) return; dragId = c.dataset.id; c.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); });
@@ -4450,7 +4450,7 @@ function drawInsights() {
   const types = [['Contrarian', 3.2], ['Story', 2.1], ['Listicle', 1.6], ['How-to', 1.4], ['Question', 1.1], ['Announcement', .7]];
   $('#ins').innerHTML = `<div class="insight-hero"><h2 class="display">Your contrarian hooks get <em>3.2× the replies.</em></h2><p>Lines that push back on common advice pulled 3.2× the replies of everything else. You wrote ${Math.max(1, Math.round(4 * f))} of them. Your audience wants more.</p><div class="acts"><button class="btn primary" data-nact="contra">${ic('swap', 'sm')} Write a contrarian post</button><button class="btn" data-nact="posts">See the posts</button></div></div>
   <p class="kpi-line">Over the last ${RANGE} days: ${kpis.map(([k, v, dl, up], i) => `${i === kpis.length - 1 ? 'and ' : ''}<b>${v}</b> ${k.toLowerCase()} <span class="delta ${up ? 'up' : 'down'}">${dl}</span>`).join(', ')}, compared with the ${RANGE} days before.</p>
-  <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Impressions</h3><p class="faint" style="font-size:13px;margin-top:2px">Tuesday spikes are your 8:40am posts landing.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Impressions</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(Date.now() - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
+  <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Impressions</h3><p class="faint" style="font-size:13px;margin-top:2px">Tuesday spikes are your 8:40 AM posts landing.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Impressions</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(Date.now() - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">Replies by hook type</h3><p class="faint" style="font-size:13px;margin-top:2px">Relative to your average post</p></div></div><div class="hbars">${types.map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k}: ${v}× your average replies"><span>${k}</span><div class="track"><div class="fillb" style="width:${v / 3.2 * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${v}×</span></div>`).join('')}</div></div>
   <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your people reply</h3><p class="faint" style="font-size:13px;margin-top:2px">First-hour replies, darker is more</p></div></div>${heatmap()}</div></div>
   <div class="grid-3 sec" style="margin-top:16px">
@@ -4551,7 +4551,7 @@ ROUTES.brand = () => {
     <div class="r"><span class="label">Display<br>Geist 600</span><span class="display" style="font-size:56px">Say it well.</span></div>
     <div class="r"><span class="label">Heading<br>Geist 600</span><span class="h1">Posts that sound like you on a good day</span></div>
     <div class="r"><span class="label">Editor<br>Geist 18/1.6</span><span style="font-size:18px;line-height:1.6;max-width:62ch">Nobody tells you the hardest part of a side project is month three. Not the start. Not the launch. Month three.</span></div>
-    <div class="r"><span class="label">UI<br>Geist 14</span><span>Schedule for Tue 8:40am · Follow-up reply at 100 likes</span></div>
+    <div class="r"><span class="label">UI<br>Geist 14</span><span>Schedule for Tue 8:40 AM · Follow-up reply at 100 likes</span></div>
     <div class="r"><span class="label">Mono<br>Geist Mono</span><span class="mono">0123456789 · 12.4k views · ⌘K</span></div></div></section>
   <section class="sec"><div class="sec-h"><h2 class="h2">Components, every state</h2></div><div class="card pad" style="display:grid;gap:28px">
     <div class="state-grid">${['Default', 'Hover', 'Focus', 'Active', 'Disabled', 'Loading'].map((s, i) => `<div><span class="label">${s}</span><button class="btn primary ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Schedule</button><button class="btn ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Save idea</button></div>`).join('')}</div>
@@ -4564,7 +4564,7 @@ ROUTES.brand = () => {
   $('#demo-sw').onclick = e => e.currentTarget.setAttribute('aria-checked', e.currentTarget.getAttribute('aria-checked') !== 'true');
   $('#view').addEventListener('click', e => {
     const b = e.target.closest('[data-bact]'); if (!b) return;
-    if (b.dataset.bact === 'toast') toast('Scheduled for Tue 8:40am. Go touch grass.', { icon: 'clock', tone: 'accent', action: 'Undo', onAction: () => toast('Undone.', { icon: 'undo' }) });
+    if (b.dataset.bact === 'toast') toast('Scheduled for Tue 8:40 AM. Go touch grass.', { icon: 'clock', tone: 'accent', action: 'Undo', onAction: () => toast('Undone.', { icon: 'undo' }) });
     if (b.dataset.bact === 'modal') modal(`${modalHead('A modal', 'Springs in, fades out, traps focus, closes on Esc.')}<div class="modal-b"><p class="muted">Every overlay in Hookworthy uses this one. Try Tab, then Esc.</p></div><div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" data-close>Got it</button></div>`, { label: 'Example modal' });
     if (b.dataset.bact === 'menu') openMenu(b, [{ label: 'Publish now', icon: 'send', kbd: [MOD, SHIFT, '↵'], run: () => toast('Menus run real actions.', { icon: 'check' }) }, { label: 'Schedule…', icon: 'clock', kbd: [MOD, '↵'], run: () => toast('Arrow keys work too.', { icon: 'check' }) }, '-', { label: 'Delete', icon: 'trash', run: () => toast('Nothing was deleted. It’s a demo.', { icon: 'trash' }) }]);
   });

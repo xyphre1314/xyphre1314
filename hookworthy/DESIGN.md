@@ -88,9 +88,9 @@ typography:
     lineHeight: 1
     fontFeature: "tnum"
   wordmark:
-    fontFamily: "EB Garamond, Georgia, serif"
-    fontSize: "23px"
-    fontWeight: 500
+    fontFamily: "Geist, Geist Fallback, sans-serif"
+    fontSize: "20px"
+    fontWeight: 650
     lineHeight: 1
   platform-x:
     fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
@@ -186,12 +186,13 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 - **Bluesky**: secondary #405168, icons #667B99, divider #DCE2EA.
 
 ### Named Rules
-**The One Marker Rule.** Yellow appears only as a highlighter under a hook. If it is doing anything else, remove it.
+**The One Marker Rule.** Yellow is a highlighter, never a fill. It sits under the words worth stopping for: a first line that scores 70 or more, the one key phrase in a headline, the text you've selected, a take you're about to keep. It never colors a button (except Keep, the moment you accept a sharper line), a border or a background. If yellow is doing anything else, remove it.
+**The One Threshold Rule.** 70 is the only number that matters. At 70 or more, the hook chip turns yellow, the marker sweeps under the first line, and a small sound plays. Below 70, nothing celebrates.
 **The Replica Rule.** Platform colors never leave a platform replica, and Hookworthy colors never enter one.
 
 ## Typography
 
-**Family:** Geist (display, headings, UI, body), Geist Mono for numbers and keys, Caveat for margin notes, EB Garamond for the wordmark only. Every face is self-hosted in `fonts/` (OFL). **Geist Fallback** is Arial with Geist's metrics (size-adjust 104.76%, ascent 95.94%, descent 28.16%), so a slow font never reflows a line.
+**Family:** Geist for everything: display, headings, UI, body and the wordmark. Geist Mono is for numbers and keys, and Caveat is for margin notes on the homepage. Nothing else. Every face is self-hosted in `fonts/` (OFL). **Geist Fallback** is Arial with Geist's metrics (size-adjust 104.76%, ascent 95.94%, descent 28.16%), so a slow font never reflows a line.
 **Replicas:** each platform's own stack (system UI for X, Threads and LinkedIn; Inter for Bluesky).
 
 ### Hierarchy
@@ -254,6 +255,44 @@ The homepage primary is an ink pill (48px) with a white label and an arrow that 
 ### Character ring (composer)
 It follows X: a quiet ring that grows at 20 remaining, turns to warning then error, shows the count, and hides the circle at 10 over.
 
+### Sharpen (selection rewrite)
+Select three or more characters in a post and an ink pill appears above where the selection starts. It offers Punchier, Shorter, Clearer, Bolder and More human (⌥1–5). Picking one previews the first of three takes in place on a marker-soft background. You flip takes with ‹ › or the arrow keys, keep with ↵ (the yellow Keep button), and cancel with Esc. Kept text flashes marker and fades. Sharpen is free and unlimited, because it only touches the words you chose.
+
+### Visuals
+The spark-image tool opens four kinds of visual, each rendered to canvas in-browser:
+- **Quote card:** your line on Paper, Ink or Marker, with the first line swiped yellow.
+- **Before / after:** a chart parsed from "21% → 38%" or "from X to Y" in your post.
+- **Post screenshot:** an X-style card for cross-posting.
+- **Frame a screenshot:** drop an image and get padding, a radius and a shadow.
+
+Each comes in 16:9, 1:1 or 4:5, and is added as an image with alt text.
+
+### Niche radar (Ideas tab)
+Choose a niche, then:
+- **Trends:** three trends, with the one you're early on outlined in ink and given a "Post on it first" button.
+- **Popped posts:** real-looking posts from accounts in your niche, each with three reasons it spread (early, hook, relatable, timing, format, proof) and the structure written out with placeholders marked.
+- **Write your take:** loads that structure into the composer with [brackets] to fill.
+
+The accounts are illustrative and labelled as such.
+
+### Live demo (homepage)
+A product window with four tabs that act as a timeline (Sharpen, Visuals, Niche radar, Schedule). A cursor works the real UI, each tab fills as its scene plays, the demo auto-advances and loops only while on screen, and clicking a tab jumps to it. Sound is opt-in from the speaker in the title bar.
+
+### Sound
+Sounds are synthesized in Web Audio and never samples. Each is under 350 ms and very quiet:
+- **tick:** toggles and tabs.
+- **tap:** primary actions.
+- **hook:** a rising two-note cue when the first line crosses 70.
+- **swap:** a rewrite or take is kept.
+- **done:** a four-note arpeggio when a post is scheduled or published.
+
+Sounds are on by default in the app and can be switched off in the account menu. On the homepage they're off until you ask for them.
+
+### App shell
+- **Sidebar:** logo, a New post pill, Search (⌘K), then Write, Ideas, Queue, Insights and Your voice. Your five most recent drafts sit below, and the account button (which also switches client voices) is at the bottom. There are no section headers.
+- **Composer top bar:** status, Post to, the preview toggle, ··· and Schedule.
+- **Post tools:** image, GIF, visual, poll | Rewrite … hook chip, character ring.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -273,5 +312,19 @@ It follows X: a quiet ring that grows at 20 remaining, turns to warning then err
 ## Brand and Voice
 
 - **Name:** Hookworthy. **Promise:** Write posts people stop for.
-- **Logo: The Cursor.** A text I-beam whose foot curls into a hook, with the wordmark *hookworthy* in EB Garamond 500. Files: `assets/icon.svg`, `assets/wordmark.svg`, `assets/app-icon.svg`.
+- **Logo: The First Line.** A marker swipe (a skewed yellow bar) with a text caret standing at its end. It means you just wrote a line worth highlighting. On load and on hover the swipe draws in and the caret blinks twice. The wordmark is lowercase *hookworthy* in Geist 650 at −0.05em. The app icon is the mark on an ink squircle. Files: `assets/icon.svg`, `assets/wordmark.svg`, `assets/app-icon.svg` / `.png`.
+- **Glossary (say it this way):**
+
+  | Say | Don't say |
+  |---|---|
+  | Rewrite | Riff |
+  | Sharpen | AI edit |
+  | Best time | Golden slot |
+  | Follow-up reply | Auto-plug |
+  | Ideas for you | Engine |
+  | Your voice | Voice profile |
+  | Hook formulas | Hook library |
+  | Drafts | Archive |
+
+- **Time format:** 8:40 AM, with a space and capitals, as on X.
 - **Voice:** creator to creator; short sentences; numbers beat adjectives; no "unlock / supercharge / leverage / elevate / seamless / AI-powered".
