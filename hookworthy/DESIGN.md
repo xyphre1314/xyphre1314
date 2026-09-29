@@ -20,11 +20,11 @@ The full search (5 rounds, 250+ candidates, domain checks) is in `NAMES.md`.
   4. Banned words: unlock, supercharge, leverage, elevate, seamless, game-changer, delve, "AI-powered".
   5. Celebrate quietly. One exclamation mark per screen, max. Usually zero.
   6. Errors say what happened and what to do next. No "Oops", no apologies.
-- **Logo: The Hook.** A single rounded stroke with a solid eye: a fishhook drawn like a pen line. It reads at 16px and on a billboard. On hover it tilts back, as if something just bit.
+- **Logo: The Cursor** (direction B, "Graphite"). A text I-beam whose foot curls into a hook: writing first, catching second. One stroke weight, round caps, no fill. It reads at 16px and on a billboard. On hover it tilts back. Other directions considered: `brand/logo-directions.html`.
   - Icon: `assets/icon.svg`
-  - Wordmark: `assets/wordmark.svg` (lowercase *hookworthy*, EB Garamond 500, −2% tracking, the hook leading)
-  - App icon: `assets/app-icon.svg` (ink squircle, lilac hook, soft indigo glow)
-- **Signature motif: the hook + indigo glow.** The hook marks the first line everywhere: the hook score ring, the hook grader, the publish toast ("Hook, meet world."). The glow is a single soft indigo radial light behind whatever you're focused on. The landing page's particle field stays as ambient "attention" gathering around the composer.
+  - Wordmark: `assets/wordmark.svg` (lowercase *hookworthy*, EB Garamond 500, −2% tracking, the cursor leading)
+  - App icon: `assets/app-icon.svg` (graphite gradient squircle `#4A4C53 → #141518`, white cursor, a soft top sheen and a glass edge: the Arc-style touch)
+- **Signature motif: the cursor + soft light.** The cursor marks where writing happens: the logo, the editor caret, the hook score ring. Glows behind heroes are neutral white light, never tinted. The landing page's particle field stays as ambient "attention" gathering around the composer.
 
 ## (c) Design system
 
@@ -42,7 +42,7 @@ The full search (5 rounds, 250+ candidates, domain checks) is in `NAMES.md`.
 
 ### Color (v2: Linear-inspired)
 
-Cool, near-neutral greys and one indigo accent. The landing page and onboarding are always dark, like Linear's site, with one light "paper" chapter (the Wispr-style alternation). The app follows light/dark.
+Cool, near-neutral greys (Linear) and no brand hue. The accent is ink: near-black on light, near-white on dark. Hue is reserved for meaning: green for good, amber for warnings, red for errors. The landing page and onboarding are always dark, like Linear's site, with one light "paper" chapter (the Wispr-style alternation). The app follows light/dark.
 
 | Token | Light | Dark |
 |---|---|---|
@@ -53,12 +53,12 @@ Cool, near-neutral greys and one indigo accent. The landing page and onboarding 
 | `--text-1` | `#111216` | `#F7F8F8` |
 | `--text-2` | `#51545C` | `#A3A7AF` |
 | `--text-3` | `#6B6F78` | `#80858E` |
-| `--accent` (Indigo) | `#5E6AD2` | `#6E78E6` |
-| `--accent-text` | `#4C57C2` | `#9AA2FF` |
+| `--accent` (Ink) | `#17181B` | `#F4F4F5` |
+| `--accent-text` / `--accent-ink` | `#17181B` / `#FFFFFF` | `#F4F4F5` / `#0B0C0E` |
 | `--success` / `--warn` / `--error` | `#1F8F5F` / `#C26A12` / `#D63F3F` | `#4CC38A` / `#F2A14A` / `#F26D6D` |
 | Paper chapter | `#F5F4F0` | n/a |
 
-Depth comes from 1px borders, an inset main panel (Linear's app shell), soft indigo glows behind heroes, and gradient-to-transparent headline text. No grain and no blur-banding glows.
+Depth comes from 1px borders, an inset main panel (Linear's app shell), soft neutral light behind heroes, and gradient-to-transparent headline text. No grain and no blur-banding glows.
 
 ### Spacing, radii, icons
 

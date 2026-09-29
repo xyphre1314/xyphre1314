@@ -105,3 +105,13 @@ What changed with the rebrand:
 - Hero: "Write posts people *stop* for." The final CTA is "Your next hook is already in here."
 - Publish reward copy: "Hook, meet world."
 - PWA name, meta/OG tags, service-worker cache and localStorage prefix all say `hookworthy`.
+
+## Round 3: Graphite
+
+Owner picked direction B from `brand/logo-directions.html`: minimal like Linear and Arc, not bare like Craft, with Wispr-style type.
+
+- Logo: the fishhook became The Cursor, an I-beam whose foot curls into a hook.
+- Color: the indigo accent is gone. The accent is now ink (near-black on light, near-white on dark), and on-accent text flips with it (`--accent-ink`).
+- Glows behind the hero, demo, story and final CTA are neutral white light instead of indigo.
+- App icon: a graphite gradient tile with a white cursor and a glass edge.
+- Fixed while switching: switch knobs and spinners on accent backgrounds used hard-coded white, which would have vanished on the near-white dark-mode accent. They now use `--accent-ink`. The logo's SVG class was renamed from `.hk` to `.cm` because it collided with the hook-card `.hk` class.
