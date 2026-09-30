@@ -37,7 +37,10 @@ Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (th
 | `POST /api/typefully/import` `{key}` | Your published and scheduled Typefully drafts (key used once, never stored) |
 | `POST /api/publish` `{posts, platforms}` | Post now to X (as a thread) and/or LinkedIn. Each post is a string or `{text, media:[ids]}`; X gets up to 4 per post (uploaded in chunks, with alt text), LinkedIn gets every picture in one post |
 | `POST /api/schedule` `{posts, at, platforms}`, `GET /api/queue`, `DELETE /api/queue/:id` | The posting queue; checked every 30 s |
-| `POST /api/v1/check` `{text, never?, limit?}` | Hook score + pre-post checks, no key needed |
+| `POST /api/v1/check` `{text, never?, limit?, history?}` | Hook score + pre-post checks, no key needed. Send `history` (your past posts with likes, reposts, replies) and it also returns `mine`: the score tuned to your posts, what helps and hurts this line for you, and how the tuned score did on your newest posts |
+| `GET/POST /api/breakout` | Breakout alerts: status, and settings `{on, email, median, voice, subscribe, unsubscribe}`. `median` is your typical post's engagement (the app sends it from your history); `subscribe` is a browser push subscription |
+| `GET /api/breakout/alerts?since=` | Alerts so far (the open app checks every minute) |
+| `POST /api/breakout/test` | Sends a test alert to your devices and email |
 | `POST /api/v1/rewrite` `{text, kind, voice?}` | Three rewrites in a voice |
 | `POST /api/v1/ideas` `{niche, notes, top}` | First lines to write today |
 | `GET /api/x/replies?id=` | First-hour replies to a post, ranked (questions and reach first) |
@@ -83,6 +86,7 @@ Or on Render: New → Blueprint, point it at this repo (`hookworthy/server/rende
 - Binds to `127.0.0.1` by default. If you open it up, set `HOOKWORTHY_TOKEN`.
 - OAuth tokens live in `server/data/` (mode 600). The Typefully key is never written anywhere.
 - Media for posts is stored in `server/data/media/` (mode 600), named by a hash of its bytes. `/api/media` only fetches https links on GIPHY's own hosts, so it can't be used to reach other addresses.
+- Breakout alerts: each post sent through Hookworthy is checked at minutes 5, 10, 15, 20, 25, 30, 40, 50 and 60 with one batched X lookup for everything being watched (about nine reads per post, only while alerts are on). It alerts once, between minute 8 and 45, when a post is at 3× your usual engagement for that minute and at least 12. "Usual" comes from your history until five watched posts teach it your real first-hour pace. Push uses Web Push with VAPID keys the server makes on first use (kept in `server/data/vapid.json`); push endpoints must be https. Email goes through Resend when `RESEND_API_KEY` is set, and is only logged otherwise.
 - X asks for the `media.write` scope. If you connected X before this was added, connect it again so pictures can post.
 - `/api/ai` is rate limited per IP (30 a minute; voice study costs 5).
 - Review links are readable by anyone with the link (random 12-character ids); they carry only the draft and the author's name.

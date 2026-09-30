@@ -644,6 +644,49 @@ body.typing .tw-tools{ opacity:0!important; }
 .hook-reason{ margin-top:10px; padding:14px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:var(--t-13); color:var(--text-2); animation:rise var(--d-spring) var(--ease-out) both; }
 .force-dark .hook-reason,:root[data-theme="dark"] .hook-reason:not(.force-light .hook-reason){ background:var(--surface-2); }
 .hook-reason b{ color:var(--text-1); font-weight:600; }
+/* Round 21: breakout alerts */
+.bo{ display:grid; gap:14px; }
+.bo-post{ margin:0; padding:12px 14px; border-left:3px solid var(--accent); background:var(--surface-2); border-radius:0 10px 10px 0; font-size:var(--t-14); color:var(--text-1); white-space:pre-line; }
+.bo-hero{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:16px; align-items:center; }
+.bo-x{ display:grid; gap:2px; } .bo-x b{ font:400 52px/1 var(--font-display,Georgia,serif); color:var(--accent); letter-spacing:-.02em; font-variant-numeric:tabular-nums; animation:pop var(--d-spring) var(--spring-snap) both; } .bo-x span{ font-size:12px; color:var(--text-3); }
+.bo-chart{ width:100%; height:auto; max-width:100%; display:block; overflow:visible; }
+.bo-chart .ax{ stroke:var(--border-strong); } .bo-chart .tk,.bo-chart .lb{ font:500 10px var(--font-mono); fill:var(--text-3); } .bo-chart .lb{ fill:var(--text-1); font-weight:600; } .bo-chart .lb.mute{ fill:var(--text-3); font-weight:500; }
+.bo-chart .usual{ fill:none; stroke:var(--text-3); stroke-width:1.5; stroke-dasharray:4 4; }
+.bo-chart .now{ fill:none; stroke:var(--accent); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; stroke-dasharray:600; stroke-dashoffset:600; animation:bo-draw 900ms var(--ease-out) 120ms forwards; }
+.bo-chart .area{ fill:color-mix(in srgb,var(--accent) 14%,transparent); stroke:none; } .bo-chart .dot{ fill:var(--accent); stroke:var(--bg-elev); stroke-width:2; }
+@keyframes bo-draw{ to{ stroke-dashoffset:0; } }
+@media (prefers-reduced-motion:reduce){ .bo-chart .now{ animation:none; stroke-dashoffset:0; } }
+.bo-stats{ margin:0; font-size:var(--t-13); color:var(--text-2); } .bo-stats b{ color:var(--text-1); font-variant-numeric:tabular-nums; }
+.bo-do{ margin:0; padding-left:20px; display:grid; gap:6px; font-size:var(--t-13); color:var(--text-2); } .bo-do b{ color:var(--text-1); }
+.bo-set{ display:grid; gap:12px; } .bo-set > p{ margin:0; }
+.bo-sw{ display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:12px; background:var(--surface-2); cursor:pointer; } .bo-sw input{ margin-top:3px; accent-color:var(--accent); width:18px; height:18px; } .bo-sw span{ display:grid; gap:2px; } .bo-sw small{ color:var(--text-3); font-size:12px; }
+.bo-base{ display:flex; gap:8px; align-items:flex-start; flex-wrap:wrap; font-size:var(--t-13); color:var(--text-2); } .bo-base.warn{ color:var(--text-1); }
+.bo-ch{ display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; padding:12px 0; border-top:1px solid var(--border); } .bo-ch > div:first-child{ display:grid; gap:2px; min-width:0; flex:1 1 200px; } .bo-ch small{ color:var(--text-3); font-size:12px; }
+.bo-em{ display:flex; gap:6px; flex:1 1 240px; } .bo-em .input{ flex:1; min-width:0; }
+.bo-recent{ display:grid; gap:6px; } .bo-rec{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:center; text-align:left; padding:8px 10px; border-radius:10px; background:var(--surface-2); } .bo-rec b{ color:var(--accent); font-variant-numeric:tabular-nums; } .bo-rec span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .bo-rec small{ color:var(--text-3); }
+@media (max-width:520px){ .bo-hero{ grid-template-columns:1fr; } .bo-x{ grid-auto-flow:column; justify-content:start; align-items:baseline; gap:8px; } .bo-x b{ font-size:40px; } }
+/* Round 21: the hook score, tuned to you */
+.hook.mine .sc{ box-shadow:inset 0 0 0 1.5px var(--accent); }
+.hk-mine{ display:grid; gap:10px; padding:12px; border-radius:12px; background:var(--tint-soft,var(--surface-2)); }
+.hk-mine.off{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--surface-2); } .hk-mine.off p{ flex:1 1 220px; margin:0; }
+.hk-mh{ display:flex; gap:12px; align-items:center; } .hk-mh p{ margin:0; }
+.hk-big{ flex:none; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:var(--accent); color:var(--accent-ink); font:600 17px/1 var(--font-mono); font-variant-numeric:tabular-nums; animation:pop var(--d-spring) var(--spring-snap) both; }
+.hk-ts{ display:flex; flex-wrap:wrap; gap:6px; }
+.hk-t{ display:inline-flex; gap:5px; align-items:center; padding:4px 9px; border-radius:99px; font-size:12px; background:var(--surface); box-shadow:0 0 0 1px var(--border); }
+.hk-t.up b{ color:var(--success); } .hk-t.down b{ color:var(--error); }
+.hk-try{ display:flex; gap:8px; align-items:flex-start; margin:0; } .hk-trust{ margin:0; font-size:12px; color:var(--text-3); }
+.hk-gen summary{ cursor:pointer; font-size:12px; color:var(--text-3); }
+.ih-tune{ display:grid; gap:14px; }
+.ih-tr{ display:grid; grid-template-columns:minmax(0,1fr) minmax(120px,2fr) 52px; gap:10px; align-items:center; font-size:13px; }
+.ih-tr .ax{ position:relative; height:10px; } .ih-tr .ax::before{ content:''; position:absolute; left:50%; top:-3px; bottom:-3px; width:1px; background:var(--border-strong); }
+.ih-tr .ax i{ position:absolute; top:0; height:100%; border-radius:4px; animation:grow var(--d-spring) var(--ease-out) both; }
+.ih-tr .ax i.up{ left:50%; background:var(--accent); } .ih-tr .ax i.down{ right:50%; background:color-mix(in srgb,var(--text-3) 55%,transparent); }
+.ih-tr .num{ text-align:right; font:600 12px/1 var(--font-mono); font-variant-numeric:tabular-nums; }
+.ih-tr .nm{ min-width:0; } .ih-tr .nm small{ display:block; color:var(--text-3); font-size:11px; }
+@media (max-width:520px){ .ih-tr{ grid-template-columns:minmax(0,1fr) 48px; row-gap:6px; } .ih-tr .nm{ grid-column:1 / -1; display:flex; justify-content:space-between; gap:8px; } .ih-tr .nm small{ display:inline; } }
+.ih-trs{ display:grid; gap:12px; }
+@keyframes grow{ from{ transform:scaleX(0); } }
+.ih-tr .ax i.up{ transform-origin:left; } .ih-tr .ax i.down{ transform-origin:right; }
 .hk-f{ display:grid; gap:6px; padding-top:12px; border-top:1px solid var(--border); }
 .hk-fh{ display:flex; align-items:center; justify-content:space-between; }
 .hkf{ display:grid; grid-template-columns:78px 1fr; gap:10px; align-items:baseline; text-align:left; padding:8px 10px; border-radius:10px; color:var(--text-1); transition:background var(--d-micro); }
@@ -916,8 +959,8 @@ body.typing .preview{ opacity:.7; }
 .heat .rl{ display:flex; align-items:center; }
 .heat .cl{ text-align:center; padding-bottom:4px; }
 .ins-card{ padding:18px; display:grid; gap:10px; align-content:start; grid-template-rows:auto 1fr auto; } .ins-card > .btn:last-child, .ins-card > :last-child:is(.btn,button){ justify-self:start; align-self:end; }
-.ins-card .big{ font:400 28px/1.1 var(--f-serif,'EB Garamond',serif); letter-spacing:-.01em; color:var(--text-1); text-wrap:balance; }
-.ins-card .big em{ color:var(--accent-text); }
+.ins-card .big,.ih-tune .big{ font:400 28px/1.1 var(--f-serif,'EB Garamond',serif); letter-spacing:-.01em; color:var(--text-1); text-wrap:balance; }
+.ins-card .big em,.ih-tune .big em{ color:var(--accent-text); }
 .ins-card p{ color:var(--text-2); font-size:var(--t-13); }
 .top-post{ display:grid; grid-template-columns:28px 1fr auto; gap:14px; align-items:center; padding:14px 6px; border-bottom:1px solid var(--border); }
 .top-post:last-child{ border-bottom:0; }
@@ -2147,6 +2190,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
     <symbol id="i-right" viewBox="0 0 20 20"><path d="M8 5l5 5-5 5"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M4 10h12M11 5l5 5-5 5"/></symbol>
     <symbol id="i-lr" viewBox="0 0 20 20"><path d="M7 6l-4 4 4 4M13 6l4 4-4 4"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 20 20"><path d="M5.2 13.6V9a4.8 4.8 0 0 1 9.6 0v4.6l1.4 1.6H3.8z"/><path d="M8.3 17.2a1.9 1.9 0 0 0 3.4 0"/></symbol>
     <symbol id="i-clock" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><path d="M10 6.2V10l2.6 1.6"/></symbol>
     <symbol id="i-send" viewBox="0 0 20 20"><path d="M3.5 9.5l13-6-5 13.5-2.3-5.2z"/><path d="M9.2 11.8l7.3-8.3"/></symbol>
     <symbol id="i-trash" viewBox="0 0 20 20"><path d="M4 6h12M8 6V4.2h4V6M5.8 6l.8 10h6.8l.8-10"/></symbol>
@@ -2467,6 +2511,9 @@ function voiceSpec() {
 /* your imported history and its analysis (cached until the history changes) */
 const HIST = () => S.history || [];
 let _an = { key: '', v: null };
+let _ph = {}; function PHOOK() { const k = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (_ph.key !== k) _ph = { key: k, v: HWCore.learnHooks(HIST()) }; return _ph.v; }
+/* the score the composer shows: tuned to you once there's enough history, the general one before */
+function hookFor(text, parts) { const m = PHOOK(), g = hookScore(text); const me = m.ready ? HWCore.personalScore(text, m, { parts }) : null; return { score: me ? me.score : g.score, me, g, m }; }
 function ANALYSIS() { const k = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (_an.key !== k) _an = { key: k, v: HWCore.analyze(HIST()) }; return _an.v; }
 const AI = {
   punchier(t) {
@@ -3048,6 +3095,7 @@ function paletteCommands() {
     { g: 'Actions', label: 'Plan my week', icon: 'cal', run: () => openPlan() },
     { g: 'Actions', label: 'Picture to post (screenshot, chart, DM)', icon: 'image', run: () => openPicture() },
     { g: 'Actions', label: 'Reply radar: fresh posts worth an early reply', icon: 'reply', run: () => openRadar() },
+    { g: 'Actions', label: 'Breakout alerts: a ping when a post takes off', icon: 'bell', run: () => openBreakoutSetup() },
     { g: 'Actions', label: 'Write from a brief, doc or PDF', icon: 'write', run: () => openBrief() },
     { g: 'Actions', label: 'Talk instead of typing', icon: 'mic', run: () => { goThen('write', () => dictate(0)); } },
     { g: 'Actions', label: 'X format: thread or long post', icon: 'layers', run: () => { goThen('write', () => openXFormat($('[data-cact="schedmenu"]') || $('#thread'))); } },
@@ -3378,20 +3426,32 @@ function selectFrag(frag) {
 }
 function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
-  const h = hookScore(t0.text); const sc = $('.sc', b); b.style.visibility = t0.text.trim() ? '' : 'hidden';
+  const H = hookFor(t0.text, S.draft.tweets.filter(t => t.text.trim()).length), h = H; const sc = $('.sc', b); b.style.visibility = t0.text.trim() ? '' : 'hidden';
+  b.classList.toggle('mine', !!H.me); b.dataset.tip = H.me ? `Tuned to your ${fmtN(H.m.n)} posts. Why this score?` : 'Why this score?';
   if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
   b.classList.toggle('hi', h.score >= 70);
-  const pr = predict(h.score, t0.text); const p = $('#predict');
-  if (p) p.textContent = pr ? `~${fmtK(pr.views)} views · ${Math.round(pr.replies)} replies` : '';
-  if (p) p.dataset.tip = 'Predicted from your last 90 days';
+  const pr = predict(H.g.score, t0.text); const p = $('#predict');
+  if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
+  else if (p) { p.textContent = pr ? `~${fmtK(pr.views)} views · ${Math.round(pr.replies)} replies` : ''; p.dataset.tip = 'A rough guess from the general score. Bring your posts and it’s tuned to you.'; }
   if (UI.hook) renderExtras(t0.id);
   refreshChecks();
 }
+function mineHTML(H) {
+  const m = H.m;
+  if (!m.ready) return `<div class="hk-mine off">${ic('trend', 'sm')}<p>${m.n ? `The score tunes itself to you after ${m.need} posts with likes. You have ${m.n}.` : 'Bring your posts and this score learns what works for your audience, not people in general.'}</p><button class="btn sm" data-act="import">${ic('upload', 'sm')} Bring your posts</button></div>`;
+  const me = H.me, trait = t => `<span class="hk-t ${t.w > 0 ? 'up' : 'down'}" data-tip="${t.n} of your posts have it">${esc(cap(t.label))} <b>${t.x}×</b></span>`;
+  const trust = m.trust === 'better' ? `Tested on your newest ${m.val.n} posts: it called them better than the general score (${m.val.r} vs ${m.val.rGeneral}).` : m.trust === 'similar' ? `Tested on your newest ${m.val.n} posts: about as good as the general score so far.` : m.trust === 'weak' ? `Still learning: on your newest ${m.val.n} posts it didn’t predict much yet. Treat it as a hint.` : 'Not tested yet: your posts need dates for that.';
+  return `<div class="hk-mine"><div class="hk-mh"><span class="hk-big">${me.score}</span><p><b>For you.</b> This line would beat ${me.score}% of your ${fmtN(m.n)} posts, about <b>${me.x}×</b> your usual.</p></div>
+    ${me.helps.length || me.hurts.length ? `<div class="hk-ts">${me.helps.map(trait).join('')}${me.hurts.map(trait).join('')}</div>` : ''}
+    ${me.tryNext ? `<p class="hk-try">${ic('spark', 'sm')} <span><b>${esc(me.tryNext.add)}.</b> On your posts, ${esc(me.tryNext.label)} earns ${me.tryNext.x}×.</span></p>` : ''}
+    <p class="hk-trust">${esc(trust)}</p></div>`;
+}
 function hookReasonHTML() {
-  const h = hookScore(S.draft.tweets[0].text);
+  const H = hookFor(S.draft.tweets[0].text, S.draft.tweets.filter(t => t.text.trim()).length), h = H.g;
   const bars = Object.entries(h.parts).map(([k, v]) => `<div class="bar-row"><span>${cap(k)}</span><div class="meter"><i style="width:${v}%"></i></div><span class="num">${v}</span></div>`).join('');
-  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%"><div style="display:flex;gap:10px;align-items:flex-start">${ic(h.tone === 'good' ? 'check' : 'target', 'sm')}<p><b>${h.score}/100.</b> ${esc(h.reason)}</p></div><div class="bars">${bars}</div>${h.score < 76 && S.draft.tweets[0].text.trim() ? `<div><button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button></div>` : ''}${h.score < 70 ? formulasHTML() : ''}</div></div>`;
+  const general = `<div style="display:flex;gap:10px;align-items:flex-start">${ic(h.tone === 'good' ? 'check' : 'target', 'sm')}<p><b>${H.me ? 'General score ' : ''}${h.score}/100.</b> ${esc(h.reason)}</p></div><div class="bars">${bars}</div>`;
+  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${S.draft.tweets[0].text.trim() ? mineHTML(H) : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${h.score}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : general}${H.score < 76 && S.draft.tweets[0].text.trim() ? `<div><button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button></div>` : ''}${H.score < 70 ? formulasHTML() : ''}</div></div>`;
 }
 /* hook formulas, offered right where a weak first line is: pick one, then type over the blanks */
 function formulasHTML() {
@@ -4989,7 +5049,7 @@ const SAMPLE_REPLIES = [
 ];
 function replyKind(r) { return r.question ? 'Question' : r.followers >= 10000 ? 'Big account' : /\b(same|relatable|this|so true)\b/i.test(r.text) ? 'Agrees' : 'Reply'; }
 function localReply(r, post) { const k = replyKind(r); const topic = topicOf(post); return k === 'Question' ? '' : k === 'Agrees' ? `The worst part is how reasonable it felt at the time. What tipped you off?` : k === 'Big account' ? `Appreciate that. The [${topic}] part is what I'd do first next time.` : `Thanks for reading. What would you add?`; }
-async function openReplyDesk(q) {
+async function openReplyDesk(q, preset) {
   q = q || [...S.queue].reverse().find(x => x.status === 'published'); if (!q) { toast('Post something first. The desk opens right after.', { icon: 'reply' }); return; }
   const srv = LLM.server || {}; const live = !!(srv.replies && q.xIds && q.xIds[0]);
   const m = modal(`${modalHead('First-hour replies', `For “${esc(clip(q.text, 70))}”. Answer the ones that matter while the post is still being judged.`)}
@@ -5005,7 +5065,8 @@ async function openReplyDesk(q) {
   };
   const localDrafts = () => list.forEach(r => { if (!r.draft) r.draft = localReply(r, q.text); });
   try {
-    if (live) { const r = await fetch(`api/x/replies?id=${encodeURIComponent(q.xIds[0])}`); const j = await r.json(); if (!r.ok) throw new Error(j.error); list = j.replies; $('#rd-note', el).innerHTML = `${ic('check', 'sm')} Live from X, ranked: questions and people with reach first.`; }
+    if (preset) { list = preset.map(x => ({ ...x })); $('#rd-note', el).innerHTML = `${ic('check', 'sm')} The first replies, ranked, with answers drafted. Edit before you send.`; }
+    else if (live) { const r = await fetch(`api/x/replies?id=${encodeURIComponent(q.xIds[0])}`); const j = await r.json(); if (!r.ok) throw new Error(j.error); list = j.replies; $('#rd-note', el).innerHTML = `${ic('check', 'sm')} Live from X, ranked: questions and people with reach first.`; }
     else { list = SAMPLE_REPLIES.map(x => ({ ...x })); $('#rd-note', el).innerHTML = `${ic('q', 'sm')} Sample replies. ${srv.replies ? 'This post wasn’t sent through Hookworthy, so there’s no live thread to read.' : 'Once X is connected, the real ones show up here. For now, paste them below.'}`; }
   } catch (e) { list = []; $('#rd-note', el).innerHTML = `<span class="imp-err">X said no: ${esc(e.message)}</span>`; }
   localDrafts(); draw();
@@ -5027,7 +5088,7 @@ async function openReplyDesk(q) {
     try { await navigator.clipboard.writeText(text); } catch (err) { /* intent carries the text anyway */ }
     window.open(url, '_blank', 'noopener'); r.done = true; draw();
   });
-  if (aiOn()) draftAll($('#rd-draft', el));
+  if (aiOn() && !(preset && list.every(r => r.draft))) draftAll($('#rd-draft', el));
 }
 /* ==========================================================================
    BRING YOUR POSTS: X archive, Typefully, LinkedIn, any CSV, pasted text,
@@ -5143,6 +5204,87 @@ function openPeople() {
     }
   });
 }
+/* ---------- Breakout alert: a ping when a post is taking off, with its first replies drafted ---------- */
+const BO_SAMPLE = () => { const now = Date.now(), f = t => (t / (t + 90)) / (1440 / 1530); const p = (S.queue.filter(q => q.status === 'published').pop() || {}).text || 'I raised prices 40% and lost 2 customers. Here’s the email I sent.';
+  return { id: 'sample', sample: true, at: now - 60e3, text: p, posts: [p], min: 18, pace: 3.3, likes: 41, reposts: 6, replyCount: 9, views: 2300, usual: 24, usualFrom: 'history', checks: [{ min: 5, eng: 9 }, { min: 10, eng: 24 }, { min: 15, eng: 47 }, { min: 18, eng: 80 }], curve: [5, 10, 15, 20, 25, 30, 40, 50, 60].map(c => ({ min: c, v: Math.round(24 * f(c) / f(18)) })),
+    replies: SAMPLE_REPLIES.slice(0, 3).map(r => ({ ...r, draft: localReply(r, p) })), url: '' }; };
+const boOn = () => !!(S.settings.breakout && LLM.server && LLM.server.breakout);
+function boChart(a) {
+  const W = 320, H = 120, pl = 6, pr = 44, pt = 10, pb = 20, maxMin = Math.max(30, a.min + 5), pts = [{ min: 0, eng: 0 }, ...(a.checks || [])], curve = [{ min: 0, v: 0 }, ...(a.curve || []).filter(c => c.min <= maxMin)];
+  const top = Math.max(1, ...pts.map(p => p.eng), ...curve.map(c => c.v)) * 1.1, x = m => pl + m / maxMin * (W - pl - pr), y = v => H - pb - v / top * (H - pt - pb);
+  const line = arr => arr.map((p, i) => `${i ? 'L' : 'M'}${x(p.min).toFixed(1)} ${y(p.v ?? p.eng).toFixed(1)}`).join(' '), last = pts[pts.length - 1], lu = curve.filter(c => c.min <= maxMin).pop();
+  return `<svg class="bo-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Engagement over the first ${a.min} minutes: ${last.eng}, against your usual ${a.usual} by now">
+    <line x1="${pl}" x2="${W - pr}" y1="${H - pb}" y2="${H - pb}" class="ax"/><text x="${pl}" y="${H - 5}" class="tk">0</text><text x="${x(maxMin)}" y="${H - 5}" class="tk" text-anchor="end">${maxMin} min</text>
+    <path d="${line(curve)}" class="usual"/><text x="${x(lu.min) + 4}" y="${y(lu.v) + 4}" class="lb mute">usual</text>
+    <path d="${line(pts)} L${x(last.min)} ${H - pb} L${x(0)} ${H - pb}Z" class="area"/><path d="${line(pts)}" class="now"/><circle cx="${x(last.min)}" cy="${y(last.eng)}" r="4" class="dot"/><text x="${x(last.min) + 8}" y="${y(last.eng) + 4}" class="lb">${fmtN(last.eng)}</text></svg>`;
+}
+function openBreakout(a) {
+  a = a || BO_SAMPLE();
+  const q = S.queue.find(x => x.xIds && x.xIds[0] === a.id) || { id: 'bo-' + a.id, text: a.text, tweets: a.posts && a.posts.length ? a.posts : [a.text], xIds: [a.id], status: 'published' };
+  const m = modal(`${modalHead(`This one’s taking off${a.sample ? ' <span class="pill">Sample</span>' : ''}`, `${a.min} minutes in. Replies in the next half hour help it travel.`)}
+    <div class="modal-b bo">
+      <blockquote class="bo-post">${esc(clip(a.text, 220))}</blockquote>
+      <div class="bo-hero"><div class="bo-x"><b>${a.pace}×</b><span>your usual pace</span></div>${boChart(a)}</div>
+      <p class="bo-stats"><b>${fmtN(a.likes)}</b> likes · <b>${fmtN(a.reposts)}</b> reposts · <b>${fmtN(a.replyCount)}</b> replies in ${a.min} min. By now you usually have about ${fmtN(a.usual)}${a.usualFrom === 'posts' ? ', from your last posts' : ', from your history'}.</p>
+      <ol class="bo-do"><li><b>Answer the first replies.</b> ${a.replies && a.replies.length ? `${a.replies.length} worth it, answers drafted${a.replies.some(r => r.draft) ? ' in your voice' : ''}.` : 'They’re usually coming in by now.'}</li><li><b>Pin it</b> on your profile while people are visiting.</li><li><b>Add one reply to your own post</b> with the next thing: a link, the follow-up, what to read next.</li></ol>
+    </div>
+    <div class="modal-f">${a.url ? `<a class="btn" href="${esc(a.url)}" target="_blank" rel="noopener">${ic('link', 'sm')} Open on X</a>` : ''}<span class="grow"></span><button class="btn primary" id="bo-go">${ic('reply', 'sm')} Answer the first replies</button></div>`, { label: 'This post is taking off', box: 'modal bo-box' });
+  $('#bo-go', m.el).onclick = () => { m.close(); openReplyDesk(q, a.replies && a.replies.length ? a.replies : null); };
+  SFX.play('hook');
+}
+async function boStatus() { const r = await fetch('api/breakout'); const j = await r.json(); if (!r.ok) throw new Error(j.error || 'failed'); return j; }
+async function boSave(extra = {}) {
+  const an = HIST().length >= 8 ? ANALYSIS() : null;
+  const r = await fetch('api/breakout', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ on: !!S.settings.breakout, median: an ? an.median : 0, voice: voiceSpec(), ...extra }) });
+  const j = await r.json(); if (!r.ok) throw new Error(j.error || 'failed'); return j;
+}
+const b64ToU8 = s => { const b = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4)); return Uint8Array.from(b, c => c.charCodeAt(0)); };
+async function boPushHere(key) {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) throw new Error(/iPhone|iPad/.test(navigator.userAgent) ? 'On iPhone, add Hookworthy to your Home Screen first (Share → Add to Home Screen), then turn this on from there.' : 'This browser can’t get push alerts. Use email instead.');
+  const perm = await Notification.requestPermission(); if (perm !== 'granted') throw new Error('Notifications are blocked for this site. Allow them in the browser’s site settings, then try again.');
+  const reg = await navigator.serviceWorker.ready; let sub = await reg.pushManager.getSubscription();
+  if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToU8(key) });
+  return sub.toJSON();
+}
+async function openBreakoutSetup() {
+  const srv = LLM.server || {};
+  if (!srv.breakout) {
+    const m = modal(`${modalHead('Breakout alerts', 'A ping when a post is taking off, with its first replies already drafted.')}<div class="modal-b bo-set"><p>When a post runs at <b>3× your usual pace</b> in its first 45 minutes, Hookworthy pings your phone or email, while an early reply still helps it travel.</p><p class="faint">This needs your Hookworthy server with X connected: it checks each new post about nine times in its first hour, in one batched lookup.</p></div><div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="bo-sample">${ic('trend', 'sm')} See a sample alert</button></div>`, { label: 'Breakout alerts' });
+    $('#bo-sample', m.el).onclick = () => { m.close(); openBreakout(); }; return;
+  }
+  const m = modal(`${modalHead('Breakout alerts', 'A ping when a post is taking off, with its first replies already drafted.')}<div class="modal-b bo-set" id="bo-set"><p class="faint">Loading…</p></div><div class="modal-f"><button class="btn" id="bo-test">Send me a test</button><span class="grow"></span><button class="btn primary" data-close>Done</button></div>`, { label: 'Breakout alerts' });
+  const el = $('#bo-set', m.el); let st = null;
+  const draw = () => {
+    const u = st.usual, base = u ? (u.from === 'posts' ? `Your usual comes from your last ${u.n} posts: about ${fmtN(u.v)} engagements 20 minutes in.` : `Your usual comes from your history: a typical post of yours earns ${fmtN(st.median)}, so about ${fmtN(u.v)} by minute 20.`) : 'No baseline yet. Bring your posts (or post a few through Hookworthy) so it knows your usual.';
+    el.innerHTML = `<label class="bo-sw"><input type="checkbox" id="bo-on" ${S.settings.breakout ? 'checked' : ''}><span><b>Watch my new posts</b><small>Alert at 3× your usual pace, between minute 8 and 45.</small></span></label>
+      <p class="bo-base ${u ? '' : 'warn'}">${ic(u ? 'chart' : 'q', 'sm')} ${esc(base)}${u ? '' : ` <button class="btn sm" data-act="import">Bring your posts</button>`}</p>
+      <div class="bo-ch"><div><b>This device</b><small>${st.devices ? `${st.devices} device${st.devices > 1 ? 's' : ''} get push alerts.` : 'Push alerts on your phone or computer.'}</small></div><button class="btn sm" id="bo-push">${ic('bell', 'sm')} ${BO_HERE ? 'On here' : 'Turn on here'}</button></div>
+      <form class="bo-ch" id="bo-mail"><div><b>Email</b><small>${srv.email ? 'Sent the moment it happens.' : 'The server has no email key yet (RESEND_API_KEY), so it only logs these.'}</small></div><div class="bo-em"><input class="input" type="email" id="bo-email" placeholder="you@example.com" value="${esc(st.email || '')}" aria-label="Email for alerts"><button class="btn sm" type="submit">Save</button></div></form>
+      ${st.alerts && st.alerts.length ? `<div class="bo-recent"><span class="label">Recent</span>${st.alerts.map((a, i) => `<button class="bo-rec" data-bi="${i}"><b>${a.pace}×</b><span>${esc(clip(a.text, 70))}</span><small>${boAgo(a.at)}</small></button>`).join('')}</div>` : ''}`;
+  };
+  try { st = await boStatus(); BO_HERE = await boHasPush(); draw(); } catch (e) { el.innerHTML = `<p class="imp-err">${esc(e.message)}</p>`; return; }
+  el.addEventListener('change', async e => { if (e.target.id !== 'bo-on') return; S.settings.breakout = e.target.checked; save(); try { await boSave(); toast(S.settings.breakout ? 'Watching your new posts. Posts sent through Hookworthy count from now on.' : 'Breakout alerts are off.', { icon: 'trend', tone: 'accent' }); boPoll(); } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } });
+  el.addEventListener('submit', async e => { e.preventDefault(); try { st = { ...st, ...(await boSave({ email: $('#bo-email', el).value })) }; toast('Saved.', { icon: 'check' }); } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } });
+  el.addEventListener('click', async e => {
+    const rb = e.target.closest('[data-bi]'); if (rb) { m.close(); openBreakout(st.alerts[+rb.dataset.bi]); return; }
+    if (e.target.closest('[data-act="import"]')) { m.close(); return; }
+    const b = e.target.closest('#bo-push'); if (!b) return; b.classList.add('is-loading');
+    try { const sub = await boPushHere(st.vapidKey); st = { ...st, ...(await boSave({ subscribe: sub, on: true })) }; S.settings.breakout = true; save(); BO_HERE = true; draw(); toast('Push alerts are on for this device.', { icon: 'bell', tone: 'accent' }); boPoll(); }
+    catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err', ms: 8000 }); } finally { b.classList.remove('is-loading'); }
+  });
+  $('#bo-test', m.el).onclick = async e => { const b = e.currentTarget; b.classList.add('is-loading'); try { const r = await fetch('api/breakout/test', { method: 'POST' }); const j = await r.json(); if (!r.ok) throw new Error(j.error); const s = j.sent || {}; const mail = s.email === 'logged' ? 'The email was only logged: the server has no RESEND_API_KEY.' : s.email ? 'Emailed.' : ''; toast(s.push || s.email ? `${s.push ? `Sent to ${s.push} device${s.push > 1 ? 's' : ''}. ` : ''}${mail}` : 'Nowhere to send it yet. Turn on push here or add an email.', { icon: 'bell', tone: s.push || s.email === true ? 'accent' : 'err' }); } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } finally { b.classList.remove('is-loading'); } };
+}
+let BO_HERE = false;
+const boAgo = t => { const m = Math.round((Date.now() - t) / 60e3); return m < 60 ? `${Math.max(1, m)} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : agoLabel(t); };
+async function boHasPush() { try { const reg = await navigator.serviceWorker.getRegistration(); return !!(reg && reg.pushManager && await reg.pushManager.getSubscription()); } catch { return false; } }
+/* while the app is open: check for alerts every minute, and show them in place */
+let boTimer = null;
+function boPoll() {
+  clearInterval(boTimer); if (!boOn()) return;
+  const check = async () => { try { const r = await fetch(`api/breakout/alerts?since=${S.boSeen || 0}`); if (!r.ok) return; const j = await r.json(); const fresh = (j.alerts || []).filter(a => a.at > (S.boSeen || 0)); if (!fresh.length) return; S.boSeen = Math.max(...fresh.map(a => a.at)); save(); const a = fresh[0]; toast(`Taking off: “${esc(clip(a.text, 50))}” is at ${a.pace}× your usual.`, { icon: 'trend', tone: 'accent', action: 'Answer replies', onAction: () => openBreakout(a), ms: 15000 }); } catch { /* next minute */ } };
+  check(); boTimer = setInterval(check, 60e3);
+}
+async function boOpenId(id) { try { const r = await fetch('api/breakout/alerts'); const j = await r.json(); const a = (j.alerts || []).find(x => x.id === id); if (a) openBreakout(a); } catch { /* nothing to open */ } }
 /* Connections: where Claude comes from, and which accounts can post */
 function openConnections() {
   const srv = LLM.server || {};
@@ -5155,12 +5297,13 @@ function openConnections() {
       ${row('X plan', xPaid(), xPlanLabel(), srv.xUser ? `<button class="btn sm" data-xt="check">Re-check</button>` : `<button class="btn sm" data-xt="self">${xPaid() ? 'I’m on free X' : 'I have Premium'}</button>`)}
       ${row('LinkedIn', !!srv.liUser, srv.linkedin ? (srv.liUser ? `Posting as ${esc(srv.liUser)}.` : 'App set. Connect to post.') : 'Needs the server with a LinkedIn app. Import Shares.csv meanwhile.', srv.linkedin ? `<a class="btn sm" href="auth/linkedin/start">${srv.liUser ? 'Reconnect' : 'Connect'}</a>` : '')}
       ${row('Typefully import', !!srv.typefully, srv.typefully ? 'Paste your API key in Bring your posts. Used once.' : 'Needs the server. A CSV export works without it.')}
+      ${row('Breakout alerts', boOn(), srv.breakout ? (S.settings.breakout ? 'Watching new posts for 3× your usual pace.' : 'A ping when a post takes off, with replies drafted.') : 'Needs the server with X connected.', `<button class="btn sm" data-bo="setup">${srv.breakout ? (S.settings.breakout ? 'Settings' : 'Set up') : 'See a sample'}</button>`)}
       ${row('Your history', HIST().length > 0, HIST().length ? `${fmtN(HIST().length)} posts in this browser.` : 'Nothing imported yet.', `<button class="btn sm" data-act="import">${HIST().length ? 'Add more' : 'Import'}</button>`)}
       ${syncRowHTML()}
       <form id="sy-join" class="sy-join" hidden><input class="input" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" aria-label="Sync code" autocomplete="off" spellcheck="false"><button class="btn sm primary" type="submit">Sync this device</button></form>
       <details class="dev-note"><summary>Self-hosting?</summary><p class="faint imp-note">Run the server: <code>cd hookworthy/server && npm install && npm start</code>. Keys go in <code>server/.env</code> (see server/README.md).</p></details>
     </div><div class="modal-f"><button class="btn primary" data-close>Done</button></div>`, { label: 'Connections', box: 'modal' });
-  m.el.addEventListener('click', e => { const xt = e.target.closest('[data-xt]'); if (xt) { if (xt.dataset.xt === 'check') refreshXTier(xt); else { setSelfTier(!xPaid()); m.close(); openConnections(); } return; } if (e.target.closest('[data-act="import"]')) m.close(); const sy = e.target.closest('[data-sy]'); if (sy) syncAction(sy.dataset.sy, m); });
+  m.el.addEventListener('click', e => { if (e.target.closest('[data-bo]')) { m.close(); openBreakoutSetup(); return; } const xt = e.target.closest('[data-xt]'); if (xt) { if (xt.dataset.xt === 'check') refreshXTier(xt); else { setSelfTier(!xPaid()); m.close(); openConnections(); } return; } if (e.target.closest('[data-act="import"]')) m.close(); const sy = e.target.closest('[data-sy]'); if (sy) syncAction(sy.dataset.sy, m); });
   const jf = $('#sy-join', m.el); if (jf) jf.onsubmit = async e => { e.preventDefault(); const code = $('input', jf).value.trim(); const btn = $('button', jf); btn.classList.add('is-loading'); try { const prev = SYNC.code; SYNC.code = code.toUpperCase(); SYNC.key = null; const got = await pullSync(true); if (!got) { const r = await fetch(`api/sync/${SYNC.id}`); if (r.status === 404) { SYNC.code = prev; throw new Error('No synced copy with that code yet'); } } try { localStorage.setItem('hw-sync', SYNC.code); } catch (err) { /* ok */ } m.close(); route(); toast('This device is synced.', { icon: 'check', tone: 'accent' }); } catch (err) { SYNC.key = null; toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } finally { btn.classList.remove('is-loading'); } };
 }
 /* Tidy up: the draft pile, one at a time. Finish it, give it a slot, or let it go. */
@@ -6584,6 +6727,17 @@ function drawInsights() {
   <div class="card chart-card sec" style="margin-top:16px" id="top-posts"><div class="chart-h"><h3 class="h3">Top posts</h3></div>${TOP_POSTS.map((p, i) => `<div class="top-post"><span class="rk">${String(i + 1).padStart(2, '0')}</span><div><p>${esc(p.text.split('\n')[0])}</p><div class="st"><span>${fmtK(p.views)} views</span><span>${fmtK(p.likes)} likes</span><span>${fmtK(p.replies)} replies</span><span>${p.kind}</span></div></div><button class="btn sm" data-nact="remix" data-id="${p.id}">${ic('layers', 'sm')} Remix</button></div>`).join('')}</div>`;
   lineChart($('#line'), d);
 }
+/* the hook score tuned to you: what each first-line trait is worth on your posts, others held equal */
+function tuneCardHTML() {
+  const m = PHOOK();
+  if (!m.ready) return `<div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Your hook score</h3><p class="faint" style="font-size:13px;margin-top:2px">It tunes itself to your audience after ${m.need} posts with likes. You have ${m.n}.</p></div></div></div>`;
+  const list = m.traits.filter(t => Math.abs(t.w) >= .04).slice(0, 8), mx = Math.max(.1, ...list.map(t => Math.abs(t.w)));
+  const trust = m.trust === 'better' ? `Tested on your newest ${m.val.n} posts, it ranked them better than the general score did (${m.val.r} vs ${m.val.rGeneral}), so the composer now uses it.` : m.trust === 'similar' ? `Tested on your newest ${m.val.n} posts, it did about as well as the general score (${m.val.r} vs ${m.val.rGeneral}).` : m.trust === 'weak' ? `Tested on your newest ${m.val.n} posts, it barely predicted them (${m.val.r}). Read these as hints until you have more posts.` : 'Your posts came without dates, so it couldn’t be tested on your newest ones yet.';
+  return `<div class="card chart-card sec ih-tune" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Your hook score, tuned to you</h3><p class="faint" style="font-size:13px;margin-top:2px">What each first-line habit is worth on your ${fmtN(m.n)} posts, with the others held equal</p></div></div>
+    ${m.vs ? `<p class="big" style="margin:0">Your ${esc(m.vs.best.label)} do <em>${m.vs.x}×</em> better than your ${esc(m.vs.worst.label)}.</p>` : ''}
+    ${list.length ? `<div class="ih-trs">${list.map((t, i) => `<div class="ih-tr"><span class="nm">${esc(cap(t.label))}<small>${t.n} post${t.n > 1 ? 's' : ''}</small></span><span class="ax" aria-hidden="true"><i class="${t.w > 0 ? 'up' : 'down'}" style="width:${(Math.abs(t.w) / mx * 50).toFixed(1)}%;animation-delay:${i * 50}ms"></i></span><span class="num" style="color:var(${t.w > 0 ? '--success' : '--error'})">${t.x}×</span></div>`).join('')}</div>` : '<p class="faint">No habit stands out yet: your posts do about the same whichever way they open.</p>'}
+    <p class="faint" style="font-size:12px;margin:0">${esc(trust)} Patterns, not causes: a habit can ride along with something else you did.</p></div>`;
+}
 /* Insights from your own history: every number below is computed from posts you imported */
 function drawInsightsReal() {
   const all = HIST(), an = ANALYSIS(), E = HWCore.eng;
@@ -6616,6 +6770,7 @@ function drawInsightsReal() {
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Engagement per day</h3><p class="faint" style="font-size:13px;margin-top:2px">Likes, plus reposts ×2 and replies ×3, on the days you posted.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Engagement</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(end - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">What works, by post type</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement relative to your median post</p></div></div><div class="hbars">${kinds.map((k, i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k.k}: ${k.x}× your median, ${k.n} posts"><span>${k.k}</span><div class="track"><div class="fillb" style="width:${k.x / maxX * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${k.x}×</span></div>`).join('')}</div></div>
   <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your posts land</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement by when you posted. Stronger color, more engagement</p></div></div>${heat}</div></div>
+  ${tuneCardHTML()}
   ${cells.length ? `<div class="grid-3 sec" style="margin-top:16px">${cells.slice(0, 3).join('')}</div>` : ''}
   <div class="card chart-card sec" style="margin-top:16px" id="top-posts"><div class="chart-h"><h3 class="h3">Top posts</h3><span class="faint" style="font-size:12px">Ask “Why?” for a post-mortem in your voice</span></div>${an.top.slice(0, 8).map((p, i) => row(p, i)).join('')}</div>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><h3 class="h3">Quietest posts</h3><span class="faint" style="font-size:12px">Worth knowing why, too</span></div>${an.flops.slice(0, 4).map((p, i) => row(p, i, '··')).join('')}</div>`;
@@ -6792,6 +6947,8 @@ const REVIEW_ID = new URLSearchParams(location.search).get('review');
 })();
 /* the archive X promised should be ready: one nudge a day until it's imported */
 if (!REVIEW_ID && S.archiveAskedAt && !HIST().some(p => p.src === 'x-archive') && Date.now() - S.archiveAskedAt > 20 * 3600e3 && (S.archiveNudged || 0) < Date.now() - 20 * 3600e3) setTimeout(() => { S.archiveNudged = Date.now(); save(); toast('Your X archive is probably ready. Check your email from X.', { icon: 'upload', tone: 'accent', action: 'Import it', onAction: () => openImport('x'), ms: 9000 }); }, 1500);
+if (!REVIEW_ID) LLM.ready.then(() => { if (!LLM.server || !LLM.server.breakout) return; if (S.settings.breakout) boSave().catch(() => {}); boPoll(); const bid = new URLSearchParams(location.search).get('breakout'); if (bid) { history.replaceState(null, '', location.pathname + location.hash); boOpenId(bid); } });
+if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', e => { const d = e.data || {}; if (d.type === 'breakout' && d.url) { const id = new URL(d.url, location.href).searchParams.get('breakout'); if (id) boOpenId(id); } });
 if (REVIEW_ID) LLM.ready.then(() => renderReview(REVIEW_ID)); else { route(); LLM.ready.then(() => SYNC.code && LLM.server && LLM.server.sync && pullSync().then(ch => ch && route()).catch(() => {})); }
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !/claude|anthropic/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => { });
 </script>

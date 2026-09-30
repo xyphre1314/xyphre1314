@@ -24,6 +24,7 @@ const LI = await import('./lib/linkedin.mjs');
 const TF = await import('./lib/typefully.mjs');
 const Q = await import('./lib/scheduler.mjs');
 const E = await import('./lib/extras.mjs');
+const BO = await import('./lib/breakout.mjs');
 
 const ROOT = normalize(join(here, '..'));
 const PORT = +process.env.PORT || 8787, HOST = process.env.HOST || '127.0.0.1';
@@ -40,7 +41,10 @@ const fail = (res, e) => send(res, e.status || 500, { error: e.message || 'Somet
 async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []; for await (const c of req) { n += c.length; if (n > limit) throw Object.assign(new Error('Request too large'), { status: 413 }); chunks.push(c); } try { return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}'); } catch { throw Object.assign(new Error('Send JSON'), { status: 400 }); } }
 const authed = req => !TOKEN || req.headers.authorization === `Bearer ${TOKEN}` || (req.headers.cookie || '').split(/;\s*/).includes(`hw=${TOKEN}`);
 
-export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+
+/* drafts for a breakout's first replies, in your voice (only when Claude is on) */
+export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => (await AI.complete({ ...core.prompts.replies({ post, replies, voice }), json: true })).data : null;
 
 export async function handle(req, res) {
   const url = new URL(req.url, 'http://x'); const p = url.pathname; const ip = req.socket.remoteAddress || 'local';
@@ -71,6 +75,12 @@ export async function handle(req, res) {
     if (p === '/api/x/replies') return send(res, 200, { replies: await X.replies(url.searchParams.get('id')) });
     if (p === '/api/x/reply' && req.method === 'POST') { const b = await body(req); if (!String(b.text || '').trim()) return send(res, 400, { error: 'Write the reply first' }); return send(res, 200, await X.reply(b.inReplyTo, String(b.text).slice(0, 1000))); }
 
+    /* breakout alerts */
+    if (p === '/api/breakout' && req.method === 'GET') return send(res, 200, BO.status());
+    if (p === '/api/breakout' && req.method === 'POST') return send(res, 200, BO.setSettings(await body(req, 64 * 1024)));
+    if (p === '/api/breakout/alerts') return send(res, 200, { alerts: BO.alerts(+url.searchParams.get('since') || 0) });
+    if (p === '/api/breakout/test' && req.method === 'POST') { if (!allow(ip, 3)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); const a = BO.sampleAlert(); await BO.deliverTest(a, { email: E.sendEmail, publicUrl: PUBLIC_URL }); return send(res, 200, { ok: true, sent: a.sent }); }
+
     /* review links (the review page itself is public by link; comments too) */
     if (p === '/api/review' && req.method === 'POST') { const b = await body(req); const r = E.createReview(b); return send(res, 200, { id: r.id, url: `${PUBLIC_URL}/r/${r.id}` }); }
     let m;
@@ -91,7 +101,7 @@ export async function handle(req, res) {
     if (p.startsWith('/api/queue/') && req.method === 'DELETE') return send(res, 200, { removed: Q.remove(p.split('/').pop()) });
 
     /* the same checks and rewrites, for other apps and AI assistants */
-    if (p === '/api/v1/check' && req.method === 'POST') { const b = await body(req); const text = String(b.text || ''); return send(res, 200, { hook: core.hookScore(text), kind: core.kindOf(text), checks: core.checkPost(text, { never: b.never || [], limit: b.limit || 280 }) }); }
+    if (p === '/api/v1/check' && req.method === 'POST') { const b = await body(req); const text = String(b.text || ''); const hist = Array.isArray(b.history) ? b.history.slice(0, 3000).map(core.normPost).filter(Boolean) : null; const tuned = hist ? core.learnHooks(hist) : null; return send(res, 200, { hook: core.hookScore(text), ...(tuned ? { mine: tuned.ready ? { ...core.personalScore(text, tuned), tested: tuned.val } : { ready: false, n: tuned.n, need: tuned.need } } : {}), kind: core.kindOf(text), checks: core.checkPost(text, { never: b.never || [], limit: b.limit || 280 }) }); }
     if (p === '/api/v1/rewrite' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); const spec = core.prompts.rewrite({ text: b.text, kind: b.kind || 'punchier', lang: b.lang, voice: b.voice || null, platform: b.platform || 'X', limit: b.limit || 280 }); const r = await AI.complete({ ...spec, json: true }); return send(res, 200, r.data); }
     if (p === '/api/v1/ideas' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); const r = await AI.complete({ ...core.prompts.ideas({ niche: b.niche, voice: b.voice, top: b.top || [], inbox: b.notes || [], count: b.count || 6 }), json: true }); return send(res, 200, { ideas: r.data }); }
 
@@ -123,4 +133,5 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === normalize(process.argv
   });
   Q.start();
   setInterval(() => E.sendDigests().catch(e => console.error('[digest]', e)), 15 * 60e3).unref();
+  setInterval(() => BO.tick({ draft: breakoutDrafts, email: E.sendEmail, publicUrl: PUBLIC_URL }).catch(e => console.error('[breakout]', e.message)), 60e3).unref();
 }

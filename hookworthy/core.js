@@ -627,6 +627,81 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return [fit([hook, '', ...pts.flatMap(p => [p, '']), close].join('\n').replace(/\n{3,}/g, '\n\n').trim(), limit)];
   }
 
+  /* ---------------- a hook score that learns from you ----------------
+     The general score is a set of rules. This one checks which first-line traits actually earned more on
+     YOUR posts (median with vs without, shrunk toward "no effect" when there are few examples), then scores
+     a new line by where it would rank among your own posts. It is tested before it is trusted: fitted on
+     your older posts, scored on your newest ones, and compared with the general score on the same posts. */
+  const KIND_PL = { Contrarian: 'contrarian posts', Listicle: 'lists', Question: 'questions', 'How-to': 'how-tos', Story: 'stories', Curiosity: 'open-loop posts', Announcement: 'announcements', Take: 'plain takes' };
+  const firstOf = t => { const ls = String(t || '').replace(/https?:\/\/\S+/g, '').split('\n').map(l => l.trim()).filter(Boolean); let f = ls[0] || ''; if (f.length < 40 && ls[1]) f += ' ' + ls[1]; return f; };
+  const TRAITS = [
+    { k: 'number', label: 'a number in line one', add: 'Put a real number in line one', f: f => /\d/.test(f) },
+    { k: 'money', label: 'a $ or % in line one', add: 'Use the $ or % figure', f: f => /[$€£%]/.test(f) },
+    { k: 'question', label: 'a question in line one', add: 'Open with the question', f: f => /\?\s*$/.test(f) },
+    { k: 'lower', label: 'a lowercase opener', add: 'Start lowercase', f: f => /^[a-z]/.test(f) },
+    { k: 'short', label: 'a first line under 60 characters', add: 'Cut line one under 60 characters', f: f => f.length < 60 },
+    { k: 'long', label: 'a first line over 120 characters', f: f => f.length > 120 },
+    { k: 'me', label: '“I” or “we” in line one', add: 'Make it yours: “I” or “we”', f: f => /\b(i|my|me|we|our)\b/i.test(f) },
+    { k: 'you', label: '“you” in line one', add: 'Talk to the reader: “you”', f: f => /\b(you|your)\b/i.test(f) },
+    { k: 'emoji', label: 'an emoji in line one', f: f => /\p{Extended_Pictographic}/u.test(f) },
+    { k: 'loop', label: 'an open loop (a colon, ↓ or 🧵)', add: 'End line one on a colon or ↓', f: f => /[:…]\s*$|↓|👇|🧵/.test(f) },
+    { k: 'push', label: 'pushing back on common advice', add: 'Push back on something people repeat', f: f => /\b(unpopular|overrated|underrated|wrong|myth|lie|stop|don[’']?t|nobody|hot take|never|quit)\b/i.test(f) },
+    { k: 'command', label: 'opening with a command', add: 'Open with a command', f: f => /^(stop|start|quit|double|charge|raise|cut|ship|write|build|never|don[’']?t|forget|ignore|delete|kill|hire|ask|steal|try|drop)\b/i.test(f) },
+    { k: 'link', label: 'a link in the post', f: (f, t) => /https?:\/\//.test(t) },
+    { k: 'tags', label: 'hashtags', f: (f, t) => /(^|\s)#\w/.test(t) },
+    { k: 'thread', label: 'a thread', add: 'Make it a thread', f: (f, t, p) => !!(p && ((p.thread && p.thread.length) || p.parts > 1)) }
+  ];
+  const traitsOf = (text, p) => { const f = firstOf(text), out = TRAITS.filter(x => x.f(f, String(text || ''), p)).map(x => x.k); out.push('kind:' + kindOf(text)); return out; };
+  const ranks = a => { const idx = a.map((v, i) => [v, i]).sort((x, y) => x[0] - y[0]); const r = new Array(a.length); for (let i = 0; i < idx.length;) { let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++; for (let k = i; k <= j; k++) r[idx[k][1]] = (i + j) / 2; i = j + 1; } return r; };
+  const spearman = (a, b) => pearson(ranks(a), ranks(b));
+  /* ridge regression on log engagement: each trait's effect with the others held equal, pulled toward zero */
+  function solve(A, b) { const n = b.length, M = A.map((r, i) => [...r, b[i]]); for (let c = 0; c < n; c++) { let piv = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[piv][c])) piv = r; [M[c], M[piv]] = [M[piv], M[c]]; const d = M[c][c] || 1e-9; for (let r = 0; r < n; r++) if (r !== c) { const f = M[r][c] / d; for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; } } return M.map((r, i) => r[n] / (r[i] || 1e-9)); }
+  function fitHooks(posts, lambda = 6) {
+    const rows = posts.map(p => ({ t: traitsOf(p.text, p), e: eng(p) }));
+    const keys = [...new Set(rows.flatMap(r => r.t))].filter(k => { const a = rows.filter(r => r.t.includes(k)).length; return a >= 5 && rows.length - a >= 5; });
+    const y = rows.map(r => Math.log1p(r.e)), my = y.reduce((a, b) => a + b, 0) / y.length;
+    const X = rows.map(r => keys.map(k => r.t.includes(k) ? 1 : 0)), mx = keys.map((_, j) => X.reduce((a, r) => a + r[j], 0) / X.length);
+    const A = keys.map((_, i) => keys.map((_, j) => X.reduce((a, r) => a + (r[i] - mx[i]) * (r[j] - mx[j]), 0) + (i === j ? lambda : 0)));
+    const b = keys.map((_, i) => X.reduce((a, r, n) => a + (r[i] - mx[i]) * (y[n] - my), 0));
+    const beta = keys.length ? solve(A, b) : [];
+    const w = {}, info = [];
+    keys.forEach((k, i) => {
+      w[k] = beta[i]; const n = rows.filter(r => r.t.includes(k)).length;
+      const tr = TRAITS.find(t => t.k === k), kind = k.startsWith('kind:') ? k.slice(5) : null;
+      info.push({ k, label: kind ? KIND_PL[kind] || kind : tr.label, add: kind ? null : tr.add || null, kind, n, x: +Math.exp(beta[i]).toFixed(2), w: +beta[i].toFixed(3) });
+    });
+    const lp = r => r.t.reduce((s, k) => s + (w[k] || 0), 0);
+    return { w, info, lps: rows.map(lp).sort((a, c) => a - c), lp };
+  }
+  function learnHooks(posts, { min = 30 } = {}) {
+    const P = (posts || []).filter(p => p && p.text && p.text.trim());
+    const withNums = P.filter(p => eng(p) > 0);
+    if (withNums.length < min) return { ready: false, n: withNums.length, need: min };
+    /* test before trusting: fit on the older 75%, score the newest 25% */
+    const dated = withNums.filter(p => p.at).sort((a, b) => a.at - b.at), pool = dated.length >= min ? dated : withNums.slice().reverse();
+    const cut = Math.floor(pool.length * .75), train = pool.slice(0, cut), test = pool.slice(cut);
+    let val = null;
+    if (test.length >= 8) { const m = fitHooks(train); const act = test.map(eng); const mine = test.map(p => m.lp({ t: traitsOf(p.text, p) })), gen = test.map(p => hookScore(p.text).score);
+      val = { r: +spearman(mine, act).toFixed(2), rGeneral: +spearman(gen, act).toFixed(2), n: test.length }; }
+    const m = fitHooks(withNums); const mid = median(m.lps);
+    const trust = !val ? 'untested' : val.r >= .1 && val.r >= val.rGeneral + .03 ? 'better' : val.r >= .1 ? 'similar' : 'weak';
+    const kinds = m.info.filter(i => i.kind && i.n >= 5).sort((a, b) => b.x - a.x);
+    const vs = kinds.length >= 2 && kinds[0].x / kinds[kinds.length - 1].x >= 1.3 ? { best: kinds[0], worst: kinds[kinds.length - 1], x: +(kinds[0].x / kinds[kinds.length - 1].x).toFixed(1) } : null;
+    return { ready: true, n: withNums.length, median: median(withNums.map(eng)), w: m.w, traits: m.info.sort((a, b) => Math.abs(b.w) - Math.abs(a.w)), lps: m.lps, mid, val, trust, vs };
+  }
+  function personalScore(text, model, { parts = 1 } = {}) {
+    if (!model || !model.ready || !String(text || '').trim()) return null;
+    const have = traitsOf(text, { parts }), lp = have.reduce((s, k) => s + (model.w[k] || 0), 0), L = model.lps;
+    let below = 0, same = 0; for (const v of L) { if (v < lp - 1e-9) below++; else if (Math.abs(v - lp) <= 1e-9) same++; }
+    const pct = (below + same / 2) / Math.max(1, L.length);
+    const byK = Object.fromEntries(model.traits.map(t => [t.k, t]));
+    const helps = have.map(k => byK[k]).filter(t => t && t.w > .05).sort((a, b) => b.w - a.w).slice(0, 2);
+    const hurts = have.map(k => byK[k]).filter(t => t && t.w < -.05).sort((a, b) => a.w - b.w).slice(0, 2);
+    const clash = { short: ['long'], long: ['short'] };
+    const tryNext = model.traits.filter(t => t.add && t.w > .1 && t.x >= 1.2 && !have.includes(t.k) && !(clash[t.k] || []).some(c => have.includes(c))).sort((a, b) => b.w - a.w)[0] || null;
+    return { score: clamp(Math.round(5 + pct * 94), 5, 99), x: +Math.exp(lp - model.mid).toFixed(1), helps, hurts, tryNext, trust: model.trust, n: model.n };
+  }
+
   /* pre-post rules shared with the server's /api/v1/check and the MCP server */
   const CRINGE = [
     { re: /\b(?:I['’]?m|I am|we['’]re|we are) (?:so |super |beyond )?(?:humbled|thrilled|excited|delighted|honou?red) to (?:announce|share)(?: that)?/i, msg: 'Opens like a press release.' },
@@ -646,5 +721,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
 
-  return { factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
+  return { learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
 });

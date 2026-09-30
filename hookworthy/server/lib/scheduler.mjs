@@ -5,6 +5,7 @@ import { read, write } from './store.mjs';
 import * as X from './x.mjs';
 import * as LI from './linkedin.mjs';
 import * as M from './media.mjs';
+import * as BO from './breakout.mjs';
 
 export const list = () => read('queue', []);
 /* posts arrive as strings or { text, media: [mediaId] } */
@@ -25,7 +26,7 @@ export async function publish(item) {
   for (const p of item.platforms) {
     try {
       const posts = normPosts(item.posts).map(q => ({ text: q.text, media: q.media.map(id => M.getMedia(id)) }));
-      if (p === 'x') results.x = { ok: true, ...(await X.postThread(posts)) };
+      if (p === 'x') { results.x = { ok: true, ...(await X.postThread(posts)) }; BO.track({ ids: results.x.ids, posts }); }
       /* LinkedIn has no threads: one post, parts separated by a blank line, every picture attached */
       if (p === 'linkedin') results.linkedin = { ok: true, ...(await LI.post(posts.map(q => q.text).filter(Boolean).join('\n\n'), posts.flatMap(q => q.media))) };
     } catch (e) { results[p] = { ok: false, error: e.message }; }
