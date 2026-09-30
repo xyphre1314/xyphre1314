@@ -264,3 +264,25 @@ Owner: lock Lilac & Plum, use their avatar as the demo profile, critique everyth
 - **Worth a rerun.** Your best post from 2+ months ago, with a fresh first line. Most of today's followers never saw it.
 - **Rest days.** Pick days that don't break your streak. Streaks that punish weekends make people quit.
 
+## Round 13: real Claude, your real history, a real backend
+
+Owner: implement the plan to beat Typefully, make the AI good, use their own Claude to test, import past posts (Typefully, an @handle, the people they follow).
+
+**AI, three ways in (same prompts everywhere, in `core.js`)**
+- claude.ai artifact: the viewer's own Claude through the `sample` capability. Rewrites and ideas on the default tier, voice study on complex, hook critiques on quick. Asks once per visit; declining falls back to the offline editor.
+- Hookworthy server: Sonnet 5.5 for everyday writing (low/medium effort), Opus 5.5 for voice study (high). Refusal fallbacks on. Verified end to end against a mock Messages API: every call carried the right model, effort and fallback header.
+- Offline: the old heuristics, now clearly labelled "Offline editor".
+- Prompts are built for voice fidelity: never invent numbers (use [number]), match casing and habits from the author's own best posts, a banned list of AI tells, three genuinely different takes per call.
+
+**Your history**
+- Bring your posts: X archive (.zip or tweets.js, parsed in the browser; retweets and replies to others dropped, self-replies folded into threads), Typefully (API key via server, or CSV), LinkedIn Shares.csv, any CSV, pasted posts, or an @handle through the X API on the server. No scraping: X forbids it; the archive has more history anyway.
+- Learn my voice: Claude reads up to 120 posts and writes the profile every rewrite uses (traits with evidence, habits, what would sound wrong, what works, the most-you post).
+- Insights run on your posts: best post type vs your median, when your posts land, engagement per day, top and quietest posts with a "Why?" post-mortem, and cards that only appear when a difference is real (20% either way).
+- The hook score is checked against your own results ("hooks 70+ earned 2.3× the ones under 50 on your posts"), and says so honestly when it doesn't predict.
+- People you learn from: handles (server) or pasted posts; Claude pulls out reusable patterns with a fill-in-the-blank first line.
+- Reruns, "you said this before" and Remix now use your history.
+
+**Backend (`server/`)**: static app, `/api/ai`, X read (posts, people, metrics), X posting (OAuth 2 PKCE, threads), LinkedIn posting (OpenID + Posts API), Typefully import, a posting queue checked every 30 s, a keyless `/api/v1/check`, rewrite and ideas endpoints, and an MCP server (grade_hook, check_post, rewrite_in_voice, schedule_post). 21 tests, no keys or network needed.
+
+**Not verifiable here**: live X, LinkedIn and Typefully calls (the sandbox blocks those hosts and there are no keys). They're built to the public API shapes and covered by mocked tests; the first real run should be watched.
+
