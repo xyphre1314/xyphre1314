@@ -26,14 +26,16 @@ Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (th
 | | |
 |---|---|
 | `GET /api/health` | What's switched on |
-| `POST /api/ai` `{prompt, tier, json, docs?}` | Claude, routed by tier (used by the app). `docs`: up to 3 PDFs as base64 (`{name, mime:'application/pdf', data}`), sent to Claude as document blocks, for briefs |
+| `POST /api/ai` `{prompt, tier, json, docs?}` | Claude, routed by tier (used by the app). `docs`: up to 3 PDFs or images (PNG, JPEG, GIF, WebP, 5 MB each) as base64 (`{name, mime, data}`), sent to Claude as document or image blocks, for briefs and Picture to post |
+| `POST /api/media` `{data}` or `{url, alt?}` | Stores a picture or GIF for posting: a base64 data URL, or a GIPHY link (only `*.giphy.com` over https). Images up to 5 MB, GIFs up to 15 MB. Returns `{id, kind, mime, bytes}`; pass the id in `posts[].media` |
+| `GET /api/x/radar?handles=a,b` | Reply radar: original posts from those accounts in the last 2 hours, ranked by how much an early reply is worth (freshness, pace, reach, how crowded the replies are), with the reasons. Up to 30 handles, cached 3 minutes. Uses X search, so it counts against your X API plan |
 | `GET /api/gifs?q=&offset=` | GIF search through GIPHY (trending when `q` is empty). Needs `GIPHY_API_KEY`; results cached 15 minutes per query because beta keys allow 100 calls an hour |
 | `GET /api/x/me` | Re-checks the connected X account's plan (`subscription_type`, falling back to `verified_type`). Paid plans (Basic, Premium, Premium+) get 25,000-character posts; everyone else 280. Also returned as `xTier` in `/api/health` |
 | `GET /api/x/posts?handle=&max=` | An account's original posts with public metrics (X API, bearer token) |
 | `GET /api/x/people?handles=a,b` | Top recent posts from people you learn from |
 | `GET /api/x/metrics?ids=` | Fresh metrics for posts, for post-mortems |
 | `POST /api/typefully/import` `{key}` | Your published and scheduled Typefully drafts (key used once, never stored) |
-| `POST /api/publish` `{posts, platforms}` | Post now to X (as a thread) and/or LinkedIn |
+| `POST /api/publish` `{posts, platforms}` | Post now to X (as a thread) and/or LinkedIn. Each post is a string or `{text, media:[ids]}`; X gets up to 4 per post (uploaded in chunks, with alt text), LinkedIn gets every picture in one post |
 | `POST /api/schedule` `{posts, at, platforms}`, `GET /api/queue`, `DELETE /api/queue/:id` | The posting queue; checked every 30 s |
 | `POST /api/v1/check` `{text, never?, limit?}` | Hook score + pre-post checks, no key needed |
 | `POST /api/v1/rewrite` `{text, kind, voice?}` | Three rewrites in a voice |
@@ -80,6 +82,8 @@ Or on Render: New → Blueprint, point it at this repo (`hookworthy/server/rende
 
 - Binds to `127.0.0.1` by default. If you open it up, set `HOOKWORTHY_TOKEN`.
 - OAuth tokens live in `server/data/` (mode 600). The Typefully key is never written anywhere.
+- Media for posts is stored in `server/data/media/` (mode 600), named by a hash of its bytes. `/api/media` only fetches https links on GIPHY's own hosts, so it can't be used to reach other addresses.
+- X asks for the `media.write` scope. If you connected X before this was added, connect it again so pictures can post.
 - `/api/ai` is rate limited per IP (30 a minute; voice study costs 5).
 - Review links are readable by anyone with the link (random 12-character ids); they carry only the draft and the author's name.
 - Sync payloads are AES-GCM encrypted in the browser with a key derived (PBKDF2, 200k rounds) from a 100-bit code the server never sees.

@@ -7,7 +7,7 @@ import { read, write } from './store.mjs';
 
 const API = process.env.X_API_BASE || 'https://api.x.com/2';
 const AUTH = 'https://x.com/i/oauth2/authorize';
-const SCOPES = 'tweet.read tweet.write users.read offline.access';
+const SCOPES = 'tweet.read tweet.write users.read offline.access media.write';
 export const xConfigured = () => ({ read: !!process.env.X_BEARER_TOKEN, post: !!process.env.X_CLIENT_ID });
 
 export class XError extends Error { constructor(status, message) { super(message); this.status = status; } }
@@ -105,11 +105,33 @@ async function userToken() {
   const n = await tokenRequest({ grant_type: 'refresh_token', refresh_token: t.refresh });
   write('x-token', { ...t, ...n, refresh: n.refresh || t.refresh }); return n.access;
 }
-/* post a thread: each post replies to the one before it */
-export async function postThread(texts) {
+/* ---- media upload (v2, chunked): initialize → append → finalize → wait while X processes GIFs ---- */
+const CHUNK = 4 * 1024 * 1024;
+async function xform(path, token, form) {
+  const r = await fetch(API + path, { method: 'POST', headers: { authorization: `Bearer ${token}` }, body: form });
+  const j = await r.json().catch(() => ({})); if (!r.ok) throw new XError(r.status, (j.detail || j.title || (j.errors && j.errors[0] && j.errors[0].message) || `X media ${r.status}`)); return j;
+}
+export async function uploadMedia({ buf, mime, kind, alt }, token) {
+  token = token || await userToken();
+  const init = await xfetch('/media/upload/initialize', { token, method: 'POST', body: { media_type: mime, total_bytes: buf.length, media_category: kind === 'gif' ? 'tweet_gif' : 'tweet_image' } });
+  const id = init.data && init.data.id; if (!id) throw new XError(502, 'X didn’t start the upload');
+  for (let i = 0, seg = 0; i < buf.length; i += CHUNK, seg++) { const f = new FormData(); f.append('media', new Blob([buf.subarray(i, i + CHUNK)], { type: mime }), 'media'); f.append('segment_index', String(seg)); await xform(`/media/upload/${id}/append`, token, f); }
+  let fin = await xfetch(`/media/upload/${id}/finalize`, { token, method: 'POST' });
+  for (let tries = 0; fin.data && fin.data.processing_info && ['pending', 'in_progress'].includes(fin.data.processing_info.state) && tries < 30; tries++) {
+    await new Promise(r => setTimeout(r, Math.min(10, fin.data.processing_info.check_after_secs || 1) * (process.env.HW_FAST_TESTS ? 1 : 1000)));
+    fin = await xfetch(`/media/upload?media_id=${id}&command=STATUS`, { token });
+  }
+  if (fin.data && fin.data.processing_info && fin.data.processing_info.state === 'failed') throw new XError(422, (fin.data.processing_info.error && fin.data.processing_info.error.message) || 'X couldn’t process that file');
+  if (alt) await xfetch('/media/metadata', { token, method: 'POST', body: { id, metadata: { alt_text: { text: String(alt).slice(0, 1000) } } } }).catch(() => null);
+  return id;
+}
+/* post a thread: each post replies to the one before it. posts: strings, or { text, media: [{ buf, mime, kind, alt }] } */
+export async function postThread(posts) {
   const token = await userToken(); const ids = []; let prev = null;
-  for (const text of texts) {
-    const j = await xfetch('/tweets', { token, method: 'POST', body: { text, ...(prev ? { reply: { in_reply_to_tweet_id: prev } } : {}) } });
+  for (const p of posts) {
+    const text = typeof p === 'string' ? p : p.text; const media = typeof p === 'string' ? [] : (p.media || []);
+    const media_ids = []; for (const m of media.slice(0, 4)) media_ids.push(await uploadMedia(m, token));
+    const j = await xfetch('/tweets', { token, method: 'POST', body: { text, ...(media_ids.length ? { media: { media_ids } } : {}), ...(prev ? { reply: { in_reply_to_tweet_id: prev } } : {}) } });
     prev = j.data.id; ids.push(prev);
   }
   const h = connectedUser();

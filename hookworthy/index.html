@@ -131,7 +131,7 @@
   :root:not([data-theme="light"]) .seg .seg-thumb:not(.force-light .seg .seg-thumb){ background:var(--surface-3); }
   :root:not([data-theme="light"]) .menu:not(.force-light .menu){ background:var(--surface-2); }
   :root:not([data-theme="light"]) .modal:not(.force-light .modal){ background:var(--surface-2); }
-  :root:not([data-theme="light"]) .modal-f:not(.force-light .modal-f){ background:rgba(0,0,0,.15); }
+  :root:not([data-theme="light"]) .modal-f:not(.force-light .modal-f){ background:color-mix(in srgb,var(--bg-elev) 86%,#000); }
   :root:not([data-theme="light"]) .plat[aria-pressed="true"]:not(.force-light .plat[aria-pressed="true"]){ background:var(--surface-3); }
   :root:not([data-theme="light"]) .starter:not(.force-light .starter){ background:var(--surface-2); }
   :root:not([data-theme="light"]) .hook-reason:not(.force-light .hook-reason){ background:var(--surface-2); }
@@ -330,7 +330,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .vis-opts{ display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; }
 @media (max-width:760px){ .vis-b{ grid-template-columns:minmax(0,1fr); } .vis-kinds{ grid-row:auto; display:flex; overflow-x:auto; margin:0 -4px; padding:2px 4px; scrollbar-width:none; } .vk{ flex:none; padding:9px 12px; } .vk small{ display:none; } .vis-stage{ min-height:0; padding:10px; } }
 .modal-f{ display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:var(--bg-elev); position:sticky; bottom:0; z-index:3; }
-.force-dark .modal-f,:root[data-theme="dark"] .modal-f:not(.force-light .modal-f){ background:rgba(0,0,0,.15); }
+.force-dark .modal-f,:root[data-theme="dark"] .modal-f:not(.force-light .modal-f){ background:color-mix(in srgb,var(--bg-elev) 86%,#000); }
 @keyframes fade{ from{ opacity:0 } }
 @keyframes fadeout{ to{ opacity:0 } }
 @keyframes modalin{ from{ opacity:0; transform:translateY(10px) scale(.97); filter:blur(4px); } }
@@ -2058,6 +2058,35 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
   .dict-help li{ display:grid; grid-template-columns:88px 1fr; }
 }
 .dict-help li{ display:grid; grid-template-columns:92px 1fr; align-items:center; }
+
+/* ---------- Round 20: reply radar, picture to post, media on the queue ---------- */
+.rr-note{ margin:0 0 12px; font-size:var(--t-13); color:var(--text-2); display:flex; gap:6px; align-items:center; } .rr-note:empty{ display:none; }
+.rr-list{ display:grid; gap:12px; }
+.rr-card{ display:grid; gap:10px; padding:16px; border-radius:18px; background:var(--surface); box-shadow:0 0 0 1px var(--border); animation:rise var(--d-spring) calc(var(--i,0) * 40ms) var(--spring) both; transition:opacity .18s,transform .18s; }
+.rr-card.leaving{ opacity:0; transform:translateX(12px); }
+.rr-card.sk{ height:170px; background:linear-gradient(90deg,var(--surface),var(--surface-2),var(--surface)); background-size:200% 100%; animation:gifsk 1.2s linear infinite; }
+.rr-card header{ display:flex; gap:10px; align-items:center; } .rr-card header .avatar{ width:36px; height:36px; flex:none; }
+.rr-who{ display:grid; min-width:0; flex:1; } .rr-who b{ font-weight:600; font-size:var(--t-14); } .rr-who span{ font-size:var(--t-12); color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.rr-clock{ position:relative; display:inline-grid; place-items:center; width:40px; height:40px; flex:none; font:600 11px/1 var(--font-sans,inherit); color:var(--text-3); font-variant-numeric:tabular-nums; }
+.rr-clock i{ position:absolute; inset:0; border-radius:50%; background:conic-gradient(var(--track,var(--surface-3)) calc(var(--p) * 360deg), var(--pl,#6A2FA0) 0); -webkit-mask:radial-gradient(circle,transparent 15px,#000 16px); mask:radial-gradient(circle,transparent 15px,#000 16px); opacity:.35; }
+.rr-clock.live{ color:var(--pl,#6A2FA0); } .rr-clock.live i{ opacity:1; }
+.rr-t{ margin:0; font-size:var(--t-15); line-height:1.5; white-space:pre-wrap; }
+.rr-why{ display:flex; flex-wrap:wrap; gap:6px; } .rr-why span{ padding:3px 9px; border-radius:99px; background:var(--tint-soft); font-size:var(--t-12); color:var(--text-2); }
+.rr-me{ display:grid; grid-template-columns:28px minmax(0,1fr); gap:10px; align-items:start; } .rr-me .avatar{ width:28px; height:28px; }
+.rr-box{ position:relative; } .rr-box textarea{ resize:none; padding-bottom:22px; } .rr-n{ position:absolute; right:10px; bottom:6px; font:500 11px/1 var(--font-mono); color:var(--text-3); } .rr-n.over{ color:#B4232C; }
+.rr-card.drafting .rr-box textarea{ background:linear-gradient(90deg,var(--surface),var(--tint-soft),var(--surface)); background-size:200% 100%; animation:gifsk 1.2s linear infinite; }
+.rr-a{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; } .rr-a .grow{ flex:1; }
+.rr-card.done{ opacity:.7; } .rr-done{ display:flex; gap:6px; align-items:center; margin:0; font-size:var(--t-13); color:#1F7A45; }
+.pic-box{ width:min(820px,100%); } .pic-b{ display:grid; gap:14px; }
+.pic-prev{ margin:0; position:relative; border-radius:14px; overflow:hidden; background:var(--surface-2); display:grid; place-items:center; max-height:46vh; }
+.pic-prev img{ display:block; max-width:100%; max-height:46vh; object-fit:contain; } .pic-prev .btn{ position:absolute; right:10px; bottom:10px; }
+.pic-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:16px; align-items:start; } .pic-prev.sm, .pic-prev.sm img{ max-height:300px; }
+.pic-side{ display:grid; gap:12px; } .pic-read section{ display:grid; gap:8px; } .pic-read h3{ margin:0; }
+.pic-post{ resize:none; font-size:var(--t-15); line-height:1.5; } .pic-meta{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; font-size:var(--t-12); }
+.pic-un{ display:inline-flex; gap:5px; align-items:center; color:#B35A12; } .pic-ok{ display:inline-flex; gap:5px; align-items:center; color:#1F7A45; }
+.pic-att{ display:flex; gap:8px; align-items:center; font-size:var(--t-14); }
+.qcard .qmed{ display:inline-flex; align-items:center; gap:3px; } .qcard .qmed svg{ width:12px; height:12px; }
+@media (max-width:760px){ .pic-grid{ grid-template-columns:1fr; } }
 /* ---------- Round 18: phones and touch ---------- */
 @media (max-width:760px){
   /* modals become bottom sheets that always fit, with the header and actions pinned */
@@ -3017,6 +3046,8 @@ function paletteCommands() {
     { g: 'Actions', label: 'Tidy up drafts', icon: 'archive', run: () => openTidy() },
     { g: 'Actions', label: 'First-hour replies', icon: 'reply', run: () => openReplyDesk() },
     { g: 'Actions', label: 'Plan my week', icon: 'cal', run: () => openPlan() },
+    { g: 'Actions', label: 'Picture to post (screenshot, chart, DM)', icon: 'image', run: () => openPicture() },
+    { g: 'Actions', label: 'Reply radar: fresh posts worth an early reply', icon: 'reply', run: () => openRadar() },
     { g: 'Actions', label: 'Write from a brief, doc or PDF', icon: 'write', run: () => openBrief() },
     { g: 'Actions', label: 'Talk instead of typing', icon: 'mic', run: () => { goThen('write', () => dictate(0)); } },
     { g: 'Actions', label: 'X format: thread or long post', icon: 'layers', run: () => { goThen('write', () => openXFormat($('[data-cact="schedmenu"]') || $('#thread'))); } },
@@ -3230,7 +3261,7 @@ function composerHTML() {
 }
 function startersHTML() {
   const ideas = genIdeas(3, S.starterSeed);
-  return `<div class="starters-h"><span class="starters-t">Nothing on your mind? Borrow one.</span><span style="display:flex;gap:6px"><button class="btn ghost sm" data-cact="brief" data-tip="Notes, a doc or a PDF, written up in your voice">${ic('upload', 'sm')} From a brief</button><button class="btn ghost sm" data-cact="shuffle" data-tip="New ideas" data-kbd="R">${ic('shuffle', 'sm')} Shuffle</button></span></div>
+  return `<div class="starters-h"><span class="starters-t">Nothing on your mind? Borrow one.</span><span style="display:flex;gap:6px"><button class="btn ghost sm" data-cact="brief" data-tip="Notes, a doc or a PDF, written up in your voice">${ic('upload', 'sm')} From a brief</button><button class="btn ghost sm" data-cact="picture" data-tip="A screenshot or chart, read and drafted">${ic('image', 'sm')} From a picture</button><button class="btn ghost sm" data-cact="shuffle" data-tip="New ideas" data-kbd="R">${ic('shuffle', 'sm')} Shuffle</button></span></div>
   <div class="starter-list">${ideas.map(i => `<button class="starter" data-cact="starter" data-t="${esc(i.text)}" data-kind="${esc(i.kind)}" data-topic="${esc(i.topic)}"><p>${esc(i.text)}</p><span class="meta"><span class="pill kp" data-kind="${String(i.kind).toLowerCase()}">${esc(i.kind)}</span><span class="faint" style="font-size:12px;display:inline-flex;gap:4px;align-items:center">Draft it ${ic('arrow', 'xs')}</span></span></button>`).join('')}</div>`;
 }
 function mediaHTML(tw) {
@@ -4073,6 +4104,177 @@ function openBrief(files) {
 
 /* GIFs: real search through GIPHY when the server has a key; a small set of sample moods otherwise */
 const GIFQ = { cache: new Map() };
+const copyText = t => { try { return navigator.clipboard.writeText(t).catch(() => fallbackCopy(t)); } catch (e) { fallbackCopy(t); } };
+/* ---------- Media that actually posts: pictures and GIFs go to the server once, then out with the post ---------- */
+async function uploadMedia(m) {
+  if (m.type === 'gif' && !m.src) throw new Error('Sample mood GIFs can’t be posted. Pick a real one from GIPHY');
+  const body = m.src && /^data:/.test(m.src) ? { data: m.src, alt: m.alt || '' } : { url: m.src, alt: m.alt || '' };
+  const r = await fetch('api/media', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || `upload failed (${r.status})`); return j.id;
+}
+const mediaCount = q => (q.mcount || []).reduce((a, b) => a + b, 0);
+
+/* ---------- Reply radar: fresh posts from people you learn from, worth an early reply ---------- */
+const RADAR_SAMPLE = () => { const P = typeof PEOPLE !== 'undefined' ? PEOPLE : []; const posts = (typeof HOOK_POSTS !== 'undefined' ? HOOK_POSTS : []).slice(0, 8); const now = Date.now();
+  return posts.map((p, i) => { const who = P[p.p] || { n: 'Someone', h: 'someone' }; const age = [4, 9, 13, 22, 31, 48, 70, 95][i] || 60; const c = p.c || [0, 0, 0, 0];
+    return { id: 'sample-' + i, text: p.t, at: new Date(now - age * 60e3).toISOString(), handle: who.h, name: who.n, pic: who.pic || null, followers: [182000, 41000, 12600, 96000, 8800, 300000, 22000, 5400][i] || 10000, likes: Math.round((c[2] || 40) * .08), replies: [2, 6, 1, 14, 3, 40, 9, 2][i] || 3, reposts: Math.round((c[1] || 10) * .05), sample: true, why: [age <= 15 ? `${age} min old: the first replies get seen most` : `${age} min old`, ...(i % 2 ? ['moving fast'] : []), (n => `only ${n} repl${n > 1 ? 'ies' : 'y'} so far`)([2, 6, 1, 14, 3, 40, 9, 2][i] || 3)].slice(0, 2) }; }); };
+const RRADAR = { posts: [], live: false, at: 0, loading: false, drafts: {}, why: '' };
+function radarPaneHTML() {
+  const live = !!(LLM.server && LLM.server.radar), people = (S.people || []).map(p => p.handle).filter(Boolean);
+  return `<section class="sec rr"><div class="sec-h"><div><h2 class="h2">Reply radar</h2><p class="muted" style="margin-top:4px">Fresh posts from people you learn from, ranked by how much an early, useful reply is worth. Best in the first 15 minutes.</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-rr="people">${ic('trend', 'sm')} ${people.length ? `${people.length} account${people.length > 1 ? 's' : ''}` : 'Pick accounts'}</button><button class="btn sm primary" data-rr="refresh">${ic('shuffle', 'sm')} Refresh</button></div></div>
+    <p class="rr-note" id="rr-note">${live ? (people.length ? '' : 'Add the accounts you learn from, and the radar watches them.') : `${ic('q', 'sm')} Sample posts. Connect X on your server and the radar shows real ones as they go live.`}</p>
+    <div class="rr-list" id="rr-list"></div></section>`;
+}
+function rrAge(at) { const m = Math.max(0, Math.round((Date.now() - Date.parse(at)) / 60e3)); return m; }
+function rrCardHTML(p, i) {
+  const age = rrAge(p.at), left = Math.max(0, 15 - age), done = S.radar && S.radar.done && S.radar.done[p.id], d = RRADAR.drafts[p.id] || {};
+  const pic = p.pic ? `<span class="avatar pic"><img src="${esc(p.pic)}" alt=""></span>` : p.avatar ? `<span class="avatar pic"><img src="${esc(p.avatar)}" alt="" referrerpolicy="no-referrer"></span>` : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
+  return `<article class="rr-card ${done ? 'done' : ''}" data-rid="${esc(p.id)}" style="--i:${i}">
+    <header>${pic}<div class="rr-who"><b>${esc(p.name || '@' + p.handle)}</b><span>@${esc(p.handle)} · ${fmtN(p.followers)} followers</span></div><span class="rr-clock ${left ? 'live' : ''}" style="--p:${Math.min(1, age / 15)}" title="${left ? `${left} min left in the first 15` : 'Past the first 15 minutes'}"><i></i><span>${age < 60 ? age + 'm' : Math.round(age / 60) + 'h'}</span></span></header>
+    <p class="rr-t">${esc(p.text)}</p>
+    <div class="rr-why">${(p.why || []).map(w => `<span>${esc(w)}</span>`).join('')}</div>
+    ${done ? `<p class="rr-done">${ic('check', 'sm')} Replied${S.radar.done[p.id] !== true ? `: “${esc(clip(S.radar.done[p.id], 80))}”` : ''}</p>` : `<div class="rr-me">${avatar(S.user)}<div class="rr-box"><textarea class="input" rows="2" data-rrt="${esc(p.id)}" placeholder="${d.hint ? esc(d.hint) : 'Add a number, a counterexample, or a real question. Not “great post”.'}" aria-label="Your reply to @${esc(p.handle)}">${esc(d.text || '')}</textarea><span class="rr-n" data-rrn="${esc(p.id)}">${d.text ? HWCore.xLength(d.text) : 0}/280</span></div></div>
+    <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${ic('shuffle', 'sm')} Another angle</button>` : ''}<button class="btn sm primary" data-rra="send">${ic('reply', 'sm')} ${LLM.server && LLM.server.xUser && !p.sample ? 'Reply' : 'Reply on X'}</button></div>`}
+  </article>`;
+}
+function drawRadar() {
+  const list = $('#rr-list'); if (!list) return; const posts = RRADAR.posts.filter(p => !(S.radar && S.radar.skip && S.radar.skip[p.id]));
+  list.innerHTML = RRADAR.loading ? Array.from({ length: 3 }, () => '<div class="rr-card sk" aria-hidden="true"></div>').join('') : posts.length ? posts.map(rrCardHTML).join('') : `<div class="empty">${RRADAR.why ? esc(RRADAR.why) : 'Nothing fresh right now. Check back in a few minutes.'}</div>`;
+}
+async function loadRadar(force) {
+  const live = !!(LLM.server && LLM.server.radar), handles = (S.people || []).map(p => p.handle).filter(Boolean);
+  RRADAR.loading = true; RRADAR.why = ''; drawRadar();
+  try {
+    if (live && handles.length) { const r = await fetch(`api/x/radar?handles=${encodeURIComponent(handles.join(','))}`); const j = await r.json(); if (!r.ok) throw new Error(j.error || 'Radar failed'); RRADAR.posts = j.posts; RRADAR.live = true; }
+    else { RRADAR.posts = RADAR_SAMPLE(); RRADAR.live = false; }
+    RRADAR.at = Date.now();
+  } catch (e) { RRADAR.posts = []; RRADAR.why = e.message; }
+  RRADAR.loading = false; drawRadar(); draftRadar();
+}
+async function draftRadar(only) {
+  const todo = RRADAR.posts.filter(p => (!only || p.id === only) && !(S.radar && S.radar.done && S.radar.done[p.id]));
+  if (!todo.length) return;
+  if (!aiOn()) { const hints = { Contrarian: 'Push back with one case where it didn’t hold for you.', Story: 'Add the moment it happened to you, in one line.', Listicle: 'Add the item you’d put first, and why.', Proof: 'Share your own number for the same thing.', Question: 'Answer it with something specific.' }; todo.forEach(p => { RRADAR.drafts[p.id] = { hint: hints[HWCore.kindOf(p.text)] || 'Add one thing the post doesn’t have: a number, a story, or a sharp question.' }; }); drawRadar(); return; }
+  $$('.rr-card', $('#rr-list')).forEach(c => { if (!only || c.dataset.rid === only) c.classList.add('drafting'); });
+  try {
+    const r = await ask(HWCore.prompts.radarReplies({ posts: todo.slice(0, 10), voice: voiceSpec(), niche: S.user.niche }), { fresh: !!only });
+    (Array.isArray(r) ? r : []).forEach(x => { const p = todo[+x.id]; if (p && x.reply) RRADAR.drafts[p.id] = { text: String(x.reply).trim(), angle: x.angle || '' }; });
+  } catch (e) { aiError(e); }
+  drawRadar();
+}
+function openRadar() { UI.ideaTab = 'replies'; go('ideas'); }
+function radarPaneInit(root) {
+  if (!$('#rr-list', root)) return;
+  if (!RRADAR.at || Date.now() - RRADAR.at > 3 * 60e3) loadRadar(); else drawRadar();
+  const t = setInterval(() => { if (document.hidden) return; $$('.rr-card[data-rid]').forEach(c => { const p = RRADAR.posts.find(x => x.id === c.dataset.rid); if (!p) return; const a = rrAge(p.at), el = $('.rr-clock', c); if (el) { el.style.setProperty('--p', Math.min(1, a / 15)); el.classList.toggle('live', a < 15); $('span', el).textContent = a < 60 ? a + 'm' : Math.round(a / 60) + 'h'; } }); }, 30e3);
+  onDispose(() => clearInterval(t));
+}
+async function radarAction(e) {
+  const b = e.target.closest('[data-rr],[data-rra]'); if (!b) return false;
+  if (b.dataset.rr === 'refresh') { loadRadar(true); SFX.play('tick'); return true; }
+  if (b.dataset.rr === 'people') { openPeople(); return true; }
+  const card = b.closest('[data-rid]'); const p = card && RRADAR.posts.find(x => x.id === card.dataset.rid); if (!p) return true;
+  S.radar = S.radar || { done: {}, skip: {} }; S.radar.done = S.radar.done || {}; S.radar.skip = S.radar.skip || {};
+  const a = b.dataset.rra;
+  if (a === 'skip') { S.radar.skip[p.id] = 1; save(); card.classList.add('leaving'); setTimeout(drawRadar, 180); return true; }
+  if (a === 'again') { delete RRADAR.drafts[p.id]; draftRadar(p.id); return true; }
+  if (a === 'send') {
+    const text = ((RRADAR.drafts[p.id] || {}).text || '').trim();
+    if (!text) { const t = $('textarea', card); t && (t.setAttribute('aria-invalid', 'true'), t.focus()); toast('Write the reply first.', { icon: 'reply' }); return true; }
+    if (/\[[^\]]+\]/.test(text)) { toast('Fill the [brackets] first. Only you know that part.', { icon: 'reply', tone: 'err' }); return true; }
+    if (HWCore.xLength(text) > 280) { toast('Over 280 characters. Trim it first.', { icon: 'reply', tone: 'err' }); return true; }
+    if (LLM.server && LLM.server.xUser && !p.sample) {
+      b.classList.add('is-loading');
+      try { const r = await fetch('api/x/reply', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ inReplyTo: p.id, text }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); S.radar.done[p.id] = text; save(); SFX.play('done'); toast('Replied. Early and useful beats loud.', { icon: 'reply', tone: 'accent', action: 'View', onAction: () => window.open(j.url, '_blank') }); drawRadar(); }
+      catch (err) { toast(`X said no: ${esc(err.message || 'try again')}`, { icon: 'zapoff', tone: 'err' }); } finally { b.classList.remove('is-loading'); }
+      return true;
+    }
+    copyText(text); window.open(`https://x.com/intent/post?in_reply_to=${encodeURIComponent(p.sample ? '' : p.id)}&text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    S.radar.done[p.id] = text; save(); drawRadar(); toast(p.sample ? 'That was a sample post. Your reply is copied, ready for a real one.' : 'Opened X with your reply. It’s on your clipboard too.', { icon: 'reply' });
+    return true;
+  }
+  return true;
+}
+
+/* ---------- Picture to post: Claude reads a screenshot, chart or DM, pulls out what's actually in it, and drafts ---------- */
+async function shrinkImage(file, max = 1568) {
+  const url = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
+  const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('That picture wouldn’t open')); i.src = url; });
+  const k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight)); const png = file.type === 'image/png' && file.size < 1.6e6 && k === 1;
+  if (png || (k === 1 && file.type === 'image/jpeg' && file.size < 3e6)) return { data: url, mime: file.type, w: im.naturalWidth, h: im.naturalHeight };
+  const cv = document.createElement('canvas'); cv.width = Math.round(im.naturalWidth * k); cv.height = Math.round(im.naturalHeight * k); const c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(im, 0, 0, cv.width, cv.height);
+  return { data: cv.toDataURL('image/jpeg', .9), mime: 'image/jpeg', w: cv.width, h: cv.height };
+}
+function openPicture(file) {
+  const P = { img: null, note: '', read: null, angle: 0, attach: true, post: '', step: 'drop', name: '' };
+  const canRead = LLM.mode === 'server';
+  const m = modal('<div class="pic" id="pic"></div>', { label: 'Picture to post', box: 'modal pic-box' });
+  const el = $('#pic', m.el);
+  const head = (t, d) => `<div class="modal-h"><div><h2 class="h3">${t}</h2><p class="muted" style="font-size:13px;margin-top:4px">${d}</p></div><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div>`;
+  const draw = () => {
+    if (P.step === 'drop') {
+      el.innerHTML = `${head('Picture to post', canRead ? 'Drop a screenshot, chart, dashboard or DM. Claude reads what’s in it and drafts the post, with the numbers checked.' : 'Drop a screenshot or chart. Reading pictures needs Claude on your server, so here you tell us the point and we draft around it.')}
+      <div class="modal-b pic-b">${P.img ? `<figure class="pic-prev"><img src="${P.img.data}" alt="Your picture"><button class="btn sm" data-pc="change">${ic('image', 'sm')} Change</button></figure>` : `<label class="br-drop" id="pic-drop" tabindex="0"><input type="file" id="pic-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden><span class="br-ic">${ic('image')}</span><b><span class="desk-only">Drop a picture, paste one, or click to choose</span><span class="touch-only">Tap to choose a picture</span></b><small>PNG, JPEG, WebP or GIF. Screenshots work best.</small></label>`}
+        <label class="vis-f"><span>${canRead ? 'What should people take from it? (optional)' : 'What’s the point, in your words? Include the number.'}</span><textarea class="input" id="pic-note" rows="2" placeholder="${canRead ? 'e.g. this is the week we stopped discounting' : 'e.g. Signups went from 120 to 410 after we cut the form to one field'}">${esc(P.note)}</textarea></label>
+      </div>
+      <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" data-pc="read">${ic('riff', 'sm')} ${canRead ? 'Read it' : 'Draft it'}</button></div>`;
+      $('#pic-note', el).oninput = e => { P.note = e.target.value; };
+      const f = $('#pic-file', el); if (f) f.onchange = e => take(e.target.files[0]);
+      const dz = $('#pic-drop', el); if (dz) { dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); }); dz.addEventListener('dragleave', () => dz.classList.remove('over')); dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); take(e.dataTransfer.files[0]); }); dz.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f.click(); } }); }
+      return;
+    }
+    const r = P.read, lim = S.platforms.x ? 280 : effLimit(), src = [r.what, ...(r.facts || []).map(x => x.fact), P.note].join('\n'), un = HWCore.factCheck(P.post, src);
+    el.innerHTML = `${head(esc(r.what || 'Your picture'), r.ai ? `${cap(AI_NAME())} read it. Check the facts, pick a way in, then take it to the editor.` : 'Drafted from your note. Check it, then take it to the editor.')}
+      <div class="modal-b pic-b pic-read">
+        <div class="pic-grid"><figure class="pic-prev sm"><img src="${P.img.data}" alt="Your picture"></figure>
+        <div class="pic-side">
+          ${r.private && r.private.length ? `<div class="br-check warn">${ic('zapoff', 'sm')}<span><b>Other people are in this picture:</b> ${r.private.map(esc).join(', ')}. Crop or blur them before posting it.</span></div>` : ''}
+          <section><h3 class="label">What’s in it${r.ai ? '' : ' (from your note)'}</h3>${r.facts && r.facts.length ? `<ul class="br-facts">${r.facts.map(f => `<li>${ic('check', 'sm')}<span>${esc(f.fact)}${f.where ? `<q>${esc(f.where)}</q>` : ''}</span></li>`).join('')}</ul>` : '<p class="faint">No numbers found. The post leans on the story.</p>'}</section>
+        </div></div>
+        ${r.angles && r.angles.length > 1 ? `<section><h3 class="label">Way in</h3><div class="br-angles" role="radiogroup">${r.angles.map((a, k) => `<button class="br-ang" role="radio" data-pang="${k}" aria-checked="${P.angle === k}"><b>${esc(a.angle)}</b><span>${esc(a.line)}</span></button>`).join('')}</div></section>` : ''}
+        <section><h3 class="label">Post</h3><textarea class="input pic-post" id="pic-post" rows="4">${esc(P.post)}</textarea><div class="pic-meta"><span class="br-len ${HWCore.xLength(P.post) > lim ? 'over' : ''}" id="pic-len">${HWCore.xLength(P.post)} / ${lim}</span>${un.length ? `<span class="pic-un">${ic('zapoff', 'sm')} Not in the picture: ${un.map(esc).join(', ')}</span>` : P.post ? `<span class="pic-ok">${ic('check', 'sm')} Every number is from the picture</span>` : ''}</div></section>
+        <label class="pic-att"><input type="checkbox" id="pic-att" ${P.attach ? 'checked' : ''}> Attach the picture to the post</label>
+      </div>
+      <div class="modal-f"><button class="btn" data-pc="back">${ic('left', 'sm')} Back</button><span class="grow"></span><button class="btn" data-pc="card">${ic('spark', 'sm')} Make a card from it</button><button class="btn primary" data-pc="open">${ic('write', 'sm')} Open in editor</button></div>`;
+    const pp = $('#pic-post', el); pp.oninput = () => { P.post = pp.value; const n = HWCore.xLength(P.post); $('#pic-len', el).textContent = `${n} / ${lim}`; $('#pic-len', el).classList.toggle('over', n > lim); };
+    $('#pic-att', el).onchange = e => { P.attach = e.target.checked; };
+  };
+  const take = async f => {
+    if (!f || !/^image\//.test(f.type)) { toast('That isn’t a picture. PNG, JPEG, WebP or GIF work.', { icon: 'image', tone: 'err' }); return; }
+    try { P.img = await shrinkImage(f); P.name = f.name; SFX.play('pop'); draw(); } catch (e) { toast(esc(e.message), { icon: 'image', tone: 'err' }); }
+  };
+  const read = async () => {
+    if (!P.img) { const f = $('#pic-file', el); f && f.click(); return; }
+    const b = $('[data-pc="read"]', el); b && b.classList.add('is-loading'); let r = null;
+    if (canRead) { try { const spec = HWCore.prompts.picture({ note: P.note.trim(), voice: voiceSpec(), niche: S.user.niche }); spec.docs = [{ name: P.name || 'picture', mime: P.img.mime, data: P.img.data }]; const j = await ask(spec, { fresh: true }); if (j && typeof j === 'object' && (j.what || j.posts)) r = { ...j, ai: true }; } catch (e) { aiError(e); } }
+    if (!r) {
+      const note = P.note.trim(); if (!note) { b && b.classList.remove('is-loading'); const t = $('#pic-note', el); t.setAttribute('aria-invalid', 'true'); t.focus(); toast(canRead ? 'Claude couldn’t read it. Tell us the point in a line and we’ll draft around it.' : 'Tell us the point in a line, with the number.', { icon: 'image' }); return; }
+      const br = HWCore.briefRead(note), vp = HWCore.visualPlan(note);
+      r = { what: clip(note.split('\n')[0], 80), facts: br.facts.map(f => ({ fact: f.fact })), private: [], angles: br.angles.length ? br.angles : [{ angle: 'Your point', line: note }], posts: HWCore.briefDraft(note, { format: 'single', limit: 280 }), visual: vp.template === 'data' ? { template: 'data', metric: vp.metric, before: vp.before, after: vp.after } : vp.template === 'stat' ? { template: 'stat', value: vp.value, label: vp.label } : { template: 'quote' }, ai: false };
+    }
+    r.facts = (r.facts || []).filter(f => f && f.fact); r.private = Array.isArray(r.private) ? r.private.filter(Boolean).map(String) : []; r.angles = (r.angles || []).filter(a => a && a.line);
+    P.read = r; P.post = (r.posts && r.posts[0]) || (r.angles[0] && r.angles[0].line) || P.note; P.attach = !r.private.length; P.step = 'read'; SFX.play('swap'); draw();
+  };
+  el.addEventListener('click', e => {
+    const an = e.target.closest('[data-pang]'); if (an) { P.angle = +an.dataset.pang; const a = P.read.angles[P.angle]; if (a && (!P.post || P.read.angles.some(x => x.line === P.post) || (P.read.posts || []).includes(P.post))) P.post = a.line; SFX.play('tick'); draw(); return; }
+    const b = e.target.closest('[data-pc]'); if (!b) return; const a = b.dataset.pc;
+    if (a === 'change') { P.img = null; draw(); setTimeout(() => { const f = $('#pic-file', el); f && f.click(); }, 50); }
+    if (a === 'read') read();
+    if (a === 'back') { P.step = 'drop'; draw(); }
+    if (a === 'open' || a === 'card') {
+      const text = P.post.trim(); if (!text) { toast('The post is empty. Write a line first.', { icon: 'write', tone: 'err' }); return; }
+      writeFrom([text]); const tw = S.draft.tweets[0];
+      if (P.attach && a === 'open') { tw.media.push({ type: 'img', src: P.img.data, alt: clip(P.read.what || text, 400) }); refreshMedia(tw.id); }
+      m.close(); save();
+      if (a === 'card') { setTimeout(() => openVisual(0), 200); toast('Pick the card’s look. Your picture’s numbers are already in it.', { icon: 'spark', tone: 'accent' }); }
+      else toast(P.read.private && P.read.private.length && P.attach ? 'In the editor, picture attached. Remember to crop out the names.' : 'In the editor. Schedule it when it reads right.', { icon: 'write', tone: 'accent' });
+    }
+  });
+  m.el.addEventListener('paste', e => { const f = [...(e.clipboardData && e.clipboardData.files || [])].find(x => /^image\//.test(x.type)); if (f && P.step === 'drop') { e.preventDefault(); take(f); } });
+  draw(); if (file) take(file);
+}
+
 function openGifs(i) {
   const tw = S.draft.tweets[i]; if (!tw) return; const live = !!(LLM.server && LLM.server.gifs);
   const m = modal(`${modalHead('Add a GIF', live ? 'Search GIPHY, or pick from what’s trending.' : 'Sample moods for now. Real GIF search turns on when your Hookworthy server has a GIPHY key.')}<div class="modal-b gifb"><input class="input" id="gif-q" placeholder="${live ? 'Search GIPHY: shipped, facepalm, let’s go…' : 'Search moods: ship, fine, hmm…'}" aria-label="Search GIFs"><div class="gifs ${live ? 'live' : ''}" id="gif-grid" role="list"></div>${live ? '<div class="gif-foot"><button class="btn sm" id="gif-more" hidden>More</button><a class="giphy-by" href="https://giphy.com" target="_blank" rel="noopener">Powered by <b>GIPHY</b></a></div>' : ''}</div>`, { label: 'Add a GIF', box: 'modal gif-modal' });
@@ -4412,9 +4614,10 @@ function draftProblems() {
 const platList = () => Object.keys(PLAT).filter(k => S.platforms[k]).map(k => PLAT[k].name).join(', ').replace(/, ([^,]*)$/, ' and $1');
 function commitDraft({ day, time, status = 'scheduled' }) {
   const tws = S.draft.tweets.filter(t => t.text.trim() || t.media.length);
-  S.queue.push({ id: uid(), day, time, text: tws[0].text, tweets: tws.map(t => t.text), platforms: { ...S.platforms }, status, autoPlug: S.settings.autoPlug, autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
+  const media = tws.map(t => t.media.slice());
+  S.queue.push({ id: uid(), day, time, text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), platforms: { ...S.platforms }, status, autoPlug: S.settings.autoPlug, autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
   S.streak[dayKey(Date.now())] = 1; SFX.play('done');
-  syncToServer(S.queue[S.queue.length - 1]);
+  syncToServer(S.queue[S.queue.length - 1], media);
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; UI.hook = false; save();
 }
 function openSchedule() {
@@ -4461,11 +4664,17 @@ function openSchedule() {
 }
 function splitOverflow() { const lim = effLimit(); for (let i = S.draft.tweets.length - 1; i >= 0; i--) { const t = S.draft.tweets[i]; if (tlen(t.text) > lim) { const parts = splitText(t.text, lim); t.text = parts[0]; const tws = parts.slice(1).map(x => newTweet(x)); S.draft.tweets.splice(i + 1, 0, ...tws); tws.forEach(x => UI.fresh.add(x.id)); } } renderThread(); markSaving(); }
 /* with Hookworthy's server and a connected account, the queue is real: X and LinkedIn get the post */
-function syncToServer(q) {
+async function syncToServer(q, media) {
   const srv = LLM.server; if (!srv || !(srv.xUser || srv.liUser) || !q) return;
+  /* pictures and GIFs go up first; if one can't, nothing is posted half-finished */
+  let ids = null;
+  if (media && media.some(x => x.length)) {
+    try { ids = []; for (const list of media) { const one = []; for (const m of list.slice(0, 4)) one.push(await uploadMedia(m)); ids.push(one); } q.mediaIds = ids; save(); }
+    catch (e) { toast(`Couldn’t upload a picture, so nothing was ${q.status === 'published' ? 'posted' : 'queued'}: ${esc(e.message)}`, { icon: 'zapoff', tone: 'err', ms: 7000 }); return; }
+  } else if (q.mediaIds) ids = q.mediaIds;
   const platforms = { x: !!(q.platforms.x && srv.xUser), linkedin: !!(q.platforms.linkedin && srv.liUser) }; if (!platforms.x && !platforms.linkedin) return;
   const skipped = ['threads', 'bsky'].filter(k => q.platforms[k]).map(k => PLAT[k].name);
-  const body = { posts: q.tweets, platforms }; const pub = q.status === 'published';
+  const body = { posts: ids ? q.tweets.map((text, i) => ({ text, media: ids[i] || [] })) : q.tweets, platforms }; const pub = q.status === 'published';
   if (!pub) body.at = slotDate(q.day, q.time).toISOString();
   fetch(pub ? 'api/publish' : 'api/schedule', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json().then(j => ({ ok: r.ok, j }))).then(({ ok, j }) => {
     if (!ok) throw new Error(j.error || 'failed');
@@ -5027,6 +5236,7 @@ function composerClick(e) {
       { label: 'Schedule…', icon: 'clock', kbd: [MOD, '↵'], run: openSchedule }, '-',
       ...(S.platforms.x ? [{ label: 'X format', icon: 'x', hint: xLong() ? 'Long post' : xPaid() ? 'Thread' : 'Thread · free X', run: () => setTimeout(() => openXFormat(el), 0) }] : []),
       { label: 'Write from a brief or doc', icon: 'upload', run: () => openBrief() },
+      { label: 'Picture to post', icon: 'image', run: () => openPicture() },
       { label: S.draft.reviewId ? 'Update review link' : 'Share for feedback', icon: 'link', hint: LLM.server && LLM.server.review ? 'Link + comments' : 'Copy as text', run: shareReview },
       { label: 'LinkedIn carousel (PDF)', icon: 'layers', run: openCarousel },
       { label: 'Copy thread text', icon: 'copy', run: copyThread },
@@ -5041,6 +5251,7 @@ function composerClick(e) {
     case 'dictate': dictate(i); break;
     case 'xfmt': openXFormat(el); break;
     case 'brief': openBrief(); break;
+    case 'picture': openPicture(); break;
     case 'poll': { const tw = S.draft.tweets[i]; if (tw.poll) { tw.poll = null; } else { if (tw.media.length) { toast('Polls and images don’t mix on X. Remove the image first.', { icon: 'poll', tone: 'err' }); break; } tw.poll = { options: ['', ''], days: 1 }; } refreshMedia(id); const f = $(`.tw[data-id="${id}"] [data-poll="0"]`); f && f.focus(); break; }
     case 'polladd': { const tw = S.draft.tweets[i]; tw.poll.options.push(''); refreshMedia(id); $(`.tw[data-id="${id}"] [data-poll="${tw.poll.options.length - 1}"]`).focus(); break; }
     case 'pollrm': S.draft.tweets[i].poll = null; refreshMedia(id); break;
@@ -5092,7 +5303,7 @@ ROUTES.write = () => {
   document.addEventListener('selectionchange', selch); onDispose(() => document.removeEventListener('selectionchange', selch));
   th.addEventListener('pointerdown', e => { const h = e.target.closest('.handle'); if (h) startDrag(e, h); });
   th.addEventListener('paste', e => {
-    const f = e.clipboardData && e.clipboardData.files; if (f && f.length && e.target.classList.contains('tw-input')) { e.preventDefault(); addFiles(tIndex(e.target.closest('.tw').dataset.id), f); return; }
+    const f = e.clipboardData && e.clipboardData.files; if (f && f.length && e.target.classList.contains('tw-input')) { e.preventDefault(); const empty = isEmptyDraft(), img = [...f].find(x => /^image\//.test(x.type)); addFiles(tIndex(e.target.closest('.tw').dataset.id), f); if (empty && img) setTimeout(() => toast('Want a post about this picture?', { icon: 'image', tone: 'accent', ms: 7000, action: 'Picture to post', onAction: () => { const tw = S.draft.tweets[0]; if (tw) { tw.media = []; refreshMedia(tw.id); } openPicture(img); } }), 350); return; }
     const t = e.clipboardData && e.clipboardData.getData('text/plain'); const ta = e.target; if (!t || !ta.classList.contains('tw-input') || !threadable()) return;
     const parts = pastedThread(t); if (parts.length < 2 || ta.value.trim()) return;
     e.preventDefault(); const i = tIndex(ta.closest('.tw').dataset.id); const was = S.draft.tweets.map(x => ({ ...x }));
@@ -5965,19 +6176,21 @@ ROUTES.ideas = () => {
       </div>
     </div>
     <div id="angles"></div>
-    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'Fresh angles'], ['radar', 'What’s working'], ['inbox', `Saved · ${S.ideas.length}`]].map(([k, l]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}">${l}</button>`).join('')}</div></div>
+    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'Fresh angles'], ['replies', 'Reply radar'], ['radar', 'What’s working'], ['inbox', `Saved · ${S.ideas.length}`]].map(([k, l]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}">${l}</button>`).join('')}</div></div>
     <div id="tab-you" ${(UI.ideaTab || 'you') === 'you' ? '' : 'hidden'}>
     <section class="sec"><div class="sec-h"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><h2 class="h2">Angles you could write today</h2><span class="pill">${esc(S.user.niche)}</span></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="seg" id="eng-seg" role="tablist" aria-label="Filter ideas">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity'].map(k => `<button role="tab" data-ek="${k}" aria-selected="${ENGINE.kind === k}">${k}</button>`).join('')}</div><button class="btn sm needs-ai" data-iact="claude" data-tip="Angles from your notes and your best posts">${ic('spark', 'sm')} Ask Claude</button><button class="btn sm" data-iact="shuffle" data-tip="Shuffle" data-kbd="R">${ic('shuffle', 'sm')}</button></div></div>
       <div class="grid-3" id="engine"></div></section>
     </div>
+    <div id="tab-replies" ${UI.ideaTab === 'replies' ? '' : 'hidden'}>${UI.ideaTab === 'replies' ? radarPaneHTML() : ''}</div>
     <div id="tab-radar" ${UI.ideaTab === 'radar' ? '' : 'hidden'}>${UI.ideaTab === 'radar' ? radarHTML() : ''}</div>
     <div id="tab-inbox" ${UI.ideaTab === 'inbox' ? '' : 'hidden'}><section class="sec" style="margin-top:20px"><div class="sec-h"><div><h2 class="h2">Saved <span class="faint mono" style="font-size:14px" id="inbox-n">${S.ideas.length}</span></h2><p class="muted" style="margin-top:4px">Links, notes, screenshots and voice memos you parked. Turn any of them into a draft when you’re ready.</p></div></div><div class="inbox" id="inbox"></div></section></div>
     <div id="tab-you2" ${(UI.ideaTab || 'you') === 'you' ? '' : 'hidden'}>
     <section class="sec"><div class="sec-h"><div><h2 class="h2">Remix your greatest hits</h2><p class="muted" style="margin-top:4px">Your best posts, back for a second run in a new shape.</p></div></div><div style="display:grid;gap:10px" id="remix">${MYTOP().slice(0, 4).map(p => `<div class="card remix-row" data-tp="${esc(p.id)}"><div><p>${esc(p.text)}</p><div class="stats"><span>${fmtK(p.views)} views</span><span>${fmtK(p.likes)} likes</span><span>${fmtK(p.replies)} replies</span><span class="pill kp" style="height:18px" data-kind="${String(p.kind).toLowerCase()}">${p.kind}</span></div></div><button class="btn" data-iact="remix" aria-haspopup="menu">${ic('layers', 'sm')} Remix${ic('down', 'xs')}</button></div>`).join('')}</div></section>
     </div>
   </div>`);
-  drawEngine(); drawInbox(); syncSeg($('#eng-seg')); syncSeg($('#idea-seg'));
+  drawEngine(); drawInbox(); syncSeg($('#eng-seg')); syncSeg($('#idea-seg')); if (UI.ideaTab === 'replies') radarPaneInit($('#tab-replies'));
+  $('#view').addEventListener('input', e => { const t = e.target.closest('[data-rrt]'); if (!t) return; const id = t.dataset.rrt; RRADAR.drafts[id] = { ...(RRADAR.drafts[id] || {}), text: t.value }; const n = $(`[data-rrn="${CSS.escape(id)}"]`); if (n) { const k = HWCore.xLength(t.value); n.textContent = `${k}/280`; n.classList.toggle('over', k > 280); } });
   const view = $('#view'), inp = $('#cap-in');
   const updateHint = () => { const link = /^https?:\/\/\S+$/i.test(inp.value.trim()); $('#cap-go').textContent = link ? 'Find angles' : 'Save idea'; };
   inp.addEventListener('input', updateHint);
@@ -5993,8 +6206,10 @@ ROUTES.ideas = () => {
   view.addEventListener('keydown', e => { if (e.target.matches('label[tabindex]') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); $('input', e.target).click(); } });
   view.addEventListener('click', e => {
     const it = e.target.closest('[data-it]'); if (it) { const k = it.dataset.it; UI.ideaTab = k; $$('[data-it]').forEach(b => b.setAttribute('aria-selected', b === it)); syncSeg($('#idea-seg')); SFX.play('tick');
-      ['you', 'you2', 'radar', 'inbox'].forEach(t => { const el = $('#tab-' + t); if (el) el.hidden = !(t === k || (k === 'you' && t === 'you2')); });
-      if (k === 'radar' && !$('#tab-radar').innerHTML.trim()) $('#tab-radar').innerHTML = radarHTML(); return; }
+      ['you', 'you2', 'replies', 'radar', 'inbox'].forEach(t => { const el = $('#tab-' + t); if (el) el.hidden = !(t === k || (k === 'you' && t === 'you2')); });
+      if (k === 'radar' && !$('#tab-radar').innerHTML.trim()) $('#tab-radar').innerHTML = radarHTML();
+      if (k === 'replies' && !$('#tab-replies').innerHTML.trim()) { $('#tab-replies').innerHTML = radarPaneHTML(); radarPaneInit($('#tab-replies')); } return; }
+    if (e.target.closest('[data-rr],[data-rra]')) { radarAction(e); return; }
     if (radarClick(e)) return;
     const tab = e.target.closest('[data-ek]'); if (tab) { ENGINE.kind = tab.dataset.ek; $$('[data-ek]').forEach(b => b.setAttribute('aria-selected', b === tab)); syncSeg($('#eng-seg')); drawEngine(); return; }
     const b = e.target.closest('[data-iact]'); if (!b) return; const a = b.dataset.iact;
@@ -6232,7 +6447,7 @@ function qMenu(c) {
 /* one calendar, three places: the Queue, the homepage week and the homepage demo all render through here */
 function qcardHTML(q, interactive = true) {
   const tag = interactive ? 'button' : 'div';
-  return `<${tag} class="qcard ${q.status}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(q.text.replace(/[.!?…]+$/, ''))}. ${q.status === 'published' ? 'Published' : 'Scheduled ' + slotLabel(q.day, q.time)}"><p>${esc(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
+  return `<${tag} class="qcard ${q.status}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(q.text.replace(/[.!?…]+$/, ''))}. ${q.status === 'published' ? 'Published' : 'Scheduled ' + slotLabel(q.day, q.time)}"><p>${esc(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
 }
 function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) {
   const today = dayKey(Date.now()); const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
@@ -6260,7 +6475,7 @@ function drawCal() {
   const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
   const html = calGridHTML(days, S.queue, { now });
   cal.innerHTML = html;
-  const qc = q => `<button class="qcard ${q.status}" data-id="${q.id}" aria-label="${esc(q.text)}"><p>${esc(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
+  const qc = q => `<button class="qcard ${q.status}" data-id="${q.id}" aria-label="${esc(q.text)}"><p>${esc(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
   const ag = $('#agenda'); if (ag) ag.innerHTML = days.map(d => {
     const day = dayKey(d); const items = S.queue.filter(q => q.day === day).sort((a, b) => a.time.localeCompare(b.time));
     const open = Object.keys(BEST[dowIdx(d)] || {}).filter(t => slotDate(day, t).getTime() > now && !taken(day, t));

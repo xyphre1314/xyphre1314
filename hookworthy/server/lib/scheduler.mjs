@@ -4,10 +4,13 @@ import { randomUUID } from 'node:crypto';
 import { read, write } from './store.mjs';
 import * as X from './x.mjs';
 import * as LI from './linkedin.mjs';
+import * as M from './media.mjs';
 
 export const list = () => read('queue', []);
+/* posts arrive as strings or { text, media: [mediaId] } */
+export const normPosts = posts => (posts || []).map(p => typeof p === 'string' ? { text: p.trim(), media: [] } : { text: String((p && p.text) || '').trim(), media: Array.isArray(p && p.media) ? p.media.map(String).slice(0, 4) : [] }).filter(p => p.text || p.media.length);
 export function add({ at, posts, platforms }) {
-  const texts = (posts || []).map(t => String(t || '').trim()).filter(Boolean);
+  const texts = normPosts(posts);
   if (!texts.length) throw Object.assign(new Error('Nothing to post'), { status: 400 });
   const when = Date.parse(at); if (isNaN(when)) throw Object.assign(new Error('Pick a time'), { status: 400 });
   const plats = Object.keys(platforms || {}).filter(k => platforms[k] && (k === 'x' || k === 'linkedin'));
@@ -21,9 +24,10 @@ export async function publish(item) {
   const results = {};
   for (const p of item.platforms) {
     try {
-      if (p === 'x') results.x = { ok: true, ...(await X.postThread(item.posts)) };
-      /* LinkedIn has no threads: one post, parts separated by a blank line */
-      if (p === 'linkedin') results.linkedin = { ok: true, ...(await LI.post(item.posts.join('\n\n'))) };
+      const posts = normPosts(item.posts).map(q => ({ text: q.text, media: q.media.map(id => M.getMedia(id)) }));
+      if (p === 'x') results.x = { ok: true, ...(await X.postThread(posts)) };
+      /* LinkedIn has no threads: one post, parts separated by a blank line, every picture attached */
+      if (p === 'linkedin') results.linkedin = { ok: true, ...(await LI.post(posts.map(q => q.text).filter(Boolean).join('\n\n'), posts.flatMap(q => q.media))) };
     } catch (e) { results[p] = { ok: false, error: e.message }; }
   }
   return results;

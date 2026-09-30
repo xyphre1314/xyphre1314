@@ -32,14 +32,16 @@ export function parseJSON(text) {
   throw new AIError('invalid_json', 'Claude did not return valid JSON', 502);
 }
 
-/* PDFs ride along as document blocks (read natively by Claude), before the prompt text */
+/* PDFs ride along as document blocks and pictures as image blocks (Claude reads both natively), before the prompt text */
+const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'], MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const MAX_DOCS = 3, MAX_DOC_BYTES = 15 * 1024 * 1024;
 function docBlocks(docs = []) {
   if (!Array.isArray(docs) || !docs.length) return [];
   if (docs.length > MAX_DOCS) throw new AIError('too_many_docs', `Up to ${MAX_DOCS} files at a time`, 400);
   return docs.map(d => {
-    if (!d || d.mime !== 'application/pdf' || typeof d.data !== 'string') throw new AIError('invalid_request', 'Only PDF files can be attached; send other text in the prompt', 400);
+    if (!d || typeof d.data !== 'string' || !(d.mime === 'application/pdf' || IMAGE_TYPES.includes(d.mime))) throw new AIError('invalid_request', 'Attach PDFs or PNG, JPEG, GIF or WebP images; send other text in the prompt', 400);
     const data = d.data.replace(/^data:[^,]*,/, '').replace(/\s+/g, '');
+    if (IMAGE_TYPES.includes(d.mime)) { if (data.length * .75 > MAX_IMAGE_BYTES) throw new AIError('doc_too_large', 'Pictures can be up to 5 MB', 413); return { type: 'image', source: { type: 'base64', media_type: d.mime, data } }; }
     if (data.length * .75 > MAX_DOC_BYTES) throw new AIError('doc_too_large', `${d.name || 'That PDF'} is over 15 MB`, 413);
     return { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data }, ...(d.name ? { title: String(d.name).slice(0, 200) } : {}) };
   });

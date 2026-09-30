@@ -22,10 +22,21 @@ export async function authCallback(code, state) {
   return u.name;
 }
 export function connectedUser() { const t = read('li-token', null); return t && Date.now() < t.exp ? t.name : null; }
-export async function post(text) {
+const HDR = t => ({ authorization: `Bearer ${t.access}`, 'LinkedIn-Version': VERSION, 'X-Restli-Protocol-Version': '2.0.0' });
+/* images (GIFs too): initialize an upload, PUT the bytes, then reference the image URN in the post */
+export async function uploadImage({ buf, mime }, t) {
+  const r = await fetch('https://api.linkedin.com/rest/images?action=initializeUpload', { method: 'POST', headers: { ...HDR(t), 'content-type': 'application/json' }, body: JSON.stringify({ initializeUploadRequest: { owner: `urn:li:person:${t.sub}` } }) });
+  const j = await r.json().catch(() => ({})); if (!r.ok || !j.value) throw new LIError(r.status || 502, j.message || 'LinkedIn didn’t start the upload');
+  const up = await fetch(j.value.uploadUrl, { method: 'PUT', headers: { authorization: `Bearer ${t.access}`, 'content-type': mime }, body: buf });
+  if (!up.ok) throw new LIError(up.status, `LinkedIn upload failed (${up.status})`);
+  return j.value.image;
+}
+export async function post(text, media = []) {
   const t = read('li-token', null); if (!t || Date.now() > t.exp) throw new LIError(401, 'Connect LinkedIn first');
-  const r = await fetch('https://api.linkedin.com/rest/posts', { method: 'POST', headers: { authorization: `Bearer ${t.access}`, 'content-type': 'application/json', 'LinkedIn-Version': VERSION, 'X-Restli-Protocol-Version': '2.0.0' },
-    body: JSON.stringify({ author: `urn:li:person:${t.sub}`, commentary: text, visibility: 'PUBLIC', distribution: { feedDistribution: 'MAIN_FEED', targetEntities: [], thirdPartyDistributionChannels: [] }, lifecycleState: 'PUBLISHED', isReshareDisabledByAuthor: false }) });
+  const imgs = []; for (const m of media.slice(0, 9)) imgs.push({ id: await uploadImage(m, t), altText: String(m.alt || '').slice(0, 4086) });
+  const content = imgs.length === 1 ? { content: { media: { id: imgs[0].id, ...(imgs[0].altText ? { altText: imgs[0].altText } : {}) } } } : imgs.length > 1 ? { content: { multiImage: { images: imgs } } } : {};
+  const r = await fetch('https://api.linkedin.com/rest/posts', { method: 'POST', headers: { ...HDR(t), 'content-type': 'application/json' },
+    body: JSON.stringify({ author: `urn:li:person:${t.sub}`, commentary: text, visibility: 'PUBLIC', distribution: { feedDistribution: 'MAIN_FEED', targetEntities: [], thirdPartyDistributionChannels: [] }, lifecycleState: 'PUBLISHED', isReshareDisabledByAuthor: false, ...content }) });
   if (!r.ok) { const j = await r.json().catch(() => ({})); throw new LIError(r.status, j.message || `LinkedIn ${r.status}`); }
   const id = r.headers.get('x-restli-id'); return { id, url: id ? `https://www.linkedin.com/feed/update/${id}` : null };
 }

@@ -407,6 +407,43 @@ ${text}
 
 Reply with only JSON: {"posts":["..."]}` };
     },
+    radarReplies({ posts, voice, niche }) {
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+${voiceBlock(voice)}
+${niche ? `The author writes about: ${niche}.` : ''}
+
+Write one early reply for each post below, from the author. The goal is replies that the post's readers find worth reading, so the author gets noticed for being useful, not loud.
+Rules:
+- Add something the post doesn't have: a specific number, a counterexample, a short first-hand story, or a sharp question that proves you read it.
+- At most 220 characters. One idea.
+- Never open with praise ("Great post", "This", "So true", "100%"). No emoji unless the author's voice uses them. Never pitch or link anything.
+- If you have nothing real to add, give a short question instead of filler.
+- Don't invent personal facts about the author; write [your number] or [your example] where only they can fill it in.
+
+${posts.map((p, i) => `<post id="${i}" by="@${p.handle}">${p.text}</post>`).join('\n')}
+
+Reply with only JSON: [{"id":0,"reply":"...","angle":"number|counterexample|story|question"}]` };
+    },
+    picture({ note, voice, niche }) {
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+${voiceBlock(voice)}
+${niche ? `The author writes about: ${niche}.` : ''}
+
+The author dropped in the attached picture (a screenshot, chart, dashboard, DM, receipt or photo) and wants a post about it.${note ? `\nWhat they want people to take from it: ${note}` : ''}
+
+Read the picture carefully:
+- what: one plain sentence on what it shows.
+- kind: chart | dashboard | dm | tweet | receipt | photo | other.
+- facts: every number or claim visible in it, with where it appears ("y-axis", "top-right total"). Copy numbers exactly; never estimate a number that isn't printed.
+- private: names, @handles, emails, faces or order numbers of other people that should be blurred or cropped before posting. Empty if none.
+- angles: 3 ways in, each with a first line that uses only what's visible (or the author's note).
+- posts: one post (at most 280 characters) in the author's voice using the best angle.
+- visual: if the picture shows a number that changed, {"template":"data","metric":"","before":"","after":""}; if one big number, {"template":"stat","value":"","label":""}; otherwise {"template":"quote"}.
+
+Reply with only JSON: {"what":"","kind":"","facts":[{"fact":"","where":""}],"private":[],"angles":[{"angle":"","line":""}],"posts":[""],"visual":{}}` };
+    },
     visual({ text, plan }) {
       return { tier: 'quick', json: true, prompt: `You are the art director for one social media graphic that goes under this post. The graphic must make someone scrolling stop and get the point in one second.
 

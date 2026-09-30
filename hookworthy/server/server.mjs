@@ -18,6 +18,8 @@ const core = createRequire(import.meta.url)('../core.js');
 const AI = await import('./lib/ai.mjs');
 const X = await import('./lib/x.mjs');
 const G = await import('./lib/gifs.mjs');
+const M = await import('./lib/media.mjs');
+const RD = await import('./lib/radar.mjs');
 const LI = await import('./lib/linkedin.mjs');
 const TF = await import('./lib/typefully.mjs');
 const Q = await import('./lib/scheduler.mjs');
@@ -38,7 +40,7 @@ const fail = (res, e) => send(res, e.status || 500, { error: e.message || 'Somet
 async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []; for await (const c of req) { n += c.length; if (n > limit) throw Object.assign(new Error('Request too large'), { status: 413 }); chunks.push(c); } try { return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}'); } catch { throw Object.assign(new Error('Send JSON'), { status: 400 }); } }
 const authed = req => !TOKEN || req.headers.authorization === `Bearer ${TOKEN}` || (req.headers.cookie || '').split(/;\s*/).includes(`hw=${TOKEN}`);
 
-export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
 
 export async function handle(req, res) {
   const url = new URL(req.url, 'http://x'); const p = url.pathname; const ip = req.socket.remoteAddress || 'local';
@@ -62,6 +64,8 @@ export async function handle(req, res) {
     if (p === '/api/typefully/import' && req.method === 'POST') { const b = await body(req); const drafts = await TF.importDrafts(b.key); return send(res, 200, { posts: core.parseTypefully(drafts) }); }
 
     /* first hour */
+    if (p === '/api/media' && req.method === 'POST') { const b = await body(req, 24 * 1024 * 1024); const m = await M.saveMedia(b); return send(res, 200, { id: m.id, kind: m.kind, mime: m.mime, bytes: m.bytes }); }
+    if (p === '/api/x/radar') { if (!allow(ip, 2)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); return send(res, 200, await RD.radar((url.searchParams.get('handles') || '').split(','))); }
     if (p === '/api/gifs') { if (!allow(ip, .5)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); return send(res, 200, await G.searchGifs(url.searchParams.get('q'), { offset: url.searchParams.get('offset') })); }
     if (p === '/api/x/me') return send(res, 200, await X.refreshTier());
     if (p === '/api/x/replies') return send(res, 200, { replies: await X.replies(url.searchParams.get('id')) });
