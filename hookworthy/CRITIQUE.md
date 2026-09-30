@@ -286,3 +286,18 @@ Owner: implement the plan to beat Typefully, make the AI good, use their own Cla
 
 **Not verifiable here**: live X, LinkedIn and Typefully calls (the sandbox blocks those hosts and there are no keys). They're built to the public API shapes and covered by mocked tests; the first real run should be watched.
 
+
+## Round 14: the small stuff creators notice
+
+Owner: check the app again; every minor detail matters, that's what beats Typefully.
+
+- **Phones could hide the toolbar for good.** The "fade while typing" chrome only came back on mouse movement, so on a phone Rewrite, images and Add to thread stayed invisible until you left the field. Touch screens never fade now; on desktop the chrome returns after a 1.6 s pause.
+- **Character counts now match X.** Links count as 23, emoji and CJK as 2 (the twitter-text rules), so a long link no longer triggers a false "over the limit" and 150 emoji no longer slip past. The counter's tooltip says why when it matters. Splitting uses the same count.
+- **Double Enter explains itself.** After one Enter at the end of a paragraph: "↵ again starts post 2 · Shift ↵ for a blank line" (shown the first few times only; phones get "Return again starts post 2"). LinkedIn-only posts never split, since LinkedIn has no threads.
+- **Pasting a thread lands as a thread.** 1/ 2/ 3/ numbering, or blank-line blocks that each fit a post, become separate posts, with "Keep as one post" to undo.
+- **Toasts no longer cover a dialog's main button** on phones: opening a dialog clears them.
+- **Past posts show as sent.** A scheduled post whose time passed shows "Sent · 8:40 AM" (the old corner badge overlapped the text in narrow columns); its menu says when it went out and links to the live post when the server posted it.
+- **Search stopped matching nonsense.** Typing "sch" no longer pulls hook formulas that merely contain s…c…h.
+- **Words:** "Post now" everywhere (it said "Publish now" in one menu); "Built-in editor" instead of "Offline editor" (it isn't offline, it just isn't Claude).
+- **Small comforts:** hover a draft in the sidebar for its full first line, age and length; hover "Saved" for when; the schedule dialog names your time zone; the undo window is a setting (8 s, 15 s, 5 s or off).
+- **A crash** when the caret moved in a field that had just been replaced (paste, new post) is fixed.

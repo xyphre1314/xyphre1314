@@ -18,6 +18,18 @@
   const hashStr = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
   const EMOJI = /\p{Extended_Pictographic}/gu;
 
+  /* ---------------- X's character count ----------------
+     X counts every link as 23, emoji as 2, and CJK and most non-Latin scripts as 2 per character. */
+  const URL_RX = /\bhttps?:\/\/\S+|\b(?:[a-z0-9-]+\.)+(?:com|io|xyz|co|ai|app|dev|so|gg|me|org|net|ly|to)(?:\/\S*)?/gi;
+  const light = cp => cp <= 4351 || (cp >= 8192 && cp <= 8205) || (cp >= 8208 && cp <= 8223) || (cp >= 8242 && cp <= 8247);
+  const seg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null;
+  function xLength(text) {
+    let n = 0; const t = String(text || '').replace(URL_RX, () => { n += 23; return ''; });
+    const gs = seg ? [...seg.segment(t)].map(x => x.segment) : [...t];
+    for (const g of gs) { if (/\p{Extended_Pictographic}/u.test(g)) { n += 2; continue; } for (const ch of g) { const cp = ch.codePointAt(0); if (cp >= 0xFE00 && cp <= 0xFE0F || cp === 0x200D) continue; n += light(cp) ? 1 : 2; } }
+    return n;
+  }
+
   /* ---------------- hook score ----------------
      A transparent heuristic: five parts, each explainable in one sentence.
      calibrate() below checks it against the author's own results. */
@@ -322,5 +334,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
 
-  return { clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
+  return { xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
 });

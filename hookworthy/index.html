@@ -842,7 +842,7 @@ body.typing .preview{ opacity:.7; }
 .qcard .qp{ display:flex; gap:3px; }
 .qcard .qp svg{ width:11px; height:11px; }
 .qcard.published{ opacity:.6; }
-.qcard.published::after{ content:"Sent"; position:absolute; top:6px; right:6px; font:600 10px/1 var(--font-ui); color:var(--success); }
+.qcard.published .qm > span:first-child::before{ content:"Sent · "; font:600 10px/1 var(--font-ui); color:var(--success); letter-spacing:0; }
 .side-panel{ display:grid; gap:12px; }
 .side-panel .card{ padding:16px; display:grid; gap:12px; }
 .setting{ display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center; }
@@ -1854,6 +1854,9 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .g-line:hover{ box-shadow:0 0 0 1px var(--border-strong),var(--sh-1); transform:translateY(-1px); } .g-line:focus-visible{ box-shadow:var(--focus); }
 .g-line mark{ background:var(--pa); color:#1A1A1A; border-radius:4px; padding:0 3px; }
 .g-wait{ margin:14px 0 4px; font-size:var(--t-13); }
+
+.split-hint{ display:inline-flex; gap:6px; align-items:center; margin:2px 0 0; font-size:12px; color:var(--text-3); animation:rise .2s var(--spring) both; }
+.split-hint kbd{ font-size:10.5px; }
 </style>
 </head>
 <body>
@@ -2163,7 +2166,7 @@ LLM.ready = (async () => {
   return LLM.mode;
 })();
 const aiOn = () => LLM.mode !== 'offline';
-const AI_NAME = () => LLM.mode === 'server' ? 'Claude' : LLM.mode === 'claude' ? 'your Claude' : 'the offline editor';
+const AI_NAME = () => LLM.mode === 'server' ? 'Claude' : LLM.mode === 'claude' ? 'your Claude' : 'the built-in editor';
 async function ask(spec, { signal, onText, fresh } = {}) {
   await LLM.ready;
   if (LLM.mode === 'server') {
@@ -2185,7 +2188,7 @@ function aiError(e) {
   toast(m, { icon: 'zapoff', tone: c === 'rate_limited' ? 'accent' : 'err' });
 }
 function refreshAIBadge() { $$('.ai-badge').forEach(b => { b.dataset.mode = LLM.mode; b.innerHTML = aiBadgeInner(); }); }
-function aiBadgeInner() { return `<i></i><span>${LLM.mode === 'server' ? 'Claude · Sonnet + Opus' : LLM.mode === 'claude' ? 'Claude · your account' : 'Offline editor'}</span>`; }
+function aiBadgeInner() { return `<i></i><span>${LLM.mode === 'server' ? 'Claude · Sonnet + Opus' : LLM.mode === 'claude' ? 'Claude · your account' : 'Built-in editor'}</span>`; }
 /* what Claude gets to know about your voice: dials, habits it learned, never-say words, your best posts */
 function voiceSpec() {
   const pr = S.profile || {}; const top = (HIST().length ? ANALYSIS().top : TOP_POSTS).slice(0, 5).map(p => p.text);
@@ -2491,6 +2494,7 @@ function openMenu(anchor, items, { align = 'start', width } = {}) {
 /* modals */
 const MODALS = [];
 function modal(html, { box = 'modal', center = false, label = 'Dialog', onClose } = {}) {
+  $$('#toasts .toast').forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); });
   closeMenu(); Tip.hide();
   const scrim = document.createElement('div'); scrim.className = 'scrim' + (center ? ' center' : '');
   scrim.innerHTML = `<div class="${box}" role="dialog" aria-modal="true" aria-label="${esc(label)}">${html}</div>`;
@@ -2657,7 +2661,7 @@ function shell(active, inner) {
     <nav class="nav" aria-label="Main">
       ${NAV.map(it => `<a href="#${it.k}" ${active === it.k ? 'aria-current="page"' : ''} data-tip="${it.label}" data-kbd="G ${it.key}">${ic(it.icon)}<span>${it.label}</span>${counts[it.k] ? `<span class="count">${counts[it.k]}</span>` : ''}</a>`).join('')}
     </nav>
-    ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts${S.drafts.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or bin">Tidy up</button>` : ''}</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}</div>` : ''}
+    ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts${S.drafts.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or bin">Tidy up</button>` : ''}</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}" title="${esc(clip((d.tweets[0] && d.tweets[0].text) || 'Untitled draft', 120))}${d.created ? ` · started ${agoLabel(d.created)}` : ''}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}</div>` : ''}
     <div class="spacer"></div>
     <button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="Where the AI comes from">${aiBadgeInner()}</button>
     ${S.plan === 'free' ? `<a class="side-plan plan-card" href="#upgrade" data-tip="Unlimited rewrites on Pro"><span class="pc-count">${S.ai.limit - used} of ${S.ai.limit} rewrites left today</span><span class="go">Go Pro</span></a>` : ''}
@@ -2701,8 +2705,9 @@ const ACT = {
     { header: `@${S.user.handle}` },
     { label: 'Your voice', icon: 'voice', run: () => go('voice') },
     { label: 'Bring your posts', icon: 'upload', hint: HIST().length ? fmtN(HIST().length) : 'X, Typefully, CSV', run: () => openImport() },
-    { label: 'Connections', icon: 'link', hint: LLM.mode === 'offline' ? 'Offline' : 'Claude on', run: () => openConnections() },
+    { label: 'Connections', icon: 'link', hint: LLM.mode === 'offline' ? 'Claude off' : 'Claude on', run: () => openConnections() },
     { label: S.plan === 'free' ? 'Upgrade to Pro' : 'Manage plan', icon: 'riff', run: () => go('upgrade') },
+    { label: 'Undo window', icon: 'undo', hint: (S.settings.undoSecs ?? 8) ? `${S.settings.undoSecs ?? 8}s` : 'Off', run: () => { const o = [8, 15, 5, 0]; const c = S.settings.undoSecs ?? 8; S.settings.undoSecs = o[(o.indexOf(c) + 1) % o.length]; save(); toast(S.settings.undoSecs ? `Post now waits ${S.settings.undoSecs} seconds so you can take it back.` : 'Post now goes out straight away. Brave.', { icon: 'undo' }); } },
     { label: 'Keyboard shortcuts', icon: 'kbd', kbd: ['?'], run: openShortcuts },
     { label: 'Appearance', icon: 'palette', hint: 'Light, dark or system', run: () => openAppearance(el) },
     '-',
@@ -2778,7 +2783,7 @@ function openPalette(initial = '') {
   const inp = $('#cmdk-q', m.el), list = $('#cmdk-list', m.el);
   function draw() {
     const q = inp.value.trim();
-    const res = cmds.map(c => ({ c, f: fuzzy(q, c.label) })).filter(x => x.f).sort((a, b) => q ? b.f.score - a.f.score : 0);
+    const res = cmds.map(c => ({ c, f: c.g === 'Hook library' && q && !c.label.toLowerCase().includes(q.toLowerCase()) ? null : fuzzy(q, c.label) })).filter(x => x.f).sort((a, b) => q ? b.f.score - a.f.score : 0);
     shown = (q ? res.slice(0, 40) : res.filter(x => x.c.g !== 'Hook library' && x.c.g !== 'Saved ideas').concat(res.filter(x => x.c.g === 'Saved ideas').slice(0, 3)));
     active = clamp(active, 0, Math.max(0, shown.length - 1));
     if (!shown.length) { list.innerHTML = `<div class="cmdk-empty">Nothing matches “${esc(q)}”.<br><button class="btn sm" style="margin-top:12px" data-cap>${ic('plus', 'sm')} Save it as an idea</button></div>`; $('[data-cap]', list).onclick = () => { m.close(); addIdea({ src: 'note', text: q }); }; return; }
@@ -2884,19 +2889,28 @@ document.addEventListener('keydown', e => {
    COMPOSER
    ========================================================================== */
 S.drafts = S.drafts || [];
+/* a scheduled post whose time has passed went out (the demo has no one to stop it); approvals still wait */
+function settleQueue() { const now = Date.now(); let n = 0; S.queue.forEach(q => { if (q.status === 'scheduled' && q.approval !== 'needs' && slotDate(q.day, q.time).getTime() < now - 60e3) { q.status = 'published'; n++; } }); if (n) save(); return n; }
 S.starterSeed = S.starterSeed || 11;
 const UI = { ghostUsed: new Set(), riff: null, diff: null, hook: false, ghost: null, fresh: new Set(), noSplit: false, liMore: false, splitToast: false };
 let PH_IDEAS = genIdeas(6, 7), phI = 0;
 const tById = id => S.draft.tweets.find(t => t.id === id);
 const tIndex = id => S.draft.tweets.findIndex(t => t.id === id);
 const isEmptyDraft = () => S.draft.tweets.every(t => !t.text.trim() && !t.media.length && !t.poll);
+/* length the way the strictest selected platform counts it: X's weighted count when X is on */
+const tlen = t => S.platforms.x ? HWCore.xLength(t) : [...String(t || '')].length;
+const tzName = () => { try { const z = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; const short = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' }).formatToParts(new Date()).find(x => x.type === 'timeZoneName'); return (z.split('/').pop() || '').replace(/_/g, ' ') + (short ? ` (${short.value})` : ''); } catch (e) { return 'your time'; } };
+const threadable = () => Object.keys(PLAT).some(k => S.platforms[k] && k !== 'linkedin');
 function effLimit() { const on = Object.keys(PLAT).filter(k => S.platforms[k] && k !== 'linkedin'); return on.length ? Math.min(...on.map(k => PLAT[k].limit)) : PLAT.linkedin.limit; }
 function splitText(text, limit) {
   const out = []; let s = text;
-  while (s.length > limit) {
-    const win = s.slice(0, limit + 1); let cut = -1; const re = /[.!?…](?=\s)|\n/g; let m;
-    while ((m = re.exec(win))) if (m.index + 1 <= limit && m.index > limit * .4) cut = m.index + 1;
-    if (cut < 0) { cut = win.lastIndexOf(' '); if (cut < limit * .3) cut = limit; }
+  const fit = x => { let lo = 0, hi = x.length; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (tlen(x.slice(0, mid)) <= limit) lo = mid; else hi = mid - 1; } return lo; };
+  while (tlen(s) > limit) {
+    const L = fit(s);
+    const win = s.slice(0, L + 1); let cut = -1; const re = /[.!?…](?=\s)|\n/g; let m;
+    while ((m = re.exec(win))) if (m.index + 1 <= L && m.index > L * .4) cut = m.index + 1;
+    if (cut < 0) { cut = win.lastIndexOf(' '); if (cut < L * .3) cut = L; }
+    if (cut <= 0) cut = Math.max(1, L);
     out.push(s.slice(0, cut).trimEnd()); s = s.slice(cut).replace(/^\s+/, '');
   }
   out.push(s); return out;
@@ -3028,14 +3042,14 @@ function placeCaret(ta) {
 }
 function paintRing(tEl) {
   const ring = $('.ring', tEl); const ta = $('.tw-input', tEl); if (!ring) return;
-  const len = [...ta.value].length, lim = effLimit(), C = 59.69, rem = lim - len; ring.style.visibility = len ? '' : 'hidden';
+  const len = tlen(ta.value), lim = effLimit(), C = 59.69, rem = lim - len; ring.style.visibility = len ? '' : 'hidden';
   $('.val', ring).style.strokeDashoffset = C * (1 - Math.min(len / lim, 1));
   const state = rem < 0 ? 'over' : rem <= 20 ? 'warn' : '';
   if ((ring.dataset.s || '') !== state) { ring.classList.remove('pulse'); void ring.offsetWidth; if (state) ring.classList.add('pulse'); }
   ring.dataset.s = state; ring.classList.toggle('warn', state === 'warn'); ring.classList.toggle('over', state === 'over');
   ring.classList.toggle('far', rem <= -10);
   $('b', ring).textContent = state ? rem : '';
-  ring.dataset.tip = `${len} / ${lim} characters`;
+  ring.dataset.tip = `${len} / ${lim} characters${S.platforms.x && /https?:\/\/|\.\w{2,3}\//.test(ta.value) ? ' · X counts each link as 23' : ''}${S.platforms.x && /\p{Extended_Pictographic}/u.test(ta.value) ? ' · emoji count as 2' : ''}`;
 }
 function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
@@ -3108,7 +3122,7 @@ function focusTweet(i, pos = 'end') {
   ta.setSelectionRange(p, p); paintField(ta);
   const r = ta.getBoundingClientRect(); if (r.bottom > innerHeight - 80 || r.top < 70) ta.closest('.tw').scrollIntoView({ block: 'center', behavior: REDUCED ? 'auto' : 'smooth' });
 }
-const markSaving = (() => { const done = debounce(() => { const s = $('#save-state'); if (s) { s.textContent = isEmptyDraft() ? 'New draft' : 'Saved'; s.parentElement.classList.toggle('is-new', isEmptyDraft()); } save(); }, 600); return () => { const s = $('#save-state'); if (s) s.textContent = 'Saving…'; done(); }; })();
+const markSaving = (() => { const done = debounce(() => { const s = $('#save-state'); if (s) { s.textContent = isEmptyDraft() ? 'New draft' : 'Saved'; s.parentElement.dataset.tip = isEmptyDraft() ? 'Nothing to save yet' : `Saved at ${fmtTime(`${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}`)}. Drafts live in this browser.`; s.parentElement.classList.toggle('is-new', isEmptyDraft()); } save(); }, 600); return () => { const s = $('#save-state'); if (s) s.textContent = 'Saving…'; done(); }; })();
 function insertAfter(i, texts, focus) {
   const tws = texts.map(t => newTweet(t)); S.draft.tweets.splice(i + 1, 0, ...tws); tws.forEach(t => UI.fresh.add(t.id));
   renderThread(focus || { focusId: tws[tws.length - 1].id, pos: 'end' }); markSaving();
@@ -3123,13 +3137,14 @@ function acceptGhost(ta) {
   ta.value += g; ta.setSelectionRange(ta.value.length, ta.value.length); tById(id).text = ta.value;
   paintField(ta); paintRing(ta.closest('.tw')); if (tIndex(id) === 0) paintHook(); schedulePreview(); markSaving();
 }
-function setTyping(on) { document.body.classList.toggle('typing', on); }
+let typingT = 0;
+function setTyping(on) { if (on && !FINE) return; clearTimeout(typingT); document.body.classList.toggle('typing', on); if (on) typingT = setTimeout(() => document.body.classList.remove('typing'), 1600); }
 
 function onInput(e) {
   const ta = e.target; if (!ta.classList.contains('tw-input')) return;
   const tEl = ta.closest('.tw'); const id = tEl.dataset.id; const i = tIndex(id); const tw = S.draft.tweets[i];
   tw.text = ta.value; UI.ghost = null;
-  if (S.settings.split && !UI.noSplit && e.inputType === 'insertLineBreak') {
+  if (S.settings.split && !UI.noSplit && e.inputType === 'insertLineBreak' && threadable()) {
     const p = ta.selectionStart;
     if (ta.value.slice(p - 2, p) === '\n\n') {
       const before = ta.value.slice(0, p - 2).replace(/\s+$/, ''), after = ta.value.slice(p).replace(/^\s+/, '');
@@ -3138,7 +3153,7 @@ function onInput(e) {
   }
   UI.noSplit = false;
   const lim = effLimit();
-  if (S.settings.split && [...ta.value].length > lim) {
+  if (S.settings.split && tlen(ta.value) > lim) {
     const atEnd = ta.selectionStart >= ta.value.length - 1;
     const parts = splitText(ta.value, lim); tw.text = parts[0];
     const ids = parts.slice(1).map(() => null);
@@ -3147,9 +3162,25 @@ function onInput(e) {
     if (!UI.splitToast) { UI.splitToast = true; toast('Hit the limit, so it became a thread. Snap.', { icon: 'layers', tone: 'accent', ms: 2600 }); }
     return;
   }
-  paintField(ta); paintRing(tEl); if (i === 0) paintHook();
+  paintField(ta); paintRing(tEl); if (i === 0) paintHook(); splitHint(tEl, ta);
   const st = $('#starters'); if (st) st.hidden = !isEmptyDraft();
   scheduleGhost(ta); schedulePreview(); markSaving();
+}
+/* after one Enter at the end of a paragraph, say what a second one does (once it's learned, stop saying it) */
+function splitHint(tEl, ta) {
+  let h = $('.split-hint', tEl); const p = ta.selectionStart;
+  const show = S.settings.split && threadable() && (S.splitHints || 0) < 6 && p === ta.value.length && /[^\n]\n$/.test(ta.value.slice(0, p));
+  if (!show) { h && h.remove(); return; }
+  if (!h) { h = document.createElement('span'); h.className = 'split-hint'; h.innerHTML = FINE ? `${kbd('↵')} again starts post ${tIndex(tEl.dataset.id) + 2} · ${kbd(SHIFT, '↵')} for a blank line` : `Return again starts post ${tIndex(tEl.dataset.id) + 2}`; $('.field-wrap', tEl).after(h); S.splitHints = (S.splitHints || 0) + 1; save(); }
+}
+/* a pasted thread: split on 1/ 2/ numbering or on blank lines when the blocks look like posts */
+function pastedThread(t) {
+  const txt = t.replace(/\r/g, '').trim();
+  const byNum = txt.split(/\n+(?=\s*\d{1,2}\s*[\/.)]\s)/).map(x => x.trim()).filter(Boolean);
+  if (byNum.length >= 2 && byNum.slice(1).every(x => /^\d{1,2}\s*[\/.)]/.test(x))) return byNum;
+  const blocks = txt.split(/\n\s*\n/).map(x => x.trim()).filter(Boolean);
+  if (blocks.length >= 3 && tlen(txt) > effLimit() && blocks.every(b => tlen(b) <= effLimit())) return blocks;
+  return [txt];
 }
 function onKey(e) {
   const ta = e.target; if (!ta.classList || !ta.classList.contains('tw-input')) return;
@@ -3355,7 +3386,7 @@ function sharpenPlace() {
   const w = el.offsetWidth, W = wrap.offsetWidth; el.style.left = clamp(x - 12, -8, W - w + 8) + 'px'; el.style.top = (y < 8 ? ye + 8 : y - el.offsetHeight - 8) + 'px';
 }
 function sharpenCheck(ta) {
-  if (SH.st) return;
+  if (SH.st || !ta) return;
   if (UI.fSel) { if (ta.selectionStart === ta.selectionEnd) UI.fSel = false; return; }
   const s = ta.selectionStart, e = ta.selectionEnd;
   if (document.activeElement !== ta || e - s < 3 || !ta.value.slice(s, e).trim()) { if (SH.el) sharpenHide(); return; }
@@ -3444,7 +3475,7 @@ function closeDiff(accept) {
   if (!accept || !tw) { renderExtras(d.id); focusTweet(i, 'end'); return; }
   const before = d.before, after = composeDiff(d.chunks); tw.text = after; SFX.play('swap');
   const lim = effLimit();
-  if ([...after].length > lim && S.settings.split) { const parts = splitText(after, lim); tw.text = parts[0]; insertAfter(i, parts.slice(1), { focusId: tw.id, pos: 'end' }); }
+  if (tlen(after) > lim && S.settings.split) { const parts = splitText(after, lim); tw.text = parts[0]; insertAfter(i, parts.slice(1), { focusId: tw.id, pos: 'end' }); }
   else renderThread({ focusId: tw.id, pos: 'end' });
   markSaving();
   toast(`${RIFFS.find(r => r.k === d.kind).label} applied.`, { icon: 'riff', tone: 'accent', action: 'Undo', onAction: () => { tw.text = before; renderThread({ focusId: tw.id }); markSaving(); } });
@@ -3501,7 +3532,7 @@ function pvCard(k, compact) {
     tag = `<span>${pic('li')} ${esc(you.n)}</span><span>${S.draft.li != null ? 'Custom version' : 'One post, stitched'}</span>`;
     body += S.draft.li != null ? `<div class="pv-edit" style="display:grid"><textarea class="input" id="li-edit" aria-label="LinkedIn version">${esc(S.draft.li)}</textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span>Edits here only change LinkedIn.</span><button class="btn ghost sm" data-cact="lireset">${ic('undo', 'sm')} Follow thread</button></div></div>` : `<div class="pv-edit"><span>Stitched from your thread.</span><button class="btn sm" data-cact="litweak">${ic('riff', 'sm')} Tweak for LinkedIn</button></div>`;
   } else {
-    const list = compact ? tws.slice(0, 1) : tws; const overN = tws.filter(t => [...t.text].length > p.limit).length;
+    const list = compact ? tws.slice(0, 1) : tws; const overN = tws.filter(t => (k === 'x' ? HWCore.xLength(t.text) : [...t.text].length) > p.limit).length;
     body = list.map((t, i) => R({ t: t.text, html: t.text ? overText(t.text, p.limit) : ph(i), mh: umedia(t) + upoll(t), c: cnt(i === 0 ? 1 : .32 / i), ago: 'now' }, { dark, you, rail: i < list.length - 1 })).join('');
     if (compact && tws.length > 1) body += `<div class="pf pv-more ${dark ? 'dark' : ''}">${pfAv(you)}<span>Show ${tws.length - 1} more repl${tws.length > 2 ? 'ies' : 'y'}</span></div>`;
     tag = `<span>${pic(p.icon)} @${esc(you.h)}${k === 'bsky' ? '.bsky.social' : ''}</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${tws.length > 1 ? `Thread of ${tws.length}` : `${p.limit} characters`}</span>`}`;
@@ -3616,8 +3647,8 @@ function typewriter() {
 function draftProblems() {
   const tws = S.draft.tweets; if (isEmptyDraft()) return 'Nothing to post yet. One good line is plenty.';
   if (!Object.values(S.platforms).some(Boolean)) return 'Pick where this goes first: X, Threads, LinkedIn or Bluesky.';
-  const lim = effLimit(); const bad = tws.findIndex(t => [...t.text].length > lim);
-  if (bad >= 0) return `Post ${bad + 1} is ${[...tws[bad].text].length - lim} characters over. Trim it, or let Hookworthy split it.`;
+  const lim = effLimit(); const bad = tws.findIndex(t => tlen(t.text) > lim);
+  if (bad >= 0) return `Post ${bad + 1} is ${tlen(tws[bad].text) - lim} characters over. Trim it, or let Hookworthy split it.`;
   if (tws.some(t => t.poll && t.poll.options.filter(o => o.trim()).length < 2)) return 'Polls need at least two choices.';
   return null;
 }
@@ -3634,7 +3665,7 @@ function openSchedule() {
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   const best = nextSlots(3); let pickI = 0;
   const ps = S.draft.slot; if (ps && slotDate(ps.day, ps.time).getTime() > Date.now() && !taken(ps.day, ps.time)) { best.unshift({ day: ps.day, time: ps.time, reason: 'The slot you picked in your queue' }); best.length = Math.min(best.length, 3); } const n = S.draft.tweets.filter(t => t.text.trim()).length;
-  const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())}`)}
+  const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times are ${esc(tzName())}`)}
   <div class="modal-b" style="display:grid;gap:18px">
     ${checksHTML(preflight())}
     <div style="display:grid;gap:8px"><span class="label">Best times for you</span>
@@ -3671,7 +3702,7 @@ function openSchedule() {
   };
   $('#s-queue', el).onclick = e => { const s = nextSlots(1, false)[0]; finish(s, e.currentTarget); };
 }
-function splitOverflow() { const lim = effLimit(); for (let i = S.draft.tweets.length - 1; i >= 0; i--) { const t = S.draft.tweets[i]; if ([...t.text].length > lim) { const parts = splitText(t.text, lim); t.text = parts[0]; const tws = parts.slice(1).map(x => newTweet(x)); S.draft.tweets.splice(i + 1, 0, ...tws); tws.forEach(x => UI.fresh.add(x.id)); } } renderThread(); markSaving(); }
+function splitOverflow() { const lim = effLimit(); for (let i = S.draft.tweets.length - 1; i >= 0; i--) { const t = S.draft.tweets[i]; if (tlen(t.text) > lim) { const parts = splitText(t.text, lim); t.text = parts[0]; const tws = parts.slice(1).map(x => newTweet(x)); S.draft.tweets.splice(i + 1, 0, ...tws); tws.forEach(x => UI.fresh.add(x.id)); } } renderThread(); markSaving(); }
 /* with Hookworthy's server and a connected account, the queue is real: X and LinkedIn get the post */
 function syncToServer(q) {
   const srv = LLM.server; if (!srv || !(srv.xUser || srv.liUser) || !q) return;
@@ -3843,7 +3874,7 @@ function openConnections() {
   const row = (name, on, detail, act) => `<div class="cx-row"><span class="cx-dot ${on ? 'on' : ''}"></span><div><b>${name}</b><small>${detail}</small></div>${act || ''}</div>`;
   const m = modal(`${modalHead('Connections', 'Where the AI comes from, and which accounts Hookworthy can post to.')}
     <div class="modal-b cx">
-      ${row('Claude', aiOn(), LLM.mode === 'server' ? `Hookworthy server: ${esc(srv.models ? `${srv.models.default} for writing, ${srv.models.complex} for voice study` : 'Sonnet for writing, Opus for voice study')}.` : LLM.mode === 'claude' ? 'Your own Claude account, through this claude.ai page. You approve it once per visit.' : LLM.why ? 'Claude was declined for this page, so the offline editor is on.' : 'Offline editor. Open Hookworthy in claude.ai or run the server to use Claude.')}
+      ${row('Claude', aiOn(), LLM.mode === 'server' ? `Hookworthy server: ${esc(srv.models ? `${srv.models.default} for writing, ${srv.models.complex} for voice study` : 'Sonnet for writing, Opus for voice study')}.` : LLM.mode === 'claude' ? 'Your own Claude account, through this claude.ai page. You approve it once per visit.' : LLM.why ? 'Claude was declined for this page, so the built-in editor is on.' : 'Built-in editor: instant, but not Claude. Open Hookworthy in claude.ai or run the server to use Claude.')}
       ${row('X', !!srv.xUser, srv.x ? (srv.xUser ? `Posting as @${esc(srv.xUser)}.` : 'API key set. Connect to post and read metrics.') : 'Needs the server with X API keys. Import your archive meanwhile.', srv.x ? `<a class="btn sm" href="auth/x/start">${srv.xUser ? 'Reconnect' : 'Connect'}</a>` : '')}
       ${row('LinkedIn', !!srv.liUser, srv.linkedin ? (srv.liUser ? `Posting as ${esc(srv.liUser)}.` : 'App set. Connect to post.') : 'Needs the server with a LinkedIn app. Import Shares.csv meanwhile.', srv.linkedin ? `<a class="btn sm" href="auth/linkedin/start">${srv.liUser ? 'Reconnect' : 'Connect'}</a>` : '')}
       ${row('Typefully import', !!srv.typefully, srv.typefully ? 'Paste your API key in Bring your posts. Used once.' : 'Needs the server. A CSV export works without it.')}
@@ -3969,7 +4000,7 @@ ROUTES.write = () => {
   th.addEventListener('input', e => { if (e.target.matches('[data-poll]')) { const tw = tById(e.target.closest('.tw').dataset.id); tw.poll.options[+e.target.dataset.poll] = e.target.value; schedulePreview(); markSaving(); return; } onInput(e); });
   th.addEventListener('change', e => { if (e.target.matches('[data-media]')) { addFiles(tIndex(e.target.closest('.tw').dataset.id), e.target.files); e.target.value = ''; } if (e.target.matches('[data-polldays]')) { tById(e.target.closest('.tw').dataset.id).poll.days = +e.target.value; markSaving(); } });
   th.addEventListener('keydown', e => { if (e.target.matches('label.tool') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); $('input', e.target).click(); return; } onKey(e); });
-  const repaint = e => { if (e.target.classList && e.target.classList.contains('tw-input')) requestAnimationFrame(() => placeCaretOrPaint(e.target)); };
+  const repaint = e => { const t = e.target; if (t && t.classList && t.classList.contains('tw-input')) requestAnimationFrame(() => t.isConnected && placeCaretOrPaint(t)); };
   const placeCaretOrPaint = ta => { if (UI.ghost && ta.selectionEnd !== ta.value.length) { UI.ghost = null; } if (!SH.st) paintField(ta); sharpenCheck(ta); typewriter(); };
   const shClick = e => { const b = e.target.closest('.sharpen button'); if (!b) return; e.preventDefault(); if (b.dataset.sh) sharpenRun(b.dataset.sh); else if (b.dataset.shn) { sharpenShow(SH.st.i + +b.dataset.shn); SFX.play('tick'); } else if ('shk' in b.dataset) sharpenKeep(); else if ('shx' in b.dataset) { sharpenCancel(); sharpenHide(); } };
   th.addEventListener('mousedown', e => { if (e.target.closest('.sharpen')) e.preventDefault(); });
@@ -3980,7 +4011,14 @@ ROUTES.write = () => {
   const selch = () => { const a = document.activeElement; if (a && a.classList.contains('tw-input')) { placeCaret(a); if (!SH.st) sharpenCheck(a); } };
   document.addEventListener('selectionchange', selch); onDispose(() => document.removeEventListener('selectionchange', selch));
   th.addEventListener('pointerdown', e => { const h = e.target.closest('.handle'); if (h) startDrag(e, h); });
-  th.addEventListener('paste', e => { const f = e.clipboardData && e.clipboardData.files; if (f && f.length && e.target.classList.contains('tw-input')) { e.preventDefault(); addFiles(tIndex(e.target.closest('.tw').dataset.id), f); } });
+  th.addEventListener('paste', e => {
+    const f = e.clipboardData && e.clipboardData.files; if (f && f.length && e.target.classList.contains('tw-input')) { e.preventDefault(); addFiles(tIndex(e.target.closest('.tw').dataset.id), f); return; }
+    const t = e.clipboardData && e.clipboardData.getData('text/plain'); const ta = e.target; if (!t || !ta.classList.contains('tw-input') || !threadable()) return;
+    const parts = pastedThread(t); if (parts.length < 2 || ta.value.trim()) return;
+    e.preventDefault(); const i = tIndex(ta.closest('.tw').dataset.id); const was = S.draft.tweets.map(x => ({ ...x }));
+    S.draft.tweets[i].text = parts[0]; insertAfter(i, parts.slice(1), { focusId: null }); focusTweet(i + parts.length - 1, 'end'); markSaving();
+    toast(`Pasted as a ${parts.length}-post thread.`, { icon: 'layers', tone: 'accent', action: 'Keep as one post', onAction: () => { S.draft.tweets = was; S.draft.tweets[i].text = t.trim(); renderThread({ focusId: S.draft.tweets[i].id, pos: 'end' }); markSaving(); } });
+  });
   th.addEventListener('dragover', e => { if ([...(e.dataTransfer.types || [])].includes('Files')) e.preventDefault(); });
   th.addEventListener('drop', e => { const t = e.target.closest('.tw'); if (t && e.dataTransfer.files.length) { e.preventDefault(); addFiles(tIndex(t.dataset.id), e.dataTransfer.files); } });
   $('#pv-b').addEventListener('input', e => { if (e.target.id === 'li-edit') { S.draft.li = e.target.value; save(); } });
@@ -4988,6 +5026,7 @@ function drawHooks() {
    ========================================================================== */
 let WEEK = 0;
 ROUTES.queue = () => {
+  settleQueue();
   mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-qact="fill">${ic('target', 'sm')} Fill my best times</button></div></div>
   <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span><span class="grow" style="flex:1"></span><a class="faint q-why" href="#insights" data-tip="From when your last 90 days of posts got replies in the first hour. Updates weekly."><span class="dot" style="color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span> Best time: your people are online</a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal"></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
@@ -5031,13 +5070,13 @@ function moveQ(id, day, time) {
 }
 function qMenu(c) {
   const q = S.queue.find(x => x.id === c.dataset.id); if (!q) return;
-  if (q.status === 'published') { openMenu(c, [{ header: 'Published' }, { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
+  if (q.status === 'published') { openMenu(c, [{ header: `Went out ${slotLabel(q.day, q.time)}` }, ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
   const next = nextSlots(1)[0];
   const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { q.approval = 'ok'; save(); drawCal(); drawQSide(); toast('Approved. It goes out on schedule.', { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
   openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
     { label: 'Edit in composer', icon: 'write', run: () => { S.queue = S.queue.filter(x => x !== q); save(); writeFrom(q.tweets); S.draft.slot = { day: q.day, time: q.time }; } },
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No best times left', icon: 'target', disabled: true },
-    { label: 'Publish now', icon: 'send', run: () => { q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Published. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); } },
+    { label: 'Post now', icon: 'send', run: () => { q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Posted. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); syncToServer(q); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; S.queue.push({ ...q, id: uid(), day: s.day, time: s.time }); save(); drawCal(); drawQSide(); toast(`Duplicated to ${slotLabel(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
     { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); save(); drawCal(); drawQSide(); toast('Gone from the queue.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); drawCal(); drawQSide(); } }); } }
   ], { width: 250 });
@@ -5291,7 +5330,7 @@ function heuristicTraits(an) {
 async function learnVoice(btn) {
   const an = ANALYSIS(); if (!an || an.n < 8) { toast('Bring at least 8 posts first so there’s a voice to learn.', { icon: 'voice' }); openImport(); return; }
   const pool = [...an.top, ...HIST().filter(p => !an.top.includes(p))].slice(0, 120);
-  if (!aiOn()) { S.profile = { summary: `Short sentences (${an.stats.wps} words), ${an.stats.oneSentOpen}% one-sentence openers, ${an.stats.emojiPer} emoji and ${an.stats.tagsPer} hashtags per post.`, traits: heuristicTraits(an).map(([name, evidence]) => ({ name, evidence })), rules: [], avoid: [], works: [], most_you: an.top[0].text, n: an.n, at: Date.now(), by: 'the offline editor' }; save(); route(); toast('Learned the basics offline. Connect Claude for the full profile.', { icon: 'voice', tone: 'accent' }); return; }
+  if (!aiOn()) { S.profile = { summary: `Short sentences (${an.stats.wps} words), ${an.stats.oneSentOpen}% one-sentence openers, ${an.stats.emojiPer} emoji and ${an.stats.tagsPer} hashtags per post.`, traits: heuristicTraits(an).map(([name, evidence]) => ({ name, evidence })), rules: [], avoid: [], works: [], most_you: an.top[0].text, n: an.n, at: Date.now(), by: 'the built-in editor' }; save(); route(); toast('Learned the basics. Connect Claude for the full profile.', { icon: 'voice', tone: 'accent' }); return; }
   btn && btn.classList.add('is-loading');
   const t = toast(`${AI_NAME() === 'your Claude' ? 'Your Claude' : 'Claude'} is reading ${pool.length} posts. This takes about a minute.`, { icon: 'voice', tone: 'accent', ms: 90000 });
   try {

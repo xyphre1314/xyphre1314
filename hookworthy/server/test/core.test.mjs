@@ -74,3 +74,11 @@ test('prompts carry the voice evidence and ask for JSON', () => {
   assert.match(s.prompt, /my best post/); assert.match(s.prompt, /delve/); assert.match(s.prompt, /Never invent/);
   assert.equal(core.prompts.voiceProfile({ posts: [] }).tier, 'complex');
 });
+
+test('X character count: links are 23, emoji and CJK are 2', () => {
+  assert.equal(core.xLength('hello'), 5);
+  assert.equal(core.xLength('see https://example.com/' + 'a'.repeat(200)), 27);
+  assert.equal(core.xLength('🚀🚀'), 4);
+  assert.equal(core.xLength('日本語'), 6);
+  assert.equal(core.xLength('👍🏽 ok'), 5);
+});
