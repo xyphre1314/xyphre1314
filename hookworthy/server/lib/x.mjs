@@ -99,3 +99,20 @@ export async function postThread(texts) {
   const h = connectedUser();
   return { ids, url: `https://x.com/${h}/status/${ids[0]}` };
 }
+
+/* ---- the first hour: replies worth answering, ranked ---- */
+export async function replies(tweetId) {
+  const id = String(tweetId || '').replace(/^x-/, ''); if (!/^\d+$/.test(id)) throw new XError(400, 'Need the post id');
+  const j = await xfetch(`/tweets/search/recent?query=${encodeURIComponent(`conversation_id:${id} is:reply`)}&max_results=100&tweet.fields=author_id,created_at,public_metrics,in_reply_to_user_id&expansions=author_id&user.fields=username,name,public_metrics,verified`);
+  const users = new Map(((j.includes && j.includes.users) || []).map(u => [u.id, u]));
+  const me = connectedUser();
+  return (j.data || []).map(t => { const u = users.get(t.author_id) || {}; const followers = u.public_metrics?.followers_count || 0; const q = /\?\s*$/.test(t.text) || /\?/.test(t.text);
+    const score = Math.log10(followers + 1) * 2 + (q ? 3 : 0) + (t.public_metrics?.like_count || 0) * .5 + (t.public_metrics?.reply_count || 0) + (u.verified ? 1.5 : 0);
+    return { id: t.id, text: t.text.replace(/^(@\w+\s+)+/, ''), handle: u.username, name: u.name, followers, verified: !!u.verified, question: q, likes: t.public_metrics?.like_count || 0, at: t.created_at, score };
+  }).filter(r => r.handle !== me).sort((a, b) => b.score - a.score).slice(0, 12);
+}
+export async function reply(inReplyTo, text) {
+  const token = await userToken(); const id = String(inReplyTo).replace(/^x-/, '');
+  const j = await xfetch('/tweets', { token, method: 'POST', body: { text, reply: { in_reply_to_tweet_id: id } } });
+  return { id: j.data.id, url: `https://x.com/${connectedUser()}/status/${j.data.id}` };
+}

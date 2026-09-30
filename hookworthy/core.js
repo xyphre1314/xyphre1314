@@ -302,6 +302,60 @@ ${posts.slice(0, 40).map(p => `<post author="@${p.handle || 'someone'}" likes="$
 
 Reply with only JSON: [{"pattern":"short name","why":"why it works, one sentence","example":"the post's first line that shows it","author":"handle","try":"a fill-in-the-blank first line the reader could use, with [brackets] for their own details"}] — 4 to 6 items.` };
     },
+    replies({ post, replies, voice }) {
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+${voiceBlock(voice)}
+
+The author just posted this:
+<post>
+${post}
+</post>
+
+Replies in the first hour (the ones worth answering, most important first):
+${replies.slice(0, 12).map((r, i) => `<reply id="${i}" from="@${r.handle}" followers="${r.followers || 0}">${r.text}</reply>`).join('\n')}
+
+Write one reply for each, in the author's voice: short, warm or sharp as the reply deserves, adds something (a detail, a number, a question back), never generic thanks, never "Great question". Under 200 characters each. Reply with only JSON: [{"id":0,"reply":"...","why":"what this reply earns, 6 words max"}]` };
+    },
+    weekPlan({ niche, voice, top, inbox, slots, count = 5 }) {
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+${voiceBlock(voice)}
+
+Plan this author's week: ${count} posts, one per slot below, grounded in their saved notes and in what already works for them. Mix the kinds (at most two of the same). Each post must be complete and ready to schedule, in their voice, within 280 characters unless it's a thread (then give the posts as separate strings, max 5).
+Niche: ${niche || 'building in public'}
+Slots: ${(slots || []).map(s => s.label).join('; ')}
+What works for them:
+${(top || []).slice(0, 5).map(t => `- ${t.text.split('\n')[0]} (${t.likes || 0} likes)`).join('\n') || '- (no history yet)'}
+Notes they saved:
+${(inbox || []).slice(0, 12).map(t => `- ${t}`).join('\n') || '- (none)'}
+
+Reply with only JSON: [{"slot":0,"kind":"Contrarian|Story|Listicle|How-to|Curiosity|Question","posts":["post 1","optional post 2"],"why":"why this, this day, one short sentence"}]` };
+    },
+    shootout({ a, b, voice, evidence }) {
+      return { tier: 'quick', json: true, prompt: `Two first lines for the same post. Using the author's own results below as the main evidence, predict which gets more engagement from their audience and say why in one sentence.
+
+${voiceBlock(voice)}
+
+Their posts most similar to each line, with engagement:
+${evidence || '(no history)'}
+
+<a>${a}</a>
+<b>${b}</b>
+
+Reply with only JSON: {"winner":"a"|"b","confidence":0.5-0.95,"why":"one sentence"}` };
+    },
+    digest({ week, best, worst, voice, niche }) {
+      return { tier: 'default', json: true, prompt: `Write a short Sunday note to a creator about their week on social media. Plain, warm, specific, no hype, no emoji.
+
+This week: ${week}
+Best post: ${best ? `"${best.text}" (${best.likes} likes, ${best.replies || 0} replies)` : 'none'}
+Quietest post: ${worst ? `"${worst.text}" (${worst.likes} likes)` : 'none'}
+Niche: ${niche || ''}
+${voiceBlock(voice)}
+
+Reply with only JSON: {"subject":"under 60 characters","headline":"one sentence on the week","why_best":"why the best one worked, one sentence","try_next":"one concrete thing to try next week","first_line":"a first line they could post Monday, in their voice"}` };
+    },
     critique({ text, voice }) {
       return { tier: 'quick', json: true, prompt: `${BRIEF}
 
@@ -314,6 +368,33 @@ ${text}
 Reply with only JSON: {"reason":"one plain sentence on the biggest issue or strength","better":["3 stronger first lines in their voice, same facts, [brackets] for any number they'd need to add"]}` };
     }
   };
+
+  /* "sounds like you": how far a draft drifts from the author's measured habits (0-100) and which words drift most */
+  function voiceMatch(text, stats, { never = [], lean = [] } = {}) {
+    const t = String(text || '').trim(); if (!t || !stats) return null;
+    const miss = []; let score = 100;
+    const sents = t.split(/(?<=[.!?])\s+|\n+/).filter(x => words(x).length >= 2);
+    const wps = sents.length ? sents.reduce((a, x) => a + words(x).length, 0) / sents.length : 0;
+    if (stats.wps && wps > stats.wps * 1.6 && wps - stats.wps > 6) { score -= 18; const long = sents.sort((x, y) => words(y).length - words(x).length)[0]; miss.push({ why: `Longer sentences than you write (${Math.round(wps)} words vs your ${stats.wps})`, frag: long }); }
+    const em = (t.match(EMOJI) || []).length; if (stats.emojiPer < .2 && em >= 2) { score -= 14; miss.push({ why: 'More emoji than you use', frag: (t.match(EMOJI) || [])[0] }); }
+    const tags = t.match(/#\w+/g) || []; if (stats.tagsPer < .1 && tags.length) { score -= 14; miss.push({ why: 'You never use hashtags', frag: tags[0] }); }
+    const lowerOpen = /^[a-z]/.test(t); if (stats.lower >= 70 && !lowerOpen && /^[A-Z]/.test(t)) { score -= 8; miss.push({ why: 'You usually open in lowercase', frag: t.split(/\s/)[0] }); }
+    if (stats.lower <= 15 && lowerOpen) { score -= 8; miss.push({ why: 'You usually capitalise your first word', frag: t.split(/\s/)[0] }); }
+    const bad = never.find(w => t.toLowerCase().includes(String(w).toLowerCase())); if (bad) { score -= 22; miss.push({ why: `“${bad}” is on your never-say list`, frag: bad }); }
+    const tell = (t.match(/\b(delve|game[- ]changer|unlock|leverage|elevate|supercharge|seamless|in today's|in today’s|it's not just|here's the thing|let that sink in)\b/gi) || []).find(x => x.toLowerCase() !== String(bad || '').toLowerCase()); if (tell) { score -= 16; miss.push({ why: 'Reads like AI wrote it', frag: tell }); }
+    if ((t.match(/—/g) || []).length >= 3) { score -= 8; miss.push({ why: 'A lot of em dashes', frag: '—' }); }
+    if ((t.match(/!/g) || []).length >= 2 && stats.emojiPer < .3) { score -= 6; miss.push({ why: 'More exclamation marks than you use', frag: '!' }); }
+    const ws = new Set(words(t)); const hits = lean.filter(l => ws.has(String(l.w || l).toLowerCase())).length; if (hits) score = Math.min(100, score + 3 * hits);
+    return { score: clamp(Math.round(score), 5, 100), miss };
+  }
+  /* predict engagement for a line from the author's most similar past posts (k nearest by shared words + kind) */
+  function predictFromHistory(line, posts, k = 5) {
+    const bag = x => new Set(words(x).filter(w => w.length > 2 && !STOP.has(w))); const a = bag(line), ka = kindOf(line);
+    const scored = (posts || []).map(p => { const b = bag(p.text.split('\n')[0]); let n = 0; a.forEach(w => b.has(w) && n++); const sim = n / Math.max(1, Math.min(a.size, b.size)) + (kindOf(p.text) === ka ? .35 : 0); return { p, sim }; }).filter(x => x.sim > 0).sort((x, y) => y.sim - x.sim).slice(0, k);
+    if (!scored.length) return null;
+    const med = median(scored.map(x => eng(x.p)));
+    return { estimate: Math.round(med * (0.75 + hookScore(line).score / 200)), near: scored.map(x => x.p) };
+  }
 
   /* pre-post rules shared with the server's /api/v1/check and the MCP server */
   const CRINGE = [
@@ -334,5 +415,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
 
-  return { xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
+  return { voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
 });

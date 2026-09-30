@@ -301,3 +301,20 @@ Owner: check the app again; every minor detail matters, that's what beats Typefu
 - **Words:** "Post now" everywhere (it said "Publish now" in one menu); "Built-in editor" instead of "Offline editor" (it isn't offline, it just isn't Claude).
 - **Small comforts:** hover a draft in the sidebar for its full first line, age and length; hover "Saved" for when; the schedule dialog names your time zone; the undo window is a setting (8 s, 15 s, 5 s or off).
 - **A crash** when the caret moved in a field that had just been replaced (paste, new post) is fixed.
+
+## Round 15: the features that make it a daily habit
+
+Owner: build all of them.
+
+- **First-hour reply desk.** After Post now (toast action), from a sent post's menu, or ⌘K. Live replies from X through the server, ranked questions and reach first; your own replies skipped. One Claude call drafts a reply for each in your voice; "Reply" posts it (server) or opens X's reply box with the text ready. Sample replies are labelled as samples; you can paste real ones.
+- **Plan my week.** In Queue (and a nudge when fewer than 3 posts are lined up). Claude drafts five posts for your next best slots from your saved ideas and top posts; review one at a time (schedule ↵, skip K, edit E). Offline, it builds them from your ideas.
+- **Share from any app.** The installed app is a share target: sharing a link or text from Safari, X or Notes parks it in Ideas and shows angles.
+- **Review links with comments.** "Share for feedback" makes a link to a clean page showing the draft as it'll look, with a comment box per post. The composer shows "2 comments · 1 new" and opens them grouped by post. Without the server it copies the draft as a ready-to-paste message.
+- **LinkedIn carousel (PDF).** Thread → cover, one slide per point, a follow slide; Paper, Plum or Lilac; 1080×1350. Written by a tiny built-in PDF writer (no library, works offline and in claude.ai through the download capability).
+- **"Sounds like you" meter.** Next to the hook chip: how far the draft drifts from your measured habits (sentence length, emoji, hashtags, casing, never-say words, AI tells). Tap it to see what sounds off; each item selects the words so Sharpen can fix them.
+- **Hook shootout.** A vs B on the Hooks page, judged by your most similar past posts (and Claude when on). Every call is kept, and checked once the post shows up in your history ("3 of 4 called right").
+- **Evergreen reruns.** An Autopilot switch: once a week, a best post from 2+ months ago comes back with a fresh first line in an open (non-best) slot, tagged "Rerun".
+- **Sunday note.** Insights opens on "Your week": posts, likes, streak, what's lined up. Claude writes the note (best post and why, one thing to try, Monday's first line). "Email me Sundays" sends it at 9 AM via the server.
+- **Launch:** end-to-end encrypted sync across devices (a 20-character code; the server stores ciphertext only), a Dockerfile and Render blueprint, a sign-in link for locked servers, and a nudge when the X archive you requested should be ready.
+- **Bug found while testing:** the service worker was caching the server's API (health, reviews, sync), so live data went stale. API, sign-in and review pages now bypass it, and the page itself is network-first.
+

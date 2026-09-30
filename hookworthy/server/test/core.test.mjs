@@ -82,3 +82,14 @@ test('X character count: links are 23, emoji and CJK are 2', () => {
   assert.equal(core.xLength('日本語'), 6);
   assert.equal(core.xLength('👍🏽 ok'), 5);
 });
+
+test('sounds-like-you flags what drifts from your habits', () => {
+  const r = core.voiceMatch('I am thrilled to leverage this game-changer!! 🚀🚀 #growth', { wps: 9, emojiPer: .05, tagsPer: 0, lower: 60 }, { never: ['leverage'] });
+  assert.ok(r.score < 50); const frags = r.miss.map(m => m.frag);
+  for (const f of ['#growth', 'leverage', 'game-changer']) assert.ok(frags.includes(f), f);
+  assert.ok(core.voiceMatch('shipped the pricing page. 3 plans to 1.', { wps: 8, emojiPer: 0, tagsPer: 0, lower: 80 }).score >= 90);
+});
+test('predict from history uses the nearest past posts', () => {
+  const posts = [core.normPost({ id: 'a', text: 'I raised my price and lost zero customers', likes: 900 }), core.normPost({ id: 'b', text: 'my morning routine, ranked', likes: 20 })];
+  const p = core.predictFromHistory('I doubled my price. Customers stayed.', posts); assert.ok(p && p.near[0].id === 'a' && p.estimate > 300);
+});
