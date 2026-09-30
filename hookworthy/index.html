@@ -311,7 +311,12 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .modal-b{ padding:16px 20px 20px; }
 .vis-modal{ width:min(860px,100%); }
 .vis-b{ display:grid; grid-template-columns:220px minmax(0,1fr); gap:14px 18px; }
-.vis-kinds{ grid-row:span 2; display:grid; gap:6px; align-content:start; }
+.vis-kinds{ grid-row:span 4; display:grid; gap:6px; align-content:start; }
+.vk-pick{ margin-left:6px; padding:2px 7px; border-radius:99px; background:var(--pa,#EADCFF); color:var(--pl,#6A2FA0); font:600 10.5px/1.3 var(--font-sans,inherit); letter-spacing:.02em; vertical-align:1px; }
+.vis-why{ display:flex; gap:8px; align-items:flex-start; margin:0; padding:10px 12px; border-radius:12px; background:color-mix(in srgb,var(--pa,#EADCFF) 45%,transparent); font-size:var(--t-13); line-height:1.45; color:var(--text-2); }
+.vis-why .icon{ flex:none; margin-top:2px; color:var(--pl,#6A2FA0); } .vis-why b{ color:var(--text-1); font-weight:600; }
+.vis-why.thinking .icon{ animation:spin 1.2s linear infinite; }
+.vis-edit{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; } .vis-f{ display:grid; gap:5px; flex:1 1 180px; min-width:0; } .vis-f span{ font-size:var(--t-12); color:var(--text-3); } #vis-mw{ flex:0 1 170px; }
 .vk{ display:grid; gap:3px; text-align:left; padding:11px 12px; border-radius:12px; box-shadow:inset 0 0 0 1px var(--border); transition:box-shadow var(--d-micro),background var(--d-micro); }
 .vk b{ font-weight:600; font-size:var(--t-14); } .vk small{ font-size:var(--t-12); color:var(--text-3); }
 .vk:hover{ background:var(--surface-2); }
@@ -320,7 +325,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .vis-stage canvas{ display:block; max-width:100%; max-height:52vh; width:auto; height:auto; border-radius:10px; box-shadow:0 10px 30px -18px rgba(0,0,0,.45); }
 .vis-stage.drop{ cursor:pointer; } .vis-stage.over{ box-shadow:inset 0 0 0 2px var(--text-1); }
 .vis-opts{ display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; }
-@media (max-width:760px){ .vis-b{ grid-template-columns:minmax(0,1fr); } .vis-kinds{ grid-row:auto; grid-template-columns:1fr 1fr; } }
+@media (max-width:760px){ .vis-b{ grid-template-columns:minmax(0,1fr); } .vis-kinds{ grid-row:auto; display:flex; overflow-x:auto; margin:0 -4px; padding:2px 4px; scrollbar-width:none; } .vk{ flex:none; padding:9px 12px; } .vk small{ display:none; } .vis-stage{ min-height:0; padding:10px; } }
 .modal-f{ display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:var(--bg-elev); }
 .force-dark .modal-f,:root[data-theme="dark"] .modal-f:not(.force-light .modal-f){ background:rgba(0,0,0,.15); }
 @keyframes fade{ from{ opacity:0 } }
@@ -1202,7 +1207,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw h1, .hw h2{ font-family:var(--f-serif); font-weight:400; letter-spacing:-.018em; line-height:1; }
 .hw h3{ font-family:var(--f-disp); font-weight:600; letter-spacing:0; }
 .hw h1 .mk, .hw h2 .mk, .hw h1 em, .hw h2 em{ font-style:italic; }
-.hw p{ margin:0; }
+:where(.hw) p{ margin:0; }
 .hw .mk{ background:var(--psq) no-repeat 0 100% / var(--mkw,100%) .26em; padding:0 .02em .1em; }
 .hw .story, .hw .voice2, .hw .on-dark{ --c-mark:color-mix(in srgb,var(--pa) 40%,transparent); }
 .hw .mk.draw{ --mkw:0%; animation:mkdraw .9s .75s var(--ease-o) forwards; }
@@ -1358,9 +1363,20 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .dm-win{ position:relative; max-width:1080px; margin:0 auto; border-radius:22px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 50px 100px -50px rgba(0,0,0,.45),0 20px 40px -30px rgba(0,0,0,.25); overflow:hidden; font:400 14px/1.45 var(--f-disp); color:var(--c-ink); }
 .dm-bar{ display:flex; align-items:center; gap:7px; height:40px; padding:0 14px; border-bottom:1px solid var(--c-line); background:#FFFEF6; }
 .dm-bar i{ width:11px; height:11px; border-radius:50%; background:#E7E4D4; }
-.dm-bar span{ margin:0 auto; font-size:12.5px; color:var(--c-3); }
-.dm-snd{ width:28px; height:28px; border-radius:99px; display:grid; place-items:center; color:var(--c-3); } .dm-snd .icon{ width:15px; height:15px; }
-.dm-win.snd .dm-snd{ color:#fff; background:var(--c-ink); }
+.dm-bar > span{ margin:0 auto; font-size:12.5px; color:var(--c-3); }
+.dm-snd{ display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px 0 8px; border-radius:99px; color:var(--c-3); font:500 12px/1 var(--f-disp); box-shadow:inset 0 0 0 1px var(--c-line); transition:background .2s,color .2s; } .dm-snd .icon{ width:14px; height:14px; }
+.dm-win.snd .dm-snd{ color:var(--c-ink); background:var(--c-mark); box-shadow:none; }
+.dm-caret{ display:inline-block; width:2px; height:1.1em; margin:0 -1px -.18em 1px; border-radius:1px; background:var(--pl,#6A2FA0); animation:dmblink 1.05s steps(1) infinite; } .typing .dm-caret{ animation:none; }
+@keyframes dmblink{ 50%{ opacity:0; } }
+.dm-vm{ top:40px; gap:10px; width:min(560px,90%); margin-left:max(-280px,-45%); }
+.dm-kinds i{ font-style:normal; margin-left:4px; padding:1px 6px; border-radius:99px; background:var(--c-mark); font-size:10.5px; font-weight:600; }
+.dm-vwhy{ display:flex; gap:7px; align-items:flex-start; padding:8px 10px; border-radius:10px; background:color-mix(in srgb,var(--c-mark) 45%,transparent); font-size:12.5px; line-height:1.4; color:var(--c-2); } .dm-vwhy .icon{ flex:none; width:14px; height:14px; margin-top:1px; color:var(--pl,#6A2FA0); } .dm-vwhy b{ color:var(--c-ink); font-weight:600; }
+.dm-visimg{ display:block; width:100%; aspect-ratio:16/9; border-radius:10px; box-shadow:0 0 0 1px var(--c-line),0 12px 30px -18px rgba(0,0,0,.4); transition:opacity .16s,transform .3s cubic-bezier(.3,1.3,.4,1),filter .16s; } .dm-visimg.sw{ opacity:.2; transform:scale(.98); filter:blur(3px); }
+.dm-vrow{ display:flex; align-items:center; gap:8px; } .dm-vrow .dm-add{ margin-left:auto; }
+.dm-look{ display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 11px; border-radius:9px; box-shadow:inset 0 0 0 1px var(--c-line); font-size:12.5px; font-weight:500; } .dm-look .icon{ width:13px; height:13px; }
+.dm-sty{ display:inline-flex; padding:2px; border-radius:9px; box-shadow:inset 0 0 0 1px var(--c-line); } .dm-sty span{ padding:5px 10px; border-radius:7px; font-size:12px; color:var(--c-2); } .dm-sty .on{ background:var(--c-ink); color:#fff; }
+.dm-img img{ display:block; width:100%; }
+.dm-pvb .dm-pvimg img{ display:block; width:100%; }
 .dm-body{ display:grid; grid-template-columns:200px minmax(0,1fr) 290px; height:560px; background:var(--panel); }
 .dm-side{ display:flex; flex-direction:column; gap:2px; padding:12px 10px 10px; background:var(--bg); border-right:1px solid var(--border); }
 .dm-side .logo{ padding:2px 6px 12px; } .dm-side .logo .word{ font-size:22px; }
@@ -1468,13 +1484,19 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .seg2 button:focus-visible{ outline:2px solid var(--c-ink); outline-offset:2px; }
 
 /* ---------- the fold ---------- */
-.fold{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,4vw,64px); align-items:center; }
+.fold{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,4vw,64px); align-items:end; }
 .fold .ed{ display:grid; gap:12px; }
-.fold textarea{ width:100%; min-height:160px; resize:none; padding:18px 20px; border-radius:18px; border:0; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 20px 40px -30px rgba(0,0,0,.35); font:400 17px/1.5 var(--f-disp); color:var(--c-ink); letter-spacing:0; }
+.fold textarea{ width:100%; min-height:160px; resize:none; overflow:hidden; field-sizing:content; padding:18px 20px; border-radius:18px; border:0; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 20px 40px -30px rgba(0,0,0,.35); font:400 17px/1.5 var(--f-disp); color:var(--c-ink); letter-spacing:0; }
 .fold textarea:focus{ outline:none; box-shadow:0 0 0 2px var(--c-ink),0 20px 40px -30px rgba(0,0,0,.35); }
-.fold .fmeter{ display:flex; justify-content:space-between; font-size:13.5px; color:var(--c-2); }
-.fold .fmeter b{ font:500 13px/1 var(--font-mono); color:var(--c-ink); }
-.fold .cards{ display:grid; gap:14px; }
+.fold .fmeter{ display:grid; gap:8px; font-size:13.5px; color:var(--c-2); font-variant-numeric:tabular-nums; }
+.fold .fmeter b{ font-weight:600; color:var(--c-ink); }
+.fold .fbar{ display:block; height:4px; border-radius:4px; background:var(--c-line); overflow:hidden; }
+.fold .fbar b{ display:block; height:100%; width:var(--f,0%); border-radius:4px; background:var(--c-ink); transition:width .35s var(--ease-o); }
+.fold .cards{ display:grid; gap:14px; width:100%; max-width:420px; justify-self:center; }
+.fold .cards .lip{ max-width:none!important; }
+.fold .fstat{ display:inline-flex; align-items:center; gap:6px; font-weight:500; color:var(--c-ink); transition:color .3s; }
+.fold .fstat::before{ content:''; width:7px; height:7px; border-radius:50%; background:#1F9D55; box-shadow:0 0 0 3px color-mix(in srgb,#1F9D55 18%,transparent); transition:background .3s,box-shadow .3s; }
+.fold .fstat.cut::before{ background:#D9822B; box-shadow:0 0 0 3px color-mix(in srgb,#D9822B 20%,transparent); }
 .fold .lbl{ font-size:13px; color:var(--c-2); margin-bottom:6px; display:flex; justify-content:space-between; }
 
 
@@ -1486,6 +1508,14 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .voice2 .sl{ display:grid; gap:10px; }
 .voice2 .sl .ends{ display:flex; justify-content:space-between; font-size:14px; color:rgba(254,253,241,.86); }
 .voice2 input[type=range]{ width:100%; accent-color:var(--c-lt); }
+.voice2 .sl .ends output{ font-weight:600; color:var(--pa,#EADCFF); transition:color .2s; }
+.voice2 #hv-out .tx .vw{ display:inline-block; border-radius:4px; animation:vwin .55s calc(var(--i) * 28ms) cubic-bezier(.2,.9,.25,1) both, vwhl 1.6s calc(var(--i) * 28ms) ease-out both; }
+@keyframes vwin{ from{ opacity:0; transform:translateY(.35em); filter:blur(5px); } }
+@keyframes vwhl{ 0%,35%{ background:color-mix(in srgb,#CDB2FF 38%,transparent); box-shadow:0 0 0 2px color-mix(in srgb,#CDB2FF 38%,transparent); } 100%{ background:transparent; box-shadow:0 0 0 2px transparent; } }
+.voice2 .hv-read{ margin-top:14px; min-height:1.4em; font-size:13.5px; color:rgba(254,253,241,.7); text-align:center; opacity:0; }
+.voice2 .hv-read b{ color:#EADCFF; font-weight:600; font-variant-numeric:tabular-nums; }
+.voice2 .hv-read.on{ animation:hvread 2.4s ease-out both; } @keyframes hvread{ 0%{ opacity:0; transform:translateY(4px); } 12%,70%{ opacity:1; transform:none; } 100%{ opacity:.55; } }
+@media (prefers-reduced-motion:reduce){ .voice2 #hv-out .tx .vw{ animation:vwhl 1.2s ease-out both; } }
 .voice2 .chips{ display:flex; flex-wrap:wrap; gap:8px; }
 .voice2 .chips span{ display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; border-radius:99px; background:rgba(254,253,241,.1); font-size:13.5px; color:rgba(254,253,241,.9); }
 .voice2 .chips span s{ color:rgba(254,253,241,.86); }
@@ -2643,15 +2673,28 @@ const SFX = (() => {
     g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
     o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .02);
   };
+  /* a key: a short burst of filtered noise plus a low thump, pitch nudged each press so it never sounds looped */
+  const bufs = {}; const noise = (c, secs) => { const k = secs; if (!bufs[k]) { const b = c.createBuffer(1, Math.ceil(c.sampleRate * secs), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.5); bufs[k] = b; } return bufs[k]; };
+  const hiss = (f, vol, dur, { q = 1.1, type = 'bandpass', sweep = 0, secs = .05 } = {}) => { const c = ac(); if (!c) return; const t = c.currentTime, s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain(); s.buffer = noise(c, secs); fl.type = type; fl.frequency.setValueAtTime(f, t); if (sweep) fl.frequency.exponentialRampToValueAtTime(f * sweep, t + dur); fl.Q.value = q; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .004); g.gain.exponentialRampToValueAtTime(.0001, t + dur); s.connect(fl).connect(g).connect(c.destination); s.start(t); s.stop(t + dur + .02); };
   const cues = {
+    key: () => { const r = Math.random(); hiss(2600 + r * 1500, .07, .03); tone(160 + r * 50, 0, .028, { vol: .018 }); },
+    space: () => { hiss(1200, .08, .055, { q: .8 }); tone(105, 0, .05, { vol: .024 }); },
+    back: () => { hiss(1800, .06, .035); tone(140, 0, .03, { vol: .016 }); },
+    enter: () => { hiss(1500, .1, .07, { q: .7 }); tone(120, 0, .06, { vol: .028 }); },
+    whoosh: () => hiss(500, .05, .32, { q: .6, sweep: 5, secs: .4 }),
+    pop: () => { tone(380, 0, .1, { vol: .05, glide: 2.4 }); hiss(3000, .03, .04); },
     tick: () => tone(1800, 0, .03, { type: 'triangle', vol: .025 }),                       /* toggles, tabs */
     tap: () => tone(660, 0, .06, { vol: .04, glide: 1.25 }),                                  /* primary buttons */
     hook: () => { tone(880, 0, .12, { vol: .05 }); tone(1320, .07, .16, { vol: .045 }); },     /* first line crosses 70 */
     swap: () => { tone(520, 0, .08, { type: 'triangle', vol: .04, glide: 1.5 }); tone(990, .06, .12, { vol: .035 }); }, /* rewrite accepted */
     done: () => { [523.3, 659.3, 784, 1046.5].forEach((f, i) => tone(f, i * .075, .32, { vol: .045 })); }                 /* scheduled, published */
   };
-  return { play: k => { try { if (on() && cues[k]) cues[k](); } catch (e) { } } };
+  const KEYMAP = { ' ': 'space', Backspace: 'back', Delete: 'back', Enter: 'enter' };
+  return { play: k => { try { if (on() && cues[k]) cues[k](); } catch (e) { } }, key: k => { try { if (on() && (k.length === 1 || KEYMAP[k])) cues[KEYMAP[k] || 'key'](); } catch (e) { } } };
 })();
+/* typing sounds in the editor: off unless you turn them on */
+document.addEventListener('keydown', e => { if (!S.settings.keys || e.repeat || e.metaKey || e.ctrlKey || e.altKey || !(e.target.classList && e.target.classList.contains('tw-input'))) return; SFX.key(e.key); });
+function toggleKeys() { S.settings.keys = !S.settings.keys; save(); if (S.settings.keys) { if (S.settings.sound === false) S.settings.sound = true; SFX.key('a'); } toast(S.settings.keys ? 'Typing sounds on. Soft keys, like a good keyboard.' : 'Typing sounds off.', { icon: 'volume', ms: 1800 }); }
 function toggleSound() { S.settings.sound = S.settings.sound === false; save(); if (S.settings.sound) SFX.play('tap'); toast(S.settings.sound ? 'Sounds on. Quiet ones, promise.' : 'Sounds off.', { icon: 'volume', ms: 1600 }); }
 
 /* theme */
@@ -2793,6 +2836,7 @@ const ACT = {
     { label: 'Appearance', icon: 'palette', hint: 'Light, dark or system', run: () => openAppearance(el) },
     '-',
     { label: S.settings.sound === false ? 'Turn sounds on' : 'Turn sounds off', icon: 'volume', run: toggleSound },
+    { label: 'Typing sounds', icon: 'kbd', hint: S.settings.keys ? 'On' : 'Off', run: toggleKeys },
     { label: 'Design system', icon: 'palette', run: () => go('brand') },
     { label: 'Replay onboarding', icon: 'play', run: () => go('start') },
     { label: 'Reset demo data', icon: 'undo', run: resetDemo },
@@ -3364,76 +3408,242 @@ function refreshMedia(id) { const el = $(`.tw[data-id="${id}"]`); if (!el) retur
 /* ---------- Visuals: turn a line into an image people stop on ----------
    Quote cards, a before/after chart from the numbers you wrote, a clean screenshot of the post
    (for cross-posting to LinkedIn), and a frame for any screenshot you drop in. All drawn in the browser. */
-const VIS = { kind: 'quote', style: 'paper', size: 'wide', frameImg: null };
-const VIS_SIZES = { wide: [1200, 675], square: [1080, 1080], tall: [1080, 1350] };
-const VIS_BG = { paper: ['#FEFDF1', '#1A1A1A', '#65645C'], ink: ['#3B1F5C', '#FEFDF1', 'rgba(254,253,241,.78)'], marker: ['#EADCFF', '#1A1A1A', '#4D4C46'] };
-const visVar = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-const visAcc = () => visVar('--pl') || '#5B3FB8';
-const visTint = () => visVar('--pa') || '#EBDDFF';
-const numPair = t => { const m = t.match(/(\$?\d[\d,.]*\s?(?:%|k|K|m|M|x)?)\s*(?:→|->|to)\s*(\$?\d[\d,.]*\s?(?:%|k|K|m|M|x)?)/); if (!m) return null; const v = x => parseFloat(x.replace(/[$,\s]/g, '')) * (/k/i.test(x) ? 1e3 : /m/i.test(x) ? 1e6 : 1); const a = v(m[1]), b = v(m[2]); return isFinite(a) && isFinite(b) && (a || b) ? { a, b, la: m[1].trim(), lb: m[2].trim() } : null; };
 function visWrap(ctx, text, maxW) { const out = []; text.split('\n').forEach(par => { let line = ''; par.split(/\s+/).forEach(w => { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; }); out.push(line); }); return out; }
-function visRound(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function visRound(ctx, x, y, w, h, r) { r = Math.max(0, Math.min(r, w / 2, h / 2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 function visAvatar(ctx, x, y, r, u) { const im = u.pic && picImg(u.pic); if (im && im.complete && im.naturalWidth) { ctx.save(); ctx.beginPath(); ctx.arc(x + r, y + r, r, 0, 7); ctx.clip(); ctx.drawImage(im, x, y, r * 2, r * 2); ctx.restore(); return; } ctx.save(); ctx.beginPath(); ctx.arc(x + r, y + r, r, 0, 7); ctx.fillStyle = `hsl(${u.hue || 28} 58% 50%)`; ctx.fill(); ctx.fillStyle = '#fff'; ctx.font = `700 ${r * .8}px Geist, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText((u.name || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase(), x + r, y + r + 1); ctx.restore(); }
 const PIC_CACHE = {};
 function picImg(src) { if (!PIC_CACHE[src]) { const im = new Image(); im.src = src; PIC_CACHE[src] = im; } return PIC_CACHE[src]; }
-function visDraw(cv, text) {
-  const [W, H] = VIS_SIZES[VIS.size]; cv.width = W; cv.height = H; const ctx = cv.getContext('2d'); const [bg, fg, mu] = VIS.style === 'marker' ? [visTint(), '#1A1A1A', '#4D4C46'] : VIS.style === 'ink' ? [visVar('--pb1') || '#1F4D3A', '#FEFDF1', 'rgba(254,253,241,.74)'] : VIS_BG[VIS.style]; const u = S.user, P = Math.round(W * .08);
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H); ctx.textBaseline = 'alphabetic';
-  const foot = () => { visAvatar(ctx, P, H - P - 56, 28, u); ctx.fillStyle = fg; ctx.font = '600 28px Figtree, sans-serif'; ctx.fillText(u.name, P + 72, H - P - 24); const nw = ctx.measureText(u.name).width; ctx.fillStyle = mu; ctx.font = '400 24px Figtree, sans-serif'; ctx.fillText('@' + u.handle, P + 72 + nw + 12, H - P - 24); };
-  if (VIS.kind === 'quote') {
-    const t = text.trim() || 'Your first line goes here.'; let size = 78, lines;
-    do { ctx.font = `400 ${Math.round(size * 1.22)}px "EB Garamond", Georgia, serif`; lines = visWrap(ctx, t, W - P * 2 - 16); size -= 4; } while (lines.length * size * 1.3 > H - P * 2 - 120 && size > 34);
-    size += 4; const lh = size * 1.3; let y = P + size * 1.15;
-    lines.forEach((l, i) => { ctx.font = `400 ${Math.round(size * 1.22)}px "EB Garamond", Georgia, serif`; if (i === 0 && VIS.style !== 'marker') { const w = ctx.measureText(l).width; ctx.fillStyle = visTint(); ctx.globalAlpha = VIS.style === 'ink' ? .4 : 1; ctx.beginPath(); ctx.moveTo(P - 12, y + size * .26); ctx.lineTo(P - 12 + size * .14, y - size * .5); ctx.lineTo(P + w + 16, y - size * .5); ctx.lineTo(P + w + 16 - size * .14, y + size * .26); ctx.fill(); ctx.globalAlpha = 1; ctx.fillStyle = fg; } else ctx.fillStyle = fg; ctx.fillText(l, P, y); y += lh; });
-    foot();
-  } else if (VIS.kind === 'chart') {
-    const n = numPair(text); const title = (text.split('\n')[0] || '').slice(0, 90);
-    ctx.fillStyle = fg; ctx.font = '400 52px "EB Garamond", Georgia, serif'; visWrap(ctx, title || 'Before and after', W - P * 2 - 190).slice(0, 2).forEach((l, i) => ctx.fillText(l, P, P + 44 + i * 54));
-    if (!n) { ctx.fillStyle = mu; ctx.font = '400 30px Figtree, sans-serif'; ctx.fillText('Write two numbers, like “21% → 38%”, and they’ll chart here.', P, H / 2 + 20); }
-    else {
-      const top = P + 150, bot = H - P - 40, mx = Math.max(n.a, n.b), bw = Math.min(260, (W - P * 2) / 3), gap = bw * .6, x0 = W / 2 - bw - gap / 2;
-      [[n.a, n.la, 'Before', x0, VIS.style === 'ink' ? '#3A3A3F' : 'rgba(26,26,26,.16)'], [n.b, n.lb, 'After', x0 + bw + gap, VIS.style === 'marker' ? '#1A1A1A' : visAcc()]].forEach(([v, lab, cp, x, col]) => {
-        const h = Math.max(8, (bot - top - 60) * v / mx); visRound(ctx, x, bot - h, bw, h, 16); ctx.fillStyle = col; ctx.fill();
-        ctx.fillStyle = fg; ctx.textAlign = 'center'; ctx.font = '700 56px Figtree, sans-serif'; ctx.fillText(lab, x + bw / 2, bot - h - 20); ctx.font = '500 26px Figtree, sans-serif'; ctx.fillStyle = mu; ctx.fillText(cp, x + bw / 2, bot + 40); ctx.textAlign = 'left'; });
-      const d = n.a ? Math.round((n.b - n.a) / n.a * 100) : 0; if (d) { const lbl = `${d > 0 ? '+' : ''}${d}%`; ctx.font = '700 30px Figtree, sans-serif'; const w = ctx.measureText(lbl).width + 36; visRound(ctx, W - P - w, P + 8, w, 52, 26); ctx.fillStyle = fg; ctx.fill(); ctx.fillStyle = bg; ctx.fillText(lbl, W - P - w + 18, P + 45); }
-    }
-  } else if (VIS.kind === 'post') {
-    const cw = W - P * 2; ctx.font = '400 34px Figtree, sans-serif'; const lines = visWrap(ctx, text.trim() || 'Your post shows up here.', cw - 64).slice(0, Math.floor((H - P * 2 - 230) / 46)); const ch = 170 + lines.length * 46 + 60, cy = (H - ch) / 2;
-    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.18)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 18; visRound(ctx, P, cy, cw, ch, 28); ctx.fillStyle = VIS.style === 'ink' ? '#000' : '#fff'; ctx.fill(); ctx.restore();
-    const tx = VIS.style === 'ink' ? '#E7E9EA' : '#0F1419', t2 = VIS.style === 'ink' ? '#71767B' : '#536471';
-    visAvatar(ctx, P + 32, cy + 32, 34, u); ctx.fillStyle = tx; ctx.font = '700 30px Figtree, sans-serif'; ctx.fillText(u.name, P + 116, cy + 62); ctx.fillStyle = t2; ctx.font = '400 26px Figtree, sans-serif'; ctx.fillText('@' + u.handle, P + 116, cy + 96);
-    ctx.fillStyle = tx; ctx.font = '400 34px Figtree, sans-serif'; lines.forEach((l, i) => ctx.fillText(l, P + 32, cy + 160 + i * 46));
-    ctx.fillStyle = t2; ctx.font = '400 24px Figtree, sans-serif'; ctx.fillText(new Date().toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' }) + ' · ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), P + 32, cy + ch - 34);
-  } else if (VIS.kind === 'frame') {
-    const im = VIS.frameImg;
-    if (!im) { ctx.fillStyle = mu; ctx.font = '500 32px Figtree, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Drop a screenshot here, or click to choose one.', W / 2, H / 2); ctx.textAlign = 'left'; return; }
+const VIS = { kind: 'auto', style: 'paper', size: 'wide', look: 0, frameImg: null };
+const VIS_SIZES = { wide: [1200, 675], square: [1080, 1080], tall: [1080, 1350] };
+/* three looks, all from the brand: cream paper, deep plum ink, lilac tint */
+const VIS_PAL = {
+  paper: { bg: '#FCFAF0', bg2: '#F2EDDA', fg: '#1A1A1A', mu: '#6B6A61', acc: '#6A2FA0', acc2: '#A27BE0', tint: '#EADCFF', line: 'rgba(26,26,26,.09)', card: '#FFFFFF', on: '#FFFFFF', hatch: 'rgba(26,26,26,.16)' },
+  ink: { bg: '#2A1545', bg2: '#120A1F', fg: '#FEFDF1', mu: 'rgba(254,253,241,.64)', acc: '#CDB2FF', acc2: '#8D5CD6', tint: 'rgba(205,178,255,.26)', line: 'rgba(254,253,241,.1)', card: 'rgba(254,253,241,.06)', on: '#1A1030', hatch: 'rgba(254,253,241,.2)' },
+  marker: { bg: '#EFE4FF', bg2: '#DCC6FF', fg: '#1A1A1A', mu: '#4D4461', acc: '#3B1F5C', acc2: '#6A2FA0', tint: '#FFFFFF', line: 'rgba(59,31,92,.12)', card: 'rgba(255,255,255,.6)', on: '#FFFFFF', hatch: 'rgba(59,31,92,.22)' }
+};
+const VIS_KINDS = [['data', 'Numbers', 'Before → after, charted'], ['stat', 'Big number', 'One figure, huge'], ['list', 'List', 'Points people save'], ['compare', 'Side by side', 'Two ways, compared'], ['quote', 'Quote card', 'Your line, set big'], ['post', 'Post screenshot', 'For LinkedIn and Threads'], ['frame', 'Frame a screenshot', 'Make any screenshot look good']];
+const visA = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
+const SERIF = s => `400 ${s}px "EB Garamond", Georgia, serif`, SANS = (w, s) => `${w} ${s}px Figtree, system-ui, sans-serif`, HAND = s => `500 ${s}px Caveat, cursive`;
+function visFit(ctx, text, font, max, min, maxW, maxLines) {
+  let size = max, lines = [];
+  for (; size >= min; size -= 2) { ctx.font = font(size); lines = visWrap(ctx, text, maxW); if (lines.length <= maxLines) break; }
+  size = Math.max(size, min); ctx.font = font(size); lines = visWrap(ctx, text, maxW);
+  if (lines.length > maxLines) { lines = lines.slice(0, maxLines); let l = lines[maxLines - 1]; while (l && ctx.measureText(l + '…').width > maxW) l = l.replace(/\s*\S+$/, ''); lines[maxLines - 1] = l + '…'; }
+  return { size, lines };
+}
+let VIS_GRAIN = null;
+function visBg(ctx, W, H, c, glow = [.86, .08]) {
+  const g = ctx.createLinearGradient(0, 0, W * .4, H); g.addColorStop(0, c.bg); g.addColorStop(1, c.bg2); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const r = ctx.createRadialGradient(W * glow[0], H * glow[1], 0, W * glow[0], H * glow[1], Math.max(W, H) * .75); r.addColorStop(0, visA(c.acc2, .24)); r.addColorStop(.55, visA(c.acc2, .06)); r.addColorStop(1, visA(c.acc2, 0)); ctx.fillStyle = r; ctx.fillRect(0, 0, W, H);
+  if (!VIS_GRAIN) { VIS_GRAIN = document.createElement('canvas'); VIS_GRAIN.width = VIS_GRAIN.height = 160; const gx = VIS_GRAIN.getContext('2d'), d = gx.createImageData(160, 160); for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; } gx.putImageData(d, 0, 0); }
+  ctx.save(); ctx.globalAlpha = .045; ctx.globalCompositeOperation = 'overlay'; ctx.fillStyle = ctx.createPattern(VIS_GRAIN, 'repeat'); ctx.fillRect(0, 0, W, H); ctx.restore();
+}
+function visFoot(ctx, W, H, P, c, u, s) {
+  const r = 26 * s, y = H - P - r * 2; visAvatar(ctx, P, y, r, u);
+  ctx.textBaseline = 'middle'; ctx.fillStyle = c.fg; ctx.font = SANS(600, 25 * s); ctx.fillText(u.name, P + r * 2 + 16 * s, y + r - 12 * s);
+  ctx.fillStyle = c.mu; ctx.font = SANS(400, 21 * s); ctx.fillText('@' + u.handle, P + r * 2 + 16 * s, y + r + 15 * s); ctx.textBaseline = 'alphabetic';
+}
+function visEyebrow(ctx, x, y, text, c, s) {
+  ctx.save(); ctx.font = SANS(700, 19 * s); ctx.letterSpacing = `${3 * s}px`; ctx.fillStyle = c.acc; ctx.beginPath(); ctx.arc(x + 6 * s, y - 7 * s, 6 * s, 0, 7); ctx.fill();
+  ctx.fillText(String(text).toUpperCase(), x + 22 * s, y); ctx.restore();
+}
+function visPill(ctx, x, y, text, bg, fg, size, s) { ctx.font = SANS(700, size); const w = ctx.measureText(text).width + 34 * s, h = size * 1.7; visRound(ctx, x, y, w, h, h / 2); ctx.fillStyle = bg; ctx.fill(); ctx.fillStyle = fg; ctx.textBaseline = 'middle'; ctx.fillText(text, x + 17 * s, y + h / 2 + 1); ctx.textBaseline = 'alphabetic'; return w; }
+/* a hand-drawn arrow with a note, the way you'd scribble on a screenshot */
+function visScribble(ctx, x1, y1, x2, y2, note, c, s) {
+  ctx.save(); ctx.strokeStyle = c.acc; ctx.lineWidth = 3.2 * s; ctx.lineCap = 'round'; const mx = (x1 + x2) / 2, my = Math.max(20 * s, Math.min(y1, y2) - 60 * s);
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(mx, my, x2, y2); ctx.stroke();
+  const a = Math.atan2(y2 - my, x2 - mx), L = 16 * s; ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - L * Math.cos(a - .5), y2 - L * Math.sin(a - .5)); ctx.moveTo(x2, y2); ctx.lineTo(x2 - L * Math.cos(a + .5), y2 - L * Math.sin(a + .5)); ctx.stroke();
+  if (note) { ctx.fillStyle = c.acc; ctx.font = HAND(44 * s); ctx.textAlign = 'center'; ctx.fillText(note, mx, my + 6 * s); }
+  ctx.restore();
+}
+function visHatch(ctx, c) { const p = document.createElement('canvas'); p.width = p.height = 14; const g = p.getContext('2d'); g.strokeStyle = c.hatch; g.lineWidth = 2; g.beginPath(); g.moveTo(-2, 16); g.lineTo(16, -2); g.stroke(); return ctx.createPattern(p, 'repeat'); }
+/* the chart: columns, a rising line, or a ring for percentages */
+function visChart(ctx, x, y, w, h, pl, c, s, look) {
+  const a = pl.a, b = pl.b, mx = Math.max(a, b) || 1, pct = /%/.test(pl.before + pl.after) && Math.max(a, b) <= 100;
+  const kind = ['cols', 'line', pct ? 'ring' : 'cols'][look % 3];
+  if (kind === 'ring') {
+    const cx = x + w / 2, cy = y + h / 2, R = Math.min(w, h) / 2 - 8 * s, lw = 34 * s;
+    ctx.lineCap = 'round'; ctx.lineWidth = lw; ctx.strokeStyle = c.line; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.stroke();
+    ctx.strokeStyle = c.mu; ctx.globalAlpha = .45; ctx.lineWidth = lw * .45; ctx.beginPath(); ctx.arc(cx, cy, R - lw * .95, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * a / 100); ctx.stroke(); ctx.globalAlpha = 1;
+    const gr = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R); gr.addColorStop(0, c.acc2); gr.addColorStop(1, c.acc);
+    ctx.save(); ctx.shadowColor = visA(c.acc2, .55); ctx.shadowBlur = 36 * s; ctx.strokeStyle = gr; ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(cx, cy, R, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * b / 100); ctx.stroke(); ctx.restore();
+    ctx.textAlign = 'center'; ctx.fillStyle = c.acc; ctx.font = SANS(800, 64 * s); ctx.fillText(pl.delta || pl.after, cx, cy + 10 * s); ctx.fillStyle = c.mu; ctx.font = SANS(500, 22 * s); ctx.fillText(`${pl.before} → ${pl.after}`, cx, cy + 46 * s); ctx.textAlign = 'left'; return;
+  }
+  const base = y + h - 34 * s;
+  ctx.strokeStyle = c.line; ctx.lineWidth = 2 * s; ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x + w, base); ctx.stroke();
+  if (kind === 'line') {
+    const top = y + 70 * s, H = base - top - 10 * s, ya = base - Math.max(.08, a / mx) * H, yb = base - Math.max(.08, b / mx) * H, x0 = x + 30 * s, x1 = x + w - 30 * s;
+    const pts = [0, .18, .36, .52, .68, .84, 1].map((t, i) => [x0 + (x1 - x0) * t, ya + (yb - ya) * (t * t * (3 - 2 * t)) + (i && i < 6 ? Math.sin(i * 2.1) * 10 * s : 0)]);
+    const path = () => { ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) { const [px, py] = pts[i - 1], [qx, qy] = pts[i]; ctx.bezierCurveTo((px + qx) / 2, py, (px + qx) / 2, qy, qx, qy); } };
+    const ga = ctx.createLinearGradient(0, Math.min(ya, yb), 0, base); ga.addColorStop(0, visA(c.acc2, .36)); ga.addColorStop(1, visA(c.acc2, 0));
+    ctx.beginPath(); path(); ctx.lineTo(x1, base); ctx.lineTo(x0, base); ctx.closePath(); ctx.fillStyle = ga; ctx.fill();
+    ctx.setLineDash([6 * s, 8 * s]); ctx.strokeStyle = c.hatch; ctx.lineWidth = 2 * s; ctx.beginPath(); ctx.moveTo(x0, ya); ctx.lineTo(x1, ya); ctx.stroke(); ctx.setLineDash([]);
+    ctx.save(); ctx.shadowColor = visA(c.acc2, .6); ctx.shadowBlur = 24 * s; ctx.strokeStyle = c.acc; ctx.lineWidth = 6 * s; ctx.lineJoin = 'round'; ctx.beginPath(); path(); ctx.stroke(); ctx.restore();
+    [[x0, ya, pl.before, c.mu], [x1, yb, pl.after, c.fg]].forEach(([px, py, l, col], i) => {
+      ctx.fillStyle = i ? c.acc : c.bg; ctx.strokeStyle = c.acc; ctx.lineWidth = 4 * s; ctx.beginPath(); ctx.arc(px, py, (i ? 12 : 9) * s, 0, 7); ctx.fill(); ctx.stroke();
+      if (i) { ctx.fillStyle = visA(c.acc2, .22); ctx.beginPath(); ctx.arc(px, py, 26 * s, 0, 7); ctx.fill(); }
+      ctx.fillStyle = col; ctx.font = SANS(i ? 800 : 600, (i ? 40 : 30) * s); ctx.textAlign = i ? 'right' : 'left'; ctx.fillText(l, px + (i ? 8 : -8) * s, py - 26 * s);
+    });
+    ctx.fillStyle = c.mu; ctx.font = SANS(500, 20 * s); ctx.textAlign = 'left'; ctx.fillText('Before', x0 - 8 * s, base + 28 * s); ctx.textAlign = 'right'; ctx.fillText('After', x1 + 8 * s, base + 28 * s); ctx.textAlign = 'left'; return;
+  }
+  const bw = Math.min(170 * s, w * .3), gap = Math.min(110 * s, w * .2), bx = x + (w - bw * 2 - gap) / 2, top = y + 90 * s, H = base - top;
+  const ha = Math.max(14 * s, H * a / mx), hb = Math.max(14 * s, H * b / mx);
+  visRound(ctx, bx, base - ha, bw, ha, 18 * s); ctx.fillStyle = c.card; ctx.fill(); ctx.fillStyle = visHatch(ctx, c); ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 2 * s; ctx.stroke();
+  const gb = ctx.createLinearGradient(0, base - hb, 0, base); gb.addColorStop(0, c.acc2); gb.addColorStop(1, c.acc);
+  ctx.save(); ctx.shadowColor = visA(c.acc2, .55); ctx.shadowBlur = 44 * s; ctx.shadowOffsetY = 14 * s; visRound(ctx, bx + bw + gap, base - hb, bw, hb, 18 * s); ctx.fillStyle = gb; ctx.fill(); ctx.restore();
+  ctx.save(); visRound(ctx, bx + bw + gap, base - hb, bw, hb, 18 * s); ctx.clip(); const sh = ctx.createLinearGradient(bx + bw + gap, 0, bx + bw * 2 + gap, 0); sh.addColorStop(0, 'rgba(255,255,255,.22)'); sh.addColorStop(.5, 'rgba(255,255,255,0)'); ctx.fillStyle = sh; ctx.fillRect(bx + bw + gap, base - hb, bw, hb); ctx.restore();
+  ctx.textAlign = 'center'; ctx.fillStyle = c.mu; ctx.font = SANS(600, 34 * s); ctx.fillText(pl.before, bx + bw / 2, base - ha - 18 * s);
+  ctx.fillStyle = c.fg; ctx.font = SANS(800, 44 * s); ctx.fillText(pl.after, bx + bw * 1.5 + gap, base - hb - 18 * s);
+  ctx.fillStyle = c.mu; ctx.font = SANS(500, 20 * s); ctx.fillText('Before', bx + bw / 2, base + 30 * s); ctx.fillText('After', bx + bw * 1.5 + gap, base + 30 * s); ctx.textAlign = 'left';
+  if (pl.b > pl.a && hb - ha > 60 * s) { ctx.font = SANS(800, 44 * s); const lw = ctx.measureText(pl.after).width; visScribble(ctx, bx + bw / 2, base - ha - 66 * s, bx + bw * 1.5 + gap - lw / 2 - 16 * s, Math.max(y + 60 * s, base - hb - 34 * s), '', c, s); }
+}
+/* draw a plan onto a canvas. u = { name, handle, pic, hue } */
+function visRender(cv, kind, pl, { style = 'paper', size = 'wide', look = 0, user, text = '', frameImg = null } = {}) {
+  const [W, H] = VIS_SIZES[size]; cv.width = W; cv.height = H; const ctx = cv.getContext('2d'); const c = VIS_PAL[style] || VIS_PAL.paper;
+  const u = { name: user.name || user.n, handle: user.handle || user.h, pic: user.pic, hue: user.hue };
+  const wide = W > H, s = wide ? 1 : 1.05, P = Math.round(W * (wide ? .06 : .075)); pl = pl || {};
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+  if (kind === 'data') {
+    visBg(ctx, W, H, c);
+    if (!(isFinite(pl.a) && isFinite(pl.b))) { visEyebrow(ctx, P, P + 20, 'Numbers', c, s); ctx.fillStyle = c.fg; ctx.font = SERIF(54 * s); visWrap(ctx, 'Write two numbers, like “21% → 38%”, and they’ll chart here.', W - P * 2).forEach((l, i) => ctx.fillText(l, P, P + 110 + i * 62)); visFoot(ctx, W, H, P, c, u, s); return; }
+    visEyebrow(ctx, P, P + 20 * s, pl.metric || 'The result', c, s);
+    const colW = wide ? W * .5 - P : W - P * 2;
+    const hd = pl.headline ? visFit(ctx, pl.headline, SERIF, 58 * s, 36 * s, colW, 3) : { size: 0, lines: [] };
+    ctx.fillStyle = c.fg; hd.lines.forEach((l, i) => { ctx.font = SERIF(hd.size); ctx.fillText(l, P, P + 20 * s + hd.size * 1.15 * (i + 1) + 8 * s); });
+    let yAfter = P + 20 * s + hd.size * 1.15 * hd.lines.length + 8 * s;
+    if (pl.chip) { ctx.font = SANS(600, 22 * s); const cw = ctx.measureText(pl.chip).width + 30 * s; visRound(ctx, P, yAfter + 20 * s, cw, 42 * s, 21 * s); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = c.fg; ctx.textBaseline = 'middle'; ctx.fillText(pl.chip, P + 15 * s, yAfter + 41 * s); ctx.textBaseline = 'alphabetic'; yAfter += 62 * s; }
+    const footTop = H - P - 52 * s, bigBase = footTop - 40 * s;
+    const big = visFit(ctx, pl.after, s2 => SANS(800, s2), (wide ? 176 : 190) * s, 90 * s, colW * .62, 1);
+    ctx.save(); ctx.fillStyle = c.fg; ctx.font = SANS(800, big.size); ctx.letterSpacing = `${-big.size * .03}px`; ctx.fillText(pl.after, P - 4 * s, bigBase); const bw = ctx.measureText(pl.after).width; ctx.restore();
+    const px = P + bw + 26 * s, zero = !pl.a; visPill(ctx, px, bigBase - big.size * .7, zero ? `from ${pl.before}` : pl.delta || '', c.acc, c.on, 28 * s, s);
+    if (!zero) { ctx.fillStyle = c.mu; ctx.font = SANS(500, 26 * s); ctx.fillText(`from ${pl.before}`, px + 2 * s, bigBase - 6 * s); }
+    if (wide) visChart(ctx, W * .54, P + 10, W * .46 - P, bigBase - P + 20, pl, c, s, look);
+    else { const cy = yAfter + 30 * s, ch = bigBase - big.size * .8 - cy - 40 * s; if (ch > 180 * s) visChart(ctx, P, cy, W - P * 2, ch, pl, c, s, look); }
+    visFoot(ctx, W, H, P, c, u, s); return;
+  }
+  if (kind === 'stat') {
+    visBg(ctx, W, H, c, [.2, .9]); const v = pl.value || (text.match(/[$€£]?\d[\d,.]*\s?(?:%|[kKmM]\b)?/) || [''])[0];
+    if (!v) { visEyebrow(ctx, P, P + 20, 'Big number', c, s); ctx.fillStyle = c.fg; ctx.font = SERIF(54 * s); visWrap(ctx, 'Write a number worth staring at, like “$12k MRR”.', W - P * 2).forEach((l, i) => ctx.fillText(l, P, P + 110 + i * 62)); visFoot(ctx, W, H, P, c, u, s); return; }
+    if (pl.label) visEyebrow(ctx, P, P + 20 * s, pl.label, c, s);
+    /* a rising line in the background, ending in a glowing point */
+    const x0 = wide ? W * .45 : P, x1 = W - P, yb = H * (wide ? .78 : .62), yt = H * (wide ? .2 : .3);
+    const pts = Array.from({ length: 9 }, (_, i) => { const t = i / 8; return [x0 + (x1 - x0) * t, yb - (yb - yt) * Math.pow(t, 2.2) + Math.sin(i * 1.7) * 14 * s * (1 - t)]; });
+    const path = () => { ctx.moveTo(...pts[0]); for (let i = 1; i < pts.length; i++) { const [px, py] = pts[i - 1], [qx, qy] = pts[i]; ctx.bezierCurveTo((px + qx) / 2, py, (px + qx) / 2, qy, qx, qy); } };
+    const ga = ctx.createLinearGradient(0, yt, 0, yb + 60); ga.addColorStop(0, visA(c.acc2, .3)); ga.addColorStop(1, visA(c.acc2, 0)); ctx.beginPath(); path(); ctx.lineTo(x1, yb + 60 * s); ctx.lineTo(x0, yb + 60 * s); ctx.closePath(); ctx.fillStyle = ga; ctx.fill();
+    ctx.save(); ctx.shadowColor = visA(c.acc2, .7); ctx.shadowBlur = 26 * s; ctx.strokeStyle = c.acc; ctx.lineWidth = 6 * s; ctx.lineCap = 'round'; ctx.beginPath(); path(); ctx.stroke(); ctx.restore();
+    const [ex, ey] = pts[8]; ctx.fillStyle = visA(c.acc2, .25); ctx.beginPath(); ctx.arc(ex, ey, 30 * s, 0, 7); ctx.fill(); ctx.fillStyle = c.acc; ctx.beginPath(); ctx.arc(ex, ey, 12 * s, 0, 7); ctx.fill();
+    const big = visFit(ctx, v, s2 => SANS(800, s2), (wide ? 230 : 250) * s, 100 * s, wide ? W * .62 : W - P * 2, 1);
+    const bigBase = wide ? H * .6 : H * .56;
+    ctx.save(); ctx.fillStyle = c.fg; ctx.font = SANS(800, big.size); ctx.letterSpacing = `${-big.size * .035}px`; ctx.shadowColor = c.bg; ctx.shadowBlur = 30; ctx.fillText(v, P - 6 * s, bigBase); ctx.restore();
+    if (pl.headline && pl.headline.trim() !== v) { const hd = visFit(ctx, pl.headline, SERIF, 44 * s, 30 * s, wide ? W * .55 : W - P * 2, 2); ctx.fillStyle = c.fg; hd.lines.forEach((l, i) => { ctx.font = SERIF(hd.size); ctx.fillText(l, P, bigBase + 30 * s + hd.size * 1.15 * (i + 1)); }); }
+    visFoot(ctx, W, H, P, c, u, s); return;
+  }
+  if (kind === 'list') {
+    visBg(ctx, W, H, c); const items = (pl.items && pl.items.length ? pl.items : text.split('\n').map(x => x.replace(/^(?:\d{1,2}[.)]|[-•–→✓*▸])\s+/, '').trim()).filter(Boolean).slice(1, 6));
+    let y = P + 20 * s; if (pl.headline) { const hd = visFit(ctx, pl.headline, SERIF, 60 * s, 38 * s, W - P * 2, 2); ctx.fillStyle = c.fg; hd.lines.forEach((l, i) => { ctx.font = SERIF(hd.size); ctx.fillText(l, P, y + hd.size * (i + .85)); }); y += hd.size * 1.1 * hd.lines.length + 26 * s; }
+    const avail = H - P - 96 * s - y, n = Math.max(1, items.length), rowH = Math.min(96 * s, avail / n), fs = Math.min(32 * s, rowH * .42);
+    items.forEach((it, i) => {
+      const ry = y + i * rowH, cy = ry + rowH / 2; if (i) { ctx.strokeStyle = c.line; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(P + 74 * s, ry); ctx.lineTo(W - P, ry); ctx.stroke(); }
+      const r = Math.min(24 * s, rowH * .3); ctx.fillStyle = i === 0 ? c.acc : c.card; ctx.beginPath(); ctx.arc(P + r, cy, r, 0, 7); ctx.fill(); if (i) { ctx.strokeStyle = c.line; ctx.stroke(); }
+      ctx.fillStyle = i === 0 ? c.on : c.fg; ctx.font = SANS(700, r * .95); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(i + 1), P + r, cy + 1); ctx.textAlign = 'left';
+      const f = visFit(ctx, it, sz => SANS(i === 0 ? 600 : 500, sz), fs, fs * .7, W - P * 2 - 80 * s, 1); ctx.fillStyle = c.fg; ctx.font = SANS(i === 0 ? 600 : 500, f.size); ctx.fillText(f.lines[0], P + 74 * s, cy + 1); ctx.textBaseline = 'alphabetic';
+    });
+    visFoot(ctx, W, H, P, c, u, s); return;
+  }
+  if (kind === 'compare') {
+    visBg(ctx, W, H, c); let y = P + 10 * s;
+    if (pl.headline) { const hd = visFit(ctx, pl.headline, SERIF, 56 * s, 36 * s, W - P * 2, 2); ctx.fillStyle = c.fg; hd.lines.forEach((l, i) => { ctx.font = SERIF(hd.size); ctx.fillText(l, P, y + hd.size * (i + .9)); }); y += hd.size * 1.12 * hd.lines.length + 26 * s; }
+    const gap = 56 * s, bottom = H - P - 86 * s, cols = wide ? 2 : 1, cw = (W - P * 2 - gap * (cols - 1)) / cols, maxH = wide ? bottom - y : (bottom - y - gap) / 2;
+    const L = pl.left || 'The old way', Rt = pl.right || 'The new way';
+    let fs = (wide ? 64 : 70) * s; const fitBoth = () => { for (; fs > 30 * s; fs -= 2) { ctx.font = SERIF(fs); const n = Math.max(visWrap(ctx, L, cw - 64 * s).length, visWrap(ctx, Rt, cw - 64 * s).length); if (96 * s + n * fs * 1.15 + 34 * s <= maxH && n <= 4) return n; } ctx.font = SERIF(fs); return Math.max(visWrap(ctx, L, cw - 64 * s).length, visWrap(ctx, Rt, cw - 64 * s).length); };
+    const nl = fitBoth(), ch = Math.min(maxH, 96 * s + nl * fs * 1.15 + 34 * s), top = y + (maxH - ch) / (wide ? 2 : 4);
+    [[L, pl.leftLabel || 'Not this', false], [Rt, pl.rightLabel || 'This', true]].forEach(([t, lab, on], i) => {
+      const x = wide ? P + i * (cw + gap) : P, yy = wide ? top : top + i * (ch + gap);
+      ctx.save(); if (on) { ctx.shadowColor = visA(c.acc2, .5); ctx.shadowBlur = 50 * s; ctx.shadowOffsetY = 16 * s; } visRound(ctx, x, yy, cw, ch, 28 * s); ctx.fillStyle = on ? c.acc : c.card; ctx.fill(); ctx.restore();
+      if (!on) { visRound(ctx, x, yy, cw, ch, 28 * s); ctx.strokeStyle = c.line; ctx.lineWidth = 2; ctx.stroke(); }
+      ctx.save(); ctx.font = SANS(700, 18 * s); ctx.letterSpacing = `${3 * s}px`; ctx.fillStyle = on ? visA(style === 'ink' ? '#1A1030' : '#FFFFFF', .75) : c.mu; ctx.fillText(lab.toUpperCase(), x + 32 * s, yy + 50 * s); ctx.restore();
+      ctx.font = SERIF(fs); const lines = visWrap(ctx, t, cw - 64 * s); ctx.fillStyle = on ? c.on : c.mu;
+      lines.forEach((l, k) => { const ly = yy + 86 * s + fs * 1.15 * (k + 1) - fs * .25; ctx.fillText(l, x + 32 * s, ly); if (!on) { ctx.strokeStyle = c.hatch; ctx.lineWidth = 3 * s; ctx.beginPath(); ctx.moveTo(x + 30 * s, ly - fs * .3); ctx.lineTo(x + 34 * s + ctx.measureText(l).width, ly - fs * .3); ctx.stroke(); } });
+    });
+    /* the arrow between them */
+    const ax = wide ? P + cw + gap / 2 : W / 2, ay = wide ? top + ch / 2 : top + ch + gap / 2, ar = 30 * s;
+    ctx.fillStyle = c.bg; ctx.beginPath(); ctx.arc(ax, ay, ar, 0, 7); ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = c.acc; ctx.lineWidth = 4 * s; ctx.lineCap = 'round'; ctx.beginPath(); const d = wide ? [1, 0] : [0, 1]; ctx.moveTo(ax - d[0] * 11 * s, ay - d[1] * 11 * s); ctx.lineTo(ax + d[0] * 11 * s, ay + d[1] * 11 * s); ctx.moveTo(ax + d[0] * 11 * s - (d[0] * 9 + d[1] * 9) * s, ay + d[1] * 11 * s - (d[1] * 9 - d[0] * 9) * s); ctx.lineTo(ax + d[0] * 11 * s, ay + d[1] * 11 * s); ctx.lineTo(ax + d[0] * 11 * s - (d[0] * 9 - d[1] * 9) * s, ay + d[1] * 11 * s - (d[1] * 9 + d[0] * 9) * s); ctx.stroke();
+    visFoot(ctx, W, H, P, c, u, s); return;
+  }
+  if (kind === 'quote') {
+    visBg(ctx, W, H, c, [.1, .1]); const t = (pl.headline || text || 'Your first line goes here.').trim(), em = (pl.emphasis || '').trim();
+    ctx.fillStyle = c.tint; ctx.globalAlpha = style === 'marker' ? .9 : .9; ctx.font = SERIF(360 * s); ctx.fillText('“', P - 16 * s, P + 250 * s); ctx.globalAlpha = 1;
+    const f = visFit(ctx, t, SERIF, (wide ? 104 : 112) * s, 38 * s, W - P * 2, wide ? 3 : 6), lh = f.size * 1.16;
+    const zoneT = P + 140 * s, zoneB = H - P - 90 * s; let y = Math.max(zoneT + f.size * .8, zoneT + (zoneB - zoneT - lh * f.lines.length) / 2 + f.size * .85);
+    const emL = em.toLowerCase();
+    f.lines.forEach(l => {
+      ctx.font = SERIF(f.size); const i = emL ? l.toLowerCase().indexOf(emL) : -1;
+      if (i >= 0) { const x0 = P + ctx.measureText(l.slice(0, i)).width, w = ctx.measureText(l.slice(i, i + em.length)).width; ctx.fillStyle = style === 'marker' ? '#FFFFFF' : visA(c.acc2, style === 'ink' ? .45 : .32); ctx.beginPath(); ctx.moveTo(x0 - 10 * s, y + f.size * .18); ctx.lineTo(x0 - 4 * s, y - f.size * .56); ctx.lineTo(x0 + w + 12 * s, y - f.size * .6); ctx.lineTo(x0 + w + 6 * s, y + f.size * .16); ctx.closePath(); ctx.fill(); }
+      ctx.fillStyle = c.fg; ctx.fillText(l, P, y);
+      y += lh;
+    });
+    visFoot(ctx, W, H, P, c, u, s); return;
+  }
+  if (kind === 'post') {
+    visBg(ctx, W, H, c); const cw = W - P * 2; ctx.font = SANS(400, 34); const lines = visWrap(ctx, text.trim() || 'Your post shows up here.', cw - 64).slice(0, Math.floor((H - P * 2 - 230) / 46)); const ch = 170 + lines.length * 46 + 60, cy = (H - ch) / 2;
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.2)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 22; visRound(ctx, P, cy, cw, ch, 28); ctx.fillStyle = style === 'ink' ? '#000' : '#fff'; ctx.fill(); ctx.restore();
+    const tx = style === 'ink' ? '#E7E9EA' : '#0F1419', t2 = style === 'ink' ? '#71767B' : '#536471';
+    visAvatar(ctx, P + 32, cy + 32, 34, u); ctx.fillStyle = tx; ctx.font = SANS(700, 30); ctx.fillText(u.name, P + 116, cy + 62); ctx.fillStyle = t2; ctx.font = SANS(400, 26); ctx.fillText('@' + u.handle, P + 116, cy + 96);
+    ctx.fillStyle = tx; ctx.font = SANS(400, 34); lines.forEach((l, i) => ctx.fillText(l, P + 32, cy + 160 + i * 46));
+    ctx.fillStyle = t2; ctx.font = SANS(400, 24); ctx.fillText(new Date().toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' }) + ' · ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), P + 32, cy + ch - 34); return;
+  }
+  if (kind === 'frame') {
+    visBg(ctx, W, H, c, [.5, .5]); const im = frameImg;
+    if (!im) { ctx.fillStyle = c.mu; ctx.font = SANS(500, 32); ctx.textAlign = 'center'; ctx.fillText('Drop a screenshot here, or click to choose one.', W / 2, H / 2); ctx.textAlign = 'left'; return; }
     const pad = P * .9, r = Math.min((W - pad * 2) / im.width, (H - pad * 2) / im.height), w = im.width * r, h = im.height * r, x = (W - w) / 2, y = (H - h) / 2;
-    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.28)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 24; visRound(ctx, x, y, w, h, 22); ctx.fillStyle = '#fff'; ctx.fill(); ctx.restore();
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.3)'; ctx.shadowBlur = 70; ctx.shadowOffsetY = 26; visRound(ctx, x, y, w, h, 22); ctx.fillStyle = '#fff'; ctx.fill(); ctx.restore();
     ctx.save(); visRound(ctx, x, y, w, h, 22); ctx.clip(); ctx.drawImage(im, x, y, w, h); ctx.restore();
   }
+}
+const visFonts = () => document.fonts ? Promise.all(['800 40px Figtree', '600 40px Figtree', '400 40px "EB Garamond"', '500 40px Caveat'].map(f => document.fonts.load(f).catch(() => 0))) : Promise.resolve();
+/* Claude, when it's on, gets the first pass and the post, and may pick better. Numbers it returns must appear in the post. */
+function visMergeAI(text, pl, r) {
+  if (!r || typeof r !== 'object') return pl; const has = x => !x || text.includes(String(x).trim());
+  const tpl = ['data', 'stat', 'list', 'compare', 'quote'].includes(r.template) ? r.template : pl.template; const out = { ...pl, template: tpl, ai: true };
+  if (r.headline && r.headline.length < 120) out.headline = r.headline; if (r.metric && r.metric.length < 40) out.metric = r.metric; if (r.emphasis) out.emphasis = r.emphasis; if (r.why) out.why = r.why;
+  if (tpl === 'data') { if (r.before && r.after && has(r.before) && has(r.after)) { const v = x => { const m = String(x).replace(/[$€£,\s]/g, ''); return parseFloat(m) * (/k$/i.test(m) ? 1e3 : /m$/i.test(m) ? 1e6 : 1); }; Object.assign(out, { before: r.before.trim(), after: r.after.trim(), a: v(r.before), b: v(r.after) }); if (out.a) out.delta = out.b / out.a >= 3 ? `${+(out.b / out.a).toFixed(1)}×` : `${out.b > out.a ? '+' : '−'}${Math.abs(Math.round((out.b - out.a) / out.a * 100))}%`; } else if (pl.template !== 'data') return pl; }
+  if (tpl === 'stat') { if (r.value && has(r.value)) { out.value = r.value.trim(); out.label = r.label || out.label; } else if (pl.template !== 'stat') return pl; }
+  if (tpl === 'list' && Array.isArray(r.items) && r.items.length >= 2) out.items = r.items.slice(0, 6).map(String);
+  if (tpl === 'compare' && r.left && r.right) Object.assign(out, { left: r.left, right: r.right });
+  return out;
 }
 function openVisual(i) {
   const tw = S.draft.tweets[i]; if (!tw) return; const ta = $(`.tw[data-id="${tw.id}"] .tw-input`);
   const sel = ta && ta.selectionEnd > ta.selectionStart ? ta.value.slice(ta.selectionStart, ta.selectionEnd) : '';
-  const all = () => S.draft.tweets.map(t => t.text).join('\n');
-  if (!sel && VIS.kind !== 'frame') VIS.kind = numPair(all()) ? 'chart' : 'quote';
-  const text = () => VIS.kind === 'quote' ? (sel || tw.text.split('\n')[0]) : VIS.kind === 'post' ? tw.text : all();
+  const all = S.draft.tweets.map(t => t.text).join('\n\n').trim();
+  let plan = HWCore.visualPlan(sel || all); const edit = {}; VIS.kind = plan.template; VIS.look = 0;
+  const cur = () => ({ ...plan, ...Object.fromEntries(Object.entries(edit).filter(([, v]) => v !== undefined)) });
+  const text = () => VIS.kind === 'post' ? tw.text : sel || all;
   const seg = (k, opts) => `<div class="seg vis-seg" role="tablist" data-vk="${k}">${opts.map(([v, l]) => `<button role="tab" data-v="${v}" aria-selected="${VIS[k] === v}">${l}</button>`).join('')}</div>`;
-  const m = modal(`${modalHead('Make a visual', 'Posts with an image get stopped on more. Pick one and it lands in this post.')}
+  const m = modal(`${modalHead('Make a visual', 'We read your post and picked the picture it wants. Change anything.')}
   <div class="modal-b vis-b">
-    <div class="vis-kinds" role="tablist">${[['quote', 'Quote card', 'Your line, set big'], ['chart', 'Before / after', 'From the numbers you wrote'], ['post', 'Post screenshot', 'For LinkedIn and Threads'], ['frame', 'Frame a screenshot', 'Make any screenshot look good']].map(([k, l, d]) => `<button class="vk" data-kind="${k}" aria-selected="${VIS.kind === k}"><b>${l}</b><small>${d}</small></button>`).join('')}</div>
+    <div class="vis-kinds" role="tablist">${VIS_KINDS.map(([k, l, d]) => `<button class="vk" data-kind="${k}" aria-selected="${VIS.kind === k}"><b>${l}${plan.template === k ? ' <span class="vk-pick">Picked</span>' : ''}</b><small>${d}</small></button>`).join('')}</div>
+    <p class="vis-why" id="vis-why"></p>
     <div class="vis-stage" id="vis-stage"><canvas id="vis-cv" aria-label="Preview of the image"></canvas><input type="file" accept="image/*" id="vis-file" hidden></div>
+    <div class="vis-edit" id="vis-edit"><label class="vis-f"><span>Headline</span><input class="input" id="vis-h" maxlength="120"></label><label class="vis-f" id="vis-mw"><span>Label</span><input class="input" id="vis-m" maxlength="40"></label><button class="btn" id="vis-look">${ic('shuffle', 'sm')} Another look</button></div>
     <div class="vis-opts">${seg('style', [['paper', 'Paper'], ['ink', 'Ink'], ['marker', 'Tint']])}${seg('size', [['wide', '16:9'], ['square', '1:1'], ['tall', '4:5']])}</div>
   </div>
   <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="vis-add">${ic('image', 'sm')} Add to post</button></div>`, { label: 'Make a visual', box: 'modal vis-modal' });
   const el = m.el, cv = $('#vis-cv', el);
-  const draw = () => { visDraw(cv, text()); $('#vis-stage', el).classList.toggle('drop', VIS.kind === 'frame'); };
-  (document.fonts ? Promise.all([document.fonts.load('600 40px Figtree'), document.fonts.load('400 40px "EB Garamond"')]) : Promise.resolve()).then(draw, draw);
+  const why = () => { const k = VIS_KINDS.find(x => x[0] === VIS.kind); $('#vis-why', el).innerHTML = VIS.kind === plan.template ? `${ic('riff', 'sm')}<span><b>${plan.ai ? `${cap(AI_NAME())} picked` : 'Picked for you'}: ${k[1]}.</b> ${esc(plan.why || '')}</span>` : `${ic('image', 'sm')}<span><b>${k[1]}.</b> ${esc(k[2])}.</span>`; };
+  const fields = () => { const p = cur(); const h = $('#vis-h', el), mm = $('#vis-m', el); if (document.activeElement !== h) h.value = p.headline || ''; if (document.activeElement !== mm) mm.value = VIS.kind === 'stat' ? (p.label || '') : (p.metric || ''); $('#vis-mw', el).hidden = !['data', 'stat'].includes(VIS.kind); $('#vis-edit', el).hidden = ['post', 'frame'].includes(VIS.kind); $('#vis-look', el).hidden = VIS.kind !== 'data'; };
+  const draw = () => { visRender(cv, VIS.kind, cur(), { style: VIS.style, size: VIS.size, look: VIS.look, user: S.user, text: text(), frameImg: VIS.frameImg }); $('#vis-stage', el).classList.toggle('drop', VIS.kind === 'frame'); why(); fields(); };
+  visFonts().then(draw, draw);
+  if (aiOn() && !sel) { $('#vis-why', el).classList.add('thinking'); ask(HWCore.prompts.visual({ text: all, plan }), { fresh: true }).then(r => { const np = visMergeAI(all, plan, r && (r.data || r)); if (np !== plan) { const moved = np.template !== plan.template && VIS.kind === plan.template; plan = np; if (moved) { VIS.kind = plan.template; $$('.vk', el).forEach(x => { x.setAttribute('aria-selected', x.dataset.kind === VIS.kind); const b = $('b', x); b.innerHTML = VIS_KINDS.find(k => k[0] === x.dataset.kind)[1] + (x.dataset.kind === plan.template ? ' <span class="vk-pick">Picked</span>' : ''); }); } draw(); } }).catch(() => { }).finally(() => $('#vis-why', el) && $('#vis-why', el).classList.remove('thinking')); }
   el.addEventListener('click', e => {
     const k = e.target.closest('.vk'); if (k) { VIS.kind = k.dataset.kind; $$('.vk', el).forEach(x => x.setAttribute('aria-selected', x === k)); SFX.play('tick'); draw(); if (VIS.kind === 'frame' && !VIS.frameImg) $('#vis-file', el).click(); return; }
     const o = e.target.closest('.vis-seg [data-v]'); if (o) { const g = o.parentElement.dataset.vk; VIS[g] = o.dataset.v; $$('[data-v]', o.parentElement).forEach(x => x.setAttribute('aria-selected', x === o)); SFX.play('tick'); draw(); return; }
+    if (e.target.closest('#vis-look')) { VIS.look = (VIS.look + 1) % 3; SFX.play('swap'); draw(); return; }
     if (e.target.closest('#vis-stage') && VIS.kind === 'frame') $('#vis-file', el).click();
   });
+  $('#vis-h', el).addEventListener('input', e => { edit.headline = e.target.value; draw(); });
+  $('#vis-m', el).addEventListener('input', e => { edit[VIS.kind === 'stat' ? 'label' : 'metric'] = e.target.value; draw(); });
   const load = f => { if (!f || !f.type.startsWith('image/')) return; const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { VIS.frameImg = im; draw(); }; im.src = r.result; }; r.readAsDataURL(f); };
   $('#vis-file', el).addEventListener('change', e => load(e.target.files[0]));
   const st = $('#vis-stage', el); st.addEventListener('dragover', e => { e.preventDefault(); st.classList.add('over'); }); st.addEventListener('dragleave', () => st.classList.remove('over')); st.addEventListener('drop', e => { e.preventDefault(); st.classList.remove('over'); VIS.kind = 'frame'; $$('.vk', el).forEach(x => x.setAttribute('aria-selected', x.dataset.kind === 'frame')); load(e.dataTransfer.files[0]); });
@@ -3441,7 +3651,8 @@ function openVisual(i) {
     if (tw.poll) { toast('Polls and images don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; }
     if (tw.media.length >= 4) { toast('Four images max per post.', { icon: 'image', tone: 'err' }); return; }
     if (VIS.kind === 'frame' && !VIS.frameImg) { $('#vis-file', el).click(); return; }
-    tw.media.push({ type: 'img', src: cv.toDataURL('image/png'), alt: { quote: 'Quote card: ', chart: 'Chart: ', post: 'Screenshot of the post: ', frame: 'Screenshot' }[VIS.kind] + (VIS.kind === 'frame' ? '' : text().slice(0, 120)) });
+    const p = cur(); const alt = { data: `Chart: ${p.metric || ''} went from ${p.before} to ${p.after} (${p.delta}).`, stat: `${p.value} ${p.label || ''}. ${p.headline || ''}`, list: `${p.headline || 'List'}: ${(p.items || []).join('; ')}`, compare: `${p.leftLabel || 'Before'}: ${p.left}. ${p.rightLabel || 'After'}: ${p.right}.`, quote: `Quote card: ${p.headline || ''}`, post: 'Screenshot of the post: ' + tw.text.slice(0, 120), frame: 'Screenshot' }[VIS.kind];
+    tw.media.push({ type: 'img', src: cv.toDataURL('image/png'), alt: alt.trim().slice(0, 400) });
     refreshMedia(tw.id); m.close(); SFX.play('swap'); toast('Added. It sits right under your words.', { icon: 'image', tone: 'accent' });
   };
 }
@@ -4676,6 +4887,25 @@ const VOICE_SAMPLES = [
   ['shipped the new pricing page. 3 plans → 1. already feels better.', 'We cut our pricing page from three plans to one. It already converts better.'],
   ['3 pricing plans is a cop-out. we went to 1. trials up 22% in a week.', 'Three pricing plans is a hedge, not a strategy. We cut to one. Trials rose 22% in a week.']
 ];
+/* homepage voice sliders: five spice steps × three polish steps of one idea */
+const HV_SPICE = ['Calm', 'Easygoing', 'Direct', 'Bold', 'Spicy'], HV_POLISH = ['lowercase, loose', 'Casual', 'Polished'];
+const HV_SAMPLES = [
+  ['shipped the pricing page today. kept it simple. we’ll see how it goes.', 'Shipped the new pricing page today. Kept it simple. We’ll see how it goes.', 'We shipped the new pricing page today. It’s simpler, and we’ll see how it performs.'],
+  ['moved our pricing from 3 plans to 1 today. feels calmer already.', 'Moved our pricing from 3 plans to 1 today. Feels calmer already.', 'We moved from three pricing plans to one today. It already feels calmer.'],
+  ['shipped the new pricing page. 3 plans → 1. already feels better.', 'Shipped the new pricing page. 3 plans → 1. Already converting better.', 'We cut our pricing page from three plans to one. It already converts better.'],
+  ['3 pricing plans was us being scared to pick. we picked. trials up 22%.', 'Three pricing plans was us being scared to pick. We picked one. Trials up 22%.', 'Three pricing plans was a fear of choosing. We chose one. Trials rose 22%.'],
+  ['3 pricing plans is a cop-out. we went to 1. trials up 22% in a week.', '3 pricing plans is a cop-out. We went to 1. Trials up 22% in a week.', 'Three pricing plans is a hedge, not a strategy. We cut to one. Trials rose 22% in a week.']
+];
+const HV_LESSON = ['the lesson: every option you add is a decision you’re asking someone else to make.', 'The lesson: every option you add is a decision you’re asking someone else to make.', 'The lesson: every option you add is a decision you’re asking a customer to make for you.'];
+const HV_COUNTS = [[12, 30, 610, 41000], [26, 64, 1100, 72000], [64, 210, 2900, 188000], [138, 402, 5200, 310000], [311, 690, 8400, 520000]];
+/* word-level diff: words that are new or changed get wrapped so they can animate in */
+function wordDiff(a, b) {
+  const A = a.filter(x => x.trim()), B = b.filter(x => x.trim()), n = A.length, m = B.length, L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const keep = new Set(); for (let i = 0, j = 0; i < n && j < m;) { if (A[i] === B[j]) { keep.add(j); i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++; }
+  let w = 0, k = 0, changed = 0; const html = b.map(t => { if (!t.trim()) return esc(t); const idx = w++; if (keep.has(idx)) return pfText(t); changed++; return `<span class="vw" style="--i:${k++}">${pfText(t)}</span>`; }).join('');
+  return { html, changed };
+}
 const voiceSample = (spice, polish, length = 0) => { const row = VOICE_SAMPLES[spice < 35 ? 0 : spice < 68 ? 1 : 2]; let s = row[polish < 50 ? 0 : 1]; if (length > 55) s += polish < 50 ? '\n\nthe lesson: every option you add is a decision you’re asking someone else to make.' : '\n\nThe lesson: every option you add is a decision you’re asking a customer to make for you.'; return s; };
 
 /* reveals: armed only below the fold, so the first frame is always complete */
@@ -4699,7 +4929,7 @@ const DEMO_ME = { n: 'Sam Okafor', h: 'samwrites', v: 0, bio: 'Building in publi
 function demoHTML() {
   return `<div class="dm-tabs" role="tablist" aria-label="Product demo">${DEMO_SCENES.map((s, i) => `<button role="tab" data-dm="${i}" aria-selected="${i === 0}"><span>${s.t}</span><i><b></b></i></button>`).join('')}</div>
   <div class="dm-win" aria-hidden="true">
-    <div class="dm-bar"><i></i><i></i><i></i><span>hookworthy.com</span><button class="dm-snd" data-dmsnd aria-label="Play demo sounds" tabindex="-1">${ic('volume', 'sm')}</button></div>
+    <div class="dm-bar"><i></i><i></i><i></i><span>hookworthy.com</span><button class="dm-snd" data-dmsnd aria-label="Demo sounds">${ic('volume', 'sm')}<span>Sound</span></button></div>
     <div class="dm-body"><aside class="dm-side"><span class="logo">${LOGO}</span><span class="btn primary newpost">${ic('plus', 'sm')}<span>New post</span></span><span class="searchbtn">${ic('search', 'sm')}<span>Search</span>${kbd(MOD, 'K')}</span>
         <nav class="nav">${NAV.map(it => `<a class="dm-nav" data-n="${it.label}" tabindex="-1">${ic(it.icon)}<span>${it.label}</span></a>`).join('')}</nav><span class="spacer"></span>
         <span class="me">${pfAv(DEMO_ME)}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${DEMO_ME.n}</b><span class="faint" style="font-size:12px">@${DEMO_ME.h}</span></span></span></aside>
@@ -4712,13 +4942,36 @@ function demoHTML() {
 function demoInit(root) {
   const sec = $('#demo', root); if (!sec) return () => {};
   const win = $('.dm-win', sec), main = $('#dm-main', sec), cur = $('.dm-cur', sec), cap = $('#dm-cap', sec), tabs = $$('[data-dm]', sec);
-  let run = 0, idx = 0, visible = false, sound = false, alive = true;
-  const sfx = k => { if (sound) SFX.play(k); };
+  let run = 0, idx = 0, visible = false, alive = true;
+  /* sound is on unless you turned it off; browsers stay silent until your first click or key, so the button says so */
+  let sound = (() => { try { return localStorage.getItem('hw-demo-snd') !== '0'; } catch (e) { return true; } })(), heard = !!(navigator.userActivation && navigator.userActivation.hasBeenActive);
+  const sndBtn = $('.dm-snd', sec), sndPaint = () => { win.classList.toggle('snd', sound && heard); $('span', sndBtn).textContent = !sound ? 'Sound off' : heard ? 'Sound on' : 'Tap for sound'; };
+  const wake = () => { if (heard) return; heard = true; sndPaint(); removeEventListener('pointerdown', wake, true); removeEventListener('keydown', wake, true); };
+  addEventListener('pointerdown', wake, true); addEventListener('keydown', wake, true); sndPaint();
+  const sfx = k => { if (sound && heard) SFX.play(k); };
   const wait = (ms, id) => new Promise((res, rej) => setTimeout(() => (id === run && alive ? res() : rej('stop')), REDUCED ? 0 : ms));
   const pos = (el, fx = .5, fy = .5) => { const a = el.getBoundingClientRect(), w = win.getBoundingClientRect(); return [a.left - w.left + a.width * fx, a.top - w.top + a.height * fy]; };
   const move = async (el, id, fx, fy, ms = 700) => { const [x, y] = pos(el, fx, fy); cur.style.transitionDuration = ms + 'ms'; cur.style.transform = `translate(${x}px,${y}px)`; await wait(ms + 60, id); };
   const click = async (el, id) => { cur.classList.add('down'); el.classList.add('dm-press'); sfx('tick'); await wait(140, id); cur.classList.remove('down'); el.classList.remove('dm-press'); await wait(120, id); };
-  const type = async (el, text, id, cps = 38) => { for (let i = 1; i <= text.length; i++) { el.textContent = text.slice(0, i); await wait(1000 / cps, id); } };
+  /* typing like a person: uneven rhythm, a beat after punctuation, the odd slip fixed with backspace, a key sound per press */
+  const NEAR = { a: 's', e: 'r', i: 'o', o: 'i', n: 'm', t: 'r', s: 'a', r: 't', h: 'j', l: 'k', d: 'f', u: 'y', c: 'v', m: 'n', p: 'o', g: 'h', b: 'v', w: 'e' };
+  const typeIn = async (root, id, { cps = 26, slips = 1 } = {}) => {
+    if (REDUCED) return; const nodes = [], tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); while (tw.nextNode()) nodes.push(tw.currentNode);
+    const full = nodes.map(n => n.data); nodes.forEach(n => { n.data = ''; }); const caret = document.createElement('i'); caret.className = 'dm-caret'; root.classList.add('typing'); let made = 0, n = 0;
+    try {
+      for (let k = 0; k < nodes.length; k++) { const nd = nodes[k]; nd.after(caret);
+        for (const ch of full[k]) {
+          if (made < slips && n > 8 && NEAR[ch] && Math.random() < .08) { made++; nd.data += NEAR[ch]; sfx('key'); await wait(90 + Math.random() * 60, id); await wait(180 + Math.random() * 120, id); nd.data = nd.data.slice(0, -1); sfx('back'); await wait(110 + Math.random() * 60, id); }
+          nd.data += ch; n++; sfx(ch === ' ' ? 'space' : 'key');
+          let d = 1000 / cps * (.5 + Math.random() * .95); if (/[.!?]/.test(ch)) d += 280; else if (/[,:;→]/.test(ch)) d += 150; else if (ch === ' ' && Math.random() < .18) d += 110;
+          await wait(d, id);
+        } }
+      await wait(380, id);
+    } finally { nodes.forEach((nd, k) => { nd.data = full[k]; }); caret.remove(); root.classList.remove('typing'); }
+  };
+  const type = async (el, text, id) => { el.textContent = text; await typeIn(el, id, { slips: 0, cps: 22 }); };
+  /* the visual in the demo is the app's real renderer, drawn once */
+  let VISD = null; const visDemo = () => VISD || (VISD = visFonts().then(() => { const T = 'Redesigned onboarding from 7 screens to 2. Activation went from 21% → 38%.', pl = HWCore.visualPlan(T); const img = (look, style) => { const cv = document.createElement('canvas'); visRender(cv, 'data', pl, { user: DEMO_ME, style, size: 'wide', look }); return cv.toDataURL('image/jpeg', .88); }; return { pl, cols: img(0, 'paper'), line: img(1, 'paper'), ink: img(1, 'ink') }; }));
   /* the same components the app renders: status, Post to toggles, preview toggle, Schedule; tools row; hook chip */
   const post = (inner, extra = '') => `<div class="dm-post">${pfAv(DEMO_ME)}<div class="dm-pb"><div class="dm-who"><b>${DEMO_ME.n}</b><span>@${DEMO_ME.h}</span></div><div class="dm-tx"><span class="l1">${inner.split('<br>')[0]}</span>${inner.includes('<br>') ? '<br>' + inner.split('<br>').slice(1).join('<br>') : ''}</div>${extra}<div class="tw-tools dm-tools"><span class="tool">${ic('image')}</span><span class="tool gif-t"><span>GIF</span></span><span class="tool dm-vis">${ic('spark')}</span><span class="tools-sep"></span><span class="tool riff">${ic('riff')}<span>Rewrite</span></span><div class="tw-meta"><span class="hook dm-hook"><span class="sc"><span>48</span></span><span>Hook</span></span></div></div></div></div>`;
   const top = btn => `<div class="c-top dm-top"><div class="status"><span class="dot"></span><span class="txt">Saved</span></div><div class="grow"></div><span class="plats-l">Post to</span><div class="plats">${[['x', 1], ['threads', 1], ['li', 0], ['bsky', 1]].map(([p, on]) => `<span class="plat" aria-pressed="${!!on}">${pic(p)}</span>`).join('')}</div><span class="btn ghost icon-only">${ic('more')}</span><span class="btn primary dm-sched">${ic('clock', 'sm')}<span>${btn || 'Schedule'}</span></span></div>`;
@@ -4731,7 +4984,7 @@ function demoInit(root) {
     async sharpen(id) {
       nav('Write');
       main.innerHTML = top() + post('<span class="a">I think </span><span class="s">we should really try to talk to customers</span><span class="b"> before building anything.</span>');
-      const s = $('.s', main), hook = $('.dm-hook', main); await wait(500, id);
+      const s = $('.s', main), hook = $('.dm-hook', main); await wait(300, id); await typeIn($('.dm-tx', main), id); await wait(250, id);
       await move(s, id, 0, .5); cur.classList.add('down'); s.classList.add('sel'); await wait(650, id); cur.classList.remove('down');
       const bar = document.createElement('div'); bar.className = 'dm-sharp'; bar.innerHTML = `<span class="sh-t">${ic('riff', 'sm')}Sharpen</span><button>Punchier</button><button>Shorter</button><button class="bd">Bolder</button><button>More human</button>`; $('.dm-tx', main).append(bar);
       requestAnimationFrame(() => bar.classList.add('on')); await wait(500, id);
@@ -4746,14 +4999,18 @@ function demoInit(root) {
       await wait(1600, id);
     },
     async visual(id) {
-      nav('Write');
+      nav('Write'); const V = visDemo();
       main.innerHTML = top() + post('Redesigned onboarding from 7 screens to 2. Activation went from 21% → 38%.');
-      await wait(500, id); const v = $('.dm-vis', main); await move(v, id); await click(v, id);
-      const m = document.createElement('div'); m.className = 'dm-modal'; m.innerHTML = `<b>Make a visual</b><div class="dm-kinds"><span>Quote card</span><span class="on">Before / after</span><span>Post screenshot</span></div><div class="dm-chart"><span class="t">Activation</span><div class="bars"><div><em>21%</em><i style="--h:.42"></i><small>Before</small></div><div><em>38%</em><i class="y" style="--h:.76"></i><small>After</small></div></div><span class="pill">+81%</span></div><span class="dm-add">Add to post</span>`;
-      main.append(m); requestAnimationFrame(() => m.classList.add('on')); await wait(1500, id);
-      await move($('.dm-add', m), id); await click($('.dm-add', m), id); m.classList.remove('on'); sfx('swap');
-      $('.dm-pb .dm-tx', main).insertAdjacentHTML('afterend', `<div class="dm-img"><div class="dm-chart sm"><span class="t">Activation</span><div class="bars"><div><em>21%</em><i style="--h:.42"></i></div><div><em>38%</em><i class="y" style="--h:.76"></i></div></div><span class="pill">+81%</span></div></div>`);
-      await wait(1900, id);
+      await wait(300, id); await typeIn($('.dm-tx', main), id); const vd = await V; await wait(200, id);
+      const v = $('.dm-vis', main); await move(v, id); await click(v, id);
+      const m = document.createElement('div'); m.className = 'dm-modal dm-vm'; m.innerHTML = `<b>Make a visual</b><div class="dm-kinds"><span class="on">Numbers <i>Picked</i></span><span>Big number</span><span>Quote card</span><span>List</span></div><p class="dm-vwhy">${ic('riff', 'sm')}<span>You wrote <b>21% → 38%</b>. A number that moves is the fastest thing to read in a feed.</span></p><img class="dm-visimg" alt="" src="${vd.cols}"><div class="dm-vrow"><span class="dm-look">${ic('shuffle', 'sm')} Another look</span><span class="dm-sty"><span class="on">Paper</span><span class="ink">Ink</span></span><span class="dm-add">Add to post</span></div>`;
+      main.append(m); requestAnimationFrame(() => m.classList.add('on')); sfx('whoosh'); await wait(1500, id);
+      const im = $('.dm-visimg', m), swap = async src => { im.classList.add('sw'); await wait(160, id); im.src = src; im.classList.remove('sw'); };
+      await move($('.dm-look', m), id); await click($('.dm-look', m), id); await swap(vd.line); await wait(1100, id);
+      const ink = $('.dm-sty .ink', m); await move(ink, id); await click(ink, id); $('.dm-sty .on', m).classList.remove('on'); ink.classList.add('on'); await swap(vd.ink); await wait(1200, id);
+      await move($('.dm-add', m), id); await click($('.dm-add', m), id); m.classList.remove('on'); sfx('pop');
+      $('.dm-pb .dm-tx', main).insertAdjacentHTML('afterend', `<div class="dm-img"><img alt="" src="${vd.ink}"></div>`);
+      await wait(2000, id);
     },
     async radar(id) {
       nav('Ideas');
@@ -4769,12 +5026,13 @@ function demoInit(root) {
     async schedule(id) {
       nav('Write');
       main.innerHTML = top() + post('We doubled our price. Signups went up 31%.');
-      $('.dm-tx', main).classList.add('good'); const hook = $('.dm-hook', main); hook.classList.add('hi'); setHook(hook, 91);
+      await wait(300, id); await typeIn($('.dm-tx', main), id, { cps: 28 });
+      $('.dm-tx', main).classList.add('good'); const hook = $('.dm-hook', main); hook.classList.add('hi'); setHook(hook, 91); sfx('hook');
       await wait(600, id); const sb = $('.dm-sched', main); await move(sb, id); await click(sb, id);
       /* the app's own Schedule sheet: best times first, the best one picked */
       const m = document.createElement('div'); m.className = 'dm-modal sm dm-sheet';
       m.innerHTML = `<div class="dm-sh"><b>Schedule</b><small>1 post to X, Threads and Bluesky</small></div><span class="label">Best times for you</span><div class="sched-times">${[['Tue 8:40 AM', 'Your replies peak here', 1], ['Wed 5:30 PM', 'The commute scroll', 0], ['Pick a time', 'Your call. We trust you.', 0]].map(([a, b, on]) => `<div class="stime" aria-checked="${!!on}"><span class="radio"></span><span><b>${a}</b><small>${b}</small></span>${on ? '<span class="pill accent">Best</span>' : ''}</div>`).join('')}</div><span class="dm-add">${ic('clock', 'sm')} Schedule for Tue 8:40 AM</span>`;
-      main.append(m); requestAnimationFrame(() => m.classList.add('on')); await wait(1200, id);
+      main.append(m); requestAnimationFrame(() => m.classList.add('on')); sfx('whoosh'); await wait(1200, id);
       await move($('.dm-add', m), id); await click($('.dm-add', m), id); m.classList.remove('on'); sfx('done');
       await wait(260, id); m.remove();
       /* then the real Queue: same calendar the app renders, and the post lands on the peak */
@@ -4788,13 +5046,13 @@ function demoInit(root) {
   const play = async i => {
     const id = ++run; idx = i; tabs.forEach((t, k) => { t.setAttribute('aria-selected', k === i); t.classList.remove('done'); t.style.setProperty('--p', 0); if (k < i) t.classList.add('done'); });
     cap.textContent = DEMO_SCENES[i].d; cur.style.transitionDuration = '0ms'; cur.style.transform = 'translate(70%,80%)';
-    const t0 = performance.now(), bar = tabs[i]; let prog = 0; const tick = () => { if (id !== run) return; prog = Math.min(.97, (performance.now() - t0) / 9000); bar.style.setProperty('--p', prog); requestAnimationFrame(tick); }; tick();
+    const t0 = performance.now(), bar = tabs[i]; let prog = 0; const tick = () => { if (id !== run) return; prog = Math.min(.97, (performance.now() - t0) / 13000); bar.style.setProperty('--p', prog); requestAnimationFrame(tick); }; tick();
     try { await scenes[DEMO_SCENES[i].k](id); bar.style.setProperty('--p', 1); await wait(300, id); play((i + 1) % DEMO_SCENES.length); } catch (e) { }
   };
-  sec.addEventListener('click', e => { const t = e.target.closest('[data-dm]'); if (t) { play(+t.dataset.dm); return; } if (e.target.closest('[data-dmsnd]')) { sound = !sound; win.classList.toggle('snd', sound); if (sound) SFX.play('tap'); } });
+  sec.addEventListener('click', e => { const t = e.target.closest('[data-dm]'); if (t) { play(+t.dataset.dm); return; } if (e.target.closest('[data-dmsnd]')) { const was = heard; heard = true; sound = was ? !sound : true; try { localStorage.setItem('hw-demo-snd', sound ? '1' : '0'); } catch (x) { } sndPaint(); if (sound) SFX.play('tap'); } });
   const io = new IntersectionObserver(([en]) => { const v = en.isIntersecting; if (v && !visible) play(idx); if (!v) run++; visible = v; }, { threshold: .35 });
   if (REDUCED) { play(0); } else io.observe(win);
-  return () => { alive = false; run++; io.disconnect(); mo.disconnect(); };
+  return () => { alive = false; run++; io.disconnect(); mo.disconnect(); removeEventListener('pointerdown', wake, true); removeEventListener('keydown', wake, true); };
 }
 
 /* ----- the ring ----- */
@@ -5007,9 +5265,9 @@ ROUTES.home = () => {
       <div class="ed rv"><div class="hw-h" style="margin-bottom:10px"><span class="eyebrow">LinkedIn</span><h2>Your hook lives <em>above the fold.</em></h2><p>LinkedIn shows about three lines, then “…more”. Type below and watch exactly where your post gets cut.</p></div>
         <label for="fold-t" class="lbl"><span>Your LinkedIn post</span><span id="fold-sc"></span></label>
         <textarea id="fold-t" spellcheck="false">${esc(FOLD_DEFAULT)}</textarea>
-        <div class="fmeter"><span>Before the fold on mobile</span><b id="fold-n"></b></div>
+        <div class="fmeter"><span id="fold-n"></span><i class="fbar"><b id="fold-bar"></b></i></div>
       </div>
-      <div class="cards rv" style="--d:.1s"><div class="lbl"><span>How it looks in the feed</span><span>LinkedIn · light</span></div><div id="fold-card"></div></div>
+      <div class="cards rv" style="--d:.1s"><div class="lbl"><span>On a phone, in the feed</span><span class="fstat" id="fold-st"></span></div><div id="fold-card"></div></div>
     </div>
   </section>
 
@@ -5018,8 +5276,8 @@ ROUTES.home = () => {
       <div class="hw-h rv"><span class="eyebrow">Your voice</span><h2>Sounds like you <em>on a good day.</em></h2><p>Hookworthy learns from your own posts, not the internet’s. Slide the tone and watch the same idea change. Your never-say list stays never.</p></div>
       <div class="grid">
         <div class="ctl rv">
-          <div class="sl"><label for="hv-spice" class="ends"><span>Calm</span><span>Spicy</span></label><input type="range" id="hv-spice" min="0" max="100" value="60"></div>
-          <div class="sl"><label for="hv-pol" class="ends"><span>lowercase, loose</span><span>Polished</span></label><input type="range" id="hv-pol" min="0" max="100" value="30"></div>
+          <div class="sl"><label for="hv-spice" class="ends"><span>Calm</span><output id="hv-sl"></output><span>Spicy</span></label><input type="range" id="hv-spice" min="0" max="100" value="50"></div>
+          <div class="sl"><label for="hv-pol" class="ends"><span>lowercase, loose</span><output id="hv-pl"></output><span>Polished</span></label><input type="range" id="hv-pol" min="0" max="100" value="20"></div>
           <div class="chips">${['game-changer', 'delve', 'unlock', 'synergy', 'excited to announce'].map(w => `<span><s>${w}</s> never</span>`).join('')}</div>
         </div>
         <div class="rv" style="--d:.1s" id="hv-out"></div>
@@ -5089,16 +5347,47 @@ function initHome() {
   $('#four-theme').addEventListener('click', e => { const b = e.target.closest('[data-ft]'); if (!b) return; $$('[data-ft]').forEach(x => x.setAttribute('aria-selected', x === b)); drawFour(b.dataset.ft); });
   /* the fold */
   const ft = $('#fold-t');
+  /* the card is the truth: clamp it the way LinkedIn does on a phone, then measure which characters are still visible */
   const drawFold = () => {
-    const t = ft.value; const lines = t.split('\n'); let shown = '', ln = 0;
-    for (const l of lines) { const wraps = Math.max(1, Math.ceil(l.length / 46)); if (ln + wraps > 3) { shown += l.slice(0, Math.max(0, (3 - ln) * 46)); break; } shown += l + '\n'; ln += wraps; if (ln >= 3) break; }
-    const n = [...shown.trim()].length; $('#fold-n').textContent = `${n} characters`;
-    const h = hookScore(t); $('#fold-sc').textContent = `Hook ${h.score}`;
-    $('#fold-card').innerHTML = liPost({ t: t || ' ', c: [86, 12, 1284, 0], ago: '2h' }, { you: MAYA }).replace('<article', '<article style="max-width:420px"');
+    const t = ft.value; const h = hookScore(t); $('#fold-sc').textContent = `Hook ${h.score}`;
+    $('#fold-card').innerHTML = liPost({ t: t || ' ', c: [86, 12, 1284, 0], ago: '2h' }, { you: MAYA });
+    const tx = $('#fold-card .tx'); tx.classList.add('clamp'); const over = tx.scrollHeight > tx.clientHeight + 2; const sm = $('#fold-card .seemore');
+    if (over && !sm) tx.insertAdjacentHTML('afterend', '<span class="seemore"><span>…more</span></span>'); else if (!over && sm) { sm.remove(); tx.classList.remove('clamp'); }
+    let cut = t.length;
+    if (over) {
+      const nodes = [], w = document.createTreeWalker(tx, NodeFilter.SHOW_TEXT); while (w.nextNode()) nodes.push(w.currentNode);
+      const pos = []; let off = 0; nodes.forEach(nd => { for (let i = 0; i < nd.data.length; i++) if (!/\s/.test(nd.data[i])) pos.push([nd, i, off + i]); off += nd.data.length; });
+      const bottom = tx.getBoundingClientRect().bottom - 2, r = document.createRange(), vis = k => { const [nd, i] = pos[k]; r.setStart(nd, i); r.setEnd(nd, i + 1); const b = r.getBoundingClientRect(); return b.height && (b.top + b.bottom) / 2 <= bottom; };
+      let lo = -1, hi = pos.length - 1; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (vis(mid)) lo = mid; else hi = mid - 1; }
+      cut = lo < 0 ? 0 : pos[lo][2] + 1;
+    }
+    const all = [...t.trim()].length, n = [...t.slice(0, cut).trim()].length, first = ((t.trim().split('\n')[0] || '').trim().split(/(?<=[.!?])\s/)[0] || '').trim();
+    $('#fold-n').innerHTML = over ? `<b>${n}</b> of ${all} characters show before “…more”` : `<b>All ${all}</b> characters show. Nothing gets cut.`;
+    $('#fold-bar').parentElement.style.setProperty('--f', (all ? Math.min(100, n / all * 100) : 0) + '%');
+    const hookOk = !!first && t.slice(0, cut).includes(first); const st = $('#fold-st'); st.classList.toggle('cut', !hookOk); st.textContent = hookOk ? 'Your hook makes the cut' : 'Your hook gets cut off';
+    if (!('fieldSizing' in ft.style)) { ft.style.height = 'auto'; ft.style.height = ft.scrollHeight + 'px'; }
   };
+  if (document.fonts) document.fonts.ready.then(() => drawFold());
+  let foldW = 0; const foldRO = new ResizeObserver(([en]) => { const w = Math.round(en.contentRect.width); if (w !== foldW) { foldW = w; drawFold(); } }); foldRO.observe($('#fold-card')); onDispose(() => foldRO.disconnect());
   ft.addEventListener('input', drawFold); drawFold();
   /* voice */
-  const hv = () => { const s = +$('#hv-spice').value, pol = +$('#hv-pol').value; $('#hv-out').innerHTML = xPost({ t: voiceSample(s, pol, 60), c: [64, 210, 2900, 188000], ago: '2h' }, { dark: true, you: MAYA }); };
+  /* voice: the same idea, re-said. Only the words that change move; counts follow the spice */
+  const hvOut = $('#hv-out'); let hvPrev = null, hvKey = '', hvC = null;
+  hvOut.innerHTML = xPost({ t: ' ', c: [1, 1, 1, 1], ago: '2h' }, { dark: true, you: MAYA }) + '<p class="hv-read" id="hv-read"></p>';
+  const hvTx = $('.tx', hvOut), hvRead = $('#hv-read', hvOut);
+  const hv = () => {
+    const sp = +$('#hv-spice').value, pol = +$('#hv-pol').value, si = Math.min(4, Math.floor(sp / 20)), pi = pol < 34 ? 0 : pol < 67 ? 1 : 2, key = si + '' + pi;
+    $('#hv-sl').textContent = HV_SPICE[si]; $('#hv-pl').textContent = HV_POLISH[pi];
+    if (key === hvKey) return; hvKey = key;
+    const t = HV_SAMPLES[si][pi] + '\n\n' + HV_LESSON[pi], toks = t.split(/(\s+)/);
+    const { html, changed } = hvPrev ? wordDiff(hvPrev, toks) : { html: pfText(t), changed: 0 };
+    hvTx.innerHTML = html; hvTx.classList.remove('hv-go'); void hvTx.offsetWidth; hvTx.classList.add('hv-go');
+    if (hvPrev && changed) { hvRead.innerHTML = `Same idea. <b>${changed} word${changed === 1 ? '' : 's'}</b> changed.`; hvRead.classList.remove('on'); void hvRead.offsetWidth; hvRead.classList.add('on'); SFX.play('tick'); }
+    hvPrev = toks;
+    const c = HV_COUNTS[si], from = hvC || c; hvC = c; const t0 = performance.now();
+    const step = now => { const k = Math.min(1, (now - t0) / 500), e = 1 - Math.pow(1 - k, 3); ['r', 'rt', 'l', 'v'].forEach((d, i) => { const el = $(`.c[data-k="${d}"]`, hvOut); if (el) el.textContent = fmtN(Math.round(from[i] + (c[i] - from[i]) * e)); }); if (k < 1) requestAnimationFrame(step); };
+    REDUCED ? step(t0 + 500) : requestAnimationFrame(step);
+  };
   $('#hv-spice').addEventListener('input', hv); $('#hv-pol').addEventListener('input', hv); hv();
   /* creators: tabs swap the demo */
   const crSeg = $('#cr-seg');

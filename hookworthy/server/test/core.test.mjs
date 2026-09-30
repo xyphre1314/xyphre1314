@@ -93,3 +93,17 @@ test('predict from history uses the nearest past posts', () => {
   const posts = [core.normPost({ id: 'a', text: 'I raised my price and lost zero customers', likes: 900 }), core.normPost({ id: 'b', text: 'my morning routine, ranked', likes: 20 })];
   const p = core.predictFromHistory('I doubled my price. Customers stayed.', posts); assert.ok(p && p.near[0].id === 'a' && p.estimate > 300);
 });
+
+test('visualPlan picks the picture a post wants and copies numbers exactly', () => {
+  const d = core.visualPlan('Redesigned onboarding from 7 screens to 2. Activation went from 21% → 38%.');
+  assert.equal(d.template, 'data'); assert.equal(d.metric, 'Activation'); assert.equal(d.before, '21%'); assert.equal(d.after, '38%'); assert.equal(d.delta, '+81%');
+  assert.equal(d.headline, 'Redesigned onboarding from 7 screens to 2.'); assert.equal(d.chip, '', 'no chip when the headline already says it');
+  const churn = core.visualPlan('Churn fell from 9% to 4% after we added onboarding calls.'); assert.equal(churn.delta, '−56%'); assert.equal(churn.good, true, 'lower churn is good');
+  const words = core.visualPlan('Before: 40 meetings a week\nAfter: 6 meetings a week'); assert.equal(words.template, 'data'); assert.equal(words.metric, 'Meetings a week');
+  assert.equal(core.visualPlan('We doubled our price. Signups went up 31%.').template, 'stat');
+  assert.equal(core.visualPlan('5 things I learned:\n\n1. Ship daily\n2. Talk to users\n3. Charge more').template, 'list');
+  assert.equal(core.visualPlan('Old way: ship when ready\nNew way: ship on Fridays').template, 'compare');
+  const q = core.visualPlan('I almost quit my startup in March.'); assert.equal(q.template, 'quote'); assert.equal(q.emphasis, 'quit');
+  assert.equal(core.visualPlan('Shipped at 2am in 2024.').template, 'quote', 'times and years are not stats');
+  const p = core.prompts.visual({ text: 'x', plan: d }); assert.equal(p.tier, 'quick'); assert.match(p.prompt, /never invent/);
+});

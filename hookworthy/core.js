@@ -356,6 +356,26 @@ ${voiceBlock(voice)}
 
 Reply with only JSON: {"subject":"under 60 characters","headline":"one sentence on the week","why_best":"why the best one worked, one sentence","try_next":"one concrete thing to try next week","first_line":"a first line they could post Monday, in their voice"}` };
     },
+    visual({ text, plan }) {
+      return { tier: 'quick', json: true, prompt: `You are the art director for one social media graphic that goes under this post. The graphic must make someone scrolling stop and get the point in one second.
+
+<post>
+${text}
+</post>
+
+A rules-based first pass suggested: ${JSON.stringify(plan)}
+
+Pick the template that fits what the post is really about:
+- "data": a number that changed (before → after). Needs two numbers from the post.
+- "stat": one big number carries it.
+- "list": 3+ parallel points.
+- "compare": two sides (before/after in words, X vs Y).
+- "quote": no strong numbers; the line itself is the picture.
+
+Rules: copy numbers exactly as written in the post, never invent, round or convert one. Headline is at most 9 words, plain, in the author's words where possible, and doesn't repeat the big number. metric is 1-3 words naming what the number measures. emphasis is the 1-3 word phrase in the headline that carries the tension. why is one short sentence to the author on why this picture fits.
+
+Reply with only JSON: {"template":"data|stat|list|compare|quote","headline":"","metric":"","before":"","after":"","value":"","label":"","items":[],"left":"","right":"","emphasis":"","why":""}` };
+    },
     critique({ text, voice }) {
       return { tier: 'quick', json: true, prompt: `${BRIEF}
 
@@ -396,6 +416,70 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return { estimate: Math.round(med * (0.75 + hookScore(line).score / 200)), near: scored.map(x => x.p) };
   }
 
+  /* ---- the visual director: read a post, decide what picture it wants, pull the exact numbers out ----
+     Never invents a figure: every number it returns is copied from the text. */
+  const NUM = '[$€£]?\\d[\\d,]*(?:\\.\\d+)?\\s?(?:%|[kKmMbB]\\b|x\\b|×)?';
+  const numVal = x => { const m = String(x).replace(/[$€£,\s]/g, ''); const v = parseFloat(m); return isFinite(v) ? v * (/k$/i.test(m) ? 1e3 : /m$/i.test(m) ? 1e6 : /b$/i.test(m) ? 1e9 : 1) : NaN; };
+  const LOWER_BETTER = /\b(churn|cost|costs|cac|spend|time|hours|days|minutes|weeks|steps|screens|clicks|bugs|errors|tickets|latency|bounce|refunds|meetings|emails|fields|pages)\b/i;
+  const METRIC_SKIP = new Set(['went', 'from', 'grew', 'rose', 'jumped', 'fell', 'dropped', 'climbed', 'up', 'down', 'is', 'was', 'are', 'were', 'our', 'my', 'the', 'we', 'i', 'and', 'cut', 'took', 'moved', 'increased', 'decreased', 'by', 'to', 'a', 'an', 'its', 'it', 'their', 'went', 'got', 'have', 'has', 'had', 'just', 'redesigned', 'reduced', 'grown', 'doubled', 'tripled', 'in', 'of', 'on', 'with', 'at']);
+  const sentences = t => t.split(/(?<=[.!?])\s+|\n+/).map(x => x.trim()).filter(Boolean);
+  const clipW = (t, n) => t.length <= n ? t : t.slice(0, n).replace(/\s+\S*$/, '') + '…';
+  function metricBefore(pre) {
+    const ws = pre.replace(/[^\w\s'-]/g, ' ').split(/\s+/).filter(Boolean); const out = [];
+    for (let i = ws.length - 1; i >= 0 && out.length < 2; i--) { const w = ws[i].toLowerCase(); if (METRIC_SKIP.has(w)) { if (out.length) break; continue; } if (/^\d/.test(w)) break; out.unshift(ws[i]); }
+    return out.join(' ');
+  }
+  function visualPlan(text) {
+    const t = String(text || '').trim(); const lines = t.split('\n').map(x => x.trim()).filter(Boolean); const sents = sentences(t);
+    const first = lines[0] || '';
+    /* 1. a number that moved: "21% → 38%", "from 7 screens to 2", "$0 to $10k MRR" */
+    const pairRe = new RegExp(`(${NUM})(?:\\s+([A-Za-z]{3,}))?\\s*(?:→|->|➝|—>|\\bto\\b)\\s*(${NUM})(?:\\s+([A-Za-z][A-Za-z]+))?`, 'g');
+    const pairs = []; let m;
+    while ((m = pairRe.exec(t))) {
+      const a = numVal(m[1]), b = numVal(m[3]); if (!isFinite(a) || !isFinite(b) || a === b) continue;
+      if (/^(19|20)\d\d$/.test(m[1].trim()) && /^(19|20)\d\d$/.test(m[3].trim())) continue;
+      const sent = sents.find(s => s.includes(m[0])) || first; const pre = sent.slice(0, Math.max(0, sent.indexOf(m[0])));
+      const unit = m[2] && !/^(to|from|and|in|of)$/i.test(m[2]) ? m[2] : ''; const after = m[4] && /^[A-Z]{2,5}$/.test(m[4]) ? m[4] : '';
+      let metric = metricBefore(pre); if (unit) metric = metric ? `${metric} ${unit}` : unit; if (!metric && after) metric = after;
+      const la = m[1].trim(), lb = (m[3].trim() + (/[%$kKmM]/.test(m[3]) || !/%/.test(m[1]) ? '' : '%')).trim();
+      const score = (/[%$€£]/.test(m[0]) ? 2 : 0) + (metric ? 1 : 0) + Math.min(2, Math.abs(Math.log((b || .1) / (a || .1))));
+      pairs.push({ raw: m[0], a, b, la, lb, unit, metric, sent, score });
+    }
+    if (pairs.length) {
+      const main = pairs.slice().sort((x, y) => y.score - x.score)[0], second = pairs.find(p => p !== main);
+      const lower = LOWER_BETTER.test(`${main.metric} ${main.unit}`), good = (main.b > main.a) !== lower;
+      const delta = main.a ? (main.b / main.a >= 3 ? `${+(main.b / main.a).toFixed(1)}×` : `${main.b > main.a ? '+' : '−'}${Math.abs(Math.round((main.b - main.a) / main.a * 100))}%`) : 'from zero';
+      const head = sents.find(s => !s.includes(main.raw) && !/:$/.test(s)) || main.sent;
+      return { template: 'data', headline: clipW(head, 90), metric: main.metric ? main.metric[0].toUpperCase() + main.metric.slice(1) : 'The result', before: main.la, after: main.lb, a: main.a, b: main.b, unit: main.unit, delta, good, lowerBetter: lower,
+        chip: second && !head.includes(second.raw) ? `${second.la} → ${second.lb}${second.unit ? ' ' + second.unit : ''}` : '', why: `You wrote ${main.la} → ${main.lb}. A number that moves is the fastest thing to read in a feed.` };
+    }
+    /* 2. before / after as words */
+    const ba = t.match(/(?:^|\n)\s*(?:before|old way|then)\s*[:\-–]\s*(.+)\n+\s*(?:after|new way|now)\s*[:\-–]\s*(.+)/i) || t.match(/^(.{3,60}?)\s+vs\.?\s+(.{3,60}?)[.!?]?$/im);
+    if (ba) {
+      const na = ba[1].trim().match(new RegExp(`^(${NUM})\\s+(.+)$`)), nb = ba[2].trim().match(new RegExp(`^(${NUM})\\s+(.+)$`));
+      if (na && nb && na[2].toLowerCase() === nb[2].toLowerCase()) { const A = numVal(na[1]), B = numVal(nb[1]), metric = na[2][0].toUpperCase() + na[2].slice(1), lower = LOWER_BETTER.test(metric);
+        return { template: 'data', headline: clipW(lines.find(l => !l.includes(ba[1]) && !l.includes(ba[2])) || '', 90), metric, before: na[1].trim(), after: nb[1].trim(), a: A, b: B, unit: '', delta: A ? (B / A >= 3 ? `${+(B / A).toFixed(1)}×` : `${B > A ? '+' : '−'}${Math.abs(Math.round((B - A) / A * 100))}%`) : 'from zero', good: (B > A) !== lower, lowerBetter: lower, chip: '', why: `You wrote ${na[1].trim()} → ${nb[1].trim()}. A number that moves is the fastest thing to read in a feed.` }; }
+    }
+    if (ba) return { template: 'compare', headline: clipW(lines.find(l => !l.includes(ba[1]) && !l.includes(ba[2])) || '', 80), left: clipW(ba[1].trim(), 90), right: clipW(ba[2].trim(), 90), leftLabel: /vs/i.test(ba[0]) ? '' : 'Before', rightLabel: /vs/i.test(ba[0]) ? '' : 'After', why: 'Two sides, side by side. The eye does the comparing for you.' };
+    /* 3. a list people save */
+    const bullet = /^(?:\d{1,2}[.)]|[-•–→✓*▸])\s+/; const items = lines.filter(l => bullet.test(l)).map(l => l.replace(bullet, '').trim()).filter(Boolean);
+    if (items.length >= 3) return { template: 'list', headline: clipW(lines.find(l => !bullet.test(l)) || '', 80), items: items.slice(0, 6).map(i => clipW(i, 80)), why: `${items.length} points. Lists get saved, and saves travel.` };
+    /* 4. one big number */
+    const numRe = new RegExp(`(${NUM})(?:\\s+([A-Za-z][A-Za-z-]+(?:\\s[a-z][a-z-]+)?))?`, 'g'); const cands = [];
+    while ((m = numRe.exec(t))) { const raw = m[1].trim(), v = numVal(raw); if (!isFinite(v)) continue; if (/^(19|20)\d\d$/.test(raw) || /^\d{1,2}(:\d\d)?\s?(am|pm)/i.test(t.slice(m.index, m.index + 8))) continue;
+      const weight = (/[$€£]/.test(raw) ? 3 : 0) + (/%/.test(raw) ? 3 : 0) + (/[kmb]$/i.test(raw) ? 2 : 0) + (v >= 100 ? 1 : 0) + (v >= 1000 ? 1 : 0); if (weight < 2) continue;
+      const sent = sents.find(s => s.includes(m[0])) || first; const label = (m[2] && !STOP.has(m[2].split(' ')[0].toLowerCase()) ? m[2] : metricBefore(sent.slice(0, sent.indexOf(raw)))) || '';
+      cands.push({ raw, label, sent, weight }); }
+    if (cands.length) { const c = cands.sort((x, y) => y.weight - x.weight)[0]; return { template: 'stat', value: c.raw, label: c.label ? c.label[0].toUpperCase() + c.label.slice(1) : '', headline: clipW(c.sent, 110), why: `One figure does the work: ${c.raw}. Big numbers stop thumbs.` }; }
+    /* 5. the line itself */
+    const line = clipW(first.length > 12 ? first : (sents[0] || t), 180);
+    const ws = line.split(/\s+/); let emph = '';
+    const nx = ws.findIndex(w => /^(not|never|stop|nobody|everyone|only|wrong|best|worst|always|quit|fired|lost|failed)$/i.test(w.replace(/[^\w]/g, '')));
+    if (nx >= 0) { const nxt = (ws[nx + 1] || '').replace(/[^\w']/g, ''); emph = (nxt && !STOP.has(nxt.toLowerCase()) && !/[.,;:!?]$/.test(ws[nx]) ? ws.slice(nx, nx + 2).join(' ') : ws[nx]).replace(/[.,;:!?]+$/, ''); }
+    else { const content = ws.filter(w => w.replace(/[^\w]/g, '').length > 3 && !STOP.has(w.toLowerCase().replace(/[^\w']/g, ''))); emph = (content[content.length - 1] || '').replace(/[.,;:!?]+$/, ''); }
+    return { template: 'quote', headline: line, emphasis: emph, why: 'No numbers here, so your line is the picture. Set big, one phrase marked.' };
+  }
+
   /* pre-post rules shared with the server's /api/v1/check and the MCP server */
   const CRINGE = [
     { re: /\b(?:I['’]?m|I am|we['’]re|we are) (?:so |super |beyond )?(?:humbled|thrilled|excited|delighted|honou?red) to (?:announce|share)(?: that)?/i, msg: 'Opens like a press release.' },
@@ -415,5 +499,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
 
-  return { voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
+  return { visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
 });
