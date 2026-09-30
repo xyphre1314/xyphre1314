@@ -37,7 +37,7 @@
     const text = (raw || '').trim();
     const zero = { clarity: 0, curiosity: 0, specificity: 0, tension: 0, brevity: 0 };
     if (!text) return { score: 0, parts: zero, reason: 'Nothing to grade yet. Your first line is the hook.', tone: 'none' };
-    const lines = text.split(/\n/).map(l => l.trim()).filter(Boolean); let first = lines[0]; if (first.length < 40 && lines[1]) first += ' ' + lines[1];
+    const lines = String(text).replace(/https?:\/\/\S+/g, 'link').split(/\n/).map(l => l.trim()).filter(Boolean); let first = lines[0]; if (first.length < 40 && lines[1]) first += ' ' + lines[1];
     const lc = first.toLowerCase(); const len = first.length;
     let clarity = 72, curiosity = 30, spec = 25, tension = 30, brevity;
     brevity = len < 22 ? 80 : len <= 100 ? 96 - Math.max(0, len - 70) * .35 : Math.max(12, 86 - (len - 100) * .55);

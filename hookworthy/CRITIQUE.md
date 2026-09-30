@@ -333,3 +333,55 @@ Owner: build all of them.
 - **Write from a brief.** Drop notes, a Word doc, a PDF or Markdown, paste, or talk it through. Step 1 reads the files in the browser (.docx unzipped natively, PDFs best-effort; on the server, Claude reads the whole PDF as a document). Step 2 shows the facts it will use with the brief's exact words, gaps worth filling (each with an "Add" box that writes into the brief), hype that needs proof, three angles, and a shape: X thread, X long post (Premium only), LinkedIn post, or one post. Step 3 drafts in your voice and fact-checks the draft: any number that isn't in the brief is marked "check this", and [blanks] are highlighted.
 - **Talk instead of typing.** A mic in every post uses the browser's own speech recognition, and words land at the cursor as you speak. It understands "new line", "new paragraph", "new post" (starts the next post in the thread), "comma", "period", "question mark" and "scratch that". Ums are dropped on the fly. Afterwards, "Tidy it" removes fillers and repeats, and Claude re-says it in your voice when it's on. Where the browser or page blocks the mic (for example, inside the claude.ai preview), a help sheet points to system dictation (Fn Fn on Mac, Win+H on Windows, the keyboard mic on phones).
 - **Headline.** "Good ideas die in *bad first lines.*" on two lines at desktop, with the squiggle under "first lines."
+
+## Round 18: the whole-app audit
+
+Method: an automated sweep of every screen and modal in light/dark × desktop/phone (errors, overflow, clipped text, contrast, unnamed buttons, broken images), three independent reviews (desktop visual, phone visual, a functional click-through that tried to break things), then fixes and a re-run of every reproduction script.
+
+**Bugs fixed (verified by re-running each repro):**
+- A saved state with missing pieces blanked the app forever. It now heals field by field.
+- The last keystrokes were lost on reload. The draft now saves on pagehide/visibilitychange.
+- Double-clicking "remove" deleted two posts. It's guarded now, and Undo puts back the right one.
+- An old rewrite panel could apply its rewrite to a different post. Starting a new rewrite now closes the old panel.
+- Command-palette actions run from another screen did nothing, or threw. They now wait for the screen to render.
+- Modals left keyboard focus behind them, so typing edited the draft underneath. Focus now lands on the first usable field.
+- Posts pasted without dates drew NaN charts and "0× your median". There are now honest states for "no dates" and "no numbers".
+- Queue "Post now" skipped client approval.
+- Voice typing kept listening after leaving the page. It also now stops after 12 seconds of silence.
+- Edits made during the undo countdown were thrown away. The editor is read-only while sending, and toasts no longer cover the send bar.
+- Drafts were capped at 20 without warning (now 100).
+- The phone composer had no ⋯ menu, no poll and no remove.
+- Make a visual could attach a placeholder image with "undefined" alt text. It now tells you what the picture needs.
+- Long post mode still split at Bluesky's 300. Long posts are X-only, and the other platforms switch off with an undo.
+- Uploads made things up: "voice memo" invented a transcript and "screenshot" invented a quote. Capture now uses real dictation ("Say it") and saves files as what they are.
+- Plan my week: the K/E/↵ shortcuts typed into the post.
+- Merging posts could create a post with both a poll and media.
+- Also fixed:
+  - identical shootout lines, and duplicate shootout history
+  - "Thus are rest days"
+  - handle-derived names with double spaces
+  - URL words graded as filler
+  - empty follow-up text accepted
+  - offline translation that was word-swapping gibberish (now needs Claude)
+  - a hook grade that quoted "i think" in lowercase
+  - doubled periods in queue labels
+  - Focus mode missing from the shortcuts sheet
+
+**Design fixes:**
+- On phones, every modal is a bottom sheet that fits the screen, with the header and actions pinned.
+- Touch targets are at least 36–44px.
+- Dark-safe tints and callouts; visible score tracks and toggles.
+- No "Close Esc" tooltip popping up on open.
+- Plain language instead of setup jargon ("Basic mode · AI off"; setup commands tucked behind "Self-hosting?").
+- Dates read "Mon, Oct 5 · 8:40 AM".
+- Queue cards align and the platform icons are legible.
+- Insights: serif card headlines with aligned actions, a comparison chart in the hero, a responsive chart, and top posts that stack on phones.
+- Carousel slides share one serif style.
+- A real hook icon instead of a "J".
+- A "Formula library" heading, and highlights that don't split words.
+- A blur band under the landing nav.
+- Platform previews swipe on phones, and Pro shows first on phones.
+
+**Deliberately left:**
+- The landing page stays light in every theme; the theme shortcut says so.
+- GIF tiles are mood placeholders until a GIF API key is added.

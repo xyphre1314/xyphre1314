@@ -608,12 +608,12 @@ body.typing .tw-tools{ opacity:0!important; }
 @media (max-width:760px){
   .c-top .status .txt{ font-size:12px; white-space:nowrap; }
   .c-top{ gap:6px; padding:0 10px 0 14px; } .c-top .plats-l{ white-space:nowrap; }
-  .c-top [data-cact="schedmenu"]{ display:none; }
+
   .c-top .fm-tog{ display:none; } .c-top .pv-tog span{ display:none; } .c-top .pv-tog{ width:var(--bh); padding:0; }
   .c-top [data-cact="schedule"] span{ display:none; } .c-top [data-cact="schedule"]{ width:var(--bh); padding:0; }
   .c-top .plats .plat{ width:30px; }
   .tw-tools{ gap:0; } .tools-sep{ margin:0 2px; } .tool{ padding:0 5px; min-width:26px; }
-  .tw-tools .tool[data-cact="remove"], .tw-tools .tool[data-cact="poll"]{ display:none; }
+
   .tw-meta .hook > span:last-child{ display:none; } .tw-meta .hook{ padding:0 3px; }
 }
 .tw-meta{ margin-left:auto; display:flex; align-items:center; gap:10px; }
@@ -2194,6 +2194,7 @@ const DAY = 864e5;
 const dayKey = d => { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`; };
 const fromKey = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DOW_PL = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const startOfWeek = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); const k = (x.getDay() + 6) % 7; x.setDate(x.getDate() - k); return x; };
 const fmtTime = t => { const [h, m] = t.split(':').map(Number); return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
@@ -2308,9 +2309,14 @@ const DEFAULT_STATE = {
   settings: { rest: [], undoSecs: 8, autoPlug: true, plugText: 'I write one of these every week. Follow for the next one.', plugAt: 100, autoRepost: true, repostAfter: 12, ghost: true, caret: true, split: true }
 };
 let S = store.get('state', null);
-if (!S || S.v !== DEFAULT_STATE.v) S = structuredClone(DEFAULT_STATE);
-if (S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date.now()), limit: 5 };
+if (!S || typeof S !== 'object' || S.v !== DEFAULT_STATE.v) S = structuredClone(DEFAULT_STATE);
+/* heal a saved state that's missing pieces (older builds, a bad sync): every top-level field falls back to its default */
+for (const [k, v] of Object.entries(DEFAULT_STATE)) { if (S[k] == null || (Array.isArray(v) && !Array.isArray(S[k])) || (v && typeof v === 'object' && !Array.isArray(v) && (typeof S[k] !== 'object' || Array.isArray(S[k])))) S[k] = structuredClone(v); else if (v && typeof v === 'object' && !Array.isArray(v)) for (const [k2, v2] of Object.entries(v)) if (S[k][k2] === undefined) S[k][k2] = structuredClone(v2); }
+if (S.draft && (!Array.isArray(S.draft.tweets) || !S.draft.tweets.length)) S.draft = null;
+if (!S.ai || S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date.now()), limit: 5 };
 const save = debounce(() => { store.set('state', S); scheduleSync(); }, 250);
+const saveNow = () => { try { store.set('state', S); } catch (e) { } };
+addEventListener('pagehide', saveNow); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); }); addEventListener('beforeunload', saveNow);
 
 const newTweet = (text = '') => ({ id: uid(), text, media: [], poll: null });
 /* workspaces: your own voice plus client voices (ghostwriters, teams) */
@@ -2427,6 +2433,8 @@ const AI = {
     s = s.split(/(?<=[.!?])\s+|\n/).map(x => x.length > 90 ? x.replace(/\s+because\s+/i, '. ').replace(/\s+and (you|we|I|they)\s+/, (m, w) => `. ${cap(w)} `) : x).join(' ');
     s = s.replace(/!+/g, '.');
     s = tidy(s); if (/[a-z0-9]$/i.test(s)) s += '.';
+    /* "I think that it's important to X" loses its hedge but must stay a sentence: "X matters." */
+    s = s.replace(/(^|[.!?]\s+)that\s+(it'?s|it is)\s+(important|essential|key|crucial|worth it)\s+to\s+([^.!?]+)([.!?])/gi, (m, a, _b, _c, rest, p) => `${a}${cap(rest.trim())} matters${p}`).replace(/(^|[.!?]\s+)that\s+/gi, (m, a) => a).replace(/(^|[.!?]\s+)([a-z])/g, (m, a, b) => a + b.toUpperCase());
     return s;
   },
   shorter(t) {
@@ -2691,6 +2699,7 @@ function toast(msg, { icon = 'check', tone = 'ok', action, onAction, ms = 3800 }
 let MENU = null;
 function closeMenu() { if (!MENU) return; MENU.el.remove(); document.removeEventListener('pointerdown', MENU.outside, true); const a = MENU.anchor; MENU = null; a && a.setAttribute('aria-expanded', 'false'); }
 function openMenu(anchor, items, { align = 'start', width } = {}) {
+  anchor = anchor || $('.c-top') || document.body;
   if (MENU && MENU.anchor === anchor) { closeMenu(); return; }
   closeMenu(); Tip.hide();
   const m = document.createElement('div'); m.className = 'menu'; m.setAttribute('role', 'menu'); if (width) m.style.minWidth = width + 'px';
@@ -2719,8 +2728,7 @@ function openMenu(anchor, items, { align = 'start', width } = {}) {
 
 /* modals */
 const MODALS = [];
-function modal(html, { box = 'modal', center = false, label = 'Dialog', onClose } = {}) {
-  $$('#toasts .toast').forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); });
+function modal(html, { box = 'modal', center = false, label = 'Dialog', onClose, autofocus = true } = {}) {
   closeMenu(); Tip.hide();
   const scrim = document.createElement('div'); scrim.className = 'scrim' + (center ? ' center' : '');
   scrim.innerHTML = `<div class="${box}" role="dialog" aria-modal="true" aria-label="${esc(label)}">${html}</div>`;
@@ -2741,7 +2749,7 @@ function modal(html, { box = 'modal', center = false, label = 'Dialog', onClose 
     if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
   });
   MODALS.push(api);
-  requestAnimationFrame(() => { const af = $('[autofocus]', api.el) || $('input:not([type=hidden]):not([type=file]),textarea,select', api.el); if (af && !(COARSE && af.matches('textarea,input'))) af.focus({ preventScroll: true }); else { api.el.setAttribute('tabindex', '-1'); api.el.style.outline = 'none'; api.el.focus({ preventScroll: true }); } });
+  requestAnimationFrame(() => { if (!autofocus) return; const usable = e => !e.disabled && !e.closest('[hidden]') && e.getClientRects().length > 0; const af = [...$$('[autofocus]', api.el)].find(usable) || [...$$('input:not([type=hidden]):not([type=file]),textarea,select', api.el)].find(usable); if (af && !(COARSE && af.matches('textarea,input'))) af.focus({ preventScroll: true }); else { api.el.setAttribute('tabindex', '-1'); api.el.style.outline = 'none'; api.el.focus({ preventScroll: true }); } });
   return api;
 }
 const modalHead = (title, sub) => `<div class="modal-h"><div><h2 class="h3">${title}</h2>${sub ? `<p class="muted" style="font-size:13px;margin-top:4px">${sub}</p>` : ''}</div><button class="btn ghost icon-only sm" data-close data-tip="Close" data-kbd="Esc" aria-label="Close">${ic('x')}</button></div>`;
@@ -2829,6 +2837,7 @@ function applyTheme() {
 function setTheme(t) {
   S.theme = t; applyTheme(); save(); SFX.play('tick'); schedulePreview();
   $$('[data-act="theme"]').forEach(b => b.innerHTML = ic(isDark() ? 'sun' : 'moon'));
+  if (CURRENT === 'home') { toast(`${t === 'dark' ? 'Dark' : t === 'light' ? 'Light' : 'System'} theme is on in the app. This page stays in cream.`, { icon: isDark() ? 'moon' : 'sun', ms: 2400 }); return; }
   toast(t === 'dark' ? 'Dark. Easier on the eyes after dark.' : t === 'light' ? 'Light. Cream paper, ink text.' : 'Following your system now.', { icon: isDark() ? 'moon' : 'sun', tone: 'accent', ms: 1800 });
 }
 function toggleTheme() { setTheme(isDark() ? 'light' : 'dark'); }
@@ -2856,6 +2865,13 @@ function refreshPlanCard() {
 const ROUTES = {}; let CURRENT = null; let DISPOSE = [];
 const onDispose = fn => DISPOSE.push(fn);
 function go(name) { if (location.hash.replace('#', '') === name) route(); else location.hash = name; }
+/* go somewhere, then act once that screen has actually rendered (view transitions make the timing vary) */
+function goThen(name, fn) {
+  const ready = () => CURRENT === name && (name !== 'write' || $('#thread .tw-input'));
+  if (ready() && location.hash.replace('#', '') === name) { fn(); return; }
+  if (location.hash.replace('#', '') !== name) location.hash = name;
+  const t0 = performance.now(); const wait = () => { if (ready()) requestAnimationFrame(() => fn()); else if (performance.now() - t0 < 3000) requestAnimationFrame(wait); }; requestAnimationFrame(wait);
+}
 function route() {
   const h = location.hash.replace(/^#\/?/, '') || 'home';
   const name = ROUTES[h] ? h : 'home';
@@ -2984,20 +3000,20 @@ function paletteCommands() {
   const acts = [
     { g: 'Actions', label: 'New post', icon: 'write', kbd: ['C'], run: newPost },
     { g: 'Actions', label: 'Capture an idea', icon: 'plus', kbd: ['I'], run: openCapture },
-    { g: 'Actions', label: 'Schedule this draft', icon: 'clock', kbd: [MOD, '↵'], run: () => { go('write'); setTimeout(() => openSchedule(), 60); } },
+    { g: 'Actions', label: 'Schedule this draft', icon: 'clock', kbd: [MOD, '↵'], run: () => { goThen('write', () => openSchedule()); } },
     { g: 'Actions', label: 'Tidy up drafts', icon: 'archive', run: () => openTidy() },
     { g: 'Actions', label: 'First-hour replies', icon: 'reply', run: () => openReplyDesk() },
     { g: 'Actions', label: 'Plan my week', icon: 'cal', run: () => openPlan() },
     { g: 'Actions', label: 'Write from a brief, doc or PDF', icon: 'write', run: () => openBrief() },
-    { g: 'Actions', label: 'Talk instead of typing', icon: 'mic', run: () => { go('write'); setTimeout(() => dictate(0), 120); } },
-    { g: 'Actions', label: 'X format: thread or long post', icon: 'layers', run: () => { go('write'); setTimeout(() => openXFormat($('[data-cact="schedmenu"]')), 120); } },
+    { g: 'Actions', label: 'Talk instead of typing', icon: 'mic', run: () => { goThen('write', () => dictate(0)); } },
+    { g: 'Actions', label: 'X format: thread or long post', icon: 'layers', run: () => { goThen('write', () => openXFormat($('[data-cact="schedmenu"]') || $('#thread'))); } },
     { g: 'Actions', label: 'Bring your posts (X archive, Typefully, CSV)', icon: 'upload', run: () => openImport() },
     { g: 'Actions', label: 'Learn my voice', icon: 'voice', run: () => { go('voice'); setTimeout(() => learnVoice($('#learn')), 120); } },
     { g: 'Actions', label: 'People I learn from', icon: 'trend', run: () => openPeople() },
     { g: 'Actions', label: 'Connections and Claude', icon: 'link', run: () => openConnections() },
-    { g: 'Actions', label: 'Post now', icon: 'send', kbd: [MOD, SHIFT, '↵'], run: () => { go('write'); setTimeout(publishNow, 60); } },
-    { g: 'Actions', label: 'Toggle previews', icon: 'panel', kbd: [MOD, '\\'], run: () => { go('write'); setTimeout(togglePreview, 60); } },
-    { g: 'Actions', label: 'Shuffle today’s ideas', icon: 'shuffle', kbd: ['R'], run: () => { go('write'); setTimeout(shuffleStarters, 60); } },
+    { g: 'Actions', label: 'Post now', icon: 'send', kbd: [MOD, SHIFT, '↵'], run: () => { goThen('write', publishNow); } },
+    { g: 'Actions', label: 'Toggle previews', icon: 'panel', kbd: [MOD, '\\'], run: () => { goThen('write', togglePreview); } },
+    { g: 'Actions', label: 'Shuffle today’s ideas', icon: 'shuffle', kbd: ['R'], run: () => { goThen('write', shuffleStarters); } },
     { g: 'Actions', label: 'Browse hook formulas', icon: 'hook', run: () => go('hooks') },
     { g: 'Actions', label: 'Fill empty best-time slots', icon: 'cal', run: () => { go('queue'); setTimeout(fillGaps, 80); } },
     { g: 'Actions', label: 'Switch theme', icon: isDark() ? 'sun' : 'moon', kbd: [SHIFT, 'T'], run: toggleTheme },
@@ -3007,7 +3023,7 @@ function paletteCommands() {
     { g: 'Actions', label: 'View landing page', icon: 'arrow', run: () => go('home') },
     { g: 'Actions', label: 'Reset demo data', icon: 'undo', run: resetDemo }
   ];
-  const riffs = RIFFS.map(r => ({ g: 'Rewrite your draft', label: r.label, icon: r.icon, kbd: [ALT, r.key], run: () => { go('write'); setTimeout(() => runRiff(0, r.k), 80); } }));
+  const riffs = RIFFS.map(r => ({ g: 'Rewrite your draft', label: r.label, icon: r.icon, kbd: [ALT, r.key], run: () => { goThen('write', () => runRiff(0, r.k)); } }));
   const ideas = S.ideas.map(i => ({ g: 'Saved ideas', label: i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), icon: { link: 'link', note: 'ideas', voice: 'mic', shot: 'shot' }[i.src] || 'ideas', run: () => writeFrom(expandIdea(i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), 'How-to')) }));
   const hooks = HOOKS.slice(0, 40).map(h => ({ g: 'Hook library', label: h.t.replace(/\[|\]/g, ''), icon: 'hook', run: () => useHook(h.t) }));
   return [...acts, ...nav, ...riffs, ...ideas, ...hooks];
@@ -3056,7 +3072,7 @@ function openShortcuts() {
     ${row('Command palette', [MOD, 'K'])}${row('New post', ['C'])}${row('Capture an idea', ['I'])}${row('Switch theme', [SHIFT, 'T'])}
     ${row('Go to Write', ['G', 'W'])}${row('Go to Ideas', ['G', 'I'])}${row('Go to Queue', ['G', 'Q'])}${row('Go to Insights', ['G', 'A'])}${row('Go to Hooks', ['G', 'H'])}${row('Go to Voice', ['G', 'V'])}
     <h4 class="label">Composer</h4>
-    ${row('Accept suggestion', ['Tab'])}${row('New post in thread', ['↵', '↵'])}
+    ${row('Accept suggestion', ['Tab'])}${row('New post in thread', ['↵', '↵'])}${row('Focus mode', [MOD, '.'])}
     ${row('Rewrite menu', [MOD, 'J'])}${row('Run rewrite 1–7', [ALT, '1–7'])}
     ${row('Move post up / down', [ALT, '↑ ↓'])}${row('Merge into previous', ['⌫'])}
     ${row('Schedule', [MOD, '↵'])}${row('Publish now', [MOD, SHIFT, '↵'])}
@@ -3077,14 +3093,14 @@ function openCapture() {
     <textarea class="input" id="cap-t" autofocus rows="4" placeholder="A thought, a link, a line you overheard…"></textarea>
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <label class="btn sm" data-tip="Attach a screenshot">${ic('shot', 'sm')} Screenshot<input type="file" accept="image/*" hidden id="cap-shot"></label>
-      <label class="btn sm" data-tip="Attach a voice memo">${ic('mic', 'sm')} Voice memo<input type="file" accept="audio/*" hidden id="cap-voice"></label>
+      <button class="btn sm" type="button" id="cap-say" aria-pressed="false" data-tip="Say it instead of typing it">${ic('mic', 'sm')} Say it</button>
       <span id="cap-att" class="faint" style="font-size:12px;align-self:center"></span>
     </div>
   </div>
   <div class="modal-f"><span class="faint desk-only" style="margin-right:auto;font-size:12px;align-self:center">${kbd(MOD, '↵')} to save</span><button class="btn" data-close>Cancel</button><button class="btn primary" id="cap-save">Save idea</button></div>`, { label: 'Capture an idea' });
   const t = $('#cap-t', m.el); let att = null;
   $('#cap-shot', m.el).onchange = e => { const f = e.target.files[0]; if (f) { att = { src: 'shot', name: f.name }; $('#cap-att', m.el).textContent = `Attached ${f.name}`; } };
-  $('#cap-voice', m.el).onchange = e => { const f = e.target.files[0]; if (f) { att = { src: 'voice', name: f.name }; $('#cap-att', m.el).textContent = `Attached ${f.name}`; } };
+  $('#cap-say', m.el).onclick = e => { const b = e.currentTarget; const d = listenInto(t, $('.modal-b', m.el), { onDone: () => { b.setAttribute('aria-pressed', 'false'); t.value = t.value.replace(/\u241E/g, '\n\n'); t.focus(); } }); if (d) b.setAttribute('aria-pressed', 'true'); };
   const saveIt = () => {
     const v = t.value.trim();
     if (!v && !att) { t.setAttribute('aria-invalid', 'true'); t.placeholder = 'Type something first. Even one word counts.'; t.focus(); return; }
@@ -3472,7 +3488,7 @@ function onKey(e) {
 function mergeUp(i) {
   const prev = S.draft.tweets[i - 1], cur = S.draft.tweets[i];
   const at = prev.text.length; const sep = prev.text && cur.text ? '\n\n' : '';
-  prev.text = prev.text + sep + cur.text; prev.media = prev.media.concat(cur.media).slice(0, 4); if (!prev.poll) prev.poll = cur.poll;
+  prev.text = prev.text + sep + cur.text; prev.media = prev.media.concat(cur.media).slice(0, 4); if (!prev.poll && !prev.media.length) prev.poll = cur.poll; else if (cur.poll || (prev.poll && prev.media.length)) { prev.poll = prev.media.length ? null : prev.poll; toast('Polls and images don’t mix on X, so the poll was dropped.', { icon: 'poll' }); }
   S.draft.tweets.splice(i, 1); if (UI.diff && UI.diff.id === cur.id) UI.diff = null;
   renderThread({ focusId: prev.id, pos: at }); markSaving();
 }
@@ -3483,9 +3499,10 @@ function moveTweet(i, d) {
   renderThread({ focusId: arr[j].id, pos }); markSaving();
 }
 function removeTweet(i) {
-  const tw = S.draft.tweets[i]; if (S.draft.tweets.length === 1) return;
+  const tw = S.draft.tweets[i]; if (!tw || S.draft.tweets.length === 1 || tw._leaving) return; tw._leaving = true;
   const el = $(`.tw[data-id="${tw.id}"]`); el && el.classList.add('leaving');
   setTimeout(() => {
+    delete tw._leaving; i = S.draft.tweets.indexOf(tw); if (i < 0) return;
     S.draft.tweets.splice(i, 1); renderThread({ focusId: S.draft.tweets[Math.max(0, i - 1)].id, pos: 'end' }); markSaving();
     toast('Removed that post.', { icon: 'trash', action: 'Undo', onAction: () => { S.draft.tweets.splice(i, 0, tw); UI.fresh.add(tw.id); renderThread({ focusId: tw.id }); markSaving(); } });
   }, 170);
@@ -3752,7 +3769,7 @@ function openVisual(i) {
     <div class="vis-opts">${seg('style', [['paper', 'Paper'], ['ink', 'Ink'], ['marker', 'Tint']])}${seg('size', [['wide', '16:9'], ['square', '1:1'], ['tall', '4:5']])}</div>
   </div>
   <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="vis-add">${ic('image', 'sm')} Add to post</button></div>`, { label: 'Make a visual', box: 'modal vis-modal' });
-  const el = m.el, cv = $('#vis-cv', el);
+  const el = m.el, cv = $('#vis-cv', el); if (VIS.kind !== 'frame') VIS.frameImg = null;
   const why = () => { const k = VIS_KINDS.find(x => x[0] === VIS.kind); $('#vis-why', el).innerHTML = VIS.kind === plan.template ? `${ic('riff', 'sm')}<span><b>${plan.ai ? `${cap(AI_NAME())} picked` : 'Picked for you'}: ${k[1]}.</b> ${esc(plan.why || '')}</span>` : `${ic('image', 'sm')}<span><b>${k[1]}.</b> ${esc(k[2])}.</span>`; };
   const fields = () => { const p = cur(); const h = $('#vis-h', el), mm = $('#vis-m', el); if (document.activeElement !== h) h.value = p.headline || ''; if (document.activeElement !== mm) mm.value = VIS.kind === 'stat' ? (p.label || '') : (p.metric || ''); $('#vis-mw', el).hidden = !['data', 'stat'].includes(VIS.kind); $('#vis-edit', el).hidden = ['post', 'frame'].includes(VIS.kind); $('#vis-look', el).hidden = VIS.kind !== 'data'; };
   const draw = () => { visRender(cv, VIS.kind, cur(), { style: VIS.style, size: VIS.size, look: VIS.look, user: S.user, text: text(), frameImg: VIS.frameImg }); $('#vis-stage', el).classList.toggle('drop', VIS.kind === 'frame'); why(); fields(); };
@@ -3773,7 +3790,11 @@ function openVisual(i) {
     if (tw.poll) { toast('Polls and images don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; }
     if (tw.media.length >= 4) { toast('Four images max per post.', { icon: 'image', tone: 'err' }); return; }
     if (VIS.kind === 'frame' && !VIS.frameImg) { $('#vis-file', el).click(); return; }
-    const p = cur(); const alt = { data: `Chart: ${p.metric || ''} went from ${p.before} to ${p.after} (${p.delta}).`, stat: `${p.value} ${p.label || ''}. ${p.headline || ''}`, list: `${p.headline || 'List'}: ${(p.items || []).join('; ')}`, compare: `${p.leftLabel || 'Before'}: ${p.left}. ${p.rightLabel || 'After'}: ${p.right}.`, quote: `Quote card: ${p.headline || ''}`, post: 'Screenshot of the post: ' + tw.text.slice(0, 120), frame: 'Screenshot' }[VIS.kind];
+    const p = cur();
+    const missing = VIS.kind === 'data' && !(isFinite(p.a) && isFinite(p.b)) ? 'Numbers needs two figures in your post, like “21% → 38%”.' : VIS.kind === 'stat' && !(p.value || /\d/.test(text())) ? 'Big number needs a number in your post, like “$12k MRR”.' : VIS.kind === 'compare' && !(p.left && p.right) ? 'Side by side needs two sides, like “Before: … / After: …” on two lines.' : '';
+    if (missing) { toast(missing, { icon: 'image', tone: 'err', ms: 4200 }); return; }
+    const statV = p.value || (text().match(/[$€£]?\d[\d,.]*\s?(?:%|[kKmM]\b)?/) || [''])[0];
+    const alt = { data: `Chart: ${p.metric ? p.metric + ' went' : 'went'} from ${p.before} to ${p.after}${p.delta ? ` (${p.delta})` : ''}.`, stat: `${statV}${p.label ? ' ' + p.label : ''}. ${p.headline || ''}`, list: `${p.headline || 'List'}: ${(p.items || []).join('; ')}`, compare: `${p.leftLabel || 'Before'}: ${p.left}. ${p.rightLabel || 'After'}: ${p.right}.`, list: `${p.headline || 'List'}: ${(p.items && p.items.length ? p.items : text().split('\n').filter(Boolean).slice(1, 6)).join('; ')}`, quote: `Quote card: ${p.headline || ''}`, post: 'Screenshot of the post: ' + tw.text.slice(0, 120), frame: 'Screenshot' }[VIS.kind];
     tw.media.push({ type: 'img', src: cv.toDataURL('image/png'), alt: alt.trim().slice(0, 400) });
     refreshMedia(tw.id); m.close(); SFX.play('swap'); toast('Added. It sits right under your words.', { icon: 'image', tone: 'accent' });
   };
@@ -3803,6 +3824,8 @@ function setXFormat(f, quiet) {
     return;
   }
   const was = S.settings.xFormat || 'thread'; S.settings.xFormat = f; save();
+  const short = f === 'long' ? ['threads', 'bsky'].filter(k => S.platforms[k]) : [];
+  if (short.length) { short.forEach(k => { S.platforms[k] = false; }); setTimeout(() => toast(`Long posts are X-only, so ${short.map(k => PLAT[k].name).join(' and ')} ${short.length > 1 ? 'are' : 'is'} off for this post.`, { icon: 'x', ms: 6000, action: 'Keep them (thread)', onAction: () => { short.forEach(k => { S.platforms[k] = true; }); setXFormat('thread'); } }), 600); if (CURRENT === 'write') route(); }
   if (f === 'long' && was !== 'long' && S.draft.tweets.length > 1) {
     const joined = S.draft.tweets.map(t => t.text.trim()).filter(Boolean).join('\n\n');
     if (HWCore.xLength(joined) <= X_LONG) { const media = S.draft.tweets.flatMap(t => t.media).slice(0, 4); S.draft.tweets = [{ ...S.draft.tweets[0], text: joined, media, poll: null }]; }
@@ -3859,13 +3882,14 @@ function listenInto(ta, host, { onChange, onDone, label = 'Listening' } = {}) {
   bar.innerHTML = `<span class="dict-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="dict-live"><b>${label}…</b> <span class="dict-int">Say it the way you’d tell a friend.</span></span><button class="btn sm" data-dict="stop">${ic('check', 'sm')} Done</button>`;
   host.prepend(bar); requestAnimationFrame(() => bar.classList.add('on'));
   const paint = interim => { said = spokenToText(finalRaw).trim(); const shown = before + (said ? lead + said : ''); ta.value = shown + after; const p = shown.length; try { ta.setSelectionRange(p, p); } catch (e) { } $('.dict-int', bar).textContent = interim ? interim : said ? '…' : 'Say it the way you’d tell a friend.'; onChange && onChange(ta.value); };
-  rec.onresult = e => { let interim = ''; for (let k = e.resultIndex; k < e.results.length; k++) { const r = e.results[k]; if (r.isFinal) finalRaw += (finalRaw ? ' ' : '') + r[0].transcript.trim(); else interim += r[0].transcript; } paint(interim.trim()); bar.classList.add('hear'); clearTimeout(hearT); hearT = setTimeout(() => bar.classList.remove('hear'), 450); };
+  rec.onresult = e => { clearTimeout(quiet); quiet = 0; let interim = ''; for (let k = e.resultIndex; k < e.results.length; k++) { const r = e.results[k]; if (r.isFinal) finalRaw += (finalRaw ? ' ' : '') + r[0].transcript.trim(); else interim += r[0].transcript; } paint(interim.trim()); bar.classList.add('hear'); clearTimeout(hearT); hearT = setTimeout(() => bar.classList.remove('hear'), 450); };
   rec.onerror = e => { errored = true; if (e.error === 'no-speech') toast('Didn’t catch anything. Try again a little closer to the mic.', { icon: 'mic' }); else if (e.error === 'not-allowed' || e.error === 'service-not-allowed' || e.error === 'audio-capture') dictHelp('blocked'); else if (e.error === 'network') dictHelp('network'); else if (e.error !== 'aborted') toast(`Voice typing stopped: ${esc(e.error)}`, { icon: 'mic', tone: 'err' }); };
   const end = () => { if (!LISTEN || LISTEN.rec !== rec) return; LISTEN = null; bar.classList.remove('on'); setTimeout(() => bar.remove(), 220); document.documentElement.classList.remove('dictating'); SFX.play('tick'); onDone && onDone(said, { before, after, lead, errored }); };
   rec.onend = end;
   bar.addEventListener('click', e => { if (e.target.closest('[data-dict="stop"]')) LISTEN && LISTEN.stop(); });
   try { rec.start(); } catch (e) { bar.remove(); dictHelp('blocked'); return null; }
-  LISTEN = { rec, ta, stop: () => { try { rec.stop(); } catch (e) { end(); } } }; document.documentElement.classList.add('dictating'); SFX.play('tap');
+  LISTEN = { rec, ta, stop: () => { clearTimeout(quiet); try { rec.stop(); } catch (e) { end(); } } }; onDispose(() => { if (LISTEN && LISTEN.rec === rec) LISTEN.stop(); });
+  let quiet = setTimeout(() => { if (LISTEN && LISTEN.rec === rec && !finalRaw) { LISTEN.stop(); toast('Didn’t hear anything. Check the mic is allowed and try again.', { icon: 'mic' }); } }, 12000); document.documentElement.classList.add('dictating'); SFX.play('tap');
   return LISTEN;
 }
 /* in the editor: speak into a post; "new post" starts the next one; afterwards, offer to tidy it */
@@ -4022,7 +4046,7 @@ function openBrief(files) {
     const b = e.target.closest('[data-br]'); if (!b) return; const a = b.dataset.br;
     if (a === 'mic') { const ta = $('#br-t', el); const d = listenInto(ta, $('#br-ph', el), { label: 'Listening', onChange: v => { B.paste = v.replace(/␞/g, '\n\n'); }, onDone: said => { b.setAttribute('aria-pressed', 'false'); ta.value = ta.value.replace(/␞/g, '\n\n'); B.paste = ta.value; if (said) toast('Got it. Read it when you’re done.', { icon: 'mic' }); draw(); } }); if (d) b.setAttribute('aria-pressed', 'true'); return; }
     if (a === 'read') doRead();
-    if (a === 'write') doWrite();
+    if (a === 'write') { if (B.step === 'draft' && !aiOn() && B.read && B.read.angles.length > 1) B.angle = (B.angle + 1) % B.read.angles.length; doWrite(); }
     if (a === 'back') { B.step = B.step === 'draft' ? 'read' : 'drop'; draw(); }
     if (a === 'open') {
       if (B.format === 'long') { if (!xPaid()) return; S.settings.xFormat = 'long'; }
@@ -4117,10 +4141,12 @@ function sharpenKey(e) {
 /* riffs */
 function toggleRiff(id) { UI.riff = UI.riff === id ? null : id; renderExtras(id); if (UI.riff) { const c = $(`.tw[data-id="${id}"] .riffbar .chip`); } }
 function openTranslate(anchor, i) {
+  if (!aiOn()) { toast('Translating in your tone needs Claude. Basic mode would only swap words, so it’s off here.', { icon: 'globe', ms: 5200, action: 'Connections', onAction: () => openConnections() }); return; }
   openMenu(anchor, [{ header: 'Translate, keep your tone' }, ...[['es', 'Spanish'], ['fr', 'French'], ['de', 'German']].map(([k, l]) => ({ label: l, icon: 'globe', run: () => runRiff(i, 'translate', k) }))]);
 }
 function runRiff(i, kind, lang) {
   if (CURRENT !== 'write') return;
+  if (kind === 'translate' && !aiOn()) { openTranslate(null, i); return; }
   const tw = S.draft.tweets[i]; if (!tw) return;
   if (!tw.text.trim()) { toast('Write a line first. There’s nothing to rewrite yet.', { icon: 'riff', tone: 'accent' }); focusTweet(i); return; }
   if (aiLeft() <= 0) { outOfRiffs(); return; }
@@ -4131,7 +4157,8 @@ function runRiff(i, kind, lang) {
   if (after.trim() === before.trim()) { toast(kind === 'grammar' ? 'Grammar’s clean. Nothing to fix.' : 'Already tight. Nothing worth changing.', { icon: 'check' }); return; }
   spendAI();
   UI.riff = null; UI.ghost = null;
-  UI.diff = { id: tw.id, kind, lang, before, after, chunks: diffWords(before, after), shown: 0 };
+  const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null;
+  UI.diff = { id: tw.id, kind, lang, before, after, chunks: diffWords(before, after), shown: 0 }; if (oldD) renderExtras(oldD);
   renderExtras(tw.id);
   const total = UI.diff.chunks.length; const step = Math.max(1, Math.ceil(total / 26)); const d = UI.diff;
   const tick = () => {
@@ -4146,7 +4173,8 @@ function runRiff(i, kind, lang) {
 async function runRiffAI(i, kind, lang, { fresh } = {}) {
   const tw = S.draft.tweets[i]; const before = tw.text; const ctl = new AbortController();
   UI.riff = null; UI.ghost = null;
-  const d = UI.diff = { id: tw.id, kind, lang, before, after: before, chunks: [{ eq: before }], pending: true, ctl };
+  const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null; if (UI.diff && UI.diff.ctl) UI.diff.ctl.abort();
+  const d = UI.diff = { id: tw.id, kind, lang, before, after: before, chunks: [{ eq: before }], pending: true, ctl }; if (oldD) renderExtras(oldD);
   renderExtras(tw.id);
   const lim = effLimit(); const plat = Object.keys(PLAT).filter(k => S.platforms[k]).map(k => PLAT[k].name).join(', ') || 'X';
   try {
@@ -4429,19 +4457,20 @@ function startSend(btn) {
   if (!secs) { finishSend(snap, names, btn); return; }
   const el = document.createElement('div'); el.className = 'sendbar'; el.setAttribute('role', 'status');
   el.innerHTML = `<svg class="sb-ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="p" cx="18" cy="18" r="15" style="animation-duration:${secs}s"/></svg><span>Posting<span class="sb-to"> to ${esc(names)}</span> in <b class="mono" id="sb-n">${secs}</b></span><button class="btn sm" data-sb="undo">Undo${kbd(MOD, 'Z')}</button><button class="btn sm ghost" data-sb="now">Post now</button>`;
+  $$('#toasts .toast').forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); }); $$('.tw-input').forEach(t => { t.readOnly = true; });
   document.body.append(el); SEND.el = el; SEND.snap = snap; document.body.classList.add('sending'); document.activeElement && document.activeElement.blur && document.activeElement.blur();
   let left = secs; const tick = () => { left--; const n = $('#sb-n', el); if (n) n.textContent = left; if (left <= 0) { endSend(); finishSend(snap, names, btn); } else SEND.t = setTimeout(tick, 1000); };
   SEND.t = setTimeout(tick, 1000);
   el.addEventListener('click', e => { const a = e.target.closest('[data-sb]'); if (!a) return; if (a.dataset.sb === 'undo') cancelSend(); else { endSend(); finishSend(snap, names, btn); } });
   SFX.play('tick');
 }
-function endSend() { clearTimeout(SEND.t); SEND.t = 0; document.body.classList.remove('sending'); const el = SEND.el; SEND.el = null; if (el) { el.classList.add('out'); setTimeout(() => el.remove(), 200); } }
+function endSend() { clearTimeout(SEND.t); SEND.t = 0; document.body.classList.remove('sending'); $$('.tw-input').forEach(t => { t.readOnly = false; }); const el = SEND.el; SEND.el = null; if (el) { el.classList.add('out'); setTimeout(() => el.remove(), 200); } }
 function cancelSend() { if (!SEND.t) return false; endSend(); toast('Didn’t post. It’s all still here.', { icon: 'undo', ms: 2400 }); if (CURRENT === 'write') focusTweet(0, 'end'); return true; }
 function finishSend(snap, names, btn) {
   const live = S.draft; S.draft = snap; const d = new Date();
   commitDraft({ day: dayKey(d), time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`, status: 'published' });
   if (live.id !== snap.id) S.draft = live; S.drafts = S.drafts.filter(x => x.id !== snap.id); save();
-  if (CURRENT === 'write') { route(); const b = $('[data-cact="schedule"]'); b && burstFrom(b); }
+  if (CURRENT === 'write') { route(); const b = $('[data-cact="schedule"]'); b && burstFrom(b); } else if (CURRENT === 'queue' || CURRENT === 'insights') route();
   toast(`Posted to ${esc(names)}. Stay close for the first replies.`, { icon: 'send', tone: 'accent', action: 'Reply desk', onAction: () => openReplyDesk(S.queue.filter(q => q.status === 'published').slice(-1)[0]), ms: 8000 });
 }
 function undoLast() { const q = S.queue.pop(); if (!q) return; S.draft = { ...freshDraft(q.tweets), id: S.draft.id }; save(); route(); toast('Unscheduled. Back in the editor.', { icon: 'undo' }); }
@@ -4522,14 +4551,14 @@ async function digestNote(btn) {
    ========================================================================== */
 function shootEvidence(line) { const r = HWCore.predictFromHistory(line, HIST()); return r; }
 async function runShootout(btn) {
-  const a = $('#so-a').value.trim(), b = $('#so-b').value.trim(); if (!a || !b) { toast('Write both first lines.', { icon: 'hook' }); return; }
+  const a = $('#so-a').value.trim(), b = $('#so-b').value.trim(); if (!a || !b) { toast('Write both first lines.', { icon: 'hook' }); return; } if (a.toLowerCase() === b.toLowerCase()) { toast('That’s the same line twice. Change one word and try again.', { icon: 'hook' }); return; }
   S.shoot = { a, b }; save(); const out = $('#so-out');
   const ha = hookScore(a).score, hb = hookScore(b).score, pa = shootEvidence(a), pb = shootEvidence(b);
   let winner = pa && pb ? (pa.estimate >= pb.estimate ? 'a' : 'b') : ha >= hb ? 'a' : 'b', why = pa && pb ? `Your posts most like ${winner.toUpperCase()} did ${fmtN(Math.max(pa.estimate, pb.estimate))} vs ${fmtN(Math.min(pa.estimate, pb.estimate))} engagements.` : `Hook ${Math.max(ha, hb)} vs ${Math.min(ha, hb)}. ${hookScore(winner === 'a' ? a : b).reason}`, conf = pa && pb ? Math.min(.9, .55 + Math.abs(pa.estimate - pb.estimate) / Math.max(1, pa.estimate + pb.estimate)) : Math.min(.85, .5 + Math.abs(ha - hb) / 100);
   const paint = () => { const A = winner === 'a'; out.innerHTML = `<div class="so-res">${[['a', a, ha, pa], ['b', b, hb, pb]].map(([k, t, h, pr]) => `<div class="so-card ${winner === k ? 'so-win' : ''}"><span class="label">${k.toUpperCase()}${winner === k ? ' · predicted winner' : ''}</span><p>${esc(t)}</p><div class="so-st"><span>Hook ${h}</span>${pr ? `<span>~${fmtN(pr.estimate)} engagements</span>` : ''}</div><button class="btn sm ${winner === k ? 'primary' : ''}" data-hact="souse" data-t="${esc(t)}">Write with ${k.toUpperCase()}</button></div>`).join('')}</div><p class="so-why"><b>${Math.round(conf * 100)}% sure.</b> ${esc(why)}</p>`; };
   paint();
   if (aiOn()) { btn.classList.add('is-loading'); try { const ev = [['A', pa], ['B', pb]].map(([k, pr]) => pr ? `${k}: ${pr.near.slice(0, 3).map(p => `"${clip(p.text.split('\n')[0], 90)}" (${p.likes} likes)`).join('; ')}` : `${k}: no similar posts`).join('\n'); const r = await ask(HWCore.prompts.shootout({ a, b, voice: voiceSpec(), evidence: HIST().length ? ev : '' }), { fresh: true }); if (r && (r.winner === 'a' || r.winner === 'b')) { winner = r.winner; why = r.why || why; conf = Math.max(.5, Math.min(.95, +r.confidence || conf)); paint(); } } catch (e) { aiError(e); } finally { btn.classList.remove('is-loading'); } }
-  S.shootouts = [{ a, b, winner, conf: +conf.toFixed(2), at: Date.now() }, ...(S.shootouts || [])].slice(0, 20); save();
+  S.shootouts = [{ a, b, winner, conf: +conf.toFixed(2), at: Date.now() }, ...(S.shootouts || []).filter(x => !(x.a === a && x.b === b))].slice(0, 20); save();
   const h = $('#so-hist'); if (h) h.outerHTML = shootHistoryHTML();
 }
 /* did the prediction hold? find each line in your imported posts */
@@ -4663,7 +4692,7 @@ async function openPlan() {
   slots = slots.sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)).map(x => ({ ...x, label: slotLabel(x.day, x.time) }));
   if (!slots.length) { toast('No open slots in the next three weeks. That’s a full calendar.', { icon: 'cal' }); return; }
   const m = modal(`<div class="tidy plan"><div class="tidy-h"><span class="label" id="pl-n">Planning your week</span><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div><div id="pl-card"><div class="td-card"><p class="faint">${aiOn() ? `${esc(cap(AI_NAME()))} is drafting ${slots.length} posts from your ideas and best posts…` : 'Drafting from your ideas…'}</p><span class="skel"></span><span class="skel" style="width:70%"></span></div></div>
-    <div class="tidy-f"><button class="btn" data-pl="skip">Skip<kbd>K</kbd></button><button class="btn" data-pl="edit">${ic('write', 'sm')} Edit in composer<kbd>E</kbd></button><span class="grow"></span><button class="btn primary" data-pl="ok">${ic('clock', 'sm')} Schedule<kbd>↵</kbd></button></div></div>`, { label: 'Plan my week', box: 'modal tidy-box', onClose: () => { document.removeEventListener('keydown', key, true); done(); } });
+    <div class="tidy-f"><button class="btn" data-pl="skip">Skip<kbd>K</kbd></button><button class="btn" data-pl="edit">${ic('write', 'sm')} Edit in composer<kbd>E</kbd></button><span class="grow"></span><button class="btn primary" data-pl="ok">${ic('clock', 'sm')} Schedule<kbd>↵</kbd></button></div></div>`, { autofocus: false, label: 'Plan my week', box: 'modal tidy-box', onClose: () => { document.removeEventListener('keydown', key, true); done(); } });
   let items = [], i = 0; const planned = [];
   const inbox = S.ideas.map(x => cleanIdea(x.text));
   try {
@@ -4681,11 +4710,11 @@ async function openPlan() {
     if (!m.el.isConnected) return; if (i >= items.length) { m.close(); return; }
     const it = items[i]; $('#pl-n', m.el).textContent = `Post ${i + 1} of ${items.length} · ${it.slot.label}`;
     $('#pl-card', m.el).innerHTML = `<article class="td-card"><div class="td-meta"><span class="pill kp" data-kind="${String(it.kind).toLowerCase()}">${esc(it.kind)}</span><span>${esc(it.slot.reason && it.slot.reason !== 'Open slot' ? it.slot.reason : 'Open slot')}</span></div>${it.posts.map((t, k) => `<textarea class="pl-t" data-k="${k}" rows="${Math.min(6, Math.ceil(t.length / 60) + 1)}" aria-label="Post ${k + 1}">${esc(t)}</textarea>`).join('')}${it.why ? `<p class="td-v">${esc(it.why)}</p>` : ''}</article>`;
-    const f = $('.pl-t', m.el); f && f.focus({ preventScroll: true });
+    m.el.setAttribute('tabindex', '-1'); m.el.focus({ preventScroll: true }); /* keys work right away; click a post to edit it */
   };
   const act = a => {
     const it = items[i]; if (!it) return; $$('.pl-t', m.el).forEach(t => { it.posts[+t.dataset.k] = t.value; });
-    if (a === 'ok') { const tw = it.posts.map(x => x.trim()).filter(Boolean); if (!tw.length) return; const q = { id: uid(), day: it.slot.day, time: it.slot.time, text: tw[0], tweets: tw, platforms: { ...S.platforms }, status: 'scheduled', ws: S.ws, planned: true, ...(WS().approvals ? { approval: 'needs' } : {}) }; S.queue.push(q); save(); syncToServer(q); planned.push(it.slot.label); SFX.play('tick'); }
+    if (a === 'ok') { const tw = it.posts.map(x => x.trim()).filter(Boolean); if (!tw.length) { toast('That one’s empty. Write something or skip it.', { icon: 'write', tone: 'err' }); return; } const q = { id: uid(), day: it.slot.day, time: it.slot.time, text: tw[0], tweets: tw, platforms: { ...S.platforms }, status: 'scheduled', ws: S.ws, planned: true, ...(WS().approvals ? { approval: 'needs' } : {}) }; S.queue.push(q); save(); syncToServer(q); planned.push(it.slot.label); SFX.play('tick'); }
     if (a === 'edit') { list0 = true; const it0 = it; m.close(); writeFrom(it0.posts); S.draft.slot = { day: it0.slot.day, time: it0.slot.time }; save(); return; }
     i++; draw();
   };
@@ -4924,15 +4953,15 @@ function openDraft(i) {
 }
 function newPost() {
   SFX.play('tap');
-  if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 20); toast('Saved to Drafts.', { icon: 'archive' }); }
+  if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 100); toast('Saved to Drafts.', { icon: 'archive' }); }
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; save();
   if (CURRENT === 'write') { route(); } else go('write');
   setTimeout(() => focusTweet(0), 80);
 }
 function writeFrom(texts) {
-  if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 20); }
+  if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 100); }
   S.draft = freshDraft(texts); S.draft.tweets.forEach(t => UI.fresh.add(t.id)); UI.diff = null; UI.riff = null; save();
-  if (CURRENT === 'write') { renderThread({ focusId: S.draft.tweets[0].id, pos: 'end' }); } else { go('write'); setTimeout(() => focusTweet(0, 'end'), 120); }
+  if (CURRENT === 'write') { renderThread({ focusId: S.draft.tweets[0].id, pos: 'end' }); } else { goThen('write', () => focusTweet(0, 'end')); }
 }
 function useHook(t) {
   const text = t.replace(/\[([^\]]+)\]/g, '$1');
@@ -5842,7 +5871,7 @@ function onbStep2() {
   $('#onb-skip').onclick = () => { clearTimeout(t); fl.stop(); onbStep3(); };
 }
 function onbStep3() {
-  const handle = ONB.handle || S.user.handle; const fromArchive = HIST().length && S.user.handle === handle; const name = fromArchive ? S.user.name : ONB.handle ? ONB.handle.replace(/[._]+/g, ' ').replace(/\d+/g, '').trim().split(' ').map(cap).join(' ') || cap(ONB.handle) : S.user.name;
+  const handle = ONB.handle || S.user.handle; const fromArchive = HIST().length && S.user.handle === handle; const name = fromArchive ? S.user.name : ONB.handle ? ONB.handle.replace(/[._\d]+/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).map(cap).join(' ') || cap(ONB.handle) : S.user.name;
   S.user = { ...S.user, handle, name, niche: ONB.niche, hue: hash(handle) % 360 }; S.onboarded = true; S.ws = 'me'; Object.assign(S.workspaces[0], { name, handle, hue: S.user.hue, niche: ONB.niche }); save();
   PH_IDEAS = genIdeas(6, hash(handle) % 1000);
   const ideas = ONB.ideas || genIdeas(5, hash(handle + ONB.niche) % 9999); const an = ANALYSIS();
@@ -5890,7 +5919,7 @@ ROUTES.ideas = () => {
       <textarea id="cap-in" rows="2" placeholder="Paste a link for five angles, or think out loud…" aria-label="Capture an idea"></textarea>
       <div class="capture-f">
         <label class="btn ghost sm" data-tip="Screenshots become angles" tabindex="0">${ic('shot', 'sm')} Screenshot<input type="file" accept="image/*" hidden id="cap-img"></label>
-        <button class="btn ghost sm" id="cap-rec" data-tip="Record or upload a voice memo">${ic('mic', 'sm')} <span>Voice memo</span></button><input type="file" accept="audio/*" hidden id="cap-aud">
+        <button class="btn ghost sm" id="cap-rec" data-tip="Say it instead of typing it" aria-pressed="false">${ic('mic', 'sm')} <span>Say it</span></button><input type="file" accept="audio/*" hidden id="cap-aud">
         <span class="grow"></span><span class="faint desk-only" style="font-size:12px" id="cap-hint">${kbd(MOD, '↵')} to save</span>
         <button class="btn primary sm" id="cap-go">Save idea</button>
       </div>
@@ -5915,8 +5944,8 @@ ROUTES.ideas = () => {
   inp.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); captureGo(); } });
   $('#cap-go').onclick = captureGo;
   $('#cap-img').onchange = e => { const f = e.target.files[0]; if (f) fromScreenshot(f); e.target.value = ''; };
-  $('#cap-aud').onchange = e => { const f = e.target.files[0]; if (f) fromVoice(f.name, 42); e.target.value = ''; };
-  $('#cap-rec').onclick = toggleRecord;
+  $('#cap-aud').onchange = e => { const f = e.target.files[0]; if (f) fromVoice(f.name); e.target.value = ''; };
+  $('#cap-rec').onclick = () => { const b = $('#cap-rec'), ta = $('#cap-in'); if (!ta) return; const d = listenInto(ta, $('#cap'), { onDone: said => { b.setAttribute('aria-pressed', 'false'); ta.value = ta.value.replace(/\u241E/g, '\n\n'); ta.dispatchEvent(new Event('input', { bubbles: true })); if (said) ta.focus(); } }); if (d) b.setAttribute('aria-pressed', 'true'); };
   const cap = $('#cap');
   cap.addEventListener('dragover', e => { e.preventDefault(); if (!$('.drop-hint', cap)) cap.insertAdjacentHTML('beforeend', '<div class="drop-hint">Drop it. We’ll find the angles.</div>'); });
   cap.addEventListener('dragleave', e => { if (!cap.contains(e.relatedTarget)) { const d = $('.drop-hint', cap); d && d.remove(); } });
@@ -5941,7 +5970,6 @@ ROUTES.ideas = () => {
     if (a === 'angle-save') { addIdea({ src: 'note', text: b.closest('[data-t]').dataset.t }, true); drawInbox(); b.innerHTML = ic('check', 'sm'); b.disabled = true; }
     if (a === 'angles-close') { $('#angles').innerHTML = ''; }
   });
-  onDispose(() => { if (REC.rec) { try { REC.rec.stop(); } catch (e) { } } });
 };
 function shuffleEngine() { UI.aiIdeas = null; ENGINE.seed++; drawEngine(); }
 async function claudeIdeas(btn) {
@@ -6037,32 +6065,14 @@ function captureGo() {
   const first = $('#inbox .inbox-row'); first && first.animate([{ background: 'var(--accent-soft)' }, { background: 'transparent' }], { duration: 1200 });
 }
 function fromScreenshot(f) {
-  const b = $('#cap-go'); b.classList.add('is-loading'); $('#cap-hint').textContent = `Reading ${f.name}…`;
-  setTimeout(() => {
-    b.classList.remove('is-loading'); $('#cap-hint').innerHTML = `${kbd(MOD, '↵')} to save`;
-    const quote = pick(['The best time to post is when you have something worth saying.', 'Onboarding felt like a friend setting up my desk.', 'We removed two pricing plans and trials doubled.'], f.name);
-    addIdea({ src: 'shot', text: `Screenshot · “${quote}”` }, true); drawInbox(); showAngles({ title: quote.replace(/\.$/, ''), topic: topicOf(quote) }, 'shot');
-  }, 900);
+  const ta = $('#cap-in'); const note = ta && ta.value.trim();
+  addIdea({ src: 'shot', text: `Screenshot · ${note || f.name.replace(/\.[^.]+$/, '')}` }, true); drawInbox(); if (ta) ta.value = '';
+  toast(note ? 'Saved the screenshot with your note.' : 'Saved the screenshot. Add a line about why it caught your eye, and future you will thank you.', { icon: 'shot', ms: 5000 });
 }
-function fromVoice(name, secs) {
-  const said = pick(['So the thing I keep noticing is that the people who stick around never read the docs. They ask a friend.', 'Pricing idea: anchor with the team plan, so solo looks like a steal.', 'Month three is where side projects die. Not launch day. Month three.'], name + secs);
-  addIdea({ src: 'voice', text: `Voice memo · 0:${String(secs).padStart(2, '0')} · ${said}` }, true); drawInbox();
-  showAngles({ title: sentences(said)[0].trim().replace(/[.:]$/, ''), topic: topicOf(said) }, 'voice');
-}
-const REC = { rec: null, t0: 0 };
-async function toggleRecord() {
-  const btn = $('#cap-rec');
-  if (REC.rec) { REC.rec.stop(); return; }
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const rec = new MediaRecorder(stream); REC.rec = rec; REC.t0 = Date.now();
-    btn.classList.add('primary'); $('span', btn).textContent = 'Stop · 0:00';
-    const tick = setInterval(() => { const s = Math.round((Date.now() - REC.t0) / 1000); $('span', btn) && ($('span', btn).textContent = `Stop · 0:${String(s).padStart(2, '0')}`); }, 500);
-    rec.onstop = () => { clearInterval(tick); stream.getTracks().forEach(t => t.stop()); REC.rec = null; btn.classList.remove('primary'); $('span', btn).textContent = 'Voice memo'; fromVoice('rec', Math.max(1, Math.round((Date.now() - REC.t0) / 1000))); };
-    rec.start();
-  } catch (e) {
-    toast('The mic is off here. Pick an audio file instead.', { icon: 'mic', tone: 'err' }); $('#cap-aud').click();
-  }
+
+function fromVoice(name) {
+  addIdea({ src: 'voice', text: `Voice memo · ${name}` }, true); drawInbox();
+  toast('Saved the memo. Hookworthy can’t transcribe audio files yet, so tap “Say it” next time and it types as you talk.', { icon: 'mic', ms: 6000 });
 }
 
 /* ==========================================================================
@@ -6138,13 +6148,13 @@ ROUTES.queue = () => {
       if (a === 'slot') { S.draft.slot = { day: b.dataset.day, time: b.dataset.time }; save(); go('write'); toast(`Writing for ${slotLabel(b.dataset.day, b.dataset.time)}.`, { icon: 'clock', tone: 'accent' }); }
       return;
     }
-    const rd = e.target.closest('[data-rest]'); if (rd) { const d = +rd.dataset.rest; const r = new Set(S.settings.rest || []); r.has(d) ? r.delete(d) : r.add(d); S.settings.rest = [...r]; save(); drawQSide(); toast(r.has(d) ? `${DOW[d]}s are rest days. They won’t break your streak.` : `${DOW[d]}s count again.`, { icon: 'check', ms: 1800 }); return; }
+    const rd = e.target.closest('[data-rest]'); if (rd) { const d = +rd.dataset.rest; const r = new Set(S.settings.rest || []); r.has(d) ? r.delete(d) : r.add(d); S.settings.rest = [...r]; save(); drawQSide(); toast(r.has(d) ? `${DOW_PL[d]} are rest days. They won’t break your streak.` : `${DOW[d]}s count again.`, { icon: 'check', ms: 1800 }); return; }
     const rr = e.target.closest('[data-rerun]'); if (rr) { rerun(rr.dataset.rerun); return; }
     const c = e.target.closest('.qcard'); if (c) qMenu(c);
     const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); if (k === 'evergreen') { const q = S.settings.evergreen ? ensureEvergreen() : null; drawCal(); drawQSide(); toast(S.settings.evergreen ? (q ? `Evergreen on. First rerun: ${slotLabel(q.day, q.time)}.` : 'Evergreen on. Nothing old enough to rerun yet.') : 'Evergreen off. Scheduled reruns stay unless you delete them.', { icon: 'repost', tone: 'accent', ms: 3200 }); return; } toast(`${k === 'autoPlug' ? 'Follow-up reply' : 'Auto-repost'} ${S.settings[k] ? 'on' : 'off'}.`, { icon: 'check', ms: 1600 }); }
     const u = e.target.closest('[data-up-id]'); if (u) { const q = S.queue.find(x => x.id === u.dataset.upId); WEEK = Math.round((startOfWeek(fromKey(q.day)) - startOfWeek(new Date())) / (7 * DAY)); drawCal(); const card = $(`.qcard[data-id="${q.id}"]`); card && (card.classList.add('landed'), card.focus()); }
   });
-  v.addEventListener('change', e => { if (e.target.id === 'plug-t') { S.settings.plugText = e.target.value; save(); toast('Follow-up reply saved.', { icon: 'check', ms: 1400 }); } if (e.target.id === 'rep-h') { S.settings.repostAfter = +e.target.value; save(); } });
+  v.addEventListener('change', e => { if (e.target.id === 'plug-t') { const v = e.target.value.trim(); if (!v) { e.target.value = S.settings.plugText; toast('A follow-up needs words. Kept the last one.', { icon: 'reply', tone: 'err' }); return; } S.settings.plugText = v; save(); toast('Follow-up reply saved.', { icon: 'check', ms: 1400 }); } if (e.target.id === 'rep-h') { S.settings.repostAfter = +e.target.value; save(); } });
   /* drag between slots */
   let dragId = null;
   v.addEventListener('dragstart', e => { const c = e.target.closest('.qcard'); if (!c) return; dragId = c.dataset.id; c.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); });
@@ -6174,7 +6184,7 @@ function qMenu(c) {
   openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
     { label: 'Edit in composer', icon: 'write', run: () => { S.queue = S.queue.filter(x => x !== q); save(); writeFrom(q.tweets); S.draft.slot = { day: q.day, time: q.time }; } },
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No best times left', icon: 'target', disabled: true },
-    { label: 'Post now', icon: 'send', run: () => { q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Posted. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); syncToServer(q); } },
+    { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Posted. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); syncToServer(q); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; S.queue.push({ ...q, id: uid(), day: s.day, time: s.time }); save(); drawCal(); drawQSide(); toast(`Duplicated to ${slotLabel(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
     { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); save(); drawCal(); drawQSide(); toast('Gone from the queue.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); drawCal(); drawQSide(); } }); } }
   ], { width: 250 });
@@ -6182,7 +6192,7 @@ function qMenu(c) {
 /* one calendar, three places: the Queue, the homepage week and the homepage demo all render through here */
 function qcardHTML(q, interactive = true) {
   const tag = interactive ? 'button' : 'div';
-  return `<${tag} class="qcard ${q.status}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(q.text)}. ${q.status === 'published' ? 'Published' : 'Scheduled ' + slotLabel(q.day, q.time)}"><p>${esc(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
+  return `<${tag} class="qcard ${q.status}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(q.text.replace(/[.!?…]+$/, ''))}. ${q.status === 'published' ? 'Published' : 'Scheduled ' + slotLabel(q.day, q.time)}"><p>${esc(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
 }
 function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) {
   const today = dayKey(Date.now()); const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
@@ -6279,7 +6289,7 @@ function series(days) {
     return Math.round(trend * spike * (.9 + r() * .2));
   });
 }
-function niceTicks(max, n = 4) { const raw = max / n; const mag = Math.pow(10, Math.floor(Math.log10(raw))); const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw); return Array.from({ length: Math.ceil(max / step) + 1 }, (_, i) => i * step); }
+function niceTicks(max, n = 4) { if (!(max > 0)) return [0, 1]; const raw = max / n; const mag = Math.pow(10, Math.floor(Math.log10(raw))); const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw); return Array.from({ length: Math.ceil(max / step) + 1 }, (_, i) => i * step); }
 ROUTES.insights = () => {
   mount('insights', `<div class="page"><div class="page-h"><div><h1 class="display">Insights</h1><p>What’s working, in sentences. The numbers are there when you want them.</p></div><div class="seg" id="rng" role="tablist" aria-label="Range">${[7, 30, 90].map(d => `<button role="tab" data-r="${d}" aria-selected="${RANGE === d}">${d} days</button>`).join('')}</div></div><div id="digest"></div><div id="ins"></div></div>`);
   syncSeg($('#rng')); drawInsights(); drawDigest();
@@ -6325,12 +6335,13 @@ function drawInsightsReal() {
   const last = Math.max(...all.filter(p => p.at).map(p => p.at), 0) || Date.now(); const stale = Date.now() - last > 14 * DAY;
   const end = stale ? last : Date.now(); const win = all.filter(p => p.at && p.at > end - RANGE * DAY && p.at <= end), prev = all.filter(p => p.at && p.at > end - 2 * RANGE * DAY && p.at <= end - RANGE * DAY);
   const sum = (a, f) => a.reduce((x, p) => x + f(p), 0); const pct = (a, b) => b ? Math.round((a - b) / b * 100) : null;
-  const dl = (a, b) => { const v = pct(a, b); return v == null ? '' : `<span class="delta ${v >= 0 ? 'up' : 'down'}">${v >= 0 ? '+' : '−'}${Math.abs(v)}%</span>`; };
+  const dl = (a, b) => { const v = pct(a, b); return v == null ? '' : ` <span class="delta ${v >= 0 ? 'up' : 'down'}">${v >= 0 ? '+' : '−'}${Math.abs(v)}%</span>`; };
   const d = Array.from({ length: RANGE }, (_, i) => { const a = end - (RANGE - 1 - i) * DAY; const k = dayKey(a); return sum(win.filter(p => dayKey(p.at) === k), E); });
   const split = (f) => { const a = all.filter(f).map(E), b = all.filter(p => !f(p)).map(E); return a.length >= 3 && b.length >= 3 ? { x: +(HWCore.median(a) / Math.max(1, HWCore.median(b))).toFixed(1), n: a.length, of: all.length } : null; };
   const numFirst = split(p => /\d/.test(p.text.split('\n')[0])), lower = split(p => /^[a-z]/.test(p.text)), thr = split(p => p.thread && p.thread.length), qEnd = split(p => /\?\s*$/.test(p.text.split('\n')[0]));
   const bk = an.bestKind, c = an.calib, kinds = an.kindStats.filter(k => k.n >= 2).slice(0, 6), maxX = Math.max(...kinds.map(k => k.x), 1);
-  const hero = bk ? { h: `Your ${bk.k.toLowerCase()} posts get <em>${bk.x}× your median.</em>`, p: `${bk.n} of your ${an.n} posts are ${bk.k.toLowerCase()} posts, and they earn ${bk.x}× what a typical post of yours does. Write more of them.`, kind: bk.k }
+  const noNums = !all.some(p => E(p) > 0), noDates = !all.some(p => p.at);
+  const hero = noNums ? { h: 'Your posts are in. <em>The numbers aren’t.</em>', p: 'These came without likes or views, so Hookworthy can learn your voice from them but can’t rank them yet. Your X archive has the numbers.', kind: null } : bk ? { h: `Your ${bk.k.toLowerCase()} posts get <em>${bk.x}× your median.</em>`, p: `${bk.n} of your ${an.n} posts are ${bk.k.toLowerCase()} posts, and they earn ${bk.x}× what a typical post of yours does. Write more of them.`, kind: bk.k }
     : { h: `Your best post did <em>${Math.round(E(an.top[0]) / an.median)}× your median.</em>`, p: 'Nothing type-specific stands out yet. The top posts below show what to repeat.', kind: null };
   const cells = [];
   const heat = (() => { const cols = [[6, 9, '6a'], [9, 12, '9a'], [12, 15, '12p'], [15, 18, '3p'], [18, 21, '6p'], [21, 24, '9p']]; const days = [1, 2, 3, 4, 5, 6, 0]; const vals = days.map(dw => cols.map(([a, b]) => { const ps = all.filter(p => p.at && new Date(p.at).getDay() === dw && new Date(p.at).getHours() >= a && new Date(p.at).getHours() < b); return { n: ps.length, v: ps.length ? HWCore.median(ps.map(E)) : 0 }; })); const mx = Math.max(1, ...vals.flat().map(x => x.v)); let peak = null; vals.forEach((r, di) => r.forEach((x, ci) => { if (x.n >= 2 && (!peak || x.v > peak.v)) peak = { ...x, d: DOW[days[di]], c: cols[ci][2] }; }));
@@ -6346,7 +6357,7 @@ function drawInsightsReal() {
   const row = (p, i, tag) => `<div class="top-post" data-pid="${esc(p.id)}"><span class="rk">${tag || String(i + 1).padStart(2, '0')}</span><div><p>${esc(clip(p.text.split('\n')[0], 140))}</p><div class="st">${p.views ? `<span>${fmtK(p.views)} views</span>` : ''}<span>${fmtK(p.likes)} likes</span><span>${fmtK(p.reposts)} reposts</span>${p.replies ? `<span>${fmtK(p.replies)} replies</span>` : ''}<span>${HWCore.kindOf(p.text)}</span>${p.at ? `<span>${agoLabel(p.at)}</span>` : ''}</div><div class="pm" hidden></div></div><div class="tp-a"><button class="btn sm ghost" data-nact="why" data-id="${esc(p.id)}">${ic('q', 'sm')} Why?</button><button class="btn sm" data-nact="remix" data-id="${esc(p.id)}">${ic('layers', 'sm')} Remix</button></div></div>`;
   $('#ins').innerHTML = `${stale ? `<div class="ins-demo"><span>${ic('clock', 'sm')} Your history ends ${agoLabel(last)}, so ranges count back from ${MON[new Date(last).getMonth()]} ${new Date(last).getDate()}.</span><button class="btn sm" data-act="import">Add newer posts</button></div>` : ''}
   <div class="insight-hero">${(() => { const m = String(hero.h).match(/(\d+(?:\.\d+)?)×/); return m && hero.kind ? ihVs(hero.kind, +m[1], 'engagement') : ''; })()}<h2 class="display">${hero.h}</h2><p>${hero.p}</p><div class="acts">${hero.kind ? `<button class="btn primary" data-nact="kind" data-k="${hero.kind}">${ic('write', 'sm')} Write a ${hero.kind.toLowerCase()} post</button>` : ''}<button class="btn" data-nact="posts">See the posts</button></div></div>
-  <p class="kpi-line">Last ${RANGE} days${stale ? ' of your history' : ''}: <b>${win.length}</b> posts ${dl(win.length, prev.length)}, <b>${fmtK(sum(win, p => p.likes))}</b> likes ${dl(sum(win, p => p.likes), sum(prev, p => p.likes))}, <b>${fmtK(sum(win, p => p.reposts))}</b> reposts ${dl(sum(win, p => p.reposts), sum(prev, p => p.reposts))}${an.perWeek ? `, and you post about <b>${an.perWeek}</b> times a week` : ''}.</p>
+  ${noDates ? `<p class="kpi-line">${fmtN(all.length)} posts imported without dates, so there’s no timeline yet. What works, by type, is below.</p>` : ''}<p class="kpi-line" ${noDates ? 'hidden' : ''}>Last ${RANGE} days${stale ? ' of your history' : ''}: <b>${win.length}</b> posts${dl(win.length, prev.length)}, <b>${fmtK(sum(win, p => p.likes))}</b> likes${dl(sum(win, p => p.likes), sum(prev, p => p.likes))}, <b>${fmtK(sum(win, p => p.reposts))}</b> reposts${dl(sum(win, p => p.reposts), sum(prev, p => p.reposts))}${an.perWeek ? `, and you post about <b>${an.perWeek}</b> times a week` : ''}.</p>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Engagement per day</h3><p class="faint" style="font-size:13px;margin-top:2px">Likes, plus reposts ×2 and replies ×3, on the days you posted.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Engagement</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(end - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">What works, by post type</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement relative to your median post</p></div></div><div class="hbars">${kinds.map((k, i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k.k}: ${k.x}× your median, ${k.n} posts"><span>${k.k}</span><div class="track"><div class="fillb" style="width:${k.x / maxX * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${k.x}×</span></div>`).join('')}</div></div>
   <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your posts land</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement by when you posted. Stronger color, more engagement</p></div></div>${heat}</div></div>
@@ -6434,7 +6445,7 @@ function heuristicTraits(an) {
   const s = an.stats, out = [];
   out.push(s.oneSentOpen >= 60 ? ['Direct', `${s.oneSentOpen}% of your openers are one sentence`] : ['Builder', `Your openers run ${s.wps} words per sentence and set up the point`]);
   out.push(s.emojiPer < .3 ? ['Plain', `${s.emojiPer} emoji per post, ${s.tagsPer} hashtags`] : ['Warm', `${s.emojiPer} emoji per post; you let feeling in`]);
-  out.push(an.bestKind ? [an.bestKind.k === 'Contrarian' ? 'Contrarian' : an.bestKind.k === 'Story' ? 'Storyteller' : an.bestKind.k === 'Listicle' ? 'Generous' : 'Curious', `${an.bestKind.k} posts earn ${an.bestKind.x}× your median`] : ['Consistent', `${an.n} posts; your median post gets ${Math.round(an.median)} engagements`]);
+  out.push(an.bestKind ? [an.bestKind.k === 'Contrarian' ? 'Contrarian' : an.bestKind.k === 'Story' ? 'Storyteller' : an.bestKind.k === 'Listicle' ? 'Generous' : 'Curious', `${an.bestKind.k} posts earn ${an.bestKind.x}× your median`] : ['Consistent', HIST().some(p => HWCore.eng(p) > 0) ? `${an.n} posts; your median post gets ${fmtN(Math.round(an.median))} engagement${Math.round(an.median) === 1 ? '' : 's'}` : `${an.n} posts, no engagement numbers yet`]);
   return out;
 }
 /* Learn my voice: Claude (Opus on the server, "complex" on your account) reads your posts and writes the profile every rewrite uses */
