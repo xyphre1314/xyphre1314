@@ -66,7 +66,7 @@
     const raw0 = parts.clarity * .22 + parts.curiosity * .24 + parts.specificity * .2 + parts.tension * .18 + parts.brevity * .16;
     const score = c(raw0 * 1.35 - 10);
     let reason, tone;
-    if (fillers.length) { reason = `“${fillers[0]}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; }
+    if (fillers.length) { const orig = (String(text).match(new RegExp(`\\b${fillers[0]}\\b`, 'i')) || [fillers[0]])[0]; reason = `“${orig}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; }
     else if (warm) { reason = `Opening with “${cap(warm[0])}” spends your best real estate on a warm-up.`; tone = 'fix'; }
     else if (parts.brevity < 45) { reason = 'Long first line. Land the point in under 100 characters.'; tone = 'fix'; }
     else if (score >= 70) {
@@ -500,7 +500,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const main = pairs.slice().sort((x, y) => y.score - x.score)[0], second = pairs.find(p => p !== main);
       const lower = LOWER_BETTER.test(`${main.metric} ${main.unit}`), good = (main.b > main.a) !== lower;
       const delta = main.a ? (main.b / main.a >= 3 ? `${+(main.b / main.a).toFixed(1)}×` : `${main.b > main.a ? '+' : '−'}${Math.abs(Math.round((main.b - main.a) / main.a * 100))}%`) : 'from zero';
-      const head = sents.find(s => !s.includes(main.raw) && !/:$/.test(s)) || main.sent;
+      /* a headline from another sentence only if it doesn't bring its own unrelated number (that would caption the wrong chart) */
+      const own = x => { const re = new RegExp(NUM, 'g'); let k, left = x; pairs.forEach(p => { left = left.split(p.raw).join(' '); }); while ((k = re.exec(left))) if (/\d/.test(k[0])) return true; return false; };
+      const head = sents.find(s => !s.includes(main.raw) && !/:$/.test(s) && !own(s)) || main.sent;
       return { template: 'data', headline: clipW(head, 90), metric: main.metric ? main.metric[0].toUpperCase() + main.metric.slice(1) : 'The result', before: main.la, after: main.lb, a: main.a, b: main.b, unit: main.unit, delta, good, lowerBetter: lower,
         chip: second && !head.includes(second.raw) ? `${second.la} → ${second.lb}${second.unit ? ' ' + second.unit : ''}` : '', why: `You wrote ${main.la} → ${main.lb}. A number that moves is the fastest thing to read in a feed.` };
     }

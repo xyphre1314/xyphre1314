@@ -226,7 +226,7 @@ kbd,.kbd{ display:inline-flex; align-items:center; justify-content:center; min-w
 .chip{ display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 10px; border-radius:var(--r-pill); font:500 var(--t-13)/1 var(--font-ui); color:var(--text-2); background:var(--surface); box-shadow:0 0 0 1px var(--border-strong); transition:color var(--d-micro),background var(--d-micro),box-shadow var(--d-micro),transform var(--d-spring) var(--spring-snap); white-space:nowrap; }
 .chip:hover{ color:var(--text-1); background:var(--surface-2); }
 .chip:active{ transform:scale(.96); }
-.chip[aria-pressed="true"],.chip.on{ color:var(--text-1); background:var(--accent-soft); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent); }
+.chip[aria-pressed="true"],.chip.on{ color:var(--text-1); background:var(--accent-soft); box-shadow:0 0 0 1.5px var(--accent); font-weight:600; }
 .chip .icon{ width:14px; height:14px; }
 .chip:focus-visible{ box-shadow:var(--focus); border-radius:var(--r-pill); }
 
@@ -304,10 +304,12 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .scrim{ position:fixed; inset:0; z-index:800; background:var(--backdrop); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:fade var(--d-fast) var(--ease-out) both; display:grid; place-items:start center; padding:12vh 16px 16px; overflow:auto; }
 .scrim.center{ place-items:center; padding:16px; }
 .scrim.closing{ animation:fadeout 150ms var(--ease-out) both; }
-.modal{ width:min(540px,100%); background:var(--surface); border-radius:var(--r-xl); box-shadow:var(--sh-4); animation:modalin var(--d-snap) var(--spring) both; overflow:hidden; }
+.modal{ width:min(540px,100%); background:var(--surface); border-radius:var(--r-xl); box-shadow:var(--sh-4); animation:modalin var(--d-snap) var(--spring) both; overflow:hidden auto; overscroll-behavior:contain; max-height:calc(100dvh - 12vh - 16px); }
+.scrim.center .modal{ max-height:calc(100dvh - 32px); }
 .force-dark .modal,:root[data-theme="dark"] .modal:not(.force-light .modal){ background:var(--surface-2); }
 .scrim.closing .modal,.scrim.closing .cmdk{ animation:modalout 150ms var(--ease-out) both; }
-.modal-h{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 20px 0; }
+.modal-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:18px 20px 0; position:sticky; top:0; z-index:3; background:inherit; }
+.modal-h > .btn:last-child{ margin:-4px -6px 0 0; }
 .modal-b{ padding:16px 20px 20px; }
 .vis-modal{ width:min(860px,100%); }
 .vis-b{ display:grid; grid-template-columns:220px minmax(0,1fr); gap:14px 18px; }
@@ -326,7 +328,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .vis-stage.drop{ cursor:pointer; } .vis-stage.over{ box-shadow:inset 0 0 0 2px var(--text-1); }
 .vis-opts{ display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; }
 @media (max-width:760px){ .vis-b{ grid-template-columns:minmax(0,1fr); } .vis-kinds{ grid-row:auto; display:flex; overflow-x:auto; margin:0 -4px; padding:2px 4px; scrollbar-width:none; } .vk{ flex:none; padding:9px 12px; } .vk small{ display:none; } .vis-stage{ min-height:0; padding:10px; } }
-.modal-f{ display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:var(--bg-elev); }
+.modal-f{ display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:var(--bg-elev); position:sticky; bottom:0; z-index:3; }
 .force-dark .modal-f,:root[data-theme="dark"] .modal-f:not(.force-light .modal-f){ background:rgba(0,0,0,.15); }
 @keyframes fade{ from{ opacity:0 } }
 @keyframes fadeout{ to{ opacity:0 } }
@@ -386,7 +388,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .streak i.on{ background:var(--accent); }
 .streak i.today{ box-shadow:inset 0 0 0 1.5px var(--accent); background:transparent; }
 .plan-card{ margin-top:6px; padding:11px; border-radius:12px; display:grid; gap:8px; background:linear-gradient(160deg,var(--accent-soft),transparent 70%),var(--surface); box-shadow:0 0 0 1px var(--border); }
-.meter{ height:4px; border-radius:4px; background:var(--surface-3); overflow:hidden; }
+.meter{ height:4px; border-radius:4px; background:var(--track,var(--surface-3)); overflow:hidden; }
 .meter i{ display:block; height:100%; background:var(--accent); border-radius:4px; transition:width var(--d-slow) var(--ease-out); }
 .me{ display:flex; align-items:center; gap:9px; padding:6px; margin-top:6px; border-radius:9px; width:100%; text-align:left; transition:background var(--d-micro); }
 .me:hover{ background:var(--surface-2); }
@@ -619,7 +621,7 @@ body.typing .tw-tools{ opacity:0!important; }
 .ring{ position:relative; width:22px; height:22px; display:grid; place-items:center; }
 .ring svg{ position:absolute; inset:0; transform:rotate(-90deg); transition:transform var(--d-spring) var(--spring-snap); }
 .ring circle{ fill:none; stroke-width:2.25; }
-.ring .trk{ stroke:var(--surface-3); }
+.ring .trk{ stroke:var(--track,var(--surface-3)); }
 .ring .val{ stroke:var(--text-3); stroke-linecap:round; transition:stroke-dashoffset var(--d-spring) var(--ease-out),stroke var(--d-fast); }
 .ring.warn .val{ stroke:var(--warn); } .ring.over .val{ stroke:var(--error); }
 .ring.warn svg,.ring.over svg{ transform:rotate(-90deg) scale(1.3); }
@@ -806,7 +808,7 @@ body.typing .preview{ opacity:.7; }
 .bigscore{ display:flex; align-items:center; gap:14px; }
 .bigscore svg{ width:72px; height:72px; transform:rotate(-90deg); flex:none; }
 .bigscore circle{ fill:none; stroke-width:5; }
-.bigscore .trk{ stroke:var(--surface-3); }
+.bigscore .trk{ stroke:var(--track,var(--surface-3)); }
 .bigscore .val{ stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset var(--d-slow) var(--ease-out); }
 .bigscore b{ font:400 44px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
 .bars{ display:grid; gap:9px; }
@@ -816,7 +818,7 @@ body.typing .preview{ opacity:.7; }
 .hooklib{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
 .hk{ padding:16px; display:grid; gap:14px; align-content:space-between; }
 .hk .t{ font:500 var(--t-18)/1.35 var(--font-ui); letter-spacing:0; }
-.hk .t i{ font-style:normal; background:var(--marker-soft); border-radius:3px; padding:0 2px; }
+.hk .t i{ font-style:normal; background:var(--marker-soft); border-radius:3px; box-shadow:0 0 0 2px var(--marker-soft); }
 .hk .f{ display:flex; align-items:center; justify-content:space-between; }
 
 .cal-h{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
@@ -831,7 +833,7 @@ body.typing .preview{ opacity:.7; }
 .cal .tl{ white-space:nowrap; padding:10px 8px; font:500 var(--t-11)/1 var(--font-mono); color:var(--text-3); text-align:right; border-top:1px solid var(--border); }
 .slot{ position:relative; min-height:92px; padding:6px; border-top:1px solid var(--border); border-left:1px solid var(--border); transition:background var(--d-micro); }
 .slot.past{ background:color-mix(in srgb,var(--surface-2) 55%,transparent); }
-.slot.best{ padding-top:16px; }
+.slot.best{ padding-top:16px; } .slot{ padding-top:16px; }
 .slot.best::before{ content:""; position:absolute; top:6px; left:50%; margin-left:-3px; width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
 .slot.over{ background:var(--accent-soft); box-shadow:inset 0 0 0 1.5px var(--accent); }
 .slot .add{ position:absolute; inset:6px; border-radius:10px; display:grid; place-items:center; color:var(--text-3); opacity:0; transition:opacity var(--d-micro),background var(--d-micro); font-size:var(--t-12); }
@@ -845,7 +847,7 @@ body.typing .preview{ opacity:.7; }
 .qcard p{ overflow-wrap:anywhere; min-width:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; color:var(--text-1); }
 .qcard .qm{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:2px 6px; color:var(--text-3); font-family:var(--font-mono); font-size:10.5px; }
 .qcard .qp{ display:flex; gap:3px; }
-.qcard .qp svg{ width:11px; height:11px; }
+.qcard .qp svg{ width:13px; height:13px; } .qcard .qp{ color:var(--text-2); }
 .qcard.published{ opacity:.6; }
 .qcard.published .qm > span:first-child::before{ content:"Sent · "; font:600 10px/1 var(--font-ui); color:var(--success); letter-spacing:0; }
 .side-panel{ display:grid; gap:12px; }
@@ -872,7 +874,7 @@ body.typing .preview{ opacity:.7; }
 .insight-hero .display{ font-size:clamp(38px,5vw,60px); max-width:17ch; position:relative; }
 .insight-hero .display .n{ font-style:normal; }
 .ih-vs{ position:absolute; right:40px; bottom:36px; top:36px; display:flex; align-items:flex-end; gap:22px; margin:0; }
-.ih-vs div{ display:grid; justify-items:center; gap:8px; width:84px; } .ih-vs i{ display:block; width:100%; height:calc(var(--h) * 190px); border-radius:12px 12px 6px 6px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); transform-origin:bottom; animation:ihgrow .9s .15s var(--ease-o,ease-out) both; }
+.ih-vs div{ display:grid; grid-template-rows:auto 1fr 34px; justify-items:center; align-items:end; gap:8px; width:84px; height:100%; } .ih-vs span{ align-self:start; } .ih-vs i{ display:block; width:100%; height:calc(var(--h) * 190px); border-radius:12px 12px 6px 6px; background:var(--surface-3); box-shadow:inset 0 0 0 1px var(--border-strong); transform-origin:bottom; animation:ihgrow .9s .15s var(--ease-o,ease-out) both; }
 .ih-vs div:first-child i{ background:linear-gradient(180deg,var(--pa,#EADCFF),color-mix(in srgb,var(--pl,#6A2FA0) 70%,var(--pa,#EADCFF))); box-shadow:0 16px 36px -18px color-mix(in srgb,var(--pl,#6A2FA0) 70%,transparent); }
 .ih-vs b{ font:600 20px/1 var(--font-sans,inherit); font-variant-numeric:tabular-nums; } .ih-vs span{ font-size:var(--t-12); color:var(--text-3); text-align:center; line-height:1.3; }
 @keyframes ihgrow{ from{ transform:scaleY(0); } }
@@ -912,8 +914,8 @@ body.typing .preview{ opacity:.7; }
 .heat .c:hover{ outline:2px solid var(--text-1); outline-offset:1px; z-index:1; transform:scale(1.08); }
 .heat .rl{ display:flex; align-items:center; }
 .heat .cl{ text-align:center; padding-bottom:4px; }
-.ins-card{ padding:18px; display:grid; gap:10px; align-content:start; }
-.ins-card .big{ font:600 var(--t-24)/1.2 var(--font-ui); letter-spacing:0; text-wrap:balance; }
+.ins-card{ padding:18px; display:grid; gap:10px; align-content:start; grid-template-rows:auto 1fr auto; } .ins-card > .btn:last-child, .ins-card > :last-child:is(.btn,button){ justify-self:start; align-self:end; }
+.ins-card .big{ font:400 28px/1.1 var(--f-serif,'EB Garamond',serif); letter-spacing:-.01em; color:var(--text-1); text-wrap:balance; }
 .ins-card .big em{ color:var(--accent-text); }
 .ins-card p{ color:var(--text-2); font-size:var(--t-13); }
 .top-post{ display:grid; grid-template-columns:28px 1fr auto; gap:14px; align-items:center; padding:14px 6px; border-bottom:1px solid var(--border); }
@@ -927,7 +929,7 @@ table.data th,table.data td{ padding:8px 10px; text-align:left; border-bottom:1p
 table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
 .tbl-wrap{ overflow-x:auto; max-height:300px; }
 
-.voice-hero{ display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }
+.voice-hero{ display:grid; grid-template-columns:1fr 1fr; gap:14px; } .voice-hero + .grid-2.sec{ margin-top:14px; }
 .trait{ display:flex; align-items:baseline; gap:10px; padding:12px 0; border-bottom:1px solid var(--border); }
 .trait b{ font:400 var(--t-32)/1 var(--font-display); letter-spacing:-.01em; }
 .trait span{ color:var(--text-2); font-size:var(--t-13); margin-left:auto; text-align:right; }
@@ -1690,7 +1692,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
    ========================================================================== */
 @media (pointer: coarse){ .hw .kbds,.editor-foot,.add-tw .kbds,.searchbtn .kbds,.cmdk-f,.btn .kbds,.diff-hint{ display:none; }
   .tw-tools{ height:0; margin-top:0; overflow:hidden; transition:height var(--d-spring) var(--ease-out),margin var(--d-spring) var(--ease-out),opacity var(--d-fast); }
-  .tw:focus-within .tw-tools,.tw.has-meta .tw-tools{ height:30px; margin-top:6px; } }
+  .tw:focus-within .tw-tools,.tw.has-meta .tw-tools{ height:auto; min-height:36px; margin-top:6px; overflow:visible; } }
 @media (max-width:1180px){
   :root{ --preview-w:350px; }
   .starter-list{ grid-template-columns:1fr 1fr; }
@@ -1742,7 +1744,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .cal-scroll{ display:none; }
   .agenda{ display:block; }
   .tw-meta .predict{ display:none; }
-  .hbar{ grid-template-columns:80px 1fr 40px; }
+  .hbar{ grid-template-columns:minmax(92px,auto) 1fr 40px; }
   .l-nav .links,.l-nav .login{ display:none; }
   .shortcuts{ grid-template-columns:1fr; }
   .up-wrap{ padding:32px 16px 110px; }
@@ -1796,7 +1798,7 @@ body.sending .tabbar{ visibility:hidden; }
 .td-t{ font-size:18px; line-height:1.5; white-space:pre-wrap; overflow-wrap:anywhere; }
 .td-more{ font-size:var(--t-13); }
 .td-v{ font-size:var(--t-14); color:var(--text-2); padding-top:10px; border-top:1px solid var(--border); }
-.tidy-f{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; } .tidy-f .grow{ flex:1; }
+.tidy-f{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; } .tidy-f .grow{ flex:1; min-width:0; } .modal textarea, .shoot textarea{ resize:none; }
 .tidy-f kbd{ margin-left:6px; font:500 11px/1 var(--font-mono); opacity:.6; }
 @media (max-width:560px){ .tidy-f .grow{ display:none; } .tidy-f .btn{ flex:1 1 calc(50% - 4px); } .tidy-f kbd{ display:none; } }
 
@@ -1914,7 +1916,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .rd-t{ font-size:var(--t-15); line-height:1.45; }
 .rd-me{ display:flex; gap:10px; align-items:flex-start; } .rd-me textarea{ flex:1; min-height:44px; resize:vertical; font-size:var(--t-14); }
 .rd-a{ display:flex; gap:8px; align-items:center; font-size:12px; } .rd-a .grow{ flex:1; }
-.rd-paste summary{ cursor:pointer; font-size:var(--t-13); color:var(--text-2); } .rd-paste[open]{ display:grid; gap:8px; } .rd-paste button{ justify-self:start; }
+.rd-paste summary, .dev-note summary{ cursor:pointer; font-size:var(--t-13); color:var(--text-2); list-style:none; display:inline-flex; align-items:center; gap:6px; } .rd-paste summary::-webkit-details-marker, .dev-note summary::-webkit-details-marker{ display:none; } .rd-paste summary::before, .dev-note summary::before{ content:'+'; display:grid; place-items:center; width:18px; height:18px; border-radius:6px; background:var(--surface-2); font-weight:600; } .rd-paste[open] summary::before, .dev-note[open] summary::before{ content:'−'; } .dev-note{ margin-top:4px; } .rd-paste[open]{ display:grid; gap:8px; } .rd-paste button{ justify-self:start; }
 .rd-count{ font-size:var(--t-13); }
 
 .plan .td-card{ gap:10px; }
@@ -1942,7 +1944,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 
 /* carousel */
 .car{ display:grid; gap:14px; }
-.car-strip{ display:flex; gap:10px; overflow-x:auto; padding:4px 2px 10px; scroll-snap-type:x mandatory; }
+.car-strip{ display:flex; justify-content:safe center; gap:10px; overflow-x:auto; padding:4px 2px 10px; scroll-snap-type:x mandatory; } .car-seg{ width:max-content; margin:6px auto 0; }
 .car-sl{ flex:none; width:180px; height:225px; border-radius:10px; box-shadow:0 0 0 1px var(--border),var(--sh-1); scroll-snap-align:start; }
 @media (max-width:560px){ .car-sl{ width:150px; height:187px; } }
 
@@ -1988,9 +1990,9 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 @keyframes dwave{ 0%,100%{ height:5px; } 50%{ height:10px; } } .dict.hear .dict-wave i{ animation-duration:.45s; } .dict.hear .dict-wave i:nth-child(odd){ height:18px; }
 .dict-live{ flex:1; min-width:0; font-size:var(--t-13); color:var(--text-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .dict-live b{ color:var(--text-1); font-weight:600; } .dict-int{ font-style:italic; }
 .dict-help ul{ display:grid; gap:10px; padding:0; margin:12px 0; list-style:none; } .dict-help li{ display:flex; gap:8px; align-items:center; font-size:var(--t-14); } .dict-help li span{ color:var(--text-2); } .dict-help p{ margin:0; }
-.brief-box{ width:min(760px,100%); } .brief .modal-h{ display:flex; justify-content:space-between; gap:16px; padding:22px 24px 6px; } .brief .modal-h h2{ font:400 28px/1.1 var(--f-serif, "EB Garamond", serif); margin:0; text-wrap:balance; } .brief .modal-h p{ margin:6px 0 0; color:var(--text-2); font-size:var(--t-14); max-width:58ch; }
+.brief-box{ width:min(760px,100%); } .brief .modal-h{ display:flex; justify-content:space-between; gap:16px; padding:18px 20px 6px; } .brief .modal-h h2{ font:600 var(--t-16,16px)/1.3 var(--font-ui,inherit); margin:0; text-wrap:balance; } .brief .modal-h p{ margin:4px 0 0; color:var(--text-2); font-size:13px; max-width:58ch; }
 .br-steps{ display:flex; gap:18px; list-style:none; margin:10px 24px 4px; padding:0; font-size:var(--t-12); color:var(--text-3); } .br-steps li{ display:flex; align-items:center; gap:6px; } .br-steps span{ display:grid; place-items:center; width:18px; height:18px; border-radius:50%; box-shadow:inset 0 0 0 1px var(--border); font-weight:600; font-size:10.5px; } .br-steps li.on{ color:var(--text-1); font-weight:600; } .br-steps li.on span{ background:var(--text-1); color:var(--bg); box-shadow:none; } .br-steps li.done span{ background:var(--pa,#EADCFF); color:var(--pl,#6A2FA0); box-shadow:none; }
-.br-b{ display:grid; gap:16px; max-height:min(62vh,640px); overflow:auto; }
+.br-b{ display:grid; gap:16px; }
 .br-drop{ display:grid; justify-items:center; gap:6px; padding:26px 16px; border-radius:16px; border:1.5px dashed color-mix(in srgb,var(--text-3) 50%,transparent); text-align:center; cursor:pointer; transition:background .2s,border-color .2s; } .br-drop:hover, .br-drop.over{ background:color-mix(in srgb,var(--pa,#EADCFF) 40%,transparent); border-color:var(--pl,#6A2FA0); } .br-drop small{ color:var(--text-3); font-size:var(--t-12); } .br-ic{ display:grid; place-items:center; width:40px; height:40px; border-radius:12px; background:var(--pa,#EADCFF); color:var(--pl,#6A2FA0); }
 .br-files{ display:grid; gap:6px; } .br-files:empty{ display:none; } .br-f{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; grid-template-rows:auto auto; column-gap:10px; align-items:center; padding:8px 8px 8px 12px; border-radius:12px; background:var(--surface-2); } .br-f .pill{ grid-row:span 2; } .br-f b{ font-size:var(--t-14); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .br-f small{ grid-column:2; font-size:var(--t-12); color:var(--text-3); } .br-f .btn{ grid-row:1 / span 2; grid-column:3; } .br-f.err small{ color:#B4232C; }
 .br-or{ display:flex; align-items:center; gap:10px; color:var(--text-3); font-size:var(--t-12); } .br-or::before, .br-or::after{ content:''; flex:1; height:1px; background:var(--border); }
@@ -2009,6 +2011,73 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .br-blank{ background:color-mix(in srgb,var(--pa,#EADCFF) 80%,transparent); color:inherit; border-radius:4px; padding:0 2px; } .br-unsrc{ background:color-mix(in srgb,#D9822B 25%,transparent); color:inherit; border-radius:4px; padding:0 2px; text-decoration:underline wavy #D9822B; text-underline-offset:3px; }
 .br-fold{ display:block; margin-top:8px; font-size:var(--t-12); color:var(--text-3); }
 @media (max-width:760px){ .br-steps{ margin-inline:16px; } .brief .modal-h{ padding-inline:16px; } .br-b{ max-height:none; } }
+
+
+/* callouts and soft tints that hold up in both themes */
+:root{ --tint-soft:color-mix(in srgb,var(--pa,#EADCFF) 50%,transparent); --callout:var(--surface-2); --track:var(--surface-3); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --tint-soft:color-mix(in srgb,#8D5CD6 22%,transparent); --callout:#353535; --track:#3A3A3A; } }
+:root[data-theme="dark"]{ --tint-soft:color-mix(in srgb,#8D5CD6 22%,transparent); --callout:#353535; --track:#3A3A3A; }
+.modal .pf, .modal .pf.ok{ background:var(--callout); box-shadow:inset 0 0 0 1px var(--border); }
+.vis-why, .dict, .br-blank{ background:var(--tint-soft); }
+.vis-why{ color:var(--text-2); }
+
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+/* landing: soften whatever scrolls under the floating nav */
+.hw-veil{ position:fixed; left:0; right:0; top:0; height:calc(26px + env(safe-area-inset-top,0px)); z-index:59; pointer-events:none; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); -webkit-mask-image:linear-gradient(#000 45%,transparent); mask-image:linear-gradient(#000 45%,transparent); }
+#pp-h + .btn, #never-f .btn, #never-f .input{ height:40px; min-height:40px; }
+@media (max-width:760px){
+  .four2{ flex-wrap:nowrap !important; justify-content:flex-start; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 16px 12px; margin:0 -16px; scrollbar-width:none; }
+  .four2 > *{ scroll-snap-align:center; flex:none; }
+  .c-top .status{ display:none; }
+  .c-top [data-cact="schedule"] span{ display:inline !important; } .c-top [data-cact="schedule"]{ width:auto !important; padding:0 12px !important; }
+  #q-side .card:has(> .upnext){ display:none; }
+  .plans{ display:flex !important; flex-direction:column; } .plans > .plan.featured{ order:-1; }
+  .trait{ display:grid; gap:2px; } .trait span{ text-align:left !important; }
+  .ty-spec, .type-spec, .bs-type .row{ grid-template-columns:1fr !important; }
+  .ideas-f .seg, #hk-seg, .imp-tabs{ overflow-x:auto; flex-wrap:nowrap; scrollbar-width:none; -webkit-mask-image:linear-gradient(90deg,#000 85%,transparent); mask-image:linear-gradient(90deg,#000 85%,transparent); }
+}
+
+@media (max-width:760px){
+  .top-post{ grid-template-columns:24px 1fr; align-items:start; row-gap:8px; }
+  .top-post > .btn{ grid-column:2; justify-self:start; }
+  .top-post .st{ display:flex; flex-wrap:wrap; gap:4px 10px; hyphens:none; } .top-post .st span{ white-space:nowrap; }
+  .dict-help li{ display:grid; grid-template-columns:88px 1fr; }
+}
+.dict-help li{ display:grid; grid-template-columns:92px 1fr; align-items:center; }
+/* ---------- Round 18: phones and touch ---------- */
+@media (max-width:760px){
+  /* modals become bottom sheets that always fit, with the header and actions pinned */
+  .scrim:not(.center){ place-items:end center; padding:24px 0 0; }
+  .scrim:not(.center) > .modal{ width:100%; max-width:100%; border-radius:22px 22px 0 0; max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px)); animation:sheetin .34s cubic-bezier(.2,.9,.25,1) both; }
+  .scrim.closing:not(.center) > .modal{ animation:sheetout .18s ease-in both; }
+  .modal-f{ padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)); }
+  .modal-f > .btn{ flex:1 1 auto; justify-content:center; }
+  .modal-f > .faint, .modal-f > .br-count, .modal-f > .grow{ flex-basis:100%; margin:0; }
+  .modal-f > .grow{ display:none; }
+  .modal-b [style*="max-height"], .rd-list{ max-height:none !important; }
+  /* the composer row: tools on one line, scores on the next */
+  .tw-tools{ flex-wrap:wrap; row-gap:6px; }
+  .tw-meta{ flex-basis:100%; justify-content:flex-start; margin-left:0; }
+  .tool.riff span{ white-space:nowrap; }
+  /* scroll rows say they scroll */
+  .vis-kinds, .seg.scroll-x, .imp-tabs, .kind-row{ -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent); mask-image:linear-gradient(90deg,#000 88%,transparent); padding-right:24px !important; }
+  .hbar{ grid-template-columns:minmax(0,1fr) 40px; row-gap:4px; } .hbar > :first-child{ grid-column:1 / -1; }
+  textarea{ resize:none; }
+}
+@keyframes sheetin{ from{ transform:translateY(40px); opacity:0; } }
+@keyframes sheetout{ to{ transform:translateY(30px); opacity:0; } }
+@media (pointer:coarse){
+  .btn{ min-height:40px; } .btn.sm{ min-height:36px; } .btn.icon-only{ min-width:40px; }
+  .modal-h .btn.icon-only, [data-close].btn{ min-width:40px; min-height:40px; }
+  .tool{ min-width:36px; min-height:36px; }
+  .rest-days button{ width:34px; height:34px; }
+  .switch{ transform:scale(1.18); transform-origin:right center; }
+  .plat{ min-width:38px; min-height:36px; }
+  .tabbar a span, .tabbar button span{ font-size:11.5px; }
+  .kbds, kbd.hint, .cmdk-f, .kbd-only{ display:none !important; }
+}
+@media (hover:none){ .desk-only{ display:none !important; } }
+@media (hover:hover){ .touch-only{ display:none !important; } }
 </style>
 </head>
 <body>
@@ -2016,7 +2085,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
   <defs>
     <symbol id="i-write" viewBox="0 0 20 20"><path d="M13.2 3.8l3 3L7.5 15.5 3.8 16.2l.7-3.7z"/><path d="M11.5 5.5l3 3"/></symbol>
     <symbol id="i-ideas" viewBox="0 0 20 20"><path d="M7.8 14.2h4.4M8.3 17h3.4"/><path d="M10 2.8a5 5 0 0 0-2.9 9.1c.5.4.8.9.8 1.5v.8h4.2v-.8c0-.6.3-1.1.8-1.5A5 5 0 0 0 10 2.8z"/></symbol>
-    <symbol id="i-hook" viewBox="0 0 20 20"><path d="M12.5 2.8v8.4a4.2 4.2 0 1 1-8.4 0V9.8l2.4 2.4"/><circle cx="12.5" cy="2.8" r=".6"/></symbol>
+    <symbol id="i-hook" viewBox="0 0 20 20"><circle cx="12.5" cy="3.4" r="1.6"/><path d="M12.5 5v7.2a4 4 0 1 1-8 0V9.6"/><path d="M4.5 9.6l2.6 2.2"/></symbol>
     <symbol id="i-cal" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="13" rx="2.5"/><path d="M3 8.2h14M7 2.5v3M13 2.5v3"/></symbol>
     <symbol id="i-chart" viewBox="0 0 20 20"><path d="M3 16.5h14M6 13.5V9.5M10 13.5V5M14 13.5v-5.5"/></symbol>
     <symbol id="i-voice" viewBox="0 0 20 20"><path d="M3.5 8.5v3M6.75 6v8M10 3.5v13M13.25 6.5v7M16.5 8.5v3"/></symbol>
@@ -2115,7 +2184,7 @@ const ALT = IS_MAC ? '⌥' : 'Alt';
 const SHIFT = IS_MAC ? '⇧' : 'Shift';
 const kbd = (...keys) => `<span class="kbds">${keys.map(k => `<kbd>${esc(k)}</kbd>`).join('')}</span>`;
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const FINE = matchMedia('(pointer: fine)').matches;
+const FINE = matchMedia('(pointer: fine)').matches, COARSE = matchMedia('(pointer: coarse)').matches;
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const hash = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
 const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -2318,7 +2387,7 @@ LLM.ready = (async () => {
   return LLM.mode;
 })();
 const aiOn = () => LLM.mode !== 'offline';
-const AI_NAME = () => LLM.mode === 'server' ? 'Claude' : LLM.mode === 'claude' ? 'your Claude' : 'the built-in editor';
+const AI_NAME = () => LLM.mode === 'server' ? 'Claude' : LLM.mode === 'claude' ? 'your Claude' : 'basic mode';
 async function ask(spec, { signal, onText, fresh } = {}) {
   await LLM.ready;
   if (LLM.mode === 'server') {
@@ -2336,11 +2405,11 @@ async function ask(spec, { signal, onText, fresh } = {}) {
 function aiError(e) {
   const c = e && e.code;
   if (c === 'cancelled') return;
-  const m = { not_granted: 'Claude is off for this page. Using the built-in editor.', sampling_disabled: 'Claude isn’t available on this account. Using the built-in editor.', rate_limited: 'Claude needs a breather. Try again in a minute.', refused: 'Claude passed on that one. Try different wording.', invalid_json: 'Claude’s answer came back garbled. Try again.', prompt_too_large: 'That’s too much to send at once. Try fewer posts.', session_expired: 'Sign in to Claude again, then retry.', offline: 'No Claude connection. Using the built-in editor.' }[c] || 'Claude didn’t answer. Try again.';
+  const m = { not_granted: 'Claude is off for this page. Using basic mode.', sampling_disabled: 'Claude isn’t available on this account. Using basic mode.', rate_limited: 'Claude needs a breather. Try again in a minute.', refused: 'Claude passed on that one. Try different wording.', invalid_json: 'Claude’s answer came back garbled. Try again.', prompt_too_large: 'That’s too much to send at once. Try fewer posts.', session_expired: 'Sign in to Claude again, then retry.', offline: 'No Claude connection. Using basic mode.' }[c] || 'Claude didn’t answer. Try again.';
   toast(m, { icon: 'zapoff', tone: c === 'rate_limited' ? 'accent' : 'err' });
 }
 function refreshAIBadge() { $$('.ai-badge').forEach(b => { b.dataset.mode = LLM.mode; b.innerHTML = aiBadgeInner(); }); }
-function aiBadgeInner() { return `<i></i><span>${LLM.mode === 'server' ? 'Claude · Sonnet + Opus' : LLM.mode === 'claude' ? 'Claude · your account' : 'Built-in editor'}</span>`; }
+function aiBadgeInner() { return `<i></i><span>${LLM.mode === 'server' ? 'Claude · Sonnet + Opus' : LLM.mode === 'claude' ? 'Claude · your account' : 'Basic mode · AI off'}</span>`; }
 /* what Claude gets to know about your voice: dials, habits it learned, never-say words, your best posts */
 function voiceSpec() {
   const pr = S.profile || {}; const top = (HIST().length ? ANALYSIS().top : TOP_POSTS).slice(0, 5).map(p => p.text);
@@ -2671,7 +2740,7 @@ function modal(html, { box = 'modal', center = false, label = 'Dialog', onClose 
     if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
   });
   MODALS.push(api);
-  requestAnimationFrame(() => { const af = $('[autofocus]', api.el) || $('input,textarea,button', api.el); af && af.focus({ preventScroll: true }); });
+  requestAnimationFrame(() => { const af = $('[autofocus]', api.el) || $('input:not([type=hidden]):not([type=file]),textarea,select', api.el); if (af && !(COARSE && af.matches('textarea,input'))) af.focus({ preventScroll: true }); else { api.el.setAttribute('tabindex', '-1'); api.el.style.outline = 'none'; api.el.focus({ preventScroll: true }); } });
   return api;
 }
 const modalHead = (title, sub) => `<div class="modal-h"><div><h2 class="h3">${title}</h2>${sub ? `<p class="muted" style="font-size:13px;margin-top:4px">${sub}</p>` : ''}</div><button class="btn ghost icon-only sm" data-close data-tip="Close" data-kbd="Esc" aria-label="Close">${ic('x')}</button></div>`;
@@ -2918,9 +2987,9 @@ function paletteCommands() {
     { g: 'Actions', label: 'Tidy up drafts', icon: 'archive', run: () => openTidy() },
     { g: 'Actions', label: 'First-hour replies', icon: 'reply', run: () => openReplyDesk() },
     { g: 'Actions', label: 'Plan my week', icon: 'cal', run: () => openPlan() },
-    { g: 'Actions', label: 'Write from a brief, doc or PDF', icon: 'upload', run: () => openBrief() },
+    { g: 'Actions', label: 'Write from a brief, doc or PDF', icon: 'write', run: () => openBrief() },
     { g: 'Actions', label: 'Talk instead of typing', icon: 'mic', run: () => { go('write'); setTimeout(() => dictate(0), 120); } },
-    { g: 'Actions', label: 'X format: thread or long post', icon: 'x', run: () => { go('write'); setTimeout(() => openXFormat($('[data-cact="schedmenu"]')), 120); } },
+    { g: 'Actions', label: 'X format: thread or long post', icon: 'layers', run: () => { go('write'); setTimeout(() => openXFormat($('[data-cact="schedmenu"]')), 120); } },
     { g: 'Actions', label: 'Bring your posts (X archive, Typefully, CSV)', icon: 'upload', run: () => openImport() },
     { g: 'Actions', label: 'Learn my voice', icon: 'voice', run: () => { go('voice'); setTimeout(() => learnVoice($('#learn')), 120); } },
     { g: 'Actions', label: 'People I learn from', icon: 'trend', run: () => openPeople() },
@@ -3011,7 +3080,7 @@ function openCapture() {
       <span id="cap-att" class="faint" style="font-size:12px;align-self:center"></span>
     </div>
   </div>
-  <div class="modal-f"><span class="faint" style="margin-right:auto;font-size:12px;align-self:center">${kbd(MOD, '↵')} to save</span><button class="btn" data-close>Cancel</button><button class="btn primary" id="cap-save">Save idea</button></div>`, { label: 'Capture an idea' });
+  <div class="modal-f"><span class="faint desk-only" style="margin-right:auto;font-size:12px;align-self:center">${kbd(MOD, '↵')} to save</span><button class="btn" data-close>Cancel</button><button class="btn primary" id="cap-save">Save idea</button></div>`, { label: 'Capture an idea' });
   const t = $('#cap-t', m.el); let att = null;
   $('#cap-shot', m.el).onchange = e => { const f = e.target.files[0]; if (f) { att = { src: 'shot', name: f.name }; $('#cap-att', m.el).textContent = `Attached ${f.name}`; } };
   $('#cap-voice', m.el).onchange = e => { const f = e.target.files[0]; if (f) { att = { src: 'voice', name: f.name }; $('#cap-att', m.el).textContent = `Attached ${f.name}`; } };
@@ -3074,7 +3143,7 @@ const tIndex = id => S.draft.tweets.findIndex(t => t.id === id);
 const isEmptyDraft = () => S.draft.tweets.every(t => !t.text.trim() && !t.media.length && !t.poll);
 /* length the way the strictest selected platform counts it: X's weighted count when X is on */
 const tlen = t => S.platforms.x ? HWCore.xLength(t) : [...String(t || '')].length;
-const tzName = () => { try { const z = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; const short = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' }).formatToParts(new Date()).find(x => x.type === 'timeZoneName'); return (z.split('/').pop() || '').replace(/_/g, ' ') + (short ? ` (${short.value})` : ''); } catch (e) { return 'your time'; } };
+const tzName = () => { try { const z = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; const short = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' }).formatToParts(new Date()).find(x => x.type === 'timeZoneName'); const city = (z.split('/').pop() || '').replace(/_/g, ' '); return city && short && short.value !== city ? `${city} (${short.value})` : city || (short && short.value) || 'your time'; } catch (e) { return 'your time'; } };
 const threadable = () => Object.keys(PLAT).some(k => S.platforms[k] && k !== 'linkedin');
 function effLimit() { const on = Object.keys(PLAT).filter(k => S.platforms[k] && k !== 'linkedin'); return on.length ? Math.min(...on.map(k => PLAT[k].limit)) : PLAT.linkedin.limit; }
 function splitText(text, limit) {
@@ -3091,7 +3160,7 @@ function splitText(text, limit) {
   out.push(s); return out;
 }
 const SLOTS = ['08:40', '12:15', '17:30', '20:45'];
-const BEST = { 0: { '08:40': 'Monday planners are online' }, 1: { '08:40': 'Your replies peak here' }, 2: { '17:30': 'The commute scroll' }, 3: { '12:15': 'Highest reach last month' }, 4: { '08:40': 'Friday skim, short posts win' }, 5: { '12:15': 'Weekend readers, long threads' } };
+const BEST = { 0: { '08:40': 'Monday planners check in' }, 1: { '08:40': 'Your replies peak here' }, 2: { '17:30': 'The commute scroll' }, 3: { '12:15': 'Highest reach last month' }, 4: { '08:40': 'Friday skim, short posts win' }, 5: { '12:15': 'Weekend readers, long threads' } };
 const dowIdx = d => (d.getDay() + 6) % 7;
 const slotDate = (day, time) => { const d = fromKey(day); const [h, m] = time.split(':').map(Number); d.setHours(h, m, 0, 0); return d; };
 try { settleQueue(); } catch (e) { } /* the sidebar count is only what's still to come */
@@ -3104,7 +3173,7 @@ function nextSlots(n, bestOnly = true) {
   }
   return out;
 }
-const slotLabel = (day, time) => { const d = fromKey(day); const diff = Math.round((d - fromKey(dayKey(Date.now()))) / DAY); return `${diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : DOW[d.getDay()] + ' ' + d.getDate()} ${fmtTime(time)}`; };
+const slotLabel = (day, time) => { const d = fromKey(day); const diff = Math.round((d - fromKey(dayKey(Date.now()))) / DAY); return `${diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`} · ${fmtTime(time)}`; };
 
 function composerHTML() {
   const empty = isEmptyDraft();
@@ -3883,7 +3952,7 @@ function openBrief(files) {
     if (B.step === 'drop') {
       el.innerHTML = `${head('Write from a brief', 'Drop in notes, a doc, a PDF, or just talk it through. We’ll pull out the facts, flag what’s missing, and write it in your voice.')}${steps()}
       <div class="modal-b br-b">
-        <label class="br-drop" id="br-drop" tabindex="0"><input type="file" id="br-file" multiple hidden accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.docx,.pdf,text/*,application/pdf"><span class="br-ic">${ic('upload')}</span><b>Drop files here, or click to choose</b><small>Notes, Word (.docx), PDF, Markdown, text. Up to 15 MB each.</small></label>
+        <label class="br-drop" id="br-drop" tabindex="0"><input type="file" id="br-file" multiple hidden accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.docx,.pdf,text/*,application/pdf"><span class="br-ic">${ic('upload')}</span><b><span class="desk-only">Drop files here, or click to choose</span><span class="touch-only">Tap to choose files</span></b><small>Notes, Word (.docx), PDF, Markdown, text. Up to 15&nbsp;MB each.</small></label>
         <div class="br-files" id="br-files">${B.files.map((f, k) => `<div class="br-f ${f.error ? 'err' : ''}"><span class="pill">${esc(f.kind || 'File')}</span><b>${esc(f.name)}</b><small>${f.error ? esc(f.error) : f.text ? `${fmtN((f.text.match(/\S+/g) || []).length)} words read` : `${cap(AI_NAME())} will read the whole PDF`}</small><button class="btn ghost icon-only sm" data-brx="${k}" aria-label="Remove ${esc(f.name)}">${ic('x', 'sm')}</button></div>`).join('')}</div>
         <div class="br-or"><span>or paste it, or say it</span></div>
         <div class="br-paste" id="br-ph"><textarea class="input" id="br-t" rows="6" placeholder="Launch notes, a Notion page, a transcript, a messy voice note…">${esc(B.paste)}</textarea><button class="btn sm br-mic" data-br="mic" aria-pressed="false" data-tip="Talk it through">${ic('mic', 'sm')} Talk it through</button></div>
@@ -3941,7 +4010,7 @@ function openBrief(files) {
   const doWrite = async () => {
     busy('write', true); const lim = limitFor(B.format), a = B.read.angles[B.angle]; let posts = null, note = '';
     if (aiOn()) { try { const spec = HWCore.prompts.briefWrite({ text: src(), read: B.read, angle: a ? `${a.angle}: ${a.line}` : '', format: B.format, voice: voiceSpec(), limit: lim, platform: B.format === 'linkedin' ? 'LinkedIn' : 'X' }); if (pdfs().length) spec.docs = pdfs(); const r = await ask(spec, { fresh: true }); if (r && Array.isArray(r.posts) && r.posts.length) { posts = r.posts.map(String).filter(p => p.trim()); note = r.note || ''; } } catch (e) { aiError(e); } }
-    if (!posts) { posts = HWCore.briefDraft(src() || [B.read.summary, ...B.read.facts.map(f => f.quote)].join(' '), { format: B.format === 'linkedin' ? 'long' : B.format, limit: lim, angle: B.angle }); note = aiOn() ? '' : 'Drafted by the built-in editor from your own sentences. Connect Claude for a real rewrite in your voice.'; }
+    if (!posts) { posts = HWCore.briefDraft(src() || [B.read.summary, ...B.read.facts.map(f => f.quote)].join(' '), { format: B.format === 'linkedin' ? 'long' : B.format, limit: lim, angle: B.angle }); note = aiOn() ? '' : 'Drafted in basic mode from your own sentences. Connect Claude for a real rewrite in your voice.'; }
     if (B.format === 'thread') posts = posts.flatMap(p => HWCore.xLength(p) > X_SHORT ? splitText(p, X_SHORT) : [p]);
     B.posts = posts; B.note = note; B.step = 'draft'; busy('write', false); SFX.play('swap'); draw();
   };
@@ -4496,15 +4565,15 @@ function drawSlide(cv, sl, i, n) {
   const fit = (text, font, max, min, top, bottom) => { let size = max, lines; do { c.font = font(size); lines = visWrap(c, text, W - P * 2); size -= 4; } while (lines.length * size * 1.22 > bottom - top && size > min); size += 4; return { size, lines }; };
   if (sl.k === 'cover') { const { size, lines } = fit(sl.t, s0 => `400 ${s0}px "EB Garamond", Georgia, serif`, 110, 54, 260, H - 260); const lh = size * 1.12; let y = (H - lines.length * lh) / 2 + size * .8; c.fillStyle = st.fg; lines.forEach(l => { c.font = `400 ${size}px "EB Garamond", Georgia, serif`; c.fillText(l, P, y); y += lh; }); }
   else if (sl.k === 'body') { c.fillStyle = st.chip; visRound(c, P, 250, 110, 64, 32); c.fill(); c.fillStyle = st.fg; c.font = '600 30px Figtree, sans-serif'; c.textAlign = 'center'; c.fillText(String(i).padStart(2, '0'), P + 55, 293); c.textAlign = 'left';
-    const { size, lines } = fit(sl.t, s0 => `500 ${s0}px Figtree, sans-serif`, sl.t.length < 60 ? 96 : sl.t.length < 140 ? 76 : 60, 34, 380, H - 200); let y = 380 + size; c.fillStyle = st.fg; lines.forEach(l => { c.font = `500 ${size}px Figtree, sans-serif`; c.fillText(l, P, y); y += size * 1.3; }); }
+    const { size, lines } = fit(sl.t, s0 => `400 ${s0}px "EB Garamond", Georgia, serif`, sl.t.length < 60 ? 104 : sl.t.length < 140 ? 84 : 64, 38, 380, H - 200); let y = 380 + size; c.fillStyle = st.fg; lines.forEach(l => { c.font = `400 ${size}px "EB Garamond", Georgia, serif`; c.fillText(l, P, y); y += size * 1.18; }); }
   else { c.fillStyle = st.fg; c.font = '400 88px "EB Garamond", Georgia, serif'; visWrap(c, 'Found this useful?', W - P * 2).forEach((l, k) => c.fillText(l, P, 560 + k * 100)); c.fillStyle = st.mu; c.font = '400 40px Figtree, sans-serif'; visWrap(c, sl.t, W - P * 2).forEach((l, k) => c.fillText(l, P, 760 + k * 54)); visAvatar(c, P, 900, 60, u); }
 }
 async function openCarousel() {
   const slides = carouselSlides(); if (slides.length < 3 || !slides[1].t) { toast('Carousels need a few points. Write a thread, or a post with a few paragraphs.', { icon: 'layers' }); return; }
   const m = modal(`${modalHead('LinkedIn carousel', `${slides.length} slides from your ${S.draft.tweets.length > 1 ? 'thread' : 'post'}. LinkedIn shows PDFs as swipeable documents.`)}
     <div class="modal-b car"><div class="car-strip" id="car-strip">${slides.map((_, i) => `<canvas class="car-sl" data-i="${i}" aria-label="Slide ${i + 1}"></canvas>`).join('')}</div>
-    <div class="seg" id="car-seg" role="tablist" aria-label="Style">${[['paper', 'Paper'], ['plum', 'Plum'], ['lilac', 'Lilac']].map(([k, l]) => `<button role="tab" data-cs="${k}" aria-selected="${CAR.style === k}">${l}</button>`).join('')}</div></div>
-    <div class="modal-f"><span class="faint car-tip" style="font-size:12px">Tip: post it with one line of text and ask a question in the first comment.</span><span class="grow"></span><button class="btn" data-close>Close</button><button class="btn primary" id="car-dl">${ic('upload', 'sm')} Download PDF</button></div>`, { label: 'LinkedIn carousel', box: 'modal wide' });
+    <div class="seg car-seg" id="car-seg" role="tablist" aria-label="Style">${[['paper', 'Paper'], ['plum', 'Plum'], ['lilac', 'Lilac']].map(([k, l]) => `<button role="tab" data-cs="${k}" aria-selected="${CAR.style === k}">${l}</button>`).join('')}</div></div>
+    <div class="modal-f"><span class="faint car-tip" style="font-size:12px">Tip: post it with one line of text and ask a question in the first comment.</span><span class="grow"></span><button class="btn" data-close>Close</button><button class="btn primary" id="car-dl">Download PDF</button></div>`, { label: 'LinkedIn carousel', box: 'modal wide' });
   const paint = () => $$('.car-sl', m.el).forEach(cv => drawSlide(cv, slides[+cv.dataset.i], +cv.dataset.i, slides.length));
   if (document.fonts) await document.fonts.ready; paint(); requestAnimationFrame(() => syncSeg($('#car-seg', m.el)));
   m.el.addEventListener('click', async e => {
@@ -4640,7 +4709,7 @@ const SAMPLE_REPLIES = [
   { handle: 'kwametalks', name: 'Kwame Mensah', followers: 6700, text: 'Saving this for my next planning meeting.', likes: 5 }
 ];
 function replyKind(r) { return r.question ? 'Question' : r.followers >= 10000 ? 'Big account' : /\b(same|relatable|this|so true)\b/i.test(r.text) ? 'Agrees' : 'Reply'; }
-function localReply(r, post) { const k = replyKind(r); const topic = topicOf(post); return k === 'Question' ? `Short answer: [answer]. Longer one: [detail].` : k === 'Agrees' ? `The worst part is how reasonable it felt at the time. What tipped you off?` : k === 'Big account' ? `Appreciate that. The [${topic}] part is what I'd do first next time.` : `Thanks for reading. What would you add?`; }
+function localReply(r, post) { const k = replyKind(r); const topic = topicOf(post); return k === 'Question' ? '' : k === 'Agrees' ? `The worst part is how reasonable it felt at the time. What tipped you off?` : k === 'Big account' ? `Appreciate that. The [${topic}] part is what I'd do first next time.` : `Thanks for reading. What would you add?`; }
 async function openReplyDesk(q) {
   q = q || [...S.queue].reverse().find(x => x.status === 'published'); if (!q) { toast('Post something first. The desk opens right after.', { icon: 'reply' }); return; }
   const srv = LLM.server || {}; const live = !!(srv.replies && q.xIds && q.xIds[0]);
@@ -4651,14 +4720,14 @@ async function openReplyDesk(q) {
   const el = m.el; let list = [];
   const draw = () => {
     $('#rd-list', el).innerHTML = list.length ? list.map((r, i) => `<article class="rd-item ${r.done ? 'done' : ''}" data-i="${i}"><div class="rd-who"><b>${esc(r.name || '@' + r.handle)}</b><span>@${esc(r.handle)} · ${fmtN(r.followers)} followers</span><span class="pill rd-k" data-k="${replyKind(r).toLowerCase().replace(' ', '-')}">${replyKind(r)}</span></div><p class="rd-t">${esc(r.text)}</p>
-      <div class="rd-me">${avatar(S.user)}<textarea class="input" rows="2" data-rt="${i}" aria-label="Your reply to @${esc(r.handle)}">${esc(r.draft || '')}</textarea></div>
+      <div class="rd-me">${avatar(S.user)}<textarea class="input" rows="2" data-rt="${i}" placeholder="${replyKind(r) === 'Question' ? 'They asked. Answer in a line or two.' : 'Your reply…'}" aria-label="Your reply to @${esc(r.handle)}">${esc(r.draft || '')}</textarea></div>
       <div class="rd-a">${r.why ? `<span class="faint">${esc(r.why)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-ra="skip">${r.done ? 'Undo' : 'Skip'}</button><button class="btn sm primary" data-ra="send">${ic('reply', 'sm')} ${live && srv.xUser ? 'Reply' : 'Reply on X'}</button></div></article>`).join('') : '<p class="faint">No replies yet. They usually start within ten minutes.</p>';
-    const left = list.filter(r => !r.done).length; $('#rd-count', el).textContent = list.length ? `${left} of ${list.length} to answer` : '';
+    const left = list.filter(r => !r.done).length; $('#rd-count', el).textContent = list.length ? left ? `${left} left to answer` : 'All answered. Nice.' : '';
   };
   const localDrafts = () => list.forEach(r => { if (!r.draft) r.draft = localReply(r, q.text); });
   try {
     if (live) { const r = await fetch(`api/x/replies?id=${encodeURIComponent(q.xIds[0])}`); const j = await r.json(); if (!r.ok) throw new Error(j.error); list = j.replies; $('#rd-note', el).innerHTML = `${ic('check', 'sm')} Live from X, ranked: questions and people with reach first.`; }
-    else { list = SAMPLE_REPLIES.map(x => ({ ...x })); $('#rd-note', el).innerHTML = `${ic('q', 'sm')} Sample replies. ${srv.replies ? 'This post wasn’t sent through Hookworthy, so there’s no live thread to read.' : 'Connect X on the server to see real ones, or paste them below.'}`; }
+    else { list = SAMPLE_REPLIES.map(x => ({ ...x })); $('#rd-note', el).innerHTML = `${ic('q', 'sm')} Sample replies. ${srv.replies ? 'This post wasn’t sent through Hookworthy, so there’s no live thread to read.' : 'Once X is connected, the real ones show up here. For now, paste them below.'}`; }
   } catch (e) { list = []; $('#rd-note', el).innerHTML = `<span class="imp-err">X said no: ${esc(e.message)}</span>`; }
   localDrafts(); draw();
   const draftAll = async btn => {
@@ -4731,7 +4800,7 @@ function openImport(tab = 'x') {
   const m = modal(`${modalHead('Bring your posts', 'Your history makes the voice, the best times and the hook score yours. It stays in this browser.')}
     <div class="modal-b imp">
       <div class="seg" role="tablist" aria-label="Import from" id="imp-seg">${[['x', 'X archive'], ['file', 'Typefully, LinkedIn, CSV'], ['paste', 'Paste'], ['handle', '@handle']].map(([k, l]) => `<button role="tab" data-it="${k}" aria-selected="${k === tab}">${l}</button>`).join('')}</div>
-      <div class="imp-p" data-ip="x"><label class="drop" id="drop-x"><input type="file" accept=".zip,.js" multiple hidden><b>Drop your X archive</b><span>The .zip, or just <code>data/tweets.js</code> from inside it</span></label>
+      <div class="imp-p" data-ip="x"><label class="drop" id="drop-x"><input type="file" accept=".zip,.js" multiple hidden><b><span class="desk-only">Drop your X archive</span><span class="touch-only">Tap to choose your X archive</span></b><span>The .zip, or just <code>data/tweets.js</code> from inside it</span></label>
         <ol class="imp-steps"><li>On X: Settings → Your account → <a href="https://x.com/settings/download_your_data" target="_blank" rel="noopener">Download an archive of your data</a>.</li><li>X emails you in about a day. Unzip it if it’s over 600 MB (media makes it big).</li><li>Drop it here. Every post, with its likes and reposts, in seconds.</li></ol>
         <div class="imp-wait">${S.archiveAskedAt ? `<span class="faint">You asked X ${agoLabel(S.archiveAskedAt)}. We’ll remind you when it should be ready.</span>` : `<button class="btn sm ghost" id="imp-asked">${ic('clock', 'sm')} I’ve requested it. Remind me</button>`}<button class="btn sm ghost" data-it="paste">Meanwhile, paste 20 posts</button></div></div>
       <div class="imp-p" data-ip="file" hidden><label class="drop" id="drop-f"><input type="file" accept=".csv,.tsv,.json,.txt" multiple hidden><b>Drop a CSV or JSON export</b><span>Typefully, LinkedIn (Shares.csv), Buffer, Hypefury, a spreadsheet</span></label>
@@ -4739,7 +4808,7 @@ function openImport(tab = 'x') {
         <div class="imp-key"><span class="label">Or pull from Typefully</span><div style="display:flex;gap:8px"><input class="input" id="tf-key" placeholder="Typefully API key" type="password" ${srv.typefully ? '' : 'disabled'} autocomplete="off"><button class="btn" id="tf-go" ${srv.typefully ? '' : 'disabled'}>Import</button></div><small class="faint">${srv.typefully ? 'Settings → Integrations → API in Typefully. Used once, never stored.' : 'Needs Hookworthy’s server (see Connections). Export a CSV meanwhile.'}</small></div></div>
       <div class="imp-p" data-ip="paste" hidden><textarea class="input" id="imp-t" rows="8" placeholder="Paste posts here. Separate them with a line of three dashes (---).&#10;Add “likes: 120” on its own line under a post if you know it."></textarea><div style="display:flex;justify-content:flex-end"><button class="btn" id="imp-paste">Import pasted posts</button></div></div>
       <div class="imp-p" data-ip="handle" hidden><div style="display:flex;gap:8px"><span class="input-at">@</span><input class="input" id="imp-h" placeholder="${esc(S.user.handle || 'yourhandle')}" ${srv.x ? '' : 'disabled'} autocomplete="off"><button class="btn" id="imp-hgo" ${srv.x ? '' : 'disabled'}>Fetch posts</button></div>
-        <p class="faint imp-note">${srv.x ? 'Pulls up to 800 recent posts with their public metrics through the X API.' : 'Reading an account live needs Hookworthy’s server with an X API key (X doesn’t allow scraping). Your archive has more history anyway, including old posts the API can’t reach.'}</p></div>
+        <p class="faint imp-note">${srv.x ? 'Pulls up to 800 recent posts with their public metrics through the X API.' : 'Live reading turns on once X is connected. Your archive goes further back anyway, including old posts X’s API can’t reach.'}</p></div>
       <div id="imp-out" aria-live="polite"></div>
     </div>
     <div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="imp-learn" hidden>${ic('voice', 'sm')} Learn my voice</button></div>`, { label: 'Bring your posts', box: 'modal wide' });
@@ -4776,9 +4845,9 @@ function openPeople() {
     <div class="modal-b imp">
       <label class="label" for="pp-h">Handles</label>
       <div style="display:flex;gap:8px"><input class="input" id="pp-h" placeholder="naval, levelsio, …" value="${esc((S.people || []).map(p => p.handle).join(', '))}" ${srv.x ? '' : 'disabled'}><button class="btn" id="pp-fetch" ${srv.x ? '' : 'disabled'}>Fetch</button></div>
-      <p class="faint imp-note">${srv.x ? 'Pulls each account’s top posts from the last month through the X API.' : 'Fetching accounts needs Hookworthy’s server with an X API key. Meanwhile, paste posts you wish you’d written.'}</p>
+      <p class="faint imp-note">${srv.x ? 'Pulls each account’s top posts from the last month through the X API.' : 'Live fetching turns on once X is connected. For now, paste posts you wish you’d written.'}</p>
       <label class="label" for="pp-t">Or paste their posts</label>
-      <textarea class="input" id="pp-t" rows="6" placeholder="@someone&#10;The post text…&#10;---&#10;@someone-else&#10;Another post…"></textarea>
+      <textarea class="input" id="pp-t" rows="6" placeholder="Paste posts, one per block, split by a line with ---"></textarea>
       <div id="pp-out" aria-live="polite"></div>
     </div>
     <div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="pp-go">${ic('spark', 'sm')} Find the patterns</button></div>`, { label: 'People you learn from', box: 'modal wide' });
@@ -4802,7 +4871,7 @@ function openConnections() {
   const m = modal(`${modalHead('Connections', 'Where the AI comes from, and which accounts Hookworthy can post to.')}
     <div class="modal-b cx">
       ${srv.locked ? `<div class="cx-row"><span class="cx-dot"></span><div><b>Server is locked</b><small>Open the sign-in link the server printed when it started (/login?token=…) on this device once.</small></div></div>` : ''}
-      ${row('Claude', aiOn(), LLM.mode === 'server' ? `Hookworthy server: ${esc(srv.models ? `${srv.models.default} for writing, ${srv.models.complex} for voice study` : 'Sonnet for writing, Opus for voice study')}.` : LLM.mode === 'claude' ? 'Your own Claude account, through this claude.ai page. You approve it once per visit.' : LLM.why ? 'Claude was declined for this page, so the built-in editor is on.' : 'Built-in editor: instant, but not Claude. Open Hookworthy in claude.ai or run the server to use Claude.')}
+      ${row('Claude', aiOn(), LLM.mode === 'server' ? `Hookworthy server: ${esc(srv.models ? `${srv.models.default} for writing, ${srv.models.complex} for voice study` : 'Sonnet for writing, Opus for voice study')}.` : LLM.mode === 'claude' ? 'Your own Claude account, through this claude.ai page. You approve it once per visit.' : LLM.why ? 'Claude was declined for this page, so basic mode is on.' : 'Basic mode: instant suggestions from Hookworthy’s own rules. Connect Claude for rewrites in your voice.')}
       ${row('X', !!srv.xUser, srv.x ? (srv.xUser ? `Posting as @${esc(srv.xUser)}.` : 'API key set. Connect to post and read metrics.') : 'Needs the server with X API keys. Import your archive meanwhile.', srv.x ? `<a class="btn sm" href="auth/x/start">${srv.xUser ? 'Reconnect' : 'Connect'}</a>` : '')}
       ${row('X plan', xPaid(), xPlanLabel(), srv.xUser ? `<button class="btn sm" data-xt="check">Re-check</button>` : `<button class="btn sm" data-xt="self">${xPaid() ? 'I’m on free X' : 'I have Premium'}</button>`)}
       ${row('LinkedIn', !!srv.liUser, srv.linkedin ? (srv.liUser ? `Posting as ${esc(srv.liUser)}.` : 'App set. Connect to post.') : 'Needs the server with a LinkedIn app. Import Shares.csv meanwhile.', srv.linkedin ? `<a class="btn sm" href="auth/linkedin/start">${srv.liUser ? 'Reconnect' : 'Connect'}</a>` : '')}
@@ -4810,7 +4879,7 @@ function openConnections() {
       ${row('Your history', HIST().length > 0, HIST().length ? `${fmtN(HIST().length)} posts in this browser.` : 'Nothing imported yet.', `<button class="btn sm" data-act="import">${HIST().length ? 'Add more' : 'Import'}</button>`)}
       ${syncRowHTML()}
       <form id="sy-join" class="sy-join" hidden><input class="input" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" aria-label="Sync code" autocomplete="off" spellcheck="false"><button class="btn sm primary" type="submit">Sync this device</button></form>
-      <p class="faint imp-note">Run the server: <code>cd hookworthy/server && npm install && npm start</code>. Keys go in <code>server/.env</code> (see server/README.md).</p>
+      <details class="dev-note"><summary>Self-hosting?</summary><p class="faint imp-note">Run the server: <code>cd hookworthy/server && npm install && npm start</code>. Keys go in <code>server/.env</code> (see server/README.md).</p></details>
     </div><div class="modal-f"><button class="btn primary" data-close>Done</button></div>`, { label: 'Connections', box: 'modal' });
   m.el.addEventListener('click', e => { const xt = e.target.closest('[data-xt]'); if (xt) { if (xt.dataset.xt === 'check') refreshXTier(xt); else { setSelfTier(!xPaid()); m.close(); openConnections(); } return; } if (e.target.closest('[data-act="import"]')) m.close(); const sy = e.target.closest('[data-sy]'); if (sy) syncAction(sy.dataset.sy, m); });
   const jf = $('#sy-join', m.el); if (jf) jf.onsubmit = async e => { e.preventDefault(); const code = $('input', jf).value.trim(); const btn = $('button', jf); btn.classList.add('is-loading'); try { const prev = SYNC.code; SYNC.code = code.toUpperCase(); SYNC.key = null; const got = await pullSync(true); if (!got) { const r = await fetch(`api/sync/${SYNC.id}`); if (r.status === 404) { SYNC.code = prev; throw new Error('No synced copy with that code yet'); } } try { localStorage.setItem('hw-sync', SYNC.code); } catch (err) { /* ok */ } m.close(); route(); toast('This device is synced.', { icon: 'check', tone: 'accent' }); } catch (err) { SYNC.key = null; toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } finally { btn.classList.remove('is-loading'); } };
@@ -5226,7 +5295,7 @@ let REVEAL_IO = null;
 function armReveals(root) {
   if (REDUCED || !('IntersectionObserver' in window)) return;
   REVEAL_IO && REVEAL_IO.disconnect();
-  REVEAL_IO = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { en.target.classList.remove('armed'); REVEAL_IO.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+  REVEAL_IO = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { en.target.classList.remove('armed'); REVEAL_IO.unobserve(en.target); } }), { rootMargin: '0px 0px 6% 0px', threshold: .01 });
   $$('.rv', root).forEach(el => { if (el.getBoundingClientRect().top > innerHeight * .92) { el.classList.add('armed'); REVEAL_IO.observe(el); } });
 }
 
@@ -5514,6 +5583,7 @@ ROUTES.home = () => {
   const stW = innerWidth >= 1100 ? clamp(Math.round((innerHeight - 120) * 9 / 19.3), 300, 360) : innerWidth < 760 ? clamp(Math.round(Math.min(560, innerHeight * .62) * 9 / 19.3), 220, 300) : 300;
   $('#root').innerHTML = `<div class="hw force-light">
   <a class="hw-ann" href="#start"><span>New: <b>What’s working</b> shows why posts in your niche took off, and the shape behind each one.</span><span class="go">Try it free ›</span></a>
+  <div class="hw-veil" aria-hidden="true"></div>
   <header class="hw-nav" id="hwnav">
     <a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a>
     <nav class="links" aria-label="Sections"><a href="#home" data-scroll="story">How it works</a><a href="#home" data-scroll="four">Platforms</a><a href="#home" data-scroll="creators">Creators</a><a href="#home" data-scroll="pricing">Pricing</a></nav>
@@ -5730,7 +5800,7 @@ function onbStep1() {
   $('#onb').innerHTML = `<div class="onb-card">
     <h1 class="display">Let’s find your <em>voice.</em></h1>
     <p class="muted" style="font-size:17px;max-width:46ch">Paste your handle. We’ll read your recent posts and hand you five you could write today.</p>
-    <div class="seg" id="onb-plat" role="tablist" aria-label="Platform">${['x', 'threads', 'li', 'bsky'].map(k => `<button role="tab" data-p="${k}" aria-selected="${ONB.plat === k}">${pic(k, 'icon sm')}<span>${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}</span></button>`).join('')}</div>
+    <div class="seg" id="onb-plat" role="tablist" aria-label="Platform">${['x', 'threads', 'li', 'bsky'].map(k => `<button role="tab" data-p="${k}" aria-selected="${ONB.plat === k}">${pic(k, 'icon sm')}${k === 'x' ? '<span class="sr">X</span>' : `<span>${{ threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}</span>`}</button>`).join('')}</div>
     <form class="handle-in" id="onb-f" novalidate><span class="at">@</span><input id="onb-h" autofocus placeholder="yourhandle" value="${esc(ONB.handle)}" aria-label="Your handle" aria-describedby="onb-err" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">Read my posts${ic('arrow', 'sm')}</button></form>
     <span id="onb-err" class="field-err" role="alert" style="min-height:16px;margin-top:-14px"></span>
     <div style="display:grid;gap:10px;justify-items:center"><span class="label">What do you write about?</span><div class="niches">${niches.map(n => `<button class="chip" aria-pressed="${n === cur}" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>
@@ -5820,7 +5890,7 @@ ROUTES.ideas = () => {
       <div class="capture-f">
         <label class="btn ghost sm" data-tip="Screenshots become angles" tabindex="0">${ic('shot', 'sm')} Screenshot<input type="file" accept="image/*" hidden id="cap-img"></label>
         <button class="btn ghost sm" id="cap-rec" data-tip="Record or upload a voice memo">${ic('mic', 'sm')} <span>Voice memo</span></button><input type="file" accept="audio/*" hidden id="cap-aud">
-        <span class="grow"></span><span class="faint" style="font-size:12px" id="cap-hint">${kbd(MOD, '↵')} to save</span>
+        <span class="grow"></span><span class="faint desk-only" style="font-size:12px" id="cap-hint">${kbd(MOD, '↵')} to save</span>
         <button class="btn primary sm" id="cap-go">Save idea</button>
       </div>
     </div>
@@ -6017,7 +6087,7 @@ ROUTES.hooks = () => {
       <div class="shoot-in"><label><span class="label">A</span><textarea class="input" id="so-a" rows="2" placeholder="I spent 6 months building a feature nobody used.">${esc((S.shoot || {}).a || '')}</textarea></label><label><span class="label">B</span><textarea class="input" id="so-b" rows="2" placeholder="The most expensive feature I ever built had zero users.">${esc((S.shoot || {}).b || '')}</textarea></label></div>
       <div style="display:flex;gap:8px;align-items:center"><button class="btn primary" data-hact="shoot">${ic('bolt', 'sm')} Which one wins?</button><span class="faint" style="font-size:12px">${HIST().length ? `Uses your ${fmtN(HIST().length)} posts` : 'Uses the hook score until you bring your posts'}</span></div>
       <div id="so-out" aria-live="polite"></div>${shootHistoryHTML()}</section>
-    <section class="sec"><div class="sec-h"><div class="seg" id="hk-seg" role="tablist" aria-label="Hook types">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity', 'Proof', 'Question'].map(k => `<button role="tab" data-hk="${k}" aria-selected="${HOOKF.k === k}">${k}</button>`).join('')}</div><input class="input" id="hk-q" placeholder="Search hooks" aria-label="Search hooks" style="width:220px" value="${esc(HOOKF.q)}"></div><div class="hooklib" id="hooklib"></div></section>
+    <section class="sec"><div class="sec-h" style="margin-bottom:12px"><div><h2 class="h2">Formula library</h2><p class="muted" style="margin-top:4px">First-line shapes that keep working. Pick one and fill in the blanks.</p></div></div><div class="sec-h"><div class="seg" id="hk-seg" role="tablist" aria-label="Hook types">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity', 'Proof', 'Question'].map(k => `<button role="tab" data-hk="${k}" aria-selected="${HOOKF.k === k}">${k}</button>`).join('')}</div><input class="input" id="hk-q" placeholder="Search hooks" aria-label="Search hooks" style="width:220px" value="${esc(HOOKF.q)}"></div><div class="hooklib" id="hooklib"></div></section>
   </div>`);
   const t = $('#grader-t'); const draw = () => {
     const h = hookScore(t.value); S.graderText = t.value; save();
@@ -6186,10 +6256,10 @@ function drawQSide() {
   <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Momentum</span><span class="mono" style="font-size:12px">${n} day${n === 1 ? '' : 's'}</span></div><div class="streak">${streakHTML()}</div><span class="faint" style="font-size:12px">${postedToday ? 'Posted today. Scheduled posts count too.' : isRest(Date.now()) ? 'Rest day. Your streak waits for you.' : n ? `Post or schedule today to make it ${n + 1}.` : 'One post starts a streak. Scheduled posts count.'}</span>
     <div class="rest-row"><span class="faint">Rest days</span><div class="rest-days" role="group" aria-label="Rest days">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button data-rest="${d}" aria-pressed="${(S.settings.rest || []).includes(d)}" aria-label="${DOW[d]}" data-tip="${DOW[d]}${(S.settings.rest || []).includes(d) ? ' is a rest day' : ''}">${DOW[d][0]}</button>`).join('')}</div></div></div>
   ${rerunHTML()}
-  <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(/ (?=\d{1,2}:\d{2} [AP]M$)/, '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
+  <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(' · ', '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
   <div class="card"><span class="label">Autopilot</span>
     <div class="setting"><span>Follow-up reply</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Follow-up reply"></button><small>At ${S.settings.plugAt} likes, reply with:</small></div>
-    <input class="input" id="plug-t" value="${esc(S.settings.plugText)}" aria-label="Plug text">
+    <textarea class="input" id="plug-t" rows="2" aria-label="Follow-up reply text" style="resize:none">${esc(S.settings.plugText)}</textarea>
     <div class="setting"><span>Auto-repost</span><button class="switch" role="switch" aria-checked="${S.settings.autoRepost}" data-sw="autoRepost" aria-label="Auto-repost"></button><small>Once, for the other time zone.</small></div>
     <select class="input" id="rep-h" aria-label="Repost after">${[6, 12, 24].map(h => `<option value="${h}" ${S.settings.repostAfter === h ? 'selected' : ''}>After ${h} hours</option>`).join('')}</select>
     <div class="setting"><span>Evergreen reruns</span><button class="switch" role="switch" aria-checked="${!!S.settings.evergreen}" data-sw="evergreen" aria-label="Evergreen reruns"></button><small>Once a week, one of your best posts from 2+ months ago comes back with a fresh first line.</small></div></div>
@@ -6239,7 +6309,7 @@ function drawInsights() {
   <p class="kpi-line">Over the last ${RANGE} days: ${kpis.map(([k, v, dl, up], i) => `${i === kpis.length - 1 ? 'and ' : ''}<b>${v}</b> ${k.toLowerCase()} <span class="delta ${up ? 'up' : 'down'}">${dl}</span>`).join(', ')}, compared with the ${RANGE} days before.</p>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Impressions</h3><p class="faint" style="font-size:13px;margin-top:2px">Tuesday spikes are your 8:40 AM posts landing.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Impressions</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(Date.now() - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">Replies by hook type</h3><p class="faint" style="font-size:13px;margin-top:2px">Relative to your average post</p></div></div><div class="hbars">${types.map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k}: ${v}× your average replies"><span>${k}</span><div class="track"><div class="fillb" style="width:${v / 3.2 * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${v}×</span></div>`).join('')}</div></div>
-  <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your people reply</h3><p class="faint" style="font-size:13px;margin-top:2px">First-hour replies, darker is more</p></div></div>${heatmap()}</div></div>
+  <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your people reply</h3><p class="faint" style="font-size:13px;margin-top:2px">First-hour replies. Stronger color, more replies</p></div></div>${heatmap()}</div></div>
   <div class="grid-3 sec" style="margin-top:16px">
     <div class="card ins-card"><p class="big">4–6 posts beat longer threads by <em>41%</em>.</p><p>Past six, readers drop off fast. You averaged 8.</p><button class="btn sm" data-nact="thread" style="justify-self:start">Draft a 5-post thread</button></div>
     <div class="card ins-card"><p class="big">A number in line one gets <em>2.1×</em> the views.</p><p>Only 1 in 5 of your hooks has one. Easy win.</p><button class="btn sm" data-nact="number" style="justify-self:start">Open the hook grader</button></div>
@@ -6278,7 +6348,7 @@ function drawInsightsReal() {
   <p class="kpi-line">Last ${RANGE} days${stale ? ' of your history' : ''}: <b>${win.length}</b> posts ${dl(win.length, prev.length)}, <b>${fmtK(sum(win, p => p.likes))}</b> likes ${dl(sum(win, p => p.likes), sum(prev, p => p.likes))}, <b>${fmtK(sum(win, p => p.reposts))}</b> reposts ${dl(sum(win, p => p.reposts), sum(prev, p => p.reposts))}${an.perWeek ? `, and you post about <b>${an.perWeek}</b> times a week` : ''}.</p>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Engagement per day</h3><p class="faint" style="font-size:13px;margin-top:2px">Likes, plus reposts ×2 and replies ×3, on the days you posted.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Engagement</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(end - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">What works, by post type</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement relative to your median post</p></div></div><div class="hbars">${kinds.map((k, i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k.k}: ${k.x}× your median, ${k.n} posts"><span>${k.k}</span><div class="track"><div class="fillb" style="width:${k.x / maxX * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${k.x}×</span></div>`).join('')}</div></div>
-  <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your posts land</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement by when you posted, darker is more</p></div></div>${heat}</div></div>
+  <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your posts land</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement by when you posted. Stronger color, more engagement</p></div></div>${heat}</div></div>
   ${cells.length ? `<div class="grid-3 sec" style="margin-top:16px">${cells.slice(0, 3).join('')}</div>` : ''}
   <div class="card chart-card sec" style="margin-top:16px" id="top-posts"><div class="chart-h"><h3 class="h3">Top posts</h3><span class="faint" style="font-size:12px">Ask “Why?” for a post-mortem in your voice</span></div>${an.top.slice(0, 8).map((p, i) => row(p, i)).join('')}</div>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><h3 class="h3">Quietest posts</h3><span class="faint" style="font-size:12px">Worth knowing why, too</span></div>${an.flops.slice(0, 4).map((p, i) => row(p, i, '··')).join('')}</div>`;
@@ -6300,10 +6370,10 @@ function heatmap() {
   return `<div class="heat" role="img" aria-label="Heatmap of first-hour replies by day and time. Peak is Tuesday 9am."><span></span>${cols.map(c => `<span class="cl">${c}</span>`).join('')}${days.map((d, di) => `<span class="rl">${d}</span>${cols.map((c, ci) => { const v = val(di, ci); return `<span class="c" style="opacity:${(.12 + v * .88).toFixed(2)}" data-tip="${d} ${c}: ${Math.round(v * 48)} replies/hr avg"></span>`; }).join('')}`).join('')}</div>`;
 }
 function lineChart(host, data) {
-  const W = 720, H = 220, pl = 44, pr = 16, pt = 12, pb = 26; const ticks = niceTicks(Math.max(...data)); const nice = ticks[ticks.length - 1]; const n = data.length;
+  const W = Math.max(300, Math.min(900, Math.round(host.clientWidth || 720))), H = W < 480 ? 200 : 220, pl = 40, pr = 12, pt = 12, pb = 26; const ticks = niceTicks(Math.max(...data)); const nice = ticks[ticks.length - 1]; const n = data.length;
   const x = i => pl + (W - pl - pr) * (n === 1 ? 0 : i / (n - 1)), y = v => pt + (H - pt - pb) * (1 - v / nice);
   const pts = data.map((v, i) => [x(i), y(v)]); const path = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
-  const step = n > 60 ? 14 : n > 20 ? 7 : 1;
+  const step = Math.max(1, Math.ceil(n / Math.max(2, Math.floor((W - pl - pr) / 78))));
   host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Impressions per day, last ${n} days, ending at ${fmtK(data[n - 1])}"><defs><linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
   <g class="grid">${ticks.map(t => `<line x1="${pl}" x2="${W - pr}" y1="${y(t)}" y2="${y(t)}"/>`).join('')}</g>
   <g class="axis">${ticks.map(t => `<text x="${pl - 8}" y="${y(t) + 3.5}" text-anchor="end">${fmtK(t)}</text>`).join('')}${data.map((v, i) => { if ((n - 1 - i) % step) return ''; const dt = new Date(Date.now() - (n - 1 - i) * DAY); return `<text x="${x(i)}" y="${H - 6}" text-anchor="${i === n - 1 ? 'end' : 'middle'}">${MON[dt.getMonth()]} ${dt.getDate()}</text>`; }).join('')}</g>
@@ -6370,7 +6440,7 @@ function heuristicTraits(an) {
 async function learnVoice(btn) {
   const an = ANALYSIS(); if (!an || an.n < 8) { toast('Bring at least 8 posts first so there’s a voice to learn.', { icon: 'voice' }); openImport(); return; }
   const pool = [...an.top, ...HIST().filter(p => !an.top.includes(p))].slice(0, 120);
-  if (!aiOn()) { S.profile = { summary: `Short sentences (${an.stats.wps} words), ${an.stats.oneSentOpen}% one-sentence openers, ${an.stats.emojiPer} emoji and ${an.stats.tagsPer} hashtags per post.`, traits: heuristicTraits(an).map(([name, evidence]) => ({ name, evidence })), rules: [], avoid: [], works: [], most_you: an.top[0].text, n: an.n, at: Date.now(), by: 'the built-in editor' }; save(); route(); toast('Learned the basics. Connect Claude for the full profile.', { icon: 'voice', tone: 'accent' }); return; }
+  if (!aiOn()) { S.profile = { summary: `Short sentences (${an.stats.wps} words), ${an.stats.oneSentOpen}% one-sentence openers, ${an.stats.emojiPer} emoji and ${an.stats.tagsPer} hashtags per post.`, traits: heuristicTraits(an).map(([name, evidence]) => ({ name, evidence })), rules: [], avoid: [], works: [], most_you: an.top[0].text, n: an.n, at: Date.now(), by: 'basic mode' }; save(); route(); toast('Learned the basics. Connect Claude for the full profile.', { icon: 'voice', tone: 'accent' }); return; }
   btn && btn.classList.add('is-loading');
   const t = toast(`${AI_NAME() === 'your Claude' ? 'Your Claude' : 'Claude'} is reading ${pool.length} posts. This takes about a minute.`, { icon: 'voice', tone: 'accent', ms: 90000 });
   try {
