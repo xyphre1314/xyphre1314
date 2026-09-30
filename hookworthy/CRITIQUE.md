@@ -239,3 +239,28 @@ Owner found tight text, a homepage week that didn't match the Queue, a clipped L
 - Sidebar view transition no longer cross-fades, which caused the ghost text on draft clicks.
 - Checked with a clip/overlap detector and screenshots at 390, 1024, 1280, 1440, 1536 and 1920; remaining flags are intentional (scrolling chip rows and weeks on phones, mid-animation rewrites, clamped previews).
 
+## Round 12: plum locked, the app critiqued hard, features people will feel
+
+Owner: lock Lilac & Plum, use their avatar as the demo profile, critique everything (the app most), and add relatable features where every detail matters.
+
+**Critique (what was wrong)**
+- The demo account had two faces: a plum "SO" in the composer and a mustard "SO" in the preview. Now one portrait everywhere: sidebar, composer, all four previews, quote cards, and the homepage demo, which now shows the same account as the app.
+- "Draft saved" on a blank page is a small lie. It now says "New draft" with a grey dot until there's something to save.
+- Focus mode used the same target icon as "best time" and preflight. It has its own frame icon now.
+- Hook formulas had no place in the nav (Ideas lit up instead). Hooks is its own item, with G H.
+- "avg 69" on hook cards read like a stat nobody asked for. Now "Scores ~69" with a tooltip.
+- The never-say list on Your voice wasn't checked when you wrote. It is now, with a one-click swap.
+- Phones could not reach drafts or hooks at all. Both are in More.
+- The design system page still said "Sky and Midnight, one blue" and "harbor tile", and the app icon was a glossy gradient. Copy and icon are plum and flat now; theme names are Light and Dark.
+- Voice's "You sound" card had a dead half. It now ends on your most "you" post, the one rewrites are measured against.
+- The queue rail explained best times in a whole card. That moved into the legend's tooltip, and the room went to reruns.
+
+**Features added, and why they matter**
+- **Undo send.** Post now waits 8 seconds with a countdown bar; Esc or ⌘Z takes it back. Everyone has spotted the typo a second after posting.
+- **The 1 AM guard.** Posting between 11 PM and 6 AM asks first and offers the next morning slot in one tap. Posting while your people sleep wastes the first hour the feed judges you on.
+- **Cringe check.** "Thrilled to announce", "Let that sink in", ending on "Agree?", emoji pile-ups. Named plainly, cut in one click.
+- **You said this before.** A draft that's 60% the same as a past post shows the old one, its views and when. Rerunning is fine; doing it by accident isn't.
+- **Tidy up drafts.** The draft graveyard, one card at a time with its age and hook score: finish it, give it the best time, or let it go (B / K / S / ↵), with undo at the end.
+- **Worth a rerun.** Your best post from 2+ months ago, with a fresh first line. Most of today's followers never saw it.
+- **Rest days.** Pick days that don't break your streak. Streaks that punish weekends make people quit.
+
