@@ -1003,6 +1003,19 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .gifs button:hover{ transform:scale(1.03); }
 .gifs button:active{ transform:scale(.97); }
 .gifs .gif{ font-size:20px; }
+.gif-modal{ width:min(640px,100%); } .gifb{ display:grid; gap:12px; }
+.gifs.live{ display:block; columns:3 150px; column-gap:8px; min-height:240px; }
+.gifs.live > button{ display:block; width:100%; aspect-ratio:var(--ar,1.5); margin:0 0 8px; break-inside:avoid; border-radius:10px; overflow:hidden; background:var(--surface-2); }
+.gifs.live > button img{ width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .25s; } .gifs.live > button.in img{ opacity:1; }
+.gifs.live > button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.gif-sk{ display:block; height:110px; margin:0 0 8px; border-radius:10px; background:linear-gradient(90deg,var(--surface-2),var(--surface-3),var(--surface-2)); background-size:200% 100%; animation:gifsk 1.1s linear infinite; break-inside:avoid; } .gif-sk:nth-child(3n){ height:150px; } .gif-sk:nth-child(4n){ height:90px; }
+@keyframes gifsk{ to{ background-position:-200% 0; } }
+.gif-empty{ padding:24px; text-align:center; column-span:all; grid-column:1/-1; }
+.gif-foot{ display:flex; justify-content:space-between; align-items:center; gap:10px; } .gif-foot .btn[hidden]{ display:none; }
+.giphy-by{ margin-left:auto; font-size:12px; color:var(--text-3); text-decoration:none; letter-spacing:.02em; } .giphy-by b{ color:var(--text-1); font-weight:800; letter-spacing:.06em; }
+.gif-real{ position:relative; width:100%; height:100%; } .gif-real img{ width:100%; height:100%; object-fit:cover; display:block; }
+.gif-real small{ position:absolute; left:8px; bottom:8px; font:600 10px/1 var(--font-mono); letter-spacing:.06em; padding:3px 5px; border-radius:4px; background:rgba(0,0,0,.55); color:#fff; }
+@media (max-width:760px){ .gifs.live{ columns:2 140px; } }
 .sched-times{ display:grid; gap:8px; }
 .stime{ display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 14px; border-radius:12px; text-align:left; box-shadow:0 0 0 1px var(--border-strong); transition:box-shadow var(--d-fast),background var(--d-fast),transform var(--d-spring) var(--spring-snap); }
 .stime:hover{ background:var(--surface-3); }
@@ -3222,7 +3235,7 @@ function startersHTML() {
 }
 function mediaHTML(tw) {
   if (!tw.media.length) return '';
-  return `<div class="media-grid n${tw.media.length}">${tw.media.map((m, k) => `<div class="m">${m.type === 'gif' ? gifTile(m.id) : `<img src="${m.src}" alt="${esc(m.alt || 'Attached image')}">`}<button class="rm" data-cact="rmmedia" data-k="${k}" aria-label="Remove media" data-tip="Remove">${ic('x', 'sm')}</button></div>`).join('')}</div>`;
+  return `<div class="media-grid n${tw.media.length}">${tw.media.map((m, k) => `<div class="m">${m.type === 'gif' ? (m.src ? `<div class="gif-real"><img src="${esc(REDUCED && m.still ? m.still : (m.preview || m.src))}" alt="${esc(m.alt || 'GIF')}"><small>GIF</small></div>` : gifTile(m.id)) : `<img src="${m.src}" alt="${esc(m.alt || 'Attached image')}">`}<button class="rm" data-cact="rmmedia" data-k="${k}" aria-label="Remove media" data-tip="Remove">${ic('x', 'sm')}</button></div>`).join('')}</div>`;
 }
 function pollHTML(tw) {
   if (!tw.poll) return '';
@@ -4058,12 +4071,39 @@ function openBrief(files) {
   draw(); if (files && files.length) addFiles2(files);
 }
 
+/* GIFs: real search through GIPHY when the server has a key; a small set of sample moods otherwise */
+const GIFQ = { cache: new Map() };
 function openGifs(i) {
-  const tw = S.draft.tweets[i];
-  const m = modal(`${modalHead('Add a GIF', 'A small library of moods. No cringe, we checked.')}<div class="modal-b" style="display:grid;gap:12px"><input class="input" id="gif-q" autofocus placeholder="Search moods: ship, fine, hmm…" aria-label="Search GIFs"><div class="gifs" id="gif-grid"></div></div>`, { label: 'Add a GIF' });
-  const draw = q => { const list = GIFS.filter(g => !q || g.label.includes(q.toLowerCase()) || g.id.includes(q.toLowerCase())); $('#gif-grid', m.el).innerHTML = list.length ? list.map(g => `<button data-g="${g.id}" aria-label="${esc(g.label)}">${gifTile(g.id)}</button>`).join('') : `<p class="muted" style="grid-column:1/-1;padding:20px;text-align:center">No mood called “${esc(q)}”. Try “ship”.</p>`; };
-  draw(''); $('#gif-q', m.el).oninput = e => draw(e.target.value.trim());
-  $('#gif-grid', m.el).onclick = e => { const b = e.target.closest('[data-g]'); if (!b) return; if (tw.media.length >= 4) { toast('Four images max per post.', { tone: 'err', icon: 'image' }); return; } if (tw.poll) { toast('Polls and GIFs don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; } tw.media.push({ type: 'gif', id: b.dataset.g }); refreshMedia(tw.id); m.close(); };
+  const tw = S.draft.tweets[i]; if (!tw) return; const live = !!(LLM.server && LLM.server.gifs);
+  const m = modal(`${modalHead('Add a GIF', live ? 'Search GIPHY, or pick from what’s trending.' : 'Sample moods for now. Real GIF search turns on when your Hookworthy server has a GIPHY key.')}<div class="modal-b gifb"><input class="input" id="gif-q" placeholder="${live ? 'Search GIPHY: shipped, facepalm, let’s go…' : 'Search moods: ship, fine, hmm…'}" aria-label="Search GIFs"><div class="gifs ${live ? 'live' : ''}" id="gif-grid" role="list"></div>${live ? '<div class="gif-foot"><button class="btn sm" id="gif-more" hidden>More</button><a class="giphy-by" href="https://giphy.com" target="_blank" rel="noopener">Powered by <b>GIPHY</b></a></div>' : ''}</div>`, { label: 'Add a GIF', box: 'modal gif-modal' });
+  const grid = $('#gif-grid', m.el), more = $('#gif-more', m.el); let q = '', next = null, seq = 0, items = [];
+  const add = g => {
+    if (tw.media.length >= 4) { toast('Four images max per post.', { tone: 'err', icon: 'image' }); return; }
+    if (tw.poll) { toast('Polls and GIFs don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; }
+    if (tw.media.some(x => x.type === 'gif')) { toast('X allows one GIF per post. Remove the other one first.', { icon: 'image', tone: 'err' }); return; }
+    tw.media.push(g); refreshMedia(tw.id); m.close(); SFX.play('pop');
+  };
+  const moods = qq => { const list = GIFS.filter(g => !qq || g.label.includes(qq.toLowerCase()) || g.id.includes(qq.toLowerCase())); grid.innerHTML = list.length ? list.map(g => `<button data-g="${g.id}" aria-label="${esc(g.label)}">${gifTile(g.id)}</button>`).join('') : `<p class="muted gif-empty">No mood called “${esc(qq)}”. Try “ship”.</p>`; };
+  const paint = (append) => { const html = items.slice(append ? grid.querySelectorAll('[data-gi]').length : 0).map((g, k) => { const n = append ? grid.querySelectorAll('[data-gi]').length + k : k; return `<button data-gi="${n}" role="listitem" aria-label="${esc(g.title)}" style="--ar:${(g.w / g.h).toFixed(3)}"><img src="${esc(REDUCED && g.still ? g.still : g.preview)}" alt="" loading="lazy" decoding="async" onload="this.parentElement.classList.add('in')"></button>`; }).join('');
+    if (append) grid.insertAdjacentHTML('beforeend', html); else grid.innerHTML = html || `<p class="muted gif-empty">Nothing for “${esc(q)}”. Try fewer words.</p>`; if (more) more.hidden = next == null; };
+  const load = async (append) => {
+    const my = ++seq; const key = `${q}|${append ? next : 0}`;
+    if (!append) grid.innerHTML = Array.from({ length: 9 }, () => '<span class="gif-sk" aria-hidden="true"></span>').join('');
+    if (more) more.classList.toggle('is-loading', !!append);
+    try {
+      let j = GIFQ.cache.get(key); if (!j) { const r = await fetch(`api/gifs?q=${encodeURIComponent(q)}&offset=${append ? next : 0}`); j = await r.json(); if (!r.ok) throw new Error(j.error || 'GIF search failed'); GIFQ.cache.set(key, j); }
+      if (my !== seq) return; items = append ? items.concat(j.gifs) : j.gifs; next = j.next; paint(append);
+    } catch (e) { if (my !== seq) return; grid.innerHTML = `<p class="muted gif-empty">${esc(e.message || 'GIF search failed')}. Showing sample moods.</p>`; setTimeout(() => { if (my === seq) moods(q); }, 1200); }
+    finally { if (more) more.classList.remove('is-loading'); }
+  };
+  if (live) load(false); else moods('');
+  $('#gif-q', m.el).oninput = debounce(e => { q = e.target.value.trim(); live ? load(false) : moods(q); }, live ? 320 : 0);
+  more && (more.onclick = () => load(true));
+  grid.onclick = e => {
+    const b = e.target.closest('[data-g]'); if (b) { add({ type: 'gif', id: b.dataset.g }); return; }
+    const r = e.target.closest('[data-gi]'); if (!r) return; const g = items[+r.dataset.gi]; if (!g) return;
+    add({ type: 'gif', id: 'giphy-' + g.id, giphy: g.id, src: g.url, preview: g.preview, still: g.still, w: g.w, h: g.h, alt: g.title, page: g.page });
+  };
 }
 
 /* ---------- Sharpen: select any words, flip through three takes on just those words ----------

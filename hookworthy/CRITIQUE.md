@@ -385,3 +385,11 @@ Method: an automated sweep of every screen and modal in light/dark × desktop/ph
 **Deliberately left:**
 - The landing page stays light in every theme; the theme shortcut says so.
 - GIF tiles are mood placeholders until a GIF API key is added.
+
+## Round 19: real GIFs
+
+- GIF search goes through GIPHY, because Tenor's API shut down on June 30, 2026. The server keeps the key (`GIPHY_API_KEY`) and caches each query for 15 minutes, since free beta keys allow 100 calls an hour. The app shows trending GIFs when the search box is empty, searches as you type, loads more with "More", and shows the "Powered by GIPHY" credit GIPHY requires.
+- One GIF per post (X's rule). Polls and GIFs still don't mix. Reduced-motion users see still frames. Alt text comes from the GIF's title.
+- Without a key, the picker says plainly that these are sample moods and that real search turns on with a GIPHY key.
+- The claude.ai preview can't load images from giphy.com (its security rules), so real GIFs only work on your own server.
+- Not yet: uploading GIFs and images to X and LinkedIn at post time. Posting is text-only for now; see the proposals.
