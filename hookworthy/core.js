@@ -356,6 +356,57 @@ ${voiceBlock(voice)}
 
 Reply with only JSON: {"subject":"under 60 characters","headline":"one sentence on the week","why_best":"why the best one worked, one sentence","try_next":"one concrete thing to try next week","first_line":"a first line they could post Monday, in their voice"}` };
     },
+    briefRead({ text, niche }) {
+      return { tier: 'default', json: true, prompt: `A creator dropped in a brief (notes, a doc, a transcript) and wants posts written from it. Read it like a careful editor before anyone writes a word.
+
+<brief>
+${text || '(see the attached document)'}
+</brief>
+${niche ? `Their niche: ${niche}` : ''}
+
+Pull out:
+- summary: two plain sentences on what this is.
+- audience: who it's for, in a few words.
+- facts: every concrete claim worth posting (numbers, results, dates, names), each with the exact words from the brief as "quote". Never paraphrase a number.
+- gaps: what's missing that would make the post stronger or safer (a date, a result, a link, who it's for). Max 4, each one short sentence.
+- careful: claims that need a source or would read as hype if posted as-is. Max 3.
+- angles: 3 different ways in, each with a first line in plain words that uses only facts from the brief.
+
+Reply with only JSON: {"title":"","summary":"","audience":"","facts":[{"fact":"","quote":""}],"gaps":[],"careful":[],"angles":[{"angle":"","line":""}]}` };
+    },
+    briefWrite({ text, read, angle, format, voice, limit = 280, platform = 'X' }) {
+      const shape = { thread: `an X thread of 5-9 posts. Each post at most ${limit} characters (URLs count as 23). Post 1 is the hook and must work alone. One idea per post. No "1/" numbering unless it helps.`, long: `one long X post (X Premium allows up to 25,000 characters). Aim for 900-2,000 characters. The first 280 characters must stand alone, because X cuts there with "Show more". Short paragraphs, blank lines between.`, linkedin: 'one LinkedIn post up to 3,000 characters. The first two lines must earn the "…more" click. Short paragraphs, blank lines between, no hashtag pile.', single: `one post, at most ${limit} characters.` }[format] || '';
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+${voiceBlock(voice)}
+
+Write ${shape}
+Platform: ${platform}.
+
+The brief:
+<brief>
+${text || '(see the attached document)'}
+</brief>
+${read ? `What an editor already pulled from it: ${JSON.stringify({ facts: read.facts, careful: read.careful })}` : ''}
+Angle to take: ${angle || 'the strongest one'}
+
+Rules: use only facts from the brief. Copy every number exactly. If a detail would help but isn't in the brief, write it as a [bracketed blank] instead of inventing it. Nothing from "careful" goes in without softening. Sound like the author, not like marketing.
+
+Reply with only JSON: {"posts":["post 1","post 2"],"note":"one sentence on the choice you made"}` };
+    },
+    spoken({ text, voice, format = 'single', limit = 280 }) {
+      return { tier: 'quick', json: true, prompt: `${BRIEF}
+
+${voiceBlock(voice)}
+
+This was dictated out loud, so it rambles. Turn it into ${format === 'thread' ? `an X thread (each post at most ${limit} characters)` : `one post (at most ${limit} characters)`} in the author's voice. Keep their words and every fact; cut fillers, repeats and false starts. Don't add claims.
+
+<spoken>
+${text}
+</spoken>
+
+Reply with only JSON: {"posts":["..."]}` };
+    },
     visual({ text, plan }) {
       return { tier: 'quick', json: true, prompt: `You are the art director for one social media graphic that goes under this post. The graphic must make someone scrolling stop and get the point in one second.
 
@@ -480,6 +531,63 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return { template: 'quote', headline: line, emphasis: emph, why: 'No numbers here, so your line is the picture. Set big, one phrase marked.' };
   }
 
+  /* ---- briefs: read what a creator drops in, keep the facts straight, draft from it ---- */
+  const normNum = x => String(x).toLowerCase().replace(/[,\s]/g, '').replace(/\.0+(?=\D|$)/, '');
+  /* numbers in the draft that the source never says: the things to double-check before posting */
+  function factCheck(draft, source) {
+    const src = normNum(source), out = [], seen = new Set(), re = new RegExp(NUM, 'g'); let m;
+    const d = String(draft || '').replace(/\[[^\]]*\]/g, ' ');
+    while ((m = re.exec(d))) { const raw = m[0].trim(), n = normNum(raw); if (!/\d/.test(n) || seen.has(n)) continue; seen.add(n); const bare = n.replace(/[$€£%kmbx×]/g, ''); if (/^\d$/.test(bare) && !/[$%]/.test(raw)) continue; if (!src.includes(n) && !src.includes(bare)) out.push(raw); }
+    return out;
+  }
+  const FILLERS = /\b(?:um+|uh+|erm+|er|ah+|hmm+|you know|i mean|like,|sort of|kind of|basically|literally|actually|so yeah|yeah so|okay so)\b[,.]?\s*/gi;
+  /* spoken → written: drop fillers and stutters, fix "i", capitalise sentences, keep the words */
+  function tidySpoken(text) {
+    let t = String(text || '').replace(FILLERS, '').replace(/\b(\w+)(\s+\1\b)+/gi, '$1').replace(/\bi\b/g, 'I').replace(/\bi'(m|ve|ll|d)\b/gi, "I'$1").replace(/\s+([,.!?])/g, '$1').replace(/[ \t]{2,}/g, ' ');
+    t = t.replace(/(^|[.!?]\s+|\n\s*)([a-z])/g, (_, a, b) => a + b.toUpperCase()).trim();
+    if (t && !/[.!?:…)"'”]$/.test(t)) t += '.';
+    return t;
+  }
+  /* offline read of a brief: summary, the facts with their own words, gaps worth filling, and angles */
+  const factWeight = x => { let w = 0; if (/(?:→|->|\bfrom\b.{0,40}?\bto\b)/i.test(x) && /\d/.test(x)) w += 4; if (/[$€£]\s?\d|\d\s?%/.test(x)) w += 3; if (/\d[\d,]*\s?(?:k|m|x|×|s|ms|hours?|days?|weeks?|months?|years?|users?|teams?|customers?|people|signups?|followers?)\b/i.test(x)) w += 2; if (/\d{1,3}(,\d{3})+/.test(x)) w += 1; if (!w && /\d/.test(x.replace(/\b\d+\.\d+\b/g, ''))) w += 1; return w; };
+  const HYPE = /\b(best|first|only|#1|guaranteed|always|never|everyone|nobody|fastest|cheapest|revolutionary|game.?changer|ever made|world.?class)\b/i;
+  const CTA = /\b(sign ?up|join|try it|try the|download|waitlist|link in|buy|get it|book a)\b/i;
+  function briefRead(text) {
+    const t = String(text || '').replace(/\r/g, '').trim(); const isHead = x => !/[.!?:;)"”]$/.test(x) && x.split(/\s+/).length <= 9;
+    const all = sentences(t), heads = all.filter(isHead), sents = all.filter(x => x.length > 12 && x.length < 400 && !isHead(x));
+    const careful = sents.filter(x => HYPE.test(x) && !factWeight(x)).slice(0, 3);
+    const facts = sents.map(x => ({ x, w: factWeight(x) })).filter(f => f.w > 0).sort((a, b) => b.w - a.w).slice(0, 8).map(f => ({ fact: clipW(f.x, 140), quote: f.x, weight: f.w }));
+    const story = sents.find(x => /\b(we|i)\b/i.test(x) && !factWeight(x) && !careful.includes(x) && !CTA.test(x));
+    const cta = sents.find(x => CTA.test(x));
+    const ctx = sents[0] && !careful.includes(sents[0]) && sents[0] !== cta ? sents[0] : null;
+    const key = [...facts.map(f => f.quote), ctx, story, ...sents.filter(x => !careful.includes(x) && x !== cta)].filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 6);
+    const lesson = sents.find(x => /(because|learn(ed|t)?|lesson|turns out|realised|realized|mistake|instead)/i.test(x) && !careful.includes(x));
+    const gaps = [];
+    if (!facts.some(f => f.weight >= 2)) gaps.push('No hard numbers yet. One real result (a %, a $, a count) makes it believable.');
+    if (/\b(launch|launching|release|shipping|going live)\b/i.test(t) && !/\b(today|tomorrow|tonight|next week|monday|tuesday|wednesday|thursday|friday|saturday|sunday|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b|\b\d{1,2}(st|nd|rd|th)\b/i.test(t)) gaps.push('It mentions a launch but not when. Add the date?');
+    if (cta && !/https?:\/\//.test(t)) gaps.push('It asks people to act but there’s no link. Add one (on X it goes in a reply).');
+    if (!/\b(for|founders?|creators?|developers?|designers?|marketers?|teams?|people who|anyone who)\b/i.test(t)) gaps.push('Who is it for? Naming the reader sharpens the first line.');
+    const strip = x => x.replace(/[.!?]+$/, '');
+    const angles = [
+      facts[0] && { angle: 'Lead with the result', line: facts[0].quote },
+      story && { angle: 'The story behind it', line: `${strip(story)}. Here’s what it took.` },
+      lesson && { angle: 'The lesson', line: lesson },
+      ctx && facts[0] && { angle: 'Straight news', line: `${strip(ctx)}. ${facts[0].quote}` }
+    ].filter(Boolean);
+    return { title: clipW(strip((heads[0] || sents[0] || t.split('\n')[0] || 'Your brief').trim()), 70), summary: clipW(sents.slice(0, 2).join(' ') || t, 260), words: (t.match(/\S+/g) || []).length, facts, key, gaps: gaps.slice(0, 4), careful: careful.map(x => clipW(x, 120)), cta: cta || '', angles };
+  }
+  /* offline draft from a brief: a hook from the chosen angle, one point per post, the ask last */
+  function briefDraft(text, { format = 'thread', limit = 280, angle = 0 } = {}) {
+    const r = briefRead(text), a = r.angles[angle] || r.angles[0]; const hook = a ? a.line : r.key[0] || '';
+    const first = r.key.find(k => /^[A-Z]/.test(k) && !/\d/.test(k.replace(/\b\d+\.\d+\b/g, '')) && k !== hook);
+    const pts = [first, ...r.key].filter((k, i, a) => k && a.indexOf(k) === i && !hook.includes(k.replace(/[.!?]+$/, '')) && !k.includes(hook.replace(/[.!?]+$/, ''))).slice(0, 5);
+    const close = r.cta ? `${r.cta.replace(/[.!?]+$/, '')}: [link]` : 'Which part do you want me to go deeper on?';
+    const fit = (x, n) => { x = x.trim(); if ([...x].length <= n) return x; return x.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
+    if (format === 'thread') return [fit(hook, limit), ...pts.map(p => fit(p, limit)), fit(close, limit)];
+    if (format === 'single') return [fit(hook, limit)];
+    return [fit([hook, '', ...pts.flatMap(p => [p, '']), close].join('\n').replace(/\n{3,}/g, '\n\n').trim(), limit)];
+  }
+
   /* pre-post rules shared with the server's /api/v1/check and the MCP server */
   const CRINGE = [
     { re: /\b(?:I['’]?m|I am|we['’]re|we are) (?:so |super |beyond )?(?:humbled|thrilled|excited|delighted|honou?red) to (?:announce|share)(?: that)?/i, msg: 'Opens like a press release.' },
@@ -499,5 +607,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
 
-  return { visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
+  return { factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
 });

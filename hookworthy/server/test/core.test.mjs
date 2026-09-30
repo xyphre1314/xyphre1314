@@ -107,3 +107,16 @@ test('visualPlan picks the picture a post wants and copies numbers exactly', () 
   assert.equal(core.visualPlan('Shipped at 2am in 2024.').template, 'quote', 'times and years are not stats');
   const p = core.prompts.visual({ text: 'x', plan: d }); assert.equal(p.tier, 'quick'); assert.match(p.prompt, /never invent/);
 });
+
+test('briefs: facts ranked, hype flagged, gaps found, drafts keep numbers, factCheck catches invented ones', () => {
+  const b = 'Launching Tally Notes 2.0. We rebuilt sync from scratch. Load time dropped from 3.2s to 0.4s. 1,200 teams on the beta. It is the fastest notes app ever made. Try it on the waitlist.';
+  const r = core.briefRead(b);
+  assert.equal(r.facts[0].quote, 'Load time dropped from 3.2s to 0.4s.');
+  assert.deepEqual(r.careful, ['It is the fastest notes app ever made.']);
+  assert.ok(r.gaps.some(g => /when/.test(g)) && r.gaps.some(g => /link/.test(g)));
+  const t = core.briefDraft(b, { format: 'thread' }); assert.equal(t[0], 'Load time dropped from 3.2s to 0.4s.'); assert.ok(!t.join(' ').includes('fastest'), 'hype stays out'); assert.match(t[t.length - 1], /\[link\]/);
+  assert.ok(t.every(p => p.length <= 280));
+  assert.deepEqual(core.factCheck('Now 0.4s, down from 3.2s. 1,500 teams. [x] 3 tips.', b), ['1,500']);
+  assert.equal(core.tidySpoken('um so i think uh the the thing is, you know, we shipped it'), 'So I think the thing is, we shipped it.');
+  assert.equal(core.prompts.briefWrite({ text: b, format: 'long', limit: 25000 }).prompt.includes('25,000'), true);
+});

@@ -31,3 +31,14 @@ test('refusals and empty prompts come back as clear errors', async () => {
   await assert.rejects(AI.complete({ prompt: 'x' }), e => e.code === 'refused' && e.status === 422);
   await assert.rejects(AI.complete({ prompt: '  ' }), e => e.code === 'invalid_request');
 });
+
+test('PDFs ride along as base64 document blocks before the prompt; anything else is refused', async () => {
+  const f = fake('{"summary":"ok"}'); AI.setClient(f);
+  await AI.complete({ prompt: 'read this', json: true, docs: [{ name: 'launch.pdf', mime: 'application/pdf', data: 'data:application/pdf;base64,JVBERi0x\nLjQK' }] });
+  const c = f.calls[0].messages[0].content;
+  assert.equal(c[0].type, 'document'); assert.deepEqual(c[0].source, { type: 'base64', media_type: 'application/pdf', data: 'JVBERi0xLjQK' }); assert.equal(c[0].title, 'launch.pdf');
+  assert.deepEqual(c[1], { type: 'text', text: 'read this' });
+  await AI.complete({ prompt: 'plain' }); assert.equal(f.calls[1].messages[0].content, 'plain', 'no docs: plain string content');
+  await assert.rejects(AI.complete({ prompt: 'x', docs: [{ mime: 'image/png', data: 'x' }] }), e => e.code === 'invalid_request');
+  await assert.rejects(AI.complete({ prompt: 'x', docs: [1, 2, 3, 4].map(() => ({ mime: 'application/pdf', data: 'x' })) }), e => e.code === 'too_many_docs');
+});

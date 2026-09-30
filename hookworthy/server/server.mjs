@@ -37,7 +37,7 @@ const fail = (res, e) => send(res, e.status || 500, { error: e.message || 'Somet
 async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []; for await (const c of req) { n += c.length; if (n > limit) throw Object.assign(new Error('Request too large'), { status: 413 }); chunks.push(c); } try { return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}'); } catch { throw Object.assign(new Error('Send JSON'), { status: 400 }); } }
 const authed = req => !TOKEN || req.headers.authorization === `Bearer ${TOKEN}` || (req.headers.cookie || '').split(/;\s*/).includes(`hw=${TOKEN}`);
 
-export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
 
 export async function handle(req, res) {
   const url = new URL(req.url, 'http://x'); const p = url.pathname; const ip = req.socket.remoteAddress || 'local';
@@ -48,8 +48,9 @@ export async function handle(req, res) {
 
     /* Claude */
     if (p === '/api/ai' && req.method === 'POST') {
-      const b = await body(req); if (!allow(ip, b.tier === 'complex' ? 5 : 1)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' });
-      const r = await AI.complete({ prompt: b.prompt, tier: b.tier, json: !!b.json });
+      const b = await body(req, 24 * 1024 * 1024); const docs = Array.isArray(b.docs) ? b.docs : [];
+      if (!allow(ip, (b.tier === 'complex' ? 5 : 1) + docs.length * 2)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' });
+      const r = await AI.complete({ prompt: b.prompt, tier: b.tier, json: !!b.json, docs });
       return send(res, 200, { text: r.text, data: r.data, model: r.model, truncated: r.truncated });
     }
 
@@ -60,6 +61,7 @@ export async function handle(req, res) {
     if (p === '/api/typefully/import' && req.method === 'POST') { const b = await body(req); const drafts = await TF.importDrafts(b.key); return send(res, 200, { posts: core.parseTypefully(drafts) }); }
 
     /* first hour */
+    if (p === '/api/x/me') return send(res, 200, await X.refreshTier());
     if (p === '/api/x/replies') return send(res, 200, { replies: await X.replies(url.searchParams.get('id')) });
     if (p === '/api/x/reply' && req.method === 'POST') { const b = await body(req); if (!String(b.text || '').trim()) return send(res, 400, { error: 'Write the reply first' }); return send(res, 200, await X.reply(b.inReplyTo, String(b.text).slice(0, 1000))); }
 

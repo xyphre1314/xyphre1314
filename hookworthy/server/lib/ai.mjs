@@ -32,11 +32,24 @@ export function parseJSON(text) {
   throw new AIError('invalid_json', 'Claude did not return valid JSON', 502);
 }
 
-export async function complete({ prompt, tier = 'default', json = false }) {
+/* PDFs ride along as document blocks (read natively by Claude), before the prompt text */
+const MAX_DOCS = 3, MAX_DOC_BYTES = 15 * 1024 * 1024;
+function docBlocks(docs = []) {
+  if (!Array.isArray(docs) || !docs.length) return [];
+  if (docs.length > MAX_DOCS) throw new AIError('too_many_docs', `Up to ${MAX_DOCS} files at a time`, 400);
+  return docs.map(d => {
+    if (!d || d.mime !== 'application/pdf' || typeof d.data !== 'string') throw new AIError('invalid_request', 'Only PDF files can be attached; send other text in the prompt', 400);
+    const data = d.data.replace(/^data:[^,]*,/, '').replace(/\s+/g, '');
+    if (data.length * .75 > MAX_DOC_BYTES) throw new AIError('doc_too_large', `${d.name || 'That PDF'} is over 15 MB`, 413);
+    return { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data }, ...(d.name ? { title: String(d.name).slice(0, 200) } : {}) };
+  });
+}
+
+export async function complete({ prompt, tier = 'default', json = false, docs = [] }) {
   if (!hasKey()) throw new AIError('no_key', 'Set ANTHROPIC_API_KEY in server/.env', 503);
   if (typeof prompt !== 'string' || !prompt.trim()) throw new AIError('invalid_request', 'prompt is required', 400);
   if (Buffer.byteLength(prompt) > 256 * 1024) throw new AIError('prompt_too_large', 'Prompt over 256 KB', 413);
-  const t = MODELS[tier] ? tier : 'default';
+  const t = MODELS[tier] ? tier : 'default'; const blocks = docBlocks(docs);
   let res;
   try {
     res = await getClient().beta.messages.create({
@@ -44,7 +57,7 @@ export async function complete({ prompt, tier = 'default', json = false }) {
       max_tokens: MAX_TOKENS[t],
       system: SYSTEM,
       output_config: { effort: EFFORT[t] },
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{ role: 'user', content: blocks.length ? [...blocks, { type: 'text', text: prompt }] : prompt }],
       betas: ['server-side-fallback-2026-07-01'],
       fallbacks: 'default'
     });

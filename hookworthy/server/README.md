@@ -26,7 +26,8 @@ Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (th
 | | |
 |---|---|
 | `GET /api/health` | What's switched on |
-| `POST /api/ai` `{prompt, tier, json}` | Claude, routed by tier (used by the app) |
+| `POST /api/ai` `{prompt, tier, json, docs?}` | Claude, routed by tier (used by the app). `docs`: up to 3 PDFs as base64 (`{name, mime:'application/pdf', data}`), sent to Claude as document blocks, for briefs |
+| `GET /api/x/me` | Re-checks the connected X account's plan (`subscription_type`, falling back to `verified_type`). Paid plans (Basic, Premium, Premium+) get 25,000-character posts; everyone else 280. Also returned as `xTier` in `/api/health` |
 | `GET /api/x/posts?handle=&max=` | An account's original posts with public metrics (X API, bearer token) |
 | `GET /api/x/people?handles=a,b` | Top recent posts from people you learn from |
 | `GET /api/x/metrics?ids=` | Fresh metrics for posts, for post-mortems |

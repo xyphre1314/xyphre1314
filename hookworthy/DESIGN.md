@@ -1,6 +1,6 @@
 ---
 name: Hookworthy
-description: Write posts people stop for.
+description: Good ideas die in bad first lines.
 colors:
   cream: "#FEFDF1"
   cream-2: "#F2F0E3"
@@ -341,7 +341,7 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
 
 ## Brand and Voice
 
-- **Name:** Hookworthy. **Promise:** Write posts people stop for.
+- **Name:** Hookworthy. **Promise:** Good ideas die in bad first lines.
 - **Logo: the wordmark.** hook*worthy*: EB Garamond 500, lowercase, "hook" roman and "worthy" italic, the same move every headline makes. No symbol in the UI. Where a square is unavoidable (favicon, app icon), a roman Garamond h in cream on a harbor tile. Files: `assets/wordmark.svg` (outlined), `assets/icon.svg`, `assets/app-icon.svg` / `.png`.
 - **Glossary (say it this way):**
 

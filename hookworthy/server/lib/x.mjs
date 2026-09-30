@@ -78,11 +78,27 @@ export async function authCallback(code, state) {
   const pend = read('x-pending', {}); const p = pend[state]; delete pend[state]; write('x-pending', pend);
   if (!p || Date.now() - p.at > 15 * 60e3) throw new XError(400, 'That sign-in link expired. Start again.');
   const tok = await tokenRequest({ grant_type: 'authorization_code', code, redirect_uri: p.redirectUri, code_verifier: p.verifier });
-  const me = await xfetch('/users/me', { token: tok.access });
-  write('x-token', { ...tok, handle: me.data.username, id: me.data.id });
+  const me = await xfetch(`/users/me?${ME_FIELDS}`, { token: tok.access });
+  write('x-token', { ...tok, handle: me.data.username, id: me.data.id, tier: tierOf(me.data), tierAt: Date.now() });
   return me.data.username;
 }
 export function connectedUser() { const t = read('x-token', null); return t && t.handle; }
+/* Is this account on a paid X plan? Paid plans (Basic, Premium, Premium+) can post up to 25,000 characters;
+   everyone else gets 280 per post. subscription_type is read from the signed-in user's own lookup; verified_type
+   "blue" is the fallback signal when X doesn't return it. */
+const ME_FIELDS = 'user.fields=verified,verified_type,subscription_type,public_metrics';
+export const LONG_POST = 25000, SHORT_POST = 280;
+export function tierOf(u = {}) {
+  const sub = String(u.subscription_type || '').toLowerCase(), vt = String(u.verified_type || '').toLowerCase();
+  const paid = ['basic', 'premium', 'premiumplus'].includes(sub) || (!sub && vt === 'blue');
+  return { paid, plan: sub && sub !== 'none' ? u.subscription_type : paid ? 'Premium' : 'Free', source: sub ? 'subscription_type' : vt ? 'verified_type' : 'none', limit: paid ? LONG_POST : SHORT_POST };
+}
+export function connectedTier() { const t = read('x-token', null); return t && t.tier ? { ...t.tier, handle: t.handle, checkedAt: t.tierAt } : null; }
+/* re-check (plans change): the signed-in user's own profile */
+export async function refreshTier() {
+  const token = await userToken(); const me = await xfetch(`/users/me?${ME_FIELDS}`, { token });
+  const t = read('x-token', null); const tier = tierOf(me.data); write('x-token', { ...t, tier, tierAt: Date.now() }); return { ...tier, handle: me.data.username, checkedAt: Date.now() };
+}
 async function userToken() {
   const t = read('x-token', null); if (!t) throw new XError(401, 'Connect X first');
   if (Date.now() < t.exp) return t.access;
