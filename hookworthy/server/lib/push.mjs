@@ -42,9 +42,12 @@ export function vapidHeader(endpoint, subject = process.env.PUBLIC_URL || 'mailt
   return `vapid t=${data}.${b64u(sig)}, k=${k.publicKey}`;
 }
 
+/* only the browsers' own push services: Chrome/Edge (FCM, WNS), Firefox (Mozilla), Safari (Apple) */
+export const PUSH_HOSTS = /(^|\.)(fcm\.googleapis\.com|android\.googleapis\.com|push\.services\.mozilla\.com|push\.apple\.com|notify\.windows\.com)$/i;
+export const pushHostOk = endpoint => { try { const u = new URL(endpoint); return u.protocol === 'https:' && PUSH_HOSTS.test(u.hostname); } catch { return false; } };
 /* returns 'sent', or 'gone' when the browser unsubscribed (drop it) */
 export async function sendPush(sub, payload, { ttl = 3600 } = {}) {
-  if (!sub || !/^https:\/\//.test(sub.endpoint || '')) throw Object.assign(new Error('Bad push subscription'), { status: 400 });
+  if (!sub || !pushHostOk(sub.endpoint || '')) throw Object.assign(new Error('Bad push subscription'), { status: 400 });
   const r = await fetch(sub.endpoint, { method: 'POST', headers: { authorization: vapidHeader(sub.endpoint), 'content-encoding': 'aes128gcm', 'content-type': 'application/octet-stream', ttl: String(ttl), urgency: 'high' }, body: encrypt(JSON.stringify(payload), sub.keys || {}) });
   if (r.status === 404 || r.status === 410) return 'gone';
   if (!r.ok) throw new Error(`Push service said ${r.status}`);

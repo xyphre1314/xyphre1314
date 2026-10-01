@@ -24,7 +24,7 @@ export function setSettings(b = {}) {
   if ('email' in b) { const e = String(b.email || '').trim().slice(0, 200); if (e && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) throw Object.assign(new Error('That email doesn’t look right'), { status: 400 }); st.email = e; }
   if ('median' in b) st.median = Math.max(0, Math.min(1e7, +b.median || 0));
   if ('voice' in b) { const j = b.voice && typeof b.voice === 'object' ? JSON.stringify(b.voice) : ''; st.voice = j && j.length <= 8000 ? JSON.parse(j) : null; }
-  if (b.subscribe && b.subscribe.endpoint) { if (!/^https:\/\//.test(b.subscribe.endpoint)) throw Object.assign(new Error('Bad push subscription'), { status: 400 }); st.subs = [...st.subs.filter(x => x.endpoint !== b.subscribe.endpoint), { endpoint: b.subscribe.endpoint, keys: b.subscribe.keys || {}, at: Date.now() }].slice(-5); }
+  if (b.subscribe && b.subscribe.endpoint) { if (!P.pushHostOk(b.subscribe.endpoint)) throw Object.assign(new Error('Bad push subscription'), { status: 400 }); st.subs = [...st.subs.filter(x => x.endpoint !== b.subscribe.endpoint), { endpoint: b.subscribe.endpoint, keys: b.subscribe.keys || {}, at: Date.now() }].slice(-5); }
   if (b.unsubscribe) st.subs = st.subs.filter(x => x.endpoint !== b.unsubscribe);
   save(s); return getSettings();
 }

@@ -36,23 +36,25 @@ test('push: payload encryption opens with the browser’s keys (RFC 8291), VAPID
 test('push: sends with the right headers; a 410 means the device unsubscribed', async () => {
   const b = browser(); let seen;
   globalThis.fetch = async (u, o) => { seen = { u, o }; return res(201, {}); };
-  assert.equal(await P.sendPush({ endpoint: 'https://push.example/1', keys: b.keys }, { title: 'x' }), 'sent');
+  assert.equal(await P.sendPush({ endpoint: 'https://fcm.googleapis.com/fcm/send/1', keys: b.keys }, { title: 'x' }), 'sent');
   assert.equal(seen.o.headers['content-encoding'], 'aes128gcm'); assert.match(seen.o.headers.authorization, /^vapid t=/); assert.equal(JSON.parse(decrypt(seen.o.body, b)).title, 'x');
   globalThis.fetch = async () => res(410, {});
-  assert.equal(await P.sendPush({ endpoint: 'https://push.example/1', keys: b.keys }, { title: 'x' }), 'gone');
+  assert.equal(await P.sendPush({ endpoint: 'https://fcm.googleapis.com/fcm/send/1', keys: b.keys }, { title: 'x' }), 'gone');
   await assert.rejects(P.sendPush({ endpoint: 'http://169.254.169.254/', keys: b.keys }, {}), /Bad push/);
+  await assert.rejects(P.sendPush({ endpoint: 'https://evil.example.com/hook', keys: b.keys }, {}), /Bad push/, 'only real push services');
+  assert.throws(() => BO.setSettings({ subscribe: { endpoint: 'https://internal.corp/x', keys: b.keys } }), /Bad push/);
 });
 
 test('breakout: alerts once at 3× your usual pace, with replies drafted, by push and email', async () => {
   const now = Date.now(); const b = browser();
-  BO.setSettings({ on: true, median: 100, email: 'me@example.com', subscribe: { endpoint: 'https://push.example/dev', keys: b.keys }, voice: { summary: 'short' } });
+  BO.setSettings({ on: true, median: 100, email: 'me@example.com', subscribe: { endpoint: 'https://fcm.googleapis.com/fcm/send/dev', keys: b.keys }, voice: { summary: 'short' } });
   BO.track({ ids: ['900'], posts: [{ text: 'Cutting to one plan doubled trials.' }, { text: 'Here’s how.' }], at: now - 20 * 60e3 });
   BO.track({ ids: ['901'], posts: ['A quiet one.'], at: now - 20 * 60e3 });
   const pushes = [], mails = [], lookups = [];
   globalThis.fetch = async (u, o = {}) => { const url = String(u);
     if (url.includes('/tweets?ids=')) { lookups.push(url); return res(200, { data: [{ id: '900', text: 't', public_metrics: { like_count: 60, retweet_count: 5, reply_count: 8 } }, { id: '901', text: 't', public_metrics: { like_count: 2, retweet_count: 0, reply_count: 0 } }] }); }
     if (url.includes('/tweets/search/recent')) return res(200, { data: [{ id: 'r1', text: '@me how long did this take?', author_id: 'u1', public_metrics: { like_count: 3 } }], includes: { users: [{ id: 'u1', username: 'asker', public_metrics: { followers_count: 5000 } }] } });
-    if (url.startsWith('https://push.example/')) { pushes.push(JSON.parse(decrypt(o.body, b))); return res(201, {}); }
+    if (url.startsWith('https://fcm.googleapis.com/fcm/send/')) { pushes.push(JSON.parse(decrypt(o.body, b))); return res(201, {}); }
     return res(404, {}); };
   const drafted = [];
   const fired = await BO.tick({ now, draft: async x => { drafted.push(x); return [{ id: 0, reply: 'About six weeks.' }]; }, email: async (to, subj, html) => { mails.push({ to, subj, html }); }, publicUrl: 'https://hw.example' });
