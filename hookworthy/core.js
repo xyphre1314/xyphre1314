@@ -66,7 +66,8 @@
     const toks = first.match(/[A-Za-z]{3,}/g) || [];
     const mash = toks.filter(w => /^(asdf|qwer|zxcv|sdfg|hjkl|uiop|lorem|ipsum|blah)/i.test(w) || /[bcdfghjklmnpqrstvwxz]{5,}/i.test(w) || !/[aeiouy]/i.test(w)).length;
     const gib = toks.length ? mash / toks.length : 1;
-    const bait = (lc.match(/\b(\d+% of (you|people)|won[’']?t (read|believe|see)|nobody (tells|talks)|secrets?|10x your|game[- ]?changer|you need to see|read (this|till the end)|bookmark this|thank me later|this will change|most people (don[’']?t|won[’']?t|will never))\b/g) || []).length;
+    const bait = (lc.match(/\b(\d+% of (you|people)|won[’']?t (read|believe|see)|nobody (tells|talks)|secrets?|10x your|game[- ]?changer|you need to see|read (this|till the end)|bookmark this|thank me later|this will change|most people (don[’']?t|won[’']?t|will never)|nobody(?: is|['’]s) talking|stop scrolling|change your life|breaking|unpopular opinion|hot take)\b/g) || []).length + (/\b(agree|thoughts|am i wrong)\s*\?\s*$/i.test(text.trim()) ? 1 : 0) + ((first.match(/\p{Extended_Pictographic}/gu) || []).length >= 3 ? 1 : 0);
+    const short = toks.length < 4 && !/\d/.test(first);
     const nums = (first.match(/\d+/g) || []).length;
     if (nums >= 3) spec -= 18 * (nums - 2);
     const c = v => clamp(Math.round(v), 4, 99);
@@ -76,11 +77,13 @@
     if (bait) score = c(score - (bait > 1 ? 14 * Math.min(3, bait) + 10 : 8));
     if (nums >= 3) score = c(score - 8 * (nums - 2));
     if (gib > .25 || toks.length < 2) score = Math.min(score, 30);
+    else if (short) score = Math.min(score, 50);
     if (blank) score = Math.min(score, 40);
     let reason, tone;
     if (blank) { reason = 'There are blanks left. Fill them with what really happened, then it gets a real score.'; tone = 'fix'; }
     else if (gib > .25 || toks.length < 2) { reason = 'That doesn’t read as words yet. Say the thing plainly.'; tone = 'fix'; }
-    else if (bait > 1 || (bait && score < 60)) { reason = 'It reads like bait. Readers have learned to scroll past that. Say the real thing.'; tone = 'fix'; }
+    else if (short) { reason = 'Too short to stop anyone. Say what it’s about.'; tone = 'fix'; }
+    else if (bait > 1 || (bait && score < 66)) { reason = 'It reads like bait. Readers have learned to scroll past that. Say the real thing.'; tone = 'fix'; }
     else if (nums >= 3) { reason = 'Too many numbers at once. Keep the one that matters.'; tone = 'fix'; }
     else if (fillers.length) { const orig = (String(text).match(new RegExp(`\\b${fillers[0]}\\b`, 'i')) || [fillers[0]])[0]; reason = `“${orig}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; }
     else if (warm) { reason = `Opening with “${cap(warm[0])}” spends your best real estate on a warm-up.`; tone = 'fix'; }
