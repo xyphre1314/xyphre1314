@@ -644,6 +644,7 @@ body.typing .tw-tools{ opacity:0!important; }
 .hook-reason{ margin-top:10px; padding:14px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:var(--t-13); color:var(--text-2); animation:rise var(--d-spring) var(--ease-out) both; }
 .force-dark .hook-reason,:root[data-theme="dark"] .hook-reason:not(.force-light .hook-reason){ background:var(--surface-2); }
 .hook-reason b{ color:var(--text-1); font-weight:600; }
+
 /* Round 25: settings, all drafts, coming soon */
 .rr-av{ width:32px; height:32px; flex:none; }
 .rr-sep{ height:1px; background:var(--border); margin:6px 0 2px; }
@@ -2279,6 +2280,44 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 }
 @media (hover:none){ .desk-only{ display:none !important; } }
 @media (hover:hover){ .touch-only{ display:none !important; } }
+
+/* Round 25: the top bar fits a 360px phone: compact checks badge, tighter platform buttons */
+.checks-pill .cp-i{ display:none; }
+@media (max-width:560px){ .checks-pill .cp-t{ display:none; } .checks-pill .cp-i{ display:inline-flex; margin-right:3px; } .checks-pill{ padding:0 7px; gap:0; } .c-top .plats .plat{ min-width:32px; width:32px; } .c-top{ gap:4px; } }
+/* Round 25: phone fixes from the mobile review */
+@media (max-width:560px){
+  .c-top .pv-tog, .c-top .fm-tog{ display:none; } .c-top .btn.primary{ flex:none; } .c-top .plats{ flex-shrink:1; min-width:0; }
+  .c-top .status .txt{ display:none; }
+  #idea-seg{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%; } #idea-seg button{ justify-content:center; padding:0 4px; }
+  .set-b .cx-row{ flex-wrap:wrap; } .set-b .cx-row > div{ flex:1 1 100%; }
+  .set-b .rest-days{ width:100%; } .set-b .rest-days button{ flex:1; height:40px; }
+  .vt-opt{ padding:18px 18px; } .vt-opt.shown .vt-t{ padding-right:56px; } .vt-opt .vt-c{ position:absolute; top:14px; right:16px; font-size:12px; }
+  .ra-h b{ white-space:nowrap; } .ra-t{ max-height:4.6em; } .ra [data-ra="rate"]{ min-width:40px; }
+  .inbox-row .acts .btn[data-iact="expand"], .inbox-row .acts .btn[data-iact="archive"]{ display:none; }
+}
+#idea-seg .sl{ display:none; } @media (max-width:560px){ #idea-seg .ll{ display:none; } #idea-seg .sl{ display:inline; } }
+.vt-t{ text-wrap:pretty; }
+@media (max-width:760px){
+  body:has(.live-pill) .ra{ bottom:calc(146px + env(safe-area-inset-bottom,0px)); }
+  body:has(.ra) #toasts{ bottom:auto; top:calc(14px + env(safe-area-inset-top,0px)); }
+  body:has(.live-pill) .page, body:has(.live-pill) .editor{ padding-bottom:calc(200px + env(safe-area-inset-bottom,0px)); }
+  body:has(.ra) .page, body:has(.ra) .editor{ padding-bottom:calc(320px + env(safe-area-inset-bottom,0px)); }
+  .starters-h{ flex-direction:column; align-items:flex-start; gap:8px; } .starters-h > span:last-child{ max-width:100%; overflow-x:auto; scrollbar-width:none; }
+  .tw-extra .hook-reason{ margin-left:-40px; }
+  .hkf{ grid-template-columns:1fr; gap:2px; }
+  .modal-h p{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .c-top{ padding-top:env(safe-area-inset-top,0px); height:calc(var(--top-h) + env(safe-area-inset-top,0px)); }
+  body .page{ padding-top:calc(24px + env(safe-area-inset-top,0px)); }
+}
+@media (pointer:coarse){
+  .input, textarea.input, select.input, .cmdk-in input{ font-size:16px; }
+  .seg button, .chip{ min-height:40px; height:auto; }
+  .menu .mi{ min-height:44px; font-size:15px; }
+  .hint-n{ width:40px; height:40px; margin:-9px -9px -9px 0; }
+  .checks-pill, #q-why, .dev-note summary, .hint-k{ position:relative; } .checks-pill::after, #q-why::after, .dev-note summary::after{ content:""; position:absolute; inset:-10px -4px; }
+  .tabbar a, .tabbar button{ font-size:12px; } .hint-k{ font-size:11px; }
+}
+.card.soon .pill{ box-shadow:none; background:var(--surface-2); }
 </style>
 </head>
 <body>
@@ -3262,7 +3301,7 @@ function hl(s, marks) { const set = new Set(marks); return [...s].map((ch, i) =>
 function openPalette(initial = '') {
   if (MODALS.some(m => m.el.classList.contains('cmdk'))) return;
   const cmds = paletteCommands(); let active = 0, shown = [];
-  const m = modal(`<div class="cmdk-in">${ic('search')}<input id="cmdk-q" autofocus placeholder="Jump somewhere, or start typing an idea…" aria-label="Search commands" autocomplete="off" spellcheck="false" value="${esc(initial)}">${kbd('Esc')}</div><div class="cmdk-list" role="listbox" id="cmdk-list"></div><div class="cmdk-f"><span>${kbd('↑', '↓')} move</span><span>${kbd('↵')} run</span><span style="margin-left:auto">${ic('riff', 'xs')} Hookworthy</span></div>`, { box: 'cmdk', label: 'Command palette' });
+  const m = modal(`<div class="cmdk-in">${ic('search')}<input id="cmdk-q" autofocus placeholder="${COARSE ? 'Search, or jot an idea' : 'Jump somewhere, or start typing an idea…'}" aria-label="Search commands" autocomplete="off" spellcheck="false" value="${esc(initial)}">${COARSE ? '<button class="btn ghost sm cmdk-x" data-close>Cancel</button>' : kbd('Esc')}</div><div class="cmdk-list" role="listbox" id="cmdk-list"></div><div class="cmdk-f"><span>${kbd('↑', '↓')} move</span><span>${kbd('↵')} run</span><span style="margin-left:auto">${ic('riff', 'xs')} Hookworthy</span></div>`, { box: 'cmdk', label: 'Command palette' });
   const inp = $('#cmdk-q', m.el), list = $('#cmdk-list', m.el);
   function draw() {
     const q = inp.value.trim();
@@ -4785,7 +4824,7 @@ function preflight() {
   /* cringe check: lines that read like bait or a press release on every platform */
   CRINGE.forEach((c, i) => { const m = all.match(c.re); if (m) out.push({ k: 'cr' + i, msg: c.msg.replace('$0', m[0].trim()), why: c.why, ...(c.cut ? { fix: 'cr' + i, fixL: 'Cut it' } : {}) }); });
   /* said it before: close to something you already posted */
-  const old = saidBefore(tws[0].text); if (old) out.push({ k: 'said', msg: `You posted something close to this ${agoDays(old.days)}.`, why: `“${clip(old.text, 70)}”${old.views ? ` got ${fmtN(old.views)} views` : ''}. Rerunning is fine; a new first line makes it read fresh.` });
+  const old = saidBefore(tws[0].text); if (old) out.push({ k: 'said', msg: `You posted something close to this ${agoDays(old.days)}.`, why: `“${clip(old.text, 70).replace(/[.!?]+$/, '')}”${old.views ? ` got ${fmtN(old.views)} views` : ''}. Rerunning is fine; a new first line makes it read fresh.` });
   if (tws.some(t => /  +|[ \t]+$/m.test(t.text))) out.push({ k: 'space', msg: 'A few double spaces snuck in.', why: 'Invisible here, oddly wide in the feed.', fix: 'space', fixL: 'Tidy up' });
   return out;
 }
@@ -4810,7 +4849,7 @@ function checksHTML(list) {
 }
 function refreshChecks() {
   const b = $('#checks'); if (!b) return; const n = preflight().length;
-  b.hidden = !n; if (n) { b.innerHTML = `${n}<span class="cp-l"> thing${n > 1 ? 's' : ''}</span> to check`; b.setAttribute('aria-label', `${n} thing${n > 1 ? 's' : ''} to check before posting`); }
+  b.hidden = !n; if (n) { b.innerHTML = `<span class="cp-i">${ic('target', 'xs')}</span>${n}<span class="cp-l"> thing${n > 1 ? 's' : ''}</span><span class="cp-t"> to check</span>`; b.setAttribute('aria-label', `${n} thing${n > 1 ? 's' : ''} to check before posting`); }
 }
 function openChecks() {
   const m = modal(`${modalHead('Before you post', 'The small stuff people only notice once it’s live.')}<div class="modal-b" id="pf-b">${checksHTML(preflight())}</div><div class="modal-f"><button class="btn" data-close>Done</button><button class="btn primary" id="pf-go">${ic('clock', 'sm')} Schedule</button></div>`, { label: 'Before you post' });
@@ -4859,15 +4898,15 @@ function openSchedule() {
     <div style="display:grid;gap:8px"><span class="label">${TIMES.src === 'you' ? 'Best times for you' : 'Good times to post'}</span>
       <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" data-si="${i}"><span class="radio"></span><span><b>${slotLabel(s.day, s.time)}</b><small>${esc(s.reason)}</small></span>${i === pickI ? '<span class="pill accent">Best</span>' : i === 0 && pickI ? '<span class="pill">Soonest</span>' : ''}</button>`).join('')}
       <button class="stime" role="radio" aria-checked="false" data-si="custom"><span class="radio"></span><span><b>Pick a time</b><small>Choose a date and time</small></span></button></div>
-      ${hintHTML('schedule', { cls: 'in-modal' })}
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${dayKey(Date.now() + DAY)}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="09:00" aria-label="Time"></div>
+      ${hintHTML('schedule', { cls: 'in-modal' })}
     </div>
   </div>
   <div class="modal-f"><button class="btn" id="s-queue" data-tip="The next free slot in your week, best time or not">Next open slot${(() => { const n = nextSlots(1, false)[0]; return n ? ` · ${slotLabel(n.day, n.time).replace(/^.* · /, n.day === dayKey(Date.now()) ? 'today ' : n.day === dayKey(Date.now() + DAY) ? 'tomorrow ' : DOW[fromKey(n.day).getDay()] + ' ')}` : ''; })()}</button><button class="btn primary" id="s-go">${ic('clock', 'sm')} <span id="s-go-l">Schedule for ${best[pickI] ? slotLabel(best[pickI].day, best[pickI].time) : 'later'}</span></button></div>`, { label: 'Schedule' });
   const el = m.el;
   el.addEventListener('click', e => {
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
-    const s = e.target.closest('.stime'); if (s) { $$('.stime', el).forEach(x => x.setAttribute('aria-checked', x === s)); pickI = s.dataset.si; $('#custom-t', el).hidden = pickI !== 'custom'; $('#s-go-l', el).textContent = pickI === 'custom' ? 'Schedule' : `Schedule for ${slotLabel(best[pickI].day, best[pickI].time)}`; }
+    const s = e.target.closest('.stime'); if (s) { $$('.stime', el).forEach(x => x.setAttribute('aria-checked', x === s)); pickI = s.dataset.si; $('#custom-t', el).hidden = pickI !== 'custom'; const cl = () => { const d = $('#sd', el).value, t = $('#st', el).value; return d && t ? `Schedule for ${slotLabel(d, t)}` : 'Schedule'; }; $('#s-go-l', el).textContent = pickI === 'custom' ? cl() : `Schedule for ${slotLabel(best[pickI].day, best[pickI].time)}`; if (pickI === 'custom') { $('#sd', el).oninput = $('#st', el).oninput = () => { $('#s-go-l', el).textContent = cl(); }; } }
     const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); }
   });
   $$('.stime', el).forEach(r => r.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const all = $$('.stime', el); const i = all.indexOf(r); const nx = all[(i + (e.key === 'ArrowDown' ? 1 : -1) + all.length) % all.length]; nx.focus(); nx.click(); } }));
@@ -5523,7 +5562,7 @@ function raPost() {
       if (a === 'rate') { RA.rate = RA.rate === 1 ? 1.2 : RA.rate === 1.2 ? .9 : 1; b.textContent = `${RA.rate}×`; const at = RA.i; speechSynthesis.cancel(); RA.i = at; setTimeout(raPost, 60); }
       if (a === 'again') { speechSynthesis.cancel(); setTimeout(raPost, 60); } }); }
   let k = 0; const words = t.split(/(\s+)/).map(w => { const s = k; k += w.length; return /\S/.test(w) ? `<span class="w" data-s="${s}">${esc(w)}</span>` : esc(w); }).join('');
-  el.innerHTML = `<div class="ra-h"><span class="ra-eq" aria-hidden="true"><i></i><i></i><i></i></span><b>Reading${RA.posts.length > 1 ? ` post ${RA.i + 1} of ${RA.posts.length}` : ''}</b><span class="grow"></span><button class="btn ghost sm" data-ra="rate" aria-label="Speed">${RA.rate}×</button><button class="btn ghost icon-only sm" data-ra="again" aria-label="Start this post again" data-tip="Again">${ic('undo', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="pause" aria-label="Pause">${ic('pause', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="stop" aria-label="Stop" data-tip="Stop (Esc)">${ic('x', 'sm')}</button></div><p class="ra-t">${words}</p><p class="ra-tip">If you trip over a line, so will your readers.</p>`;
+  el.innerHTML = `<div class="ra-h"><span class="ra-eq" aria-hidden="true"><i></i><i></i><i></i></span><b>${RA.posts.length > 1 ? `Post ${RA.i + 1} of ${RA.posts.length}` : 'Reading'}</b><span class="grow"></span><button class="btn ghost sm" data-ra="rate" aria-label="Speed">${RA.rate}×</button><button class="btn ghost icon-only sm" data-ra="again" aria-label="Start this post again" data-tip="Again">${ic('undo', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="pause" aria-label="Pause">${ic('pause', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="stop" aria-label="Stop" data-tip="Stop (Esc)">${ic('x', 'sm')}</button></div><p class="ra-t">${words}</p><p class="ra-tip">If you trip over a line, so will your readers.</p>`;
   /* long posts go in sentence-sized pieces: some voices stop after ~15 seconds of one utterance */
   RA.chunks = []; const re = /[^.!?\n]+[.!?]*\s*|\n+/g; let m, buf = '', bs = 0; while ((m = re.exec(t))) { if (!buf) bs = m.index; buf += m[0]; if (buf.length > 180 || /\n/.test(m[0])) { RA.chunks.push({ s: bs, t: buf }); buf = ''; } } if (buf.trim()) RA.chunks.push({ s: bs, t: buf });
   RA.ci = 0; raChunk();
@@ -5565,7 +5604,7 @@ function openHookVote() {
     const sh = $('#hv-share', el); if (sh) sh.onclick = () => navigator.share({ title: 'Which first line would stop you scrolling?', url: V.url }).catch(() => {});
   };
   el.addEventListener('click', e => { const u = e.target.closest('[data-use]'); if (!u) return; const line = V.options[+u.dataset.use]; const tw = S.draft.tweets[0], rest = tw.text.includes('\n') ? tw.text.slice(tw.text.indexOf('\n')) : ''; tw.text = line + rest; save(); m.close(); if (CURRENT === 'write') route(); SFX.play('swap'); toast(`Using line ${'ABC'[+u.dataset.use]}${V.total ? `, picked by ${Math.round(V.counts[+u.dataset.use] / V.total * 100)}% of your friends` : ''}.`, { icon: 'hook', tone: 'accent' }); });
-  drawAsk(); setTimeout(() => { const t = $$('[data-hv]', el)[first ? 1 : 0]; t && t.focus(); }, 60);
+  drawAsk(); if (!COARSE) setTimeout(() => { const t = $$('[data-hv]', el)[first ? 1 : 0]; t && t.focus(); }, 60);
 }
 /* the page a friend opens: tap a line, see how everyone voted */
 async function renderVote(id) {
@@ -5811,6 +5850,7 @@ function composerClick(e) {
       { label: 'Post now', icon: 'send', kbd: [MOD, SHIFT, '↵'], hint: `${S.settings.undoSecs ?? 8}s to undo`, run: () => publishNow() },
       { label: 'Add to queue', icon: 'cal', hint: nextSlots(1, false)[0] ? slotLabel(nextSlots(1, false)[0].day, nextSlots(1, false)[0].time) : '', run: () => { const p = draftProblems(); if (p) { toast(esc(p), { tone: 'err', icon: 'zapoff' }); return; } const s = nextSlots(1, false)[0]; commitDraft(s); route(); toast(`Queued for ${slotLabel(s.day, s.time)}.`, { icon: 'cal', tone: 'accent', action: 'View', onAction: () => go('queue') }); } },
       { label: 'Schedule…', icon: 'clock', kbd: [MOD, '↵'], run: openSchedule }, '-',
+      ...(innerWidth <= 560 ? [{ label: S.preview.on ? 'Hide preview' : 'Show preview', icon: 'panel', run: togglePreview }] : []),
       ...(S.platforms.x ? [{ label: 'X format', icon: 'x', hint: xLong() ? 'Long post' : xPaid() ? 'Thread' : 'Thread · free X', run: () => setTimeout(() => openXFormat(el), 0) }] : []),
       { label: S.draft.reviewId ? 'Update review link' : 'Share for feedback', icon: 'link', hint: LLM.server && LLM.server.review ? 'Link + comments' : 'Copy as text', run: shareReview },
       { label: 'LinkedIn carousel (PDF)', icon: 'layers', run: openCarousel },
@@ -6754,7 +6794,7 @@ ROUTES.ideas = () => {
       </div>
     </div>
     <div id="angles"></div>
-    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'Post ideas'], ['replies', 'Reply radar'], ['radar', 'In your niche'], ['inbox', `Saved · ${S.ideas.length}`]].map(([k, l]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}">${l}</button>`).join('')}</div></div>
+    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'Post ideas', 'Ideas'], ['replies', 'Reply radar', 'Radar'], ['radar', 'In your niche', 'Niche'], ['inbox', `Saved · ${S.ideas.length}`, `Saved ${S.ideas.length}`]].map(([k, l, sl]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}" aria-label="${esc(l)}"><span class="ll">${l}</span><span class="sl">${sl}</span></button>`).join('')}</div></div>
     <div id="tab-you" ${(UI.ideaTab || 'you') === 'you' ? '' : 'hidden'}>
     <section class="sec"><div class="sec-h"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><h2 class="h2">Post ideas for you</h2><span class="pill">${esc(S.user.niche)}</span></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="seg" id="eng-seg" role="tablist" aria-label="Filter ideas">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity'].map(k => `<button role="tab" data-ek="${k}" aria-selected="${ENGINE.kind === k}">${k}</button>`).join('')}</div><button class="btn sm needs-ai" data-iact="claude" data-tip="Angles from your notes and your best posts">${ic('spark', 'sm')} Ask Claude</button><button class="btn sm" data-iact="shuffle" data-tip="Shuffle" data-kbd="R">${ic('shuffle', 'sm')}</button></div></div>
