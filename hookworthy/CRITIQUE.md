@@ -421,3 +421,18 @@ Method: an automated sweep of every screen and modal in light/dark × desktop/ph
 - **Personal bests.** When a post beats everything you've posted in the last 60 days, once and only once: a gold burst, a rising chime, and "Your best since Mar 3" (or "Your best post yet").
 - Also: the schedule sheet badges and preselects the strongest slot, not just the soonest; the rerun card shows likes when there are no view counts.
 - Tested: 49 server tests; browser end-to-end on desktop and phone for each item above, plus every earlier suite.
+
+## Round 23: honest by default, and three new helpers
+
+- **No more made-up numbers.**
+  - The post preview showed likes, replies and views "projected from your last 90 days" that came from a formula. It now shows what a typical post of yours gets (times your tuned score's multiplier), and says so; with no history it shows no numbers and says why.
+  - The late-night prompt claimed "your posts after midnight got a third of the replies"; it now says what's true for everyone.
+  - The "you posted something close to this" check no longer compares new users against sample posts.
+- **No fake paywall.** Nothing is charged yet, so the "5 of 5 rewrites left today" counter, the "Go Pro" card and the upgrade nudges are off behind one switch (`BILLING`) that brings them all back when checkout is real. The pricing page says it's a preview.
+- **Nothing pretends to post.** Without a connected account, "Post now" says "Marked as posted. Nothing went out from here" with a Copy button, instead of "Posted to X, Threads and Bluesky". Threads and Bluesky say "(you post this one by hand)".
+- **Removed switches that did nothing.** "Follow-up reply" and "Auto-repost" were on by default in the Queue and the Schedule sheet, but nothing ever ran them. Removed, along with the FAQ line and tip that promised them.
+- **A real bug.** Sample and pasted replies in the reply desk opened X's compose box without the reply link, which would have posted the reply as a standalone post. They now copy the text instead ("Copy reply").
+- **Your calendar.** Link the secret iCal address from Google, Outlook or Apple (on your server), or upload an .ics file (works anywhere, including the claude.ai preview). Best times you're in a meeting for are skipped, with a free time next to them offered instead ("Free for the first hour, next to your 8:40 AM best time"). The queue shades busy slots with the meeting name (or just "Busy"), and dropping a post into one offers the nearest free time. The parser handles time zones, daylight saving, weekly and daily repeats, exceptions, moved meetings, cancelled and "free" events.
+- **Read it aloud.** A speaker button on every post reads the thread back, word by word highlighted, with speed, again, pause and Esc to stop. Long posts are read in sentence-sized pieces so voices don't cut out.
+- **Hook vote.** "Ask friends which line wins" in the hook panel: two or three first lines on a link. Friends see the lines in their own random order (so the first doesn't win by being first), tap one, and see the results; you watch the votes come in and "Use this" puts the winner into your draft.
+- Tested: 52 server tests (calendar parsing across time zones and DST, link safety, votes); browser end-to-end on desktop, phone and offline; every earlier suite.

@@ -25,6 +25,8 @@ const TF = await import('./lib/typefully.mjs');
 const Q = await import('./lib/scheduler.mjs');
 const E = await import('./lib/extras.mjs');
 const BO = await import('./lib/breakout.mjs');
+const CAL = await import('./lib/calendar.mjs');
+const VO = await import('./lib/votes.mjs');
 
 const ROOT = normalize(join(here, '..'));
 const PORT = +process.env.PORT || 8787, HOST = process.env.HOST || '127.0.0.1';
@@ -41,7 +43,7 @@ const fail = (res, e) => send(res, e.status || 500, { error: e.message || 'Somet
 async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []; for await (const c of req) { n += c.length; if (n > limit) throw Object.assign(new Error('Request too large'), { status: 413 }); chunks.push(c); } try { return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}'); } catch { throw Object.assign(new Error('Send JSON'), { status: 400 }); } }
 const authed = req => !TOKEN || req.headers.authorization === `Bearer ${TOKEN}` || (req.headers.cookie || '').split(/;\s*/).includes(`hw=${TOKEN}`);
 
-export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), calendar: CAL.connected(), vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
 
 /* drafts for a breakout's first replies, in your voice (only when Claude is on) */
 export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => (await AI.complete({ ...core.prompts.replies({ post, replies, voice }), json: true })).data : null;
@@ -51,7 +53,7 @@ export async function handle(req, res) {
   try {
     if (p === '/api/health') return send(res, 200, { ...health(), locked: !!TOKEN && !authed(req) });
     if (p === '/login') { if (!TOKEN || url.searchParams.get('token') !== TOKEN) return send(res, 401, { error: 'Wrong or missing token' }); res.writeHead(302, { 'set-cookie': `hw=${TOKEN}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${PUBLIC_URL.startsWith('https') ? '; Secure' : ''}`, location: '/#write' }); return res.end(); }
-    if (p.startsWith('/api/') && !/^\/api\/review\/[\w-]{6,20}(\/comments)?$/.test(p) && !authed(req)) return send(res, 401, { error: 'Missing HOOKWORTHY_TOKEN', code: 'auth' });
+    if (p.startsWith('/api/') && !/^\/api\/review\/[\w-]{6,20}(\/comments)?$/.test(p) && !/^\/api\/vote\/[\w-]{8,20}$/.test(p) && !authed(req)) return send(res, 401, { error: 'Missing HOOKWORTHY_TOKEN', code: 'auth' });
 
     /* Claude */
     if (p === '/api/ai' && req.method === 'POST') {
@@ -74,6 +76,14 @@ export async function handle(req, res) {
     if (p === '/api/x/me') return send(res, 200, await X.refreshTier());
     if (p === '/api/x/replies') return send(res, 200, { replies: await X.replies(url.searchParams.get('id')) });
     if (p === '/api/x/reply' && req.method === 'POST') { const b = await body(req); if (!String(b.text || '').trim()) return send(res, 400, { error: 'Write the reply first' }); return send(res, 200, await X.reply(b.inReplyTo, String(b.text).slice(0, 1000))); }
+
+    /* hook vote: a public link where friends pick the first line that stops them */
+    if (p === '/api/vote' && req.method === 'POST') { const b = await body(req, 16 * 1024); const v = VO.createVote(b); return send(res, 200, { ...v, url: `${PUBLIC_URL}/v/${v.id}` }); }
+    const vm = p.match(/^\/api\/vote\/([\w-]{8,20})$/); if (vm) { if (req.method === 'POST') { if (!allow(ip, .5)) return send(res, 429, { error: 'Slow down a little' }); return send(res, 200, VO.castVote(vm[1], await body(req, 4 * 1024))); } return send(res, 200, { ...VO.getVote(vm[1]), mine: VO.mineFor(vm[1], url.searchParams.get('voter')) }); }
+
+    /* calendar: busy times so scheduling avoids your meetings */
+    if (p === '/api/calendar' && req.method === 'GET') return send(res, 200, await CAL.busy());
+    if (p === '/api/calendar' && req.method === 'POST') { const b = await body(req, 8 * 1024); return send(res, 200, await CAL.setLink(b.url)); }
 
     /* breakout alerts */
     if (p === '/api/breakout' && req.method === 'GET') return send(res, 200, BO.status());
@@ -111,6 +121,7 @@ export async function handle(req, res) {
     if (p === '/auth/x/callback') { const h = await X.authCallback(url.searchParams.get('code'), url.searchParams.get('state')); res.writeHead(302, { location: `/#write?connected=x&as=${encodeURIComponent(h)}` }); return res.end(); }
     if (p === '/auth/linkedin/start') { if (!LI.liConfigured()) return send(res, 503, { error: 'Set LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET' }); res.writeHead(302, { location: LI.authStart(`${PUBLIC_URL}/auth/linkedin/callback`) }); return res.end(); }
     if (p === '/auth/linkedin/callback') { await LI.authCallback(url.searchParams.get('code'), url.searchParams.get('state')); res.writeHead(302, { location: '/#write' }); return res.end(); }
+    if ((m = p.match(/^\/v\/([\w-]{8,20})$/))) { res.writeHead(302, { location: `/?vote=${m[1]}` }); return res.end(); }
     if ((m = p.match(/^\/r\/([\w-]{6,20})$/))) { res.writeHead(302, { location: `/?review=${m[1]}` }); return res.end(); }
     if (p.startsWith('/api/')) return send(res, 404, { error: 'No such endpoint' });
 

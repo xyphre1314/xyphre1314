@@ -702,6 +702,73 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return { score: clamp(Math.round(5 + pct * 94), 5, 99), x: +Math.exp(lp - model.mid).toFixed(1), helps, hurts, tryNext, trust: model.trust, n: model.n };
   }
 
+  /* ---------------- calendar: when you're busy, from an .ics feed or file ----------------
+     Enough of RFC 5545 for real calendars: folded lines, TZID and UTC times, all-day events, DURATION,
+     daily/weekly/monthly RRULEs with INTERVAL, BYDAY, COUNT and UNTIL, EXDATE, moved instances
+     (RECURRENCE-ID), cancelled and "free" events. Returns busy intervals in [from, to] as epoch ms. */
+  function tzOffset(ms, tz) { try { const f = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }); const p = {}; f.formatToParts(new Date(ms)).forEach(x => { p[x.type] = +x.value; }); return Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute, p.second) - ms; } catch (e) { return null; } }
+  function wallToMs(w, tz) {
+    if (w.utc) return Date.UTC(w.y, w.mo, w.d, w.h, w.mi, w.s);
+    if (tz) { const g = Date.UTC(w.y, w.mo, w.d, w.h, w.mi, w.s); const o1 = tzOffset(g, tz); if (o1 != null) { const o2 = tzOffset(g - o1, tz); return g - (o2 != null ? o2 : o1); } }
+    return new Date(w.y, w.mo, w.d, w.h, w.mi, w.s).getTime();
+  }
+  const icsWall = v => { const m = String(v).match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?/); if (!m) return null; return { y: +m[1], mo: +m[2] - 1, d: +m[3], h: +(m[4] || 0), mi: +(m[5] || 0), s: +(m[6] || 0), utc: !!m[7], date: !m[4] }; };
+  const durMs = v => { const m = String(v).match(/^([+-])?P(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/); if (!m) return 0; return (m[1] === '-' ? -1 : 1) * ((+m[2] || 0) * 7 * 864e5 + (+m[3] || 0) * 864e5 + (+m[4] || 0) * 36e5 + (+m[5] || 0) * 6e4 + (+m[6] || 0) * 1e3); };
+  const icsText = v => String(v || '').replace(/\\n/gi, ' ').replace(/\\([,;\\])/g, '$1').trim();
+  function parseICS(text, { from = Date.now(), to = Date.now() + 14 * 864e5, max = 2000 } = {}) {
+    const lines = String(text || '').replace(/\r\n?/g, '\n').replace(/\n[ \t]/g, '').split('\n');
+    const events = []; let ev = null;
+    for (const line of lines) {
+      if (line === 'BEGIN:VEVENT') { ev = { ex: [] }; continue; }
+      if (line === 'END:VEVENT') { if (ev) events.push(ev); ev = null; continue; }
+      if (!ev) continue;
+      const i = line.indexOf(':'); if (i < 0) continue; const head = line.slice(0, i), val = line.slice(i + 1); const [name, ...ps] = head.split(';'); const prm = {}; ps.forEach(x => { const [k, v] = x.split('='); prm[k.toUpperCase()] = (v || '').replace(/^"|"$/g, ''); });
+      const N = name.toUpperCase();
+      if (N === 'DTSTART') { ev.start = icsWall(val); ev.tz = prm.TZID; }
+      else if (N === 'DTEND') { ev.end = icsWall(val); ev.etz = prm.TZID; }
+      else if (N === 'DURATION') ev.dur = durMs(val);
+      else if (N === 'SUMMARY') ev.title = icsText(val).slice(0, 120);
+      else if (N === 'RRULE') ev.rrule = Object.fromEntries(val.split(';').map(x => x.split('=')).map(([k, v]) => [k.toUpperCase(), v]));
+      else if (N === 'EXDATE') val.split(',').forEach(x => { const w = icsWall(x); if (w) ev.ex.push(wallToMs(w, prm.TZID)); });
+      else if (N === 'RECURRENCE-ID') { ev.rid = icsWall(val); ev.rtz = prm.TZID; }
+      else if (N === 'UID') ev.uid = val;
+      else if (N === 'STATUS') ev.status = val.toUpperCase();
+      else if (N === 'TRANSP') ev.transp = val.toUpperCase();
+    }
+    /* a moved or cancelled single instance replaces its slot in the series */
+    const moved = {}; events.filter(e => e.rid && e.uid).forEach(e => { (moved[e.uid] = moved[e.uid] || []).push(wallToMs(e.rid, e.rtz || e.tz)); });
+    const out = [];
+    for (const e of events) {
+      if (!e.start || e.status === 'CANCELLED') continue;
+      const allDay = e.start.date; if (e.transp ? e.transp === 'TRANSPARENT' : allDay) continue;
+      const s0 = wallToMs(e.start, e.tz), len = e.end ? wallToMs(e.end, e.etz || e.tz) - s0 : e.dur || (allDay ? 864e5 : 0); if (len <= 0) continue;
+      const skip = new Set([...e.ex, ...(!e.rid && e.uid && moved[e.uid] ? moved[e.uid] : [])]);
+      const push = ms => { if (!skip.has(ms) && ms < to && ms + len > from) out.push({ start: ms, end: ms + len, title: e.title || 'Busy' }); };
+      if (!e.rrule || e.rid) { push(s0); continue; }
+      const R = e.rrule, freq = R.FREQ, iv = Math.max(1, +R.INTERVAL || 1), count = +R.COUNT || Infinity, untilW = R.UNTIL ? icsWall(R.UNTIL) : null, until = untilW ? wallToMs(untilW, untilW.utc ? null : e.tz) : Infinity;
+      const DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'], byday = R.BYDAY ? R.BYDAY.split(',').map(d => DAYS.indexOf(d.replace(/^[+-]?\d+/, ''))).filter(d => d >= 0) : null;
+      const w = { ...e.start }; let n = 0, guard = 0;
+      const at = (y, mo, d) => wallToMs({ ...w, y, mo, d }, e.tz);
+      if (freq === 'WEEKLY') {
+        const days = byday && byday.length ? byday.sort((a, b) => a - b) : [new Date(Date.UTC(w.y, w.mo, w.d)).getUTCDay()];
+        const base = Date.UTC(w.y, w.mo, w.d), wk0 = base - new Date(base).getUTCDay() * 864e5;
+        for (let k = 0; guard++ < max; k += iv) { let stop = false;
+          for (const dw of days) { const dd = new Date(wk0 + (k * 7 + dw) * 864e5); const ms = at(dd.getUTCFullYear(), dd.getUTCMonth(), dd.getUTCDate()); if (ms < s0) continue; if (ms > until || n >= count || ms >= to) { stop = true; break; } n++; push(ms); }
+          if (stop) break; }
+      } else if (freq === 'DAILY' || freq === 'MONTHLY' || freq === 'YEARLY') {
+        for (let k = 0; guard++ < max; k += iv) {
+          const dd = freq === 'DAILY' ? new Date(Date.UTC(w.y, w.mo, w.d + k)) : freq === 'MONTHLY' ? new Date(Date.UTC(w.y, w.mo + k, w.d)) : new Date(Date.UTC(w.y + k, w.mo, w.d));
+          if (freq !== 'DAILY' && dd.getUTCDate() !== w.d) continue;
+          const ms = at(dd.getUTCFullYear(), dd.getUTCMonth(), dd.getUTCDate()); if (ms > until || n >= count || ms >= to) break;
+          if (byday && freq === 'DAILY' && !byday.includes(dd.getUTCDay())) continue; n++; push(ms);
+        }
+      } else push(s0);
+    }
+    return out.sort((a, b) => a.start - b.start);
+  }
+  /* the first busy stretch that overlaps [ms, ms + mins] */
+  function busyAt(busy, ms, mins = 60) { return (busy || []).find(b => b.start < ms + mins * 6e4 && b.end > ms) || null; }
+
   /* pre-post rules shared with the server's /api/v1/check and the MCP server */
   const CRINGE = [
     { re: /\b(?:I['’]?m|I am|we['’]re|we are) (?:so |super |beyond )?(?:humbled|thrilled|excited|delighted|honou?red) to (?:announce|share)(?: that)?/i, msg: 'Opens like a press release.' },
@@ -721,5 +788,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
 
-  return { learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
+  return { parseICS, busyAt, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost };
 });

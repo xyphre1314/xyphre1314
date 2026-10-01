@@ -644,6 +644,47 @@ body.typing .tw-tools{ opacity:0!important; }
 .hook-reason{ margin-top:10px; padding:14px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:var(--t-13); color:var(--text-2); animation:rise var(--d-spring) var(--ease-out) both; }
 .force-dark .hook-reason,:root[data-theme="dark"] .hook-reason:not(.force-light .hook-reason){ background:var(--surface-2); }
 .hook-reason b{ color:var(--text-1); font-weight:600; }
+/* Round 23: calendar, read aloud, hook vote */
+.cal-set{ display:grid; gap:16px; }
+.cal-on{ display:flex; gap:10px; align-items:center; padding:12px; border-radius:12px; background:var(--accent-soft); } .cal-on > span{ display:grid; gap:2px; flex:1; min-width:0; } .cal-on small{ color:var(--text-2); font-size:12px; } .cal-on .icon{ color:var(--accent-text); }
+.cal-hide{ display:flex; gap:8px; align-items:center; font-size:var(--t-13); color:var(--text-2); } .cal-hide input{ accent-color:var(--accent); }
+.cal-way{ display:grid; gap:8px; } .cal-form{ display:flex; gap:8px; } .cal-form .input{ flex:1; min-width:0; }
+.cal-how summary{ cursor:pointer; font-size:var(--t-13); color:var(--text-2); } .cal-how ul{ margin:8px 0; padding-left:18px; display:grid; gap:6px; font-size:var(--t-13); color:var(--text-2); } .cal-how b{ color:var(--text-1); }
+.cal-drop{ min-height:0; padding:16px; }
+.cal-note{ display:flex; gap:8px; align-items:center; margin:0; font-size:var(--t-13); color:var(--text-2); }
+.cal-ask{ display:flex; gap:8px; align-items:center; width:100%; text-align:left; padding:10px 12px; border-radius:10px; font-size:var(--t-13); color:var(--text-2); box-shadow:0 0 0 1px dashed var(--border); border:1px dashed var(--border-strong); transition:background var(--d-micro),color var(--d-micro); } .cal-ask span{ flex:1; } .cal-ask:hover{ background:var(--surface-2); color:var(--text-1); }
+.slot.busy{ background-image:repeating-linear-gradient(-45deg,transparent 0 6px,color-mix(in srgb,var(--text-3) 9%,transparent) 6px 7px); }
+.slot .bz{ position:absolute; left:6px; top:3px; max-width:calc(100% - 40px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:500 10px/1.4 var(--font-ui); color:var(--text-3); }
+.cal.dragging .slot.busy .sx{ display:none !important; }
+.ra{ position:fixed; z-index:945; left:50%; bottom:calc(84px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); width:min(560px,calc(100vw - 32px)); padding:12px 14px 14px; border-radius:18px; background:var(--bg-elev); box-shadow:0 0 0 1px var(--border-strong),0 20px 44px -16px rgba(20,10,40,.4); animation:lp-in 360ms var(--spring-snap) both; }
+.ra.out{ animation:lp-out 220ms var(--ease-out) both; }
+.ra-h{ display:flex; gap:6px; align-items:center; font-size:var(--t-13); } .ra-h b{ font-weight:600; }
+.ra-eq{ display:inline-flex; gap:2px; align-items:flex-end; height:12px; margin-right:4px; } .ra-eq i{ width:3px; border-radius:2px; background:var(--accent); animation:ra-eq 900ms ease-in-out infinite; } .ra-eq i:nth-child(2){ animation-delay:-.3s; } .ra-eq i:nth-child(3){ animation-delay:-.6s; }
+.ra.fin .ra-eq i{ animation:none; height:3px; }
+@keyframes ra-eq{ 0%,100%{ height:3px; } 50%{ height:12px; } }
+.ra-t{ margin:10px 0 0; max-height:7.5em; overflow:auto; font:400 18px/1.5 var(--font-display); color:var(--text-3); white-space:pre-wrap; scroll-behavior:smooth; }
+.ra-t .w{ transition:color 160ms,background 160ms; border-radius:4px; } .ra-t .w.done{ color:var(--text-1); } .ra-t .w.now{ color:var(--accent-ink); background:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+.ra-tip{ margin:8px 0 0; font-size:12px; color:var(--text-3); }
+.hk-acts{ display:flex; gap:8px; flex-wrap:wrap; }
+.hv-b{ display:grid; gap:12px; }
+.hv-opt{ display:grid; grid-template-columns:28px minmax(0,1fr); gap:10px; align-items:start; } .hv-opt .input{ resize:vertical; }
+.hv-n{ width:28px; height:28px; border-radius:50%; display:grid; place-items:center; font:600 12px/1 var(--font-mono); background:var(--surface-2); color:var(--text-2); margin-top:6px; }
+.hv-link{ display:flex; gap:6px; } .hv-link .input{ flex:1; min-width:0; font:500 13px var(--font-mono); }
+.hv-res{ display:grid; gap:8px; }
+.hv-row{ position:relative; display:grid; grid-template-columns:28px minmax(0,1fr) auto auto; gap:10px; align-items:center; padding:10px 12px; border-radius:12px; background:var(--surface-2); overflow:hidden; } .hv-row .hv-n{ margin:0; background:var(--surface); position:relative; } .hv-row p{ margin:0; position:relative; font-size:var(--t-14); }
+.hv-bar{ position:absolute; inset:0 auto 0 0; width:var(--p); background:color-mix(in srgb,var(--accent) 22%,transparent); transition:width 700ms cubic-bezier(.2,.9,.25,1); }
+.hv-row.lead .hv-bar{ background:color-mix(in srgb,var(--accent) 38%,transparent); }
+.hv-c{ position:relative; font:600 13px/1 var(--font-mono); font-variant-numeric:tabular-nums; } .hv-row .btn{ position:relative; }
+.hv-note{ margin:0; font-size:12px; }
+.vt-list{ display:grid; gap:12px; margin-top:24px; }
+.vt-opt{ position:relative; overflow:hidden; display:flex; gap:12px; align-items:center; justify-content:space-between; width:100%; text-align:left; padding:20px 22px; border-radius:18px; background:var(--surface); box-shadow:0 0 0 1px var(--border-strong); transition:transform var(--d-micro),box-shadow var(--d-micro); }
+.vt-opt:hover{ transform:translateY(-1px); box-shadow:0 0 0 1.5px var(--accent); } .vt-opt:active{ transform:scale(.99); }
+.vt-t{ position:relative; font:400 22px/1.35 var(--font-display); color:var(--text-1); text-wrap:balance; }
+.vt-c{ position:relative; flex:none; font:600 13px/1 var(--font-mono); color:var(--text-2); }
+.vt-opt.mine{ box-shadow:0 0 0 2px var(--accent); } .vt-opt.mine .vt-c{ color:var(--accent-text); }
+.vt-foot{ margin-top:18px; font-size:13px; } .vt-foot a{ color:var(--accent-text); }
+@media (max-width:760px){ .ra{ bottom:calc(84px + env(safe-area-inset-bottom,0px)); } .vt-t{ font-size:19px; } .hv-row{ grid-template-columns:24px minmax(0,1fr) auto; } .hv-row .btn{ grid-column:2 / -1; justify-self:start; } }
+@media (prefers-reduced-motion:reduce){ .ra-eq i,.ra{ animation:none; } .hv-bar{ transition:none; } }
 /* Round 22: the details */
 /* hints: one useful line, like a good game's loading screen */
 .hint{ display:flex; align-items:baseline; gap:8px; margin:0; font-size:var(--t-13); line-height:1.45; color:var(--text-2); transition:opacity 180ms var(--ease-out),transform 180ms var(--ease-out); }
@@ -2502,6 +2543,12 @@ function sentences(t) { return (t.match(/[^.!?\n]+[.!?]*[”"’)]*\s*|\n+/g) ||
 /* hook score: a transparent heuristic grader (0-100) */
 /* hook score lives in core.js so the server and MCP grade the same way */
 const hookScore = HWCore.hookScore;
+/* what to expect, from your own posts: your median likes/replies/reposts/views × how this line scores for you */
+function pvEstimate(text) {
+  const H = HIST().filter(p => HWCore.eng(p) > 0); if (H.length < 8 || !String(text || '').trim()) return null;
+  const med = k => HWCore.median(H.map(p => p[k] || 0)), m = PHOOK(), me = m.ready ? HWCore.personalScore(text, m, { parts: S.draft.tweets.filter(t => t.text.trim()).length }) : null, x = me ? me.x : 1;
+  return { replies: med('replies') * x, reposts: med('reposts') * x, likes: med('likes') * x, views: med('views') * x, x, n: H.length, tuned: !!me };
+}
 function predict(score, text) {
   if (!text.trim()) return null;
   const views = 320 * Math.pow(1.042, score) * (1 + (hash(text) % 17) / 100);
@@ -3009,9 +3056,11 @@ function openAppearance(el) {
   ], { width: 240 });
 }
 
-/* AI quota: generous, never a wall */
-function aiLeft() { return S.plan !== 'free' ? Infinity : Math.max(0, S.ai.limit - S.ai.used); }
-function spendAI() { if (S.plan === 'free') S.ai.used++; save(); refreshPlanCard(); }
+/* plans: nothing is charged yet, so nothing is capped. Flip BILLING on when real checkout exists:
+   the daily rewrite count, the sidebar card and the upgrade nudges all come back with it. */
+const BILLING = false;
+function aiLeft() { return !BILLING || S.plan !== 'free' ? Infinity : Math.max(0, S.ai.limit - S.ai.used); }
+function spendAI() { if (BILLING && S.plan === 'free') S.ai.used++; save(); refreshPlanCard(); }
 function refreshPlanCard() {
   const c = $('.plan-card'); if (!c) return;
   const used = Math.min(S.ai.used, S.ai.limit);
@@ -3078,7 +3127,7 @@ function shell(active, inner) {
     ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts${S.drafts.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or bin">Tidy up</button>` : ''}</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}" title="${esc(clip((d.tweets[0] && d.tweets[0].text) || 'Untitled draft', 120))}${d.created ? ` · started ${agoLabel(d.created)}` : ''}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}</div>` : ''}
     <div class="spacer"></div>
     <button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="Where the AI comes from">${aiBadgeInner()}</button>
-    ${S.plan === 'free' ? `<a class="side-plan plan-card" href="#upgrade" data-tip="Unlimited rewrites on Pro"><span class="pc-count">${S.ai.limit - used} of ${S.ai.limit} rewrites left today</span><span class="go">Go Pro</span></a>` : ''}
+    ${BILLING && S.plan === 'free' ? `<a class="side-plan plan-card" href="#upgrade" data-tip="Unlimited rewrites on Pro"><span class="pc-count">${S.ai.limit - used} of ${S.ai.limit} rewrites left today</span><span class="go">Go Pro</span></a>` : ''}
     <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.ws === 'me' ? S.user.name : S.workspaces[0].name)}</b><span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span></span>${ic('more', 'sm')}</button>
   </aside>
   <main class="main" id="main"><div class="view" id="view">${inner}</div></main>
@@ -3120,7 +3169,7 @@ const ACT = {
     { label: 'Your voice', icon: 'voice', run: () => go('voice') },
     { label: 'Bring your posts', icon: 'upload', hint: HIST().length ? fmtN(HIST().length) : 'X, Typefully, CSV', run: () => openImport() },
     { label: 'Connections', icon: 'link', hint: LLM.mode === 'offline' ? 'Claude off' : 'Claude on', run: () => openConnections() },
-    { label: S.plan === 'free' ? 'Upgrade to Pro' : 'Manage plan', icon: 'riff', run: () => go('upgrade') },
+    ...(BILLING ? [{ label: S.plan === 'free' ? 'Upgrade to Pro' : 'Manage plan', icon: 'riff', run: () => go('upgrade') }] : []),
     { label: 'Undo window', icon: 'undo', hint: (S.settings.undoSecs ?? 8) ? `${S.settings.undoSecs ?? 8}s` : 'Off', run: () => { const o = [8, 15, 5, 0]; const c = S.settings.undoSecs ?? 8; S.settings.undoSecs = o[(o.indexOf(c) + 1) % o.length]; save(); toast(S.settings.undoSecs ? `Post now waits ${S.settings.undoSecs} seconds so you can take it back.` : 'Post now goes out straight away. Brave.', { icon: 'undo' }); } },
     { label: 'Keyboard shortcuts', icon: 'kbd', kbd: ['?'], run: openShortcuts },
     { label: 'Appearance', icon: 'palette', hint: 'Light, dark or system', run: () => openAppearance(el) },
@@ -3141,7 +3190,7 @@ const ACT = {
     { label: 'Capture an idea', icon: 'plus', run: openCapture },
     { label: 'Search', icon: 'search', run: () => openPalette() },
     { label: 'Appearance', icon: 'palette', run: () => openAppearance(el) },
-    { label: S.plan === 'free' ? 'Upgrade to Pro' : 'Manage plan', icon: 'riff', run: () => go('upgrade') }
+    ...(BILLING ? [{ label: S.plan === 'free' ? 'Upgrade to Pro' : 'Manage plan', icon: 'riff', run: () => go('upgrade') }] : [])
   ], { align: 'end' })
 };
 document.addEventListener('click', e => {
@@ -3166,6 +3215,9 @@ function paletteCommands() {
     { g: 'Actions', label: 'Picture to post (screenshot, chart, DM)', icon: 'image', run: () => openPicture() },
     { g: 'Actions', label: 'Reply radar: fresh posts worth an early reply', icon: 'reply', run: () => openRadar() },
     { g: 'Actions', label: 'Breakout alerts: a ping when a post takes off', icon: 'bell', run: () => openBreakoutSetup() },
+    { g: 'Actions', label: 'Calendar: skip times you’re in meetings', icon: 'cal', run: () => openCalendarSetup() },
+    { g: 'Actions', label: 'Read my post aloud', icon: 'volume', run: () => goThen('write', () => readAloud(0)) },
+    { g: 'Actions', label: 'Hook vote: ask friends which first line wins', icon: 'share', run: () => goThen('write', openHookVote) },
     { g: 'Actions', label: 'Write from a brief, doc or PDF', icon: 'write', run: () => openBrief() },
     { g: 'Actions', label: 'Talk instead of typing', icon: 'mic', run: () => { goThen('write', () => dictate(0)); } },
     { g: 'Actions', label: 'X format: thread or long post', icon: 'layers', run: () => { goThen('write', () => openXFormat($('[data-cact="schedmenu"]') || $('#thread'))); } },
@@ -3180,7 +3232,7 @@ function paletteCommands() {
     { g: 'Actions', label: 'Fill empty best-time slots', icon: 'cal', run: () => { go('queue'); setTimeout(fillGaps, 80); } },
     { g: 'Actions', label: 'Switch theme', icon: isDark() ? 'sun' : 'moon', kbd: [SHIFT, 'T'], run: toggleTheme },
     { g: 'Actions', label: 'Keyboard shortcuts', icon: 'kbd', kbd: ['?'], run: openShortcuts },
-    { g: 'Actions', label: 'Upgrade to Pro', icon: 'riff', run: () => go('upgrade') },
+    ...(BILLING ? [{ g: 'Actions', label: 'Upgrade to Pro', icon: 'riff', run: () => go('upgrade') }] : []),
     { g: 'Actions', label: 'Replay onboarding', icon: 'play', run: () => go('start') },
     { g: 'Actions', label: 'View landing page', icon: 'arrow', run: () => go('home') },
     { g: 'Actions', label: 'Reset demo data', icon: 'undo', run: resetDemo }
@@ -3363,15 +3415,15 @@ function refreshBest() {
   BEST = mine ? best : GENERAL_BEST; TIMES = { src: mine ? 'you' : 'general', n: ps.length, top: mine ? cells.find(c => c.n >= 3) : null };
 }
 /* what a slot is worth, for the drag labels and the drop toast */
-function slotInfo(day, time) { refreshBest(); const d = dowIdx(fromKey(day)); const s = (SLOTX[d] || {})[time] || {}; return { x: s.x, n: s.n || 0, general: !!s.general, best: (BEST[d] || {})[time] || null }; }
+function slotInfo(day, time) { refreshBest(); const d = dowIdx(fromKey(day)); const s = (SLOTX[d] || {})[time] || (SLOTX[d] || {})[SLOTS[rowOfT(time)]] || {}; return { x: s.x, n: s.n || 0, general: !!s.general, best: (BEST[d] || {})[time] || null }; }
 try { refreshBest(); } catch (e) { /* history not ready yet */ }
 try { settleQueue(); } catch (e) { } /* the sidebar count is only what's still to come */
 const taken = (day, time) => S.queue.some(q => q.day === day && q.time === time && q.status === 'scheduled');
-function nextSlots(n, bestOnly = true) {
+function nextSlots(n, bestOnly = true, { ignoreBusy = false } = {}) {
   const out = []; const now = Date.now();
   for (let i = 0; i < 21 && out.length < n; i++) {
     const d = new Date(now + i * DAY); const day = dayKey(d); const bi = BEST[dowIdx(d)] || {};
-    for (const t of SLOTS) { if (bestOnly && !bi[t]) continue; if (slotDate(day, t).getTime() <= now + 10 * 60e3 || taken(day, t)) continue; out.push({ day, time: t, reason: bi[t] || 'Open slot' }); if (out.length >= n) break; }
+    for (const t of SLOTS) { if (bestOnly && !bi[t]) continue; if (slotDate(day, t).getTime() <= now + 10 * 60e3 || taken(day, t) || (!ignoreBusy && busyFor(day, t))) continue; out.push({ day, time: t, reason: bi[t] || 'Open slot' }); if (out.length >= n) break; }
   }
   return out;
 }
@@ -3385,7 +3437,7 @@ function composerHTML() {
       <div class="status ${isEmptyDraft() ? 'is-new' : ''}" aria-live="polite"><span class="dot"></span><span class="txt" id="save-state">${isEmptyDraft() ? 'New draft' : 'Saved'}</span></div><button class="checks-pill" id="checks" data-cact="checks" hidden></button><button class="review-pill" id="review-pill" data-cact="reviews" hidden></button>
       ${S.ws !== 'me' ? `<button class="ws-pill" data-act="ws" aria-haspopup="menu">${avatar(WS())}<span>Writing as <b>${esc(WS().name)}</b></span></button>` : ''}
       <div class="grow"></div>
-      <span class="plats-l">Post to</span><div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>${S.platforms.x && xPaid() ? `<button class="xfmt-pill" data-cact="xfmt" data-tip="How X gets this" aria-haspopup="menu">${xLong() ? 'Long post' : 'Thread'}</button>` : ''}
+      <span class="plats-l">Post to</span><div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Including' : 'Not including'} ${p.name}${k === 'threads' || k === 'bsky' ? ' (you post this one by hand)' : ''}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>${S.platforms.x && xPaid() ? `<button class="xfmt-pill" data-cact="xfmt" data-tip="How X gets this" aria-haspopup="menu">${xLong() ? 'Long post' : 'Thread'}</button>` : ''}
       <button class="btn ghost icon-only sm fm-tog" data-cact="focus" data-tip="Focus: just you and the words" data-kbd="${MOD} ." aria-label="Focus mode">${ic('focus', 'sm')}</button><button class="btn ghost sm pv-tog" data-cact="preview" aria-pressed="${!!S.preview.on}" data-tip="${S.preview.on ? 'Hide' : 'Show'} the preview" data-kbd="${MOD} \\">${ic('panel', 'sm')}<span>Preview</span></button>
       <button class="btn ghost icon-only" data-cact="schedmenu" data-tip="More" aria-label="More ways to publish" aria-haspopup="menu">${ic('more')}</button>
       <button class="btn primary" data-cact="schedule" data-tip="Pick a time" data-kbd="${MOD} ↵">${ic('clock', 'sm')}<span>Schedule</span></button>
@@ -3444,6 +3496,7 @@ function tweetHTML(tw, i, n) {
       <button class="tool" data-cact="visual" data-tip="Make a visual">${ic('spark')}</button>
       <button class="tool" data-cact="poll" data-tip="Add a poll">${ic('poll')}</button>
       <button class="tool mic-t" data-cact="dictate" data-tip="Talk instead of typing" aria-pressed="false" aria-label="Talk instead of typing">${ic('mic')}</button>
+      <button class="tool" data-cact="readaloud" data-tip="Hear it read aloud" aria-label="Read it aloud">${ic('volume')}</button>
       <span class="tools-sep"></span>
       <button class="tool riff" data-cact="riff" data-tip="Rewrite this post" data-kbd="${MOD} J" aria-expanded="${UI.riff === tw.id}">${ic('riff')}<span>Rewrite</span></button>
       ${n > 1 ? `<button class="tool" data-cact="remove" data-tip="Remove this post">${ic('trash')}</button>` : ''}
@@ -3532,9 +3585,9 @@ function paintHook() {
   if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
   b.classList.toggle('hi', h.score >= 70);
-  const pr = predict(H.g.score, t0.text); const p = $('#predict');
+  const p = $('#predict');
   if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
-  else if (p) { p.textContent = pr ? `~${fmtK(pr.views)} views · ${Math.round(pr.replies)} replies` : ''; p.dataset.tip = 'A rough guess from the general score. Bring your posts and it’s tuned to you.'; }
+  else if (p) { p.textContent = ''; p.dataset.tip = ''; }
   if (UI.hook) renderExtras(t0.id);
   refreshChecks();
 }
@@ -3552,7 +3605,7 @@ function hookReasonHTML() {
   const H = hookFor(S.draft.tweets[0].text, S.draft.tweets.filter(t => t.text.trim()).length), h = H.g;
   const bars = Object.entries(h.parts).map(([k, v]) => `<div class="bar-row"><span>${cap(k)}</span><div class="meter"><i style="width:${v}%"></i></div><span class="num">${v}</span></div>`).join('');
   const general = `<div style="display:flex;gap:10px;align-items:flex-start">${ic(h.tone === 'good' ? 'check' : 'target', 'sm')}<p><b>${H.me ? 'General score ' : ''}${h.score}/100.</b> ${esc(h.reason)}</p></div><div class="bars">${bars}</div>`;
-  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${S.draft.tweets[0].text.trim() ? mineHTML(H) : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${h.score}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : general}${H.score < 76 && S.draft.tweets[0].text.trim() ? `<div><button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button></div>` : ''}${H.score < 70 ? formulasHTML() : ''}</div></div>`;
+  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${S.draft.tweets[0].text.trim() ? mineHTML(H) : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${h.score}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : general}${S.draft.tweets[0].text.trim() ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button>` : ''}<button class="btn sm" data-cact="hookvote" data-tip="Friends pick between versions of your first line">${ic('share', 'sm')} Ask friends which line wins</button></div>` : ''}${H.score < 70 ? formulasHTML() : ''}</div></div>`;
 }
 /* hook formulas, offered right where a weak first line is: pick one, then type over the blanks */
 function formulasHTML() {
@@ -4610,7 +4663,7 @@ function outOfRiffs() {
   el.addEventListener('click', e => { const b = e.target.closest('[data-up]'); if (e.target.closest('a')) closeUpsell(); if (!b) return; if (b.dataset.up === 'free') { S.ai.freebie = 1; S.ai.used = Math.max(0, S.ai.used - 1); save(); refreshPlanCard(); toast('One on the house. Make it count.', { icon: 'gift', tone: 'accent' }); } closeUpsell(); });
 }
 function showUpsell(a, b) {
-  if (S.plan !== 'free' || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
+  if (!BILLING || S.plan !== 'free' || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
   const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hookworthy Pro');
   el.innerHTML = `<div class="jump"><span class="from">${a}</span>${ic('arrow', 'lg')}<span class="to">${b}</span></div><p class="muted">Your hook just jumped ${b - a} points. Pro does this all day: unlimited rewrites, your full voice model, and an automatic follow-up reply when a post takes off.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
   document.body.append(el); burstFrom($('.to', el));
@@ -4639,8 +4692,8 @@ function overText(t, lim) { const a = [...t]; if (a.length <= lim) return pfText
 const PV_NEAR = { x: [3, 8], threads: [1, 10], linkedin: [4, 5], bsky: [0, 9] };
 function pvCard(k, compact) {
   const p = PLAT[k], tws = S.draft.tweets, dark = isDark(), you = pvYou(), R = PF_RENDER[k];
-  const h = hookScore(tws[0].text); const pr = predict(h.score, tws[0].text) || { views: 0, replies: 0 };
-  const cnt = sc => { const v = pr.views * sc, r = pr.replies * sc; return v ? [r, v * .006, v * .021, v] : [0, 0, 0, 0]; };
+  const est = pvEstimate(tws[0].text);
+  const cnt = sc => est ? [est.replies, est.reposts, est.likes, est.views].map(v => Math.round(v * sc)) : [0, 0, 0, 0];
   const umedia = t => t.media.length ? mediaHTML(t).replace(/<button class="rm"[\s\S]*?<\/button>/g, '') : '';
   const upoll = t => t.poll ? `<div class="poll-pv">${t.poll.options.filter(Boolean).map(o => `<div>${esc(o)}</div>`).join('') || '<div>Choice 1</div><div>Choice 2</div>'}<span>0 votes · ${t.poll.days} day${t.poll.days > 1 ? 's' : ''} left</span></div>` : '';
   const ph = i => `<span class="pv-ph">${i === 0 ? 'Your first line shows up here.' : 'Next post…'}</span>`;
@@ -4658,7 +4711,7 @@ function pvCard(k, compact) {
     tag = `<span>${pic(p.icon)} @${esc(you.h)}${k === 'bsky' ? '.bsky.social' : ''}</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${k === 'x' && xLong() ? `Long post · ${fmtN(HWCore.xLength(tws[0].text))} / 25,000` : tws.length > 1 ? `Thread of ${tws.length}` : `${p.limit} characters`}</span>`}`;
   }
   const near = compact ? ['', ''] : PV_NEAR[k].map(i => R(VOID_POSTS[i], { dark }));
-  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${!compact && pr.views ? `<p class="pv-proj">Counts are projected at 24 hours from your last 90 days.</p>` : ''}</div>`;
+  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${compact ? '' : `<p class="pv-proj">${est ? `Counts are what a typical post of yours gets${est.tuned ? `, times ${est.x} for how this line scores with your audience` : ''}. From ${fmtN(est.n)} of your posts.` : 'No numbers yet. Bring your posts and this shows what to expect, from your own history.'}</p>`}</div>`;
 }
 function liVersion() {
   let t = S.draft.tweets.map(x => x.text.trim()).filter(Boolean).join('\n\n');
@@ -4692,7 +4745,7 @@ const agoDays = d => d < 14 ? `${d} days ago` : d < 60 ? `${Math.round(d / 7)} w
 /* posted history: your top posts plus anything published from here */
 function pastPosts() {
   const pub = S.queue.filter(q => q.status === 'published').map(q => ({ text: q.text, days: Math.max(0, Math.round((Date.now() - fromKey(q.day)) / DAY)), views: 0 }));
-  return [...(HIST().length ? HIST().map(p => ({ text: p.text, days: p.at ? Math.round((Date.now() - p.at) / DAY) : 0, views: p.views || p.likes })) : TOP_POSTS), ...pub];
+  return [...HIST().map(p => ({ text: p.text, days: p.at ? Math.round((Date.now() - p.at) / DAY) : 0, views: p.views || p.likes })), ...pub];
 }
 function saidBefore(text) {
   const bag = t => new Set(words(t).filter(w => w.length > 2 && !STOP.has(w)));
@@ -4720,7 +4773,7 @@ function preflight() {
   /* cringe check: lines that read like bait or a press release on every platform */
   CRINGE.forEach((c, i) => { const m = all.match(c.re); if (m) out.push({ k: 'cr' + i, msg: c.msg.replace('$0', m[0].trim()), why: c.why, ...(c.cut ? { fix: 'cr' + i, fixL: 'Cut it' } : {}) }); });
   /* said it before: close to something you already posted */
-  const old = saidBefore(tws[0].text); if (old) out.push({ k: 'said', msg: `You posted something close to this ${agoDays(old.days)}.`, why: `“${clip(old.text, 70)}” got ${fmtN(old.views)} views. Rerunning is fine; a new first line makes it read fresh.` });
+  const old = saidBefore(tws[0].text); if (old) out.push({ k: 'said', msg: `You posted something close to this ${agoDays(old.days)}.`, why: `“${clip(old.text, 70)}”${old.views ? ` got ${fmtN(old.views)} views` : ''}. Rerunning is fine; a new first line makes it read fresh.` });
   if (tws.some(t => /  +|[ \t]+$/m.test(t.text))) out.push({ k: 'space', msg: 'A few double spaces snuck in.', why: 'Invisible here, oddly wide in the feed.', fix: 'space', fixL: 'Tidy up' });
   return out;
 }
@@ -4786,6 +4839,9 @@ function openSchedule() {
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   const best = nextSlots(3); let pickI = 0;
   /* the strongest of the three gets the badge and the default, not just the soonest */
+  /* your calendar: a best time you're stuck in a meeting for gets a free time next to it instead */
+  let calNote = '';
+  if (calOn()) { const raw = nextSlots(3, true, { ignoreBusy: true }), hit = raw.map(x => ({ ...x, b: busyFor(x.day, x.time) })).find(x => x.b); if (hit) { const alt = freeNear(hit.day, hit.time); calNote = `Skipped ${slotLabel(hit.day, hit.time)}: you’re in ${calName(hit.b)}.`; if (alt && !best.some(b => b.day === alt.day && b.time === alt.time)) { best.push({ day: alt.day, time: alt.time, reason: `Free for the first hour, next to your ${fmtTime(hit.time)} best time` }); best.sort((a, c) => slotDate(a.day, a.time) - slotDate(c.day, c.time)); best.length = Math.min(best.length, 3); } } }
   { const xs = best.map(b => slotInfo(b.day, b.time).x || 0); const top = xs.indexOf(Math.max(...xs)); if (TIMES.src === 'you' && top > 0) pickI = top; }
   const ps = S.draft.slot; if (ps && slotDate(ps.day, ps.time).getTime() > Date.now() && !taken(ps.day, ps.time)) { best.unshift({ day: ps.day, time: ps.time, reason: 'The slot you picked in your queue' }); best.length = Math.min(best.length, 3); } const n = S.draft.tweets.filter(t => t.text.trim()).length;
   const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times are ${esc(tzName())}`)}
@@ -4794,17 +4850,15 @@ function openSchedule() {
     <div style="display:grid;gap:8px"><span class="label">${TIMES.src === 'you' ? 'Best times for you' : 'Good times to post'}</span>
       <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" data-si="${i}"><span class="radio"></span><span><b>${slotLabel(s.day, s.time)}</b><small>${esc(s.reason)}</small></span>${i === pickI ? '<span class="pill accent">Best</span>' : i === 0 && pickI ? '<span class="pill">Soonest</span>' : ''}</button>`).join('')}
       <button class="stime" role="radio" aria-checked="false" data-si="custom"><span class="radio"></span><span><b>Pick a time</b><small>Your call. We trust you.</small></span></button></div>
+      ${calNote ? `<p class="cal-note">${ic('cal', 'sm')} ${esc(calNote)}</p>` : !calOn() ? `<button class="cal-ask" data-cal-setup>${ic('cal', 'sm')} <span>Connect your calendar and this skips times you’re in meetings</span>${ic('right', 'xs')}</button>` : ''}
       ${hintHTML('schedule', { cls: 'in-modal' })}
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${dayKey(Date.now() + DAY)}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="09:00" aria-label="Time"></div>
-    </div>
-    <div style="display:grid;gap:14px"><span class="label">While you’re away</span>
-      <div class="setting"><span>Follow-up reply</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Follow-up reply"></button><small>At ${S.settings.plugAt} likes, reply with: “${esc(S.settings.plugText)}”</small></div>
-      <div class="setting"><span>Auto-repost</span><button class="switch" role="switch" aria-checked="${S.settings.autoRepost}" data-sw="autoRepost" aria-label="Auto-repost"></button><small>Repost once after ${S.settings.repostAfter} hours for the other time zone.</small></div>
     </div>
   </div>
   <div class="modal-f"><button class="btn" id="s-queue">Add to queue</button><button class="btn primary" id="s-go">${ic('clock', 'sm')} <span id="s-go-l">Schedule for ${best[pickI] ? slotLabel(best[pickI].day, best[pickI].time) : 'later'}</span></button></div>`, { label: 'Schedule' });
   const el = m.el;
   el.addEventListener('click', e => {
+    if (e.target.closest('[data-cal-setup]')) { m.close(); openCalendarSetup(); return; }
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
     const s = e.target.closest('.stime'); if (s) { $$('.stime', el).forEach(x => x.setAttribute('aria-checked', x === s)); pickI = s.dataset.si; $('#custom-t', el).hidden = pickI !== 'custom'; $('#s-go-l', el).textContent = pickI === 'custom' ? 'Schedule' : `Schedule for ${slotLabel(best[pickI].day, best[pickI].time)}`; }
     const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); }
@@ -4857,7 +4911,7 @@ function publishNow(btn, { anyway = false } = {}) {
 }
 function lateNight(nx, btn) {
   const d = new Date(); const now = fmtTime(`${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`);
-  const m = modal(`${modalHead(`It’s ${now}. Your people are asleep.`, 'Your posts after midnight got a third of the first-hour replies your morning ones did. The feed judges a post by that first hour.')}
+  const m = modal(`${modalHead(`It’s ${now}. Your people are asleep.`, 'Most of your people are asleep, and the feed judges a post by its first hour. Morning gets you more of it.')}
     <div class="modal-b"><div class="late"><span class="late-moon">${ic('moon')}</span><div><b>${nx ? slotLabel(nx.day, nx.time) : 'Tomorrow morning'}</b><small>${nx && nx.reason !== 'Open slot' ? esc(nx.reason) : 'The next slot after people wake up'}</small></div></div></div>
     <div class="modal-f"><button class="btn" id="late-now">Post now anyway</button><button class="btn primary" id="late-sched">${ic('clock', 'sm')} Schedule for ${nx ? fmtTime(nx.time) : 'the morning'}</button></div>`, { label: 'Post now?' });
   $('#late-now', m.el).onclick = () => { m.close(); publishNow(btn, { anyway: true }); };
@@ -4885,7 +4939,9 @@ function finishSend(snap, names, btn) {
   commitDraft({ day: dayKey(d), time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`, status: 'published' });
   if (live.id !== snap.id) S.draft = live; S.drafts = S.drafts.filter(x => x.id !== snap.id); save();
   if (CURRENT === 'write' || CURRENT === 'queue' || CURRENT === 'insights') route(); sendOff(so, { count, plats, published: true }); liveStart(S.queue.filter(q => q.status === 'published').slice(-1)[0]);
-  toast(`Posted to ${esc(names)}. Stay close for the first replies.`, { icon: 'send', tone: 'accent', action: 'Reply desk', onAction: () => openReplyDesk(S.queue.filter(q => q.status === 'published').slice(-1)[0]), ms: 8000 });
+  const srv = LLM.server || {}, sent = (plats.x && srv.xUser) || (plats.linkedin && srv.liUser);
+  if (sent) toast(`Sending to ${esc(names)}. Stay close for the first replies.`, { icon: 'send', tone: 'accent', action: 'Replies', onAction: () => openReplyDesk(S.queue.filter(q => q.status === 'published').slice(-1)[0]), ms: 8000 });
+  else toast('Marked as posted. Nothing went out from here: copy it to post, or connect X or LinkedIn.', { icon: 'send', tone: 'accent', action: 'Copy text', onAction: () => copyText(snap.tweets.map(t => t.text.trim()).filter(Boolean).join('\n\n')), ms: 9000 });
 }
 function undoLast() { const q = S.queue.pop(); if (!q) return; S.draft = { ...freshDraft(q.tweets), id: S.draft.id }; save(); route(); toast('Unscheduled. Back in the editor.', { icon: 'undo' }); }
 /* ==========================================================================
@@ -5165,7 +5221,7 @@ async function openReplyDesk(q, preset) {
   const draw = () => {
     $('#rd-list', el).innerHTML = list.length ? list.map((r, i) => `<article class="rd-item ${r.done ? 'done' : ''}" data-i="${i}"><div class="rd-who"><b>${esc(r.name || '@' + r.handle)}</b><span>@${esc(r.handle)} · ${fmtN(r.followers)} followers</span><span class="pill rd-k" data-k="${replyKind(r).toLowerCase().replace(' ', '-')}">${replyKind(r)}</span></div><p class="rd-t">${esc(r.text)}</p>
       <div class="rd-me">${avatar(S.user)}<textarea class="input" rows="2" data-rt="${i}" placeholder="${replyKind(r) === 'Question' ? 'They asked. Answer in a line or two.' : 'Your reply…'}" aria-label="Your reply to @${esc(r.handle)}">${esc(r.draft || '')}</textarea></div>
-      <div class="rd-a">${r.why ? `<span class="faint">${esc(r.why)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-ra="skip">${r.done ? 'Undo' : 'Skip'}</button><button class="btn sm primary" data-ra="send">${ic('reply', 'sm')} ${live && srv.xUser ? 'Reply' : 'Reply on X'}</button></div></article>`).join('') : '<p class="faint">No replies yet. They usually start within ten minutes.</p>';
+      <div class="rd-a">${r.why ? `<span class="faint">${esc(r.why)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-ra="skip">${r.done ? 'Undo' : 'Skip'}</button><button class="btn sm primary" data-ra="send">${ic(r.id ? 'reply' : 'copy', 'sm')} ${!r.id ? 'Copy reply' : live && srv.xUser ? 'Reply' : 'Reply on X'}</button></div></article>`).join('') : '<p class="faint">No replies yet. They usually start within ten minutes.</p>';
     const left = list.filter(r => !r.done).length; $('#rd-count', el).textContent = list.length ? left ? `${left} left to answer` : 'All answered. Nice.' : '';
   };
   const localDrafts = () => list.forEach(r => { if (!r.draft) r.draft = localReply(r, q.text); });
@@ -5189,9 +5245,10 @@ async function openReplyDesk(q, preset) {
     const text = (r.draft || '').trim(); if (!text) { toast('Write the reply first.', { icon: 'reply' }); return; }
     if (/\[[^\]]+\]/.test(text)) { toast('Fill the [brackets] first.', { icon: 'reply', tone: 'err' }); return; }
     if (live && srv.xUser && r.id) { b.classList.add('is-loading'); try { const rr = await fetch('api/x/reply', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ inReplyTo: r.id, text }) }); const j = await rr.json(); if (!rr.ok) throw new Error(j.error); r.done = true; draw(); SFX.play('tick'); } catch (err) { toast(`X said no: ${esc(err.message)}`, { icon: 'zapoff', tone: 'err' }); } finally { b.classList.remove('is-loading'); } return; }
-    const url = `https://x.com/intent/post?text=${encodeURIComponent(text)}${r.id ? `&in_reply_to=${r.id}` : ''}`;
     try { await navigator.clipboard.writeText(text); } catch (err) { /* intent carries the text anyway */ }
-    window.open(url, '_blank', 'noopener'); r.done = true; draw();
+    /* without the reply's id X would post it as a new post, not a reply: copy it instead */
+    if (!r.id) { r.done = true; draw(); toast(`Copied. Paste it under @${esc(r.handle)}’s reply on X.`, { icon: 'copy', ms: 3200 }); return; }
+    window.open(`https://x.com/intent/post?text=${encodeURIComponent(text)}&in_reply_to=${r.id}`, '_blank', 'noopener'); r.done = true; draw();
   });
   if (aiOn() && !(preset && list.every(r => r.draft))) draftAll($('#rd-draft', el));
 }
@@ -5316,7 +5373,7 @@ function openPeople() {
 /* ---- hints: one useful line at a time; yours first, general ones after ---- */
 const GEN_TIPS = {
   queue: ['Post when your people are awake, not when you finish writing. That’s what the queue is for.', 'A steady week beats a big burst. Three good posts land better than seven rushed ones.', 'Drag a post onto a highlighted slot. Those are the times your audience reads most.', 'Leave one slot open for something that happens this week. The best posts are often unplanned.'],
-  schedule: ['The first hour decides how far a post travels. Pick a time you can be around for it.', 'Most people check their phone in the first hour they’re awake. Morning slots get the most first-hour replies.', 'If you won’t be there to answer replies, the follow-up reply can do it for you.'],
+  schedule: ['The first hour decides how far a post travels. Pick a time you can be around for it.', 'Connect your calendar and Hookworthy skips best times when you’re stuck in a meeting.', 'Most people check their phone in the first hour they’re awake. Morning slots get the most first-hour replies.', 'Answer the first few replies yourself. It’s the cheapest reach there is.'],
   write: ['Write the first line last. By then you know what the post is really about.', 'One idea per post. If you need an “also”, that’s the next post.', 'A real number in line one makes people stop scrolling.', 'Read it out loud once. If you trip over a line, your readers will too.', 'Links in the first post cut reach on X and LinkedIn. Put the link in a reply.'],
   insights: ['Your best post is a recipe, not luck. Ask “Why?” on it and write the next one the same way.', 'Quiet posts teach as much as big ones. Look at what they have in common.', 'Compare like with like: a thread and a one-liner have different ceilings.'],
   live: ['Answer the first few replies. It tells the feed people are talking.', 'The first hour decides how far a post travels. Stay close.', 'A question back gets more replies than “thanks!”.', 'If it’s doing well, pin it while people are visiting your profile.', 'Add one reply to your own post with the next thing: a link, the follow-up, what to read next.']
@@ -5443,6 +5500,120 @@ function checkBest(q, eng) {
   SFX.play('best');
   toast(ever ? `Your best post yet. ${fmtN(eng)} engagements and still climbing.` : `Your best since ${MON[d.getMonth()]} ${d.getDate()}${d.getFullYear() !== new Date().getFullYear() ? `, ${d.getFullYear()}` : ''}. ${fmtN(eng)} engagements and climbing.`, { icon: 'spark', tone: 'accent', ms: 7000, action: 'Answer replies', onAction: () => openReplyDesk(q) });
 }
+/* ---------- your calendar: be around for a post's first hour ---------- */
+const CALS = { busy: null, at: 0 };
+const calOn = () => !!(S.cal && (S.cal.src === 'file' ? (S.cal.busy || []).length : S.cal.src === 'link'));
+const calBusy = () => !S.cal ? [] : S.cal.src === 'file' ? S.cal.busy || [] : CALS.busy || [];
+const calName = b => S.cal && S.cal.hide ? 'a meeting' : `“${clip(b.title || 'Busy', 40)}”`;
+async function calRefresh(force) {
+  if (!S.cal || S.cal.src !== 'link' || !LLM.server || !LLM.server.calendar) return;
+  if (!force && CALS.busy && Date.now() - CALS.at < 10 * 60e3) return;
+  try { const r = await fetch('api/calendar'); const j = await r.json(); if (r.ok) { CALS.busy = j.busy; CALS.at = Date.now(); if (CURRENT === 'queue') drawCal(); } } catch { /* keep the last copy */ }
+}
+const busyFor = (day, time) => calOn() ? HWCore.busyAt(calBusy(), slotDate(day, time).getTime(), 60) : null;
+/* the nearest time that day you're free for a whole hour, not too early or late */
+function freeNear(day, time) {
+  const base = slotDate(day, time).getTime();
+  for (const d of [15, 30, 45, 60, -15, -30, 75, 90, -45, -60, 105, 120, -75, -90, 150, 180]) { const t = base + d * 6e4, dt = new Date(t); if (dayKey(dt) !== day || dt.getHours() < 7 || dt.getHours() >= 22 || t < Date.now() + 10 * 60e3) continue; if (!HWCore.busyAt(calBusy(), t, 60)) return { day, time: hhmm(dt) }; }
+  return null;
+}
+function openCalendarSetup() {
+  const srv = LLM.server || {}, on = calOn(), n = calBusy().filter(b => b.end > Date.now()).length;
+  const m = modal(`${modalHead('Your calendar', 'Your best time is no good if you’re in a meeting for the first hour. Hookworthy skips those slots.')}
+    <div class="modal-b cal-set">
+      ${on ? `<div class="cal-on">${ic('check', 'sm')}<span><b>${S.cal.src === 'link' ? 'Connected' : `From ${esc(S.cal.name || 'your file')}`}</b><small>${n} busy time${n === 1 ? '' : 's'} in the next three weeks${S.cal.src === 'file' ? `. Upload a fresh copy now and then; files don’t update themselves` : ', refreshed every 15 minutes'}.</small></span><button class="btn sm" data-cs="off">Disconnect</button></div>
+      <label class="cal-hide"><input type="checkbox" id="cs-hide" ${S.cal.hide ? 'checked' : ''}> Don’t show meeting names, just “busy”</label>` : ''}
+      ${srv.sync !== undefined && srv.ok !== false && LLM.server ? `<section class="cal-way"><h3 class="label">Link it (stays up to date)</h3><form id="cs-form" class="cal-form"><input class="input" id="cs-url" placeholder="Your calendar’s secret iCal link" autocomplete="off" spellcheck="false" aria-label="Secret iCal link"><button class="btn primary" type="submit">Connect</button></form>
+        <details class="cal-how"><summary>Where do I find that?</summary><ul>
+          <li><b>Google Calendar:</b> Settings → your calendar → Integrate calendar → <i>Secret address in iCal format</i>.</li>
+          <li><b>Outlook:</b> Settings → Calendar → Shared calendars → Publish a calendar → <i>ICS</i> link.</li>
+          <li><b>Apple iCloud:</b> Calendar app → share the calendar → <i>Public Calendar</i> → copy the link.</li></ul>
+          <p class="faint">The link stays on your Hookworthy server. Only busy times reach this page.</p></details></section>` : ''}
+      <section class="cal-way"><h3 class="label">${LLM.server ? 'Or upload a file' : 'Upload your calendar'}</h3><label class="br-drop cal-drop"><input type="file" id="cs-file" accept=".ics,text/calendar" hidden><span class="br-ic">${ic('cal')}</span><b>Choose an .ics file</b><small>Export it from Google, Outlook or Apple Calendar. It’s read here, in your browser, and only busy times are kept.</small></label></section>
+    </div><div class="modal-f"><button class="btn primary" data-close>Done</button></div>`, { label: 'Your calendar' });
+  const el = m.el, done = msg => { m.close(); toast(msg, { icon: 'cal', tone: 'accent', ms: 4200 }); if (CURRENT === 'queue') drawCal(); };
+  const f = $('#cs-form', el); if (f) f.onsubmit = async e => { e.preventDefault(); const b = $('button', f); b.classList.add('is-loading'); try { const r = await fetch('api/calendar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: $('#cs-url', el).value }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); S.cal = { src: 'link', hide: S.cal && S.cal.hide }; save(); await calRefresh(true); done(`Calendar connected. ${j.events} busy time${j.events === 1 ? '' : 's'} coming up; scheduling skips them.`); } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err', ms: 6000 }); } finally { b.classList.remove('is-loading'); } };
+  $('#cs-file', el).onchange = async e => { const file = e.target.files[0]; if (!file) return; try { const text = await file.text(); if (!/BEGIN:VCALENDAR/.test(text)) throw new Error('That file isn’t a calendar (.ics)'); const busy = HWCore.parseICS(text, { from: Date.now() - 864e5, to: Date.now() + 30 * 864e5 }); S.cal = { src: 'file', name: file.name, busy, at: Date.now(), hide: S.cal && S.cal.hide }; save(); done(`Read ${busy.length} busy time${busy.length === 1 ? '' : 's'} from ${esc(file.name)}. Scheduling skips them.`); } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } };
+  el.addEventListener('click', async e => { if (!e.target.closest('[data-cs="off"]')) return; if (S.cal.src === 'link') await fetch('api/calendar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: '' }) }).catch(() => {}); S.cal = null; CALS.busy = null; save(); done('Calendar disconnected.'); });
+  el.addEventListener('change', e => { if (e.target.id === 'cs-hide') { S.cal.hide = e.target.checked; save(); if (CURRENT === 'queue') drawCal(); } });
+}
+
+/* ---------- read it aloud: hear the clunky line before your readers do ---------- */
+const RA = { on: false, posts: [], i: 0, rate: 1, chunks: [], ci: 0 };
+function raVoice() { const vs = speechSynthesis.getVoices(), lang = (document.documentElement.lang || navigator.language || 'en').slice(0, 2), pool = vs.filter(v => (v.lang || '').toLowerCase().startsWith(lang)); return pool.find(v => /natural|neural|premium|enhanced/i.test(v.name)) || pool.find(v => /google|samantha|daniel|aria|jenny|serena/i.test(v.name)) || pool[0] || null; }
+function readAloud(from = 0) {
+  if (!('speechSynthesis' in window)) { toast('This browser can’t read aloud. Chrome, Edge and Safari can.', { icon: 'volume', tone: 'err' }); return; }
+  const posts = S.draft.tweets.map(t => t.text.trim()).filter(Boolean); if (!posts.length) { toast('Write something first, then hear how it sounds.', { icon: 'volume' }); return; }
+  raStop(); RA.on = true; RA.posts = posts; RA.i = Math.min(from, posts.length - 1); raPost();
+}
+function raPost() {
+  const t = RA.posts[RA.i]; let el = $('#ra');
+  if (!el) { el = document.createElement('div'); el.id = 'ra'; el.className = 'ra'; el.setAttribute('role', 'region'); el.setAttribute('aria-label', 'Reading your post aloud'); document.body.append(el);
+    el.addEventListener('click', e => { const b = e.target.closest('[data-ra]'); if (!b) return; const a = b.dataset.ra;
+      if (a === 'stop') raStop(); if (a === 'pause') { if (speechSynthesis.paused) { speechSynthesis.resume(); b.innerHTML = ic('minus', 'sm'); b.setAttribute('aria-label', 'Pause'); } else { speechSynthesis.pause(); b.innerHTML = ic('play', 'sm'); b.setAttribute('aria-label', 'Resume'); } }
+      if (a === 'rate') { RA.rate = RA.rate === 1 ? 1.2 : RA.rate === 1.2 ? .9 : 1; b.textContent = `${RA.rate}×`; const at = RA.i; speechSynthesis.cancel(); RA.i = at; setTimeout(raPost, 60); }
+      if (a === 'again') { speechSynthesis.cancel(); setTimeout(raPost, 60); } }); }
+  let k = 0; const words = t.split(/(\s+)/).map(w => { const s = k; k += w.length; return /\S/.test(w) ? `<span class="w" data-s="${s}">${esc(w)}</span>` : esc(w); }).join('');
+  el.innerHTML = `<div class="ra-h"><span class="ra-eq" aria-hidden="true"><i></i><i></i><i></i></span><b>Reading${RA.posts.length > 1 ? ` post ${RA.i + 1} of ${RA.posts.length}` : ''}</b><span class="grow"></span><button class="btn ghost sm" data-ra="rate" aria-label="Speed">${RA.rate}×</button><button class="btn ghost icon-only sm" data-ra="again" aria-label="Start this post again" data-tip="Again">${ic('undo', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="pause" aria-label="Pause">${ic('minus', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="stop" aria-label="Stop" data-tip="Stop (Esc)">${ic('x', 'sm')}</button></div><p class="ra-t">${words}</p><p class="ra-tip">If you trip over a line, so will your readers.</p>`;
+  /* long posts go in sentence-sized pieces: some voices stop after ~15 seconds of one utterance */
+  RA.chunks = []; const re = /[^.!?\n]+[.!?]*\s*|\n+/g; let m, buf = '', bs = 0; while ((m = re.exec(t))) { if (!buf) bs = m.index; buf += m[0]; if (buf.length > 180 || /\n/.test(m[0])) { RA.chunks.push({ s: bs, t: buf }); buf = ''; } } if (buf.trim()) RA.chunks.push({ s: bs, t: buf });
+  RA.ci = 0; raChunk();
+}
+function raChunk() {
+  if (!RA.on) return; const c = RA.chunks[RA.ci]; if (!c) { if (RA.i < RA.posts.length - 1) { RA.i++; setTimeout(raPost, 420); } else raStop(true); return; }
+  if (!c.t.trim()) { RA.ci++; raChunk(); return; }
+  const u = new SpeechSynthesisUtterance(c.t.replace(/https?:\/\/\S+/g, m => ' '.repeat(m.length))); u.rate = RA.rate; const v = raVoice(); if (v) u.voice = v;
+  u.onboundary = e => { if (e.name && e.name !== 'word') return; const at = c.s + e.charIndex; const ws = $$('#ra .w'); let cur = null; ws.forEach(w => { const s = +w.dataset.s; w.classList.toggle('done', s < at); if (s <= at) cur = w; }); ws.forEach(w => w.classList.toggle('now', w === cur)); if (cur) { cur.classList.remove('done'); const box = $('#ra .ra-t'); if (box && cur.offsetTop > box.scrollTop + box.clientHeight - 30) box.scrollTop = cur.offsetTop - 20; } };
+  u.onend = () => { if (!RA.on) return; $$('#ra .w').forEach(w => { if (+w.dataset.s < c.s + c.t.length) { w.classList.add('done'); w.classList.remove('now'); } }); RA.ci++; raChunk(); };
+  u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') { toast('The voice stopped. Try again, or another browser.', { icon: 'volume', tone: 'err' }); raStop(); } };
+  speechSynthesis.speak(u);
+}
+function raStop(finished) { if (!RA.on && !$('#ra')) return; RA.on = false; try { speechSynthesis.cancel(); } catch { } const el = $('#ra'); if (el) { if (finished) { el.classList.add('fin'); setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 220); }, 900); } else { el.classList.add('out'); setTimeout(() => el.remove(), 220); } } }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && RA.on) { e.stopPropagation(); raStop(); } }, true);
+window.addEventListener('pagehide', () => RA.on && raStop());
+
+/* ---------- hook vote: let a few friends pick the first line ---------- */
+function openHookVote() {
+  const srv = LLM.server || {};
+  if (!srv.vote) { const m = modal(`${modalHead('Ask friends which line wins', 'Send two or three first lines; friends tap the one that would stop them scrolling.')}<div class="modal-b"><p>Hook votes need your Hookworthy server, so friends have a link to open. It’s free to run: see <b>Self-hosting</b> under Connections.</p></div><div class="modal-f"><button class="btn primary" data-close>Got it</button></div>`, { label: 'Hook vote' }); return; }
+  const first = (S.draft.tweets[0].text.split('\n')[0] || '').trim(); let V = null, poll = 0;
+  const m = modal(`<div id="hv"></div>`, { label: 'Ask friends which line wins', onClose: () => clearInterval(poll) }); const el = $('#hv', m.el);
+  const drawAsk = () => { el.innerHTML = `${modalHead('Ask friends which line wins', 'Two or three versions of your first line. Friends tap the one that would stop them scrolling, and you see it live.')}
+    <div class="modal-b hv-b">${[0, 1, 2].map(i => `<label class="hv-opt"><span class="hv-n">${'ABC'[i]}</span><textarea class="input" rows="2" data-hv="${i}" placeholder="${i === 0 ? 'Your first line' : i === 1 ? 'Another way in' : 'A third, if you have one (optional)'}">${i === 0 ? esc(first) : ''}</textarea></label>`).join('')}
+    <label class="vis-f"><span>Your name, so they know who’s asking</span><input class="input" id="hv-name" value="${esc(S.user.name || '')}" maxlength="60"></label></div>
+    <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="hv-go">${ic('link', 'sm')} Make the link</button></div>`;
+    $('#hv-go', el).onclick = async e => { const opts = $$('[data-hv]', el).map(t => t.value.trim()).filter(Boolean); if (opts.length < 2) { toast('Give them at least two lines to pick from.', { icon: 'hook', tone: 'err' }); $$('[data-hv]', el)[opts.length ? 1 : 0].focus(); return; }
+      const b = e.currentTarget; b.classList.add('is-loading'); try { const r = await fetch('api/vote', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ options: opts, author: $('#hv-name', el).value }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); V = j; S.votes = [{ id: j.id, url: j.url, at: Date.now(), first: opts[0] }, ...(S.votes || [])].slice(0, 10); save(); SFX.play('pop'); drawLive(); poll = setInterval(refresh, 6000); } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } finally { b.classList.remove('is-loading'); } }; };
+  const refresh = async () => { if (!V || !m.el.isConnected) return clearInterval(poll); try { const r = await fetch(`api/vote/${V.id}`); const j = await r.json(); if (r.ok && j.total !== V.total) { const more = j.total > V.total; V = { ...V, ...j }; drawLive(); if (more) SFX.play('blip'); } } catch { } };
+  const drawLive = () => { const top = Math.max(...V.counts), t = V.total || 0;
+    el.innerHTML = `${modalHead(t ? `${t} vote${t === 1 ? '' : 's'} so far` : 'Your link is ready', t ? 'Updates live while this is open. Pick the winner whenever you like.' : 'Send it to a few people whose taste you trust. Five votes tell you plenty.')}
+    <div class="modal-b hv-b"><div class="hv-link"><input class="input" readonly value="${esc(V.url)}" aria-label="Vote link"><button class="btn sm" id="hv-copy">${ic('copy', 'sm')} Copy</button>${navigator.share ? `<button class="btn sm" id="hv-share">${ic('share', 'sm')} Share</button>` : ''}</div>
+    <div class="hv-res">${V.options.map((o, i) => { const c = V.counts[i], pct = t ? Math.round(c / t * 100) : 0; return `<div class="hv-row ${t && c === top ? 'lead' : ''}"><div class="hv-bar" style="--p:${pct}%"></div><span class="hv-n">${'ABC'[i]}</span><p>${esc(o)}</p><span class="hv-c">${t ? `${pct}%` : ''}</span><button class="btn sm ${t && c === top ? 'primary' : ''}" data-use="${i}">Use this</button></div>`; }).join('')}</div>
+    <p class="faint hv-note">Votes are anonymous. The link works for 14 days.</p></div>
+    <div class="modal-f"><button class="btn primary" data-close>Done</button></div>`;
+    $('#hv-copy', el).onclick = async () => { try { await navigator.clipboard.writeText(V.url); toast('Link copied. Send it to a few people.', { icon: 'copy', ms: 1800 }); } catch { $('.hv-link input', el).select(); } };
+    const sh = $('#hv-share', el); if (sh) sh.onclick = () => navigator.share({ title: 'Which first line would stop you scrolling?', url: V.url }).catch(() => {});
+  };
+  el.addEventListener('click', e => { const u = e.target.closest('[data-use]'); if (!u) return; const line = V.options[+u.dataset.use]; const tw = S.draft.tweets[0], rest = tw.text.includes('\n') ? tw.text.slice(tw.text.indexOf('\n')) : ''; tw.text = line + rest; save(); m.close(); if (CURRENT === 'write') route(); SFX.play('swap'); toast(`Using line ${'ABC'[+u.dataset.use]}${V.total ? `, picked by ${Math.round(V.counts[+u.dataset.use] / V.total * 100)}% of your friends` : ''}.`, { icon: 'hook', tone: 'accent' }); });
+  drawAsk(); setTimeout(() => { const t = $$('[data-hv]', el)[first ? 1 : 0]; t && t.focus(); }, 60);
+}
+/* the page a friend opens: tap a line, see how everyone voted */
+async function renderVote(id) {
+  document.title = 'Pick a first line · Hookworthy'; const root = $('#root');
+  let me = ''; try { me = localStorage.getItem('hw-voter') || ''; if (!me) { me = 'v-' + Array.from(crypto.getRandomValues(new Uint8Array(12)), b => b.toString(16).padStart(2, '0')).join(''); localStorage.setItem('hw-voter', me); } } catch { me = 'v-' + Math.random().toString(36).slice(2) + Date.now().toString(36); }
+  root.innerHTML = `<div class="rv-page vt-page"><header class="rv-h"><span class="logo">${LOGO}</span></header><main class="rv-main" id="vt-main"><p class="faint">Loading…</p></main></div>`;
+  let V; try { const r = await fetch(`api/vote/${encodeURIComponent(id)}?voter=${encodeURIComponent(me)}`); V = await r.json(); if (!r.ok) throw new Error(V.error); } catch (e) { $('#vt-main').innerHTML = `<h1 class="display" style="font-size:40px">This vote is closed.</h1><p class="muted">${esc(e.message || 'It may have expired.')}</p>`; return; }
+  /* each person sees the lines in their own order, so the first one doesn't win by being first */
+  const order = V.options.map((_, i) => i).sort((a, b) => hash(me + a) - hash(me + b));
+  const draw = () => { const voted = V.mine != null, t = V.total || 0, top = Math.max(...V.counts);
+    $('#vt-main').innerHTML = `<h1 class="display rv-title">${esc(V.author)} can’t pick <em>a first line.</em></h1><p class="muted rv-sub">${voted ? 'Thanks. Here’s how everyone voted so far. Tap another to change yours.' : esc(V.question) + ' Tap it.'}</p>
+      <div class="vt-list" role="radiogroup" aria-label="First lines">${order.map(i => { const c = V.counts[i], pct = t ? Math.round(c / t * 100) : 0; return `<button class="vt-opt ${voted ? 'shown' : ''} ${V.mine === i ? 'mine' : ''} ${voted && c === top ? 'lead' : ''}" role="radio" aria-checked="${V.mine === i}" data-v="${i}"><span class="hv-bar" style="--p:${voted ? pct : 0}%"></span><span class="vt-t">${esc(V.options[i])}</span>${voted ? `<span class="vt-c">${pct}%${V.mine === i ? ' · you' : ''}</span>` : ''}</button>`; }).join('')}</div>
+      <p class="faint vt-foot">${voted ? `${t} vote${t === 1 ? '' : 's'}. Anonymous.` : 'Anonymous. Nobody sees who picked what.'} <a href="./#home">Made with Hookworthy</a></p>`; };
+  draw();
+  $('#vt-main').addEventListener('click', async e => { const b = e.target.closest('[data-v]'); if (!b) return; const i = +b.dataset.v; if (V.mine === i) return; b.classList.add('is-loading');
+    try { const r = await fetch(`api/vote/${encodeURIComponent(id)}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ choice: i, voter: me }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); const first = V.mine == null; V = j; draw(); SFX.play(first ? 'pop' : 'tick'); if (first) { const el = $(`[data-v="${i}"]`); el && burstFrom(el); } } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); b.classList.remove('is-loading'); } });
+  setInterval(async () => { if (document.hidden || V.mine == null) return; try { const r = await fetch(`api/vote/${encodeURIComponent(id)}?voter=${encodeURIComponent(me)}`); const j = await r.json(); if (r.ok && j.total !== V.total) { V = j; draw(); } } catch { } }, 8000);
+}
 /* ---------- Breakout alert: a ping when a post is taking off, with its first replies drafted ---------- */
 const BO_SAMPLE = () => { const now = Date.now(), f = t => (t / (t + 90)) / (1440 / 1530); const p = (S.queue.filter(q => q.status === 'published').pop() || {}).text || 'I raised prices 40% and lost 2 customers. Here’s the email I sent.';
   return { id: 'sample', sample: true, at: now - 60e3, text: p, posts: [p], min: 18, pace: 3.3, likes: 41, reposts: 6, replyCount: 9, views: 2300, usual: 24, usualFrom: 'history', checks: [{ min: 5, eng: 9 }, { min: 10, eng: 24 }, { min: 15, eng: 47 }, { min: 18, eng: 80 }], curve: [5, 10, 15, 20, 25, 30, 40, 50, 60].map(c => ({ min: c, v: Math.round(24 * f(c) / f(18)) })),
@@ -5536,13 +5707,14 @@ function openConnections() {
       ${row('X plan', xPaid(), xPlanLabel(), srv.xUser ? `<button class="btn sm" data-xt="check">Re-check</button>` : `<button class="btn sm" data-xt="self">${xPaid() ? 'I’m on free X' : 'I have Premium'}</button>`)}
       ${row('LinkedIn', !!srv.liUser, srv.linkedin ? (srv.liUser ? `Posting as ${esc(srv.liUser)}.` : 'App set. Connect to post.') : 'Needs the server with a LinkedIn app. Import Shares.csv meanwhile.', srv.linkedin ? `<a class="btn sm" href="auth/linkedin/start">${srv.liUser ? 'Reconnect' : 'Connect'}</a>` : '')}
       ${row('Typefully import', !!srv.typefully, srv.typefully ? 'Paste your API key in Bring your posts. Used once.' : 'Needs the server. A CSV export works without it.')}
+      ${row('Calendar', calOn(), calOn() ? (S.cal.src === 'link' ? 'Connected. Scheduling skips times you’re in meetings.' : `From ${esc(S.cal.name || 'a file')}. Scheduling skips your meetings.`) : 'Skip best times when you’re in a meeting for the first hour.', `<button class="btn sm" data-cal-setup>${calOn() ? 'Settings' : 'Connect'}</button>`)}
       ${row('Breakout alerts', boOn(), srv.breakout ? (S.settings.breakout ? 'Watching new posts for 3× your usual pace.' : 'A ping when a post takes off, with replies drafted.') : 'Needs the server with X connected.', `<button class="btn sm" data-bo="setup">${srv.breakout ? (S.settings.breakout ? 'Settings' : 'Set up') : 'See a sample'}</button>`)}
       ${row('Your history', HIST().length > 0, HIST().length ? `${fmtN(HIST().length)} posts in this browser.` : 'Nothing imported yet.', `<button class="btn sm" data-act="import">${HIST().length ? 'Add more' : 'Import'}</button>`)}
       ${syncRowHTML()}
       <form id="sy-join" class="sy-join" hidden><input class="input" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" aria-label="Sync code" autocomplete="off" spellcheck="false"><button class="btn sm primary" type="submit">Sync this device</button></form>
       <details class="dev-note"><summary>Self-hosting?</summary><p class="faint imp-note">Run the server: <code>cd hookworthy/server && npm install && npm start</code>. Keys go in <code>server/.env</code> (see server/README.md).</p></details>
     </div><div class="modal-f"><button class="btn primary" data-close>Done</button></div>`, { label: 'Connections', box: 'modal' });
-  m.el.addEventListener('click', e => { if (e.target.closest('[data-bo]')) { m.close(); openBreakoutSetup(); return; } const xt = e.target.closest('[data-xt]'); if (xt) { if (xt.dataset.xt === 'check') refreshXTier(xt); else { setSelfTier(!xPaid()); m.close(); openConnections(); } return; } if (e.target.closest('[data-act="import"]')) m.close(); const sy = e.target.closest('[data-sy]'); if (sy) syncAction(sy.dataset.sy, m); });
+  m.el.addEventListener('click', e => { if (e.target.closest('[data-bo]')) { m.close(); openBreakoutSetup(); return; } if (e.target.closest('[data-cal-setup]')) { m.close(); openCalendarSetup(); return; } const xt = e.target.closest('[data-xt]'); if (xt) { if (xt.dataset.xt === 'check') refreshXTier(xt); else { setSelfTier(!xPaid()); m.close(); openConnections(); } return; } if (e.target.closest('[data-act="import"]')) m.close(); const sy = e.target.closest('[data-sy]'); if (sy) syncAction(sy.dataset.sy, m); });
   const jf = $('#sy-join', m.el); if (jf) jf.onsubmit = async e => { e.preventDefault(); const code = $('input', jf).value.trim(); const btn = $('button', jf); btn.classList.add('is-loading'); try { const prev = SYNC.code; SYNC.code = code.toUpperCase(); SYNC.key = null; const got = await pullSync(true); if (!got) { const r = await fetch(`api/sync/${SYNC.id}`); if (r.status === 404) { SYNC.code = prev; throw new Error('No synced copy with that code yet'); } } try { localStorage.setItem('hw-sync', SYNC.code); } catch (err) { /* ok */ } m.close(); route(); toast('This device is synced.', { icon: 'check', tone: 'accent' }); } catch (err) { SYNC.key = null; toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } finally { btn.classList.remove('is-loading'); } };
 }
 /* Tidy up: the draft pile, one at a time. Finish it, give it a slot, or let it go. */
@@ -5631,6 +5803,8 @@ function composerClick(e) {
     case 'gif': openGifs(i); break;
     case 'visual': openVisual(i); break;
     case 'dictate': dictate(i); break;
+    case 'readaloud': readAloud(i); break;
+    case 'hookvote': openHookVote(); break;
     case 'xfmt': openXFormat(el); break;
     case 'brief': openBrief(); break;
     case 'picture': openPicture(); break;
@@ -5914,7 +6088,7 @@ function plansHTML(yearly) {
     <button class="btn ${p.hero ? 'primary' : ''} lg" data-plan="${p.k}">${p.cta}</button></div>`).join('');
 }
 function choosePlan(k, btn) {
-  if (k === 'free') { go(S.onboarded ? 'write' : 'start'); return; }
+  if (k === 'free' || !BILLING) { if (!BILLING && k !== 'free') toast('Nothing to buy yet. Every feature is already on while Hookworthy is in preview.', { icon: 'gift', tone: 'accent', ms: 4200 }); go(S.onboarded ? 'write' : 'start'); return; }
   if (S.plan === k) { toast(`You’re already on ${cap(k)}.`, { icon: 'check' }); return; }
   btn.classList.add('is-loading');
   setTimeout(() => {
@@ -6815,6 +6989,7 @@ function moveQ(id, day, time) {
   if (other) { other.day = q.day; other.time = q.time; }
   q.day = day; q.time = time; save(); drawCal(); drawQSide();
   const card = $(`.qcard[data-id="${id}"]`); card && card.classList.add('landed');
+  const bz = busyFor(day, time); if (bz) { const fr = freeNear(day, time); toast(`Moved to ${slotLabel(day, time)}, but you’re in ${calName(bz)} then. The first hour is when replies matter.`, { icon: 'cal', tone: 'err', ms: 6000, ...(fr ? { action: `Move to ${fmtTime(fr.time)}`, onAction: () => moveQ(id, fr.day, fr.time) } : {}) }); return; }
   const si = slotInfo(day, time), alt = !si.best ? nextSlots(6).find(x => slotDate(x.day, x.time) - slotDate(day, time) < 3 * DAY && slotDate(x.day, x.time) > Date.now()) : null, ai = alt && slotInfo(alt.day, alt.time);
   if (si.best) { SFX.play('pop'); toast(`Moved to ${slotLabel(day, time)}${other ? ', swapped with the post that was there' : ''}. ${si.general ? 'A good time to post.' : `One of your best times: ${si.x}× your usual.`}`, { icon: 'target', tone: 'accent', ms: 3000 }); }
   else toast(`Moved to ${slotLabel(day, time)}${other ? ', swapped with the post that was there' : ''}.${alt && ai.x && (si.x == null || ai.x > si.x) ? ` ${slotLabel(alt.day, alt.time)} usually does ${ai.x}×${si.x != null ? ` vs ${si.x}×` : ''}.` : ''}`, { icon: 'cal', ms: 4200, ...(alt && ai.x && (si.x == null || ai.x > si.x) ? { action: 'Move it there', onAction: () => moveQ(id, alt.day, alt.time) } : {}) });
@@ -6827,7 +7002,7 @@ function qMenu(c) {
   openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
     { label: 'Edit in composer', icon: 'write', run: () => { S.queue = S.queue.filter(x => x !== q); save(); writeFrom(q.tweets); S.draft.slot = { day: q.day, time: q.time }; } },
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No best times left', icon: 'target', disabled: true },
-    { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide(); toast('Posted. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); syncToServer(q); liveStart(q); } },
+    { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide(); { const srv = LLM.server || {}; toast((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? 'Sending now. Stay close for the first replies.' : 'Marked as posted. Nothing went out from here: copy it to post, or connect X or LinkedIn.', { icon: 'send', tone: 'accent', ...((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? {} : { action: 'Copy text', onAction: () => copyText(q.tweets.join('\n\n')) }) }); } syncToServer(q); liveStart(q); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; S.queue.push({ ...q, id: uid(), day: s.day, time: s.time }); save(); drawCal(); drawQSide(); toast(`Duplicated to ${slotLabel(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
     { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); save(); drawCal(); drawQSide(); toast('Gone from the queue.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); drawCal(); drawQSide(); } }); } }
   ], { width: 250 });
@@ -6847,7 +7022,8 @@ function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) 
       const day = dayKey(d); const past = slotDate(day, t).getTime() < now; const best = BEST[dowIdx(d)] && BEST[dowIdx(d)][t];
       const items = list.filter(q => q.day === day && (q.status === 'scheduled' ? q.time === t : rowOf(q.time) === r));
       const sx = interactive && !past ? (SLOTX[dowIdx(d)] || {})[t] : null, xl = sx && sx.x != null ? `${sx.x}×` : '';
-      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${interactive && !past ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
+      const bz = interactive && !past ? busyFor(day, t) : null, tip = [best, bz ? `You’re in ${calName(bz)} for part of the first hour` : ''].filter(Boolean).join('. ');
+      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''} ${bz ? 'busy' : ''}" data-day="${day}" data-time="${t}" ${tip ? `data-tip="${esc(tip)}"` : ''}>${bz ? `<span class="bz" aria-hidden="true">${S.cal && S.cal.hide ? 'Busy' : esc(clip(bz.title || 'Busy', 18))}</span>` : ''}${interactive && !past ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
     });
   });
   return html;
@@ -6915,11 +7091,7 @@ function drawQSide() {
     <div class="rest-row"><span class="faint">Rest days</span><div class="rest-days" role="group" aria-label="Rest days">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button data-rest="${d}" aria-pressed="${(S.settings.rest || []).includes(d)}" aria-label="${DOW[d]}" data-tip="${DOW[d]}${(S.settings.rest || []).includes(d) ? ' is a rest day' : ''}">${DOW[d][0]}</button>`).join('')}</div></div></div>
   ${rerunHTML()}
   <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(' · ', '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
-  <div class="card"><span class="label">Autopilot</span>
-    <div class="setting"><span>Follow-up reply</span><button class="switch" role="switch" aria-checked="${S.settings.autoPlug}" data-sw="autoPlug" aria-label="Follow-up reply"></button><small>At ${S.settings.plugAt} likes, reply with:</small></div>
-    <textarea class="input" id="plug-t" rows="2" aria-label="Follow-up reply text" style="resize:none">${esc(S.settings.plugText)}</textarea>
-    <div class="setting"><span>Auto-repost</span><button class="switch" role="switch" aria-checked="${S.settings.autoRepost}" data-sw="autoRepost" aria-label="Auto-repost"></button><small>Once, for the other time zone.</small></div>
-    <select class="input" id="rep-h" aria-label="Repost after">${[6, 12, 24].map(h => `<option value="${h}" ${S.settings.repostAfter === h ? 'selected' : ''}>After ${h} hours</option>`).join('')}</select>
+  <div class="card"><span class="label">Reruns</span>
     <div class="setting"><span>Evergreen reruns</span><button class="switch" role="switch" aria-checked="${!!S.settings.evergreen}" data-sw="evergreen" aria-label="Evergreen reruns"></button><small>Once a week, one of your best posts from 2+ months ago comes back with a fresh first line.</small></div></div>
 `;
 }
@@ -7129,10 +7301,10 @@ async function learnVoice(btn) {
 ROUTES.upgrade = () => {
   const n = S.ai.used; const h = hookScore(S.draft.tweets[0].text).score;
   mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited rewrites in your voice, a follow-up reply when a post takes off, and insights that tell you what to write next.</p>
-    ${n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free rewrites today${h ? ` · your current hook scores ${h}` : ''}</p>` : ''}
+    ${!BILLING ? `<p class="pill accent" style="height:auto;padding:6px 12px;white-space:normal">Pricing preview. Hookworthy isn’t charging yet, so every feature is on for you now.</p>` : n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free rewrites today${h ? ` · your current hook scores ${h}` : ''}</p>` : ''}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
     <div class="pl-grid" id="up-plans" style="margin-top:32px">${plansHTML(true)}</div>
-    <div class="faq"><h2 class="h2" style="margin-bottom:12px">Questions, answered plainly</h2>${[['Is the free plan actually free?', 'Yes. Five rewrites a day, hook scores on everything, unlimited drafts and ideas. No trial clock, no card.'], ['Does the AI sound like ChatGPT?', 'No. It learns from your posts, follows your tone sliders, and never uses words you’ve banned. If it writes something you wouldn’t, that’s a bug and we want to hear about it.'], ['Can I cancel anytime?', 'Two clicks, no call, no guilt trip. Your drafts and ideas stay yours on the free plan.'], ['Which platforms?', 'X, Threads, LinkedIn and Bluesky today. Each gets its own preview and its own version when you need one.'], ['Do you post without asking?', 'Never. Follow-up replies and reposts only run on posts you scheduled, and you can switch them off per post.']].map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
+    <div class="faq"><h2 class="h2" style="margin-bottom:12px">Questions, answered plainly</h2>${[['Is the free plan actually free?', 'Yes. Five rewrites a day, hook scores on everything, unlimited drafts and ideas. No trial clock, no card.'], ['Does the AI sound like ChatGPT?', 'No. It learns from your posts, follows your tone sliders, and never uses words you’ve banned. If it writes something you wouldn’t, that’s a bug and we want to hear about it.'], ['Can I cancel anytime?', 'Two clicks, no call, no guilt trip. Your drafts and ideas stay yours on the free plan.'], ['Which platforms?', 'X, Threads, LinkedIn and Bluesky today. Each gets its own preview and its own version when you need one.'], ['Do you post without asking?', 'Never. Only posts you schedule go out, at the time you picked, and you can take them back for a few seconds after you press Post.']].map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
     <p class="faint" style="text-align:center;margin-top:40px;font-size:13px">Cancel in two clicks. We’ll even say thanks.</p></div>`);
   syncSeg($('#up-bill'));
   $('#up-bill').addEventListener('click', e => { const b = e.target.closest('[data-bill]'); if (!b) return; $$('#up-bill [data-bill]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#up-bill')); $('#up-plans').innerHTML = plansHTML(b.dataset.bill === 'y'); });
@@ -7184,7 +7356,7 @@ ROUTES.brand = () => {
 applyTheme();
 if (S.user.pic) picImg(S.user.pic);
 /* a reviewer opened a review link: show only the draft and the comment boxes */
-const REVIEW_ID = new URLSearchParams(location.search).get('review');
+const REVIEW_ID = new URLSearchParams(location.search).get('review'), VOTE_ID = new URLSearchParams(location.search).get('vote');
 /* shared from another app (phone share sheet): park it, then show angles */
 (() => {
   const q = new URLSearchParams(location.search); const t = q.get('text'), u = q.get('url'), ti = q.get('title');
@@ -7196,11 +7368,11 @@ const REVIEW_ID = new URLSearchParams(location.search).get('review');
 })();
 /* the archive X promised should be ready: one nudge a day until it's imported */
 if (!REVIEW_ID && S.archiveAskedAt && !HIST().some(p => p.src === 'x-archive') && Date.now() - S.archiveAskedAt > 20 * 3600e3 && (S.archiveNudged || 0) < Date.now() - 20 * 3600e3) setTimeout(() => { S.archiveNudged = Date.now(); save(); toast('Your X archive is probably ready. Check your email from X.', { icon: 'upload', tone: 'accent', action: 'Import it', onAction: () => openImport('x'), ms: 9000 }); }, 1500);
-if (!REVIEW_ID) LLM.ready.then(() => { if (!LLM.server || !LLM.server.breakout) return; if (S.settings.breakout) boSave().catch(() => {}); boPoll(); const bid = new URLSearchParams(location.search).get('breakout'); if (bid) { history.replaceState(null, '', location.pathname + location.hash); boOpenId(bid); } });
+if (!REVIEW_ID && !VOTE_ID) LLM.ready.then(() => { if (!LLM.server || !LLM.server.breakout) return; if (S.settings.breakout) boSave().catch(() => {}); boPoll(); const bid = new URLSearchParams(location.search).get('breakout'); if (bid) { history.replaceState(null, '', location.pathname + location.hash); boOpenId(bid); } });
 if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', e => { const d = e.data || {}; if (d.type === 'breakout' && d.url) { const id = new URL(d.url, location.href).searchParams.get('breakout'); if (id) boOpenId(id); } });
 /* a post went out less than an hour ago: the live pill picks up where it left off */
-if (!REVIEW_ID && S.live) { if (Date.now() - S.live.at < 60 * 60e3) LLM.ready.then(() => { liveDraw(); liveTick(); }); else S.live = null; }
-if (REVIEW_ID) LLM.ready.then(() => renderReview(REVIEW_ID)); else { route(); LLM.ready.then(() => SYNC.code && LLM.server && LLM.server.sync && pullSync().then(ch => ch && route()).catch(() => {})); }
+if (!REVIEW_ID && !VOTE_ID && S.live) { if (Date.now() - S.live.at < 60 * 60e3) LLM.ready.then(() => { liveDraw(); liveTick(); }); else S.live = null; }
+if (VOTE_ID) LLM.ready.then(() => renderVote(VOTE_ID)); else if (REVIEW_ID) LLM.ready.then(() => renderReview(REVIEW_ID)); else { LLM.ready.then(() => calRefresh()); route(); LLM.ready.then(() => SYNC.code && LLM.server && LLM.server.sync && pullSync().then(ch => ch && route()).catch(() => {})); }
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !/claude|anthropic/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => { });
 </script>
 </body>
