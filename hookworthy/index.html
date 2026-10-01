@@ -645,6 +645,18 @@ body.typing .tw-tools{ opacity:0!important; }
 .force-dark .hook-reason,:root[data-theme="dark"] .hook-reason:not(.force-light .hook-reason){ background:var(--surface-2); }
 .hook-reason b{ color:var(--text-1); font-weight:600; }
 /* Round 25: settings, all drafts, coming soon */
+.rr-av{ width:32px; height:32px; flex:none; }
+.rr-sep{ height:1px; background:var(--border); margin:6px 0 2px; }
+.card.soon{ display:grid; gap:10px; } .soon-h{ display:flex; justify-content:space-between; align-items:center; } .soon-i{ display:grid; gap:2px; } .soon-i b{ font:inherit; color:var(--text-2); } .soon-i small{ color:var(--text-3); font-size:var(--t-12); line-height:1.4; }
+.qt.missed{ color:var(--error); } .qt.missed i{ background:var(--error); }
+.grow{ flex:1 1 auto; min-width:0; }
+.modal-h{ padding-bottom:12px; transition:box-shadow var(--d-micro); } .modal-h + .modal-b{ padding-top:4px; } .scrim .scrolled .modal-h{ box-shadow:0 1px 0 var(--border); }
+/* with a sheet open, toasts move out of its way: above it on desktop, above its footer on phones */
+body:has(.scrim) #toasts{ z-index:1001; } @media (min-width:761px){ body:has(.scrim) #toasts{ bottom:auto; top:calc(14px + env(safe-area-inset-top,0px)); } } @media (max-width:760px){ body:has(.scrim) #toasts{ bottom:calc(96px + env(safe-area-inset-bottom,0px)); } }
+.set-b .cx-row{ padding:0; border-bottom:0; } .set-b .cx-row b{ font:inherit; color:var(--text-1); } .set-b .cx-row small{ font-size:var(--t-12); color:var(--text-3); line-height:1.4; } .set-b .cx-dot{ display:none; }
+.vt-title{ max-width:none; margin-bottom:14px; }
+.hv-link{ align-items:center; } .hv-link .btn{ height:40px; }
+.page-h p{ text-wrap:pretty; }
 .set-b{ display:grid; gap:22px; } .set-b section{ display:grid; gap:12px; } .set-b section + section{ padding-top:18px; border-top:1px solid var(--border); }
 .set-row{ display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; } .set-row > div:first-child{ display:grid; gap:4px; min-width:0; flex:1 1 220px; } .set-row b{ font:inherit; color:var(--text-1); } .set-row small{ color:var(--text-3); font-size:var(--t-12); line-height:1.4; }
 .set-b .rest-days button{ min-width:30px; height:30px; }
@@ -2215,7 +2227,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .rr-who{ display:grid; min-width:0; flex:1; } .rr-who b{ font-weight:600; font-size:var(--t-14); } .rr-who span{ font-size:var(--t-12); color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .rr-clock{ position:relative; display:inline-grid; place-items:center; width:40px; height:40px; flex:none; font:600 11px/1 var(--font-sans,inherit); color:var(--text-3); font-variant-numeric:tabular-nums; }
 .rr-clock i{ position:absolute; inset:0; border-radius:50%; background:conic-gradient(var(--track,var(--surface-3)) calc(var(--p) * 360deg), var(--pl,#6A2FA0) 0); -webkit-mask:radial-gradient(circle,transparent 15px,#000 16px); mask:radial-gradient(circle,transparent 15px,#000 16px); opacity:.35; }
-.rr-clock.live{ color:var(--pl,#6A2FA0); } .rr-clock.live i{ opacity:1; }
+.rr-clock.live{ color:var(--accent-text); } .rr-clock.live i{ opacity:1; }
 .rr-t{ margin:0; font-size:var(--t-15); line-height:1.5; white-space:pre-wrap; }
 .rr-why{ display:flex; flex-wrap:wrap; gap:6px; } .rr-why span{ padding:3px 9px; border-radius:99px; background:var(--tint-soft); font-size:var(--t-12); color:var(--text-2); }
 .rr-me{ display:grid; grid-template-columns:28px minmax(0,1fr); gap:10px; align-items:start; } .rr-me .avatar{ width:28px; height:28px; }
@@ -2293,6 +2305,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
     <symbol id="i-right" viewBox="0 0 20 20"><path d="M8 5l5 5-5 5"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M4 10h12M11 5l5 5-5 5"/></symbol>
     <symbol id="i-lr" viewBox="0 0 20 20"><path d="M7 6l-4 4 4 4M13 6l4 4-4 4"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 20 20"><path d="M7.5 5v10M12.5 5v10"/></symbol>
     <symbol id="i-bell" viewBox="0 0 20 20"><path d="M5.2 13.6V9a4.8 4.8 0 0 1 9.6 0v4.6l1.4 1.6H3.8z"/><path d="M8.3 17.2a1.9 1.9 0 0 0 3.4 0"/></symbol>
     <symbol id="i-clock" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><path d="M10 6.2V10l2.6 1.6"/></symbol>
     <symbol id="i-send" viewBox="0 0 20 20"><path d="M3.5 9.5l13-6-5 13.5-2.3-5.2z"/><path d="M9.2 11.8l7.3-8.3"/></symbol>
@@ -2623,7 +2636,7 @@ const HIST = () => S.history || [];
 let _an = { key: '', v: null };
 let _ph = {}; function PHOOK() { const k = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (_ph.key !== k) _ph = { key: k, v: HWCore.learnHooks(HIST()) }; return _ph.v; }
 /* the score the composer shows: tuned to you once there's enough history, the general one before */
-function hookFor(text, parts) { const m = PHOOK(), g = hookScore(text); const me = m.ready ? HWCore.personalScore(text, m, { parts }) : null; return { score: me ? me.score : g.score, me, g, m }; }
+function hookFor(text, parts) { const m = PHOOK(), g = hookScore(text); const me = m.ready ? HWCore.personalScore(text, m, { parts }) : null; const trusted = !!me && (m.trust === 'better' || m.trust === 'similar'); return { score: trusted ? me.score : g.score, me: trusted ? me : null, hint: !trusted ? me : null, g, m }; }
 function ANALYSIS() { const k = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (_an.key !== k) _an = { key: k, v: HWCore.analyze(HIST()) }; return _an.v; }
 const AI = {
   punchier(t) {
@@ -2932,6 +2945,8 @@ function modal(html, { box = 'modal', center = false, label = 'Dialog', onClose,
   const scrim = document.createElement('div'); scrim.className = 'scrim' + (center ? ' center' : '');
   scrim.innerHTML = `<div class="${box}" role="dialog" aria-modal="true" aria-label="${esc(label)}">${html}</div>`;
   document.body.append(scrim);
+  /* a hairline under the sticky header once the sheet scrolls, so content never runs flush under the title */
+  { const box = scrim.firstElementChild; box.addEventListener('scroll', () => box.classList.toggle('scrolled', box.scrollTop > 4), { passive: true }); }
   const prev = document.activeElement; let closed = false;
   const api = {
     el: scrim.firstElementChild, scrim,
@@ -3206,11 +3221,11 @@ function paletteCommands() {
     { g: 'Actions', label: 'Tidy up drafts', icon: 'archive', run: () => openTidy() },
     { g: 'Actions', label: 'Replies to your last post', icon: 'reply', run: () => openReplyDesk() },
     { g: 'Actions', label: 'Plan my week', icon: 'cal', run: () => openPlan() },
-    { g: 'Actions', label: 'Picture to post (screenshot, chart, DM)', icon: 'image', run: () => openPicture() },
+    { g: 'Actions', label: 'Write from a picture (screenshot, chart, DM)', icon: 'image', run: () => openPicture() },
     { g: 'Actions', label: 'Reply radar: fresh posts worth an early reply', icon: 'reply', run: () => openRadar() },
     { g: 'Actions', label: 'Breakout alerts: a ping when a post takes off', icon: 'bell', run: () => openBreakoutSetup() },
     { g: 'Actions', label: 'Read my post aloud', icon: 'volume', run: () => goThen('write', () => readAloud(0)) },
-    { g: 'Actions', label: 'Hook vote: ask friends which first line wins', icon: 'share', run: () => goThen('write', openHookVote) },
+    { g: 'Actions', label: 'Hook vote: ask friends which first line wins', icon: 'poll', run: () => goThen('write', openHookVote) },
     { g: 'Actions', label: 'Write from a brief, doc or PDF', icon: 'write', run: () => openBrief() },
     { g: 'Actions', label: 'Talk instead of typing', icon: 'mic', run: () => { goThen('write', () => dictate(0)); } },
     { g: 'Actions', label: 'X format: thread or long post', icon: 'layers', run: () => { goThen('write', () => openXFormat($('[data-cact="schedmenu"]') || $('#thread'))); } },
@@ -3561,11 +3576,13 @@ function paintVoice() {
   const r = HWCore.voiceMatch(txt, an ? an.stats : DEMO_STATS, { never: S.voice.never, lean: an ? an.lean : [] }); UI.vm = r;
   if (!r || txt.trim().length < 16) { b.hidden = true; return; }
   b.hidden = false; $('.vm-n', b).textContent = r.score; b.classList.toggle('lo', r.score < 70); b.classList.toggle('hi', r.score >= 90);
-  b.dataset.tip = r.miss.length ? `${r.score}% you · ${r.miss[0].why}` : `${r.score}% you. Nothing sounds off.`;
+  const who = an || S.profile ? 'you' : 'the sample voice';
+  b.dataset.tip = r.miss.length ? `${r.score}% ${who} · ${r.miss[0].why}` : `${r.score}% ${who}. Nothing sounds off.`;
 }
 function openVoiceMatch(el) {
   const r = UI.vm; if (!r) return; const an = ANALYSIS();
-  openMenu(el, [{ header: `Sounds ${r.score}% like you` }, ...(r.miss.length ? r.miss.map(m => ({ label: m.why, icon: 'target', hint: clip(String(m.frag || ''), 16), run: () => selectFrag(m.frag) })) : [{ label: 'Nothing sounds off. Ship it.', icon: 'check', disabled: true }]), '-', { label: an ? `Measured against ${fmtN(an.n)} of your posts` : 'Demo voice. Bring your posts to make it yours', icon: 'voice', run: () => an ? go('voice') : openImport() }], { width: 300, align: 'end' });
+  if (UI.hook) { UI.hook = false; renderExtras(S.draft.tweets[0].id); const hb = $('.tw .hook'); hb && hb.setAttribute('aria-expanded', false); }
+  openMenu(el, [{ header: an || S.profile ? `Sounds ${r.score}% like you` : `Matches the sample voice ${r.score}%` }, ...(r.miss.length ? r.miss.map(m => ({ label: m.why, icon: 'target', hint: clip(String(m.frag || ''), 16), run: () => selectFrag(m.frag) })) : [{ label: 'Nothing sounds off. Ship it.', icon: 'check', disabled: true }]), '-', { label: an ? `Measured against ${fmtN(an.n)} of your posts` : 'Demo voice. Bring your posts to make it yours', icon: 'voice', run: () => an ? go('voice') : openImport() }], { width: 300, align: 'end' });
 }
 function selectFrag(frag) {
   const k = S.draft.tweets.findIndex(t => t.text.includes(frag)); if (k < 0) return; const ta = $$('.tw-input')[k]; if (!ta) return;
@@ -3586,6 +3603,7 @@ function paintHook() {
 }
 function mineHTML(H) {
   const m = H.m;
+  if (m.ready && !H.me && H.hint) { const h = H.hint; return `<div class="hk-mine off">${ic('trend', 'sm')}<p><b>Still learning your audience.</b> On your newest posts the tuned score didn’t beat the general one yet, so the chip shows the general score. Early read: this line would beat ${h.score}% of your posts.</p></div>`; }
   if (!m.ready) return `<div class="hk-mine off">${ic('trend', 'sm')}<p>${m.n ? `The score tunes itself to you after ${m.need} posts with likes. You have ${m.n}.` : 'Bring your posts and this score learns what works for your audience, not people in general.'}</p><button class="btn sm" data-act="import">${ic('upload', 'sm')} Bring your posts</button></div>`;
   const me = H.me, trait = t => `<span class="hk-t ${t.w > 0 ? 'up' : 'down'}" data-tip="${t.n} of your posts have it">${esc(cap(t.label))} <b>${t.x}×</b></span>`;
   const trust = m.trust === 'better' ? `Tested on your newest ${m.val.n} posts: it called them better than the general score (${m.val.r} vs ${m.val.rGeneral}).` : m.trust === 'similar' ? `Tested on your newest ${m.val.n} posts: about as good as the general score so far.` : m.trust === 'weak' ? `Still learning: on your newest ${m.val.n} posts it didn’t predict much yet. Treat it as a hint.` : 'Not tested yet: your posts need dates for that.';
@@ -3598,7 +3616,7 @@ function hookReasonHTML() {
   const H = hookFor(S.draft.tweets[0].text, S.draft.tweets.filter(t => t.text.trim()).length), h = H.g;
   const bars = Object.entries(h.parts).map(([k, v]) => `<div class="bar-row"><span>${cap(k)}</span><div class="meter"><i style="width:${v}%"></i></div><span class="num">${v}</span></div>`).join('');
   const general = `<div style="display:flex;gap:10px;align-items:flex-start">${ic(h.tone === 'good' ? 'check' : 'target', 'sm')}<p><b>${H.me ? 'General score ' : ''}${h.score}/100.</b> ${esc(h.reason)}</p></div><div class="bars">${bars}</div>`;
-  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${S.draft.tweets[0].text.trim() ? mineHTML(H) : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${h.score}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : general}${S.draft.tweets[0].text.trim() ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button>` : ''}<button class="btn sm" data-cact="hookvote" data-tip="Friends pick between versions of your first line">${ic('share', 'sm')} Ask friends which line wins</button></div>` : ''}${H.score < 70 ? formulasHTML() : ''}</div></div>`;
+  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${S.draft.tweets[0].text.trim() ? mineHTML(H) : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${h.score}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : general}${S.draft.tweets[0].text.trim() ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button>` : ''}<button class="btn sm" data-cact="hookvote" data-tip="Friends pick between versions of your first line">${ic('poll', 'sm')} Ask friends which line wins</button></div>` : ''}${H.score < 70 ? formulasHTML() : ''}</div></div>`;
 }
 /* hook formulas, offered right where a weak first line is: pick one, then type over the blanks */
 function formulasHTML() {
@@ -4059,6 +4077,7 @@ const xTier = () => (LLM.server && LLM.server.xTier) || S.xTier || null;
 const xPaid = () => !!(xTier() && xTier().paid);
 const xLong = () => xPaid() && S.settings.xFormat === 'long';
 const xVerified = () => { const t = xTier(); return !!(t && t.source && t.source !== 'self'); };
+const modelName = id => { const m = String(id || '').match(/(opus|sonnet|haiku|fable)/i); return m ? cap(m[1].toLowerCase()) : ''; };
 function xPlanLabel() { const t = xTier(); if (!t) return 'Not checked yet. Treated as free: 280 per post.'; return `${esc(t.plan || (t.paid ? 'Premium' : 'Free'))}${t.paid ? ': long posts up to 25,000 characters' : ': 280 characters per post'}. ${xVerified() ? 'Verified with X.' : 'You told us (connect X to verify).'}`; }
 function setSelfTier(paid) { if (xVerified()) { toast('Your X plan comes from X itself while you’re connected. Reconnect to re-check it.', { icon: 'x' }); return; } S.xTier = { paid, plan: paid ? 'Premium' : 'Free', source: 'self', checkedAt: Date.now() }; if (!paid && S.settings.xFormat === 'long') setXFormat('thread', true); save(); toast(paid ? 'Noted: X Premium. Long posts unlocked (up to 25,000 characters).' : 'Noted: free X. Posts stay at 280 and longer ones become threads.', { icon: 'x', tone: 'accent' }); }
 async function refreshXTier(btn) {
@@ -4324,7 +4343,7 @@ const mediaCount = q => (q.mcount || []).reduce((a, b) => a + b, 0);
 /* ---------- Reply radar: fresh posts from people you learn from, worth an early reply ---------- */
 const RADAR_SAMPLE = () => { const P = typeof PEOPLE !== 'undefined' ? PEOPLE : []; const posts = (typeof HOOK_POSTS !== 'undefined' ? HOOK_POSTS : []).slice(0, 8); const now = Date.now();
   return posts.map((p, i) => { const who = P[p.p] || { n: 'Someone', h: 'someone' }; const age = [4, 9, 13, 22, 31, 48, 70, 95][i] || 60; const c = p.c || [0, 0, 0, 0];
-    return { id: 'sample-' + i, text: p.t, at: new Date(now - age * 60e3).toISOString(), handle: who.h, name: who.n, pic: who.pic || null, followers: [182000, 41000, 12600, 96000, 8800, 300000, 22000, 5400][i] || 10000, likes: Math.round((c[2] || 40) * .08), replies: [2, 6, 1, 14, 3, 40, 9, 2][i] || 3, reposts: Math.round((c[1] || 10) * .05), sample: true, why: [age <= 15 ? `${age} min old: the first replies get seen most` : `${age} min old`, ...(i % 2 ? ['moving fast'] : []), (n => `only ${n} repl${n > 1 ? 'ies' : 'y'} so far`)([2, 6, 1, 14, 3, 40, 9, 2][i] || 3)].slice(0, 2) }; }); };
+    return { id: 'sample-' + i, text: p.t, at: new Date(now - age * 60e3).toISOString(), handle: who.h, name: who.n, pic: who.pic || null, img: who.img, followers: [182000, 41000, 12600, 96000, 8800, 300000, 22000, 5400][i] || 10000, likes: Math.round((c[2] || 40) * .08), replies: [2, 6, 1, 14, 3, 40, 9, 2][i] || 3, reposts: Math.round((c[1] || 10) * .05), sample: true, why: [age <= 15 ? `${age} min old: the first replies get seen most` : `${age} min old`, ...(i % 2 ? ['moving fast'] : []), (n => `only ${n} repl${n > 1 ? 'ies' : 'y'} so far`)([2, 6, 1, 14, 3, 40, 9, 2][i] || 3)].slice(0, 2) }; }); };
 const RRADAR = { posts: [], live: false, at: 0, loading: false, drafts: {}, why: '' };
 function radarPaneHTML() {
   const live = !!(LLM.server && LLM.server.radar), people = (S.people || []).map(p => p.handle).filter(Boolean);
@@ -4336,7 +4355,7 @@ function radarPaneHTML() {
 function rrAge(at) { const m = Math.max(0, Math.round((Date.now() - Date.parse(at)) / 60e3)); return m; }
 function rrCardHTML(p, i) {
   const age = rrAge(p.at), left = Math.max(0, 15 - age), done = S.radar && S.radar.done && S.radar.done[p.id], d = RRADAR.drafts[p.id] || {};
-  const pic = p.pic ? `<span class="avatar pic"><img src="${esc(p.pic)}" alt=""></span>` : p.avatar ? `<span class="avatar pic"><img src="${esc(p.avatar)}" alt="" referrerpolicy="no-referrer"></span>` : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
+  const pic = Number.isInteger(p.img) ? pfAv({ n: p.name, img: p.img }, 'rr-av') : p.pic ? `<span class="avatar pic"><img src="${esc(p.pic)}" alt=""></span>` : p.avatar ? `<span class="avatar pic"><img src="${esc(p.avatar)}" alt="" referrerpolicy="no-referrer"></span>` : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
   return `<article class="rr-card ${done ? 'done' : ''}" data-rid="${esc(p.id)}" style="--i:${i}">
     <header>${pic}<div class="rr-who"><b>${esc(p.name || '@' + p.handle)}</b><span>@${esc(p.handle)} · ${fmtN(p.followers)} followers</span></div><span class="rr-clock ${left ? 'live' : ''}" style="--p:${Math.min(1, age / 15)}" title="${left ? `${left} min left in the first 15` : 'Past the first 15 minutes'}"><i></i><span>${age < 60 ? age + 'm' : Math.round(age / 60) + 'h'}</span></span></header>
     <p class="rr-t">${esc(p.text)}</p>
@@ -4701,10 +4720,10 @@ function pvCard(k, compact) {
     const list = compact ? tws.slice(0, 1) : tws; const overN = tws.filter(t => (k === 'x' ? HWCore.xLength(t.text) : [...t.text].length) > p.limit).length;
     body = list.map((t, i) => R({ t: t.text, html: t.text ? (k === 'x' && xLong() ? xLongHTML(t.text) : overText(t.text, p.limit)) : ph(i), mh: umedia(t) + upoll(t), c: cnt(i === 0 ? 1 : .32 / i), ago: 'now' }, { dark, you, rail: i < list.length - 1 })).join('');
     if (compact && tws.length > 1) body += `<div class="pf pv-more ${dark ? 'dark' : ''}">${pfAv(you)}<span>Show ${tws.length - 1} more repl${tws.length > 2 ? 'ies' : 'y'}</span></div>`;
-    tag = `<span>${pic(p.icon)} @${esc(you.h)}${k === 'bsky' ? '.bsky.social' : ''}</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${k === 'x' && xLong() ? `Long post · ${fmtN(HWCore.xLength(tws[0].text))} / 25,000` : tws.length > 1 ? `Thread of ${tws.length}` : `${p.limit} characters`}</span>`}`;
+    tag = `<span>${pic(p.icon)} @${esc(you.h)}${k === 'bsky' ? '.bsky.social' : ''}</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${k === 'x' && xLong() ? `Long post · ${fmtN(HWCore.xLength(tws[0].text))} / 25,000` : tws.length > 1 ? `Thread of ${tws.length}` : `Up to ${fmtN(p.limit)} characters`}</span>`}`;
   }
   const near = compact ? ['', ''] : PV_NEAR[k].map(i => R(VOID_POSTS[i], { dark }));
-  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${compact ? '' : `<p class="pv-proj">${est ? `Counts are what a typical post of yours gets${est.tuned ? `, times ${est.x} for how this line scores with your audience` : ''}. From ${fmtN(est.n)} of your posts.` : demo ? 'Sample numbers. Bring your posts and these come from your own history.' : 'No numbers yet. Bring your posts and this shows what to expect, from your own history.'}</p>`}</div>`;
+  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${compact ? '' : `<p class="pv-proj">${est ? `Counts are what a typical post of yours gets${est.tuned ? `, times ${est.x} for how this line scores with your audience` : ''}. From ${fmtN(est.n)} of your posts.` : demo ? 'Sample numbers. Bring your posts and these come from your own history.' : HIST().length >= 8 ? `Start typing to see what this gets, from your ${fmtN(HIST().length)} posts.` : 'No numbers yet. Bring your posts and this shows what to expect, from your own history.'}</p>`}</div>`;
 }
 function liVersion() {
   let t = S.draft.tweets.map(x => x.text.trim()).filter(Boolean).join('\n\n');
@@ -5500,11 +5519,11 @@ function raPost() {
   const t = RA.posts[RA.i]; let el = $('#ra');
   if (!el) { el = document.createElement('div'); el.id = 'ra'; el.className = 'ra'; el.setAttribute('role', 'region'); el.setAttribute('aria-label', 'Reading your post aloud'); document.body.append(el);
     el.addEventListener('click', e => { const b = e.target.closest('[data-ra]'); if (!b) return; const a = b.dataset.ra;
-      if (a === 'stop') raStop(); if (a === 'pause') { if (speechSynthesis.paused) { speechSynthesis.resume(); b.innerHTML = ic('minus', 'sm'); b.setAttribute('aria-label', 'Pause'); } else { speechSynthesis.pause(); b.innerHTML = ic('play', 'sm'); b.setAttribute('aria-label', 'Resume'); } }
+      if (a === 'stop') raStop(); if (a === 'pause') { if (speechSynthesis.paused) { speechSynthesis.resume(); b.innerHTML = ic('pause', 'sm'); b.setAttribute('aria-label', 'Pause'); } else { speechSynthesis.pause(); b.innerHTML = ic('play', 'sm'); b.setAttribute('aria-label', 'Resume'); } }
       if (a === 'rate') { RA.rate = RA.rate === 1 ? 1.2 : RA.rate === 1.2 ? .9 : 1; b.textContent = `${RA.rate}×`; const at = RA.i; speechSynthesis.cancel(); RA.i = at; setTimeout(raPost, 60); }
       if (a === 'again') { speechSynthesis.cancel(); setTimeout(raPost, 60); } }); }
   let k = 0; const words = t.split(/(\s+)/).map(w => { const s = k; k += w.length; return /\S/.test(w) ? `<span class="w" data-s="${s}">${esc(w)}</span>` : esc(w); }).join('');
-  el.innerHTML = `<div class="ra-h"><span class="ra-eq" aria-hidden="true"><i></i><i></i><i></i></span><b>Reading${RA.posts.length > 1 ? ` post ${RA.i + 1} of ${RA.posts.length}` : ''}</b><span class="grow"></span><button class="btn ghost sm" data-ra="rate" aria-label="Speed">${RA.rate}×</button><button class="btn ghost icon-only sm" data-ra="again" aria-label="Start this post again" data-tip="Again">${ic('undo', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="pause" aria-label="Pause">${ic('minus', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="stop" aria-label="Stop" data-tip="Stop (Esc)">${ic('x', 'sm')}</button></div><p class="ra-t">${words}</p><p class="ra-tip">If you trip over a line, so will your readers.</p>`;
+  el.innerHTML = `<div class="ra-h"><span class="ra-eq" aria-hidden="true"><i></i><i></i><i></i></span><b>Reading${RA.posts.length > 1 ? ` post ${RA.i + 1} of ${RA.posts.length}` : ''}</b><span class="grow"></span><button class="btn ghost sm" data-ra="rate" aria-label="Speed">${RA.rate}×</button><button class="btn ghost icon-only sm" data-ra="again" aria-label="Start this post again" data-tip="Again">${ic('undo', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="pause" aria-label="Pause">${ic('pause', 'sm')}</button><button class="btn ghost icon-only sm" data-ra="stop" aria-label="Stop" data-tip="Stop (Esc)">${ic('x', 'sm')}</button></div><p class="ra-t">${words}</p><p class="ra-tip">If you trip over a line, so will your readers.</p>`;
   /* long posts go in sentence-sized pieces: some voices stop after ~15 seconds of one utterance */
   RA.chunks = []; const re = /[^.!?\n]+[.!?]*\s*|\n+/g; let m, buf = '', bs = 0; while ((m = re.exec(t))) { if (!buf) bs = m.index; buf += m[0]; if (buf.length > 180 || /\n/.test(m[0])) { RA.chunks.push({ s: bs, t: buf }); buf = ''; } } if (buf.trim()) RA.chunks.push({ s: bs, t: buf });
   RA.ci = 0; raChunk();
@@ -5525,7 +5544,8 @@ window.addEventListener('pagehide', () => RA.on && raStop());
 /* ---------- hook vote: let a few friends pick the first line ---------- */
 function openHookVote() {
   const srv = LLM.server || {};
-  if (!srv.vote) { const m = modal(`${modalHead('Ask friends which line wins', 'Send two or three first lines; friends tap the one that would stop them scrolling.')}<div class="modal-b"><p>Hook votes need your Hookworthy server, so friends have a link to open. It’s free to run: see <b>Self-hosting</b> under Connections.</p></div><div class="modal-f"><button class="btn primary" data-close>Got it</button></div>`, { label: 'Hook vote' }); return; }
+  if (!srv.vote) { const a = (S.draft.tweets[0].text.split('\n')[0] || 'I raised prices 40% and lost 2 customers.').trim(), opts = [[a, 64], ['Pricing is a product decision, not a finance one.', 36]];
+    modal(`${modalHead('Ask friends which line wins <span class="pill">Sample</span>', 'You send a link with two or three versions of your first line. Friends tap the one that would stop them scrolling, and you watch the votes come in.')}<div class="modal-b hv-b"><div class="hv-res">${opts.map(([o, p], i) => `<div class="hv-row ${i ? '' : 'lead'}"><div class="hv-bar" style="--p:${p}%"></div><span class="hv-n">${'AB'[i]}</span><p>${esc(o)}</p><span class="hv-c">${p}%</span></div>`).join('')}</div><p class="faint hv-note">This is what it looks like with 11 votes. Real links work once Hookworthy runs on its own server, so friends have somewhere to open them.</p></div><div class="modal-f"><button class="btn primary" data-close>Got it</button></div>`, { label: 'Hook vote' }); return; }
   const first = (S.draft.tweets[0].text.split('\n')[0] || '').trim(); let V = null, poll = 0;
   const m = modal(`<div id="hv"></div>`, { label: 'Ask friends which line wins', onClose: () => clearInterval(poll) }); const el = $('#hv', m.el);
   const drawAsk = () => { el.innerHTML = `${modalHead('Ask friends which line wins', 'Two or three versions of your first line. Friends tap the one that would stop them scrolling, and you see it live.')}
@@ -5556,7 +5576,7 @@ async function renderVote(id) {
   /* each person sees the lines in their own order, so the first one doesn't win by being first */
   const order = V.options.map((_, i) => i).sort((a, b) => hash(me + a) - hash(me + b));
   const draw = () => { const voted = V.mine != null, t = V.total || 0, top = Math.max(...V.counts);
-    $('#vt-main').innerHTML = `<h1 class="display rv-title">${esc(V.author)} can’t pick <em>a first line.</em></h1><p class="muted rv-sub">${voted ? 'Thanks. Here’s how everyone voted so far. Tap another to change yours.' : esc(V.question) + ' Tap it.'}</p>
+    $('#vt-main').innerHTML = `<h1 class="display rv-title vt-title">Help ${esc(String(V.author).split(' ')[0])} pick <em>a first line.</em></h1><p class="muted rv-sub">${voted ? 'Thanks. Here’s how everyone voted so far. Tap another to change yours.' : esc(V.question) + ' Tap it.'}</p>
       <div class="vt-list" role="radiogroup" aria-label="First lines">${order.map(i => { const c = V.counts[i], pct = t ? Math.round(c / t * 100) : 0; return `<button class="vt-opt ${voted ? 'shown' : ''} ${V.mine === i ? 'mine' : ''} ${voted && c === top ? 'lead' : ''}" role="radio" aria-checked="${V.mine === i}" data-v="${i}"><span class="hv-bar" style="--p:${voted ? pct : 0}%"></span><span class="vt-t">${esc(V.options[i])}</span>${voted ? `<span class="vt-c">${pct}%${V.mine === i ? ' · you' : ''}</span>` : ''}</button>`; }).join('')}</div>
       <p class="faint vt-foot">${voted ? `${t} vote${t === 1 ? '' : 's'}. Anonymous.` : 'Anonymous. Nobody sees who picked what.'} <a href="./#home">Made with Hookworthy</a></p>`; };
   draw();
@@ -5695,7 +5715,7 @@ function openSettings() {
 /* every draft, not just the five in the sidebar */
 function openAllDrafts() {
   if (!S.drafts.length) { toast('No drafts. All clear.', { icon: 'check' }); return; }
-  const m = modal(`${modalHead(`All drafts · ${S.drafts.length}`, 'Newest first. Open one to keep going, or let it go.')}<div class="modal-b ad-list" id="ad-list"></div><div class="modal-f">${S.drafts.length >= 3 ? `<button class="btn" data-ad="tidy">One at a time</button>` : ''}<span class="grow"></span><button class="btn primary" data-close>Done</button></div>`, { label: 'All drafts' });
+  const m = modal(`${modalHead(`All drafts · ${S.drafts.length}`, 'Most recently touched first. Open one to keep going, or let it go.')}<div class="modal-b ad-list" id="ad-list"></div><div class="modal-f">${S.drafts.length >= 3 ? `<button class="btn" data-ad="tidy">${ic('archive', 'sm')} Tidy up</button>` : ''}<span class="grow"></span><button class="btn primary" data-close>Done</button></div>`, { label: 'All drafts' });
   const list = $('#ad-list', m.el);
   const draw = () => { if (!S.drafts.length) { m.close(); toast('No drafts left. All clear.', { icon: 'check' }); return; }
     list.innerHTML = S.drafts.map((d, i) => { const t = (d.tweets[0] && d.tweets[0].text.trim()) || ''; return `<div class="ad-row"><button class="ad-open" data-ad="open" data-i="${i}"><b>${esc(clip(t.split('\n')[0] || 'Untitled draft', 90))}</b><small>${d.created ? `Started ${agoLabel(d.created)}` : 'Draft'}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}${/\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')) ? ' · has blanks to fill' : ''}</small></button><button class="btn ghost icon-only sm" data-ad="del" data-i="${i}" aria-label="Delete draft" data-tip="Let it go">${ic('trash', 'sm')}</button></div>`; }).join(''); };
@@ -5712,9 +5732,9 @@ function openConnections() {
   const m = modal(`${modalHead('Connections', 'Where the AI comes from, and which accounts Hookworthy can post to. Everything else is in Settings.')}
     <div class="modal-b cx">
       ${srv.locked ? `<div class="cx-row"><span class="cx-dot"></span><div><b>Server is locked</b><small>Open the sign-in link the server printed when it started (/login?token=…) on this device once.</small></div></div>` : ''}
-      ${row('Claude', aiOn(), LLM.mode === 'server' ? `Hookworthy server: ${esc(srv.models ? `${srv.models.default} for writing, ${srv.models.complex} for voice study` : 'Sonnet for writing, Opus for voice study')}.` : LLM.mode === 'claude' ? 'Your own Claude account, through this claude.ai page. You approve it once per visit.' : LLM.why ? 'Claude was declined for this page, so basic mode is on.' : 'Basic mode: instant suggestions from Hookworthy’s own rules. Connect Claude for rewrites in your voice.')}
+      ${row('Claude', aiOn(), LLM.mode === 'server' ? `Hookworthy server: Claude ${esc(modelName(srv.models && srv.models.default) || 'Sonnet')} for writing, ${esc(modelName(srv.models && srv.models.complex) || 'Opus')} for learning your voice.` : LLM.mode === 'claude' ? 'Your own Claude account, through this claude.ai page. You approve it once per visit.' : LLM.why ? 'Claude was declined for this page, so basic mode is on.' : 'Basic mode: instant suggestions from Hookworthy’s own rules. Connect Claude for rewrites in your voice.')}
       ${row('X', !!srv.xUser, srv.x ? (srv.xUser ? `Posting as @${esc(srv.xUser)}.` : 'API key set. Connect to post and read metrics.') : 'Needs the server with X API keys. Import your archive meanwhile.', srv.x ? `<a class="btn sm" href="auth/x/start">${srv.xUser ? 'Reconnect' : 'Connect'}</a>` : '')}
-      ${row('X plan', xPaid(), xPlanLabel(), srv.xUser ? `<button class="btn sm" data-xt="check">Re-check</button>` : `<button class="btn sm" data-xt="self">${xPaid() ? 'I’m on free X' : 'I have Premium'}</button>`)}
+      ${row('X plan', xPaid(), xPlanLabel(), srv.xUser ? `<button class="btn sm" data-xt="check">${xTier() ? 'Re-check' : 'Check'}</button>` : `<button class="btn sm" data-xt="self">${xPaid() ? 'I’m on free X' : 'I have Premium'}</button>`)}
       ${row('LinkedIn', !!srv.liUser, srv.linkedin ? (srv.liUser ? `Posting as ${esc(srv.liUser)}.` : 'App set. Connect to post.') : 'Needs the server with a LinkedIn app. Import Shares.csv meanwhile.', srv.linkedin ? `<a class="btn sm" href="auth/linkedin/start">${srv.liUser ? 'Reconnect' : 'Connect'}</a>` : '')}
       <details class="dev-note"><summary>Self-hosting?</summary><p class="faint imp-note">Run the server: <code>cd hookworthy/server && npm install && npm start</code>. Keys go in <code>server/.env</code> (see server/README.md).</p></details>
     </div><div class="modal-f"><button class="btn primary" data-close>Done</button></div>`, { label: 'Connections', box: 'modal' });
@@ -6854,7 +6874,7 @@ function drawInbox() {
   const el = $('#inbox'); if (!el) return; const n = $('#inbox-n'); if (n) n.textContent = S.ideas.length;
   $$('.nav a[href="#ideas"] .count').forEach(c => c.textContent = S.ideas.length || '');
   if (!S.ideas.length) { el.innerHTML = `<div class="empty"><div class="flock-big"><i style="width:14px;height:14px"></i><i style="width:10px;height:10px"></i><i style="width:7px;height:7px"></i></div><b style="color:var(--text-1)">Nothing parked yet.</b><span>Next time something makes you think “I should post about that”, press ${kbd('I')} and drop it here.</span></div>`; return; }
-  el.innerHTML = S.ideas.map(it => `<div class="inbox-row" data-id="${it.id}"><span class="src" data-tip="${SRC_NAME[it.src]}">${ic(SRC_ICON[it.src] || 'ideas')}</span><div style="min-width:0"><p>${esc(it.text)}</p><small>${SRC_NAME[it.src]}${it.url ? ` · ${esc(parseLink(it.url)?.host || '')}` : ''} · ${ago(it.at)}</small></div><div class="acts"><button class="btn ghost sm" data-iact="expand" data-tip="Five angles">${ic('layers', 'sm')}<span class="hide-sm">Angles</span></button><button class="btn ghost sm" data-iact="draft" data-tip="Draft it now">${ic('write', 'sm')}</button><button class="btn ghost sm" data-iact="archive" data-tip="Archive" aria-label="Archive">${ic('archive', 'sm')}</button></div></div>`).join('');
+  el.innerHTML = S.ideas.map(it => `<div class="inbox-row" data-id="${it.id}"><span class="src" data-tip="${SRC_NAME[it.src]}">${ic(SRC_ICON[it.src] || 'ideas')}</span><div style="min-width:0"><p>${esc(it.text.replace(/^(Voice memo|Screenshot|Link|Note) · (\d+:\d\d · )?/, ''))}</p><small>${SRC_NAME[it.src]}${it.url ? ` · ${esc(parseLink(it.url)?.host || '')}` : ''} · ${ago(it.at)}</small></div><div class="acts"><button class="btn ghost sm" data-iact="expand" data-tip="Five angles">${ic('layers', 'sm')}<span class="hide-sm">Angles</span></button><button class="btn ghost sm" data-iact="draft" data-tip="Draft it now">${ic('write', 'sm')}</button><button class="btn ghost sm" data-iact="archive" data-tip="Archive" aria-label="Archive">${ic('archive', 'sm')}</button></div></div>`).join('');
 }
 function showAngles(src, kind) {
   const list = anglesFor(src); const el = $('#angles'); if (!el) return;
@@ -6979,7 +6999,7 @@ ROUTES.queue = () => {
 };
 function qTags(q) {
   const w = q.ws && q.ws !== 'me' ? S.workspaces.find(x => x.id === q.ws) : null; if (!w && !q.approval && !q.rerun) return '';
-  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? `<span class="qt ${q.approval}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>` : ''}</span>`;
+  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now() ? `<span class="qt missed"><i></i><span>Missed: pick a new time</span></span>` : `<span class="qt ${q.approval}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>`) : ''}</span>`;
 }
 function moveQ(id, day, time) {
   const q = S.queue.find(x => x.id === id); if (!q) return;
@@ -7063,8 +7083,9 @@ function ensureEvergreen() {
 }
 function rerunPick() { if (!HIST().length) return null; return MYTOP().filter(p => p.days >= 60 && !(S.reruns || []).includes(p.id)).sort((a, b) => b.views - a.views)[0]; }
 function rerunHTML() {
-  const p = rerunPick(); if (!p) return '';
-  return `<div class="card rerun"><span class="label">Worth a rerun</span><p class="rr-t">${esc(clip(p.text, 120))}</p><span class="rr-m">${p.views ? `<b class="mono">${fmtN(p.views)}</b> views` : `<b class="mono">${fmtN(p.likes)}</b> likes`} · ${agoDays(p.days)}</span><p class="faint" style="font-size:12px">Most of today’s followers weren’t here for it.</p><button class="btn sm" data-rerun="${p.id}">${ic('repost', 'sm')} Rerun it</button></div>`;
+  const p = rerunPick(), sw = `<div class="setting"><span>Evergreen reruns</span><button class="switch" role="switch" aria-checked="${!!S.settings.evergreen}" data-sw="evergreen" aria-label="Evergreen reruns"></button><small>Once a week, one of your best posts from 2+ months ago comes back with a fresh first line.</small></div>`;
+  if (!p) return `<div class="card"><span class="label">Reruns</span>${sw}</div>`;
+  return `<div class="card rerun"><span class="label">Worth a rerun</span><p class="rr-t">${esc(clip(p.text, 120))}</p><span class="rr-m">${p.views ? `<b class="mono">${fmtN(p.views)}</b> views` : `<b class="mono">${fmtN(p.likes)}</b> likes`} · ${agoDays(p.days)}</span><p class="faint" style="font-size:12px">Most of today’s followers weren’t here for it.</p><button class="btn sm" data-rerun="${p.id}">${ic('repost', 'sm')} Rerun it</button><div class="rr-sep"></div>${sw}</div>`;
 }
 function rerun(id) {
   const p = MYTOP().find(x => x.id === id); if (!p) return; S.reruns = [...(S.reruns || []), id];
@@ -7081,11 +7102,9 @@ function drawQSide() {
     <div class="rest-row"><span class="faint">Rest days</span><div class="rest-days" role="group" aria-label="Rest days">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button data-rest="${d}" aria-pressed="${(S.settings.rest || []).includes(d)}" aria-label="${DOW[d]}" data-tip="${DOW[d]}${(S.settings.rest || []).includes(d) ? ' is a rest day' : ''}">${DOW[d][0]}</button>`).join('')}</div></div></div>
   ${rerunHTML()}
   <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(' · ', '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
-  ${SHOWCASE() ? `<div class="card soon"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Autopilot</span><span class="pill">Coming soon</span></div>
-    <div class="setting"><span>Follow-up reply</span><button class="switch" role="switch" aria-checked="false" disabled aria-label="Follow-up reply, coming soon"></button><small>At 100 likes, reply with your next thing: a link, a newsletter, the follow-up.</small></div>
-    <div class="setting"><span>Auto-repost</span><button class="switch" role="switch" aria-checked="false" disabled aria-label="Auto-repost, coming soon"></button><small>Once, hours later, for the other time zone.</small></div></div>` : ''}
-  <div class="card"><span class="label">Reruns</span>
-    <div class="setting"><span>Evergreen reruns</span><button class="switch" role="switch" aria-checked="${!!S.settings.evergreen}" data-sw="evergreen" aria-label="Evergreen reruns"></button><small>Once a week, one of your best posts from 2+ months ago comes back with a fresh first line.</small></div></div>
+  ${SHOWCASE() ? `<div class="card soon"><div class="soon-h"><span class="label">Autopilot</span><span class="pill">Coming soon</span></div>
+    <div class="soon-i"><b>Follow-up reply</b><small>When a post passes 100 likes, it replies with your next thing.</small></div>
+    <div class="soon-i"><b>Auto-repost</b><small>Posts it again hours later, for the other time zone.</small></div></div>` : ''}
 `;
 }
 
