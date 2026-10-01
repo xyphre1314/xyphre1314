@@ -61,12 +61,28 @@
     spec += Math.min(2, (first.slice(1).match(/\b[A-Z][a-z]{2,}/g) || []).length) * 5;
     const ten = lc.match(/\b(unpopular|overrated|underrated|wrong|myth|lie|stop|don[’']?t|backwards|nobody|hot take|instead|not|never|quit|fired|failed|broke|lost|hate|cop-out|hedge)\b/g) || [];
     tension += Math.min(3, ten.length) * 17 + (imperative ? 20 : 0);
+    /* guards against gaming: unfilled blanks, keyboard mash, stacked bait phrases and number stuffing */
+    const blank = /\[[^\]]+\]|\{[^}]+\}|_{3,}|\b[XYZ]\b(?=[\s.,!?:]|$)/.test(first);
+    const toks = first.match(/[A-Za-z]{3,}/g) || [];
+    const mash = toks.filter(w => /^(asdf|qwer|zxcv|sdfg|hjkl|uiop|lorem|ipsum|blah)/i.test(w) || /[bcdfghjklmnpqrstvwxz]{5,}/i.test(w) || !/[aeiouy]/i.test(w)).length;
+    const gib = toks.length ? mash / toks.length : 1;
+    const bait = (lc.match(/\b(\d+% of (you|people)|won[’']?t (read|believe|see)|nobody (tells|talks)|secrets?|10x your|game[- ]?changer|you need to see|read (this|till the end)|bookmark this|thank me later|this will change|most people (don[’']?t|won[’']?t|will never))\b/g) || []).length;
+    const nums = (first.match(/\d+/g) || []).length;
+    if (nums >= 3) spec -= 18 * (nums - 2);
     const c = v => clamp(Math.round(v), 4, 99);
     const parts = { clarity: c(clarity), curiosity: c(curiosity), specificity: c(spec), tension: c(tension), brevity: c(brevity) };
     const raw0 = parts.clarity * .22 + parts.curiosity * .24 + parts.specificity * .2 + parts.tension * .18 + parts.brevity * .16;
-    const score = c(raw0 * 1.35 - 10);
+    let score = c(raw0 * 1.35 - 10);
+    if (bait) score = c(score - (bait > 1 ? 14 * Math.min(3, bait) + 10 : 8));
+    if (nums >= 3) score = c(score - 8 * (nums - 2));
+    if (gib > .25 || toks.length < 2) score = Math.min(score, 30);
+    if (blank) score = Math.min(score, 40);
     let reason, tone;
-    if (fillers.length) { const orig = (String(text).match(new RegExp(`\\b${fillers[0]}\\b`, 'i')) || [fillers[0]])[0]; reason = `“${orig}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; }
+    if (blank) { reason = 'There are blanks left. Fill them with what really happened, then it gets a real score.'; tone = 'fix'; }
+    else if (gib > .25 || toks.length < 2) { reason = 'That doesn’t read as words yet. Say the thing plainly.'; tone = 'fix'; }
+    else if (bait > 1 || (bait && score < 60)) { reason = 'It reads like bait. Readers have learned to scroll past that. Say the real thing.'; tone = 'fix'; }
+    else if (nums >= 3) { reason = 'Too many numbers at once. Keep the one that matters.'; tone = 'fix'; }
+    else if (fillers.length) { const orig = (String(text).match(new RegExp(`\\b${fillers[0]}\\b`, 'i')) || [fillers[0]])[0]; reason = `“${orig}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; }
     else if (warm) { reason = `Opening with “${cap(warm[0])}” spends your best real estate on a warm-up.`; tone = 'fix'; }
     else if (parts.brevity < 45) { reason = 'Long first line. Land the point in under 100 characters.'; tone = 'fix'; }
     else if (score >= 70) {
@@ -219,7 +235,8 @@ Hard rules:
 - Keep the author's facts, numbers, names and claims. Never invent a number, a result, a person or an event. If a stronger version needs a number the author didn't give, write [number] instead.
 - Match the author's voice from the evidence given: casing, punctuation, line breaks, sentence length, slang, emoji and hashtag habits. If they write lowercase, stay lowercase.
 - Plain words. Short sentences. One idea per line.
-- Never use these AI tells: delve, game-changer, unlock, leverage, elevate, supercharge, seamless, "in today's fast-paced world", "here's the thing", "let that sink in", "it's not X, it's Y" more than once, a stack of three adjectives, em dashes in every sentence, rhetorical questions as filler.
+- Never use these AI tells: delve, game-changer, unlock, leverage, elevate, supercharge, seamless, "in today's fast-paced world", "here's the thing", "let that sink in", "it's not X, it's Y" more than once, a stack of three adjectives, rhetorical questions as filler. No em dashes unless the author uses them.
+- Never open with bait: "Here's the thing", "Unpopular opinion:", "Nobody talks about", "Most people…", "Stop X. Start Y.", "99% of you". Never end on "Agree?", "Thoughts?" or "Am I wrong?".
 - No hashtags or emoji unless the author uses them in the examples.
 - Respect the platform limit you're given.`;
   function voiceBlock(v) {
@@ -272,7 +289,7 @@ Give exactly 3 traits.` };
 
 ${voiceBlock(voice)}
 
-The author writes about: ${niche || 'building things in public'}.
+The author writes about: ${niche || 'building in public'}.
 Their best posts so far (what their audience rewards):
 ${(top || []).slice(0, 6).map(t => `- ${t.text.split('\n')[0]} (${t.likes} likes)`).join('\n') || '- (none yet)'}
 Notes they saved to write about later:
@@ -281,7 +298,9 @@ ${(inbox || []).slice(0, 8).map(t => `- ${t}`).join('\n') || '- (none)'}
 Suggest ${count} first lines they could write today, grounded in their notes and what already works for them. No generic advice-guru lines. Reply with only JSON: [{"text":"the first line","kind":"Contrarian|Story|Listicle|How-to|Curiosity|Question","why":"one short sentence, tied to their evidence"}]` };
     },
     postmortem({ post, median, similar, voice }) {
-      return { tier: 'default', json: true, prompt: `You explain why one social post over- or under-performed for its author, using only the evidence given. Be specific and plain; no hype.
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+You explain why one social post over- or under-performed for its author, using only the evidence given. Be specific and plain; no hype.
 
 ${voiceBlock(voice)}
 
@@ -296,7 +315,9 @@ ${(similar || []).slice(0, 5).map(p => `<post likes="${p.likes}">${p.text}</post
 Reply with only JSON: {"verdict":"one sentence","reasons":["2-4 specific reasons, each tied to the text, the timing or the comparison"],"next_time":"one concrete thing to do differently (or repeat)","rewrite":"the first line as you'd write it now, in their voice"}` };
     },
     people({ posts, niche }) {
-      return { tier: 'default', json: true, prompt: `These are recent high-performing posts from accounts someone learns from${niche ? ` in ${niche}` : ''}. Find the reusable patterns, not the topics.
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+These are recent high-performing posts from accounts someone learns from${niche ? ` in ${niche}` : ''}. Find the reusable patterns, not the topics.
 
 ${posts.slice(0, 40).map(p => `<post author="@${p.handle || 'someone'}" likes="${p.likes}">\n${p.text}\n</post>`).join('\n')}
 
@@ -317,12 +338,12 @@ ${replies.slice(0, 12).map((r, i) => `<reply id="${i}" from="@${r.handle}" follo
 
 Write one reply for each, in the author's voice: short, warm or sharp as the reply deserves, adds something (a detail, a number, a question back), never generic thanks, never "Great question". Under 200 characters each. Reply with only JSON: [{"id":0,"reply":"...","why":"what this reply earns, 6 words max"}]` };
     },
-    weekPlan({ niche, voice, top, inbox, slots, count = 5 }) {
+    weekPlan({ niche, voice, top, inbox, slots, count = 5, limit = 280 }) {
       return { tier: 'default', json: true, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
-Plan this author's week: ${count} posts, one per slot below, grounded in their saved notes and in what already works for them. Mix the kinds (at most two of the same). Each post must be complete and ready to schedule, in their voice, within 280 characters unless it's a thread (then give the posts as separate strings, max 5).
+Plan this author's week: ${count} posts, one per slot below, grounded in their saved notes and in what already works for them. Mix the kinds (at most two of the same). Each post must be complete and ready to schedule, in their voice, within ${limit} characters unless it's a thread (then give the posts as separate strings, max 5).
 Niche: ${niche || 'building in public'}
 Slots: ${(slots || []).map(s => s.label).join('; ')}
 What works for them:
@@ -346,7 +367,9 @@ ${evidence || '(no history)'}
 Reply with only JSON: {"winner":"a"|"b","confidence":0.5-0.95,"why":"one sentence"}` };
     },
     digest({ week, best, worst, voice, niche }) {
-      return { tier: 'default', json: true, prompt: `Write a short Sunday note to a creator about their week on social media. Plain, warm, specific, no hype, no emoji.
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+Write a short Sunday note to a creator about their week on social media. Plain, warm, specific, no hype, no emoji.
 
 This week: ${week}
 Best post: ${best ? `"${best.text}" (${best.likes} likes, ${best.replies || 0} replies)` : 'none'}
@@ -487,7 +510,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const em = (t.match(EMOJI) || []).length; if (stats.emojiPer < .2 && em >= 2) { score -= 14; miss.push({ why: 'More emoji than you use', frag: (t.match(EMOJI) || [])[0] }); }
     const tags = t.match(/#\w+/g) || []; if (stats.tagsPer < .1 && tags.length) { score -= 14; miss.push({ why: 'You never use hashtags', frag: tags[0] }); }
     const lowerOpen = /^[a-z]/.test(t); if (stats.lower >= 70 && !lowerOpen && /^[A-Z]/.test(t)) { score -= 8; miss.push({ why: 'You usually open in lowercase', frag: t.split(/\s/)[0] }); }
-    if (stats.lower <= 15 && lowerOpen) { score -= 8; miss.push({ why: 'You usually capitalise your first word', frag: t.split(/\s/)[0] }); }
+    if (stats.lower <= 15 && lowerOpen) { score -= 8; miss.push({ why: 'You usually capitalize your first word', frag: t.split(/\s/)[0] }); }
     const bad = never.find(w => t.toLowerCase().includes(String(w).toLowerCase())); if (bad) { score -= 22; miss.push({ why: `“${bad}” is on your never-say list`, frag: bad }); }
     const tell = (t.match(/\b(delve|game[- ]changer|unlock|leverage|elevate|supercharge|seamless|in today's|in today’s|it's not just|here's the thing|let that sink in)\b/gi) || []).find(x => x.toLowerCase() !== String(bad || '').toLowerCase()); if (tell) { score -= 16; miss.push({ why: 'Reads like AI wrote it', frag: tell }); }
     if ((t.match(/—/g) || []).length >= 3) { score -= 8; miss.push({ why: 'A lot of em dashes', frag: '—' }); }
@@ -580,7 +603,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
   const FILLERS = /\b(?:um+|uh+|erm+|er|ah+|hmm+|you know|i mean|like,|sort of|kind of|basically|literally|actually|so yeah|yeah so|okay so)\b[,.]?\s*/gi;
-  /* spoken → written: drop fillers and stutters, fix "i", capitalise sentences, keep the words */
+  /* spoken → written: drop fillers and stutters, fix "i", capitalize sentences, keep the words */
   function tidySpoken(text) {
     let t = String(text || '').replace(FILLERS, '').replace(/\b(\w+)(\s+\1\b)+/gi, '$1').replace(/\bi\b/g, 'I').replace(/\bi'(m|ve|ll|d)\b/gi, "I'$1").replace(/\s+([,.!?])/g, '$1').replace(/[ \t]{2,}/g, ' ');
     t = t.replace(/(^|[.!?]\s+|\n\s*)([a-z])/g, (_, a, b) => a + b.toUpperCase()).trim();
@@ -706,8 +729,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const CRINGE = [
     { re: /\b(?:I['’]?m|I am|we['’]re|we are) (?:so |super |beyond )?(?:humbled|thrilled|excited|delighted|honou?red) to (?:announce|share)(?: that)?/i, msg: 'Opens like a press release.' },
     { re: /\s*(?:Let that sink in|Read that again)\.?/i, msg: '“Let that sink in” tells people how to feel.' },
-    { re: /\s*(?:Agree|Thoughts|Am I wrong)\s*\?\s*$/i, msg: 'Ends on a bait question.' },
-    { re: /\bnobody(?: is|['’]s) talking about\b/i, msg: '“Nobody is talking about this.”' },
+    { re: /\s*(?:Agree|Thoughts|Am I wrong)\s*\?\s*$/i, msg: 'Ends on a bait question. End on your point instead.' },
+    { re: /\bnobody(?: is|['’]s) talking about\b/i, msg: '“Nobody is talking about this” is a cliché. Say what you noticed.' },
     { re: /(?:(?:🚀|🔥|💯|🙌|👏)\s*){3,}/u, msg: 'An emoji pile-up.' }
   ];
   function checkPost(text, { never = [], limit = 280 } = {}) {

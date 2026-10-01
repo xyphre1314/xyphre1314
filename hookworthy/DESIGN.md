@@ -310,7 +310,8 @@ Sounds are on by default in the app and can be switched off in the account menu.
 ### App shell
 - **Sidebar:** logo, a New post pill, Search (⌘K), then Write, Ideas, Queue, Insights and Your voice. Your five most recent drafts sit below, and the account button (which also switches client voices) is at the bottom. There are no section headers.
 - **Composer top bar:** status, a “N things to check” pill when there is something to look at, Post to, Focus, a labelled Preview toggle (pressed when open), ··· and Schedule. The preview panel has its own **Hide** button top right, and ⌘\\ works from inside the editor.
-- **Ideas:** three tabs that say what they are: **Fresh angles** (ideas for you and remixes), **What’s working** (niche trends and why posts popped) and **Saved** (links, notes, screenshots and voice memos you parked; formerly Inbox).
+- **Navigation:** the daily loop on top (**Today**, Write, Ideas, **Replies**, Queue, Insights), then Tools (Hooks, Your voice). Today is the app's front door: one post to write, the week, fresh posts worth a reply, and how the last one did. Replies holds replies to your own posts, the reply radar and breakout alerts.
+- **Ideas:** three tabs that say what they are: **Post ideas**, **What’s working** (why posts in your niche popped, sample data until real search backs it) and **Saved** (links, notes, screenshots and voice memos you parked).
 - **Hook formulas** are no longer a tab. When your first line scores under 70, the hook panel offers three formulas; picking one adds it above your line with the first blank selected. The full library stays reachable from ⌘K.
 
 ### Before you post (checks)
@@ -347,16 +348,26 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
 
   | Say | Don't say |
   |---|---|
-  | Rewrite | Riff |
-  | Sharpen | AI edit |
-  | Best time | Golden slot |
-  | Follow-up reply | Auto-plug |
-  | Fresh angles | Engine, Ideas for you |
-  | What’s working | Niche radar |
-  | Saved | Inbox |
-  | Your voice | Voice profile |
-  | Hook formulas | Hook library |
-  | Drafts | Archive |
+  | **Hook** (the first line), **Hook score** | grade (as a noun) |
+  | **Rewrite** (the whole post), **Sharpen** (selected words), **version** | riff, take, option, "applied", AI edit |
+  | **Formula** (a fill-in first line or post shape) | shape, structure, pattern (as a template), hook library |
+  | **Pattern** (only what What's working finds) | |
+  | **Post ideas** | starters, engine, fresh angles |
+  | **What's working** | In your niche (as a name), Niche radar |
+  | **Reply radar** (others' fresh posts) / **Replies to your post** (your own) | desk, reply desk |
+  | **Saved** | Inbox, Archive |
+  | **Your voice**, **never-say list** | voice profile, voice model, full profile, banned words, Ban it |
+  | **Say it** (dictation) | voice typing, Talk it through |
+  | **Your people** = your audience; **Accounts you learn from** | your people (meaning sources) |
+  | **Best time**, **Next open slot**, **Scheduled for** | golden slot, Add to queue, Queued for |
+  | **Hook vote** (friends) / **Compare two lines** (your past posts or friends) | Hook shootout as a title |
+  | **Delete** (drafts, ideas) | Archive, let it go, bin |
+  | **Claude** / **Basic mode** | your Claude, the AI |
+  | **Bring your posts** | Import it, Add posts |
+  | **Breakout alert** | Follow-up reply, auto-plug (removed) |
+  | **Post by hand** (a post whose time came with nothing to send it) | Published (unless something sent it) |
+
+- **Slots in sentences:** "Scheduled for tomorrow at 8:40 AM", never "Scheduled for Tomorrow · 8:40 AM". The "·" form is for labels and lists only.
 
 - **Time format:** 8:40 AM, with a space and capitals, as on X.
 - **Voice:** a coworker who writes too: warm, plain, a little dry. Say what happened and what to do next (“Gone from the queue.”, “Added on top. Your old line is right below it.”), never “Operation successful”. Creator to creator; short sentences; numbers beat adjectives; no "unlock / supercharge / leverage / elevate / seamless / AI-powered".
