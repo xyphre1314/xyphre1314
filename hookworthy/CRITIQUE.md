@@ -445,3 +445,47 @@ Method: an automated sweep of every screen and modal in light/dark × desktop/ph
 - "Add to queue" next to "Schedule for Tue 8:40" didn't say how they differ → **Next open slot · today 5:30 PM**. "Your call. We trust you." → "Choose a date and time".
 - The sample Insights headlines start with **Example:** and no longer say "your" about someone else's numbers.
 - Smaller: "Publish now" → "Post now" in the shortcut sheet; Tidy says "let go" and "Schedule" instead of "bin" and "Best time"; the loading line drops the "Basic mode is writing…" name; the landing page's scheduling copy matches what the app really does, and "Look around first" (which opens search) is now "Search the app".
+
+## Round 25: demo mode, one Settings, and a three-reviewer audit
+
+**Built**
+- **Demo mode.** In the claude.ai preview, or before you bring posts or connect a server, the demo shows sample numbers in the preview ("Sample numbers"), the pricing demo and an Autopilot card marked "Coming soon". Real accounts never see them; the app re-checks once it knows whether a server is there.
+- **Settings**, in one sheet: posting (a real undo-window picker, rest days, evergreen reruns), sound and look, alerts, your data and sync, and a Demo section for demo tools. Connections is now just Claude, X and LinkedIn.
+- **All drafts**, from the sidebar or search, not only the five most recent.
+- **Clearer names.** Hooks and Formulas, "Post ideas", "Replies to your post", "In your niche", "Start writing", "Edit in Write", "Write from a picture". Removed "Fill my best times", the developer items in the account menu, the duplicate Capture button and duplicate menu items, and "Log out" (there are no accounts to log out of).
+- **Onboarding.** The platform you pick is used, a new account starts clean (no sample week, drafts, streak, client workspaces, ideas or photo), and without a server it promises a starting voice rather than reading your posts.
+
+**Audit and fixes.** Three independent reviews (desktop, phone, functional), 67 findings, all fixed and re-tested.
+- **Critical:** moving, editing, deleting, undoing or duplicating a scheduled post never reached the server's copy, so a deleted post could still go out. Every change now drops or re-sends the server job; unapproved client posts aren't sent until approved.
+- **Failed posts.** A post X rejected was recorded as published (streak credited, live pill shown). It's now marked "didn't go out" with the reason and a Try again.
+- **Edit in Write** now brings back the workspace, approval rules, platforms and pictures. "Put it back" keeps your edits as a draft.
+- **Other fixes:**
+  - No crash when the next three weeks are full.
+  - Tidy won't schedule a draft with blanks.
+  - All drafts stays open after a delete.
+  - A wrong sync code no longer turns sync on.
+  - You can get back to your last hook vote.
+  - Importing refreshes the page you're on.
+  - Esc closes the open sheet before it cancels a post.
+  - G-shortcuts don't type into the editor.
+  - Read aloud's speed button restarts the right post.
+- **Phone:**
+  - The Schedule button no longer gets cut off at 360px.
+  - The read-aloud bar, live pill and toasts no longer stack on top of each other.
+  - Fields don't zoom on iPhone.
+  - Tap targets are 40px or more.
+  - Ideas tabs fit.
+  - The hook panel uses the full width.
+  - Toasts move clear of open sheets.
+- **Desktop:**
+  - Spacers work in every footer.
+  - Sticky sheet headers get a hairline when scrolled.
+  - The tuned hook score only takes over the chip once it has beaten the general score on your newest posts.
+  - The demo hook vote shows a labelled sample instead of setup jargon.
+  - The Voice chip says "sample voice" in the demo.
+  - Settings rows look alike.
+  - Readable model names.
+  - One rerun card.
+  - Missed client approvals are flagged.
+  - Text wraps better.
+- Tested: 50 server tests; every browser suite from earlier rounds; new checks for each fix on desktop, 390px and 360px, light and dark, demo and server modes.
