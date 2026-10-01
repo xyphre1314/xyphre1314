@@ -489,3 +489,76 @@ Method: an automated sweep of every screen and modal in light/dark × desktop/ph
   - Missed client approvals are flagged.
   - Text wraps better.
 - Tested: 50 server tests; every browser suite from earlier rounds; new checks for each fix on desktop, 390px and 360px, light and dark, demo and server modes.
+
+## Round 26: a full critique from every corner, and the fixes
+
+Five reviewers (product, visual, copy, accessibility and performance, code and security) went over the whole app. Everything except security and live posting to X was fixed. Those two were left on purpose: the site is a demo and nothing posts to X for real yet.
+
+**Honest by default**
+- A scheduled post whose time passes is only marked "Sent" if something sent it. In demo mode it plays along. Otherwise it becomes **Post by hand**, with Copy text, Mark as posted, and Pick a new time.
+- The streak no longer picks up the demo's sample days after a reload.
+- **Write it** gives you the hook plus an outline of [brackets] to fill, never invented results under your name. The Voice chip hides on outlines, and outside the demo it hides until there's a real voice to compare against.
+- The hook score can't be gamed:
+  - Unfilled blanks cap it at 40.
+  - Gibberish caps it at 30.
+  - Stacked bait ("99% of you won't read this") and number-stuffing lose points, each with a reason.
+  - Formulas no longer claim "Scores ~92".
+- Pricing:
+  - Breakout alerts replace the removed follow-up reply.
+  - Unbuilt Studio items are marked Soon.
+  - There's no trial and no cancel flow to claim.
+  - Studio yearly is $27, so "save 25%" is true.
+  - The demo labels its rewrite limit as a demo.
+- Threads and Bluesky are described as "ready to post by hand". Sample data on Your voice and Insights says it's a sample.
+
+**A daily loop**
+- **Today**, the app's front door: one post to write (from your saved ideas first), your week and streak, three fresh posts worth an early reply, and how the last post did.
+- **Replies**: replies to your own posts, the reply radar and breakout alerts, in one place.
+- Nav is Today, Write, Ideas, Replies, Queue, Insights, with Hooks and Your voice under Tools. Ideas has three tabs: Post ideas, What's working, Saved.
+- **First run reaches the aha.** "Try it on your own line": paste the post you almost wrote, get a score with one reason, then a sharper version with every changed word marked.
+- **Fewer overlapping tools.**
+  - The rewrite bar has four chips plus More angles.
+  - The composer toolbar is image, GIF, poll, Say it, and ⋯ (a visual, read aloud).
+  - Hook shootout and hook vote became one **Compare two lines**: ask your past posts or ask friends.
+
+**Copy**
+- Slots read as sentences: "Scheduled for tomorrow at 8:40 AM".
+- One name per thing: Next open slot, Formula, Delete, never-say list, Accounts you learn from, What's working, Hook vote.
+- Errors say what failed and what to do next.
+- Recycled quips are gone.
+- Tips have no unsourced stats.
+- Claude's brief bans bait openers and endings, and applies to every prompt that writes for you.
+- DESIGN.md has the new glossary.
+
+**Visual**
+- Bugs fixed:
+  - Queue cards fit their cells.
+  - Segmented controls draw correctly on touch.
+- 761–1180px has a 64px icon rail. The preview stays a column down to 980px; below that it's a capped sheet over a dimmed backdrop.
+- One solid accent button per screen. Plum only for 70+ scores and "best".
+- One left edge for every page; type no smaller than 12px; Garamond only at display sizes.
+- Insights bars sit on their numbers and become two rows on smaller screens.
+- Modals come in three widths. The scrim is flat. Landing chapters are centred.
+- Pro comes first on phones, with three pricing columns down to 860px.
+
+**Accessibility**
+- Focus and keys:
+  - Visible focus everywhere, including Windows High Contrast.
+  - Undo toasts stay 10 seconds, pause while focused, and Ctrl+Z works.
+  - Single-key shortcuts can be turned off.
+  - Tabs move with arrow keys.
+  - A skip link, and focus lands on each page's heading.
+- Screen readers:
+  - Queue cards say their status, client and platforms.
+  - "Move to…" moves a post without dragging, and the reorder handle works with arrow keys.
+  - A live region announces the character limit, hook score bands, ghost suggestions and search results.
+  - The command palette is a real combobox.
+- Images get an ALT button, and file names are no longer used as alt text.
+- Contrast fixes; axe is clean on every app route.
+
+**Performance**
+- Past posts are tokenised once, and the pre-post checks run when typing pauses.
+- History is saved separately, so each save is small.
+- Images are downscaled to 1600px, and a full browser says so instead of failing silently.
+- The node server sends br/gzip (837KB → 221KB) with ETags (repeat visits get a 304).
+- The service worker falls back to the cached page after 3 seconds, caches the page once, and the 321KB photo sprite loads only where photos appear.
