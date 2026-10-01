@@ -127,13 +127,17 @@ export async function handle(req, res) {
     if (!f.startsWith(ROOT) || /[\\/](server|node_modules|\.git)([\\/]|$)/.test(f.slice(ROOT.length))) return send(res, 404, { error: 'Not found' });
     if (!existsSync(f) || statSync(f).isDirectory()) f = join(ROOT, 'index.html');
     /* repeat visits revalidate with an ETag (a 304 is a few bytes), and text is sent compressed */
-    const st = statSync(f), etag = `"${st.size.toString(36)}-${Math.floor(st.mtimeMs).toString(36)}"`, type = TYPES[extname(f)] || 'application/octet-stream';
+    const st = statSync(f), type = TYPES[extname(f)] || 'application/octet-stream';
+    const enc0 = /\bbr\b/.test(req.headers['accept-encoding'] || '') ? 'br' : /\bgzip\b/.test(req.headers['accept-encoding'] || '') ? 'gzip' : null;
+    const enc = enc0 && /^(text\/|application\/(javascript|json|manifest)|image\/svg)/.test(type) && st.size > 1024 ? enc0 : null;
+    /* each encoding has its own ETag; If-None-Match may be a list or weak */
+    const etag = `"${st.size.toString(36)}-${Math.floor(st.mtimeMs).toString(36)}${enc ? '-' + enc : ''}"`;
     const head = { 'content-type': type, 'cache-control': extname(f) === '.html' ? 'no-cache' : 'public, max-age=3600', 'x-content-type-options': 'nosniff', etag, vary: 'accept-encoding' };
-    if (req.headers['if-none-match'] === etag) { res.writeHead(304, head); return res.end(); }
-    const enc = /\bbr\b/.test(req.headers['accept-encoding'] || '') ? 'br' : /\bgzip\b/.test(req.headers['accept-encoding'] || '') ? 'gzip' : null;
-    if (enc && /^(text\/|application\/(javascript|json|manifest)|image\/svg)/.test(type) && st.size > 1024) {
+    const inm = String(req.headers['if-none-match'] || '').split(',').map(x => x.trim().replace(/^W\//, ''));
+    if (inm.includes(etag) || inm.includes('*')) { res.writeHead(304, head); return res.end(); }
+    if (enc) {
       const key = f + etag + enc; let buf = ZIP.get(key);
-      if (!buf) { const raw = readFileSync(f); buf = enc === 'br' ? brotliCompressSync(raw, { params: { [Z.BROTLI_PARAM_QUALITY]: 9 } }) : gzipSync(raw, { level: 9 }); ZIP.set(key, buf); if (ZIP.size > 64) ZIP.delete(ZIP.keys().next().value); }
+      if (!buf) { const raw = readFileSync(f); buf = enc === 'br' ? brotliCompressSync(raw, { params: { [Z.BROTLI_PARAM_QUALITY]: 6 } }) : gzipSync(raw, { level: 9 }); ZIP.set(key, buf); if (ZIP.size > 64) ZIP.delete(ZIP.keys().next().value); }
       res.writeHead(200, { ...head, 'content-encoding': enc, 'content-length': buf.length }); return res.end(buf);
     }
     res.writeHead(200, head);

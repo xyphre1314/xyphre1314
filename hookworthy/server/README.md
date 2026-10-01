@@ -83,6 +83,8 @@ docker run -p 8787:8787 -v hookworthy-data:/data --env-file server/.env hookwort
 
 Or on Render: New → Blueprint, point it at this repo (`hookworthy/server/render.yaml`), fill the keys. Set `PUBLIC_URL` to your https URL and register `{PUBLIC_URL}/auth/x/callback` and `{PUBLIC_URL}/auth/linkedin/callback` with X and LinkedIn. With `HOOKWORTHY_TOKEN` set, open the `/login?token=…` link the server prints once per device.
 
+Static files go out with an ETag per encoding (a repeat visit gets a 304) and brotli or gzip for text, so the 0.9 MB page travels as about 220 KB. Compressed copies are cached in memory.
+
 ## Security notes
 
 - Binds to `127.0.0.1` by default. If you open it up, set `HOOKWORTHY_TOKEN`.

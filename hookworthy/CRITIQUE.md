@@ -562,3 +562,28 @@ Five reviewers (product, visual, copy, accessibility and performance, code and s
 - Images are downscaled to 1600px, and a full browser says so instead of failing silently.
 - The node server sends br/gzip (837KB → 221KB) with ETags (repeat visits get a 304).
 - The service worker falls back to the cached page after 3 seconds, caches the page once, and the 321KB photo sprite loads only where photos appear.
+
+**Checked twice.** After the fixes, three fresh reviewers re-verified every finding (product and copy, visual at five viewports and both themes, accessibility and performance by measurement). What they caught was fixed too:
+- **Replies:** radar replies are drafted once Claude connects, even if Today loaded the radar first.
+- **No bait from Hookworthy itself:** the offline rewrites, formulas and idea templates no longer use openers the brief bans. The hook score also catches "Agree?" endings, emoji stacks, "Stop scrolling" and lines too short to say anything.
+- **Visual:**
+  - The preview sheet is centred.
+  - The segmented-control thumb sits on its button.
+  - Small-screen insight bars line up.
+  - Rail tooltips open to the right.
+  - Queue chips compact to a dot on narrow cards.
+  - Mono is only for digits, and no text is under 12px.
+- **Accessibility:**
+  - Ctrl+Z only undoes what's on screen.
+  - Focus never falls to the page after an undo, a move or an image description.
+  - Focused controls stay clear of the phone tab bar.
+  - Every tab row is roving from the start.
+  - The palette handles "no results".
+  - Hook-score announcements wait for a pause.
+- **Saving and offline:**
+  - A failed history save is retried.
+  - "Saved" turns to "Not saved" when storage is full.
+  - The offline copy is only ever the app's own page.
+  - A slow network costs 3 seconds once, not twice.
+  - Each encoding has its own ETag, and lists and weak ETags revalidate.
+- Tested: 50 server tests, every browser suite from rounds 13–25, a new round-26 suite (onboarding, Today, Replies, outlines, hook score, queue states, streak, pricing, keyboard, palette, storage, images), and axe on every route (clean).

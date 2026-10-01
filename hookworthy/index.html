@@ -2452,6 +2452,8 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 @media (max-width:560px){ .ot-row{ grid-template-columns:1fr; gap:8px; } .ot-row .hook{ justify-self:start; } .onb-try .ot-a .btn{ flex:1 1 auto; } .up-hero .pill.accent{ border-radius:12px; text-align:center; line-height:1.45; } }
 /* the LinkedIn fold chapter centres when it stacks */
 @media (max-width:1060px){ .fold .ed .hw-h{ text-align:center; justify-items:center; margin-inline:auto; } }
+@media (max-width:760px){ html{ scroll-padding-bottom:96px; scroll-padding-top:16px; } }
+.thp.dark{ --t-2:#8E8E8E; }
 </style>
 </head>
 <body>
@@ -2695,7 +2697,7 @@ for (const [k, v] of Object.entries(DEFAULT_STATE)) { if (S[k] == null || (Array
 if (S.draft && (!Array.isArray(S.draft.tweets) || !S.draft.tweets.length)) S.draft = null;
 if (!S.ai || S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date.now()), limit: 5 };
 const HIST_K = { k: null };
-function persist() { const h = S.history; const k = h ? `${h.length}:${h.reduce((a, p) => a + (p.likes || 0) + (p.replies || 0), 0)}` : '0'; if (k !== HIST_K.k) { store.set('history', h || []); HIST_K.k = k; } const { history, ...rest } = S; store.set('state', rest); }
+function persist() { const h = S.history; const k = h ? `${h.length}:${h.reduce((a, p) => a + (p.likes || 0) + (p.replies || 0) + (p.views || 0) + (p.text ? p.text.length : 0), 0)}` : '0'; if (k !== HIST_K.k && store.set('history', h || [])) HIST_K.k = k; const { history, ...rest } = S; store.set('state', rest); }
 const save = debounce(() => { persist(); scheduleSync(); }, 250);
 const saveNow = () => { try { persist(); } catch (e) { } };
 addEventListener('pagehide', saveNow); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); }); addEventListener('beforeunload', saveNow);
@@ -3087,11 +3089,12 @@ function toast(msg, { icon = 'check', tone = 'ok', action, onAction, ms = 3800 }
   const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status');
   el.innerHTML = `${ic(icon, 't-' + tone)}<span>${msg}</span>${action ? `<button type="button">${esc(action)}</button>` : ''}`;
   host.append(el);
-  const close = () => { if (el.classList.contains('out')) return; el.classList.add('out'); setTimeout(() => el.remove(), 190); };
+  const close = () => { if (el.classList.contains('out')) return; el.classList.add('out'); if (UNDO.el === el) { UNDO.fn = null; UNDO.el = null; } setTimeout(() => el.remove(), 190); };
+  if (UNDO.el && UNDO.el !== el) { UNDO.fn = null; UNDO.el = null; }
   let t = setTimeout(close, ms);
   el.addEventListener('mouseenter', () => clearTimeout(t)); el.addEventListener('mouseleave', () => { if (!el.contains(document.activeElement)) t = setTimeout(close, 1600); });
   el.addEventListener('focusin', () => clearTimeout(t)); el.addEventListener('focusout', () => { t = setTimeout(close, 1600); });
-  if (action) { el.querySelector('button').addEventListener('click', () => { onAction && onAction(); UNDO.fn = null; close(); }); if (/^undo$/i.test(action)) { UNDO.fn = onAction; UNDO.close = close; } }
+  if (action) { el.querySelector('button').addEventListener('click', () => { onAction && onAction(); UNDO.fn = null; close(); keepFocus(); }); if (/^undo$/i.test(action)) { UNDO.fn = onAction; UNDO.close = close; UNDO.el = el; } }
   return close;
 }
 
@@ -3161,7 +3164,7 @@ document.addEventListener('click', e => { if (e.target.closest('[data-close]')) 
 function syncSeg(seg) {
   if (!seg) return; let th = $('.seg-thumb', seg); if (!th) { th = document.createElement('i'); th.className = 'seg-thumb'; seg.prepend(th); }
   const items = $$('[role="tab"],[role="radio"]', seg); if (items.length) items.forEach(b => { b.tabIndex = b.getAttribute('aria-selected') === 'true' || b.getAttribute('aria-checked') === 'true' ? 0 : -1; });
-  const on = $('[aria-selected="true"]', seg); if (!on) return;
+  const on = $('[aria-selected="true"],[aria-checked="true"]', seg); if (!on) return;
   th.style.width = on.offsetWidth + 'px'; th.style.transform = `translateX(${on.offsetLeft}px)`;
 }
 
@@ -3171,6 +3174,8 @@ document.addEventListener('keydown', e => {
   e.preventDefault(); const n = e.key === 'Home' ? 0 : e.key === 'End' ? all.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + all.length) % all.length; all[n].focus(); all[n].click();
   requestAnimationFrame(() => { all.forEach(b => { b.tabIndex = b === all[n] ? 0 : -1; }); });
 });
+function rovingTabs(root = document) { $$('[role="tablist"]', root).forEach(tl => { const it = $$('[role="tab"]', tl); if (!it.some(b => b.getAttribute('aria-selected') === 'true')) return; it.forEach(b => { b.tabIndex = b.getAttribute('aria-selected') === 'true' ? 0 : -1; }); }); }
+document.addEventListener('click', e => { if (e.target.closest && e.target.closest('[role="tab"]')) requestAnimationFrame(() => rovingTabs()); });
 /* reward: a small murmuration takes off from the button */
 function burst(x, y, { n = 34, gold = false } = {}) {
   if (REDUCED) return;
@@ -3298,7 +3303,7 @@ function route() {
     DISPOSE.forEach(f => { try { f(); } catch (e) { } }); DISPOSE = [];
     CURRENT = name;
     document.body.classList.toggle('force-light', name === 'home'); /* the homepage is a light world; its menus and modals follow */
-    ROUTES[name]({ same }); scrollTo(0, 0); initNavPill();
+    ROUTES[name]({ same }); scrollTo(0, 0); initNavPill(); requestAnimationFrame(() => rovingTabs());
     /* a route change puts focus on the new page's heading, so screen readers hear where they landed (Write keeps the editor's own focus) */
     if (CURRENT !== 'home' && CURRENT !== 'write') { const h = $('#view h1') || $('#root h1'), a = document.activeElement; if (h && (!a || a === document.body || !a.isConnected)) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
   };
@@ -3476,8 +3481,8 @@ function openPalette(initial = '') {
     const res = cmds.map(c => ({ c, f: c.g === 'Formulas' && q && !c.label.toLowerCase().includes(q.toLowerCase()) ? null : fuzzy(q, c.label) })).filter(x => x.f).sort((a, b) => q ? b.f.score - a.f.score : 0);
     shown = (q ? res.slice(0, 40) : res.filter(x => x.c.g !== 'Formulas' && x.c.g !== 'Saved ideas').concat(res.filter(x => x.c.g === 'Saved ideas').slice(0, 3)));
     active = clamp(active, 0, Math.max(0, shown.length - 1));
-    if (!shown.length) { list.innerHTML = `<div class="cmdk-empty">Nothing matches “${esc(q)}”.<br><button class="btn sm" style="margin-top:12px" data-cap>${ic('plus', 'sm')} Save it as an idea</button></div>`; $('[data-cap]', list).onclick = () => { m.close(); addIdea({ src: 'note', text: q }); }; return; }
-    let g = null; list.innerHTML = shown.map((x, i) => { const head = x.c.g !== g ? `<div class="cmdk-g label">${esc(g = x.c.g)}</div>` : ''; return `${head}<button class="cmdk-i ${i === active ? 'active' : ''}" role="option" id="cmdk-o${i}" tabindex="-1" aria-selected="${i === active}" data-i="${i}">${ic(x.c.icon)}<span>${hl(x.c.label, x.f.marks)}</span>${x.c.kbd ? kbd(...x.c.kbd) : ''}</button>`; }).join('');
+    if (!shown.length) { inp.removeAttribute('aria-activedescendant'); list.removeAttribute('role'); srSay('No results. Press the button to save it as an idea.'); list.innerHTML = `<div class="cmdk-empty">Nothing matches “${esc(q)}”.<br><button class="btn sm" style="margin-top:12px" data-cap>${ic('plus', 'sm')} Save it as an idea</button></div>`; $('[data-cap]', list).onclick = () => { m.close(); addIdea({ src: 'note', text: q }); }; return; }
+    list.setAttribute('role', 'listbox'); let g = null; list.innerHTML = shown.map((x, i) => { const head = x.c.g !== g ? `<div class="cmdk-g label">${esc(g = x.c.g)}</div>` : ''; return `${head}<button class="cmdk-i ${i === active ? 'active' : ''}" role="option" id="cmdk-o${i}" tabindex="-1" aria-selected="${i === active}" data-i="${i}">${ic(x.c.icon)}<span>${hl(x.c.label, x.f.marks)}</span>${x.c.kbd ? kbd(...x.c.kbd) : ''}</button>`; }).join('');
     const a = $('.cmdk-i.active', list); a && a.scrollIntoView({ block: 'nearest' }); inp.setAttribute('aria-activedescendant', a ? a.id : '');
     if (q) srSay(`${shown.length} result${shown.length === 1 ? '' : 's'}.`);
   }
@@ -3550,7 +3555,9 @@ let gPending = 0;
 const isTyping = e => { const t = e.target; return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable); };
 document.addEventListener('keydown', e => { if (SEND.t && ((e.key === 'Escape' && !MODALS.length) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z'))) { e.preventDefault(); e.stopImmediatePropagation(); cancelSend(); } }, true);
 /* Ctrl/⌘+Z outside a text field takes back whatever the last toast offered to undo */
-document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && !isTyping(e) && UNDO.fn && $('#toasts .toast:not(.out)')) { e.preventDefault(); const f = UNDO.fn; UNDO.fn = null; UNDO.close && UNDO.close(); f(); srSay('Undone.'); } });
+document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && !isTyping(e) && UNDO.fn && $('#toasts .toast:not(.out)')) { e.preventDefault(); const f = UNDO.fn; UNDO.fn = null; UNDO.close && UNDO.close(); f(); srSay('Undone.'); keepFocus(); } });
+/* when a redraw removes the focused element, land on something sensible instead of the page body */
+function keepFocus(sel) { requestAnimationFrame(() => { const a = document.activeElement; if (a && a !== document.body && a.isConnected) return; const t = (sel && $(sel)) || $('#cal .qcard') || $('#view h1') || $('#main'); if (t) { if (!t.matches('a,button,input,textarea,select,[tabindex]')) t.tabIndex = -1; t.focus({ preventScroll: true }); } }); }
 document.addEventListener('keydown', e => {
   const mod = e.metaKey || e.ctrlKey;
   if (mod && /^[1-3]$/.test(e.key) && CURRENT && CURRENT !== 'home' && CURRENT !== 'start' && S.workspaces[+e.key - 1]) { e.preventDefault(); switchWs(S.workspaces[+e.key - 1].id); return; }
@@ -3679,7 +3686,7 @@ function startersHTML() {
 }
 function mediaHTML(tw) {
   if (!tw.media.length) return '';
-  return `<div class="media-grid n${tw.media.length}">${tw.media.map((m, k) => `<div class="m">${m.type === 'gif' ? (m.src ? `<div class="gif-real"><img src="${esc(REDUCED && m.still ? m.still : (m.preview || m.src))}" alt="${esc(m.alt || 'GIF')}"><small>GIF</small></div>` : gifTile(m.id)) : `<img src="${m.src}" alt="${esc(m.alt || '')}"><button class="alt-b ${m.alt ? 'has' : ''}" data-cact="alt" data-k="${k}" aria-label="${m.alt ? 'Edit image description' : 'Describe this image'}">${m.alt ? 'ALT ✓' : '+ ALT'}</button>`}<button class="rm" data-cact="rmmedia" data-k="${k}" aria-label="Remove image" data-tip="Remove">${ic('x', 'sm')}</button></div>`).join('')}</div>`;
+  return `<div class="media-grid n${tw.media.length}">${tw.media.map((m, k) => `<div class="m">${m.type === 'gif' ? (m.src ? `<div class="gif-real"><img src="${esc(REDUCED && m.still ? m.still : (m.preview || m.src))}" alt="${esc(m.alt || 'GIF')}"><small>GIF</small></div>` : gifTile(m.id)) : `<img src="${m.src}" alt="${esc(m.alt || '')}"><button class="alt-b ${m.alt ? 'has' : ''}" data-cact="alt" data-k="${k}" aria-label="${m.alt ? `Edit the description of image ${k + 1}` : `Describe image ${k + 1}`}">${m.alt ? 'ALT ✓' : '+ ALT'}</button>`}<button class="rm" data-cact="rmmedia" data-k="${k}" aria-label="Remove image" data-tip="Remove">${ic('x', 'sm')}</button></div>`).join('')}</div>`;
 }
 function pollHTML(tw) {
   if (!tw.poll) return '';
@@ -3805,7 +3812,7 @@ function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
   const H = hookFor(t0.text, S.draft.tweets.filter(t => t.text.trim()).length), h = H; const sc = $('.sc', b); b.style.visibility = t0.text.trim() ? '' : 'hidden';
   b.classList.toggle('mine', !!H.me); b.dataset.tip = H.me ? `Tuned to your ${fmtN(H.m.n)} posts. Why this score?` : 'Why this score?';
-  if (UI.lastHook != null && Math.floor(h.score / 10) !== Math.floor(UI.lastHook / 10)) srSay(`Hook score ${h.score}.`);
+  if (UI.lastHook != null && Math.floor(h.score / 10) !== Math.floor(UI.lastHook / 10)) { clearTimeout(UI.hsT); UI.hsT = setTimeout(() => srSay(`Hook score ${hookFor(S.draft.tweets[0].text).score}.`), 1500); }
   if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
   b.classList.toggle('hi', h.score >= 70);
@@ -3888,7 +3895,7 @@ function focusTweet(i, pos = 'end') {
   ta.setSelectionRange(p, p); paintField(ta);
   const r = ta.getBoundingClientRect(); if (r.bottom > innerHeight - 80 || r.top < 70) ta.closest('.tw').scrollIntoView({ block: 'center', behavior: REDUCED ? 'auto' : 'smooth' });
 }
-const markSaving = (() => { const done = debounce(() => { const s = $('#save-state'); if (s) { s.textContent = isEmptyDraft() ? 'New draft' : 'Saved'; s.parentElement.dataset.tip = isEmptyDraft() ? 'Nothing to save yet' : `Saved at ${fmtTime(`${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}`)}. Drafts live in this browser.`; s.parentElement.classList.toggle('is-new', isEmptyDraft()); } save(); }, 600); return () => { const s = $('#save-state'); if (s) s.textContent = 'Saving…'; done(); }; })();
+const markSaving = (() => { const done = debounce(() => { const s = $('#save-state'); if (s) { s.textContent = isEmptyDraft() ? 'New draft' : store.full ? 'Not saved' : 'Saved'; s.parentElement.dataset.tip = isEmptyDraft() ? 'Nothing to save yet' : store.full ? 'This browser’s storage is full. Remove a few images or old drafts.' : `Saved at ${fmtTime(`${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}`)}. Drafts live in this browser.`; s.parentElement.classList.toggle('is-new', isEmptyDraft()); } save(); }, 600); return () => { const s = $('#save-state'); if (s) s.textContent = 'Saving…'; done(); }; })();
 function insertAfter(i, texts, focus) {
   const tws = texts.map(t => newTweet(t)); S.draft.tweets.splice(i + 1, 0, ...tws); tws.forEach(t => UI.fresh.add(t.id));
   renderThread(focus || { focusId: tws[tws.length - 1].id, pos: 'end' }); markSaving();
@@ -3896,7 +3903,7 @@ function insertAfter(i, texts, focus) {
 const scheduleGhost = debounce(ta => {
   if (document.activeElement !== ta || ta.selectionEnd !== ta.value.length || UI.diff) return;
   const id = ta.closest('.tw').dataset.id; const g = ghostFor(ta.value, id);
-  if (g && !SH.st && ta.selectionStart === ta.selectionEnd) { UI.ghost = { id, text: g }; srSay(`Suggestion: ${g.trim()}. Tab to accept, keep typing to ignore.`); if (NEXT_SENT.some(n => g.includes(n))) UI.ghostUsed.add(id); paintField(ta); }
+  if (g && !SH.st && ta.selectionStart === ta.selectionEnd) { UI.ghost = { id, text: g }; srSay(`Suggestion: ${g.trim().replace(/[.…]+$/, '')}. Tab to accept, keep typing to ignore.`); if (NEXT_SENT.some(n => g.includes(n))) UI.ghostUsed.add(id); paintField(ta); }
 }, 1100);
 function acceptGhost(ta) {
   const id = ta.closest('.tw').dataset.id; const g = UI.ghost.text; UI.ghost = null; UI.ghostUsed.add(id);
@@ -4024,8 +4031,8 @@ function addFiles(i, files) {
   if (!imgs.length) { toast('That file isn’t an image. PNG, JPG, GIF or WebP work.', { icon: 'image', tone: 'err' }); return; }
   if (tw.poll) { toast('Polls and images don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; }
   const room = 4 - tw.media.length; if (room <= 0) { toast('Four images max per post. Start a new post for more.', { icon: 'image', tone: 'err' }); return; }
-  imgs.slice(0, room).forEach(f => { if (f.type === 'image/gif') { const r = new FileReader(); r.onload = () => { tw.media.push({ type: 'img', src: r.result, alt: '' }); refreshMedia(tw.id); save(); }; r.readAsDataURL(f); return; }
-    shrinkImage(f, 1600).then(x => { tw.media.push({ type: 'img', src: x.data, alt: '' }); refreshMedia(tw.id); save(); }).catch(e => toast(failMsg('add that image', e), { icon: 'image', tone: 'err' })); });
+  const read = f => f.type === 'image/gif' ? new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); }) : shrinkImage(f, 1600).then(x => x.data);
+  Promise.allSettled(imgs.slice(0, room).map(read)).then(rs => { rs.forEach(r => { if (r.status === 'fulfilled') tw.media.push({ type: 'img', src: r.value, alt: '' }); else toast(failMsg('add that image', r.reason), { icon: 'image', tone: 'err' }); }); refreshMedia(tw.id); save(); });
   if (imgs.length > room) toast(`Added ${room}. Four images max per post.`, { icon: 'image' });
 }
 function refreshMedia(id) { const el = $(`.tw[data-id="${id}"]`); if (!el) return; const tw = tById(id); $('.media-slot', el).innerHTML = mediaHTML(tw); $('.poll-slot', el).innerHTML = pollHTML(tw); schedulePreview(); markSaving(); }
@@ -5922,7 +5929,7 @@ async function boOpenId(id) { try { const r = await fetch('api/breakout/alerts')
 const DEV = (() => { try { return /[?&]dev\b/.test(location.search) || localStorage.getItem('hw-dev') === '1'; } catch (e) { return false; } })();
 function openSettings() {
   const srv = LLM.server || {}, undo = S.settings.undoSecs ?? 8, theme = S.theme || 'system', rest = S.settings.rest || [];
-  const seg = (name, cur, opts) => `<div class="seg set-seg" role="radiogroup" aria-label="${name}">${opts.map(([v, l]) => `<button role="radio" data-set="${name}" data-v="${v}" aria-checked="${String(cur) === String(v)}" aria-selected="${String(cur) === String(v)}">${l}</button>`).join('')}</div>`;
+  const seg = (name, cur, opts) => `<div class="seg set-seg" role="radiogroup" aria-label="${name}">${opts.map(([v, l]) => `<button role="radio" data-set="${name}" data-v="${v}" aria-checked="${String(cur) === String(v)}">${l}</button>`).join('')}</div>`;
   const sw = (k, on, label, sub) => `<div class="setting"><span>${label}</span><button class="switch" role="switch" aria-checked="${!!on}" data-setsw="${k}" aria-label="${label}"></button><small>${sub}</small></div>`;
   const row = (name, on, detail, act) => `<div class="cx-row"><span class="cx-dot ${on ? 'on' : ''}"></span><div><b>${name}</b><small>${detail}</small></div>${act || ''}</div>`;
   const m = modal(`${modalHead('Settings', 'How posting, sound and your data work. Accounts and Claude live in Connections.')}
@@ -5950,7 +5957,7 @@ function openSettings() {
     </div><div class="modal-f"><button class="btn" data-close>Done</button></div>`, { label: 'Settings', box: 'modal set-box' });
   const el = m.el; requestAnimationFrame(() => $$('.set-seg', el).forEach(syncSeg));
   el.addEventListener('click', e => {
-    const sg = e.target.closest('[data-set]'); if (sg) { const k = sg.dataset.set, v = sg.dataset.v; $$(`[data-set="${k}"]`, el).forEach(x => { x.setAttribute('aria-checked', x === sg); x.setAttribute('aria-selected', x === sg); }); syncSeg(sg.closest('.seg'));
+    const sg = e.target.closest('[data-set]'); if (sg) { const k = sg.dataset.set, v = sg.dataset.v; $$(`[data-set="${k}"]`, el).forEach(x => { x.setAttribute('aria-checked', x === sg); }); syncSeg(sg.closest('.seg'));
       if (k === 'undo') { S.settings.undoSecs = +v; save(); SFX.play('tick'); }
       if (k === 'theme') setTheme(v === 'system' ? null : v); return; }
     const s2 = e.target.closest('[data-setsw]'); if (s2) { const k = s2.dataset.setsw, on = s2.getAttribute('aria-checked') !== 'true'; s2.setAttribute('aria-checked', on);
@@ -6090,7 +6097,7 @@ function composerClick(e) {
     case 'poll': { const tw = S.draft.tweets[i]; if (tw.poll) { tw.poll = null; } else { if (tw.media.length) { toast('Polls and images don’t mix on X. Remove the image first.', { icon: 'poll', tone: 'err' }); break; } tw.poll = { options: ['', ''], days: 1 }; } refreshMedia(id); const f = $(`.tw[data-id="${id}"] [data-poll="0"]`); f && f.focus(); break; }
     case 'polladd': { const tw = S.draft.tweets[i]; tw.poll.options.push(''); refreshMedia(id); $(`.tw[data-id="${id}"] [data-poll="${tw.poll.options.length - 1}"]`).focus(); break; }
     case 'pollrm': S.draft.tweets[i].poll = null; refreshMedia(id); break;
-    case 'alt': { const m = S.draft.tweets[i].media[+el.dataset.k]; if (m) openAlt(m, () => refreshMedia(id)); break; }
+    case 'alt': { const k = +el.dataset.k, m = S.draft.tweets[i].media[k]; if (m) openAlt(m, () => { refreshMedia(id); requestAnimationFrame(() => { const b = $(`.tw[data-id="${id}"] .alt-b[data-k="${k}"]`); b && b.focus(); }); }); break; }
     case 'rmmedia': S.draft.tweets[i].media.splice(+el.dataset.k, 1); refreshMedia(id); break;
     case 'riff': toggleRiff(id); break;
     case 'remove': removeTweet(i); break;
@@ -6280,7 +6287,7 @@ function pfAv(p, cls = '') {
   return `<span class="av ini ${cls}"${tint} aria-hidden="true">${ini}${pic}</span>`;
 }
 function pfText(t) { return esc(t).replace(/(🧵|👇)/g, '$1').replace(/(^|\s)([#@][\w]+)/g, '$1<span class="lnk">$2</span>'); }
-function pfMedia(m) { loadSprite('ph'); const k = m in PHOTO ? PHOTO[m] : -1; return k < 0 ? '' : `<div class="md"><i class="mdp" style="background-position:0 ${sprY(k, PH_N)}"></i></div>`; }
+function pfMedia(m) { if (m in PHOTO) loadSprite('ph'); const k = m in PHOTO ? PHOTO[m] : -1; return k < 0 ? '' : `<div class="md"><i class="mdp" style="background-position:0 ${sprY(k, PH_N)}"></i></div>`; }
 
 /* X / Twitter */
 function xPost(post, { dark = false, liked = false, cls = '', counts = true, rail = false, you = null } = {}) {
@@ -6700,7 +6707,7 @@ ROUTES.home = () => { loadSprite('ph');
   const others = [VOID_POSTS[1], VOID_POSTS[6], VOID_POSTS[3]];
   /* the story phone is as large as the pinned viewport allows, and always whole: up to 360pt on desktop, fit to the stage on phones */
   const stW = innerWidth >= 1100 ? clamp(Math.round((innerHeight - 120) * 9 / 19.3), 300, 360) : innerWidth < 760 ? clamp(Math.round(Math.min(560, innerHeight * .62) * 9 / 19.3), 220, 300) : 300;
-  $('#root').innerHTML = `<div class="hw force-light">
+  $('#root').innerHTML = `<div class="hw force-light" role="main">
   <a class="hw-ann" href="#start"><span>New: <b>What’s working</b> shows why posts in your niche took off, and the formula behind each one.</span><span class="go">Try it free ›</span></a>
   <div class="hw-veil" aria-hidden="true"></div>
   <header class="hw-nav" id="hwnav">
@@ -6926,7 +6933,7 @@ function onbStep1() {
     <div class="onb-alt"><button class="btn ghost sm" id="onb-arch">${ic('upload', 'sm')} Have your X archive? Use that</button><button class="btn ghost sm" id="onb-fresh">No posts yet? Start from your niche</button></div>
   </div>`;
   ONB.niche = cur; syncSeg($('#onb-plat'));
-  $('#onb-plat').onclick = e => { const b = e.target.closest('[data-p]'); if (!b) return; ONB.plat = b.dataset.p; $$('#onb-plat [data-p]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#onb-plat')); $('#onb-h').focus(); };
+  $('#onb-plat').onclick = e => { const b = e.target.closest('[data-p]'); if (!b) return; ONB.plat = b.dataset.p; $$('#onb-plat [data-p]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#onb-plat')); if (e.detail) $('#onb-h').focus(); };
   $('.niches').onclick = e => { const b = e.target.closest('[data-n]'); if (!b) return; ONB.niche = b.dataset.n; $$('.niches .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); };
   const inp = $('#onb-h'); inp.oninput = () => { inp.removeAttribute('aria-invalid'); $('#onb-err').textContent = ''; ONB.t0 = ONB.t0 || Date.now(); };
   $('#onb-f').onsubmit = e => {
@@ -7371,7 +7378,7 @@ function qMenu(c) {
   const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { if (slotDate(q.day, q.time) < Date.now()) { toast('Its time already passed. Move it to a new slot, then approve it.', { icon: 'clock', tone: 'err' }); return; } q.approval = 'ok'; save(); syncToServer(q, q.mediaIds ? null : q.media); drawCal(); drawQSide(); toast('Approved. It goes out on schedule.', { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; serverDrop(q); save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
   openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
     { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) },
-    next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No best times left', icon: 'target', disabled: true },
+    next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => { moveQ(q.id, next.day, next.time); keepFocus(`.qcard[data-id="${q.id}"]`); } } : { label: 'No best times left', icon: 'target', disabled: true },
     { label: 'Move to…', icon: 'clock', run: () => setTimeout(() => openMenu(c, [{ header: 'Move to an open time' }, ...nextSlots(10, false).map(x => ({ label: slotLabel(x.day, x.time), icon: slotInfo(x.day, x.time).best ? 'target' : 'cal', hint: slotInfo(x.day, x.time).best ? 'Best' : '', run: () => { moveQ(q.id, x.day, x.time); requestAnimationFrame(() => { const nc = $(`.qcard[data-id="${q.id}"]`); nc && nc.focus(); }); } }))], { width: 260 }), 0) },
     { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } serverDrop(q); q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide(); { const srv = LLM.server || {}; toast((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? 'Sending now. Stay close for the first replies.' : SHOWCASE() ? 'Posted. It’s a demo, so nothing actually went out.' : 'Marked as posted. Nothing went out from here: copy it to post, or connect X or LinkedIn.', { icon: 'send', tone: 'accent', ...((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? {} : { action: 'Copy text', onAction: () => copyText(q.tweets.join('\n\n')) }) }); } syncToServer(q, q.mediaIds ? null : q.media); liveStart(q); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } const copy = { ...q, id: uid(), day: s.day, time: s.time, serverId: null }; delete copy.xIds; delete copy.urls; S.queue.push(copy); save(); syncToServer(copy, copy.mediaIds ? null : copy.media); drawCal(); drawQSide(); toast(`Duplicated to ${slotWhen(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
