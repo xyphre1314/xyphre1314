@@ -1086,7 +1086,7 @@ body.typing .preview{ opacity:.7; }
 .top-post > div{ min-width:0; }
 .top-post .rk{ font:500 var(--t-13)/1 var(--font-mono); color:var(--text-3); }
 .top-post p{ font-size:var(--t-14); }
-.top-post .st{ display:flex; gap:12px; margin-top:6px; font:500 var(--t-11)/1 var(--font-mono); color:var(--text-3); }
+.top-post .st{ display:flex; gap:12px; margin-top:6px; font:500 12px/1 var(--font-ui); font-variant-numeric:tabular-nums; color:var(--text-3); }
 table.data{ width:100%; border-collapse:collapse; font-size:var(--t-13); }
 table.data th,table.data td{ padding:8px 10px; text-align:left; border-bottom:1px solid var(--border); }
 table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
@@ -2396,10 +2396,10 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 @media (max-width:1100px){
   .ih-vs{ position:static; display:grid; gap:10px; margin-top:20px; max-width:520px; }
   .insight-hero{ display:flex; flex-direction:column; } .insight-hero .ih-vs{ order:9; }
-  .ih-vs div{ display:grid; grid-template-columns:110px minmax(0,1fr) 48px; grid-template-rows:auto; align-items:center; width:auto; height:auto; gap:12px; }
+  .ih-vs div{ display:grid; grid-template-columns:110px minmax(0,1fr) 48px; grid-template-rows:auto; justify-items:start; align-items:center; width:auto; height:auto; gap:12px; }
   .ih-vs span{ order:-1; min-height:0; text-align:left; } .ih-vs i{ order:0; } .ih-vs b{ order:1; } .ih-vs span br{ display:none; }
   .ih-vs i{ height:14px; width:calc(var(--h) * 100%); border-radius:4px; animation:none; }
-  .ih-vs b{ font-size:15px; text-align:right; }
+  .ih-vs b{ font-size:15px; justify-self:end; }
 }
 /* pricing: Pro first on phones; three columns down to 860px */
 .pl li.soon{ color:var(--text-3); } .pl li.soon small{ margin-left:auto; padding:1px 7px; border-radius:99px; background:var(--surface-2); font-size:12px; color:var(--text-2); }
@@ -2416,10 +2416,10 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
   .side .newpost, .side .searchbtn{ width:40px; padding:0; justify-content:center; } .side .newpost span, .side .searchbtn span, .side .searchbtn .kbds, .side .searchbtn kbd{ display:none; }
   .side .nav{ width:100%; } .side .nav a{ justify-content:center; padding:0; height:40px; } .side .nav a span, .side .nav .count{ display:none; } .side .nav-tools{ font-size:0; padding:10px 0 4px !important; border-top:1px solid var(--border); margin:8px 8px 0; }
   .side-drafts, .side .plan-card, .side .ai-badge span, .side .me > span:not(.avatar), .side .me > .icon{ display:none !important; }
-  .side .me{ width:40px; padding:4px; justify-content:center; } .side .ai-badge{ width:28px; padding:0; justify-content:center; }
+  .side .me{ width:40px; padding:4px; justify-content:center; } .side .ai-badge{ width:36px; height:28px; padding:0; justify-content:center; display:flex; align-items:center; } .side .searchbtn{ height:36px; }
 }
 @media (max-width:980px) and (min-width:761px){
-  .composer .preview{ left:50%; right:auto; width:min(600px,100vw); margin-left:min(-300px,-50vw); }
+  .composer .preview{ left:max(0px,calc(50% - 300px)); right:auto; width:min(600px,100vw); margin-left:0; }
   .composer.show-sheet::after{ content:""; position:fixed; inset:0; z-index:74; background:rgba(26,26,26,.32); animation:fade var(--d-fast) var(--ease-out) both; }
 }
 
@@ -2438,6 +2438,20 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .words .w button{ min-width:24px; min-height:24px; display:inline-grid; place-items:center; } .nav-lk{ min-height:24px; padding:0 6px; } #q-why{ display:inline-flex; align-items:center; min-height:24px; }
 /* 320px: tools wrap instead of overlapping */
 @media (max-width:360px){ .tw-tools{ flex-wrap:wrap; row-gap:4px; } .tw-tools .tw-meta{ margin-left:auto; } .starter .acts, .starter-list .acts{ flex-wrap:wrap; } }
+
+/* ==== Round 26 QA: visual follow-ups ==== */
+/* type floor and mono only for digits */
+.nav a .count, .cal .tl, .rr-n{ font-family:var(--font-ui); font-variant-numeric:tabular-nums; font-size:12px; }
+.heat, .chart .axis text{ font-family:var(--font-ui); font-variant-numeric:tabular-nums; }
+.tabbar a span, .tabbar button span{ font-size:12px !important; } .rest-days button{ font-size:12px; } .gif-t span{ font-size:11.5px; }
+.qt{ font-size:12px; padding:0 5px; } .qt > span{ overflow-wrap:normal; }
+.qcard{ container-type:inline-size; container-name:qc; }
+@container qc (max-width:110px){ .qt.ok > span, .qt.needs > span{ display:none; } .qt.ok, .qt.needs{ padding:0 4px; min-width:18px; justify-content:center; } }
+.story .cap h3{ font-size:clamp(32px,6vw,62px); }
+/* the onboarding try card stacks on phones */
+@media (max-width:560px){ .ot-row{ grid-template-columns:1fr; gap:8px; } .ot-row .hook{ justify-self:start; } .onb-try .ot-a .btn{ flex:1 1 auto; } .up-hero .pill.accent{ border-radius:12px; text-align:center; line-height:1.45; } }
+/* the LinkedIn fold chapter centres when it stacks */
+@media (max-width:1060px){ .fold .ed .hw-h{ text-align:center; justify-items:center; margin-inline:auto; } }
 </style>
 </head>
 <body>
@@ -3043,6 +3057,7 @@ const Tip = (() => {
     let y = r.top - h - 8, origin = '50% 100%';
     if (y < 8) { y = r.bottom + 8; origin = '50% 0%'; }
     let x = clamp(r.left + r.width / 2 - w / 2, 8, innerWidth - w - 8);
+    if (t.closest('.side') && innerWidth > 760 && innerWidth <= 1180) { x = r.right + 10; y = r.top + r.height / 2 - h / 2; origin = '0% 50%'; }
     el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.setProperty('--tip-origin', origin);
   }
   function show(t) {
@@ -3148,7 +3163,7 @@ function syncSeg(seg) {
   if (!seg) return; let th = $('.seg-thumb', seg); if (!th) { th = document.createElement('i'); th.className = 'seg-thumb'; seg.prepend(th); }
   const items = $$('[role="tab"],[role="radio"]', seg); if (items.length) items.forEach(b => { b.tabIndex = b.getAttribute('aria-selected') === 'true' || b.getAttribute('aria-checked') === 'true' ? 0 : -1; });
   const on = $('[aria-selected="true"]', seg); if (!on) return;
-  th.style.width = on.offsetWidth + 'px'; th.style.transform = `translateX(${on.offsetLeft - 3}px)`;
+  th.style.width = on.offsetWidth + 'px'; th.style.transform = `translateX(${on.offsetLeft}px)`;
 }
 
 document.addEventListener('keydown', e => {
@@ -3258,7 +3273,7 @@ function spendAI() { if (PRICED() && S.plan === 'free') S.ai.used++; save(); ref
 function refreshPlanCard() {
   const c = $('.plan-card'); if (!c) return;
   const used = Math.min(S.ai.used, S.ai.limit);
-  $('.pc-count', c).textContent = `${SHOWCASE() ? 'Demo limit: ' : ''}${S.ai.limit - used} of ${S.ai.limit} rewrites left`;
+  $('.pc-count', c).textContent = `${SHOWCASE() ? 'Demo: ' : ''}${S.ai.limit - used}/${S.ai.limit} rewrites left`;
 }
 
 /* ==========================================================================
@@ -3329,7 +3344,7 @@ function shell(active, inner) {
     ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts${S.drafts.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or let go">Tidy up</button>` : ''}</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}" title="${esc(clip((d.tweets[0] && d.tweets[0].text) || 'Untitled draft', 120))}${d.created ? ` · started ${agoLabel(d.created)}` : ''}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}${S.drafts.length > 5 ? `<button class="sd sd-all" data-act="alldrafts">All drafts · ${S.drafts.length}</button>` : ''}</div>` : ''}
     <div class="spacer"></div>
     <button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="${aiBadgeTip()}">${aiBadgeInner()}</button>
-    ${S.plan === 'free' ? `<a class="side-plan plan-card" ${PRICED() ? '' : 'hidden'} href="#upgrade" data-tip="${SHOWCASE() ? 'How the free plan’s daily limit works. Nothing is for sale yet' : 'Unlimited rewrites on Pro'}"><span class="pc-count">${SHOWCASE() ? 'Demo limit: ' : ''}${S.ai.limit - used} of ${S.ai.limit} rewrites left</span><span class="go">Pricing</span></a>` : ''}
+    ${S.plan === 'free' ? `<a class="side-plan plan-card" ${PRICED() ? '' : 'hidden'} href="#upgrade" data-tip="${SHOWCASE() ? 'How the free plan’s daily limit works. Nothing is for sale yet' : 'Unlimited rewrites on Pro'}"><span class="pc-count">${SHOWCASE() ? 'Demo: ' : ''}${S.ai.limit - used}/${S.ai.limit} rewrites left</span><span class="go">Pricing</span></a>` : ''}
     <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.ws === 'me' ? S.user.name : S.workspaces[0].name)}</b><span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span></span>${ic('more', 'sm')}</button>
   </aside>
   <main class="main" id="main"><div class="view" id="view">${inner}</div></main>
@@ -4563,7 +4578,7 @@ function rrCardHTML(p, i) {
     <p class="rr-t">${esc(p.text)}</p>
     <div class="rr-why">${(p.why || []).map(w => `<span>${esc(w)}</span>`).join('')}</div>
     ${done ? `<p class="rr-done">${ic('check', 'sm')} Replied${S.radar.done[p.id] !== true ? `: “${esc(clip(S.radar.done[p.id], 80))}”` : ''}</p>` : `<div class="rr-me">${avatar(S.user)}<div class="rr-box"><textarea class="input" rows="2" data-rrt="${esc(p.id)}" placeholder="${d.hint ? esc(d.hint) : 'Add a number, a counterexample, or a real question. Not “great post”.'}" aria-label="Your reply to @${esc(p.handle)}">${esc(d.text || '')}</textarea><span class="rr-n" data-rrn="${esc(p.id)}">${d.text ? HWCore.xLength(d.text) : 0}/280</span></div></div>
-    <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${ic('shuffle', 'sm')} Another angle</button>` : ''}<button class="btn sm primary" data-rra="send">${ic('reply', 'sm')} ${LLM.server && LLM.server.xUser && !p.sample ? 'Reply' : 'Reply on X'}</button></div>`}
+    <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${ic('shuffle', 'sm')} Another angle</button>` : ''}<button class="btn sm" data-rra="send">${ic('reply', 'sm')} ${LLM.server && LLM.server.xUser && !p.sample ? 'Reply' : 'Reply on X'}</button></div>`}
   </article>`;
 }
 function drawRadar() {
@@ -6389,7 +6404,7 @@ function wordDiff(a, b) {
   const A = a.filter(x => x.trim()), B = b.filter(x => x.trim()), n = A.length, m = B.length, L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
   for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
   const keep = new Set(); for (let i = 0, j = 0; i < n && j < m;) { if (A[i] === B[j]) { keep.add(j); i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++; }
-  let w = 0, k = 0, changed = 0; const html = b.map(t => { if (!t.trim()) return esc(t); const idx = w++; if (keep.has(idx)) return pfText(t); changed++; return `<span class="vw" style="--i:${k++}">${pfText(t)}</span>`; }).join('');
+  let w = 0, k = 0, changed = 0; const html = b.map(t => { if (!t.trim()) return esc(t); const idx = w++; if (keep.has(idx)) return pfText(t); if (!/[\p{L}\p{N}]/u.test(t)) return pfText(t); changed++; return `<span class="vw" style="--i:${k++}">${pfText(t)}</span>`; }).join('');
   return { html, changed };
 }
 const voiceSample = (spice, polish, length = 0) => { const row = VOICE_SAMPLES[spice < 35 ? 0 : spice < 68 ? 1 : 2]; let s = row[polish < 50 ? 0 : 1]; if (length > 55) s += polish < 50 ? '\n\nthe lesson: every option you add is a decision you’re asking someone else to make.' : '\n\nThe lesson: every option you add is a decision you’re asking a customer to make for you.'; return s; };
@@ -7007,7 +7022,7 @@ function onbTry() {
 }
 function onbIdeas(ideas) {
   return ideas.map((x, i) => { const s = hookScore(x.text).score;
-    return `<div class="card pidea" style="animation-delay:${i * 70}ms" data-t="${esc(x.text)}" data-k="${esc(x.kind)}" data-topic="${esc(x.topic)}"><div><p>${esc(x.text)}</p><div class="f"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(x.kind)}</span><span class="hook ${s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span><span>Hook</span></span></div></div><div style="display:flex;gap:6px"><button class="btn sm" data-oi="save" data-tip="Save to Ideas">${ic('inbox', 'sm')}</button><button class="btn sm primary" data-oi="open">Write it${ic('arrow', 'sm')}</button></div></div>`; }).join('');
+    return `<div class="card pidea" style="animation-delay:${i * 70}ms" data-t="${esc(x.text)}" data-k="${esc(x.kind)}" data-topic="${esc(x.topic)}"><div><p>${esc(x.text)}</p><div class="f"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(x.kind)}</span><span class="hook ${s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span><span>Hook</span></span></div></div><div style="display:flex;gap:6px"><button class="btn sm" data-oi="save" data-tip="Save to Ideas">${ic('inbox', 'sm')}</button><button class="btn sm" data-oi="open">Write it${ic('arrow', 'sm')}</button></div></div>`; }).join('');
 }
 
 /* ==========================================================================
@@ -7039,7 +7054,7 @@ function todayHTML() {
       <div class="t-a"><button class="btn primary" data-tact="write">${ic('write', 'sm')} Write it</button><button class="btn ghost" data-tact="another">${ic('shuffle', 'sm')} Another</button></div>
       ${slot ? `<p class="t-slot">${ic('clock', 'sm')} <span>Next good time: <b>${slotWhen(slot.day, slot.time)}</b>. ${esc(slot.reason)}.</span></p>` : ''}</section>
     <section class="card pad t-week"><span class="label">Your week</span>
-      <p class="t-big"><b class="mono">${wk.length}</b> scheduled <span class="faint">·</span> <b class="mono">${open}</b> best time${open === 1 ? '' : 's'} open this week</p>
+      <p class="t-big"><b class="mono">${wk.length}</b> in the next 7 days <span class="faint">·</span> <b class="mono">${open}</b> best time${open === 1 ? '' : 's'} open this week</p>
       ${wk.length ? `<div class="upnext">${wk.slice(0, 3).map(q => `<a href="#queue"><span class="when">${slotLabel(q.day, q.time).replace(' · ', '<br>')}</span><p>${esc(q.text)}</p></a>`).join('')}</div>` : '<p class="faint" style="font-size:13px">Nothing lined up yet.</p>'}
       <div class="t-streak"><div class="streak">${streakHTML()}</div><span class="faint">${n ? `${n}-day streak` : 'One post starts a streak'}</span></div>
       <div class="t-a"><a class="btn sm" href="#queue">Open the queue</a>${wk.length < 3 ? `<button class="btn sm" data-tact="plan">${ic('spark', 'sm')} Plan my week</button>` : ''}</div></section>
@@ -7189,7 +7204,7 @@ function drawEngine() {
   if (ENGINE.kind !== 'All') list = list.filter(x => x.kind === ENGINE.kind);
   list = list.slice(0, 6);
   if (!list.length) { el.innerHTML = `<div class="empty" style="grid-column:1/-1">No ${ENGINE.kind.toLowerCase()} ideas in this batch. <button class="btn sm" data-iact="shuffle">${ic('shuffle', 'sm')} Shuffle</button></div>`; return; }
-  el.innerHTML = list.map((x, i) => { const s = hookScore(x.text).score; return `<div class="card idea hoverable" style="animation:rise var(--d-snap) ${i * 40}ms var(--spring) both" data-t="${esc(x.text)}" data-k="${esc(x.kind)}"><p class="t">${esc(x.text)}</p>${x.why ? `<p class="why">${esc(x.why)}</p>` : ''}<div class="f"><span style="display:flex;gap:6px;align-items:center"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(x.kind)}</span><span class="hook ${s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span></span></span><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="save" data-tip="Save for later" aria-label="Save for later">${ic('inbox', 'sm')}</button><button class="btn sm" data-iact="write">Write${ic('arrow', 'xs')}</button></span></div></div>`; }).join('');
+  el.innerHTML = list.map((x, i) => { const s = hookScore(x.text).score; return `<div class="card idea hoverable" style="animation:rise var(--d-snap) ${i * 40}ms var(--spring) both" data-t="${esc(x.text)}" data-k="${esc(x.kind)}"><p class="t">${esc(x.text)}</p>${x.why ? `<p class="why">${esc(x.why)}</p>` : ''}<div class="f"><span style="display:flex;gap:6px;align-items:center"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(x.kind)}</span><span class="hook ${s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span><span>Hook</span></span></span><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="save" data-tip="Save for later" aria-label="Save for later">${ic('inbox', 'sm')}</button><button class="btn sm" data-iact="write">Write${ic('arrow', 'xs')}</button></span></div></div>`; }).join('');
 }
 function drawInbox() {
   const el = $('#inbox'); if (!el) return; const n = $('#inbox-n'); if (n) n.textContent = S.ideas.length;
@@ -7321,7 +7336,7 @@ ROUTES.queue = () => {
 };
 function qTags(q) {
   const w = q.ws && q.ws !== 'me' ? S.workspaces.find(x => x.id === q.ws) : null; if (!w && !q.approval && !q.rerun) return '';
-  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now() ? `<span class="qt missed" title="Its time passed before it was approved. Pick a new time."><i></i><span>Missed</span></span>` : `<span class="qt ${q.approval}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>`) : ''}</span>`;
+  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now() ? `<span class="qt missed" title="Its time passed before it was approved. Pick a new time."><i></i><span>Missed</span></span>` : `<span class="qt ${q.approval}" title="${q.approval === 'needs' ? 'To approve' : 'Approved'}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>`) : ''}</span>`;
 }
 function moveQ(id, day, time) {
   const q = S.queue.find(x => x.id === id); if (!q) return;
@@ -7442,7 +7457,7 @@ function drawQSide() {
   const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled');
   const n = streakCount(); const postedToday = !!S.streak[dayKey(Date.now())];
   el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
-  <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Momentum</span><span class="mono" style="font-size:12px">${n} day${n === 1 ? '' : 's'}</span></div><div class="streak">${streakHTML()}</div><span class="faint" style="font-size:12px">${postedToday ? 'Posted today. Scheduled posts count too.' : isRest(Date.now()) ? 'Rest day. Your streak waits for you.' : n ? `Post or schedule today to make it ${n + 1}.` : 'One post starts a streak. Scheduled posts count.'}</span>
+  <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Momentum</span><span style="font-size:12px;font-variant-numeric:tabular-nums">${n} day${n === 1 ? '' : 's'}</span></div><div class="streak">${streakHTML()}</div><span class="faint" style="font-size:12px">${postedToday ? 'Posted today. Scheduled posts count too.' : isRest(Date.now()) ? 'Rest day. Your streak waits for you.' : n ? `Post or schedule today to make it ${n + 1}.` : 'One post starts a streak. Scheduled posts count.'}</span>
     <div class="rest-row"><span class="faint">Rest days</span><div class="rest-days" role="group" aria-label="Rest days">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button data-rest="${d}" aria-pressed="${(S.settings.rest || []).includes(d)}" aria-label="${DOW[d]}" data-tip="${DOW[d]}${(S.settings.rest || []).includes(d) ? ' is a rest day' : ''}">${DOW[d][0]}</button>`).join('')}</div></div></div>
   ${rerunHTML()}
   <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(' · ', '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
