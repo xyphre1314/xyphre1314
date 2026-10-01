@@ -94,4 +94,7 @@ export function sampleAlert(now = Date.now()) {
 export const deliverTest = (a, o) => deliver(a, o);
 
 export const alerts = (since = 0) => state().alerts.filter(a => a.at > since);
+/* the open app's live pill: what the watcher has seen so far for one post (no extra X calls) */
+export function live(id) { const s = state(), w = s.watch.find(x => x.id === String(id)); if (!w) return { checks: [], curve: [], alert: null, watching: false };
+  return { checks: w.checks || [], curve: CHECKS.map(c => ({ min: c, v: Math.round((usualAt(c, { ...s, watch: s.watch.filter(x => x.id !== w.id) }) || { v: 0 }).v) })), alert: s.alerts.find(a => a.id === w.id) || null, watching: s.settings.on }; }
 export function status() { const s = state(); return { ...getSettings(), configured: configured(), vapidKey: P.publicKey(), watching: s.watch.filter(w => Date.now() - w.at < 3600e3).length, usual: usualAt(20, s), alerts: s.alerts.slice(0, 5) }; }

@@ -40,6 +40,7 @@ Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (th
 | `POST /api/v1/check` `{text, never?, limit?, history?}` | Hook score + pre-post checks, no key needed. Send `history` (your past posts with likes, reposts, replies) and it also returns `mine`: the score tuned to your posts, what helps and hurts this line for you, and how the tuned score did on your newest posts |
 | `GET/POST /api/breakout` | Breakout alerts: status, and settings `{on, email, median, voice, subscribe, unsubscribe}`. `median` is your typical post's engagement (the app sends it from your history); `subscribe` is a browser push subscription |
 | `GET /api/breakout/alerts?since=` | Alerts so far (the open app checks every minute) |
+| `GET /api/breakout/live?id=` | What the watcher has seen for one post so far (minute, likes, replies, engagement) and your usual pace curve. Feeds the app's live first-hour pill; makes no X calls of its own |
 | `POST /api/breakout/test` | Sends a test alert to your devices and email |
 | `POST /api/v1/rewrite` `{text, kind, voice?}` | Three rewrites in a voice |
 | `POST /api/v1/ideas` `{niche, notes, top}` | First lines to write today |

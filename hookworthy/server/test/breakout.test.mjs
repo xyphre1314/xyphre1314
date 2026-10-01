@@ -114,3 +114,10 @@ test('hook score tuned to you: learns your traits, tests itself on your newest p
   assert.deepEqual(core.learnHooks(posts.slice(0, 12)), { ready: false, n: 12, need: 30 });
   assert.equal(core.personalScore('x', { ready: false }), null);
 });
+
+test('breakout: the live pill reads what the watcher saw, without new X calls', () => {
+  write('breakout', { settings: { on: true, email: '', median: 40, voice: null, subs: [] }, watch: [{ id: '77', text: 'x', posts: ['x'], at: Date.now() - 12 * 60e3, checks: [{ min: 5, eng: 20, likes: 15, replies: 1 }, { min: 10, eng: 60, likes: 40, replies: 5 }], alerted: false }], alerts: [] });
+  let calls = 0; globalThis.fetch = async () => { calls++; return res(200, {}); };
+  const l = BO.live('77'); assert.equal(l.checks.length, 2); assert.equal(l.checks[1].likes, 40); assert.ok(l.curve.find(c => c.min === 10).v > 0); assert.equal(l.watching, true); assert.equal(calls, 0);
+  assert.deepEqual(BO.live('nope').checks, []);
+});

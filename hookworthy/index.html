@@ -644,6 +644,67 @@ body.typing .tw-tools{ opacity:0!important; }
 .hook-reason{ margin-top:10px; padding:14px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:var(--t-13); color:var(--text-2); animation:rise var(--d-spring) var(--ease-out) both; }
 .force-dark .hook-reason,:root[data-theme="dark"] .hook-reason:not(.force-light .hook-reason){ background:var(--surface-2); }
 .hook-reason b{ color:var(--text-1); font-weight:600; }
+/* Round 22: the details */
+/* hints: one useful line, like a good game's loading screen */
+.hint{ display:flex; align-items:baseline; gap:8px; margin:0; font-size:var(--t-13); line-height:1.45; color:var(--text-2); transition:opacity 180ms var(--ease-out),transform 180ms var(--ease-out); }
+.hint.swap{ opacity:0; transform:translateY(3px); }
+.hint-k{ flex:none; display:inline-flex; align-items:center; gap:4px; font:600 10.5px/1 var(--font-ui); letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); padding:4px 7px; border-radius:99px; background:var(--surface-2); transform:translateY(-1px); }
+.hint.mine .hint-k{ color:var(--accent-text); background:var(--accent-soft); } .hint-dot{ width:5px; height:5px; border-radius:50%; background:currentColor; }
+.hint-t{ min-width:0; text-wrap:pretty; }
+.hint-n{ flex:none; align-self:center; width:22px; height:22px; display:grid; place-items:center; border-radius:50%; color:var(--text-3); transition:background var(--d-micro),color var(--d-micro),transform var(--d-micro); }
+.hint-n:hover{ background:var(--surface-2); color:var(--text-1); } .hint-n:active{ transform:scale(.9); }
+.page-hint{ margin-top:10px; max-width:640px; }
+.card-hint{ margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+.starters-hint{ margin-top:16px; }
+.in-modal{ padding:10px 12px; border-radius:10px; background:var(--surface-2); } .in-modal .hint-k{ background:var(--surface); }
+.loading-hint{ padding:12px 14px; border-radius:12px; background:var(--surface-2); margin:4px 0 8px; animation:rise var(--d-spring) var(--ease-out) both; } .loading-hint .hint-k{ background:var(--surface); }
+.loading-hint .hint-t{ color:var(--text-1); }
+/* the send-off */
+.sendoff{ position:fixed; z-index:960; pointer-events:none; transform-origin:50% 30%; display:grid; will-change:transform,opacity; }
+.so-card{ grid-area:1/1; padding:14px 16px; border-radius:16px; background:var(--bg-elev); box-shadow:0 0 0 1px var(--border-strong),0 18px 40px -14px rgba(20,10,40,.35); transform:translate(calc(var(--i) * 6px),calc(var(--i) * 6px)) rotate(calc(var(--i) * 1.5deg)); }
+.so-card p{ margin:0; font-size:var(--t-15,15px); line-height:1.45; color:var(--text-1); display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+.so-m{ display:inline-flex; margin-top:10px; font:600 11px/1 var(--font-ui); letter-spacing:.04em; text-transform:uppercase; color:var(--accent-text); }
+.nav a.got,.tabbar a.got{ animation:nav-got 900ms var(--spring-snap) both; }
+.nav a.got .icon,.tabbar a.got .icon{ color:var(--accent-text); }
+@keyframes nav-got{ 0%{ transform:scale(1); } 25%{ transform:scale(1.08); background:var(--accent-soft); } 60%{ transform:scale(.98); } 100%{ transform:none; } }
+/* where the platform cuts */
+.tw-mirror .xcut{ position:relative; }
+.tw-mirror .xcut::before{ content:""; position:absolute; left:-1px; top:-.05em; height:1.35em; border-left:2px dashed var(--error); }
+.tw-mirror .xover{ background:color-mix(in srgb,var(--error) 13%,transparent); border-radius:3px; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+.tw .ring.act{ cursor:pointer; } .tw .ring.over b::after{ content:' · tap to split'; font:500 11px/1 var(--font-ui); color:var(--text-3); white-space:nowrap; } .tw .ring.act:hover{ transform:scale(1.08); } .tw .ring.act:focus-visible{ outline:2px solid var(--error); outline-offset:2px; border-radius:50%; }
+/* slots while dragging: what each one is worth, and a pull toward the good ones */
+.slot .sx{ position:absolute; right:6px; top:3px; display:none; align-items:baseline; gap:2px; padding:2px 5px; border-radius:99px; background:var(--bg-elev); font:500 10.5px/1 var(--font-ui); color:var(--text-3); pointer-events:none; z-index:2; }
+.slot .sx span{ display:none; } .slot.over .sx span{ display:inline; } .slot:not(.over) .sx:not(:has(b)){ display:none !important; }
+.slot .sx b{ font:600 11px/1 var(--font-mono); color:var(--text-2); }
+.cal.dragging .slot:not(.past) .sx{ display:flex; animation:rise 200ms var(--ease-out) both; }
+.cal.dragging .slot.best .sx b{ color:var(--accent-text); }
+.cal.dragging .slot.over .sx{ color:var(--text-1); } .cal.dragging .slot.over .sx b{ font-size:13px; }
+.slot.snap{ animation:slot-snap 420ms var(--spring-snap) both; }
+@keyframes slot-snap{ 0%{ box-shadow:inset 0 0 0 1.5px var(--accent); } 35%{ box-shadow:inset 0 0 0 3px var(--accent),0 0 0 4px var(--accent-soft); } 100%{ box-shadow:inset 0 0 0 1.5px var(--accent); } }
+/* the first hour, live */
+.live-pill{ position:fixed; z-index:940; right:20px; bottom:calc(20px + env(safe-area-inset-bottom,0px)); display:flex; align-items:center; gap:2px; padding:4px; border-radius:99px; background:var(--bg-elev); box-shadow:0 0 0 1px var(--border-strong),0 14px 34px -14px rgba(20,10,40,.4); animation:lp-in 460ms var(--spring-snap) both; max-width:min(380px,calc(100vw - 32px)); }
+.live-pill.out{ animation:lp-out 240ms var(--ease-out) both; }
+@keyframes lp-in{ from{ opacity:0; transform:translateY(16px) scale(.92); } }
+@keyframes lp-out{ to{ opacity:0; transform:translateY(10px) scale(.96); } }
+.lp-main{ display:flex; align-items:center; gap:10px; padding:4px 12px 4px 4px; border-radius:99px; text-align:left; min-width:0; position:relative; }
+.lp-main:hover{ background:var(--surface-2); }
+.lp-ring{ flex:none; width:34px; height:34px; transform:rotate(-90deg); } .lp-ring circle{ fill:none; stroke-width:3; stroke:var(--surface-2); } .lp-ring .p{ stroke:var(--accent); stroke-linecap:round; stroke-dasharray:94.25; transition:stroke-dashoffset 900ms var(--ease-out); }
+.lp-dot{ position:absolute; left:19px; top:19px; width:8px; height:8px; margin:-4px; border-radius:50%; background:var(--accent); animation:lp-breathe 2.4s ease-in-out infinite; }
+.live-pill.done .lp-dot{ animation:none; background:var(--text-3); }
+@keyframes lp-breathe{ 50%{ transform:scale(.6); opacity:.55; } }
+.live-pill.ping .lp-dot{ animation:lp-ping 700ms var(--ease-out); }
+@keyframes lp-ping{ 0%{ box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent); } 100%{ box-shadow:0 0 0 14px transparent; } }
+.lp-body{ display:grid; gap:3px; min-width:0; }
+.lp-h{ display:flex; gap:6px; align-items:baseline; font:500 12px/1 var(--font-ui); color:var(--text-3); } .lp-h b{ color:var(--text-1); font-weight:600; letter-spacing:.02em; }
+.lp-nums{ display:flex; gap:12px; align-items:center; font:600 13px/1 var(--font-mono); color:var(--text-1); }
+.lp-n{ display:inline-flex; gap:4px; align-items:center; } .lp-n .icon{ color:var(--text-3); }
+.lp-x{ color:var(--accent-text); font-size:12px; }
+.lp-tip{ font-size:12px; line-height:1.35; color:var(--text-2); white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.lp-close{ flex:none; width:26px; height:26px; display:grid; place-items:center; border-radius:50%; color:var(--text-3); margin-right:4px; } .lp-close:hover{ background:var(--surface-2); color:var(--text-1); }
+.odo{ display:inline-flex; height:1em; overflow:hidden; line-height:1; font-variant-numeric:tabular-nums; }
+.od{ display:inline-block; height:1em; overflow:hidden; } .od-r{ display:flex; flex-direction:column; transition:transform 700ms cubic-bezier(.2,.9,.25,1.05); } .od-r i{ font-style:normal; height:1em; line-height:1; }
+@media (max-width:760px){ .live-pill{ right:12px; left:12px; max-width:none; bottom:calc(74px + env(safe-area-inset-bottom,0px)); } body:has(.live-pill) #toasts{ bottom:calc(146px + env(safe-area-inset-bottom,0px)); } }
+@media (prefers-reduced-motion:reduce){ .live-pill,.lp-dot,.slot.snap,.nav a.got,.tabbar a.got{ animation:none; } .od-r{ transition:none; } }
 /* Round 21: breakout alerts */
 .bo{ display:grid; gap:14px; }
 .bo-post{ margin:0; padding:12px 14px; border-left:3px solid var(--accent); background:var(--surface-2); border-radius:0 10px 10px 0; font-size:var(--t-14); color:var(--text-1); white-space:pre-line; }
@@ -2852,12 +2913,12 @@ function syncSeg(seg) {
 }
 
 /* reward: a small murmuration takes off from the button */
-function burst(x, y) {
+function burst(x, y, { n = 34, gold = false } = {}) {
   if (REDUCED) return;
   const c = $('#burst'), ctx = c.getContext('2d'), dpr = devicePixelRatio || 1;
   c.width = innerWidth * dpr; c.height = innerHeight * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   const cs = getComputedStyle(document.documentElement); const acc = cs.getPropertyValue('--accent').trim() || '#F5A30B'; const ink = cs.getPropertyValue('--text-1').trim();
-  const P = Array.from({ length: 34 }, (_, i) => ({ x: x + (Math.random() - .5) * 30, y: y + (Math.random() - .5) * 12, vx: (Math.random() - .3) * 3, vy: -Math.random() * 3 - 1, r: Math.random() * 2.2 + 1.3, d: i * 9, c: i % 4 ? acc : ink }));
+  const GOLD = ['#E9B949', '#F6D77E', '#C98A1B', '#FFF1C2']; const P = Array.from({ length: n }, (_, i) => ({ x: x + (Math.random() - .5) * 30, y: y + (Math.random() - .5) * 12, vx: (Math.random() - .3) * 3, vy: -Math.random() * 3 - 1, r: Math.random() * 2.2 + 1.3, d: i * (gold ? 6 : 9), c: gold ? GOLD[i % 4] : i % 4 ? acc : ink }));
   const t0 = performance.now(), dur = 1400, dir = x > innerWidth * .6 ? -1 : 1;
   (function f(now) {
     const t = now - t0; ctx.clearRect(0, 0, innerWidth, innerHeight);
@@ -2899,11 +2960,20 @@ const SFX = (() => {
     tap: () => tone(660, 0, .06, { vol: .04, glide: 1.25 }),                                  /* primary buttons */
     hook: () => { tone(880, 0, .12, { vol: .05 }); tone(1320, .07, .16, { vol: .045 }); },     /* first line crosses 70 */
     swap: () => { tone(520, 0, .08, { type: 'triangle', vol: .04, glide: 1.5 }); tone(990, .06, .12, { vol: .035 }); }, /* rewrite accepted */
-    done: () => { [523.3, 659.3, 784, 1046.5].forEach((f, i) => tone(f, i * .075, .32, { vol: .045 })); }                 /* scheduled, published */
+    done: () => { [523.3, 659.3, 784, 1046.5].forEach((f, i) => tone(f, i * .075, .32, { vol: .045 })); },                /* scheduled, published */
+    sendX: () => { hiss(700, .04, .38, { q: .7, sweep: 4, secs: .45 }); tone(659.3, .05, .16, { type: 'triangle', vol: .045 }); tone(987.8, .15, .3, { vol: .045 }); },   /* the send-off, crisp */
+    sendLi: () => { hiss(500, .035, .42, { q: .6, sweep: 3, secs: .45 }); tone(523.3, .05, .2, { vol: .045 }); tone(784, .17, .34, { vol: .042 }); },                  /* the send-off, warmer */
+    sendMore: () => { tone(1318.5, 0, .28, { vol: .03 }); tone(1975.5, .06, .3, { vol: .018 }); },                              /* a thread gets a little extra */
+    best: () => { [784, 987.8, 1174.7, 1568].forEach((f, i) => tone(f, i * .09, .5, { vol: .04 })); hiss(6000, .02, .6, { q: .5, secs: .6 }); }, /* a personal best */
+    blip: () => tone(1046.5, 0, .09, { vol: .03, glide: 1.12 })                                                                   /* a new reply */
   };
   const KEYMAP = { ' ': 'space', Backspace: 'back', Delete: 'back', Enter: 'enter' };
-  return { play: k => { try { if (on() && cues[k]) cues[k](); } catch (e) { } }, key: k => { try { if (on() && (k.length === 1 || KEYMAP[k])) cues[KEYMAP[k] || 'key'](); } catch (e) { } } };
+  return { detent: x => { try { if (on()) tone(700 + Math.min(2.5, Math.max(.5, x || 1)) * 380, 0, .035, { type: 'triangle', vol: .03 }); } catch (e) { } }, play: k => { try { if (on() && cues[k]) cues[k](); } catch (e) { } }, key: k => { try { if (on() && (k.length === 1 || KEYMAP[k])) cues[KEYMAP[k] || 'key'](); } catch (e) { } } };
 })();
+/* tap the counter when it's over: the rest moves to the next post, split at a sentence */
+const ringSplit = () => { splitOverflow(); SFX.play('swap'); toast('Moved the rest into the next post, split at a sentence.', { icon: 'swap', ms: 2600 }); };
+document.addEventListener('click', e => { if (e.target.closest('.tw .ring.over')) ringSplit(); });
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('.tw .ring.over')) { e.preventDefault(); ringSplit(); } });
 /* typing sounds in the editor: off unless you turn them on */
 document.addEventListener('keydown', e => { if (!S.settings.keys || e.repeat || e.metaKey || e.ctrlKey || e.altKey || !(e.target.classList && e.target.classList.contains('tw-input'))) return; SFX.key(e.key); });
 function toggleKeys() { S.settings.keys = !S.settings.keys; save(); if (S.settings.keys) { if (S.settings.sound === false) S.settings.sound = true; SFX.key('a'); } toast(S.settings.keys ? 'Typing sounds on. Soft keys, like a good keyboard.' : 'Typing sounds off.', { icon: 'volume', ms: 1800 }); }
@@ -3269,9 +3339,32 @@ function splitText(text, limit) {
   out.push(s); return out;
 }
 const SLOTS = ['08:40', '12:15', '17:30', '20:45'];
-const BEST = { 0: { '08:40': 'Monday planners check in' }, 1: { '08:40': 'Your replies peak here' }, 2: { '17:30': 'The commute scroll' }, 3: { '12:15': 'Highest reach last month' }, 4: { '08:40': 'Friday skim, short posts win' }, 5: { '12:15': 'Weekend readers, long threads' } };
 const dowIdx = d => (d.getDay() + 6) % 7;
 const slotDate = (day, time) => { const d = fromKey(day); const [h, m] = time.split(':').map(Number); d.setHours(h, m, 0, 0); return d; };
+/* best times: from your own posts once there are 20 with dates and numbers; until then, honest general defaults */
+const GENERAL_BEST = { 0: { '08:40': 'Monday planners check in' }, 1: { '08:40': 'Mid-morning, when replies tend to peak' }, 2: { '17:30': 'The commute scroll' }, 3: { '12:15': 'The lunch scroll reaches the most people' }, 4: { '08:40': 'Friday skim: short posts win' }, 5: { '12:15': 'Weekend readers have time for threads' } };
+let BEST = GENERAL_BEST, SLOTX = {}, TIMES = { src: 'general', n: 0, top: null };
+const rowOfT = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
+const hhmm = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+function refreshBest() {
+  const key = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (key === refreshBest.k) return; refreshBest.k = key;
+  const ps = HIST().filter(p => p.at && HWCore.eng(p) > 0); SLOTX = {};
+  if (ps.length < 20) {
+    BEST = GENERAL_BEST; TIMES = { src: 'general', n: ps.length, top: null };
+    for (let d = 0; d < 7; d++) { SLOTX[d] = {}; SLOTS.forEach((t, i) => { SLOTX[d][t] = { x: GENERAL_BEST[d] && GENERAL_BEST[d][t] ? 1.3 : d >= 5 ? .9 : [1.1, 1.05, 1, .85][i], n: 0, general: true }; }); }
+    return;
+  }
+  const E = HWCore.eng, med = HWCore.median(ps.map(E)) || 1, b = {}, cells = [];
+  ps.forEach(p => { const d = new Date(p.at); const k = dowIdx(d) + '|' + SLOTS[rowOfT(hhmm(d))]; (b[k] = b[k] || []).push(E(p)); });
+  for (let d = 0; d < 7; d++) { SLOTX[d] = {}; SLOTS.forEach(t => { const a = b[d + '|' + t] || []; const x = a.length >= 2 ? +(HWCore.median(a) / med).toFixed(1) : null; SLOTX[d][t] = { x, n: a.length }; if (x != null) cells.push({ d, t, x, n: a.length }); }); }
+  cells.sort((a, c) => c.x - a.x); const best = {};
+  cells.filter(c => c.x >= 1.15 && c.n >= 3).forEach(c => { const day = best[c.d] = best[c.d] || {}; if (Object.keys(day).length < 2) day[c.t] = `Your posts here earn ${c.x}× your usual`; });
+  const mine = Object.keys(best).length > 0;
+  BEST = mine ? best : GENERAL_BEST; TIMES = { src: mine ? 'you' : 'general', n: ps.length, top: mine ? cells.find(c => c.n >= 3) : null };
+}
+/* what a slot is worth, for the drag labels and the drop toast */
+function slotInfo(day, time) { refreshBest(); const d = dowIdx(fromKey(day)); const s = (SLOTX[d] || {})[time] || {}; return { x: s.x, n: s.n || 0, general: !!s.general, best: (BEST[d] || {})[time] || null }; }
+try { refreshBest(); } catch (e) { /* history not ready yet */ }
 try { settleQueue(); } catch (e) { } /* the sidebar count is only what's still to come */
 const taken = (day, time) => S.queue.some(q => q.day === day && q.time === time && q.status === 'scheduled');
 function nextSlots(n, bestOnly = true) {
@@ -3310,7 +3403,7 @@ function composerHTML() {
 function startersHTML() {
   const ideas = genIdeas(3, S.starterSeed);
   return `<div class="starters-h"><span class="starters-t">Nothing on your mind? Borrow one.</span><span style="display:flex;gap:6px"><button class="btn ghost sm" data-cact="brief" data-tip="Notes, a doc or a PDF, written up in your voice">${ic('upload', 'sm')} From a brief</button><button class="btn ghost sm" data-cact="picture" data-tip="A screenshot or chart, read and drafted">${ic('image', 'sm')} From a picture</button><button class="btn ghost sm" data-cact="shuffle" data-tip="New ideas" data-kbd="R">${ic('shuffle', 'sm')} Shuffle</button></span></div>
-  <div class="starter-list">${ideas.map(i => `<button class="starter" data-cact="starter" data-t="${esc(i.text)}" data-kind="${esc(i.kind)}" data-topic="${esc(i.topic)}"><p>${esc(i.text)}</p><span class="meta"><span class="pill kp" data-kind="${String(i.kind).toLowerCase()}">${esc(i.kind)}</span><span class="faint" style="font-size:12px;display:inline-flex;gap:4px;align-items:center">Draft it ${ic('arrow', 'xs')}</span></span></button>`).join('')}</div>`;
+  <div class="starter-list">${ideas.map(i => `<button class="starter" data-cact="starter" data-t="${esc(i.text)}" data-kind="${esc(i.kind)}" data-topic="${esc(i.topic)}"><p>${esc(i.text)}</p><span class="meta"><span class="pill kp" data-kind="${String(i.kind).toLowerCase()}">${esc(i.kind)}</span><span class="faint" style="font-size:12px;display:inline-flex;gap:4px;align-items:center">Draft it ${ic('arrow', 'xs')}</span></span></button>`).join('')}</div>${hintHTML('write', { cls: 'starters-hint' })}`;
 }
 function mediaHTML(tw) {
   if (!tw.media.length) return '';
@@ -3366,6 +3459,9 @@ function tweetHTML(tw, i, n) {
 }
 
 /* caret + ghost + autosize: the textarea sits on a mirror that renders ghost text and locates the caret */
+/* where the platform would cut: the longest start of the text that still fits (code points, so emoji never split) */
+function cutAt(v, lim) { const cps = Array.from(v); let lo = 0, hi = cps.length; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (tlen(cps.slice(0, mid).join('')) <= lim) lo = mid; else hi = mid - 1; } return cps.slice(0, lo).join('').length; }
+const limName = () => { const on = Object.keys(PLAT).filter(k => S.platforms[k] && k !== 'linkedin').sort((a, b) => PLAT[a].limit - PLAT[b].limit); return PLAT[on[0] || 'linkedin'].name; };
 function paintField(ta) {
   if (!ta) return;
   const wrap = ta.parentElement, mir = wrap.firstElementChild; const tEl = ta.closest('.tw'); const id = tEl.dataset.id; const i = tIndex(id);
@@ -3378,7 +3474,11 @@ function paintField(ta) {
     /* a first line that scores 70+ gets the brand's marker under it, the same stroke as the logo and the homepage */
     const good = i === 0 && hookScore(v).score >= 70, fe = v.indexOf('\n') < 0 ? v.length : v.indexOf('\n');
     const since = Date.now() - (UI.hlAt || 0), hl = `<span class="hl${since < 700 ? ' draw" style="animation-delay:-' + since + 'ms' : ''}">`;
-    const CM = '<span class="cm"></span>', seg = (a, b) => esc(v.slice(a, b));
+    /* past the limit: a dashed line where the platform cuts, and everything after it tinted */
+    const lim = effLimit(), cut = tlen(v) > lim ? cutAt(v, lim) : -1; let marked = false;
+    const MARK = () => { if (marked) return ''; marked = true; return `<span class="xcut" data-l="${esc(limName())} cuts here"></span>`; };
+    const raw = (a, b) => esc(v.slice(a, b));
+    const CM = '<span class="cm"></span>', seg = cut < 0 ? raw : (a, b = v.length) => b <= cut ? raw(a, b) : a >= cut ? (a === cut ? MARK() : '') + `<span class="xover">${raw(a, b)}</span>` : raw(a, cut) + MARK() + `<span class="xover">${raw(cut, b)}</span>`;
     const sh = UI.sharp && UI.sharp.id === id ? UI.sharp : null;
     const body = sh ? `${seg(0, sh.s)}<span class="sv${sh.flash ? ' draw' : ''}">${seg(sh.s, sh.s + sh.len)}</span>${CM}${seg(sh.s + sh.len)}` : !good ? seg(0, p) + CM + seg(p) : p <= fe ? `${hl}${seg(0, p)}${CM}${seg(p, fe)}</span>${seg(fe)}` : `${hl}${seg(0, fe)}</span>${seg(fe, p)}${CM}${seg(p)}`;
     html = body + (g ? `<span class="ghost">${esc(g)}</span><span class="ghost-hint">${kbd('Tab')}</span>` : '') + '​';
@@ -3405,7 +3505,8 @@ function paintRing(tEl) {
   ring.dataset.s = state; ring.classList.toggle('warn', state === 'warn'); ring.classList.toggle('over', state === 'over');
   ring.classList.toggle('far', rem <= -10);
   $('b', ring).textContent = state ? rem : '';
-  ring.dataset.tip = `${len} / ${lim} characters${S.platforms.x && /https?:\/\/|\.\w{2,3}\//.test(ta.value) ? ' · X counts each link as 23' : ''}${S.platforms.x && /\p{Extended_Pictographic}/u.test(ta.value) ? ' · emoji count as 2' : ''}`;
+  ring.classList.toggle('act', state === 'over'); ring.setAttribute('role', state === 'over' ? 'button' : 'img'); ring.tabIndex = state === 'over' ? 0 : -1;
+  ring.dataset.tip = state === 'over' ? `${-rem} over. Tap to move the rest into the next post` : `${len} / ${lim} characters${S.platforms.x && /https?:\/\/|\.\w{2,3}\//.test(ta.value) ? ' · X counts each link as 23' : ''}${S.platforms.x && /\p{Extended_Pictographic}/u.test(ta.value) ? ' · emoji count as 2' : ''}`;
 }
 /* "sounds like you": the draft against your measured habits; tap it to jump to what sounds off */
 const DEMO_STATS = { wps: 11, emojiPer: .3, tagsPer: 0, oneSentOpen: 82, lower: 35 };
@@ -4127,7 +4228,7 @@ function openBrief(files) {
     for (const f of ok.slice(0, 6)) { const r = await readBriefFile(f).catch(e => ({ name: f.name, error: e.message })); B.files.push(r); }
     SFX.play('pop'); draw();
   };
-  const busy = (b, on) => { const x = $(`[data-br="${b}"]`, el); x && x.classList.toggle('is-loading', on); };
+  const busy = (b, on) => { const x = $(`[data-br="${b}"]`, el); x && x.classList.toggle('is-loading', on); const mb = $('.modal-b', el); if (on && aiOn() && mb && !$('.loading-hint', mb)) mb.insertAdjacentHTML('beforeend', hintHTML('loading', { rotate: true, cls: 'loading-hint' })); if (!on) $$('.loading-hint', el).forEach(h => h.remove()); };
   const doRead = async () => {
     if (!src().trim() && !pdfs().length) { const t = $('#br-t', el); t && (t.setAttribute('aria-invalid', 'true'), t.focus()); toast('Drop a file or paste something first.', { icon: 'upload', tone: 'err' }); return; }
     busy('read', true); let r = null;
@@ -4200,7 +4301,7 @@ function rrCardHTML(p, i) {
 }
 function drawRadar() {
   const list = $('#rr-list'); if (!list) return; const posts = RRADAR.posts.filter(p => !(S.radar && S.radar.skip && S.radar.skip[p.id]));
-  list.innerHTML = RRADAR.loading ? Array.from({ length: 3 }, () => '<div class="rr-card sk" aria-hidden="true"></div>').join('') : posts.length ? posts.map(rrCardHTML).join('') : `<div class="empty">${RRADAR.why ? esc(RRADAR.why) : 'Nothing fresh right now. Check back in a few minutes.'}</div>`;
+  list.innerHTML = RRADAR.loading ? hintHTML('loading', { rotate: true, cls: 'loading-hint' }) + Array.from({ length: 3 }, () => '<div class="rr-card sk" aria-hidden="true"></div>').join('') : posts.length ? posts.map(rrCardHTML).join('') : `<div class="empty">${RRADAR.why ? esc(RRADAR.why) : 'Nothing fresh right now. Check back in a few minutes.'}</div>`;
 }
 async function loadRadar(force) {
   const live = !!(LLM.server && LLM.server.radar), handles = (S.people || []).map(p => p.handle).filter(Boolean);
@@ -4306,7 +4407,7 @@ function openPicture(file) {
   };
   const read = async () => {
     if (!P.img) { const f = $('#pic-file', el); f && f.click(); return; }
-    const b = $('[data-pc="read"]', el); b && b.classList.add('is-loading'); let r = null;
+    const b = $('[data-pc="read"]', el); b && b.classList.add('is-loading'); let r = null; if (canRead) { const mb = $('.modal-b', el); mb && mb.insertAdjacentHTML('beforeend', hintHTML('loading', { rotate: true, cls: 'loading-hint' })); }
     if (canRead) { try { const spec = HWCore.prompts.picture({ note: P.note.trim(), voice: voiceSpec(), niche: S.user.niche }); spec.docs = [{ name: P.name || 'picture', mime: P.img.mime, data: P.img.data }]; const j = await ask(spec, { fresh: true }); if (j && typeof j === 'object' && (j.what || j.posts)) r = { ...j, ai: true }; } catch (e) { aiError(e); } }
     if (!r) {
       const note = P.note.trim(); if (!note) { b && b.classList.remove('is-loading'); const t = $('#pic-note', el); t.setAttribute('aria-invalid', 'true'); t.focus(); toast(canRead ? 'Claude couldn’t read it. Tell us the point in a line and we’ll draft around it.' : 'Tell us the point in a line, with the number.', { icon: 'image' }); return; }
@@ -4676,21 +4777,24 @@ function commitDraft({ day, time, status = 'scheduled' }) {
   const tws = S.draft.tweets.filter(t => t.text.trim() || t.media.length);
   const media = tws.map(t => t.media.slice());
   S.queue.push({ id: uid(), day, time, text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), platforms: { ...S.platforms }, status, autoPlug: S.settings.autoPlug, autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
-  S.streak[dayKey(Date.now())] = 1; SFX.play('done');
+  S.streak[dayKey(Date.now())] = 1; if (UI.quietDone) UI.quietDone = false; else SFX.play('done');
   syncToServer(S.queue[S.queue.length - 1], media);
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; UI.hook = false; save();
 }
 function openSchedule() {
-  if (CURRENT !== 'write') return;
+  if (CURRENT !== 'write') return; refreshBest();
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   const best = nextSlots(3); let pickI = 0;
+  /* the strongest of the three gets the badge and the default, not just the soonest */
+  { const xs = best.map(b => slotInfo(b.day, b.time).x || 0); const top = xs.indexOf(Math.max(...xs)); if (TIMES.src === 'you' && top > 0) pickI = top; }
   const ps = S.draft.slot; if (ps && slotDate(ps.day, ps.time).getTime() > Date.now() && !taken(ps.day, ps.time)) { best.unshift({ day: ps.day, time: ps.time, reason: 'The slot you picked in your queue' }); best.length = Math.min(best.length, 3); } const n = S.draft.tweets.filter(t => t.text.trim()).length;
   const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times are ${esc(tzName())}`)}
   <div class="modal-b" style="display:grid;gap:18px">
     ${checksHTML(preflight())}
-    <div style="display:grid;gap:8px"><span class="label">Best times for you</span>
-      <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === 0}" data-si="${i}"><span class="radio"></span><span><b>${slotLabel(s.day, s.time)}</b><small>${esc(s.reason)}</small></span>${i === 0 ? '<span class="pill accent">Best</span>' : ''}</button>`).join('')}
+    <div style="display:grid;gap:8px"><span class="label">${TIMES.src === 'you' ? 'Best times for you' : 'Good times to post'}</span>
+      <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" data-si="${i}"><span class="radio"></span><span><b>${slotLabel(s.day, s.time)}</b><small>${esc(s.reason)}</small></span>${i === pickI ? '<span class="pill accent">Best</span>' : i === 0 && pickI ? '<span class="pill">Soonest</span>' : ''}</button>`).join('')}
       <button class="stime" role="radio" aria-checked="false" data-si="custom"><span class="radio"></span><span><b>Pick a time</b><small>Your call. We trust you.</small></span></button></div>
+      ${hintHTML('schedule', { cls: 'in-modal' })}
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${dayKey(Date.now() + DAY)}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="09:00" aria-label="Time"></div>
     </div>
     <div style="display:grid;gap:14px"><span class="label">While you’re away</span>
@@ -4698,7 +4802,7 @@ function openSchedule() {
       <div class="setting"><span>Auto-repost</span><button class="switch" role="switch" aria-checked="${S.settings.autoRepost}" data-sw="autoRepost" aria-label="Auto-repost"></button><small>Repost once after ${S.settings.repostAfter} hours for the other time zone.</small></div>
     </div>
   </div>
-  <div class="modal-f"><button class="btn" id="s-queue">Add to queue</button><button class="btn primary" id="s-go">${ic('clock', 'sm')} <span id="s-go-l">Schedule for ${best[0] ? slotLabel(best[0].day, best[0].time) : 'later'}</span></button></div>`, { label: 'Schedule' });
+  <div class="modal-f"><button class="btn" id="s-queue">Add to queue</button><button class="btn primary" id="s-go">${ic('clock', 'sm')} <span id="s-go-l">Schedule for ${best[pickI] ? slotLabel(best[pickI].day, best[pickI].time) : 'later'}</span></button></div>`, { label: 'Schedule' });
   const el = m.el;
   el.addEventListener('click', e => {
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
@@ -4708,7 +4812,8 @@ function openSchedule() {
   $$('.stime', el).forEach(r => r.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const all = $$('.stime', el); const i = all.indexOf(r); const nx = all[(i + (e.key === 'ArrowDown' ? 1 : -1) + all.length) % all.length]; nx.focus(); nx.click(); } }));
   const finish = (slot, btn) => {
     btn.classList.add('is-loading');
-    setTimeout(() => { burstFrom(btn); commitDraft(slot); m.close(); route(); toast(`Scheduled for ${slotLabel(slot.day, slot.time)}. Go touch grass.`, { icon: 'clock', tone: 'accent', action: 'View queue', onAction: () => go('queue') }); }, 420);
+    const so = composerSnap(), count = S.draft.tweets.filter(t => t.text.trim() || t.media.length).length, plats = { ...S.platforms };
+    setTimeout(() => { UI.quietDone = true; commitDraft(slot); m.close(); route(); sendOff(so, { count, plats }); const si = slotInfo(slot.day, slot.time); toast(`Scheduled for ${slotLabel(slot.day, slot.time)}.${si.best && !si.general ? ` One of your best times: ${si.x}× your usual.` : ' Go touch grass.'}`, { icon: 'clock', tone: 'accent', action: 'View queue', onAction: () => go('queue') }); }, 420);
   };
   $('#s-go', el).onclick = e => {
     let slot = best[pickI];
@@ -4738,7 +4843,7 @@ async function syncToServer(q, media) {
   if (!pub) body.at = slotDate(q.day, q.time).toISOString();
   fetch(pub ? 'api/publish' : 'api/schedule', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json().then(j => ({ ok: r.ok, j }))).then(({ ok, j }) => {
     if (!ok) throw new Error(j.error || 'failed');
-    if (pub) { const bad = Object.entries(j.results || {}).filter(([, r]) => !r.ok); const good = Object.entries(j.results || {}).filter(([, r]) => r.ok); q.urls = Object.fromEntries(good.map(([k, r]) => [k, r.url])); if (j.results.x && j.results.x.ids) q.xIds = j.results.x.ids; save(); toast(bad.length ? `Live on ${good.map(([k]) => k === 'x' ? 'X' : 'LinkedIn').join(' and ') || 'nothing'}. ${bad.map(([k, r]) => `${k === 'x' ? 'X' : 'LinkedIn'}: ${esc(r.error)}`).join(' ')}` : `Live on ${good.map(([k]) => k === 'x' ? 'X' : 'LinkedIn').join(' and ')}.${skipped.length ? ` ${skipped.join(' and ')} still need you to post by hand.` : ''}`, { icon: bad.length ? 'zapoff' : 'send', tone: bad.length ? 'err' : 'accent', ms: 6000 }); }
+    if (pub) { const bad = Object.entries(j.results || {}).filter(([, r]) => !r.ok); const good = Object.entries(j.results || {}).filter(([, r]) => r.ok); q.urls = Object.fromEntries(good.map(([k, r]) => [k, r.url])); if (j.results.x && j.results.x.ids) { q.xIds = j.results.x.ids; if (S.live && S.live.id === q.id) setTimeout(() => liveFetch().then(liveDraw), 400); } save(); toast(bad.length ? `Live on ${good.map(([k]) => k === 'x' ? 'X' : 'LinkedIn').join(' and ') || 'nothing'}. ${bad.map(([k, r]) => `${k === 'x' ? 'X' : 'LinkedIn'}: ${esc(r.error)}`).join(' ')}` : `Live on ${good.map(([k]) => k === 'x' ? 'X' : 'LinkedIn').join(' and ')}.${skipped.length ? ` ${skipped.join(' and ')} still need you to post by hand.` : ''}`, { icon: bad.length ? 'zapoff' : 'send', tone: bad.length ? 'err' : 'accent', ms: 6000 }); }
     else { q.serverId = j.id; save(); }
   }).catch(e => toast(`The server couldn’t ${pub ? 'post' : 'queue'} it: ${esc(e.message)}`, { icon: 'zapoff', tone: 'err', ms: 6000 }));
 }
@@ -4776,10 +4881,10 @@ function startSend(btn) {
 function endSend() { clearTimeout(SEND.t); SEND.t = 0; document.body.classList.remove('sending'); $$('.tw-input').forEach(t => { t.readOnly = false; }); const el = SEND.el; SEND.el = null; if (el) { el.classList.add('out'); setTimeout(() => el.remove(), 200); } }
 function cancelSend() { if (!SEND.t) return false; endSend(); toast('Didn’t post. It’s all still here.', { icon: 'undo', ms: 2400 }); if (CURRENT === 'write') focusTweet(0, 'end'); return true; }
 function finishSend(snap, names, btn) {
-  const live = S.draft; S.draft = snap; const d = new Date();
+  const live = S.draft; S.draft = snap; const d = new Date(); const so = composerSnap(), count = snap.tweets.filter(t => t.text.trim() || t.media.length).length, plats = { ...S.platforms }; UI.quietDone = true;
   commitDraft({ day: dayKey(d), time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`, status: 'published' });
   if (live.id !== snap.id) S.draft = live; S.drafts = S.drafts.filter(x => x.id !== snap.id); save();
-  if (CURRENT === 'write') { route(); const b = $('[data-cact="schedule"]'); b && burstFrom(b); } else if (CURRENT === 'queue' || CURRENT === 'insights') route();
+  if (CURRENT === 'write' || CURRENT === 'queue' || CURRENT === 'insights') route(); sendOff(so, { count, plats, published: true }); liveStart(S.queue.filter(q => q.status === 'published').slice(-1)[0]);
   toast(`Posted to ${esc(names)}. Stay close for the first replies.`, { icon: 'send', tone: 'accent', action: 'Reply desk', onAction: () => openReplyDesk(S.queue.filter(q => q.status === 'published').slice(-1)[0]), ms: 8000 });
 }
 function undoLast() { const q = S.queue.pop(); if (!q) return; S.draft = { ...freshDraft(q.tweets), id: S.draft.id }; save(); route(); toast('Unscheduled. Back in the editor.', { icon: 'undo' }); }
@@ -5053,7 +5158,7 @@ async function openReplyDesk(q, preset) {
   q = q || [...S.queue].reverse().find(x => x.status === 'published'); if (!q) { toast('Post something first. The desk opens right after.', { icon: 'reply' }); return; }
   const srv = LLM.server || {}; const live = !!(srv.replies && q.xIds && q.xIds[0]);
   const m = modal(`${modalHead('First-hour replies', `For “${esc(clip(q.text, 70))}”. Answer the ones that matter while the post is still being judged.`)}
-    <div class="modal-b rd"><div class="rd-note" id="rd-note"></div><div id="rd-list" class="rd-list"><p class="faint">Loading replies…</p></div>
+    <div class="modal-b rd"><div class="rd-note" id="rd-note"></div><div id="rd-list" class="rd-list"><p class="faint">Loading replies…</p>${hintHTML('live', { rotate: true, cls: 'loading-hint' })}</div>
     <details class="rd-paste"><summary>Paste replies instead</summary><textarea class="input" id="rd-t" rows="4" placeholder="@someone: their reply&#10;@another: another reply"></textarea><button class="btn sm" id="rd-use">Use these</button></details></div>
     <div class="modal-f"><span class="faint rd-count" id="rd-count"></span><span class="grow"></span><button class="btn needs-ai" id="rd-draft">${ic('spark', 'sm')} Draft all in my voice</button><button class="btn primary" data-close>Done</button></div>`, { label: 'First-hour replies', box: 'modal wide' });
   const el = m.el; let list = [];
@@ -5120,7 +5225,7 @@ function parseImport(files) {
 }
 function absorb(posts, { account, src } = {}) {
   const before = HIST().length;
-  S.history = HWCore.mergeHistory(S.history, posts).slice(0, 3000);
+  S.history = HWCore.mergeHistory(S.history, posts).slice(0, 3000); refreshBest();
   if (account && account.handle && (S.user.handle === 'samwrites' || !S.user.handle)) { S.user.handle = account.handle; if (account.name) S.user.name = account.name; const me = S.workspaces.find(w => w.id === 'me'); if (me) Object.assign(me, { handle: account.handle, name: S.user.name }); }
   S.importedAt = Date.now(); save();
   return HIST().length - before;
@@ -5203,6 +5308,140 @@ function openPeople() {
       catch (err) { out.innerHTML = ''; aiError(err); } finally { b.classList.remove('is-loading'); }
     }
   });
+}
+/* ==========================================================================
+   THE DETAILS: hints like a good game's loading screen, the send-off,
+   snapping to good slots, the live first hour, and personal bests.
+   ========================================================================== */
+/* ---- hints: one useful line at a time; yours first, general ones after ---- */
+const GEN_TIPS = {
+  queue: ['Post when your people are awake, not when you finish writing. That’s what the queue is for.', 'A steady week beats a big burst. Three good posts land better than seven rushed ones.', 'Drag a post onto a highlighted slot. Those are the times your audience reads most.', 'Leave one slot open for something that happens this week. The best posts are often unplanned.'],
+  schedule: ['The first hour decides how far a post travels. Pick a time you can be around for it.', 'Most people check their phone in the first hour they’re awake. Morning slots get the most first-hour replies.', 'If you won’t be there to answer replies, the follow-up reply can do it for you.'],
+  write: ['Write the first line last. By then you know what the post is really about.', 'One idea per post. If you need an “also”, that’s the next post.', 'A real number in line one makes people stop scrolling.', 'Read it out loud once. If you trip over a line, your readers will too.', 'Links in the first post cut reach on X and LinkedIn. Put the link in a reply.'],
+  insights: ['Your best post is a recipe, not luck. Ask “Why?” on it and write the next one the same way.', 'Quiet posts teach as much as big ones. Look at what they have in common.', 'Compare like with like: a thread and a one-liner have different ceilings.'],
+  live: ['Answer the first few replies. It tells the feed people are talking.', 'The first hour decides how far a post travels. Stay close.', 'A question back gets more replies than “thanks!”.', 'If it’s doing well, pin it while people are visiting your profile.', 'Add one reply to your own post with the next thing: a link, the follow-up, what to read next.']
+};
+GEN_TIPS.loading = [...GEN_TIPS.write.slice(0, 3), ...GEN_TIPS.schedule.slice(0, 2), ...GEN_TIPS.live.slice(0, 2), GEN_TIPS.queue[1]];
+const fmtHour = h => fmtTime(`${h}:00`).replace(':00', '');
+function myTips(ctx) {
+  refreshBest();
+  const out = [], an = HIST().length >= 8 ? ANALYSIS() : null, m = PHOOK(), day = d => DOW_PL[(d + 1) % 7];
+  if (TIMES.src === 'you' && TIMES.top) out.push({ k: 'time', c: 'queue schedule loading insights', t: `Your best time to post is ${day(TIMES.top.d)} around ${fmtTime(TIMES.top.t)}. Posts then earn ${TIMES.top.x}× your usual.` });
+  if (an && an.hours) { const hs = an.hours.filter(h => h.n >= 3).sort((a, b) => b.x - a.x);
+    if (hs[0] && hs[0].x >= 1.2) out.push({ k: 'hours', c: 'queue schedule insights loading', t: `Your audience engages most with posts that go out around ${fmtHour(hs[0].h)}. That’s when they’re reading.` });
+    const lo = hs[hs.length - 1]; if (hs.length > 3 && lo.x <= .7) out.push({ k: 'low', c: 'queue schedule loading', t: `Posts that go out around ${fmtHour(lo.h)} get ${Math.round((1 - lo.x) * 100)}% less for you. Give those a better hour.` }); }
+  if (m.ready && m.vs) out.push({ k: 'kinds', c: 'write loading insights', t: `Your ${m.vs.best.label} do ${m.vs.x}× better than your ${m.vs.worst.label}.` });
+  if (m.ready) { const t = m.traits.find(x => x.add && x.w > .1 && x.x >= 1.2); if (t) out.push({ c: 'write loading', t: `On your posts, ${t.label} earns ${t.x}×. ${t.add}.` }); }
+  if (an && an.perWeek) out.push({ c: 'queue loading', t: `You post about ${an.perWeek} times a week. Steady weeks beat big bursts.` });
+  const old = HIST().length ? rerunPick() : null; if (old) out.push({ c: 'queue loading', t: `“${clip(old.text, 48)}” went out ${agoDays(old.days)}. Most of today’s followers never saw it. Worth a rerun.` });
+  const first = { queue: ['time', 'hours'], schedule: ['hours', 'low', 'time'], insights: ['hours', 'kinds', 'time'], write: ['kinds'] }[ctx] || [], rank = x => { const i = first.indexOf(x.k); return i < 0 ? 9 : i; };
+  return out.filter(x => x.c.split(' ').includes(ctx)).sort((a, b) => rank(a) - rank(b)).map(x => ({ t: x.t, mine: true }));
+}
+const tipsFor = ctx => [...myTips(ctx), ...(GEN_TIPS[ctx] || GEN_TIPS.loading).map(t => ({ t, mine: false }))];
+const HINT_I = {};
+function hintHTML(ctx, { rotate = false, cls = '', start } = {}) {
+  const list = tipsFor(ctx); if (!list.length) return '';
+  if (HINT_I[ctx] == null && ctx === 'loading') HINT_I[ctx] = Math.floor(Math.random() * list.length);
+  const i = start != null ? start % list.length : (HINT_I[ctx] || 0) % list.length, tp = list[i];
+  return `<p class="hint ${cls} ${tp.mine ? 'mine' : ''}" data-hctx="${ctx}" data-hi="${i}" ${rotate ? 'data-rotate' : ''}><span class="hint-k">${tp.mine ? `<i class="hint-dot"></i>For you` : 'Tip'}</span><span class="hint-t">${esc(tp.t)}</span>${list.length > 1 ? `<button class="hint-n" data-hint-next aria-label="Another tip" data-tip="Another tip">${ic('right', 'xs')}</button>` : ''}</p>`;
+}
+function nextHint(p) {
+  const ctx = p.dataset.hctx, list = tipsFor(ctx); if (list.length < 2) return; const i = (+p.dataset.hi + 1) % list.length; HINT_I[ctx] = i; const tp = list[i];
+  const t = $('.hint-t', p), k = $('.hint-k', p);
+  const swap = () => { p.dataset.hi = i; p.classList.toggle('mine', tp.mine); k.innerHTML = tp.mine ? `<i class="hint-dot"></i>For you` : 'Tip'; t.textContent = tp.t; };
+  if (REDUCED) { swap(); return; } p.classList.add('swap'); setTimeout(() => { swap(); p.classList.remove('swap'); }, 180);
+}
+document.addEventListener('click', e => { const n = e.target.closest('[data-hint-next]'); if (n) { const p = n.closest('.hint'); p && nextHint(p); SFX.play('tick'); } });
+setInterval(() => { if (document.hidden) return; $$('.hint[data-rotate]').forEach(p => { if (p.isConnected && p.offsetParent) nextHint(p); }); }, 7000);
+
+/* ---- the send-off: the post folds up and flies into the queue, with a chime that knows where it's going ---- */
+function composerSnap() {
+  const tws = $$('#composer .tw').filter(t => t.offsetParent); if (!tws.length) return null;
+  const a = tws[0].getBoundingClientRect(), z = tws[tws.length - 1].getBoundingClientRect();
+  const top = Math.max(a.top, 0), bottom = Math.min(z.bottom, innerHeight);
+  return { rect: { left: a.left, top, width: a.width, height: Math.max(60, Math.min(bottom - top, 260)) }, text: (S.draft.tweets[0] || {}).text || '' };
+}
+const navTarget = (k = 'queue') => $$(`.nav a[href="#${k}"], .tabbar a[href="#${k}"]`).find(a => a.getBoundingClientRect().width > 0);
+function pulseNav(a, count = 1) {
+  if (!a) return; a.classList.remove('got'); void a.offsetWidth; a.classList.add('got'); setTimeout(() => a.classList.remove('got'), 1000);
+  const r = a.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, { n: 12 + Math.min(count, 7) * 4 });
+}
+function sendOff(snap, { count = 1, plats = S.platforms, published = false } = {}) {
+  const tgt = navTarget(), cue = () => { SFX.play(plats.linkedin && !plats.x ? 'sendLi' : 'sendX'); if (count >= 3) setTimeout(() => SFX.play('sendMore'), 300); };
+  if (!snap || !tgt || REDUCED) { cue(); pulseNav(tgt, count); return; }
+  const g = document.createElement('div'); g.className = 'sendoff'; g.setAttribute('aria-hidden', 'true');
+  const layers = Math.min(3, count), r = snap.rect;
+  g.innerHTML = Array.from({ length: layers }, (_, i) => `<div class="so-card" style="--i:${layers - 1 - i}">${i === layers - 1 ? `<p>${esc(clip(snap.text || ' ', 160))}</p><span class="so-m">${published ? 'Posting' : 'Scheduled'}${count > 1 ? ` · ${count} posts` : ''}</span>` : ''}</div>`).join('');
+  Object.assign(g.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px' }); document.body.append(g);
+  const t = tgt.getBoundingClientRect(), gh = Math.min(g.offsetHeight, 220), dx = t.left + t.width / 2 - (r.left + r.width / 2), dy = t.top + t.height / 2 - (r.top + gh / 2), tilt = dx > 0 ? 7 : -7;
+  const a = g.animate([
+    { transform: 'translate(0,0) scale(1)', opacity: 1, filter: 'blur(0)' },
+    { transform: 'translate(0,-8px) scale(.965) rotate(0deg)', opacity: 1, offset: .18 },
+    { transform: `translate(${dx * .4}px,${dy * .4 - 70}px) scale(.42) rotate(${tilt}deg)`, opacity: 1, offset: .58 },
+    { transform: `translate(${dx}px,${dy}px) scale(.05) rotate(${tilt * 2}deg)`, opacity: .15, filter: 'blur(1px)' }
+  ], { duration: 820 + Math.min(count, 6) * 35, easing: 'cubic-bezier(.55,0,.25,1)', fill: 'forwards' });
+  setTimeout(cue, 120);
+  a.onfinish = () => { g.remove(); pulseNav(tgt, count); };
+}
+
+/* ---- the first hour, live: a small pill that keeps you company after you post ---- */
+const LIVE = { timer: 0, last: null, replies: null, tipAt: 0 };
+function odo(el, n) {
+  const s = String(n); if (!el || el.dataset.v === s) return; const prev = el.dataset.v; el.dataset.v = s; el.setAttribute('aria-label', s); el.setAttribute('role', 'img');
+  const col = d => `<span class="od" aria-hidden="true"><span class="od-r" style="transform:translateY(-${d * 10}%)">${'0123456789'.split('').map(x => `<i>${x}</i>`).join('')}</span></span>`;
+  if (!prev || prev.length !== s.length || REDUCED) { el.innerHTML = [...s].map(() => col(0)).join(''); requestAnimationFrame(() => requestAnimationFrame(() => $$('.od-r', el).forEach((r, i) => { r.style.transform = `translateY(-${+s[i] * 10}%)`; }))); return; }
+  $$('.od-r', el).forEach((r, i) => { r.style.transform = `translateY(-${+s[i] * 10}%)`; });
+}
+function liveStart(q) { if (!q) return; S.live = { id: q.id, at: Date.now() }; save(); LIVE.last = null; LIVE.replies = null; liveDraw(); liveTick(); }
+function liveEnd() { clearInterval(LIVE.timer); LIVE.timer = 0; S.live = null; save(); const el = $('#live-pill'); if (el) { el.classList.add('out'); setTimeout(() => el.remove(), 260); } }
+function liveDraw() {
+  const L = S.live, q = L && S.queue.find(x => x.id === L.id); if (!q) { if (L) liveEnd(); return; }
+  let el = $('#live-pill');
+  if (!el) {
+    el = document.createElement('div'); el.id = 'live-pill'; el.className = 'live-pill'; el.setAttribute('role', 'status');
+    el.innerHTML = `<button class="lp-main" data-lp="open" aria-label="First hour of your post. Open the replies"><svg class="lp-ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="p" cx="18" cy="18" r="15"/></svg><span class="lp-dot" aria-hidden="true"></span><span class="lp-body"><span class="lp-h"><b>Live</b><span class="lp-age"></span></span><span class="lp-nums" hidden><span class="lp-n">${ic('heart', 'xs')}<span class="odo lp-likes"></span></span><span class="lp-n lp-rn">${ic('reply', 'xs')}<span class="odo lp-reps"></span></span><span class="lp-x"></span></span><span class="lp-tip"></span></span></button><button class="lp-close" data-lp="hide" aria-label="Hide until next time">${ic('x', 'xs')}</button>`;
+    document.body.append(el);
+    el.addEventListener('click', e => { const b = e.target.closest('[data-lp]'); if (!b) return; if (b.dataset.lp === 'hide') { liveEnd(); return; } const qq = S.queue.find(x => x.id === (S.live || {}).id); if (LIVE.alert) openBreakout(LIVE.alert); else openReplyDesk(qq); });
+  }
+  const age = Math.max(0, (Date.now() - L.at) / 60e3), left = Math.max(0, 1 - age / 60);
+  $('.lp-ring .p', el).style.strokeDashoffset = (94.25 * (1 - left)).toFixed(2);
+  $('.lp-age', el).textContent = age < 60 ? `${Math.max(1, Math.round(age))} min in` : 'First hour done';
+  const d = LIVE.last;
+  if (d) { $('.lp-nums', el).hidden = false; $('.lp-tip', el).hidden = true; odo($('.lp-likes', el), d.likes); odo($('.lp-reps', el), d.replies); $('.lp-x', el).textContent = d.pace ? `${d.pace}×` : ''; $('.lp-x', el).dataset.tip = d.pace ? `${d.pace}× your usual pace for minute ${d.min}` : ''; }
+  else if (Date.now() - LIVE.tipAt > 40e3 || !$('.lp-tip', el).textContent) { const list = GEN_TIPS.live; LIVE.tipAt = Date.now(); $('.lp-tip', el).textContent = list[Math.floor(age / 1.2) % list.length]; }
+  el.classList.toggle('done', age >= 60);
+}
+async function liveFetch() {
+  const L = S.live, q = L && S.queue.find(x => x.id === L.id); if (!q || !LLM.server || !LLM.server.breakout || !q.xIds || !q.xIds[0]) return;
+  try {
+    const r = await fetch(`api/breakout/live?id=${encodeURIComponent(q.xIds[0])}`); if (!r.ok) return; const j = await r.json(); const c = (j.checks || []).slice(-1)[0]; if (!c) return;
+    const usual = (j.curve || []).find(x => x.min === c.min); const prevReplies = LIVE.last ? LIVE.last.replies : null;
+    LIVE.last = { likes: c.likes || 0, replies: c.replies || 0, eng: c.eng || 0, min: c.min, pace: usual && usual.v ? +(c.eng / usual.v).toFixed(1) : null }; LIVE.alert = j.alert || null;
+    q.peak = Math.max(q.peak || 0, c.eng || 0); save();
+    if (prevReplies != null && LIVE.last.replies > prevReplies) { const el = $('#live-pill'); el && (el.classList.remove('ping'), void el.offsetWidth, el.classList.add('ping')); SFX.play('blip'); }
+    checkBest(q, c.eng || 0);
+  } catch { /* the pill keeps its last numbers */ }
+}
+function liveTick() {
+  clearInterval(LIVE.timer); if (!S.live) return; liveFetch().then(liveDraw);
+  LIVE.timer = setInterval(() => {
+    if (!S.live) return clearInterval(LIVE.timer); const age = (Date.now() - S.live.at) / 60e3;
+    if (age >= 60 && !LIVE.summed) { LIVE.summed = true; const d = LIVE.last; toast(d ? `First hour: ${fmtN(d.likes)} likes and ${fmtN(d.replies)} replies${d.pace ? `, ${d.pace}× your usual pace` : ''}.` : 'The first hour is done. Replies still help today, just a little less.', { icon: 'chart', tone: 'accent', ms: 6000 }); setTimeout(liveEnd, 12e3); }
+    liveFetch().then(liveDraw);
+  }, 60e3);
+}
+
+/* ---- personal bests: once per post, only when it truly beats what came before ---- */
+function checkBest(q, eng) {
+  S.pbShown = S.pbShown || {}; if (S.pbShown[q.id] || eng < 10) return;
+  const past = [...HIST().map(p => ({ e: HWCore.eng(p), at: p.at })), ...S.queue.filter(x => x.id !== q.id && x.peak).map(x => ({ e: x.peak, at: slotDate(x.day, x.time).getTime() }))];
+  if (!past.length) return; const top = Math.max(...past.map(p => p.e)); const since = past.filter(p => p.e >= eng && p.at).sort((a, b) => b.at - a.at)[0];
+  const recent = past.filter(p => p.at && Date.now() - p.at < 60 * DAY); if (recent.length && eng <= Math.max(...recent.map(p => p.e))) return;
+  S.pbShown[q.id] = 1; save();
+  const ever = eng > top, d = since && new Date(since.at), el = $('#live-pill') || navTarget();
+  if (el) { const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, { n: 56, gold: true }); }
+  SFX.play('best');
+  toast(ever ? `Your best post yet. ${fmtN(eng)} engagements and still climbing.` : `Your best since ${MON[d.getMonth()]} ${d.getDate()}${d.getFullYear() !== new Date().getFullYear() ? `, ${d.getFullYear()}` : ''}. ${fmtN(eng)} engagements and climbing.`, { icon: 'spark', tone: 'accent', ms: 7000, action: 'Answer replies', onAction: () => openReplyDesk(q) });
 }
 /* ---------- Breakout alert: a ping when a post is taking off, with its first replies drafted ---------- */
 const BO_SAMPLE = () => { const now = Date.now(), f = t => (t / (t + 90)) / (1440 / 1530); const p = (S.queue.filter(q => q.status === 'published').pop() || {}).text || 'I raised prices 40% and lost 2 customers. Here’s the email I sent.';
@@ -6532,9 +6771,9 @@ function drawHooks() {
 let WEEK = 0;
 ROUTES.queue = () => {
   settleQueue(); if (S.settings.evergreen) ensureEvergreen();
-  mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-qact="fill">${ic('target', 'sm')} Fill my best times</button><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week</button></div></div>
+  mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p><div id="q-hint"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-qact="fill">${ic('target', 'sm')} Fill my best times</button><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week</button></div></div>
   ${weekGap() < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${weekGap() ? `Only ${weekGap()} post${weekGap() > 1 ? 's' : ''} lined up for the next 7 days.` : 'Nothing lined up for the next 7 days.'} Five minutes now saves the week.</span><button class="btn sm primary" data-qact="plan">Plan my week</button></div>` : ''}
-  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span><span class="grow" style="flex:1"></span><a class="faint q-why" href="#insights" data-tip="From when your last 90 days of posts got replies in the first hour. Updates weekly."><span class="dot" style="color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span> Best time: your people are online</a></div>
+  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span><span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal"></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide();
   const v = $('#view');
@@ -6555,9 +6794,13 @@ ROUTES.queue = () => {
   v.addEventListener('change', e => { if (e.target.id === 'plug-t') { const v = e.target.value.trim(); if (!v) { e.target.value = S.settings.plugText; toast('A follow-up needs words. Kept the last one.', { icon: 'reply', tone: 'err' }); return; } S.settings.plugText = v; save(); toast('Follow-up reply saved.', { icon: 'check', ms: 1400 }); } if (e.target.id === 'rep-h') { S.settings.repostAfter = +e.target.value; save(); } });
   /* drag between slots */
   let dragId = null;
-  v.addEventListener('dragstart', e => { const c = e.target.closest('.qcard'); if (!c) return; dragId = c.dataset.id; c.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); });
-  v.addEventListener('dragend', e => { const c = e.target.closest('.qcard'); c && c.classList.remove('drag'); $$('.slot.over').forEach(s => s.classList.remove('over')); });
-  v.addEventListener('dragover', e => { const s = e.target.closest('.slot'); if (!s || !dragId || s.classList.contains('past')) return; e.preventDefault(); $$('.slot.over').forEach(x => x !== s && x.classList.remove('over')); s.classList.add('over'); });
+  let overSlot = null;
+  v.addEventListener('dragstart', e => { const c = e.target.closest('.qcard'); if (!c) return; dragId = c.dataset.id; c.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); const cal = $('#cal'); cal && cal.classList.add('dragging'); });
+  v.addEventListener('dragend', e => { const c = e.target.closest('.qcard'); c && c.classList.remove('drag'); $$('.slot.over').forEach(s => s.classList.remove('over', 'snap')); const cal = $('#cal'); cal && cal.classList.remove('dragging'); overSlot = null; });
+  v.addEventListener('dragover', e => { const s = e.target.closest('.slot'); if (!s || !dragId || s.classList.contains('past')) return; e.preventDefault(); if (s === overSlot) return; overSlot = s;
+    $$('.slot.over').forEach(x => x !== s && x.classList.remove('over', 'snap')); s.classList.add('over');
+    /* a detent: each slot clicks as you pass it, higher for better slots; the best ones pull a little */
+    const si = slotInfo(s.dataset.day, s.dataset.time); SFX.detent(si.x); if (si.best) { s.classList.remove('snap'); void s.offsetWidth; s.classList.add('snap'); } });
   v.addEventListener('drop', e => { const s = e.target.closest('.slot'); if (!s || !dragId) return; e.preventDefault(); moveQ(dragId, s.dataset.day, s.dataset.time); dragId = null; });
   v.addEventListener('keydown', e => { const c = e.target.closest('.qcard'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); qMenu(c); } });
 };
@@ -6572,7 +6815,9 @@ function moveQ(id, day, time) {
   if (other) { other.day = q.day; other.time = q.time; }
   q.day = day; q.time = time; save(); drawCal(); drawQSide();
   const card = $(`.qcard[data-id="${id}"]`); card && card.classList.add('landed');
-  toast(`Moved to ${slotLabel(day, time)}${other ? ', swapped with the post that was there' : ''}.`, { icon: 'cal', ms: 2400 });
+  const si = slotInfo(day, time), alt = !si.best ? nextSlots(6).find(x => slotDate(x.day, x.time) - slotDate(day, time) < 3 * DAY && slotDate(x.day, x.time) > Date.now()) : null, ai = alt && slotInfo(alt.day, alt.time);
+  if (si.best) { SFX.play('pop'); toast(`Moved to ${slotLabel(day, time)}${other ? ', swapped with the post that was there' : ''}. ${si.general ? 'A good time to post.' : `One of your best times: ${si.x}× your usual.`}`, { icon: 'target', tone: 'accent', ms: 3000 }); }
+  else toast(`Moved to ${slotLabel(day, time)}${other ? ', swapped with the post that was there' : ''}.${alt && ai.x && (si.x == null || ai.x > si.x) ? ` ${slotLabel(alt.day, alt.time)} usually does ${ai.x}×${si.x != null ? ` vs ${si.x}×` : ''}.` : ''}`, { icon: 'cal', ms: 4200, ...(alt && ai.x && (si.x == null || ai.x > si.x) ? { action: 'Move it there', onAction: () => moveQ(id, alt.day, alt.time) } : {}) });
 }
 function qMenu(c) {
   const q = S.queue.find(x => x.id === c.dataset.id); if (!q) return;
@@ -6582,7 +6827,7 @@ function qMenu(c) {
   openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
     { label: 'Edit in composer', icon: 'write', run: () => { S.queue = S.queue.filter(x => x !== q); save(); writeFrom(q.tweets); S.draft.slot = { day: q.day, time: q.time }; } },
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No best times left', icon: 'target', disabled: true },
-    { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); drawCal(); drawQSide(); toast('Posted. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); syncToServer(q); } },
+    { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide(); toast('Posted. Stay close for the first replies.', { icon: 'send', tone: 'accent' }); syncToServer(q); liveStart(q); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; S.queue.push({ ...q, id: uid(), day: s.day, time: s.time }); save(); drawCal(); drawQSide(); toast(`Duplicated to ${slotLabel(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
     { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); save(); drawCal(); drawQSide(); toast('Gone from the queue.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); drawCal(); drawQSide(); } }); } }
   ], { width: 250 });
@@ -6593,6 +6838,7 @@ function qcardHTML(q, interactive = true) {
   return `<${tag} class="qcard ${q.status}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(q.text.replace(/[.!?…]+$/, ''))}. ${q.status === 'published' ? 'Published' : 'Scheduled ' + slotLabel(q.day, q.time)}"><p>${esc(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
 }
 function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) {
+  refreshBest();
   const today = dayKey(Date.now()); const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
   let html = `<div class="dh" style="border-left:0"></div>` + days.map(d => `<div class="dh ${dayKey(d) === today ? 'today' : ''}"><span class="dn">${DOW[d.getDay()]}</span><span class="dd">${d.getDate()}</span></div>`).join('');
   SLOTS.forEach((t, r) => {
@@ -6600,7 +6846,8 @@ function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) 
     days.forEach(d => {
       const day = dayKey(d); const past = slotDate(day, t).getTime() < now; const best = BEST[dowIdx(d)] && BEST[dowIdx(d)][t];
       const items = list.filter(q => q.day === day && (q.status === 'scheduled' ? q.time === t : rowOf(q.time) === r));
-      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
+      const sx = interactive && !past ? (SLOTX[dowIdx(d)] || {})[t] : null, xl = sx && sx.x != null ? `${sx.x}×` : '';
+      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${interactive && !past ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
     });
   });
   return html;
@@ -6626,6 +6873,8 @@ function drawCal() {
   }).join('');
   const wk = S.queue.filter(q => { const d = fromKey(q.day); return d >= w0 && d < new Date(w0.getTime() + 7 * DAY) && q.status === 'scheduled'; }).length;
   const open = gapSlots().length;
+  const why = $('#q-why'); if (why) { why.innerHTML = `<span class="dot" style="color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span> ${TIMES.src === 'you' ? 'Your best times, from your posts' : 'Good times to post, in general'}`; why.dataset.tip = TIMES.src === 'you' ? `Highlighted slots are when your audience engaged most with ${fmtN(TIMES.n)} of your posts. They update as you post.` : 'Highlighted slots are good times for most accounts. Bring your posts and they become your audience’s own best hours.'; }
+  const qh = $('#q-hint'); if (qh && !qh.firstChild) qh.innerHTML = hintHTML('queue', { cls: 'page-hint' });
   $('#q-sub').textContent = `${wk} post${wk === 1 ? '' : 's'} scheduled this week. ${open ? `${open} best time${open === 1 ? '' : 's'} still open.` : 'Every best time this week is covered.'}`;
 }
 function gapSlots() { const w0 = startOfWeek(new Date()); const out = []; for (let i = 0; i < 7; i++) { const d = new Date(w0.getTime() + i * DAY); const day = dayKey(d); for (const t of Object.keys(BEST[dowIdx(d)] || {})) if (slotDate(day, t).getTime() > Date.now() && !taken(day, t)) out.push({ day, time: t }); } return out; }
@@ -6649,7 +6898,7 @@ function ensureEvergreen() {
 function rerunPick() { return MYTOP().filter(p => p.days >= 60 && !(S.reruns || []).includes(p.id)).sort((a, b) => b.views - a.views)[0]; }
 function rerunHTML() {
   const p = rerunPick(); if (!p) return '';
-  return `<div class="card rerun"><span class="label">Worth a rerun</span><p class="rr-t">${esc(clip(p.text, 120))}</p><span class="rr-m"><b class="mono">${fmtN(p.views)}</b> views · ${agoDays(p.days)}</span><p class="faint" style="font-size:12px">Most of today’s followers weren’t here for it.</p><button class="btn sm" data-rerun="${p.id}">${ic('repost', 'sm')} Rerun it</button></div>`;
+  return `<div class="card rerun"><span class="label">Worth a rerun</span><p class="rr-t">${esc(clip(p.text, 120))}</p><span class="rr-m">${p.views ? `<b class="mono">${fmtN(p.views)}</b> views` : `<b class="mono">${fmtN(p.likes)}</b> likes`} · ${agoDays(p.days)}</span><p class="faint" style="font-size:12px">Most of today’s followers weren’t here for it.</p><button class="btn sm" data-rerun="${p.id}">${ic('repost', 'sm')} Rerun it</button></div>`;
 }
 function rerun(id) {
   const p = MYTOP().find(x => x.id === id); if (!p) return; S.reruns = [...(S.reruns || []), id];
@@ -6769,7 +7018,7 @@ function drawInsightsReal() {
   ${noDates ? `<p class="kpi-line">${fmtN(all.length)} posts imported without dates, so there’s no timeline yet. What works, by type, is below.</p>` : ''}<p class="kpi-line" ${noDates ? 'hidden' : ''}>Last ${RANGE} days${stale ? ' of your history' : ''}: <b>${win.length}</b> posts${dl(win.length, prev.length)}, <b>${fmtK(sum(win, p => p.likes))}</b> likes${dl(sum(win, p => p.likes), sum(prev, p => p.likes))}, <b>${fmtK(sum(win, p => p.reposts))}</b> reposts${dl(sum(win, p => p.reposts), sum(prev, p => p.reposts))}${an.perWeek ? `, and you post about <b>${an.perWeek}</b> times a week` : ''}.</p>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Engagement per day</h3><p class="faint" style="font-size:13px;margin-top:2px">Likes, plus reposts ×2 and replies ×3, on the days you posted.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Engagement</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(end - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">What works, by post type</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement relative to your median post</p></div></div><div class="hbars">${kinds.map((k, i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k.k}: ${k.x}× your median, ${k.n} posts"><span>${k.k}</span><div class="track"><div class="fillb" style="width:${k.x / maxX * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${k.x}×</span></div>`).join('')}</div></div>
-  <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your posts land</h3><p class="faint" style="font-size:13px;margin-top:2px">Median engagement by when you posted. Stronger color, more engagement</p></div></div>${heat}</div></div>
+  <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your posts land</h3><p class="faint" style="font-size:13px;margin-top:2px">When your audience engages most with your posts. Stronger color, more engagement</p></div></div>${heat}${hintHTML('insights', { cls: 'card-hint' })}</div></div>
   ${tuneCardHTML()}
   ${cells.length ? `<div class="grid-3 sec" style="margin-top:16px">${cells.slice(0, 3).join('')}</div>` : ''}
   <div class="card chart-card sec" style="margin-top:16px" id="top-posts"><div class="chart-h"><h3 class="h3">Top posts</h3><span class="faint" style="font-size:12px">Ask “Why?” for a post-mortem in your voice</span></div>${an.top.slice(0, 8).map((p, i) => row(p, i)).join('')}</div>
@@ -6780,7 +7029,7 @@ function drawInsightsReal() {
 async function postMortem(id, btn) {
   const p = HIST().find(x => x.id === id); if (!p) return; const box = $(`[data-pid="${CSS.escape(id)}"] .pm`); if (!box) return;
   if (!aiOn()) { const h = hookScore(p.text), an = ANALYSIS(); box.hidden = false; box.innerHTML = `<p><b>${Math.round(HWCore.eng(p) / an.median * 10) / 10}× your median.</b> Hook ${h.score}: ${esc(h.reason)} ${p.at ? `Posted ${DOW[new Date(p.at).getDay()]} at ${fmtTime(`${new Date(p.at).getHours()}:${String(new Date(p.at).getMinutes()).padStart(2, '0')}`)}.` : ''}</p><small class="faint">Connect Claude for the full post-mortem.</small>`; return; }
-  btn.classList.add('is-loading'); box.hidden = false; box.innerHTML = `<p class="faint">${esc(cap(AI_NAME()))} is comparing it with your best posts…</p>`;
+  btn.classList.add('is-loading'); box.hidden = false; box.innerHTML = `<p class="faint">${esc(cap(AI_NAME()))} is comparing it with your best posts…</p>${hintHTML('insights', { rotate: true, cls: 'loading-hint' })}`;
   try { const an = ANALYSIS(); const r = await ask(HWCore.prompts.postmortem({ post: p, median: an.median, similar: an.top.filter(x => x.id !== id).slice(0, 5), voice: voiceSpec() }));
     box.innerHTML = `<p><b>${esc(r.verdict || '')}</b></p><ul>${(r.reasons || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${r.next_time ? `<p><span class="label">Next time</span> ${esc(r.next_time)}</p>` : ''}${r.rewrite ? `<div class="pm-rw"><span class="label">First line, now</span><p>${esc(r.rewrite)}</p><button class="btn sm" data-nact="userw" data-t="${esc(r.rewrite)}">${ic('write', 'sm')} Write it</button></div>` : ''}`;
   } catch (e) { box.hidden = true; aiError(e); } finally { btn.classList.remove('is-loading'); }
@@ -6949,6 +7198,8 @@ const REVIEW_ID = new URLSearchParams(location.search).get('review');
 if (!REVIEW_ID && S.archiveAskedAt && !HIST().some(p => p.src === 'x-archive') && Date.now() - S.archiveAskedAt > 20 * 3600e3 && (S.archiveNudged || 0) < Date.now() - 20 * 3600e3) setTimeout(() => { S.archiveNudged = Date.now(); save(); toast('Your X archive is probably ready. Check your email from X.', { icon: 'upload', tone: 'accent', action: 'Import it', onAction: () => openImport('x'), ms: 9000 }); }, 1500);
 if (!REVIEW_ID) LLM.ready.then(() => { if (!LLM.server || !LLM.server.breakout) return; if (S.settings.breakout) boSave().catch(() => {}); boPoll(); const bid = new URLSearchParams(location.search).get('breakout'); if (bid) { history.replaceState(null, '', location.pathname + location.hash); boOpenId(bid); } });
 if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', e => { const d = e.data || {}; if (d.type === 'breakout' && d.url) { const id = new URL(d.url, location.href).searchParams.get('breakout'); if (id) boOpenId(id); } });
+/* a post went out less than an hour ago: the live pill picks up where it left off */
+if (!REVIEW_ID && S.live) { if (Date.now() - S.live.at < 60 * 60e3) LLM.ready.then(() => { liveDraw(); liveTick(); }); else S.live = null; }
 if (REVIEW_ID) LLM.ready.then(() => renderReview(REVIEW_ID)); else { route(); LLM.ready.then(() => SYNC.code && LLM.server && LLM.server.sync && pullSync().then(ch => ch && route()).catch(() => {})); }
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !/claude|anthropic/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => { });
 </script>

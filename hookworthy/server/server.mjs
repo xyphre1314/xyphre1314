@@ -78,6 +78,7 @@ export async function handle(req, res) {
     /* breakout alerts */
     if (p === '/api/breakout' && req.method === 'GET') return send(res, 200, BO.status());
     if (p === '/api/breakout' && req.method === 'POST') return send(res, 200, BO.setSettings(await body(req, 64 * 1024)));
+    if (p === '/api/breakout/live') return send(res, 200, BO.live(url.searchParams.get('id') || ''));
     if (p === '/api/breakout/alerts') return send(res, 200, { alerts: BO.alerts(+url.searchParams.get('since') || 0) });
     if (p === '/api/breakout/test' && req.method === 'POST') { if (!allow(ip, 3)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); const a = BO.sampleAlert(); await BO.deliverTest(a, { email: E.sendEmail, publicUrl: PUBLIC_URL }); return send(res, 200, { ok: true, sent: a.sent }); }
 
