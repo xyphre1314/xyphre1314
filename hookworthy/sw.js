@@ -1,6 +1,7 @@
 // Hookworthy service worker: cache-first for the app shell, network-first for fonts.
-const CACHE = 'hookworthy-v24';
-const SHELL = ['./', './index.html', './core.js', './manifest.webmanifest', './assets/icon.svg', './assets/app-icon.svg', './assets/app-icon.png', './fonts/GeistMono-Variable.woff2', './fonts/EBGaramond-Regular.woff2', './fonts/EBGaramond-Italic.woff2', './fonts/Figtree-Regular.woff2', './fonts/Caveat-500.woff2', './fonts/Inter-400.woff2', './fonts/Inter-600.woff2', './assets/people/avatars.jpg', './assets/people/photos.jpg', './assets/people/avatars-2.jpg', './assets/people/you.jpg'];
+const CACHE = 'hookworthy-v25';
+/* the page is cached once (as ./index.html); the big photo sprite is cached when a page first uses it */
+const SHELL = ['./index.html', './core.js', './manifest.webmanifest', './assets/icon.svg', './assets/app-icon.svg', './assets/app-icon.png', './fonts/GeistMono-Variable.woff2', './fonts/EBGaramond-Regular.woff2', './fonts/EBGaramond-Italic.woff2', './fonts/Figtree-Regular.woff2', './fonts/Caveat-500.woff2', './fonts/Inter-400.woff2', './fonts/Inter-600.woff2', './assets/people/avatars.jpg', './assets/people/avatars-2.jpg', './assets/people/you.jpg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -17,7 +18,12 @@ self.addEventListener('fetch', e => {
     if (/^\/(api|auth|login|r|v)(\/|$)/.test(url.pathname) || url.searchParams.has('review') || url.searchParams.has('vote')) return;
     /* the page itself: network first so updates land, cache when offline */
     if (req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/core.js')) {
-      e.respondWith(fetch(req).then(res => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return res; }).catch(() => caches.match(req).then(hit => hit || caches.match('./index.html'))));
+      /* network first, but a slow network falls back to the cached copy after 3 seconds instead of hanging */
+      const key = req.mode === 'navigate' ? './index.html' : req;
+      const net = fetch(req).then(res => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(key, copy)); } return res; });
+      const cached = () => caches.match(key).then(hit => hit || caches.match('./index.html'));
+      e.respondWith(new Promise(resolve => { let done = false; const t = setTimeout(() => cached().then(hit => { if (hit && !done) { done = true; resolve(hit); } }), 3000);
+        net.then(res => { clearTimeout(t); if (!done) { done = true; resolve(res); } }).catch(() => { clearTimeout(t); cached().then(hit => { if (!done) { done = true; resolve(hit || Response.error()); } }); }); }));
       return;
     }
     e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => {

@@ -3,12 +3,14 @@
    Config in server/.env (see .env.example). Nothing here is required: every missing key just turns
    that feature off, and the app falls back to what it can do in the browser. */
 import { createServer } from 'node:http';
+import { gzipSync, brotliCompressSync, constants as Z } from 'node:zlib';
 import { readFileSync, existsSync, statSync, createReadStream } from 'node:fs';
 import { join, normalize, extname, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
 const here = dirname(fileURLToPath(import.meta.url));
+const ZIP = new Map();
 /* .env without a dependency */
 const envFile = join(here, '.env');
 if (existsSync(envFile)) for (const line of readFileSync(envFile, 'utf8').split('\n')) { const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/); if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, ''); }
@@ -124,7 +126,17 @@ export async function handle(req, res) {
     let f = normalize(join(ROOT, decodeURIComponent(p === '/' ? '/index.html' : p)));
     if (!f.startsWith(ROOT) || /[\\/](server|node_modules|\.git)([\\/]|$)/.test(f.slice(ROOT.length))) return send(res, 404, { error: 'Not found' });
     if (!existsSync(f) || statSync(f).isDirectory()) f = join(ROOT, 'index.html');
-    res.writeHead(200, { 'content-type': TYPES[extname(f)] || 'application/octet-stream', 'cache-control': extname(f) === '.html' ? 'no-cache' : 'public, max-age=3600', 'x-content-type-options': 'nosniff' });
+    /* repeat visits revalidate with an ETag (a 304 is a few bytes), and text is sent compressed */
+    const st = statSync(f), etag = `"${st.size.toString(36)}-${Math.floor(st.mtimeMs).toString(36)}"`, type = TYPES[extname(f)] || 'application/octet-stream';
+    const head = { 'content-type': type, 'cache-control': extname(f) === '.html' ? 'no-cache' : 'public, max-age=3600', 'x-content-type-options': 'nosniff', etag, vary: 'accept-encoding' };
+    if (req.headers['if-none-match'] === etag) { res.writeHead(304, head); return res.end(); }
+    const enc = /\bbr\b/.test(req.headers['accept-encoding'] || '') ? 'br' : /\bgzip\b/.test(req.headers['accept-encoding'] || '') ? 'gzip' : null;
+    if (enc && /^(text\/|application\/(javascript|json|manifest)|image\/svg)/.test(type) && st.size > 1024) {
+      const key = f + etag + enc; let buf = ZIP.get(key);
+      if (!buf) { const raw = readFileSync(f); buf = enc === 'br' ? brotliCompressSync(raw, { params: { [Z.BROTLI_PARAM_QUALITY]: 9 } }) : gzipSync(raw, { level: 9 }); ZIP.set(key, buf); if (ZIP.size > 64) ZIP.delete(ZIP.keys().next().value); }
+      res.writeHead(200, { ...head, 'content-encoding': enc, 'content-length': buf.length }); return res.end(buf);
+    }
+    res.writeHead(200, head);
     createReadStream(f).pipe(res);
   } catch (e) { fail(res, e); }
 }

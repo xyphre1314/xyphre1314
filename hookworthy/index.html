@@ -167,9 +167,10 @@ img{ max-width:100%; display:block; }
 button,input,textarea,select{ font:inherit; color:inherit; letter-spacing:inherit; }
 button{ cursor:pointer; background:none; border:0; padding:0; }
 a{ color:inherit; text-decoration:none; }
-:focus{ outline:none; }
-:focus-visible{ box-shadow:var(--focus); border-radius:var(--r-sm); }
-:is(.tw-input,.handle-in input,.hero-handle input,.capture textarea,#grader-t,.cmdk-in input):focus-visible{ box-shadow:none; }
+:focus:not(:focus-visible){ outline:none; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:var(--r-sm); }
+:is(.tw-input,.handle-in input,.hero-handle input,.capture textarea,#grader-t,.cmdk-in input,[tabindex="-1"]):focus-visible{ outline:none; box-shadow:none; }
+@media (forced-colors:active){ :focus-visible{ outline:2px solid Highlight !important; } .seg .seg-thumb{ forced-color-adjust:none; outline:1px solid Highlight; } .switch[aria-checked="true"]{ outline:2px solid Highlight; } }
 [hidden]{ display:none!important; }
 .sr{ position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 .num,.mono{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; letter-spacing:0; }
@@ -863,13 +864,13 @@ body.typing .preview{ opacity:.7; }
 .pv-linkedin .pv-feed{ background:#F4F2EE; display:grid; gap:8px; padding:8px 0; }
 .pv-linkedin.dark .pv-feed{ background:#000; }
 .pv-linkedin .lip{ border-radius:0; box-shadow:none; }
-.pv-near{ overflow:hidden; pointer-events:none; opacity:.6; }
+.pv-near{ overflow:hidden; pointer-events:none; }
 .pv-near.up{ max-height:128px; display:flex; flex-direction:column; justify-content:flex-end; -webkit-mask-image:linear-gradient(transparent,#000 90%); mask-image:linear-gradient(transparent,#000 90%); }
 .pv-near.dn{ max-height:110px; -webkit-mask-image:linear-gradient(#000 10%,transparent); mask-image:linear-gradient(#000 10%,transparent); }
 .pv-mine{ position:relative; animation:rise var(--d-snap) var(--ease-out) both; }
 .pv-mine .xp:last-child,.pv-mine .thp:last-child,.pv-mine .bsp:last-child{ border-bottom-color:transparent; }
 .pf .tx .over{ background:rgba(244,33,46,.2); border-radius:2px; }
-.pf .pv-ph{ opacity:.45; }
+.pf .pv-ph{ color:var(--text-3); }
 .pf .media-grid{ margin-top:12px; border-radius:16px; box-shadow:0 0 0 1px rgba(128,128,128,.25); }
 .lip .media-grid{ border-radius:0; box-shadow:none; margin-top:8px; }
 .pf .poll-pv{ margin-top:12px; display:grid; gap:8px; }
@@ -1295,7 +1296,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .xp.cc{ border:1px solid var(--x-line); border-radius:16px; }
 
 /* ---------------- Threads ---------------- */
-.thp{ --t-bg:#FFFFFF; --t-tx:#000000; --t-2:#999999; --t-line:rgba(0,0,0,.15); --t-rail:rgba(0,0,0,.15);
+.thp{ --t-bg:#FFFFFF; --t-tx:#000000; --t-2:#707070; --t-line:rgba(0,0,0,.15); --t-rail:rgba(0,0,0,.15);
   display:grid; grid-template-columns:48px minmax(0,1fr); gap:0 0; padding:12px 16px 10px; background:var(--t-bg); color:var(--t-tx); font:400 15px/21px var(--pf-sys); border-bottom:1px solid var(--t-line); }
 .thp.dark{ --t-bg:#101010; --t-tx:#F3F5F7; --t-2:#777777; --t-line:rgba(243,245,247,.15); --t-rail:rgba(243,245,247,.15); }
 .thp .av{ width:36px; height:36px; margin-top:4px; }
@@ -1347,7 +1348,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 @container (max-width:420px){ .lip .bar{ margin:0 8px; } .lip .bar span{ flex-direction:column; gap:2px; padding:8px 2px 6px; font-size:11.5px; font-weight:600; } .lip .bar .ic{ width:18px; height:18px; } .lip .follow{ font-size:14px; padding:4px 2px; } }
 
 /* ---------------- Bluesky ---------------- */
-.bsp{ --b-bg:#FFFFFF; --b-tx:#000000; --b-2:#405168; --b-ic:#667B99; --b-line:#DCE2EA; --b-blue:#006AFF;
+.bsp{ --b-bg:#FFFFFF; --b-tx:#000000; --b-2:#405168; --b-ic:#56698A; --b-line:#DCE2EA; --b-blue:#006AFF;
   display:grid; grid-template-columns:42px minmax(0,1fr); gap:0 10px; padding:12px 15px 6px 18px; background:var(--b-bg); color:var(--b-tx); font:400 15px/1.3 Inter,var(--pf-sys); font-variant:no-contextual; border-bottom:1px solid var(--b-line); }
 .bsp.dark{ --b-bg:#000000; --b-tx:#FFFFFF; --b-2:#A5B2C5; --b-ic:#667B99; --b-line:#232E3E; }
 .bsp .av{ width:42px; height:42px; }
@@ -1758,7 +1759,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .crx-demo .xp, .crx-demo .lip{ border-radius:16px; border:0; box-shadow:0 0 0 1px var(--c-line),0 14px 30px -24px rgba(0,0,0,.35); }
 .crx-lbl{ font-size:13px; color:var(--c-2); margin:4px 4px 8px; display:block; }
 .crx-ba{ display:grid; gap:0; } .crx-ba .xp + .crx-lbl{ margin-top:18px; }
-.crx-ba .xp:first-of-type{ opacity:.62; }
+.crx-ba .xp:first-of-type{ filter:saturate(.3); }
 .crx-flow{ display:grid; grid-template-columns:minmax(0,.8fr) 28px minmax(0,1.2fr); gap:10px; align-items:center; }
 .crx-notes{ border-radius:14px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line); padding:16px; font-size:13.5px; line-height:1.45; }
 .crx-notes b{ display:block; font-size:15px; letter-spacing:0; } .crx-notes > span{ color:var(--c-3); font-size:12.5px; }
@@ -2421,6 +2422,22 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
   .composer .preview{ left:50%; right:auto; width:min(600px,100vw); margin-left:min(-300px,-50vw); }
   .composer.show-sheet::after{ content:""; position:fixed; inset:0; z-index:74; background:rgba(26,26,26,.32); animation:fade var(--d-fast) var(--ease-out) both; }
 }
+
+/* ==== Round 26: accessibility ==== */
+.skip{ position:fixed; left:12px; top:-60px; z-index:2000; padding:10px 14px; border-radius:10px; background:var(--text-1); color:var(--text-inv); font-weight:600; transition:top var(--d-fast); } .skip:focus{ top:12px; }
+.btn.ghost:focus-visible, .plat:focus-visible, .starter:focus-visible, .searchbtn:focus-visible, .btn:focus-visible, .chip:focus-visible, .seg button:focus-visible, .switch:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.media-grid .m{ position:relative; } .alt-b{ position:absolute; left:6px; bottom:6px; height:24px; padding:0 8px; border-radius:6px; background:rgba(0,0,0,.72); color:#fff; font:700 11.5px/24px var(--font-ui); letter-spacing:.03em; } .alt-b.has{ background:rgba(0,0,0,.5); }
+/* contrast: solid text tokens instead of faded opacity */
+.pv-feed .meta, .pv-feed .xp .h span, .pv-feed .xp .c, .pf-meta{ opacity:1 !important; color:var(--text-3) !important; }
+.qcard.published{ opacity:1; } .qcard.published p{ color:var(--text-2); } .qcard.published .qm{ color:var(--text-3); }
+::placeholder{ color:var(--text-3); opacity:1; }
+.plat{ color:var(--text-3); }
+.switch[aria-checked="false"]{ box-shadow:inset 0 0 0 1.5px var(--text-3); }
+.input, textarea.input{ border-color:var(--border-strong); }
+/* targets: at least 24×24 */
+.words .w button{ min-width:24px; min-height:24px; display:inline-grid; place-items:center; } .nav-lk{ min-height:24px; padding:0 6px; } #q-why{ display:inline-flex; align-items:center; min-height:24px; }
+/* 320px: tools wrap instead of overlapping */
+@media (max-width:360px){ .tw-tools{ flex-wrap:wrap; row-gap:4px; } .tw-tools .tw-meta{ margin-left:auto; } .starter .acts, .starter-list .acts{ flex-wrap:wrap; } }
 </style>
 </head>
 <body>
@@ -2498,7 +2515,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 </svg>
 
 <div id="root"></div>
-<div id="tip" role="tooltip"></div>
+<div id="tip" role="tooltip" aria-hidden="true"></div><div id="sr-live" class="sr" aria-live="polite" aria-atomic="true"></div>
 <div id="toasts" aria-live="polite"></div>
 <canvas class="burst" id="burst" aria-hidden="true"></canvas>
 
@@ -2545,8 +2562,12 @@ const fmtTime = t => { const [h, m] = t.split(':').map(Number); return `${((h + 
 const ago = ts => { const s = (Date.now() - ts) / 1000; if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + 'm ago'; if (s < 86400) return Math.floor(s / 3600) + 'h ago'; return Math.floor(s / 86400) + 'd ago'; };
 
 const store = {
+  full: false,
   get(k, d) { try { const v = localStorage.getItem('hookworthy:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem('hookworthy:' + k, JSON.stringify(v)); } catch (e) { /* storage blocked: app keeps working in memory */ } }
+  set(k, v) { try { localStorage.setItem('hookworthy:' + k, JSON.stringify(v)); store.full = false; return true; } catch (e) {
+    /* storage blocked or full: the app keeps working in memory, and says so once */
+    if (e && (e.name === 'QuotaExceededError' || e.code === 22) && !store.full) { store.full = true; setTimeout(() => typeof toast === 'function' && toast('This browser’s storage is full, so changes aren’t being saved. Remove a few images or old drafts, then keep going.', { icon: 'zapoff', tone: 'err', ms: 12000 }), 0); }
+    return false; } }
 };
 
 /* ---------- springs: real physics baked into CSS linear() ---------- */
@@ -2653,13 +2674,16 @@ const DEFAULT_STATE = {
   settings: { rest: [], undoSecs: 8, autoPlug: true, plugText: 'I write one of these every week. Follow for the next one.', plugAt: 100, autoRepost: true, repostAfter: 12, ghost: true, caret: true, split: true }
 };
 let S = store.get('state', null);
+if (S && typeof S === 'object' && !Array.isArray(S.history)) { const h = store.get('history', null); if (Array.isArray(h)) S.history = h; }
 if (!S || typeof S !== 'object' || S.v !== DEFAULT_STATE.v) S = structuredClone(DEFAULT_STATE);
 /* heal a saved state that's missing pieces (older builds, a bad sync): every top-level field falls back to its default */
 for (const [k, v] of Object.entries(DEFAULT_STATE)) { if (S[k] == null || (Array.isArray(v) && !Array.isArray(S[k])) || (v && typeof v === 'object' && !Array.isArray(v) && (typeof S[k] !== 'object' || Array.isArray(S[k])))) S[k] = structuredClone(v); else if (v && typeof v === 'object' && !Array.isArray(v) && k !== 'streak') for (const [k2, v2] of Object.entries(v)) if (S[k][k2] === undefined) S[k][k2] = structuredClone(v2); }
 if (S.draft && (!Array.isArray(S.draft.tweets) || !S.draft.tweets.length)) S.draft = null;
 if (!S.ai || S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date.now()), limit: 5 };
-const save = debounce(() => { store.set('state', S); scheduleSync(); }, 250);
-const saveNow = () => { try { store.set('state', S); } catch (e) { } };
+const HIST_K = { k: null };
+function persist() { const h = S.history; const k = h ? `${h.length}:${h.reduce((a, p) => a + (p.likes || 0) + (p.replies || 0), 0)}` : '0'; if (k !== HIST_K.k) { store.set('history', h || []); HIST_K.k = k; } const { history, ...rest } = S; store.set('state', rest); }
+const save = debounce(() => { persist(); scheduleSync(); }, 250);
+const saveNow = () => { try { persist(); } catch (e) { } };
 addEventListener('pagehide', saveNow); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); }); addEventListener('beforeunload', saveNow);
 
 const newTweet = (text = '') => ({ id: uid(), text, media: [], poll: null });
@@ -2959,12 +2983,12 @@ function genIdeas(count, seed, niche = S.user.niche) {
 function expandIdea(hookText, kind = 'How-to', topic = topicOf(hookText)) {
   const map = {
     Listicle: [hookText, '1. [The first thing, in one line. Then why it mattered.]', '2. [The second thing. A real example beats advice.]', '3. [The third thing. The one people skip.]', '[Which one would you start with? Or end on the one you’d keep.]'],
-    Story: [hookText, `[What you believed about ${topic} before.]`, '[The moment it changed: when, who, what was said.]', '[What you did differently after.]', '[What happened, with a real number if you have one.]', '[The lesson, in one line.]'],
-    Contrarian: [hookText, `[What everyone says about ${topic}.]`, '[What you saw instead. One specific case.]', '[Why the usual advice fails there.]', '[What you’d tell a friend to do.]'],
+    Story: [hookText, '[What you believed before.]', '[The moment it changed: when, who, what was said.]', '[What you did differently after.]', '[What happened, with a real number if you have one.]', '[The lesson, in one line.]'],
+    Contrarian: [hookText, '[What everyone usually says.]', '[What you saw instead. One specific case.]', '[Why the usual advice fails there.]', '[What you’d tell a friend to do.]'],
     Question: [hookText],
     Proof: [hookText, '[Where you started, with the number.]', '[Step 1: what you did first.]', '[Step 2: what you cut or changed.]', '[Where you ended up, with the number.]'],
   };
-  return map[kind] || [hookText, `[The one outcome that matters for ${topic}.]`, '[The smallest step that gets you there. Yours, not a textbook’s.]', '[What went wrong the first time.]', '[What you’d do again tomorrow.]'];
+  return map[kind] || [hookText, '[The one outcome that matters.]', '[The smallest step that gets you there. Yours, not a textbook’s.]', '[What went wrong the first time.]', '[What you’d do again tomorrow.]'];
 }
 const OUTLINE_MSG = 'Your hook, plus an outline. Fill each [bracket] with what really happened.';
 function remix(post, format) {
@@ -3041,15 +3065,19 @@ const Tip = (() => {
 })();
 
 /* toasts */
+const UNDO = { fn: null, close: null };
+let SR_T = 0; function srSay(t) { const el = document.getElementById('sr-live'); if (!el || !t) return; clearTimeout(SR_T); el.textContent = ''; SR_T = setTimeout(() => { el.textContent = t; }, 60); }
 function toast(msg, { icon = 'check', tone = 'ok', action, onAction, ms = 3800 } = {}) {
+  if (action) ms = Math.max(ms, 10000);
   const host = $('#toasts'); $$('.toast', host).forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); });
   const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status');
   el.innerHTML = `${ic(icon, 't-' + tone)}<span>${msg}</span>${action ? `<button type="button">${esc(action)}</button>` : ''}`;
   host.append(el);
   const close = () => { if (el.classList.contains('out')) return; el.classList.add('out'); setTimeout(() => el.remove(), 190); };
   let t = setTimeout(close, ms);
-  el.addEventListener('mouseenter', () => clearTimeout(t)); el.addEventListener('mouseleave', () => { t = setTimeout(close, 1600); });
-  if (action) el.querySelector('button').addEventListener('click', () => { onAction && onAction(); close(); });
+  el.addEventListener('mouseenter', () => clearTimeout(t)); el.addEventListener('mouseleave', () => { if (!el.contains(document.activeElement)) t = setTimeout(close, 1600); });
+  el.addEventListener('focusin', () => clearTimeout(t)); el.addEventListener('focusout', () => { t = setTimeout(close, 1600); });
+  if (action) { el.querySelector('button').addEventListener('click', () => { onAction && onAction(); UNDO.fn = null; close(); }); if (/^undo$/i.test(action)) { UNDO.fn = onAction; UNDO.close = close; } }
   return close;
 }
 
@@ -3118,10 +3146,17 @@ document.addEventListener('click', e => { if (e.target.closest('[data-close]')) 
 /* segmented control thumb */
 function syncSeg(seg) {
   if (!seg) return; let th = $('.seg-thumb', seg); if (!th) { th = document.createElement('i'); th.className = 'seg-thumb'; seg.prepend(th); }
+  const items = $$('[role="tab"],[role="radio"]', seg); if (items.length) items.forEach(b => { b.tabIndex = b.getAttribute('aria-selected') === 'true' || b.getAttribute('aria-checked') === 'true' ? 0 : -1; });
   const on = $('[aria-selected="true"]', seg); if (!on) return;
   th.style.width = on.offsetWidth + 'px'; th.style.transform = `translateX(${on.offsetLeft - 3}px)`;
 }
 
+document.addEventListener('keydown', e => {
+  const t = e.target.closest && e.target.closest('[role="tab"],.seg [role="radio"]'); if (!t || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+  const list = t.closest('[role="tablist"],[role="radiogroup"]'); if (!list) return; const all = $$('[role="tab"],[role="radio"]', list).filter(b => !b.disabled && !b.hidden); const i = all.indexOf(t); if (i < 0) return;
+  e.preventDefault(); const n = e.key === 'Home' ? 0 : e.key === 'End' ? all.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + all.length) % all.length; all[n].focus(); all[n].click();
+  requestAnimationFrame(() => { all.forEach(b => { b.tabIndex = b === all[n] ? 0 : -1; }); });
+});
 /* reward: a small murmuration takes off from the button */
 function burst(x, y, { n = 34, gold = false } = {}) {
   if (REDUCED) return;
@@ -3250,6 +3285,8 @@ function route() {
     CURRENT = name;
     document.body.classList.toggle('force-light', name === 'home'); /* the homepage is a light world; its menus and modals follow */
     ROUTES[name]({ same }); scrollTo(0, 0); initNavPill();
+    /* a route change puts focus on the new page's heading, so screen readers hear where they landed (Write keeps the editor's own focus) */
+    if (CURRENT !== 'home' && CURRENT !== 'write') { const h = $('#view h1') || $('#root h1'), a = document.activeElement; if (h && (!a || a === document.body || !a.isConnected)) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
   };
   if (!CURRENT || !document.startViewTransition || REDUCED) render();
   else if (same) document.startViewTransition(render);
@@ -3279,7 +3316,7 @@ function streakHTML() {
 function shell(active, inner) {
   const counts = { ideas: S.ideas.length, queue: S.queue.filter(q => q.status === 'scheduled').length };
   const used = Math.min(S.ai.used, S.ai.limit); const w = WS();
-  return `<div class="shell">
+  return `<div class="shell"><a class="skip" href="#main" onclick="event.preventDefault();const m=document.getElementById('main');m.tabIndex=-1;m.focus()">Skip to content</a>
   <aside class="side" aria-label="Sidebar">
     <div class="top"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a><a class="rail-mark" href="#home" aria-label="Hookworthy home">${LOGO_MARK}</a></div>
     <button class="btn primary newpost" data-act="newpost" data-tip="New post" data-kbd="C">${ic('plus', 'sm')}<span>New post</span></button>
@@ -3418,7 +3455,7 @@ function hl(s, marks) { const set = new Set(marks); return [...s].map((ch, i) =>
 function openPalette(initial = '') {
   if (MODALS.some(m => m.el.classList.contains('cmdk'))) return;
   const cmds = paletteCommands(); let active = 0, shown = [];
-  const m = modal(`<div class="cmdk-in">${ic('search')}<input id="cmdk-q" autofocus placeholder="${COARSE ? 'Search, or jot an idea' : 'Jump somewhere, or start typing an idea…'}" aria-label="Search commands" autocomplete="off" spellcheck="false" value="${esc(initial)}">${COARSE ? '<button class="btn ghost sm cmdk-x" data-close>Cancel</button>' : kbd('Esc')}</div><div class="cmdk-list" role="listbox" id="cmdk-list"></div><div class="cmdk-f"><span>${kbd('↑', '↓')} move</span><span>${kbd('↵')} run</span><span style="margin-left:auto">${ic('riff', 'xs')} Hookworthy</span></div>`, { box: 'cmdk', label: 'Command palette' });
+  const m = modal(`<div class="cmdk-in">${ic('search')}<input id="cmdk-q" role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list" autofocus placeholder="${COARSE ? 'Search, or jot an idea' : 'Jump somewhere, or start typing an idea…'}" aria-label="Search commands" autocomplete="off" spellcheck="false" value="${esc(initial)}">${COARSE ? '<button class="btn ghost sm cmdk-x" data-close>Cancel</button>' : kbd('Esc')}</div><div class="cmdk-list" role="listbox" id="cmdk-list"></div><div class="cmdk-f"><span>${kbd('↑', '↓')} move</span><span>${kbd('↵')} run</span><span style="margin-left:auto">${ic('riff', 'xs')} Hookworthy</span></div>`, { box: 'cmdk', label: 'Command palette' });
   const inp = $('#cmdk-q', m.el), list = $('#cmdk-list', m.el);
   function draw() {
     const q = inp.value.trim();
@@ -3426,8 +3463,9 @@ function openPalette(initial = '') {
     shown = (q ? res.slice(0, 40) : res.filter(x => x.c.g !== 'Formulas' && x.c.g !== 'Saved ideas').concat(res.filter(x => x.c.g === 'Saved ideas').slice(0, 3)));
     active = clamp(active, 0, Math.max(0, shown.length - 1));
     if (!shown.length) { list.innerHTML = `<div class="cmdk-empty">Nothing matches “${esc(q)}”.<br><button class="btn sm" style="margin-top:12px" data-cap>${ic('plus', 'sm')} Save it as an idea</button></div>`; $('[data-cap]', list).onclick = () => { m.close(); addIdea({ src: 'note', text: q }); }; return; }
-    let g = null; list.innerHTML = shown.map((x, i) => { const head = x.c.g !== g ? `<div class="cmdk-g label">${esc(g = x.c.g)}</div>` : ''; return `${head}<button class="cmdk-i ${i === active ? 'active' : ''}" role="option" aria-selected="${i === active}" data-i="${i}">${ic(x.c.icon)}<span>${hl(x.c.label, x.f.marks)}</span>${x.c.kbd ? kbd(...x.c.kbd) : ''}</button>`; }).join('');
-    const a = $('.cmdk-i.active', list); a && a.scrollIntoView({ block: 'nearest' });
+    let g = null; list.innerHTML = shown.map((x, i) => { const head = x.c.g !== g ? `<div class="cmdk-g label">${esc(g = x.c.g)}</div>` : ''; return `${head}<button class="cmdk-i ${i === active ? 'active' : ''}" role="option" id="cmdk-o${i}" tabindex="-1" aria-selected="${i === active}" data-i="${i}">${ic(x.c.icon)}<span>${hl(x.c.label, x.f.marks)}</span>${x.c.kbd ? kbd(...x.c.kbd) : ''}</button>`; }).join('');
+    const a = $('.cmdk-i.active', list); a && a.scrollIntoView({ block: 'nearest' }); inp.setAttribute('aria-activedescendant', a ? a.id : '');
+    if (q) srSay(`${shown.length} result${shown.length === 1 ? '' : 's'}.`);
   }
   function run(i) { const x = shown[i]; if (!x) return; m.close(); setTimeout(() => x.c.run(), 10); }
   inp.addEventListener('input', () => { active = 0; draw(); });
@@ -3497,6 +3535,8 @@ function openCapture() {
 let gPending = 0;
 const isTyping = e => { const t = e.target; return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable); };
 document.addEventListener('keydown', e => { if (SEND.t && ((e.key === 'Escape' && !MODALS.length) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z'))) { e.preventDefault(); e.stopImmediatePropagation(); cancelSend(); } }, true);
+/* Ctrl/⌘+Z outside a text field takes back whatever the last toast offered to undo */
+document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && !isTyping(e) && UNDO.fn && $('#toasts .toast:not(.out)')) { e.preventDefault(); const f = UNDO.fn; UNDO.fn = null; UNDO.close && UNDO.close(); f(); srSay('Undone.'); } });
 document.addEventListener('keydown', e => {
   const mod = e.metaKey || e.ctrlKey;
   if (mod && /^[1-3]$/.test(e.key) && CURRENT && CURRENT !== 'home' && CURRENT !== 'start' && S.workspaces[+e.key - 1]) { e.preventDefault(); switchWs(S.workspaces[+e.key - 1].id); return; }
@@ -3506,7 +3546,7 @@ document.addEventListener('keydown', e => {
     if (MODALS.length) { e.preventDefault(); MODALS[MODALS.length - 1].close(); return; }
     const up = $('.upsell'); if (up) { closeUpsell(); return; }
   }
-  if (MODALS.length || isTyping(e) || mod || e.altKey) return;
+  if (MODALS.length || isTyping(e) || mod || e.altKey || S.settings.shortcuts === false) return;
   const inApp = CURRENT && CURRENT !== 'home' && CURRENT !== 'start';
   if (e.key === '?' ) { e.preventDefault(); openShortcuts(); return; }
   if (e.key === 'T' && e.shiftKey) { e.preventDefault(); toggleTheme(); return; }
@@ -3598,7 +3638,7 @@ const slotLabel = (day, time) => { const d = fromKey(day); const diff = Math.rou
 function composerHTML() {
   const empty = isEmptyDraft();
   return `<div class="composer ${S.preview.on ? '' : 'no-preview'} ${FINE && S.settings.caret && !REDUCED ? 'fancy-caret' : ''}" id="composer">
-  <div class="editor-col">
+  <div class="editor-col"><h1 class="sr">Write a post</h1>
     <div class="c-top fade-typing">
       <div class="status ${isEmptyDraft() ? 'is-new' : ''}" aria-live="polite"><span class="dot"></span><span class="txt" id="save-state">${isEmptyDraft() ? 'New draft' : 'Saved'}</span></div><button class="checks-pill" id="checks" data-cact="checks" hidden></button><button class="review-pill" id="review-pill" data-cact="reviews" hidden></button>
       ${S.ws !== 'me' ? `<button class="ws-pill" data-act="ws" aria-haspopup="menu">${avatar(WS())}<span>Writing as <b>${esc(WS().name)}</b></span></button>` : ''}
@@ -3625,7 +3665,7 @@ function startersHTML() {
 }
 function mediaHTML(tw) {
   if (!tw.media.length) return '';
-  return `<div class="media-grid n${tw.media.length}">${tw.media.map((m, k) => `<div class="m">${m.type === 'gif' ? (m.src ? `<div class="gif-real"><img src="${esc(REDUCED && m.still ? m.still : (m.preview || m.src))}" alt="${esc(m.alt || 'GIF')}"><small>GIF</small></div>` : gifTile(m.id)) : `<img src="${m.src}" alt="${esc(m.alt || 'Attached image')}">`}<button class="rm" data-cact="rmmedia" data-k="${k}" aria-label="Remove media" data-tip="Remove">${ic('x', 'sm')}</button></div>`).join('')}</div>`;
+  return `<div class="media-grid n${tw.media.length}">${tw.media.map((m, k) => `<div class="m">${m.type === 'gif' ? (m.src ? `<div class="gif-real"><img src="${esc(REDUCED && m.still ? m.still : (m.preview || m.src))}" alt="${esc(m.alt || 'GIF')}"><small>GIF</small></div>` : gifTile(m.id)) : `<img src="${m.src}" alt="${esc(m.alt || '')}"><button class="alt-b ${m.alt ? 'has' : ''}" data-cact="alt" data-k="${k}" aria-label="${m.alt ? 'Edit image description' : 'Describe this image'}">${m.alt ? 'ALT ✓' : '+ ALT'}</button>`}<button class="rm" data-cact="rmmedia" data-k="${k}" aria-label="Remove image" data-tip="Remove">${ic('x', 'sm')}</button></div>`).join('')}</div>`;
 }
 function pollHTML(tw) {
   if (!tw.poll) return '';
@@ -3649,7 +3689,7 @@ const gifTile = id => { const g = GIFS.find(x => x.id === id) || GIFS[0]; return
 function tweetHTML(tw, i, n) {
   const u = S.user;
   return `<div class="tw" data-id="${tw.id}" role="listitem">
-  <button class="handle" data-tip="Drag to reorder" data-kbd="${ALT} ↑ ↓" aria-label="Reorder post ${i + 1}">${ic('drag', 'sm')}</button>
+  <button class="handle" data-tip="Drag to reorder, or use the arrow keys" data-kbd="${ALT} ↑ ↓" aria-label="Move post ${i + 1} of ${n}. Use up and down arrows">${ic('drag', 'sm')}</button>
   <div class="tw-gutter">${i === 0 ? avatar(u) : `<span class="idx">${i + 1}/${n}</span>`}<span class="spine"></span></div>
   <div class="tw-body">
     ${i === 0 ? `<div class="tw-head"><b>${esc(u.name)}</b><span>@${esc(u.handle)}</span></div>` : ''}
@@ -3712,7 +3752,7 @@ function placeCaret(ta) {
   const h = cm.offsetHeight || 20;
   c.style.opacity = 1; c.style.height = h + 'px';
   c.style.transform = `translate(${cm.offsetLeft - 1}px,${cm.offsetTop}px)`;
-  c.classList.remove('blink'); void c.offsetWidth; c.classList.add('blink');
+  if (c.classList.contains('blink')) c.getAnimations().forEach(a => { a.currentTime = 0; }); else c.classList.add('blink');
 }
 function paintRing(tEl) {
   const ring = $('.ring', tEl); const ta = $('.tw-input', tEl); if (!ring) return;
@@ -3720,6 +3760,8 @@ function paintRing(tEl) {
   $('.val', ring).style.strokeDashoffset = C * (1 - Math.min(len / lim, 1));
   const state = rem < 0 ? 'over' : rem <= 20 ? 'warn' : '';
   if ((ring.dataset.s || '') !== state) { ring.classList.remove('pulse'); void ring.offsetWidth; if (state) ring.classList.add('pulse'); }
+  if ((ring.dataset.s || '') !== state && document.activeElement === ta) srSay(state === 'over' ? `${-rem} characters over the limit.` : state === 'warn' ? `${rem} characters left.` : '');
+  ring.setAttribute('aria-label', state === 'over' ? `${-rem} over the limit. Press to move the rest into the next post` : `${len} of ${lim} characters`);
   ring.dataset.s = state; ring.classList.toggle('warn', state === 'warn'); ring.classList.toggle('over', state === 'over');
   ring.classList.toggle('far', rem <= -10);
   $('b', ring).textContent = state ? rem : '';
@@ -3749,6 +3791,7 @@ function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
   const H = hookFor(t0.text, S.draft.tweets.filter(t => t.text.trim()).length), h = H; const sc = $('.sc', b); b.style.visibility = t0.text.trim() ? '' : 'hidden';
   b.classList.toggle('mine', !!H.me); b.dataset.tip = H.me ? `Tuned to your ${fmtN(H.m.n)} posts. Why this score?` : 'Why this score?';
+  if (UI.lastHook != null && Math.floor(h.score / 10) !== Math.floor(UI.lastHook / 10)) srSay(`Hook score ${h.score}.`);
   if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
   b.classList.toggle('hi', h.score >= 70);
@@ -3756,7 +3799,7 @@ function paintHook() {
   if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
   else if (p) { p.textContent = ''; p.dataset.tip = ''; }
   if (UI.hook) renderExtras(t0.id);
-  refreshChecks();
+  clearTimeout(UI.chkT); UI.chkT = setTimeout(() => (window.requestIdleCallback || setTimeout)(refreshChecks), 400);
 }
 function mineHTML(H) {
   const m = H.m;
@@ -3839,7 +3882,7 @@ function insertAfter(i, texts, focus) {
 const scheduleGhost = debounce(ta => {
   if (document.activeElement !== ta || ta.selectionEnd !== ta.value.length || UI.diff) return;
   const id = ta.closest('.tw').dataset.id; const g = ghostFor(ta.value, id);
-  if (g && !SH.st && ta.selectionStart === ta.selectionEnd) { UI.ghost = { id, text: g }; if (NEXT_SENT.some(n => g.includes(n))) UI.ghostUsed.add(id); paintField(ta); }
+  if (g && !SH.st && ta.selectionStart === ta.selectionEnd) { UI.ghost = { id, text: g }; srSay(`Suggestion: ${g.trim()}. Tab to accept, keep typing to ignore.`); if (NEXT_SENT.some(n => g.includes(n))) UI.ghostUsed.add(id); paintField(ta); }
 }, 1100);
 function acceptGhost(ta) {
   const id = ta.closest('.tw').dataset.id; const g = UI.ghost.text; UI.ghost = null; UI.ghostUsed.add(id);
@@ -3967,7 +4010,8 @@ function addFiles(i, files) {
   if (!imgs.length) { toast('That file isn’t an image. PNG, JPG, GIF or WebP work.', { icon: 'image', tone: 'err' }); return; }
   if (tw.poll) { toast('Polls and images don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; }
   const room = 4 - tw.media.length; if (room <= 0) { toast('Four images max per post. Start a new post for more.', { icon: 'image', tone: 'err' }); return; }
-  imgs.slice(0, room).forEach(f => { const r = new FileReader(); r.onload = () => { tw.media.push({ type: 'img', src: r.result, alt: f.name.replace(/\.[^.]+$/, '') }); refreshMedia(tw.id); }; r.readAsDataURL(f); });
+  imgs.slice(0, room).forEach(f => { if (f.type === 'image/gif') { const r = new FileReader(); r.onload = () => { tw.media.push({ type: 'img', src: r.result, alt: '' }); refreshMedia(tw.id); save(); }; r.readAsDataURL(f); return; }
+    shrinkImage(f, 1600).then(x => { tw.media.push({ type: 'img', src: x.data, alt: '' }); refreshMedia(tw.id); save(); }).catch(e => toast(failMsg('add that image', e), { icon: 'image', tone: 'err' })); });
   if (imgs.length > room) toast(`Added ${room}. Four images max per post.`, { icon: 'image' });
 }
 function refreshMedia(id) { const el = $(`.tw[data-id="${id}"]`); if (!el) return; const tw = tById(id); $('.media-slot', el).innerHTML = mediaHTML(tw); $('.poll-slot', el).innerHTML = pollHTML(tw); schedulePreview(); markSaving(); }
@@ -4602,9 +4646,9 @@ async function shrinkImage(file, max = 1568) {
   const url = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
   const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('That picture wouldn’t open')); i.src = url; });
   const k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight)); const png = file.type === 'image/png' && file.size < 1.6e6 && k === 1;
-  if (png || (k === 1 && file.type === 'image/jpeg' && file.size < 3e6)) return { data: url, mime: file.type, w: im.naturalWidth, h: im.naturalHeight };
+  if (png || (k === 1 && file.type === 'image/jpeg' && file.size < 1.2e6)) return { data: url, mime: file.type, w: im.naturalWidth, h: im.naturalHeight };
   const cv = document.createElement('canvas'); cv.width = Math.round(im.naturalWidth * k); cv.height = Math.round(im.naturalHeight * k); const c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(im, 0, 0, cv.width, cv.height);
-  return { data: cv.toDataURL('image/jpeg', .9), mime: 'image/jpeg', w: cv.width, h: cv.height };
+  return { data: cv.toDataURL('image/jpeg', .86), mime: 'image/jpeg', w: cv.width, h: cv.height };
 }
 function openPicture(file) {
   const P = { img: null, note: '', read: null, angle: 0, attach: true, post: '', step: 'drop', name: '' };
@@ -4934,10 +4978,12 @@ function pastPosts() {
   const pub = S.queue.filter(q => q.status === 'published').map(q => ({ text: q.text, days: Math.max(0, Math.round((Date.now() - fromKey(q.day)) / DAY)), views: 0 }));
   return [...HIST().map(p => ({ text: p.text, days: p.at ? Math.round((Date.now() - p.at) / DAY) : 0, views: p.views || p.likes })), ...pub];
 }
+const BAGS = { k: '', list: [] };
 function saidBefore(text) {
   const bag = t => new Set(words(t).filter(w => w.length > 2 && !STOP.has(w)));
   const a = bag(text); if (a.size < 4) return null; let best = null, bs = 0;
-  pastPosts().forEach(h => { if (h.text === text) return; const b = bag(h.text); let n = 0; a.forEach(w => b.has(w) && n++); const sim = n / Math.min(a.size, b.size); if (sim > bs) { bs = sim; best = h; } });
+  const key = HIST().length + ':' + S.queue.length; if (BAGS.k !== key) { BAGS.k = key; BAGS.list = pastPosts().map(h => ({ h, b: bag(h.text) })); }
+  for (const { h, b } of BAGS.list) { if (h.text === text || !b.size) continue; let n = 0; a.forEach(w => b.has(w) && n++); const sim = n / Math.min(a.size, b.size); if (sim > bs) { bs = sim; best = h; } }
   return bs >= .6 ? best : null;
 }
 function preflight() {
@@ -4952,7 +4998,7 @@ function preflight() {
   if (n > 1 && /[:…]\s*$|\.\.\.\s*$/.test(tws[n - 1].text.trim())) out.push({ k: 'end', msg: 'Your thread ends mid-thought.', why: 'The last post ends with a colon or an ellipsis. Missing a final post?' });
   if (on('x') && /^@\w/.test(tws[0].text.trim())) out.push({ k: 'at', msg: 'Your post starts with an @.', why: 'On X that can read like a reply. Put a word in front of it.' });
   const key = x => x.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim().slice(0, 42); const k0 = key(tws[0].text.split('\n')[0]);
-  if (k0.length > 16) { const dup = S.queue.find(q => key((q.text || '').split('\n')[0]) === k0); if (dup) out.push({ k: 'dup', msg: 'This opens like a post already in your queue.', why: `Same first line as the post going out ${slotWhebel(dup.day, dup.time)}. On purpose?` }); }
+  if (k0.length > 16) { const dup = S.queue.find(q => key((q.text || '').split('\n')[0]) === k0); if (dup) out.push({ k: 'dup', msg: 'This opens like a post already in your queue.', why: `Same first line as the post going out ${slotWhen(dup.day, dup.time)}. On purpose?` }); }
   const all = tws.map(t => t.text).join('\n');
   /* words you banned on Your voice */
   const banned = S.voice.never.filter(w => new RegExp(`(^|[^\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(all));
@@ -4974,10 +5020,10 @@ function runFix(k) {
   if (k === 'alt') { const t = tws.find(t => t.media.some(m => m.type !== 'gif' && !m.alt)); if (t) openAlt(t.media.find(m => m.type !== 'gif' && !m.alt)); return; }
   save(); if (CURRENT === 'write') renderThread(); SFX.play('tick');
 }
-function openAlt(m) {
+function openAlt(m, done) {
   const md = modal(`${modalHead('Describe the image', 'What would you say if you were reading the post out loud?')}<div class="modal-b" style="display:grid;gap:12px"><img src="${m.src}" alt="" style="max-height:220px;border-radius:12px;object-fit:contain;background:var(--surface-2)"><textarea class="input" id="alt-t" rows="3" placeholder="e.g. BTC daily chart, breaking above the 200-day line">${esc(m.alt || '')}</textarea></div><div class="modal-f"><button class="btn" data-close>Later</button><button class="btn primary" id="alt-go">Save</button></div>`, { label: 'Describe the image' });
   const t = $('#alt-t', md.el); setTimeout(() => t.focus(), 60);
-  $('#alt-go', md.el).onclick = () => { m.alt = t.value.trim(); save(); md.close(); refreshChecks(); const b = $('#pf-b'); if (b) b.innerHTML = checksHTML(preflight()); toast(m.alt ? 'Thanks. Screen readers will too.' : 'Left it blank.', { icon: 'check', ms: 1500 }); };
+  $('#alt-go', md.el).onclick = () => { m.alt = t.value.trim(); save(); md.close(); refreshChecks(); done && done(); const b = $('#pf-b'); if (b) b.innerHTML = checksHTML(preflight()); toast(m.alt ? 'Thanks. Screen readers will too.' : 'Left it blank.', { icon: 'check', ms: 1500 }); };
 }
 function checksHTML(list) {
   if (!list.length) return `<div class="pf ok">${ic('check', 'sm')}<span>Gave it a once-over. Nothing to fix.</span></div>`;
@@ -5167,7 +5213,7 @@ async function pullSync(quiet) {
   const r = await fetch(`api/sync/${SYNC.id}`); if (r.status === 404) return false; const j = await r.json(); if (!r.ok) throw new Error(j.error);
   const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(j.iv) }, SYNC.key, unb64(j.ct)).catch(() => { throw new Error('That code doesn’t unlock this copy'); });
   const remote = JSON.parse(new TextDecoder().decode(pt)); if ((remote.syncV || 0) <= (S.syncV || 0)) return false;
-  const theme = S.theme; S = { ...remote, theme }; store.set('state', S); if (!quiet) toast('Synced from your other device.', { icon: 'check', ms: 2000 }); return true;
+  const theme = S.theme; S = { ...remote, theme }; HIST_K.k = null; persist(); if (!quiet) toast('Synced from your other device.', { icon: 'check', ms: 2000 }); return true;
 }
 function syncRowHTML() {
   const srv = LLM.server || {}; if (!srv.sync) return `<div class="cx-row"><span class="cx-dot"></span><div><b>Sync across devices</b><small>Needs the server. Your drafts live in this browser until then.</small></div></div>`;
@@ -5874,6 +5920,7 @@ function openSettings() {
       <section><h3 class="label">Sound and look</h3>
         ${sw('sound', S.settings.sound !== false, 'Sounds', 'Small, quiet cues: scheduled, posted, a first line that lands.')}
         ${sw('keys', !!S.settings.keys, 'Typing sounds', 'Soft key clicks while you write.')}
+        ${sw('shortcuts', S.settings.shortcuts !== false, 'Single-key shortcuts', 'C for a new post, I to save an idea, G then a letter to jump. Turn off if you use voice control or keep pressing them by accident. ⌘K and Ctrl+K always work.')}
         <div class="set-row"><div><b>Theme</b><small>Light is cream paper; dark is warm ink.</small></div>${seg('theme', theme, [['light', 'Light'], ['dark', 'Dark'], ['system', 'System']])}</div>
       </section>
       <section><h3 class="label">Alerts</h3>
@@ -5893,6 +5940,7 @@ function openSettings() {
       if (k === 'theme') setTheme(v === 'system' ? null : v); return; }
     const s2 = e.target.closest('[data-setsw]'); if (s2) { const k = s2.dataset.setsw, on = s2.getAttribute('aria-checked') !== 'true'; s2.setAttribute('aria-checked', on);
       if (k === 'sound') { S.settings.sound = on; if (!on) S.settings.keys = false; save(); if (on) SFX.play('tap'); const kk = $('[data-setsw="keys"]', el); kk && kk.setAttribute('aria-checked', !!S.settings.keys); }
+      if (k === 'shortcuts') { S.settings.shortcuts = on; save(); }
       if (k === 'keys') { S.settings.keys = on; if (on) S.settings.sound = true; save(); if (on) SFX.key('a'); const ss = $('[data-setsw="sound"]', el); ss && ss.setAttribute('aria-checked', S.settings.sound !== false); }
       if (k === 'evergreen') { S.settings.evergreen = on; save(); const q = on ? ensureEvergreen() : null; toast(on ? (q ? `Evergreen on. First rerun: ${slotWhen(q.day, q.time)}.` : 'Evergreen on. Nothing old enough to rerun yet.') : 'Evergreen off. Reruns already scheduled stay unless you delete them.', { icon: 'repost', ms: 3000 }); }
       return; }
@@ -5991,6 +6039,7 @@ function useHook(t) {
 }
 function shuffleStarters() { S.starterSeed++; save(); const st = $('#starters'); if (st && !st.hidden) st.innerHTML = startersHTML(); PH_IDEAS = genIdeas(6, S.starterSeed * 3); }
 
+document.addEventListener('keydown', e => { const h = e.target.closest && e.target.closest('.tw .handle'); if (!h || !(e.key === 'ArrowUp' || e.key === 'ArrowDown')) return; e.preventDefault(); const i = tIndex(h.closest('.tw').dataset.id), d = e.key === 'ArrowUp' ? -1 : 1; if (i + d < 0 || i + d >= S.draft.tweets.length) return; moveTweet(i, d); requestAnimationFrame(() => { const hs = $$('#thread .handle'); hs[i + d] && hs[i + d].focus(); srSay(`Moved to position ${i + d + 1} of ${S.draft.tweets.length}.`); }); });
 function composerClick(e) {
   const el = e.target.closest('[data-cact],[data-pv],.chg'); if (!el) return;
   if (el.classList.contains('chg')) { const d = UI.diff; const c = d.chunks[+el.dataset.ci]; c.on = !c.on; renderExtras(d.id); const again = $(`.chg[data-ci="${el.dataset.ci}"]`); again && again.focus({ preventScroll: true }); return; }
@@ -6026,6 +6075,7 @@ function composerClick(e) {
     case 'poll': { const tw = S.draft.tweets[i]; if (tw.poll) { tw.poll = null; } else { if (tw.media.length) { toast('Polls and images don’t mix on X. Remove the image first.', { icon: 'poll', tone: 'err' }); break; } tw.poll = { options: ['', ''], days: 1 }; } refreshMedia(id); const f = $(`.tw[data-id="${id}"] [data-poll="0"]`); f && f.focus(); break; }
     case 'polladd': { const tw = S.draft.tweets[i]; tw.poll.options.push(''); refreshMedia(id); $(`.tw[data-id="${id}"] [data-poll="${tw.poll.options.length - 1}"]`).focus(); break; }
     case 'pollrm': S.draft.tweets[i].poll = null; refreshMedia(id); break;
+    case 'alt': { const m = S.draft.tweets[i].media[+el.dataset.k]; if (m) openAlt(m, () => refreshMedia(id)); break; }
     case 'rmmedia': S.draft.tweets[i].media.splice(+el.dataset.k, 1); refreshMedia(id); break;
     case 'riff': toggleRiff(id); break;
     case 'remove': removeTweet(i); break;
@@ -6133,7 +6183,9 @@ const sprY = (i, n) => `${(i / (n - 1) * 100).toFixed(4)}%`;
 /* local sheets ship with the app (assets/people/); the CDN copy is only a fallback */
 const SPRITES = { av2: ['assets/people/avatars-2.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/003effcf-184c-4ed9-a04c-f2b897f71a6b.jpg'], av: ['assets/people/avatars.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/c1690549-793f-4b50-a3f1-19e873c4626c.jpg'], ph: ['assets/people/photos.jpg', 'https://d2ol7oe51mr4n9.cloudfront.net/user_3HcZYVcPc8vUtGt8MhZZpm9L6KL/a814989f-cac9-40ac-9293-0314cc05ec44.jpg'] };
 /* if no copy loads (offline, blocked), photos collapse and portraits fall back to initials: never an empty slab */
-Object.entries(SPRITES).forEach(([k, urls]) => { const tryAt = i => { if (i >= urls.length) { document.documentElement.classList.add(k === 'av2' ? 'no-spr2' : 'no-spr'); return; } const im = new Image(); im.onload = () => document.documentElement.style.setProperty(`--spr-${k}`, `url("${urls[i]}")`); im.onerror = () => tryAt(i + 1); im.src = urls[i]; }; tryAt(0); });
+const SPR_ON = {};
+function loadSprite(k) { if (SPR_ON[k]) return; SPR_ON[k] = 1; const urls = SPRITES[k]; const tryAt = i => { if (i >= urls.length) { document.documentElement.classList.add(k === 'av2' ? 'no-spr2' : 'no-spr'); return; } const im = new Image(); im.onload = () => document.documentElement.style.setProperty(`--spr-${k}`, `url("${urls[i]}")`); im.onerror = () => tryAt(i + 1); im.src = urls[i]; }; tryAt(0); }
+loadSprite('av'); loadSprite('av2');
 
 /* posts that stop the scroll: shown in the hero carousel */
 const HOOK_POSTS = [
@@ -6213,7 +6265,7 @@ function pfAv(p, cls = '') {
   return `<span class="av ini ${cls}"${tint} aria-hidden="true">${ini}${pic}</span>`;
 }
 function pfText(t) { return esc(t).replace(/(🧵|👇)/g, '$1').replace(/(^|\s)([#@][\w]+)/g, '$1<span class="lnk">$2</span>'); }
-function pfMedia(m) { const k = m in PHOTO ? PHOTO[m] : -1; return k < 0 ? '' : `<div class="md"><i class="mdp" style="background-position:0 ${sprY(k, PH_N)}"></i></div>`; }
+function pfMedia(m) { loadSprite('ph'); const k = m in PHOTO ? PHOTO[m] : -1; return k < 0 ? '' : `<div class="md"><i class="mdp" style="background-position:0 ${sprY(k, PH_N)}"></i></div>`; }
 
 /* X / Twitter */
 function xPost(post, { dark = false, liked = false, cls = '', counts = true, rail = false, you = null } = {}) {
@@ -6362,7 +6414,7 @@ const DEMO_SCENES = [
 const DEMO_ME = { n: 'Sam Okafor', h: 'samwrites', v: 0, bio: 'Building in public', pic: ME_PIC };
 function demoHTML() {
   return `<div class="dm-tabs" role="tablist" aria-label="Product demo">${DEMO_SCENES.map((s, i) => `<button role="tab" data-dm="${i}" aria-selected="${i === 0}"><span>${s.t}</span><i><b></b></i></button>`).join('')}</div>
-  <div class="dm-win" aria-hidden="true">
+  <div class="dm-win" aria-hidden="true" inert>
     <div class="dm-bar"><i></i><i></i><i></i><span>hookworthy.com</span><button class="dm-snd" data-dmsnd aria-label="Demo sounds">${ic('volume', 'sm')}<span>Sound</span></button></div>
     <div class="dm-body"><aside class="dm-side"><span class="logo">${LOGO}</span><span class="btn primary newpost">${ic('plus', 'sm')}<span>New post</span></span><span class="searchbtn">${ic('search', 'sm')}<span>Search</span>${kbd(MOD, 'K')}</span>
         <nav class="nav">${NAV.map(it => `<a class="dm-nav" data-n="${it.label}" tabindex="-1">${ic(it.icon)}<span>${it.label}</span></a>`).join('')}</nav><span class="spacer"></span>
@@ -6626,7 +6678,7 @@ const MAYA = PEOPLE[0];
 const FOUR_POST = { t: 'Double your price.\n\nSignups went up 31% when we did. Customers value what costs more, and the ones who stay are the ones you want.\n\nHere’s the email we sent, word for word ↓', c: [184, 612, 4100, 381000], ago: '2m', m: 'whiteboard' };
 const FOLD_DEFAULT = 'I almost quit my startup in March.\n\nNot because of money. Because I stopped believing the thing we were building mattered.\n\nHere’s what changed my mind, and what I’d tell any founder sitting where I was:';
 
-ROUTES.home = () => {
+ROUTES.home = () => { loadSprite('ph');
   const W = (s, i0 = 0) => s.split(' ').map((w, i) => `<span class="w" style="--i:${i0 + i}">${w} </span>`).join('');
   const wallA = VOID_POSTS.slice(0, 6), wallB = VOID_POSTS.slice(6);
   const wallRow = (list, kind) => { const cards = list.map((p, i) => (kind === 'mix' ? [xPost, thPost, xPost, bsPost, xPost, thPost][i % 6] : xPost)(p)).join(''); return cards; };
@@ -6844,7 +6896,7 @@ function initHome() {
 const ONB = { handle: '', plat: 'x', niche: null, t0: 0 };
 ROUTES.start = () => {
   ONB.t0 = 0;
-  $('#root').innerHTML = `<div class="onb"><div class="onb-top"><a class="logo" href="#home">${LOGO}</a><a class="btn ghost sm" href="#write">Skip to the app${ic('arrow', 'sm')}</a></div><div class="onb-stage" id="onb" style="position:relative"></div></div>`;
+  $('#root').innerHTML = `<main class="onb"><div class="onb-top"><a class="logo" href="#home">${LOGO}</a><a class="btn ghost sm" href="#write">Skip to the app${ic('arrow', 'sm')}</a></div><div class="onb-stage" id="onb" style="position:relative"></div></main>`;
   if (ONB.auto) { ONB.auto = false; ONB.niche = ONB.niche || S.user.niche; ONB.t0 = Date.now(); onbStep2(); } else onbStep1();
 };
 function onbStep1() {
@@ -7237,7 +7289,7 @@ ROUTES.queue = () => {
   mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p><div id="q-hint"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week</button></div></div>
   ${weekGap() < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${weekGap() ? `Only ${weekGap()} post${weekGap() > 1 ? 's' : ''} lined up for the next 7 days.` : 'Nothing lined up for the next 7 days.'} Five minutes now saves the week.</span><button class="btn sm" data-qact="plan">Plan my week</button></div>` : ''}
   <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span><span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
-  <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal"></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
+  <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="This week’s calendar. Each card is a post; press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide();
   const v = $('#view');
   v.addEventListener('click', e => {
@@ -7305,15 +7357,22 @@ function qMenu(c) {
   openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
     { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) },
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => moveQ(q.id, next.day, next.time) } : { label: 'No best times left', icon: 'target', disabled: true },
+    { label: 'Move to…', icon: 'clock', run: () => setTimeout(() => openMenu(c, [{ header: 'Move to an open time' }, ...nextSlots(10, false).map(x => ({ label: slotLabel(x.day, x.time), icon: slotInfo(x.day, x.time).best ? 'target' : 'cal', hint: slotInfo(x.day, x.time).best ? 'Best' : '', run: () => { moveQ(q.id, x.day, x.time); requestAnimationFrame(() => { const nc = $(`.qcard[data-id="${q.id}"]`); nc && nc.focus(); }); } }))], { width: 260 }), 0) },
     { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } serverDrop(q); q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide(); { const srv = LLM.server || {}; toast((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? 'Sending now. Stay close for the first replies.' : SHOWCASE() ? 'Posted. It’s a demo, so nothing actually went out.' : 'Marked as posted. Nothing went out from here: copy it to post, or connect X or LinkedIn.', { icon: 'send', tone: 'accent', ...((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? {} : { action: 'Copy text', onAction: () => copyText(q.tweets.join('\n\n')) }) }); } syncToServer(q, q.mediaIds ? null : q.media); liveStart(q); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } const copy = { ...q, id: uid(), day: s.day, time: s.time, serverId: null }; delete copy.xIds; delete copy.urls; S.queue.push(copy); save(); syncToServer(copy, copy.mediaIds ? null : copy.media); drawCal(); drawQSide(); toast(`Duplicated to ${slotLabel(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
-    { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); serverDrop(q); save(); drawCal(); drawQSide(); toast('Gone from the queue.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); serverResync(q); drawCal(); drawQSide(); } }); } }
+    { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); serverDrop(q); save(); drawCal(); drawQSide(); requestAnimationFrame(() => { const nc = $('#cal .qcard') || $('#cal .slot .add'); nc && nc.focus(); }); toast('Gone from the queue. Ctrl+Z to undo.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); serverResync(q); drawCal(); drawQSide(); } }); } }
   ], { width: 250 });
 }
 /* one calendar, three places: the Queue, the homepage week and the homepage demo all render through here */
+function qAria(q) {
+  const w = q.ws && q.ws !== 'me' ? (S.workspaces.find(x => x.id === q.ws) || {}).name : '', plats = Object.keys(PLAT).filter(k => q.platforms && q.platforms[k]).map(k => PLAT[k].name);
+  const missed = q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now();
+  const st = q.status === 'published' ? `Sent ${slotWhen(q.day, q.time)}` : q.status === 'due' ? `Post by hand. Its time was ${slotWhen(q.day, q.time)}` : q.status === 'failed' ? 'Didn’t go out' : missed ? 'Missed: its time passed before it was approved' : `Scheduled ${slotWhen(q.day, q.time)}${q.approval === 'needs' ? ', waiting for approval' : q.approval === 'ok' ? ', approved' : ''}`;
+  return `${q.text.replace(/[.!?…]+$/, '')}. ${st}.${w ? ` ${w}.` : ''}${q.tweets.length > 1 ? ` ${q.tweets.length} posts.` : ''}${plats.length ? ` To ${plats.join(', ')}.` : ''}`;
+}
 function qcardHTML(q, interactive = true) {
   const tag = interactive ? 'button' : 'div';
-  return `<${tag} class="qcard ${q.status}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(q.text.replace(/[.!?…]+$/, ''))}. ${q.status === 'published' ? 'Published' : 'Scheduled ' + slotLabel(q.day, q.time)}"><p>${esc(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
+  return `<${tag} class="qcard ${q.status}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(qAria(q))}"><p>${esc(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
 }
 function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) {
   refreshBest();
@@ -7343,7 +7402,7 @@ function drawCal() {
   const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
   const html = calGridHTML(days, S.queue, { now });
   cal.innerHTML = html;
-  const qc = q => `<button class="qcard ${q.status}" data-id="${q.id}" aria-label="${esc(q.text)}"><p>${esc(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
+  const qc = q => `<button class="qcard ${q.status}" data-id="${q.id}" aria-label="${esc(qAria(q))}"><p>${esc(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
   const ag = $('#agenda'); if (ag) ag.innerHTML = days.map(d => {
     const day = dayKey(d); const items = S.queue.filter(q => q.day === day).sort((a, b) => a.time.localeCompare(b.time));
     const open = Object.keys(BEST[dowIdx(d)] || {}).filter(t => slotDate(day, t).getTime() > now && !taken(day, t));
