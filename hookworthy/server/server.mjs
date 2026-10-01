@@ -25,7 +25,6 @@ const TF = await import('./lib/typefully.mjs');
 const Q = await import('./lib/scheduler.mjs');
 const E = await import('./lib/extras.mjs');
 const BO = await import('./lib/breakout.mjs');
-const CAL = await import('./lib/calendar.mjs');
 const VO = await import('./lib/votes.mjs');
 
 const ROOT = normalize(join(here, '..'));
@@ -43,7 +42,7 @@ const fail = (res, e) => send(res, e.status || 500, { error: e.message || 'Somet
 async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []; for await (const c of req) { n += c.length; if (n > limit) throw Object.assign(new Error('Request too large'), { status: 413 }); chunks.push(c); } try { return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}'); } catch { throw Object.assign(new Error('Send JSON'), { status: 400 }); } }
 const authed = req => !TOKEN || req.headers.authorization === `Bearer ${TOKEN}` || (req.headers.cookie || '').split(/;\s*/).includes(`hw=${TOKEN}`);
 
-export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), calendar: CAL.connected(), vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
 
 /* drafts for a breakout's first replies, in your voice (only when Claude is on) */
 export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => (await AI.complete({ ...core.prompts.replies({ post, replies, voice }), json: true })).data : null;
@@ -80,10 +79,6 @@ export async function handle(req, res) {
     /* hook vote: a public link where friends pick the first line that stops them */
     if (p === '/api/vote' && req.method === 'POST') { const b = await body(req, 16 * 1024); const v = VO.createVote(b); return send(res, 200, { ...v, url: `${PUBLIC_URL}/v/${v.id}` }); }
     const vm = p.match(/^\/api\/vote\/([\w-]{8,20})$/); if (vm) { if (req.method === 'POST') { if (!allow(ip, .5)) return send(res, 429, { error: 'Slow down a little' }); return send(res, 200, VO.castVote(vm[1], await body(req, 4 * 1024))); } return send(res, 200, { ...VO.getVote(vm[1]), mine: VO.mineFor(vm[1], url.searchParams.get('voter')) }); }
-
-    /* calendar: busy times so scheduling avoids your meetings */
-    if (p === '/api/calendar' && req.method === 'GET') return send(res, 200, await CAL.busy());
-    if (p === '/api/calendar' && req.method === 'POST') { const b = await body(req, 8 * 1024); return send(res, 200, await CAL.setLink(b.url)); }
 
     /* breakout alerts */
     if (p === '/api/breakout' && req.method === 'GET') return send(res, 200, BO.status());

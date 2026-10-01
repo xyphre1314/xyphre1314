@@ -644,18 +644,7 @@ body.typing .tw-tools{ opacity:0!important; }
 .hook-reason{ margin-top:10px; padding:14px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:var(--t-13); color:var(--text-2); animation:rise var(--d-spring) var(--ease-out) both; }
 .force-dark .hook-reason,:root[data-theme="dark"] .hook-reason:not(.force-light .hook-reason){ background:var(--surface-2); }
 .hook-reason b{ color:var(--text-1); font-weight:600; }
-/* Round 23: calendar, read aloud, hook vote */
-.cal-set{ display:grid; gap:16px; }
-.cal-on{ display:flex; gap:10px; align-items:center; padding:12px; border-radius:12px; background:var(--accent-soft); } .cal-on > span{ display:grid; gap:2px; flex:1; min-width:0; } .cal-on small{ color:var(--text-2); font-size:12px; } .cal-on .icon{ color:var(--accent-text); }
-.cal-hide{ display:flex; gap:8px; align-items:center; font-size:var(--t-13); color:var(--text-2); } .cal-hide input{ accent-color:var(--accent); }
-.cal-way{ display:grid; gap:8px; } .cal-form{ display:flex; gap:8px; } .cal-form .input{ flex:1; min-width:0; }
-.cal-how summary{ cursor:pointer; font-size:var(--t-13); color:var(--text-2); } .cal-how ul{ margin:8px 0; padding-left:18px; display:grid; gap:6px; font-size:var(--t-13); color:var(--text-2); } .cal-how b{ color:var(--text-1); }
-.cal-drop{ min-height:0; padding:16px; }
-.cal-note{ display:flex; gap:8px; align-items:center; margin:0; font-size:var(--t-13); color:var(--text-2); }
-.cal-ask{ display:flex; gap:8px; align-items:center; width:100%; text-align:left; padding:10px 12px; border-radius:10px; font-size:var(--t-13); color:var(--text-2); box-shadow:0 0 0 1px dashed var(--border); border:1px dashed var(--border-strong); transition:background var(--d-micro),color var(--d-micro); } .cal-ask span{ flex:1; } .cal-ask:hover{ background:var(--surface-2); color:var(--text-1); }
-.slot.busy{ background-image:repeating-linear-gradient(-45deg,transparent 0 6px,color-mix(in srgb,var(--text-3) 9%,transparent) 6px 7px); }
-.slot .bz{ position:absolute; left:6px; top:3px; max-width:calc(100% - 40px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:500 10px/1.4 var(--font-ui); color:var(--text-3); }
-.cal.dragging .slot.busy .sx{ display:none !important; }
+/* Round 23: read aloud, hook vote */
 .ra{ position:fixed; z-index:945; left:50%; bottom:calc(84px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); width:min(560px,calc(100vw - 32px)); padding:12px 14px 14px; border-radius:18px; background:var(--bg-elev); box-shadow:0 0 0 1px var(--border-strong),0 20px 44px -16px rgba(20,10,40,.4); animation:lp-in 360ms var(--spring-snap) both; }
 .ra.out{ animation:lp-out 220ms var(--ease-out) both; }
 .ra-h{ display:flex; gap:6px; align-items:center; font-size:var(--t-13); } .ra-h b{ font-weight:600; }
@@ -3215,7 +3204,6 @@ function paletteCommands() {
     { g: 'Actions', label: 'Picture to post (screenshot, chart, DM)', icon: 'image', run: () => openPicture() },
     { g: 'Actions', label: 'Reply radar: fresh posts worth an early reply', icon: 'reply', run: () => openRadar() },
     { g: 'Actions', label: 'Breakout alerts: a ping when a post takes off', icon: 'bell', run: () => openBreakoutSetup() },
-    { g: 'Actions', label: 'Calendar: skip times you’re in meetings', icon: 'cal', run: () => openCalendarSetup() },
     { g: 'Actions', label: 'Read my post aloud', icon: 'volume', run: () => goThen('write', () => readAloud(0)) },
     { g: 'Actions', label: 'Hook vote: ask friends which first line wins', icon: 'share', run: () => goThen('write', openHookVote) },
     { g: 'Actions', label: 'Write from a brief, doc or PDF', icon: 'write', run: () => openBrief() },
@@ -3419,11 +3407,11 @@ function slotInfo(day, time) { refreshBest(); const d = dowIdx(fromKey(day)); co
 try { refreshBest(); } catch (e) { /* history not ready yet */ }
 try { settleQueue(); } catch (e) { } /* the sidebar count is only what's still to come */
 const taken = (day, time) => S.queue.some(q => q.day === day && q.time === time && q.status === 'scheduled');
-function nextSlots(n, bestOnly = true, { ignoreBusy = false } = {}) {
+function nextSlots(n, bestOnly = true) {
   const out = []; const now = Date.now();
   for (let i = 0; i < 21 && out.length < n; i++) {
     const d = new Date(now + i * DAY); const day = dayKey(d); const bi = BEST[dowIdx(d)] || {};
-    for (const t of SLOTS) { if (bestOnly && !bi[t]) continue; if (slotDate(day, t).getTime() <= now + 10 * 60e3 || taken(day, t) || (!ignoreBusy && busyFor(day, t))) continue; out.push({ day, time: t, reason: bi[t] || 'Open slot' }); if (out.length >= n) break; }
+    for (const t of SLOTS) { if (bestOnly && !bi[t]) continue; if (slotDate(day, t).getTime() <= now + 10 * 60e3 || taken(day, t)) continue; out.push({ day, time: t, reason: bi[t] || 'Open slot' }); if (out.length >= n) break; }
   }
   return out;
 }
@@ -4839,9 +4827,6 @@ function openSchedule() {
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   const best = nextSlots(3); let pickI = 0;
   /* the strongest of the three gets the badge and the default, not just the soonest */
-  /* your calendar: a best time you're stuck in a meeting for gets a free time next to it instead */
-  let calNote = '';
-  if (calOn()) { const raw = nextSlots(3, true, { ignoreBusy: true }), hit = raw.map(x => ({ ...x, b: busyFor(x.day, x.time) })).find(x => x.b); if (hit) { const alt = freeNear(hit.day, hit.time); calNote = `Skipped ${slotLabel(hit.day, hit.time)}: you’re in ${calName(hit.b)}.`; if (alt && !best.some(b => b.day === alt.day && b.time === alt.time)) { best.push({ day: alt.day, time: alt.time, reason: `Free for the first hour, next to your ${fmtTime(hit.time)} best time` }); best.sort((a, c) => slotDate(a.day, a.time) - slotDate(c.day, c.time)); best.length = Math.min(best.length, 3); } } }
   { const xs = best.map(b => slotInfo(b.day, b.time).x || 0); const top = xs.indexOf(Math.max(...xs)); if (TIMES.src === 'you' && top > 0) pickI = top; }
   const ps = S.draft.slot; if (ps && slotDate(ps.day, ps.time).getTime() > Date.now() && !taken(ps.day, ps.time)) { best.unshift({ day: ps.day, time: ps.time, reason: 'The slot you picked in your queue' }); best.length = Math.min(best.length, 3); } const n = S.draft.tweets.filter(t => t.text.trim()).length;
   const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times are ${esc(tzName())}`)}
@@ -4850,7 +4835,6 @@ function openSchedule() {
     <div style="display:grid;gap:8px"><span class="label">${TIMES.src === 'you' ? 'Best times for you' : 'Good times to post'}</span>
       <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" data-si="${i}"><span class="radio"></span><span><b>${slotLabel(s.day, s.time)}</b><small>${esc(s.reason)}</small></span>${i === pickI ? '<span class="pill accent">Best</span>' : i === 0 && pickI ? '<span class="pill">Soonest</span>' : ''}</button>`).join('')}
       <button class="stime" role="radio" aria-checked="false" data-si="custom"><span class="radio"></span><span><b>Pick a time</b><small>Your call. We trust you.</small></span></button></div>
-      ${calNote ? `<p class="cal-note">${ic('cal', 'sm')} ${esc(calNote)}</p>` : !calOn() ? `<button class="cal-ask" data-cal-setup>${ic('cal', 'sm')} <span>Connect your calendar and this skips times you’re in meetings</span>${ic('right', 'xs')}</button>` : ''}
       ${hintHTML('schedule', { cls: 'in-modal' })}
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${dayKey(Date.now() + DAY)}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="09:00" aria-label="Time"></div>
     </div>
@@ -4858,7 +4842,6 @@ function openSchedule() {
   <div class="modal-f"><button class="btn" id="s-queue">Add to queue</button><button class="btn primary" id="s-go">${ic('clock', 'sm')} <span id="s-go-l">Schedule for ${best[pickI] ? slotLabel(best[pickI].day, best[pickI].time) : 'later'}</span></button></div>`, { label: 'Schedule' });
   const el = m.el;
   el.addEventListener('click', e => {
-    if (e.target.closest('[data-cal-setup]')) { m.close(); openCalendarSetup(); return; }
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
     const s = e.target.closest('.stime'); if (s) { $$('.stime', el).forEach(x => x.setAttribute('aria-checked', x === s)); pickI = s.dataset.si; $('#custom-t', el).hidden = pickI !== 'custom'; $('#s-go-l', el).textContent = pickI === 'custom' ? 'Schedule' : `Schedule for ${slotLabel(best[pickI].day, best[pickI].time)}`; }
     const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); }
@@ -5373,7 +5356,7 @@ function openPeople() {
 /* ---- hints: one useful line at a time; yours first, general ones after ---- */
 const GEN_TIPS = {
   queue: ['Post when your people are awake, not when you finish writing. That’s what the queue is for.', 'A steady week beats a big burst. Three good posts land better than seven rushed ones.', 'Drag a post onto a highlighted slot. Those are the times your audience reads most.', 'Leave one slot open for something that happens this week. The best posts are often unplanned.'],
-  schedule: ['The first hour decides how far a post travels. Pick a time you can be around for it.', 'Connect your calendar and Hookworthy skips best times when you’re stuck in a meeting.', 'Most people check their phone in the first hour they’re awake. Morning slots get the most first-hour replies.', 'Answer the first few replies yourself. It’s the cheapest reach there is.'],
+  schedule: ['The first hour decides how far a post travels. Pick a time you can be around for it.', 'Most people check their phone in the first hour they’re awake. Morning slots get the most first-hour replies.', 'Answer the first few replies yourself. It’s the cheapest reach there is.'],
   write: ['Write the first line last. By then you know what the post is really about.', 'One idea per post. If you need an “also”, that’s the next post.', 'A real number in line one makes people stop scrolling.', 'Read it out loud once. If you trip over a line, your readers will too.', 'Links in the first post cut reach on X and LinkedIn. Put the link in a reply.'],
   insights: ['Your best post is a recipe, not luck. Ask “Why?” on it and write the next one the same way.', 'Quiet posts teach as much as big ones. Look at what they have in common.', 'Compare like with like: a thread and a one-liner have different ceilings.'],
   live: ['Answer the first few replies. It tells the feed people are talking.', 'The first hour decides how far a post travels. Stay close.', 'A question back gets more replies than “thanks!”.', 'If it’s doing well, pin it while people are visiting your profile.', 'Add one reply to your own post with the next thing: a link, the follow-up, what to read next.']
@@ -5500,44 +5483,6 @@ function checkBest(q, eng) {
   SFX.play('best');
   toast(ever ? `Your best post yet. ${fmtN(eng)} engagements and still climbing.` : `Your best since ${MON[d.getMonth()]} ${d.getDate()}${d.getFullYear() !== new Date().getFullYear() ? `, ${d.getFullYear()}` : ''}. ${fmtN(eng)} engagements and climbing.`, { icon: 'spark', tone: 'accent', ms: 7000, action: 'Answer replies', onAction: () => openReplyDesk(q) });
 }
-/* ---------- your calendar: be around for a post's first hour ---------- */
-const CALS = { busy: null, at: 0 };
-const calOn = () => !!(S.cal && (S.cal.src === 'file' ? (S.cal.busy || []).length : S.cal.src === 'link'));
-const calBusy = () => !S.cal ? [] : S.cal.src === 'file' ? S.cal.busy || [] : CALS.busy || [];
-const calName = b => S.cal && S.cal.hide ? 'a meeting' : `“${clip(b.title || 'Busy', 40)}”`;
-async function calRefresh(force) {
-  if (!S.cal || S.cal.src !== 'link' || !LLM.server || !LLM.server.calendar) return;
-  if (!force && CALS.busy && Date.now() - CALS.at < 10 * 60e3) return;
-  try { const r = await fetch('api/calendar'); const j = await r.json(); if (r.ok) { CALS.busy = j.busy; CALS.at = Date.now(); if (CURRENT === 'queue') drawCal(); } } catch { /* keep the last copy */ }
-}
-const busyFor = (day, time) => calOn() ? HWCore.busyAt(calBusy(), slotDate(day, time).getTime(), 60) : null;
-/* the nearest time that day you're free for a whole hour, not too early or late */
-function freeNear(day, time) {
-  const base = slotDate(day, time).getTime();
-  for (const d of [15, 30, 45, 60, -15, -30, 75, 90, -45, -60, 105, 120, -75, -90, 150, 180]) { const t = base + d * 6e4, dt = new Date(t); if (dayKey(dt) !== day || dt.getHours() < 7 || dt.getHours() >= 22 || t < Date.now() + 10 * 60e3) continue; if (!HWCore.busyAt(calBusy(), t, 60)) return { day, time: hhmm(dt) }; }
-  return null;
-}
-function openCalendarSetup() {
-  const srv = LLM.server || {}, on = calOn(), n = calBusy().filter(b => b.end > Date.now()).length;
-  const m = modal(`${modalHead('Your calendar', 'Your best time is no good if you’re in a meeting for the first hour. Hookworthy skips those slots.')}
-    <div class="modal-b cal-set">
-      ${on ? `<div class="cal-on">${ic('check', 'sm')}<span><b>${S.cal.src === 'link' ? 'Connected' : `From ${esc(S.cal.name || 'your file')}`}</b><small>${n} busy time${n === 1 ? '' : 's'} in the next three weeks${S.cal.src === 'file' ? `. Upload a fresh copy now and then; files don’t update themselves` : ', refreshed every 15 minutes'}.</small></span><button class="btn sm" data-cs="off">Disconnect</button></div>
-      <label class="cal-hide"><input type="checkbox" id="cs-hide" ${S.cal.hide ? 'checked' : ''}> Don’t show meeting names, just “busy”</label>` : ''}
-      ${srv.sync !== undefined && srv.ok !== false && LLM.server ? `<section class="cal-way"><h3 class="label">Link it (stays up to date)</h3><form id="cs-form" class="cal-form"><input class="input" id="cs-url" placeholder="Your calendar’s secret iCal link" autocomplete="off" spellcheck="false" aria-label="Secret iCal link"><button class="btn primary" type="submit">Connect</button></form>
-        <details class="cal-how"><summary>Where do I find that?</summary><ul>
-          <li><b>Google Calendar:</b> Settings → your calendar → Integrate calendar → <i>Secret address in iCal format</i>.</li>
-          <li><b>Outlook:</b> Settings → Calendar → Shared calendars → Publish a calendar → <i>ICS</i> link.</li>
-          <li><b>Apple iCloud:</b> Calendar app → share the calendar → <i>Public Calendar</i> → copy the link.</li></ul>
-          <p class="faint">The link stays on your Hookworthy server. Only busy times reach this page.</p></details></section>` : ''}
-      <section class="cal-way"><h3 class="label">${LLM.server ? 'Or upload a file' : 'Upload your calendar'}</h3><label class="br-drop cal-drop"><input type="file" id="cs-file" accept=".ics,text/calendar" hidden><span class="br-ic">${ic('cal')}</span><b>Choose an .ics file</b><small>Export it from Google, Outlook or Apple Calendar. It’s read here, in your browser, and only busy times are kept.</small></label></section>
-    </div><div class="modal-f"><button class="btn primary" data-close>Done</button></div>`, { label: 'Your calendar' });
-  const el = m.el, done = msg => { m.close(); toast(msg, { icon: 'cal', tone: 'accent', ms: 4200 }); if (CURRENT === 'queue') drawCal(); };
-  const f = $('#cs-form', el); if (f) f.onsubmit = async e => { e.preventDefault(); const b = $('button', f); b.classList.add('is-loading'); try { const r = await fetch('api/calendar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: $('#cs-url', el).value }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); S.cal = { src: 'link', hide: S.cal && S.cal.hide }; save(); await calRefresh(true); done(`Calendar connected. ${j.events} busy time${j.events === 1 ? '' : 's'} coming up; scheduling skips them.`); } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err', ms: 6000 }); } finally { b.classList.remove('is-loading'); } };
-  $('#cs-file', el).onchange = async e => { const file = e.target.files[0]; if (!file) return; try { const text = await file.text(); if (!/BEGIN:VCALENDAR/.test(text)) throw new Error('That file isn’t a calendar (.ics)'); const busy = HWCore.parseICS(text, { from: Date.now() - 864e5, to: Date.now() + 30 * 864e5 }); S.cal = { src: 'file', name: file.name, busy, at: Date.now(), hide: S.cal && S.cal.hide }; save(); done(`Read ${busy.length} busy time${busy.length === 1 ? '' : 's'} from ${esc(file.name)}. Scheduling skips them.`); } catch (err) { toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } };
-  el.addEventListener('click', async e => { if (!e.target.closest('[data-cs="off"]')) return; if (S.cal.src === 'link') await fetch('api/calendar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: '' }) }).catch(() => {}); S.cal = null; CALS.busy = null; save(); done('Calendar disconnected.'); });
-  el.addEventListener('change', e => { if (e.target.id === 'cs-hide') { S.cal.hide = e.target.checked; save(); if (CURRENT === 'queue') drawCal(); } });
-}
-
 /* ---------- read it aloud: hear the clunky line before your readers do ---------- */
 const RA = { on: false, posts: [], i: 0, rate: 1, chunks: [], ci: 0 };
 function raVoice() { const vs = speechSynthesis.getVoices(), lang = (document.documentElement.lang || navigator.language || 'en').slice(0, 2), pool = vs.filter(v => (v.lang || '').toLowerCase().startsWith(lang)); return pool.find(v => /natural|neural|premium|enhanced/i.test(v.name)) || pool.find(v => /google|samantha|daniel|aria|jenny|serena/i.test(v.name)) || pool[0] || null; }
@@ -5707,14 +5652,13 @@ function openConnections() {
       ${row('X plan', xPaid(), xPlanLabel(), srv.xUser ? `<button class="btn sm" data-xt="check">Re-check</button>` : `<button class="btn sm" data-xt="self">${xPaid() ? 'I’m on free X' : 'I have Premium'}</button>`)}
       ${row('LinkedIn', !!srv.liUser, srv.linkedin ? (srv.liUser ? `Posting as ${esc(srv.liUser)}.` : 'App set. Connect to post.') : 'Needs the server with a LinkedIn app. Import Shares.csv meanwhile.', srv.linkedin ? `<a class="btn sm" href="auth/linkedin/start">${srv.liUser ? 'Reconnect' : 'Connect'}</a>` : '')}
       ${row('Typefully import', !!srv.typefully, srv.typefully ? 'Paste your API key in Bring your posts. Used once.' : 'Needs the server. A CSV export works without it.')}
-      ${row('Calendar', calOn(), calOn() ? (S.cal.src === 'link' ? 'Connected. Scheduling skips times you’re in meetings.' : `From ${esc(S.cal.name || 'a file')}. Scheduling skips your meetings.`) : 'Skip best times when you’re in a meeting for the first hour.', `<button class="btn sm" data-cal-setup>${calOn() ? 'Settings' : 'Connect'}</button>`)}
       ${row('Breakout alerts', boOn(), srv.breakout ? (S.settings.breakout ? 'Watching new posts for 3× your usual pace.' : 'A ping when a post takes off, with replies drafted.') : 'Needs the server with X connected.', `<button class="btn sm" data-bo="setup">${srv.breakout ? (S.settings.breakout ? 'Settings' : 'Set up') : 'See a sample'}</button>`)}
       ${row('Your history', HIST().length > 0, HIST().length ? `${fmtN(HIST().length)} posts in this browser.` : 'Nothing imported yet.', `<button class="btn sm" data-act="import">${HIST().length ? 'Add more' : 'Import'}</button>`)}
       ${syncRowHTML()}
       <form id="sy-join" class="sy-join" hidden><input class="input" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" aria-label="Sync code" autocomplete="off" spellcheck="false"><button class="btn sm primary" type="submit">Sync this device</button></form>
       <details class="dev-note"><summary>Self-hosting?</summary><p class="faint imp-note">Run the server: <code>cd hookworthy/server && npm install && npm start</code>. Keys go in <code>server/.env</code> (see server/README.md).</p></details>
     </div><div class="modal-f"><button class="btn primary" data-close>Done</button></div>`, { label: 'Connections', box: 'modal' });
-  m.el.addEventListener('click', e => { if (e.target.closest('[data-bo]')) { m.close(); openBreakoutSetup(); return; } if (e.target.closest('[data-cal-setup]')) { m.close(); openCalendarSetup(); return; } const xt = e.target.closest('[data-xt]'); if (xt) { if (xt.dataset.xt === 'check') refreshXTier(xt); else { setSelfTier(!xPaid()); m.close(); openConnections(); } return; } if (e.target.closest('[data-act="import"]')) m.close(); const sy = e.target.closest('[data-sy]'); if (sy) syncAction(sy.dataset.sy, m); });
+  m.el.addEventListener('click', e => { if (e.target.closest('[data-bo]')) { m.close(); openBreakoutSetup(); return; } const xt = e.target.closest('[data-xt]'); if (xt) { if (xt.dataset.xt === 'check') refreshXTier(xt); else { setSelfTier(!xPaid()); m.close(); openConnections(); } return; } if (e.target.closest('[data-act="import"]')) m.close(); const sy = e.target.closest('[data-sy]'); if (sy) syncAction(sy.dataset.sy, m); });
   const jf = $('#sy-join', m.el); if (jf) jf.onsubmit = async e => { e.preventDefault(); const code = $('input', jf).value.trim(); const btn = $('button', jf); btn.classList.add('is-loading'); try { const prev = SYNC.code; SYNC.code = code.toUpperCase(); SYNC.key = null; const got = await pullSync(true); if (!got) { const r = await fetch(`api/sync/${SYNC.id}`); if (r.status === 404) { SYNC.code = prev; throw new Error('No synced copy with that code yet'); } } try { localStorage.setItem('hw-sync', SYNC.code); } catch (err) { /* ok */ } m.close(); route(); toast('This device is synced.', { icon: 'check', tone: 'accent' }); } catch (err) { SYNC.key = null; toast(esc(err.message), { icon: 'zapoff', tone: 'err' }); } finally { btn.classList.remove('is-loading'); } };
 }
 /* Tidy up: the draft pile, one at a time. Finish it, give it a slot, or let it go. */
@@ -6989,7 +6933,6 @@ function moveQ(id, day, time) {
   if (other) { other.day = q.day; other.time = q.time; }
   q.day = day; q.time = time; save(); drawCal(); drawQSide();
   const card = $(`.qcard[data-id="${id}"]`); card && card.classList.add('landed');
-  const bz = busyFor(day, time); if (bz) { const fr = freeNear(day, time); toast(`Moved to ${slotLabel(day, time)}, but you’re in ${calName(bz)} then. The first hour is when replies matter.`, { icon: 'cal', tone: 'err', ms: 6000, ...(fr ? { action: `Move to ${fmtTime(fr.time)}`, onAction: () => moveQ(id, fr.day, fr.time) } : {}) }); return; }
   const si = slotInfo(day, time), alt = !si.best ? nextSlots(6).find(x => slotDate(x.day, x.time) - slotDate(day, time) < 3 * DAY && slotDate(x.day, x.time) > Date.now()) : null, ai = alt && slotInfo(alt.day, alt.time);
   if (si.best) { SFX.play('pop'); toast(`Moved to ${slotLabel(day, time)}${other ? ', swapped with the post that was there' : ''}. ${si.general ? 'A good time to post.' : `One of your best times: ${si.x}× your usual.`}`, { icon: 'target', tone: 'accent', ms: 3000 }); }
   else toast(`Moved to ${slotLabel(day, time)}${other ? ', swapped with the post that was there' : ''}.${alt && ai.x && (si.x == null || ai.x > si.x) ? ` ${slotLabel(alt.day, alt.time)} usually does ${ai.x}×${si.x != null ? ` vs ${si.x}×` : ''}.` : ''}`, { icon: 'cal', ms: 4200, ...(alt && ai.x && (si.x == null || ai.x > si.x) ? { action: 'Move it there', onAction: () => moveQ(id, alt.day, alt.time) } : {}) });
@@ -7022,8 +6965,7 @@ function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) 
       const day = dayKey(d); const past = slotDate(day, t).getTime() < now; const best = BEST[dowIdx(d)] && BEST[dowIdx(d)][t];
       const items = list.filter(q => q.day === day && (q.status === 'scheduled' ? q.time === t : rowOf(q.time) === r));
       const sx = interactive && !past ? (SLOTX[dowIdx(d)] || {})[t] : null, xl = sx && sx.x != null ? `${sx.x}×` : '';
-      const bz = interactive && !past ? busyFor(day, t) : null, tip = [best, bz ? `You’re in ${calName(bz)} for part of the first hour` : ''].filter(Boolean).join('. ');
-      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''} ${bz ? 'busy' : ''}" data-day="${day}" data-time="${t}" ${tip ? `data-tip="${esc(tip)}"` : ''}>${bz ? `<span class="bz" aria-hidden="true">${S.cal && S.cal.hide ? 'Busy' : esc(clip(bz.title || 'Busy', 18))}</span>` : ''}${interactive && !past ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
+      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${interactive && !past ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
     });
   });
   return html;
@@ -7372,7 +7314,7 @@ if (!REVIEW_ID && !VOTE_ID) LLM.ready.then(() => { if (!LLM.server || !LLM.serve
 if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', e => { const d = e.data || {}; if (d.type === 'breakout' && d.url) { const id = new URL(d.url, location.href).searchParams.get('breakout'); if (id) boOpenId(id); } });
 /* a post went out less than an hour ago: the live pill picks up where it left off */
 if (!REVIEW_ID && !VOTE_ID && S.live) { if (Date.now() - S.live.at < 60 * 60e3) LLM.ready.then(() => { liveDraw(); liveTick(); }); else S.live = null; }
-if (VOTE_ID) LLM.ready.then(() => renderVote(VOTE_ID)); else if (REVIEW_ID) LLM.ready.then(() => renderReview(REVIEW_ID)); else { LLM.ready.then(() => calRefresh()); route(); LLM.ready.then(() => SYNC.code && LLM.server && LLM.server.sync && pullSync().then(ch => ch && route()).catch(() => {})); }
+if (VOTE_ID) LLM.ready.then(() => renderVote(VOTE_ID)); else if (REVIEW_ID) LLM.ready.then(() => renderReview(REVIEW_ID)); else { route(); LLM.ready.then(() => SYNC.code && LLM.server && LLM.server.sync && pullSync().then(ch => ch && route()).catch(() => {})); }
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !/claude|anthropic/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => { });
 </script>
 </body>
