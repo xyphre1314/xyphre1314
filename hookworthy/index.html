@@ -2598,8 +2598,9 @@ function aiError(e) {
   const m = { not_granted: 'Claude is off for this page. Using basic mode.', sampling_disabled: 'Claude isn’t available on this account. Using basic mode.', rate_limited: 'Claude needs a breather. Try again in a minute.', refused: 'Claude passed on that one. Try different wording.', invalid_json: 'Claude’s answer came back garbled. Try again.', prompt_too_large: 'That’s too much to send at once. Try fewer posts.', session_expired: 'Sign in to Claude again, then retry.', offline: 'No Claude connection. Using basic mode.' }[c] || 'Claude didn’t answer. Try again.';
   toast(m, { icon: 'zapoff', tone: c === 'rate_limited' ? 'accent' : 'err' });
 }
-function refreshAIBadge() { $$('.ai-badge').forEach(b => { b.dataset.mode = LLM.mode; b.innerHTML = aiBadgeInner(); }); }
-function aiBadgeInner() { return `<i></i><span>${LLM.mode === 'server' ? 'Claude · Sonnet + Opus' : LLM.mode === 'claude' ? 'Claude · your account' : 'Basic mode · AI off'}</span>`; }
+const aiBadgeTip = () => LLM.mode === 'server' ? 'Claude on your server: Sonnet for writing, Opus for voice study' : LLM.mode === 'claude' ? 'Claude, through your own claude.ai account' : 'Basic mode: instant suggestions without AI. Tap to connect Claude';
+function refreshAIBadge() { $$('.ai-badge').forEach(b => { b.dataset.mode = LLM.mode; b.innerHTML = aiBadgeInner(); if (b.classList.contains('side-ai')) b.dataset.tip = aiBadgeTip(); }); }
+function aiBadgeInner() { return `<i></i><span>${LLM.mode === 'server' || LLM.mode === 'claude' ? 'Claude on' : 'Basic mode · AI off'}</span>`; }
 /* what Claude gets to know about your voice: dials, habits it learned, never-say words, your best posts */
 function voiceSpec() {
   const pr = S.profile || {}; const top = (HIST().length ? ANALYSIS().top : TOP_POSTS).slice(0, 5).map(p => p.text);
@@ -3113,9 +3114,9 @@ function shell(active, inner) {
     <nav class="nav" aria-label="Main">
       ${NAV.map(it => `<a href="#${it.k}" ${active === it.k ? 'aria-current="page"' : ''} data-tip="${it.label}" data-kbd="G ${it.key}">${ic(it.icon)}<span>${it.label}</span>${counts[it.k] ? `<span class="count">${counts[it.k]}</span>` : ''}</a>`).join('')}
     </nav>
-    ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts${S.drafts.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or bin">Tidy up</button>` : ''}</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}" title="${esc(clip((d.tweets[0] && d.tweets[0].text) || 'Untitled draft', 120))}${d.created ? ` · started ${agoLabel(d.created)}` : ''}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}</div>` : ''}
+    ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts${S.drafts.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or let go">Tidy up</button>` : ''}</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}" title="${esc(clip((d.tweets[0] && d.tweets[0].text) || 'Untitled draft', 120))}${d.created ? ` · started ${agoLabel(d.created)}` : ''}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}</div>` : ''}
     <div class="spacer"></div>
-    <button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="Where the AI comes from">${aiBadgeInner()}</button>
+    <button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="${aiBadgeTip()}">${aiBadgeInner()}</button>
     ${BILLING && S.plan === 'free' ? `<a class="side-plan plan-card" href="#upgrade" data-tip="Unlimited rewrites on Pro"><span class="pc-count">${S.ai.limit - used} of ${S.ai.limit} rewrites left today</span><span class="go">Go Pro</span></a>` : ''}
     <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.ws === 'me' ? S.user.name : S.workspaces[0].name)}</b><span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span></span>${ic('more', 'sm')}</button>
   </aside>
@@ -3277,7 +3278,7 @@ function openShortcuts() {
     ${row('Accept suggestion', ['Tab'])}${row('New post in thread', ['↵', '↵'])}${row('Focus mode', [MOD, '.'])}
     ${row('Rewrite menu', [MOD, 'J'])}${row('Run rewrite 1–7', [ALT, '1–7'])}
     ${row('Move post up / down', [ALT, '↑ ↓'])}${row('Merge into previous', ['⌫'])}
-    ${row('Schedule', [MOD, '↵'])}${row('Publish now', [MOD, SHIFT, '↵'])}
+    ${row('Schedule', [MOD, '↵'])}${row('Post now', [MOD, SHIFT, '↵'])}
     ${row('Toggle previews', [MOD, '\\'])}${row('Shuffle ideas', ['R'])}
   </div></div>`, { label: 'Keyboard shortcuts' });
 }
@@ -3489,7 +3490,7 @@ function tweetHTML(tw, i, n) {
       <button class="tool riff" data-cact="riff" data-tip="Rewrite this post" data-kbd="${MOD} J" aria-expanded="${UI.riff === tw.id}">${ic('riff')}<span>Rewrite</span></button>
       ${n > 1 ? `<button class="tool" data-cact="remove" data-tip="Remove this post">${ic('trash')}</button>` : ''}
       <div class="tw-meta">
-        ${i === 0 ? `<button class="vm" data-cact="vminfo" data-tip="How much this sounds like you" hidden><span class="vm-n">–</span><span>You</span></button>` : ''}
+        ${i === 0 ? `<button class="vm" data-cact="vminfo" data-tip="How much this sounds like you" hidden><span class="vm-n">–</span><span>Voice</span></button>` : ''}
         ${i === 0 ? `<button class="hook" data-cact="hookinfo" data-tip="Why this score?" aria-expanded="${UI.hook}"><span class="sc" style="--v:0"><span>0</span></span><span>Hook</span></button>` : ''}
         <span class="ring" data-tip="0 characters"><svg viewBox="0 0 24 24"><circle class="trk" cx="12" cy="12" r="9.5"/><circle class="val" cx="12" cy="12" r="9.5" stroke-dasharray="59.69" stroke-dashoffset="59.69"/></svg><b></b></span>
       </div>
@@ -3611,7 +3612,7 @@ function riffbarHTML(id) {
 }
 function diffHTML() {
   const d = UI.diff;
-  if (d.pending) { const r0 = RIFFS.find(x => x.k === d.kind); return `<div class="diff pending" role="status" aria-live="polite"><div class="diff-h">${ic(r0.icon, 'sm')}<b style="font-size:13px">${r0.label}</b><span class="faint" style="font-size:12px">${esc(AI_NAME())} is writing three takes in your voice…</span><span class="grow"></span></div><div class="diff-b"><span class="skel"></span><span class="skel" style="width:72%"></span><span class="skel" style="width:48%"></span></div><div class="diff-f"><span class="grow"></span><button class="btn sm" data-cact="diffretry">Stop</button></div></div>`; } const n = d.chunks.filter(c => c.eq === undefined).length; const on = d.chunks.filter(c => c.eq === undefined && c.on).length;
+  if (d.pending) { const r0 = RIFFS.find(x => x.k === d.kind); return `<div class="diff pending" role="status" aria-live="polite"><div class="diff-h">${ic(r0.icon, 'sm')}<b style="font-size:13px">${r0.label}</b><span class="faint" style="font-size:12px">Writing three takes in your voice…</span><span class="grow"></span></div><div class="diff-b"><span class="skel"></span><span class="skel" style="width:72%"></span><span class="skel" style="width:48%"></span></div><div class="diff-f"><span class="grow"></span><button class="btn sm" data-cact="diffretry">Stop</button></div></div>`; } const n = d.chunks.filter(c => c.eq === undefined).length; const on = d.chunks.filter(c => c.eq === undefined && c.on).length;
   const now = composeDiff(d.chunks); const i = tIndex(d.id);
   let delta = '';
   if (i === 0) { const a = hookScore(d.before).score, b = hookScore(now).score; delta = `<span class="delta ${b >= a ? 'up' : 'down'}" data-tip="How strong your first line is">Hook ${a} → ${b}</span>`; }
@@ -4834,12 +4835,12 @@ function openSchedule() {
     ${checksHTML(preflight())}
     <div style="display:grid;gap:8px"><span class="label">${TIMES.src === 'you' ? 'Best times for you' : 'Good times to post'}</span>
       <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" data-si="${i}"><span class="radio"></span><span><b>${slotLabel(s.day, s.time)}</b><small>${esc(s.reason)}</small></span>${i === pickI ? '<span class="pill accent">Best</span>' : i === 0 && pickI ? '<span class="pill">Soonest</span>' : ''}</button>`).join('')}
-      <button class="stime" role="radio" aria-checked="false" data-si="custom"><span class="radio"></span><span><b>Pick a time</b><small>Your call. We trust you.</small></span></button></div>
+      <button class="stime" role="radio" aria-checked="false" data-si="custom"><span class="radio"></span><span><b>Pick a time</b><small>Choose a date and time</small></span></button></div>
       ${hintHTML('schedule', { cls: 'in-modal' })}
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${dayKey(Date.now() + DAY)}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="09:00" aria-label="Time"></div>
     </div>
   </div>
-  <div class="modal-f"><button class="btn" id="s-queue">Add to queue</button><button class="btn primary" id="s-go">${ic('clock', 'sm')} <span id="s-go-l">Schedule for ${best[pickI] ? slotLabel(best[pickI].day, best[pickI].time) : 'later'}</span></button></div>`, { label: 'Schedule' });
+  <div class="modal-f"><button class="btn" id="s-queue" data-tip="The next free slot in your week, best time or not">Next open slot${(() => { const n = nextSlots(1, false)[0]; return n ? ` · ${slotLabel(n.day, n.time).replace(/^.* · /, n.day === dayKey(Date.now()) ? 'today ' : n.day === dayKey(Date.now() + DAY) ? 'tomorrow ' : DOW[fromKey(n.day).getDay()] + ' ')}` : ''; })()}</button><button class="btn primary" id="s-go">${ic('clock', 'sm')} <span id="s-go-l">Schedule for ${best[pickI] ? slotLabel(best[pickI].day, best[pickI].time) : 'later'}</span></button></div>`, { label: 'Schedule' });
   const el = m.el;
   el.addEventListener('click', e => {
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
@@ -5668,7 +5669,7 @@ function openTidy() {
   const age = d => { const n = Math.max(0, Math.round((Date.now() - (d.created || Date.now())) / DAY)); return n === 0 ? 'Started today' : n === 1 ? 'Started yesterday' : `Started ${agoDays(n)}`; };
   const verdict = (d, h) => { const t = d.tweets.map(x => x.text).join('\n'); if (/\[[^\]]+\]/.test(t)) return 'Still has a blank to fill.'; if (t.trim().split(/\s+/).length < 6) return 'Just a line so far. Is there a post in it?'; if (h.score >= 70) return 'Strong opener. Worth finishing.'; return h.reason; };
   const m = modal(`<div class="tidy"><div class="tidy-h"><span class="label" id="td-n"></span><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div><div id="td-card"></div>
-    <div class="tidy-f"><button class="btn" data-td="bin">${ic('trash', 'sm')} Let it go<kbd>B</kbd></button><button class="btn" data-td="skip">Later<kbd>K</kbd></button><span class="grow"></span><button class="btn" data-td="plan">${ic('clock', 'sm')} Best time<kbd>S</kbd></button><button class="btn primary" data-td="open">${ic('write', 'sm')} Finish it<kbd>↵</kbd></button></div></div>`, { label: 'Tidy up drafts', box: 'modal tidy-box', onClose: () => { document.removeEventListener('keydown', key, true); summary(); } });
+    <div class="tidy-f"><button class="btn" data-td="bin">${ic('trash', 'sm')} Let it go<kbd>B</kbd></button><button class="btn" data-td="skip">Later<kbd>K</kbd></button><span class="grow"></span><button class="btn" data-td="plan">${ic('clock', 'sm')} Schedule<kbd>S</kbd></button><button class="btn primary" data-td="open">${ic('write', 'sm')} Finish it<kbd>↵</kbd></button></div></div>`, { label: 'Tidy up drafts', box: 'modal tidy-box', onClose: () => { document.removeEventListener('keydown', key, true); summary(); } });
   const draw = () => {
     if (i >= list.length) { m.close(); return; }
     const d = list[i], t0 = d.tweets[0] ? d.tweets[0].text : '', h = hookScore(t0), more = d.tweets.length - 1;
@@ -6450,7 +6451,7 @@ ROUTES.home = () => {
   </div>
 
   <section class="hw-sec wrap" id="week">
-    <div class="hw-h rv"><span class="eyebrow">Scheduling</span><h2>Posted while you sleep. <em>Timed for when they don’t.</em></h2><p>Your best times come from when your last 90 days of posts got replies. Drop a post anywhere and it snaps to the best slot.</p></div>
+    <div class="hw-h rv"><span class="eyebrow">Scheduling</span><h2>Posted while you sleep. <em>Timed for when they don’t.</em></h2><p>Bring 20 or more of your posts and your best times come from your own audience. Drag a post anywhere and it tells you what that slot is worth.</p></div>
     <div class="wk rv" id="wk"></div>
     <div class="wk-legend"><span class="wk-hint">Swipe for the whole week →</span><span><b class="bd"></b>Best time: when your people reply</span><span>Illustrative week. Posts are fictional.</span></div>
   </section>
@@ -6474,7 +6475,7 @@ ROUTES.home = () => {
 
   <section class="fin" id="final">
     <div class="wrap"><span class="eyebrow rv">Start today</span><h2 class="rv">Your next post could <em>stop the feed.</em></h2><p class="rv">Bring one half-formed thought. Leave with a first line people stop for, in your voice, scheduled for when they’re up.</p>
-      <div class="cta rv"><a class="hbtn lg" href="#start">Start writing, free ${ic('arrow', 'sm')}</a><button class="ghost" data-act="palette"><span class="play">${ic('search', 'sm')}</span>Look around first</button></div></div>
+      <div class="cta rv"><a class="hbtn lg" href="#start">Start writing, free ${ic('arrow', 'sm')}</a><button class="ghost" data-act="palette"><span class="play">${ic('search', 'sm')}</span>Search the app</button></div></div>
     <div class="c3d" id="ring2" aria-hidden="true">${ringHTML([...HOOK_POSTS].reverse())}</div>
   </section>
   <footer class="hw-foot"><a class="logo" href="#home">${LOGO}</a><nav><a href="#write">App</a><a href="#brand">Brand</a><a href="#upgrade">Pricing</a><a href="#home" data-act="shortcuts">Shortcuts</a></nav><span>© ${new Date().getFullYear()} Hookworthy. For creators, by creators. Personas shown are fictional.</span></footer>
@@ -6845,7 +6846,7 @@ let HOOKF = { k: 'All', q: '' };
 ROUTES.hooks = () => {
   const start = S.graderText || 'I think pricing is really important for early startups.';
   mount('hooks', `<div class="page">
-    <div class="page-h"><div><h1 class="display">Hook formulas</h1><p>Your first line does 80% of the work. Grade it, then borrow a structure that works.</p></div></div>
+    <div class="page-h"><div><h1 class="display">Hook formulas</h1><p>Your first line decides whether anyone reads the rest. Grade it, then borrow a structure that works.</p></div></div>
     <div class="card grader"><div style="display:grid;grid-template-rows:1fr auto"><textarea id="grader-t" aria-label="Hook to grade" placeholder="Type a first line…">${esc(start)}</textarea><div style="display:flex;gap:8px;padding:0 18px 18px;flex-wrap:wrap"><button class="btn primary" data-hact="improve">${ic('hook', 'sm')} Write a stronger one</button><button class="btn" data-hact="send">${ic('write', 'sm')} Send to composer</button></div></div>
       <div class="grader-side" aria-live="polite"><div class="bigscore" id="g-score"></div><p id="g-reason" class="muted" style="font-size:14px"></p><div class="bars" id="g-bars"></div></div></div>
     <div id="g-better" aria-live="polite"></div>
@@ -7077,15 +7078,15 @@ function drawInsights() {
   const d = series(RANGE); const total = d.reduce((a, b) => a + b, 0); const f = RANGE / 30;
   const kpis = [['Impressions', fmtK(total), '+18%', 1], ['Engagement', (3.1 + (RANGE === 7 ? .4 : 0)).toFixed(1) + '%', '+0.6 pts', 1], ['New followers', fmtK(Math.round(412 * f)), '+9%', 1], ['Replies', fmtK(Math.round(1284 * f)), '−4%', 0]];
   const types = [['Contrarian', 3.2], ['Story', 2.1], ['Listicle', 1.6], ['How-to', 1.4], ['Question', 1.1], ['Announcement', .7]];
-  $('#ins').innerHTML = `<div class="ins-demo"><span>${ic('chart', 'sm')} Sample numbers. Bring your posts and every line here becomes yours.</span><button class="btn sm primary" data-act="import">${ic('upload', 'sm')} Bring your posts</button></div><div class="insight-hero">${ihVs('Contrarian', 3.2, 'replies')}<h2 class="display">Your contrarian hooks get <em>3.2× the replies.</em></h2><p>Lines that push back on common advice pulled 3.2× the replies of everything else. You wrote ${Math.max(1, Math.round(4 * f))} of them. Your audience wants more.</p><div class="acts"><button class="btn primary" data-nact="contra">${ic('swap', 'sm')} Write a contrarian post</button><button class="btn" data-nact="posts">See the posts</button></div></div>
+  $('#ins').innerHTML = `<div class="ins-demo"><span>${ic('chart', 'sm')} Sample numbers. Bring your posts and every line here becomes yours.</span><button class="btn sm primary" data-act="import">${ic('upload', 'sm')} Bring your posts</button></div><div class="insight-hero">${ihVs('Contrarian', 3.2, 'replies')}<h2 class="display">Example: contrarian hooks get <em>3.2× the replies.</em></h2><p>In this sample account, lines that push back on common advice pulled 3.2× the replies of everything else. Bring your posts to see which kind works for you.</p><div class="acts"><button class="btn primary" data-nact="contra">${ic('swap', 'sm')} Write a contrarian post</button><button class="btn" data-nact="posts">See the posts</button></div></div>
   <p class="kpi-line">Over the last ${RANGE} days: ${kpis.map(([k, v, dl, up], i) => `${i === kpis.length - 1 ? 'and ' : ''}<b>${v}</b> ${k.toLowerCase()} <span class="delta ${up ? 'up' : 'down'}">${dl}</span>`).join(', ')}, compared with the ${RANGE} days before.</p>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Impressions</h3><p class="faint" style="font-size:13px;margin-top:2px">Tuesday spikes are your 8:40 AM posts landing.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Impressions</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(Date.now() - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
   <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">Replies by hook type</h3><p class="faint" style="font-size:13px;margin-top:2px">Relative to your average post</p></div></div><div class="hbars">${types.map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${k}: ${v}× your average replies"><span>${k}</span><div class="track"><div class="fillb" style="width:${v / 3.2 * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${v}×</span></div>`).join('')}</div></div>
   <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When your people reply</h3><p class="faint" style="font-size:13px;margin-top:2px">First-hour replies. Stronger color, more replies</p></div></div>${heatmap()}</div></div>
   <div class="grid-3 sec" style="margin-top:16px">
-    <div class="card ins-card"><p class="big">4–6 posts beat longer threads by <em>41%</em>.</p><p>Past six, readers drop off fast. You averaged 8.</p><button class="btn sm" data-nact="thread" style="justify-self:start">Draft a 5-post thread</button></div>
-    <div class="card ins-card"><p class="big">A number in line one gets <em>2.1×</em> the views.</p><p>Only 1 in 5 of your hooks has one. Easy win.</p><button class="btn sm" data-nact="number" style="justify-self:start">Open the hook grader</button></div>
-    <div class="card ins-card"><p class="big">Your lowercase posts get <em>18%</em> more replies.</p><p>They read as more personal. Hookworthy keeps your casing.</p><button class="btn sm" data-nact="lower" style="justify-self:start">Tune your voice</button></div>
+    <div class="card ins-card"><p class="big">Example: 4–6 posts beat longer threads by <em>41%</em>.</p><p>Past six, readers drop off fast.</p><button class="btn sm" data-nact="thread" style="justify-self:start">Draft a 5-post thread</button></div>
+    <div class="card ins-card"><p class="big">Example: a number in line one gets <em>2.1×</em> the views.</p><p>Real numbers only. They’re the easiest win there is.</p><button class="btn sm" data-nact="number" style="justify-self:start">Open the hook grader</button></div>
+    <div class="card ins-card"><p class="big">Example: lowercase posts get <em>18%</em> more replies.</p><p>They read as more personal. Hookworthy keeps your casing.</p><button class="btn sm" data-nact="lower" style="justify-self:start">Tune your voice</button></div>
   </div>
   <div class="card chart-card sec" style="margin-top:16px" id="top-posts"><div class="chart-h"><h3 class="h3">Top posts</h3></div>${TOP_POSTS.map((p, i) => `<div class="top-post"><span class="rk">${String(i + 1).padStart(2, '0')}</span><div><p>${esc(p.text.split('\n')[0])}</p><div class="st"><span>${fmtK(p.views)} views</span><span>${fmtK(p.likes)} likes</span><span>${fmtK(p.replies)} replies</span><span>${p.kind}</span></div></div><button class="btn sm" data-nact="remix" data-id="${p.id}">${ic('layers', 'sm')} Remix</button></div>`).join('')}</div>`;
   lineChart($('#line'), d);
@@ -7288,7 +7289,7 @@ ROUTES.brand = () => {
     const b = e.target.closest('[data-bact]'); if (!b) return;
     if (b.dataset.bact === 'toast') toast('Scheduled for Tue 8:40 AM. Go touch grass.', { icon: 'clock', tone: 'accent', action: 'Undo', onAction: () => toast('Back how it was.', { icon: 'undo' }) });
     if (b.dataset.bact === 'modal') modal(`${modalHead('A modal', 'Springs in, fades out, traps focus, closes on Esc.')}<div class="modal-b"><p class="muted">Every overlay in Hookworthy uses this one. Try Tab, then Esc.</p></div><div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" data-close>Got it</button></div>`, { label: 'Example modal' });
-    if (b.dataset.bact === 'menu') openMenu(b, [{ label: 'Publish now', icon: 'send', kbd: [MOD, SHIFT, '↵'], run: () => toast('In the app, this publishes right away.', { icon: 'check' }) }, { label: 'Schedule…', icon: 'clock', kbd: [MOD, '↵'], run: () => toast('Arrow keys work too.', { icon: 'check' }) }, '-', { label: 'Delete', icon: 'trash', run: () => toast('Nothing was deleted. It’s a demo.', { icon: 'trash' }) }]);
+    if (b.dataset.bact === 'menu') openMenu(b, [{ label: 'Post now', icon: 'send', kbd: [MOD, SHIFT, '↵'], run: () => toast('In the app, this publishes right away.', { icon: 'check' }) }, { label: 'Schedule…', icon: 'clock', kbd: [MOD, '↵'], run: () => toast('Arrow keys work too.', { icon: 'check' }) }, '-', { label: 'Delete', icon: 'trash', run: () => toast('Nothing was deleted. It’s a demo.', { icon: 'trash' }) }]);
   });
 };
 

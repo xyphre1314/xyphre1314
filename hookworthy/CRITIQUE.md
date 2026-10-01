@@ -436,3 +436,12 @@ Method: an automated sweep of every screen and modal in light/dark × desktop/ph
 - **Hook vote.** "Ask friends which line wins" in the hook panel: two or three first lines on a link. Friends see the lines in their own random order (so the first doesn't win by being first), tap one, and see the results; you watch the votes come in and "Use this" puts the winner into your draft.
 - Tested: server tests for votes; browser end-to-end on desktop, phone and offline; every earlier suite.
 - Calendar-aware scheduling was built and then removed: posting times are about when your audience reads, not your meetings.
+
+## Round 24: words that say what they mean
+
+- The "You" score next to Hook is now **Voice** ("How much this sounds like you").
+- "Your first line does 80% of the work" (an unsupported stat) → "Your first line decides whether anyone reads the rest."
+- The sidebar badge says **Claude on**; the models are in its tooltip.
+- "Add to queue" next to "Schedule for Tue 8:40" didn't say how they differ → **Next open slot · today 5:30 PM**. "Your call. We trust you." → "Choose a date and time".
+- The sample Insights headlines start with **Example:** and no longer say "your" about someone else's numbers.
+- Smaller: "Publish now" → "Post now" in the shortcut sheet; Tidy says "let go" and "Schedule" instead of "bin" and "Best time"; the loading line drops the "Basic mode is writing…" name; the landing page's scheduling copy matches what the app really does, and "Look around first" (which opens search) is now "Search the app".
