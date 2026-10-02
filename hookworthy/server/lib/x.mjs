@@ -50,10 +50,11 @@ export async function peopleTop(handles, per = 5) {
   return out;
 }
 
-export async function metrics(ids) {
+/* asUser: read with the signed-in account's token (for a server that posts but has no app bearer token) */
+export async function metrics(ids, { asUser = false } = {}) {
   const clean = ids.map(i => String(i).replace(/^x-/, '')).filter(i => /^\d+$/.test(i)).slice(0, 100);
   if (!clean.length) return [];
-  const j = await xfetch(`/tweets?ids=${clean.join(',')}&tweet.fields=public_metrics,created_at`);
+  const j = await xfetch(`/tweets?ids=${clean.join(',')}&tweet.fields=public_metrics,created_at`, asUser ? { token: await userToken() } : {});
   return (j.data || []).map(t => toPost(t));
 }
 
@@ -125,13 +126,17 @@ export async function uploadMedia({ buf, mime, kind, alt }, token) {
   if (alt) await xfetch('/media/metadata', { token, method: 'POST', body: { id, metadata: { alt_text: { text: String(alt).slice(0, 1000) } } } }).catch(() => null);
   return id;
 }
-/* post a thread: each post replies to the one before it. posts: strings, or { text, media: [{ buf, mime, kind, alt }] } */
-export async function postThread(posts) {
-  const token = await userToken(); const ids = []; let prev = null;
+/* who can reply to a post: X API v2's reply_settings on create. Everyone is the default, so it's left out */
+export const REPLY_SETTINGS = ['following', 'mentionedUsers'];
+export const replySettingsOf = v => REPLY_SETTINGS.includes(v) ? v : null;
+/* post a thread: each post replies to the one before it. posts: strings, or { text, media: [{ buf, mime, kind, alt }] }.
+   replySettings applies to the first post only; the rest of the thread are your own replies */
+export async function postThread(posts, { replySettings } = {}) {
+  const token = await userToken(); const ids = []; let prev = null; const rs = replySettingsOf(replySettings);
   for (const p of posts) {
     const text = typeof p === 'string' ? p : p.text; const media = typeof p === 'string' ? [] : (p.media || []);
     const media_ids = []; for (const m of media.slice(0, 4)) media_ids.push(await uploadMedia(m, token));
-    const j = await xfetch('/tweets', { token, method: 'POST', body: { text, ...(media_ids.length ? { media: { media_ids } } : {}), ...(prev ? { reply: { in_reply_to_tweet_id: prev } } : {}) } });
+    const j = await xfetch('/tweets', { token, method: 'POST', body: { text, ...(media_ids.length ? { media: { media_ids } } : {}), ...(prev ? { reply: { in_reply_to_tweet_id: prev } } : rs ? { reply_settings: rs } : {}) } });
     prev = j.data.id; ids.push(prev);
   }
   const h = connectedUser();
