@@ -52,6 +52,7 @@ export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => 
 export async function handle(req, res) {
   const url = new URL(req.url, 'http://x'); const p = url.pathname; const ip = req.socket.remoteAddress || 'local';
   try {
+    let m;
     if (p === '/api/health') return send(res, 200, { ...health(), locked: !!TOKEN && !authed(req) });
     if (p === '/login') { if (!TOKEN || url.searchParams.get('token') !== TOKEN) return send(res, 401, { error: 'Wrong or missing token' }); res.writeHead(302, { 'set-cookie': `hw=${TOKEN}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${PUBLIC_URL.startsWith('https') ? '; Secure' : ''}`, location: '/#write' }); return res.end(); }
     if (p.startsWith('/api/') && !/^\/api\/review\/[\w-]{6,20}(\/comments)?$/.test(p) && !/^\/api\/vote\/[\w-]{8,20}$/.test(p) && !authed(req)) return send(res, 401, { error: 'Missing HOOKWORTHY_TOKEN', code: 'auth' });
@@ -91,7 +92,6 @@ export async function handle(req, res) {
 
     /* review links (the review page itself is public by link; comments too) */
     if (p === '/api/review' && req.method === 'POST') { const b = await body(req); const r = E.createReview(b); return send(res, 200, { id: r.id, url: `${PUBLIC_URL}/r/${r.id}` }); }
-    let m;
     if ((m = p.match(/^\/api\/review\/([\w-]{6,20})$/))) { if (req.method === 'PUT') return send(res, 200, E.updateReview(m[1], await body(req))); return send(res, 200, E.getReview(m[1])); }
     if ((m = p.match(/^\/api\/review\/([\w-]{6,20})\/comments$/)) && req.method === 'POST') { if (!allow(ip)) return send(res, 429, { error: 'Slow down a little' }); return send(res, 200, E.addComment(m[1], await body(req, 20 * 1024))); }
 
@@ -106,10 +106,12 @@ export async function handle(req, res) {
     if (p === '/api/publish' && req.method === 'POST') { const b = await body(req); const item = { posts: b.posts, platforms: Object.keys(b.platforms || {}).filter(k => b.platforms[k] && (k === 'x' || k === 'linkedin')) }; if (!item.platforms.length) return send(res, 400, { error: 'Pick X or LinkedIn' }); return send(res, 200, { results: await Q.publish(item) }); }
     if (p === '/api/schedule' && req.method === 'POST') { const b = await body(req); return send(res, 200, Q.add(b)); }
     if (p === '/api/queue' && req.method === 'GET') return send(res, 200, { queue: Q.list() });
-    if (p.startsWith('/api/queue/') && req.method === 'DELETE') return send(res, 200, { removed: Q.remove(p.split('/').pop()) });
+    /* DELETE /api/queue/:id (what the app's serverDrop calls) and DELETE /api/schedule/:id: always 200 with
+       { removed, id, status } — status is 'removed', 'missing', or why it stays ('posting', 'published', …) */
+    if ((m = p.match(/^\/api\/(?:queue|schedule)\/([^/]+)$/)) && req.method === 'DELETE') { let id = m[1]; try { id = decodeURIComponent(id); } catch { /* keep it raw */ } return send(res, 200, Q.drop(id)); }
 
     /* the same checks and rewrites, for other apps and AI assistants */
-    if (p === '/api/v1/check' && req.method === 'POST') { const b = await body(req); const text = String(b.text || ''); const hist = Array.isArray(b.history) ? b.history.slice(0, 3000).map(core.normPost).filter(Boolean) : null; const tuned = hist ? core.learnHooks(hist) : null; return send(res, 200, { hook: core.hookScore(text), ...(tuned ? { mine: tuned.ready ? { ...core.personalScore(text, tuned), tested: tuned.val } : { ready: false, n: tuned.n, need: tuned.need } } : {}), kind: core.kindOf(text), checks: core.checkPost(text, { never: b.never || [], limit: b.limit || 280 }) }); }
+    if (p === '/api/v1/check' && req.method === 'POST') { const b = await body(req); const text = String(b.text || ''); const hist = Array.isArray(b.history) ? b.history.slice(0, 3000).map(core.normPost).filter(Boolean) : null; const tuned = hist ? core.learnHooks(hist) : null; return send(res, 200, { hook: core.hookScore(text), ...(tuned ? { mine: tuned.ready ? { ...core.personalScore(text, tuned), tested: tuned.val } : { ready: false, n: tuned.n, need: tuned.need } } : {}), kind: core.kindOf(text), checks: core.checkPost(text, { never: b.never || [], limit: b.limit || 280, platform: b.platform || 'x' }) }); }
     if (p === '/api/v1/rewrite' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); const spec = core.prompts.rewrite({ text: b.text, kind: b.kind || 'punchier', lang: b.lang, voice: b.voice || null, platform: b.platform || 'X', limit: b.limit || 280 }); const r = await AI.complete({ ...spec, json: true }); return send(res, 200, r.data); }
     if (p === '/api/v1/ideas' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); const r = await AI.complete({ ...core.prompts.ideas({ niche: b.niche, voice: b.voice, top: b.top || [], inbox: b.notes || [], count: b.count || 6 }), json: true }); return send(res, 200, { ideas: r.data }); }
 

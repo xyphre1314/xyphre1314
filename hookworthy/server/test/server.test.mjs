@@ -40,6 +40,22 @@ test('schedule, list and cancel', async () => {
   const l = await call('/api/queue'); assert.equal(l.json.queue.length, 1);
   const d = await call('/api/queue/' + ok.json.id, { method: 'DELETE' }); assert.equal(d.json.removed, true);
 });
+test('schedule: a past time is a clear 400; DELETE /api/schedule/:id works like the queue route', async () => {
+  const past = await call('/api/schedule', { method: 'POST', body: { posts: ['late'], at: new Date(Date.now() - 10 * 60e3).toISOString(), platforms: { x: true } } });
+  assert.equal(past.status, 400); assert.equal(past.json.code, 'past'); assert.match(past.json.error, /already passed/);
+  const ok = await call('/api/schedule', { method: 'POST', body: { posts: ['soon'], at: new Date(Date.now() + 60 * 60e3).toISOString(), platforms: { x: true } } });
+  assert.equal(ok.status, 200);
+  const d = await call('/api/schedule/' + ok.json.id, { method: 'DELETE' });
+  assert.equal(d.status, 200); assert.deepEqual(d.json, { removed: true, id: ok.json.id, status: 'removed' });
+  const again = await call('/api/queue/' + ok.json.id, { method: 'DELETE' });
+  assert.equal(again.status, 200); assert.deepEqual(again.json, { removed: false, id: ok.json.id, status: 'missing' });
+});
+test('v1/check counts characters the way X does', async () => {
+  const r = await call('/api/v1/check', { method: 'POST', body: { text: '日'.repeat(180) } });
+  assert.ok(r.json.checks.includes('80 characters over the 280 limit.'));
+  const li = await call('/api/v1/check', { method: 'POST', body: { text: '日'.repeat(180), platform: 'linkedin' } });
+  assert.ok(!li.json.checks.some(x => /over the/.test(x)));
+});
 test('X posts through the API, normalized for import', async () => {
   const real = globalThis.fetch;
   globalThis.fetch = async (url, opt) => {
