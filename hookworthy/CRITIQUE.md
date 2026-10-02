@@ -729,3 +729,22 @@ Six reviewers (visual, UX and copy, motion and performance, code, accessibility,
 - The small-screen preview is a real modal. Touch targets are 44px. Narrow queue cards show status by shape as well as colour.
 - CJK lines score as words. Weeks, the Today strip and the next good time are DST-safe. The hook tournament keeps your claim, and the highest-scoring kept line wins.
 - Dead code from earlier rounds is removed.
+
+## Round 29: features from the SuperX comparison, and a copy pass
+
+**Built**
+- **Tell it what to change.** Improve has a free-text note ("calmer", "for beginners", "cut the jargon") above the preset chips. Claude keeps your claim, facts and tickers, never adds numbers, and leaves [brackets] for what only you know. Basic mode maps notes to on-device rewrites (new: Calmer, Simpler) and says which it used. Sharpen has a Custom… input for selected words. The last 5 notes come back as chips.
+- **Who can reply** per post, sent as X's `reply_settings` on the first post of a thread.
+- **Auto-plug**, per post and off by default. One reply you write ahead, with example chips, sent once when the post reaches 25/50/100 likes within 48 hours. The server batches the lookups every 10 minutes and never sends a second reply. It never DMs, deletes or reposts. It stays inert until X is connected.
+- **Your posting times:** a weekly grid that Schedule fills first.
+- **Insights › Your posts:** a sortable, searchable table.
+- **Homepage:** a sticky bar after the hero that carries your graded line, a 60-second tour built from real components (captions always on, a stepper under reduced motion), and nav and footer for Tools, Teams and Developers. **#tools** has five free tools (grader, thread splitter, X counter, LinkedIn "…more" check, best times). **#teams** covers client voices and approvals. **#developers** documents the self-hosted API and MCP.
+
+**Fixed while merging**
+- "For beginners" kept grammar broken ("anyone who buying a bit…"). Jargon now stays and gets a gloss: "DCA (buying a little at a time)".
+- Calmer left one-word stubs ("Insane setup, LFG!" → "Setup."). Stray single words now go. One-word sentences you wrote stay.
+- The instruction placeholder was cut off on phones.
+- The Studio price on #teams was typed in. Plans and #teams now read one `PRICES` table.
+- On phones the nav button and the sticky bar showed the same call to action. The nav button hides while the bar is up.
+
+**Copy pass:** every string goes through 100+ candidates → top 10 → top 3 → one pick, in scratchpad shortlists, applied in one pass. The auto-plug example replies wait for the owner's pick.
