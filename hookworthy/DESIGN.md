@@ -388,7 +388,7 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
   | **Bring your posts** | Import it, Add posts |
   | **Breakout alert** | Follow-up reply |
   | **Auto-plug** (one reply you write ahead, per post, off by default, sent once at a like count you pick) | follow-up, CTA bot, auto-reply |
-  | **Who can reply** (per post: Everyone, People you follow, People you mention, Verified accounts) | reply settings, audience |
+  | **Who can reply** (per post: Everyone, People you follow, Only people you mention) | reply settings, audience |
   | **Your posting times** (the weekly grid Schedule fills first) | golden slots, time slots |
   | **Post by hand** (a post whose time came with nothing to send it) | Published (unless something sent it) |
 
