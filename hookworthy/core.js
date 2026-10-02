@@ -62,7 +62,8 @@
     const ten = lc.match(/\b(unpopular|overrated|underrated|wrong|myth|lie|stop|don[’']?t|backwards|nobody|hot take|instead|not|never|quit|fired|failed|broke|lost|hate|cop-out|hedge)\b/g) || [];
     tension += Math.min(3, ten.length) * 17 + (imperative ? 20 : 0);
     /* guards against gaming: unfilled blanks, keyboard mash, stacked bait phrases and number stuffing */
-    const blank = /\[[^\]]+\]|\{[^}]+\}|_{3,}|\b[XYZ]\b(?=[\s.,!?:]|$)/.test(first);
+    /* blanks: [brackets], {braces}, ___ and TK; a lone X only counts when a Y placeholder sits beside it ("Stop X. Do Y."), so "grow on X" is just X */
+    const blank = /\[[^\]]+\]|\{[^}]+\}|_{3,}|\bTK\b/.test(first) || /\bX\b[^\n]*\bY\b/.test(first);
     const toks = first.match(/[A-Za-z]{3,}/g) || [];
     const mash = toks.filter(w => /^(asdf|qwer|zxcv|sdfg|hjkl|uiop|lorem|ipsum|blah)/i.test(w) || /[bcdfghjklmnpqrstvwxz]{5,}/i.test(w) || !/[aeiouy]/i.test(w)).length;
     const gib = toks.length ? mash / toks.length : 1;
