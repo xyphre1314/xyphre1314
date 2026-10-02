@@ -2634,6 +2634,16 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .imp{ margin-top:10px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); padding:10px 12px 12px; display:grid; gap:10px; animation:rise var(--d-spring) var(--ease-out) both; }
 .imp-h{ display:flex; align-items:center; justify-content:space-between; gap:8px; } .imp .hook-reason{ margin:0; padding:0; box-shadow:none; background:none; }
 .imp .riffbar{ padding:0; margin:0; } .imp-b.swap-in{ animation:fade 120ms var(--ease-out) both; } .imp-tip{ font-size:12px; }
+/* "Tell it what to change" (round 29): one line above the presets, recent asks as chips under it */
+.instr{ display:flex; gap:6px; align-items:center; margin-bottom:8px; } .instr .input{ flex:1; min-width:0; height:34px; }
+.instr-recent{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px; } .instr-recent .chip{ height:26px; font-size:12px; }
+.instr-note{ margin:0 0 10px; font-size:var(--t-13); color:var(--text-2); } .instr-note:empty{ display:none; }
+.instr-note button{ color:var(--accent-text); text-decoration:underline; text-underline-offset:2px; font:inherit; }
+.sharpen .sh-in{ width:min(230px,48vw); height:28px; padding:0 10px; border:0; border-radius:99px; background:color-mix(in srgb,var(--bg) 14%,transparent); color:inherit; font:inherit; outline:none; }
+.sharpen .sh-in::placeholder{ color:inherit; opacity:.6; } .sharpen .sh-in:focus-visible{ box-shadow:0 0 0 2px var(--accent); }
+.sharpen.busy .sh-in{ opacity:.6; }
+@media (max-width:640px){ .sharpen{ max-width:calc(100% + 8px); overflow-x:auto; scrollbar-width:none; overscroll-behavior-x:contain; } .sharpen::-webkit-scrollbar{ display:none; } }
+@media (pointer:coarse){ .instr .input, .instr .btn, .instr-recent .chip, .instr-note button, .sharpen button, .sharpen .sh-in{ min-height:44px; } }
 .hk-main{ display:flex; gap:10px; align-items:flex-start; } .hk-main p{ font-size:14px; }
 .hk-how summary{ cursor:pointer; font-size:12px; color:var(--text-3); } .hk-how .bars{ margin-top:8px; } .hk-how p{ font-size:12px; margin-top:6px; }
 .vm-line{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .vm-line b{ color:var(--text-1); font-variant-numeric:tabular-nums; } .vm-line .icon{ color:var(--text-3); }
@@ -4341,14 +4351,16 @@ function riffbarHTML(id) {
   return `<div class="riffbar" role="toolbar" aria-label="Rewrite options">${RIFFS.filter(r => RIFF_MAIN.includes(r.k)).map(r => `<button class="chip" data-cact="dorriff" data-k="${r.k}" data-tip="${r.k === 'translate' ? 'Keeps your tone and slang' : r.label}" data-kbd="${ALT} ${r.key}">${ic(r.icon)}${r.label}${r.k === 'translate' ? ic('down', 'xs') : ''}</button>`).join('')}
   <button class="chip" data-cact="moreriffs" aria-haspopup="menu">${ic('more')}More angles</button><a class="chip" href="#voice" data-tip="Rewrites follow your voice">${ic('sliders')}Voice · ${S.voice.spice > 60 ? 'spicy' : S.voice.spice < 35 ? 'calm' : 'balanced'}</a></div>`;
 }
+/* a preset rewrite, or your own note ("Tell it what to change") shown in quotes */
+const riffOf = d => d.kind === 'instruct' ? { icon: 'write', label: `“${esc(clip(d.instr || '', 48))}”` } : RIFFS.find(x => x.k === d.kind);
 function diffHTML() {
   const d = UI.diff;
-  if (d.pending) { const r0 = RIFFS.find(x => x.k === d.kind); return `<div class="diff pending" role="status" aria-live="polite"><div class="diff-h">${ic(r0.icon, 'sm')}<b style="font-size:13px">${r0.label}</b><span class="faint" style="font-size:12px">Writing three takes in your voice…</span><span class="grow"></span></div><div class="diff-b"><span class="skel"></span><span class="skel" style="width:72%"></span><span class="skel" style="width:48%"></span></div><div class="diff-f"><span class="grow"></span><button class="btn sm" data-cact="diffretry">Stop</button></div></div>`; } const n = d.chunks.filter(c => c.eq === undefined).length; const on = d.chunks.filter(c => c.eq === undefined && c.on).length;
+  if (d.pending) { const r0 = riffOf(d); return `<div class="diff pending" role="status" aria-live="polite"><div class="diff-h">${ic(r0.icon, 'sm')}<b style="font-size:13px">${r0.label}</b><span class="faint" style="font-size:12px">${d.kind === 'instruct' ? 'Rewriting with your note…' : 'Writing three takes in your voice…'}</span><span class="grow"></span></div><div class="diff-b"><span class="skel"></span><span class="skel" style="width:72%"></span><span class="skel" style="width:48%"></span></div><div class="diff-f"><span class="grow"></span><button class="btn sm" data-cact="diffretry">Stop</button></div></div>`; } const n = d.chunks.filter(c => c.eq === undefined).length; const on = d.chunks.filter(c => c.eq === undefined && c.on).length;
   const now = composeDiff(d.chunks); const i = tIndex(d.id);
   let delta = '';
   if (i === 0) { const a = hookScore(d.before).score, b = hookScore(now).score; delta = `<span class="delta ${b >= a ? 'up' : 'down'}" data-tip="How strong your first line is">Hook ${a} → ${b}</span>`; }
   else { const dl = now.length - d.before.length; delta = `<span class="delta ${dl <= 0 ? 'up' : 'down'}">${dl > 0 ? '+' : ''}${dl} chars</span>`; }
-  const r = RIFFS.find(x => x.k === d.kind);
+  const r = riffOf(d);
   const body = d.chunks.slice(0, d.shown ?? d.chunks.length).map((c, k) => c.eq !== undefined ? esc(c.eq) : `<span class="chg ${c.on ? '' : 'off'} ${c.newNum ? 'newnum' : ''}" data-ci="${k}" role="button" tabindex="0" aria-pressed="${c.on}"><span class="sr">${c.newNum ? 'A new number you didn’t write, off until you check it. ' : ''}${c.del ? `Remove “${esc(c.del)}”. ` : ''}${c.ins ? `Add “${esc(c.ins)}”. ` : ''}${c.on ? 'Change on.' : 'Change undone.'}</span>${c.del ? markSeg('del', c.del) : ''}${c.ins ? markSeg('ins', c.ins) : ''}${!c.on && !c.del ? '<span class="gap">+</span>' : ''}</span>`).join('');
   return `<div class="diff" role="region" aria-label="Suggested edit">
     <div class="diff-h">${ic(r.icon, 'sm')}<b style="font-size:13px">${r.label}${d.lang ? ` · ${{ es: 'Spanish', fr: 'French', de: 'German' }[d.lang]}` : ''}</b><span class="faint diff-hint" style="font-size:12px">${d.alts ? `Version ${d.alt + 1} of ${d.alts.length} · ` : ''}${n} change${n === 1 ? '' : 's'}${on < n ? `, ${n - on} undone` : ''}. ${matchMedia('(pointer:coarse)').matches ? 'Tap' : 'Click'} one to undo it</span><span class="grow"></span>${delta}</div>
@@ -4360,7 +4372,13 @@ function diffHTML() {
 function improveHTML(id, i) {
   const tabs = i === 0 ? [['score', 'Score'], ['takes', 'Rewrites'], ['formulas', 'Formulas']] : [['takes', 'Rewrites']], t = UI.imp.tab;
   return `<div class="imp" role="region" aria-label="Improve this post"><div class="imp-h"><div class="seg imp-tabs" role="tablist" aria-label="Improve">${tabs.map(([k, l]) => `<button role="tab" data-cact="imptab" data-t="${k}" aria-selected="${t === k}">${l}</button>`).join('')}</div><button class="btn ghost icon-only sm" data-cact="impclose" aria-label="Close" data-tip="Close (Esc)">${ic('x', 'sm')}</button></div>
-    <div class="imp-b">${t === 'score' ? hookReasonHTML() : t === 'formulas' ? formulasHTML() : riffbarHTML(id) + '<p class="faint imp-tip">Select a few words to sharpen just those.</p>'}</div></div>`;
+    <div class="imp-b">${t === 'score' ? hookReasonHTML() : t === 'formulas' ? formulasHTML() : instrHTML(id) + riffbarHTML(id) + '<p class="faint imp-tip">Select a few words to sharpen just those.</p>'}</div></div>`;
+}
+/* the free-text ask: a field, a Rewrite button, your last five asks (or three starters) */
+function instrHTML(id) {
+  const recent = (S.settings.recentInstr || []).slice(0, 5), chips = recent.length ? recent : ['Calmer', 'For beginners', 'Cut the jargon'];
+  return `<div class="instr"><label class="sr" for="instr-${id}">Tell it what to change</label><input class="input instr-in" id="instr-${id}" type="text" maxlength="200" autocomplete="off" enterkeyhint="go" placeholder="Tell it what to change, e.g. calmer, for beginners, cut the jargon"><button class="btn sm" data-cact="instr" data-tip="Rewrite with your note" data-kbd="↵">Rewrite</button></div>
+    <div class="instr-recent" role="group" aria-label="${recent.length ? 'Your recent changes' : 'Try one'}">${chips.map(c => `<button class="chip" data-cact="instrgo" data-t="${esc(c)}">${esc(cap(clip(c, 32)))}</button>`).join('')}</div><p class="instr-note" role="status"></p>`;
 }
 function setImprove(id, tab) { const cur = UI.imp; UI.imp = cur && cur.id === id && cur.tab === tab ? null : { id, tab }; renderExtras(id); $$('.tw .tw-extra').forEach(x => { const o = x.closest('.tw').dataset.id; if (o !== id && x.querySelector('.imp')) renderExtras(o); }); const d = $('.hk-dial'); d && d.setAttribute('aria-expanded', !!(UI.imp && UI.imp.tab === 'score')); }
 function renderExtras(id) {
@@ -5342,8 +5360,8 @@ function sharpVariants(k, frag) {
   const fit = x => { x = tidy(x).trim(); if (!endsP) x = x.replace(/\.+$/, ''); if (low && k !== 'human') x = x.replace(/^./, c => c.toLowerCase()); return x; };
   return [...new Set(v.map(fit))].filter(x => x && x !== core).slice(0, 3).map(x => lead + x + trail);
 }
-const SH = { el: null, ta: null, st: null };
-function sharpenHide() { if (SH.st) sharpenCancel(); if (SH.el) { const el = SH.el; el.classList.remove('on'); setTimeout(() => { if (!el.classList.contains('on')) el.remove(); }, 180); SH.el = null; } }
+const SH = { el: null, ta: null, st: null, ask: null };
+function sharpenHide() { if (SH.ask) { SH.ask.ctl && SH.ask.ctl.abort(); SH.ask = null; } if (SH.st) sharpenCancel(); if (SH.el) { const el = SH.el; el.classList.remove('on'); setTimeout(() => { if (!el.classList.contains('on')) el.remove(); }, 180); SH.el = null; } }
 function sharpenPlace() {
   const el = SH.el, ta = SH.ta; if (!el || !ta) return; const wrap = ta.parentElement, mir = wrap.firstElementChild;
   /* measure where the selection starts: a throwaway mirror pass, then the real paint puts it back */
@@ -5354,13 +5372,13 @@ function sharpenPlace() {
   const w = el.offsetWidth, W = wrap.offsetWidth; el.style.left = clamp(x - 12, -8, W - w + 8) + 'px'; el.style.top = (y < 8 ? ye + 8 : y - el.offsetHeight - 8) + 'px';
 }
 function sharpenCheck(ta) {
-  if (SH.st || !ta) return;
+  if (SH.st || SH.ask || !ta) return;
   if (UI.fSel) { if (ta.selectionStart === ta.selectionEnd) UI.fSel = false; return; }
   const s = ta.selectionStart, e = ta.selectionEnd;
   if (document.activeElement !== ta || e - s < 3 || !ta.value.slice(s, e).trim()) { if (SH.el) sharpenHide(); return; }
   if (!SH.el || SH.el.parentElement !== ta.parentElement) { if (SH.el) SH.el.remove(); SH.el = document.createElement('div'); SH.el.className = 'sharpen'; SH.el.setAttribute('role', 'toolbar'); SH.el.setAttribute('aria-label', 'Sharpen the selected words'); ta.parentElement.append(SH.el); }
   SH.ta = ta;
-  SH.el.innerHTML = `<span class="sh-t">${ic('riff', 'sm')}Sharpen</span>${SHARP.map((m, i) => `<button data-sh="${m.k}" data-tip="${m.label}" data-kbd="${ALT} ${i + 1}">${m.label}</button>`).join('')}`;
+  SH.el.innerHTML = `<span class="sh-t">${ic('riff', 'sm')}Sharpen</span>${SHARP.map((m, i) => `<button data-sh="${m.k}" data-tip="${m.label}" data-kbd="${ALT} ${i + 1}">${m.label}</button>`).join('')}<button data-shc data-tip="Tell it what to change" aria-label="Custom: tell it what to change">✎ Custom…</button>`;
   requestAnimationFrame(() => { sharpenPlace(); SH.el && SH.el.classList.add('on'); });
 }
 function sharpenRun(k) {
@@ -5373,7 +5391,7 @@ function sharpenShow(i) {
   const st = SH.st, ta = SH.ta; st.i = (i + st.vars.length) % st.vars.length; const v = st.vars[st.i];
   ta.value = st.before.slice(0, st.s) + v + st.before.slice(st.e); ta.setSelectionRange(st.s, st.s + v.length);
   UI.sharp = { id: st.id, s: st.s, len: v.length }; paintField(ta);
-  SH.el.innerHTML = `<span class="sh-t">${ic('riff', 'sm')}${SHARP.find(m => m.k === st.k).label}</span>${st.vars.length > 1 ? `<button data-shn="-1" aria-label="Previous take">${ic('left', 'sm')}</button><span class="n">${st.i + 1} / ${st.vars.length}</span><button data-shn="1" aria-label="Next take">${ic('right', 'sm')}</button>` : ''}<button class="keep" data-shk>Keep ${kbd('↵')}</button><button data-shx aria-label="Cancel">${ic('x', 'sm')}</button>`;
+  SH.el.innerHTML = `<span class="sh-t">${ic(st.k === 'ask' ? 'write' : 'riff', 'sm')}${st.k === 'ask' ? esc(st.label) : SHARP.find(m => m.k === st.k).label}</span>${st.vars.length > 1 ? `<button data-shn="-1" aria-label="Previous take">${ic('left', 'sm')}</button><span class="n">${st.i + 1} / ${st.vars.length}</span><button data-shn="1" aria-label="Next take">${ic('right', 'sm')}</button>` : ''}<button class="keep" data-shk>Keep ${kbd('↵')}</button><button data-shx aria-label="Cancel">${ic('x', 'sm')}</button>`;
   requestAnimationFrame(sharpenPlace);
 }
 function sharpenCancel() { const st = SH.st; if (!st) return; SH.st = null; UI.sharp = null; const ta = SH.ta; if (ta && document.contains(ta)) { ta.value = st.before; ta.setSelectionRange(st.s, st.e); paintField(ta); } }
@@ -5388,11 +5406,158 @@ function sharpenKeep() {
   toast('Sharpened. Undo if you liked yours better.', { icon: 'riff', tone: 'accent', ms: 2600, action: 'Undo', onAction: () => { if (!tw) return; S.draft.tweets = snap; renderThread({ focusId: tw.id }); markSaving(); } });
 }
 function sharpenKey(e) {
+  if (SH.ask) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); sharpenAskCancel(); } else if (e.key === 'Enter' && !e.isComposing && SH.el && SH.el.contains(e.target)) { e.preventDefault(); e.stopPropagation(); sharpenAskRun(); } return; }
   if (!SH.st) { if (SH.el && e.altKey && /^Digit[1-5]$/.test(e.code)) { e.preventDefault(); e.stopPropagation(); sharpenRun(SHARP[+e.code.slice(5) - 1].k); } return; }
   if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); e.stopPropagation(); sharpenShow(SH.st.i + (e.key === 'ArrowRight' ? 1 : -1)); SFX.play('tick'); }
   else if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); sharpenKeep(); }
   else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); sharpenCancel(); sharpenHide(); }
   else if (!['Shift', 'Alt', 'Control', 'Meta'].includes(e.key)) { sharpenKeep(); }
+}
+
+/* ---------- "Tell it what to change" (round 29) ----------
+   Your own note, for the whole post (Improve › Rewrites) or for selected words (Sharpen › Custom…).
+   Claude on: the note, the post and your voice go to Claude, which keeps your claim and facts.
+   Basic mode: common notes map to the rewrites that run on this device, and it says which one it used. */
+const CAPS_OK = new Set('AI ATH ATL BTC ETH SOL XRP BNB ADA AVAX DOGE LINK DOT ARB OP SUI TIA TON PEPE USD USDT USDC EUR GBP JPY SPX SPY QQQ NDX DXY VIX NVDA TSLA AAPL ETF ETFS CPI PPI GDP FOMC FED SEC CEO CTO IPO DCA PNL TVL RSI MACD EMA SMA VWAP OI TP SL ROI APY APR KYC NFT NFTS DEFI CEX DEX L1 L2 US UK EU NY UTC EST PST AM PM OK TA FA NFA DYOR IMO TBH CT FDV'.split(' '));
+const CAPS_SHOUT = new Set('NOT NO YES NOW THIS THAT IS IT ALL BUY SELL HOLD JUST HUGE BIG WOW OMG GO SO VERY EVER NEVER THE AND BUT FOR YOU WE ARE WAS UP DOWN OUT IN ON TO OF MOON PUMP DUMP BULL BEAR WILD TIME NEXT REAL DO DONT LOOK WAIT STOP READ'.split(' '));
+const JARGON = [[/\bDCA\b(?!['’])/i, 'buying a bit every week (DCA)'], [/\bP(?:n|&)L\b/i, 'profit and loss'], [/\bATH\b/i, 'all-time high'], [/\bATL\b/i, 'all-time low'], [/\bHODL(?:ing)?\b/i, 'holding for the long run'], [/\bFOMO\b/i, 'fear of missing out (FOMO)'], [/\bFUD\b/i, 'fear and doubt (FUD)'], [/\bR[:\/]R\b/i, 'risk to reward'], [/\bTP\b/, 'profit target'], [/\bSL\b/, 'stop-loss'], [/\brekt\b/i, 'wiped out'], [/\bdegen\b/i, 'high-risk'], [/\bperps\b/i, 'perpetual futures (perps)'], [/\bmcap\b/i, 'market cap'], [/\bFDV\b/i, 'fully diluted value'], [/\bTVL\b/i, 'money locked in (TVL)'], [/\baltcoins?\b/i, 'smaller coins'], [/\balts\b/i, 'smaller coins'], [/\bNFA\b/i, 'not financial advice'], [/\bCT\b/, 'crypto Twitter']];
+Object.assign(AI, {
+  /* calmer: no exclamation marks, no hype words, no shouting (tickers keep their capitals) */
+  calmer(t) {
+    const tick = new Set((t.match(/\$[A-Za-z]{2,10}\b/g) || []).map(x => x.slice(1).toUpperCase()));
+    const soft = { huge: 'big', massive: 'big', insane: 'notable', crazy: 'notable', unreal: 'notable', epic: 'notable', parabolic: 'steep' };
+    const glue = /^(for|to|and|or|but|if|in|on|at|of|with|because|since|when|that|this|it|right|here|there|now|today|so)$/i;
+    let s = t.replace(/\?!+|!+\?/g, '?').replace(/!+/g, '.').replace(/[,;]?\s*\bLFG\b[.!]*/gi, m => /^[,;]/.test(m) ? '.' : '');
+    /* an emoji that ended a sentence leaves a full stop behind */
+    s = s.replace(/(?:\s*(?:🚀|🔥|💥|🤯|🌕|💎|🙌|‼️?))+/gu, (m, off, str) => /[\p{L}\p{N}]/u.test(str[off - 1] || '') && /^\s*[A-Z]/.test(str.slice(off + m.length)) ? '.' : '');
+    s = s.replace(/\b(insanely|massively|hugely)\s+(?=\p{L})/giu, '');
+    s = s.replace(/\b(an?\s+)?(insane|huge|massive|crazy|unreal|epic|parabolic)\b(\s+)?([\p{L}$][\p{L}\p{N}$’']*)?/giu, (m, art, adj, sp, w) => {
+      const k = adj.toLowerCase(), A = art ? art.trim() : '';
+      if (w && sp && !glue.test(w)) return (A ? (/^[aeiou]/i.test(w) ? (A[0] === 'A' ? 'An ' : 'an ') : (A[0] === 'A' ? 'A ' : 'a ')) : '') + w;
+      return (art || '') + soft[k] + (sp || '') + (w || '');
+    });
+    s = s.replace(/\b[A-Z][A-Z’']{1,}\b/g, (w, off, str) => { const u = w.replace(/[’']/g, ''); if (str[off - 1] === '$' || CAPS_OK.has(u) || tick.has(u)) return w; return CAPS_SHOUT.has(u) || u.length >= 5 ? w.toLowerCase() : w; });
+    return tidy(s.replace(/^[ \t]+|[ \t]+$/gm, ''));
+  },
+  /* plainer: the PLAIN word swaps, then trading jargon spelled out (first time only) */
+  plainer(t) {
+    let s = subAll(t, PLAIN);
+    JARGON.forEach(([re, w]) => { s = s.replace(re, w); });
+    return tidy(s);
+  }
+});
+const INSTR = [
+  { k: 'calmer', label: 'Calmer', what: 'took out exclamation marks, hype words and shouting', re: /\b(calm(er|ly)?|soft(er|en)?|gentler|chill(er)?|relax(ed)?|less (hype[ds]?|hyped|loud|shouty|aggressive|salesy|intense)|no hype|de-?hype|tone (it )?down)\b/i },
+  { k: 'plainer', label: 'Simpler', what: 'spelled out the jargon in plain words', re: /\b(simpl(e|er|ify|ified)|plain(er)?( english| words)?|beginners?|newbies?|newcomers?|(no|less|cut( the)?|without( the)?|drop( the)?|skip( the)?) jargon|jargon|eli5|easier( to (read|follow|understand))?|non-?traders?|normies)\b/i },
+  { k: 'hook', label: 'Stronger hook', what: 'put a stronger first line on top', re: /\b((strong|bett|bold|sharp|punchi)er\s+|better\s+)?(hook|first line|opener|opening( line)?)\b/i },
+  { k: 'shorter', label: 'Shorter', what: 'cut filler and trimmed the end', re: /\b(short(er|en)?|tight(er|en)?|cut( it)?( down)?|trim|concise|brief(er)?|fewer words|less words|condense)\b/i },
+  { k: 'punchier', label: 'Punchier', what: 'cut filler and hedges', re: /\b(punch(ier|y)?|strong(er)?|bold(er)?|confident|direct|sharper|snappier)\b/i },
+  { k: 'curiosity', label: 'Curiosity gap', what: 'opened a question in the first lines', re: /\b(question|curious|curiosity|tease|intrigu(e|ing))\b/i }
+];
+const INSTR_RUN = ['calmer', 'plainer', 'punchier', 'shorter', 'hook', 'curiosity'];
+const INSTR_FILL = /\b(make|it|its|it’s|it's|a|an|the|bit|little|lot|more|much|less|and|but|also|please|pls|to|be|for|so|way|too|sound|sounds|read|reads|feel|just|then|with|this|post|tweet|thread|version|some|me|my|of|very|slightly|tad|kinda|kind|tone|i|can|you|should|write|rewrite|rephrase|up|in|than|now|one)\b/gi;
+function instrPlan(instr) {
+  let rest = ` ${instr.toLowerCase()} `; const hit = new Set();
+  INSTR.forEach(m => { if (m.re.test(rest)) { hit.add(m.k); rest = rest.replace(new RegExp(m.re.source, 'gi'), ' '); } });
+  const steps = INSTR_RUN.filter(k => hit.has(k)).map(k => INSTR.find(m => m.k === k));
+  return { steps, partial: steps.length > 0 && /\p{L}{3,}/u.test(rest.replace(INSTR_FILL, ' ')) };
+}
+const instrRun = (k, t) => AI[k](t);
+const BASIC_CAN = 'Basic mode can do: shorter, punchier, calmer, simpler, a stronger hook. Connect Claude for anything else.';
+function rememberInstr(instr) { S.settings.recentInstr = [instr, ...(S.settings.recentInstr || []).filter(x => x.toLowerCase() !== instr.toLowerCase())].slice(0, 5); save(); }
+function runInstruct(i, instr, { from, fresh } = {}) {
+  if (CURRENT !== 'write') return;
+  instr = String(instr || '').replace(/\s+/g, ' ').trim().slice(0, 200); const tw = S.draft.tweets[i]; if (!tw) return;
+  const note = from && from.closest && from.closest('.imp') ? $('.instr-note', from.closest('.imp')) : null;
+  const say = (html, opts) => { if (note) note.innerHTML = html; else toast(html.replace(/<[^>]+>.*$/, '').trim(), opts); };
+  if (!instr) { say('Type what to change first, like “calmer” or “for beginners”.', { icon: 'write' }); from && from.focus && from.focus(); return; }
+  if (!tw.text.trim()) { toast('Write a line first. There’s nothing to rewrite yet.', { icon: 'riff', tone: 'accent' }); focusTweet(i); return; }
+  if (aiOn()) { if (aiLeft() <= 0) { outOfRiffs(); return; } rememberInstr(instr); runInstructAI(i, instr, { fresh }); return; }
+  const plan = instrPlan(instr);
+  if (!plan.steps.length) { say(`${BASIC_CAN} <button data-cact="instrconn">Open Connections</button>`, { icon: 'zapoff', ms: 6000, action: 'Connections', onAction: () => openConnections() }); return; }
+  riffNonce++;
+  const before = tw.text, after = plan.steps.reduce((t, m) => instrRun(m.k, t), before), used = plan.steps.map(m => m.label).join(' + ');
+  if (after.trim() === before.trim()) { say(`Basic mode tried ${used}. Nothing to change there.`, { icon: 'check' }); return; }
+  rememberInstr(instr);
+  const why = `Basic mode used ${used}: ${plan.steps.map(m => m.what).join('; ')}.${plan.partial ? ' It can’t do the rest of your note. Connect Claude for that.' : ''}`;
+  UI.imp = null; UI.ghost = null;
+  const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null; if (UI.diff && UI.diff.ctl) UI.diff.ctl.abort();
+  const d = UI.diff = { id: tw.id, kind: 'instruct', instr, before, after, why, chunks: diffWords(before, after), shown: null }; if (oldD) renderExtras(oldD);
+  renderExtras(tw.id); instrReady(d, `Basic mode used ${used}.`);
+}
+/* one short announcement per result; focus lands on Accept, as with every rewrite */
+function instrReady(d, extra = '') {
+  const y = $('#diff-yes'); y && y.focus({ preventScroll: true }); const el = $(`.tw[data-id="${d.id}"] .diff`); el && el.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
+  const n = d.chunks.filter(c => c.eq === undefined).length;
+  srSay(`Rewrite ready: ${n} change${n === 1 ? '' : 's'}. ${extra}${d.chunks.some(c => c.newNum) ? ' It adds a number you didn’t write, so that change is off.' : ''}`);
+}
+async function runInstructAI(i, instr, { fresh } = {}) {
+  const tw = S.draft.tweets[i]; const before = tw.text; const ctl = new AbortController();
+  UI.imp = null; UI.ghost = null;
+  const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null; if (UI.diff && UI.diff.ctl) UI.diff.ctl.abort();
+  const d = UI.diff = { id: tw.id, kind: 'instruct', instr, before, after: before, chunks: [{ eq: before }], pending: true, ctl }; if (oldD) renderExtras(oldD);
+  renderExtras(tw.id);
+  const plat = Object.keys(PLAT).filter(k => S.platforms[k]).map(k => PLAT[k].name).join(', ') || 'X';
+  try {
+    const res = await ask(HWCore.prompts.instruct({ text: before, instruction: instr, voice: voiceSpec(), platform: plat, limit: effLimit() }), { signal: ctl.signal, fresh });
+    if (UI.diff !== d) return;
+    const opts = (res && res.options || []).map(o => ({ text: String(o.text || '').trim(), why: String(o.why || '') })).filter(o => o.text && o.text !== before.trim());
+    if (!opts.length) { UI.diff = null; renderExtras(tw.id); toast(res && res.why ? String(res.why) : 'Claude had nothing to change for that note.', { icon: 'check' }); return; }
+    spendAI();
+    Object.assign(d, { pending: false, alts: opts, alt: 0 }); setAlt(d, 0); instrReady(d, opts.length > 1 ? `${opts.length} versions.` : '');
+  } catch (e) { if (UI.diff === d) { UI.diff = null; renderExtras(tw.id); } aiError(e); if (e && e.code !== 'cancelled' && !aiOn()) runInstruct(i, instr); }
+}
+/* Sharpen › Custom…: the pill becomes one line for a note about just the selected words */
+function sharpenAskOpen() {
+  const ta = SH.ta; if (!ta || !SH.el || SH.st) return; const s = ta.selectionStart, e = ta.selectionEnd; if (e - s < 1) return;
+  SH.ask = { s, e, before: ta.value };
+  SH.el.innerHTML = `<span class="sh-t">${ic('write', 'sm')}</span><label class="sr" for="sh-ask">Tell it what to change in the selected words</label><input class="sh-in" id="sh-ask" type="text" maxlength="160" autocomplete="off" enterkeyhint="go" placeholder="Tell it what to change"><button data-shgo>Rewrite</button><button data-shx aria-label="Cancel" data-tip="Cancel" data-kbd="Esc">${ic('x', 'sm')}</button>`;
+  const inp = $('.sh-in', SH.el);
+  inp.addEventListener('blur', () => setTimeout(() => { const a = SH.ask; if (!a || a.busy || (SH.el && SH.el.contains(document.activeElement))) return; SH.ask = null; if (document.activeElement === SH.ta) sharpenCheck(SH.ta); else sharpenHide(); }, 0));
+  inp.focus(); requestAnimationFrame(sharpenPlace);
+}
+function sharpenAskCancel() { const a = SH.ask, ta = SH.ta; if (!a) return; a.ctl && a.ctl.abort(); SH.ask = null; if (SH.el) SH.el.classList.remove('busy'); if (ta && document.contains(ta) && ta.value === a.before) { ta.focus(); ta.setSelectionRange(a.s, a.e); sharpenCheck(ta); } else sharpenHide(); }
+async function sharpenAskRun() {
+  const a = SH.ask, ta = SH.ta; if (!a || a.busy || !ta || !SH.el) return; const inp = $('.sh-in', SH.el);
+  const instr = (inp ? inp.value : '').replace(/\s+/g, ' ').trim(); if (!instr) { inp && inp.focus(); return; }
+  const frag = a.before.slice(a.s, a.e), lead = frag.match(/^\s*/)[0], trail = frag.match(/\s*$/)[0], core = frag.trim();
+  const endsP = /[.!?:…]$/.test(core), low = /^[a-z]/.test(core);
+  const fit = x => { x = tidy(x).trim(); if (!endsP) x = x.replace(/\.+$/, ''); if (low) x = x.replace(/^./, c => c.toLowerCase()); return x; };
+  let vars = [], label = '', fallback = false;
+  if (aiOn()) {
+    if (aiLeft() <= 0) { outOfRiffs(); return; }
+    a.busy = true; a.ctl = new AbortController(); SH.el.classList.add('busy'); inp.readOnly = true; const go = $('[data-shgo]', SH.el); if (go) go.textContent = 'Rewriting…'; srSay('Rewriting the selected words…');
+    try {
+      const r = await ask(HWCore.prompts.instruct({ text: core, instruction: instr, voice: voiceSpec(), context: a.before }), { signal: a.ctl.signal });
+      if (SH.ask !== a) return;
+      /* a number you didn't write never slips into a selection: those versions are dropped */
+      const have = new Set((a.before.match(/\d[\d,.]*%?/g) || []).map(x => x.replace(/[,.]$/, '')));
+      const all = (r && r.options || []).map(o => String(o.text || '').trim()).filter(x => x && x !== core);
+      vars = all.filter(x => !(x.match(/\d[\d,.]*%?/g) || []).some(n => !have.has(n.replace(/[,.]$/, '')))).map(x => /[.!?]$/.test(core) && /[\p{L}\p{N}]$/u.test(x) ? x + '.' : x);
+      if (!vars.length) toast(all.length ? 'Claude’s versions added numbers you didn’t write, so they’re hidden. Try another note.' : (r && r.why ? String(r.why) : 'Claude had nothing to change there.'), { icon: all.length ? 'target' : 'check', ms: 4200 });
+      else { spendAI(); label = `“${clip(instr, 22)}”`; rememberInstr(instr); }
+    } catch (e) {
+      if (SH.ask !== a) return; aiError(e);
+      fallback = !!(e && e.code !== 'cancelled' && !aiOn());
+    }
+    if (SH.ask !== a) return; a.busy = false; SH.el.classList.remove('busy'); if (inp) inp.readOnly = false; const go2 = $('[data-shgo]', SH.el); if (go2) go2.textContent = 'Rewrite';
+    if (fallback) return sharpenAskRun();
+  } else {
+    const plan = instrPlan(instr), ok = plan.steps.filter(m => ['calmer', 'plainer', 'shorter', 'punchier'].includes(m.k));
+    if (!ok.length) { toast('On selected words, Basic mode can do: shorter, punchier, calmer, simpler. Connect Claude for anything else.', { icon: 'zapoff', ms: 6000, action: 'Connections', onAction: () => openConnections() }); inp && inp.focus(); return; }
+    vars = ok.length === 1 && (ok[0].k === 'shorter' || ok[0].k === 'punchier') ? sharpVariants(ok[0].k, core) : [ok.reduce((t, m) => instrRun(m.k, t), core)];
+    /* a trailing emoji that ended a sentence leaves a full stop, as on the whole post */
+    const stop = /(?:🚀|🔥|💥|🤯|🌕|💎|🙌)\s*$/u.test(core) && /^\s*[A-Z]/.test(a.before.slice(a.e));
+    vars = vars.map(fit).map(x => stop && /[\p{L}\p{N}]$/u.test(x) ? x + '.' : x).filter(x => x && x !== core);
+    if (!vars.length) { toast(`Basic mode tried ${ok.map(m => m.label).join(' + ')}. Nothing to change there.`, { icon: 'check', ms: 2600 }); inp && inp.focus(); return; }
+    label = `${ok.map(m => m.label).join(' + ')} · Basic`; rememberInstr(instr);
+  }
+  if (!vars.length) { inp && inp.focus(); return; }
+  if (!document.contains(ta) || ta.value !== a.before) { SH.ask = null; sharpenHide(); return; }
+  vars = [...new Set(vars)].slice(0, 3).map(x => lead + x + trail);
+  SH.ask = null; UI.ghost = null; SH.st = { id: ta.closest('.tw').dataset.id, s: a.s, e: a.e, before: a.before, vars, i: 0, k: 'ask', label };
+  ta.focus(); sharpenShow(0); SFX.play('tap');
+  srSay(`${label.replace(' · Basic', ', in Basic mode')}: ${vars.length === 1 ? 'one version' : `${vars.length} versions, arrows flip`}. Enter keeps, Escape cancels.`);
 }
 
 /* riffs */
@@ -5453,7 +5618,7 @@ function closeDiff(accept) {
   if (tlen(after) > lim && S.settings.split) { const parts = splitText(after, lim); tw.text = parts[0]; insertAfter(i, parts.slice(1), { focusId: tw.id, pos: 'end' }); }
   else renderThread({ focusId: tw.id, pos: 'end' });
   markSaving();
-  toast(`Swapped in the ${RIFFS.find(r => r.k === d.kind).label.toLowerCase()} version.`, { icon: 'riff', tone: 'accent', action: 'Undo', onAction: () => { S.draft.tweets = snap; renderThread({ focusId: tw.id }); markSaving(); } });
+  toast(d.kind === 'instruct' ? 'Swapped in your rewrite.' : `Swapped in the ${RIFFS.find(r => r.k === d.kind).label.toLowerCase()} version.`, { icon: 'riff', tone: 'accent', action: 'Undo', onAction: () => { S.draft.tweets = snap; renderThread({ focusId: tw.id }); markSaving(); } });
   if (i === 0) { const a = hookScore(before).score, b = hookScore(after).score; if (b >= 78 && b - a >= 12) setTimeout(() => showUpsell(a, b), 700); }
 }
 function outOfRiffs() {
@@ -6947,7 +7112,9 @@ function composerClick(e) {
     case 'dorriff': { const k = el.dataset.k; const idx = i >= 0 ? i : 0; if (k === 'translate') openTranslate(el, idx); else runRiff(idx, k); break; }
     case 'diffyes': closeDiff(true); break;
     case 'diffno': closeDiff(false); break;
-    case 'diffretry': { const d = UI.diff; if (d && d.pending) { d.ctl.abort(); UI.diff = null; renderExtras(d.id); break; } if (d && d.alts && d.alt < d.alts.length - 1) { setAlt(d, d.alt + 1); break; } UI.diff = null; S.draft.tweets[i].text = d.before; if (d && d.alts) runRiffAI(i, d.kind, d.lang, { fresh: true }); else runRiff(i, d.kind, d.lang); break; }
+    case 'instr': case 'instrgo': { const inp = $('.instr-in', el.closest('.imp')); if (a === 'instrgo' && inp) inp.value = el.dataset.t; runInstruct(i >= 0 ? i : 0, inp ? inp.value : el.dataset.t, { from: inp }); break; }
+    case 'instrconn': openConnections(); break;
+    case 'diffretry': { const d = UI.diff; if (d && d.pending) { d.ctl.abort(); UI.diff = null; renderExtras(d.id); break; } if (d && d.alts && d.alt < d.alts.length - 1) { setAlt(d, d.alt + 1); break; } UI.diff = null; S.draft.tweets[i].text = d.before; if (d.kind === 'instruct') runInstruct(i, d.instr, { fresh: true }); else if (d && d.alts) runRiffAI(i, d.kind, d.lang, { fresh: true }); else runRiff(i, d.kind, d.lang); break; }
     case 'limore': UI.liMore = !UI.liMore; renderPreviewBody(); break;
     case 'litweak': S.draft.li = liVersion(); save(); renderPreviewHead(); renderPreviewBody(); toast('LinkedIn version ready. Edit it without touching the thread.', { icon: 'riff', tone: 'accent' }); break;
     case 'lireset': S.draft.li = null; save(); renderPreviewBody(); break;
@@ -6969,6 +7136,8 @@ ROUTES.write = () => {
   c.addEventListener('click', composerClick);
   c.addEventListener('keydown', e => { if ((e.target.classList.contains('chg') || e.target.matches('[data-cact="limore"]')) && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.target.click(); } });
   /* Esc inside the Improve panel closes it and hands focus back to its button */
+  /* ↵ (or ⌘↵ / Ctrl+Enter) in "Tell it what to change" rewrites; it never reaches the composer's own ⌘↵ (Schedule) */
+  c.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && e.target.classList.contains('instr-in')) { e.preventDefault(); e.stopPropagation(); runInstruct(tIndex(e.target.closest('.tw').dataset.id), e.target.value, { from: e.target }); } });
   c.addEventListener('keydown', e => { if (e.key !== 'Escape' || !e.target.closest('.imp')) return; const cl = $('[data-cact="impclose"]', e.target.closest('.imp')); if (cl) { e.preventDefault(); e.stopPropagation(); cl.click(); } });
   th.addEventListener('input', e => { if (e.target.matches('[data-poll]')) { const tw = tById(e.target.closest('.tw').dataset.id); tw.poll.options[+e.target.dataset.poll] = e.target.value; schedulePreview(); markSaving(); return; } onInput(e); });
   th.addEventListener('change', e => { if (e.target.matches('[data-media]')) { addFiles(tIndex(e.target.closest('.tw').dataset.id), e.target.files); e.target.value = ''; } if (e.target.matches('[data-polldays]')) { tById(e.target.closest('.tw').dataset.id).poll.days = +e.target.value; markSaving(); } });
@@ -6978,12 +7147,12 @@ ROUTES.write = () => {
     if (e.type === 'keyup' && (e.key.length === 1 || /^(Backspace|Delete|Enter|Shift|Meta|Control|Alt|CapsLock)$/.test(e.key))) { requestAnimationFrame(() => t.isConnected && typewriter()); return; }
     requestAnimationFrame(() => t.isConnected && placeCaretOrPaint(t)); };
   const placeCaretOrPaint = ta => { if (UI.ghost && ta.selectionEnd !== ta.value.length) { UI.ghost = null; } if (!SH.st) paintField(ta); sharpenCheck(ta); typewriter(); };
-  const shClick = e => { const b = e.target.closest('.sharpen button'); if (!b) return; e.preventDefault(); if (b.dataset.sh) sharpenRun(b.dataset.sh); else if (b.dataset.shn) { sharpenShow(SH.st.i + +b.dataset.shn); SFX.play('tick'); } else if ('shk' in b.dataset) sharpenKeep(); else if ('shx' in b.dataset) { sharpenCancel(); sharpenHide(); } };
-  th.addEventListener('mousedown', e => { if (e.target.closest('.sharpen')) e.preventDefault(); });
+  const shClick = e => { const b = e.target.closest('.sharpen button'); if (!b) return; e.preventDefault(); if (b.dataset.sh) sharpenRun(b.dataset.sh); else if (b.dataset.shn) { sharpenShow(SH.st.i + +b.dataset.shn); SFX.play('tick'); } else if ('shk' in b.dataset) sharpenKeep(); else if ('shx' in b.dataset) { if (SH.ask) sharpenAskCancel(); else { sharpenCancel(); sharpenHide(); } } else if ('shc' in b.dataset) sharpenAskOpen(); else if ('shgo' in b.dataset) sharpenAskRun(); };
+  th.addEventListener('mousedown', e => { if (e.target.closest('.sharpen') && !e.target.matches('input')) e.preventDefault(); });
   th.addEventListener('click', shClick);
-  document.addEventListener('keydown', sharpenKey, true); onDispose(() => { document.removeEventListener('keydown', sharpenKey, true); SH.st = null; UI.sharp = null; if (SH.el) SH.el.remove(); SH.el = null; });
+  document.addEventListener('keydown', sharpenKey, true); onDispose(() => { document.removeEventListener('keydown', sharpenKey, true); SH.st = null; SH.ask = null; UI.sharp = null; if (SH.el) SH.el.remove(); SH.el = null; });
   ['keyup', 'click', 'focusin', 'select'].forEach(ev => th.addEventListener(ev, repaint));
-  th.addEventListener('focusout', e => { if (e.target.classList.contains('tw-input')) { if (SH.st) sharpenKeep(); else setTimeout(() => { if (document.activeElement !== SH.ta) sharpenHide(); }, 0); UI.ghost = null; const ta = e.target; setTimeout(() => { if (document.contains(ta)) paintField(ta); }, 0); setTyping(false); } });
+  th.addEventListener('focusout', e => { if (e.target.classList.contains('tw-input')) { if (SH.st) sharpenKeep(); else setTimeout(() => { if (document.activeElement !== SH.ta && !(SH.el && SH.el.contains(document.activeElement))) sharpenHide(); }, 0); UI.ghost = null; const ta = e.target; setTimeout(() => { if (document.contains(ta)) paintField(ta); }, 0); setTyping(false); } });
   const selch = () => { const a = document.activeElement; if (a && a.classList.contains('tw-input')) { placeCaret(a); if (!SH.st) sharpenCheck(a); } };
   document.addEventListener('selectionchange', selch); onDispose(() => document.removeEventListener('selectionchange', selch));
   th.addEventListener('pointerdown', e => { const h = e.target.closest('.handle'); if (h) startDrag(e, h); });
