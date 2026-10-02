@@ -2454,6 +2454,32 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 @media (max-width:1060px){ .fold .ed .hw-h{ text-align:center; justify-items:center; margin-inline:auto; } }
 @media (max-width:760px){ html{ scroll-padding-bottom:96px; scroll-padding-top:16px; } }
 .thp.dark{ --t-2:#8E8E8E; }
+
+/* ==== Round 27: hook-first Write ==== */
+.hk-dial{ margin-top:10px; flex-direction:column; height:auto !important; padding:0 !important; gap:3px; background:none !important; box-shadow:none !important; border-radius:12px; position:relative; z-index:1; }
+.hk-dial .sc{ width:34px; height:34px; min-width:0; padding:0; border-radius:50%; background:conic-gradient(var(--dial,var(--text-3)) calc(var(--v) * 1%), color-mix(in srgb,var(--text-1) 10%,transparent) 0) !important; display:grid; place-items:center; transition:--v var(--d-spring) var(--ease-out), background var(--d-fast); }
+.hk-dial .sc::before{ content:""; position:absolute; width:28px; height:28px; border-radius:50%; background:var(--bg-elev,var(--surface)); }
+.hk-dial .sc span{ position:relative; font:700 12px/1 var(--font-ui) !important; font-variant-numeric:tabular-nums; color:var(--text-1) !important; }
+.hk-dial small{ font:600 10px/1 var(--font-ui); letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); }
+.hk-dial.lo{ --dial:var(--warn); } .hk-dial{ --dial:var(--text-2); } .hk-dial.hi{ --dial:var(--accent); } .hk-dial.hi small{ color:var(--accent-text); }
+.hk-dial.hi .sc{ animation:dialpop .5s var(--spring-snap); } @keyframes dialpop{ 40%{ transform:scale(1.12); } }
+.hk-dial[aria-expanded="true"] .sc::before{ box-shadow:inset 0 0 0 1.5px var(--accent); }
+.hk-dial:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+@property --v{ syntax:'<number>'; inherits:true; initial-value:0; }
+.imp{ margin-top:10px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); padding:10px 12px 12px; display:grid; gap:10px; animation:rise var(--d-spring) var(--ease-out) both; }
+.imp-h{ display:flex; align-items:center; justify-content:space-between; gap:8px; } .imp .hook-reason{ margin:0; padding:0; box-shadow:none; background:none; }
+.imp .riffbar{ padding:0; margin:0; } .imp-tip{ font-size:12px; }
+.hk-main{ display:flex; gap:10px; align-items:flex-start; } .hk-main p{ font-size:14px; }
+.hk-how summary{ cursor:pointer; font-size:12px; color:var(--text-3); } .hk-how .bars{ margin-top:8px; } .hk-how p{ font-size:12px; margin-top:6px; }
+.vm-line{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .vm-line b{ color:var(--text-1); font-variant-numeric:tabular-nums; } .vm-line .icon{ color:var(--text-3); }
+.start-line{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin:18px 0 0 48px; padding-top:14px; border-top:1px dashed var(--border); } .start-line .faint{ font-size:13px; margin-right:4px; }
+.sh-hook{ display:grid; gap:10px; padding:12px 14px; border-radius:12px; background:var(--surface-2); }
+.sh-hook.ok{ display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--text-2); background:none; padding:0; } .sh-hook.ok .icon{ color:var(--success); } .sh-hook.ok .btn{ margin-left:auto; }
+.sh-hh{ display:flex; gap:10px; align-items:flex-start; font-size:13.5px; } .sh-hh .hook{ flex:none; }
+.sh-alts{ display:grid; gap:6px; } .sh-alt{ display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:center; text-align:left; padding:9px 10px; border-radius:10px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:14px; transition:box-shadow var(--d-micro), transform var(--d-micro); }
+.sh-alt:hover{ box-shadow:0 0 0 1px var(--accent); } .sh-alt:active{ transform:scale(.99); }
+.hook.lo .sc{ background:var(--warn-soft); } .hook.lo .sc span{ color:var(--warn); }
+@media (max-width:760px){ .start-line{ margin-left:0; } .hk-dial{ margin-top:8px; } .hk-dial .sc{ width:30px; height:30px; } .hk-dial .sc::before{ width:24px; height:24px; } }
 </style>
 </head>
 <body>
@@ -2829,7 +2855,7 @@ function hookFor(text, parts) { const m = PHOOK(), g = hookScore(text); const me
 function ANALYSIS() { const k = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (_an.key !== k) _an = { key: k, v: HWCore.analyze(HIST()) }; return _an.v; }
 const AI = {
   punchier(t) {
-    let s = stripFillers(t);
+    let s = stripFillers(t).replace(/^\s*(ok(ay)? so|so|well|basically|honestly|look),?\s+/i, '').replace(/^([a-z])/, m => m.toUpperCase());
     s = s.replace(/,\s+(and|but|so)\s+/gi, (m, w) => `. ${cap(w.toLowerCase())} `);
     s = s.split(/(?<=[.!?])\s+|\n/).map(x => x.length > 90 ? x.replace(/\s+because\s+/i, '. ').replace(/\s+and (you|we|I|they)\s+/, (m, w) => `. ${cap(w)} `) : x).join(' ');
     s = s.replace(/!+/g, '.');
@@ -2850,20 +2876,10 @@ const AI = {
     return tidy(s);
   },
   hook(t) {
-    const topic = topicOf(t);
-    const num = (t.match(/\$?\d[\d,.]*\s?(k|%|x|years?|months?|weeks?|days?|hours?|users|customers|people|posts)?/i) || [])[0];
-    const spicy = S.voice.spice > 60;
-    const pool = [
-      num ? `${cap(num.trim())}. That’s what ${topic} actually took.` : null,
-      `I got ${topic} wrong for years. Here’s what changed:`,
-      `What I’d tell myself about ${topic} a year ago:`,
-      `If I had to figure out ${topic} again from zero, I’d do this:`,
-      spicy ? `I’ve stopped believing the usual line on ${topic}. Here’s why:` : `${cap(topic)}, in one honest line:`
-    ].filter(Boolean);
     const ss = sentences(t.trim()); let rest = t.trim();
     if (ss.length > 1 && hookScore(ss[0]).score < 60) rest = ss.slice(1).join('').trim();
     rest = AI.punchier(rest);
-    const ranked = pool.map(l => ({ l, s: hookScore(`${l}\n\n${rest}`).score })).sort((a, b) => b.s - a.s);
+    const ranked = hookPool(t).map(l => ({ l, s: hookScore(`${l}\n\n${rest}`).score })).sort((a, b) => b.s - a.s);
     const line = ranked[riffNonce % Math.min(2, ranked.length)].l;
     return tidy(`${line}\n\n${rest}`);
   },
@@ -3011,6 +3027,22 @@ function expandIdea(hookText, kind = 'How-to', topic = topicOf(hookText)) {
   return map[kind] || [hookText, '[The one outcome that matters.]', '[The smallest step that gets you there. Yours, not a textbook’s.]', '[What went wrong the first time.]', '[What you’d do again tomorrow.]'];
 }
 const OUTLINE_MSG = 'Your hook, plus an outline. Fill each [bracket] with what really happened.';
+/* an idea starts as one post: the hook, cursor right after it. A thread outline is one tap away */
+function writeIdea(text, kind, topic) {
+  writeFrom([text]); goThen('write', () => { const ta = $('.tw-input'); if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } });
+  if (kind !== 'Question') toast('Your hook is in. Keep going, or outline it as a thread.', { icon: 'write', tone: 'accent', ms: 6000, action: 'Outline as thread', onAction: () => { writeFrom(expandIdea(text, kind, topic)); toast(OUTLINE_MSG, { icon: 'riff', tone: 'accent', ms: 4200 }); } });
+}
+function hookPool(t) {
+  const topic = topicOf(t), spicy = S.voice.spice > 60;
+  const num = (t.match(/\$?\d[\d,.]*\s?(k|%|x|years?|months?|weeks?|days?|hours?|users|customers|people|posts)?/i) || [])[0];
+  return [
+    num ? `${cap(num.trim())}. That’s what ${topic} actually took.` : null,
+    `I got ${topic} wrong for years. Here’s what changed:`,
+    `What I’d tell myself about ${topic} a year ago:`,
+    `If I had to figure out ${topic} again from zero, I’d do this:`,
+    spicy ? `I’ve stopped believing the usual line on ${topic}. Here’s why:` : `${cap(topic)}, in one honest line:`
+  ].filter(Boolean);
+}
 function remix(post, format) {
   const t = post.text; const topic = topicOf(t); const first = sentences(t)[0].trim();
   switch (format) {
@@ -3347,8 +3379,6 @@ function shell(active, inner) {
     <button class="searchbtn" data-act="palette">${ic('search', 'sm')}<span>Search</span>${kbd(MOD, 'K')}</button>
     <nav class="nav" aria-label="Main">
       ${NAV.map(it => `<a href="#${it.k}" ${active === it.k ? 'aria-current="page"' : ''} data-tip="${it.label}" data-kbd="G ${it.key}">${ic(it.icon)}<span>${it.label}</span>${counts[it.k] ? `<span class="count">${counts[it.k]}</span>` : ''}</a>`).join('')}
-      <div class="nav-l nav-tools">Tools</div>
-      ${TOOLS.map(it => `<a href="#${it.k}" ${active === it.k ? 'aria-current="page"' : ''} data-tip="${it.label}" data-kbd="G ${it.key}">${ic(it.icon)}<span>${it.label}</span></a>`).join('')}
     </nav>
     ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts${S.drafts.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or let go">Tidy up</button>` : ''}</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}" title="${esc(clip((d.tweets[0] && d.tweets[0].text) || 'Untitled draft', 120))}${d.created ? ` · started ${agoLabel(d.created)}` : ''}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}${S.drafts.length > 5 ? `<button class="sd sd-all" data-act="alldrafts">All drafts · ${S.drafts.length}</button>` : ''}</div>` : ''}
     <div class="spacer"></div>
@@ -3597,7 +3627,7 @@ S.drafts = S.drafts || [];
 /* a post whose time has passed: the demo plays along; a post the server took for X or LinkedIn went out there; anything else waits for you to post it by hand */
 function settleQueue() { const now = Date.now(); let n = 0; const srv = LLM.server || {}; S.queue.forEach(q => { if (q.status === 'scheduled' && q.approval !== 'needs' && slotDate(q.day, q.time).getTime() < now - 60e3) { const sent = q.serverId && Object.keys(q.platforms || {}).filter(k => q.platforms[k]).every(k => (k === 'x' && srv.xUser) || (k === 'linkedin' && srv.liUser)); q.status = SHOWCASE() || sent ? 'published' : 'due'; n++; } }); if (n) save(); return n; }
 S.starterSeed = S.starterSeed || 11;
-const UI = { ghostUsed: new Set(), riff: null, diff: null, hook: false, ghost: null, fresh: new Set(), noSplit: false, liMore: false, splitToast: false };
+const UI = { ghostUsed: new Set(), imp: null, diff: null, ghost: null, fresh: new Set(), noSplit: false, liMore: false, splitToast: false };
 let PH_IDEAS = genIdeas(6, 7), phI = 0;
 const tById = id => S.draft.tweets.find(t => t.id === id);
 const tIndex = id => S.draft.tweets.findIndex(t => t.id === id);
@@ -3676,15 +3706,16 @@ function composerHTML() {
     </div>
     <div class="editor">
       <div class="glow" aria-hidden="true"></div>
-      <section class="starters fade-typing" id="starters" ${empty ? '' : 'hidden'} aria-label="Ideas to start from"></section>
       <div class="thread" id="thread" role="list"></div>
       <button class="add-tw fade-typing" data-cact="add"><span class="plus"><span>${ic('plus', 'sm')}</span></span>Add to thread</button>
+      <section class="starters fade-typing" id="starters" ${empty ? '' : 'hidden'} aria-label="Ideas to start from"></section>
     </div>
   </div>
   <aside class="preview" id="preview" aria-label="Your post in the feed"><div class="preview-h" id="pv-h"></div><div class="preview-b" id="pv-b"></div></aside>
 </div>`;
 }
 function startersHTML() {
+  if (!UI.startOpen) return `<div class="start-line"><span class="faint">Need a start?</span><button class="btn ghost sm" data-cact="startopen">${ic('ideas', 'sm')} Post ideas</button><button class="btn ghost sm" data-cact="brief" data-tip="Notes, a doc or a PDF, written up in your voice">${ic('upload', 'sm')} From a brief</button><button class="btn ghost sm" data-cact="picture" data-tip="A screenshot or chart, read and drafted">${ic('image', 'sm')} From a picture</button></div>`;
   const ideas = genIdeas(3, S.starterSeed);
   return `<div class="starters-h"><span class="starters-t">Post ideas for you</span><span style="display:flex;gap:6px"><button class="btn ghost sm" data-cact="brief" data-tip="Notes, a doc or a PDF, written up in your voice">${ic('upload', 'sm')} From a brief</button><button class="btn ghost sm" data-cact="picture" data-tip="A screenshot or chart, read and drafted">${ic('image', 'sm')} From a picture</button><button class="btn ghost sm" data-cact="shuffle" data-tip="New ideas" data-kbd="R">${ic('shuffle', 'sm')} Shuffle</button></span></div>
   <div class="starter-list">${ideas.map(i => `<button class="starter" data-cact="starter" data-t="${esc(i.text)}" data-kind="${esc(i.kind)}" data-topic="${esc(i.topic)}"><p>${esc(i.text)}</p><span class="meta"><span class="pill kp" data-kind="${String(i.kind).toLowerCase()}">${esc(i.kind)}</span><span class="faint" style="font-size:12px;display:inline-flex;gap:4px;align-items:center">Draft it ${ic('arrow', 'xs')}</span></span></button>`).join('')}</div>${hintHTML('write', { cls: 'starters-hint' })}`;
@@ -3716,7 +3747,7 @@ function tweetHTML(tw, i, n) {
   const u = S.user;
   return `<div class="tw" data-id="${tw.id}" role="listitem">
   <button class="handle" data-tip="Drag to reorder, or use the arrow keys" data-kbd="${ALT} ↑ ↓" aria-label="Move post ${i + 1} of ${n}. Use up and down arrows">${ic('drag', 'sm')}</button>
-  <div class="tw-gutter">${i === 0 ? avatar(u) : `<span class="idx">${i + 1}/${n}</span>`}<span class="spine"></span></div>
+  <div class="tw-gutter">${i === 0 ? `${avatar(u)}<button class="hook hk-dial" data-cact="hookinfo" aria-expanded="${!!(UI.imp && UI.imp.tab === 'score')}" aria-label="Hook score. Why this score?"><span class="sc" style="--v:0"><span>–</span></span><small>Hook</small></button>` : `<span class="idx">${i + 1}/${n}</span>`}<span class="spine"></span></div>
   <div class="tw-body">
     ${i === 0 ? `<div class="tw-head"><b>${esc(u.name)}</b><span>@${esc(u.handle)}</span></div>` : ''}
     <div class="field-wrap"><div class="tw-mirror" aria-hidden="true"></div><div class="caret" aria-hidden="true" style="opacity:0"></div><textarea class="tw-input" rows="1" aria-label="Post ${i + 1} of ${n}" placeholder="${i === 0 ? 'Start with the line you’d stop for' : 'Keep going…'}">${esc(tw.text)}</textarea></div>
@@ -3729,11 +3760,9 @@ function tweetHTML(tw, i, n) {
       <button class="tool mic-t" data-cact="dictate" data-tip="Say it: talk instead of typing" aria-pressed="false" aria-label="Say it: talk instead of typing">${ic('mic')}</button>
       <button class="tool" data-cact="toolsmore" data-tip="More: a visual, read it aloud" aria-label="More tools" aria-haspopup="menu">${ic('more')}</button>
       <span class="tools-sep"></span>
-      <button class="tool riff" data-cact="riff" data-tip="Rewrite this post" data-kbd="${MOD} J" aria-expanded="${UI.riff === tw.id}">${ic('riff')}<span>Rewrite</span></button>
+      <button class="tool riff" data-cact="riff" data-tip="Improve: score, rewrites, formulas" data-kbd="${MOD} J" aria-expanded="${!!(UI.imp && UI.imp.id === tw.id)}">${ic('riff')}<span>Improve</span></button>
       ${n > 1 ? `<button class="tool" data-cact="remove" data-tip="Remove this post">${ic('trash')}</button>` : ''}
       <div class="tw-meta">
-        ${i === 0 ? `<button class="vm" data-cact="vminfo" data-tip="How much this sounds like you" hidden><span class="vm-n">–</span><span>Voice</span></button>` : ''}
-        ${i === 0 ? `<button class="hook" data-cact="hookinfo" data-tip="Why this score?" aria-expanded="${UI.hook}"><span class="sc" style="--v:0"><span>0</span></span><span>Hook</span></button>` : ''}
         <span class="ring" data-tip="0 characters"><svg viewBox="0 0 24 24"><circle class="trk" cx="12" cy="12" r="9.5"/><circle class="val" cx="12" cy="12" r="9.5" stroke-dasharray="59.69" stroke-dashoffset="59.69"/></svg><b></b></span>
       </div>
     </div>
@@ -3782,7 +3811,7 @@ function placeCaret(ta) {
 }
 function paintRing(tEl) {
   const ring = $('.ring', tEl); const ta = $('.tw-input', tEl); if (!ring) return;
-  const len = tlen(ta.value), lim = effLimit(), C = 59.69, rem = lim - len; ring.style.visibility = len ? '' : 'hidden';
+  const len = tlen(ta.value), lim = effLimit(), C = 59.69, rem = lim - len; ring.style.visibility = len && (rem <= Math.max(60, lim * .2)) ? '' : 'hidden';
   $('.val', ring).style.strokeDashoffset = C * (1 - Math.min(len / lim, 1));
   const state = rem < 0 ? 'over' : rem <= 20 ? 'warn' : '';
   if ((ring.dataset.s || '') !== state) { ring.classList.remove('pulse'); void ring.offsetWidth; if (state) ring.classList.add('pulse'); }
@@ -3797,16 +3826,18 @@ function paintRing(tEl) {
 /* "sounds like you": the draft against your measured habits; tap it to jump to what sounds off */
 const DEMO_STATS = { wps: 11, emojiPer: .3, tagsPer: 0, oneSentOpen: 82, lower: 35 };
 function paintVoice() {
-  const b = $('.tw .vm'); if (!b) return; const txt = S.draft.tweets.map(t => t.text).join('\n'); const an = ANALYSIS();
+  const txt = S.draft.tweets.map(t => t.text).join('\n'); const an = ANALYSIS(); const b = $('.vm-line');
   const r = HWCore.voiceMatch(txt, an ? an.stats : DEMO_STATS, { never: S.voice.never, lean: an ? an.lean : [] }); UI.vm = r;
-  if (!r || txt.trim().length < 16 || /\[[^\]]+\]/.test(txt) || (!an && !S.profile && !SHOWCASE())) { b.hidden = true; return; }
-  b.hidden = false; $('.vm-n', b).textContent = r.score; b.classList.toggle('lo', r.score < 70); b.classList.toggle('hi', r.score >= 90);
+  UI.vmShow = !(!r || txt.trim().length < 16 || /\[[^\]]+\]/.test(txt) || (!an && !S.profile && !SHOWCASE()));
+  if (b) b.outerHTML = vmLineHTML();
+}
+function vmLineHTML() {
+  const r = UI.vm, an = ANALYSIS(); if (!r || !UI.vmShow) return '<p class="vm-line" hidden></p>';
   const who = an || S.profile ? 'you' : 'the sample voice';
-  b.dataset.tip = r.miss.length ? `${r.score}% ${who} · ${r.miss[0].why}` : `${r.score}% ${who}. Nothing sounds off.`;
+  return `<p class="vm-line ${r.score < 70 ? 'lo' : ''}">${ic('voice', 'sm')}<span>Sounds <b>${r.score}%</b> like ${who}${r.miss.length ? `. ${esc(r.miss[0].why)}` : '. Nothing sounds off.'}</span>${r.miss.length ? `<button class="lnk-u" data-cact="vminfo">What sounds off</button>` : ''}</p>`;
 }
 function openVoiceMatch(el) {
   const r = UI.vm; if (!r) return; const an = ANALYSIS();
-  if (UI.hook) { UI.hook = false; renderExtras(S.draft.tweets[0].id); const hb = $('.tw .hook'); hb && hb.setAttribute('aria-expanded', false); }
   openMenu(el, [{ header: an || S.profile ? `Sounds ${r.score}% like you` : `Matches the sample voice ${r.score}%` }, ...(r.miss.length ? r.miss.map(m => ({ label: m.why, icon: 'target', hint: clip(String(m.frag || ''), 16), run: () => selectFrag(m.frag) })) : [{ label: 'Nothing sounds off. Ship it.', icon: 'check', disabled: true }]), '-', { label: an ? `Measured against ${fmtN(an.n)} of your posts` : 'Demo voice. Bring your posts to make it yours', icon: 'voice', run: () => an ? go('voice') : openImport() }], { width: 300, align: 'end' });
 }
 function selectFrag(frag) {
@@ -3820,11 +3851,12 @@ function paintHook() {
   if (UI.lastHook != null && Math.floor(h.score / 10) !== Math.floor(UI.lastHook / 10)) { clearTimeout(UI.hsT); UI.hsT = setTimeout(() => srSay(`Hook score ${hookFor(S.draft.tweets[0].text).score}.`), 1500); }
   if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
-  b.classList.toggle('hi', h.score >= 70);
+  b.classList.toggle('hi', h.score >= 70); b.classList.toggle('lo', h.score > 0 && h.score < 50); b.setAttribute('aria-label', `Hook score ${h.score || 'none yet'}. ${h.g ? h.g.reason : ''} Press for details`);
+  if (h.score >= 70 && !b.classList.contains('was-hi')) { b.classList.add('was-hi'); } else if (h.score < 70) b.classList.remove('was-hi');
   const p = $('#predict');
   if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
   else if (p) { p.textContent = ''; p.dataset.tip = ''; }
-  if (UI.hook) renderExtras(t0.id);
+  if (UI.imp && UI.imp.tab === 'score' && UI.imp.id === t0.id) renderExtras(t0.id);
   clearTimeout(UI.chkT); UI.chkT = setTimeout(() => (window.requestIdleCallback || setTimeout)(refreshChecks), 400);
 }
 function mineHTML(H) {
@@ -3841,16 +3873,17 @@ function mineHTML(H) {
 function hookReasonHTML() {
   const H = hookFor(S.draft.tweets[0].text, S.draft.tweets.filter(t => t.text.trim()).length), h = H.g;
   const bars = Object.entries(h.parts).map(([k, v]) => `<div class="bar-row"><span>${cap(k)}</span><div class="meter"><i class="${v >= 70 ? 'hi' : ''}" style="width:${v}%"></i></div><span class="num">${v}</span></div>`).join('');
-  const general = `<div style="display:flex;gap:10px;align-items:flex-start">${ic(h.tone === 'good' ? 'check' : 'target', 'sm')}<p><b>${H.me ? 'General score ' : ''}${h.score}/100.</b> ${esc(h.reason)}</p></div><div class="bars">${bars}</div>`;
-  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${S.draft.tweets[0].text.trim() ? mineHTML(H) : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${h.score}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : general}${S.draft.tweets[0].text.trim() ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button>` : ''}<button class="btn sm" data-cact="hookvote" data-tip="Friends pick between versions of your first line">${ic('poll', 'sm')} Ask friends which line wins</button></div>` : ''}${H.score < 70 ? formulasHTML() : ''}</div></div>`;
+  const general = `<div class="hk-main">${ic(h.tone === 'good' ? 'check' : 'target', 'sm')}<p><b>${H.me ? 'General score ' : ''}${h.score}/100.</b> ${esc(h.reason)}</p></div><details class="hk-how"><summary>How it’s scored</summary><div class="bars">${bars}</div><p class="faint">A plain heuristic: clear, specific, a little tension, short. Bring your posts and it tunes itself to your audience.</p></details>`;
+  const has = S.draft.tweets[0].text.trim();
+  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${H.me ? mineHTML(H) : general}${vmLineHTML()}${has ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Write a stronger hook</button>` : ''}<button class="btn sm" data-cact="imptab" data-t="formulas">${ic('layers', 'sm')} Start from a formula</button><button class="btn sm ghost" data-cact="hookvote" data-tip="A link friends tap to vote">${ic('poll', 'sm')} Ask friends</button></div>` : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${h.score}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : has ? mineHTML(H) : ''}</div></div>`;
 }
 /* hook formulas, offered right where a weak first line is: pick one, then type over the blanks */
 function formulasHTML() {
   UI.fOff = UI.fOff || 0; const pool = [...HOOKS].sort((a, b) => b.s - a.s).slice(0, 18); const list = [0, 1, 2].map(j => pool[(UI.fOff * 3 + j * 5) % pool.length]);
-  return `<div class="hk-f"><div class="hk-fh"><span class="label">Or start from a formula</span><button class="btn ghost sm" data-cact="fmore">${ic('shuffle', 'sm')} Others</button></div>${list.map(f => `<button class="hkf" data-cact="formula" data-t="${esc(f.t)}"><span class="k">${f.k}</span><span>${esc(f.t).replace(/\[([^\]]+)\]/g, '<i>$1</i>')}</span></button>`).join('')}</div>`;
+  return `<div class="hk-f"><div class="hk-fh"><span class="label">Formulas that keep working</span><span style="display:flex;gap:4px"><button class="btn ghost sm" data-cact="fmore">${ic('shuffle', 'sm')} Others</button><a class="btn ghost sm" href="#hooks">All formulas${ic('arrow', 'xs')}</a></span></div>${list.map(f => `<button class="hkf" data-cact="formula" data-t="${esc(f.t)}"><span class="k">${f.k}</span><span>${esc(f.t).replace(/\[([^\]]+)\]/g, '<i>$1</i>')}</span></button>`).join('')}</div>`;
 }
 function useFormula(t) {
-  const tw = S.draft.tweets[0]; const before = tw.text; tw.text = before.trim() ? `${t}\n\n${before}` : t; UI.hook = false; save(); renderThread();
+  const tw = S.draft.tweets[0]; const before = tw.text; tw.text = before.trim() ? `${t}\n\n${before}` : t; UI.imp = null; save(); renderThread();
   const ta = $(`.tw[data-id="${tw.id}"] .tw-input`); const m = t.indexOf('['); if (ta) { UI.fSel = true; ta.focus(); if (m >= 0) ta.setSelectionRange(m, t.indexOf(']', m) + 1); }
   toast(before.trim() ? 'Formula added on top. Your old line is right below it.' : 'Formula added. Fill the [brackets] with yours.', { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { tw.text = before; save(); renderThread(); } });
 }
@@ -3874,11 +3907,19 @@ function diffHTML() {
     <div class="diff-f"><button class="btn ghost sm" data-cact="diffretry" data-tip="Another take">${ic('shuffle', 'sm')} ${d.alts && d.alt < d.alts.length - 1 ? 'Next take' : 'Try again'}</button><span class="grow"></span><button class="btn sm" data-cact="diffno">Discard ${kbd('Esc')}</button><button class="btn sm primary" data-cact="diffyes" id="diff-yes">Accept ${kbd('↵')}</button></div>
   </div>`;
 }
+/* Improve: one panel for everything that makes a post better. Score (first post), Rewrites, Formulas (first post) */
+function improveHTML(id, i) {
+  const tabs = i === 0 ? [['score', 'Score'], ['takes', 'Rewrites'], ['formulas', 'Formulas']] : [['takes', 'Rewrites']], t = UI.imp.tab;
+  return `<div class="imp" role="region" aria-label="Improve this post"><div class="imp-h"><div class="seg imp-tabs" role="tablist" aria-label="Improve">${tabs.map(([k, l]) => `<button role="tab" data-cact="imptab" data-t="${k}" aria-selected="${t === k}">${l}</button>`).join('')}</div><button class="btn ghost icon-only sm" data-cact="impclose" aria-label="Close" data-tip="Close (Esc)">${ic('x', 'sm')}</button></div>
+    <div class="imp-b">${t === 'score' ? hookReasonHTML() : t === 'formulas' ? formulasHTML() : riffbarHTML(id) + '<p class="faint imp-tip">Select a few words to sharpen just those.</p>'}</div></div>`;
+}
+function setImprove(id, tab) { const cur = UI.imp; UI.imp = cur && cur.id === id && cur.tab === tab ? null : { id, tab }; renderExtras(id); $$('.tw .tw-extra').forEach(x => { const o = x.closest('.tw').dataset.id; if (o !== id && x.querySelector('.imp')) renderExtras(o); }); const d = $('.hk-dial'); d && d.setAttribute('aria-expanded', !!(UI.imp && UI.imp.tab === 'score')); }
 function renderExtras(id) {
   const el = $(`.tw[data-id="${id}"] .tw-extra`); if (!el) return; const i = tIndex(id);
-  el.innerHTML = (UI.riff === id ? riffbarHTML(id) : '') + (UI.diff && UI.diff.id === id ? diffHTML() : '') + (UI.hook && i === 0 ? hookReasonHTML() : '');
+  const open = UI.imp && UI.imp.id === id && !(UI.imp.tab !== 'takes' && i !== 0);
+  el.innerHTML = (open ? improveHTML(id, i) : '') + (UI.diff && UI.diff.id === id ? diffHTML() : '');
   const tEl = el.closest('.tw'); tEl.classList.toggle('has-meta', !!el.innerHTML);
-  const rb = $('[data-cact="riff"]', tEl); rb && rb.setAttribute('aria-expanded', UI.riff === id);
+  const rb = $('[data-cact="riff"]', tEl); rb && rb.setAttribute('aria-expanded', !!open); const tl = $('.imp-tabs', el); tl && syncSeg(tl);
 }
 function renderThread({ focusId, pos } = {}) {
   const th = $('#thread'); if (!th) return; const n = S.draft.tweets.length;
@@ -3970,14 +4011,14 @@ function onKey(e) {
   if (mod && e.key.toLowerCase() === 'j') { e.preventDefault(); toggleRiff(id); return; }
   if (mod && e.key === '\\') { e.preventDefault(); togglePreview(); return; }
   if (mod && e.key === '.') { e.preventDefault(); toggleFocus(); return; }
-  if (e.key === 'Escape' && document.body.classList.contains('focus-mode') && !UI.diff && !UI.ghost && !UI.riff) { e.preventDefault(); toggleFocus(false); return; }
+  if (e.key === 'Escape' && document.body.classList.contains('focus-mode') && !UI.diff && !UI.ghost && !UI.imp) { e.preventDefault(); toggleFocus(false); return; }
   if (e.altKey && /^Digit[1-7]$/.test(e.code)) { e.preventDefault(); const r = RIFFS[+e.code.slice(5) - 1]; if (r.k === 'translate') openTranslate(ta, i); else runRiff(i, r.k); return; }
   if (e.altKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); moveTweet(i, e.key === 'ArrowUp' ? -1 : 1); return; }
   if (e.key === 'Enter' && e.shiftKey) UI.noSplit = true;
   if (e.key === 'Backspace' && ta.selectionStart === 0 && ta.selectionEnd === 0 && i > 0) { e.preventDefault(); mergeUp(i); return; }
   if (e.key === 'ArrowUp' && ta.selectionStart === 0 && ta.selectionEnd === 0 && i > 0 && !e.shiftKey) { e.preventDefault(); focusTweet(i - 1, 'end'); return; }
   if (e.key === 'ArrowDown' && ta.selectionEnd === ta.value.length && i < n - 1 && !e.shiftKey) { e.preventDefault(); focusTweet(i + 1, 0); return; }
-  if (e.key === 'Escape') { if (UI.diff) { e.preventDefault(); e.stopPropagation(); closeDiff(false); return; } if (UI.ghost) { UI.ghost = null; paintField(ta); return; } if (UI.riff) { UI.riff = null; renderExtras(id); return; } }
+  if (e.key === 'Escape') { if (UI.diff) { e.preventDefault(); e.stopPropagation(); closeDiff(false); return; } if (UI.ghost) { UI.ghost = null; paintField(ta); return; } if (UI.imp) { UI.imp = null; renderExtras(id); return; } }
   if (UI.ghost && !['Shift', 'Meta', 'Control', 'Alt', 'Tab', 'CapsLock'].includes(e.key)) { UI.ghost = null; }
   if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') setTyping(true);
 }
@@ -4852,7 +4893,7 @@ function sharpenKey(e) {
 }
 
 /* riffs */
-function toggleRiff(id) { UI.riff = UI.riff === id ? null : id; renderExtras(id); if (UI.riff) { const c = $(`.tw[data-id="${id}"] .riffbar .chip`); } }
+function toggleRiff(id) { setImprove(id, 'takes'); }
 function openTranslate(anchor, i) {
   if (!aiOn()) { toast('Translating in your tone needs Claude. Basic mode would only swap words, so it’s off here.', { icon: 'globe', ms: 5200, action: 'Connections', onAction: () => openConnections() }); return; }
   openMenu(anchor, [{ header: 'Translate, keep your tone' }, ...[['es', 'Spanish'], ['fr', 'French'], ['de', 'German']].map(([k, l]) => ({ label: l, icon: 'globe', run: () => runRiff(i, 'translate', k) }))]);
@@ -4869,7 +4910,7 @@ function runRiff(i, kind, lang) {
   if (kind === 'hook' && i === 0 && hookScore(after).score <= hookScore(before).score) { toast(`Your hook already scores ${hookScore(before).score}. Nothing here beats it.`, { icon: 'hook', tone: 'accent' }); return; }
   if (after.trim() === before.trim()) { toast(kind === 'grammar' ? 'Grammar’s clean. Nothing to fix.' : 'Already tight. Nothing worth changing.', { icon: 'check' }); return; }
   spendAI();
-  UI.riff = null; UI.ghost = null;
+  UI.imp = null; UI.ghost = null;
   const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null;
   UI.diff = { id: tw.id, kind, lang, before, after, chunks: diffWords(before, after), shown: 0 }; if (oldD) renderExtras(oldD);
   renderExtras(tw.id);
@@ -4885,7 +4926,7 @@ function runRiff(i, kind, lang) {
 /* the Claude version: three takes in one call, streamed into the same diff view */
 async function runRiffAI(i, kind, lang, { fresh } = {}) {
   const tw = S.draft.tweets[i]; const before = tw.text; const ctl = new AbortController();
-  UI.riff = null; UI.ghost = null;
+  UI.imp = null; UI.ghost = null;
   const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null; if (UI.diff && UI.diff.ctl) UI.diff.ctl.abort();
   const d = UI.diff = { id: tw.id, kind, lang, before, after: before, chunks: [{ eq: before }], pending: true, ctl }; if (oldD) renderExtras(oldD);
   renderExtras(tw.id);
@@ -5092,7 +5133,7 @@ function commitDraft({ day, time, status = 'scheduled' }) {
   S.queue.push({ id: uid(), day, time, text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), ...(media.some(x => x.length) ? { media } : {}), platforms: { ...S.platforms }, status, autoPlug: S.settings.autoPlug, autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
   S.streak[dayKey(Date.now())] = 1; if (UI.quietDone) UI.quietDone = false; else SFX.play('done');
   syncToServer(S.queue[S.queue.length - 1], media);
-  S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; UI.hook = false; save();
+  S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.imp = null; save();
 }
 function openSchedule() {
   if (CURRENT !== 'write') return; refreshBest();
@@ -5103,6 +5144,7 @@ function openSchedule() {
   const ps = S.draft.slot; if (ps && slotDate(ps.day, ps.time).getTime() > Date.now() && !taken(ps.day, ps.time)) { best.unshift({ day: ps.day, time: ps.time, reason: 'The slot you picked in your queue' }); best.length = Math.min(best.length, 3); } const n = S.draft.tweets.filter(t => t.text.trim()).length;
   const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times are ${esc(tzName())}`)}
   <div class="modal-b" style="display:grid;gap:18px">
+    <div id="sh-hook">${schedHookHTML()}</div>
     ${checksHTML(preflight())}
     <div style="display:grid;gap:8px"><span class="label">${TIMES.src === 'you' ? 'Best times for you' : 'Good times to post'}</span>
       <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" data-si="${i}"><span class="radio"></span><span><b>${slotLabel(s.day, s.time)}</b><small>${esc(s.reason)}</small></span>${i === pickI ? '<span class="pill accent">Best</span>' : i === 0 && pickI ? '<span class="pill">Soonest</span>' : ''}</button>`).join('')}
@@ -5115,7 +5157,9 @@ function openSchedule() {
   const el = m.el;
   el.addEventListener('click', e => {
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
-    const s = e.target.closest('.stime'); if (s) { $$('.stime', el).forEach(x => x.setAttribute('aria-checked', x === s)); pickI = s.dataset.si; $('#custom-t', el).hidden = pickI !== 'custom'; const cl = () => { const d = $('#sd', el).value, t = $('#st', el).value; return d && t ? `Schedule for ${slotLabel(d, t)}` : 'Schedule'; }; $('#s-go-l', el).textContent = pickI === 'custom' ? cl() : `Schedule for ${slotLabel(best[pickI].day, best[pickI].time)}`; if (pickI === 'custom') { $('#sd', el).oninput = $('#st', el).oninput = () => { $('#s-go-l', el).textContent = cl(); }; } }
+    const ha = e.target.closest('[data-halt]'); if (ha) { const tw = S.draft.tweets[0], before = tw.text, a0 = hookFor(before).score; tw.text = UI.halts[+ha.dataset.halt]; save(); renderThread(); const a1 = hookFor(tw.text).score; $('#sh-hook', el).innerHTML = `<div class="sh-hook ok">${ic('check', 'sm')}<span>Hook ${a0} → <b>${a1}</b>. Swapped in.</span><button class="btn ghost sm" data-hundo>Undo</button></div>`; UI.hundo = before; SFX.play(a1 >= 70 ? 'hook' : 'swap'); return; }
+    if (e.target.closest('[data-hundo]')) { S.draft.tweets[0].text = UI.hundo; save(); renderThread(); $('#sh-hook', el).innerHTML = schedHookHTML(); return; }
+    const s = e.target.closest('.stime'); if (s) { $$('.stime', el).forEach(x => x.setAttribute('aria-checked', x === s)); pickI = s.dataset.si; $('#custom-t', el).hidden = pickI !== 'custom'; const cl = () => { const d = $('#sd', el).value, t = $('#st', el).value; return d && t ? `Schedule for ${slotWhen(d, t)}` : 'Schedule'; }; $('#s-go-l', el).textContent = pickI === 'custom' ? cl() : `Schedule for ${slotWhen(best[pickI].day, best[pickI].time)}`; if (pickI === 'custom') { $('#sd', el).oninput = $('#st', el).oninput = () => { $('#s-go-l', el).textContent = cl(); }; } }
     const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); }
   });
   $$('.stime', el).forEach(r => r.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const all = $$('.stime', el); const i = all.indexOf(r); const nx = all[(i + (e.key === 'ArrowDown' ? 1 : -1) + all.length) % all.length]; nx.focus(); nx.click(); } }));
@@ -5135,6 +5179,25 @@ function openSchedule() {
     finish(slot, e.currentTarget);
   };
   $('#s-queue', el).onclick = e => { const s = nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } finish(s, e.currentTarget); };
+}
+/* the moment of commitment: a weak first line gets three stronger ones, each one tap away. Scheduling anyway is always fine */
+function hookAlts(text, n = 3) {
+  const t = text.trim(), ss = sentences(t), first = (ss[0] || '').trim(), rest0 = ss.length > 1 ? ss.slice(1).join('').trim() : '';
+  const base = hookScore(first).score, out = new Set();
+  const keepRest = l => rest0 ? `${l}\n\n${rest0}` : l;
+  const punch = AI.punchier(first); if (punch && punch !== first) out.add(keepRest(punch));
+  hookPool(t).forEach(l => out.add(l + (t ? `\n\n${AI.punchier(base < 60 && rest0 ? rest0 : t)}` : '')));
+  /* your own line, tightened, always comes first when it helps; the templates fill in after */
+  const own = punch && punch !== first && hookScore(punch).score > base ? [keepRest(punch)] : [];
+  const rest = [...out].filter(x => !own.includes(x)).map(x => ({ x, s: hookScore(x.split('\n')[0]).score })).filter(o => o.s > base).sort((a, b) => b.s - a.s).map(o => o.x);
+  return [...own, ...rest].slice(0, n);
+}
+function schedHookHTML() {
+  const t = S.draft.tweets[0].text; if (!t.trim()) return ''; const H = hookFor(t, S.draft.tweets.filter(x => x.text.trim()).length);
+  if (H.score >= 60) return `<div class="sh-hook ok">${ic('check', 'sm')}<span>Hook <b>${H.score}</b>. ${H.score >= 70 ? 'A line worth stopping for.' : 'Good enough to post.'}</span></div>`;
+  UI.halts = hookAlts(t);
+  return `<div class="sh-hook"><div class="sh-hh"><span class="hook lo" style="height:24px"><span class="sc" style="--v:${H.score}"><span>${H.score}</span></span><span>Hook</span></span><span><b>Your first line could work harder.</b> ${esc((H.g || hookScore(t)).reason)}</span></div>
+    ${UI.halts.length ? `<div class="sh-alts">${UI.halts.map((a, i) => `<button class="sh-alt" data-halt="${i}"><span class="hook ${hookScore(a.split('\n')[0]).score >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc"><span>${hookScore(a.split('\n')[0]).score}</span></span></span><span>${esc(clip(a.split('\n')[0], 110))}</span></button>`).join('')}</div><p class="faint" style="font-size:12px">Tap one to swap it in. Or schedule as it is; it’s your call.</p>` : ''}</div>`;
 }
 function splitOverflow() { const lim = effLimit(); for (let i = S.draft.tweets.length - 1; i >= 0; i--) { const t = S.draft.tweets[i]; if (tlen(t.text) > lim) { const parts = splitText(t.text, lim); t.text = parts[0]; const tws = parts.slice(1).map(x => newTweet(x)); S.draft.tweets.splice(i + 1, 0, ...tws); tws.forEach(x => UI.fresh.add(x.id)); } } renderThread(); markSaving(); }
 /* with Hookworthy's server and a connected account, the queue is real: X and LinkedIn get the post */
@@ -6041,20 +6104,20 @@ function refreshSide() { if (!CURRENT || CURRENT === 'home' || CURRENT === 'star
 function openDraft(i) {
   const d = S.drafts[i]; if (!d) return;
   S.drafts.splice(i, 1); if (!isEmptyDraft()) S.drafts.unshift(S.draft);
-  S.draft = d; UI.diff = null; UI.riff = null; save();
+  S.draft = d; UI.diff = null; UI.imp = null; save();
   if (CURRENT === 'write') route(); else go('write');
   setTimeout(() => focusTweet(0, 'end'), 80);
 }
 function newPost() {
   SFX.play('tap');
   if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 100); toast('Saved to Drafts.', { icon: 'archive' }); }
-  S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.riff = null; save();
+  S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.imp = null; save();
   if (CURRENT === 'write') { route(); } else go('write');
   setTimeout(() => focusTweet(0), 80);
 }
 function writeFrom(texts) {
   if (!isEmptyDraft()) { S.drafts.unshift(S.draft); S.drafts = S.drafts.slice(0, 100); }
-  S.draft = freshDraft(texts); S.draft.tweets.forEach(t => UI.fresh.add(t.id)); UI.diff = null; UI.riff = null; save();
+  S.draft = freshDraft(texts); S.draft.tweets.forEach(t => UI.fresh.add(t.id)); UI.diff = null; UI.imp = null; save();
   if (CURRENT === 'write') { renderThread({ focusId: S.draft.tweets[0].id, pos: 'end' }); } else { goThen('write', () => focusTweet(0, 'end')); }
 }
 function useHook(t) {
@@ -6088,7 +6151,8 @@ function composerClick(e) {
     ], { align: 'end', width: 250 }); break;
     case 'add': { const last = S.draft.tweets.length - 1; insertAfter(last, [''], { focusId: null }); focusTweet(last + 1, 0); break; }
     case 'shuffle': shuffleStarters(); break;
-    case 'starter': writeFrom(expandIdea(el.dataset.t, el.dataset.kind, el.dataset.topic)); toast(OUTLINE_MSG, { icon: 'riff', tone: 'accent', ms: 4200 }); break;
+    case 'startopen': UI.startOpen = true; { const st = $('#starters'); if (st) st.innerHTML = startersHTML(); } SFX.play('tick'); break;
+    case 'starter': writeIdea(el.dataset.t, el.dataset.kind, el.dataset.topic); break;
     case 'gif': openGifs(i); break;
     case 'visual': openVisual(i); break;
     case 'toolsmore': openMenu(el, [{ label: 'Make a visual', icon: 'spark', hint: 'Quote card or chart', run: () => openVisual(i) }, { label: 'Read it aloud', icon: 'volume', run: () => readAloud(i) }]); break;
@@ -6112,7 +6176,9 @@ function composerClick(e) {
     case 'fmore': UI.fOff = (UI.fOff || 0) + 1; renderExtras(S.draft.tweets[0].id); SFX.play('swap'); break;
     case 'vminfo': openVoiceMatch(el); break;
     case 'reviews': openReviewComments(); break;
-    case 'hookinfo': UI.hook = !UI.hook; renderExtras(S.draft.tweets[0].id); el.setAttribute('aria-expanded', UI.hook); break;
+    case 'hookinfo': setImprove(S.draft.tweets[0].id, 'score'); break;
+    case 'imptab': { const tid = (el.closest('.tw') || {}).dataset ? el.closest('.tw').dataset.id : S.draft.tweets[0].id; UI.imp = { id: tid, tab: el.dataset.t }; renderExtras(tid); SFX.play('tick'); break; }
+    case 'impclose': { const tid = el.closest('.tw').dataset.id; UI.imp = null; renderExtras(tid); break; }
     case 'dorriff': { const k = el.dataset.k; const idx = i >= 0 ? i : 0; if (k === 'translate') openTranslate(el, idx); else runRiff(idx, k); break; }
     case 'diffyes': closeDiff(true); break;
     case 'diffno': closeDiff(false); break;
@@ -7004,7 +7070,7 @@ function onbStep3() {
   $('#onb-more').onclick = () => { $('#onb-ideas').innerHTML = onbIdeas(genIdeas(5, ++seed)); };
   $('#onb-ideas').onclick = e => {
     const b = e.target.closest('[data-oi]'); if (!b) return; const card = b.closest('.pidea');
-    if (b.dataset.oi === 'open') writeFrom(expandIdea(card.dataset.t, card.dataset.k, card.dataset.topic));
+    if (b.dataset.oi === 'open') writeIdea(card.dataset.t, card.dataset.k, card.dataset.topic);
     else { addIdea({ src: 'note', text: card.dataset.t }); b.disabled = true; b.innerHTML = `${ic('check', 'sm')} Saved`; }
   };
 }
@@ -7085,7 +7151,7 @@ ROUTES.today = () => {
   if (!RRADAR.at || Date.now() - RRADAR.at > 3 * 60e3) loadRadar().then(() => { const t = $('.t-rr'); if (t && CURRENT === 'today') { $('#t-body').innerHTML = todayHTML(); } }).catch(() => { });
   $('#view').addEventListener('click', e => {
     const b = e.target.closest('[data-tact]'); if (!b) return; const a = b.dataset.tact;
-    if (a === 'write') { const i = todayIdea(); writeFrom(expandIdea(i.text, i.kind)); toast(OUTLINE_MSG, { icon: 'riff', tone: 'accent', ms: 4200 }); }
+    if (a === 'write') { const i = todayIdea(); writeIdea(i.text, i.kind); }
     if (a === 'another') { TODAY.k++; $('#t-body').innerHTML = todayHTML(); SFX.play('tick'); }
     if (a === 'plan') openPlan();
     if (a === 'desk') openReplyDesk();
@@ -7138,7 +7204,7 @@ ROUTES.ideas = () => {
     const b = e.target.closest('[data-iact]'); if (!b) return; const a = b.dataset.iact;
     if (a === 'shuffle') shuffleEngine();
     if (a === 'claude') claudeIdeas(b);
-    if (a === 'write') { const c = b.closest('[data-t]'); writeFrom(expandIdea(c.dataset.t, c.dataset.k)); toast(OUTLINE_MSG, { icon: 'riff', tone: 'accent', ms: 4200 }); }
+    if (a === 'write') { const c = b.closest('[data-t]'); writeIdea(c.dataset.t, c.dataset.k); }
     if (a === 'save') { const c = b.closest('[data-t]'); addIdea({ src: 'note', text: c.dataset.t }, true); drawInbox(); b.innerHTML = ic('check', 'sm'); b.disabled = true; toast('Parked in Saved.', { icon: 'inbox' }); }
     if (a === 'expand') { const it = S.ideas.find(x => x.id === b.closest('[data-id]').dataset.id); showAngles(it.src === 'link' ? parseLink(it.url || '') || { title: it.text, topic: topicOf(it.text) } : { title: cleanIdea(it.text), topic: topicOf(cleanIdea(it.text)) }, it.src); }
     if (a === 'draft') { const it = S.ideas.find(x => x.id === b.closest('[data-id]').dataset.id); writeFrom(expandIdea(cleanIdea(it.text), 'How-to')); }
