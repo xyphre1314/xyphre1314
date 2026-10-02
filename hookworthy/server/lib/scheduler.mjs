@@ -33,7 +33,7 @@ export async function publish(item, onResult = () => {}) {
       const posts = normPosts(item.posts).map(q => ({ text: q.text, media: q.media.map(id => M.getMedia(id)) }));
       if (p === 'x') { results.x = { ok: true, ...(await X.postThread(posts)) }; BO.track({ ids: results.x.ids, posts }); }
       /* LinkedIn has no threads: one post, parts separated by a blank line, every picture attached */
-      if (p === 'linkedin') results.linkedin = { ok: true, ...(await LI.post(posts.map(q => q.text).filter(Boolean).join('\n\n'), posts.flatMap(q => q.media))) };
+      if (p === 'linkedin') results.linkedin = { ok: true, ...(await LI.post(posts.map(q => String(q.text || '').replace(/^\s*\d+\s*\/\s*\d*\s*/, '')).filter(Boolean).join('\n\n') /* one LinkedIn post: thread numbers (1/, 2/6) don't belong */, posts.flatMap(q => q.media))) };
     } catch (e) { results[p] = { ok: false, error: e.message }; }
     onResult(p, results[p]);
   }
