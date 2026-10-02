@@ -2170,6 +2170,38 @@ button.ai-badge:hover{ color:var(--text-1); }
 .pm-rw{ display:grid; gap:6px; justify-items:start; padding-top:8px; border-top:1px solid var(--border); }
 .ins-card.calib{ background:color-mix(in srgb,var(--pa) 35%,var(--surface)); }
 @media (max-width:560px){ .top-post{ flex-wrap:wrap; } .top-post .tp-a{ width:100%; padding-left:34px; } }
+/* Insights · Your posts: tiles, then a sortable table; a list of cards on phones */
+.pt-tiles{ margin:0 0 18px; }
+.pt .pt-tile{ background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); align-content:start; }
+.pt .pt-tile b{ font-size:var(--t-40,40px); }
+.pt-dl{ font-size:var(--t-12); line-height:1.4; color:var(--text-3); } .pt-dl .delta{ font-size:var(--t-12); }
+.pt-bar{ display:flex; align-items:center; gap:8px 14px; flex-wrap:wrap; margin-bottom:6px; }
+.pt-search{ position:relative; flex:1 1 240px; max-width:380px; } .pt-search .input{ padding-left:34px; }
+.pt-search > .icon{ position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--text-3); pointer-events:none; }
+.pt-n{ font-size:var(--t-13); font-variant-numeric:tabular-nums; }
+.pt-sort{ display:none; align-items:center; gap:8px; margin-left:auto; } .pt-sort .input{ width:auto; min-width:0; max-width:190px; }
+.pt-tbl{ table-layout:fixed; font-variant-numeric:tabular-nums; }
+table.data.pt-tbl th{ padding:10px; font:600 var(--t-12)/1.2 var(--font-ui); color:var(--text-3); white-space:nowrap; vertical-align:bottom; }
+.pt-tbl th button{ display:inline-flex; align-items:center; gap:3px; padding:4px 0; border:0; background:none; font:inherit; color:inherit; cursor:pointer; }
+.pt-tbl th button:hover, .pt-tbl th[aria-sort] button{ color:var(--text-1); }
+.pt-tbl th.n button{ flex-direction:row-reverse; } .pt-ar{ display:inline-block; width:1ch; text-align:center; }
+.pt-tbl th.pt-at{ width:84px; } .pt-tbl th.pt-hook{ width:92px; } .pt-tbl th.pt-likes, .pt-tbl th.pt-replies, .pt-tbl th.pt-reposts, .pt-tbl th.pt-views{ width:76px; } .pt-tbl th.pt-rate{ width:124px; }
+.pt-tbl td{ padding:11px 10px; vertical-align:middle; } .pt-tbl td.pt-at{ color:var(--text-3); white-space:nowrap; }
+.pt-tbl tbody tr{ cursor:pointer; transition:background var(--d-micro) var(--ease-out); } .pt-tbl tbody tr:hover{ background:var(--surface-2); }
+.pt-open{ display:block; width:100%; padding:0; border:0; background:none; font:inherit; font-size:var(--t-14); color:var(--text-1); text-align:left; cursor:pointer; }
+.pt-tbl .pt-open{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .pt-open .fl1{ font-weight:500; }
+.pt-cards{ display:none; list-style:none; margin:0; padding:0; } .pt-cards li{ border-bottom:1px solid var(--border); } .pt-cards li:last-child{ border-bottom:0; }
+.pt-card{ display:grid; gap:6px; padding:12px 2px; }
+.pt-fl{ display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; line-height:1.4; overflow-wrap:anywhere; }
+.pt-nums{ display:flex; flex-wrap:wrap; gap:2px 12px; font:500 var(--t-12)/1.5 var(--font-ui); font-variant-numeric:tabular-nums; color:var(--text-3); } .pt-nums span{ white-space:nowrap; }
+.pt-pg{ display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-top:14px; }
+.pt-pn{ min-width:6ch; text-align:center; font:500 var(--t-13)/1 var(--font-mono); font-variant-numeric:tabular-nums; color:var(--text-2); }
+.pt-empty{ display:grid; justify-items:start; gap:12px; padding:6px 0 4px; color:var(--text-2); font-size:var(--t-15); max-width:58ch; }
+@media (max-width:900px){
+  .pt-tbl{ display:none; } .pt-cards{ display:block; } .pt-sort{ display:flex; }
+  .pt-tiles{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .pt .pt-tile{ padding:14px; } .pt .pt-tile b{ font-size:30px; }
+  .pt-bar{ gap:10px; } .pt-search{ max-width:none; flex-basis:100%; } .pt-pg{ justify-content:space-between; }
+}
 
 html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !important; }
 .idea .why{ font-size:var(--t-13); color:var(--text-2); margin-top:-4px; }
@@ -8258,7 +8290,7 @@ function series(days) {
 }
 function niceTicks(max, n = 4) { if (!(max > 0)) return [0, 1]; const raw = max / n; const mag = Math.pow(10, Math.floor(Math.log10(raw))); const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw); return Array.from({ length: Math.ceil(max / step) + 1 }, (_, i) => i * step); }
 ROUTES.insights = () => {
-  mount('insights', `<div class="page"><div class="page-h"><div><h1 class="display">Insights</h1><p>What your audience rewards, in sentences. The numbers are there when you want them.</p></div><div class="seg" id="rng" role="tablist" aria-label="Range">${[7, 30, 90].map(d => `<button role="tab" data-r="${d}" aria-selected="${RANGE === d}">${d} days</button>`).join('')}</div></div><div id="digest"></div><div id="ins"></div></div>`);
+  mount('insights', `<div class="page"><div class="page-h"><div><h1 class="display">Insights</h1><p>What your audience rewards, in sentences. The numbers are there when you want them.</p></div><div class="seg" id="rng" role="tablist" aria-label="Range">${[7, 30, 90].map(d => `<button role="tab" data-r="${d}" aria-selected="${RANGE === d}">${d} days</button>`).join('')}</div></div><div id="digest"></div><div id="ins"></div><div id="ins-posts"></div></div>`);
   syncSeg($('#rng')); drawInsights(); drawDigest();
   $('#view').addEventListener('click', e => {
     const r = e.target.closest('[data-r]'); if (r) { RANGE = +r.dataset.r; $$('[data-r]').forEach(b => b.setAttribute('aria-selected', b === r)); syncSeg($('#rng')); drawInsights(); return; }
@@ -8280,7 +8312,7 @@ ROUTES.insights = () => {
   });
 };
 function drawInsights() {
-  if (HIST().length >= 8) return drawInsightsReal();
+  drawPosts(); if (HIST().length >= 8) return drawInsightsReal();
   const d = series(RANGE); const total = d.reduce((a, b) => a + b, 0); const f = RANGE / 30;
   const kpis = [['Impressions', fmtK(total), '+18%', 1], ['Engagement', (3.1 + (RANGE === 7 ? .4 : 0)).toFixed(1) + '%', '+0.6 pts', 1], ['New followers', fmtK(Math.round(412 * f)), '+9%', 1], ['Replies', fmtK(Math.round(1284 * f)), '−4%', 0]];
   const types = [['Contrarian', 3.2], ['Story', 2.1], ['Listicle', 1.6], ['How-to', 1.4], ['Question', 1.1], ['Announcement', .7]];
@@ -8356,6 +8388,88 @@ async function postMortem(id, btn) {
   } catch (e) { box.hidden = true; aiError(e); } finally { btn.classList.remove('is-loading'); }
 }
 function MYTOP() { if (!HIST().length) return TOP_POSTS; return ANALYSIS().top.map(p => ({ id: p.id, text: p.text, views: p.views, likes: p.likes, replies: p.replies, reposts: p.reposts, kind: HWCore.kindOf(p.text), days: p.at ? Math.round((Date.now() - p.at) / DAY) : 0, url: p.url })); }
+/* Your posts: every post you brought (plus queue posts that came back with numbers), sortable and searchable, 20 to a page.
+   Rows are built once per history change; sorting and search touch plain fields, and only the current page becomes HTML. */
+const PT = { k: 'at', dir: -1, q: '', pg: 0 }, PT_PER = 20;
+const PT_COLS = [['at', 'Date'], ['text', 'Post'], ['hook', 'Hook score'], ['likes', 'Likes'], ['replies', 'Replies'], ['reposts', 'Reposts'], ['views', 'Views'], ['rate', 'Engagement rate']];
+let _pt = { key: '', v: null };
+function ptRow(p, extra) { const v = p.views || 0, e = (p.likes || 0) + (p.replies || 0) + (p.reposts || 0); return { id: p.id, text: p.text, thread: p.thread || [], at: p.at || null, likes: p.likes || 0, replies: p.replies || 0, reposts: p.reposts || 0, views: v, rate: v ? e / v : null, lc: p.text.toLowerCase(), hook: null, ...extra }; }
+function ptData() {
+  const pub = S.queue.filter(q => q.status === 'published' && !q.marked && mineQ(q)).map(q => ({ q, m: q.metrics || q })).filter(({ m }) => ['likes', 'replies', 'reposts', 'views'].some(k => typeof m[k] === 'number'));
+  const key = histKey() + '|' + pub.map(({ q, m }) => q.id + ':' + (m.likes || 0) + ':' + (m.replies || 0) + ':' + (m.views || 0)).join(',') + '|' + SHOWCASE();
+  if (_pt.key === key) return _pt.v;
+  const h = HIST(), seen = new Set(h.map(p => p.text.trim())), ids = new Set(h.map(p => p.id));
+  let rows = h.map(p => ptRow(p)), sample = false;
+  pub.forEach(({ q, m }) => { if (seen.has(q.text.trim()) || (q.xIds && ids.has('x-' + q.xIds[0]))) return; rows.push(ptRow({ id: q.id, text: q.text, thread: q.tweets.slice(1), at: slotDate(q.day, q.time).getTime(), likes: m.likes, replies: m.replies, reposts: m.reposts, views: m.views })); });
+  /* the showcase has no posts of its own: the sample account's top posts stand in, labelled Sample */
+  if (!rows.length && SHOWCASE()) { sample = true; rows = TOP_POSTS.map(p => ptRow({ ...p, at: Date.now() - p.days * DAY, reposts: Math.round(p.likes * .17) })); }
+  _pt = { key, v: { rows, sample, views: rows.some(r => r.views > 0) } }; return _pt.v;
+}
+const ptHook = r => r.hook == null ? (r.hook = hookScore(r.text).score) : r.hook;
+const ptCols = views => PT_COLS.filter(c => views || (c[0] !== 'views' && c[0] !== 'rate'));
+function ptView() {
+  const { rows } = ptData(), q = PT.q.trim().toLowerCase(), k = PT.k, d = PT.dir;
+  const list = q ? rows.filter(r => r.lc.includes(q)) : rows.slice(), val = k === 'hook' ? ptHook : r => r[k];
+  if (k === 'text') list.sort((a, b) => d * a.lc.localeCompare(b.lc));
+  else list.sort((a, b) => { const x = val(a), y = val(b); if (x == null || y == null) return x == null ? (y == null ? 0 : 1) : -1; return d * (x - y) || (b.at || 0) - (a.at || 0); });
+  const pages = Math.max(1, Math.ceil(list.length / PT_PER)); PT.pg = clamp(PT.pg, 0, pages - 1);
+  return { list, pages, page: list.slice(PT.pg * PT_PER, PT.pg * PT_PER + PT_PER) };
+}
+const ptDate = t => { if (!t) return '—'; const x = new Date(t); return `${MON[x.getMonth()]} ${x.getDate()}${x.getFullYear() !== new Date().getFullYear() ? `, ${x.getFullYear()}` : ''}`; };
+const ptRate = r => r.rate == null ? '—' : (r.rate * 100).toFixed(r.rate >= .1 ? 1 : 2) + '%';
+const ptSortName = (k, d) => k === 'at' ? (d < 0 ? 'Newest first' : 'Oldest first') : k === 'text' ? (d > 0 ? 'Post, A to Z' : 'Post, Z to A') : k === 'hook' || k === 'rate' ? `${d < 0 ? 'Highest' : 'Lowest'} ${k === 'hook' ? 'hook score' : 'engagement rate'}` : `${d < 0 ? 'Most' : 'Fewest'} ${k}`;
+/* the header tiles: the selected range against the one before it, counted back from your newest post when the history is old */
+function ptTiles(rows, views) {
+  const dated = rows.filter(r => r.at), last = Math.max(0, ...dated.map(r => r.at)) || Date.now(), end = Date.now() - last > 14 * DAY ? last : Date.now();
+  const win = dated.filter(r => r.at > end - RANGE * DAY && r.at <= end), prev = dated.filter(r => r.at > end - 2 * RANGE * DAY && r.at <= end - RANGE * DAY);
+  const sum = (a, k) => a.reduce((x, r) => x + r[k], 0), tile = (label, b, sub) => `<div class="card kpi pt-tile"><span class="label">${label}</span><b>${b}</b><span class="pt-dl">${sub}</span></div>`;
+  return [['likes', 'Likes'], ['replies', 'Replies'], ['reposts', 'Reposts'], ['views', 'Views']].map(([k, label]) => {
+    if (k === 'views' && !views) return tile(label, '—', '<span class="faint">Views come with your X archive</span>');
+    if (!dated.length) return tile(label, fmtN(sum(rows, k)), '<span class="faint">All posts. They came without dates</span>');
+    const a = sum(win, k), b = sum(prev, k), v = b ? Math.round((a - b) / b * 100) : null;
+    return tile(label, fmtN(a), v == null ? `<span class="faint">Nothing in the ${RANGE} days before to compare</span>` : v === 0 ? `<span class="faint">Same as the ${RANGE} days before</span>`
+      : `<span class="delta ${v > 0 ? 'up' : 'down'}"><span aria-hidden="true">${v > 0 ? '↑' : '↓'}</span> ${v > 0 ? '+' : '−'}${fmtN(Math.abs(v))}%</span> <span class="faint">vs the ${RANGE} days before</span>`);
+  }).join('');
+}
+function drawPosts() {
+  const box = $('#ins-posts'); if (!box) return; const { rows, sample, views } = ptData();
+  if (!rows.length) { box.innerHTML = `<section class="card chart-card sec pt" aria-labelledby="pt-h"><div class="chart-h"><h3 class="h3" id="pt-h">Your posts</h3></div><div class="pt-empty"><p>Nothing here yet. Bring your X archive or a CSV and every post you’ve written lands in this table, with its likes, replies and views.</p><button class="btn primary" data-act="import">${ic('upload', 'sm')} Bring your posts</button></div></section>`; return; }
+  const opts = [['at', -1], ['at', 1], ...ptCols(views).filter(c => c[0] !== 'at' && c[0] !== 'text').map(c => [c[0], -1])];
+  box.innerHTML = `<section class="card chart-card sec pt" aria-labelledby="pt-h"><div class="chart-h"><div><h3 class="h3" id="pt-h">Your posts${sample ? ' <span class="pill ex-chip">Sample</span>' : ''}</h3><p class="faint" style="font-size:13px;margin-top:2px">${sample ? 'A sample account’s posts. Bring yours and this table fills with your own numbers.' : `Every post you brought, ${fmtN(rows.length)} in all. The tiles cover the last ${RANGE} days.`}</p></div>${sample ? `<button class="btn sm" data-act="import">${ic('upload', 'sm')} Bring your posts</button>` : ''}</div>
+    <div class="kpis pt-tiles">${ptTiles(rows, views)}</div>
+    <div class="pt-bar"><div class="pt-search">${ic('search', 'sm')}<label class="sr" for="pt-q">Search your posts</label><input class="input" id="pt-q" type="search" placeholder="Search your posts" autocomplete="off" value="${esc(PT.q)}"></div><span class="pt-n faint" id="pt-n" role="status"></span>
+    <div class="pt-sort"><label class="label" for="pt-sort">Sort</label><select class="input" id="pt-sort">${opts.map(([k, d]) => `<option value="${k}:${d}">${ptSortName(k, d)}</option>`).join('')}</select></div></div>
+    <div class="pt-body" id="pt-body"></div></section>`;
+  const sec = $('.pt', box), qi = $('#pt-q', sec); let tm;
+  qi.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(() => { PT.q = qi.value; PT.pg = 0; ptBody(); }, rows.length > 800 ? 120 : 40); });
+  $('#pt-sort', sec).addEventListener('change', e => { const [k, d] = e.target.value.split(':'); PT.k = k; PT.dir = +d; PT.pg = 0; ptBody(); });
+  sec.addEventListener('click', e => {
+    const s = e.target.closest('[data-pts]'); if (s) { const k = s.dataset.pts; PT.dir = PT.k === k ? -PT.dir : k === 'text' ? 1 : -1; PT.k = k; PT.pg = 0; ptBody(); const again = $(`[data-pts="${k}"]`, sec); again && again.focus({ preventScroll: true }); srSay(`Sorted: ${ptSortName(PT.k, PT.dir)}.`); return; }
+    const pg = e.target.closest('[data-ptp]'); if (pg) { const dir = pg.dataset.ptp; PT.pg += +dir; ptBody(); const b = $(`.pt-pg [data-ptp="${dir}"]`, sec); (b && !b.disabled ? b : $(`.pt-pg [data-ptp="${-dir}"]`, sec) || qi).focus({ preventScroll: true }); srSay(`Page ${PT.pg + 1}.`); return; }
+    if (e.target.closest('[data-ptclear]')) { PT.q = qi.value = ''; PT.pg = 0; ptBody(); qi.focus(); return; }
+    const row = e.target.closest('[data-pr]'); if (row) ptMenu(row.matches('.pt-open') ? row : $('.pt-open', row), row.dataset.pr);
+  });
+  ptBody();
+}
+function ptBody() {
+  const body = $('#pt-body'); if (!body) return; const { rows, views } = ptData(), { list, pages, page } = ptView();
+  const cols = ptCols(views), q = PT.q.trim(), n = $('#pt-n'), sel = $('#pt-sort'), v = `${PT.k}:${PT.dir}`;
+  if (n) n.textContent = q ? `${fmtN(list.length)} of ${fmtN(rows.length)} posts match` : `${fmtN(rows.length)} post${rows.length === 1 ? '' : 's'}`;
+  if (sel) { if (![...sel.options].some(o => o.value === v)) sel.add(new Option(ptSortName(PT.k, PT.dir), v)); sel.value = v; }
+  if (!list.length) { body.innerHTML = `<div class="pt-empty"><p>No posts match “${esc(q)}”.</p><button class="btn sm" data-ptclear>Clear search</button></div>`; return; }
+  const num = (r, k) => k === 'hook' ? ptHook(r) : k === 'rate' ? ptRate(r) : k === 'views' && !r.views ? '—' : fmtN(r[k]), fl = r => firstLineHTML(clip(r.text.split('\n')[0], 160));
+  body.innerHTML = `<table class="data pt-tbl"><caption class="sr">Your posts, sorted by ${esc(ptSortName(PT.k, PT.dir).toLowerCase())}. Page ${PT.pg + 1} of ${pages}. Choose a post for options.</caption>
+    <thead><tr>${cols.map(([k, l]) => `<th scope="col" class="pt-${k}${k !== 'at' && k !== 'text' ? ' n' : ''}"${PT.k === k ? ` aria-sort="${PT.dir > 0 ? 'ascending' : 'descending'}"` : ''}><button type="button" data-pts="${k}">${l}<span class="pt-ar" aria-hidden="true">${PT.k === k ? (PT.dir > 0 ? '↑' : '↓') : ''}</span></button></th>`).join('')}</tr></thead>
+    <tbody>${page.map(r => `<tr data-pr="${esc(r.id)}">${cols.map(([k]) => k === 'at' ? `<td class="pt-at">${ptDate(r.at)}</td>` : k === 'text' ? `<td class="pt-text"><button type="button" class="pt-open" aria-haspopup="menu" aria-expanded="false">${fl(r)}</button></td>` : `<td class="n">${num(r, k)}</td>`).join('')}</tr>`).join('')}</tbody></table>
+    <ul class="pt-cards" role="list">${page.map(r => `<li><button type="button" class="pt-open pt-card" data-pr="${esc(r.id)}" aria-haspopup="menu" aria-expanded="false"><span class="pt-fl">${fl(r)}</span><span class="pt-nums"><span>${ptDate(r.at)}</span><span>Hook ${ptHook(r)}</span><span>${fmtN(r.likes)} likes</span><span>${fmtN(r.replies)} replies</span><span>${fmtN(r.reposts)} reposts</span>${r.views ? `<span>${fmtN(r.views)} views</span><span>${ptRate(r)} rate</span>` : ''}</span></button></li>`).join('')}</ul>
+    ${pages > 1 ? `<nav class="pt-pg" aria-label="Pages of posts"><button type="button" class="btn sm" data-ptp="-1"${PT.pg ? '' : ' disabled'}>${ic('left', 'sm')} Prev</button><span class="pt-pn"><span aria-hidden="true">${PT.pg + 1}/${pages}</span><span class="sr">Page ${PT.pg + 1} of ${pages}</span></span><button type="button" class="btn sm" data-ptp="1"${PT.pg < pages - 1 ? '' : ' disabled'}>Next ${ic('right', 'sm')}</button></nav>` : ''}`;
+}
+function ptMenu(anchor, id) {
+  const r = ptData().rows.find(x => x.id === id); if (!r || !anchor) return; const all = [r.text, ...r.thread];
+  openMenu(anchor, [{ label: 'Open in Write as a new draft', icon: 'write', run: () => writeFrom(all) },
+    { label: 'Write another like it', icon: 'layers', run: () => { writeFrom(remix({ text: r.text, kind: HWCore.kindOf(r.text) }, 'thread')); toast(OUTLINE_MSG, { icon: 'layers', tone: 'accent', ms: 4200 }); } },
+    { label: 'Copy text', icon: 'copy', run: () => { copyText(all.join('\n\n')); toast('Copied.', { icon: 'copy', ms: 1400 }); } }], { width: 240 });
+}
 function heatmap() {
   const r = rng(RANGE); const cols = ['6a', '9a', '12p', '3p', '6p', '9p']; const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const val = (di, ci) => clamp((ci === 1 ? .7 : ci === 2 ? .55 : ci === 4 ? .5 : .22) + (di === 1 && ci === 1 ? .3 : 0) + (di >= 5 ? -.15 : 0) + (di === 3 && ci === 2 ? .25 : 0) + (r() - .5) * .2, .06, 1);
