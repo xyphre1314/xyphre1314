@@ -2508,6 +2508,42 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 /* margin notes: handwriting in empty states, one per screen */
 .mnote{ font:500 21px/1.15 "Caveat", "Segoe Print", cursive; color:var(--text-3); transform:rotate(-2deg); display:inline-flex; align-items:flex-end; gap:6px; }
 .mnote svg{ width:34px; height:22px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; }
+
+/* ==== Round 27: Today as one next action ==== */
+.today .page-h{ align-items:flex-end; }
+.rhythm{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-2); }
+.rh-days{ display:flex; gap:4px; } .rh-days i{ width:22px; height:22px; border-radius:6px; display:grid; place-items:center; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); }
+.rh-days i b{ font:600 10.5px/1 var(--font-ui); color:var(--text-3); } .rh-days i.on{ background:var(--text-1); box-shadow:none; } .rh-days i.on b{ color:var(--bg); }
+.rh-days i.sched{ box-shadow:inset 0 0 0 1.5px var(--text-2); background:none; } .rh-days i.now{ box-shadow:inset 0 0 0 1.5px var(--apricot); } .rh-days i.now.on{ background:var(--apricot); box-shadow:none; } .rh-days i.now.on b{ color:#1A1A1A; } .rh-days i.now.sched{ box-shadow:inset 0 0 0 1.5px var(--apricot); }
+.rh-t b{ font:400 24px/1 var(--font-display); color:var(--text-1); margin-right:2px; }
+.t-hero{ display:grid; gap:12px; margin-top:4px; } .t-hero .t-idea{ max-width:30ch; } .t-sub{ font-size:14px; color:var(--text-2); }
+.t-live, .t-miss{ background:var(--surface); box-shadow:0 0 0 1px var(--border-strong); } .t-live .t-idea, .t-miss .t-idea{ font:400 28px/1.15 var(--font-display); letter-spacing:-.01em; color:var(--text-1); }
+.t-live .label::before{ content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--success); margin-right:6px; vertical-align:1px; animation:livepulse 1.6s ease-in-out infinite; } @keyframes livepulse{ 50%{ opacity:.35; } }
+.t-miss{ box-shadow:0 0 0 1.5px color-mix(in srgb,var(--warn) 55%,transparent); }
+.t-strip{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; margin-top:20px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.ts-col{ display:grid; gap:6px; align-content:start; padding:14px 16px; min-width:0; } .ts-col + .ts-col{ border-left:1px solid var(--border); } .ts-col.now .label{ color:var(--text-1); }
+.ts-i, .ts-open{ display:grid; grid-template-columns:62px minmax(0,1fr); gap:8px; align-items:baseline; text-align:left; padding:6px 8px; margin:0 -8px; border-radius:8px; color:inherit; text-decoration:none; font-size:13px; }
+.ts-i:hover, .ts-open:hover{ background:var(--surface-2); } .ts-t{ font-variant-numeric:tabular-nums; color:var(--text-3); white-space:nowrap; } .ts-x{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ts-open .ts-x{ color:var(--accent-text); } .ts-none{ font-size:13px; }
+.today-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:32px; margin-top:24px; } .today-grid > section{ display:grid; gap:12px; align-content:start; min-width:0; }
+.t-stats{ display:flex; gap:16px; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .t-stats b{ font:400 26px/1 var(--font-display); color:var(--text-1); margin-right:3px; font-variant-numeric:lining-nums tabular-nums; } .t-stats .up b{ color:var(--success); } .t-stats .down b{ color:var(--text-2); }
+@media (max-width:860px){ .today .page-h{ align-items:flex-start; flex-direction:column; gap:12px; } .t-strip{ grid-template-columns:1fr; } .ts-col + .ts-col{ border-left:0; border-top:1px solid var(--border); } .today-grid{ grid-template-columns:1fr; } .t-live .t-idea, .t-miss .t-idea{ font-size:24px; } }
+
+.qd-list{ display:grid; gap:6px; } .qd{ padding:9px 11px; border-radius:10px; background:var(--bg-elev); box-shadow:0 0 0 1px var(--border-strong); font-size:13px; cursor:grab; display:grid; gap:2px; } .qd:hover{ box-shadow:0 0 0 1px var(--accent); } .qd.drag{ opacity:.4; } .qd[draggable="false"]{ cursor:default; opacity:.75; } .qd small{ color:var(--warn); font-size:12px; }
+.q-drafts .rhythm.compact .rh-days i{ width:16px; height:16px; border-radius:4px; } .q-drafts .rhythm.compact .rh-days i b{ display:none; } .q-drafts .rhythm.compact .rh-t{ font-size:12px; } .q-drafts .rhythm.compact .rh-t b{ font-size:16px; }
+
+.rr-card.mini{ padding:0; } .rr-mini{ display:grid; grid-template-columns:auto auto minmax(0,1fr) auto; gap:4px 10px; align-items:baseline; width:100%; text-align:left; padding:12px 16px; border-radius:inherit; font-size:13.5px; color:inherit; }
+.rr-mini:hover{ background:var(--surface-2); } .rr-mt{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-2); }
+@media (max-width:560px){ .rr-mini{ grid-template-columns:auto 1fr; } .rr-mt{ grid-column:1 / -1; white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; } .rr-mini .pill{ display:none; } }
+.rp-sum{ display:flex; justify-content:space-between; align-items:center; gap:12px; width:100%; padding:14px 16px; border-radius:var(--r-lg); border:1px solid var(--border); background:var(--surface); font-size:14.5px; color:inherit; text-align:left; } .rp-sum:hover{ background:var(--surface-2); } .rp-sum b{ font:400 22px/1 var(--font-display); }
+
+/* ==== Round 27: app cleanups ==== */
+.tab-new{ display:grid; justify-items:center; gap:3px; padding:4px 10px; font:500 12px/1 var(--font-ui); color:var(--text-2); }
+.tab-new .icon{ width:40px; height:30px; padding:6px 11px; border-radius:12px; background:var(--btn-bg); color:var(--btn-ink); box-sizing:border-box; }
+.ghost-acc{ position:absolute; right:0; bottom:-30px; z-index:3; display:inline-flex; gap:4px; align-items:center; height:28px; padding:0 10px; border-radius:99px; background:var(--text-1); color:var(--bg); font:600 12px/1 var(--font-ui); box-shadow:var(--sh-2); animation:rise var(--d-fast) var(--ease-out) both; }
+.side-status{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:4px 2px; } .side-status .plan-card{ margin:0; padding:0; background:none; box-shadow:none; border:0; font-size:12px; color:var(--text-3); } .side-status .plan-card:hover{ color:var(--text-1); text-decoration:underline; } .side-status .plan-card .pc-count{ font-size:12px; }
+@media (pointer:coarse){ .desk-only, .kbd-only{ display:none !important; } }
+@media (min-width:761px){ body:has(.scrim) #toasts{ top:auto !important; bottom:calc(20px + env(safe-area-inset-bottom,0px)) !important; } }
 </style>
 </head>
 <body>
@@ -3410,13 +3446,12 @@ function shell(active, inner) {
     </nav>
     ${S.drafts.length ? `<div class="side-drafts"><div class="nav-l">Drafts${S.drafts.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or let go">Tidy up</button>` : ''}</div>${S.drafts.slice(0, 5).map((d, i) => `<button class="sd" data-act="opendraft" data-i="${i}" title="${esc(clip((d.tweets[0] && d.tweets[0].text) || 'Untitled draft', 120))}${d.created ? ` · started ${agoLabel(d.created)}` : ''}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}${S.drafts.length > 5 ? `<button class="sd sd-all" data-act="alldrafts">All drafts · ${S.drafts.length}</button>` : ''}</div>` : ''}
     <div class="spacer"></div>
-    <button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="${aiBadgeTip()}">${aiBadgeInner()}</button>
-    ${S.plan === 'free' ? `<a class="side-plan plan-card" ${PRICED() ? '' : 'hidden'} href="#upgrade" data-tip="${SHOWCASE() ? 'How the free plan’s daily limit works. Nothing is for sale yet' : 'Unlimited rewrites on Pro'}"><span class="pc-count">${SHOWCASE() ? 'Demo: ' : ''}${S.ai.limit - used}/${S.ai.limit} rewrites left</span><span class="go">Pricing</span></a>` : ''}
+    <div class="side-status"><button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="${aiBadgeTip()}">${aiBadgeInner()}</button>${S.plan === 'free' ? `<a class="side-plan plan-card" ${PRICED() ? '' : 'hidden'} href="#upgrade" data-tip="${SHOWCASE() ? 'How the free plan’s daily limit works. Nothing is for sale yet' : 'Unlimited rewrites on Pro'}"><span class="pc-count">${SHOWCASE() ? 'Demo: ' : ''}${S.ai.limit - used}/${S.ai.limit} rewrites left</span></a>` : ''}</div>
     <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.ws === 'me' ? S.user.name : S.workspaces[0].name)}</b><span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span></span>${ic('more', 'sm')}</button>
   </aside>
   <main class="main" id="main"><div class="view" id="view">${inner}</div></main>
   <nav class="tabbar" aria-label="Main">
-    ${[['today', 'sun', 'Today'], ['write', 'write', 'Write'], ['ideas', 'ideas', 'Ideas'], ['queue', 'cal', 'Queue']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}
+    ${[['today', 'sun', 'Today'], ['replies', 'reply', 'Replies']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}<button class="tab-new" data-act="tabnew" aria-label="New post. Hold to save an idea">${ic('plus')}<span>${active === 'write' ? 'Write' : 'New'}</span></button>${[['queue', 'cal', 'Queue']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}
     <button data-act="mobilemore">${ic('more')}<span>More</span></button>
   </nav>
 </div>`;
@@ -3461,8 +3496,10 @@ const ACT = {
     '-',
     { label: 'View landing page', icon: 'arrow', run: () => go('home') }
   ], { width: 240 }),
+  tabnew: () => { if (Date.now() - (UI.tabHold || 0) < 700) return; if (CURRENT === 'write') { const ta = $('.tw-input'); ta && ta.focus(); } else newPost(); },
   mobilemore: el => openMenu(el, [
-    { label: 'Replies', icon: 'reply', run: () => go('replies') },
+    { label: 'Write', icon: 'write', run: () => go('write') },
+    { label: 'Ideas', icon: 'ideas', run: () => go('ideas') },
     { label: 'Insights', icon: 'chart', run: () => go('insights') },
     '-',
     { label: 'Hooks', icon: 'hook', run: () => go('hooks') },
@@ -3476,6 +3513,8 @@ const ACT = {
     ...(PRICED() ? [{ label: S.plan === 'free' ? 'Upgrade to Pro' : 'Manage plan', icon: 'riff', run: () => go('upgrade') }] : [])
   ], { align: 'end' })
 };
+/* hold the + tab to save an idea instead */
+document.addEventListener('pointerdown', e => { const b = e.target.closest && e.target.closest('.tab-new'); if (!b) return; const t = setTimeout(() => { UI.tabHold = Date.now(); if (navigator.vibrate) navigator.vibrate(12); openCapture(); }, 450); const up = () => { clearTimeout(t); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); }; addEventListener('pointerup', up); addEventListener('pointercancel', up); });
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
   const fn = ACT[el.dataset.act]; if (fn) { e.preventDefault(); fn(el, e); }
@@ -3825,6 +3864,8 @@ function paintField(ta) {
     html = body + (g ? `<span class="ghost">${esc(g)}</span><span class="ghost-hint">${kbd('Tab')}</span>` : '') + '​';
   }
   mir.innerHTML = html;
+  let ga = wrap.querySelector('.ghost-acc'); const gNow = UI.ghost && UI.ghost.id === id && v;
+  if (gNow && !FINE) { if (!ga) { ga = document.createElement('button'); ga.type = 'button'; ga.className = 'ghost-acc'; ga.innerHTML = `Use suggestion ${ic('right', 'xs')}`; ga.addEventListener('pointerdown', ev => { ev.preventDefault(); acceptGhost(ta); }); wrap.append(ga); } } else if (ga) ga.remove();
   ta.style.height = 'auto'; ta.style.height = Math.max(ta.scrollHeight, mir.offsetHeight) + 'px';
   placeCaret(ta);
 }
@@ -4644,7 +4685,7 @@ const RADAR_SAMPLE = () => { const P = typeof PEOPLE !== 'undefined' ? PEOPLE : 
 const RRADAR = { posts: [], live: false, at: 0, loading: false, drafts: {}, why: '' };
 function radarPaneHTML() {
   const live = !!(LLM.server && LLM.server.radar), people = (S.people || []).map(p => p.handle).filter(Boolean);
-  return `<section class="sec rr"><div class="sec-h"><div><h2 class="h2">Reply radar</h2><p class="muted" style="margin-top:4px">Fresh posts from people you learn from, ranked by how much an early, useful reply is worth. Best in the first 15 minutes.</p></div>
+  return `<section class="sec rr"><div class="sec-h"><div><h2 class="h2">Reply radar</h2><p class="muted" style="margin-top:4px">Fresh posts from accounts you learn from, ranked by how much an early, useful reply is worth. Best in the first 15 minutes. <span class="kbd-only">${kbd('J')} ${kbd('K')} to move, ${kbd('S')} to skip, ${kbd(MOD, '↵')} to send.</span></p></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-rr="people">${ic('trend', 'sm')} ${people.length ? `${people.length} account${people.length > 1 ? 's' : ''}` : 'Pick accounts'}</button><button class="btn sm" data-rr="refresh">${ic('shuffle', 'sm')} Refresh</button></div></div>
     <p class="rr-note" id="rr-note">${live ? (people.length ? '' : `${ic('q', 'sm')} Sample posts for now. Pick the accounts you learn from, and the radar watches them.`) : `${ic('q', 'sm')} Sample posts. Connect X on your server and the radar shows real ones as they go live.`}</p>
     <div class="rr-list" id="rr-list"></div></section>`;
@@ -4652,17 +4693,19 @@ function radarPaneHTML() {
 function rrAge(at) { const m = Math.max(0, Math.round((Date.now() - Date.parse(at)) / 60e3)); return m; }
 function rrCardHTML(p, i) {
   const age = rrAge(p.at), left = Math.max(0, 15 - age), done = S.radar && S.radar.done && S.radar.done[p.id], d = RRADAR.drafts[p.id] || {};
+  if (i !== (RRADAR.active || 0) && !done) return `<article class="rr-card mini" data-rid="${esc(p.id)}" style="--i:${i}"><button class="rr-mini" data-rra="focus" aria-label="Reply to ${esc(p.name || p.handle)}: ${esc(clip(p.text, 80))}"><b>${esc(p.name || '@' + p.handle)}</b><span class="faint">${age < 60 ? age + 'm' : Math.round(age / 60) + 'h'}</span><span class="rr-mt">${esc(clip(p.text.replace(/\n+/g, ' '), 110))}</span>${d.text ? '<span class="pill">Drafted</span>' : ''}</button></article>`;
   const pic = Number.isInteger(p.img) ? pfAv({ n: p.name, img: p.img }, 'rr-av') : p.pic ? `<span class="avatar pic"><img src="${esc(p.pic)}" alt=""></span>` : p.avatar ? `<span class="avatar pic"><img src="${esc(p.avatar)}" alt="" referrerpolicy="no-referrer"></span>` : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
   return `<article class="rr-card ${done ? 'done' : ''}" data-rid="${esc(p.id)}" style="--i:${i}">
     <header>${pic}<div class="rr-who"><b>${esc(p.name || '@' + p.handle)}</b><span>@${esc(p.handle)} · ${fmtN(p.followers)} followers</span></div><span class="rr-clock ${left ? 'live' : ''}" style="--p:${Math.min(1, age / 15)}" title="${left ? `${left} min left in the first 15` : 'Past the first 15 minutes'}"><i></i><span>${age < 60 ? age + 'm' : Math.round(age / 60) + 'h'}</span></span></header>
     <p class="rr-t">${esc(p.text)}</p>
     <div class="rr-why">${(p.why || []).map(w => `<span>${esc(w)}</span>`).join('')}</div>
     ${done ? `<p class="rr-done">${ic('check', 'sm')} Replied${S.radar.done[p.id] !== true ? `: “${esc(clip(S.radar.done[p.id], 80))}”` : ''}</p>` : `<div class="rr-me">${avatar(S.user)}<div class="rr-box"><textarea class="input" rows="2" data-rrt="${esc(p.id)}" placeholder="${d.hint ? esc(d.hint) : 'Add a number, a counterexample, or a real question. Not “great post”.'}" aria-label="Your reply to @${esc(p.handle)}">${esc(d.text || '')}</textarea><span class="rr-n" data-rrn="${esc(p.id)}">${d.text ? HWCore.xLength(d.text) : 0}/280</span></div></div>
-    <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${ic('shuffle', 'sm')} Another angle</button>` : ''}<button class="btn sm" data-rra="send">${ic('reply', 'sm')} ${LLM.server && LLM.server.xUser && !p.sample ? 'Reply' : 'Reply on X'}</button></div>`}
+    <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip" data-tip="S">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${ic('shuffle', 'sm')} Another angle</button>` : ''}<button class="btn sm primary" data-rra="send" data-tip="${keys(MOD, '↵')}">${ic('reply', 'sm')} Reply</button></div>`}
   </article>`;
 }
 function drawRadar() {
   const list = $('#rr-list'); if (!list) return; const posts = RRADAR.posts.filter(p => !(S.radar && S.radar.skip && S.radar.skip[p.id]));
+  const live = posts.filter(p => !(S.radar && S.radar.done && S.radar.done[p.id])); RRADAR.active = Math.max(0, Math.min(RRADAR.active || 0, posts.length - 1)); if (S.radar && S.radar.done && posts[RRADAR.active] && S.radar.done[posts[RRADAR.active].id] && live.length) RRADAR.active = posts.indexOf(live[0]);
   list.innerHTML = RRADAR.loading ? hintHTML('loading', { rotate: true, cls: 'loading-hint' }) + Array.from({ length: 3 }, () => '<div class="rr-card sk" aria-hidden="true"></div>').join('') : posts.length ? posts.map(rrCardHTML).join('') : `<div class="empty">${RRADAR.why ? esc(RRADAR.why) : 'Nothing fresh right now. Check back in a few minutes.'}</div>`;
 }
 async function loadRadar(force) {
@@ -4687,18 +4730,27 @@ async function draftRadar(only) {
   drawRadar();
 }
 function openRadar() { go('replies'); }
+function rrVisible() { return RRADAR.posts.filter(x => !(S.radar && S.radar.skip && S.radar.skip[x.id])); }
+function rrFocus(i, field = true) { const v = rrVisible(); if (!v.length) return; RRADAR.active = (i + v.length) % v.length; drawRadar(); const c = $(`.rr-card[data-rid="${CSS.escape(v[RRADAR.active].id)}"]`); if (c) { c.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }); const t = $('textarea', c); (field && t ? t : c.querySelector('button')) && (field && t ? t : c.querySelector('button')).focus({ preventScroll: true }); } }
+function rrNext() { const v = rrVisible(), done = S.radar && S.radar.done || {}; const nxt = v.findIndex((x, k) => k > (RRADAR.active || 0) && !done[x.id]); const any = v.findIndex(x => !done[x.id]); rrFocus(nxt >= 0 ? nxt : any >= 0 ? any : RRADAR.active || 0, false); }
 ROUTES.replies = () => {
   settleQueue(); const mine = S.queue.filter(q => q.status === 'published').slice(-4).reverse(), srv = LLM.server || {};
   mount('replies', `<div class="page"><div class="page-h"><div><h1 class="display">Replies</h1><p>Early, useful replies are the cheapest reach there is: on your own posts while they’re being judged, and on other people’s while they’re fresh.</p></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-rp="alerts">${ic('bell', 'sm')} Breakout alerts</button></div></div>
     <section class="sec rp-mine"><div class="sec-h"><div><h2 class="h2">Replies to your posts</h2><p class="muted" style="margin-top:4px">${mine.length ? 'Answer the first few yourself. It tells the feed people are talking.' : 'Nothing posted from here yet. Once you post, its replies show up here.'}</p></div></div>
-      ${mine.length ? `<div class="rp-list">${mine.map(q => `<button class="rp-post" data-rp="desk" data-id="${q.id}"><span class="rp-t">${firstLineHTML(clip(q.text, 140))}</span><span class="rp-m">Went out ${slotWhen(q.day, q.time)}${q.xIds && q.xIds[0] && srv.replies ? '' : SHOWCASE() ? ' · sample replies' : ''}</span><span class="rp-go">${ic('reply', 'sm')} Answer replies</span></button>`).join('')}</div>` : `<a class="btn sm" href="#write">${ic('write', 'sm')} Write something</a>`}</section>
+      ${mine.length && !UI.rpOpen ? `<button class="rp-sum" data-rp="more"><span><b>${mine.length}</b> post${mine.length > 1 ? 's' : ''} · <b>${mine.reduce((a, q) => a + 2 + hash(q.id) % 5, 0)}</b> replies need you${SHOWCASE() ? ' (sample)' : ''}</span><span class="rp-go">${ic('right', 'sm')} Open</span></button>` : mine.length ? `<div class="rp-list">${mine.map(q => `<button class="rp-post" data-rp="desk" data-id="${q.id}"><span class="rp-t">${firstLineHTML(clip(q.text, 140))}</span><span class="rp-m">Went out ${slotWhen(q.day, q.time)}${q.xIds && q.xIds[0] && srv.replies ? '' : SHOWCASE() ? ' · sample replies' : ''}</span><span class="rp-go">${ic('reply', 'sm')} Reply</span></button>`).join('')}</div>` : `<a class="btn sm" href="#write">${ic('write', 'sm')} Write something</a>`}</section>
     ${radarPaneHTML()}</div>`);
   radarPaneInit($('#view'));
   $('#view').addEventListener('input', e => { const t = e.target.closest('[data-rrt]'); if (!t) return; const id = t.dataset.rrt; RRADAR.drafts[id] = { ...(RRADAR.drafts[id] || {}), text: t.value }; const n = $(`[data-rrn="${CSS.escape(id)}"]`); if (n) { const k = HWCore.xLength(t.value); n.textContent = `${k}/280`; n.classList.toggle('over', k > 280); } });
+  const rk = e => { if (CURRENT !== 'replies' || MODALS.length) return; const inField = e.target.matches && e.target.matches('textarea[data-rrt]');
+    if (inField && (e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); const sb = $('[data-rra="send"]', e.target.closest('.rr-card')); sb && sb.click(); return; }
+    if (inField || isTyping(e) || e.metaKey || e.ctrlKey || e.altKey || S.settings.shortcuts === false) return;
+    if (e.key === 'j') { e.preventDefault(); rrFocus((RRADAR.active || 0) + 1, false); } else if (e.key === 'k') { e.preventDefault(); rrFocus((RRADAR.active || 0) - 1, false); } else if (e.key === 's') { const sk = $(`.rr-card:not(.mini) [data-rra="skip"]`); if (sk) { e.preventDefault(); sk.click(); } } };
+  document.addEventListener('keydown', rk); onDispose(() => document.removeEventListener('keydown', rk));
   $('#view').addEventListener('click', e => {
     if (e.target.closest('[data-rr],[data-rra]')) { radarAction(e); return; }
     const b = e.target.closest('[data-rp]'); if (!b) return;
+    if (b.dataset.rp === 'more') { UI.rpOpen = true; route(); return; }
     if (b.dataset.rp === 'alerts') openBreakoutSetup();
     if (b.dataset.rp === 'desk') openReplyDesk(S.queue.find(q => q.id === b.dataset.id));
   });
@@ -4717,7 +4769,8 @@ async function radarAction(e) {
   const card = b.closest('[data-rid]'); const p = card && RRADAR.posts.find(x => x.id === card.dataset.rid); if (!p) return true;
   S.radar = S.radar || { done: {}, skip: {} }; S.radar.done = S.radar.done || {}; S.radar.skip = S.radar.skip || {};
   const a = b.dataset.rra;
-  if (a === 'skip') { S.radar.skip[p.id] = 1; save(); card.classList.add('leaving'); setTimeout(drawRadar, 180); return true; }
+  if (a === 'focus') { rrFocus(RRADAR.posts.filter(x => !(S.radar && S.radar.skip && S.radar.skip[x.id])).indexOf(p)); return true; }
+  if (a === 'skip') { S.radar.skip[p.id] = 1; save(); card.classList.add('leaving'); setTimeout(() => { drawRadar(); rrFocus(RRADAR.active || 0); }, 180); return true; }
   if (a === 'again') { delete RRADAR.drafts[p.id]; draftRadar(p.id); return true; }
   if (a === 'send') {
     const text = ((RRADAR.drafts[p.id] || {}).text || '').trim();
@@ -4726,12 +4779,12 @@ async function radarAction(e) {
     if (HWCore.xLength(text) > 280) { toast('Over 280 characters. Trim it first.', { icon: 'reply', tone: 'err' }); return true; }
     if (LLM.server && LLM.server.xUser && !p.sample) {
       b.classList.add('is-loading');
-      try { const r = await fetch('api/x/reply', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ inReplyTo: p.id, text }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); S.radar.done[p.id] = text; save(); SFX.play('done'); toast('Replied. Early and useful beats loud.', { icon: 'reply', tone: 'accent', action: 'View', onAction: () => window.open(j.url, '_blank') }); drawRadar(); }
+      try { const r = await fetch('api/x/reply', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ inReplyTo: p.id, text }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); S.radar.done[p.id] = text; save(); SFX.play('done'); rrNext(); toast('Replied. Early and useful beats loud.', { icon: 'reply', tone: 'accent', action: 'View', onAction: () => window.open(j.url, '_blank') }); drawRadar(); }
       catch (err) { toast(`X said no: ${esc(String(err.message || 'unknown error').replace(/[.!]+$/, ''))}. Try again in a minute.`, { icon: 'zapoff', tone: 'err' }); } finally { b.classList.remove('is-loading'); }
       return true;
     }
     copyText(text); window.open(`https://x.com/intent/post?in_reply_to=${encodeURIComponent(p.sample ? '' : p.id)}&text=${encodeURIComponent(text)}`, '_blank', 'noopener');
-    S.radar.done[p.id] = text; save(); drawRadar(); toast(p.sample ? 'That was a sample post. Your reply is copied, ready for a real one.' : 'Opened X with your reply. It’s on your clipboard too.', { icon: 'reply' });
+    S.radar.done[p.id] = text; save(); rrNext(); toast(p.sample ? 'That was a sample post. Your reply is copied, ready for a real one.' : 'Opened X with your reply. It’s on your clipboard too.', { icon: 'reply' });
     return true;
   }
   return true;
@@ -5037,7 +5090,7 @@ function pvCard(k, compact) {
     tag = `<span>${pic(p.icon)} @${esc(you.h)}${k === 'bsky' ? '.bsky.social' : ''}</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${k === 'x' && xLong() ? `Long post · ${fmtN(HWCore.xLength(tws[0].text))} / 25,000` : tws.length > 1 ? `Thread of ${tws.length}` : `Up to ${fmtN(p.limit)} characters`}</span>`}`;
   }
   const near = compact ? ['', ''] : PV_NEAR[k].map(i => R(VOID_POSTS[i], { dark }));
-  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${compact ? '' : `<p class="pv-proj">${est ? `Counts are what a typical post of yours gets${est.tuned ? `, times ${est.x} for how this line scores with your audience` : ''}. From ${fmtN(est.n)} of your posts.` : demo ? 'Sample numbers. Bring your posts and these come from your own history.' : HIST().length >= 8 ? `Start typing to see what this gets, from your ${fmtN(HIST().length)} posts.` : 'No numbers yet. Bring your posts and this shows what to expect, from your own history.'}</p>`}</div>`;
+  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${compact ? '' : `<p class="pv-proj">${est ? `<b>Estimate.</b> Counts are what a typical post of yours gets${est.tuned ? `, times ${est.x} for how this line scores with your audience` : ''}. From ${fmtN(est.n)} of your posts.` : demo ? '<b>Sample estimate.</b> Bring your posts and these come from your own history.' : HIST().length >= 8 ? `Start typing to see what this gets, from your ${fmtN(HIST().length)} posts.` : 'No numbers yet. Bring your posts and this shows what to expect, from your own history.'}</p>`}</div>`;
 }
 function liVersion() {
   let t = S.draft.tweets.map(x => x.text.trim()).filter(Boolean).join('\n\n');
@@ -5756,8 +5809,11 @@ function myTips(ctx) {
 }
 const tipsFor = ctx => [...myTips(ctx), ...(GEN_TIPS[ctx] || GEN_TIPS.loading).map(t => ({ t, mine: false }))];
 const HINT_I = {};
+const TIPS_SHOWN = { ctx: null };
 function hintHTML(ctx, { rotate = false, cls = '', start } = {}) {
   const list = tipsFor(ctx); if (!list.length) return '';
+  /* page tips are a once-per-visit thing: the first screen that has one keeps it, the rest stay quiet. Loading tips always rotate */
+  if (!rotate && /page-hint|starters-hint|in-modal/.test(cls) && !list[0].mine) { if (TIPS_SHOWN.ctx && TIPS_SHOWN.ctx !== ctx) return ''; TIPS_SHOWN.ctx = ctx; }
   if (HINT_I[ctx] == null && ctx === 'loading') HINT_I[ctx] = Math.floor(Math.random() * list.length);
   const i = start != null ? start % list.length : (HINT_I[ctx] || 0) % list.length, tp = list[i];
   return `<p class="hint ${cls} ${tp.mine ? 'mine' : ''}" data-hctx="${ctx}" data-hi="${i}" ${rotate ? 'data-rotate' : ''}><span class="hint-k">${tp.mine ? `<i class="hint-dot"></i>For you` : 'Tip'}</span><span class="hint-t">${esc(tp.t)}</span>${list.length > 1 ? `<button class="hint-n" data-hint-next aria-label="Another tip" data-tip="Another tip">${ic('right', 'xs')}</button>` : ''}</p>`;
@@ -6032,7 +6088,7 @@ function openSettings() {
     <div class="modal-b set-b">
       <section><h3 class="label">Posting</h3>
         <div class="set-row"><div><b>Undo window</b><small>After you press Post now, how long you have to take it back.</small></div>${seg('undo', undo, [[0, 'Off'], [5, '5s'], [8, '8s'], [15, '15s']])}</div>
-        <div class="set-row"><div><b>Rest days</b><small>Days off that don’t break your streak.</small></div><div class="rest-days" role="group" aria-label="Rest days">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button data-setrest="${d}" aria-pressed="${rest.includes(d)}" aria-label="${DOW[d]}">${DOW[d][0]}</button>`).join('')}</div></div>
+        <div class="set-row"><div><b>Posting days a week</b><small>Your weekly rhythm. A few good posts beat seven rushed ones.</small></div>${seg('goal', S.settings.weekGoal || 5, [[3, '3'], [4, '4'], [5, '5'], [7, '7']])}</div>
         ${sw('evergreen', S.settings.evergreen, 'Evergreen reruns', 'Once a week, one of your best posts from 2+ months ago comes back with a fresh first line.')}
       </section>
       <section><h3 class="label">Sound and look</h3>
@@ -6055,6 +6111,7 @@ function openSettings() {
   el.addEventListener('click', e => {
     const sg = e.target.closest('[data-set]'); if (sg) { const k = sg.dataset.set, v = sg.dataset.v; $$(`[data-set="${k}"]`, el).forEach(x => { x.setAttribute('aria-checked', x === sg); }); syncSeg(sg.closest('.seg'));
       if (k === 'undo') { S.settings.undoSecs = +v; save(); SFX.play('tick'); }
+      if (k === 'goal') { S.settings.weekGoal = +v; save(); SFX.play('tick'); }
       if (k === 'theme') setTheme(v === 'system' ? null : v); return; }
     const s2 = e.target.closest('[data-setsw]'); if (s2) { const k = s2.dataset.setsw, on = s2.getAttribute('aria-checked') !== 'true'; s2.setAttribute('aria-checked', on);
       if (k === 'sound') { S.settings.sound = on; if (!on) S.settings.keys = false; save(); if (on) SFX.play('tap'); const kk = $('[data-setsw="keys"]', el); kk && kk.setAttribute('aria-checked', !!S.settings.keys); }
@@ -7021,7 +7078,7 @@ ROUTES.start = () => {
   if (ONB.auto) { ONB.auto = false; ONB.niche = ONB.niche || S.user.niche; ONB.t0 = Date.now(); onbStep2(); } else onbStep1();
 };
 function onbStep1() {
-  const niches = Object.keys(NICHES); const cur = ONB.niche || S.user.niche;
+  const niches = Object.keys(NICHES); const cur = ONB.niche || (S.onboarded ? S.user.niche : 'Crypto & trading');
   $('#onb').innerHTML = `<div class="onb-card">
     <h1 class="display">Let’s find your <em>voice.</em></h1>
     <p class="muted" style="font-size:17px;max-width:46ch">${LLM.server && LLM.server.x ? 'Paste your handle. We’ll read your recent posts and hand you five you could write today.' : 'Pick where you post and what you write about. You’ll get a starting voice and five posts you could write today.'}</p>
@@ -7092,7 +7149,7 @@ function onbStep3() {
       <div style="display:grid;gap:12px;align-content:start"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Or start from one of these</span><button class="btn ghost sm" id="onb-more">${ic('shuffle', 'sm')} Five more</button></div>
         <div class="post-ideas" id="onb-ideas">${onbIdeas(ideas)}</div></div>
     </div>
-    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap"><a class="btn primary xl" href="#write">Start writing${ic('arrow')}</a></div>
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap"><a class="btn lg" href="#today">Go to Today${ic('arrow')}</a></div>
   </div>`;
   let seed = hash(handle) % 9999; onbTry();
   $('#onb-more').onclick = () => { $('#onb-ideas').innerHTML = onbIdeas(genIdeas(5, ++seed)); };
@@ -7139,50 +7196,90 @@ const SRC_NAME = { link: 'Link', note: 'Note', voice: 'Voice memo', shot: 'Scree
 let ENGINE = { seed: 21, kind: 'All' };
 const cleanIdea = t => t.replace(/^(Voice memo|Screenshot) · (\d:\d\d · )?/, '');
 /* Today: the one screen to open each morning. One post to write, the week at a glance, fresh posts worth a reply, and how the last one did */
+/* weekly rhythm, not a daily streak: a good week is a few good posts, not seven rushed ones */
+function weekRhythm() {
+  const w0 = startOfWeek(new Date()), today = dayKey(Date.now()), goal = S.settings.weekGoal || 5, days = [];
+  for (let i = 0; i < 7; i++) { const k = dayKey(w0.getTime() + i * DAY), posted = !!S.streak[k] || S.queue.some(q => q.day === k && q.status === 'published'), planned = !posted && S.queue.some(q => q.day === k && q.status === 'scheduled'); days.push({ k, d: DOW[(i + 1) % 7], posted, planned, today: k === today, past: k < today }); }
+  const n = days.filter(d => d.posted || d.planned).length; return { days, n, goal, done: days.filter(d => d.posted).length };
+}
+function rhythmHTML(compact) {
+  const r = weekRhythm();
+  return `<div class="rhythm ${compact ? 'compact' : ''}" role="img" aria-label="${r.n} of ${r.goal} posting days this week"><span class="rh-days">${r.days.map(d => `<i class="${d.posted ? 'on' : d.planned ? 'sched' : ''} ${d.today ? 'now' : ''}" title="${d.d}${d.posted ? ': posted' : d.planned ? ': scheduled' : ''}"><b>${d.d[0]}</b></i>`).join('')}</span><span class="rh-t">${r.n >= r.goal ? `<b>${r.n}</b> days this week · goal met` : `<b>${r.n}</b> of ${r.goal} this week`}</span></div>`;
+}
+/* Today: one next action, chosen by what's actually going on */
 const TODAY = { k: 0 };
 function todayIdea() {
   const saved = S.ideas.map(i => ({ text: cleanIdea(i.text), kind: 'How-to', saved: true })).filter(x => x.text.length > 12);
-  const gen = genIdeas(12, hash(dayKey(Date.now())) % 997);
-  const pool = [...saved, ...gen]; return pool[TODAY.k % pool.length];
+  const gen = genIdeas(16, hash(dayKey(Date.now())) % 997);
+  const pool = [...saved, ...gen].map(x => ({ ...x, s: hookScore(x.text).score })).sort((a, b) => (b.s >= 70) - (a.s >= 70) || (b.saved || 0) - (a.saved || 0) || b.s - a.s);
+  return pool[TODAY.k % pool.length];
+}
+function todayState() {
+  const now = Date.now(), pub = S.queue.filter(q => q.status === 'published'), last = pub.slice(-1)[0];
+  const live = last && now - slotDate(last.day, last.time).getTime() < 60 * 60e3 && now >= slotDate(last.day, last.time).getTime() ? last : null;
+  const missed = S.queue.find(q => q.status === 'due') || S.queue.find(q => q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < now);
+  return live ? { k: 'live', q: live } : missed ? { k: 'missed', q: missed } : { k: 'write' };
+}
+function lastPostStats() {
+  const lastQ = S.queue.filter(q => q.status === 'published').slice(-1)[0];
+  if (lastQ && SHOWCASE()) { const h = hash(lastQ.id || lastQ.text); return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, likes: 40 + h % 180, replies: 4 + h % 26, x: Math.round((7 + h % 18) ) / 10, sample: true, q: lastQ }; }
+  if (lastQ) return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, q: lastQ };
+  const lastH = HIST().length ? [...HIST()].filter(p => p.at).sort((a, b) => new Date(b.at) - new Date(a.at))[0] : null; if (!lastH) return null;
+  const an = ANALYSIS(), eng = HWCore.eng(lastH), med = an && an.median || 0;
+  return { text: lastH.text, when: agoLabel(new Date(lastH.at).getTime()), likes: lastH.likes || 0, replies: lastH.replies || 0, x: med ? Math.round(eng / med * 10) / 10 : null };
+}
+function todayHeroHTML(st) {
+  if (st.k === 'live') return `<section class="card pad t-hero t-live"><div class="t-h"><span class="label">Live now</span><span class="pill">${Math.max(1, Math.round((Date.now() - slotDate(st.q.day, st.q.time)) / 60e3))} min in</span></div>
+    <p class="t-idea">${esc(clip(st.q.text.split('\n')[0], 140))}</p><p class="t-sub">The first hour decides how far it travels. Answer the first few replies yourself.</p>
+    <div class="t-a"><button class="btn primary" data-tact="desk">${ic('reply', 'sm')} Reply</button><button class="btn ghost" data-tact="write2">${ic('write', 'sm')} Write the next one</button></div></section>`;
+  if (st.k === 'missed') { const q = st.q, due = q.status === 'due', nx = nextSlots(1)[0];
+    return `<section class="card pad t-hero t-miss"><div class="t-h"><span class="label">${due ? 'Missed its time' : 'Missed while waiting for approval'}</span><span class="pill">${esc(slotLabel(q.day, q.time))}</span></div>
+    <p class="t-idea">${esc(clip(q.text.split('\n')[0], 140))}</p><p class="t-sub">${due ? 'Nothing sent it. Post it by hand now, or give it the next good slot.' : 'It needs a new time before it can be approved.'}</p>
+    <div class="t-a">${nx ? `<button class="btn primary" data-tact="rescue" data-id="${q.id}">${ic('target', 'sm')} Move to ${esc(slotWhen(nx.day, nx.time))}</button>` : ''}${due ? `<button class="btn ghost" data-tact="copy" data-id="${q.id}">${ic('copy', 'sm')} Copy to post by hand</button>` : ''}</div></section>`; }
+  const idea = todayIdea(), h = hookScore(idea.text), slot = nextSlots(1)[0] || nextSlots(1, false)[0];
+  return `<section class="card pad t-hero t-write"><div class="t-h"><span class="label">One post to write today</span><span class="pill">${idea.saved ? 'From your saved ideas' : esc(S.user.niche)}</span></div>
+    <p class="t-idea">${esc(idea.text)}</p>
+    <div class="t-meta"><span class="hook ${h.score >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${h.score}"><span>${h.score}</span></span><span>Hook</span></span><span class="faint">${esc(h.reason)}</span></div>
+    <div class="t-a"><button class="btn primary" data-tact="write">${ic('write', 'sm')} Write it</button><button class="btn ghost" data-tact="another">${ic('shuffle', 'sm')} Another</button></div>
+    ${slot ? `<p class="t-slot">${ic('clock', 'sm')} <span>Next good time: <b>${slotWhen(slot.day, slot.time)}</b>. ${esc(slot.reason)}.</span></p>` : ''}</section>`;
+}
+function todayStripHTML() {
+  const now = Date.now(), day = n => dayKey(now + n * DAY);
+  const col = (n, label) => { const k = day(n), items = S.queue.filter(q => q.day === k && (n < 0 ? q.status === 'published' : q.status === 'scheduled')).sort((a, b) => a.time.localeCompare(b.time));
+    const open = n >= 0 ? Object.keys(BEST[dowIdx(fromKey(k))] || {}).filter(t => slotDate(k, t).getTime() > now && !taken(k, t)) : [];
+    return `<div class="ts-col ${n === 0 ? 'now' : ''}"><span class="label">${label}</span>${items.map(q => `<a class="ts-i" href="#queue"><span class="ts-t">${fmtTime(q.time)}</span><span class="ts-x">${firstLineHTML(clip(q.text, 70))}</span></a>`).join('')}${open.slice(0, n === 0 ? 2 : 1).map(t => `<button class="ts-open" data-tact="slot" data-day="${k}" data-time="${t}"><span class="ts-t">${fmtTime(t)}</span><span class="ts-x">Open best time. Write for it</span></button>`).join('')}${!items.length && !open.length ? `<p class="faint ts-none">${n < 0 ? 'Nothing went out.' : 'Nothing planned. That’s allowed.'}</p>` : ''}</div>`; };
+  return `<section class="t-strip" aria-label="Yesterday, today and tomorrow">${col(-1, 'Yesterday')}${col(0, 'Today')}${col(1, 'Tomorrow')}</section>`;
 }
 function todayHTML() {
-  const idea = todayIdea(), h = hookScore(idea.text), slot = nextSlots(1)[0] || nextSlots(1, false)[0], now = Date.now();
-  const wk = S.queue.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now && slotDate(q.day, q.time) - now < 7 * DAY).sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time));
-  const due = S.queue.filter(q => q.status === 'due'), open = gapSlots().length, n = streakCount();
+  refreshBest(); const st = todayState(), lp = lastPostStats();
   const rr = (RRADAR.posts.length ? RRADAR.posts : RADAR_SAMPLE()).filter(p => !(S.radar && ((S.radar.skip || {})[p.id] || (S.radar.done || {})[p.id]))).slice(0, 3);
-  const lastQ = S.queue.filter(q => q.status === 'published').slice(-1)[0], lastH = !lastQ && HIST().length ? [...HIST()].filter(p => p.at).sort((a, b) => new Date(b.at) - new Date(a.at))[0] : null;
   const rrPic = p => Number.isInteger(p.img) ? pfAv({ n: p.name, img: p.img }, 'rr-av') : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
-  return `${due.length ? `<div class="ins-demo plan-nudge"><span>${ic('clock', 'sm')} ${due.length} post${due.length > 1 ? 's' : ''} hit ${due.length > 1 ? 'their' : 'its'} time with nothing to send ${due.length > 1 ? 'them' : 'it'}. Post by hand, or pick a new time.</span><a class="btn sm" href="#queue">Open the queue</a></div>` : ''}
+  return `${todayHeroHTML(st)}
+  ${todayStripHTML()}
   <div class="today-grid">
-    <section class="card pad t-write"><div class="t-h"><span class="label">One post to write today</span><span class="pill">${idea.saved ? 'From your saved ideas' : esc(S.user.niche)}</span></div>
-      <p class="t-idea">${esc(idea.text)}</p>
-      <div class="t-meta"><span class="hook ${h.score >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${h.score}"><span>${h.score}</span></span><span>Hook</span></span><span class="faint">${esc(h.reason)}</span></div>
-      <div class="t-a"><button class="btn primary" data-tact="write">${ic('write', 'sm')} Write it</button><button class="btn ghost" data-tact="another">${ic('shuffle', 'sm')} Another</button></div>
-      ${slot ? `<p class="t-slot">${ic('clock', 'sm')} <span>Next good time: <b>${slotWhen(slot.day, slot.time)}</b>. ${esc(slot.reason)}.</span></p>` : ''}</section>
-    <section class="card pad t-week"><span class="label">Your week</span>
-      <p class="t-big"><b class="mono">${wk.length}</b> in the next 7 days <span class="faint">·</span> <b class="mono">${open}</b> best time${open === 1 ? '' : 's'} open this week</p>
-      ${wk.length ? `<div class="upnext">${wk.slice(0, 3).map(q => `<a href="#queue"><span class="when">${slotLabel(q.day, q.time).replace(' · ', '<br>')}</span><p>${esc(q.text)}</p></a>`).join('')}</div>` : '<p class="faint" style="font-size:13px">Nothing lined up yet.</p>'}
-      <div class="t-streak"><div class="streak">${streakHTML()}</div><span class="faint">${n ? `${n}-day streak` : 'One post starts a streak'}</span></div>
-      <div class="t-a"><a class="btn sm" href="#queue">Open the queue</a>${wk.length < 3 ? `<button class="btn sm" data-tact="plan">${ic('spark', 'sm')} Plan my week</button>` : ''}</div></section>
-    <section class="card pad t-rr"><div class="t-h"><span class="label">Worth an early reply</span>${RRADAR.live ? '' : '<span class="pill">Sample</span>'}</div>
-      ${rr.length ? `<div class="t-rr-list">${rr.map(p => `<a href="#replies" class="t-rr-i">${rrPic(p)}<span><b>${esc(p.name || '@' + p.handle)}</b> <span class="faint">${rrAge(p.at) < 60 ? rrAge(p.at) + 'm' : Math.round(rrAge(p.at) / 60) + 'h'}</span><span class="t-rr-t">${esc(clip(p.text, 90))}</span></span></a>`).join('')}</div>` : '<p class="faint" style="font-size:13px">Nothing fresh right now.</p>'}
-      <a class="btn sm" href="#replies">${ic('reply', 'sm')} Reply to these</a></section>
-    <section class="card pad t-last"><span class="label">Your last post</span>
-      ${lastQ ? `<p class="t-lp">${esc(clip(lastQ.text, 160))}</p><p class="faint" style="font-size:13px">Went out ${slotWhen(lastQ.day, lastQ.time)}.</p><div class="t-a"><button class="btn sm" data-tact="desk">${ic('reply', 'sm')} Answer replies</button><button class="btn sm ghost" data-tact="again">${ic('layers', 'sm')} Write another like it</button></div>`
-      : lastH ? `<p class="t-lp">${esc(clip(lastH.text, 160))}</p><p class="faint" style="font-size:13px"><b class="mono">${fmtN(lastH.likes || 0)}</b> likes · <b class="mono">${fmtN(lastH.replies || 0)}</b> replies · ${agoLabel(new Date(lastH.at).getTime())}</p><a class="btn sm" href="#insights">${ic('chart', 'sm')} What’s working for you</a>`
+    <section class="t-last"><div class="t-h"><span class="label">Your last post</span>${lp && lp.sample ? '<span class="pill">Sample numbers</span>' : ''}</div>
+      ${lp ? `<p class="t-lp">${firstLineHTML(clip(lp.text, 160))}</p>${lp.likes != null ? `<div class="t-stats"><span><b>${fmtN(lp.likes)}</b> likes</span><span><b>${fmtN(lp.replies)}</b> replies</span>${lp.x != null ? `<span class="${lp.x >= 1 ? 'up' : 'down'}"><b>${lp.x}×</b> your usual</span>` : ''}</div>` : '<p class="faint" style="font-size:13px">Numbers show up here once X is connected.</p>'}<p class="faint" style="font-size:13px">${esc(lp.when)}.</p>
+        <div class="t-a">${lp.q ? `<button class="btn sm" data-tact="desk">${ic('reply', 'sm')} Reply</button>` : ''}<button class="btn sm ghost" data-tact="again">${ic('layers', 'sm')} Write another like it</button></div>`
       : `<p class="faint" style="font-size:14px">Nothing posted yet. Its numbers show up here.</p>${mnote('your first one goes here')}`}</section>
+    <section class="t-rr"><div class="t-h"><span class="label">Worth an early reply</span>${RRADAR.live ? '' : '<span class="pill">Sample</span>'}</div>
+      ${rr.length ? `<div class="t-rr-list">${rr.map(p => `<a href="#replies" class="t-rr-i">${rrPic(p)}<span><b>${esc(p.name || '@' + p.handle)}</b> <span class="faint">${rrAge(p.at) < 60 ? rrAge(p.at) + 'm' : Math.round(rrAge(p.at) / 60) + 'h'}</span><span class="t-rr-t">${esc(clip(p.text, 90))}</span></span></a>`).join('')}</div>` : '<p class="faint" style="font-size:13px">Nothing fresh right now.</p>'}
+      <a class="btn sm" href="#replies">${ic('reply', 'sm')} Reply</a></section>
   </div>`;
 }
 ROUTES.today = () => {
-  settleQueue(); const d = new Date(), hr = d.getHours(), first = (S.user.name || '').split(' ')[0];
-  mount('today', `<div class="page today"><div class="page-h"><div><h1 class="display">${hr < 12 ? 'Morning' : hr < 18 ? 'Afternoon' : 'Evening'}${first ? `, ${esc(first)}` : ''}.</h1><p>${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}. One good post and a few early replies is a good day.</p><div id="t-hint">${hintHTML('today', { cls: 'page-hint' })}</div></div></div><div id="t-body">${todayHTML()}</div></div>`);
-  if (!RRADAR.at || Date.now() - RRADAR.at > 3 * 60e3) loadRadar().then(() => { const t = $('.t-rr'); if (t && CURRENT === 'today') { $('#t-body').innerHTML = todayHTML(); } }).catch(() => { });
+  settleQueue(); const d = new Date(), hr = d.getHours(), first = (S.user.name || '').split(' ')[0], up = S.queue.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now() && slotDate(q.day, q.time) - Date.now() < 7 * DAY).length;
+  mount('today', `<div class="page today"><div class="page-h"><div><h1 class="display">${hr < 12 ? 'Morning' : hr < 18 ? 'Afternoon' : 'Evening'}${first ? `, ${esc(first)}` : ''}.</h1><p>${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()} · ${up} lined up for the next 7 days</p></div>${rhythmHTML()}</div><div id="t-body">${todayHTML()}</div></div>`);
+  if (!RRADAR.at || Date.now() - RRADAR.at > 3 * 60e3) loadRadar().then(() => { if (CURRENT === 'today' && $('#t-body')) $('#t-body').innerHTML = todayHTML(); }).catch(() => { });
   $('#view').addEventListener('click', e => {
     const b = e.target.closest('[data-tact]'); if (!b) return; const a = b.dataset.tact;
     if (a === 'write') { const i = todayIdea(); writeIdea(i.text, i.kind); }
+    if (a === 'write2') newPost();
     if (a === 'another') { TODAY.k++; $('#t-body').innerHTML = todayHTML(); SFX.play('tick'); }
     if (a === 'plan') openPlan();
     if (a === 'desk') openReplyDesk();
+    if (a === 'slot') { S.draft.slot = { day: b.dataset.day, time: b.dataset.time }; save(); go('write'); toast(`Writing for ${slotWhen(b.dataset.day, b.dataset.time)}.`, { icon: 'clock', tone: 'accent' }); }
+    if (a === 'rescue') { const q = S.queue.find(x => x.id === b.dataset.id), nx = nextSlots(1)[0]; if (q && nx) { q.status = 'scheduled'; if (q.approval === 'needs') q.approval = 'needs'; moveQ(q.id, nx.day, nx.time); $('#t-body').innerHTML = todayHTML(); keepFocus('#t-body .btn.primary'); } }
+    if (a === 'copy') { const q = S.queue.find(x => x.id === b.dataset.id); if (q) { copyText(q.tweets.join('\n\n')); toast('Copied. Post it, then mark it posted from the queue.', { icon: 'copy', action: 'Mark as posted', onAction: () => { q.status = 'published'; S.streak[dayKey(Date.now())] = 1; save(); $('#t-body').innerHTML = todayHTML(); } }); } }
     if (a === 'again') { const q = S.queue.filter(x => x.status === 'published').slice(-1)[0]; if (q) { writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')); toast(OUTLINE_MSG, { icon: 'layers', tone: 'accent', ms: 4200 }); } }
   });
 };
@@ -7405,11 +7502,14 @@ function drawHooks() {
    QUEUE
    ========================================================================== */
 let WEEK = 0;
+/* client voices stay out of a solo writer's way: the queue shows the voice you're writing as, unless you ask for all */
+const QF = { mine: true };
+const qList = () => S.workspaces.length > 1 && QF.mine ? S.queue.filter(q => (q.ws || 'me') === S.ws) : S.queue;
 ROUTES.queue = () => {
   settleQueue(); if (S.settings.evergreen) ensureEvergreen();
   mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p><div id="q-hint"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week</button></div></div>
   ${weekGap() < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${weekGap() ? `Only ${weekGap()} post${weekGap() > 1 ? 's' : ''} lined up for the next 7 days.` : 'Nothing lined up for the next 7 days.'} Five minutes now saves the week.</span><button class="btn sm" data-qact="plan">Plan my week</button></div>` : ''}
-  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span><span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
+  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="This week’s calendar. Each card is a post; press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide();
   const v = $('#view');
@@ -7421,6 +7521,7 @@ ROUTES.queue = () => {
       if (a === 'slot') { S.draft.slot = { day: b.dataset.day, time: b.dataset.time }; save(); go('write'); toast(`Writing for ${slotWhen(b.dataset.day, b.dataset.time)}.`, { icon: 'clock', tone: 'accent' }); }
       return;
     }
+    const qw = e.target.closest('[data-qws]'); if (qw) { QF.mine = qw.dataset.qws === 'mine'; $$('[data-qws]').forEach(x => x.setAttribute('aria-selected', x === qw)); syncSeg($('#q-ws')); drawCal(); drawQSide(); return; }
     const rd = e.target.closest('[data-rest]'); if (rd) { const d = +rd.dataset.rest; const r = new Set(S.settings.rest || []); r.has(d) ? r.delete(d) : r.add(d); S.settings.rest = [...r]; save(); drawQSide(); toast(r.has(d) ? `${DOW_PL[d]} are rest days. They won’t break your streak.` : `${DOW[d]}s count again.`, { icon: 'check', ms: 1800 }); return; }
     const rr = e.target.closest('[data-rerun]'); if (rr) { rerun(rr.dataset.rerun); return; }
     const c = e.target.closest('.qcard'); if (c) qMenu(c);
@@ -7431,13 +7532,19 @@ ROUTES.queue = () => {
   /* drag between slots */
   let dragId = null;
   let overSlot = null;
-  v.addEventListener('dragstart', e => { const c = e.target.closest('.qcard'); if (!c) return; dragId = c.dataset.id; c.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); const cal = $('#cal'); cal && cal.classList.add('dragging'); });
+  let dragDraft = null;
+  v.addEventListener('dragstart', e => { const dd = e.target.closest('.qd'); if (dd) { dragDraft = +dd.dataset.di; dd.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'draft'); const cal = $('#cal'); cal && cal.classList.add('dragging'); return; } const c = e.target.closest('.qcard'); if (!c) return; dragId = c.dataset.id; c.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); const cal = $('#cal'); cal && cal.classList.add('dragging'); });
   v.addEventListener('dragend', e => { const c = e.target.closest('.qcard'); c && c.classList.remove('drag'); $$('.slot.over').forEach(s => s.classList.remove('over', 'snap')); const cal = $('#cal'); cal && cal.classList.remove('dragging'); overSlot = null; });
-  v.addEventListener('dragover', e => { const s = e.target.closest('.slot'); if (!s || !dragId || s.classList.contains('past')) return; e.preventDefault(); if (s === overSlot) return; overSlot = s;
+  v.addEventListener('dragover', e => { const s = e.target.closest('.slot'); if (!s || !(dragId || dragDraft != null) || s.classList.contains('past')) return; e.preventDefault(); if (s === overSlot) return; overSlot = s;
     $$('.slot.over').forEach(x => x !== s && x.classList.remove('over', 'snap')); s.classList.add('over');
     /* a detent: each slot clicks as you pass it, higher for better slots; the best ones pull a little */
     const si = slotInfo(s.dataset.day, s.dataset.time); SFX.detent(si.x); if (si.best) { s.classList.remove('snap'); void s.offsetWidth; s.classList.add('snap'); } });
-  v.addEventListener('drop', e => { const s = e.target.closest('.slot'); if (!s || !dragId) return; e.preventDefault(); moveQ(dragId, s.dataset.day, s.dataset.time); dragId = null; });
+  v.addEventListener('drop', e => { const s = e.target.closest('.slot'); if (!s) return;
+    if (dragDraft != null) { e.preventDefault(); const d = S.drafts[dragDraft]; dragDraft = null; if (!d) return; if (slotDate(s.dataset.day, s.dataset.time) < Date.now()) { toast('That time has passed. Pick a later one.', { tone: 'err', icon: 'clock' }); return; } if (taken(s.dataset.day, s.dataset.time)) { toast('There’s already a post there. Drop it on an open time.', { tone: 'err', icon: 'cal' }); return; }
+      const live = S.draft; S.draft = d; S.drafts = S.drafts.filter(x => x !== d); commitDraft({ day: s.dataset.day, time: s.dataset.time }); S.draft = live; save(); drawCal(); drawQSide(); SFX.play('pop'); toast(`Scheduled for ${slotWhen(s.dataset.day, s.dataset.time)}.`, { icon: 'clock', tone: 'accent' }); return; }
+    if (!dragId) return; e.preventDefault(); moveQ(dragId, s.dataset.day, s.dataset.time); dragId = null; });
+  v.addEventListener('dragend', () => { dragDraft = null; $$('.qd.drag').forEach(x => x.classList.remove('drag')); });
+  v.addEventListener('keydown', e => { const dd = e.target.closest('.qd'); if (dd && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDraft(+dd.dataset.di); } });
   v.addEventListener('keydown', e => { const c = e.target.closest('.qcard'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); qMenu(c); } });
 };
 function qTags(q) {
@@ -7475,9 +7582,11 @@ function qMenu(c) {
   if (q.status === 'published') { openMenu(c, [{ header: `Went out ${slotWhen(q.day, q.time)}` }, { label: 'Replies to this post', icon: 'reply', run: () => openReplyDesk(q) }, ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
   const next = nextSlots(1)[0];
   const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { if (slotDate(q.day, q.time) < Date.now()) { toast('Its time already passed. Move it to a new slot, then approve it.', { icon: 'clock', tone: 'err' }); return; } q.approval = 'ok'; save(); syncToServer(q, q.mediaIds ? null : q.media); drawCal(); drawQSide(); toast('Approved. It goes out on schedule.', { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; serverDrop(q); save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
-  openMenu(c, [{ header: slotLabel(q.day, q.time) }, ...apv,
-    { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) },
+  const late = slotDate(q.day, q.time) < Date.now();
+  openMenu(c, [{ header: late ? `Missed: ${slotLabel(q.day, q.time)}` : slotLabel(q.day, q.time) }, ...(late ? [] : apv),
+    ...(late ? [] : [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }]),
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => { moveQ(q.id, next.day, next.time); keepFocus(`.qcard[data-id="${q.id}"]`); } } : { label: 'No best times left', icon: 'target', disabled: true },
+    ...(late ? [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }] : []),
     { label: 'Move to…', icon: 'clock', run: () => setTimeout(() => openMenu(c, [{ header: 'Move to an open time' }, ...nextSlots(10, false).map(x => ({ label: slotLabel(x.day, x.time), icon: slotInfo(x.day, x.time).best ? 'target' : 'cal', hint: slotInfo(x.day, x.time).best ? 'Best' : '', run: () => { moveQ(q.id, x.day, x.time); requestAnimationFrame(() => { const nc = $(`.qcard[data-id="${q.id}"]`); nc && nc.focus(); }); } }))], { width: 260 }), 0) },
     { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } serverDrop(q); q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide(); { const srv = LLM.server || {}; toast((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? 'Sending now. Stay close for the first replies.' : SHOWCASE() ? 'Posted. It’s a demo, so nothing actually went out.' : 'Marked as posted. Nothing went out from here: copy it to post, or connect X or LinkedIn.', { icon: 'send', tone: 'accent', ...((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? {} : { action: 'Copy text', onAction: () => copyText(q.tweets.join('\n\n')) }) }); } syncToServer(q, q.mediaIds ? null : q.media); liveStart(q); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } const copy = { ...q, id: uid(), day: s.day, time: s.time, serverId: null }; delete copy.xIds; delete copy.urls; S.queue.push(copy); save(); syncToServer(copy, copy.mediaIds ? null : copy.media); drawCal(); drawQSide(); toast(`Duplicated to ${slotWhen(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
@@ -7524,19 +7633,20 @@ function drawCal() {
   const days = Array.from({ length: 7 }, (_, i) => new Date(w0.getTime() + i * DAY));
   const end = days[6]; $('#q-range').textContent = `${MON[w0.getMonth()]} ${w0.getDate()} – ${w0.getMonth() !== end.getMonth() ? MON[end.getMonth()] + ' ' : ''}${end.getDate()}`;
   const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
-  const html = calGridHTML(days, S.queue, { now });
+  const html = calGridHTML(days, qList(), { now });
   cal.innerHTML = html;
   const qc = q => `<button class="qcard ${q.status}" data-id="${q.id}" aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
   const ag = $('#agenda'); if (ag) ag.innerHTML = days.map(d => {
-    const day = dayKey(d); const items = S.queue.filter(q => q.day === day).sort((a, b) => a.time.localeCompare(b.time));
+    const day = dayKey(d); const items = qList().filter(q => q.day === day).sort((a, b) => a.time.localeCompare(b.time));
     const open = Object.keys(BEST[dowIdx(d)] || {}).filter(t => slotDate(day, t).getTime() > now && !taken(day, t));
     return `<div class="ag-day ${day === today ? 'today' : ''}"><h3>${DOW[d.getDay()]} ${d.getDate()}<span>${day === today ? 'Today' : MON[d.getMonth()]}</span></h3>${items.map(qc).join('')}${open.map(t => `<button class="ag-open" data-qact="slot" data-day="${day}" data-time="${t}"><span class="dot"></span>${fmtTime(t)} · ${esc(BEST[dowIdx(d)][t])}<b>Write${ic('arrow', 'xs')}</b></button>`).join('')}${!items.length && !open.length ? '<p class="faint" style="font-size:13px">Nothing planned. That’s allowed.</p>' : ''}</div>`;
   }).join('');
-  const wk = S.queue.filter(q => { const d = fromKey(q.day); return d >= w0 && d < new Date(w0.getTime() + 7 * DAY) && q.status === 'scheduled'; }).length;
+  const wk = qList().filter(q => { const d = fromKey(q.day); return d >= w0 && d < new Date(w0.getTime() + 7 * DAY) && q.status === 'scheduled'; }).length;
   const open = gapSlots().length;
   const why = $('#q-why'); if (why) { why.innerHTML = `<span class="dot" style="color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span> ${TIMES.src === 'you' ? 'Your best times, from your posts' : 'Good times to post, in general'}`; why.dataset.tip = TIMES.src === 'you' ? `Highlighted slots are when your audience engaged most with ${fmtN(TIMES.n)} of your posts. They update as you post.` : 'Highlighted slots are good times for most accounts. Bring your posts and they become your audience’s own best hours.'; }
   const qh = $('#q-hint'); if (qh && !qh.firstChild) qh.innerHTML = hintHTML('queue', { cls: 'page-hint' });
-  $('#q-sub').textContent = `${wk} post${wk === 1 ? '' : 's'} scheduled this week. ${open ? `${open} best time${open === 1 ? '' : 's'} still open.` : 'Every best time this week is covered.'}`;
+  const miss = qList().filter(q => q.status === 'due' || (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < now)).length;
+  $('#q-sub').textContent = `${wk} post${wk === 1 ? '' : 's'} scheduled this week. ${open ? `${open} best time${open === 1 ? '' : 's'} still open.` : 'Every best time left this week is covered.'}${miss ? ` ${miss} missed ${miss > 1 ? 'their' : 'its'} time and need${miss > 1 ? '' : 's'} a new one.` : ''}`; syncSeg($('#q-ws'));
 }
 function gapSlots() { const w0 = startOfWeek(new Date()); const out = []; for (let i = 0; i < 7; i++) { const d = new Date(w0.getTime() + i * DAY); const day = dayKey(d); for (const t of Object.keys(BEST[dowIdx(d)] || {})) if (slotDate(day, t).getTime() > Date.now() && !taken(day, t)) out.push({ day, time: t }); } return out; }
 /* Reruns: most of your followers never saw your best post. Bring it back with a new first line. */
@@ -7561,19 +7671,13 @@ function rerun(id) {
   writeFrom([`${lead}\n\n${p.text}`]); toast('Same idea, new first line. Change anything you’ve learned since.', { icon: 'repost', tone: 'accent', ms: 4200 });
 }
 const numWord = n => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'][n] || String(n);
+/* the queue's rail only holds what you'd act on from here: approvals, and drafts you can drag onto a time */
 function drawQSide() {
-  const el = $('#q-side'); if (!el) return; const up = S.queue.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now()).sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)).slice(0, 5);
-  const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled');
-  const n = streakCount(); const postedToday = !!S.streak[dayKey(Date.now())];
+  const el = $('#q-side'); if (!el) return;
+  const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled' && (!QF.mine || q.ws === S.ws));
   el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
-  <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Momentum</span><span style="font-size:12px;font-variant-numeric:tabular-nums">${n} day${n === 1 ? '' : 's'}</span></div><div class="streak">${streakHTML()}</div><span class="faint" style="font-size:12px">${postedToday ? 'Posted today. Scheduled posts count too.' : isRest(Date.now()) ? 'Rest day. Your streak waits for you.' : n ? `Post or schedule today to make it ${n + 1}.` : 'One post starts a streak. Scheduled posts count.'}</span>
-    <div class="rest-row"><span class="faint">Rest days</span><div class="rest-days" role="group" aria-label="Rest days">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button data-rest="${d}" aria-pressed="${(S.settings.rest || []).includes(d)}" aria-label="${DOW[d]}" data-tip="${DOW[d]}${(S.settings.rest || []).includes(d) ? ' is a rest day' : ''}">${DOW[d][0]}</button>`).join('')}</div></div></div>
-  ${rerunHTML()}
-  <div class="card"><span class="label">Up next</span><div class="upnext">${up.length ? up.map(q => `<button data-up-id="${q.id}"><span class="when">${slotLabel(q.day, q.time).replace(' · ', '<br>')}</span><p>${esc(q.text)}</p></button>`).join('') : '<p class="faint" style="font-size:13px">Nothing queued. Your future self is free.</p>'}</div></div>
-  ${SHOWCASE() ? `<div class="card soon"><div class="soon-h"><span class="label">Autopilot</span><span class="pill">Coming soon</span></div>
-    <div class="soon-i"><b>Follow-up reply</b><small>When a post passes 100 likes, it replies with your next thing.</small></div>
-    <div class="soon-i"><b>Auto-repost</b><small>Posts it again hours later, for the other time zone.</small></div></div>` : ''}
-`;
+  <div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span><span class="faint" style="font-size:12px">${S.drafts.length}</span></div>
+    ${S.drafts.length ? `<p class="faint" style="font-size:12px">Drag one onto a time to schedule it.</p><div class="qd-list">${S.drafts.slice(0, 6).map((d, i) => { const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd" draggable="${!blank}" data-di="${i}" tabindex="0" role="button" aria-label="${esc(clip(t, 80))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">No drafts waiting.</p>${mnote('ideas become drafts')}`}</div>`;
 }
 
 /* ==========================================================================
@@ -7727,8 +7831,8 @@ ROUTES.voice = () => {
   const lean = real ? an.lean.slice(0, 8).map(x => [x.w, x.n]) : [['shipping', 48], ['users', 64], ['honestly', 31], ['boring', 22], ['month', 29], ['the fix', 17], ['small', 26], ['simple', 19]];
   const works = pr && pr.works && pr.works.length ? pr.works : real ? an.kindStats.filter(k => k.n >= 3).slice(0, 4).map(k => `${k.k} posts: ${k.x}× your median (${k.n} posts)`) : null;
   const status = pr ? `Learned from ${pr.n} of your posts ${agoLabel(pr.at)} by ${pr.by || 'Claude'}.` : real ? `${an.n} posts imported. Let Claude study them and this page becomes you.` : 'This is a demo voice. Bring your posts and it becomes yours.';
-  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Bring your posts and Hookworthy learns how you write. Until then, this is a sample voice you can tune.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${real ? 'primary' : ''}" id="learn" ${real ? '' : 'disabled'}>${ic('voice', 'sm')} ${pr ? 'Relearn' : 'Learn my voice'}</button></div></div>
-  <p class="v-status"><span class="ai-badge" data-mode="${LLM.mode}">${aiBadgeInner()}</span><span>${esc(status)}</span></p>
+  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Bring your posts and Hookworthy learns how you write. Until then, this is a sample voice you can tune.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${real ? 'primary' : ''}" id="learn" ${real ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${real ? 'Claude reads your posts and writes the profile every rewrite uses' : 'Bring at least 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Relearn' : 'Learn my voice'}</button></div></div>
+  <p class="v-status"><span class="ai-badge" data-mode="${LLM.mode}">${aiBadgeInner()}</span><span>${esc(status)}</span>${real ? '' : '<span class="faint" id="learn-why">“Learn my voice” turns on after you bring 8 or more posts.</span>'}</p>
   <div class="voice-hero">
     <div class="card pad" style="display:grid;gap:14px;grid-template-rows:auto auto auto 1fr"><span class="label">${real || pr ? 'You sound' : 'Sample voice'}</span><div>${traits.map(([t, s]) => `<div class="trait"><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join('')}</div>
       <div class="v-stats">${st.map(([v, l]) => `<div><b class="mono" style="font-size:20px">${v}</b><div class="faint" style="font-size:12px;line-height:1.3;margin-top:4px">${l}</div></div>`).join('')}</div>
