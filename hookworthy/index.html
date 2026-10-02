@@ -1443,6 +1443,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw .eyebrow{ display:block; margin-bottom:20px; font:500 12.5px/1 var(--f-disp); letter-spacing:.12em; text-transform:uppercase; color:var(--c-2); }
 .hw h1 em, .hw h2 em, .hw h3 em{ font-style:italic; }
 .hw h1, .hw h2{ font-family:var(--f-serif); font-weight:400; letter-spacing:-.012em; line-height:1.04; }
+@media (max-width:640px){ .hw-nav.bar-on #hw-cta{ visibility:hidden; } }
 .hw-nav{ position:sticky; top:12px; z-index:60; display:flex; align-items:center; gap:22px; height:58px; width:min(920px,calc(100% - 24px)); margin:14px auto 0; padding:0 8px 0 18px; background:#FFFFF8; border:1px solid var(--c-line); border-radius:14px; box-shadow:0 1px 0 rgba(26,26,26,.03); -webkit-backdrop-filter:saturate(1.6) blur(16px); border-bottom:1px solid transparent; transition:background .35s,border-color .35s,color .35s; }
 .hw-nav.scrolled{ box-shadow:0 10px 30px -18px rgba(26,26,26,.35); }
 .hw-nav.on-dark{ background:#FFFFF8; color:var(--c-ink); }
@@ -7662,11 +7663,13 @@ function phoneFeed(kind, { dark = false, you, mine, others = [], w = 320, id = '
 /* ----- shared bits other routes use (onboarding feed, pricing, voice) ----- */
 /* onboarding backdrop: the same real-looking feed as the homepage, drifting and faded */
 const ghostFeedHTML = () => { const all = [...VOID_POSTS, ...HOOK_POSTS.map(q => ({ ...q, m: null }))]; return `<div class="ghostfeed" aria-hidden="true">${[0, 1, 2].map(c => { const items = all.filter((_, i) => i % 3 === c); return `<div class="col">${[...items, ...items].map(q => xPost(q, { dark: isDark() })).join('')}</div>`; }).join('')}</div>`; };
+/* placeholder prices, one source for Plans and #teams: [yearly, monthly] per month */
+const PRICES = { pro: [12, 16], studio: [27, 36] };
 function plansHTML(yearly) {
   const P = [
     { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score on every post', 'Sharpen any sentence, unlimited', '5 full rewrites a day', 'A once-over before it posts, and 8 seconds to undo', 'Quote cards and charts', 'Up to 10 scheduled posts'] },
-    { k: 'pro', name: 'Pro', price: yearly ? 12 : 16, blurb: 'For posting most days.', cta: 'Start with Pro', hero: true, feats: ['Unlimited rewrites in your voice', 'What’s working in your niche, and why', 'Your voice keeps learning', 'Reruns of your best posts', 'Breakout alerts, with replies drafted', 'Insights that say why', 'Unlimited queue'] },
-    { k: 'studio', name: 'Studio', price: yearly ? 27 : 36, blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Five client voices', 'Approvals before anything ships', ['Shared saved ideas', 1], ['Support from humans', 1]] }
+    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For posting most days.', cta: 'Start with Pro', hero: true, feats: ['Unlimited rewrites in your voice', 'What’s working in your niche, and why', 'Your voice keeps learning', 'Reruns of your best posts', 'Breakout alerts, with replies drafted', 'Insights that say why', 'Unlimited queue'] },
+    { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Five client voices', 'Approvals before anything ships', ['Shared saved ideas', 1], ['Support from humans', 1]] }
   ];
   return P.map(p => `<div class="pl ${p.hero ? 'pro' : ''}">
     <div class="nm"><b>${p.name}</b><span>${p.blurb}</span></div>
@@ -8281,7 +8284,8 @@ function initHome() {
   const paintBar = () => {
     if (G.typed && G.text) { barT.innerHTML = `<q>${esc(clip(G.text, 80))}</q>`; barCta.innerHTML = `Keep your ${G.score} ${ic('arrow', 'sm')}`; barCta.setAttribute('aria-label', `Keep your line, hook score ${G.score}, and open it in the app`); }
     else { barT.textContent = 'One good first line a day.'; barCta.textContent = 'Start free'; barCta.removeAttribute('aria-label'); }
-    bar.classList.toggle('on', !barOff && !seen.hero && !seen.fin && !seen.foot);
+    const on = !barOff && !seen.hero && !seen.fin && !seen.foot;
+    bar.classList.toggle('on', on); nav.classList.toggle('bar-on', on); /* one call to action on screen at a time on phones */
   };
   barCta.addEventListener('click', carry);
   $('#h7-bar-x').addEventListener('click', () => { barOff = true; try { sessionStorage.setItem('hw.bar', 'off'); } catch (e) { } paintBar(); cta.focus({ preventScroll: true }); });
@@ -8539,7 +8543,7 @@ ROUTES.teams = () => {
     </section>
     <p class="fict">Clients and posts shown are fictional. No customer logos, because there are no customers to show yet.</p>
     <section class="tm-price" aria-labelledby="tm-p-h">
-      <div><span class="eyebrow">Pricing</span><h2 id="tm-p-h">Studio is <em>built for this.</em></h2><p>Client voices and approvals before anything ships, on top of everything in Pro. Studio shows as $27 a month billed yearly, or $36 monthly. Those are placeholders: Hookworthy is in preview and nothing is for sale yet.</p></div>
+      <div><span class="eyebrow">Pricing</span><h2 id="tm-p-h">Studio is <em>built for this.</em></h2><p>Client voices and approvals before anything ships, on top of everything in Pro. Studio shows as $${PRICES.studio[0]} a month billed yearly, or $${PRICES.studio[1]} monthly. Those are placeholders: Hookworthy is in preview and nothing is for sale yet.</p></div>
       <div class="mk-cta"><a class="hbtn lg" ${hwHref('home', 'pricing')}>See pricing ${ic('arrow', 'sm')}</a><a href="#upgrade">Compare every feature</a></div>
     </section>
   </div>`);
