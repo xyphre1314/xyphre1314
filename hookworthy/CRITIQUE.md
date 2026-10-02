@@ -587,3 +587,58 @@ Five reviewers (product, visual, copy, accessibility and performance, code and s
   - A slow network costs 3 seconds once, not twice.
   - Each encoding has its own ETag, and lists and weak ETags revalidate.
 - Tested: 50 server tests, every browser suite from rounds 13–25, a new round-26 suite (onboarding, Today, Replies, outlines, hook score, queue states, streak, pricing, keyboard, palette, storage, images), and axe on every route (clean).
+
+## Round 27: the homepage rebuilt, one next action, hook-first writing
+
+A fresh critique of the whole app, homepage first. Every proposal was built.
+
+**Homepage (19 screens → 9 at 1440)**
+- The hero is the product. A live grader comes pre-filled with a hedging trader line, puts a wavy underline under soft words (the reason shows on hover, focus or tap), and scores with a dial. **Sharpen** is an honest local rewrite: it keeps the claim, cuts hedges and leaves `[your number]` for the proof. **Keep it** opens Write with your line.
+- Both 3D rings, the pinned keynote, the four-tab demo and the standalone fold and voice sections are gone. In their place:
+  - one row of void posts
+  - one plum story in three beats (draft 48 → sharpened 80 → scheduled Tue 8:40)
+  - a bento of four cards: Hook score, Your voice, Reply radar with breakout alerts, What's working
+  - one phone with platform tabs (LinkedIn keeps the fold check)
+  - the real calendar in the visitor's time zone
+  - Who it's for (crypto first), comparing first lines and real hook scores only
+  - Switching and trust, pricing, five FAQ answers
+  - a final "Paste the post you almost wrote" box with your next good slot
+- No likes or views are promised anywhere. Personas are labelled fictional, and the page says "Demo. Nothing posts."
+
+**Write is hook-first**
+- **Write it** gives you only the hook, not an outline. "Outline as thread" is one tap away in the toast.
+- One **Improve** panel (Score · Takes · Formulas) replaces the separate hook panel, rewrite bar and formula picker. The hook dial sits in the first post's gutter. Voice match is one plain line.
+- The schedule sheet checks the hook. Under 60, it offers your own line tightened first, then two formulas, with Undo.
+- The character ring appears only near the limit. "Need a start?" collapses the starters.
+- The hook score now catches more bait ("Agree?", "unpopular opinion", 3+ emoji). Lines under four words cap at 50, and a lone "X" is no longer read as a blank.
+
+**Colors and type**
+- One plum ramp (900 / 600 / 400, lilac, apricot) and an aubergine dark mode instead of neutral black. Status colors are tuned to pass contrast on both themes.
+- One label style (uppercase eyebrow), Garamond for big numbers, bold first lines in every list, neutral pills and platform toggles.
+
+**Today is one next action**
+- The hero card picks the single thing that matters: reply while a post is live, rescue a missed post, or write the next one.
+- A yesterday / today / tomorrow strip, how the last post did, and a weekly rhythm (goal 5) replace the four-card grid.
+
+**App cleanups**
+- Replies is a triage list: one open card, the rest compact. J / K move, S skips, ⌘↵ / Ctrl+Enter replies. One verb everywhere: Reply.
+- Queue gets a "Mine" voice filter. The side rail shows only approvals and drafts you can drag onto the calendar. A missed post's menu leads with Move.
+- Mobile tab bar: Today, Replies, +, Queue, More.
+- One tip per visit, touch can accept ghost suggestions, toasts at the bottom.
+- Keyboard hints follow your computer: ⌘ ⌥ ⇧ ↵ on a Mac, Ctrl Alt Shift Enter on a PC.
+
+**Cut, merged, rethought**
+- Tools left the sidebar (Hooks and Your voice live in ⌘K and the account menu).
+- Trends are hidden.
+- The LinkedIn carousel only shows for 3+ posts with LinkedIn on.
+- Read aloud only shows for threads and long posts.
+
+**New**
+- **Stale-price guard:** a queued post that quotes BTC, ETH or SOL warns when the price has moved more than 3%, with "Update the price". Prices come from CoinGecko, with labelled sample numbers as fallback.
+- **New-number guard:** a rewrite that adds a number you didn't write is flagged before you keep it.
+- **Market events:** FOMC days and CPI estimates on the queue, with "Write your take 30 min before".
+- **They asked, you answer:** questions in your replies become a post.
+- **Hook tournament:** 10 lines, 30 seconds, pick the better one.
+- **Hook of the week:** a share card of your best line.
+- **Say a post:** an app shortcut that opens straight into dictation.
+- **Trader persona:** the demo is now Sam Okafor (@samtrades), Crypto & trading.

@@ -180,18 +180,20 @@ The owner picked Lilac & Plum from the 20-palette exploration (round 10), so the
 | Spark (rare active states) | `--psp` | #FF9F6B apricot |
 | Squiggle | `--psq` | #A27BE0, drawn as SVG at load |
 
+**Plum ramp (app, round 27).** `--plum-900` #3A1E5C (Today's write block, Pro card), `--plum-600` #6A2FA0 (links, focus, hook 70+), `--plum-400` #9466D6 (dark: #A887E8; squiggle, dials), `--lilac` #E8DBFF and `--lilac-soft` (selection, chips), `--apricot` #F28A55 (spark, used rarely). Every app accent comes from this ramp.
+
 Why plum: blue belongs to X, Typefully and Buffer; plum stands apart in a creator's tab bar, reads creative rather than corporate, stays warm next to cream, and its lilac buttons keep ink text readable in dark mode. The 20-palette board is kept as history in CRITIQUE.md round 10.
 
 ### Neutrals
 - Light: cream #FEFDF1, card #FFFFF8, sunk #F2F0E3, ink #1A1A1A / #4D4C46 / #65645C.
-- **Dark (Wispr-style):** near-black #1A1A1A (Wispr's own dark), surfaces #232323 / #2B2B2B / #353535, cream text #FFFFEB / #CFCDBB / #B3B1A0, hairlines rgba(255,255,235,.09). Primary buttons keep the palette pastel with ink text, exactly like Wispr's lavender on black.
+- **Dark (aubergine, round 27):** bg #141118, surfaces #201C26 / #29242F / #342E3B, panel #1C1820, warm text #F6F2E8 / #C9C2CF / #A29BA9. The neutrals lean toward plum so dark mode feels like the brand, not a generic black. Primary buttons keep the lilac pastel with ink text.
 - Text on colored blocks is cream at 84–100% opacity, never a fixed grey, so it reads on any block.
 
 ### Retired
 Round 9's harbor blue (#0B3A66) and periwinkle as the only brand colors; round 8's cobalt, sky canvas, navy dark mode and washes.
 
 ### Semantic (app)
-- **Success** (#1F8F5F), **Warn** (#C26A12), **Error** (#D63F3F): state only.
+- **Success** #2B7A4B / dark #6FCF97, **Warn** #A0560F / #F0A458, **Error** #B3313A / #FF8A8A: state only, each passing AA on its theme.
 
 ### Platform replicas
 These are not Hookworthy colors. They exist so a replica matches the real app, and they appear only inside a post, feed or phone.
@@ -226,17 +228,17 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 
 ## Layout
 
-The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. Chapters are spaced clamp(110px, 14vw, 190px) apart. Each chapter has one centered headline, one sentence and one demo.
+The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. It is about 9 screens at 1440. Every rule is scoped under `.hw27`.
 
-1. **Hero**: headline, sub, two CTAs, two hand notes, then the 3D ring of X posts. The ring is a CSS cylinder of 320px cards (real X posts rendered at 400px and scaled). It turns slowly, brakes on a Hermite curve, and marks the front card's first line and hook score. It supports drag with inertia and pauses off-screen.
-2. **Story** (520vh, pinned, dark): the chapter opens from an inset rounded sheet to full bleed as it arrives. One post goes from an 11:47pm draft (type up to 36px, pushed in), to hedges struck through, to a rewrite in her voice, to scheduled for Tue 8:40. Then the draft leaves and a viewport-sized phone takes the stage, with the X feed, a live count-up and an iOS notification.
-3. **Void wall**: two rows of relatable posts that drift with scroll.
-4. **Four feeds**: X, Threads, LinkedIn and Bluesky phones at true 390pt scale (`zoom`), with a light/dark toggle.
-5. **The fold**: type a LinkedIn post and watch the "…more" cut.
-6. **Voice** (dark): sliders rewrite an X post live.
-7. **Week**: the app's own Queue calendar (`calGridHTML`, non-interactive) with a sample week; one post lands on the best slot as it scrolls in. On phones the week swipes. The demo's Schedule tab uses the same calendar and the real schedule sheet.
-8. **Creators**: tabs for solo, founder and ghostwriter, each a demo built from platform posts (before and after, release notes to posts, voice switcher with approval).
-9. **Pricing**, then the **Final CTA** (a second ring).
+1. **Hero**: "Good ideas die in bad first lines." with one sub and two CTAs (Start free, Open the demo). The visual is a live grader: soft words get a wavy underline with the reason, a dial scores the line, and **Sharpen** shows an honest rewrite as a word diff with the real score jump. **Keep it** opens Write with the line. After you type, the nav CTA reads "Keep your N →".
+2. **The problem**: one row of void posts that drifts with scroll.
+3. **Story** (full-bleed plum): Priya's post in three beats: the draft (48), sharpened in her voice (80, with `[your number]` left for her), scheduled Tue 8:40 AM. No likes or views.
+4. **Built around the hook**: a bento of Hook score (five parts), Your voice (tone/polish sliders and the never-say list), Reply radar and breakout alerts, and What's working.
+5. **Previews**: one phone with X / Threads / LinkedIn / Bluesky tabs. LinkedIn shows the fold check.
+6. **Scheduling**: the app's own calendar (`calGridHTML`) with a trading week, in the visitor's time zone.
+7. **Who it's for**: Crypto & trading first, then Founders, Creators, Ghostwriters. Each shows first lines before and after, with real hook scores.
+8. **Switching & trust**, **Pricing** (Free trimmed to three items on the home card), **FAQ** (five questions).
+9. **Final call**: "Paste the post you almost wrote" with a live score and your next good slot, then the footer.
 
 The app keeps its 232px sidebar and inset main panel. The composer's "In the feed" panel renders your draft with the same platform components, between two real neighbour posts, in the app's theme.
 
@@ -269,7 +271,10 @@ True 390pt frame with the island, status bar, app header, tabs and tab bar, scal
 The homepage primary is an ink pill (48px) with a white label and an arrow that nudges on hover. The ghost button has a play glyph in a circle. In the app, the primary is ink with a 10px radius and a spring press.
 
 ### Character ring (composer)
-It follows X: a quiet ring that grows at 20 remaining, turns to warning then error, shows the count, and hides the circle at 10 over.
+It follows X, but stays hidden until you're near the limit: it appears at 20 remaining, turns to warning then error, shows the count, and hides the circle at 10 over.
+
+### Improve panel (round 27)
+One panel beside the post, with three tabs: **Score** (the hook dial's reason, a fix, and the five sub-scores under "How it's scored"), **Takes** (Punchier, Shorter, Hook, then More angles and Get a second opinion), and **Formulas**. The hook dial sits in the first post's gutter, plum at 70+, warn under 50. Voice match is a single line under the post ("Sounds 82% like you"). A rewrite that adds a number you didn't write gets flagged before you keep it.
 
 ### Sharpen (selection rewrite)
 Select three or more characters in a post and an ink pill appears above where the selection starts. It offers Punchier, Shorter, Clearer, Bolder and More human (⌥1–5). Picking one previews the first of three takes in place on a marker-soft background. You flip takes with ‹ › or the arrow keys, keep with ↵ (the accent Keep button), and cancel with Esc. Kept text flashes the tint and fades. Sharpen is free and unlimited, because it only touches the words you chose.
@@ -284,7 +289,7 @@ The spark-image tool opens four kinds of visual, each rendered to canvas in-brow
 Each comes in 16:9, 1:1 or 4:5, and is added as an image with alt text.
 
 ### Primary audience
-Most users write about crypto and trading. The product shows them first-class: the first niche in onboarding, trader posts in the hero ring and the relatable wall, a trader as the solo creator story, and What’s working defaulting to trading. Other niches keep equal craft.
+Most users write about crypto and trading. The product shows them first-class: the default niche in onboarding, a hedging trader line in the homepage grader, crypto first in Who it’s for, a trader demo persona (Sam Okafor, @samtrades), market events and a stale-price guard in the queue, and What’s working defaulting to trading. Other niches keep equal craft.
 
 ### What’s working (Ideas tab, formerly Niche radar)
 Choose a niche, then:
@@ -293,9 +298,6 @@ Choose a niche, then:
 - **Write your take:** loads that structure into the composer with [brackets] to fill.
 
 The accounts are illustrative and labelled as such.
-
-### Live demo (homepage)
-A product window with four tabs that act as a timeline (Sharpen, Visuals, Niche radar, Schedule). A cursor works the real UI, each tab fills as its scene plays, the demo auto-advances and loops only while on screen, and clicking a tab jumps to it. Sound is opt-in from the speaker in the title bar.
 
 ### Sound
 Sounds are synthesized in Web Audio and never samples. Each is under 350 ms and very quiet:
@@ -308,14 +310,17 @@ Sounds are synthesized in Web Audio and never samples. Each is under 350 ms and 
 Sounds are on by default in the app and can be switched off in the account menu. On the homepage they're off until you ask for them.
 
 ### App shell
-- **Sidebar:** logo, a New post pill, Search (⌘K), then Write, Ideas, Queue, Insights and Your voice. Your five most recent drafts sit below, and the account button (which also switches client voices) is at the bottom. There are no section headers.
+- **Sidebar:** logo, a New post pill, Search (⌘K / Ctrl K), then Today, Write, Ideas, Replies, Queue and Insights. Your five most recent drafts sit below, and the account button (which also switches client voices) is at the bottom. There are no section headers.
 - **Composer top bar:** status, a “N things to check” pill when there is something to look at, Post to, Focus, a labelled Preview toggle (pressed when open), ··· and Schedule. The preview panel has its own **Hide** button top right, and ⌘\\ works from inside the editor.
-- **Navigation:** the daily loop on top (**Today**, Write, Ideas, **Replies**, Queue, Insights), then Tools (Hooks, Your voice). Today is the app's front door: one post to write, the week, fresh posts worth a reply, and how the last one did. Replies holds replies to your own posts, the reply radar and breakout alerts.
+- **Navigation:** the daily loop only (**Today**, Write, Ideas, **Replies**, Queue, Insights). Hooks and Your voice live in ⌘K, G H / G V and the account menu. On phones the tab bar is Today, Replies, + (hold to capture an idea), Queue, More.
+- **Today** is one next action. A plum hero card picks it: reply while a post is live (first hour), rescue a missed post, or write the next one (your best saved idea, 70+ hooks first). Below it are a yesterday / today / tomorrow strip, how the last post did, and the weekly rhythm (goal 5).
+- **Replies** is a triage list. One card is open and the rest are compact. J / K move, S skips, ⌘↵ (Ctrl+Enter on a PC) replies. The verb is always "Reply".
+- **Keyboard hints** follow the computer: ⌘ ⌥ ⇧ ↵ on a Mac, Ctrl Alt Shift Enter on a PC. They are hidden on touch.
 - **Ideas:** three tabs that say what they are: **Post ideas**, **What’s working** (why posts in your niche popped, sample data until real search backs it) and **Saved** (links, notes, screenshots and voice memos you parked).
 - **Hook formulas** are no longer a tab. When your first line scores under 70, the hook panel offers three formulas; picking one adds it above your line with the first blank selected. The full library stays reachable from ⌘K.
 
 ### Before you post (checks)
-The small stuff people only notice once it’s live, checked on every keystroke and shown in the schedule sheet and the top-bar pill: leftover blanks ([brackets], TK, TODO), a link in the first post on X or LinkedIn (fix: move it to a reply), a word used three times, more than two hashtags, images without a description (fix: describe it), thread numbering that doesn’t match (fix: renumber), a thread ending on a colon or ellipsis, a post starting with @ on X, a first line that repeats something already queued, and double spaces (fix: tidy up). Checks never block posting.
+The small stuff people only notice once it’s live, checked on every keystroke and shown in the schedule sheet and the top-bar pill: leftover blanks ([brackets], TK, TODO), a link in the first post on X or LinkedIn (fix: move it to a reply), a word used three times, more than two hashtags, images without a description (fix: describe it), thread numbering that doesn’t match (fix: renumber), a thread ending on a colon or ellipsis, a post starting with @ on X, a first line that repeats something already queued, double spaces (fix: tidy up), and a quoted BTC/ETH/SOL price that has moved more than 3% (fix: update the price). The schedule sheet also checks the hook: under 60 it offers your own line tightened, then two formulas. Checks never block posting.
 
 ### Focus mode
 ⌘. (or the target button) hides the sidebar, preview and chrome, centers the editor and keeps the line you’re on at eye height (typewriter scrolling). Esc or ⌘. brings everything back. Desktop only.
