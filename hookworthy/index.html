@@ -2312,6 +2312,10 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .rr-card.drafting .rr-box textarea{ background:linear-gradient(90deg,var(--surface),var(--tint-soft),var(--surface)); background-size:200% 100%; animation:gifsk 1.2s linear infinite; }
 .rr-a{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; } .rr-a .grow{ flex:1; }
 .rr-card.done{ opacity:.7; } .rr-done{ display:flex; gap:6px; align-items:center; margin:0; font-size:var(--t-13); color:var(--success); }
+.rr-card:focus{ outline:none; } #view article.rr-card:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.rr-all{ margin:0; padding:12px 16px; border-radius:var(--r-lg,14px); background:var(--tint-soft); font-size:var(--t-14); display:flex; gap:8px; align-items:center; flex-wrap:wrap; } .rr-all:focus{ outline:none; } #view p.rr-all:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.rr-empty{ display:grid; gap:10px; justify-items:start; } .rr-empty:focus{ outline:none; }
+@media (pointer:coarse){ .rr-card .rr-a .btn, .rr-list .rr-all .btn, .rr-list .rr-empty .btn, .sec.rr .sec-h .btn{ min-height:44px; } .rr-card .rr-mini{ min-height:44px; } }
 .pic-box{ width:min(820px,100%); } .pic-b{ display:grid; gap:14px; }
 .pic-prev{ margin:0; position:relative; border-radius:14px; overflow:hidden; background:var(--surface-2); display:grid; place-items:center; max-height:46vh; }
 .pic-prev img{ display:block; max-width:100%; max-height:46vh; object-fit:contain; } .pic-prev .btn{ position:absolute; right:10px; bottom:10px; }
@@ -4856,20 +4860,24 @@ const RADAR_SAMPLE = () => { const P = typeof PEOPLE !== 'undefined' ? PEOPLE : 
 const RRADAR = { posts: [], live: false, at: 0, loading: false, drafts: {}, why: '' };
 function radarPaneHTML() {
   const live = !!(LLM.server && LLM.server.radar), people = (S.people || []).map(p => p.handle).filter(Boolean);
-  return `<section class="sec rr"><div class="sec-h"><div><h2 class="h2">Reply radar</h2><p class="muted" style="margin-top:4px">Fresh posts from accounts you learn from, ranked by how much an early, useful reply is worth. Best in the first 15 minutes. <span class="kbd-only">${kbd('J')} ${kbd('K')} to move, ${kbd('S')} to skip, ${kbd(MOD, '↵')} to reply.</span></p></div>
+  return `<section class="sec rr"><div class="sec-h"><div><h2 class="h2">Reply radar</h2><p class="muted" style="margin-top:4px">Fresh posts from accounts you learn from, ranked by how much an early, useful reply is worth. Best in the first 15 minutes. <span class="kbd-only">${kbd('J')} ${kbd('K')} to move, ${kbd('S')} to skip, ${kbd(MOD, '↵')} to reply. In the reply box, ${kbd(ALT, 'J')} ${kbd(ALT, 'K')} to move, or ${kbd('Esc')} to leave it.</span></p></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-rr="people">${ic('trend', 'sm')} ${people.length ? `${people.length} account${people.length > 1 ? 's' : ''}` : 'Pick accounts'}</button><button class="btn sm" data-rr="refresh">${ic('shuffle', 'sm')} Refresh</button></div></div>
     <p class="rr-note" id="rr-note">${live ? (people.length ? '' : `${ic('q', 'sm')} Sample posts for now. Pick the accounts you learn from, and the radar watches them.`) : `${ic('q', 'sm')} Sample posts. Connect your X account and the radar shows real ones as they go live. In this demo, nothing posts.`}</p>
     <div class="rr-list" id="rr-list"></div></section>`;
 }
 function rrAge(at) { const m = Math.max(0, Math.round((Date.now() - Date.parse(at)) / 60e3)); return m; }
+/* one age source for the ring, the mini row and the "N min old" chip, recomputed at render */
+function rrAgeShort(a) { return a < 60 ? a + 'm' : Math.round(a / 60) + 'h'; }
+function rrAgeChip(a, w) { const m = /^\d+ min old(:.*)?$/.exec(w || ''); if (!m) return null; return (a < 60 ? `${a} min old` : `${Math.round(a / 60)} h old`) + (a <= 15 ? ': the first replies get seen most' : ''); }
 function rrCardHTML(p, i) {
   const age = rrAge(p.at), left = Math.max(0, 15 - age), done = S.radar && S.radar.done && S.radar.done[p.id], d = RRADAR.drafts[p.id] || {};
-  if (i !== (RRADAR.active || 0) && !done) return `<article class="rr-card mini" data-rid="${esc(p.id)}" style="--i:${i}"><button class="rr-mini" data-rra="focus" aria-label="Reply to ${esc(p.name || p.handle)}: ${esc(clip(p.text, 80))}"><b>${esc(p.name || '@' + p.handle)}</b><span class="faint">${age < 60 ? age + 'm' : Math.round(age / 60) + 'h'}</span><span class="rr-mt">${esc(clip(p.text.replace(/\n+/g, ' '), 110))}</span>${d.text ? '<span class="pill">Drafted</span>' : ''}</button></article>`;
+  if (i !== (RRADAR.active || 0) && !done) return `<article class="rr-card mini" data-rid="${esc(p.id)}" style="--i:${i}"><button class="rr-mini" data-rra="focus" aria-label="Reply to ${esc(p.name || p.handle)}: ${esc(clip(p.text, 80))}"><b>${esc(p.name || '@' + p.handle)}</b><span class="faint rr-ago">${rrAgeShort(age)}</span><span class="rr-mt">${esc(clip(p.text.replace(/\n+/g, ' '), 110))}</span>${d.text ? '<span class="pill">Drafted</span>' : ''}</button></article>`;
   const pic = Number.isInteger(p.img) ? pfAv({ n: p.name, img: p.img }, 'rr-av') : p.pic ? `<span class="avatar pic"><img src="${esc(p.pic)}" alt=""></span>` : p.avatar ? `<span class="avatar pic"><img src="${esc(p.avatar)}" alt="" referrerpolicy="no-referrer"></span>` : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
-  return `<article class="rr-card ${done ? 'done' : ''}" data-rid="${esc(p.id)}" style="--i:${i}">
-    <header>${pic}<div class="rr-who"><b>${esc(p.name || '@' + p.handle)}</b><span>@${esc(p.handle)} · ${fmtN(p.followers)} followers</span></div><span class="rr-clock ${left ? 'live' : ''}" style="--p:${Math.min(1, age / 15)}" title="${left ? `${left} min left in the first 15` : 'Past the first 15 minutes'}"><i></i><span>${age < 60 ? age + 'm' : Math.round(age / 60) + 'h'}</span></span></header>
-    <p class="rr-t">${esc(p.text)}</p>
-    <div class="rr-why">${(p.why || []).map(w => `<span>${esc(w)}</span>`).join('')}</div>
+  const rid = 'rr-' + String(p.id).replace(/[^\w-]/g, '_');
+  return `<article class="rr-card ${done ? 'done' : ''}" data-rid="${esc(p.id)}" style="--i:${i}" tabindex="-1" aria-labelledby="${rid}-who ${rid}-t">
+    <header>${pic}<div class="rr-who" id="${rid}-who"><b>${esc(p.name || '@' + p.handle)}</b><span>@${esc(p.handle)} · ${fmtN(p.followers)} followers</span></div><span class="rr-clock ${left ? 'live' : ''}" style="--p:${Math.min(1, age / 15)}" title="${left ? `${left} min left in the first 15` : 'Past the first 15 minutes'}"><i></i><span aria-hidden="true">${rrAgeShort(age)}</span></span></header>
+    <p class="rr-t" id="${rid}-t">${esc(p.text)}</p>
+    <div class="rr-why">${(p.why || []).map(w => rrAgeChip(age, w) ? `<span class="rr-agechip" data-w="${esc(w)}">${esc(rrAgeChip(age, w))}</span>` : `<span>${esc(w)}</span>`).join('')}</div>
     ${done ? `<p class="rr-done">${ic('check', 'sm')} Replied${S.radar.done[p.id] !== true ? `: “${esc(clip(S.radar.done[p.id], 80))}”` : ''}</p>` : `<div class="rr-me">${avatar(S.user)}<div class="rr-box"><textarea class="input" rows="2" data-rrt="${esc(p.id)}" placeholder="${d.hint ? esc(d.hint) : 'Add a number, a counterexample, or a real question. Not “great post”.'}" aria-label="Your reply to @${esc(p.handle)}">${esc(d.text || '')}</textarea><span class="rr-n" data-rrn="${esc(p.id)}">${d.text ? HWCore.xLength(d.text) : 0}/280</span></div></div>
     <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip" data-tip="S">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${ic('shuffle', 'sm')} Another angle</button>` : ''}<button class="btn sm primary" data-rra="send" data-tip="${keys(MOD, '↵')}">${ic('reply', 'sm')} Reply</button></div>`}
   </article>`;
@@ -4877,7 +4885,9 @@ function rrCardHTML(p, i) {
 function drawRadar() {
   const list = $('#rr-list'); if (!list) return; const posts = RRADAR.posts.filter(p => !(S.radar && S.radar.skip && S.radar.skip[p.id]));
   const live = posts.filter(p => !(S.radar && S.radar.done && S.radar.done[p.id])); RRADAR.active = Math.max(0, Math.min(RRADAR.active || 0, posts.length - 1)); if (S.radar && S.radar.done && posts[RRADAR.active] && S.radar.done[posts[RRADAR.active].id] && live.length) RRADAR.active = posts.indexOf(live[0]);
-  list.innerHTML = RRADAR.loading ? hintHTML('loading', { rotate: true, cls: 'loading-hint' }) + Array.from({ length: 3 }, () => '<div class="rr-card sk" aria-hidden="true"></div>').join('') : posts.length ? posts.map(rrCardHTML).join('') : `<div class="empty">${RRADAR.why ? esc(RRADAR.why) : 'Nothing fresh right now. Check back in a few minutes.'}</div>`;
+  const skipped = RRADAR.posts.length - posts.length, back = skipped ? `<button class="btn sm" data-rr="unskip">${ic('undo', 'sm')} Show the ${skipped} you skipped</button>` : '';
+  const allDone = posts.length && !live.length ? `<p class="rr-all" id="rr-all" tabindex="-1" role="status">${ic('check', 'sm')} You’re caught up. Fresh posts show up here as they go live. ${back}</p>` : '';
+  list.innerHTML = RRADAR.loading ? hintHTML('loading', { rotate: true, cls: 'loading-hint' }) + Array.from({ length: 3 }, () => '<div class="rr-card sk" aria-hidden="true"></div>').join('') : posts.length ? allDone + posts.map(rrCardHTML).join('') : `<div class="empty rr-empty" id="rr-empty" tabindex="-1"><span>${RRADAR.why ? esc(RRADAR.why) : skipped ? 'You skipped everything here. Fresh posts show up as they go live.' : 'Nothing fresh right now. Check back in a few minutes.'}</span>${back}</div>`;
 }
 async function loadRadar(force) {
   const live = !!(LLM.server && LLM.server.radar), handles = (S.people || []).map(p => p.handle).filter(Boolean);
@@ -4902,8 +4912,10 @@ async function draftRadar(only) {
 }
 function openRadar() { go('replies'); }
 function rrVisible() { return RRADAR.posts.filter(x => !(S.radar && S.radar.skip && S.radar.skip[x.id])); }
-function rrFocus(i, field = true) { const v = rrVisible(); if (!v.length) return; RRADAR.active = (i + v.length) % v.length; drawRadar(); const c = $(`.rr-card[data-rid="${CSS.escape(v[RRADAR.active].id)}"]`); if (c) { c.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }); const t = $('textarea', c); (field && t ? t : c.querySelector('button')) && (field && t ? t : c.querySelector('button')).focus({ preventScroll: true }); } }
-function rrNext() { const v = rrVisible(), done = S.radar && S.radar.done || {}; const nxt = v.findIndex((x, k) => k > (RRADAR.active || 0) && !done[x.id]); const any = v.findIndex(x => !done[x.id]); rrFocus(nxt >= 0 ? nxt : any >= 0 ? any : RRADAR.active || 0, false); }
+/* J, K, S, a send and a click all land in the open card's reply box, so typing never reaches a button or a global shortcut */
+function rrFocus(i, field = true) { const v = rrVisible(); if (!v.length) { drawRadar(); const em = $('#rr-empty'); em && em.focus({ preventScroll: true }); return; } RRADAR.active = (i + v.length) % v.length; drawRadar(); const c = $(`.rr-card[data-rid="${CSS.escape(v[RRADAR.active].id)}"]`); if (c) { c.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }); const t = $('textarea', c); (field && t ? t : c).focus({ preventScroll: true }); } }
+function rrStep(dir) { const v = rrVisible(), done = S.radar && S.radar.done || {}; if (!v.length) return rrFocus(0); for (let n = 1; n <= v.length; n++) { const k = ((RRADAR.active || 0) + dir * n + v.length * n) % v.length; if (!done[v[k].id]) return rrFocus(k); } rrNext(); }
+function rrNext() { const v = rrVisible(), done = S.radar && S.radar.done || {}; const nxt = v.findIndex((x, k) => k > (RRADAR.active || 0) && !done[x.id]); const any = v.findIndex(x => !done[x.id]); if (nxt < 0 && any < 0) { drawRadar(); const a = $('#rr-all'); if (a) { a.focus({ preventScroll: true }); return; } } rrFocus(nxt >= 0 ? nxt : any >= 0 ? any : RRADAR.active || 0); }
 ROUTES.replies = () => {
   settleQueue(); const mine = S.queue.filter(q => q.status === 'published').slice(-4).reverse(), srv = LLM.server || {};
   mount('replies', `<div class="page"><div class="page-h"><div><h1 class="display">Replies</h1><p>Early, useful replies are the cheapest reach there is: on your own posts while they’re being judged, and on other people’s while they’re fresh.</p></div>
@@ -4913,10 +4925,15 @@ ROUTES.replies = () => {
     ${radarPaneHTML()}</div>`);
   radarPaneInit($('#view'));
   $('#view').addEventListener('input', e => { const t = e.target.closest('[data-rrt]'); if (!t) return; const id = t.dataset.rrt; RRADAR.drafts[id] = { ...(RRADAR.drafts[id] || {}), text: t.value }; const n = $(`[data-rrn="${CSS.escape(id)}"]`); if (n) { const k = HWCore.xLength(t.value); n.textContent = `${k}/280`; n.classList.toggle('over', k > 280); } });
-  const rk = e => { if (CURRENT !== 'replies' || MODALS.length) return; const inField = e.target.matches && e.target.matches('textarea[data-rrt]');
-    if (inField && (e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); const sb = $('[data-rra="send"]', e.target.closest('.rr-card')); sb && sb.click(); return; }
-    if (inField || isTyping(e) || e.metaKey || e.ctrlKey || e.altKey || S.settings.shortcuts === false) return;
-    if (e.key === 'j') { e.preventDefault(); rrFocus((RRADAR.active || 0) + 1, false); } else if (e.key === 'k') { e.preventDefault(); rrFocus((RRADAR.active || 0) - 1, false); } else if (e.key === 's') { const sk = $(`.rr-card:not(.mini) [data-rra="skip"]`); if (sk) { e.preventDefault(); sk.click(); } } };
+  const rk = e => { if (CURRENT !== 'replies' || MODALS.length || e.defaultPrevented) return; const inField = e.target.matches && e.target.matches('textarea[data-rrt]');
+    if (inField && (e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); if (e.repeat) return; const sb = $('[data-rra="send"]', e.target.closest('.rr-card')); sb && sb.click(); return; }
+    if (inField && e.key === 'Escape') { e.preventDefault(); const c = e.target.closest('.rr-card'); c && c.focus(); return; }
+    if (inField && S.settings.shortcuts !== false && !e.altKey && !e.metaKey && !e.ctrlKey && /^[jks]$/.test(e.key) && !e.target.value && Date.now() - (RRADAR.kbAt || 0) < 600) { e.preventDefault(); if (e.repeat) return; if (e.key === 's') { RRADAR.kbAt = Date.now() + 180; const sk = $('[data-rra="skip"]', e.target.closest('.rr-card')); sk && sk.click(); } else { RRADAR.kbAt = Date.now(); rrStep(e.key === 'j' ? 1 : -1); } return; }
+    /* in the reply box only Alt+J / Alt+K move (e.code: ⌥J types ∆ on a Mac); plain letters are the reply */
+    const k = e.altKey && /^Key[JK]$/.test(e.code) ? e.code.slice(3).toLowerCase() : e.altKey ? '' : e.key.toLowerCase();
+    if (e.metaKey || e.ctrlKey || e.shiftKey || S.settings.shortcuts === false || (isTyping(e) && !(inField && e.altKey))) return;
+    if (k === 'j' || k === 'k') { e.preventDefault(); RRADAR.kbAt = Date.now(); rrStep(k === 'j' ? 1 : -1); }
+    else if (k === 's' && !inField) { e.preventDefault(); if (e.repeat) return; RRADAR.kbAt = Date.now() + 180; const sk = $(`.rr-card:not(.mini):not(.leaving) [data-rra="skip"]`); sk && sk.click(); } };
   document.addEventListener('keydown', rk); onDispose(() => document.removeEventListener('keydown', rk));
   $('#view').addEventListener('click', e => {
     if (e.target.closest('[data-rr],[data-rra]')) { radarAction(e); return; }
@@ -4931,18 +4948,19 @@ function radarPaneInit(root) {
   if (!$('#rr-list', root)) return;
   /* drafts that were only hints (Claude wasn't connected yet when the radar loaded) get written once it is */
   if (!RRADAR.at || Date.now() - RRADAR.at > 3 * 60e3) loadRadar(); else { drawRadar(); if (aiOn() && RRADAR.posts.some(p => !(RRADAR.drafts[p.id] || {}).text && !(S.radar && S.radar.done && S.radar.done[p.id]))) draftRadar(); }
-  const t = setInterval(() => { if (document.hidden) return; $$('.rr-card[data-rid]').forEach(c => { const p = RRADAR.posts.find(x => x.id === c.dataset.rid); if (!p) return; const a = rrAge(p.at), el = $('.rr-clock', c); if (el) { el.style.setProperty('--p', Math.min(1, a / 15)); el.classList.toggle('live', a < 15); $('span', el).textContent = a < 60 ? a + 'm' : Math.round(a / 60) + 'h'; } }); }, 30e3);
+  const t = setInterval(() => { if (document.hidden) return; $$('.rr-card[data-rid]').forEach(c => { const p = RRADAR.posts.find(x => x.id === c.dataset.rid); if (!p) return; const a = rrAge(p.at), el = $('.rr-clock', c); if (el) { el.style.setProperty('--p', Math.min(1, a / 15)); el.classList.toggle('live', a < 15); $('span', el).textContent = rrAgeShort(a); } const ag = $('.rr-ago', c); if (ag) ag.textContent = rrAgeShort(a); $$('.rr-agechip', c).forEach(x => { x.textContent = rrAgeChip(a, x.dataset.w) || x.textContent; }); }); }, 30e3);
   onDispose(() => clearInterval(t));
 }
 async function radarAction(e) {
   const b = e.target.closest('[data-rr],[data-rra]'); if (!b) return false;
   if (b.dataset.rr === 'refresh') { loadRadar(true); SFX.play('tick'); return true; }
   if (b.dataset.rr === 'people') { openPeople(); return true; }
+  if (b.dataset.rr === 'unskip') { if (S.radar) S.radar.skip = {}; save(); RRADAR.active = 0; rrFocus(0); srSay('Skipped posts are back.'); return true; }
   const card = b.closest('[data-rid]'); const p = card && RRADAR.posts.find(x => x.id === card.dataset.rid); if (!p) return true;
   S.radar = S.radar || { done: {}, skip: {} }; S.radar.done = S.radar.done || {}; S.radar.skip = S.radar.skip || {};
   const a = b.dataset.rra;
   if (a === 'focus') { rrFocus(RRADAR.posts.filter(x => !(S.radar && S.radar.skip && S.radar.skip[x.id])).indexOf(p)); return true; }
-  if (a === 'skip') { S.radar.skip[p.id] = 1; save(); card.classList.add('leaving'); setTimeout(() => { drawRadar(); rrFocus(RRADAR.active || 0); }, 180); return true; }
+  if (a === 'skip') { if (card.classList.contains('leaving')) return true; S.radar.skip[p.id] = 1; save(); card.classList.add('leaving'); setTimeout(() => { drawRadar(); rrFocus(RRADAR.active || 0); }, 180); return true; }
   if (a === 'again') { delete RRADAR.drafts[p.id]; draftRadar(p.id); return true; }
   if (a === 'send') {
     const text = ((RRADAR.drafts[p.id] || {}).text || '').trim();
@@ -4957,7 +4975,7 @@ async function radarAction(e) {
     }
     /* a sample post has no real tweet to answer: copy only, never open a stand-alone public post */
     copyText(text); if (!p.sample) window.open(`https://x.com/intent/post?in_reply_to=${encodeURIComponent(p.id)}&text=${encodeURIComponent(text)}`, '_blank', 'noopener');
-    S.radar.done[p.id] = text; save(); rrNext(); toast(p.sample ? 'That was a sample post. Your reply is copied, ready for a real one.' : 'Opened X with your reply. It’s on your clipboard too.', { icon: 'reply' });
+    S.radar.done[p.id] = text; save(); rrNext(); toast(p.sample ? 'Copied your reply. This was a sample post, so nothing went to X.' : 'Opened X with your reply. It’s on your clipboard too.', { icon: p.sample ? 'copy' : 'reply' });
     return true;
   }
   return true;
