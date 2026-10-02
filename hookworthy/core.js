@@ -65,7 +65,9 @@
     /* blanks: [brackets], {braces}, ___ and TK; a lone X only counts when a Y placeholder sits beside it ("Stop X. Do Y."), so "grow on X" is just X */
     const blank = /\[[^\]]+\]|\{[^}]+\}|_{3,}|\bTK\b/.test(first) || /\bX\b[^\n]*\bY\b/.test(first);
     const toks = first.match(/[A-Za-z]{3,}/g) || [];
-    const mash = toks.filter(w => /^(asdf|qwer|zxcv|sdfg|hjkl|uiop|lorem|ipsum|blah)/i.test(w) || /[bcdfghjklmnpqrstvwxz]{5,}/i.test(w) || !/[aeiouy]/i.test(w)).length;
+    /* tickers, acronyms and chat shorthand (BTC, PnL, tbh, nfts) are words, not mash: only lowercase vowel-less runs of 4+ count, minus a known list */
+    const SHORT_OK = /^(btc|eth|sol|nfts?|pnl|tbh|imo|imho|ngl|dca|tvl|cpi|ppi|fomc|gm|gn|ath|atl|rsi|dma|ema|sma|lfg|wagmi|ngmi|wtf|smh|brb|ltv|cltv|mrr|arr|cac|kpis?|ctr|crm|cms|dms?|pfp|yolo|hmm+|psst|shh+|grr+|tsk|nth|rhythms?|crypts?|lynch|nymphs?|psych|spry|sync|synth|myth|lymph|gym|hymn|tryst|dryly|shyly|slyly|why|fly|cry|dry|try|sky|spy|sly|shy|pry|ply)$/i;
+    const mash = toks.filter(w => /^(asdf|qwer|zxcv|sdfg|hjkl|uiop|lorem|ipsum|blah)/i.test(w) || /[bcdfghjklmnpqrstvwxz]{6,}/i.test(w) || (w.length >= 4 && w === w.toLowerCase() && !/[aeiouy]/.test(w) && !SHORT_OK.test(w))).length;
     const gib = toks.length ? mash / toks.length : 1;
     const bait = (lc.match(/\b(\d+% of (you|people)|won[’']?t (read|believe|see)|nobody (tells|talks)|secrets?|10x your|game[- ]?changer|you need to see|read (this|till the end)|bookmark this|thank me later|this will change|most people (don[’']?t|won[’']?t|will never)|nobody(?: is|['’]s) talking|stop scrolling|change your life|breaking|unpopular opinion|hot take)\b/g) || []).length + (/\b(agree|thoughts|am i wrong)\s*\?\s*$/i.test(text.trim()) ? 1 : 0) + ((first.match(/\p{Extended_Pictographic}/gu) || []).length >= 3 ? 1 : 0);
     const short = toks.length < 4 && !/\d/.test(first);
@@ -95,7 +97,7 @@
       if (parts.curiosity >= 60) s.push('an open loop');
       if (parts.tension >= 60) s.push('real friction');
       if (!s.length) s.push('tight, clear phrasing');
-      reason = `${cap(s.slice(0, 2).join(' and '))}. That stops a scroll.`; tone = 'good';
+      reason = `${cap(s.slice(0, 2).join(' and '))}. A strong first line.`; tone = 'good';
     }
     else if (parts.specificity < 45) { reason = 'No numbers or specifics yet. Concrete beats clever.'; tone = 'fix'; }
     else if (parts.curiosity < 45) { reason = 'It answers itself. Leave one question open.'; tone = 'fix'; }

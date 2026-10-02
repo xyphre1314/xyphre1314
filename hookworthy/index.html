@@ -1011,6 +1011,7 @@ body.typing .preview{ opacity:.7; }
 .qcard.published{ opacity:.6; }
 .qcard.due{ box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--warn) 60%,transparent); } .qcard.due .qm > span:first-child::before{ content:"Post by hand · "; font:600 11px/1 var(--font-ui); color:var(--text-1); letter-spacing:0; }
 .qcard.published .qm > span:first-child::before{ content:"Sent · "; font:600 10px/1 var(--font-ui); color:var(--success); letter-spacing:0; }
+.qcard.published.sending .qm > span:first-child::before{ content:"Sending… · "; color:var(--text-3); }
 .side-panel{ display:grid; gap:12px; }
 .side-panel .card{ padding:16px; display:grid; gap:12px; }
 .setting{ display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center; }
@@ -2704,7 +2705,8 @@ const ic = (id, cls = '') => `<svg class="icon ${cls}" aria-hidden="true"><use h
 const pic = (id, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-${id}"/></svg>`;
 const uid = () => Math.random().toString(36).slice(2, 9);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const TICKER0 = /^(btc|eth|sol|xrp|bnb|ada|doge|avax|link|dot|ltc|usdt|usdc|nft|nfts|pnl|cpi|fomc|etf|etfs|spx|qqq|ath|atl|dca|tvl|rsi)\b/i;
+const cap = s => !s ? s : TICKER0.test(s) ? s.replace(TICKER0, m => /^nfts?$|^etfs$/i.test(m) ? m.slice(0, 3).toUpperCase() + m.slice(3).toLowerCase() : m === 'pnl' ? 'PnL' : m.toUpperCase()) : s[0].toUpperCase() + s.slice(1);
 const lcFirst = s => s && !/^[A-Z]{2}|^I\b/.test(s) ? s[0].toLowerCase() + s.slice(1) : s;
 /* keyboard hints follow your computer: ⌘ ⌥ ⇧ on a Mac, Ctrl Alt Shift everywhere else */
 const IS_MAC = /mac|iphone|ipad|ipod/i.test((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent);
@@ -2838,7 +2840,7 @@ const DEFAULT_STATE = {
     { id: uid(), src: 'note', text: 'Every indicator I’ve used, ranked by how much I’d actually miss it.', at: now0 - 80 * 3600e3 }
   ],
   queue: seedQueue(),
-  voice: { spice: 58, polish: 38, length: 35, never: ['delve', 'game-changer', 'unlock', 'leverage', 'synergy', 'in today’s fast-paced world'] },
+  voice: { spice: 58, polish: 38, length: 35, never: ['delve', 'game-changer', 'unlock', 'synergy', 'in today’s fast-paced world'] },
   streak: seedStreak(),
   drafts: seedDrafts(),
   reruns: [],
@@ -2851,6 +2853,8 @@ if (!S || typeof S !== 'object' || S.v !== DEFAULT_STATE.v) S = structuredClone(
 for (const [k, v] of Object.entries(DEFAULT_STATE)) { if (S[k] == null || (Array.isArray(v) && !Array.isArray(S[k])) || (v && typeof v === 'object' && !Array.isArray(v) && (typeof S[k] !== 'object' || Array.isArray(S[k])))) S[k] = structuredClone(v); else if (v && typeof v === 'object' && !Array.isArray(v) && k !== 'streak') for (const [k2, v2] of Object.entries(v)) if (S[k][k2] === undefined) S[k][k2] = structuredClone(v2); }
 if (S.draft && (!Array.isArray(S.draft.tweets) || !S.draft.tweets.length)) S.draft = null;
 if (!S.ai || S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date.now()), limit: 5 };
+/* round 28: 'leverage' left the default never-say list (traders mean margin by it); drop it from saved lists that still carry the old default set */
+if (S.voice && Array.isArray(S.voice.never) && !S.migr28) { if (S.voice.never.includes('synergy') && S.voice.never.includes('delve')) S.voice.never = S.voice.never.filter(w => w !== 'leverage'); S.migr28 = true; }
 const HIST_K = { k: null };
 function persist() { const h = S.history; const k = h ? `${h.length}:${h.reduce((a, p) => a + (p.likes || 0) + (p.replies || 0) + (p.views || 0) + (p.text ? p.text.length : 0), 0)}` : '0'; if (k !== HIST_K.k && store.set('history', h || [])) HIST_K.k = k; const { history, ...rest } = S; store.set('state', rest); }
 const save = debounce(() => { persist(); scheduleSync(); }, 250);
@@ -2876,6 +2880,7 @@ const STOP = new Set(("a an the and or but so to of in on for with at by from is
 function words(t) { return (t.toLowerCase().match(/[a-z][a-z’'-]+/g) || []); }
 const VERBISH = new Set('probably charge value values cost costs should would could might think thought feel felt want wanted need needed make made take took give gave keep kept start started stop stopped try tried quit said says tell told know knew learn learned build built ship shipped write wrote post posted work worked works use used using getting going doing having being important really actually great good best better worst simple hard easy wrong right little every'.split(' '));
 function topicOf(text) {
+  text = String(text || '').replace(/https?:\/\/\S+|\bwww\.\S+/gi, ' ');
   const w = (text.toLowerCase().match(/[a-z0-9][a-z0-9’'$%-]*/g) || []);
   let best = '', bs = -Infinity;
   for (let i = 0; i < w.length; i++) {
@@ -2890,24 +2895,12 @@ function topicOf(text) {
   }
   return best || 'this';
 }
-function sentences(t) { return (t.match(/[^.!?\n]+[.!?]*[”"’)]*\s*|\n+/g) || [t]); }
+/* a full stop inside a link, a price or a ticker (example.com, 3.5, $4.2k) doesn't end a sentence */
+function sentences(t) { return (t.match(/(?:[^.!?\n]|[.!?](?=[^\s.!?”"’)]))+[.!?]*[”"’)]*\s*|\n+/g) || [t]); }
 
 /* hook score: a transparent heuristic grader (0-100) */
 /* hook score lives in core.js so the server and MCP grade the same way */
 const hookScore = HWCore.hookScore;
-/* what to expect, from your own posts: your median likes/replies/reposts/views × how this line scores for you */
-function pvEstimate(text) {
-  const H = HIST().filter(p => HWCore.eng(p) > 0); if (H.length < 8 || !String(text || '').trim()) return null;
-  const med = k => HWCore.median(H.map(p => p[k] || 0)), m = PHOOK(), me = m.ready ? HWCore.personalScore(text, m, { parts: S.draft.tweets.filter(t => t.text.trim()).length }) : null, x = me ? me.x : 1;
-  return { replies: med('replies') * x, reposts: med('reposts') * x, likes: med('likes') * x, views: med('views') * x, x, n: H.length, tuned: !!me };
-}
-function predict(score, text) {
-  if (!text.trim()) return null;
-  const views = 320 * Math.pow(1.042, score) * (1 + (hash(text) % 17) / 100);
-  const hs = hookScore(text);
-  const replies = views * .0065 * (1 + hs.parts.tension / 120);
-  return { views, replies };
-}
 
 /* ---------- riffs (AI actions) ---------- */
 const CONTRACT = [[/\bit is\b/gi, "it’s"], [/\bdo not\b/gi, "don’t"], [/\bdoes not\b/gi, "doesn’t"], [/\bI am\b/g, 'I’m'], [/\bcannot\b/gi, "can’t"], [/\bwill not\b/gi, "won’t"], [/\bthat is\b/gi, "that’s"], [/\bthey are\b/gi, "they’re"], [/\bwe are\b/gi, "we’re"], [/\byou are\b/gi, "you’re"], [/\bis not\b/gi, "isn’t"], [/\bare not\b/gi, "aren’t"], [/\bI have\b/g, 'I’ve'], [/\bdid not\b/gi, "didn’t"], [/\bwas not\b/gi, "wasn’t"]];
@@ -2980,7 +2973,8 @@ function hookFor(text, parts) { const m = PHOOK(), g = hookScore(text); const me
 function ANALYSIS() { const k = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (_an.key !== k) _an = { key: k, v: HWCore.analyze(HIST()) }; return _an.v; }
 const AI = {
   punchier(t) {
-    let s = stripFillers(t).replace(/^\s*(ok(ay)? so|so|well|basically|honestly|look),?\s+/i, '').replace(/^([a-z])/, m => m.toUpperCase());
+    let s = stripFillers(t).replace(/^\s*(ok(ay)? so|so|well|basically|honestly|look),?\s+/i, '').replace(/[,\s]+(tbh|ngl|imo|lol|fr|lmao)[.!]*\s*$/i, '');
+    s = cap(s);
     s = s.replace(/,\s+(and|but|so)\s+/gi, (m, w) => `. ${cap(w.toLowerCase())} `);
     s = s.split(/(?<=[.!?])\s+|\n/).map(x => x.length > 90 ? x.replace(/\s+because\s+/i, '. ').replace(/\s+and (you|we|I|they)\s+/, (m, w) => `. ${cap(w)} `) : x).join(' ');
     s = s.replace(/!+/g, '.');
@@ -3001,12 +2995,11 @@ const AI = {
     return tidy(s);
   },
   hook(t) {
-    const ss = sentences(t.trim()); let rest = t.trim();
-    if (ss.length > 1 && hookScore(ss[0]).score < 60) rest = ss.slice(1).join('').trim();
-    rest = AI.punchier(rest);
-    const ranked = hookPool(t).map(l => ({ l, s: hookScore(`${l}\n\n${rest}`).score })).sort((a, b) => b.s - a.s);
+    const ss = sentences(t.trim()), rest = AI.punchier(ss.slice(1).join('').trim());
+    const ranked = hookPool(t).map(l => ({ l, s: hookScore(l).score })).sort((a, b) => b.s - a.s);
+    if (!ranked.length) return tidy(t);
     const line = ranked[riffNonce % Math.min(2, ranked.length)].l;
-    return tidy(`${line}\n\n${rest}`);
+    return tidy(rest ? `${line}\n\n${rest}` : line);
   },
   contrarian(t) {
     const p = AI.punchier(t); const topic = topicOf(t);
@@ -3160,16 +3153,18 @@ function writeIdea(text, kind, topic) {
   writeFrom([text]); goThen('write', () => { const ta = $('.tw-input'); if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } });
   if (kind !== 'Question') toast('Your hook is in. Keep going, or outline it as a thread.', { icon: 'write', tone: 'accent', ms: 6000, action: 'Outline as thread', onAction: () => { writeFrom(expandIdea(text, kind, topic)); toast(OUTLINE_MSG, { icon: 'riff', tone: 'accent', ms: 4200 }); } });
 }
+/* Basic-mode hook frames: every one is the writer's own claim, reshaped. No invented backstory, numbers or results */
 function hookPool(t) {
-  const topic = topicOf(t), spicy = S.voice.spice > 60;
-  const num = (t.match(/\$?\d[\d,.]*\s?(k|%|x|years?|months?|weeks?|days?|hours?|users|customers|people|posts)?/i) || [])[0];
-  return [
-    num ? `${cap(num.trim())}. That’s what ${topic} actually took.` : null,
-    `I got ${topic} wrong for years. Here’s what changed:`,
-    `What I’d tell myself about ${topic} a year ago:`,
-    `If I had to figure out ${topic} again from zero, I’d do this:`,
-    spicy ? `I’ve stopped believing the usual line on ${topic}. Here’s why:` : `${cap(topic)}, in one honest line:`
-  ].filter(Boolean);
+  const first = (sentences(String(t || '').trim())[0] || '').trim(); if (!first) return [];
+  const p = AI.punchier(first).replace(/\s+$/, ''), bare = p.replace(/[.!…]+$/, ''), out = [];
+  const nxt = (sentences(String(t).trim())[1] || '').trim();
+  const looped = /[:?]$/.test(p) || /\bhere(’|')?s (why|how|what)\b|\bhere is (why|how|what)\b/i.test(p) || /^here(’|')?s\b|^here is\b|:$/i.test(nxt);
+  if (!looped && bare.length < 120) out.push(`${bare}. Here’s why:`);
+  if (/\?$/.test(p)) out.push(`${p} My answer:`);
+  if (!looped && bare.length < 110 && /\b(i|we|my|our)\b/i.test(bare)) out.push(`${bare}. Here’s what happened:`);
+  if (S.voice.spice > 60 && !looped && bare.length < 100) out.push(`I’ll say it plainly: ${lcFirst(bare)}.`);
+  if (p !== first) out.push(p);
+  return [...new Set(out)];
 }
 function remix(post, format) {
   const t = post.text; const topic = topicOf(t); const first = sentences(t)[0].trim();
@@ -3460,6 +3455,10 @@ function goThen(name, fn) {
 }
 function route() {
   const h = location.hash.replace(/^#\/?/, '') || 'home';
+  if (h === 'main') return; /* the skip link's target, not a page */
+  /* #settings is a sheet, not a page; any other unknown hash lands on Today once you're in, never on the marketing page */
+  if (h === 'settings') { location.replace('#today'); setTimeout(() => openSettings(), 260); return; }
+  if (!ROUTES[h] && h !== 'home' && S.onboarded) { location.replace('#today'); return; }
   const name = ROUTES[h] ? h : 'home';
   closeMenu(); while (MODALS.length) MODALS[MODALS.length - 1].close(); Tip.hide(); closeUpsell();
   document.body.classList.remove('typing');
@@ -3515,7 +3514,7 @@ function shell(active, inner) {
   </aside>
   <main class="main" id="main"><div class="view" id="view">${inner}</div></main>
   <nav class="tabbar" aria-label="Main">
-    ${[['today', 'sun', 'Today'], ['replies', 'reply', 'Replies']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}<button class="tab-new" data-act="tabnew" aria-label="New post. Hold to save an idea">${ic('plus')}<span>${active === 'write' ? 'Write' : 'New'}</span></button>${[['queue', 'cal', 'Queue']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}
+    ${[['today', 'sun', 'Today'], ['replies', 'reply', 'Replies']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}<button class="tab-new" data-act="tabnew" aria-label="New post. Hold to save an idea">${ic('plus')}<span>New</span></button>${[['queue', 'cal', 'Queue']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}
     <button data-act="mobilemore">${ic('more')}<span>More</span></button>
   </nav>
 </div>`;
@@ -4754,7 +4753,7 @@ function radarPaneHTML() {
   const live = !!(LLM.server && LLM.server.radar), people = (S.people || []).map(p => p.handle).filter(Boolean);
   return `<section class="sec rr"><div class="sec-h"><div><h2 class="h2">Reply radar</h2><p class="muted" style="margin-top:4px">Fresh posts from accounts you learn from, ranked by how much an early, useful reply is worth. Best in the first 15 minutes. <span class="kbd-only">${kbd('J')} ${kbd('K')} to move, ${kbd('S')} to skip, ${kbd(MOD, '↵')} to send.</span></p></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-rr="people">${ic('trend', 'sm')} ${people.length ? `${people.length} account${people.length > 1 ? 's' : ''}` : 'Pick accounts'}</button><button class="btn sm" data-rr="refresh">${ic('shuffle', 'sm')} Refresh</button></div></div>
-    <p class="rr-note" id="rr-note">${live ? (people.length ? '' : `${ic('q', 'sm')} Sample posts for now. Pick the accounts you learn from, and the radar watches them.`) : `${ic('q', 'sm')} Sample posts. Connect X on your server and the radar shows real ones as they go live.`}</p>
+    <p class="rr-note" id="rr-note">${live ? (people.length ? '' : `${ic('q', 'sm')} Sample posts for now. Pick the accounts you learn from, and the radar watches them.`) : `${ic('q', 'sm')} Sample posts. Connect your X account and the radar shows real ones as they go live. In this demo, nothing posts.`}</p>
     <div class="rr-list" id="rr-list"></div></section>`;
 }
 function rrAge(at) { const m = Math.max(0, Math.round((Date.now() - Date.parse(at)) / 60e3)); return m; }
@@ -4851,7 +4850,8 @@ async function radarAction(e) {
       catch (err) { toast(`X said no: ${esc(String(err.message || 'unknown error').replace(/[.!]+$/, ''))}. Try again in a minute.`, { icon: 'zapoff', tone: 'err' }); } finally { b.classList.remove('is-loading'); }
       return true;
     }
-    copyText(text); window.open(`https://x.com/intent/post?in_reply_to=${encodeURIComponent(p.sample ? '' : p.id)}&text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    /* a sample post has no real tweet to answer: copy only, never open a stand-alone public post */
+    copyText(text); if (!p.sample) window.open(`https://x.com/intent/post?in_reply_to=${encodeURIComponent(p.id)}&text=${encodeURIComponent(text)}`, '_blank', 'noopener');
     S.radar.done[p.id] = text; save(); rrNext(); toast(p.sample ? 'That was a sample post. Your reply is copied, ready for a real one.' : 'Opened X with your reply. It’s on your clipboard too.', { icon: 'reply' });
     return true;
   }
@@ -4972,7 +4972,7 @@ function openGifs(i) {
 /* ---------- Sharpen: select any words, flip through three takes on just those words ----------
    Rewrites the part you mean and leaves the rest alone. Free, instant, previewed in place. */
 const SHARP = [{ k: 'punchier', label: 'Punchier' }, { k: 'shorter', label: 'Shorter' }, { k: 'clearer', label: 'Clearer' }, { k: 'bolder', label: 'Bolder' }, { k: 'human', label: 'More human' }];
-const PLAIN = [[/\butili[sz]e\b/gi, 'use'], [/\bleverage\b/gi, 'use'], [/\bin order to\b/gi, 'to'], [/\bfacilitate\b/gi, 'help'], [/\bprior to\b/gi, 'before'], [/\bsubsequently\b/gi, 'then'], [/\ba number of\b/gi, 'some'], [/\bat this point in time\b/gi, 'now'], [/\bdue to the fact that\b/gi, 'because'], [/\bcommence\b/gi, 'start'], [/\bendeavou?r\b/gi, 'try'], [/\boptimi[sz]e\b/gi, 'improve'], [/\bin terms of\b/gi, 'for'], [/\bwith regards? to\b/gi, 'about'], [/\bis able to\b/gi, 'can'], [/\bthe majority of\b/gi, 'most']];
+const PLAIN = [[/\butili[sz]e\b/gi, 'use'], [/\bin order to\b/gi, 'to'], [/\bfacilitate\b/gi, 'help'], [/\bprior to\b/gi, 'before'], [/\bsubsequently\b/gi, 'then'], [/\ba number of\b/gi, 'some'], [/\bat this point in time\b/gi, 'now'], [/\bdue to the fact that\b/gi, 'because'], [/\bcommence\b/gi, 'start'], [/\bendeavou?r\b/gi, 'try'], [/\boptimi[sz]e\b/gi, 'improve'], [/\bin terms of\b/gi, 'for'], [/\bwith regards? to\b/gi, 'about'], [/\bis able to\b/gi, 'can'], [/\bthe majority of\b/gi, 'most']];
 const CONTRACTIONS = [[/\bdo not\b/gi, 'don’t'], [/\bdoes not\b/gi, 'doesn’t'], [/\bI am\b/g, 'I’m'], [/\bit is\b/gi, 'it’s'], [/\bwe are\b/gi, 'we’re'], [/\byou are\b/gi, 'you’re'], [/\bcannot\b/gi, 'can’t'], [/\bwill not\b/gi, 'won’t'], [/\bI have\b/g, 'I’ve'], [/\bthat is\b/gi, 'that’s'], [/\bthey are\b/gi, 'they’re'], [/\bis not\b/gi, 'isn’t']];
 const QUAL = /\b(i think|i feel like|i believe|maybe|perhaps|probably|kind of|sort of|a bit|somewhat|arguably|in my opinion|it seems like|honestly|really|just)\s+/gi;
 const subAll = (t, list) => list.reduce((x, [r, w]) => x.replace(r, m => /^[A-Z]/.test(m) ? cap(w) : w), t);
@@ -5139,8 +5139,8 @@ function overText(t, lim) { const a = [...t]; if (a.length <= lim) return pfText
 const PV_NEAR = { x: [3, 8], threads: [1, 10], linkedin: [4, 5], bsky: [0, 9] };
 function pvCard(k, compact) {
   const p = PLAT[k], tws = S.draft.tweets, dark = isDark(), you = pvYou(), R = PF_RENDER[k];
-  const est = pvEstimate(tws[0].text), demo = !est && SHOWCASE() ? predict(hookScore(tws[0].text).score, tws[0].text) : null;
-  const cnt = sc => est ? [est.replies, est.reposts, est.likes, est.views].map(v => Math.round(v * sc)) : demo ? [demo.replies, demo.views * .006, demo.views * .021, demo.views].map(v => Math.round(v * sc)) : [0, 0, 0, 0];
+  /* your own post shows the actions, never a prediction of likes or views */
+  const cnt = () => [0, 0, 0, 0];
   const umedia = t => t.media.length ? mediaHTML(t).replace(/<button class="rm"[\s\S]*?<\/button>/g, '') : '';
   const upoll = t => t.poll ? `<div class="poll-pv">${t.poll.options.filter(Boolean).map(o => `<div>${esc(o)}</div>`).join('') || '<div>Choice 1</div><div>Choice 2</div>'}<span>0 votes · ${t.poll.days} day${t.poll.days > 1 ? 's' : ''} left</span></div>` : '';
   const ph = i => `<span class="pv-ph">${i === 0 ? 'Your first line shows up here.' : 'Next post…'}</span>`;
@@ -5158,7 +5158,7 @@ function pvCard(k, compact) {
     tag = `<span>${pic(p.icon)} @${esc(you.h)}${k === 'bsky' ? '.bsky.social' : ''}</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${k === 'x' && xLong() ? `Long post · ${fmtN(HWCore.xLength(tws[0].text))} / 25,000` : tws.length > 1 ? `Thread of ${tws.length}` : `Up to ${fmtN(p.limit)} characters`}</span>`}`;
   }
   const near = compact ? ['', ''] : PV_NEAR[k].map(i => R(VOID_POSTS[i], { dark }));
-  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${compact ? '' : `<p class="pv-proj">${est ? `<b>Estimate.</b> Counts are what a typical post of yours gets${est.tuned ? `, times ${est.x} for how this line scores with your audience` : ''}. From ${fmtN(est.n)} of your posts.` : demo ? '<b>Sample estimate.</b> Bring your posts and these come from your own history.' : HIST().length >= 8 ? `Start typing to see what this gets, from your ${fmtN(HIST().length)} posts.` : 'No numbers yet. Bring your posts and this shows what to expect, from your own history.'}</p>`}</div>`;
+  return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${compact ? '' : `<p class="pv-proj">How it will look in the feed.</p>`}</div>`;
 }
 function liVersion() {
   let t = S.draft.tweets.map(x => x.text.trim()).filter(Boolean).join('\n\n');
@@ -5219,7 +5219,7 @@ function preflight() {
   const all = tws.map(t => t.text).join('\n');
   /* words you banned on Your voice */
   const banned = S.voice.never.filter(w => new RegExp(`(^|[^\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(all));
-  if (banned.length) out.push({ k: 'never', msg: `You said “${banned[0]}”${banned.length > 1 ? ` and ${banned.length - 1} more` : ''}.`, why: 'It’s on your never-say list. Future you asked present you to catch this.', fix: 'never', fixL: 'Rewrite it' });
+  if (banned.length) out.push({ k: 'never', msg: `You said “${banned[0]}”${banned.length > 1 ? ` and ${banned.length - 1} more` : ''}.`, why: 'It’s on your never-say list. If you meant it, remove it in Your voice.', fix: 'never', fixL: 'Rewrite it' });
   /* cringe check: lines that read like bait or a press release on every platform */
   CRINGE.forEach((c, i) => { const m = all.match(c.re); if (m) out.push({ k: 'cr' + i, msg: c.msg.replace('$0', m[0].trim()), why: c.why, ...(c.cut ? { fix: 'cr' + i, fixL: 'Cut it' } : {}) }); });
   /* said it before: close to something you already posted */
@@ -5336,10 +5336,12 @@ function hookAlts(text, n = 3) {
   const base = hookScore(first).score, out = new Set();
   const keepRest = l => rest0 ? `${l}\n\n${rest0}` : l;
   const punch = AI.punchier(first); if (punch && punch !== first) out.add(keepRest(punch));
-  hookPool(t).forEach(l => out.add(l + (t ? `\n\n${AI.punchier(base < 60 && rest0 ? rest0 : t)}` : '')));
+  hookPool(t).forEach(l => out.add(keepRest(l)));
   /* your own line, tightened, always comes first when it helps; the templates fill in after */
   const own = punch && punch !== first && hookScore(punch).score > base ? [keepRest(punch)] : [];
-  const rest = [...out].filter(x => !own.includes(x)).map(x => ({ x, s: hookScore(x.split('\n')[0]).score })).filter(o => o.s > base).sort((a, b) => b.s - a.s).map(o => o.x);
+  /* a single post can't end on "Here's why:" with nothing after it */
+  const solo = !rest0 && S.draft.tweets.filter(x => x.text.trim()).length < 2;
+  const rest = [...out].filter(x => !own.includes(x) && !(solo && /:\s*$/.test(x))).map(x => ({ x, s: hookScore(x.split('\n')[0]).score })).filter(o => o.s > base).sort((a, b) => b.s - a.s).map(o => o.x);
   return [...own, ...rest].slice(0, n);
 }
 function schedHookHTML() {
@@ -5372,15 +5374,16 @@ async function syncToServer(q, media) {
   const skipped = ['threads', 'bsky'].filter(k => q.platforms[k]).map(k => PLAT[k].name);
   const body = { posts: ids ? q.tweets.map((text, i) => ({ text, media: ids[i] || [] })) : q.tweets, platforms }; const pub = q.status === 'published';
   if (!pub && q.approval === 'needs') return; /* not until it's approved */
-  if (!pub) body.at = slotDate(q.day, q.time).toISOString();
+  if (!pub) body.at = slotDate(q.day, q.time).toISOString(); else { q.sending = true; if (CURRENT === 'queue') { drawCal(); drawQSide(); } }
+  const settled = () => { delete q.sending; save(); if (CURRENT === 'queue') { drawCal(); drawQSide(); } };
   fetch(pub ? 'api/publish' : 'api/schedule', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json().then(j => ({ ok: r.ok, j }))).then(({ ok, j }) => {
     if (!ok) throw new Error(j.error || 'failed');
-    if (pub) { const bad = Object.entries(j.results || {}).filter(([, r]) => !r.ok), good = Object.entries(j.results || {}).filter(([, r]) => r.ok), nm = k => k === 'x' ? 'X' : 'LinkedIn';
+    if (pub) { settled(); const bad = Object.entries(j.results || {}).filter(([, r]) => !r.ok), good = Object.entries(j.results || {}).filter(([, r]) => r.ok), nm = k => k === 'x' ? 'X' : 'LinkedIn';
       if (!good.length) { markFailed(q, bad.map(([k, r]) => `${nm(k)}: ${r.error}`).join(' ')); return; }
       q.urls = Object.fromEntries(good.map(([k, r]) => [k, r.url])); if (j.results.x && j.results.x.ids) { q.xIds = j.results.x.ids; if (S.live && S.live.id === q.id) setTimeout(() => liveFetch().then(liveDraw), 400); } save();
       toast(bad.length ? `Live on ${good.map(([k]) => nm(k)).join(' and ')}. ${bad.map(([k, r]) => `${nm(k)} didn’t work: ${esc(r.error)}`).join(' ')}` : `Live on ${good.map(([k]) => nm(k)).join(' and ')}.${skipped.length ? ` ${skipped.join(' and ')} still need you to post by hand.` : ''}`, { icon: bad.length ? 'zapoff' : 'send', tone: bad.length ? 'err' : 'accent', ms: 6000 }); }
     else { q.serverId = j.id; save(); }
-  }).catch(e => pub ? markFailed(q, `The server couldn’t post it: ${e.message}`) : toast(failMsg('queue it on the server', e), { icon: 'zapoff', tone: 'err', ms: 6000 }));
+  }).catch(e => pub ? (settled(), markFailed(q, `The server couldn’t post it: ${e.message}`)) : toast(failMsg('queue it on the server', e), { icon: 'zapoff', tone: 'err', ms: 6000 }));
 }
 function publishNow(btn, { anyway = false } = {}) {
   if (CURRENT !== 'write' || SEND.t) return;
@@ -6264,7 +6267,7 @@ function openSettings() {
         <div class="set-row"><div><b>Theme</b><small>Light is cream paper; dark is warm ink.</small></div>${seg('theme', theme, [['light', 'Light'], ['dark', 'Dark'], ['system', 'System']])}</div>
       </section>
       <section><h3 class="label">Alerts</h3>
-        ${row('Breakout alerts', boOn(), srv.breakout ? (S.settings.breakout ? 'Watching new posts for 3× your usual pace.' : 'A ping when a post takes off, with its first replies drafted.') : 'Needs your Hookworthy server with X connected.', `<button class="btn sm" data-bo="setup">${srv.breakout ? (S.settings.breakout ? 'Settings' : 'Set up') : 'See a sample'}</button>`)}
+        ${row('Breakout alerts', boOn(), srv.breakout ? (S.settings.breakout ? 'Watching new posts for 3× your usual pace.' : 'A ping when a post takes off, with its first replies drafted.') : 'Needs your X account connected. In this demo, it shows a sample.', `<button class="btn sm" data-bo="setup">${srv.breakout ? (S.settings.breakout ? 'Settings' : 'Set up') : 'See a sample'}</button>`)}
       </section>
       <section><h3 class="label">Your data</h3>
         ${row('Your posts', HIST().length > 0, HIST().length ? `${fmtN(HIST().length)} posts in this browser. They tune your best times and your hook score.` : 'None yet. Bring them and best times, hints and your hook score become yours.', `<button class="btn sm" data-act="import">${HIST().length ? 'Add more' : 'Bring your posts'}</button>`)}
@@ -6768,12 +6771,12 @@ function hgSharpen(raw) {
   s = s.replace(/\s{2,}/g, ' ').replace(/\s+([,.!?;:])/g, '$1').replace(/^[,;:\s]+/, '').trim();
   s = s.replace(/\bi\b/g, 'I').replace(/\bi[’'](m|ve|ll|d)\b/g, 'I’$1').replace(/\bim\b/g, 'I’m').replace(/\bdont\b/g, 'don’t').replace(/\bcant\b/g, 'can’t').replace(/\bdoesnt\b/g, 'doesn’t').replace(/\bisnt\b/g, 'isn’t');
   s = s.replace(/!+$/, '.').replace(/^here is\b/i, 'Here’s').replace(/\bit is\b/gi, m => m[0] === 'I' ? 'It’s' : 'it’s').replace(/\bdo not\b/gi, 'don’t');
-  s = s ? s[0].toUpperCase() + s.slice(1) : s;
+  s = cap(s);
   if (/[\p{L}\p{N}%)]$/u.test(s)) s += '.';
   let first = s, loop = false;
   /* an open loop only on a claim, and only when it earns its place */
   const claim = /\b(is|are|was|isn’t|aren’t|should|shouldn’t|must|matters?|beats?|wins?|never|always|most|best|worst|only|don’t|stop|nobody|everyone|overrated|underrated|wrong)\b/i.test(first) && !/\b(feedback|check (it )?out|link|dm me|thoughts|agree)\b/i.test(first);
-  if (claim && hookScore(first).score < 70 && !/[:?…]$/.test(first) && first.length < 110 && hookScore(first + ' Here’s why:').score > hookScore(first).score) { first += ' Here’s why:'; loop = true; }
+  if (claim && hookScore(first).score < 70 && !/[:?…]$/.test(first) && !/\bhere(’|')?s why\b|\bhere is why\b/i.test(first) && first.length < 110 && hookScore(first + ' Here’s why:').score > hookScore(first).score) { first += ' Here’s why:'; loop = true; }
   /* no number in the post? leave a blank for theirs. Never make one up */
   const add = loop && !/\d/.test(text) && !rest && first.length >= 40 ? 'The proof, in one number: [your number]' : '';
   const out = [first, rest, add].filter(Boolean).join('\n\n');
@@ -6953,12 +6956,12 @@ ROUTES.home = () => { loadSprite('ph');
   <section class="h7-sec wrap" id="features" aria-labelledby="ft-h">
     <div class="h7-head"><div><span class="eyebrow">Built around the hook</span><h2 id="ft-h">Everything starts <em>at the first line.</em></h2></div><p>A coach for the line people decide on, a voice that stays yours, and two radars that tell you when to show up.</p></div>
     <div class="bento">
-      <article class="bx bx-score rv"><div class="bx-h"><span class="bx-k">${ic('hook', 'sm')} Hook score</span><h3>A score, and one plain reason.</h3><p>Five checks on your first line, out of 100. At 70 it stops a scroll. Under that, you get the one fix that matters.</p></div>
+      <article class="bx bx-score rv"><div class="bx-h"><span class="bx-k">${ic('hook', 'sm')} Hook score</span><h3>A score, and one plain reason.</h3><p>Five checks on your first line, out of 100. 70 is the bar. Under it, you get the one fix that matters.</p></div>
         <div class="bx-demo bxs" id="bxs"><div class="bxs-top"><p class="bxs-line" id="bxs-line"></p>${dialHTML('bxs-dial')}</div><div class="bxs-parts" id="bxs-parts">${BX_PARTS.map(([k, l, d]) => `<div class="pt" data-k="${k}"><span class="pn">${l}</span><i><b></b></i><span class="pv" aria-hidden="true"></span><span class="sr">${d}</span></div>`).join('')}</div><div class="bxs-f"><span id="bxs-why"></span><button type="button" class="bx-btn" id="bxs-next">Next line ${ic('arrow', 'xs')}</button></div></div></article>
       <article class="bx bx-voice rv" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('voice', 'sm')} Your voice</span><h3>Sounds like you on a good day.</h3><p>Learned from your posts, not the internet’s. Slide the tone and the same idea re-says itself.</p></div>
         <div class="bx-demo vx"><div class="vx-sl"><label for="vx-sp"><span>Tone</span><output id="vx-spo"></output></label><input type="range" id="vx-sp" min="0" max="2" step="1" value="1"></div><div class="vx-sl"><label for="vx-po"><span>Polish</span><output id="vx-poo"></output></label><input type="range" id="vx-po" min="0" max="2" step="1" value="1"></div>
           <p class="vx-out" id="vx-out" aria-live="polite"></p>
-          <div class="vx-never"><span class="lbl">Never-say list</span>${['to the moon', 'LFG', 'game-changer', 'not financial advice'].map(w => `<s>${w}</s>`).join('')}</div></div></article>
+          <div class="vx-never"><span class="lbl">Never-say list</span>${['to the moon', 'LFG', 'game-changer', 'wagmi'].map(w => `<s>${w}</s>`).join('')}</div></div></article>
       <article class="bx bx-replies rv"><div class="bx-h"><span class="bx-k">${ic('reply', 'sm')} Reply radar · Breakout alerts</span><h3>Show up early. Hear when it takes off.</h3><p>Fresh posts worth an early reply, and a ping when yours runs ahead of your usual, with replies drafted.</p></div>
         <div class="bx-demo h7rr"><div class="h7rr-alert" aria-label="Sample breakout alert"><span class="h7rr-ic">${LOGO_MARK || ''}</span><div><p><b>Breakout alert</b><span>now</span></p><span>Your 8:40 AM post is moving faster than your usual. 3 replies drafted, in your voice.</span></div></div>
           <ul class="h7rr-list" id="h7rr-list">${H7_RADAR.map(r => `<li>${pfAv(PEOPLE[r.p])}<div><p><b>${esc(PEOPLE[r.p].n)}</b><span>· ${r.ago}</span></p><span class="t">${esc(r.t)}</span><span class="w">${esc(r.why)}</span></div></li>`).join('')}</ul>
@@ -6988,7 +6991,7 @@ ROUTES.home = () => { loadSprite('ph');
   </section>
 
   <section class="h7-sec wrap" id="schedule" aria-labelledby="wk-h">
-    <div class="h7-head"><div><span class="eyebrow">Scheduling</span><h2 id="wk-h">Posted while you sleep. <em>Timed for when they don’t.</em></h2></div><p>X and LinkedIn go out on their own at your best times. Threads and Bluesky get a nudge to post by hand. Bring 20 posts and the best times come from your own audience.</p></div>
+    <div class="h7-head"><div><span class="eyebrow">Scheduling</span><h2 id="wk-h">Posted while you sleep. <em>Timed for when they don’t.</em></h2></div><p>Once you connect them, X and LinkedIn go out on their own at your best times. Threads and Bluesky get a nudge to post by hand. Bring 20 posts and the best times come from your own audience.</p></div>
     <div class="wk wk7 rv" id="wk"></div>
     <div class="wk-legend"><span class="wk-hint">Swipe for the whole week →</span><span><b class="bd"></b>Best time: when your people reply</span><span id="wk-tz"></span><span>Illustrative week. Posts are fictional.</span></div>
   </section>
@@ -7010,12 +7013,12 @@ ROUTES.home = () => { loadSprite('ph');
       <div class="tr rv">${ic('upload')}<h3>Switch in a minute</h3><p>Drop in a Typefully export or your X archive. Both are read in your browser, and teach Hookworthy how you open and when your people reply.</p></div>
       <div class="tr rv" style="--d:.05s">${ic('hook')}<h3>How the hook score works</h3><p>Five plain checks on your first line: clear, open loop, specific, friction, short. 70 is the bar. It’s a transparent rule set, not a guess about your reach.</p></div>
       <div class="tr rv" style="--d:.1s">${ic('panel')}<h3>What’s demo, what’s real</h3><p>On this page the people and the week are made up and nothing posts. The scoring, rewrites, previews and imports are the real thing.</p></div>
-      <div class="tr rv" style="--d:.15s">${ic('lock')}<h3>Your drafts stay yours</h3><p>Posts stay in your browser unless you connect a server. Scheduling to X and LinkedIn runs on your own server, with your own keys.</p></div>
+      <div class="tr rv" style="--d:.15s">${ic('lock')}<h3>Your drafts stay yours</h3><p>Posts stay in your browser until you choose to connect an account. Nothing is posted without you scheduling it.</p></div>
     </div>
   </section>
 
   <section class="h7-sec wrap" id="pricing" aria-labelledby="pr-h">
-    <div class="h7-head"><div><span class="eyebrow">Pricing</span><h2 id="pr-h">Free to start. <em>Paid when it pays.</em></h2></div><div class="pr7-side"><p>Prices are placeholders while Hookworthy is in preview. Every feature is on.</p><div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div></div></div>
+    <div class="h7-head"><div><span class="eyebrow">Pricing</span><h2 id="pr-h">Free to start. <em>Paid when it pays.</em></h2></div><div class="pr7-side"><p>Prices are placeholders while Hookworthy is in preview. The demo keeps the free plan’s limits on, so you can see them.</p><div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div></div></div>
     <div class="pl-grid pl7" id="plans">${plansHTML(true)}</div>
     <p class="pl7-all"><a href="#upgrade">Compare every feature ${ic('arrow', 'xs')}</a></p>
     <div class="faq7" id="faq"><h2 class="faq7-h">Five things <em>people ask first.</em></h2><div class="faq7-l">${FAQ.map(([q, a]) => `<details><summary><span>${q}</span>${ic('plus', 'sm')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div>
@@ -7237,17 +7240,21 @@ function onbStep2() {
   })();
   $('#onb').innerHTML = `${ghostFeedHTML()}<div class="onb-card" style="position:relative"><h2 class="display" style="font-size:clamp(34px,5vw,48px)">Reading the room…</h2><div class="reading" role="status" aria-live="polite">${steps.map((s, i) => `<div class="st" data-i="${i}"><span class="ck">${ic('check')}</span><span>${esc(s)}</span></div>`).join('')}</div><button class="btn ghost sm" id="onb-skip">Skip the suspense</button></div>`;
   const fl = { stop() {} };
+  /* nothing to read and no Claude: no loading theatre, straight to the result */
+  const quick = !aiOn() && !live && !have;
   let i = 0; const els = $$('.reading .st'); let t;
   const next = () => {
     if (i > 0) { els[i - 1].classList.remove('on'); els[i - 1].classList.add('done'); }
-    if (i < els.length - 1) { els[i].classList.add('on'); i++; t = setTimeout(next, REDUCED ? 150 : 640); return; }
-    if (i === els.length - 1) { const last = els[i]; last.classList.add('on'); i++; Promise.race([ONB.job, new Promise(r => setTimeout(r, 45000))]).then(() => new Promise(r => setTimeout(r, REDUCED ? 0 : 500))).then(() => { if (!last.isConnected) return; last.classList.remove('on'); last.classList.add('done'); t = setTimeout(() => { fl.stop(); onbStep3(); }, 380); }); }
+    if (i < els.length - 1) { els[i].classList.add('on'); i++; t = setTimeout(next, quick ? 0 : REDUCED ? 150 : 640); return; }
+    if (i === els.length - 1) { const last = els[i]; last.classList.add('on'); i++; Promise.race([ONB.job, new Promise(r => setTimeout(r, 45000))]).then(() => new Promise(r => setTimeout(r, REDUCED || quick ? 0 : 500))).then(() => { if (!last.isConnected) return; last.classList.remove('on'); last.classList.add('done'); t = setTimeout(() => { fl.stop(); onbStep3(); }, 380); }); }
   };
   next(); onDispose(() => clearTimeout(t));
   $('#onb-skip').onclick = () => { clearTimeout(t); fl.stop(); onbStep3(); };
 }
 function onbStep3() {
-  const handle = ONB.handle || S.user.handle; const fromArchive = HIST().length && S.user.handle === handle; const name = fromArchive ? S.user.name : ONB.handle ? ONB.handle.replace(/[._\d]+/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).map(cap).join(' ') || cap(ONB.handle) : S.user.name;
+  /* no handle and no archive: you're not the demo's Sam. No name, a placeholder handle */
+  const fromArchive = HIST().length && (!ONB.handle || S.user.handle === ONB.handle); const handle = ONB.handle || (fromArchive ? S.user.handle : 'yourhandle');
+  const name = fromArchive ? S.user.name : ONB.handle ? ONB.handle.replace(/[._\d]+/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).map(cap).join(' ') || cap(ONB.handle) : '';
   if (ONB.plat) { const k = ONB.plat === 'li' ? 'linkedin' : ONB.plat; S.platforms = { x: false, threads: false, linkedin: false, bsky: false, [k]: true }; }
   /* a real start: the sample week, drafts, streak and client workspaces belong to the demo, not to you */
   if (!S.seedCleared) { S.queue = []; S.drafts = []; S.streak = {}; S.workspaces = S.workspaces.slice(0, 1); S.ideas = []; if (S.user.pic === ME_PIC) S.user.pic = null; if (S.workspaces[0].pic === ME_PIC) S.workspaces[0].pic = null; S.ws = 'me'; S.seedCleared = true; }
@@ -7303,7 +7310,7 @@ function onbTry() {
     const line = inp.value.trim(); if (!line) { inp.setAttribute('aria-invalid', 'true'); note.textContent = 'Type a line first. One rough sentence is plenty.'; inp.focus(); return; }
     inp.removeAttribute('aria-invalid'); note.textContent = '';
     if (aiOn()) { go.classList.add('is-loading'); try { const r = await ask(HWCore.prompts.critique({ text: line, voice: voiceSpec() }), { fresh: true }); const best = (r && r.better || []).map(String).filter(x => x && !/\[[^\]]+\]/.test(x)).sort((x, y) => hookScore(y).score - hookScore(x).score)[0]; if (best) { show(line, best, r.reason || ''); return; } } catch (e) { /* fall back to the offline rewrite */ } finally { go.classList.remove('is-loading'); } }
-    riffNonce++; const first = AI.hook(line).split('\n')[0], rest = AI.punchier(line); show(line, hookScore(rest).score > hookScore(first).score ? rest : `${first}\n\n${rest}`, aiOn() ? '' : 'Basic mode rewrote it on your device. Connect Claude and it rewrites in your voice.');
+    riffNonce++; const cands = [AI.punchier(line), ...hookPool(line)].filter(Boolean).sort((x, y) => hookScore(y).score - hookScore(x).score); show(line, cands[0] || line, aiOn() ? '' : 'Basic mode rewrote it on your device. Connect Claude and it rewrites in your voice.');
   };
   inp.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); go.click(); } });
 }
@@ -7633,7 +7640,7 @@ const qList = () => S.workspaces.length > 1 && QF.mine ? S.queue.filter(q => (q.
 ROUTES.queue = () => {
   settleQueue(); if (S.settings.evergreen) ensureEvergreen();
   mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p><div id="q-hint"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week</button></div></div>
-  ${weekGap() < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${weekGap() ? `Only ${weekGap()} post${weekGap() > 1 ? 's' : ''} lined up for the next 7 days.` : 'Nothing lined up for the next 7 days.'} Five minutes now saves the week.</span><button class="btn sm" data-qact="plan">Plan my week</button></div>` : ''}
+  ${weekGap() < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${weekGap() ? `Only ${weekGap()} post${weekGap() > 1 ? 's' : ''} lined up for the next 7 days.` : 'Nothing lined up for the next 7 days.'} Five minutes now saves the week.</span></div>` : ''}
   <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="This week’s calendar. Each card is a post; press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide(); checkQueuePrices();
@@ -7671,6 +7678,7 @@ ROUTES.queue = () => {
     if (!dragId) return; e.preventDefault(); moveQ(dragId, s.dataset.day, s.dataset.time); dragId = null; });
   v.addEventListener('dragend', () => { dragDraft = null; $$('.qd.drag').forEach(x => x.classList.remove('drag')); });
   v.addEventListener('keydown', e => { const dd = e.target.closest('.qd'); if (dd && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDraft(+dd.dataset.di); } });
+  v.addEventListener('click', e => { const dd = e.target.closest('.qd'); if (dd) openDraft(+dd.dataset.di); });
   v.addEventListener('keydown', e => { const c = e.target.closest('.qcard'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); qMenu(c); } });
 };
 function qTags(q) {
@@ -7732,7 +7740,7 @@ function qAria(q) {
 }
 function qcardHTML(q, interactive = true) {
   const tag = interactive ? 'button' : 'div';
-  return `<${tag} class="qcard ${q.status}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
+  return `<${tag} class="qcard ${q.status}${q.sending ? ' sending' : ''}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
 }
 function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) {
   refreshBest();
@@ -7762,7 +7770,7 @@ function drawCal() {
   const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
   const html = calGridHTML(days, qList(), { now });
   cal.innerHTML = html;
-  const qc = q => `<button class="qcard ${q.status}" data-id="${q.id}" aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
+  const qc = q => `<button class="qcard ${q.status}${q.sending ? ' sending' : ''}" data-id="${q.id}" aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
   const ag = $('#agenda'); if (ag) ag.innerHTML = days.map(d => {
     const day = dayKey(d); const items = qList().filter(q => q.day === day).sort((a, b) => a.time.localeCompare(b.time));
     const open = Object.keys(BEST[dowIdx(d)] || {}).filter(t => slotDate(day, t).getTime() > now && !taken(day, t));
@@ -7773,7 +7781,7 @@ function drawCal() {
   const why = $('#q-why'); if (why) { why.innerHTML = `<span class="dot" style="color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span> ${TIMES.src === 'you' ? 'Your best times, from your posts' : 'Good times to post, in general'}`; why.dataset.tip = TIMES.src === 'you' ? `Highlighted slots are when your audience engaged most with ${fmtN(TIMES.n)} of your posts. They update as you post.` : 'Highlighted slots are good times for most accounts. Bring your posts and they become your audience’s own best hours.'; }
   const qh = $('#q-hint'); if (qh && !qh.firstChild) qh.innerHTML = hintHTML('queue', { cls: 'page-hint' });
   const miss = qList().filter(q => q.status === 'due' || (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < now)).length;
-  $('#q-sub').textContent = `${wk} post${wk === 1 ? '' : 's'} scheduled this week. ${open ? `${open} best time${open === 1 ? '' : 's'} still open.` : 'Every best time left this week is covered.'}${miss ? ` ${miss} missed ${miss > 1 ? 'their' : 'its'} time and need${miss > 1 ? '' : 's'} a new one.` : ''}`; syncSeg($('#q-ws'));
+  $('#q-sub').textContent = `${wk} post${wk === 1 ? '' : 's'} scheduled this week. ${open ? `${open} best time${open === 1 ? '' : 's'} still open.` : 'No open best times left this week.'}${miss ? ` ${miss} missed ${miss > 1 ? 'their' : 'its'} time and need${miss > 1 ? '' : 's'} a new one.` : ''}`; syncSeg($('#q-ws'));
 }
 function gapSlots() { const w0 = startOfWeek(new Date()); const out = []; for (let i = 0; i < 7; i++) { const d = new Date(w0.getTime() + i * DAY); const day = dayKey(d); for (const t of Object.keys(BEST[dowIdx(d)] || {})) if (slotDate(day, t).getTime() > Date.now() && !taken(day, t)) out.push({ day, time: t }); } return out; }
 /* Reruns: most of your followers never saw your best post. Bring it back with a new first line. */
@@ -7804,7 +7812,7 @@ function drawQSide() {
   const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled' && (!QF.mine || q.ws === S.ws));
   el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
   <div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span><span class="faint" style="font-size:12px">${S.drafts.length}</span></div>
-    ${S.drafts.length ? `<p class="faint" style="font-size:12px">Drag one onto a time to schedule it.</p><div class="qd-list">${S.drafts.slice(0, 6).map((d, i) => { const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd" draggable="${!blank}" data-di="${i}" tabindex="0" role="button" aria-label="${esc(clip(t, 80))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">No drafts waiting.</p>${mnote('ideas become drafts')}`}</div>`;
+    ${S.drafts.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${S.drafts.slice(0, 6).map((d, i) => { const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd" draggable="${!blank}" data-di="${i}" tabindex="0" role="button" aria-label="${esc(clip(t, 80))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">No drafts waiting.</p>${mnote('ideas become drafts')}`}</div>`;
 }
 
 /* ==========================================================================
