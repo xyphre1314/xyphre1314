@@ -720,3 +720,12 @@ Six reviewers (visual, UX and copy, motion and performance, code, accessibility,
 - Sub-scores are Clear / Open loop / Specific / Friction / Short everywhere.
 - Plain onboarding for LinkedIn (asks for your name).
 - No more "Sam" when you skip your handle.
+
+**Second pass (fresh reviewers and four new simulated users)**
+- A line typed on the homepage goes through setup first, then waits in Write. A new visitor never lands in the demo's account.
+- Post now from a queue card follows the practice-mode rules: it's Marked, never Live, and has Undo. Marked posts never show replies or count as sent.
+- A client voice with approvals can't post straight away, and the market "Now" slot is hidden for it.
+- No post ends on "Here's why:" with nothing after it. [Blanks] block scheduling and posting. Scheduling no longer counts as posting.
+- The small-screen preview is a real modal. Touch targets are 44px. Narrow queue cards show status by shape as well as colour.
+- CJK lines score as words. Weeks, the Today strip and the next good time are DST-safe. The hook tournament keeps your claim, and the highest-scoring kept line wins.
+- Dead code from earlier rounds is removed.
