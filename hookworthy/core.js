@@ -72,7 +72,9 @@
     /* blanks: [brackets], {braces}, ___ and TK; a lone X only counts when a Y placeholder sits beside it ("Stop X. Do Y."), so "grow on X" is just X */
     const xAt = first.search(/\bX\b/);
     const blank = /\[[^\]]+\]|\{[^}]+\}|_{3,}|\bTK\b/.test(first) || (xAt >= 0 && /\bY\b/.test(first.slice(xAt)));
-    const toks = first.match(/[A-Za-z]{3,}/g) || [];
+    /* words in any script; Chinese, Japanese and Korean run together, so every two characters count as a word there */
+    const cjkN = (first.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu) || []).length;
+    const toks = [...(first.replace(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]+/gu, ' ').match(/\p{L}{3,}/gu) || []), ...Array(Math.floor(cjkN / 2)).fill('字字')];
     /* tickers, acronyms and chat shorthand (BTC, PnL, tbh, nfts) are words, not mash: only lowercase vowel-less runs of 4+ count, minus a known list */
     const SHORT_OK = /^(btc|eth|sol|nfts?|pnl|tbh|imo|imho|ngl|dca|tvl|cpi|ppi|fomc|gm|gn|ath|atl|rsi|dma|ema|sma|lfg|wagmi|ngmi|wtf|smh|brb|ltv|cltv|mrr|arr|cac|kpis?|ctr|crm|cms|dms?|pfp|yolo|hmm+|psst|shh+|grr+|tsk|nth|rhythms?|crypts?|lynch|nymphs?|psych|spry|sync|synth|myth|lymph|gym|hymn|tryst|dryly|shyly|slyly|why|fly|cry|dry|try|sky|spy|sly|shy|pry|ply)$/i;
     const mash = toks.filter(w => /^(asdf|qwer|zxcv|sdfg|hjkl|uiop|lorem|ipsum|blah)/i.test(w) || /[bcdfghjklmnpqrstvwxz]{6,}/i.test(w) || (w.length >= 4 && w === w.toLowerCase() && !/[aeiouy]/.test(w) && !SHORT_OK.test(w))).length;
@@ -91,12 +93,13 @@
     let score = c(raw0 * 1.35 - 10);
     if (bait) score = c(score - (bait > 1 ? 14 * Math.min(3, bait) + 10 : 8));
     if (over) score = c(score - Math.min(12, 6 * over));
-    if (gib > .25 || toks.length < 2) score = Math.min(score, 30);
+    const noWords = !toks.length && !/\d/.test(first);
+    if (gib > .25 || noWords) score = Math.min(score, 30);
     else if (short) score = Math.min(score, 50);
     if (blank) score = Math.min(score, 40);
     let reason, tone;
     if (blank) { reason = 'There are blanks left. Fill them with what really happened, then it gets a real score.'; tone = 'fix'; }
-    else if (gib > .25 || toks.length < 2) { reason = 'That doesn’t read as words yet. Say the thing plainly.'; tone = 'fix'; }
+    else if (gib > .25 || noWords) { reason = 'That doesn’t read as words yet. Say the thing plainly.'; tone = 'fix'; }
     else if (short) { reason = 'Too short to stop anyone. Say what it’s about.'; tone = 'fix'; }
     else if (bait > 1 || (bait && score < 66)) { reason = 'It reads like bait. Readers have learned to scroll past that. Say the real thing.'; tone = 'fix'; }
     else if (over) { reason = 'Too many numbers at once. Keep the one that matters.'; tone = 'fix'; }
