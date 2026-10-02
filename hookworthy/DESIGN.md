@@ -213,8 +213,8 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 **Replicas:** each platform's own stack (system UI for X, Threads and LinkedIn; Inter for Bluesky).
 
 ### Hierarchy
-- **Display** (EB Garamond 400, clamp(56px, 8.4vw, 128px), 0.98, -0.018em): hero and final call. The second half is italic, one word gets the squiggle.
-- **Headline** (EB Garamond 400, clamp(46px, 6.2vw, 92px), 1.02): one per chapter, roman then italic, under an uppercase Figtree eyebrow (12.5px, .14em).
+- **Display** (EB Garamond 400, clamp(48px, 6.8vw, 104px), 0.98, -0.018em): the homepage hero, always the largest line on the page. The second half is italic, one phrase gets the squiggle.
+- **Headline** (EB Garamond 400, clamp(40px, 4.8–5.2vw, 72–80px), 1.02): one per chapter (story, sections, final call), roman then italic, under an uppercase Figtree eyebrow (12px, .12em). Every homepage section, FAQ included, has an eyebrow.
 - **Title** (EB Garamond 400, 32–56px): app page titles, plan names, prices. Section heads below 32px are Figtree 600 19px.
 - **Body** (400, 17–21px, max ~56ch): chapter intros.
 - **UI** (500, 13–15px): controls, captions.
@@ -224,21 +224,23 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 ### Named Rules
 **The Numbers-Only Mono Rule.** Mono is for counts, times, scores and keys, never sentences.
 **The No-Gradient Rule.** Text is solid. Emphasis comes from the tint or from size.
-**The Tracking Rule.** Negative letter-spacing only on Garamond at 32px and up. Figtree is always 0 (uppercase eyebrows get +.14em). Body text runs at 1.5 or looser.
+**The Tracking Rule.** Negative letter-spacing only on Garamond at 32px and up. Figtree is always 0 (uppercase eyebrows and app labels get +.1–.12em, 12px, never smaller). Body text runs at 1.5 or looser.
 
 ## Layout
 
 The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. It is about 9 screens at 1440. Every rule is scoped under `.hw27`.
 
 1. **Hero**: "Good ideas die in bad first lines." with one sub and two CTAs (Start free, Open the demo). The visual is a live grader: soft words get a wavy underline with the reason, a dial scores the line, and **Sharpen** shows an honest rewrite as a word diff with the real score jump. **Keep it** opens Write with the line. After you type, the nav CTA reads "Keep your N →".
-2. **The problem**: one row of void posts that drifts with scroll.
-3. **Story** (full-bleed plum): Priya's post in three beats: the draft (48), sharpened in her voice (80, with `[your number]` left for her), scheduled Tue 8:40 AM. No likes or views.
-4. **Built around the hook**: a bento of Hook score (five parts), Your voice (tone/polish sliders and the never-say list), Reply radar and breakout alerts, and What's working.
+2. **The problem**: one row of void posts that drifts with scroll (no lagging transition; cards min(330px, 100vw − 48px) on phones).
+3. **Story** (full-bleed plum, beats on a shared subgrid so the cards line up; they swipe sideways below 900px): Priya's post in three beats: the draft (48), sharpened in her voice (80, with `[your number]` left for her), scheduled Tue 8:40 AM. No likes or views.
+4. **Built around the hook**: a bento in two 7/5 rows: Hook score (Clear, Open loop, Specific, Friction, Short) and Your voice (tone/polish sliders and the never-say list), then What's working and Reply radar with breakout alerts. Below 760px the cards swipe sideways.
 5. **Previews**: one phone with X / Threads / LinkedIn / Bluesky tabs. LinkedIn shows the fold check.
 6. **Scheduling**: the app's own calendar (`calGridHTML`) with a trading week, in the visitor's time zone.
 7. **Who it's for**: Crypto & trading first, then Founders, Creators, Ghostwriters. Each shows first lines before and after, with real hook scores.
 8. **Switching & trust**, **Pricing** (Free trimmed to three items on the home card), **FAQ** (five questions).
-9. **Final call**: "Paste the post you almost wrote" with a live score and your next good slot, then the footer.
+9. **Final call**: a deep plum block with cream text: "Paste the post you almost wrote", a live score, a centred lilac CTA and "Your next good time: tomorrow at 12:15 PM (UTC)", then the footer.
+
+The header and footer sit outside `<main id="main">`; the announcement bar is an `<aside>`. Reveals run 600ms at most and never blur large cards. Phone length is about 11 screens at 390.
 
 The app keeps its 232px sidebar and inset main panel. The composer's "In the feed" panel renders your draft with the same platform components, between two real neighbour posts, in the app's theme.
 
@@ -268,7 +270,7 @@ Fictional accounts never carry a verified badge.
 True 390pt frame with the island, status bar, app header, tabs and tab bar, scaled with `zoom` so type stays crisp.
 
 ### Buttons
-The homepage primary is an ink pill (48px) with a white label and an arrow that nudges on hover. The ghost button has a play glyph in a circle. In the app, the primary is ink with a 10px radius and a spring press.
+There is one primary button style everywhere: lilac with a 1.5px ink edge (the hero's is 52px tall, the same colour). On a plum block the same lilac button reads as the CTA. The ghost button has a play glyph in a circle. In the app, the primary is ink with a 10px radius and a spring press.
 
 ### Character ring (composer)
 It follows X, but stays hidden until you're near the limit: it appears at 20 remaining, turns to warning then error, shows the count, and hides the circle at 10 over.
