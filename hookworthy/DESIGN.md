@@ -233,7 +233,7 @@ The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. It is abou
 1. **Hero**: "Good ideas die in bad first lines." with one sub and two CTAs (Start free, Open the demo). The visual is a live grader: soft words get a wavy underline with the reason, a dial scores the line, and **Sharpen** shows an honest rewrite as a word diff with the real score jump. **Keep it** opens Write with the line. After you type, the nav CTA reads "Keep your N →".
 2. **The problem**: one row of void posts that drifts with scroll (no lagging transition; cards min(330px, 100vw − 48px) on phones).
 3. **Story** (full-bleed plum, beats on a shared subgrid so the cards line up; they swipe sideways below 900px): Priya's post in three beats: the draft (48), sharpened in her voice (80, with `[your number]` left for her), scheduled Tue 8:40 AM. No likes or views.
-4. **Built around the hook**: a bento in two 7/5 rows: Hook score (Clear, Open loop, Specific, Friction, Short) and Your voice (tone/polish sliders and the never-say list), then What's working and Reply radar with breakout alerts. Below 760px the cards swipe sideways.
+4. **Built around the hook**: a bento in two 7/5 rows: Hook score (Clear, Open loop, Specific, Tension, Short) and Your voice (tone/polish sliders and the never-say list), then What's working and Reply radar with breakout alerts. Below 760px the cards swipe sideways.
 5. **Previews**: one phone with X / Threads / LinkedIn / Bluesky tabs. LinkedIn shows the fold check.
 6. **Scheduling**: the app's own calendar (`calGridHTML`) with a trading week, in the visitor's time zone.
 7. **Who it's for**: Crypto & trading first, then Founders, Creators, Ghostwriters. Each shows first lines before and after, with real hook scores.
@@ -387,6 +387,15 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
   | **Claude** / **Basic mode** | your Claude, the AI |
   | **Bring your posts** | Import it, Add posts |
   | **Breakout alert** | Follow-up reply |
+  | **Plans** (the page), **Your plan** (paid), **Upgrade to Pro** (free users only) | Pricing (preview), Hookworthy Pro, Manage plan |
+  | **Tension** (the fourth sub-score) | Friction, Stakes |
+  | **Keep** (accepts a version) / **version** (one result of Rewrite or Sharpen) | Accept, take, angle (for rewrites) |
+  | **Add an open loop** (the rewrite) | Curiosity gap |
+  | **Save an idea** | Capture an idea |
+  | **Write from a picture** (feature) / **From a picture** (button) | Picture to post |
+  | **Weekly reruns** | Evergreen reruns, Repost |
+  | **Fix spacing** / **Swap it out** (one-click fixes) | Tidy up, Rewrite it (for these) |
+  | **Use this pattern** (What's working card) | Write your take (that name is for market events only) |
   | **Auto-plug** (one reply you write ahead, per post, off by default, sent once at a like count you pick) | follow-up, CTA bot, auto-reply |
   | **Who can reply** (per post: Everyone, People you follow, Only people you mention) | reply settings, audience |
   | **Your posting times** (the weekly grid Schedule fills first) | golden slots, time slots |

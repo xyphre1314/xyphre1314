@@ -110,7 +110,7 @@
       const s = [];
       if (parts.specificity >= 65) s.push('a concrete number');
       if (parts.curiosity >= 60) s.push('an open loop');
-      if (parts.tension >= 60) s.push('real friction');
+      if (parts.tension >= 60) s.push('real tension');
       if (!s.length) s.push('tight, clear phrasing');
       reason = `${cap(s.slice(0, 2).join(' and '))}. A strong first line.`; tone = 'good';
     }
