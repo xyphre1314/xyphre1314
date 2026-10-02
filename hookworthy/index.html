@@ -2791,7 +2791,7 @@ function springEase(stiffness, damping, mass = 1) {
 
 /* ---------- state ---------- */
 const NICHES = {
-  'Crypto & trading': ['risk management', 'your worst trade', 'position sizing', 'revenge trading', 'on-chain data', 'journaling trades', 'stablecoins', 'bear markets', 'FOMO', 'taking profits'],
+  'Crypto & trading': ['risk management', 'losing trades', 'position sizing', 'revenge trading', 'on-chain data', 'journaling trades', 'stop losses', 'bear markets', 'FOMO', 'taking profits', 'leverage', 'funding rates'],
   'Building in public': ['pricing', 'your first 100 users', 'shipping weekly', 'burnout', 'cold DMs', 'landing pages', 'churn', 'your first hire', 'saying no', 'side projects'],
   'Design': ['design systems', 'portfolio reviews', 'critique', 'spacing', 'onboarding flows', 'typography', 'design debt', 'handoff', 'empty states', 'taste'],
   'Engineering': ['code review', 'tech debt', 'on-call', 'rewrites', 'testing', 'shipping on Fridays', 'naming things', 'estimates', 'senior engineers', 'side projects'],
@@ -3138,29 +3138,42 @@ function ghostFor(text, id) {
 }
 
 /* ---------- ideas engine ---------- */
+/* sample sets are keyed by niche: crypto & trading is the default (the largest group), every other niche keeps its own */
+function tradingNiche(n = S && S.user && S.user.niche) { return /crypto|trad|defi|bitcoin/i.test(n || 'Crypto & trading'); }
+/* a list that reads as one array but serves the set for the current niche, so callers stay plain arrays */
+function bySet(sets) { const pick = () => tradingNiche() ? sets.trading : sets.general; return new Proxy([], { get: (_, k) => { const a = pick(), v = a[k]; return typeof v === 'function' ? v.bind(a) : v; }, has: (_, k) => k in pick() }); }
+/* every idea is a frame, never a claim: anything only the writer knows (a number, a duration, a result) is a [blank].
+   {topic} reads in the second person or neutral; {mt} is the same topic in the first person ("your first hire" → "my first hire") */
 const IDEA_T = [
-  { k: 'Contrarian', t: 'The {topic} advice I stopped following, and what I do instead' },
-  { k: 'Story', t: 'The mistake I made with {topic} for {n} years, and what finally fixed it' },
-  { k: 'Listicle', t: '{n} things I wish I knew about {topic} before I started' },
-  { k: 'How-to', t: 'How I’d approach {topic} if I started from zero today' },
-  { k: 'Lesson', t: 'What {m} months of getting {topic} wrong taught me' },
+  { k: 'Contrarian', t: 'The advice on {topic} I stopped following, and what I do instead' },
+  { k: 'Story', t: 'The mistake I made with {mt} for [N years], and what finally fixed it' },
+  { k: 'Listicle', t: '[N] things I wish I knew about {mt} before I started' },
+  { k: 'How-to', t: 'How I’d approach {mt} if I started from zero today' },
+  { k: 'Lesson', t: 'What [N months] of mistakes with {mt} taught me' },
   { k: 'Contrarian', t: 'I disagree with the usual take on {topic}. Here’s my case.' },
-  { k: 'Curiosity', t: 'The dumbest thing that ever worked for {topic}' },
-  { k: 'Proof', t: 'My exact playbook for {topic}, with numbers. Steal it.' },
-  { k: 'Question', t: 'What’s one “best practice” about {topic} you quietly ignore?' },
-  { k: 'Story', t: 'I almost gave up on {topic}. One conversation changed my mind.' },
-  { k: 'Listicle', t: '{n} tools I use for {topic} (and {n2} I cancelled)' },
-  { k: 'Curiosity', t: 'The one question I ask about {topic} before every decision' }
+  { k: 'Proof', t: 'What my own numbers say about {mt}: [the one number that matters]' },
+  { k: 'Question', t: 'What’s the worst advice you’ve heard about {topic}?' },
+  { k: 'Question', t: 'What do you wish someone had told you about {topic}?' },
+  { k: 'Story', t: 'The day I changed my mind about {mt}: [what happened]' },
+  { k: 'Curiosity', t: 'The part of {mt} nobody warned me about' },
+  { k: 'Curiosity', t: 'The one question I ask about {topic} before every {decision}' }
+];
+const IDEA_T_TRADING = [
+  { k: 'Story', t: 'I lost [amount] on [one trade]. Here’s what it taught me about {mt}.' },
+  { k: 'How-to', t: 'What I’d tell a new trader about {topic} before their first trade' },
+  { k: 'Listicle', t: 'The [N] rules I follow for {mt}:' },
+  { k: 'Contrarian', t: 'Most threads about {topic} skip the boring part. Here’s the boring part:' },
+  { k: 'Curiosity', t: 'The one number I check before every trade, and why it isn’t [the obvious one]' }
 ];
 function genIdeas(count, seed, niche = S.user.niche) {
-  const topics = NICHES[niche] || NICHES['Building in public']; const r = rng(seed); const out = [];
+  const topics = NICHES[niche] || NICHES['Building in public']; const r = rng(seed); const out = []; const tr = tradingNiche(niche);
+  const tpls = tr ? [...IDEA_T, ...IDEA_T_TRADING] : IDEA_T;
   const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   let tq = [], pq = [];
   while (out.length < count) {
-    if (!tq.length) tq = shuffle(IDEA_T); if (!pq.length) pq = shuffle(topics);
+    if (!tq.length) tq = shuffle(tpls); if (!pq.length) pq = shuffle(topics);
     const tpl = tq.pop(), topic = pq.pop();
-    const n = [3, 5, 7, 10][Math.floor(r() * 4)], m = [6, 12, 18][Math.floor(r() * 3)];
-    const text = tpl.t.replace('{topic}', topic).replace('{n}', n).replace('{m}', m).replace('{n2}', Math.max(2, n - 3));
+    const text = tpl.t.replace('{topic}', topic).replace('{mt}', topic.replace(/^your\b/i, 'my')).replace('{decision}', tr ? 'trade' : 'decision');
     out.push({ id: uid(), kind: tpl.k, text: cap(text), topic });
   }
   return out;
@@ -3202,7 +3215,7 @@ function remix(post, format) {
     case 'oneliner': return [AI.shorter(first)];
     case 'listicle': return expandIdea(`${[5, 7][hash(t) % 2]} things I learned from “${first.replace(/[.:]$/, '')}”`, 'Listicle', topic);
     case 'contrarian': return [AI.contrarian(first)];
-    case 'linkedin': return [`${first}\n\nA year ago I would’ve disagreed with that.\n\nHere’s what changed my mind:\n\n→ I tested it with real customers\n→ I tracked one number, not ten\n→ I let the data be boring\n\nThe lesson isn’t about ${topic}. It’s about trusting what you can measure.\n\nWhat would you add?`];
+    case 'linkedin': return [`${first}\n\n[What you believed before, and when.]\n\nHere’s what changed my mind:\n\n→ [The first thing you saw]\n→ [The second]\n→ [The one that settled it]\n\n[The lesson, in one line. Bigger than ${topic}.]\n\nWhat would you add?`];
   }
   return [t];
 }
@@ -3210,9 +3223,9 @@ function anglesFor(src) {
   let topic = src.topic, title = src.title;
   const yr = new Date().getFullYear();
   return [
-    { k: 'Hot take', t: `Everyone’s sharing this piece on ${topic}. Here’s the part they’re skipping:` },
-    { k: 'Summary', t: `I read “${title}” so you don’t have to. 5 takeaways:` },
-    { k: 'Story', t: `This made me rethink how I handled ${topic} last year.` },
+    { k: 'Missing part', t: `Everyone’s sharing this piece on ${topic}. Here’s the part they’re skipping:` },
+    { k: 'Summary', t: `I read “${title}” so you don’t have to. [N] takeaways:` },
+    { k: 'Story', t: `This made me rethink how I handled ${topic}. [What changed]` },
     { k: 'Question', t: `Honest question: does ${topic} still matter in ${yr}?` },
     { k: 'Contrarian', t: `Good piece on ${topic}. I disagree with one big point.` }
   ];
@@ -4790,8 +4803,20 @@ async function uploadMedia(m) {
 const mediaCount = q => (q.mcount || []).reduce((a, b) => a + b, 0);
 
 /* ---------- Reply radar: fresh posts from people you learn from, worth an early reply ---------- */
-const RADAR_SAMPLE = () => { const P = typeof PEOPLE !== 'undefined' ? PEOPLE : []; const posts = (typeof HOOK_POSTS !== 'undefined' ? HOOK_POSTS : []).slice(0, 8); const now = Date.now();
-  return posts.map((p, i) => { const who = P[p.p] || { n: 'Someone', h: 'someone' }; const age = [4, 9, 13, 22, 31, 48, 70, 95][i] || 60; const c = p.c || [0, 0, 0, 0];
+/* sample radar for trading niches: fictional traders, written for this demo. Market colour, not calls: nothing here tells anyone to buy.
+   p is an index into PEOPLE, or an inline fictional person; hint is the reply starter shown in the empty reply box (blanks are yours) */
+const RADAR_TRADING = [
+  { p: 21, t: 'CPI came in hot. BTC wicked 4% in ten minutes and gave half of it back.\n\nI’m not trading the first candle. Waiting for the daily close.', c: [40, 120, 900, 52000], hint: 'Say what you do on CPI days: [your rule], and why.' },
+  { p: { n: 'Rafael Costa', h: 'rafaperps' }, t: 'Funding flipped negative on most majors overnight while open interest kept climbing.\n\nThat’s a lot of people paying to be short. Watching for a squeeze, not betting on one.', c: [28, 90, 640, 38000], hint: 'Add what you watch next to funding: [your signal], and what it told you last time.' },
+  { p: 22, t: 'The Arclight bridge exploit is still unfolding, and the team’s latest count is about $30M drained.\n\nIf you bridged through it this month: revoke approvals first, read threads second.', c: [60, 410, 1800, 140000], hint: 'Add one useful step: how you check approvals, or [what you did when it happened to you].' },
+  { p: 20, t: 'Went back through 6 months of my trade journal.\n\nMost of my losses came in the hour after another loss. Same day, same mistake. New rule: one loss and I’m done for the day.', c: [52, 160, 2300, 96000], hint: 'Share your own rule after a loss: [your rule], and when you started using it.' },
+  { p: 23, t: 'Beginner lesson I repeat every week:\n\nYour stop is decided before you enter. If you set it after, it isn’t a stop. It’s a hope.', c: [35, 220, 3100, 120000], hint: 'Add the stop rule you’d give a beginner: [yours], in one line.' },
+  { p: 19, t: 'Exchange balances for ETH just hit a multi-year low on the dashboard I track.\n\nNot a signal on its own. Less supply sitting one click from a sell button. Context, not a call.', c: [22, 70, 820, 41000], hint: 'Add the context you pair it with: [your metric], and why.' },
+  { p: { n: 'Mei Tanaka', h: 'meiriskdesk' }, t: '$400M in longs liquidated in an hour, and my timeline is calling it a “healthy reset.”\n\nHealthy for whoever sized right. Here’s how I size so a wick doesn’t decide for me:', c: [44, 130, 1500, 70000], hint: 'Share how you size: [risk per trade], and what it saved you from.' },
+  { p: 18, t: 'FOMC tomorrow. I’m flat into it.\n\nNot because I know the outcome. Because I know I trade worse when I’m guessing.', c: [30, 85, 1200, 58000], hint: 'Say how you handle FOMC days: [flat, hedged or sized down], and why.' }
+];
+const RADAR_SAMPLE = () => { const P = typeof PEOPLE !== 'undefined' ? PEOPLE : []; const posts = tradingNiche() ? RADAR_TRADING : (typeof HOOK_POSTS !== 'undefined' ? HOOK_POSTS : []).slice(0, 8); const now = Date.now();
+  return posts.map((p, i) => { const who = (typeof p.p === 'object' ? p.p : P[p.p]) || { n: 'Someone', h: 'someone' }; const age = [4, 9, 13, 22, 31, 48, 70, 95][i] || 60; const c = p.c || [0, 0, 0, 0];
     return { id: 'sample-' + i, text: p.t, at: new Date(now - age * 60e3).toISOString(), handle: who.h, name: who.n, pic: who.pic || null, img: who.img, followers: [182000, 41000, 12600, 96000, 8800, 300000, 22000, 5400][i] || 10000, likes: Math.round((c[2] || 40) * .08), replies: [2, 6, 1, 14, 3, 40, 9, 2][i] || 3, reposts: Math.round((c[1] || 10) * .05), sample: true, why: [age <= 15 ? `${age} min old: the first replies get seen most` : `${age} min old`, ...(i % 2 ? ['moving fast'] : []), (n => `only ${n} repl${n > 1 ? 'ies' : 'y'} so far`)([2, 6, 1, 14, 3, 40, 9, 2][i] || 3)].slice(0, 2) }; }); };
 const RRADAR = { posts: [], live: false, at: 0, loading: false, drafts: {}, why: '' };
 function radarPaneHTML() {
@@ -4832,7 +4857,7 @@ async function loadRadar(force) {
 async function draftRadar(only) {
   const todo = RRADAR.posts.filter(p => (!only || p.id === only) && !(S.radar && S.radar.done && S.radar.done[p.id]));
   if (!todo.length) return;
-  if (!aiOn()) { const hints = { Contrarian: 'Push back with one case where it didn’t hold for you.', Story: 'Add the moment it happened to you, in one line.', Listicle: 'Add the item you’d put first, and why.', Proof: 'Share your own number for the same thing.', Question: 'Answer it with something specific.' }; todo.forEach(p => { RRADAR.drafts[p.id] = { hint: hints[HWCore.kindOf(p.text)] || 'Add one thing the post doesn’t have: a number, a story, or a sharp question.' }; }); drawRadar(); return; }
+  if (!aiOn()) { const hints = { Contrarian: 'Push back with one case where it didn’t hold for you.', Story: 'Add the moment it happened to you, in one line.', Listicle: 'Add the item you’d put first, and why.', Proof: 'Share your own number for the same thing.', Question: 'Answer it with something specific.' }; todo.forEach(p => { const sh = p.sample && tradingNiche() && (RADAR_TRADING[+String(p.id).replace('sample-', '')] || {}).hint; RRADAR.drafts[p.id] = { hint: sh || hints[HWCore.kindOf(p.text)] || 'Add one thing the post doesn’t have: a number, a story, or a sharp question.' }; }); drawRadar(); return; }
   const rl = $('#rr-list'); if (rl) $$('.rr-card', rl).forEach(c => { if (!only || c.dataset.rid === only) c.classList.add('drafting'); });
   try {
     const r = await ask(HWCore.prompts.radarReplies({ posts: todo.slice(0, 10), voice: voiceSpec(), niche: S.user.niche }), { fresh: !!only });
@@ -5186,6 +5211,8 @@ const pvYou = () => { const u = S.user; return { n: u.name, h: u.handle, v: 0, b
 function overText(t, lim) { const a = [...t]; if (a.length <= lim) return pfText(t); return pfText(a.slice(0, lim).join('')) + `<span class="over">${esc(a.slice(lim).join(''))}</span>`; }
 /* feed neighbours: real-looking posts from other creators sit above and below yours */
 const PV_NEAR = { x: [3, 8], threads: [1, 10], linkedin: [4, 5], bsky: [0, 9] };
+/* trading niches get trading neighbours in the preview feed (VOID_POSTS 12 and 13) */
+const PV_NEAR_T = { x: [12, 13], threads: [13, 3], linkedin: [4, 5], bsky: [12, 0] };
 function pvCard(k, compact) {
   const p = PLAT[k], tws = S.draft.tweets, dark = isDark(), you = pvYou(), R = PF_RENDER[k];
   /* your own post shows the actions, never a prediction of likes or views */
@@ -5206,7 +5233,7 @@ function pvCard(k, compact) {
     if (compact && tws.length > 1) body += `<div class="pf pv-more ${dark ? 'dark' : ''}">${pfAv(you)}<span>Show ${tws.length - 1} more repl${tws.length > 2 ? 'ies' : 'y'}</span></div>`;
     tag = `<span>${pic(p.icon)} @${esc(you.h)}${k === 'bsky' ? '.bsky.social' : ''}</span>${overN ? `<span class="pv-warn">${overN} post${overN > 1 ? 's' : ''} over ${p.limit}</span>` : `<span>${k === 'x' && xLong() ? `Long post · ${fmtN(HWCore.xLength(tws[0].text))} / 25,000` : tws.length > 1 ? `Thread of ${tws.length}` : `Up to ${fmtN(p.limit)} characters`}</span>`}`;
   }
-  const near = compact ? ['', ''] : PV_NEAR[k].map(i => R(VOID_POSTS[i], { dark }));
+  const near = compact ? ['', ''] : (tradingNiche() ? PV_NEAR_T : PV_NEAR)[k].map(i => R(VOID_POSTS[i], { dark }));
   return `<div class="pv pv-${k} ${dark ? 'dark' : ''}"><div class="pv-tag">${tag}</div><div class="pv-feed">${near[0] ? `<div class="pv-near up">${near[0]}</div>` : ''}<div class="pv-mine">${body}</div>${near[1] ? `<div class="pv-near dn">${near[1]}</div>` : ''}</div>${compact ? '' : `<p class="pv-proj">How it will look in the feed.</p>`}</div>`;
 }
 function liVersion() {
@@ -5841,13 +5868,23 @@ function weekGap() { const now = Date.now(); return S.queue.filter(q => q.status
    Live replies come from X through the server; otherwise it shows a labelled sample
    or replies you paste. Answering in the first hour is what spreads a post.
    ========================================================================== */
-const SAMPLE_REPLIES = [
-  { handle: 'mayabuilds', name: 'Maya Chen', followers: 18400, text: 'What would you do differently if you could go back to that week?', question: true, likes: 14 },
-  { handle: 'arjunships', name: 'Arjun Mehta', followers: 9200, text: 'Painfully relatable. Did exactly this in 2021.', likes: 22 },
-  { handle: 'hannahwrites', name: 'Hannah Brooks', followers: 41000, text: 'How did you notice? Your journal, or the P&L?', question: true, likes: 9 },
-  { handle: 'diegocodes', name: 'Diego Santos', followers: 1300, text: 'Brutal. Did any of the old rules survive?', question: true, likes: 3 },
-  { handle: 'kwametalks', name: 'Kwame Mensah', followers: 6700, text: 'Saving this for my next planning meeting.', likes: 5 }
-];
+/* sample replies to your own post, by niche (trading first). Fictional people, written for this demo */
+const SAMPLE_REPLIES = bySet({
+  trading: [
+    { handle: 'jaytradesdaily', name: 'Jay Kim', followers: 18400, text: 'What would you do differently if you could go back to that week?', question: true, likes: 14 },
+    { handle: 'theocharts', name: 'Theo Marchetti', followers: 9200, text: 'Painfully relatable. Took three trades out of boredom last Friday alone.', likes: 22 },
+    { handle: 'lenavogt', name: 'Lena Vogt', followers: 41000, text: 'How did you notice? Your journal, or the P&L?', question: true, likes: 9 },
+    { handle: 'camilateaches', name: 'Camila Reyes', followers: 1300, text: 'Do you have a rule for it now, or just awareness?', question: true, likes: 3 },
+    { handle: 'priyaonchain', name: 'Priya Nair', followers: 6700, text: 'Saving this for my next journal review.', likes: 5 }
+  ],
+  general: [
+    { handle: 'mayabuilds', name: 'Maya Chen', followers: 18400, text: 'What would you do differently if you could go back to that week?', question: true, likes: 14 },
+    { handle: 'arjunships', name: 'Arjun Mehta', followers: 9200, text: 'Painfully relatable. Did exactly this last year.', likes: 22 },
+    { handle: 'hannahwrites', name: 'Hannah Brooks', followers: 41000, text: 'How did you notice? Was it the numbers, or a conversation?', question: true, likes: 9 },
+    { handle: 'diegocodes', name: 'Diego Santos', followers: 1300, text: 'Did any of the old habits survive?', question: true, likes: 3 },
+    { handle: 'kwametalks', name: 'Kwame Mensah', followers: 6700, text: 'Saving this for my next planning meeting.', likes: 5 }
+  ]
+});
 function replyKind(r) { return r.question ? 'Question' : r.followers >= 10000 ? 'Big account' : /\b(same|relatable|this|so true)\b/i.test(r.text) ? 'Agrees' : 'Reply'; }
 function localReply(r, post) { const k = replyKind(r); const topic = topicOf(post); return k === 'Question' ? '' : k === 'Agrees' ? `The worst part is how reasonable it felt at the time. What tipped you off?` : k === 'Big account' ? `Appreciate that. The [${topic}] part is what I'd do first next time.` : `Thanks for reading. What would you add?`; }
 async function openReplyDesk(q, preset) {
@@ -7404,6 +7441,8 @@ function rhythmHTML(compact) {
 }
 /* Today: one next action, chosen by what's actually going on */
 const TODAY = { k: 0 };
+/* Today is about the voice you're writing as: client posts stay in the Queue (its "Mine" filter does the same) */
+const mineQ = q => (q.ws || 'me') === S.ws;
 function todayIdea() {
   const saved = S.ideas.map(i => ({ text: cleanIdea(i.text), kind: 'How-to', saved: true })).filter(x => x.text.length > 12);
   const gen = genIdeas(16, hash(dayKey(Date.now())) % 997);
@@ -7411,13 +7450,13 @@ function todayIdea() {
   return pool[TODAY.k % pool.length];
 }
 function todayState() {
-  const now = Date.now(), pub = S.queue.filter(q => q.status === 'published'), last = pub.slice(-1)[0];
+  const now = Date.now(), pub = S.queue.filter(q => q.status === 'published' && mineQ(q)), last = pub.slice(-1)[0];
   const live = last && now - slotDate(last.day, last.time).getTime() < 60 * 60e3 && now >= slotDate(last.day, last.time).getTime() ? last : null;
-  const missed = S.queue.find(q => q.status === 'due') || S.queue.find(q => q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < now);
+  const missed = S.queue.find(q => q.status === 'due' && mineQ(q)) || S.queue.find(q => q.approval === 'needs' && q.status === 'scheduled' && mineQ(q) && slotDate(q.day, q.time) < now);
   return live ? { k: 'live', q: live } : missed ? { k: 'missed', q: missed } : { k: 'write' };
 }
 function lastPostStats() {
-  const lastQ = S.queue.filter(q => q.status === 'published').slice(-1)[0];
+  const lastQ = S.queue.filter(q => q.status === 'published' && mineQ(q)).slice(-1)[0];
   if (lastQ && SHOWCASE()) { const h = hash(lastQ.id || lastQ.text); return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, likes: 40 + h % 180, replies: 4 + h % 26, x: Math.round((7 + h % 18) ) / 10, sample: true, q: lastQ }; }
   if (lastQ) return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, q: lastQ };
   const lastH = HIST().length ? [...HIST()].filter(p => p.at).sort((a, b) => new Date(b.at) - new Date(a.at))[0] : null; if (!lastH) return null;
@@ -7441,7 +7480,7 @@ function todayHeroHTML(st) {
 }
 function todayStripHTML() {
   const now = Date.now(), day = n => dayKey(now + n * DAY);
-  const col = (n, label) => { const k = day(n), items = S.queue.filter(q => q.day === k && (n < 0 ? q.status === 'published' : q.status === 'scheduled')).sort((a, b) => a.time.localeCompare(b.time));
+  const col = (n, label) => { const k = day(n), items = S.queue.filter(q => q.day === k && mineQ(q) && (n < 0 ? q.status === 'published' : q.status === 'scheduled')).sort((a, b) => a.time.localeCompare(b.time));
     const open = n >= 0 ? Object.keys(BEST[dowIdx(fromKey(k))] || {}).filter(t => slotDate(k, t).getTime() > now && !taken(k, t)) : [];
     return `<div class="ts-col ${n === 0 ? 'now' : ''}"><span class="label">${label}</span>${items.map(q => `<a class="ts-i" href="#queue"><span class="ts-t">${fmtTime(q.time)}</span><span class="ts-x">${firstLineHTML(clip(q.text, 70))}</span></a>`).join('')}${open.slice(0, n === 0 ? 2 : 1).map(t => `<button class="ts-open" data-tact="slot" data-day="${k}" data-time="${t}"><span class="ts-t">${fmtTime(t)}</span><span class="ts-x">Best time, still open. Write for it</span></button>`).join('')}${!items.length && !open.length ? `<p class="faint ts-none">${n < 0 ? 'Nothing went out.' : 'Nothing planned. That’s allowed.'}</p>` : ''}</div>`; };
   return `<section class="t-strip" aria-label="Yesterday, today and tomorrow">${col(-1, 'Yesterday')}${col(0, 'Today')}${col(1, 'Tomorrow')}</section>`;
@@ -7644,14 +7683,28 @@ function fromVoice(name) {
 /* ==========================================================================
    HOOKS: grader + library
    ========================================================================== */
-const HOOKS = [
-  ['Contrarian', 'I stopped believing [common belief]. Here’s what changed my mind.'], ['Contrarian', 'I tried [common advice] for [6 months]. Here’s what I do instead.'], ['Contrarian', 'Everyone says [popular advice]. I think it’s backwards.'], ['Contrarian', '[Popular thing] is a trap. Here’s why.'], ['Contrarian', 'The worst advice I ever took: [advice].'], ['Contrarian', 'Hot take: you don’t need [thing] to [result].'],
+const HOOKS_GENERAL = [
+  ['Contrarian', 'I stopped believing [common belief]. Here’s what changed my mind.'], ['Contrarian', 'I tried [common advice] for [6 months]. Here’s what I do instead.'], ['Contrarian', 'Everyone says [popular advice]. I think it’s backwards.'], ['Contrarian', '[Popular thing] is a trap. Here’s why.'], ['Contrarian', 'The worst advice I ever took: [advice].'], ['Contrarian', 'You don’t need [thing] to [result].'],
   ['Story', 'I [did hard thing] for [3 years]. Here’s what I didn’t expect:'], ['Story', '[2 years] ago I was [low point]. Today I [result].'], ['Story', 'I almost quit [thing]. Then [event] happened.'], ['Story', 'My first [product] made $[40]. My last one made $[40k].'], ['Story', 'The day I [mistake] changed how I [verb].'], ['Story', 'I got fired from [job]. Best thing that ever happened to me.'],
   ['Listicle', '[7] [things] I wish I knew before [milestone]:'], ['Listicle', '[5] tools I pay for and would happily pay double for:'], ['Listicle', '[10] lessons from [2 years] of [activity]:'], ['Listicle', 'The [4]-step [process] I use every [week]:'], ['Listicle', '[3] mistakes that cost me [result]:'], ['Listicle', '[6] questions to ask before you [decision]:'],
   ['Curiosity', 'The [thing] I wish I’d noticed sooner in [field]:'], ['Curiosity', 'Why does [surprising fact]? It took me [a year] to figure out.'], ['Curiosity', 'There’s one [thing] every [group] gets wrong.'], ['Curiosity', 'I tested [thing] for [30 days]. The results surprised me.'], ['Curiosity', 'The most underrated skill in [field] isn’t [obvious skill].'], ['Curiosity', 'What great [role]s do differently (it’s not [obvious thing]):'],
-  ['Proof', 'I grew [metric] from [1k] to [50k] in [6 months]. Here’s the playbook:'], ['Proof', '$[10k] in [90 days] with [constraint]. Full breakdown:'], ['Proof', '[80]% of my [results] came from one [thing]:'], ['Proof', 'Exactly how I [result], step by step:'], ['Proof', 'We [result]. The fix took [20 minutes].'], ['Proof', 'Here’s the [document] that got me [result]. Steal it.'],
-  ['Question', 'What’s one [thing] you’d never go back to?'], ['Question', 'Be honest: do you actually [common practice]?'], ['Question', 'If you started [thing] over tomorrow, what’s the first thing you’d do?'], ['Question', 'What’s the most overrated advice in [field]?'], ['Question', '[Option A] or [option B]? Wrong answers only.'], ['Question', 'What did you learn the hard way about [topic]?']
-].map(([k, t]) => ({ k, t, s: hookScore(t.replace(/\[([^\]]+)\]/g, '$1')).score }));
+  ['Proof', 'I grew [metric] from [1k] to [50k] in [6 months]. Here’s the playbook:'], ['Proof', '$[10k] in [90 days] with [constraint]. Full breakdown:'], ['Proof', '[80]% of my [results] came from one [thing]:'], ['Proof', 'Exactly how I [result], step by step:'], ['Proof', 'We [result]. The fix took [20 minutes].'], ['Proof', 'Here’s the [document] that got me [result].'],
+  ['Question', 'What’s one [thing] you’d never go back to?'], ['Question', 'Be honest: do you actually [common practice]?'], ['Question', 'If you started [thing] over tomorrow, what’s the first thing you’d do?'], ['Question', 'What’s the most overrated advice in [field]?'], ['Question', '[Option A] or [option B]? Tell me why.'], ['Question', 'What did you learn the hard way about [topic]?']
+];
+/* trading formulas: the ticker, the entry, the stop, the amount and the count are always the writer's, so they're always blanks */
+const HOOKS_TRADING = [
+  ['Contrarian', 'I stopped using [indicator]. Here’s what I watch instead.'], ['Contrarian', 'I tried [common trading advice] for [N months]. Here’s what I do instead.'], ['Contrarian', 'You don’t need [N indicators] to trade [market]. You need one rule you follow.'], ['Contrarian', '[Popular strategy] isn’t an edge. Here’s why.'], ['Contrarian', 'The worst trading advice I ever took: [advice].'], ['Contrarian', 'Buying the dip on [ticker] isn’t a plan. This is:'],
+  ['Story', 'I lost [amount] on [one trade]. Here’s the rule it taught me:'], ['Story', 'I moved my stop on [ticker] once. It cost me [amount].'], ['Story', 'My worst week: [N trades], [result]. What I changed after:'], ['Story', '[N years] ago I blew up [an account]. Here’s what I do differently now.'], ['Story', 'I almost quit trading after [event]. Then [what changed].'], ['Story', 'The day I [mistake] changed how I size every trade.'],
+  ['Listicle', '[N] rules I wrote after [my worst trade]:'], ['Listicle', '[N] questions I ask before every [entry]:'], ['Listicle', '[N] mistakes that cost me [amount] in [year]:'], ['Listicle', 'The [N]-step checklist I run before I buy [ticker]:'], ['Listicle', '[N] lessons from [N trades] in my journal:'], ['Listicle', '[N] things I wish I knew before [my first leveraged trade]:'],
+  ['Curiosity', 'The one column in my trading journal that changed [what changed]:'], ['Curiosity', 'Why does [ticker] keep [pattern]? It took me [time] to see it.'], ['Curiosity', 'There’s one thing every [kind of trader] gets wrong about [stop losses].'], ['Curiosity', 'I journaled [N trades] for [N weeks]. Here’s the pattern I found.'], ['Curiosity', 'Funding on [ticker] just [did what]. Here’s how I read it:'], ['Curiosity', 'The most underrated skill in trading isn’t [obvious skill].'],
+  ['Proof', 'Entry [price], stop [price], target [price] on [ticker]. Here’s my reasoning:'], ['Proof', '[N] trades, [X]% win rate, [Y]R average. The full breakdown:'], ['Proof', '[X]% of my P&L came from [one setup]:'], ['Proof', 'Exactly how I size a trade at [risk %] risk, step by step:'], ['Proof', 'My [month] P&L: [amount]. What worked, what didn’t:'], ['Proof', 'The journal template that stopped my [revenge trades]:'],
+  ['Question', 'What’s one rule you’d never trade without? Mine is [rule].'], ['Question', 'Be honest: do you set your stop before you enter, or after [price moves]?'], ['Question', 'If you started trading over with [amount], what’s the first thing you’d do?'], ['Question', 'What’s the most overrated indicator in [market]?'], ['Question', '[Ticker A] or [ticker B] for the next [timeframe]? Tell me why.'], ['Question', 'What did your worst trade teach you about [risk]?']
+];
+const hookRows = rows => rows.map(([k, t]) => ({ k, t, s: hookScore(t.replace(/\[([^\]]+)\]/g, '$1')).score }));
+/* Improve › Formulas, the Hooks page and ⌘K all read HOOKS: it serves the trading set to trading niches and the general set to everyone else */
+const HOOKS = bySet({ trading: hookRows(HOOKS_TRADING), general: hookRows(HOOKS_GENERAL) });
+/* Compare two lines: example pair shown as placeholders, in the writer's niche */
+const SHOOT_EX = () => tradingNiche() ? ['I moved my stop once. It cost me a month of gains.', 'The most expensive trade I ever took was the one I didn’t plan.'] : ['I spent 6 months building a feature nobody used.', 'The most expensive feature I ever built had zero users.'];
 let HOOKF = { k: 'All', q: '' };
 ROUTES.hooks = () => {
   const start = S.graderText || 'I think risk management is really important for new traders.';
@@ -7661,7 +7714,7 @@ ROUTES.hooks = () => {
       <div class="grader-side" aria-live="polite"><div class="bigscore" id="g-score"></div><p id="g-reason" class="muted" style="font-size:14px"></p><div class="bars" id="g-bars"></div></div></div>
     <div id="g-better" aria-live="polite"></div>
     <section class="sec shoot"><div class="sec-h"><div><h2 class="h2">Compare two lines</h2><p class="muted" style="margin-top:4px">Two first lines, one post. Let your past posts pick, or ask friends.</p></div></div>
-      <div class="shoot-in"><label><span class="label">A</span><textarea class="input" id="so-a" rows="2" placeholder="I spent 6 months building a feature nobody used.">${esc((S.shoot || {}).a || '')}</textarea></label><label><span class="label">B</span><textarea class="input" id="so-b" rows="2" placeholder="The most expensive feature I ever built had zero users.">${esc((S.shoot || {}).b || '')}</textarea></label></div>
+      <div class="shoot-in"><label><span class="label">A</span><textarea class="input" id="so-a" rows="2" placeholder="${esc(SHOOT_EX()[0])}">${esc((S.shoot || {}).a || '')}</textarea></label><label><span class="label">B</span><textarea class="input" id="so-b" rows="2" placeholder="${esc(SHOOT_EX()[1])}">${esc((S.shoot || {}).b || '')}</textarea></label></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn" data-hact="shoot" data-tip="${HIST().length ? `Uses your ${fmtN(HIST().length)} posts` : 'Uses the hook score until you bring your posts'}">${ic('bolt', 'sm')} Ask my past posts</button><button class="btn" data-hact="vote" data-tip="A link friends tap to vote">${ic('poll', 'sm')} Ask friends</button></div>
       <div id="so-out" aria-live="polite"></div>${shootHistoryHTML()}</section>
     <section class="sec"><div class="sec-h" style="margin-bottom:12px"><div><h2 class="h2">Formulas</h2><p class="muted" style="margin-top:4px">First-line formulas that keep working. Pick one and fill in the blanks.</p></div></div><div class="sec-h"><div class="seg" id="hk-seg" role="tablist" aria-label="Hook types">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity', 'Proof', 'Question'].map(k => `<button role="tab" data-hk="${k}" aria-selected="${HOOKF.k === k}">${k}</button>`).join('')}</div><input class="input" id="hk-q" placeholder="Search formulas" aria-label="Search formulas" style="width:220px" value="${esc(HOOKF.q)}"></div><div class="hooklib" id="hooklib"></div></section>
@@ -7899,9 +7952,9 @@ ROUTES.insights = () => {
   $('#view').addEventListener('click', e => {
     const r = e.target.closest('[data-r]'); if (r) { RANGE = +r.dataset.r; $$('[data-r]').forEach(b => b.setAttribute('aria-selected', b === r)); syncSeg($('#rng')); drawInsights(); return; }
     const b = e.target.closest('[data-nact]'); if (!b) return; const a = b.dataset.nact;
-    if (a === 'contra') { const i = genIdeas(24, Date.now() % 99).find(x => x.kind === 'Contrarian') || { text: 'Everyone’s advice on pricing is backwards.', kind: 'Contrarian' }; writeFrom(expandIdea(i.text, 'Contrarian')); toast('A contrarian outline, since they work for you. Fill the [brackets].', { icon: 'swap', tone: 'accent' }); }
+    if (a === 'contra') { const i = genIdeas(24, Date.now() % 99).find(x => x.kind === 'Contrarian') || { text: 'I disagree with the usual take on [topic]. Here’s my case.', kind: 'Contrarian' }; writeFrom(expandIdea(i.text, 'Contrarian')); toast('A contrarian outline, since they work for you. Fill the [brackets].', { icon: 'swap', tone: 'accent' }); }
     if (a === 'posts') $('#top-posts').scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' });
-    if (a === 'thread') writeFrom(expandIdea('5 things I wish I knew about ' + (NICHES[S.user.niche] || NICHES['Building in public'])[0], 'Listicle'));
+    if (a === 'thread') writeFrom(expandIdea('[N] things I wish I knew about ' + (NICHES[S.user.niche] || NICHES['Building in public'])[0], 'Listicle'));
     if (a === 'number') { go('hooks'); }
     if (a === 'lower') go('voice');
     if (a === 'table') { const w = $('#chart-table'); w.hidden = !w.hidden; b.textContent = w.hidden ? 'View as table' : 'Hide table'; }
@@ -8024,6 +8077,18 @@ function lineChart(host, data) {
 /* ==========================================================================
    VOICE
    ========================================================================== */
+/* Your voice preview: the same idea at your settings. Trading niches get a trading line; everyone else keeps the pricing-page one */
+const VOICE_SAMPLES_TRADING = [
+  ['took a small loss on eth today. stuck to my stop. that’s the job.', 'I took a small loss on ETH today. I stuck to my stop, and that’s the job.'],
+  ['cut my size in half this month. fewer trades, calmer weeks. already feels better.', 'I cut my position size in half this month. Fewer trades, calmer weeks. It already feels better.'],
+  ['3 indicators on one chart is a hedge, not a plan. went to 1. stopped overtrading in a week.', 'Three indicators on one chart is a hedge, not a plan. I cut to one and stopped overtrading within a week.']
+];
+function voiceSampleFor(spice, polish, length = 0) {
+  if (!tradingNiche()) return voiceSample(spice, polish, length);
+  let s = VOICE_SAMPLES_TRADING[spice < 35 ? 0 : spice < 68 ? 1 : 2][polish < 50 ? 0 : 1];
+  if (length > 55) s += polish < 50 ? '\n\nthe lesson: every rule you skip is a trade your mood takes for you.' : '\n\nThe lesson: every rule you skip is a trade you let your mood take for you.';
+  return s;
+}
 ROUTES.voice = () => {
   const an = ANALYSIS(), pr = S.profile, real = !!an;
   const traits = pr && pr.traits && pr.traits.length ? pr.traits.slice(0, 3).map(t => [t.name, t.evidence]) : real ? heuristicTraits(an) : [['Direct', '82% of its openers are one sentence'], ['Dry', 'Jokes in 1 of 5 posts, never with emoji'], ['Generous', '61% of its top posts give the playbook away']];
@@ -8048,8 +8113,8 @@ ROUTES.voice = () => {
     <div class="card pad" style="display:grid;gap:12px;align-content:start"><span class="label">Never-say list</span><div class="words" id="never"></div><form id="never-f" style="display:flex;gap:8px"><input class="input" id="never-in" placeholder="Add a word or phrase" aria-label="Add to your never-say list" maxlength="40"><button class="btn" type="submit">Add</button></form></div>
   </div></div>`);
   const drawNever = () => { $('#never').innerHTML = S.voice.never.map((w, i) => `<span class="w no">${esc(w)}<button data-nv="${i}" aria-label="Allow ${esc(w)}" data-tip="Allow again">${ic('x', 'xs')}</button></span>`).join('') || '<span class="faint" style="font-size:13px">Nothing on your never-say list yet.</span>'; };
-  const sample = () => { const s = $('#v-sample'); s.style.opacity = .3; setTimeout(() => { s.textContent = voiceSample(S.voice.spice, S.voice.polish, S.voice.length); s.style.opacity = 1; }, 120); };
-  drawNever(); $('#v-sample').textContent = voiceSample(S.voice.spice, S.voice.polish, S.voice.length);
+  const sample = () => { const s = $('#v-sample'); s.style.opacity = .3; setTimeout(() => { s.textContent = voiceSampleFor(S.voice.spice, S.voice.polish, S.voice.length); s.style.opacity = 1; }, 120); };
+  drawNever(); $('#v-sample').textContent = voiceSampleFor(S.voice.spice, S.voice.polish, S.voice.length);
   const v = $('#view'); const deb = debounce(sample, 60);
   v.addEventListener('input', e => { const k = e.target.dataset.v; if (!k) return; S.voice[k] = +e.target.value; e.target.style.setProperty('--p', e.target.value + '%'); $(`#v-${k}-n`).textContent = e.target.value; save(); deb(); });
   v.addEventListener('click', e => { const b = e.target.closest('[data-nv]'); if (b) { const [w] = S.voice.never.splice(+b.dataset.nv, 1); save(); drawNever(); toast(`“${esc(w)}” is allowed again.`, { icon: 'check' }); } });
