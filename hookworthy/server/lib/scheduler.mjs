@@ -6,20 +6,29 @@ import * as X from './x.mjs';
 import * as LI from './linkedin.mjs';
 import * as M from './media.mjs';
 import * as BO from './breakout.mjs';
+import * as PL from './plug.mjs';
 
 export const list = () => read('queue', []);
 /* posts arrive as strings or { text, media: [mediaId] } */
 export const normPosts = posts => (posts || []).map(p => typeof p === 'string' ? { text: p.trim(), media: [] } : { text: String((p && p.text) || '').trim(), media: Array.isArray(p && p.media) ? p.media.map(String).slice(0, 4) : [] }).filter(p => p.text || p.media.length);
 /* a little clock skew is fine; anything older than this is a mistake, not "post now" */
 export const PAST_GRACE_MS = 2 * 60e3;
-export function add({ at, posts, platforms } = {}, now = Date.now()) {
+/* per-post X options: who can reply (X only; Everyone is the default and isn't stored) and the auto-plug */
+export function xOptions({ replySettings, plug } = {}, plats = ['x']) {
+  if (!plats.includes('x')) return {};
+  const rs = X.replySettingsOf(replySettings);
+  if (replySettings && replySettings !== 'everyone' && !rs) throw Object.assign(new Error('Who can reply: everyone, following or mentionedUsers'), { status: 400 });
+  const pl = PL.normPlug(plug);
+  return { ...(rs ? { replySettings: rs } : {}), ...(pl ? { plug: pl } : {}) };
+}
+export function add({ at, posts, platforms, replySettings, plug } = {}, now = Date.now()) {
   const texts = normPosts(posts);
   if (!texts.length) throw Object.assign(new Error('Nothing to post'), { status: 400 });
   const when = Date.parse(at); if (isNaN(when)) throw Object.assign(new Error('Pick a time'), { status: 400 });
   if (when < now - PAST_GRACE_MS) throw Object.assign(new Error(`That time (${new Date(when).toISOString()}) has already passed. Pick a time in the future, or post it now.`), { status: 400, code: 'past' });
   const plats = Object.keys(platforms || {}).filter(k => platforms[k] && (k === 'x' || k === 'linkedin'));
   if (!plats.length) throw Object.assign(new Error('Pick X or LinkedIn'), { status: 400 });
-  const item = { id: randomUUID(), at: new Date(when).toISOString(), posts: texts, platforms: plats, status: 'scheduled', results: {} };
+  const item = { id: randomUUID(), at: new Date(when).toISOString(), posts: texts, platforms: plats, status: 'scheduled', results: {}, ...xOptions({ replySettings, plug }, plats) };
   write('queue', [...list(), item]); return item;
 }
 /* only a post still waiting can be taken back; one that's posting or done stays on record */
@@ -31,7 +40,9 @@ export async function publish(item, onResult = () => {}) {
   for (const p of item.platforms) {
     try {
       const posts = normPosts(item.posts).map(q => ({ text: q.text, media: q.media.map(id => M.getMedia(id)) }));
-      if (p === 'x') { results.x = { ok: true, ...(await X.postThread(posts)) }; BO.track({ ids: results.x.ids, posts }); }
+      if (p === 'x') { results.x = { ok: true, ...(await X.postThread(posts, { replySettings: item.replySettings })) }; BO.track({ ids: results.x.ids, posts });
+        /* the auto-plug starts watching once the post is really out */
+        if (item.plug) { const w = PL.watch({ tweetId: results.x.ids[0], queueId: item.id || null, plug: item.plug }); if (w) results.x.plug = w.status; } }
       /* LinkedIn has no threads: one post, parts separated by a blank line, every picture attached */
       if (p === 'linkedin') results.linkedin = { ok: true, ...(await LI.post(posts.map(q => String(q.text || '').replace(/^\s*\d+\s*\/\s*\d*\s*/, '')).filter(Boolean).join('\n\n') /* one LinkedIn post: thread numbers (1/, 2/6) don't belong */, posts.flatMap(q => q.media))) };
     } catch (e) { results[p] = { ok: false, error: e.message }; }

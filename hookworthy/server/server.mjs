@@ -28,6 +28,7 @@ const Q = await import('./lib/scheduler.mjs');
 const E = await import('./lib/extras.mjs');
 const BO = await import('./lib/breakout.mjs');
 const VO = await import('./lib/votes.mjs');
+const PL = await import('./lib/plug.mjs');
 
 const ROOT = normalize(join(here, '..'));
 const PORT = +process.env.PORT || 8787, HOST = process.env.HOST || '127.0.0.1';
@@ -44,7 +45,7 @@ const fail = (res, e) => send(res, e.status || 500, { error: e.message || 'Somet
 async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []; for await (const c of req) { n += c.length; if (n > limit) throw Object.assign(new Error('Request too large'), { status: 413 }); chunks.push(c); } try { return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}'); } catch { throw Object.assign(new Error('Send JSON'), { status: 400 }); } }
 const authed = req => !TOKEN || req.headers.authorization === `Bearer ${TOKEN}` || (req.headers.cookie || '').split(/;\s*/).includes(`hw=${TOKEN}`);
 
-export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), plug: true, replySettings: true, vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
 
 /* drafts for a breakout's first replies, in your voice (only when Claude is on) */
 export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => (await AI.complete({ ...core.prompts.replies({ post, replies, voice }), json: true })).data : null;
@@ -103,7 +104,10 @@ export async function handle(req, res) {
     if ((m = p.match(/^\/api\/sync\/([a-f0-9]{32,64})$/))) { if (req.method === 'PUT') return send(res, 200, E.putSync(m[1], await body(req))); return send(res, 200, E.getSync(m[1])); }
 
     /* posting */
-    if (p === '/api/publish' && req.method === 'POST') { const b = await body(req); const item = { posts: b.posts, platforms: Object.keys(b.platforms || {}).filter(k => b.platforms[k] && (k === 'x' || k === 'linkedin')) }; if (!item.platforms.length) return send(res, 400, { error: 'Pick X or LinkedIn' }); return send(res, 200, { results: await Q.publish(item) }); }
+    if (p === '/api/publish' && req.method === 'POST') { const b = await body(req); const item = { posts: b.posts, platforms: Object.keys(b.platforms || {}).filter(k => b.platforms[k] && (k === 'x' || k === 'linkedin')) }; if (!item.platforms.length) return send(res, 400, { error: 'Pick X or LinkedIn' }); Object.assign(item, Q.xOptions(b, item.platforms)); return send(res, 200, { results: await Q.publish(item) }); }
+    /* auto-plug: what each watched post is doing, and turning one off before it goes out */
+    if (p === '/api/plugs' && req.method === 'GET') return send(res, 200, { plugs: PL.all() });
+    if ((m = p.match(/^\/api\/plugs\/(\d{1,25})$/)) && req.method === 'DELETE') return send(res, 200, PL.cancel(m[1]));
     if (p === '/api/schedule' && req.method === 'POST') { const b = await body(req); return send(res, 200, Q.add(b)); }
     if (p === '/api/queue' && req.method === 'GET') return send(res, 200, { queue: Q.list() });
     /* DELETE /api/queue/:id (what the app's serverDrop calls) and DELETE /api/schedule/:id: always 200 with
@@ -159,4 +163,5 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === normalize(process.argv
   Q.start();
   setInterval(() => E.sendDigests().catch(e => console.error('[digest]', e)), 15 * 60e3).unref();
   setInterval(() => BO.tick({ draft: breakoutDrafts, email: E.sendEmail, publicUrl: PUBLIC_URL }).catch(e => console.error('[breakout]', e.message)), 60e3).unref();
+  setInterval(() => PL.tick().catch(e => console.error('[plug]', e.message)), 60e3).unref(); /* each post is checked every HW_PLUG_POLL_MIN minutes (10) */
 }

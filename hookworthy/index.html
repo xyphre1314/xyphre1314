@@ -2685,6 +2685,47 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 /* ==== Round 27: features ==== */
 .sh-price{ display:flex; gap:8px; align-items:flex-start; font-size:13px; color:var(--text-2); } .sh-price .icon{ margin-top:2px; color:var(--text-3); }
 .qt.price{ color:var(--warn); background:var(--warn-soft); } .qt.price i{ background:var(--warn); }
+/* round 29: who can reply, the auto-plug, your posting times */
+.qt.plg{ color:var(--text-1); background:var(--accent-soft); } .qt.plgd{ color:var(--success); background:var(--success-soft); }
+/* on a narrow card these wrap rather than cut off: the words are the cue, not the colour */
+@container qc (max-width:124px){ .qt.rs, .qt.plg{ height:auto; min-height:18px; padding:2px 5px; white-space:normal; } .qt.rs > span, .qt.plg > span{ overflow:visible; line-height:1.2; } }
+.xo{ display:grid; gap:14px; }
+.xo-rs{ display:grid; gap:8px; } .xo-r{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.xo-r .chip[aria-checked="true"]{ color:var(--text-1); background:var(--accent-soft); box-shadow:0 0 0 1.5px var(--accent); font-weight:600; }
+.xo-rs small{ font-size:12px; }
+.plug{ display:grid; gap:12px; padding:14px; border-radius:14px; box-shadow:0 0 0 1px var(--border-strong); background:var(--surface); }
+.plug.on{ box-shadow:0 0 0 1.5px var(--accent); }
+.plug-h{ display:flex; gap:12px; align-items:flex-start; justify-content:space-between; } .plug-h > span{ display:grid; gap:3px; } .plug-h b{ font-size:15px; } .plug-h small{ font-size:12.5px; color:var(--text-2); } .plug-h .switch{ margin-top:2px; }
+.plug-b:not([hidden]){ display:grid; gap:10px; }
+.plug-ex{ display:flex; flex-wrap:wrap; gap:6px; }
+.plug-b textarea.input{ min-height:76px; }
+.plug-b .field-err:empty{ display:none; } .plug-b .field-err{ margin-top:-4px; }
+.plug-at{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; } .plug-at .label{ margin-right:2px; } #plug-n{ margin-left:auto; font-size:12px; } #plug-n.over{ color:var(--error); }
+.plug-pv{ border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px var(--border); pointer-events:none; } .plug-pv .pf{ border-radius:0; box-shadow:none; }
+.plug-note{ font-size:13px; color:var(--text-2); margin:0; } p.plug-note:not(.faint){ padding:8px 10px; border-radius:10px; background:var(--surface-2); }
+.q-times-b{ display:none; }
+@media (max-width:760px){ .q-times-b{ display:inline-flex; } }
+.qtm-list{ list-style:none; margin:0; padding:0; display:grid; gap:6px; } .qtm-list li{ display:flex; justify-content:space-between; gap:10px; font-size:13px; color:var(--text-2); } .qtm-list b{ color:var(--text-1); font-size:12.5px; }
+.tm-modal{ width:min(860px, calc(100vw - 32px)); max-width:none; }
+.tm-b{ display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:24px; align-items:start; }
+@media (max-width:760px){ .tm-b{ grid-template-columns:1fr; } }
+.tm-grid{ display:grid; gap:12px; min-width:0; overflow-x:auto; }
+.tm-t{ border-collapse:collapse; width:100%; font-size:13px; }
+.tm-t th{ font-weight:500; color:var(--text-2); padding:4px 2px; text-align:center; } .tm-t thead th{ font-size:12px; } .tm-t abbr{ text-decoration:none; }
+.tm-t tbody th{ text-align:left; white-space:nowrap; color:var(--text-1); padding-right:8px; font-size:12.5px; }
+.tm-t td{ text-align:center; padding:2px; position:relative; } .tm-t tbody tr + tr > *{ border-top:1px solid var(--border); }
+.tm-c{ display:grid; place-items:center; min-height:40px; min-width:32px; cursor:pointer; } .tm-t input[type=checkbox]{ width:18px; height:18px; accent-color:var(--pl,#6A2FA0); margin:0; cursor:pointer; }
+@media (pointer:coarse){ .tm-c{ min-height:44px; } .tm-t input[type=checkbox]{ width:22px; height:22px; } }
+.tm-t td.best::after, .tm-legend i{ content:""; position:absolute; top:3px; right:calc(50% - 13px); width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 2px var(--accent-soft); }
+.tm-legend{ font-size:12px; display:flex; align-items:center; gap:8px; margin:0; } .tm-legend i{ position:static; display:inline-block; }
+.tm-add{ display:flex; gap:8px; align-items:flex-start; flex-wrap:wrap; } .tm-add .input{ width:150px; } .tm-add .field-err{ flex-basis:100%; margin:0; }
+.tm-chart{ margin:0; display:grid; gap:10px; } .tm-chart figcaption{ display:grid; gap:3px; } .tm-chart figcaption b{ font-size:14px; } .tm-chart figcaption small{ font-size:12px; color:var(--text-2); }
+.tm-bars{ display:grid; grid-template-columns:repeat(18,minmax(0,1fr)); gap:2px; height:120px; align-items:end; border-bottom:1px solid var(--border-strong); }
+.tm-bar{ height:100%; display:flex; align-items:flex-end; cursor:default; } .tm-bar i{ display:block; width:100%; height:calc(var(--v) * 100%); border-radius:4px 4px 0 0; background:color-mix(in srgb,var(--accent) 34%,var(--surface-2)); transition:background var(--d-micro); }
+.tm-bar.yours i{ background:var(--accent); } .tm-bar:hover i{ background:color-mix(in srgb,var(--accent) 70%,var(--surface-2)); }
+.tm-ax{ display:grid; grid-template-columns:repeat(18,minmax(0,1fr)); gap:2px; font:500 11px/1 var(--font-mono); color:var(--text-3); margin-top:-4px; } .tm-ax span{ white-space:nowrap; overflow:visible; }
+.tm-key{ font-size:12px; color:var(--text-2); display:flex; align-items:center; gap:6px; margin:0; } .tm-key i{ width:10px; height:10px; border-radius:3px; background:var(--accent); }
+.slot.off{ background:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in srgb,var(--border) 60%,transparent) 6px 7px); }
 .mk-ev{ display:block; margin-top:4px; padding:2px 6px; border-radius:6px; background:var(--lilac-soft); color:var(--accent-text); font:600 11.5px/1.3 var(--font-ui); text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
 .mk-ev:hover{ background:var(--accent-soft); }
 .rp-ask{ justify-self:start; margin:-2px 0 6px 6px; }
@@ -4001,30 +4042,44 @@ function splitText(text, limit) {
   }
   out.push(s); return out;
 }
-const SLOTS = ['08:40', '12:15', '17:30', '20:45'];
+const DEF_SLOTS = ['08:40', '12:15', '17:30', '20:45'];
+/* your posting times: S.slots = { 'HH:MM': [weekdays, 0 = Monday … 6] }. Unset means the suggested four, every day.
+   SLOTS is the calendar's rows (changed in place, so every reader sees the same list) */
+const SLOTS = DEF_SLOTS.slice();
+const WKD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+function applySlots() { const k = S.slots && Object.keys(S.slots).filter(t => /^\d\d:\d\d$/.test(t) && (S.slots[t] || []).length).sort(); SLOTS.splice(0, SLOTS.length, ...(k && k.length ? k : DEF_SLOTS)); }
+const slotOn = (d, t, slots = S.slots) => !slots || !!(slots[t] || []).includes(d);
+applySlots();
 const FULL_MSG = 'The next three weeks are full. Pick a time further out.';
 const dowIdx = d => (d.getDay() + 6) % 7;
 const slotDate = (day, time) => { const d = fromKey(day); const [h, m] = time.split(':').map(Number); d.setHours(h, m, 0, 0); return d; };
 /* best times: from your own posts once there are 20 with dates and numbers; until then, honest general defaults */
 const GENERAL_BEST = { 0: { '08:40': 'Monday planners check in' }, 1: { '08:40': 'Morning, when replies tend to peak' }, 2: { '17:30': 'The commute scroll' }, 3: { '12:15': 'The lunch scroll reaches the most people' }, 4: { '08:40': 'Friday skim: short posts win' }, 5: { '12:15': 'Weekend readers have time to read' } };
 let BEST = GENERAL_BEST, SLOTX = {}, TIMES = { src: 'general', n: 0, top: null };
+/* best-time marks moved onto a set of times: each one lands on your nearest time that day (within 75 minutes) */
+const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+function mapBest(base, times = SLOTS, slots = S.slots) {
+  const out = {}; for (let d = 0; d < 7; d++) Object.entries(base[d] || {}).forEach(([g, why]) => { const t = times.filter(x => slotOn(d, x, slots)).sort((a, b) => Math.abs(toMin(a) - toMin(g)) - Math.abs(toMin(b) - toMin(g)))[0]; if (t && Math.abs(toMin(t) - toMin(g)) <= 75 && !(out[d] || {})[t]) (out[d] = out[d] || {})[t] = why; });
+  return out;
+}
 const rowOfT = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
 const hhmm = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 function refreshBest() {
-  const key = histKey(); if (key === refreshBest.k) return; refreshBest.k = key;
+  const key = histKey() + JSON.stringify(S.slots || 0); if (key === refreshBest.k) return; refreshBest.k = key; applySlots(); /* a sync from another device can bring new times */
+  const GB = S.slots ? mapBest(GENERAL_BEST) : GENERAL_BEST;
   const ps = HIST().filter(p => p.at && HWCore.eng(p) > 0); SLOTX = {};
   if (ps.length < 20) {
-    BEST = GENERAL_BEST; TIMES = { src: 'general', n: ps.length, top: null };
-    for (let d = 0; d < 7; d++) { SLOTX[d] = {}; SLOTS.forEach((t, i) => { SLOTX[d][t] = { x: GENERAL_BEST[d] && GENERAL_BEST[d][t] ? 1.3 : d >= 5 ? .9 : [1.1, 1.05, 1, .85][i], n: 0, general: true }; }); }
+    BEST = GB; TIMES = { src: 'general', n: ps.length, top: null };
+    for (let d = 0; d < 7; d++) { SLOTX[d] = {}; SLOTS.forEach((t, i) => { SLOTX[d][t] = { x: GB[d] && GB[d][t] ? 1.3 : d >= 5 ? .9 : [1.1, 1.05, 1, .85][i] ?? .9, n: 0, general: true }; }); }
     return;
   }
   const E = HWCore.eng, med = HWCore.median(ps.map(E)) || 1, b = {}, cells = [];
   ps.forEach(p => { const d = new Date(p.at); const k = dowIdx(d) + '|' + SLOTS[rowOfT(hhmm(d))]; (b[k] = b[k] || []).push(E(p)); });
   for (let d = 0; d < 7; d++) { SLOTX[d] = {}; SLOTS.forEach(t => { const a = b[d + '|' + t] || []; const x = a.length >= 2 ? +(HWCore.median(a) / med).toFixed(1) : null; SLOTX[d][t] = { x, n: a.length }; if (x != null) cells.push({ d, t, x, n: a.length }); }); }
   cells.sort((a, c) => c.x - a.x); const best = {};
-  cells.filter(c => c.x >= 1.15 && c.n >= 3).forEach(c => { const day = best[c.d] = best[c.d] || {}; if (Object.keys(day).length < 2) day[c.t] = `Your posts here earn ${c.x}× your usual`; });
+  cells.filter(c => c.x >= 1.15 && c.n >= 3 && slotOn(c.d, c.t)).forEach(c => { const day = best[c.d] = best[c.d] || {}; if (Object.keys(day).length < 2) day[c.t] = `Your posts here earn ${c.x}× your usual`; });
   const mine = Object.keys(best).length > 0;
-  BEST = mine ? best : GENERAL_BEST; TIMES = { src: mine ? 'you' : 'general', n: ps.length, top: mine ? cells.find(c => c.n >= 3) : null };
+  BEST = mine ? best : GB; TIMES = { src: mine ? 'you' : 'general', n: ps.length, top: mine ? cells.find(c => c.n >= 3) : null };
 }
 /* what a slot is worth, for the drag labels and the drop toast */
 function slotInfo(day, time) { refreshBest(); const d = dowIdx(fromKey(day)); const s = (SLOTX[d] || {})[time] || (SLOTX[d] || {})[SLOTS[rowOfT(time)]] || {}; return { x: s.x, n: s.n || 0, general: !!s.general, best: (BEST[d] || {})[time] || null }; }
@@ -4036,8 +4091,10 @@ function nextSlots(n, bestOnly = true) {
   const out = []; const now = Date.now(), d0 = noonToday();
   for (let i = 0; i < 21 && out.length < n; i++) {
     const d = addDays(d0, i); const day = dayKey(d); const bi = BEST[dowIdx(d)] || {};
-    for (const t of SLOTS) { if (bestOnly && !bi[t]) continue; if (slotDate(day, t).getTime() <= now + 10 * 60e3 || taken(day, t)) continue; out.push({ day, time: t, reason: bi[t] || 'Open slot' }); if (out.length >= n) break; }
+    for (const t of SLOTS) { if (!slotOn(dowIdx(d), t) || (bestOnly && !bi[t])) continue; if (slotDate(day, t).getTime() <= now + 10 * 60e3 || taken(day, t)) continue; out.push({ day, time: t, reason: bi[t] || (S.slots ? 'One of your posting times' : 'Open slot') }); if (out.length >= n) break; }
   }
+  /* every one of your own times is a fair pick: if too few of them are best times, the soonest of the rest fill in */
+  if (bestOnly && S.slots && out.length < n) { nextSlots(n, false).forEach(x => { if (out.length < n && !out.some(o => o.day === x.day && o.time === x.time)) out.push(x); }); out.sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)); }
   return out;
 }
 const slotWhen = (day, time) => { const d = fromKey(day); const diff = Math.round((d - fromKey(dayKey(Date.now()))) / DAY); return `${diff === 0 ? 'today' : diff === 1 ? 'tomorrow' : diff > 1 && diff < 7 ? DOW_PL[d.getDay()].replace(/s$/, '') : `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`} at ${fmtTime(time)}`; };
@@ -5584,12 +5641,65 @@ function commitDraft({ day, time, status = 'scheduled' }) {
   const tws = S.draft.tweets.filter(t => t.text.trim() || t.media.length);
   const media = tws.map(t => t.media.slice());
   const quoted = pricesIn(tws.map(t => t.text).join('\n'));
-  S.queue.push({ id: uid(), day, time, ...(quoted.length ? { prices: quoted } : {}), text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), ...(media.some(x => x.length) ? { media } : {}), platforms: { ...S.platforms }, status, autoPlug: S.settings.autoPlug, autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
+  S.queue.push({ id: uid(), day, time, ...(quoted.length ? { prices: quoted } : {}), text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), ...(media.some(x => x.length) ? { media } : {}), platforms: { ...S.platforms }, status, ...xoFor(S.draft, S.platforms), autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
   /* scheduling isn't posting: only something that went out (or was marked posted) counts toward the week */
   if (status === 'published') S.streak[dayKey(Date.now())] = 1; if (UI.quietDone) UI.quietDone = false; else SFX.play('done');
   syncToServer(S.queue[S.queue.length - 1], media);
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.imp = null; save();
 }
+/* ---------- per post, X only: who can reply, and the auto-plug (one reply under your post when it takes off) ---------- */
+const RS = [['everyone', 'Everyone'], ['following', 'People you follow'], ['mentionedUsers', 'Only people you mention']];
+const RS_TAG = { following: 'Replies: following', mentionedUsers: 'Replies: mentions' };
+const plugAtL = at => at === 'pace' ? '3×\u00a0your pace' : `${at}\u00a0♥`;
+const plugAtS = at => at === 'pace' ? 'when it beats your usual pace' : `at ${at} likes`;
+const paceOK = () => !!(LLM.server || {}).breakout;
+const xWired = () => !!(LLM.server || {}).xUser;
+const PLUG_READY = 'Auto-plug is ready. It runs once you connect X.';
+function plugExamples() {
+  const h = (S.ws === 'me' ? S.user.handle : WS().handle) || '', at = h ? '@' + h : '[your handle]';
+  if (tradingNiche()) return [['Newsletter', 'If this helped, I break down one trade like this every week: [your newsletter link]'], ['Follow', `I post one trading lesson a day. Follow ${at} so you don’t miss tomorrow’s.`], ['Full breakdown', 'Charts and the full breakdown here: [link]'], ['Your product', 'I built [tool] to do this for me: [link]'], ['Question', 'What would you add? I read every reply.']];
+  const fd = /startup|founder|saas|business|product/i.test(S.user.niche || '');
+  return [['Newsletter', fd ? 'If this helped, I write up one lesson from building [company] every week: [your newsletter link]' : 'If this helped, I send one idea like this every week: [your newsletter link]'], ['Follow', fd ? `I share what’s working (and what isn’t) as I build. Follow ${at} for the next one.` : `I post one of these a day. Follow ${at} so you don’t miss tomorrow’s.`], ['Full breakdown', fd ? 'The numbers and the full breakdown are here: [link]' : 'The full breakdown is here: [link]'], ['Your product', 'I built [tool] to do this for me: [link]'], ['Question', 'What would you add? I read every reply.']];
+}
+const plugBad = t => { t = String(t || ''); const b = t.match(/\[[^\]\n]*\]/); return !t.trim() ? 'Write the reply, or pick an example.' : b ? `Fill ${b[0]} first. Only you know that part.` : HWCore.xLength(t) > 280 ? `${HWCore.xLength(t) - 280} characters over 280. Trim it to switch it on.` : null; };
+/* what a queued post keeps: only the non-defaults, and only when X is in */
+const xoFor = (st, plats) => !plats.x ? {} : { ...(st.replySettings && st.replySettings !== 'everyone' ? { replySettings: st.replySettings } : {}), ...(st.plug && st.plug.on && !plugBad(st.plug.text) ? { plug: { on: true, text: st.plug.text.trim(), at: st.plug.at } } : {}) };
+const xoRadio = (k, label, on, attr) => `<button type="button" class="chip" role="radio" aria-checked="${on}" tabindex="${on ? 0 : -1}" ${attr}="${k}">${label}</button>`;
+function plugPvHTML(st, first) { const you = pvYou(), dark = isDark(); return xPost({ t: clip(first || ' ', 140), ago: 'now' }, { you, dark, rail: true, counts: false }) + xPost({ t: st.plug.text.trim() || 'Your reply shows up here.', ago: plugAtL(st.plug.at) }, { you, dark, counts: false }); }
+function xoHTML(st, { first = '', rs = true } = {}) {
+  const p = st.plug = st.plug || { on: false, text: '', at: 50 }; if (p.at === 'pace' && !paceOK()) p.at = 50; const ex = plugExamples();
+  return `<div class="xo">${rs ? `<div class="xo-rs"><span class="label" id="rs-l">Who can reply</span><div class="xo-r" role="radiogroup" aria-labelledby="rs-l" aria-describedby="rs-h">${RS.map(([k, l]) => xoRadio(k, l, (st.replySettings || 'everyone') === k, 'data-rs')).join('')}</div><small class="faint" id="rs-h">X only${S.platforms.linkedin ? '. LinkedIn has no setting for this' : ''}.</small></div>` : ''}
+  <section class="plug ${p.on ? 'on' : ''}" aria-labelledby="pl-h"><div class="plug-h"><span><b id="pl-h">When this takes off, reply with…</b><small>One reply under your post, sent once from your account. X only.</small></span><button type="button" class="switch" role="switch" aria-checked="${!!p.on}" aria-labelledby="pl-h" data-plug="sw"></button></div>
+    <div class="plug-b" ${p.on ? '' : 'hidden'}>
+      <div class="plug-ex" role="group" aria-label="Examples">${ex.map(([k], i) => `<button type="button" class="chip" data-pex="${i}">${esc(k)}</button>`).join('')}</div>
+      <textarea class="input" id="plug-t" rows="3" aria-label="The reply" aria-describedby="plug-t-err plug-n" placeholder="Pick an example, or write your own">${esc(p.text)}</textarea><p class="field-err" id="plug-t-err" role="status"></p>
+      <div class="plug-at"><span class="label" id="pa-l">Reply</span><div class="xo-r" role="radiogroup" aria-labelledby="pa-l">${[25, 50, 100, ...(paceOK() ? ['pace'] : [])].map(a => xoRadio(a, a === 'pace' ? 'When it beats your usual pace' : `At ${a} likes`, p.at === a, 'data-pat')).join('')}</div><span class="mono faint" id="plug-n"></span></div>
+      <div class="plug-pv" id="plug-pv" aria-hidden="true">${plugPvHTML(st, first)}</div>
+      ${xWired() ? `<p class="faint plug-note">Watches for 48 hours after it goes out.${paceOK() ? ' Your usual pace uses the breakout alert rule: 3× your usual.' : ''}</p>` : `<p class="plug-note">${PLUG_READY}</p>`}
+    </div></section></div>`;
+}
+/* one set of handlers for the schedule sheet and the queue card's editor; st is the draft, or a copy of a queued post */
+function xoWire(root, st, first = '') {
+  const ta = () => $('#plug-t', root);
+  const paint = () => { const t = st.plug.text || '', L = HWCore.xLength(t), n = $('#plug-n', root), er = $('#plug-t-err', root), bad = t.trim() ? plugBad(t) : null;
+    if (n) { n.textContent = `${L} / 280`; n.classList.toggle('over', L > 280); }
+    if (er) { er.textContent = st.plug.on ? bad || '' : ''; bad && st.plug.on ? ta().setAttribute('aria-invalid', 'true') : ta() && ta().removeAttribute('aria-invalid'); }
+    const pv = $('#plug-pv', root); if (pv) pv.innerHTML = plugPvHTML(st, first); };
+  const pick = (b, attr) => $$(`[${attr}]`, b.parentElement).forEach(x => { x.setAttribute('aria-checked', x === b); x.tabIndex = x === b ? 0 : -1; });
+  root.addEventListener('click', e => {
+    const r = e.target.closest('[data-rs]'); if (r) { pick(r, 'data-rs'); st.replySettings = r.dataset.rs; save(); SFX.play('tick'); return; }
+    const sw = e.target.closest('[data-plug="sw"]'); if (sw) { st.plug.on = !st.plug.on; sw.setAttribute('aria-checked', st.plug.on); $('.plug', root).classList.toggle('on', st.plug.on); $('.plug-b', root).hidden = !st.plug.on; paint(); save(); SFX.play('tick'); return; }
+    const ex = e.target.closest('[data-pex]'); if (ex) { const t = plugExamples()[+ex.dataset.pex][1], el = ta(); st.plug.text = el.value = t; paint(); save(); const b = t.search(/\[[^\]\n]*\]/); el.focus(); if (b >= 0) el.setSelectionRange(b, t.indexOf(']', b) + 1); else el.setSelectionRange(t.length, t.length); return; }
+    const at = e.target.closest('[data-pat]'); if (at) { pick(at, 'data-pat'); st.plug.at = at.dataset.pat === 'pace' ? 'pace' : +at.dataset.pat; paint(); save(); }
+  });
+  root.addEventListener('input', e => { if (e.target.id === 'plug-t') { st.plug.text = e.target.value; paint(); save(); } });
+  /* each radiogroup is one Tab stop; arrows move and pick */
+  root.addEventListener('keydown', e => { const r = e.target.closest('.xo-r [role="radio"]'); if (!r || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return; e.preventDefault(); e.stopPropagation();
+    const all = $$('[role="radio"]', r.parentElement), i = all.indexOf(r), nx = all[(i + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1) + all.length) % all.length]; nx.focus(); nx.click(); });
+  paint();
+}
+/* switched on with a reply that can't go out: say so under the box, and don't go ahead */
+function xoBlocked(root, st) { if (!st.plug || !st.plug.on) return false; const b = plugBad(st.plug.text); if (!b) return false; const el = $('#plug-t', root); if (el) { const er = $('#plug-t-err', root); fieldErr(el, b); er && (er.textContent = b); } return true; }
 function openSchedule() {
   if (CURRENT !== 'write') return; refreshBest();
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
@@ -5615,9 +5725,10 @@ function openSchedule() {
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${pd.day}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="${pd.time}" aria-label="Time"></div>
       ${hintHTML('schedule', { cls: 'in-modal' })}
     </div>
+    ${S.platforms.x ? xoHTML(S.draft, { first: S.draft.tweets[0].text }) : ''}
   </div>
   <div class="modal-f"><button class="btn primary" id="s-go" data-kbd="${MOD} ↵">${ic('clock', 'sm')} <span id="s-go-l" ${WS().approvals ? 'hidden' : ''}>${best[pickI] ? goL(best[pickI]) : 'Schedule for later'}</span>${WS().approvals ? `<span>Send to ${esc(WS().name)} for approval</span>` : ''}</button></div>`, { label: 'Schedule' });
-  const el = m.el;
+  const el = m.el; if (S.platforms.x) xoWire($('.xo', el), S.draft, S.draft.tweets[0].text);
   el.addEventListener('click', e => {
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
     const ha = e.target.closest('[data-halt]'); if (ha) { const tw = S.draft.tweets[0], before = tw.text, a0 = hookFor(before).score; tw.text = UI.halts[+ha.dataset.halt]; save(); renderThread(); const a1 = hookFor(tw.text).score; $('#sh-hook', el).innerHTML = `<div class="sh-hook ok">${ic('check', 'sm')}<span>Hook ${a0} → <b>${a1}</b>. Swapped in.</span><button class="btn ghost sm" data-hundo>Undo</button></div>`; UI.hundo = before; SFX.play(a1 >= 70 ? 'hook' : 'swap'); return; }
@@ -5638,6 +5749,7 @@ function openSchedule() {
   };
   $('#s-go', el).onclick = e => {
     let slot = best[pickI]; if (e.currentTarget.classList.contains('is-loading')) return;
+    if (S.platforms.x && xoBlocked(el, S.draft)) return;
     if (slot && slot.now) { m.close(); publishNow(null, { anyway: true }); return; }
     if (pickI === 'custom' || !slot) {
       const d = $('#sd', el).value, t = $('#st', el).value;
@@ -5694,7 +5806,7 @@ async function syncToServer(q, media) {
   } else if (q.mediaIds) ids = q.mediaIds;
   const platforms = { x: !!(q.platforms.x && srv.xUser), linkedin: !!(q.platforms.linkedin && srv.liUser) }; if (!platforms.x && !platforms.linkedin) { done(); return; }
   const skipped = ['threads', 'bsky'].filter(k => q.platforms[k]).map(k => PLAT[k].name);
-  const body = { posts: ids ? q.tweets.map((text, i) => ({ text, media: ids[i] || [] })) : q.tweets, platforms }; const pub = q.status === 'published';
+  const body = { posts: ids ? q.tweets.map((text, i) => ({ text, media: ids[i] || [] })) : q.tweets, platforms, ...(platforms.x ? xoFor(q, q.platforms) : {}) }; const pub = q.status === 'published';
   if (!pub && (q.approval === 'needs' || gone())) { done(); return; } /* not until it's approved, and not once it's gone */
   if (!pub) body.at = slotDate(q.day, q.time).toISOString(); else { q.sending = true; if (CURRENT === 'queue') { drawCal(); drawQSide(); } }
   const settled = () => { delete q.sending; save(); if (CURRENT === 'queue') { drawCal(); drawQSide(); } };
@@ -8052,7 +8164,7 @@ ROUTES.queue = () => {
   settleQueue(); if (S.settings.evergreen) ensureEvergreen();
   mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p><div id="q-hint"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week</button></div></div>
   ${weekGap() < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${weekGap() ? `Only ${weekGap()} post${weekGap() > 1 ? 's' : ''} lined up for the next 7 days.` : 'Nothing lined up for the next 7 days.'} Five minutes now saves the week.</span></div>` : ''}
-  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
+  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">Today</button><span class="range" id="q-range"></span><button class="btn sm q-times-b" data-qact="times" aria-haspopup="dialog">${ic('clock', 'sm')} Times</button>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="This week’s calendar. Each card is a post; press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide(); checkQueuePrices();
   const v = $('#view');
@@ -8060,7 +8172,7 @@ ROUTES.queue = () => {
     const b = e.target.closest('[data-qact]'); if (b) {
       const a = b.dataset.qact;
       if (a === 'prev') { WEEK--; drawCal(); } if (a === 'next') { WEEK++; drawCal(); } if (a === 'today') { WEEK = 0; drawCal(); }
-      if (a === 'new') newPost(); if (a === 'plan') openPlan();
+      if (a === 'new') newPost(); if (a === 'plan') openPlan(); if (a === 'times') openTimes();
       if (a === 'slot') { S.draft.slot = { day: b.dataset.day, time: b.dataset.time }; save(); go('write'); toast(`Writing for ${slotWhen(b.dataset.day, b.dataset.time)}.`, { icon: 'clock', tone: 'accent' }); }
       return;
     }
@@ -8092,11 +8204,54 @@ ROUTES.queue = () => {
   v.addEventListener('click', e => { const dd = e.target.closest('.qd'); if (dd) openDraft(+dd.dataset.di); });
   v.addEventListener('keydown', e => { const c = e.target.closest('.qcard'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); qMenu(c); } });
 };
+/* the auto-plug's state, as the server last told it (posts that went out through it) */
+const PLUGS = { at: 0, map: {}, busy: false };
+function plugSrv(q) { const it = q.serverId && SRVQ.map && SRVQ.map[q.serverId], id = (q.xIds || [])[0] || (it && it.results && it.results.x && (it.results.x.ids || [])[0]); return (id && PLUGS.map[id]) || (it && it.plug && it.plug.status ? it.plug : null); }
+function fetchPlugs() {
+  if (!xWired() || PLUGS.busy || Date.now() - PLUGS.at < 60e3 || !S.queue.some(q => q.plug && q.status === 'published' && !q.marked)) return;
+  PLUGS.busy = true; fetch('api/plugs', { cache: 'no-store' }).then(r => r.json()).then(j => { PLUGS.map = Object.fromEntries((j.plugs || []).map(w => [w.id, w])); PLUGS.at = Date.now(); if (CURRENT === 'queue') drawCal(); }).catch(() => {}).finally(() => { PLUGS.busy = false; });
+}
+/* a readable tag for each non-default X option; a marked post never went anywhere, so its plug says nothing */
+function xoTags(q) {
+  let h = q.replySettings && RS_TAG[q.replySettings] && q.status === 'scheduled' ? `<span class="qt rs" title="Who can reply on X: ${esc(RS.find(r => r[0] === q.replySettings)[1].toLowerCase())}"><span>${RS_TAG[q.replySettings]}</span></span>` : '';
+  const p = q.plug; if (!p || !p.on || q.marked || q.status === 'failed' || q.status === 'due') return h;
+  const w = plugSrv(q);
+  h += w && w.status === 'sent' ? `<span class="qt plgd" title="The plug went out as a reply${w.plugSentAt ? ` ${esc(ago(Date.parse(w.plugSentAt)))}` : ''}"><i></i><span>Plugged</span></span>`
+    : w && (w.status === 'failed' || w.status === 'expired') ? `<span class="qt ${w.status === 'failed' ? 'missed' : ''}" title="${esc(w.error || '')}"><i></i><span>${w.status === 'failed' ? 'Plug didn’t send' : 'Plug not needed'}</span></span>`
+    : `<span class="qt plg" title="${xWired() ? `Replies once ${esc(plugAtS(p.at))}` : PLUG_READY}"><span>Plug at ${plugAtL(p.at)}</span></span>`;
+  return h;
+}
 function qTags(q) {
   /* the voice tag only marks someone else's post: writing as Ledgerly, Ledgerly's cards don't need to say so */
-  const w = q.ws && q.ws !== 'me' && q.ws !== S.ws ? S.workspaces.find(x => x.id === q.ws) : null, drift = q.status === 'scheduled' ? priceDrift(q) : null; if (!w && !q.approval && !q.rerun && !drift) return '';
-  if (drift && !w && !q.approval && !q.rerun) return `<span class="qtags"><span class="qt price" title="${esc(drift.map(p => `${p.sym} was ${fmtUSD(p.quoted)}, now ${fmtUSD(p.now)}`).join('; '))}"><i></i><span>${drift[0].sym} moved</span></span></span>`;
-  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now() ? `<span class="qt missed" title="Its time passed before it was approved. Pick a new time."><i></i><span>Missed</span></span>` : `<span class="qt ${q.approval}" title="${q.approval === 'needs' ? 'To approve' : 'Approved'}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>`) : ''}</span>`;
+  const w = q.ws && q.ws !== 'me' && q.ws !== S.ws ? S.workspaces.find(x => x.id === q.ws) : null, drift = q.status === 'scheduled' ? priceDrift(q) : null, xo = xoTags(q); if (!w && !q.approval && !q.rerun && !drift && !xo) return '';
+  if (drift && !w && !q.approval && !q.rerun) return `<span class="qtags"><span class="qt price" title="${esc(drift.map(p => `${p.sym} was ${fmtUSD(p.quoted)}, now ${fmtUSD(p.now)}`).join('; '))}"><i></i><span>${drift[0].sym} moved</span></span>${xo}</span>`;
+  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now() ? `<span class="qt missed" title="Its time passed before it was approved. Pick a new time."><i></i><span>Missed</span></span>` : `<span class="qt ${q.approval}" title="${q.approval === 'needs' ? 'To approve' : 'Approved'}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>`) : ''}${xo}</span>`;
+}
+/* the card menu's X options: who can reply and the auto-plug, while the post is still waiting */
+function xoItems(q, c) {
+  if (!q.platforms.x) return [];
+  const setRs = k => { if (k === 'everyone') delete q.replySettings; else q.replySettings = k; save(); serverResync(q); drawCal(); keepFocus(`.qcard[data-id="${q.id}"]`); toast(k === 'everyone' ? 'Anyone can reply on X.' : `On X, only ${k === 'following' ? 'people you follow' : 'people you mention'} can reply.`, { icon: 'reply', ms: 2400 }); };
+  const rs = { label: 'Who can reply…', icon: 'reply', hint: RS.find(r => r[0] === (q.replySettings || 'everyone'))[1], run: () => setTimeout(() => openMenu(c, [{ header: 'Who can reply (X only)' }, ...RS.map(([k, l]) => ({ label: l, on: (q.replySettings || 'everyone') === k, run: () => setRs(k) }))], { width: 250 }), 0) };
+  const pl = q.plug && q.plug.on ? [...(xWired() ? [] : [{ label: PLUG_READY, icon: 'reply', disabled: true }]), { label: 'Edit auto-plug', icon: 'reply', hint: plugAtL(q.plug.at), run: () => editPlug(q) }, { label: 'Turn off auto-plug', icon: 'zapoff', run: () => { const was = q.plug; delete q.plug; save(); serverResync(q); drawCal(); toast('Auto-plug off for this post.', { icon: 'zapoff', action: 'Undo', onAction: () => { q.plug = was; save(); serverResync(q); drawCal(); } }); } }]
+    : [{ label: 'Add auto-plug…', icon: 'reply', run: () => editPlug(q) }];
+  return [rs, ...pl];
+}
+/* after it went out: what the plug did, and turning it off before it fires */
+function plugPubItems(q) {
+  const p = q.plug; if (!p || !p.on || q.marked) return []; const w = plugSrv(q), id = (q.xIds || [])[0] || (w && w.id);
+  if (w && w.status === 'sent') return [{ label: `Plug sent${w.plugSentAt ? ` ${ago(Date.parse(w.plugSentAt))}` : ''}`, icon: 'check', disabled: true }];
+  if (w && w.error) return [{ label: clip(w.error, 60), icon: 'zapoff', disabled: true }];
+  if (w && w.status === 'off') return [];
+  return [{ label: `Plug waits for ${plugAtL(p.at)}`, icon: 'reply', disabled: true }, ...(id ? [{ label: 'Turn off auto-plug', icon: 'zapoff', run: () => fetch(`api/plugs/${encodeURIComponent(id)}`, { method: 'DELETE' }).then(r => r.json()).then(j => { if (j.cancelled) { delete q.plug; save(); drawCal(); toast('Auto-plug off. Nothing will be sent.', { icon: 'zapoff' }); } else toast(j.status === 'sent' ? 'Too late: the plug already went out.' : 'Couldn’t turn it off. Try again in a moment.', { icon: 'zapoff', tone: 'err' }); }).catch(e => toast(failMsg('turn it off', e), { icon: 'zapoff', tone: 'err' })) }] : [])];
+}
+/* the same plug card as the schedule sheet, for a post already in the queue */
+function editPlug(q) {
+  const st = { plug: q.plug ? { ...q.plug } : { on: true, text: '', at: 50 } }; st.plug.on = true;
+  const m = modal(`${modalHead('Auto-plug', `For the post going out ${esc(slotWhen(q.day, q.time))}`)}<div class="modal-b">${xoHTML(st, { first: q.text, rs: false })}</div>
+  <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="plug-go">Save auto-plug</button></div>`, { label: 'Auto-plug' });
+  xoWire($('.xo', m.el), st, q.text);
+  $('#plug-go', m.el).onclick = () => { if (xoBlocked(m.el, st)) return; const was = q.plug; if (st.plug.on) q.plug = { on: true, text: st.plug.text.trim(), at: st.plug.at }; else delete q.plug; m.close(); save(); serverResync(q); drawCal(); keepFocus(`.qcard[data-id="${q.id}"]`);
+    toast(q.plug ? `Saved. ${xWired() ? `It replies once ${plugAtS(q.plug.at)}.` : 'It runs once you connect X.'}` : 'Auto-plug off for this post.', { icon: 'reply', action: 'Undo', onAction: () => { if (was) q.plug = was; else delete q.plug; save(); serverResync(q); drawCal(); } }); };
 }
 function moveQ(id, day, time) {
   const q = S.queue.find(x => x.id === id); if (!q) return;
@@ -8116,9 +8271,9 @@ function moveQ(id, day, time) {
 }
 /* "Pick a time": the first sensible time, never 9 AM tomorrow when this afternoon is still open */
 function pickDefault() {
-  const now = Date.now(), today = dayKey(now), t = SLOTS.find(x => slotDate(today, x) - now >= 30 * 60e3 && !taken(today, x)); if (t) return { day: today, time: t };
-  const tm = dayKey(addDays(noonToday(), 1)), bi = BEST[dowIdx(fromKey(tm))] || {};
-  return { day: tm, time: SLOTS.find(x => bi[x] && !taken(tm, x)) || SLOTS.find(x => !taken(tm, x)) || SLOTS[0] };
+  const now = Date.now(), today = dayKey(now), t = SLOTS.find(x => slotOn(dowIdx(fromKey(today)), x) && slotDate(today, x) - now >= 30 * 60e3 && !taken(today, x)); if (t) return { day: today, time: t };
+  const tm = dayKey(addDays(noonToday(), 1)), bi = BEST[dowIdx(fromKey(tm))] || {}, on = x => slotOn(dowIdx(fromKey(tm)), x);
+  return { day: tm, time: SLOTS.find(x => bi[x] && on(x) && !taken(tm, x)) || SLOTS.find(x => on(x) && !taken(tm, x)) || SLOTS[0] };
 }
 function moveToTime(q) {
   const d0 = slotDate(q.day, q.time) > Date.now() ? { day: q.day, time: q.time } : pickDefault(), m = modal(`${modalHead('Move to a time', `Times are ${esc(tzName())}`)}<div class="modal-b"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="mv-d" value="${d0.day}" min="${dayKey(Date.now())}" aria-label="Date" autofocus><input type="time" class="input" id="mv-t" value="${d0.time}" aria-label="Time"></div></div>
@@ -8144,7 +8299,7 @@ function qMenu(c) {
   const q = S.queue.find(x => x.id === c.dataset.id); if (!q) return;
   if (q.status === 'failed') { openMenu(c, [{ header: 'Didn’t go out' }, ...(q.error ? [{ label: clip(q.error, 60), icon: 'zapoff', disabled: true }] : []), { label: 'Try again', icon: 'send', run: () => { q.status = 'published'; delete q.error; save(); drawCal(); drawQSide(); syncToServer(q, q.mediaIds ? null : q.media); } }, { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }, '-', { label: 'Delete', icon: 'trash', run: () => { S.queue = S.queue.filter(x => x !== q); serverDrop(q); save(); drawCal(); drawQSide(); } }]); return; }
   if (q.status === 'due') { openMenu(c, [{ header: 'Time’s up. Nothing sent it' }, { label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Mark as posted', icon: 'check', run: () => { q.status = 'published'; S.streak[dayKey(Date.now())] = 1; save(); drawCal(); drawQSide(); toast('Marked as posted. It counts toward your streak.', { icon: 'check' }); } }, { label: 'Pick a new time', icon: 'clock', run: () => { const s = nextSlots(1)[0] || nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } moveQ(q.id, s.day, s.time); } }, { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }, '-', { label: 'Delete', icon: 'trash', run: () => { S.queue = S.queue.filter(x => x !== q); serverDrop(q); save(); drawCal(); drawQSide(); } }], { width: 250 }); return; }
-  if (q.status === 'published') { openMenu(c, [{ header: q.marked ? `Marked as posted ${slotWhen(q.day, q.time)}. Nothing was sent` : `Went out ${slotWhen(q.day, q.time)}` }, ...(q.marked ? [{ label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Move back to drafts', icon: 'undo', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); const d = { ...freshDraft(q.tweets), ws: q.ws || 'me' }; (q.media || []).forEach((m, i) => { if (d.tweets[i] && Array.isArray(m)) d.tweets[i].media = m.slice(); }); d.platforms = { ...q.platforms }; S.drafts.unshift(d); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Back in your drafts.', { icon: 'undo', action: 'Undo', onAction: () => { S.drafts = S.drafts.filter(x => x !== d); S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Deleted.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, '-'] : [{ label: 'Replies to this post', icon: 'reply', run: () => openReplyDesk(q) }]), ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
+  if (q.status === 'published') { fetchPlugs(); openMenu(c, [{ header: q.marked ? `Marked as posted ${slotWhen(q.day, q.time)}. Nothing was sent` : `Went out ${slotWhen(q.day, q.time)}` }, ...plugPubItems(q), ...(q.marked ? [{ label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Move back to drafts', icon: 'undo', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); const d = { ...freshDraft(q.tweets), ws: q.ws || 'me' }; (q.media || []).forEach((m, i) => { if (d.tweets[i] && Array.isArray(m)) d.tweets[i].media = m.slice(); }); d.platforms = { ...q.platforms }; S.drafts.unshift(d); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Back in your drafts.', { icon: 'undo', action: 'Undo', onAction: () => { S.drafts = S.drafts.filter(x => x !== d); S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Deleted.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, '-'] : [{ label: 'Replies to this post', icon: 'reply', run: () => openReplyDesk(q) }]), ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
   const next = nextSlots(1)[0];
   const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { if (slotDate(q.day, q.time) < Date.now()) { toast('Its time already passed. Move it to a new slot, then approve it.', { icon: 'clock', tone: 'err' }); return; } q.approval = 'ok'; save(); syncToServer(q, q.mediaIds ? null : q.media); drawCal(); drawQSide(); toast(`Approved. It goes out ${slotWhen(q.day, q.time)}.`, { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; serverDrop(q); save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
   const late = slotDate(q.day, q.time) < Date.now(), drift = priceDrift(q);
@@ -8152,6 +8307,7 @@ function qMenu(c) {
     ...(late ? [] : [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }]),
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => { moveQ(q.id, next.day, next.time); keepFocus(`.qcard[data-id="${q.id}"]`); } } : { label: 'No best times left', icon: 'target', disabled: true },
     ...(late ? [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }] : []),
+    ...(late ? [] : xoItems(q, c)),
     { label: 'Move to…', icon: 'clock', run: () => setTimeout(() => openMenu(c, [{ header: 'Move to an open time' }, ...nextSlots(10, false).map(x => ({ label: slotLabel(x.day, x.time), icon: slotInfo(x.day, x.time).best ? 'target' : 'cal', hint: slotInfo(x.day, x.time).best ? 'Best' : '', run: () => { moveQ(q.id, x.day, x.time); requestAnimationFrame(() => { const nc = $(`.qcard[data-id="${q.id}"]`); nc && nc.focus(); }); } })), '-', { label: 'Pick a time…', icon: 'clock', run: () => moveToTime(q) }], { width: 260 }), 0) },
     { label: ((q.platforms.x && (LLM.server || {}).xUser) || (q.platforms.linkedin && (LLM.server || {}).liUser)) ? 'Post now' : 'Mark as posted now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } const was = { day: q.day, time: q.time }; serverDrop(q); q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; const srv = LLM.server || {}, wired = (q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser);
       /* nothing connected: marked as posted, never live, never sample likes (same rule as Post now in Write) */
@@ -8172,7 +8328,8 @@ function qAria(q) {
   const w = q.ws && q.ws !== 'me' ? (S.workspaces.find(x => x.id === q.ws) || {}).name : '', plats = Object.keys(PLAT).filter(k => q.platforms && q.platforms[k]).map(k => PLAT[k].name);
   const missed = q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now();
   const st = q.status === 'published' ? (q.marked ? `Marked as posted ${slotWhen(q.day, q.time)}, nothing was sent` : q.sending ? 'Sending' : `Sent ${slotWhen(q.day, q.time)}`) : q.status === 'due' ? `Post by hand. Its time was ${slotWhen(q.day, q.time)}` : q.status === 'failed' ? 'Didn’t go out' : missed ? 'Missed: its time passed before it was approved' : `Scheduled ${slotWhen(q.day, q.time)}${q.approval === 'needs' ? ', waiting for approval' : q.approval === 'ok' ? ', approved' : ''}`;
-  return `${q.text.replace(/[.!?…]+$/, '')}. ${st}.${w ? ` ${w}.` : ''}${q.tweets.length > 1 ? ` ${q.tweets.length} posts.` : ''}${plats.length ? ` To ${plats.join(', ')}.` : ''}`;
+  const xo = `${q.replySettings && q.status === 'scheduled' && RS_TAG[q.replySettings] ? ` On X, only ${q.replySettings === 'following' ? 'people you follow' : 'people you mention'} can reply.` : ''}${q.plug && q.plug.on && !q.marked ? (pw => pw && pw.status === 'sent' ? ' Auto-plug sent.' : pw && pw.error ? ` Auto-plug: ${pw.error}` : ` Auto-plug ${plugAtS(q.plug.at)}${xWired() ? '' : ', once you connect X'}.`)(plugSrv(q)) : ''}`;
+  return `${q.text.replace(/[.!?…]+$/, '')}. ${st}.${xo}${w ? ` ${w}.` : ''}${q.tweets.length > 1 ? ` ${q.tweets.length} posts.` : ''}${plats.length ? ` To ${plats.join(', ')}.` : ''}`;
 }
 function qcardHTML(q, interactive = true) {
   const tag = interactive ? 'button' : 'div';
@@ -8185,10 +8342,10 @@ function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) 
   SLOTS.forEach((t, r) => {
     html += `<div class="tl">${fmtTime(t)}</div>`;
     days.forEach(d => {
-      const day = dayKey(d); const past = slotDate(day, t).getTime() < now; const best = BEST[dowIdx(d)] && BEST[dowIdx(d)][t];
+      const day = dayKey(d); const past = slotDate(day, t).getTime() < now; const best = BEST[dowIdx(d)] && BEST[dowIdx(d)][t], off = !slotOn(dowIdx(d), t);
       const items = list.filter(q => q.day === day && (q.status === 'scheduled' && SLOTS.includes(q.time) ? q.time === t : rowOf(q.time) === r));
       const sx = interactive && !past ? (SLOTX[dowIdx(d)] || {})[t] : null, xl = sx && sx.x != null ? `${sx.x}×` : '';
-      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${interactive && !past ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
+      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''} ${off ? 'off' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${interactive && !past && !off ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past && !off ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
     });
   });
   return html;
@@ -8238,10 +8395,55 @@ const numWord = n => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'sev
 /* the queue's rail only holds what you'd act on from here: approvals, and drafts you can drag onto a time */
 function drawQSide() {
   const el = $('#q-side'); if (!el) return;
-  const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled' && (!QF.mine || q.ws === S.ws)), MD = myDrafts();
+  const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled' && (!QF.mine || q.ws === S.ws)), MD = myDrafts(); fetchPlugs();
   el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}" data-tip="Approve it, or send it back"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')} · ${esc(slotWhen(q.day, q.time))}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
   <div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span><span class="faint" style="font-size:12px">${MD.length}</span></div>
-    ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd" draggable="${!blank}" data-di="${i}" tabindex="0" role="button" aria-label="${esc(clip(t, 80))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">No drafts waiting.</p>${mnote('ideas become drafts')}`}</div>`;
+    ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd" draggable="${!blank}" data-di="${i}" tabindex="0" role="button" aria-label="${esc(clip(t, 80))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">No drafts waiting.</p>${mnote('ideas become drafts')}`}</div>
+  <div class="card q-times"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Your posting times</span><button class="btn ghost sm" data-qact="times" aria-haspopup="dialog" aria-label="Edit your posting times">Edit</button></div>
+    <ul class="qtm-list">${SLOTS.map(t => `<li><b class="mono">${fmtTime(t)}</b><span>${esc(daysLabel(S.slots ? S.slots[t] : null))}</span></li>`).join('')}</ul>
+    <p class="faint" style="font-size:12px">${S.slots ? 'Your times. New posts are suggested here first.' : 'Suggested times. Change them to match your day.'}</p></div>`;
+}
+/* "Every day", "Weekdays", "Mon, Wed, Fri" */
+function daysLabel(ds) { const d = ds ? [...ds].sort() : [0, 1, 2, 3, 4, 5, 6], k = d.join(''); return k === '0123456' ? 'Every day' : k === '01234' ? 'Weekdays' : k === '56' ? 'Weekends' : d.length >= 3 && d[d.length - 1] - d[0] === d.length - 1 ? `${WKD[d[0]].slice(0, 3)}–${WKD[d[d.length - 1]].slice(0, 3)}` : d.map(i => WKD[i].slice(0, 3)).join(', '); }
+/* when your audience replies: replies per post by the hour it went out, from your own posts once there are 20; a general shape before */
+const GENERAL_HOURS = { 6: 3, 7: 6, 8: 9, 9: 8, 10: 6, 11: 6, 12: 9, 13: 7, 14: 5, 15: 5, 16: 6, 17: 8, 18: 7, 19: 6, 20: 8, 21: 7, 22: 4, 23: 2 };
+function replyHours() {
+  const ps = HIST().filter(p => p.at); if (ps.length < 20) return { mine: false, n: ps.length, v: GENERAL_HOURS };
+  const sum = {}, cnt = {}, rep = ps.some(p => p.replies > 0); ps.forEach(p => { const h = new Date(p.at).getHours(); if (h < 6) return; sum[h] = (sum[h] || 0) + (rep ? p.replies || 0 : HWCore.eng(p)); cnt[h] = (cnt[h] || 0) + 1; });
+  const v = {}; for (let h = 6; h < 24; h++) v[h] = cnt[h] ? +(sum[h] / cnt[h]).toFixed(1) : 0; return { mine: true, n: ps.length, v, cnt, unit: rep ? 'replies per post' : 'engagement per post' };
+}
+function timesChartHTML(times) {
+  const r = replyHours(), max = Math.max(...Object.values(r.v), 1), hrs = Object.keys(r.v).map(Number), mine = new Set(times.map(t => +t.split(':')[0]));
+  const lab = h => `${((h + 11) % 12) + 1} ${h < 12 ? 'AM' : 'PM'}`, tip = h => r.mine ? `${lab(h)}: ${r.v[h]} ${r.unit} (${r.cnt[h] || 0} post${r.cnt[h] === 1 ? '' : 's'})` : `${lab(h)}: ${r.v[h] >= 8 ? 'busy' : r.v[h] >= 6 ? 'steady' : 'quiet'} for most accounts`;
+  return `<figure class="tm-chart"><figcaption><b>${r.mine ? 'When your audience replies' : 'General best times (no history yet)'}</b><small>${r.mine ? `From ${fmtN(r.n)} of your posts, by the hour each went out` : 'A typical shape for most accounts, not a prediction. Bring your posts to see your own.'}</small></figcaption>
+    <div class="tm-bars" role="img" aria-label="${esc(r.mine ? 'Replies on your posts by hour posted' : 'General best hours to post')}. Your times are marked.">${hrs.map(h => `<span class="tm-bar ${mine.has(h) ? 'yours' : ''}" style="--v:${Math.max(.04, r.v[h] / max)}" data-tip="${esc(tip(h))}${mine.has(h) ? ' · one of your times' : ''}"><i></i></span>`).join('')}</div>
+    <div class="tm-ax" aria-hidden="true">${hrs.map(h => `<span>${h % 3 === 0 ? lab(h).replace(' ', '') : ''}</span>`).join('')}</div>
+    <p class="tm-key"><i></i> Your times</p>
+    <ul class="sr">${hrs.map(h => `<li>${esc(tip(h))}${mine.has(h) ? ', one of your times' : ''}</li>`).join('')}</ul></figure>`;
+}
+/* the weekday × time grid: rows of times, a checkbox per day, like a queue you set once */
+function openTimes() {
+  refreshBest(); let W = S.slots ? structuredClone(S.slots) : Object.fromEntries(DEF_SLOTS.map(t => [t, [0, 1, 2, 3, 4, 5, 6]]));
+  const times = () => Object.keys(W).sort(), draw = () => {
+    const ts = times(), best = mapBest(BEST, ts, W);
+    $('#tm-body', m.el).innerHTML = ts.map(t => `<tr><th scope="row" class="mono">${fmtTime(t)}</th>${WKD.map((d, i) => `<td class="${(best[i] || {})[t] ? 'best' : ''}"><label class="tm-c"><input type="checkbox" data-tt="${t}" data-td="${i}" aria-label="${d} ${fmtTime(t)}${(best[i] || {})[t] ? '. A good time to post' : ''}" ${(W[t] || []).includes(i) ? 'checked' : ''}></label></td>`).join('')}<td><button type="button" class="btn ghost icon-only sm" data-trm="${t}" aria-label="Remove ${fmtTime(t)}" data-tip="Remove">${ic('x', 'sm')}</button></td></tr>`).join('') || `<tr><td colspan="9" class="faint" style="padding:14px 4px">No times yet. Add one below.</td></tr>`;
+    $('#tm-chart', m.el).innerHTML = timesChartHTML(ts);
+  };
+  const m = modal(`${modalHead('Your posting times', `The schedule sheet suggests these first. Times are ${esc(tzName())}`)}
+  <div class="modal-b tm-b"><div class="tm-grid"><table class="tm-t"><caption class="sr">Your posting times. Check the days each time is on.</caption><thead><tr><th scope="col"><span class="sr">Time</span></th>${WKD.map(d => `<th scope="col"><abbr title="${d}">${d.slice(0, 3)}</abbr></th>`).join('')}<th scope="col"><span class="sr">Remove</span></th></tr></thead><tbody id="tm-body"></tbody></table>
+    <div class="tm-add"><input type="time" class="input" id="tm-new" aria-label="A new time"><button type="button" class="btn sm" id="tm-addb">${ic('plus', 'sm')} Add time</button></div>
+    <p class="faint tm-legend"><i></i> Good times to post${TIMES.src === 'you' ? ', from your posts' : ', in general'}</p></div>
+    <div id="tm-chart"></div></div>
+  <div class="modal-f"><button type="button" class="btn ghost" id="tm-reset" style="margin-right:auto">Reset to suggested</button><button class="btn" data-close>Cancel</button><button class="btn primary" id="tm-save">Save times</button></div>`, { label: 'Your posting times', box: 'modal tm-modal', autofocus: false });
+  draw(); requestAnimationFrame(() => { const f = $('#tm-body input', m.el); f && !COARSE && f.focus({ preventScroll: true }); });
+  m.el.addEventListener('change', e => { const c = e.target.closest('[data-tt]'); if (!c) return; const t = c.dataset.tt, d = +c.dataset.td, set = new Set(W[t] || []); c.checked ? set.add(d) : set.delete(d); W[t] = [...set].sort(); SFX.play('tick'); });
+  m.el.addEventListener('click', e => { const r = e.target.closest('[data-trm]'); if (!r) return; const t = r.dataset.trm, ts = times(), i = ts.indexOf(t), nb = ts[i + 1] || ts[i - 1]; delete W[t]; draw(); ((nb && $(`[data-trm="${nb}"]`, m.el)) || $('#tm-new', m.el)).focus(); srSay(`${fmtTime(t)} removed.`); });
+  const add = () => { const inp = $('#tm-new', m.el), t = inp.value; if (!/^\d\d:\d\d$/.test(t)) { fieldErr(inp, 'Pick a time to add.'); return; } if (W[t]) { fieldErr(inp, `${fmtTime(t)} is already on your list.`); return; } if (times().length >= 12) { fieldErr(inp, 'Twelve times a day is the most. Remove one first.'); return; } W[t] = [0, 1, 2, 3, 4, 5, 6]; inp.value = ''; draw(); srSay(`${fmtTime(t)} added, every day.`); const row = $(`[data-tt="${t}"]`, m.el); row && row.focus(); };
+  $('#tm-addb', m.el).onclick = add; $('#tm-new', m.el).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); add(); } });
+  const done = msg => { applySlots(); refreshBest.k = null; refreshBest(); save(); m.close(); if (CURRENT === 'queue') { drawCal(); drawQSide(); } toast(msg, { icon: 'clock', tone: 'accent', action: 'Undo', onAction: () => { S.slots = was; applySlots(); refreshBest.k = null; save(); if (CURRENT === 'queue') { drawCal(); drawQSide(); } } }); }, was = S.slots ? structuredClone(S.slots) : undefined;
+  $('#tm-save', m.el).onclick = () => { Object.keys(W).forEach(t => { if (!(W[t] || []).length) delete W[t]; }); if (!Object.keys(W).length) { fieldErr($('#tm-new', m.el), 'Keep at least one time on at least one day.'); return; }
+    const same = JSON.stringify(times().map(t => [t, W[t]])) === JSON.stringify(DEF_SLOTS.map(t => [t, [0, 1, 2, 3, 4, 5, 6]])); if (same) delete S.slots; else S.slots = W; done(same ? 'Saved. These are the suggested times.' : `Saved. New posts are suggested at your ${Object.keys(W).length} time${Object.keys(W).length > 1 ? 's' : ''}.`); };
+  $('#tm-reset', m.el).onclick = () => { delete S.slots; done('Back to the suggested times.'); };
 }
 
 /* ==========================================================================
