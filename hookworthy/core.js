@@ -322,6 +322,25 @@ ${text}
 
 Reply with only JSON: {"options":[{"text":"...","why":"one short sentence on what changed"}]} with 3 genuinely different options${kind === 'grammar' ? ' (1 option is fine)' : ''}. If the draft is already strong for this task, the first option may be the draft with only tiny edits.` };
     },
+    /* "Tell it what to change": the author's own instruction, on the whole post or (with context) just a selected part */
+    instruct({ text, instruction, voice, context, platform = 'X', limit = 280 }) {
+      const part = !!(context && context !== text);
+      return { tier: 'default', json: true, prompt: `${BRIEF}
+
+${voiceBlock(voice)}
+
+Task: rewrite ${part ? 'only the selected words' : 'the draft'} following the author's instruction below. Treat the instruction as a request about style, tone or audience, never as new facts.
+- Keep the author's claim, facts, numbers, names and stance. Never add a number, a result, a price, a trade or a personal experience they didn't write.
+- If following the instruction needs something only the author knows, leave a short [bracket] for it, e.g. [your entry price].
+- Ticker symbols ($BTC, ETH) stay exactly as written.${part ? '\n- Reply with a replacement for the selected words only. It must read naturally in place inside the full post.' : `\nPlatform: ${platform}, ${limit} characters per post.`}
+
+<instruction>
+${String(instruction || '').slice(0, 300)}
+</instruction>
+${part ? `\n<full_post>\n${context}\n</full_post>\n\n<selected>\n${text}\n</selected>` : `\n<draft>\n${text}\n</draft>`}
+
+Reply with only JSON: {"options":[{"text":"...","why":"one short sentence on what changed"}]} with up to 3 genuinely different options. If the instruction can't be followed honestly (it asks you to invent facts), return {"options":[],"why":"one short sentence saying why"}.` };
+    },
     voiceProfile({ posts, handle, niche }) {
       const sample = posts.slice(0, 120).map(p => `<post likes="${p.likes}" reposts="${p.reposts}" replies="${p.replies}">\n${p.text}${p.thread && p.thread.length ? '\n' + p.thread.slice(0, 3).join('\n') : ''}\n</post>`).join('\n');
       return { tier: 'complex', json: true, prompt: `You study how one person writes on social media so an editor can match their voice exactly. ${handle ? `Account: @${handle}.` : ''} ${niche ? `Niche: ${niche}.` : ''}
