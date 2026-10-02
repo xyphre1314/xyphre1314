@@ -4377,7 +4377,7 @@ function improveHTML(id, i) {
 /* the free-text ask: a field, a Rewrite button, your last five asks (or three starters) */
 function instrHTML(id) {
   const recent = (S.settings.recentInstr || []).slice(0, 5), chips = recent.length ? recent : ['Calmer', 'For beginners', 'Cut the jargon'];
-  return `<div class="instr"><label class="sr" for="instr-${id}">Tell it what to change</label><input class="input instr-in" id="instr-${id}" type="text" maxlength="200" autocomplete="off" enterkeyhint="go" placeholder="Tell it what to change, e.g. calmer, for beginners, cut the jargon"><button class="btn sm" data-cact="instr" data-tip="Rewrite with your note" data-kbd="↵">Rewrite</button></div>
+  return `<div class="instr"><label class="sr" for="instr-${id}">Tell it what to change</label><input class="input instr-in" id="instr-${id}" type="text" maxlength="200" autocomplete="off" enterkeyhint="go" placeholder="Say what to change, e.g. calmer"><button class="btn sm" data-cact="instr" data-tip="Rewrite with your note" data-kbd="↵">Rewrite</button></div>
     <div class="instr-recent" role="group" aria-label="${recent.length ? 'Your recent changes' : 'Try one'}">${chips.map(c => `<button class="chip" data-cact="instrgo" data-t="${esc(c)}">${esc(cap(clip(c, 32)))}</button>`).join('')}</div><p class="instr-note" role="status"></p>`;
 }
 function setImprove(id, tab) { const cur = UI.imp; UI.imp = cur && cur.id === id && cur.tab === tab ? null : { id, tab }; renderExtras(id); $$('.tw .tw-extra').forEach(x => { const o = x.closest('.tw').dataset.id; if (o !== id && x.querySelector('.imp')) renderExtras(o); }); const d = $('.hk-dial'); d && d.setAttribute('aria-expanded', !!(UI.imp && UI.imp.tab === 'score')); }
@@ -5420,7 +5420,7 @@ function sharpenKey(e) {
    Basic mode: common notes map to the rewrites that run on this device, and it says which one it used. */
 const CAPS_OK = new Set('AI ATH ATL BTC ETH SOL XRP BNB ADA AVAX DOGE LINK DOT ARB OP SUI TIA TON PEPE USD USDT USDC EUR GBP JPY SPX SPY QQQ NDX DXY VIX NVDA TSLA AAPL ETF ETFS CPI PPI GDP FOMC FED SEC CEO CTO IPO DCA PNL TVL RSI MACD EMA SMA VWAP OI TP SL ROI APY APR KYC NFT NFTS DEFI CEX DEX L1 L2 US UK EU NY UTC EST PST AM PM OK TA FA NFA DYOR IMO TBH CT FDV'.split(' '));
 const CAPS_SHOUT = new Set('NOT NO YES NOW THIS THAT IS IT ALL BUY SELL HOLD JUST HUGE BIG WOW OMG GO SO VERY EVER NEVER THE AND BUT FOR YOU WE ARE WAS UP DOWN OUT IN ON TO OF MOON PUMP DUMP BULL BEAR WILD TIME NEXT REAL DO DONT LOOK WAIT STOP READ'.split(' '));
-const JARGON = [[/\bDCA\b(?!['’])/i, 'buying a bit every week (DCA)'], [/\bP(?:n|&)L\b/i, 'profit and loss'], [/\bATH\b/i, 'all-time high'], [/\bATL\b/i, 'all-time low'], [/\bHODL(?:ing)?\b/i, 'holding for the long run'], [/\bFOMO\b/i, 'fear of missing out (FOMO)'], [/\bFUD\b/i, 'fear and doubt (FUD)'], [/\bR[:\/]R\b/i, 'risk to reward'], [/\bTP\b/, 'profit target'], [/\bSL\b/, 'stop-loss'], [/\brekt\b/i, 'wiped out'], [/\bdegen\b/i, 'high-risk'], [/\bperps\b/i, 'perpetual futures (perps)'], [/\bmcap\b/i, 'market cap'], [/\bFDV\b/i, 'fully diluted value'], [/\bTVL\b/i, 'money locked in (TVL)'], [/\baltcoins?\b/i, 'smaller coins'], [/\balts\b/i, 'smaller coins'], [/\bNFA\b/i, 'not financial advice'], [/\bCT\b/, 'crypto Twitter']];
+const JARGON = [[/\bDCA\b(?!['’])/i, '$& (buying a little at a time)'], [/\bP(?:n|&)L\b/i, 'profit and loss'], [/\bATH\b/i, 'all-time high'], [/\bATL\b/i, 'all-time low'], [/\bHODL(?:ing)?\b/i, '$& (holding long term)'], [/\bFOMO\b/i, '$& (fear of missing out)'], [/\bFUD\b/i, '$& (fear and doubt)'], [/\bR[:\/]R\b/i, 'risk to reward'], [/\bTP\b/, 'profit target'], [/\bSL\b/, 'stop-loss'], [/\brekt\b/i, 'wiped out'], [/\bdegen\b/i, 'high-risk'], [/\bperps\b/i, '$& (perpetual futures)'], [/\bmcap\b/i, 'market cap'], [/\bFDV\b/i, 'fully diluted value'], [/\bTVL\b/i, '$& (money locked in)'], [/\baltcoins?\b/i, 'smaller coins'], [/\balts\b/i, 'smaller coins'], [/\bNFA\b/i, 'not financial advice'], [/\bCT\b/, 'crypto Twitter']];
 Object.assign(AI, {
   /* calmer: no exclamation marks, no hype words, no shouting (tickers keep their capitals) */
   calmer(t) {
@@ -5437,6 +5437,8 @@ Object.assign(AI, {
       return (art || '') + soft[k] + (sp || '') + (w || '');
     });
     s = s.replace(/\b[A-Z][A-Z’']{1,}\b/g, (w, off, str) => { const u = w.replace(/[’']/g, ''); if (str[off - 1] === '$' || CAPS_OK.has(u) || tick.has(u)) return w; return CAPS_SHOUT.has(u) || u.length >= 5 ? w.toLowerCase() : w; });
+    /* a sentence cut down to one stray word ("Insane setup, LFG!" → "Setup.") goes; one-word sentences the author wrote stay */
+    s = s.replace(/(^|[.?]\s+)([A-Za-z][a-z]+)\.(?=\s|$)/g, (m, pre, w) => new RegExp('(^|[.?!]\\s+)' + w + '[.!?]', 'i').test(t) ? m : pre.trimEnd() || pre);
     return tidy(s.replace(/^[ \t]+|[ \t]+$/gm, ''));
   },
   /* plainer: the PLAIN word swaps, then trading jargon spelled out (first time only) */
