@@ -1012,6 +1012,7 @@ body.typing .preview{ opacity:.7; }
 .qcard.due{ box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--warn) 60%,transparent); } .qcard.due .qm > span:first-child::before{ content:"Post by hand · "; font:600 11px/1 var(--font-ui); color:var(--text-1); letter-spacing:0; }
 .qcard.published .qm > span:first-child::before{ content:"Sent · "; font:600 10px/1 var(--font-ui); color:var(--success); letter-spacing:0; }
 .qcard.published.sending .qm > span:first-child::before{ content:"Sending… · "; color:var(--text-3); }
+.qcard.published.marked .qm > span:first-child::before{ content:"Marked · "; color:var(--text-2); }
 .side-panel{ display:grid; gap:12px; }
 .side-panel .card{ padding:16px; display:grid; gap:12px; }
 .setting{ display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center; }
@@ -2517,7 +2518,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
   .qcard p{ font-size:12px; line-height:1.3; }
   .qcard.published p::before, .qcard.due p::before, .qcard.failed p::before{ content:""; display:inline-block; width:6px; height:6px; border-radius:50%; margin:0 5px 1px 0; vertical-align:middle; background:var(--success); }
   .qcard.due p::before{ background:var(--warn); } .qcard.failed p::before{ background:var(--error); }
-  .qcard.published.sending p::before{ background:var(--text-3); }
+  .qcard.published.sending p::before, .qcard.published.marked p::before{ background:var(--text-3); }
 }
 .story .cap h3{ font-size:clamp(32px,6vw,62px); }
 /* the onboarding try card stacks on phones */
@@ -2627,7 +2628,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .mk-ev{ display:block; margin-top:4px; padding:2px 6px; border-radius:6px; background:var(--lilac-soft); color:var(--accent-text); font:600 11.5px/1.3 var(--font-ui); text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
 .mk-ev:hover{ background:var(--accent-soft); }
 .rp-ask{ justify-self:start; margin:-2px 0 6px 6px; }
-.ht-bar{ height:4px; border-radius:4px; background:var(--surface-3); overflow:hidden; } .ht-bar i{ display:block; height:100%; width:100%; background:var(--accent); transition:width 1s linear; }
+.ht-top{ display:flex; align-items:center; gap:10px; } .ht-top .ht-bar{ flex:1; } .ht-bar{ height:4px; border-radius:4px; background:var(--surface-3); overflow:hidden; } .ht-bar i{ display:block; height:100%; width:100%; background:var(--accent); transition:width 1s linear; }
 .ht-stage{ display:grid; gap:16px; padding:16px 0 4px; min-height:220px; align-content:start; touch-action:pan-y; }
 .ht-card{ display:grid; gap:12px; justify-items:start; padding:20px; border-radius:16px; background:var(--surface-2); user-select:none; } .ht-line{ font:400 26px/1.2 var(--font-display); letter-spacing:-.01em; color:var(--text-1); text-wrap:balance; }
 .ht-acts{ display:grid; grid-template-columns:1fr 1fr; gap:10px; } .ht-acts kbd{ margin-left:6px; } .ht-win{ display:grid; gap:10px; } .ht-rest{ display:grid; gap:6px; margin-top:8px; }
@@ -2732,8 +2733,13 @@ const ic = (id, cls = '') => `<svg class="icon ${cls}" aria-hidden="true"><use h
 const pic = (id, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-${id}"/></svg>`;
 const uid = () => Math.random().toString(36).slice(2, 9);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const TICKER0 = /^(btc|eth|sol|xrp|bnb|ada|doge|avax|link|dot|ltc|usdt|usdc|nft|nfts|pnl|cpi|fomc|etf|etfs|spx|qqq|ath|atl|dca|tvl|rsi)\b/i;
-const cap = s => !s ? s : TICKER0.test(s) ? s.replace(TICKER0, m => /^nfts?$|^etfs$/i.test(m) ? m.slice(0, 3).toUpperCase() + m.slice(3).toLowerCase() : m === 'pnl' ? 'PnL' : m.toUpperCase()) : s[0].toUpperCase() + s.slice(1);
+/* tickers keep their capitals at a sentence start (BTC, not Btc); only clear tickers, and only when typed all-lowercase or all-caps */
+const TICKER0 = /^(btc|eth|xrp|bnb|doge|avax|ltc|usdt|usdc|nfts?|pnl|cpi|ppi|fomc|etfs?|spx|qqq|dca|tvl|rsi)\b/i;
+const cap = s => {
+  if (!s) return s; const m = s.match(TICKER0);
+  if (m && (m[0] === m[0].toLowerCase() || m[0] === m[0].toUpperCase())) { const w = m[0].toLowerCase(); return (w === 'pnl' ? 'PnL' : /^(nfts|etfs)$/.test(w) ? w.slice(0, -1).toUpperCase() + 's' : w.toUpperCase()) + s.slice(m[0].length); }
+  return s[0].toUpperCase() + s.slice(1);
+};
 const lcFirst = s => s && !/^[A-Z]{2}|^I\b/.test(s) ? s[0].toLowerCase() + s.slice(1) : s;
 /* keyboard hints follow your computer: ⌘ ⌥ ⇧ on a Mac, Ctrl Alt Shift everywhere else */
 const IS_MAC = /mac|iphone|ipad|ipod/i.test((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent);
@@ -2879,6 +2885,11 @@ if (!S || typeof S !== 'object' || S.v !== DEFAULT_STATE.v) S = structuredClone(
 /* heal a saved state that's missing pieces (older builds, a bad sync): every top-level field falls back to its default */
 for (const [k, v] of Object.entries(DEFAULT_STATE)) { if (S[k] == null || (Array.isArray(v) && !Array.isArray(S[k])) || (v && typeof v === 'object' && !Array.isArray(v) && (typeof S[k] !== 'object' || Array.isArray(S[k])))) S[k] = structuredClone(v); else if (v && typeof v === 'object' && !Array.isArray(v) && k !== 'streak') for (const [k2, v2] of Object.entries(v)) if (S[k][k2] === undefined) S[k][k2] = structuredClone(v2); }
 if (S.draft && (!Array.isArray(S.draft.tweets) || !S.draft.tweets.length)) S.draft = null;
+/* older or half-synced shapes: every queue item and draft post gets the fields the screens read */
+S.queue = S.queue.filter(q => q && typeof q === 'object').map(q => { const tw = Array.isArray(q.tweets) && q.tweets.length ? q.tweets.map(String) : [String(q.text || '')]; return { ...q, tweets: tw, text: String(q.text || tw[0] || ''), platforms: q.platforms && typeof q.platforms === 'object' ? q.platforms : { x: true }, time: /^\d\d:\d\d$/.test(q.time) ? q.time : '08:40', day: q.day || dayKey(Date.now()), status: q.status || 'scheduled' }; });
+const fixTweet = t => ({ id: t && t.id || uid(), text: String(t && t.text || ''), media: Array.isArray(t && t.media) ? t.media : [], poll: t && t.poll || null });
+if (S.draft) S.draft.tweets = S.draft.tweets.map(fixTweet);
+S.drafts = S.drafts.filter(d => d && Array.isArray(d.tweets)).map(d => ({ ...d, tweets: d.tweets.length ? d.tweets.map(fixTweet) : [fixTweet({})] }));
 if (!S.ai || S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date.now()), limit: 5 };
 /* round 28: 'leverage' left the default never-say list (traders mean margin by it); drop it from saved lists that still carry the old default set */
 if (S.voice && Array.isArray(S.voice.never) && !S.migr28) { if (S.voice.never.includes('synergy') && S.voice.never.includes('delve')) S.voice.never = S.voice.never.filter(w => w !== 'leverage'); S.migr28 = true; }
@@ -3512,7 +3523,9 @@ function route() {
     DISPOSE.forEach(f => { try { f(); } catch (e) { } }); DISPOSE = [];
     CURRENT = name;
     document.body.classList.toggle('force-light', name === 'home'); /* the homepage is a light world; its menus and modals follow */
-    ROUTES[name]({ same }); scrollTo(0, 0); initNavPill(); requestAnimationFrame(() => rovingTabs());
+    /* a screen that throws while rendering says so and falls back to Today, instead of leaving the old screen up */
+    try { ROUTES[name]({ same }); } catch (err) { console.error('Hookworthy: couldn’t render', name, err); if (name !== 'today') { CURRENT = 'today'; try { ROUTES.today({}); } catch (e2) { console.error(e2); } toast('Something on that screen broke. You’re on Today; your posts are safe.', { icon: 'zapoff', tone: 'err', ms: 5000 }); } }
+    scrollTo(0, 0); initNavPill(); requestAnimationFrame(() => rovingTabs());
     /* a route change puts focus on the new page's heading, so screen readers hear where they landed (Write keeps the editor's own focus) */
     if (CURRENT !== 'home' && CURRENT !== 'write') { const h = $('#view h1') || $('#root h1'), a = document.activeElement; if (h && (!a || a === document.body || !a.isConnected)) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
   };
@@ -5098,10 +5111,12 @@ function sharpenCancel() { const st = SH.st; if (!st) return; SH.st = null; UI.s
 function sharpenKeep() {
   const st = SH.st, ta = SH.ta; if (!st) return; SH.st = null; const tw = tById(st.id);
   const len = st.vars[st.i].length; UI.sharp = { id: st.id, s: st.s, len, flash: Date.now() };
+  /* the kept text can push the post over the limit and split it: Undo restores the whole thread, not just this post */
+  const snap = S.draft.tweets.map(t => (t.id === st.id ? { ...t, text: st.before } : { ...t }));
   ta.setSelectionRange(st.s + len, st.s + len); ta.dispatchEvent(new Event('input', { bubbles: true }));
   SFX.play('swap'); sharpenHide();
   setTimeout(() => { if (UI.sharp && UI.sharp.flash) { UI.sharp = null; document.contains(ta) && paintField(ta); } }, 950);
-  toast('Sharpened. Undo if you liked yours better.', { icon: 'riff', tone: 'accent', ms: 2600, action: 'Undo', onAction: () => { if (!tw) return; tw.text = st.before; renderThread({ focusId: tw.id }); markSaving(); } });
+  toast('Sharpened. Undo if you liked yours better.', { icon: 'riff', tone: 'accent', ms: 2600, action: 'Undo', onAction: () => { if (!tw) return; S.draft.tweets = snap; renderThread({ focusId: tw.id }); markSaving(); } });
 }
 function sharpenKey(e) {
   if (!SH.st) { if (SH.el && e.altKey && /^Digit[1-5]$/.test(e.code)) { e.preventDefault(); e.stopPropagation(); sharpenRun(SHARP[+e.code.slice(5) - 1].k); } return; }
@@ -5163,12 +5178,13 @@ function setAlt(d, k) { const o = d.alts[k]; d.alt = k; d.after = o.text; d.why 
 function closeDiff(accept) {
   const d = UI.diff; if (!d) return; UI.diff = null; if (d.pending) { d.ctl && d.ctl.abort(); accept = false; } const i = tIndex(d.id); const tw = S.draft.tweets[i];
   if (!accept || !tw) { renderExtras(d.id); focusTweet(i, 'end'); return; }
-  const before = d.before, after = composeDiff(d.chunks); tw.text = after; SFX.play('swap');
+  /* snapshot the whole thread: a rewrite that runs long splits into new posts, and Undo has to take those back too */
+  const snap = S.draft.tweets.map(t => ({ ...t })), before = d.before, after = composeDiff(d.chunks); tw.text = after; SFX.play('swap');
   const lim = effLimit();
   if (tlen(after) > lim && S.settings.split) { const parts = splitText(after, lim); tw.text = parts[0]; insertAfter(i, parts.slice(1), { focusId: tw.id, pos: 'end' }); }
   else renderThread({ focusId: tw.id, pos: 'end' });
   markSaving();
-  toast(`Swapped in the ${RIFFS.find(r => r.k === d.kind).label.toLowerCase()} version.`, { icon: 'riff', tone: 'accent', action: 'Undo', onAction: () => { tw.text = before; renderThread({ focusId: tw.id }); markSaving(); } });
+  toast(`Swapped in the ${RIFFS.find(r => r.k === d.kind).label.toLowerCase()} version.`, { icon: 'riff', tone: 'accent', action: 'Undo', onAction: () => { S.draft.tweets = snap; renderThread({ focusId: tw.id }); markSaving(); } });
   if (i === 0) { const a = hookScore(before).score, b = hookScore(after).score; if (b >= 78 && b - a >= 12) setTimeout(() => showUpsell(a, b), 700); }
 }
 function outOfRiffs() {
@@ -5493,9 +5509,10 @@ function lateNight(nx, btn) {
 const SEND = { t: 0, el: null, snap: null };
 function startSend(btn) {
   const secs = S.settings.undoSecs ?? 8; const names = platList(); const snap = structuredClone(S.draft);
+  const srv0 = LLM.server || {}, wired = (S.platforms.x && srv0.xUser) || (S.platforms.linkedin && srv0.liUser);
   if (!secs) { finishSend(snap, names, btn); return; }
   const el = document.createElement('div'); el.className = 'sendbar'; el.setAttribute('role', 'status');
-  el.innerHTML = `<svg class="sb-ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="p" cx="18" cy="18" r="15" style="animation-duration:${secs}s"/></svg><span>Posting<span class="sb-to"> to ${esc(names)}</span> in <b class="mono" id="sb-n">${secs}</b></span><button class="btn sm" data-sb="undo">Undo${kbd(MOD, 'Z')}</button><button class="btn sm ghost" data-sb="now">Post now</button>`;
+  el.innerHTML = `<svg class="sb-ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="p" cx="18" cy="18" r="15" style="animation-duration:${secs}s"/></svg><span>${wired ? `Posting<span class="sb-to"> to ${esc(names)}</span> in` : 'Marking as posted in'} <b class="mono" id="sb-n">${secs}</b>${wired ? '' : '<span class="sb-to"> · nothing leaves this browser</span>'}</span><button class="btn sm" data-sb="undo">Undo${kbd(MOD, 'Z')}</button><button class="btn sm ghost" data-sb="now">${wired ? 'Post now' : 'Mark now'}</button>`;
   $$('#toasts .toast').forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); }); $$('.tw-input').forEach(t => { t.readOnly = true; });
   document.body.append(el); SEND.el = el; SEND.snap = snap; document.body.classList.add('sending'); document.activeElement && document.activeElement.blur && document.activeElement.blur();
   let left = secs; const tick = () => { left--; const n = $('#sb-n', el); if (n) n.textContent = left; if (left <= 0) { endSend(); finishSend(snap, names, btn); } else SEND.t = setTimeout(tick, 1000); };
@@ -5509,10 +5526,12 @@ function finishSend(snap, names, btn) {
   const live = S.draft; S.draft = snap; const d = new Date(); const so = composerSnap(), count = snap.tweets.filter(t => t.text.trim() || t.media.length).length, plats = { ...S.platforms }; UI.quietDone = true;
   commitDraft({ day: dayKey(d), time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`, status: 'published' });
   if (live.id !== snap.id) S.draft = live; S.drafts = S.drafts.filter(x => x.id !== snap.id); save();
-  if (CURRENT === 'write' || CURRENT === 'queue' || CURRENT === 'insights') route(); sendOff(so, { count, plats, published: true }); liveStart(S.queue.filter(q => q.status === 'published').slice(-1)[0]);
-  const srv = LLM.server || {}, sent = (plats.x && srv.xUser) || (plats.linkedin && srv.liUser);
+  const srv = LLM.server || {}, sent = (plats.x && srv.xUser) || (plats.linkedin && srv.liUser), mine = S.queue.filter(q => q.status === 'published').slice(-1)[0];
+  /* nothing connected: it's marked as posted, never shown as live, and never gets sample likes */
+  if (!sent && mine) { mine.marked = true; save(); }
+  if (CURRENT === 'write' || CURRENT === 'queue' || CURRENT === 'insights') route(); sendOff(so, { count, plats, published: true }); if (sent) liveStart(mine);
   if (sent) toast(`Sending to ${esc(names)}. Stay close for the first replies.`, { icon: 'send', tone: 'accent', action: 'Answer replies', onAction: () => openReplyDesk(S.queue.filter(q => q.status === 'published').slice(-1)[0]), ms: 8000 });
-  else toast(SHOWCASE() ? `Posted to ${esc(names)}. It’s a demo, so nothing actually went out.` : srv.xUser || srv.liUser ? `${esc(names)} ${/ and /.test(names) ? 'don’t' : 'doesn’t'} post from here. Copy it and post it by hand.` : 'Marked as posted. Nothing went out from here: copy it to post, or connect X or LinkedIn.', { icon: 'send', tone: 'accent', action: 'Copy text', onAction: () => copyText(snap.tweets.map(t => t.text.trim()).filter(Boolean).join('\n\n')), ms: 9000 });
+  else toast(srv.xUser || srv.liUser ? `Marked as posted. ${esc(names)} ${/ and /.test(names) ? 'don’t' : 'doesn’t'} post from here, so copy it and post it yourself.` : 'Marked as posted. Nothing went out: no account is connected. Copy it to post it yourself, or move it back to drafts from the queue.', { icon: 'send', tone: 'accent', action: 'Copy text', onAction: () => copyText(snap.tweets.map(t => t.text.trim()).filter(Boolean).join('\n\n')), ms: 14000 });
 }
 function undoLast() { const q = S.queue.pop(); if (!q) return; serverDrop(q); S.draft = { ...freshDraft(q.tweets), id: S.draft.id }; save(); route(); toast('Unscheduled. Back in the editor.', { icon: 'undo' }); }
 
@@ -5536,8 +5555,9 @@ async function pricesNow(syms) {
   PRICE.at = Date.now(); return PRICE;
 }
 const fmtUSD = v => v >= 1000 ? `$${(v / 1000).toFixed(v >= 1e5 ? 0 : 1)}k` : `$${v < 10 ? v.toFixed(2) : Math.round(v)}`;
-function priceDrift(q) { if (!q.prices || !q.prices.length) return null; const moved = q.prices.map(p => ({ ...p, now: PRICE.data[p.sym] })).filter(p => p.now && Math.abs(p.now - p.quoted) / p.quoted > .03); return moved.length ? moved : null; }
-function updatePrices(q) { const moved = priceDrift(q); if (!moved) return; moved.forEach(p => { const nv = p.raw.includes('k') || p.raw.includes('K') ? `${p.raw.startsWith('$') ? '$' : ''}${(p.now / 1000).toFixed(1)}k` : `${p.raw.startsWith('$') ? '$' : ''}${p.now >= 100 ? Math.round(p.now).toLocaleString() : p.now}`; q.tweets = q.tweets.map(t => t.replace(p.raw, nv)); q.text = q.tweets[0]; p.quoted = p.now; p.raw = nv; }); save(); serverResync(q); drawCal(); toast('Prices updated to now. Read it once more before it goes out.', { icon: 'check' }); }
+/* only live prices can say a coin moved; sample fallback numbers never flag a post */
+function priceDrift(q) { if (!q.prices || !q.prices.length || !PRICE.live) return null; const moved = q.prices.map(p => ({ ...p, now: PRICE.data[p.sym] })).filter(p => p.now && Math.abs(p.now - p.quoted) / p.quoted > .03); return moved.length ? moved : null; }
+function updatePrices(q) { const moved = priceDrift(q); if (!moved) return; moved.forEach(p => { const nv = p.raw.includes('k') || p.raw.includes('K') ? `${p.raw.startsWith('$') ? '$' : ''}${(p.now / 1000).toFixed(1)}k` : `${p.raw.startsWith('$') ? '$' : ''}${p.now >= 100 ? Math.round(p.now).toLocaleString() : p.now}`; q.tweets = q.tweets.map(t => t.replace(p.raw, nv)); q.text = q.tweets[0]; const o = q.prices.find(x => x.sym === p.sym && x.raw === p.raw); if (o) { o.quoted = p.now; o.raw = nv; } }); save(); serverResync(q); drawCal(); toast('Prices updated to now. Read it once more before it goes out.', { icon: 'check' }); }
 async function checkQueuePrices() { const qs = S.queue.filter(q => q.status === 'scheduled' && q.prices && q.prices.length); if (!qs.length) return; await pricesNow([...new Set(qs.flatMap(q => q.prices.map(p => p.sym)))]); if (CURRENT === 'queue') drawCal(); }
 
 /* ---------- they asked, you answer: the questions in your replies become your next post ---------- */
@@ -5553,29 +5573,31 @@ function openTournament() {
   const t0 = S.draft.tweets[0].text.trim(); if (!t0) { toast('Write a first line, then let a few versions of it fight it out.', { icon: 'bolt' }); return; }
   const first = sentences(t0)[0].trim(), set = new Set([first]);
   [AI.punchier(first), ...hookPool(t0), AI.contrarian(first).split('\n')[0], AI.curiosity(t0).split('\n')[0], AI.shorter(first)].forEach(x => { x = String(x || '').trim(); if (x && x.length < 200) set.add(x); });
-  const lines = [...set].slice(0, 10); if (lines.length < 3) { toast('Only one or two ways to say this line so far. Add a sentence, then try again.', { icon: 'bolt' }); return; } let i = 0, kept = [], left = 30, timer, vote = () => {};
-  function kh(e) { if (i >= lines.length || !(e.key === 'ArrowRight' || e.key === 'ArrowLeft')) return; e.preventDefault(); e.stopPropagation(); vote(e.key === 'ArrowRight'); }
-  const m = modal(`<div class="ht">${modalHead('Hook tournament', `${cap(numWord(lines.length))} versions of your first line. Keep the ones you’d stop for. You have 30 seconds.`)}<div class="modal-b"><div class="ht-bar"><i id="ht-t"></i></div><div class="ht-stage" id="ht-stage"></div></div></div>`, { label: 'Hook tournament', onClose: () => { clearInterval(timer); document.removeEventListener('keydown', kh, true); } });
+  const lines = [...set].slice(0, 10); if (lines.length < 3) { toast('Only one or two ways to say this line so far. Add a sentence, then try again.', { icon: 'bolt' }); return; } let i = 0, kept = [], left = 30, timer, vote = () => {}, done = false, paused = false;
+  function kh(e) { if (done || i >= lines.length || !(e.key === 'ArrowRight' || e.key === 'ArrowLeft')) return; e.preventDefault(); e.stopPropagation(); vote(e.key === 'ArrowRight'); }
+  const m = modal(`<div class="ht">${modalHead('Hook tournament', `${cap(numWord(lines.length))} versions of your first line. Keep the ones you’d stop for. You have 30 seconds.`)}<div class="modal-b"><div class="ht-top"><div class="ht-bar"><i id="ht-t"></i></div><button class="btn ghost sm" id="ht-pause" aria-pressed="false">Pause</button></div><div class="ht-stage" id="ht-stage" aria-live="polite"></div></div></div>`, { label: 'Hook tournament', onClose: () => { clearInterval(timer); document.removeEventListener('keydown', kh, true); } });
   const el = m.el, stage = $('#ht-stage', el);
   const finish = () => {
-    clearInterval(timer); const pool = (kept.length ? kept : lines).map(l => ({ l, s: hookFor(l).score, ev: shootEvidence(l) })).sort((a, b) => (b.ev ? b.ev.estimate : 0) - (a.ev ? a.ev.estimate : 0) || b.s - a.s);
+    if (done) return; done = true; clearInterval(timer); const pb = $('#ht-pause', el); pb && pb.remove(); const pool = (kept.length ? kept : lines).map(l => ({ l, s: hookFor(l).score, ev: shootEvidence(l) })).sort((a, b) => (b.ev ? b.ev.estimate : 0) - (a.ev ? a.ev.estimate : 0) || b.s - a.s);
     const w = pool[0]; SFX.play(w.s >= 70 ? 'hook' : 'done');
     stage.innerHTML = `<div class="ht-win"><span class="label">Winner</span><p class="ht-line">${esc(w.l)}</p><p class="faint">${w.ev ? `Your posts most like it earned about ${fmtN(w.ev.estimate)}.` : `Hook ${w.s}. Bring your posts and the tournament checks your own history.`}</p>
       <div class="t-a"><button class="btn primary" data-ht-use="0">${ic('check', 'sm')} Use it</button></div>${pool.length > 1 ? `<div class="ht-rest">${pool.slice(1, 4).map((x, k) => `<button class="sh-alt" data-ht-use="${k + 1}"><span class="hook ${x.s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc"><span>${x.s}</span></span></span><span>${esc(x.l)}</span></button>`).join('')}</div>` : ''}</div>`;
     stage.onclick = e => { const b = e.target.closest('[data-ht-use]'); if (!b) return; const pick = pool[+b.dataset.htUse].l, tw = S.draft.tweets[0], before = tw.text; tw.text = tw.text.replace(first, pick); save(); renderThread(); m.close(); toast('Swapped in the winner.', { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { tw.text = before; save(); renderThread(); } }); };
   };
-  const show = () => { if (i >= lines.length) return finish(); const h = hookScore(lines[i]).score; stage.innerHTML = `<div class="ht-card" id="ht-card"><span class="faint">${i + 1} of ${lines.length}</span><p class="ht-line">${esc(lines[i])}</p><span class="hook ${h >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc"><span>${h}</span></span><span>Hook</span></span></div><div class="ht-acts"><button class="btn lg" data-ht="pass">${ic('x', 'sm')} Pass <kbd>←</kbd></button><button class="btn primary lg" data-ht="keep">${ic('check', 'sm')} Keep <kbd>→</kbd></button></div>`; };
-  vote = keep => { if (i >= lines.length) return; if (keep) kept.push(lines[i]); SFX.play(keep ? 'pop' : 'tick'); const c = $('#ht-card', el); if (c && !REDUCED) { c.style.transition = 'transform .18s, opacity .18s'; c.style.transform = `translateX(${keep ? 60 : -60}px) rotate(${keep ? 4 : -4}deg)`; c.style.opacity = 0; } i++; setTimeout(show, REDUCED ? 0 : 160); };
+  const show = () => { if (i >= lines.length) return finish(); const h = hookScore(lines[i]).score; stage.innerHTML = `<div class="ht-card" id="ht-card"><span class="faint">${i + 1} of ${lines.length}</span><p class="ht-line">${esc(lines[i])}</p><span class="hook ${h >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc"><span>${h}</span></span><span>Hook</span></span></div><div class="ht-acts"><button class="btn lg" data-ht="pass">${ic('x', 'sm')} Pass <kbd>←</kbd></button><button class="btn primary lg" data-ht="keep">${ic('check', 'sm')} Keep <kbd>→</kbd></button></div>`; const k = $('[data-ht="keep"]', el); k && k.focus({ preventScroll: true }); };
+  vote = keep => { if (done || i >= lines.length) return; if (keep) kept.push(lines[i]); SFX.play(keep ? 'pop' : 'tick'); const c = $('#ht-card', el); if (c && !REDUCED) { c.style.transition = 'transform .18s, opacity .18s'; c.style.transform = `translateX(${keep ? 60 : -60}px) rotate(${keep ? 4 : -4}deg)`; c.style.opacity = 0; } i++; setTimeout(show, REDUCED ? 0 : 160); };
   stage.addEventListener('click', e => { const b = e.target.closest('[data-ht]'); if (b) vote(b.dataset.ht === 'keep'); });
   document.addEventListener('keydown', kh, true);
   let sx = null; stage.addEventListener('pointerdown', e => { if (e.target.closest('#ht-card')) sx = e.clientX; }); stage.addEventListener('pointerup', e => { if (sx != null && Math.abs(e.clientX - sx) > 50) vote(e.clientX > sx); sx = null; });
-  timer = setInterval(() => { left--; const bar = $('#ht-t', el); if (bar) bar.style.width = `${left / 30 * 100}%`; if (left <= 0) finish(); }, 1000);
+  $('#ht-pause', el).onclick = e => { paused = !paused; e.currentTarget.setAttribute('aria-pressed', paused); e.currentTarget.textContent = paused ? 'Resume' : 'Pause'; };
+  timer = setInterval(() => { if (paused) return; left--; const bar = $('#ht-t', el); if (bar) bar.style.width = `${left / 30 * 100}%`; if (left <= 0) finish(); }, 1000);
   show(); requestAnimationFrame(() => { const k = $('[data-ht="keep"]', el); k && k.focus(); });
 }
 
 /* ---------- hook of the week: your best first line as a card worth sharing ---------- */
 function bestHookOfWeek() {
-  const from = Date.now() - 7 * DAY; const c = [...S.queue.filter(q => q.status !== 'due' && (q.ws || 'me') === S.ws && slotDate(q.day, q.time) > from).map(q => q.text), ...HIST().filter(p => p.at && new Date(p.at) > from).map(p => p.text), ...S.drafts.map(d => (d.tweets[0] || {}).text || '')].map(t => (t || '').split('\n')[0].trim()).filter(t => t && !/\[[^\]]+\]/.test(t));
+  /* this week only: what went out (or is going out today), not future posts or old drafts */
+  const from = Date.now() - 7 * DAY, upto = Date.now() + DAY; const c = [...S.queue.filter(q => q.status !== 'due' && (q.ws || 'me') === S.ws && slotDate(q.day, q.time) > from && slotDate(q.day, q.time) < upto).map(q => q.text), ...HIST().filter(p => p.at && new Date(p.at) > from).map(p => p.text), ...S.drafts.filter(d => (d.created || 0) > from && (d.ws || 'me') === S.ws).map(d => (d.tweets[0] || {}).text || '')].map(t => (t || '').split('\n')[0].trim()).filter(t => t && !/\[[^\]]+\]/.test(t));
   return c.map(l => ({ l, s: hookScore(l).score })).sort((a, b) => b.s - a.s)[0];
 }
 function drawHookCard(cv, line, score, user) {
@@ -5631,7 +5653,7 @@ function scheduleSync() { if (!SYNC.code || !(LLM.server && LLM.server.sync)) re
 async function pushSync() {
   if (!SYNC.code || SYNC.busy) return; SYNC.busy = true;
   try { if (!SYNC.key) Object.assign(SYNC, await syncKeys(SYNC.code)); S.syncV = Date.now(); const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, SYNC.key, new TextEncoder().encode(JSON.stringify(S)));
-    const r = await fetch(`api/sync/${SYNC.id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ iv: b64(iv), ct: b64(ct), v: S.syncV }) }); if (r.status === 409) await pullSync(true); store.set('state', S); }
+    const r = await fetch(`api/sync/${SYNC.id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ iv: b64(iv), ct: b64(ct), v: S.syncV }) }); if (r.status === 409) await pullSync(true); persist(); }
   catch (e) { console.warn('sync', e); } finally { SYNC.busy = false; }
 }
 async function pullSync(quiet) {
@@ -5851,7 +5873,10 @@ async function openPlan() {
   };
   const act = a => {
     const it = items[i]; if (!it) return; $$('.pl-t', m.el).forEach(t => { it.posts[+t.dataset.k] = t.value; });
-    if (a === 'ok') { const tw = it.posts.map(x => x.trim()).filter(Boolean); if (!tw.length) { toast('That one’s empty. Write something or skip it.', { icon: 'write', tone: 'err' }); return; } const q = { id: uid(), day: it.slot.day, time: it.slot.time, text: tw[0], tweets: tw, platforms: { ...S.platforms }, status: 'scheduled', ws: S.ws, planned: true, ...(WS().approvals ? { approval: 'needs' } : {}) }; S.queue.push(q); save(); syncToServer(q); planned.push(it.slot.label); SFX.play('tick'); }
+    if (a === 'ok') { const tw = it.posts.map(x => x.trim()).filter(Boolean); if (!tw.length) { toast('That one’s empty. Write something or skip it.', { icon: 'write', tone: 'err' }); return; }
+      /* an outline with [blanks] isn't a post yet: it goes to Write, not the queue */
+      if (tw.some(x => /\[[^\]\n]{1,40}\]/.test(x))) { const d = freshDraft(tw); d.slot = { day: it.slot.day, time: it.slot.time }; S.drafts.unshift(d); save(); planned.push(`${it.slot.label} (draft)`); toast('It has [blanks] to fill, so it’s saved as a draft for that time.', { icon: 'write', ms: 2600 }); SFX.play('tick'); }
+      else { const q = { id: uid(), day: it.slot.day, time: it.slot.time, text: tw[0], tweets: tw, platforms: { ...S.platforms }, status: 'scheduled', ws: S.ws, planned: true, ...(WS().approvals ? { approval: 'needs' } : {}) }; S.queue.push(q); save(); syncToServer(q); planned.push(it.slot.label); SFX.play('tick'); } }
     if (a === 'edit') { list0 = true; const it0 = it; m.close(); writeFrom(it0.posts); S.draft.slot = { day: it0.slot.day, time: it0.slot.time }; save(); return; }
     i++; draw();
   };
@@ -6130,7 +6155,7 @@ function odo(el, n) {
   if (!prev || prev.length !== s.length || REDUCED) { el.innerHTML = [...s].map(() => col(0)).join(''); requestAnimationFrame(() => requestAnimationFrame(() => $$('.od-r', el).forEach((r, i) => { r.style.transform = `translateY(-${+s[i] * 10}%)`; }))); return; }
   $$('.od-r', el).forEach((r, i) => { r.style.transform = `translateY(-${+s[i] * 10}%)`; });
 }
-function liveStart(q) { if (!q) return; S.live = { id: q.id, at: Date.now() }; save(); LIVE.last = null; LIVE.replies = null; liveDraw(); liveTick(); }
+function liveStart(q) { if (!q) return; S.live = { id: q.id, at: Date.now() }; save(); LIVE.last = null; LIVE.replies = null; LIVE.summed = false; liveDraw(); liveTick(); }
 function liveEnd() { clearInterval(LIVE.timer); LIVE.timer = 0; S.live = null; save(); const el = $('#live-pill'); if (el) { el.classList.add('out'); setTimeout(() => el.remove(), 260); } }
 function liveDraw() {
   const L = S.live, q = L && S.queue.find(x => x.id === L.id); if (!q) { if (L) liveEnd(); return; }
@@ -6176,7 +6201,7 @@ function checkBest(q, eng) {
   if (!past.length) return; const top = Math.max(...past.map(p => p.e)); const since = past.filter(p => p.e >= eng && p.at).sort((a, b) => b.at - a.at)[0];
   const recent = past.filter(p => p.at && Date.now() - p.at < 60 * DAY); if (recent.length && eng <= Math.max(...recent.map(p => p.e))) return;
   S.pbShown[q.id] = 1; save();
-  const ever = eng > top, d = since && new Date(since.at), el = $('#live-pill') || navTarget();
+  const ever = eng > top || !since, d = since && new Date(since.at), el = $('#live-pill') || navTarget();
   if (el) { const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, { n: 56, gold: true }); }
   SFX.play('best');
   toast(ever ? `Your best post yet. ${fmtN(eng)} engagements and still climbing.` : `Your best since ${MON[d.getMonth()]} ${d.getDate()}${d.getFullYear() !== new Date().getFullYear() ? `, ${d.getFullYear()}` : ''}. ${fmtN(eng)} engagements and climbing.`, { icon: 'spark', tone: 'accent', ms: 7000, action: 'Answer replies', onAction: () => openReplyDesk(q) });
@@ -7366,7 +7391,7 @@ function onbStep3() {
   const traits = S.profile && S.profile.traits ? S.profile.traits.map(t => [t.name, t.evidence]) : an ? heuristicTraits(an) : sliderTraits();
   const secs = Math.max(4, Math.round((Date.now() - ONB.t0) / 1000)), read = !!an;
   $('#onb').innerHTML = `<div class="onb-result">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><h1 class="display" style="font-size:clamp(36px,5vw,56px)">${an || (S.profile && S.profile.traits) ? `Here’s how you sound, ${esc(name.split(' ')[0])}.` : `Your starting voice, ${esc(name.split(' ')[0])}.`}</h1></div>${read ? `<span class="timer" data-tip="From your handle to your voice">${ic('clock', 'xs')} ${secs < 60 ? `${secs} seconds` : `${Math.round(secs / 60)} min`} to read ${fmtN(an.n)} posts</span>` : ''}</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><h1 class="display" style="font-size:clamp(36px,5vw,56px)">${an || (S.profile && S.profile.traits) ? (name ? `Here’s how you sound, ${esc(name.split(' ')[0])}.` : 'Here’s how you sound.') : (name ? `Your starting voice, ${esc(name.split(' ')[0])}.` : 'Your starting voice.')}</h1></div>${read ? `<span class="timer" data-tip="From your handle to your voice">${ic('clock', 'xs')} ${secs < 60 ? `${secs} seconds` : `${Math.round(secs / 60)} min`} to read ${fmtN(an.n)} posts</span>` : ''}</div>
     <div class="card onb-try" id="onb-try"><div class="ot-h"><span class="label">Try it on your own line</span><span class="faint">The post you almost wrote this week. Rough is fine.</span></div>
       <textarea class="input" id="ot-in" rows="2" maxlength="600" placeholder="so i think pricing is really important for early startups" aria-label="A post you almost wrote"></textarea>
       <div class="ot-a"><button class="btn primary" id="ot-go">${ic('hook', 'sm')} Score it</button><span class="faint ot-note" id="ot-note"></span></div>
@@ -7451,12 +7476,13 @@ function todayIdea() {
 }
 function todayState() {
   const now = Date.now(), pub = S.queue.filter(q => q.status === 'published' && mineQ(q)), last = pub.slice(-1)[0];
-  const live = last && now - slotDate(last.day, last.time).getTime() < 60 * 60e3 && now >= slotDate(last.day, last.time).getTime() ? last : null;
+  const live = last && !last.marked && now - slotDate(last.day, last.time).getTime() < 60 * 60e3 && now >= slotDate(last.day, last.time).getTime() ? last : null;
   const missed = S.queue.find(q => q.status === 'due' && mineQ(q)) || S.queue.find(q => q.approval === 'needs' && q.status === 'scheduled' && mineQ(q) && slotDate(q.day, q.time) < now);
   return live ? { k: 'live', q: live } : missed ? { k: 'missed', q: missed } : { k: 'write' };
 }
 function lastPostStats() {
   const lastQ = S.queue.filter(q => q.status === 'published' && mineQ(q)).slice(-1)[0];
+  if (lastQ && lastQ.marked) return { text: lastQ.text, when: `Marked as posted ${slotWhen(lastQ.day, lastQ.time)}. Nothing was sent`, q: lastQ };
   if (lastQ && SHOWCASE()) { const h = hash(lastQ.id || lastQ.text); return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, likes: 40 + h % 180, replies: 4 + h % 26, x: Math.round((7 + h % 18) ) / 10, sample: true, q: lastQ }; }
   if (lastQ) return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, q: lastQ };
   const lastH = HIST().length ? [...HIST()].filter(p => p.at).sort((a, b) => new Date(b.at) - new Date(a.at))[0] : null; if (!lastH) return null;
@@ -7832,7 +7858,7 @@ function qMenu(c) {
   const q = S.queue.find(x => x.id === c.dataset.id); if (!q) return;
   if (q.status === 'failed') { openMenu(c, [{ header: 'Didn’t go out' }, ...(q.error ? [{ label: clip(q.error, 60), icon: 'zapoff', disabled: true }] : []), { label: 'Try again', icon: 'send', run: () => { q.status = 'published'; delete q.error; save(); drawCal(); drawQSide(); syncToServer(q, q.mediaIds ? null : q.media); } }, { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }, '-', { label: 'Delete', icon: 'trash', run: () => { S.queue = S.queue.filter(x => x !== q); save(); drawCal(); drawQSide(); } }]); return; }
   if (q.status === 'due') { openMenu(c, [{ header: 'Time’s up. Nothing sent it' }, { label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Mark as posted', icon: 'check', run: () => { q.status = 'published'; S.streak[dayKey(Date.now())] = 1; save(); drawCal(); drawQSide(); toast('Marked as posted. It counts toward your streak.', { icon: 'check' }); } }, { label: 'Pick a new time', icon: 'clock', run: () => { const s = nextSlots(1)[0] || nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } q.status = 'scheduled'; moveQ(q.id, s.day, s.time); } }, { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }, '-', { label: 'Delete', icon: 'trash', run: () => { S.queue = S.queue.filter(x => x !== q); save(); drawCal(); drawQSide(); } }], { width: 250 }); return; }
-  if (q.status === 'published') { openMenu(c, [{ header: `Went out ${slotWhen(q.day, q.time)}` }, { label: 'Replies to this post', icon: 'reply', run: () => openReplyDesk(q) }, ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
+  if (q.status === 'published') { openMenu(c, [{ header: q.marked ? `Marked as posted ${slotWhen(q.day, q.time)}. Nothing was sent` : `Went out ${slotWhen(q.day, q.time)}` }, ...(q.marked ? [{ label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Move back to drafts', icon: 'undo', run: () => { S.queue.splice(S.queue.indexOf(q), 1); S.drafts.unshift({ ...freshDraft(q.tweets), ws: q.ws || 'me' }); save(); drawCal(); drawQSide(); refreshSide && refreshSide(); toast('Back in your drafts.', { icon: 'undo' }); } }, { label: 'Delete', icon: 'trash', run: () => { S.queue.splice(S.queue.indexOf(q), 1); save(); drawCal(); drawQSide(); refreshSide && refreshSide(); toast('Deleted.', { icon: 'trash' }); } }, '-'] : [{ label: 'Replies to this post', icon: 'reply', run: () => openReplyDesk(q) }]), ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
   const next = nextSlots(1)[0];
   const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { if (slotDate(q.day, q.time) < Date.now()) { toast('Its time already passed. Move it to a new slot, then approve it.', { icon: 'clock', tone: 'err' }); return; } q.approval = 'ok'; save(); syncToServer(q, q.mediaIds ? null : q.media); drawCal(); drawQSide(); toast('Approved. It goes out on schedule.', { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; serverDrop(q); save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
   const late = slotDate(q.day, q.time) < Date.now(), drift = priceDrift(q);
@@ -7858,7 +7884,7 @@ function qAria(q) {
 }
 function qcardHTML(q, interactive = true) {
   const tag = interactive ? 'button' : 'div';
-  return `<${tag} class="qcard ${q.status}${q.sending ? ' sending' : ''}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
+  return `<${tag} class="qcard ${q.status}${q.sending ? ' sending' : ''}${q.marked ? ' marked' : ''}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
 }
 function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) {
   refreshBest();
@@ -7888,7 +7914,7 @@ function drawCal() {
   const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
   const html = calGridHTML(days, qList(), { now });
   cal.innerHTML = html;
-  const qc = q => `<button class="qcard ${q.status}${q.sending ? ' sending' : ''}" data-id="${q.id}" aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
+  const qc = q => `<button class="qcard ${q.status}${q.sending ? ' sending' : ''}${q.marked ? ' marked' : ''}" data-id="${q.id}" aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${qTags(q)}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></button>`;
   const ag = $('#agenda'); if (ag) ag.innerHTML = days.map(d => {
     const day = dayKey(d); const items = qList().filter(q => q.day === day).sort((a, b) => a.time.localeCompare(b.time));
     const open = Object.keys(BEST[dowIdx(d)] || {}).filter(t => slotDate(day, t).getTime() > now && !taken(day, t));
