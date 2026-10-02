@@ -20,19 +20,26 @@
 
   /* ---------------- X's character count ----------------
      X counts every link as 23, emoji as 2, and CJK and most non-Latin scripts as 2 per character. */
-  const URL_RX = /\bhttps?:\/\/\S+|\b(?:[a-z0-9-]+\.)+(?:com|io|xyz|co|ai|app|dev|so|gg|me|org|net|ly|to)(?:\/\S*)?/gi;
+  /* a bare domain starts at a word edge (not mid-label, not after "@" or "."), so the scan stays linear on long
+     runs like "ab-ab-ab…", and the TLD must end there: "ship.Today" and "name.company" are not links */
+  const URL_RX = /\bhttps?:\/\/\S+|(?<![\w.@/-])(?:[a-z0-9-]+\.)+(?:com|io|xyz|co|ai|app|dev|so|gg|me|org|net|ly|to)(?![a-z0-9-])(?:\/\S*)?/gi;
+  /* one emoji, X counts 2: pictographs (with skin tones and ZWJ joins), flags (two regional indicators) and keycaps */
+  const EMOJI_G = /\p{Extended_Pictographic}|\p{Regional_Indicator}|\u20E3/u;
   const light = cp => cp <= 4351 || (cp >= 8192 && cp <= 8205) || (cp >= 8208 && cp <= 8223) || (cp >= 8242 && cp <= 8247);
   const seg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null;
   function xLength(text) {
     let n = 0; const t = String(text || '').replace(URL_RX, () => { n += 23; return ''; });
-    const gs = seg ? [...seg.segment(t)].map(x => x.segment) : [...t];
-    for (const g of gs) { if (/\p{Extended_Pictographic}/u.test(g)) { n += 2; continue; } for (const ch of g) { const cp = ch.codePointAt(0); if (cp >= 0xFE00 && cp <= 0xFE0F || cp === 0x200D) continue; n += light(cp) ? 1 : 2; } }
+    const gs = seg ? [...seg.segment(t)].map(x => x.segment) : (t.match(/\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3|[\s\S]/gu) || []);
+    for (const g of gs) { if (EMOJI_G.test(g)) { n += 2; continue; } for (const ch of g) { const cp = ch.codePointAt(0); if (cp >= 0xFE00 && cp <= 0xFE0F || cp === 0x200D) continue; n += light(cp) ? 1 : 2; } }
     return n;
   }
 
   /* ---------------- hook score ----------------
      A transparent heuristic: five parts, each explainable in one sentence.
      calibrate() below checks it against the author's own results. */
+  /* one figure: "2.4%", "$1.2M", "64k", "10x", "1,200". Never starts mid-number (keeps long digit runs linear). */
+  const FIG = /(?<![\w.,])\$?\d+(?:[.,]\d+)*(?:\s?[%kKmMbB]|x\b)?/g;
+  const FIG_VS = new RegExp(`(${FIG.source})\\s*(?:vs\\.?|versus)\\s*${FIG.source}`, 'gi');
   function hookScore(raw) {
     const text = (raw || '').trim();
     const zero = { clarity: 0, curiosity: 0, specificity: 0, tension: 0, brevity: 0 };
@@ -41,7 +48,7 @@
     const lc = first.toLowerCase(); const len = first.length;
     let clarity = 72, curiosity = 30, spec = 25, tension = 30, brevity;
     brevity = len < 22 ? 80 : len <= 100 ? 96 - Math.max(0, len - 70) * .35 : Math.max(12, 86 - (len - 100) * .55);
-    const fillers = lc.match(/\b(really|very|just|basically|actually|literally|kind of|sort of|i think|maybe|perhaps|somewhat|quite|honestly)\b/g) || [];
+    const fillers = lc.match(/\b(really|very|just|basically|actually|literally|kind of|sort of|kinda|sorta|i think|maybe|perhaps|somewhat|quite|honestly|tbh|ngl)\b/g) || [];
     clarity -= fillers.length * 14;
     const warm = lc.match(/^(so|hey|hi|hello|ok|okay|well|guys)\b/);
     if (warm) clarity -= 18;
@@ -63,7 +70,8 @@
     tension += Math.min(3, ten.length) * 17 + (imperative ? 20 : 0);
     /* guards against gaming: unfilled blanks, keyboard mash, stacked bait phrases and number stuffing */
     /* blanks: [brackets], {braces}, ___ and TK; a lone X only counts when a Y placeholder sits beside it ("Stop X. Do Y."), so "grow on X" is just X */
-    const blank = /\[[^\]]+\]|\{[^}]+\}|_{3,}|\bTK\b/.test(first) || /\bX\b[^\n]*\bY\b/.test(first);
+    const xAt = first.search(/\bX\b/);
+    const blank = /\[[^\]]+\]|\{[^}]+\}|_{3,}|\bTK\b/.test(first) || (xAt >= 0 && /\bY\b/.test(first.slice(xAt)));
     const toks = first.match(/[A-Za-z]{3,}/g) || [];
     /* tickers, acronyms and chat shorthand (BTC, PnL, tbh, nfts) are words, not mash: only lowercase vowel-less runs of 4+ count, minus a known list */
     const SHORT_OK = /^(btc|eth|sol|nfts?|pnl|tbh|imo|imho|ngl|dca|tvl|cpi|ppi|fomc|gm|gn|ath|atl|rsi|dma|ema|sma|lfg|wagmi|ngmi|wtf|smh|brb|ltv|cltv|mrr|arr|cac|kpis?|ctr|crm|cms|dms?|pfp|yolo|hmm+|psst|shh+|grr+|tsk|nth|rhythms?|crypts?|lynch|nymphs?|psych|spry|sync|synth|myth|lymph|gym|hymn|tryst|dryly|shyly|slyly|why|fly|cry|dry|try|sky|spy|sly|shy|pry|ply)$/i;
@@ -71,14 +79,18 @@
     const gib = toks.length ? mash / toks.length : 1;
     const bait = (lc.match(/\b(\d+% of (you|people)|won[’']?t (read|believe|see)|nobody (tells|talks)|secrets?|10x your|game[- ]?changer|you need to see|read (this|till the end)|bookmark this|thank me later|this will change|most people (don[’']?t|won[’']?t|will never)|nobody(?: is|['’]s) talking|stop scrolling|change your life|breaking|unpopular opinion|hot take)\b/g) || []).length + (/\b(agree|thoughts|am i wrong)\s*\?\s*$/i.test(text.trim()) ? 1 : 0) + ((first.match(/\p{Extended_Pictographic}/gu) || []).length >= 3 ? 1 : 0);
     const short = toks.length < 4 && !/\d/.test(first);
-    const nums = (first.match(/\d+/g) || []).length;
-    if (nums >= 3) spec -= 18 * (nums - 2);
+    /* number stuffing: count figures, not digit runs ("2.4%", "$1.2M", "64k" and "10x" are one each), a
+       comparison ("2.4% vs 2.6%") is one idea, and only 4+ distinct figures cost anything, capped so a dense
+       but clear macro line ("CPI 3.1% vs 3.3% est. Core 3.8%. 10Y 4.21%. 2Y 4.6%.") can still do well */
+    const figs = new Set((first.replace(FIG_VS, '$1').match(FIG) || []).map(f => f.replace(/\s/g, '').toLowerCase()));
+    const nums = figs.size, over = Math.max(0, nums - 3);
+    if (over) spec -= Math.min(30, 12 * over);
     const c = v => clamp(Math.round(v), 4, 99);
     const parts = { clarity: c(clarity), curiosity: c(curiosity), specificity: c(spec), tension: c(tension), brevity: c(brevity) };
     const raw0 = parts.clarity * .22 + parts.curiosity * .24 + parts.specificity * .2 + parts.tension * .18 + parts.brevity * .16;
     let score = c(raw0 * 1.35 - 10);
     if (bait) score = c(score - (bait > 1 ? 14 * Math.min(3, bait) + 10 : 8));
-    if (nums >= 3) score = c(score - 8 * (nums - 2));
+    if (over) score = c(score - Math.min(12, 6 * over));
     if (gib > .25 || toks.length < 2) score = Math.min(score, 30);
     else if (short) score = Math.min(score, 50);
     if (blank) score = Math.min(score, 40);
@@ -87,7 +99,7 @@
     else if (gib > .25 || toks.length < 2) { reason = 'That doesn’t read as words yet. Say the thing plainly.'; tone = 'fix'; }
     else if (short) { reason = 'Too short to stop anyone. Say what it’s about.'; tone = 'fix'; }
     else if (bait > 1 || (bait && score < 66)) { reason = 'It reads like bait. Readers have learned to scroll past that. Say the real thing.'; tone = 'fix'; }
-    else if (nums >= 3) { reason = 'Too many numbers at once. Keep the one that matters.'; tone = 'fix'; }
+    else if (over) { reason = 'Too many numbers at once. Keep the one that matters.'; tone = 'fix'; }
     else if (fillers.length) { const orig = (String(text).match(new RegExp(`\\b${fillers[0]}\\b`, 'i')) || [fillers[0]])[0]; reason = `“${orig}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; }
     else if (warm) { reason = `Opening with “${cap(warm[0])}” spends your best real estate on a warm-up.`; tone = 'fix'; }
     else if (parts.brevity < 45) { reason = 'Long first line. Land the point in under 100 characters.'; tone = 'fix'; }
@@ -147,9 +159,17 @@
     const rows = parseCSVRows(text); if (rows.length < 2) return [];
     const head = rows[0].map(h => h.trim().toLowerCase());
     const col = k => head.findIndex(h => COLS[k].includes(h));
-    const ci = { text: col('text'), at: col('at'), likes: col('likes'), reposts: col('reposts'), replies: col('replies'), views: col('views') };
+    const taken = new Map(); const ci = { text: col('text'), at: col('at'), likes: col('likes'), reposts: col('reposts'), replies: col('replies'), views: col('views') };
     if (ci.text < 0) { let best = -1, bl = 0; head.forEach((_, i) => { const l = rows.slice(1, 30).reduce((a, r) => a + (r[i] || '').length, 0); if (l > bl) { bl = l; best = i; } }); ci.text = best; }
-    return rows.slice(1).map((r, i) => normPost({ text: r[ci.text], at: ci.at >= 0 ? r[ci.at] : null, likes: ci.likes >= 0 ? num(r[ci.likes]) : 0, reposts: ci.reposts >= 0 ? num(r[ci.reposts]) : 0, replies: ci.replies >= 0 ? num(r[ci.replies]) : 0, views: ci.views >= 0 ? num(r[ci.views]) : 0, src, id: `${src}-${i}` })).filter(Boolean);
+    return rows.slice(1).map((r, i) => normPost({ text: r[ci.text], at: ci.at >= 0 ? r[ci.at] : null, likes: ci.likes >= 0 ? num(r[ci.likes]) : 0, reposts: ci.reposts >= 0 ? num(r[ci.reposts]) : 0, replies: ci.replies >= 0 ? num(r[ci.replies]) : 0, views: ci.views >= 0 ? num(r[ci.views]) : 0, src, id: textId(src, r[ci.text], taken) })).filter(Boolean);
+  }
+  /* import ids come from the words, not the row number, so a second import never lands on an earlier post's id.
+     Same text → same id (re-importing dedupes); two different texts that hash alike both stay (suffixed). */
+  const normText = t => String(t || '').normalize('NFC').replace(/\s+/g, ' ').trim();
+  function textId(src, text, taken) {
+    const key = normText(text), base = `${src}-${hashStr(key)}`; let id = base;
+    for (let k = 2; taken && taken.has(id) && taken.get(id) !== key; k++) id = `${base}-${k}`;
+    if (taken) taken.set(id, key); return id;
   }
 
   /* ---------------- X archive ----------------
@@ -173,25 +193,45 @@
     const kids = new Map(); tw.filter(isSelfReply).forEach(t => { const p = t.in_reply_to_status_id_str; if (!kids.has(p)) kids.set(p, []); kids.get(p).push(t); });
     const thread = t => { const out = [t]; let cur = t; for (let k = 0; k < 25; k++) { const c = (kids.get(cur.id_str) || [])[0]; if (!c) break; out.push(c); cur = c; } return out; };
     const clean = s => String(s).replace(/https:\/\/t\.co\/\w+/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
-    const posts = heads.map(t => { const th = thread(t); return normPost({ id: 'x-' + (t.id_str || t.id), text: clean(t.full_text || t.text), thread: th.slice(1).map(x => clean(x.full_text || x.text)), at: t.created_at, likes: num(t.favorite_count), reposts: num(t.retweet_count), replies: num(t.reply_count), views: num(t.view_count || t.impression_count), src: 'x-archive', url: account ? `https://x.com/${account.handle}/status/${t.id_str}` : undefined }); }).filter(Boolean);
+    const taken = new Map(); const posts = heads.map(t => { const th = thread(t); return normPost({ id: (t.id_str || t.id) ? 'x-' + (t.id_str || t.id) : textId('x-archive', clean(t.full_text || t.text), taken), text: clean(t.full_text || t.text), thread: th.slice(1).map(x => clean(x.full_text || x.text)), at: t.created_at, likes: num(t.favorite_count), reposts: num(t.retweet_count), replies: num(t.reply_count), views: num(t.view_count || t.impression_count), src: 'x-archive', url: account ? `https://x.com/${account.handle}/status/${t.id_str}` : undefined }); }).filter(Boolean);
     return { posts, account, following };
   }
 
   /* ---------------- Typefully (API JSON) and pasted text ---------------- */
   function parseTypefully(json) {
     const arr = Array.isArray(json) ? json : (json && (json.results || json.drafts || json.data)) || [];
-    return arr.map((d, i) => { const text = d.text || d.content || (Array.isArray(d.tweets) ? d.tweets.map(t => t.text || t).join('\n\n') : '') || (d.platforms && d.platforms.x && d.platforms.x.posts ? d.platforms.x.posts.map(p => p.text).join('\n\n') : '');
-      const parts = String(text).split(/\n{4,}/); return normPost({ id: 'tf-' + (d.id || i), text: parts[0], thread: parts.slice(1), at: d.published_on || d.published_at || d.scheduled_date || d.created_at, likes: num(d.likes || d.favorite_count), reposts: num(d.retweets || d.reposts), replies: num(d.replies), views: num(d.impressions), src: 'typefully', url: d.twitter_url || d.x_published_url || d.share_url }); }).filter(Boolean);
+    const taken = new Map();
+    return arr.map(d => { const text = d.text || d.content || (Array.isArray(d.tweets) ? d.tweets.map(t => t.text || t).join('\n\n') : '') || (d.platforms && d.platforms.x && d.platforms.x.posts ? d.platforms.x.posts.map(p => p.text).join('\n\n') : '');
+      const parts = String(text).split(/\n{4,}/); return normPost({ id: d.id != null && d.id !== '' ? 'tf-' + d.id : textId('typefully', parts[0], taken), text: parts[0], thread: parts.slice(1), at: d.published_on || d.published_at || d.scheduled_date || d.created_at, likes: num(d.likes || d.favorite_count), reposts: num(d.retweets || d.reposts), replies: num(d.replies), views: num(d.impressions), src: 'typefully', url: d.twitter_url || d.x_published_url || d.share_url }); }).filter(Boolean);
   }
   function parsePasted(text) {
-    return String(text).split(/\n\s*(?:-{3,}|={3,}|\*{3,})\s*\n|\n{3,}/).map((b, i) => { const m = b.match(/(?:^|\n)\s*(?:❤️?|likes?:?)\s*([\d.,]+[kKmM]?)/); const body = b.replace(/(?:^|\n)\s*(?:❤️?|likes?:?)\s*[\d.,]+[kKmM]?\s*$/, ''); return normPost({ id: 'paste-' + i, text: body, likes: m ? num(m[1]) : 0, src: 'paste' }); }).filter(Boolean);
+    const taken = new Map();
+    return String(text).split(/\n\s*(?:-{3,}|={3,}|\*{3,})\s*\n|\n{3,}/).map(b => { const m = b.match(/(?:^|\n)\s*(?:❤️?|likes?:?)\s*([\d.,]+[kKmM]?)/); const body = b.replace(/(?:^|\n)\s*(?:❤️?|likes?:?)\s*[\d.,]+[kKmM]?\s*$/, ''); return normPost({ id: textId('paste', body, taken), text: body, likes: m ? num(m[1]) : 0, src: 'paste' }); }).filter(Boolean);
   }
   function normPost(p) {
     const text = String(p.text || '').trim(); if (!text || text.length < 3) return null;
-    let at = p.at ? Date.parse(p.at) : NaN; if (isNaN(at) && p.at && /^\d+$/.test(String(p.at))) at = Number(p.at) * (String(p.at).length <= 10 ? 1000 : 1);
+    /* a bare date ("2026-01-01", common in CSV exports) is local midnight, not UTC midnight, or every post
+       lands on the previous evening west of Greenwich and best-times shifts a weekday. Timestamps stay as given. */
+    const day = p.at && String(p.at).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    let at = day ? new Date(+day[1], +day[2] - 1, +day[3]).getTime() : p.at ? Date.parse(p.at) : NaN; if (isNaN(at) && p.at && /^\d+$/.test(String(p.at))) at = Number(p.at) * (String(p.at).length <= 10 ? 1000 : 1);
     return { id: p.id || 'p-' + hashStr(text), text, thread: (p.thread || []).filter(Boolean), at: isNaN(at) ? null : at, likes: p.likes || 0, reposts: p.reposts || 0, replies: p.replies || 0, views: p.views || 0, src: p.src || 'import', url: p.url, handle: p.handle };
   }
-  function mergeHistory(old, add) { const seen = new Map((old || []).map(p => [p.id, p])); (add || []).forEach(p => { const k = [...seen.values()].find(x => x.text === p.text); if (k) Object.assign(k, { likes: Math.max(k.likes, p.likes), reposts: Math.max(k.reposts, p.reposts), replies: Math.max(k.replies, p.replies), views: Math.max(k.views, p.views), at: k.at || p.at }); else seen.set(p.id, p); }); return [...seen.values()].sort((a, b) => (b.at || 0) - (a.at || 0)); }
+  /* the same post (same words, or the same X / Typefully id) updates in place and keeps the higher numbers;
+     a different post never replaces one, even if the ids collide: it gets a suffixed id instead */
+  const STABLE_ID = /^(x|tf)-/;
+  function mergeHistory(old, add) {
+    const out = (old || []).slice(), byId = new Map(), byText = new Map();
+    out.forEach(p => { byId.set(p.id, p); const k = normText(p.text); if (!byText.has(k)) byText.set(k, p); });
+    (add || []).forEach(p => {
+      if (!p || !p.text) return;
+      const key = normText(p.text); let k = byText.get(key);
+      if (!k && p.id && STABLE_ID.test(p.id) && byId.has(p.id)) k = byId.get(p.id);
+      if (k) { Object.assign(k, { likes: Math.max(k.likes || 0, p.likes || 0), reposts: Math.max(k.reposts || 0, p.reposts || 0), replies: Math.max(k.replies || 0, p.replies || 0), views: Math.max(k.views || 0, p.views || 0), at: k.at || p.at, url: k.url || p.url }); return; }
+      const base = p.id || 'p-' + hashStr(key); let id = base; for (let n = 2; byId.has(id); n++) id = `${base}-${n}`;
+      const q = id === p.id ? p : { ...p, id }; out.push(q); byId.set(id, q); byText.set(key, q);
+    });
+    return out.sort((a, b) => (b.at || 0) - (a.at || 0));
+  }
 
   /* ---------------- analytics over your own history ---------------- */
   const eng = p => p.likes + p.reposts * 2 + p.replies * 3;
@@ -535,7 +575,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
 
   /* ---- the visual director: read a post, decide what picture it wants, pull the exact numbers out ----
      Never invents a figure: every number it returns is copied from the text. */
-  const NUM = '[$€£]?\\d[\\d,]*(?:\\.\\d+)?\\s?(?:%|[kKmMbB]\\b|x\\b|×)?';
+  const NUM = '(?<![\\d,])[$€£]?\\d[\\d,]*(?:\\.\\d+)?\\s?(?:%|[kKmMbB]\\b|x\\b|×)?';
   const numVal = x => { const m = String(x).replace(/[$€£,\s]/g, ''); const v = parseFloat(m); return isFinite(v) ? v * (/k$/i.test(m) ? 1e3 : /m$/i.test(m) ? 1e6 : /b$/i.test(m) ? 1e9 : 1) : NaN; };
   const LOWER_BETTER = /\b(churn|cost|costs|cac|spend|time|hours|days|minutes|weeks|steps|screens|clicks|bugs|errors|tickets|latency|bounce|refunds|meetings|emails|fields|pages)\b/i;
   const METRIC_SKIP = new Set(['went', 'from', 'grew', 'rose', 'jumped', 'fell', 'dropped', 'climbed', 'up', 'down', 'is', 'was', 'are', 'were', 'our', 'my', 'the', 'we', 'i', 'and', 'cut', 'took', 'moved', 'increased', 'decreased', 'by', 'to', 'a', 'an', 'its', 'it', 'their', 'went', 'got', 'have', 'has', 'had', 'just', 'redesigned', 'reduced', 'grown', 'doubled', 'tripled', 'in', 'of', 'on', 'with', 'at']);
@@ -734,15 +774,16 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* pre-post rules shared with the server's /api/v1/check and the MCP server */
   const CRINGE = [
     { re: /\b(?:I['’]?m|I am|we['’]re|we are) (?:so |super |beyond )?(?:humbled|thrilled|excited|delighted|honou?red) to (?:announce|share)(?: that)?/i, msg: 'Opens like a press release.' },
-    { re: /\s*(?:Let that sink in|Read that again)\.?/i, msg: '“Let that sink in” tells people how to feel.' },
-    { re: /\s*(?:Agree|Thoughts|Am I wrong)\s*\?\s*$/i, msg: 'Ends on a bait question. End on your point instead.' },
+    { re: /\b(?:Let that sink in|Read that again)\b/i, msg: '“Let that sink in” tells people how to feel.' },
+    { re: /\b(?:Agree|Thoughts|Am I wrong)\s*\?\s*$/i, msg: 'Ends on a bait question. End on your point instead.' },
     { re: /\bnobody(?: is|['’]s) talking about\b/i, msg: '“Nobody is talking about this” is a cliché. Say what you noticed.' },
     { re: /(?:(?:🚀|🔥|💯|🙌|👏)\s*){3,}/u, msg: 'An emoji pile-up.' }
   ];
-  function checkPost(text, { never = [], limit = 280 } = {}) {
-    const out = []; const t = String(text || '');
+  /* platform 'x' (the default) counts the way X does: links 23, emoji and CJK 2; elsewhere one per character */
+  function checkPost(text, { never = [], limit = 280, platform = 'x' } = {}) {
+    const out = []; const t = String(text || ''); const len = /^(x|twitter)$/i.test(String(platform || 'x')) ? xLength(t) : [...t].length;
     if (/\[[^\]\n]{1,40}\]|\bTK\b|\bTODO\b/i.test(t)) out.push('Still has a blank to fill.');
-    if ([...t].length > limit) out.push(`${[...t].length - limit} characters over the ${limit} limit.`);
+    if (len > limit) out.push(`${len - limit} characters over the ${limit} limit.`);
     if ((t.match(/#\w+/g) || []).length > 2) out.push('More than two hashtags reads like a bot.');
     if (/\bhttps?:\/\//.test(t.split('\n')[0])) out.push('A link in the first post shrinks reach on X and LinkedIn. Put it in a reply.');
     CRINGE.forEach(c => { if (c.re.test(t)) out.push(c.msg); });
