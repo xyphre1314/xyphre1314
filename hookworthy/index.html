@@ -307,7 +307,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 /* modal */
 .scrim{ position:fixed; inset:0; z-index:800; background:var(--backdrop); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:fade var(--d-fast) var(--ease-out) both; display:grid; place-items:start center; padding:12vh 16px 16px; overflow:auto; }
 .scrim.center{ place-items:center; padding:16px; }
-.scrim.closing{ animation:fadeout 150ms var(--ease-out) both; }
+.scrim.closing{ animation:fadeout 150ms var(--ease-out) both; pointer-events:none; }
 .modal{ width:min(540px,100%); background:var(--surface); border-radius:var(--r-xl); box-shadow:var(--sh-4); animation:modalin var(--d-snap) var(--spring) both; overflow:hidden auto; overscroll-behavior:contain; max-height:calc(100dvh - 12vh - 16px); }
 .scrim.center .modal{ max-height:calc(100dvh - 32px); }
 .force-dark .modal,:root[data-theme="dark"] .modal:not(.force-light .modal){ background:var(--surface-2); }
@@ -869,7 +869,7 @@ body.typing .preview{ opacity:.7; }
 .pv-near{ overflow:hidden; pointer-events:none; }
 .pv-near.up{ max-height:128px; display:flex; flex-direction:column; justify-content:flex-end; -webkit-mask-image:linear-gradient(transparent,#000 45%); mask-image:linear-gradient(transparent,#000 45%); } .pv-near .pf{ border-radius:0; }
 .pv-near.dn{ max-height:110px; -webkit-mask-image:linear-gradient(#000 10%,transparent); mask-image:linear-gradient(#000 10%,transparent); }
-.pv-mine{ position:relative; animation:rise var(--d-snap) var(--ease-out) both; }
+.pv-mine{ position:relative; } .preview-b.enter .pv-mine{ animation:rise var(--d-snap) var(--ease-out) both; }
 .pv-mine .xp:last-child,.pv-mine .thp:last-child,.pv-mine .bsp:last-child{ border-bottom-color:transparent; }
 .pf .tx .over{ background:rgba(244,33,46,.2); border-radius:2px; }
 .pf .pv-ph{ color:var(--text-3); }
@@ -2496,6 +2496,20 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .cal-wrap{ grid-template-columns:minmax(0,1fr) clamp(220px,19vw,290px); }
 .cal{ grid-template-columns:64px repeat(7,minmax(0,1fr)); }
 .slot{ padding:4px; } .slot .add{ inset:4px; }
+/* Windows high contrast: edges, selected times and current page stay visible */
+@media (forced-colors:active){
+  .modal, .cmdk, .menu, .toast, .preview, .card{ border:1px solid CanvasText; }
+  .btn, .chip, .stime, .qd, .qcard, .plat, .seg [role=tab]{ border:1px solid ButtonText; }
+  .stime .radio{ border:2px solid ButtonText; border-radius:50%; }
+  .stime[aria-checked="true"] .radio{ background:Highlight; forced-color-adjust:none; }
+  .stime[aria-checked="true"], .seg [aria-selected="true"], .plat[aria-pressed="true"]{ outline:2px solid Highlight; outline-offset:1px; }
+  .nav a[aria-current], .tabbar a[aria-current]{ outline:1px solid Highlight; }
+  .hk-dial, .meter i, .hint-dot{ forced-color-adjust:none; }
+}
+/* touch: every control is a comfortable 44px target */
+@media (pointer:coarse){ .tool, .plat, .imp-tabs [role=tab], .hint-n{ min-width:44px; min-height:44px; } }
+/* one look for a blank you still have to fill, everywhere in the app */
+.hkf i, .hk .t i, .br-blank{ font-style:normal; padding:0 .2em; border-radius:4px; background:var(--accent-soft); color:var(--accent-text); box-shadow:none; }
 @container qc (max-width:124px){
   .qcard .qm > span:first-child{ display:none; }
   .qcard .qm{ justify-content:flex-start; }
@@ -2526,7 +2540,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 @property --v{ syntax:'<number>'; inherits:true; initial-value:0; }
 .imp{ margin-top:10px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); padding:10px 12px 12px; display:grid; gap:10px; animation:rise var(--d-spring) var(--ease-out) both; }
 .imp-h{ display:flex; align-items:center; justify-content:space-between; gap:8px; } .imp .hook-reason{ margin:0; padding:0; box-shadow:none; background:none; }
-.imp .riffbar{ padding:0; margin:0; } .imp-tip{ font-size:12px; }
+.imp .riffbar{ padding:0; margin:0; } .imp-b.swap-in{ animation:fade 120ms var(--ease-out) both; } .imp-tip{ font-size:12px; }
 .hk-main{ display:flex; gap:10px; align-items:flex-start; } .hk-main p{ font-size:14px; }
 .hk-how summary{ cursor:pointer; font-size:12px; color:var(--text-3); } .hk-how .bars{ margin-top:8px; } .hk-how p{ font-size:12px; margin-top:6px; }
 .vm-line{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .vm-line b{ color:var(--text-1); font-variant-numeric:tabular-nums; } .vm-line .icon{ color:var(--text-3); }
@@ -2589,7 +2603,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .t-stats{ display:flex; gap:16px; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .t-stats b{ font:400 26px/1 var(--font-display); color:var(--text-1); margin-right:3px; font-variant-numeric:lining-nums tabular-nums; } .t-stats .up b{ color:var(--success); } .t-stats .down b{ color:var(--text-2); }
 @media (max-width:860px){ .today .page-h{ align-items:flex-start; flex-direction:column; gap:12px; } .t-strip{ grid-template-columns:1fr; } .ts-col + .ts-col{ border-left:0; border-top:1px solid var(--border); } .today-grid{ grid-template-columns:1fr; } .t-live .t-idea, .t-miss .t-idea{ font-size:24px; } }
 
-.qd-list{ display:grid; gap:6px; } .qd{ padding:9px 11px; border-radius:10px; background:var(--bg-elev); box-shadow:0 0 0 1px var(--border-strong); font-size:13px; cursor:grab; display:grid; gap:2px; } .qd:hover{ box-shadow:0 0 0 1px var(--accent); } .qd.drag{ opacity:.4; } .qd[draggable="false"]{ cursor:default; opacity:.75; } .qd small{ color:var(--warn); font-size:12px; }
+.qd-list{ display:grid; gap:6px; } .qd{ padding:9px 11px; border-radius:10px; background:var(--bg-elev); box-shadow:0 0 0 1px var(--border-strong); font-size:13px; cursor:grab; display:grid; gap:2px; } .qd:hover{ box-shadow:0 0 0 1px var(--accent); } .qd.drag{ opacity:.4; } .qd[draggable="false"]{ cursor:default; } .qd[draggable="false"] .fl1{ opacity:.75; } .qd small{ color:var(--warn); font-size:12px; }
 .q-drafts .rhythm.compact .rh-days i{ width:16px; height:16px; border-radius:4px; } .q-drafts .rhythm.compact .rh-days i b{ display:none; } .q-drafts .rhythm.compact .rh-t{ font-size:12px; } .q-drafts .rhythm.compact .rh-t b{ font-size:16px; }
 
 .rr-card.mini{ padding:0; } .rr-mini{ display:grid; grid-template-columns:auto auto minmax(0,1fr) auto; gap:4px 10px; align-items:baseline; width:100%; text-align:left; padding:12px 16px; border-radius:inherit; font-size:13.5px; color:inherit; }
@@ -2696,7 +2710,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 
 <div id="root"></div>
 <div id="tip" role="tooltip" aria-hidden="true"></div><div id="sr-live" class="sr" aria-live="polite" aria-atomic="true"></div>
-<div id="toasts" aria-live="polite"></div>
+<div id="toasts"></div>
 <canvas class="burst" id="burst" aria-hidden="true"></canvas>
 
 <script src="core.js"></script>
@@ -3290,13 +3304,13 @@ function openMenu(anchor, items, { align = 'start', width } = {}) {
   x = clamp(x, 8, innerWidth - w - 8);
   m.style.left = x + 'px'; m.style.top = y + 'px'; m.style.setProperty('--origin', `${align === 'end' ? 'right' : 'left'} ${oy}`);
   anchor.setAttribute('aria-expanded', 'true');
-  m.addEventListener('click', e => { const b = e.target.closest('.mi'); if (!b) return; const it = items[+b.dataset.i]; closeMenu(); it.run && it.run(); });
+  m.addEventListener('click', e => { const b = e.target.closest('.mi'); if (!b) return; const it = items[+b.dataset.i]; closeMenu(); if (anchor.isConnected) anchor.focus({ preventScroll: true }); it.run && it.run(); });
   m.addEventListener('keydown', e => {
     const list = $$('.mi:not([disabled])', m); const i = list.indexOf(document.activeElement);
     if (e.key === 'ArrowDown') { e.preventDefault(); list[(i + 1) % list.length].focus(); }
     if (e.key === 'ArrowUp') { e.preventDefault(); list[(i - 1 + list.length) % list.length].focus(); }
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeMenu(); anchor.focus(); }
-    if (e.key === 'Tab') { closeMenu(); }
+    if (e.key === 'Tab') { closeMenu(); if (anchor.isConnected) anchor.focus({ preventScroll: true }); }
   });
   const outside = e => { if (!m.contains(e.target) && !anchor.contains(e.target)) closeMenu(); };
   document.addEventListener('pointerdown', outside, true);
@@ -3311,13 +3325,16 @@ function modal(html, { box = 'modal', center = false, label = 'Dialog', onClose,
   const scrim = document.createElement('div'); scrim.className = 'scrim' + (center ? ' center' : '');
   scrim.innerHTML = `<div class="${box}" role="dialog" aria-modal="true" aria-label="${esc(label)}">${html}</div>`;
   document.body.append(scrim);
+  /* everything behind the sheet goes inert, so Tab and Shift+Tab can't wander out of it (toasts, tooltips and live regions stay reachable) */
+  const bgInert = [...document.body.children].filter(n => n !== scrim && !n.inert && !n.matches('#toasts,#sr-live,#tip,script,style,svg,.menu'));
+  bgInert.forEach(n => { n.inert = true; });
   /* a hairline under the sticky header once the sheet scrolls, so content never runs flush under the title */
   { const box = scrim.firstElementChild; box.addEventListener('scroll', () => box.classList.toggle('scrolled', box.scrollTop > 4), { passive: true }); }
   const prev = document.activeElement; let closed = false;
   const api = {
     el: scrim.firstElementChild, scrim,
     close() {
-      if (closed) return; closed = true; scrim.classList.add('closing'); setTimeout(() => scrim.remove(), 160);
+      if (closed) return; closed = true; bgInert.forEach(n => { n.inert = false; }); scrim.classList.add('closing'); setTimeout(() => scrim.remove(), 160);
       MODALS.splice(MODALS.indexOf(api), 1); onClose && onClose(); if (prev && document.contains(prev)) prev.focus({ preventScroll: true });
     }
   };
@@ -3658,7 +3675,7 @@ function hl(s, marks) { const set = new Set(marks); return [...s].map((ch, i) =>
 function openPalette(initial = '') {
   if (MODALS.some(m => m.el.classList.contains('cmdk'))) return;
   const cmds = paletteCommands(); let active = 0, shown = [];
-  const m = modal(`<div class="cmdk-in">${ic('search')}<input id="cmdk-q" role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list" autofocus placeholder="${COARSE ? 'Search, or jot an idea' : 'Jump somewhere, or start typing an idea…'}" aria-label="Search commands" autocomplete="off" spellcheck="false" value="${esc(initial)}">${COARSE ? '<button class="btn ghost sm cmdk-x" data-close>Cancel</button>' : kbd('Esc')}</div><div class="cmdk-list" role="listbox" id="cmdk-list"></div><div class="cmdk-f"><span>${kbd('↑', '↓')} move</span><span>${kbd('↵')} run</span><span style="margin-left:auto">${ic('riff', 'xs')} Hookworthy</span></div>`, { box: 'cmdk', label: 'Command palette' });
+  const m = modal(`<div class="cmdk-in">${ic('search')}<input id="cmdk-q" role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list" autofocus placeholder="${COARSE ? 'Search, or jot an idea' : 'Jump somewhere, or start typing an idea…'}" aria-label="Search commands" autocomplete="off" spellcheck="false" value="${esc(initial)}">${COARSE ? '<button class="btn ghost sm cmdk-x" data-close>Cancel</button>' : kbd('Esc')}</div><div class="cmdk-list" role="listbox" id="cmdk-list" tabindex="-1"></div><div class="cmdk-f"><span>${kbd('↑', '↓')} move</span><span>${kbd('↵')} run</span><span style="margin-left:auto">${ic('riff', 'xs')} Hookworthy</span></div>`, { box: 'cmdk', label: 'Command palette' });
   const inp = $('#cmdk-q', m.el), list = $('#cmdk-list', m.el);
   function draw() {
     const q = inp.value.trim();
@@ -3845,7 +3862,7 @@ function composerHTML() {
   return `<div class="composer ${S.preview.on ? '' : 'no-preview'} ${FINE && S.settings.caret && !REDUCED ? 'fancy-caret' : ''}" id="composer">
   <div class="editor-col"><h1 class="sr">Write a post</h1>
     <div class="c-top fade-typing">
-      <div class="status ${isEmptyDraft() ? 'is-new' : ''}" aria-live="polite"><span class="dot"></span><span class="txt" id="save-state">${isEmptyDraft() ? 'New draft' : 'Saved'}</span></div><button class="checks-pill" id="checks" data-cact="checks" hidden></button><button class="review-pill" id="review-pill" data-cact="reviews" hidden></button>
+      <div class="status ${isEmptyDraft() ? 'is-new' : ''}"><span class="dot"></span><span class="txt" id="save-state">${isEmptyDraft() ? 'New draft' : 'Saved'}</span></div><button class="checks-pill" id="checks" data-cact="checks" hidden></button><button class="review-pill" id="review-pill" data-cact="reviews" hidden></button>
       ${S.ws !== 'me' ? `<button class="ws-pill" data-act="ws" aria-haspopup="menu">${avatar(WS())}<span>Writing as <b>${esc(WS().name)}</b></span></button>` : ''}
       <div class="grow"></div>
       <span class="plats-l">Post to</span><div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Including' : 'Not including'} ${p.name}${k === 'threads' || k === 'bsky' ? ' (you post this one by hand)' : ''}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>${S.platforms.x && xPaid() ? `<button class="xfmt-pill" data-cact="xfmt" data-tip="How X gets this" aria-haspopup="menu">${xLong() ? 'Long post' : 'Thread'}</button>` : ''}
@@ -3948,7 +3965,7 @@ function paintField(ta) {
   mir.innerHTML = html;
   let ga = wrap.querySelector('.ghost-acc'); const gNow = UI.ghost && UI.ghost.id === id && v;
   if (gNow && !FINE) { if (!ga) { ga = document.createElement('button'); ga.type = 'button'; ga.className = 'ghost-acc'; ga.innerHTML = `Use suggestion ${ic('right', 'xs')}`; ga.addEventListener('pointerdown', ev => { ev.preventDefault(); acceptGhost(ta); }); wrap.append(ga); } } else if (ga) ga.remove();
-  ta.style.height = 'auto'; ta.style.height = Math.max(ta.scrollHeight, mir.offsetHeight) + 'px';
+  const hh = mir.offsetHeight + 'px'; if (ta.style.height !== hh) ta.style.height = hh;
   placeCaret(ta);
 }
 function placeCaret(ta) {
@@ -3956,8 +3973,10 @@ function placeCaret(ta) {
   const fancy = $('#composer.fancy-caret') || ta.closest('.demo-ed.fancy-caret');
   if (!c || !cm || !fancy || document.activeElement !== ta || ta.selectionStart !== ta.selectionEnd) { if (c) { c.style.opacity = 0; c.classList.remove('blink'); } return; }
   const h = cm.offsetHeight || 20;
+  const top = cm.offsetTop, snap = UI.caretSnap || (c._t != null && c._t !== top); UI.caretSnap = false; c._t = top;
+  c.style.transition = snap ? 'opacity 80ms' : '';
   c.style.opacity = 1; c.style.height = h + 'px';
-  c.style.transform = `translate(${cm.offsetLeft - 1}px,${cm.offsetTop}px)`;
+  c.style.transform = `translate(${cm.offsetLeft - 1}px,${top}px)`;
   if (c.classList.contains('blink')) c.getAnimations().forEach(a => { a.currentTime = 0; }); else c.classList.add('blink');
 }
 function paintRing(tEl) {
@@ -3976,6 +3995,7 @@ function paintRing(tEl) {
 }
 /* "sounds like you": the draft against your measured habits; tap it to jump to what sounds off */
 const DEMO_STATS = { wps: 11, emojiPer: .3, tagsPer: 0, oneSentOpen: 82, lower: 35 };
+const paintVoiceSoon = (() => { let t = 0; return () => { clearTimeout(t); t = setTimeout(() => (window.requestIdleCallback || setTimeout)(() => paintVoice()), 220); }; })();
 function paintVoice() {
   const txt = S.draft.tweets.map(t => t.text).join('\n'); const an = ANALYSIS(); const b = $('.vm-line');
   const r = HWCore.voiceMatch(txt, an ? an.stats : DEMO_STATS, { never: S.voice.never, lean: an ? an.lean : [] }); UI.vm = r;
@@ -4051,7 +4071,7 @@ function diffHTML() {
   if (i === 0) { const a = hookScore(d.before).score, b = hookScore(now).score; delta = `<span class="delta ${b >= a ? 'up' : 'down'}" data-tip="How strong your first line is">Hook ${a} → ${b}</span>`; }
   else { const dl = now.length - d.before.length; delta = `<span class="delta ${dl <= 0 ? 'up' : 'down'}">${dl > 0 ? '+' : ''}${dl} chars</span>`; }
   const r = RIFFS.find(x => x.k === d.kind);
-  const body = d.chunks.slice(0, d.shown ?? d.chunks.length).map((c, k) => c.eq !== undefined ? esc(c.eq) : `<span class="chg ${c.on ? '' : 'off'} ${c.newNum ? 'newnum' : ''}" data-ci="${k}" role="button" tabindex="0" aria-pressed="${c.on}" aria-label="${c.newNum ? 'A new number you didn’t write. Off until you check it. ' : ''}${c.on ? 'Suggestion on. Click to keep original' : 'Original kept. Click to use suggestion'}">${c.del ? markSeg('del', c.del) : ''}${c.ins ? markSeg('ins', c.ins) : ''}${!c.on && !c.del ? '<span class="gap">+</span>' : ''}</span>`).join('');
+  const body = d.chunks.slice(0, d.shown ?? d.chunks.length).map((c, k) => c.eq !== undefined ? esc(c.eq) : `<span class="chg ${c.on ? '' : 'off'} ${c.newNum ? 'newnum' : ''}" data-ci="${k}" role="button" tabindex="0" aria-pressed="${c.on}"><span class="sr">${c.newNum ? 'A new number you didn’t write, off until you check it. ' : ''}${c.del ? `Remove “${esc(c.del)}”. ` : ''}${c.ins ? `Add “${esc(c.ins)}”. ` : ''}${c.on ? 'Change on.' : 'Change undone.'}</span>${c.del ? markSeg('del', c.del) : ''}${c.ins ? markSeg('ins', c.ins) : ''}${!c.on && !c.del ? '<span class="gap">+</span>' : ''}</span>`).join('');
   return `<div class="diff" role="region" aria-label="Suggested edit">
     <div class="diff-h">${ic(r.icon, 'sm')}<b style="font-size:13px">${r.label}${d.lang ? ` · ${{ es: 'Spanish', fr: 'French', de: 'German' }[d.lang]}` : ''}</b><span class="faint diff-hint" style="font-size:12px">${d.alts ? `Version ${d.alt + 1} of ${d.alts.length} · ` : ''}${n} change${n === 1 ? '' : 's'}${on < n ? `, ${n - on} undone` : ''}. ${matchMedia('(pointer:coarse)').matches ? 'Tap' : 'Click'} one to undo it</span><span class="grow"></span>${delta}</div>
     ${d.why ? `<p class="diff-why">${esc(d.why)}</p>` : ''}${d.chunks.some(c => c.newNum) ? `<p class="diff-num">${ic('target', 'sm')}<span>This version adds a number you didn’t write. It’s off until you turn it on, so only keep it if it’s true.</span></p>` : ''}<div class="diff-b ${d.shown != null && d.shown < d.chunks.length ? 'writing' : ''}">${body}</div>
@@ -4068,6 +4088,15 @@ function setImprove(id, tab) { const cur = UI.imp; UI.imp = cur && cur.id === id
 function renderExtras(id) {
   const el = $(`.tw[data-id="${id}"] .tw-extra`); if (!el) return; const i = tIndex(id);
   const open = UI.imp && UI.imp.id === id && !(UI.imp.tab !== 'takes' && i !== 0);
+  /* switching tabs inside an open panel swaps only the body: the tab thumb slides from where it was, focus stays put, nothing re-rises */
+  const cur = $('.imp', el), hasDiff = UI.diff && UI.diff.id === id;
+  if (open && cur && !hasDiff && !$('.diff', el)) {
+    const fresh = document.createElement('div'); fresh.innerHTML = improveHTML(id, i); const nb = $('.imp-b', fresh), ob = $('.imp-b', cur), tabs = $$('[role=tab]', cur);
+    if (nb && ob && tabs.length === $$('[role=tab]', fresh).length) {
+      tabs.forEach(b => b.setAttribute('aria-selected', b.dataset.t === UI.imp.tab)); ob.replaceWith(nb); if (!REDUCED) nb.classList.add('swap-in');
+      syncSeg($('.imp-tabs', cur)); return;
+    }
+  }
   el.innerHTML = (open ? improveHTML(id, i) : '') + (UI.diff && UI.diff.id === id ? diffHTML() : '');
   const tEl = el.closest('.tw'); tEl.classList.toggle('has-meta', !!el.innerHTML);
   const rb = $('[data-cact="riff"]', tEl); rb && rb.setAttribute('aria-expanded', !!open); const tl = $('.imp-tabs', el); tl && syncSeg(tl);
@@ -4132,9 +4161,9 @@ function onInput(e) {
     if (!UI.splitToast) { UI.splitToast = true; toast('Over the limit, so the rest moved to the next post, split at a sentence.', { icon: 'layers', tone: 'accent', ms: 2600 }); }
     return;
   }
-  paintField(ta); paintRing(tEl); if (i === 0) paintHook(); paintVoice(); splitHint(tEl, ta);
+  UI.caretSnap = true; paintField(ta); paintRing(tEl); if (i === 0) paintHook(); paintVoiceSoon(); splitHint(tEl, ta);
   const st = $('#starters'); if (st) st.hidden = !isEmptyDraft();
-  scheduleGhost(ta); schedulePreview(); markSaving();
+  scheduleGhost(ta); schedulePreviewTyping(); markSaving();
 }
 /* after one Enter at the end of a paragraph, say what a second one does (once it's learned, stop saying it) */
 function splitHint(tEl, ta) {
@@ -5136,8 +5165,10 @@ function closeUpsell() { $$('.upsell').forEach(u => { u.classList.add('out'); se
 
 /* previews */
 const schedulePreview = (() => { let raf = 0; return () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(renderPreviewBody); }; })();
+/* while typing the preview catches up after a short pause, so every keystroke stays cheap */
+const schedulePreviewTyping = (() => { let t = 0; return () => { clearTimeout(t); t = setTimeout(schedulePreview, 280); }; })();
 function renderPreviewHead() {
-  const h = $('#pv-h'); if (!h) return; const on = Object.keys(PLAT).filter(k => S.platforms[k]);
+  const h = $('#pv-h'); if (!h) return; syncPreviewSheet(); const on = Object.keys(PLAT).filter(k => S.platforms[k]);
   let tab = S.preview.tab; if (tab !== 'all' && !on.includes(tab)) tab = S.preview.tab = on[0] || 'x';
   h.innerHTML = `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}">${k === 'all' ? 'All' : PLAT[k].name}</button>`).join('')}</div><button class="btn ghost sm pv-close" data-cact="preview" data-tip="Hide the preview" data-kbd="${MOD} \\">${ic('x', 'sm')}<span>Hide</span></button>`;
   requestAnimationFrame(() => syncSeg($('.seg', h)));
@@ -5146,7 +5177,9 @@ function renderPreviewBody() {
   const b = $('#pv-b'); if (!b) return; if (b.contains(document.activeElement) && document.activeElement.tagName === 'TEXTAREA') return;
   const on = Object.keys(PLAT).filter(k => S.platforms[k]); const tab = S.preview.tab;
   if (!on.length) { b.className = 'preview-b'; b.innerHTML = `<div class="empty">${ic('send', 'lg')}<p>Pick at least one place to post, up top.<br>Then you’ll see it here, exactly as people will.</p></div>`; return; }
-  b.className = 'preview-b' + (tab === 'all' ? ' all' : '');
+  /* the card rises in only when the preview first shows or the tab changes, never on a keystroke */
+  const key = tab + ':' + on.join(','), enter = UI.pvKey !== key; UI.pvKey = key;
+  b.className = 'preview-b' + (tab === 'all' ? ' all' : '') + (enter ? ' enter' : '');
   b.innerHTML = tab === 'all' ? on.map(k => pvCard(k, true)).join('') : pvCard(tab, false);
 }
 const pvYou = () => { const u = S.user; return { n: u.name, h: u.handle, v: 0, bio: `${u.niche} · writing on Hookworthy`, hue: u.hue, pic: u.pic }; };
@@ -5182,10 +5215,21 @@ function liVersion() {
   if (!/\?\s*$/.test(t)) t += '\n\nWhat would you add?';
   return t;
 }
-document.addEventListener('click', e => { const c = e.target.id === 'composer' && e.target; if (c && c.classList.contains('show-sheet')) c.classList.remove('show-sheet'); });
+/* on small screens the preview is a sheet: out of the Tab order while hidden, a dialog while open, Esc closes it */
+const PV_SM = matchMedia('(max-width: 980px)');
+function syncPreviewSheet(focus) {
+  const c = $('#composer'), p = $('#preview'); if (!c || !p) return; const open = c.classList.contains('show-sheet');
+  p.inert = PV_SM.matches && !open;
+  if (PV_SM.matches && open) { p.setAttribute('role', 'dialog'); p.setAttribute('aria-modal', 'true'); p.setAttribute('aria-label', 'Preview'); if (focus) { const f = $('#pv-h button, #pv-h [role=tab]', p); f && f.focus({ preventScroll: true }); } }
+  else { p.removeAttribute('role'); p.removeAttribute('aria-modal'); if (focus) { const t = $('.pv-tog'); t && t.focus({ preventScroll: true }); } }
+}
+PV_SM.addEventListener('change', () => syncPreviewSheet());
+function closePreviewSheet() { const c = $('#composer'); if (c && c.classList.contains('show-sheet')) { c.classList.remove('show-sheet'); syncPreviewSheet(true); return true; } return false; }
+document.addEventListener('click', e => { const c = e.target.id === 'composer' && e.target; if (c && c.classList.contains('show-sheet')) closePreviewSheet(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !MODALS.length && closePreviewSheet()) { e.preventDefault(); e.stopPropagation(); } }, true);
 function togglePreview() {
   const c = $('#composer'); if (!c) return;
-  if (matchMedia('(max-width: 980px)').matches) { c.classList.toggle('show-sheet'); return; }
+  if (PV_SM.matches) { c.classList.toggle('show-sheet'); syncPreviewSheet(true); return; }
   S.preview.on = !S.preview.on; c.classList.toggle('no-preview', !S.preview.on); save(); SFX.play('tick');
   $$('.pv-tog').forEach(b => { b.setAttribute('aria-pressed', S.preview.on); b.dataset.tip = `${S.preview.on ? 'Hide' : 'Show'} the preview`; });
   if (S.preview.on) { renderPreviewHead(); renderPreviewBody(); }
@@ -6449,7 +6493,7 @@ function composerClick(e) {
     case 'reviews': openReviewComments(); break;
     case 'hookinfo': setImprove(S.draft.tweets[0].id, 'score'); break;
     case 'imptab': { const tid = (el.closest('.tw') || {}).dataset ? el.closest('.tw').dataset.id : S.draft.tweets[0].id; UI.imp = { id: tid, tab: el.dataset.t }; renderExtras(tid); SFX.play('tick'); break; }
-    case 'impclose': { const tid = el.closest('.tw').dataset.id; UI.imp = null; renderExtras(tid); break; }
+    case 'impclose': { const tw = el.closest('.tw'), tid = tw.dataset.id; UI.imp = null; renderExtras(tid); const rb = $('[data-cact="riff"]', tw); rb && rb.focus({ preventScroll: true }); break; }
     case 'dorriff': { const k = el.dataset.k; const idx = i >= 0 ? i : 0; if (k === 'translate') openTranslate(el, idx); else runRiff(idx, k); break; }
     case 'diffyes': closeDiff(true); break;
     case 'diffno': closeDiff(false); break;
@@ -6473,10 +6517,15 @@ ROUTES.write = () => {
   renderPreviewHead(); renderThread();
   c.addEventListener('click', composerClick);
   c.addEventListener('keydown', e => { if (e.target.classList.contains('chg') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.target.click(); } });
+  /* Esc inside the Improve panel closes it and hands focus back to its button */
+  c.addEventListener('keydown', e => { if (e.key !== 'Escape' || !e.target.closest('.imp')) return; const cl = $('[data-cact="impclose"]', e.target.closest('.imp')); if (cl) { e.preventDefault(); e.stopPropagation(); cl.click(); } });
   th.addEventListener('input', e => { if (e.target.matches('[data-poll]')) { const tw = tById(e.target.closest('.tw').dataset.id); tw.poll.options[+e.target.dataset.poll] = e.target.value; schedulePreview(); markSaving(); return; } onInput(e); });
   th.addEventListener('change', e => { if (e.target.matches('[data-media]')) { addFiles(tIndex(e.target.closest('.tw').dataset.id), e.target.files); e.target.value = ''; } if (e.target.matches('[data-polldays]')) { tById(e.target.closest('.tw').dataset.id).poll.days = +e.target.value; markSaving(); } });
   th.addEventListener('keydown', e => { if (e.target.matches('label.tool') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); $('input', e.target).click(); return; } onKey(e); });
-  const repaint = e => { const t = e.target; if (t && t.classList && t.classList.contains('tw-input')) requestAnimationFrame(() => t.isConnected && placeCaretOrPaint(t)); };
+  const repaint = e => { const t = e.target; if (!(t && t.classList && t.classList.contains('tw-input'))) return;
+    /* a typed character already repainted on input; only caret moves (arrows, Home, End, clicks) need a repaint here */
+    if (e.type === 'keyup' && (e.key.length === 1 || /^(Backspace|Delete|Enter|Shift|Meta|Control|Alt|CapsLock)$/.test(e.key))) { requestAnimationFrame(() => t.isConnected && typewriter()); return; }
+    requestAnimationFrame(() => t.isConnected && placeCaretOrPaint(t)); };
   const placeCaretOrPaint = ta => { if (UI.ghost && ta.selectionEnd !== ta.value.length) { UI.ghost = null; } if (!SH.st) paintField(ta); sharpenCheck(ta); typewriter(); };
   const shClick = e => { const b = e.target.closest('.sharpen button'); if (!b) return; e.preventDefault(); if (b.dataset.sh) sharpenRun(b.dataset.sh); else if (b.dataset.shn) { sharpenShow(SH.st.i + +b.dataset.shn); SFX.play('tick'); } else if ('shk' in b.dataset) sharpenKeep(); else if ('shx' in b.dataset) { sharpenCancel(); sharpenHide(); } };
   th.addEventListener('mousedown', e => { if (e.target.closest('.sharpen')) e.preventDefault(); });
@@ -7225,7 +7274,7 @@ function onbStep1() {
   $('#onb').innerHTML = `<div class="onb-card">
     <h1 class="display">Let’s find your <em>voice.</em></h1>
     <p class="muted" style="font-size:17px;max-width:46ch">${LLM.server && LLM.server.x ? 'Paste your handle. We’ll read your recent posts and hand you five you could write today.' : 'Pick where you post and what you write about. You’ll get a starting voice and five posts you could write today.'}</p>
-    <div class="seg" id="onb-plat" role="tablist" aria-label="Platform">${['x', 'threads', 'li', 'bsky'].map(k => `<button role="tab" data-p="${k}" aria-selected="${ONB.plat === k}">${pic(k, 'icon sm')}${`<span>${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}</span>`}</button>`).join('')}</div>
+    <div class="seg" id="onb-plat" role="tablist" aria-label="Platform">${['x', 'threads', 'li', 'bsky'].map(k => `<button role="tab" data-p="${k}" aria-selected="${ONB.plat === k}" aria-label="${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}">${pic(k, 'icon sm')}${`<span>${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}</span>`}</button>`).join('')}</div>
     <form class="handle-in" id="onb-f" novalidate><span class="at">@</span><input id="onb-h" autofocus placeholder="yourhandle" value="${esc(ONB.handle)}" aria-label="Your handle" aria-describedby="onb-err" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">${LLM.server && LLM.server.x ? 'Read my posts' : 'Continue'}${ic('arrow', 'sm')}</button></form>
     <span id="onb-err" class="field-err" role="alert" style="min-height:16px;margin-top:-14px"></span>
     <div style="display:grid;gap:10px;justify-items:center"><span class="label">What do you write about?</span><div class="niches">${niches.map(n => `<button class="chip" aria-pressed="${n === cur}" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>
