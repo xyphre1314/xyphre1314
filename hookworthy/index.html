@@ -2556,11 +2556,16 @@ const uid = () => Math.random().toString(36).slice(2, 9);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 const lcFirst = s => s && !/^[A-Z]{2}|^I\b/.test(s) ? s[0].toLowerCase() + s.slice(1) : s;
-const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+/* keyboard hints follow your computer: ⌘ ⌥ ⇧ on a Mac, Ctrl Alt Shift everywhere else */
+const IS_MAC = /mac|iphone|ipad|ipod/i.test((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent);
+document.documentElement.dataset.os = IS_MAC ? 'mac' : 'pc';
 const MOD = IS_MAC ? '⌘' : 'Ctrl';
 const ALT = IS_MAC ? '⌥' : 'Alt';
 const SHIFT = IS_MAC ? '⇧' : 'Shift';
-const kbd = (...keys) => `<span class="kbds">${keys.map(k => `<kbd>${esc(k)}</kbd>`).join('')}</span>`;
+/* a shortcut written in a sentence: ⌘Z on a Mac, Ctrl+Z on a PC */
+const keys = (...k) => IS_MAC ? k.join('') : k.map(x => PC_KEY[x] || x).join('+');
+const PC_KEY = { '↵': 'Enter', '⌫': 'Backspace', '⎋': 'Esc' };
+const kbd = (...keys) => `<span class="kbds">${keys.map(k => `<kbd>${esc(IS_MAC ? k : PC_KEY[k] || k)}</kbd>`).join('')}</span>`;
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE = matchMedia('(pointer: fine)').matches, COARSE = matchMedia('(pointer: coarse)').matches;
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
@@ -3505,7 +3510,7 @@ function openShortcuts() {
   <div class="modal-b"><div class="shortcuts">
     <h4 class="label">Anywhere</h4>
     ${row('Command palette', [MOD, 'K'])}${row('New post', ['C'])}${row('Capture an idea', ['I'])}${row('Switch theme', [SHIFT, 'T'])}
-    ${row('Go to Write', ['G', 'W'])}${row('Go to Ideas', ['G', 'I'])}${row('Go to Queue', ['G', 'Q'])}${row('Go to Insights', ['G', 'A'])}${row('Go to Hooks', ['G', 'H'])}${row('Go to Voice', ['G', 'V'])}
+    ${row('Go to Today', ['G', 'T'])}${row('Go to Write', ['G', 'W'])}${row('Go to Ideas', ['G', 'I'])}${row('Go to Replies', ['G', 'R'])}${row('Go to Queue', ['G', 'Q'])}${row('Go to Insights', ['G', 'A'])}${row('Go to Hooks', ['G', 'H'])}${row('Go to Your voice', ['G', 'V'])}
     <h4 class="label">Composer</h4>
     ${row('Accept suggestion', ['Tab'])}${row('New post in thread', ['↵', '↵'])}${row('Focus mode', [MOD, '.'])}
     ${row('Rewrite menu', [MOD, 'J'])}${row('Run rewrite 1–7', [ALT, '1–7'])}
@@ -5064,7 +5069,7 @@ function toggleFocus(force) {
   const on = typeof force === 'boolean' ? force : !document.body.classList.contains('focus-mode');
   document.body.classList.toggle('focus-mode', on); SFX.play('tick');
   $$('.fm-tog').forEach(b => b.setAttribute('aria-pressed', on));
-  if (on) toast(`Focus on. ${IS_MAC ? '⌘' : 'Ctrl'} . or Esc to come back.`, { icon: 'focus', ms: 2200 });
+  if (on) toast(`Focus on. ${keys(MOD, '.')} or Esc to come back.`, { icon: 'focus', ms: 2200 });
   const ta = $('.tw-input:focus') || $('.tw-input'); ta && ta.focus({ preventScroll: true }); if (on) typewriter();
 }
 function typewriter() {
@@ -5942,7 +5947,7 @@ function openSettings() {
       <section><h3 class="label">Sound and look</h3>
         ${sw('sound', S.settings.sound !== false, 'Sounds', 'Small, quiet cues: scheduled, posted, a first line that lands.')}
         ${sw('keys', !!S.settings.keys, 'Typing sounds', 'Soft key clicks while you write.')}
-        ${sw('shortcuts', S.settings.shortcuts !== false, 'Single-key shortcuts', 'C for a new post, I to save an idea, G then a letter to jump. Turn off if you use voice control or keep pressing them by accident. ⌘K and Ctrl+K always work.')}
+        ${sw('shortcuts', S.settings.shortcuts !== false, 'Single-key shortcuts', `C for a new post, I to save an idea, G then a letter to jump. Turn off if you use voice control or keep pressing them by accident. ${keys(MOD, 'K')} always works.`)}
         <div class="set-row"><div><b>Theme</b><small>Light is cream paper; dark is warm ink.</small></div>${seg('theme', theme, [['light', 'Light'], ['dark', 'Dark'], ['system', 'System']])}</div>
       </section>
       <section><h3 class="label">Alerts</h3>
@@ -7382,7 +7387,7 @@ function qMenu(c) {
     { label: 'Move to…', icon: 'clock', run: () => setTimeout(() => openMenu(c, [{ header: 'Move to an open time' }, ...nextSlots(10, false).map(x => ({ label: slotLabel(x.day, x.time), icon: slotInfo(x.day, x.time).best ? 'target' : 'cal', hint: slotInfo(x.day, x.time).best ? 'Best' : '', run: () => { moveQ(q.id, x.day, x.time); requestAnimationFrame(() => { const nc = $(`.qcard[data-id="${q.id}"]`); nc && nc.focus(); }); } }))], { width: 260 }), 0) },
     { label: 'Post now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc(q.client || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } serverDrop(q); q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide(); { const srv = LLM.server || {}; toast((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? 'Sending now. Stay close for the first replies.' : SHOWCASE() ? 'Posted. It’s a demo, so nothing actually went out.' : 'Marked as posted. Nothing went out from here: copy it to post, or connect X or LinkedIn.', { icon: 'send', tone: 'accent', ...((q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser) ? {} : { action: 'Copy text', onAction: () => copyText(q.tweets.join('\n\n')) }) }); } syncToServer(q, q.mediaIds ? null : q.media); liveStart(q); } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } const copy = { ...q, id: uid(), day: s.day, time: s.time, serverId: null }; delete copy.xIds; delete copy.urls; S.queue.push(copy); save(); syncToServer(copy, copy.mediaIds ? null : copy.media); drawCal(); drawQSide(); toast(`Duplicated to ${slotWhen(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
-    { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); serverDrop(q); save(); drawCal(); drawQSide(); requestAnimationFrame(() => { const nc = $('#cal .qcard') || $('#cal .slot .add'); nc && nc.focus(); }); toast('Gone from the queue. Ctrl+Z to undo.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); serverResync(q); drawCal(); drawQSide(); } }); } }
+    { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); serverDrop(q); save(); drawCal(); drawQSide(); requestAnimationFrame(() => { const nc = $('#cal .qcard') || $('#cal .slot .add'); nc && nc.focus(); }); toast(`Gone from the queue. ${keys(MOD, 'Z')} to undo.`, { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); serverResync(q); drawCal(); drawQSide(); } }); } }
   ], { width: 250 });
 }
 /* one calendar, three places: the Queue, the homepage week and the homepage demo all render through here */
@@ -7710,7 +7715,7 @@ ROUTES.brand = () => {
     <div class="r"><span class="label">Heading<br>EB Garamond 400</span><span class="h1">Posts that sound like you on a good day</span></div>
     <div class="r"><span class="label">Editor<br>Figtree 18/1.6</span><span style="font-size:18px;line-height:1.6;max-width:62ch">Nobody tells you the hardest part of a side project is month three. Not the start. Not the launch. Month three.</span></div>
     <div class="r"><span class="label">UI<br>Figtree 14</span><span>Schedule for Tue 8:40 AM · Follow-up reply at 100 likes</span></div>
-    <div class="r"><span class="label">Mono<br>Geist Mono</span><span class="mono">0123456789 · 12.4k views · ⌘K</span></div></div></section>
+    <div class="r"><span class="label">Mono<br>Geist Mono</span><span class="mono">0123456789 · 12.4k views · ${keys(MOD, 'K')}</span></div></div></section>
   <section class="sec"><div class="sec-h"><h2 class="h2">Components, every state</h2></div><div class="card pad" style="display:grid;gap:28px">
     <div class="state-grid">${['Default', 'Hover', 'Focus', 'Active', 'Disabled', 'Loading'].map((s, i) => `<div><span class="label">${s}</span><button class="btn primary ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Schedule</button><button class="btn ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Save idea</button></div>`).join('')}</div>
     <div class="state-grid">${[['Default', ''], ['Focus', 'box-shadow:0 0 0 1px var(--accent),0 0 0 4px var(--accent-soft)'], ['Error', ''], ['Disabled', '']].map(([s, st], i) => `<div><span class="label">${s}</span><input class="input" tabindex="-1" value="${i ? '@samwrites' : ''}" placeholder="yourhandle" style="${st}" ${i === 2 ? 'aria-invalid="true"' : ''} ${i === 3 ? 'disabled' : ''} aria-label="Example input ${s}">${i === 2 ? '<span class="field-err">Handles use letters, numbers, dots and underscores.</span>' : ''}</div>`).join('')}</div>
