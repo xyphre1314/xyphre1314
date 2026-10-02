@@ -3060,10 +3060,12 @@ function voiceSpec() {
 /* your imported history and its analysis (cached until the history changes) */
 const HIST = () => S.history || [];
 let _an = { key: '', v: null };
-let _ph = {}; function PHOOK() { const k = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (_ph.key !== k) _ph = { key: k, v: HWCore.learnHooks(HIST()) }; return _ph.v; }
+/* keyed on the posts' numbers too: re-importing the same posts with new likes refreshes everything */
+const histKey = () => { const h = HIST(); let a = 0; for (const p of h) a += (p.likes || 0) + (p.replies || 0) * 3 + (p.reposts || 0) * 2 + (p.views || 0) % 9973 + (p.text ? p.text.length : 0); return h.length + ':' + a; };
+let _ph = {}; function PHOOK() { const k = histKey(); if (_ph.key !== k) _ph = { key: k, v: HWCore.learnHooks(HIST()) }; return _ph.v; }
 /* the score the composer shows: tuned to you once there's enough history, the general one before */
 function hookFor(text, parts) { const m = PHOOK(), g = hookScore(text); const me = m.ready ? HWCore.personalScore(text, m, { parts }) : null; const trusted = !!me && (m.trust === 'better' || m.trust === 'similar'); return { score: trusted ? me.score : g.score, me: trusted ? me : null, hint: !trusted ? me : null, g, m }; }
-function ANALYSIS() { const k = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (_an.key !== k) _an = { key: k, v: HWCore.analyze(HIST()) }; return _an.v; }
+function ANALYSIS() { const k = histKey(); if (_an.key !== k) _an = { key: k, v: HWCore.analyze(HIST()) }; return _an.v; }
 const AI = {
   punchier(t) {
     let s = stripFillers(t).replace(/^\s*(ok(ay)? so|so|well|basically|honestly|look),?\s+/i, '').replace(/[,\s]+(tbh|ngl|imo|lol|fr|lmao)[.!]*\s*$/i, '');
@@ -3927,7 +3929,7 @@ let BEST = GENERAL_BEST, SLOTX = {}, TIMES = { src: 'general', n: 0, top: null }
 const rowOfT = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
 const hhmm = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 function refreshBest() {
-  const key = HIST().length + ':' + (HIST()[0] && HIST()[0].id); if (key === refreshBest.k) return; refreshBest.k = key;
+  const key = histKey(); if (key === refreshBest.k) return; refreshBest.k = key;
   const ps = HIST().filter(p => p.at && HWCore.eng(p) > 0); SLOTX = {};
   if (ps.length < 20) {
     BEST = GENERAL_BEST; TIMES = { src: 'general', n: ps.length, top: null };
@@ -7799,7 +7801,9 @@ function drawEngine() {
 }
 function drawInbox() {
   const el = $('#inbox'); if (!el) return; const n = $('#inbox-n'); if (n) n.textContent = S.ideas.length;
-  $$('.nav a[href="#ideas"] .count').forEach(c => c.textContent = S.ideas.length || '');
+  /* the Saved tab and the nav badge follow the list (the badge appears the first time something is saved) */
+  const st = $('#idea-seg [data-it="inbox"]'); if (st) { $('.ll', st).textContent = `Saved · ${S.ideas.length}`; $('.sl', st).textContent = `Saved ${S.ideas.length}`; st.setAttribute('aria-label', `Saved · ${S.ideas.length}`); }
+  if (!$('.nav a[href="#ideas"] .count') && S.ideas.length) refreshSide(); else $$('.nav a[href="#ideas"] .count').forEach(c => c.textContent = S.ideas.length || '');
   if (!S.ideas.length) { el.innerHTML = `<div class="empty"><div class="flock-big"><i style="width:14px;height:14px"></i><i style="width:10px;height:10px"></i><i style="width:7px;height:7px"></i></div><b style="color:var(--text-1)">Nothing parked yet.</b><span>Next time something makes you think “I should post about that”, press ${kbd('I')} and drop it here.</span></div>`; return; }
   el.innerHTML = S.ideas.map(it => `<div class="inbox-row" data-id="${it.id}"><span class="src" data-tip="${SRC_NAME[it.src]}">${ic(SRC_ICON[it.src] || 'ideas')}</span><div style="min-width:0"><p>${esc(it.text.replace(/^(Voice memo|Screenshot|Link|Note) · (\d+:\d\d · )?/, ''))}</p><small>${SRC_NAME[it.src]}${it.url ? ` · ${esc(parseLink(it.url)?.host || '')}` : ''} · ${ago(it.at)}</small></div><div class="acts"><button class="btn ghost sm" data-iact="expand" data-tip="Five angles">${ic('layers', 'sm')}<span class="hide-sm">Angles</span></button><button class="btn ghost sm" data-iact="draft" data-tip="Draft it now">${ic('write', 'sm')}</button><button class="btn ghost sm" data-iact="archive" data-tip="Delete" aria-label="Delete idea">${ic('trash', 'sm')}</button></div></div>`).join('');
 }
@@ -8185,7 +8189,7 @@ function drawInsightsReal() {
   ${cells.length ? `<div class="grid-3 sec" style="margin-top:16px">${cells.slice(0, 3).join('')}</div>` : ''}
   <div class="card chart-card sec" style="margin-top:16px" id="top-posts"><div class="chart-h"><h3 class="h3">Top posts</h3><span class="faint" style="font-size:12px">Ask “Why?” for a post-mortem in your voice</span></div>${an.top.slice(0, 8).map((p, i) => row(p, i)).join('')}</div>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><h3 class="h3">Quietest posts</h3><span class="faint" style="font-size:12px">Worth knowing why, too</span></div>${an.flops.slice(0, 4).map((p, i) => row(p, i, '··')).join('')}</div>`;
-  if (!noDates) lineChart($('#line'), d);
+  if (!noDates) lineChart($('#line'), d, end);
 }
 /* post-mortem: why one post popped or flopped, from Claude, against your own median */
 async function postMortem(id, btn) {
@@ -8202,14 +8206,14 @@ function heatmap() {
   const val = (di, ci) => clamp((ci === 1 ? .7 : ci === 2 ? .55 : ci === 4 ? .5 : .22) + (di === 1 && ci === 1 ? .3 : 0) + (di >= 5 ? -.15 : 0) + (di === 3 && ci === 2 ? .25 : 0) + (r() - .5) * .2, .06, 1);
   return `<div class="heat" role="img" aria-label="Heatmap of first-hour replies by day and time. Peak is Tuesday 9am."><span></span>${cols.map(c => `<span class="cl">${c}</span>`).join('')}${days.map((d, di) => `<span class="rl">${d}</span>${cols.map((c, ci) => { const v = val(di, ci); return `<span class="c" style="opacity:${(.12 + v * .88).toFixed(2)}" data-tip="${d} ${c}: ${Math.round(v * 48)} replies/hr avg"></span>`; }).join('')}`).join('')}</div>`;
 }
-function lineChart(host, data) {
+function lineChart(host, data, end = Date.now()) {
   const W = Math.max(300, Math.min(900, Math.round(host.clientWidth || 720))), H = W < 480 ? 200 : 220, pl = 40, pr = 12, pt = 12, pb = 26; const ticks = niceTicks(Math.max(...data)); const nice = ticks[ticks.length - 1]; const n = data.length;
   const x = i => pl + (W - pl - pr) * (n === 1 ? 0 : i / (n - 1)), y = v => pt + (H - pt - pb) * (1 - v / nice);
   const pts = data.map((v, i) => [x(i), y(v)]); const path = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
   const step = Math.max(1, Math.ceil(n / Math.max(2, Math.floor((W - pl - pr) / 78))));
   host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Impressions per day, last ${n} days, ending at ${fmtK(data[n - 1])}"><defs><linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
   <g class="grid">${ticks.map(t => `<line x1="${pl}" x2="${W - pr}" y1="${y(t)}" y2="${y(t)}"/>`).join('')}</g>
-  <g class="axis">${ticks.map(t => `<text x="${pl - 8}" y="${y(t) + 3.5}" text-anchor="end">${fmtK(t)}</text>`).join('')}${data.map((v, i) => { if ((n - 1 - i) % step) return ''; const dt = new Date(Date.now() - (n - 1 - i) * DAY); return `<text x="${x(i)}" y="${H - 6}" text-anchor="${i === n - 1 ? 'end' : 'middle'}">${MON[dt.getMonth()]} ${dt.getDate()}</text>`; }).join('')}</g>
+  <g class="axis">${ticks.map(t => `<text x="${pl - 8}" y="${y(t) + 3.5}" text-anchor="end">${fmtK(t)}</text>`).join('')}${data.map((v, i) => { if ((n - 1 - i) % step) return ''; const dt = new Date(end - (n - 1 - i) * DAY); return `<text x="${x(i)}" y="${H - 6}" text-anchor="${i === n - 1 ? 'end' : 'middle'}">${MON[dt.getMonth()]} ${dt.getDate()}</text>`; }).join('')}</g>
   <path class="area" d="${path} L${x(n - 1)} ${y(0)} L${x(0)} ${y(0)} Z"/><path class="ln draw" d="${path}"/>
   <circle class="endpt" cx="${pts[n - 1][0]}" cy="${pts[n - 1][1]}" r="4.5"/>
   <g id="hover" style="display:none"><line class="cross" y1="${pt}" y2="${H - pb}"/><circle class="endpt" r="4.5"/></g>
@@ -8219,7 +8223,7 @@ function lineChart(host, data) {
   const move = e => {
     const r = svg.getBoundingClientRect(); const sx = (e.clientX - r.left) / r.width * W; const i = clamp(Math.round((sx - pl) / (W - pl - pr) * (n - 1)), 0, n - 1);
     hov.style.display = ''; $('line', hov).setAttribute('x1', x(i)); $('line', hov).setAttribute('x2', x(i)); $('circle', hov).setAttribute('cx', x(i)); $('circle', hov).setAttribute('cy', y(data[i]));
-    const dt = new Date(Date.now() - (n - 1 - i) * DAY);
+    const dt = new Date(end - (n - 1 - i) * DAY);
     tip.innerHTML = `<b>${data[i].toLocaleString()}</b><span class="faint">${DOW[dt.getDay()]}, ${MON[dt.getMonth()]} ${dt.getDate()}</span>`; tip.style.opacity = 1;
     tip.style.left = clamp(x(i) / W * r.width, 60, r.width - 60) + 'px'; tip.style.top = (y(data[i]) / H * r.height + 20) + 'px';
   };
