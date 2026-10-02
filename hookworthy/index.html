@@ -5399,7 +5399,9 @@ function preflight() {
   tws.forEach((t, i) => { const c = {}; (t.text.toLowerCase().match(/[a-z’']{4,}/g) || []).forEach(w => { if (!STOP.has(w)) c[w] = (c[w] || 0) + 1; }); const w = Object.keys(c).find(k => c[k] >= 3); if (w) out.push({ k: 'rep', msg: `“${w}” shows up ${c[w]} times${n > 1 ? ` in post ${i + 1}` : ''}.`, why: 'Once is a word. Three times is a tic.' }); });
   const tags = tws.map(t => (t.text.match(/#\w+/g) || []).length).reduce((a, b) => a + b, 0); if (tags > 2) out.push({ k: 'tags', msg: `${tags} hashtags.`, why: 'More than two reads like a bot. One good one, or none.' });
   const noAlt = tws.reduce((a, t) => a + t.media.filter(m => m.type !== 'gif' && !m.alt).length, 0); if (noAlt) out.push({ k: 'alt', msg: `${noAlt === 1 ? 'An image has' : `${noAlt} images have`} no description.`, why: 'Screen readers will just say “image”. One plain sentence helps.', fix: 'alt', fixL: 'Describe it' });
-  const nums = tws.map(t => (t.text.match(/^\s*(\d+)\s*\/\s*(\d+)?/) || []).slice(1)); if (n > 1 && nums.some(x => x[0])) { const bad = nums.some((x, i) => +x[0] !== i + 1 || (x[1] && +x[1] !== n)); if (bad) out.push({ k: 'num', msg: 'Your thread numbering is off.', why: `There are ${n} posts. The numbers say otherwise.`, fix: 'num', fixL: 'Renumber' }); }
+  /* an unnumbered hook followed by 1/, 2/… (or 2/, 3/…) is the usual convention, not a mistake */
+  const nums = tws.map(t => (t.text.match(/^\s*(\d+)\s*\/\s*(\d+)?/) || []).slice(1)), hookFree = !nums[0][0] && nums.slice(1).some(x => x[0]), list = hookFree ? nums.slice(1) : nums;
+  if (n > 1 && list.some(x => x[0])) { const start = list[0][0] ? +list[0][0] : 1, last = start + list.length - 1; const bad = list.some((x, i) => +x[0] !== start + i || (x[1] && +x[1] !== last)); if (bad) out.push({ k: 'num', msg: 'Your thread numbering is off.', why: `There are ${n} posts. The numbers say otherwise.`, fix: 'num', fixL: 'Renumber' }); }
   if (n > 1 && /[:…]\s*$|\.\.\.\s*$/.test(tws[n - 1].text.trim())) out.push({ k: 'end', msg: 'Your thread ends mid-thought.', why: 'The last post ends with a colon or an ellipsis. Missing a final post?' });
   if (on('x') && /^@\w/.test(tws[0].text.trim())) out.push({ k: 'at', msg: 'Your post starts with an @.', why: 'On X that can read like a reply. Put a word in front of it.' });
   const key = x => x.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim().slice(0, 42); const k0 = key(tws[0].text.split('\n')[0]);
@@ -5420,7 +5422,14 @@ function runFix(k) {
   if (k.startsWith('cr')) { const c = CRINGE[+k.slice(2)]; tws.forEach(t => { t.text = t.text.replace(c.re, '').replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim(); }); }
   if (k === 'never') S.voice.never.forEach(w => { const re = new RegExp(`\\s*\\b${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi'); const sw = NEVER_SWAP[w.toLowerCase()]; tws.forEach(t => { t.text = t.text.replace(re, m => sw === undefined ? '' : (/^\s/.test(m) && sw ? ' ' : '') + sw).replace(/[ \t]{2,}/g, ' ').replace(/^[,\s]+/, '').trim(); }); });
   if (k === 'link') { const t = tws[0]; const m = t.text.match(URL_RE); if (!m) return; t.text = t.text.replace(m[0], '').replace(/[ \t]+\n/g, '\n').replace(/\s+$/, '') + ' (link below)'; tws.push(newTweet(m[0])); }
-  if (k === 'num') { const tt = tws.filter(t => t.text.trim()); tt.forEach((t, i) => { t.text = t.text.replace(/^\s*\d+\s*\/\s*\d*\s*/, ''); t.text = `${i + 1}/${tt.length} ${t.text}`; }); }
+  if (k === 'num') {
+    /* keep the writer's style: an unnumbered hook stays unnumbered, "2/" stays "2/" (no total unless they used one) */
+    const tt = tws.filter(t => t.text.trim()), rx = /^\s*(\d+)\s*\/\s*(\d*)\s*/, m = tt.map(t => t.text.match(rx)), hookFree = !m[0] && m.slice(1).some(Boolean);
+    const body = hookFree ? tt.slice(1) : tt, firstNum = (m[hookFree ? 1 : 0] || [])[1], start = hookFree && firstNum === '2' ? 2 : 1, withTotal = m.some(x => x && x[2]), total = start + body.length - 1;
+    const snap = tws.map(t => ({ ...t }));
+    body.forEach((t, i) => { t.text = `${start + i}/${withTotal ? total : ''} ${t.text.replace(rx, '')}`; });
+    save(); if (CURRENT === 'write') renderThread(); SFX.play('tick'); toast('Renumbered.', { icon: 'check', action: 'Undo', onAction: () => { S.draft.tweets = snap; save(); if (CURRENT === 'write') renderThread(); } }); return;
+  }
   if (k === 'space') tws.forEach(t => { t.text = t.text.replace(/ {2,}/g, ' ').replace(/[ \t]+$/gm, ''); });
   if (k === 'alt') { const t = tws.find(t => t.media.some(m => m.type !== 'gif' && !m.alt)); if (t) openAlt(t.media.find(m => m.type !== 'gif' && !m.alt)); return; }
   save(); if (CURRENT === 'write') renderThread(); SFX.play('tick');
@@ -7561,7 +7570,7 @@ function weekRhythm() {
 }
 function rhythmHTML(compact) {
   const r = weekRhythm();
-  return `<div class="rhythm ${compact ? 'compact' : ''}" role="img" aria-label="${r.n} of ${r.goal} posting days this week"><span class="rh-days">${r.days.map(d => `<i class="${d.posted ? 'on' : d.planned ? 'sched' : ''} ${d.today ? 'now' : ''}" title="${d.d}${d.posted ? ': posted' : d.planned ? ': scheduled' : ''}"><b>${d.d[0]}</b></i>`).join('')}</span><span class="rh-t">${r.n >= r.goal ? `<b>${r.n}</b> days this week · goal met` : `<b>${r.n}</b> of ${r.goal} this week`}</span></div>`;
+  return `<div class="rhythm ${compact ? 'compact' : ''}" role="img" aria-label="${r.done} days posted and ${r.n - r.done} planned this week, goal ${r.goal}"><span class="rh-days">${r.days.map(d => `<i class="${d.posted ? 'on' : d.planned ? 'sched' : ''} ${d.today ? 'now' : ''}" title="${d.d}${d.posted ? ': posted' : d.planned ? ': scheduled' : ''}"><b>${d.d[0]}</b></i>`).join('')}</span><span class="rh-t">${r.done >= r.goal ? `<b>${r.done}</b> posted · goal met` : `<b>${r.done}</b> posted${r.n > r.done ? `, ${r.n - r.done} planned` : ''} · goal ${r.goal}`}</span></div>`;
 }
 /* Today: one next action, chosen by what's actually going on */
 const TODAY = { k: 0 };
@@ -7607,7 +7616,9 @@ function todayStripHTML() {
   const now = Date.now(), day = n => dayKey(now + n * DAY);
   const col = (n, label) => { const k = day(n), items = S.queue.filter(q => q.day === k && mineQ(q) && (n < 0 ? q.status === 'published' : q.status === 'scheduled')).sort((a, b) => a.time.localeCompare(b.time));
     const open = n >= 0 ? Object.keys(BEST[dowIdx(fromKey(k))] || {}).filter(t => slotDate(k, t).getTime() > now && !taken(k, t)) : [];
-    return `<div class="ts-col ${n === 0 ? 'now' : ''}"><span class="label">${label}</span>${items.map(q => `<a class="ts-i" href="#queue"><span class="ts-t">${fmtTime(q.time)}</span><span class="ts-x">${firstLineHTML(clip(q.text, 70))}</span></a>`).join('')}${open.slice(0, n === 0 ? 2 : 1).map(t => `<button class="ts-open" data-tact="slot" data-day="${k}" data-time="${t}"><span class="ts-t">${fmtTime(t)}</span><span class="ts-x">Best time, still open. Write for it</span></button>`).join('')}${!items.length && !open.length ? `<p class="faint ts-none">${n < 0 ? 'Nothing went out.' : 'Nothing planned. That’s allowed.'}</p>` : ''}</div>`; };
+    /* posts and open best times in one list, in time order */
+    const rows = [...items.map(q => ({ t: q.time, h: `<a class="ts-i" href="#queue"><span class="ts-t">${fmtTime(q.time)}</span><span class="ts-x">${firstLineHTML(clip(q.text, 70))}</span></a>` })), ...open.slice(0, n === 0 ? 2 : 1).map(t => ({ t, h: `<button class="ts-open" data-tact="slot" data-day="${k}" data-time="${t}"><span class="ts-t">${fmtTime(t)}</span><span class="ts-x">Best time, still open. Write for it</span></button>` }))].sort((a, b) => a.t.localeCompare(b.t));
+    return `<div class="ts-col ${n === 0 ? 'now' : ''}"><span class="label">${label}</span>${rows.map(r => r.h).join('')}${!items.length && !open.length ? `<p class="faint ts-none">${n < 0 ? 'Nothing went out.' : 'Nothing planned. That’s allowed.'}</p>` : ''}</div>`; };
   return `<section class="t-strip" aria-label="Yesterday, today and tomorrow">${col(-1, 'Yesterday')}${col(0, 'Today')}${col(1, 'Tomorrow')}</section>`;
 }
 function todayHTML() {
@@ -7628,7 +7639,7 @@ function todayHTML() {
 }
 ROUTES.today = () => {
   settleQueue(); const d = new Date(), hr = d.getHours(), first = (S.user.name || '').split(' ')[0], up = S.queue.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now() && slotDate(q.day, q.time) - Date.now() < 7 * DAY).length;
-  mount('today', `<div class="page today"><div class="page-h"><div><h1 class="display">${hr < 12 ? 'Morning' : hr < 18 ? 'Afternoon' : 'Evening'}${first ? `, ${esc(first)}` : ''}.</h1><p>${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()} · ${up} lined up for the next 7 days</p></div>${rhythmHTML()}</div><div id="t-body">${todayHTML()}</div></div>`);
+  mount('today', `<div class="page today"><div class="page-h"><div><h1 class="display">${hr < 4 ? 'Up late' : hr < 12 ? 'Morning' : hr < 18 ? 'Afternoon' : hr < 22 ? 'Evening' : 'Late one'}${first ? `, ${esc(first)}` : ''}.</h1><p>${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()} · ${up} lined up for the next 7 days</p></div>${rhythmHTML()}</div><div id="t-body">${todayHTML()}</div></div>`);
   if (!RRADAR.at || Date.now() - RRADAR.at > 3 * 60e3) loadRadar().then(() => { if (CURRENT === 'today' && $('#t-body')) $('#t-body').innerHTML = todayHTML(); }).catch(() => { });
   $('#view').addEventListener('click', e => {
     const b = e.target.closest('[data-tact]'); if (!b) return; const a = b.dataset.tact;
