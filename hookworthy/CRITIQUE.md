@@ -642,3 +642,81 @@ A fresh critique of the whole app, homepage first. Every proposal was built.
 - **Hook of the week:** a share card of your best line.
 - **Say a post:** an app shortcut that opens straight into dictation.
 - **Trader persona:** the demo is now Sam Okafor (@samtrades), Crypto & trading.
+
+## Round 28: a hard pass from every corner, then fixes
+
+Six reviewers (visual, UX and copy, motion and performance, code, accessibility, five simulated users) went over everything. Their roughly 90 findings were fixed by the lead plus six parallel fix branches (homepage, trading content, Replies, workspaces, queue and scheduling, core and server). A second pass with fresh reviewers and new simulated users then checked the result.
+
+**Honesty**
+- With nothing connected, Post now says "Marking as posted · nothing leaves this browser". The post is marked, never shown as Live, never given sample likes, and can go back to drafts. Connections reads "Not connected. Hookworthy won't post for you" with a practice-mode note.
+- The Write preview never predicts likes or views.
+- Basic-mode hook frames only reshape your own claim. "I got X wrong for years" and other invented backstories are gone. A single post can't be told to end on "Here's why:". Plan my week turns outlines with [blanks] into drafts, not scheduled posts.
+- Sample prices never claim a coin moved. Replies to sample posts are copied, never opened as public posts on X.
+- "leverage" left the default never-say list. The homepage never-say demo no longer strikes "not financial advice".
+
+**A score that understands traders**
+- BTC, PnL, tbh and NFTs aren't gibberish. "2.4% vs 2.6%" is one comparison, not too many numbers (a CPI take went from 60 to 86). 70+ reads "A strong first line", not a reach promise.
+- Ticker-aware capitals ("BTC is…", never "Btc").
+- The demo is trader-native end to end: the reply radar, Today, formulas with [ticker]/[entry]/[stop], ideas, voice preview, compare defaults and preview neighbours. Other niches keep their own sets.
+
+**Writing feels instant**
+- At 25 posts and 4× CPU, keystroke p50 fell from 168ms to 48ms and long tasks from 118 to 4.
+- The preview catches up after a pause and doesn't re-animate per key. One paint per key, a caret that snaps, no height thrash.
+- Improve tabs swap in place. Undo after a rewrite or sharpen that split the post restores the whole thread. Renumber keeps your style (an unnumbered hook is fine) and has Undo. The checks pill is live.
+
+**Scheduling you can trust**
+- Boot no longer marks server-published posts as missed.
+- Undo or delete mid-sync cancels the server job.
+- Swaps never move a post into the past. Weeks stay Monday-first across DST.
+- One source for best times.
+- Market days offer "Right after CPI" and "Now".
+- The schedule sheet confirms with ↵ / ⌘↵.
+- "Pick a time" defaults sensibly.
+- The Queue header follows the shown week.
+- "Move to… → Pick a time…".
+- Readable calendar cards at 1280–1440, with a status dot on narrow cards.
+- Server: stuck "posting" jobs recover, past times are rejected, imports no longer overwrite each other, URL/emoji/CJK counting matches X, regexes are linear.
+
+**Ghostwriters**
+- Add, rename and remove clients from the account menu or ⌘K.
+- Drafts, counts, platforms and half-written posts stay with their voice.
+- Approvals are visible ("Send to Ledgerly for approval", a readable "To approve" tag, and rail items that open the card).
+- The "Writing as" pill stays on one line.
+
+**Replies at keyboard speed**
+- J/K/S and ⌘↵ keep you in the reply box, Alt+J/K move from inside it, and Esc returns to the card.
+- Nothing typed leaks into other cards or fires shortcuts.
+- One age everywhere, and a caught-up state.
+
+**Accessibility**
+- Modals make the page behind inert. Menus return focus to their trigger. The Improve panel keeps focus and Esc closes it.
+- The small-screen preview is a real dialog.
+- Rewrite changes are read aloud. The save status is quiet. Errors sit under their fields.
+- Alt+T reaches the newest toast, and toasts with actions stay up for 14s.
+- Forced-colors styles, 44px touch targets, onboarding headings that take focus, and homepage landmarks.
+- Hook tournament: Pause, no comeback after time is up, announced lines.
+
+**Motion**
+- Route changes take 90ms out and 180ms in, with no blur and no double entrance.
+- The segment thumb lands in place.
+- The send-off card lands on the live nav link.
+- The hook dial celebrates once (re-arms below 62) with a single 280ms pop.
+- Tooltips swap in place.
+- Reduced motion also removes delays and follows live changes.
+- Homepage reveals take at most 600ms with no blur on large cards; the drifting row no longer lags.
+
+**Homepage**
+- The hero H1 is the largest line (98px at 1440).
+- There is one primary button style, a plum final call and FAQ with an eyebrow.
+- Story beats are aligned.
+- Bento rows are 7/5.
+- Phones are about 11 screens (was 13.7), with swipeable beats and bento.
+- The hero Start free carries your edited line.
+- The copy says "Hover"/"Tap" to match the device.
+- Pricing copy is honest about demo limits.
+
+**Copy**
+- One verb per action: Reply, Next version, Open in Write, Stronger hook, Open Hooks, delete (not "let go").
+- Sub-scores are Clear / Open loop / Specific / Friction / Short everywhere.
+- Plain onboarding for LinkedIn (asks for your name).
+- No more "Sam" when you skip your handle.

@@ -321,6 +321,21 @@ Sounds are on by default in the app and can be switched off in the account menu.
 - **Ideas:** three tabs that say what they are: **Post ideas**, **What’s working** (why posts in your niche popped, sample data until real search backs it) and **Saved** (links, notes, screenshots and voice memos you parked).
 - **Hook formulas** are no longer a tab. When your first line scores under 70, the hook panel offers three formulas; picking one adds it above your line with the first blank selected. The full library stays reachable from ⌘K.
 
+### Honest states (round 28)
+- **Practice mode.** With no account connected, nothing posts. Post now becomes "Marking as posted · nothing leaves this browser", with a Mark now button. The card reads **Marked**, never Live, and can go back to drafts. Connections opens with a practice-mode note.
+- **No predictions.** Your own post never shows predicted likes or views (preview, Today). Sample numbers appear only on seeded demo posts, labelled Sample.
+- **Queue card status.** Sent, Sending…, Marked, Post by hand and didn't go out. On narrow cards (≤124px) the time hides, since the row says it, and the status becomes a 6px dot before the title (success, text-3, warn, error).
+
+### Ghostwriting (round 28)
+Each voice (you plus up to eight clients) keeps its own drafts, counts, default platforms and half-written post. Add, edit or remove a client from the account menu's "Write as" section or ⌘K. Writing as a client, Schedule reads "Send to <Client> for approval", and cards wait with a readable **To approve** tag.
+
+### Keyboard (round 28)
+- **Schedule sheet:** the times are a roving radiogroup; ↵ on a time or ⌘↵ anywhere schedules.
+- **Replies:** J/K/S and ⌘↵ keep focus in the reply box; Alt+J/K move from inside it; Esc goes to the card.
+- **Toasts:** Alt+T jumps to the newest one.
+- **Improve:** Esc closes the panel.
+- Hints follow the platform (⌘ ⌥ ↵ on a Mac, Ctrl Alt Enter on a PC) and hide on touch.
+
 ### Before you post (checks)
 The small stuff people only notice once it’s live, checked on every keystroke and shown in the schedule sheet and the top-bar pill: leftover blanks ([brackets], TK, TODO), a link in the first post on X or LinkedIn (fix: move it to a reply), a word used three times, more than two hashtags, images without a description (fix: describe it), thread numbering that doesn’t match (fix: renumber), a thread ending on a colon or ellipsis, a post starting with @ on X, a first line that repeats something already queued, double spaces (fix: tidy up), and a quoted BTC/ETH/SOL price that has moved more than 3% (fix: update the price). The schedule sheet also checks the hook: under 60 it offers your own line tightened, then two formulas. Checks never block posting.
 
