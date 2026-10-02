@@ -148,7 +148,7 @@
 }
 @media (prefers-reduced-motion: reduce){
   :root{ --d-micro:1ms; --d-fast:1ms; --d-spring:1ms; --d-snap:1ms; --d-slow:1ms; }
-  *,*::before,*::after{ animation-duration:1ms!important; animation-iteration-count:1!important; transition-duration:1ms!important; scroll-behavior:auto!important; }
+  *,*::before,*::after{ animation-duration:1ms!important; animation-delay:0s!important; animation-iteration-count:1!important; transition-duration:1ms!important; transition-delay:0s!important; scroll-behavior:auto!important; }
 }
 
 /* ==========================================================================
@@ -275,7 +275,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 .card{ background:var(--surface); border-radius:var(--r-lg); box-shadow:0 0 0 1px var(--border),var(--sh-1); }
 .card.pad{ padding:var(--s5); }
 .card.hoverable{ transition:transform var(--d-spring) var(--spring),box-shadow var(--d-fast) var(--ease-out); }
-.card.hoverable:hover{ transform:translateY(-2px); box-shadow:0 0 0 1px var(--border-strong),var(--sh-2); }
+@media (hover:hover){ .card.hoverable:hover{ transform:translateY(-2px); box-shadow:0 0 0 1px var(--border-strong),var(--sh-2); } }
 .card.hoverable:active{ transform:translateY(0) scale(.99); }
 
 .pill{ display:inline-flex; align-items:center; gap:5px; height:22px; padding:0 8px; border-radius:99px; font:500 var(--t-12)/1 var(--font-ui); color:var(--text-2); background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); white-space:nowrap; }
@@ -411,14 +411,17 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
 
 /* view transitions between routes */
 ::view-transition-old(root),::view-transition-new(root){ animation:none; }
-::view-transition-old(main){ animation:vt-out 140ms var(--ease-out) both; }
-::view-transition-new(main){ animation:vt-in 260ms var(--ease-out) both; }
+/* route changes are the most frequent motion in the app: quick, opacity-led, no blur */
+::view-transition-old(main){ animation:vt-out 90ms var(--ease-out) both; }
+::view-transition-new(main){ animation:vt-in 180ms cubic-bezier(.16,1,.3,1) both; }
 ::view-transition-group(sidebar){ animation:none; }
 /* the sidebar swaps instantly: a cross-fade would ghost the old draft titles behind the new ones */
 ::view-transition-old(sidebar){ display:none; }
 ::view-transition-new(sidebar){ animation:none; }
-@keyframes vt-out{ to{ opacity:0; filter:blur(3px); } }
-@keyframes vt-in{ from{ opacity:0; transform:translateY(8px); filter:blur(3px); } }
+@keyframes vt-out{ to{ opacity:0; } }
+@keyframes vt-in{ from{ opacity:0; transform:translateY(4px); } }
+/* the view transition already brings the page in; the page's own entrance would play twice */
+@supports (view-transition-name: none){ .view{ animation:none; } }
 /* crossing between the homepage and the app: the page settles in like a sheet */
 :root[data-vt="cross"]::view-transition-old(root){ animation:vt-cross-out 220ms var(--ease-out) both; }
 :root[data-vt="cross"]::view-transition-new(root){ animation:vt-cross-in 480ms var(--ease-out) both; }
@@ -441,7 +444,7 @@ body.focus-mode .c-top{ background:transparent; border-color:transparent; }
 body.focus-mode .editor .starters, body.focus-mode .editor-foot, body.focus-mode .tw .tools{ opacity:0; pointer-events:none; }
 body.focus-mode .editor{ padding-bottom:45vh; }
 .fm-tog[aria-pressed="true"]{ color:var(--accent-text); background:var(--accent-soft); }
-.shell, .composer{ transition:grid-template-columns .5s var(--ease-out); }
+.shell, .composer{ transition:grid-template-columns 220ms var(--ease-out); }
 .checks-pill{ height:24px; padding:0 10px; border-radius:99px; font-size:var(--t-12); font-weight:500; color:var(--warn); background:var(--warn-soft); margin-left:8px; white-space:nowrap; transition:filter var(--d-micro); }
 .checks-pill:hover{ filter:brightness(.95); }
 .pf{ display:grid; gap:4px; padding:12px; border-radius:14px; background:var(--surface-2); }
@@ -515,7 +518,7 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 .starter{ text-align:left; padding:13px 14px; border-radius:12px; background:var(--surface); box-shadow:0 0 0 1px var(--border); display:grid; gap:12px; align-content:space-between; min-height:112px; transition:transform var(--d-spring) var(--spring),box-shadow var(--d-fast),background var(--d-fast); animation:rise var(--d-snap) var(--ease-out) both; }
 .force-dark .starter,:root[data-theme="dark"] .starter:not(.force-light .starter){ background:var(--surface-2); }
 .starter:nth-child(2){ animation-delay:50ms } .starter:nth-child(3){ animation-delay:100ms }
-.starter:hover{ transform:translateY(-2px); box-shadow:0 0 0 1px var(--border-strong),var(--sh-2); }
+@media (hover:hover){ .starter:hover{ transform:translateY(-2px); box-shadow:0 0 0 1px var(--border-strong),var(--sh-2); } }
 .starter:active{ transform:scale(.98); }
 .starter p{ font-size:var(--t-14); line-height:1.42; color:var(--text-1); text-wrap:pretty; }
 .starter .meta{ display:flex; align-items:center; justify-content:space-between; }
@@ -1130,12 +1133,12 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .faq details[open] summary .icon{ transform:rotate(45deg); }
 .faq details p{ padding:0 4px 18px; color:var(--text-2); max-width:62ch; animation:rise var(--d-spring) var(--ease-out) both; }
 
-.upsell{ position:fixed; z-index:880; right:20px; bottom:20px; width:min(380px,calc(100vw - 32px)); padding:20px; border-radius:18px; background:var(--surface); box-shadow:var(--sh-4); animation:sheetin var(--d-snap) var(--spring) both; overflow:hidden; }
+.upsell{ position:fixed; z-index:880; right:20px; bottom:20px; width:min(380px,calc(100vw - 32px)); padding:20px; border-radius:18px; background:var(--surface); box-shadow:var(--sh-4); animation:upsellin var(--d-snap) var(--spring) both; overflow:hidden; }
 .force-dark .upsell,:root[data-theme="dark"] .upsell:not(.force-light .upsell){ background:var(--surface-2); }
-.upsell::before{ content:""; position:absolute; inset:0; background:radial-gradient(70% 80% at 100% 0%,var(--accent-soft),transparent 70%); pointer-events:none; }
+
 .upsell > *{ position:relative; }
 .upsell.out{ animation:toastout 200ms var(--ease-out) both; }
-@keyframes sheetin{ from{ opacity:0; transform:translateY(20px) scale(.97); filter:blur(4px); } }
+@keyframes upsellin{ from{ opacity:0; transform:translateY(16px) scale(.97); } }
 .jump{ display:flex; align-items:center; gap:12px; font:400 48px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; margin:12px 0 8px; }
 .jump .from{ color:var(--text-3); text-decoration:line-through; text-decoration-thickness:2px; font-size:32px; }
 .jump .to{ color:var(--accent-text); }
@@ -2535,7 +2538,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .hk-dial .sc span{ position:relative; font:700 12px/1 var(--font-ui) !important; font-variant-numeric:tabular-nums; color:var(--text-1) !important; }
 .hk-dial small{ font:600 10px/1 var(--font-ui); letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); }
 .hk-dial.lo{ --dial:var(--warn); } .hk-dial{ --dial:var(--text-2); } .hk-dial.hi{ --dial:var(--accent); } .hk-dial.hi small{ color:var(--accent-text); }
-.hk-dial.hi .sc{ animation:dialpop .5s var(--spring-snap); } @keyframes dialpop{ 40%{ transform:scale(1.12); } }
+.hk-dial.hi .sc{ animation:dialpop 280ms cubic-bezier(.34,1.56,.64,1); } @keyframes dialpop{ 40%{ transform:scale(1.08); } }
 .hk-dial[aria-expanded="true"] .sc::before{ box-shadow:inset 0 0 0 1.5px var(--accent); }
 .hk-dial:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 @property --v{ syntax:'<number>'; inherits:true; initial-value:0; }
@@ -2751,7 +2754,8 @@ const SHIFT = IS_MAC ? '⇧' : 'Shift';
 const keys = (...k) => IS_MAC ? k.join('') : k.map(x => PC_KEY[x] || x).join('+');
 const PC_KEY = { '↵': 'Enter', '⌫': 'Backspace', '⎋': 'Esc' };
 const kbd = (...keys) => `<span class="kbds">${keys.map(k => `<kbd>${esc(IS_MAC ? k : PC_KEY[k] || k)}</kbd>`).join('')}</span>`;
-const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', e => { REDUCED = e.matches; });
 const FINE = matchMedia('(pointer: fine)').matches, COARSE = matchMedia('(pointer: coarse)').matches;
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const hash = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -3282,8 +3286,11 @@ const Tip = (() => {
   function hide() { clearTimeout(timer); cur = null; el.classList.remove('on'); }
   document.addEventListener('pointerover', e => {
     const t = e.target.closest('[data-tip]'); if (t === cur) return;
-    clearTimeout(timer); el.classList.remove('on'); cur = t; if (!t || !FINE) return;
-    if (document.body.classList.contains('typing') || t.closest('.field-wrap')) return;
+    const wasOn = el.classList.contains('on');
+    clearTimeout(timer); cur = t; if (!t || !FINE || document.body.classList.contains('typing') || t.closest('.field-wrap')) { el.classList.remove('on'); return; }
+    /* moving between neighbours while a tip is up: swap it in place, no blink */
+    if (wasOn) { el.style.transition = 'none'; show(t); requestAnimationFrame(() => { el.style.transition = ''; }); return; }
+    el.classList.remove('on');
     timer = setTimeout(() => cur === t && document.contains(t) && !document.body.classList.contains('typing') && show(t), Date.now() - warm < 700 ? 60 : 650);
   });
   document.addEventListener('focusin', e => { const t = e.target.closest('[data-tip]'); if (FINE && t && t.matches(':focus-visible')) { cur = t; show(t); } });
@@ -3378,10 +3385,13 @@ document.addEventListener('click', e => { if (e.target.closest('[data-close]')) 
 
 /* segmented control thumb */
 function syncSeg(seg) {
-  if (!seg) return; let th = $('.seg-thumb', seg); if (!th) { th = document.createElement('i'); th.className = 'seg-thumb'; seg.prepend(th); }
+  if (!seg) return; let th = $('.seg-thumb', seg), fresh = false; if (!th) { th = document.createElement('i'); th.className = 'seg-thumb'; seg.prepend(th); fresh = true; }
   const items = $$('[role="tab"],[role="radio"]', seg); if (items.length) items.forEach(b => { b.tabIndex = b.getAttribute('aria-selected') === 'true' || b.getAttribute('aria-checked') === 'true' ? 0 : -1; });
   const on = $('[aria-selected="true"],[aria-checked="true"]', seg); if (!on) return;
+  /* a new thumb lands in place; only a real tab change slides it */
+  if (fresh) th.style.transition = 'none';
   th.style.width = on.offsetWidth + 'px'; th.style.transform = `translateX(${on.offsetLeft}px)`;
+  if (fresh) { void th.offsetWidth; th.style.transition = ''; }
 }
 
 document.addEventListener('keydown', e => {
@@ -3501,6 +3511,13 @@ function refreshPlanCard() {
    ========================================================================== */
 const ROUTES = {}; let CURRENT = null; let DISPOSE = [];
 const onDispose = fn => DISPOSE.push(fn);
+/* refresh the current screen in place: no view transition, no jump to the top, focus kept where it can be */
+function rerender() {
+  if (!CURRENT || !ROUTES[CURRENT]) return route(); const y = scrollY, a = document.activeElement, id = a && a.id;
+  DISPOSE.forEach(f => { try { f(); } catch (e) { } }); DISPOSE = [];
+  try { ROUTES[CURRENT]({ same: true }); } catch (err) { console.error('Hookworthy: couldn’t refresh', CURRENT, err); }
+  initNavPill(); requestAnimationFrame(() => rovingTabs()); scrollTo(0, y); if (id) { const n = document.getElementById(id); n && n.focus({ preventScroll: true }); }
+}
 function go(name) { if (location.hash.replace('#', '') === name) route(); else location.hash = name; }
 /* go somewhere, then act once that screen has actually rendered (view transitions make the timing vary) */
 function goThen(name, fn) {
@@ -3986,7 +4003,8 @@ function paintField(ta) {
     const CM = '<span class="cm"></span>', seg = cut < 0 ? raw : (a, b = v.length) => b <= cut ? raw(a, b) : a >= cut ? (a === cut ? MARK() : '') + `<span class="xover">${raw(a, b)}</span>` : raw(a, cut) + MARK() + `<span class="xover">${raw(cut, b)}</span>`;
     const sh = UI.sharp && UI.sharp.id === id ? UI.sharp : null;
     const body = sh ? `${seg(0, sh.s)}<span class="sv${sh.flash ? ' draw' : ''}">${seg(sh.s, sh.s + sh.len)}</span>${CM}${seg(sh.s + sh.len)}` : !good ? seg(0, p) + CM + seg(p) : p <= fe ? `${hl}${seg(0, p)}${CM}${seg(p, fe)}</span>${seg(fe)}` : `${hl}${seg(0, fe)}</span>${seg(fe, p)}${CM}${seg(p)}`;
-    html = body + (g ? `<span class="ghost">${esc(g)}</span><span class="ghost-hint">${kbd('Tab')}</span>` : '') + '​';
+    if (g && !UI.ghost.at) UI.ghost.at = Date.now(); const gAge = g ? Date.now() - UI.ghost.at : 0;
+    html = body + (g ? `<span class="ghost" style="animation-delay:-${gAge}ms">${esc(g)}</span><span class="ghost-hint">${kbd('Tab')}</span>` : '') + '​';
   }
   mir.innerHTML = html;
   let ga = wrap.querySelector('.ghost-acc'); const gNow = UI.ghost && UI.ghost.id === id && v;
@@ -4046,9 +4064,11 @@ function paintHook() {
   const H = hookFor(t0.text, S.draft.tweets.filter(t => t.text.trim()).length), h = H; const sc = $('.sc', b); b.style.visibility = t0.text.trim() ? '' : 'hidden';
   b.classList.toggle('mine', !!H.me); b.dataset.tip = H.me ? `Tuned to your ${fmtN(H.m.n)} posts. Why this score?` : 'Why this score?';
   if (UI.lastHook != null && Math.floor(h.score / 10) !== Math.floor(UI.lastHook / 10)) { clearTimeout(UI.hsT); UI.hsT = setTimeout(() => srSay(`Hook score ${hookFor(S.draft.tweets[0].text).score}.`), 1500); }
-  if (h.score >= 70 && (UI.lastHook || 0) < 70 && UI.lastHook != null) { SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); } UI.lastHook = h.score;
+  /* celebrate crossing 70 once; it re-arms only after the line drops clearly below (62), so a wobble at 69/70 doesn't replay it */
+  if (h.score >= 70 && UI.hookArmed !== false && (UI.lastHook || 0) < 70 && UI.lastHook != null) { UI.hookArmed = false; SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); }
+  if (h.score < 62) UI.hookArmed = true; UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
-  b.classList.toggle('hi', h.score >= 70); b.classList.toggle('lo', h.score > 0 && h.score < 50); b.setAttribute('aria-label', `Hook score ${h.score || 'none yet'}. ${h.g ? h.g.reason : ''} Press for details`);
+  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 50); b.setAttribute('aria-label', `Hook score ${h.score || 'none yet'}. ${h.g ? h.g.reason : ''} Press for details`);
   if (h.score >= 70 && !b.classList.contains('was-hi')) { b.classList.add('was-hi'); } else if (h.score < 70) b.classList.remove('was-hi');
   const p = $('#predict');
   if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
@@ -4271,7 +4291,9 @@ function startDrag(e, handle) {
     el.style.transition = 'transform var(--d-spring) var(--spring)'; el.style.transform = '';
     const ids = $$('.tw', list).map(x => x.dataset.id); const changed = ids.join() !== S.draft.tweets.map(t => t.id).join();
     S.draft.tweets = ids.map(tById);
-    setTimeout(() => { el.classList.remove('dragging'); el.style.transition = ''; if (changed) { renderThread(); markSaving(); } }, 280);
+    /* let the release spring finish before the thread re-renders */
+    let settled = false; const settle = () => { if (settled) return; settled = true; el.classList.remove('dragging'); el.style.transition = ''; if (changed) { renderThread(); markSaving(); } };
+    el.addEventListener('transitionend', settle, { once: true }); setTimeout(settle, 420);
   };
   handle.addEventListener('pointermove', move); handle.addEventListener('pointerup', up); handle.addEventListener('pointercancel', up);
 }
@@ -4899,7 +4921,7 @@ ROUTES.replies = () => {
   $('#view').addEventListener('click', e => {
     if (e.target.closest('[data-rr],[data-rra]')) { radarAction(e); return; }
     const b = e.target.closest('[data-rp]'); if (!b) return;
-    if (b.dataset.rp === 'more') { UI.rpOpen = true; route(); return; }
+    if (b.dataset.rp === 'more') { UI.rpOpen = true; rerender(); return; }
     if (b.dataset.rp === 'alerts') openBreakoutSetup();
     if (b.dataset.rp === 'desk') openReplyDesk(S.queue.find(q => q.id === b.dataset.id));
     if (b.dataset.rp === 'ask') answerPost(S.queue.find(q => q.id === b.dataset.id));
@@ -6131,7 +6153,8 @@ function pulseNav(a, count = 1) {
 }
 function sendOff(snap, { count = 1, plats = S.platforms, published = false } = {}) {
   const tgt = navTarget(), cue = () => { SFX.play(plats.linkedin && !plats.x ? 'sendLi' : 'sendX'); if (count >= 3) setTimeout(() => SFX.play('sendMore'), 300); };
-  if (!snap || !tgt || REDUCED) { cue(); pulseNav(tgt, count); return; }
+  /* the shell can re-render while the card flies, so the nav link is looked up again when it lands */
+  if (!snap || !tgt || REDUCED) { cue(); setTimeout(() => pulseNav(navTarget(), count), 60); return; }
   const g = document.createElement('div'); g.className = 'sendoff'; g.setAttribute('aria-hidden', 'true');
   const layers = Math.min(3, count), r = snap.rect;
   g.innerHTML = Array.from({ length: layers }, (_, i) => `<div class="so-card" style="--i:${layers - 1 - i}">${i === layers - 1 ? `<p>${esc(clip(snap.text || ' ', 160))}</p><span class="so-m">${published ? 'Posting' : 'Scheduled'}${count > 1 ? ` · ${count} posts` : ''}</span>` : ''}</div>`).join('');
@@ -6144,7 +6167,7 @@ function sendOff(snap, { count = 1, plats = S.platforms, published = false } = {
     { transform: `translate(${dx}px,${dy}px) scale(.05) rotate(${tilt * 2}deg)`, opacity: .15, filter: 'blur(1px)' }
   ], { duration: 820 + Math.min(count, 6) * 35, easing: 'cubic-bezier(.55,0,.25,1)', fill: 'forwards' });
   setTimeout(cue, 120);
-  a.onfinish = () => { g.remove(); pulseNav(tgt, count); };
+  a.onfinish = () => { g.remove(); pulseNav(navTarget() || tgt, count); };
 }
 
 /* ---- the first hour, live: a small pill that keeps you company after you post ---- */
@@ -7356,6 +7379,8 @@ function onbStep1() {
   $('#onb-arch').onclick = () => { openImport('x'); const iv = setInterval(() => { if (!MODALS.length) { clearInterval(iv); if (HIST().length) { ONB.handle = S.user.handle; ONB.niche = ONB.niche || S.user.niche; onbStep2(); } } }, 400); onDispose(() => clearInterval(iv)); };
   if (ONB.handle) { ONB.t0 = Date.now(); }
 }
+/* each onboarding step puts focus on its heading, so screen readers hear the new step */
+function onbFocusHead() { requestAnimationFrame(() => { const h = $('#onb h1, #onb h2'); if (h && !(document.activeElement && $('#onb').contains(document.activeElement) && document.activeElement.matches('input,textarea'))) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }); }
 function onbStep2() {
   ONB.t0 = ONB.t0 || Date.now();
   const live = ONB.handle && LLM.server && LLM.server.x && !HIST().length, have = HIST().length >= 8;
@@ -7366,6 +7391,7 @@ function onbStep2() {
     if (aiOn()) { try { const res = await ask(HWCore.prompts.ideas({ niche: ONB.niche || S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox: S.ideas.map(i => cleanIdea(i.text)), count: 5 })); if (Array.isArray(res) && res.length) ONB.ideas = res.slice(0, 5).map(x => ({ text: String(x.text), kind: x.kind || 'Curiosity', topic: topicOf(String(x.text)) })); } catch (e) { /* offline ideas it is */ } }
   })();
   $('#onb').innerHTML = `${ghostFeedHTML()}<div class="onb-card" style="position:relative"><h2 class="display" style="font-size:clamp(34px,5vw,48px)">Reading the room…</h2><div class="reading" role="status" aria-live="polite">${steps.map((s, i) => `<div class="st" data-i="${i}"><span class="ck">${ic('check')}</span><span>${esc(s)}</span></div>`).join('')}</div><button class="btn ghost sm" id="onb-skip">Skip the suspense</button></div>`;
+  onbFocusHead();
   const fl = { stop() {} };
   /* nothing to read and no Claude: no loading theatre, straight to the result */
   const quick = !aiOn() && !live && !have;
@@ -7409,6 +7435,7 @@ function onbStep3() {
     </div>
     <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap"><a class="btn lg" href="#today">Go to Today${ic('arrow')}</a></div>
   </div>`;
+  onbFocusHead();
   let seed = hash(handle) % 9999; onbTry();
   $('#onb-more').onclick = () => { $('#onb-ideas').innerHTML = onbIdeas(genIdeas(5, ++seed)); };
   $('#onb-ideas').onclick = e => {
@@ -7685,7 +7712,7 @@ function showAngles(src, kind) {
 }
 function captureGo() {
   const inp = $('#cap-in'); const v = inp.value.trim(); const b = $('#cap-go');
-  if (!v) { inp.focus(); inp.placeholder = 'Type or paste something first. One word counts.'; $('#cap').animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }], { duration: 220 }); return; }
+  if (!v) { inp.focus(); inp.placeholder = 'Type or paste something first. One word counts.'; if (!REDUCED) $('#cap').animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }], { duration: 220 }); return; }
   if (/^https?:\/\/\S+$/i.test(v)) {
     const p = parseLink(v); if (!p) { toast('That link looks broken. Check it and try again.', { tone: 'err', icon: 'link' }); return; }
     b.classList.add('is-loading');
@@ -7693,7 +7720,7 @@ function captureGo() {
     return;
   }
   addIdea({ src: 'note', text: v }, true); drawInbox(); inp.value = ''; toast('Saved to Ideas.', { icon: 'inbox' });
-  const first = $('#inbox .inbox-row'); first && first.animate([{ background: 'var(--accent-soft)' }, { background: 'transparent' }], { duration: 1200 });
+  const first = $('#inbox .inbox-row'); first && !REDUCED && first.animate([{ background: 'var(--accent-soft)' }, { background: 'transparent' }], { duration: 1200 });
 }
 function fromScreenshot(f) {
   const ta = $('#cap-in'); const note = ta && ta.value.trim();
