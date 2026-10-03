@@ -230,10 +230,12 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 
 The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. It is about 9 screens at 1440. Every rule is scoped under `.hw27`.
 
-1. **Hero**: "Good ideas die in bad first lines." with one sub and two CTAs (Start free, Open the demo). The visual is a live grader: soft words get a wavy underline with the reason, a dial scores the line, and **Sharpen** shows an honest rewrite as a word diff with the real score jump. **Keep it** opens Write with the line. After you type, the nav CTA reads "Keep your N →".
+1. **Hero**: "Good ideas die / in *bad* / *first lines.*" (three set lines; the squiggle sits under "first lines." only and never touches the sub) with one sub, one primary (Start free) and one ghost link (Look around the app). The visual is a live grader: soft words get a wavy underline with the reason, a dial scores the line, and **Sharpen** shows an honest rewrite as a word diff with the real score jump. **Keep it** opens Write with the line. After you type, the nav CTA reads "Keep your N →". From 1100px the hero fills most of the first screen with both halves centred on each other; the measure grows to 1360px at 1600px and 1520px at 2200px, and the grader card scales with it.
 2. **The problem**: one row of void posts that drifts with scroll (no lagging transition; cards min(330px, 100vw − 48px) on phones).
 3. **Story** (full-bleed plum, beats on a shared subgrid so the cards line up; they swipe sideways below 900px): Priya's post in three beats: the draft (48), sharpened in her voice (80, with `[your number]` left for her), scheduled Tue 8:40 AM. No likes or views.
-4. **Built around the hook**: a bento in two 7/5 rows: Hook score (Clear, Open loop, Specific, Tension, Short) and Your voice (tone/polish sliders and the never-say list), then What's working and Reply radar with breakout alerts. Below 760px the cards swipe sideways.
+   **How it works** (round 30): an in-page player built from the app's own pieces (the dial, soft-word marks, the Sharpen diff and score jump, the schedule sheet, a queue card landing in the week, J/K replies). Five beats, about 21 seconds, looping. It plays only while on screen and the tab is visible, has a visible pause button, and the step list on the left (a row of bars below 1000px) jumps to any step. Under reduced motion it never plays: each step shows its finished frame.
+4. **Built around the hook**: a bento in two 7/5 rows. Each card is a label, one short line and one visual, with no paragraph: Hook score (a Your draft / Sharpened switch, the dial, five bars with a mark at 70; it flips by itself while on screen until you pick one or hover), Your voice (Tone and Polish sliders that re-say one sample line), What's working (one post, three tags, the formula, **Use this pattern**), and Reply radar (a breakout alert and one post with your drafted reply). Below 760px the cards swipe sideways.
+   **Sticky call** (round 30): a small pill at the bottom right on desktop, the 56px bar on phones. It steps aside whenever a link, button or field is under it, and comes back once the spot is clear.
 5. **Previews**: one phone with X / Threads / LinkedIn / Bluesky tabs. LinkedIn shows the fold check.
 6. **Scheduling**: the app's own calendar (`calGridHTML`) with a trading week, in the visitor's time zone.
 7. **Who it's for**: Crypto & trading first, then Founders, Creators, Ghostwriters. Each shows first lines before and after, with real hook scores.
@@ -297,7 +299,7 @@ Most users write about crypto and trading. The product shows them first-class: t
 Choose a niche, then:
 - **Trends:** three trends, with the one you're early on outlined in ink and given a "Post on it first" button.
 - **Popped posts:** real-looking posts from accounts in your niche, each with three reasons it spread (early, hook, relatable, timing, format, proof) and the structure written out with placeholders marked.
-- **Write your take:** loads that structure into the composer with [brackets] to fill.
+- **Use this pattern:** loads that formula into the composer with [brackets] to fill.
 
 The accounts are illustrative and labelled as such.
 
