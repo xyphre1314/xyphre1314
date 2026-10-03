@@ -825,7 +825,9 @@ body:has(.scrim) #toasts{ z-index:1001; } @media (min-width:761px){ body:has(.sc
 .riffbar .chip:nth-child(2){ animation-delay:20ms } .riffbar .chip:nth-child(3){ animation-delay:40ms } .riffbar .chip:nth-child(4){ animation-delay:60ms } .riffbar .chip:nth-child(5){ animation-delay:80ms } .riffbar .chip:nth-child(6){ animation-delay:100ms } .riffbar .chip:nth-child(7){ animation-delay:120ms } .riffbar .chip:nth-child(8){ animation-delay:140ms }
 .riffbar .chip .icon{ color:var(--text-3); }
 .riffbar .chip:hover .icon{ color:var(--accent-text); }
-.diff{ margin-top:10px; border-radius:14px; background:var(--surface); box-shadow:var(--sh-3); overflow:hidden; animation:rise var(--d-snap) var(--ease-out) both; }
+.diff{ margin-top:10px; border-radius:14px; background:var(--surface); box-shadow:var(--sh-3); overflow:hidden; animation:diffin var(--d-snap) var(--ease-out) both; }
+/* the card rises once without blur (the words inside do the resolving); later redraws, like flipping versions, don't rise again */
+@keyframes diffin{ from{ opacity:0; transform:translateY(8px); } } .diff.seen{ animation:none; }
 .force-dark .diff,:root[data-theme="dark"] .diff:not(.force-light .diff){ background:var(--surface-2); }
 .diff-h{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:10px 12px 10px 14px; border-bottom:1px solid var(--border); }
 .diff-h .grow{ flex:1; }
@@ -1243,6 +1245,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .ot-row{ display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start; } .ot-row p{ font-size:15px; line-height:1.5; white-space:pre-wrap; min-width:0; }
 .ot-row .hook{ height:24px; } .ot-row.better{ padding:12px; border-radius:var(--r-md); background:var(--surface-2); }
 .ot-diff .vw{ background:var(--marker-soft); border-radius:3px; box-shadow:0 0 0 1px var(--marker-soft); }
+.ot-diff del.vw{ background:none; box-shadow:none; color:var(--text-3); text-decoration:line-through; text-decoration-color:var(--accent); } .ot-diff ins{ text-decoration:none; background:var(--marker-soft); border-radius:3px; }
 .ot-why{ font-size:13px; }
 .onb-result > *{ animation:rise var(--d-slow) var(--ease-out) both; }
 .onb-result > *:nth-child(2){ animation-delay:80ms } .onb-result > *:nth-child(3){ animation-delay:160ms }
@@ -3116,6 +3119,44 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 /* a phone wraps the pill to two rows, so every option stays on screen and inside the field */
 @media (max-width:640px){ .sharpen{ width:max-content; max-width:calc(100% + 8px); flex-wrap:wrap; row-gap:2px; border-radius:22px; } .sharpen:has(.sh-in){ flex-wrap:nowrap; } .sharpen .sh-in{ flex:1 1 auto; min-width:0; } }
 @media (pointer:coarse){ .instr .input, .instr .btn, .instr-recent .chip, .instr-note button, .sharpen button, .sharpen .sh-in{ min-height:44px; } }
+/* Sharpen motion (round 31). Opacity and transform do the moving; every reveal is done inside 400ms; typing cuts it short.
+   While Claude writes: the chosen words pulse left to right in the marker tint, and the pill breathes three dots.
+   A version lands: words that go strike through and fade (110ms), then the new words resolve from a soft blur, one after another,
+   under a plum tint that settles. Flipping versions crossfades the words and slides the count. Keep: a ring where the words end. */
+.tw-mirror .sv.think{ background:none; }
+.tw-mirror .sv.think .tk{ background:color-mix(in srgb,var(--accent) 26%,transparent); border-radius:3px; -webkit-box-decoration-break:clone; box-decoration-break:clone; animation:shthink 1.3s var(--ease-in-out) infinite both; animation-delay:calc(var(--i) * 110ms + var(--age, 0ms)); }
+@keyframes shthink{ 0%,70%,100%{ opacity:.28; } 30%{ opacity:1; } }
+.field-wrap.sh-rev .tw-input{ color:transparent; }
+.field-wrap.sh-rev .tw-input::selection{ color:transparent; background:transparent; }
+.field-wrap.sh-think .tw-input::selection{ color:inherit; background:transparent; }
+.field-wrap.sh-rev .tw-mirror{ color:var(--text-1); }
+.tw-mirror .sv.rev{ background:var(--marker-soft); }
+.tw-mirror .ow{ text-decoration:line-through; text-decoration-color:var(--accent); text-decoration-thickness:1.5px; animation:shout 110ms var(--ease-out) both; }
+.tw-mirror .ow.cy{ text-decoration:none; animation-duration:70ms; }
+@keyframes shout{ to{ opacity:.18; } }
+.tw-mirror .nw{ border-radius:3px; animation:shin 240ms var(--ease-out) both; }
+@keyframes shin{ 0%{ opacity:0; filter:blur(4px); background-color:transparent; } 45%{ background-color:var(--marker); } 100%{ opacity:1; filter:blur(0); background-color:transparent; } }
+.tw-mirror .sv.cut{ display:inline-block; width:2px; height:1.1em; margin:0 1px; vertical-align:-.18em; background:var(--accent); border-radius:1px; }
+.sharpen .sh-wait{ display:inline-flex; align-items:center; gap:3px; padding:0 10px 0 4px; opacity:.85; }
+.sharpen .sh-wait i{ width:4px; height:4px; border-radius:50%; background:currentColor; animation:shdot 1s var(--ease-in-out) infinite; }
+.sharpen .sh-wait i:first-of-type{ margin-left:3px; } .sharpen .sh-wait i:nth-of-type(2){ animation-delay:.15s; } .sharpen .sh-wait i:nth-of-type(3){ animation-delay:.3s; }
+@keyframes shdot{ 0%,100%{ opacity:.25; transform:translateY(0); } 50%{ opacity:1; transform:translateY(-2px); } }
+.sharpen .n .nn{ display:inline-block; }
+.sharpen .n .nn.fwd{ animation:shnf 200ms var(--ease-out) both; } .sharpen .n .nn.back{ animation:shnb 200ms var(--ease-out) both; }
+@keyframes shnf{ from{ opacity:0; transform:translateY(6px); } } @keyframes shnb{ from{ opacity:0; transform:translateY(-6px); } }
+.sharpen .sh-score{ display:inline-flex; align-items:center; gap:3px; padding:0 8px 0 6px; font:600 var(--t-12)/1 var(--font-mono); font-variant-numeric:tabular-nums; }
+.sharpen .sh-score .a{ opacity:.55; } .sharpen .sh-score .icon{ width:11px; height:11px; opacity:.6; } .sharpen .sh-score.down{ opacity:.7; }
+.sharpen .sh-score b, .delta b{ display:inline-block; min-width:2ch; font-weight:inherit; }
+.sharpen .sh-score b.pop, .delta b.pop{ animation:shpop 320ms var(--spring-snap); }
+@keyframes shpop{ 40%{ transform:scale(1.24); } }
+.sh-pop{ position:absolute; z-index:3; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; box-shadow:0 0 0 1.5px var(--accent); pointer-events:none; animation:shring 420ms var(--ease-out) forwards; }
+@keyframes shring{ from{ transform:scale(.2); opacity:.9; } to{ transform:scale(1.7); opacity:0; } }
+.hk-dial .sc.spring{ animation:dialspring 420ms var(--spring-snap); } @keyframes dialspring{ 35%{ transform:scale(1.12); } }
+.diff.reveal .diff-b .chg ins{ animation:shinb 240ms var(--ease-out) both; animation-delay:var(--d, 0ms); }
+@keyframes shinb{ from{ opacity:0; filter:blur(4px); } }
+.diff.reveal .diff-b .chg del{ animation:shdel 160ms var(--ease-out) both; animation-delay:var(--d, 0ms); }
+@keyframes shdel{ from{ opacity:.35; } }
+@media (prefers-reduced-motion:reduce){ .tw-mirror .sv.think .tk{ animation:none; opacity:.75; } .tw-mirror .nw, .tw-mirror .ow, .sh-pop, .diff.reveal .diff-b .chg ins, .diff.reveal .diff-b .chg del{ animation:none; } }
 .hk-main{ display:flex; gap:10px; align-items:flex-start; } .hk-main p{ font-size:14px; }
 .hk-how summary{ cursor:pointer; font-size:12px; color:var(--text-3); } .hk-how .bars{ margin-top:8px; } .hk-how p{ font-size:12px; margin-top:6px; }
 .vm-line{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .vm-line b{ color:var(--text-1); font-variant-numeric:tabular-nums; } .vm-line .icon{ color:var(--text-3); }
@@ -3764,10 +3805,11 @@ const AI = {
   },
   contrarian(t) {
     const p = AI.punchier(t); const topic = topicOf(t);
-    if (/^(unpopular opinion|hot take)/i.test(p)) return tidy(`I disagree with the usual take on ${topic}.\n\n${p.replace(/^(unpopular opinion|hot take):?\s*/i, '')}`);
+    if (/^(unpopular opinion|hot take)/i.test(p)) return tidy(`I disagree with the usual take here.\n\n${p.replace(/^(unpopular opinion|hot take):?\s*/i, '')}`);
     const ss = sentences(p).map(x => x.trim()).filter(Boolean); const k = ss.findIndex(x => /\b(should|need to|must|always|never|stop|don[’']t)\b/i.test(x));
     if (k >= 0) { const rest = ss.filter((_, i) => i !== k).join(' '); return tidy(`I’ll say it plainly: ${lcFirst(ss[k])}${rest ? `\n\n${rest}` : ''}`); }
-    return tidy(pick([`I disagree with the usual take on ${topic}.\n\n${p}`, `Here’s where I part ways with the usual advice on ${topic}:\n\n${p}`], t));
+    /* no topic guessed into the frame: a wrong guess ("the usual take on lost") reads worse than none */
+    return tidy(pick([`Here’s where I part ways with the usual advice:\n\n${p}`, `I don’t buy the usual take here.\n\n${p}`], t));
   },
   curiosity(t) {
     t = AI.punchier(t); const ss = sentences(t.trim()).filter(x => x.trim());
@@ -3791,6 +3833,8 @@ const AI = {
     return t.replace(/[\p{L}’']+/gu, w => { if (slang.test(w)) return w; const k = w.toLowerCase().replace(/’/g, "'"); const r = D[k]; if (!r) return w; return w[0] === w[0].toUpperCase() ? cap(r) : r; });
   }
 };
+/* punchier, shorter, clearer, bolder and more human on a whole post: the Sharpen engine (core.js), first checked version, or the post as it was */
+['punchier', 'shorter', 'clearer', 'bolder', 'human'].forEach(k => { AI[k] = t => { const r = HWCore.SHARPEN.sharpen(k, String(t || ''), 0, String(t || '').length); return r.vars.length ? r.vars[0].full : String(t || ''); }; });
 const PHRASES = {
   es: [['most people', 'la mayoría de la gente'], ['side projects', 'proyectos paralelos'], ['side project', 'proyecto paralelo'], ['the fix', 'la solución'], ['in month', 'en el mes'], ['charge more', 'cobra más'], ['than you think', 'de lo que crees'], ['for years', 'durante años'], ['nobody tells you', 'nadie te cuenta'], ['what finally worked', 'lo que por fin funcionó']],
   fr: [['most people', 'la plupart des gens'], ['side projects', 'projets perso'], ['side project', 'projet perso'], ['the fix', 'la solution'], ['in month', 'au mois'], ['charge more', 'facture plus'], ['than you think', 'que tu ne le penses'], ['for years', 'pendant des années'], ['nobody tells you', 'personne ne te dit'], ['what finally worked', 'ce qui a enfin marché']],
@@ -4764,11 +4808,14 @@ function paintField(ta) {
     const raw = (a, b) => esc(v.slice(a, b));
     const CM = '<span class="cm"></span>', seg = cut < 0 ? raw : (a, b = v.length) => b <= cut ? raw(a, b) : a >= cut ? (a === cut ? MARK() : '') + `<span class="xover">${raw(a, b)}</span>` : raw(a, cut) + MARK() + `<span class="xover">${raw(cut, b)}</span>`;
     const sh = UI.sharp && UI.sharp.id === id ? UI.sharp : null;
-    const body = sh ? `${seg(0, sh.s)}<span class="sv${sh.flash ? ' draw' : ''}">${seg(sh.s, sh.s + sh.len)}</span>${CM}${seg(sh.s + sh.len)}` : !good ? seg(0, p) + CM + seg(p) : p <= fe ? `${hl}${seg(0, p)}${CM}${seg(p, fe)}</span>${seg(fe)}` : `${hl}${seg(0, fe)}</span>${seg(fe, p)}${CM}${seg(p)}`;
+    const body = sh ? sharpMirror(sh, v, seg, CM) : !good ? seg(0, p) + CM + seg(p) : p <= fe ? `${hl}${seg(0, p)}${CM}${seg(p, fe)}</span>${seg(fe)}` : `${hl}${seg(0, fe)}</span>${seg(fe, p)}${CM}${seg(p)}`;
     if (g && !UI.ghost.at) UI.ghost.at = Date.now(); const gAge = g ? Date.now() - UI.ghost.at : 0;
     html = body + (g ? `<span class="ghost" style="animation-delay:-${gAge}ms">${esc(g)}</span><span class="ghost-hint">${kbd('Tab')}</span>` : '') + '​';
   }
   mir.innerHTML = html;
+  /* while a Sharpen version reveals, the mirror draws the words (so each can animate) and the field's own text steps back */
+  const shr = UI.sharp && UI.sharp.id === id && UI.sharp.rev && Date.now() - UI.sharp.rev.at < SH_END * shSlow(); wrap.classList.toggle('sh-rev', !!shr);
+  wrap.classList.toggle('sh-think', !!(UI.sharp && UI.sharp.id === id && UI.sharp.think));
   let ga = wrap.querySelector('.ghost-acc'); const gNow = UI.ghost && UI.ghost.id === id && v;
   if (gNow && !FINE) { if (!ga) { ga = document.createElement('button'); ga.type = 'button'; ga.className = 'ghost-acc'; ga.innerHTML = `Use suggestion ${ic('right', 'xs')}`; ga.addEventListener('pointerdown', ev => { ev.preventDefault(); acceptGhost(ta); }); wrap.append(ga); } } else if (ga) ga.remove();
   const hh = mir.offsetHeight + 'px'; if (ta.style.height !== hh) ta.style.height = hh;
@@ -4829,7 +4876,11 @@ function paintHook() {
   /* celebrate crossing 70 once; it re-arms only after the line drops clearly below (62), so a wobble at 69/70 doesn't replay it */
   if (h.score >= 70 && UI.hookArmed !== false && (UI.lastHook || 0) < 70 && UI.lastHook != null) { UI.hookArmed = false; SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); }
   if (h.score < 62) UI.hookArmed = true; UI.lastHook = h.score;
-  sc.style.setProperty('--v', h.score); $('span', sc).textContent = h.score || '–';
+  sc.style.setProperty('--v', h.score);
+  /* after Keep, the dial counts from the old score to the new one and springs once */
+  const from = UI.hookFrom; UI.hookFrom = null;
+  if (from != null && h.score && from !== h.score && !REDUCED) { countTo($('span', sc), from, h.score); sc.classList.remove('spring'); void sc.offsetWidth; sc.classList.add('spring'); }
+  else $('span', sc).textContent = h.score || '–';
   if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 50); b.setAttribute('aria-label', `Hook score ${h.score || 'none yet'}. ${h.g ? h.g.reason : ''} Press for details`);
   if (h.score >= 70 && !b.classList.contains('was-hi')) { b.classList.add('was-hi'); } else if (h.score < 70) b.classList.remove('was-hi');
   const p = $('#predict');
@@ -4875,17 +4926,21 @@ function riffbarHTML(id) {
 const riffOf = d => d.kind === 'instruct' ? { icon: 'write', label: `“${esc(clip(d.instr || '', 48))}”` } : RIFFS.find(x => x.k === d.kind);
 function diffHTML() {
   const d = UI.diff;
-  if (d.pending) { const r0 = riffOf(d); return `<div class="diff pending" role="status" aria-live="polite"><div class="diff-h">${ic(r0.icon, 'sm')}<b style="font-size:13px">${r0.label}</b><span class="faint" style="font-size:12px">${d.kind === 'instruct' ? 'Rewriting with your note…' : 'Writing three rewrites in your voice…'}</span><span class="grow"></span></div><div class="diff-b"><span class="skel"></span><span class="skel" style="width:72%"></span><span class="skel" style="width:48%"></span></div><div class="diff-f"><span class="grow"></span><button class="btn sm" data-cact="diffretry">Stop</button></div></div>`; } const n = d.chunks.filter(c => c.eq === undefined).length; const on = d.chunks.filter(c => c.eq === undefined && c.on).length;
+  if (d.pending) { const r0 = riffOf(d), sn = d.seen; d.seen = true; return `<div class="diff pending${sn ? ' seen' : ''}" role="status" aria-live="polite"><div class="diff-h">${ic(r0.icon, 'sm')}<b style="font-size:13px">${r0.label}</b><span class="faint" style="font-size:12px">${d.kind === 'instruct' ? 'Rewriting with your note…' : 'Writing three rewrites in your voice…'}</span><span class="grow"></span></div><div class="diff-b"><span class="skel"></span><span class="skel" style="width:72%"></span><span class="skel" style="width:48%"></span></div><div class="diff-f"><span class="grow"></span><button class="btn sm" data-cact="diffretry">Stop</button></div></div>`; } const n = d.chunks.filter(c => c.eq === undefined).length; const on = d.chunks.filter(c => c.eq === undefined && c.on).length;
   const now = composeDiff(d.chunks); const i = tIndex(d.id);
+  /* a fresh result reveals: changes resolve in left to right and the score counts up (under 400ms; instant with reduced motion) */
+  const fresh = !REDUCED && d.reveal && Date.now() - d.reveal < 450, nChg = Math.max(1, n), gap = Math.min(28, Math.floor(170 / nChg));
   let delta = '';
-  if (i === 0) { const a = hookScore(d.before).score, b = hookScore(now).score; delta = `<span class="delta ${b >= a ? 'up' : 'down'}" data-tip="Hook score, before and after">Hook ${a} → ${b}</span>`; }
+  if (i === 0) { const a = hookScore(d.before).score, b = hookScore(now).score, from = d.fromScore != null ? d.fromScore : a; delta = `<span class="delta ${b >= a ? 'up' : 'down'}" data-tip="Hook score, before and after">Hook ${a} → <b data-to="${b}">${fresh && b !== from ? from : b}</b></span>`; }
   else { const dl = now.length - d.before.length; delta = `<span class="delta ${dl <= 0 ? 'up' : 'down'}">${dl > 0 ? '+' : ''}${dl} chars</span>`; }
   const r = riffOf(d);
-  const body = d.chunks.slice(0, d.shown ?? d.chunks.length).map((c, k) => c.eq !== undefined ? esc(c.eq) : `<span class="chg ${c.on ? '' : 'off'} ${c.newNum ? 'newnum' : ''}" data-ci="${k}" role="button" tabindex="0" aria-pressed="${c.on}"><span class="sr">${c.newNum ? 'A new number you didn’t write, off until you check it. ' : ''}${c.del ? `Remove “${esc(c.del)}”. ` : ''}${c.ins ? `Add “${esc(c.ins)}”. ` : ''}${c.on ? 'Change on.' : 'Change undone.'}</span>${c.del ? markSeg('del', c.del) : ''}${c.ins ? markSeg('ins', c.ins) : ''}${!c.on && !c.del ? '<span class="gap">+</span>' : ''}</span>`).join('');
-  return `<div class="diff" role="region" aria-label="Suggested rewrite">
+  let ci = 0;
+  const body = d.chunks.slice(0, d.shown ?? d.chunks.length).map((c, k) => c.eq !== undefined ? esc(c.eq) : `<span class="chg ${c.on ? '' : 'off'} ${c.newNum ? 'newnum' : ''}" style="--d:${ci++ * gap}ms" data-ci="${k}" role="button" tabindex="0" aria-pressed="${c.on}"><span class="sr">${c.newNum ? 'A new number you didn’t write, off until you check it. ' : ''}${c.del ? `Remove “${esc(c.del)}”. ` : ''}${c.ins ? `Add “${esc(c.ins)}”. ` : ''}${c.on ? 'Change on.' : 'Change undone.'}</span>${c.del ? markSeg('del', c.del) : ''}${c.ins ? markSeg('ins', c.ins) : ''}${!c.on && !c.del ? '<span class="gap">+</span>' : ''}</span>`).join('');
+  const seen = d.seen; d.seen = true;
+  return `<div class="diff${fresh ? ' reveal' : ''}${seen ? ' seen' : ''}" role="region" aria-label="Suggested rewrite">
     <div class="diff-h">${ic(r.icon, 'sm')}<b style="font-size:13px">${r.label}${d.lang ? ` · ${{ es: 'Spanish', fr: 'French', de: 'German' }[d.lang]}` : ''}</b><span class="faint diff-hint" style="font-size:12px">${d.alts ? `Version ${d.alt + 1} of ${d.alts.length} · ` : ''}${n} change${n === 1 ? '' : 's'}${on < n ? `, ${n - on} undone` : ''}. ${matchMedia('(pointer:coarse)').matches ? 'Tap' : 'Click'} one to undo it</span><span class="grow"></span>${delta}</div>
     ${d.why ? `<p class="diff-why">${esc(d.why)}</p>` : ''}${d.chunks.some(c => c.newNum) ? `<p class="diff-num">${ic('target', 'sm')}<span>This version adds a number you didn’t write. It’s off until you turn it on, so only keep it if it’s true.</span></p>` : ''}<div class="diff-b ${d.shown != null && d.shown < d.chunks.length ? 'writing' : ''}">${body}</div>
-    <div class="diff-f">${d.kind === 'instruct' && !d.alts ? '' /* a Basic-mode note rewrite is fixed: trying again gives the same one */ : `<button class="btn ghost sm" data-cact="diffretry" data-tip="Another version">${ic('shuffle', 'sm')} ${d.alts && d.alt < d.alts.length - 1 ? 'Next version' : 'Try again'}</button>`}<span class="grow"></span><button class="btn sm" data-cact="diffno">Discard ${kbd('Esc')}</button><button class="btn sm primary" data-cact="diffyes" id="diff-yes">Keep ${kbd('↵')}</button></div>
+    <div class="diff-f">${(d.kind === 'instruct' || d.basic) && !d.alts ? '' /* a single Basic-mode version is fixed: trying again gives the same one */ : `<button class="btn ghost sm" data-cact="diffretry" data-tip="Another version">${ic('shuffle', 'sm')} ${d.alts && d.alt < d.alts.length - 1 ? 'Next version' : d.basic ? 'Back to version 1' : 'Try again'}</button>`}<span class="grow"></span><button class="btn sm" data-cact="diffno">Discard ${kbd('Esc')}</button><button class="btn sm primary" data-cact="diffyes" id="diff-yes">Keep ${kbd('↵')}</button></div>
   </div>`;
 }
 /* Improve: one panel for everything that makes a post better. Score (first post), Rewrites, Formulas (first post) */
@@ -4914,6 +4969,7 @@ function renderExtras(id) {
     }
   }
   el.innerHTML = (open ? improveHTML(id, i) : '') + (UI.diff && UI.diff.id === id ? diffHTML() : '');
+  const db = $('.diff.reveal .delta b', el); if (db && +db.textContent !== +db.dataset.to) countTo(db, +db.textContent, +db.dataset.to);
   const tEl = el.closest('.tw'); tEl.classList.toggle('has-meta', !!el.innerHTML);
   const rb = $('[data-cact="riff"]', tEl); rb && rb.setAttribute('aria-expanded', !!open); const tl = $('.imp-tabs', el); tl && syncSeg(tl);
 }
@@ -5859,36 +5915,31 @@ function openGifs(i) {
   };
 }
 
-/* ---------- Sharpen: select any words, flip through three takes on just those words ----------
-   Rewrites the part you mean and leaves the rest alone. Free, instant, previewed in place. */
-const SHARP = [{ k: 'punchier', label: 'Punchier' }, { k: 'shorter', label: 'Shorter' }, { k: 'clearer', label: 'Clearer' }, { k: 'bolder', label: 'Bolder' }, { k: 'human', label: 'More human' }];
+/* ---------- Sharpen: select any words, flip through up to three versions of just those words ----------
+   Rewrites the part you mean and leaves the rest alone. Basic mode runs the shared engine in core.js on this device.
+   With Claude on, Claude writes the versions and each one passes the same checks (core.js) before you see it:
+   only the selected words, nothing echoed from around them, same numbers, tickers and "not", no hype, no repeats.
+   If none pass, Basic versions stand in. Free and unlimited: it only touches the words you chose. */
+const SHE = HWCore.SHARPEN;
+const SHARP = SHE.OPTS.map(k => ({ k, label: SHE.LABEL[k] }));
 const PLAIN = [[/\butili[sz]e\b/gi, 'use'], [/\bin order to\b/gi, 'to'], [/\bfacilitate\b/gi, 'help'], [/\bprior to\b/gi, 'before'], [/\bsubsequently\b/gi, 'then'], [/\ba number of\b/gi, 'some'], [/\bat this point in time\b/gi, 'now'], [/\bdue to the fact that\b/gi, 'because'], [/\bcommence\b/gi, 'start'], [/\bendeavou?r\b/gi, 'try'], [/\boptimi[sz]e\b/gi, 'improve'], [/\bin terms of\b/gi, 'for'], [/\bwith regards? to\b/gi, 'about'], [/\bis able to\b/gi, 'can'], [/\bthe majority of\b/gi, 'most']];
-const CONTRACTIONS = [[/\bdo not\b/gi, 'don’t'], [/\bdoes not\b/gi, 'doesn’t'], [/\bI am\b/g, 'I’m'], [/\bit is\b/gi, 'it’s'], [/\bwe are\b/gi, 'we’re'], [/\byou are\b/gi, 'you’re'], [/\bcannot\b/gi, 'can’t'], [/\bwill not\b/gi, 'won’t'], [/\bI have\b/g, 'I’ve'], [/\bthat is\b/gi, 'that’s'], [/\bthey are\b/gi, 'they’re'], [/\bis not\b/gi, 'isn’t']];
-const QUAL = /\b(i think|i feel like|i believe|maybe|perhaps|probably|kind of|sort of|a bit|somewhat|arguably|in my opinion|it seems like|honestly|really|just)\s+/gi;
 const subAll = (t, list) => list.reduce((x, [r, w]) => x.replace(r, m => /^[A-Z]/.test(m) ? cap(w) : w), t);
-function sharpVariants(k, frag) {
-  const lead = frag.match(/^\s*/)[0], trail = frag.match(/\s*$/)[0], core = frag.trim(); if (!core) return [];
-  const bare = x => tidy(x.replace(QUAL, '')).trim(), clause = x => (x.split(/[,;:—–]\s*/)[0] || x).trim();
-  const v = {
-    punchier: () => [AI.punchier(core), bare(AI.punchier(core)).replace(/,\s+/g, '. '), clause(bare(core))],
-    shorter: () => [AI.shorter(core), bare(subAll(core, PLAIN)).replace(/\b(that|very|actually|basically|literally|totally)\s+/gi, ''), clause(core)],
-    clearer: () => [subAll(core, PLAIN), subAll(bare(core), PLAIN), subAll(core, PLAIN).replace(/\s*\([^)]*\)/g, '')],
-    bolder: () => [bare(core), bare(core).replace(/\bshould\b/gi, 'must').replace(/\bcould\b/gi, 'will').replace(/\btry to\b/gi, ''), `${bare(core).replace(/[.!?]*$/, '')}. Full stop.`],
-    human: () => [subAll(core, CONTRACTIONS), `Here’s the thing: ${subAll(core, CONTRACTIONS).replace(/^./, c => c.toLowerCase())}`, subAll(core, CONTRACTIONS).replace(/^./, c => c.toLowerCase())]
-  }[k]();
-  const endsP = /[.!?:…]$/.test(core), low = /^[a-z]/.test(core);
-  const fit = x => { x = tidy(x).trim(); if (!endsP) x = x.replace(/\.+$/, ''); if (low && k !== 'human') x = x.replace(/^./, c => c.toLowerCase()); return x; };
-  return [...new Set(v.map(fit))].filter(x => x && x !== core).slice(0, 3).map(x => lead + x + trail);
-}
+/* Basic versions for one option on one selection (the quality checker calls this too) */
+const sharpenCompute = (k, post, s, e) => SHE.sharpen(k, post, s, e);
 const SH = { el: null, ta: null, st: null, ask: null };
+/* motion: old words strike and fade (SH_A ms), then new words resolve in, staggered, all inside SH_END ms */
+const SH_A = 110, SH_END = 400;
+/* frame captures can slow the motion down (window.__hwMotion = 5 with the browser's animation rate at 1/5); 1 everywhere else */
+const shSlow = () => window.__hwMotion || 1;
 function sharpenHide() { if (SH.ask) { SH.ask.ctl && SH.ask.ctl.abort(); SH.ask = null; } if (SH.st) sharpenCancel(); if (SH.el) { const el = SH.el; el.classList.remove('on'); setTimeout(() => { if (!el.classList.contains('on')) el.remove(); }, 180); SH.el = null; } }
 function sharpenPlace() {
   const el = SH.el, ta = SH.ta; if (!el || !ta) return; const wrap = ta.parentElement, mir = wrap.firstElementChild;
   /* measure where the selection starts: a throwaway mirror pass, then the real paint puts it back */
-  const at = SH.st ? SH.st.s : ta.selectionStart; const keep = mir.innerHTML; mir.innerHTML = esc(ta.value.slice(0, at)) + '<span class="ss"></span>';
+  const v = SH.st && SH.st.vars ? SH.st.vars[SH.st.i] : null;
+  const at = v ? v.s : SH.st ? SH.st.s : ta.selectionStart; const keep = mir.innerHTML; mir.innerHTML = esc(ta.value.slice(0, at)) + '<span class="ss"></span>';
   const ss = $('.ss', mir), x = ss.offsetLeft, y = ss.offsetTop;
   /* on the first line the bar would sit on the author's name, so it drops below the selection instead */
-  const end = SH.st ? SH.st.s + SH.st.vars[SH.st.i].length : ta.selectionEnd; mir.innerHTML = esc(ta.value.slice(0, end)) + '<span class="ss"></span>'; const ye = $('.ss', mir).offsetTop + $('.ss', mir).offsetHeight; mir.innerHTML = keep;
+  const end = v ? v.s + v.text.length : SH.st ? SH.st.e : ta.selectionEnd; mir.innerHTML = esc(ta.value.slice(0, end)) + '<span class="ss"></span>'; const ye = $('.ss', mir).offsetTop + $('.ss', mir).offsetHeight; mir.innerHTML = keep;
   const w = el.offsetWidth, W = wrap.offsetWidth; el.style.left = clamp(x - 12, -8, W - w + 8) + 'px'; el.style.top = (y < 8 ? ye + 8 : y - el.offsetHeight - 8) + 'px';
 }
 function sharpenCheck(ta) {
@@ -5901,37 +5952,138 @@ function sharpenCheck(ta) {
   SH.el.innerHTML = `<span class="sh-t">${ic('riff', 'sm')}Sharpen</span>${SHARP.map((m, i) => `<button data-sh="${m.k}" data-tip="${m.label}" data-kbd="${ALT} ${i + 1}">${m.label}</button>`).join('')}<button data-shc data-tip="Say what to change" aria-label="Custom: say what to change">✎ Custom…</button>`;
   requestAnimationFrame(() => { sharpenPlace(); SH.el && SH.el.classList.add('on'); });
 }
-function sharpenRun(k) {
-  const ta = SH.ta; if (!ta) return; const s = ta.selectionStart, e = ta.selectionEnd, before = ta.value;
-  const vars = sharpVariants(k, before.slice(s, e));
-  if (!vars.length) { toast('Already sharp. Nothing to change there.', { icon: 'check', ms: 1800 }); return; }
-  UI.ghost = null; SH.st = { id: ta.closest('.tw').dataset.id, s, e, before, vars, i: 0, k }; sharpenShow(0); SFX.play('tap');
+/* the hook score a version would give, when it touches the first line of the first post */
+function sharpenScore(st, full, v) {
+  if (tIndex(st.id) !== 0) return null; const fe = st.before.indexOf('\n') < 0 ? st.before.length : st.before.indexOf('\n');
+  if (v && v.s > fe) return null; return hookFor(full).score;
 }
-function sharpenShow(i) {
-  const st = SH.st, ta = SH.ta; st.i = (i + st.vars.length) % st.vars.length; const v = st.vars[st.i];
-  ta.value = st.before.slice(0, st.s) + v + st.before.slice(st.e); ta.setSelectionRange(st.s, st.s + v.length);
-  UI.sharp = { id: st.id, s: st.s, len: v.length }; paintField(ta);
-  SH.el.innerHTML = `<span class="sh-t">${ic(st.k === 'ask' ? 'write' : 'riff', 'sm')}${st.k === 'ask' ? esc(st.label) : SHARP.find(m => m.k === st.k).label}</span>${st.vars.length > 1 ? `<button data-shn="-1" aria-label="Previous version">${ic('left', 'sm')}</button><span class="n">${st.i + 1} / ${st.vars.length}</span><button data-shn="1" aria-label="Next version">${ic('right', 'sm')}</button>` : ''}<button class="keep" data-shk>Keep ${kbd('↵')}</button><button data-shx aria-label="Cancel">${ic('x', 'sm')}</button>`;
+function sharpenRun(k) {
+  const ta = SH.ta; if (!ta || SH.st) return; const before = ta.value, sel0 = [ta.selectionStart, ta.selectionEnd];
+  const F = SHE.frame(before, sel0[0], sel0[1]); if (!F.core.trim()) return;
+  UI.ghost = null; const id = ta.closest('.tw').dataset.id;
+  if (aiOn()) { sharpenAI(k, ta, before, F, id, sel0); return; }
+  sharpenOpen(k, ta, before, F, id, sel0, SHE.sharpen(k, before, F.s, F.e), 'basic');
+}
+/* Claude writes, the words you chose shimmer while it does; typing or Esc cancels and nothing changes */
+async function sharpenAI(k, ta, before, F, id, sel0) {
+  const ctl = new AbortController(), st = SH.st = { id, s: F.s, e: F.e, before, sel0, vars: null, i: 0, k, pending: true, ctl };
+  UI.sharp = { id, s: F.s, len: F.e - F.s, think: Date.now() }; paintField(ta); sharpenPill();
+  srSay(`${SHE.LABEL[k]}: Claude is writing versions of the selected words. Escape cancels.`);
+  let r = null, via = 'claude', note = '';
+  try {
+    const res = await ask(HWCore.prompts.sharpen({ post: before, s: F.s, e: F.e, option: k, voice: voiceSpec() }), { signal: ctl.signal });
+    if (SH.st !== st) return;
+    r = SHE.fromModel(res, k, before, F.s, F.e);
+    if (!r.vars.length) { r = SHE.sharpen(k, before, F.s, F.e); via = 'basic'; if (r.vars.length) note = 'Claude’s versions didn’t keep your words and numbers, so these come from Basic mode.'; }
+  } catch (e) {
+    if (SH.st !== st || (e && (e.name === 'AbortError' || e.code === 'cancelled'))) return;
+    aiError(e); r = SHE.sharpen(k, before, F.s, F.e); via = 'basic';
+  }
+  if (SH.st !== st) return;
+  SH.st = null; UI.sharp = null;
+  if (!document.contains(ta) || ta.value !== before) { sharpenHide(); return; }
+  sharpenOpen(k, ta, before, F, id, sel0, r, via, note);
+}
+function sharpenOpen(k, ta, before, F, id, sel0, r, via, note = '') {
+  if (!r.vars.length) { if (document.contains(ta)) { ta.setSelectionRange(sel0[0], sel0[1]); paintField(ta); sharpenCheck(ta); } sharpenNone(k, ta, F, r.msg); return; }
+  SH.st = { id, s: F.s, e: F.e, before, sel0, vars: r.vars, i: 0, k, via, widened: !!r.widened, note };
+  SH.st.score0 = sharpenScore(SH.st, before, r.vars[0]);
+  sharpenShow(0, { first: true }); SFX.play('tap');
+  const n = r.vars.length, v0 = r.vars[0];
+  srSay(`${SHE.LABEL[k]}${r.widened ? ', on the whole sentence' : ''}${via === 'basic' && aiOn() ? ', from Basic mode' : ''}: ${n === 1 ? 'one version' : `${n} versions, arrows flip`}. Version 1: ${v0.text || 'cut'}. Enter keeps, Escape cancels.${note ? ' ' + note : ''}`);
+  if (note) toast(note, { icon: 'zapoff', ms: 3600 });
+}
+/* nothing passed: say exactly what was checked, and offer the sentence when the selection was a word or two */
+function sharpenNone(k, ta, F, msg) {
+  const wide = /Select the (?:whole )?sentence/.test(msg || '');
+  toast(msg || 'Nothing to change there.', { icon: 'riff', ms: 4600, ...(wide ? { action: 'Whole sentence', onAction: () => {
+    if (!document.contains(ta)) return; const t = ta.value, a = Math.max(t.slice(0, F.s).search(/(?:[.!?…]["”’)]*\s+|\n)[^.!?…\n]*$/) + 1, 0), b0 = t.slice(F.e).search(/[.!?…]|\n/), b = F.coreP ? F.e : b0 < 0 ? t.length : F.e + b0 + (/[.!?…]/.test(t[F.e + b0]) ? 1 : 0);
+    const a2 = a + (t.slice(a).match(/^[.!?…"”’)\s]*/) || [''])[0].length; ta.focus(); ta.setSelectionRange(a2, b); paintField(ta); sharpenCheck(ta); requestAnimationFrame(() => sharpenRun(k));
+  } } : {}) });
+}
+/* the pill: what's showing, the version count, the score it would give, Keep */
+function sharpenPill(dir = 0) {
+  const st = SH.st; if (!st || !SH.el) return;
+  const label = st.k === 'ask' ? esc(st.label) : SHE.LABEL[st.k] + (st.widened ? ' · sentence' : '') + (st.via === 'basic' && aiOn() ? ' · Basic' : '');
+  if (st.pending) { SH.el.innerHTML = `<span class="sh-t">${ic('riff', 'sm')}${label}</span><span class="sh-wait">Sharpening<i></i><i></i><i></i></span><button data-shx aria-label="Cancel" data-tip="Cancel" data-kbd="Esc">${ic('x', 'sm')}</button>`; SH.el.classList.add('busy'); requestAnimationFrame(sharpenPlace); return; }
+  SH.el.classList.remove('busy');
+  const v = st.vars[st.i], sc = st.score0 != null ? sharpenScore(st, v.full, v) : null;
+  const score = sc != null && sc !== st.score0 ? `<span class="sh-score ${sc > st.score0 ? 'up' : 'down'}" aria-label="Hook score ${st.score0} to ${sc}"><span class="a">${st.score0}</span>${ic('arrow', 'xs')}<b data-to="${sc}">${st.shownScore != null ? st.shownScore : st.score0}</b></span>` : '';
+  SH.el.innerHTML = `<span class="sh-t">${ic(st.k === 'ask' ? 'write' : 'riff', 'sm')}${label}</span>${st.vars.length > 1 ? `<button data-shn="-1" aria-label="Previous version">${ic('left', 'sm')}</button><span class="n"><span class="nn${dir ? (dir > 0 ? ' fwd' : ' back') : ''}">${st.i + 1}</span> / ${st.vars.length}</span><button data-shn="1" aria-label="Next version">${ic('right', 'sm')}</button>` : ''}${score}<button class="keep" data-shk>Keep ${kbd('↵')}</button><button data-shx aria-label="Cancel">${ic('x', 'sm')}</button>`;
+  const b = $('.sh-score b', SH.el); if (b) countTo(b, +b.textContent, sc, v2 => { st.shownScore = v2; });
   requestAnimationFrame(sharpenPlace);
 }
-function sharpenCancel() { const st = SH.st; if (!st) return; SH.st = null; UI.sharp = null; const ta = SH.ta; if (ta && document.contains(ta)) { ta.value = st.before; ta.setSelectionRange(st.s, st.e); paintField(ta); } }
+/* a number that counts to its new value in under 400ms, with a small spring at the end */
+function countTo(el, from, to, onStep) {
+  if (from === to || REDUCED) { el.textContent = to; onStep && onStep(to); return; }
+  const t0 = performance.now(), d = Math.min(380, 140 + Math.abs(to - from) * 8);
+  const step = () => { if (!el.isConnected) return; const p = clamp((performance.now() - t0) / d, 0, 1), e = 1 - Math.pow(1 - p, 3), v = Math.round(from + (to - from) * e); el.textContent = v; onStep && onStep(v); if (p < 1) requestAnimationFrame(step); else { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); } };
+  requestAnimationFrame(step);
+}
+function sharpenShow(i, { first = false } = {}) {
+  const st = SH.st, ta = SH.ta, n = st.vars.length; const prev = first ? null : st.vars[st.i];
+  const dir = first ? 0 : Math.sign(i - st.i) || 1;
+  st.i = (i + n) % n; const v = st.vars[st.i];
+  /* what was on screen just before: the original words, or the version we're flipping away from */
+  const oldFull = prev ? prev.full : st.before, oa = prev ? prev.s : v.s, ob = prev ? prev.s + prev.text.length : v.e;
+  ta.value = v.full; ta.setSelectionRange(v.s, v.s + v.text.length);
+  UI.sharp = { id: st.id, s: v.s, len: v.text.length, rev: REDUCED ? null : { at: Date.now(), oldFull, oa, ob, oldText: oldFull.slice(oa, ob), cycle: !first } };
+  paintField(ta); sharpenPill(dir);
+  if (!REDUCED) { clearTimeout(SH.revT); clearTimeout(SH.revT2); const r = UI.sharp.rev, f = shSlow(); SH.revT = setTimeout(() => { if (UI.sharp && UI.sharp.rev === r) paintField(ta); }, ((r.cycle ? 70 : SH_A) + 5) * f); SH.revT2 = setTimeout(() => { if (UI.sharp && UI.sharp.rev === r) { UI.sharp.rev = null; paintField(ta); } }, (SH_END + 20) * f); }
+  if (!first) srSay(`Version ${st.i + 1} of ${n}: ${v.text || 'cut'}.`);
+}
+/* the mirror under the post while Sharpen is open: a shimmer while Claude writes, then the reveal, then a soft highlight */
+function sharpMirror(sh, v, seg, CM) {
+  const s = sh.s, e = sh.s + sh.len, words = (str, cls, base = 0) => str.split(/(\s+)/).map((w, k) => !w ? '' : /^\s+$/.test(w) ? esc(w) : `<span class="${cls}" style="--i:${base + (k >> 1)}">${esc(w)}</span>`).join('');
+  if (sh.think) { const age = (Date.now() - sh.think) / shSlow(); return `${seg(0, s)}<span class="sv think" style="--age:-${age}ms">${words(v.slice(s, e), 'tk')}</span>${CM}${seg(e)}`; }
+  const r = sh.rev, age = r ? (Date.now() - r.at) / shSlow() : Infinity, A = r && r.cycle ? 70 : SH_A;
+  if (r && age < A) {
+    /* phase one: the words that are going strike through and fade (the old text, shown over the new one for a beat) */
+    const keepW = new Set(v.slice(s, e).toLowerCase().split(/\s+/).filter(Boolean));
+    const old = r.oldText.split(/(\s+)/).map(w => !w ? '' : /^\s+$/.test(w) ? esc(w) : keepW.has(w.toLowerCase()) ? esc(w) : `<span class="ow${r.cycle ? ' cy' : ''}" style="animation-delay:-${age}ms">${esc(w)}</span>`).join('');
+    return `${esc(r.oldFull.slice(0, r.oa))}<span class="sv rev">${old}</span>${CM}${esc(r.oldFull.slice(r.ob))}`;
+  }
+  if (r && age < SH_END) {
+    /* phase two: new words resolve in, left to right, and a plum highlight settles under them */
+    const was = new Set(r.oldText.toLowerCase().split(/\s+/).filter(Boolean)), parts = v.slice(s, e).split(/(\s+)/); let k = 0; const nNew = parts.filter(w => w.trim() && !was.has(w.toLowerCase())).length || 1;
+    const gap = Math.min(34, Math.floor((SH_END - A - 230) / nNew)), t = age - A;
+    const html = parts.map(w => !w ? '' : /^\s+$/.test(w) ? esc(w) : was.has(w.toLowerCase()) && !r.cycle ? esc(w) : `<span class="nw" style="animation-delay:${k++ * gap - t}ms">${esc(w)}</span>`).join('');
+    return `${seg(0, s)}<span class="sv rev">${html}</span>${CM}${seg(e)}`;
+  }
+  return `${seg(0, s)}<span class="sv${sh.flash ? ' draw' : ''}${sh.len ? '' : ' cut'}">${seg(s, e)}</span>${CM}${seg(e)}`;
+}
+function sharpenCancel() {
+  const st = SH.st; if (!st) return; SH.st = null; UI.sharp = null; clearTimeout(SH.revT); clearTimeout(SH.revT2); if (st.ctl) st.ctl.abort(); if (SH.el) SH.el.classList.remove('busy');
+  const ta = SH.ta; if (ta && document.contains(ta)) { ta.value = st.before; ta.setSelectionRange(st.sel0 ? st.sel0[0] : st.s, st.sel0 ? st.sel0[1] : st.e); paintField(ta); }
+}
 function sharpenKeep() {
-  const st = SH.st, ta = SH.ta; if (!st) return; SH.st = null; const tw = tById(st.id);
-  const len = st.vars[st.i].length; UI.sharp = { id: st.id, s: st.s, len, flash: Date.now() };
+  const st = SH.st, ta = SH.ta; if (!st || st.pending) return; SH.st = null; clearTimeout(SH.revT); clearTimeout(SH.revT2); const tw = tById(st.id);
+  const v = st.vars[st.i], len = v.text.length; UI.sharp = { id: st.id, s: v.s, len, flash: Date.now() };
   /* the kept text can push the post over the limit and split it: Undo restores the whole thread, not just this post */
   const snap = S.draft.tweets.map(t => (t.id === st.id ? { ...t, text: st.before } : { ...t }));
-  ta.setSelectionRange(st.s + len, st.s + len); ta.dispatchEvent(new Event('input', { bubbles: true }));
-  SFX.play('swap'); sharpenHide();
+  if (ta.value !== v.full) ta.value = v.full;
+  /* the kept version becomes its own step in the edit history, so ⌘Z / Ctrl+Z takes it back */
+  if (tw) { tw.text = v.full; ehWatch(false); }
+  ta.setSelectionRange(v.s + len, v.s + len); if (st.score0 != null) UI.hookFrom = UI.lastHook; ta.dispatchEvent(new Event('input', { bubbles: true }));
+  SFX.play('swap'); sharpenHide(); sharpenPop(ta);
   setTimeout(() => { if (UI.sharp && UI.sharp.flash) { UI.sharp = null; document.contains(ta) && paintField(ta); } }, 950);
   toast('Sharpened. Undo if you liked yours better.', { icon: 'riff', tone: 'accent', ms: 2600, action: 'Undo', onAction: () => { if (!tw) return; S.draft.tweets = snap; renderThread({ focusId: tw.id }); markSaving(); } });
+}
+/* Keep lands with a small plum ring where the new words end: transform and opacity only, gone in 420ms */
+function sharpenPop(ta) {
+  if (REDUCED || !ta || !document.contains(ta)) return; const wrap = ta.parentElement, cm = $('.cm', wrap.firstElementChild); if (!cm) return;
+  const p = document.createElement('span'); p.className = 'sh-pop'; p.setAttribute('aria-hidden', 'true'); p.style.left = cm.offsetLeft + 'px'; p.style.top = (cm.offsetTop + cm.offsetHeight / 2) + 'px'; wrap.append(p); setTimeout(() => p.remove(), 480);
 }
 function sharpenKey(e) {
   if (SH.ask) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); sharpenAskCancel(); } else if (e.key === 'Enter' && !e.isComposing && SH.el && SH.el.contains(e.target)) { e.preventDefault(); e.stopPropagation(); sharpenAskRun(); } return; }
   if (!SH.st) { if (SH.el && e.altKey && /^Digit[1-5]$/.test(e.code)) { e.preventDefault(); e.stopPropagation(); sharpenRun(SHARP[+e.code.slice(5) - 1].k); } return; }
+  if (['Shift', 'Alt', 'Control', 'Meta'].includes(e.key)) return;
+  /* while Claude writes, nothing is in the post yet: Esc cancels, any other key cancels and goes through as typed */
+  if (SH.st.pending) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); sharpenCancel(); sharpenHide(); } else { sharpenCancel(); sharpenHide(); } return; }
   if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); e.stopPropagation(); sharpenShow(SH.st.i + (e.key === 'ArrowRight' ? 1 : -1)); SFX.play('tick'); }
   else if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); sharpenKeep(); }
   else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); sharpenCancel(); sharpenHide(); }
-  else if (!['Shift', 'Alt', 'Control', 'Meta'].includes(e.key)) { sharpenKeep(); }
+  else { sharpenKeep(); }
 }
 
 /* ---------- "Tell it what to change" (round 29) ----------
@@ -5967,18 +6119,25 @@ Object.assign(AI, {
   plainer(t) {
     let s = subAll(t, PLAIN);
     JARGON.forEach(([re, w]) => { s = s.replace(re, w); });
+    /* chat shorthand and trading slang a newcomer would trip on, said plainly (first time each) */
+    s = HWCore.SHARPEN.sub(HWCore.SHARPEN.sub(s, HWCore.SHARPEN.SHORTHAND), HWCore.SHARPEN.IDIOM);
     return tidy(s);
   }
 });
 const INSTR = [
   { k: 'calmer', label: 'Calmer', what: 'took out exclamation marks, hype words and shouting', re: /\b(calm(er|ly)?|soft(er|en)?|gentler|chill(er)?|relax(ed)?|less (hype[ds]?|hyped|loud|shouty|aggressive|salesy|intense)|no hype|de-?hype|tone (it )?down)\b/i },
-  { k: 'plainer', label: 'Simpler', what: 'spelled out the jargon in plain words', re: /\b(simpl(e|er|ify|ified)|plain(er)?( english| words)?|beginners?|newbies?|newcomers?|(no|less|cut( the)?|without( the)?|drop( the)?|skip( the)?) jargon|jargon|eli5|easier( to (read|follow|understand))?|non-?traders?|normies)\b/i },
+  { k: 'plainer', label: 'Simpler', what: 'spelled out the jargon in plain words', re: /\b(simpl(e|er|ify|ified)|plain(er)?( english| words)?|beginners?|newbies?|newcomers?|(no|less|cut( the)?|without( the)?|drop( the)?|skip( the)?) jargon|jargon|eli5|non-?traders?|normies)\b/i },
+  { k: 'clearer', label: 'Clearer', what: 'cut hedges and swapped long words for plain ones', re: /\b(clear(er|ly)?|clarity|easier to (read|follow|understand)|less confusing|easier)\b/i },
+  { k: 'human', label: 'More human', what: 'used contractions and plainer, spoken phrasing', re: /\b(human|natural(ly)?|casual|conversational|less (formal|stiff|robotic|corporate)|like (a person|i talk|i speak|me)|friendl(y|ier)|warmer)\b/i },
+  { k: 'bolder', label: 'Bolder', what: 'dropped hedges and committed to the claim', re: /\b(bold(er)?|confident|decisive|assertive|commit(ted)?|less (hedg\w*|unsure|timid))\b/i },
   { k: 'hook', label: 'Stronger hook', what: 'put a stronger first line on top', re: /\b((strong|bett|bold|sharp|punchi)er\s+|better\s+)?(hook|first line|opener|opening( line)?)\b/i },
   { k: 'shorter', label: 'Shorter', what: 'cut filler and trimmed the end', re: /\b(short(er|en)?|tight(er|en)?|cut( it)?( down)?|trim|concise|brief(er)?|fewer words|less words|condense)\b/i },
-  { k: 'punchier', label: 'Punchier', what: 'cut filler and hedges', re: /\b(punch(ier|y)?|strong(er)?|bold(er)?|confident|direct|sharper|snappier)\b/i },
+  { k: 'punchier', label: 'Punchier', what: 'cut filler and hedges', re: /\b(punch(ier|y)?|strong(er)?|direct|sharper|snappier)\b/i },
   { k: 'curiosity', label: 'Add an open loop', what: 'opened a question in the first lines', re: /\b(question|curious|curiosity|tease|intrigu(e|ing)|open(ing)?[ -]loops?)\b/i }
 ];
-const INSTR_RUN = ['calmer', 'plainer', 'punchier', 'shorter', 'hook', 'curiosity'];
+const INSTR_RUN = ['calmer', 'plainer', 'clearer', 'human', 'bolder', 'punchier', 'shorter', 'hook', 'curiosity'];
+/* the Sharpen option a note means, when it means exactly one (so Claude's versions get that option's checks) */
+const instrOpt = instr => { const ks = instrPlan(instr).steps.map(m => m.k).filter(k => HWCore.SHARPEN.OPTS.includes(k)); return ks.length === 1 ? ks[0] : null; };
 const INSTR_FILL = /\b(make|it|its|it’s|it's|a|an|the|bit|little|lot|more|much|less|and|but|also|please|pls|to|be|for|so|way|too|sound|sounds|read|reads|feel|just|then|with|this|post|tweet|thread|version|some|me|my|of|very|slightly|tad|kinda|kind|tone|i|can|you|should|write|rewrite|rephrase|up|in|than|now|one)\b/gi;
 function instrPlan(instr) {
   let rest = ` ${instr.toLowerCase()} `; const hit = new Set();
@@ -5987,7 +6146,50 @@ function instrPlan(instr) {
   return { steps, partial: steps.length > 0 && /\p{L}{3,}/u.test(rest.replace(INSTR_FILL, ' ')) };
 }
 const instrRun = (k, t) => AI[k](t);
-const BASIC_CAN = 'Basic mode can do: shorter, punchier, calmer, simpler, a stronger hook, an open loop. Connect Claude for anything else.';
+const BASIC_CAN = 'Basic mode can do: shorter, punchier, clearer, bolder, more human, calmer, simpler, a stronger hook, an open loop. Connect Claude for anything else.';
+/* what Basic mode checked, said plainly, when a note changes nothing */
+const noteWhy = (k, F) => k === 'calmer' ? `No exclamation marks, hype words or shouting to take out of “${clip(F.core, 34)}”.` : k === 'plainer' ? `No jargon or long words to spell out in “${clip(F.core, 34)}”.` : HWCore.SHARPEN.OPTS.includes(k) ? HWCore.SHARPEN.whyNot(k, F) : `Nothing ${k === 'hook' ? 'beat your first line' : 'to change'} in “${clip(F.core, 34)}”.`;
+/* Sharpen › Custom… in Basic mode: the note's steps on just the selected words, through the same checks as the pill */
+function sharpenAskBasic(instr, post, s, e) {
+  const X = HWCore.SHARPEN, F = X.frame(post, s, e), ks = instrPlan(instr).steps.map(m => m.k).filter(k => k !== 'hook' && k !== 'curiosity');
+  if (!ks.length) return { vars: [], cant: true, msg: 'On selected words, Basic mode can do: shorter, punchier, clearer, bolder, more human, calmer, simpler. A stronger hook or an open loop works on the whole post, in Improve. Connect Claude for anything else.' };
+  const label = `${ks.map(k => INSTR.find(m => m.k === k).label).join(' + ')} · Basic`, opt = ks.find(k => X.OPTS.includes(k)) || null;
+  if (ks.length === 1 && opt) { const r = X.sharpen(opt, post, s, e); return { ...r, label }; }
+  let t = F.core; ks.forEach(k => { if (X.OPTS.includes(k)) { const r = X.sharpen(k, t, 0, t.length); if (r.vars.length) t = r.vars[0].full; } else t = AI[k](t); });
+  const { kept } = X.pickVersions([t], F, opt);
+  return { vars: kept, label, msg: kept.length ? '' : `Basic mode tried ${ks.map(k => INSTR.find(m => m.k === k).label).join(' + ')}. ${noteWhy(ks[0], F)}` };
+}
+/* Improve › Rewrites in Basic mode: up to three checked versions of the whole post, or an honest note. The checker calls this too */
+function rewriteCompute(kind, text, first = true) {
+  const X = HWCore.SHARPEN, t = String(text || ''), F = X.frame(t, 0, t.length);
+  if (X.OPTS.includes(kind)) { const r = X.sharpen(kind, t, 0, t.length); return r.vars.length ? { vers: r.vars.map(v => v.full) } : { vers: [], msg: r.msg }; }
+  riffNonce++;
+  if (kind === 'hook') {
+    const a = hookScore(t).score, ss = sentences(t.trim()), rest = ss.slice(1).join('').trim();
+    const cands = [AI.hook(t), ...hookPool(t).map(l => tidy(rest ? `${l}\n\n${rest}` : l))].filter(x => x && x.trim() !== t.trim());
+    const ranked = [...new Set(cands)].map(x => ({ x, sc: hookScore(x).score })).filter(o => o.sc > a).sort((p, q) => q.sc - p.sc).map(o => o.x);
+    const { kept } = X.checkPost(ranked, 'hook', t);
+    if (kept.length) return { vers: kept.slice(0, 3) };
+    const h = hookScore(t); return { vers: [], msg: `Your hook scores ${h.score}${h.tone === 'good' ? `: ${h.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase()}` : ''}. None of Basic mode’s formulas score higher on this line, so nothing changed.${aiOn() ? '' : ' Claude can try a new angle.'}` };
+  }
+  /* frame-based rewrites (an open loop, a contrarian frame) try each of their frames, so you get real choices */
+  const outs = ['contrarian', 'curiosity'].includes(kind) ? [0, 1, 2].map(() => { riffNonce++; return AI[kind](t); }) : [AI[kind](t)];
+  /* on the first post a frame has to earn its place: it may not lower the hook score */
+  const a = hookScore(t).score, ok = [...new Set(outs)].filter(x => !first || kind === 'grammar' || hookScore(x).score >= a).sort((p, q) => hookScore(q).score - hookScore(p).score);
+  const { kept } = X.checkPost(ok, kind, t);
+  if (kept.length) return { vers: kept.slice(0, 3) };
+  if (first && outs.some(x => x.trim() !== t.trim()) && kind !== 'grammar') return { vers: [], msg: `Your hook scores ${a}. Every ${kind === 'curiosity' ? 'open-loop' : 'contrarian'} frame Basic mode has would score lower on this line, so nothing changed.${aiOn() ? '' : ' Claude can try one in your words.'}` };
+  return { vers: [], msg: kind === 'grammar' ? 'No spelling or grammar mistakes found.' : `${(RIFFS.find(r => r.k === kind) || { label: 'Basic mode' }).label} found nothing it could change and still keep your claim.` };
+}
+/* note → steps, on the whole post (Improve › Rewrites, Basic mode); the checker calls this too */
+function instructCompute(instr, text) {
+  const plan = instrPlan(instr), X = HWCore.SHARPEN, F = X.frame(text, 0, text.length); if (!plan.steps.length) return { vers: [], msg: BASIC_CAN, cant: true };
+  const flat = x => x.replace(/\s+/g, ' ').trim(); let after = text;
+  const did = plan.steps.filter(m => { const n = instrRun(m.k, after); if (flat(n) === flat(after)) return false; after = n; return true; }), idle = plan.steps.filter(m => !did.includes(m));
+  const ok = did.length ? X.checkPost([after], instrOpt(instr), text).kept : [];
+  if (!ok.length) return { vers: [], msg: `Basic mode tried ${plan.steps.map(m => m.label).join(' + ')}. ${noteWhy(plan.steps[0].k, F)}`, plan };
+  return { vers: ok, did, idle, plan };
+}
 function rememberInstr(instr) { S.settings.recentInstr = [instr, ...(S.settings.recentInstr || []).filter(x => x.toLowerCase() !== instr.toLowerCase())].slice(0, 5); save(); }
 function runInstruct(i, instr, { from, fresh } = {}) {
   if (CURRENT !== 'write') return;
@@ -6001,14 +6203,14 @@ function runInstruct(i, instr, { from, fresh } = {}) {
   if (!plan.steps.length) { say(`${BASIC_CAN} <button data-cact="instrconn">Open Connections</button>`, { icon: 'zapoff', ms: 6000, action: 'Connections', onAction: () => openConnections() }); return; }
   riffNonce++;
   /* one step at a time: the note only names the steps that actually changed something */
-  const flat = x => x.replace(/\s+/g, ' ').trim(), before = tw.text; let after = before;
-  const did = plan.steps.filter(m => { const n = instrRun(m.k, after); if (flat(n) === flat(after)) return false; after = n; return true; }), idle = plan.steps.filter(m => !did.includes(m));
-  if (!did.length) { say(`Basic mode tried ${plan.steps.map(m => m.label).join(' + ')} and found nothing to change. Your post is the same.`, { icon: 'check' }); return; }
+  const before = tw.text, rc = instructCompute(instr, before);
+  if (!rc.vers.length) { say(esc(rc.msg), { icon: 'check' }); return; }
+  const after = rc.vers[0], did = rc.did, idle = rc.idle;
   rememberInstr(instr); const used = did.map(m => m.label).join(' + ');
   const why = `Basic mode used ${used}: ${did.map(m => m.what).join('; ')}.${idle.length ? ` ${idle.map(m => m.label).join(' and ')} had nothing to change.` : ''}${plan.partial ? ' It can’t do the rest of your note. Connect Claude for that.' : ''}`;
   UI.imp = null; UI.ghost = null;
   const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null; if (UI.diff && UI.diff.ctl) UI.diff.ctl.abort();
-  const d = UI.diff = { id: tw.id, kind: 'instruct', instr, before, after, why, chunks: diffWords(before, after), shown: null }; if (oldD) renderExtras(oldD);
+  const d = UI.diff = { id: tw.id, kind: 'instruct', instr, before, after, why, chunks: diffWords(before, after), shown: null, reveal: Date.now() }; if (oldD) renderExtras(oldD);
   renderExtras(tw.id); instrReady(d, `Basic mode used ${used}.`);
 }
 /* one short announcement per result; focus lands on Keep, as with every rewrite */
@@ -6027,10 +6229,15 @@ async function runInstructAI(i, instr, { fresh } = {}) {
   try {
     const res = await ask(HWCore.prompts.instruct({ text: before, instruction: instr, voice: voiceSpec(), platform: plat, limit: effLimit() }), { signal: ctl.signal, fresh });
     if (UI.diff !== d) return;
-    const opts = (res && res.options || []).map(o => ({ text: String(o.text || '').trim(), why: String(o.why || '') })).filter(o => o.text && o.text !== before.trim());
-    if (!opts.length) { UI.diff = null; renderExtras(tw.id); toast(res && res.why ? String(res.why) : 'Claude had nothing to change for that note.', { icon: 'check' }); return; }
+    const opts = checkedAlts(res, instrOpt(instr), before);
+    if (!opts.length) {
+      /* nothing Claude sent kept your words and facts: Basic mode's version of the same note, or a plain reason */
+      const b = instructCompute(instr, before);
+      if (!b.vers.length) { UI.diff = null; renderExtras(tw.id); toast(res && res.why && !(res.options || []).length ? esc(String(res.why)) : b.msg, { icon: 'check', ms: 5200 }); return; }
+      Object.assign(d, { pending: false, alts: b.vers.map(t => ({ text: t, why: 'Basic mode: Claude’s versions didn’t keep your words and facts.' })), alt: 0, basic: true, reveal: Date.now() }); setAlt(d, 0); instrReady(d, 'From Basic mode.'); return;
+    }
     spendAI();
-    Object.assign(d, { pending: false, alts: opts, alt: 0 }); setAlt(d, 0); instrReady(d, opts.length > 1 ? `${opts.length} versions.` : '');
+    Object.assign(d, { pending: false, alts: opts, alt: 0, reveal: Date.now() }); setAlt(d, 0); instrReady(d, opts.length > 1 ? `${opts.length} versions.` : '');
   } catch (e) { if (UI.diff === d) { UI.diff = null; renderExtras(tw.id); } aiError(e); if (e && e.code !== 'cancelled' && !aiOn()) runInstruct(i, instr); }
 }
 /* Sharpen › Custom…: the pill becomes one line for a note about just the selected words */
@@ -6042,48 +6249,42 @@ function sharpenAskOpen() {
   inp.addEventListener('blur', () => setTimeout(() => { const a = SH.ask; if (!a || a.busy || (SH.el && SH.el.contains(document.activeElement))) return; SH.ask = null; if (document.activeElement === SH.ta) sharpenCheck(SH.ta); else sharpenHide(); }, 0));
   inp.focus(); requestAnimationFrame(sharpenPlace);
 }
-function sharpenAskCancel() { const a = SH.ask, ta = SH.ta; if (!a) return; a.ctl && a.ctl.abort(); SH.ask = null; if (SH.el) SH.el.classList.remove('busy'); if (ta && document.contains(ta) && ta.value === a.before) { ta.focus(); ta.setSelectionRange(a.s, a.e); sharpenCheck(ta); } else sharpenHide(); }
+function sharpenAskCancel() { const a = SH.ask, ta = SH.ta; if (!a) return; a.ctl && a.ctl.abort(); SH.ask = null; if (UI.sharp && UI.sharp.think) { UI.sharp = null; ta && document.contains(ta) && paintField(ta); } if (SH.el) SH.el.classList.remove('busy'); if (ta && document.contains(ta) && ta.value === a.before) { ta.focus(); ta.setSelectionRange(a.s, a.e); sharpenCheck(ta); } else sharpenHide(); }
 async function sharpenAskRun() {
   const a = SH.ask, ta = SH.ta; if (!a || a.busy || !ta || !SH.el) return; const inp = $('.sh-in', SH.el);
   const instr = (inp ? inp.value : '').replace(/\s+/g, ' ').trim(); if (!instr) { inp && inp.focus(); return; }
-  const frag = a.before.slice(a.s, a.e), lead = frag.match(/^\s*/)[0], trail = frag.match(/\s*$/)[0], core = frag.trim();
-  const endsP = /[.!?:…]$/.test(core), low = /^[a-z]/.test(core);
-  const fit = x => { x = tidy(x).trim(); if (!endsP) x = x.replace(/\.+$/, ''); if (low) x = x.replace(/^./, c => c.toLowerCase()); return x; };
-  let vars = [], label = '', fallback = false;
+  const X = HWCore.SHARPEN, F = X.frame(a.before, a.s, a.e), id = ta.closest('.tw').dataset.id;
+  let r = null, label = '', note = '', via = 'basic';
   if (aiOn()) {
     if (aiLeft() <= 0) { outOfRiffs(); return; }
     a.busy = true; a.ctl = new AbortController(); SH.el.classList.add('busy'); inp.readOnly = true; const go = $('[data-shgo]', SH.el); if (go) go.textContent = 'Rewriting…'; srSay('Rewriting the selected words…');
+    UI.sharp = { id, s: F.s, len: F.e - F.s, think: Date.now() }; paintField(ta);
+    let fallback = false;
     try {
-      const r = await ask(HWCore.prompts.instruct({ text: core, instruction: instr, voice: voiceSpec(), context: a.before }), { signal: a.ctl.signal });
+      const res = await ask(HWCore.prompts.instruct({ text: F.core, instruction: instr, voice: voiceSpec(), context: a.before }), { signal: a.ctl.signal });
       if (SH.ask !== a) return;
-      /* a number you didn't write never slips into a selection: those versions are dropped */
-      const have = new Set((a.before.match(/\d[\d,.]*%?/g) || []).map(x => x.replace(/[,.]$/, '')));
-      const all = (r && r.options || []).map(o => String(o.text || '').trim()).filter(x => x && x !== core);
-      vars = all.filter(x => !(x.match(/\d[\d,.]*%?/g) || []).some(n => !have.has(n.replace(/[,.]$/, '')))).map(x => /[.!?]$/.test(core) && /[\p{L}\p{N}]$/u.test(x) ? x + '.' : x);
-      if (!vars.length) toast(all.length ? 'Claude’s versions added numbers you didn’t write, so they’re hidden. Try another note.' : (r && r.why ? String(r.why) : 'Claude had nothing to change there.'), { icon: all.length ? 'target' : 'check', ms: 4200 });
-      else { spendAI(); label = `“${clip(instr, 22)}”`; rememberInstr(instr); }
+      /* every version passes the same checks as the pill: only these words, nothing echoed, no new numbers, no repeats */
+      r = X.fromModel(res, instrOpt(instr), a.before, F.s, F.e);
+      if (r.vars.length) { spendAI(); via = 'claude'; label = `“${clip(instr, 22)}”`; rememberInstr(instr); }
+      else { const b = sharpenAskBasic(instr, a.before, a.s, a.e); if (b.vars.length) { r = b; label = b.label; note = 'Claude’s versions didn’t keep your words and numbers, so these come from Basic mode.'; rememberInstr(instr); } else { toast(res && res.why && !r.total ? esc(String(res.why)) : b.msg, { icon: 'check', ms: 4600 }); r = null; } }
     } catch (e) {
       if (SH.ask !== a) return; aiError(e);
-      fallback = !!(e && e.code !== 'cancelled' && !aiOn());
+      fallback = !!(e && e.code !== 'cancelled' && e.name !== 'AbortError');
     }
     if (SH.ask !== a) return; a.busy = false; SH.el.classList.remove('busy'); if (inp) inp.readOnly = false; const go2 = $('[data-shgo]', SH.el); if (go2) go2.textContent = 'Rewrite';
-    if (fallback) return sharpenAskRun();
+    if (UI.sharp && UI.sharp.think) { UI.sharp = null; paintField(ta); }
+    if (fallback) { const b = sharpenAskBasic(instr, a.before, a.s, a.e); if (b.vars.length) { r = b; label = b.label; } else { toast(b.msg, { icon: 'zapoff', ms: 5200 }); inp && inp.focus(); return; } }
+    if (!r) { inp && inp.focus(); return; }
   } else {
-    const plan = instrPlan(instr), ok = plan.steps.filter(m => ['calmer', 'plainer', 'shorter', 'punchier'].includes(m.k));
-    if (!ok.length) { toast('On selected words, Basic mode can do: shorter, punchier, calmer, simpler. A stronger hook or an open loop works on the whole post, in Improve. Connect Claude for anything else.', { icon: 'zapoff', ms: 6000, action: 'Connections', onAction: () => openConnections() }); inp && inp.focus(); return; }
-    vars = ok.length === 1 && (ok[0].k === 'shorter' || ok[0].k === 'punchier') ? sharpVariants(ok[0].k, core) : [ok.reduce((t, m) => instrRun(m.k, t), core)];
-    /* a trailing emoji that ended a sentence leaves a full stop, as on the whole post */
-    const stop = /(?:🚀|🔥|💥|🤯|🌕|💎|🙌)\s*$/u.test(core) && /^\s*[A-Z]/.test(a.before.slice(a.e));
-    vars = vars.map(fit).map(x => stop && /[\p{L}\p{N}]$/u.test(x) ? x + '.' : x).filter(x => x && x !== core);
-    if (!vars.length) { toast(`Basic mode tried ${ok.map(m => m.label).join(' + ')}. Nothing to change there.`, { icon: 'check', ms: 2600 }); inp && inp.focus(); return; }
-    label = `${ok.map(m => m.label).join(' + ')} · Basic`; rememberInstr(instr);
+    r = sharpenAskBasic(instr, a.before, a.s, a.e); label = r.label || '';
+    if (!r.vars.length) { toast(r.msg, r.cant ? { icon: 'zapoff', ms: 6000, action: 'Connections', onAction: () => openConnections() } : { icon: 'check', ms: 4200 }); inp && inp.focus(); return; }
+    rememberInstr(instr);
   }
-  if (!vars.length) { inp && inp.focus(); return; }
   if (!document.contains(ta) || ta.value !== a.before) { SH.ask = null; sharpenHide(); return; }
-  vars = [...new Set(vars)].slice(0, 3).map(x => lead + x + trail);
-  SH.ask = null; UI.ghost = null; SH.st = { id: ta.closest('.tw').dataset.id, s: a.s, e: a.e, before: a.before, vars, i: 0, k: 'ask', label };
-  ta.focus(); sharpenShow(0); SFX.play('tap');
-  srSay(`${label.replace(' · Basic', ', in Basic mode')}: ${vars.length === 1 ? 'one version' : `${vars.length} versions, arrows flip`}. Enter keeps, Escape cancels.`);
+  SH.ask = null; UI.ghost = null; SH.st = { id, s: F.s, e: F.e, before: a.before, sel0: [a.s, a.e], vars: r.vars.slice(0, 3), i: 0, k: 'ask', label, via, note };
+  ta.focus(); sharpenShow(0, { first: true }); SFX.play('tap');
+  srSay(`${label.replace(' · Basic', ', in Basic mode')}: ${SH.st.vars.length === 1 ? 'one version' : `${SH.st.vars.length} versions, arrows flip`}. Version 1: ${SH.st.vars[0].text || 'cut'}. Enter keeps, Escape cancels.${note ? ' ' + note : ''}`);
+  if (note) toast(note, { icon: 'zapoff', ms: 3600 });
 }
 
 /* riffs */
@@ -6099,23 +6300,24 @@ function runRiff(i, kind, lang) {
   if (!tw.text.trim()) { toast('Write a line first. There’s nothing to rewrite yet.', { icon: 'riff', tone: 'accent' }); focusTweet(i); return; }
   if (aiLeft() <= 0) { outOfRiffs(); return; }
   if (aiOn()) { runRiffAI(i, kind, lang); return; }
-  riffNonce++;
-  const before = tw.text; const after = kind === 'translate' ? AI.translate(before, lang) : AI[kind](before);
-  if (kind === 'hook' && i === 0 && hookScore(after).score <= hookScore(before).score) { toast(`Your hook already scores ${hookScore(before).score}. Nothing here beats it.`, { icon: 'hook', tone: 'accent' }); return; }
-  if (after.trim() === before.trim()) { toast(kind === 'grammar' ? 'Grammar’s clean. Nothing to fix.' : 'Already tight. Nothing worth changing.', { icon: 'check' }); return; }
+  const before = tw.text, r = kind === 'translate' ? { vers: [AI.translate(before, lang)] } : rewriteCompute(kind, before, i === 0);
+  if (!r.vers.length) { toast(esc(r.msg), { icon: kind === 'hook' ? 'hook' : 'check', ms: 5200 }); return; }
   spendAI();
   UI.imp = null; UI.ghost = null;
   const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null;
-  UI.diff = { id: tw.id, kind, lang, before, after, chunks: diffWords(before, after), shown: 0 }; if (oldD) renderExtras(oldD);
-  renderExtras(tw.id);
-  const total = UI.diff.chunks.length; const step = Math.max(1, Math.ceil(total / 26)); const d = UI.diff;
-  const tick = () => {
-    if (UI.diff !== d) return; d.shown = Math.min(total, d.shown + step);
-    const b = $(`.tw[data-id="${tw.id}"] .diff-b`);
-    if (b) { b.innerHTML = $('.diff-b', (() => { const x = document.createElement('div'); x.innerHTML = diffHTML(); return x; })()).innerHTML; b.classList.toggle('writing', d.shown < total); }
-    if (d.shown < total) setTimeout(tick, REDUCED ? 0 : 18); else { d.shown = null; renderExtras(tw.id); const y = $('#diff-yes'); y && y.focus({ preventScroll: true }); const el = $(`.tw[data-id="${tw.id}"] .diff`); el && el.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }); }
-  };
-  tick();
+  const d = UI.diff = { id: tw.id, kind, lang, before, after: r.vers[0], chunks: diffWords(before, r.vers[0]), shown: null, basic: true, reveal: Date.now(), ...(r.vers.length > 1 ? { alts: r.vers.map(t => ({ text: t, why: '' })), alt: 0 } : {}) }; if (oldD) renderExtras(oldD);
+  renderExtras(tw.id); diffLanded(d);
+}
+/* a result landed: focus on Keep, bring it into view, count the hook score up, and say it once */
+function diffLanded(d) {
+  const y = $('#diff-yes'); y && y.focus({ preventScroll: true }); const el = $(`.tw[data-id="${d.id}"] .diff`); el && el.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
+  const n = d.chunks.filter(c => c.eq === undefined).length; srSay(`${(riffOf(d) || {}).label || 'Rewrite'}${d.basic && aiOn() ? ', from Basic mode' : ''}: ${d.alts ? `version ${d.alt + 1} of ${d.alts.length}, ` : ''}${n} change${n === 1 ? '' : 's'}. Enter keeps.`);
+}
+/* Claude's options → only the ones that keep your words and facts, differ from your post and from each other */
+function checkedAlts(res, kind, before) {
+  const X = HWCore.SHARPEN, out = [];
+  for (const o of (res && (res.options || res.versions)) || []) { const t = typeof o === 'string' ? o : String(o && o.text || ''), r = X.checkPost([t], kind, before); if (r.kept.length && !out.some(k => X.nearSame(k.text, r.kept[0]))) out.push({ text: r.kept[0], why: String(o && o.why || '') }); }
+  return out.slice(0, 3);
 }
 /* the Claude version: three takes in one call, streamed into the same diff view */
 async function runRiffAI(i, kind, lang, { fresh } = {}) {
@@ -6128,18 +6330,23 @@ async function runRiffAI(i, kind, lang, { fresh } = {}) {
   try {
     const res = await ask(HWCore.prompts.rewrite({ text: before, kind, lang: { es: 'Spanish', fr: 'French', de: 'German' }[lang] || lang, voice: voiceSpec(), platform: plat, limit: lim }), { signal: ctl.signal, fresh });
     if (UI.diff !== d) return;
-    const opts = (res && res.options || []).map(o => ({ text: String(o.text || '').trim(), why: String(o.why || '') })).filter(o => o.text && o.text !== before.trim());
-    if (!opts.length) { UI.diff = null; renderExtras(tw.id); toast(kind === 'grammar' ? 'Grammar’s clean. Nothing to fix.' : 'Already tight. Claude had nothing better.', { icon: 'check' }); return; }
+    const opts = kind === 'translate' ? (res && res.options || []).map(o => ({ text: String(o.text || '').trim(), why: String(o.why || '') })).filter(o => o.text && o.text !== before.trim()) : checkedAlts(res, kind, before);
+    if (!opts.length) {
+      /* nothing Claude sent passed: Basic mode's versions, or say exactly why there's no change */
+      const b = kind === 'translate' ? { vers: [] } : rewriteCompute(kind, before, i === 0);
+      if (!b.vers.length) { UI.diff = null; renderExtras(tw.id); toast(kind === 'grammar' ? 'No spelling or grammar mistakes found.' : res && res.why && !(res.options || []).length ? esc(String(res.why)) : esc(b.msg || 'Claude’s versions changed your facts, so none are shown. Try again.'), { icon: 'check', ms: 5200 }); return; }
+      Object.assign(d, { pending: false, alts: b.vers.map(t => ({ text: t, why: 'Basic mode: Claude’s versions repeated your post or changed your facts.' })), alt: 0, basic: true, reveal: Date.now() }); setAlt(d, 0); diffLanded(d); return;
+    }
     spendAI();
-    Object.assign(d, { pending: false, alts: opts, alt: 0 }); setAlt(d, 0);
+    Object.assign(d, { pending: false, alts: opts, alt: 0, reveal: Date.now() }); setAlt(d, 0); diffLanded(d);
   } catch (e) { if (UI.diff === d) { UI.diff = null; renderExtras(tw.id); } aiError(e); if (e && e.code !== 'cancelled' && !aiOn()) runRiff(i, kind, lang); }
 }
-function setAlt(d, k) { const o = d.alts[k]; d.alt = k; d.after = o.text; d.why = o.why; d.chunks = diffWords(d.before, o.text); d.shown = null; renderExtras(d.id); const y = $('#diff-yes'); y && y.focus({ preventScroll: true }); }
+function setAlt(d, k) { const prevAfter = d.after; const o = d.alts[k]; const cyc = k !== d.alt && d.chunks && d.chunks.length > 1; d.alt = k; d.after = o.text; d.why = o.why; d.chunks = diffWords(d.before, o.text); d.shown = null; if (cyc) { d.reveal = Date.now(); d.fromScore = tIndex(d.id) === 0 ? hookScore(prevAfter).score : null; } renderExtras(d.id); const y = $('#diff-yes'); y && y.focus({ preventScroll: true }); if (cyc) srSay(`Version ${k + 1} of ${d.alts.length}.`); }
 function closeDiff(accept) {
   const d = UI.diff; if (!d) return; UI.diff = null; if (d.pending) { d.ctl && d.ctl.abort(); accept = false; } const i = tIndex(d.id); const tw = S.draft.tweets[i];
   if (!accept || !tw) { renderExtras(d.id); focusTweet(i, 'end'); return; }
   /* snapshot the whole thread: a rewrite that runs long splits into new posts, and Undo has to take those back too */
-  const snap = S.draft.tweets.map(t => ({ ...t })), before = d.before, after = composeDiff(d.chunks); tw.text = after; SFX.play('swap');
+  const snap = S.draft.tweets.map(t => ({ ...t })), before = d.before, after = composeDiff(d.chunks); tw.text = after; ehWatch(false); SFX.play('swap'); if (i === 0) UI.hookFrom = UI.lastHook;
   const lim = effLimit();
   if (tlen(after) > lim && S.settings.split) { const parts = splitText(after, lim); tw.text = parts[0]; insertAfter(i, parts.slice(1), { focusId: tw.id, pos: 'end' }); }
   else renderThread({ focusId: tw.id, pos: 'end' });
@@ -7643,7 +7850,7 @@ function composerClick(e) {
     case 'diffno': closeDiff(false); break;
     case 'instr': case 'instrgo': { const inp = $('.instr-in', el.closest('.imp')); if (a === 'instrgo' && inp) inp.value = el.dataset.t; runInstruct(i >= 0 ? i : 0, inp ? inp.value : el.dataset.t, { from: inp }); break; }
     case 'instrconn': openConnections(); break;
-    case 'diffretry': { const d = UI.diff; if (d && d.pending) { d.ctl.abort(); UI.diff = null; renderExtras(d.id); break; } if (d && d.alts && d.alt < d.alts.length - 1) { setAlt(d, d.alt + 1); break; } UI.diff = null; S.draft.tweets[i].text = d.before; if (d.kind === 'instruct') runInstruct(i, d.instr, { fresh: true }); else if (d && d.alts) runRiffAI(i, d.kind, d.lang, { fresh: true }); else runRiff(i, d.kind, d.lang); break; }
+    case 'diffretry': { const d = UI.diff; if (d && d.pending) { d.ctl.abort(); UI.diff = null; renderExtras(d.id); break; } if (d && d.alts && d.alt < d.alts.length - 1) { setAlt(d, d.alt + 1); break; } if (d && d.basic && d.alts) { setAlt(d, 0); break; } UI.diff = null; S.draft.tweets[i].text = d.before; if (d.kind === 'instruct') runInstruct(i, d.instr, { fresh: true }); else if (d && d.alts && !d.basic) runRiffAI(i, d.kind, d.lang, { fresh: true }); else runRiff(i, d.kind, d.lang); break; }
     case 'limore': UI.liMore = !UI.liMore; renderPreviewBody(); break;
     case 'litweak': S.draft.li = liVersion(); save(); renderPreviewHead(); renderPreviewBody(); toast('LinkedIn version ready. Edit it without touching the thread.', { icon: 'riff', tone: 'accent' }); break;
     case 'lireset': S.draft.li = null; save(); renderPreviewBody(); break;
@@ -7681,7 +7888,7 @@ ROUTES.write = () => {
   th.addEventListener('click', shClick);
   document.addEventListener('keydown', sharpenKey, true); onDispose(() => { document.removeEventListener('keydown', sharpenKey, true); SH.st = null; SH.ask = null; UI.sharp = null; if (SH.el) SH.el.remove(); SH.el = null; });
   ['keyup', 'click', 'focusin', 'select'].forEach(ev => th.addEventListener(ev, repaint));
-  th.addEventListener('focusout', e => { if (e.target.classList.contains('tw-input')) { if (SH.st) sharpenKeep(); else setTimeout(() => { if (document.activeElement !== SH.ta && !(SH.el && SH.el.contains(document.activeElement))) sharpenHide(); }, 0); UI.ghost = null; const ta = e.target; setTimeout(() => { if (document.contains(ta)) paintField(ta); }, 0); setTyping(false); } });
+  th.addEventListener('focusout', e => { if (e.target.classList.contains('tw-input')) { if (SH.st && SH.st.pending) { sharpenCancel(); sharpenHide(); } else if (SH.st) sharpenKeep(); else setTimeout(() => { if (document.activeElement !== SH.ta && !(SH.el && SH.el.contains(document.activeElement))) sharpenHide(); }, 0); UI.ghost = null; const ta = e.target; setTimeout(() => { if (document.contains(ta)) paintField(ta); }, 0); setTyping(false); } });
   const selch = () => { const a = document.activeElement; if (a && a.classList.contains('tw-input')) { placeCaret(a); if (!SH.st) sharpenCheck(a); } };
   document.addEventListener('selectionchange', selch); onDispose(() => document.removeEventListener('selectionchange', selch));
   th.addEventListener('pointerdown', e => { const h = e.target.closest('.handle'); if (h) startDrag(e, h); });
@@ -8297,7 +8504,7 @@ function initGrader(P, { onChange = () => {} } = {}) {
     const t = ta.value.trim(); if (!t) { ta.focus(); setWhy('Type a first line, then Sharpen. One rough sentence is plenty.'); return; }
     const r = hgSharpen(t), a = hookScore(t).score, b = hookScore(r.text).score;
     delete ver.dataset.keep;
-    if (r.same || b < a) { ver.innerHTML = `<p class="hg-same">${a >= 70 ? 'Already tight. Nothing worth changing.' : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`; ver.hidden = false; return; }
+    if (r.same || b < a) { ver.innerHTML = `<p class="hg-same">${a >= 70 ? `Scores ${a}: ${esc(hookScore(t).reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so the line stays yours.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`; ver.hidden = false; return; }
     ver.innerHTML = `<div class="hg-vh"><span class="lbl">Sharper version</span><span class="hsc jump"><b>${a}</b><span>→</span><b class="to">${a}</b></span></div><p class="hg-diffx">${hgDiffHTML(r)}</p><p class="hg-vnote">${hgNote(r)}</p><div class="hg-va"><button type="button" class="hbtn sm" id="${P}-keep">${ic('check', 'sm')} Keep it</button><button type="button" class="lnk7" id="${P}-mine">Keep mine</button></div>`;
     ver.hidden = false; ver.dataset.keep = '';
     const to = $('.to', ver); hwSpring(v => { to.textContent = Math.round(v); to.classList.toggle('hi', v >= 69.5); }).to(b, a);
@@ -9095,9 +9302,10 @@ function onbTry() {
   const ol = $('#onb-line'); if (ol) ol.onclick = () => { const t = S.pendingLine; delete S.pendingLine; save(); writeFrom([t]); };
   $$('#onb a[href="#today"]').forEach(a => a.addEventListener('click', () => { delete S.pendingLine; save(); }));
   const inp = $('#ot-in'), out = $('#ot-out'), go = $('#ot-go'), note = $('#ot-note'); if (!inp) return;
-  const show = (line, better, why) => { const a = hookScore(line), b = hookScore(better), d = wordDiff(tokenize(line), tokenize(better));
+  /* a better line that only cuts words shows the cut words struck through, so a pure trim never reads as "nothing changed" */
+  const show = (line, better, why) => { const a = hookScore(line), b = hookScore(better), d0 = wordDiff(tokenize(line), tokenize(better)), d = d0.changed || better.trim() === line.trim() ? d0 : { changed: 1, html: hgDiff(line, better).replace(/<del>/g, '<del class="vw">') };
     out.innerHTML = `<div class="ot-row"><span class="hook ${a.score >= 70 ? 'hi' : ''}"><span class="sc" style="--v:${a.score}"><span>${a.score}</span></span><span>Yours</span></span><p>${esc(a.reason)}</p></div>
-      ${d.changed ? `<div class="ot-row better"><span class="hook ${b.score >= 70 ? 'hi' : ''}"><span class="sc" style="--v:${b.score}"><span>${b.score}</span></span><span>Sharper</span></span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : '<p class="faint">Already tight. Nothing worth changing.</p>'}
+      ${d.changed ? `<div class="ot-row better"><span class="hook ${b.score >= 70 ? 'hi' : ''}"><span class="sc" style="--v:${b.score}"><span>${b.score}</span></span><span>Sharper</span></span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : `<p class="faint">${a.score >= 70 ? `Scores ${a.score}: ${esc(a.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so it stays as you wrote it.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`}
       <div class="ot-a"><button class="btn ${d.changed ? 'primary' : ''}" id="ot-use">${ic('write', 'sm')} ${d.changed ? 'Write it with this hook' : 'Write it'}</button>${d.changed ? '<button class="btn ghost" id="ot-mine">Keep mine</button>' : ''}</div>`;
     SFX.play(b.score >= 70 ? 'hook' : 'tick');
     $('#ot-use').onclick = () => writeFrom([d.changed ? better : line]); const m = $('#ot-mine'); if (m) m.onclick = () => writeFrom([line]); };
