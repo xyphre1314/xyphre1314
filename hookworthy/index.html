@@ -3521,7 +3521,42 @@ if (!S.ai || S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date
 if (S.voice && Array.isArray(S.voice.never) && !S.migr28) { if (S.voice.never.includes('synergy') && S.voice.never.includes('delve')) S.voice.never = S.voice.never.filter(w => w !== 'leverage'); S.migr28 = true; }
 const HIST_K = { k: null };
 function persist() { const h = S.history; const k = h ? `${h.length}:${h.reduce((a, p) => a + (p.likes || 0) + (p.replies || 0) + (p.views || 0) + (p.text ? p.text.length : 0), 0)}` : '0'; if (k !== HIST_K.k && store.set('history', h || [])) HIST_K.k = k; const { history, ...rest } = S; store.set('state', rest); }
-const save = debounce(() => { persist(); scheduleSync(); }, 250);
+const saveSoon = debounce(() => { persist(); scheduleSync(); }, 250);
+/* edit history for the draft: typing keeps the browser's own undo; anything the app changes (a rewrite, Sharpen, a fix, a formula, a split)
+   becomes a step that ⌘Z walks back once the browser has nothing left to undo, and ⌘⇧Z walks forward again */
+const EH = { past: [], future: [], last: null, id: null };
+const ehKey = () => S.draft.tweets.map(t => t.id + '\u0001' + t.text).join('\u0002');
+const ehTake = () => ({ key: ehKey(), tweets: S.draft.tweets.map(t => ({ ...t })) });
+function ehWatch(typed) {
+  if (!S.draft || !S.draft.tweets) return;
+  if (EH.id !== S.draft.id) { EH.id = S.draft.id; EH.past = []; EH.future = []; EH.last = ehTake(); return; }
+  const k = ehKey(); if (EH.last && k === EH.last.key) return;
+  const now = ehTake(), top = EH.past[EH.past.length - 1];
+  if (typed || !EH.last) EH.future = [];
+  else if (top && top.key === k) { EH.past.pop(); EH.future.push(EH.last); } /* an Undo toast put back the step before: same as ⌘Z */
+  else { EH.past.push(EH.last); if (EH.past.length > 60) EH.past.shift(); EH.future = []; }
+  EH.last = now;
+}
+const save = () => { ehWatch(false); saveSoon(); };
+function ehStep(dir) {
+  ehWatch(false); const from = dir < 0 ? EH.past : EH.future, to = dir < 0 ? EH.future : EH.past; if (!from.length) return false;
+  to.push(EH.last); const s = from.pop(); S.draft.tweets = s.tweets.map(t => ({ ...t })); EH.last = { key: s.key, tweets: s.tweets };
+  const ta = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('tw-input') ? document.activeElement : null;
+  const fid = ta ? ta.closest('.tw').dataset.id : null;
+  saveSoon(); if (CURRENT === 'write') { renderThread(fid && tById(fid) ? { focusId: fid, pos: 'end' } : {}); paintHook(); schedulePreview(); markSaving(); }
+  srSay(dir < 0 ? 'Undone.' : 'Redone.');
+  if (!ta) toast(dir < 0 ? 'Undone.' : 'Redone.', { icon: 'check', ms: 1800 });
+  return true;
+}
+/* just before a keystroke lands, anything the app changed since the last look becomes its own step (Keep doesn't always save at once) */
+document.addEventListener('beforeinput', e => { if (e.target.classList && e.target.classList.contains('tw-input')) ehWatch(false); }, true);
+/* ⌘Z in a post: let the browser undo typing first; if that changed nothing, step back through the app's own edits */
+document.addEventListener('keydown', e => {
+  const ta = e.target; if (!(e.metaKey || e.ctrlKey) || e.altKey || !(ta.classList && ta.classList.contains('tw-input'))) return;
+  const k = e.key.toLowerCase(), dir = k === 'z' ? (e.shiftKey ? 1 : -1) : k === 'y' && e.ctrlKey && !e.metaKey ? 1 : 0; if (!dir) return;
+  ehWatch(false); if (!(dir < 0 ? EH.past : EH.future).length) return;
+  const v = ta.value; setTimeout(() => { if (ta.isConnected && ta.value === v) ehStep(dir); }, 0);
+});
 const saveNow = () => { try { persist(); } catch (e) { } };
 addEventListener('pagehide', saveNow); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); }); addEventListener('beforeunload', saveNow);
 
@@ -4491,6 +4526,8 @@ const isTyping = e => { const t = e.target; return t && (t.tagName === 'INPUT' |
 document.addEventListener('keydown', e => { if (SEND.t && ((e.key === 'Escape' && !MODALS.length) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z'))) { e.preventDefault(); e.stopImmediatePropagation(); cancelSend(); } }, true);
 /* Ctrl/⌘+Z outside a text field takes back whatever the last toast offered to undo */
 document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && !isTyping(e) && UNDO.fn && $('#toasts .toast:not(.out)')) { e.preventDefault(); const f = UNDO.fn; UNDO.fn = null; UNDO.close && UNDO.close(); f(); srSay('Undone.'); keepFocus(); } });
+/* outside a field in Write (say, right after Keep), ⌘Z and ⌘⇧Z walk the draft's edit history; a visible Undo toast still goes first */
+document.addEventListener('keydown', e => { if (CURRENT !== 'write' || !(e.metaKey || e.ctrlKey) || e.altKey || isTyping(e) || MODALS.length || e.defaultPrevented) return; const k = e.key.toLowerCase(), dir = k === 'z' ? (e.shiftKey ? 1 : -1) : k === 'y' && e.ctrlKey && !e.metaKey ? 1 : 0; if (!dir || (dir < 0 && UNDO.fn && $('#toasts .toast:not(.out)'))) return; if (ehStep(dir)) e.preventDefault(); });
 /* when a redraw removes the focused element, land on something sensible instead of the page body */
 function keepFocus(sel) { requestAnimationFrame(() => { const a = document.activeElement; if (a && a !== document.body && a.isConnected) return; const t = (sel && $(sel)) || $('#cal .qcard') || $('#view h1') || $('#main'); if (t) { if (!t.matches('a,button,input,textarea,select,[tabindex]')) t.tabIndex = -1; t.focus({ preventScroll: true }); } }); }
 document.addEventListener('keydown', e => {
@@ -7631,7 +7668,7 @@ ROUTES.write = () => {
   /* ↵ (or ⌘↵ / Ctrl+Enter) in "Tell it what to change" rewrites; it never reaches the composer's own ⌘↵ (Schedule) */
   c.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && e.target.classList.contains('instr-in')) { e.preventDefault(); e.stopPropagation(); runInstruct(tIndex(e.target.closest('.tw').dataset.id), e.target.value, { from: e.target }); } });
   c.addEventListener('keydown', e => { if (e.key !== 'Escape' || !e.target.closest('.imp')) return; const cl = $('[data-cact="impclose"]', e.target.closest('.imp')); if (cl) { e.preventDefault(); e.stopPropagation(); cl.click(); } });
-  th.addEventListener('input', e => { if (e.target.matches('[data-poll]')) { const tw = tById(e.target.closest('.tw').dataset.id); tw.poll.options[+e.target.dataset.poll] = e.target.value; schedulePreview(); markSaving(); return; } onInput(e); });
+  th.addEventListener('input', e => { if (e.target.matches('[data-poll]')) { const tw = tById(e.target.closest('.tw').dataset.id); tw.poll.options[+e.target.dataset.poll] = e.target.value; schedulePreview(); markSaving(); return; } onInput(e); ehWatch(true); });
   th.addEventListener('change', e => { if (e.target.matches('[data-media]')) { addFiles(tIndex(e.target.closest('.tw').dataset.id), e.target.files); e.target.value = ''; } if (e.target.matches('[data-polldays]')) { tById(e.target.closest('.tw').dataset.id).poll.days = +e.target.value; markSaving(); } });
   th.addEventListener('keydown', e => { if (e.target.matches('label.tool') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); $('input', e.target).click(); return; } onKey(e); });
   const repaint = e => { const t = e.target; if (!(t && t.classList && t.classList.contains('tw-input'))) return;
