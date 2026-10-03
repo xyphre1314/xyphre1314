@@ -6191,9 +6191,9 @@ const xWired = () => !!(LLM.server || {}).xUser;
 const PLUG_READY = 'Auto-plug is set. It only runs once you connect X.';
 function plugExamples() {
   const h = (S.ws === 'me' ? S.user.handle : WS().handle) || '', at = h ? '@' + h : '[your handle]';
-  if (tradingNiche()) return [['Newsletter', 'If this helped, I break down one trade like this every week: [your newsletter link]'], ['Follow', `I post one trading lesson a day. Follow ${at} so you don’t miss tomorrow’s.`], ['Full breakdown', 'Charts and the full breakdown here: [link]'], ['Your product', 'I built [tool] to do this for me: [link]'], ['Question', 'What would you add? I read every reply.']];
-  const fd = /startup|founder|saas|business|product/i.test(S.user.niche || '');
-  return [['Newsletter', fd ? 'If this helped, I write up one lesson from building [company] every week: [your newsletter link]' : 'If this helped, I send one idea like this every week: [your newsletter link]'], ['Follow', fd ? `I share what’s working (and what isn’t) as I build. Follow ${at} for the next one.` : `I post one of these a day. Follow ${at} so you don’t miss tomorrow’s.`], ['Full breakdown', fd ? 'The numbers and the full breakdown are here: [link]' : 'The full breakdown is here: [link]'], ['Your product', 'I built [tool] to do this for me: [link]'], ['Question', 'What would you add? I read every reply.']];
+  /* owner-approved picks (r29/copy/autoplug/shortlist.md ★): honest, no reach or results promises */
+  if (tradingNiche()) return [['Newsletter', 'I send one trade breakdown every [day]. Entry, exit, what I got wrong: [link]'], ['Follow', `I share my trades here, wins and losses. Follow ${at} to see the next one.`], ['Full breakdown', 'Full reasoning and charts, so you can check my work: [link]'], ['Your product', 'I built [tool]. It doesn’t trade for you, it just does the boring part: [link]'], ['Question', 'What would you add? I read the replies, even the bearish ones.']];
+  return [['Newsletter', 'Every [day] I write up one thing that worked and one that didn’t: [link]'], ['Follow', `I share what’s working and what isn’t, most days. Follow ${at}.`], ['Full breakdown', 'Everything that didn’t fit in the post: [link]'], ['Your product', 'Obligatory plug: I built [tool] for [who it’s for]. [link]'], ['Question', 'Happy to be wrong. What am I missing?']];
 }
 /* the card's status line: "set" only once the reply could actually go out */
 const plugNote = st => { const t = (st.plug && st.plug.text) || ''; if (plugBad(t)) return t.trim() ? 'Not set yet. Fix the reply above first.' : 'Not set yet. Write the reply, or pick an example.';
@@ -6206,7 +6206,7 @@ function plugPvHTML(st, first) { const you = pvYou(), dark = isDark(); return xP
 function xoHTML(st, { first = '', rs = true } = {}) {
   const p = st.plug = st.plug || { on: false, text: '', at: 50 }; if (p.at === 'pace' && !paceOK()) p.at = 50; const ex = plugExamples();
   return `<div class="xo">${rs ? `<div class="xo-rs"><span class="label" id="rs-l">Who can reply</span><div class="xo-r" role="radiogroup" aria-labelledby="rs-l" aria-describedby="rs-h">${RS.map(([k, l]) => xoRadio(k, l, (st.replySettings || 'everyone') === k, 'data-rs')).join('')}</div><small class="faint" id="rs-h">X only${S.platforms.linkedin ? '. LinkedIn has no setting for this' : ''}.</small></div>` : ''}
-  <section class="plug ${p.on ? 'on' : ''}" aria-labelledby="pl-h"><div class="plug-h"><span><span class="label plug-k">Auto-plug</span><b id="pl-h">If this takes off, reply with…</b><small>One reply under your post, sent once from your account. X only.</small></span><button type="button" class="switch" role="switch" aria-checked="${!!p.on}" aria-labelledby="pl-h" data-plug="sw"></button></div>
+  <section class="plug ${p.on ? 'on' : ''}" aria-labelledby="pl-h"><div class="plug-h"><span><span class="label plug-k">Auto-plug</span><b id="pl-h">If this takes off, reply with…</b><small>One reply under your post, sent once from your account. X only.</small></span><button type="button" class="switch" role="switch" aria-checked="${!!p.on}" aria-label="Reply automatically ${p.at === 'pace' ? 'at 3× your usual pace' : `at ${p.at} likes`}" data-tip="Reply automatically ${p.at === 'pace' ? 'at 3× your usual pace' : `at ${p.at} likes`}" data-plug="sw"></button></div>
     <div class="plug-b" ${p.on ? '' : 'hidden'}>
       <div class="plug-ex" role="group" aria-label="Examples">${ex.map(([k], i) => `<button type="button" class="chip" data-pex="${i}">${esc(k)}</button>`).join('')}</div>
       <textarea class="input" id="plug-t" rows="3" aria-label="Your reply" aria-describedby="plug-t-err plug-n" placeholder="Pick an example, or write your own">${esc(p.text)}</textarea><p class="field-err" id="plug-t-err" role="status"></p>
@@ -6227,7 +6227,7 @@ function xoWire(root, st, first = '') {
     const r = e.target.closest('[data-rs]'); if (r) { pick(r, 'data-rs'); st.replySettings = r.dataset.rs; save(); SFX.play('tick'); return; }
     const sw = e.target.closest('[data-plug="sw"]'); if (sw) { st.plug.on = !st.plug.on; sw.setAttribute('aria-checked', st.plug.on); $('.plug', root).classList.toggle('on', st.plug.on); $('.plug-b', root).hidden = !st.plug.on; paint(); save(); SFX.play('tick'); return; }
     const ex = e.target.closest('[data-pex]'); if (ex) { const t = plugExamples()[+ex.dataset.pex][1], el = ta(); st.plug.text = el.value = t; paint(); save(); const b = t.search(/\[[^\]\n]*\]/); el.focus(); if (b >= 0) el.setSelectionRange(b, t.indexOf(']', b) + 1); else el.setSelectionRange(t.length, t.length); return; }
-    const at = e.target.closest('[data-pat]'); if (at) { pick(at, 'data-pat'); st.plug.at = at.dataset.pat === 'pace' ? 'pace' : +at.dataset.pat; paint(); save(); }
+    const at = e.target.closest('[data-pat]'); if (at) { pick(at, 'data-pat'); st.plug.at = at.dataset.pat === 'pace' ? 'pace' : +at.dataset.pat; const sl = `Reply automatically ${st.plug.at === 'pace' ? 'at 3× your usual pace' : `at ${st.plug.at} likes`}`, sw = $('[data-plug="sw"]', root); if (sw) { sw.setAttribute('aria-label', sl); sw.dataset.tip = sl; } paint(); save(); }
   });
   root.addEventListener('input', e => { if (e.target.id === 'plug-t') { st.plug.text = e.target.value; paint(); save(); } });
   /* each radiogroup is one Tab stop; arrows move and pick */
@@ -9785,7 +9785,7 @@ ROUTES.brand = () => {
     <div class="r"><span class="label">Display<br>EB Garamond 400</span><span class="display" style="font-size:56px">Say it well.</span></div>
     <div class="r"><span class="label">Heading<br>EB Garamond 400</span><span class="h1">Posts that sound like you on a good day</span></div>
     <div class="r"><span class="label">Editor<br>Figtree 18/1.6</span><span style="font-size:18px;line-height:1.6;max-width:62ch">Nobody tells you the hardest part of a side project is month three. Not the start. Not the launch. Month three.</span></div>
-    <div class="r"><span class="label">UI<br>Figtree 14</span><span>Schedule for Tue 8:40 AM · Follow-up reply at 100 likes</span></div>
+    <div class="r"><span class="label">UI<br>Figtree 14</span><span>Schedule for Tue 8:40 AM · Auto-plug at 100 likes</span></div>
     <div class="r"><span class="label">Mono<br>Geist Mono</span><span class="mono">0123456789 · 12.4k views · ${keys(MOD, 'K')}</span></div></div></section>
   <section class="sec"><div class="sec-h"><h2 class="h2">Components, every state</h2></div><div class="card pad" style="display:grid;gap:28px">
     <div class="state-grid">${['Default', 'Hover', 'Focus', 'Active', 'Disabled', 'Loading'].map((s, i) => `<div><span class="label">${s}</span><button class="btn primary ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Schedule</button><button class="btn ${['', 'force-hover', 'force-focus', 'force-active', '', 'is-loading'][i]}" ${i === 4 ? 'disabled' : ''} tabindex="-1">Save idea</button></div>`).join('')}</div>
