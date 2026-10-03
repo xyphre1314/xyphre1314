@@ -164,7 +164,7 @@ Wispr Flow's editorial calm, in plum, for people who write in public. A cream pa
 - EB Garamond 400 only at 32px and above, roman with an italic second half. Figtree for UI and body.
 - Primary actions are lilac #EADCFF with a 1.5px ink border and a 10px radius, never a solid saturated fill.
 - Plum blocks (#3B1F5C) and ink (#1A1A1A) as full-bleed rounded blocks; uppercase letter-spaced eyebrows above headlines; a hand-drawn lilac squiggle instead of a highlighter.
-- Platform-true posts, fictional creators labelled once per section.
+- Platform-true posts, shown as the product working, with no demo or placeholder notes.
 
 ## Colors
 
@@ -239,8 +239,9 @@ The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. It is abou
 5. **Previews**: one phone with X / Threads / LinkedIn / Bluesky tabs. LinkedIn shows the fold check.
 6. **Scheduling**: the app's own calendar (`calGridHTML`) with a trading week, in the visitor's time zone.
 7. **Who it's for**: Crypto & trading first, then Founders, Creators, Ghostwriters. Each shows first lines before and after, with real hook scores.
-8. **Switching & trust**, **Pricing** (Free trimmed to three items on the home card), **FAQ** (five questions).
-9. **Final call**: a deep plum block with cream text: "Paste the post you almost wrote", a live score, a centred lilac CTA and "Your next good time: tomorrow at 12:15 PM (UTC)", then the footer.
+8. **Switching & trust** ("Everything comes in. *Nothing goes out without you.*"): three pictures, one line each. The import (Typefully, X archive and CSV dropping into Your posts, "Read in your browser"), the five checks as bars with the total against the 70 line (real hookScore numbers), and a browser window with two drafts and a plum lock ("Nothing scheduled · nothing posts"). **Pricing** ("Start free. *Size up when it’s working.*", Free trimmed to three items on the home card), **FAQ** (five questions).
+9. **Final call**: a deep plum block with cream text: "Paste the post you almost wrote" over a cream card. Type and a big dial scores the line, five bars show the checks and the reason sits underneath; "Or try a rough one" fills in an example. One lilac button ("Open it in Hookworthy") carries the line in with `carryLine()`, then "Free. Your line comes with you."
+10. **Footer** (every light-world page): "End of the page. *Start of the post.*" with a Start free link, four link columns (Product, Free tools, App, Legal), the wordmark at full width, then © · the promise · Back to top. Privacy and Terms live on `#legal`, in plain words.
 
 The header and footer sit outside `<main id="main">`; the announcement bar is an `<aside>`. Reveals run 600ms at most and never blur large cards. Phone length is about 11 screens at 390.
 
@@ -301,7 +302,7 @@ Choose a niche, then:
 - **Popped posts:** real-looking posts from accounts in your niche, each with three reasons it spread (early, hook, relatable, timing, format, proof) and the structure written out with placeholders marked.
 - **Use this pattern:** loads that formula into the composer with [brackets] to fill.
 
-The accounts are illustrative and labelled as such.
+The accounts are labelled Sample until live search is connected.
 
 ### Sound
 Sounds are synthesized in Web Audio and never samples. Each is under 350 ms and very quiet:
@@ -352,7 +353,7 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
 
 ### Do:
 - **Do** render every post as its platform does, with a portrait, name, handle, time and counts.
-- **Do** label fictional creators once per section ("Illustrative posts. The creators are fictional.").
+- **Do** show the product as it works. No "demo", "placeholder", "preview" or "the creators are fictional" notes (round 30). Keep the honest states the released product has too: Sample data on an empty account, practice mode with no account connected, self-hosting notes.
 - **Do** tie motion to the reader's scroll or to a meaningful stop. Each chapter has its own move: the headline wipes up from its baseline, demos rise with a slight tilt, phones stagger, and the wall only drifts.
 - **Do** respect reduced motion: the ring stops, the story shows its end state, and the wall stays still.
 
@@ -402,6 +403,8 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
   | **Who can reply** (per post: Everyone, People you follow, Only people you mention) | reply settings, audience |
   | **Your posting times** (the weekly grid Schedule fills first) | golden slots, time slots |
   | **Post by hand** (a post whose time came with nothing to send it) | Published (unless something sent it) |
+  | **Open the app** (the link into the app from the light-world pages) | Open the demo |
+  | **Reset sample data** | Reset demo data |
 
 - **Slots in sentences:** "Scheduled for tomorrow at 8:40 AM", never "Scheduled for Tomorrow · 8:40 AM". The "·" form is for labels and lists only.
 
