@@ -94,7 +94,7 @@
   function hookScore(raw) {
     const text = (raw || '').trim();
     const zero = { clarity: 0, curiosity: 0, specificity: 0, tension: 0, brevity: 0 };
-    if (!text) return { score: 0, parts: zero, reason: 'Nothing to grade yet. Your first line is the hook.', tone: 'none' };
+    if (!text) return { score: 0, parts: zero, reason: 'Nothing to read yet. Your first line is the hook.', tone: 'none', step: 'Write your first line', why: 'It’s the hook.', fix: null };
     const lines = String(text).replace(/https?:\/\/\S+/g, 'link').split(/\n/).map(l => l.trim()).filter(Boolean); let first = lines[0]; if (first.length < 40 && lines[1]) first += ' ' + lines[1];
     const lc = first.toLowerCase(); const len = first.length;
     let clarity = 72, curiosity = 30, spec = 25, tension = 30, brevity;
@@ -148,15 +148,18 @@
     if (gib > .25 || noWords) score = Math.min(score, 30);
     else if (short) score = Math.min(score, 50);
     if (blank) score = Math.min(score, 40);
-    let reason, tone;
-    if (blank) { reason = 'There are blanks left. Fill them with what really happened, then it gets a real score.'; tone = 'fix'; }
-    else if (gib > .25 || noWords) { reason = 'That doesn’t read as words yet. Say the thing plainly.'; tone = 'fix'; }
-    else if (short) { reason = 'Too short to stop anyone. Say what it’s about.'; tone = 'fix'; }
-    else if (bait > 1 || (bait && score < 66)) { reason = 'It reads like bait. Readers have learned to scroll past that. Say the real thing.'; tone = 'fix'; }
-    else if (over) { reason = 'Too many numbers at once. Keep the one that matters.'; tone = 'fix'; }
-    else if (fillers.length) { const orig = (String(text).match(new RegExp(`\\b${fillers[0]}\\b`, 'i')) || [fillers[0]])[0]; reason = `“${orig}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; }
-    else if (warm) { reason = `Opening with “${cap(warm[0])}” spends your best real estate on a warm-up.`; tone = 'fix'; }
-    else if (parts.brevity < 45) { reason = 'Long first line. Land the point in under 100 characters.'; tone = 'fix'; }
+    /* reason: one plain sentence. step: the one next move, as an instruction ("Cut “i think”"). why: half a sentence on why.
+       fix: for a cut that can be tried right here (a hedge, a warm-up), what the line would read without it, so hookNext can say where it lands */
+    let reason, tone, step, why, fix = null;
+    const drop = re => String(text).replace(re, ' ').replace(/[ \t]{2,}/g, ' ').replace(/^\s*[,.;:]\s*/, '').replace(/\s+([,.;:!?])/g, '$1').trim();
+    if (blank) { reason = 'There are blanks left. Fill them with what really happened, then it gets a real read.'; tone = 'fix'; step = 'Fill in the blanks'; why = 'Say what really happened, then it gets a real read.'; }
+    else if (gib > .25 || noWords) { reason = 'That doesn’t read as words yet. Say the thing plainly.'; tone = 'fix'; step = 'Say the thing plainly'; why = 'It doesn’t read as words yet.'; }
+    else if (short) { reason = 'Too short to stop anyone. Say what it’s about.'; tone = 'fix'; step = 'Say what it’s about'; why = 'A few more words give people a reason to stop.'; }
+    else if (bait > 1 || (bait && score < 66)) { reason = 'It reads like bait. Readers have learned to scroll past that. Say the real thing.'; tone = 'fix'; step = 'Say the real thing'; why = 'Readers have learned to scroll past bait.'; }
+    else if (over) { reason = 'Too many numbers at once. Keep the one that matters.'; tone = 'fix'; step = 'Keep the one number that matters'; why = 'Several numbers at once blur the point.'; }
+    else if (fillers.length) { const orig = (String(text).match(new RegExp(`\\b${fillers[0]}\\b`, 'i')) || [fillers[0]])[0]; reason = `“${orig}” softens the claim. Cut it and the line stands up straighter.`; tone = 'fix'; step = `Cut “${orig}”`; why = 'It softens the claim.'; fix = drop(new RegExp(`\\b${fillers[0]}\\b,?`, 'i')); }
+    else if (warm) { reason = `Opening with “${cap(warm[0])}” spends your best real estate on a warm-up.`; tone = 'fix'; step = `Drop the “${cap(warm[0])}” opener`; why = 'The first words are your best real estate.'; fix = cap(drop(new RegExp(`^\\s*${warm[0]}\\b,?`, 'i'))); }
+    else if (parts.brevity < 45) { reason = 'Long first line. Land the point in under 100 characters.'; tone = 'fix'; step = 'Land the point in under 100 characters'; why = 'Long first lines get skimmed.'; }
     else if (score >= 70) {
       const s = [];
       if (parts.specificity >= 65) s.push('a concrete number');
@@ -164,36 +167,53 @@
       if (parts.tension >= 60) s.push('real tension');
       if (!s.length) s.push('tight, clear phrasing');
       reason = `${cap(s.slice(0, 2).join(' and '))}. A strong first line.`; tone = 'good';
+      /* what would take it further, for anyone who wants more than ready */
+      step = parts.specificity < 65 ? 'Add a number or a name' : parts.curiosity < 60 ? 'Leave one question open' : parts.tension < 60 ? 'Say what most people get wrong' : 'Cut one more word'; why = `${cap(s.slice(0, 2).join(' and '))}.`;
     }
-    else if (parts.specificity < 45) { reason = 'No numbers or specifics yet. Concrete beats clever.'; tone = 'fix'; }
-    else if (parts.curiosity < 45) { reason = 'It answers itself. Leave one question open.'; tone = 'fix'; }
-    else if (parts.tension < 45) { reason = 'Safe take. What does everyone get wrong here?'; tone = 'fix'; }
-    else { reason = score >= 45 ? `Nearly there. A stronger verb or a number would make it ${HOOK_TIERS[2].word}.` : 'Nothing wrong with it, nothing strong yet. A stronger verb or a number would lift it.'; tone = 'ok'; }
-    return { score, parts, reason, tone, tier: hookTier(score).word };
+    else if (parts.specificity < 45) { reason = 'No numbers or specifics yet. Concrete beats clever.'; tone = 'fix'; step = 'Add a number or a name'; why = 'Concrete beats clever.'; }
+    else if (parts.curiosity < 45) { reason = 'It answers itself. Leave one question open.'; tone = 'fix'; step = 'Leave one question open'; why = 'Right now it answers itself.'; }
+    else if (parts.tension < 45) { reason = 'Safe take. What does everyone get wrong here?'; tone = 'fix'; step = 'Say what most people get wrong'; why = 'Push against what people assume.'; }
+    else { reason = score >= 45 ? `Nearly there. A stronger verb or a number would make it ${HOOK_TIERS[2].word}.` : 'Nothing wrong with it, nothing strong yet. A stronger verb or a number would lift it.'; tone = 'ok'; step = 'Try a stronger verb or a number'; why = 'Nothing wrong with it, nothing pulling yet.'; }
+    return { score, parts, reason, tone, step, why, fix, tier: hookTier(score).word };
   }
 
-  /* ---------------- hook tiers ----------------
-     The score stays 0–100 underneath (sorting, thresholds, the learning model). People see one of four words,
-     each describing the line, never its reach. 70 is the bar: "Aim for Sharp". */
+  /* ---------------- hook states ----------------
+     The score stays 0–100 underneath (sorting, thresholds, the learning model). People see one of four words, each a step
+     toward ready, never a verdict on the person, and never a forecast of reach. 70 is the bar: Ready.
+     Keys are internal and stable (they were the old tier names); only the words show. */
   const HOOK_TIERS = [
-    { key: 'flat', word: 'Flat', min: 0 },
-    { key: 'warming', word: 'Warming', min: 45 },
-    { key: 'sharp', word: 'Sharp', min: 70 },
-    { key: 'honed', word: 'Honed', min: 85 }
+    { key: 'flat', word: 'Getting there', min: 0 },
+    { key: 'warming', word: 'Almost', min: 45 },
+    { key: 'sharp', word: 'Ready', min: 70 },
+    { key: 'honed', word: 'Standout', min: 85 }
   ];
   function hookTier(score) {
     const s = +score || 0; let i = 0;
     for (let k = 1; k < HOOK_TIERS.length; k++) if (s >= HOOK_TIERS[k].min) i = k;
     return { ...HOOK_TIERS[i], rank: i, next: HOOK_TIERS[i + 1] || null };
   }
-  /* what a change did to the line, in words: a new tier ("Warming → Sharp"), a clear step within one ("Sharper",
-     "Less sharp"), or about the same (a point or two is noise in a rule of thumb, so it isn't called better) */
+  /* what a change did to the line, in words: a new state ("Almost → Ready"), a clear step within one ("Stronger",
+     "A bit softer"), or about the same (a point or two is noise in a rule of thumb, so it isn't called better) */
   function hookMove(a, b) {
     const A = hookTier(a), B = hookTier(b), d = (+b || 0) - (+a || 0);
     if (B.rank !== A.rank) return { dir: B.rank > A.rank ? 'up' : 'down', cross: true, from: A, to: B, text: `${A.word} → ${B.word}` };
-    if (d >= 3) return { dir: 'up', cross: false, from: A, to: B, text: 'Sharper' };
-    if (d <= -3) return { dir: 'down', cross: false, from: A, to: B, text: 'Less sharp' };
+    if (d >= 3) return { dir: 'up', cross: false, from: A, to: B, text: 'Stronger' };
+    if (d <= -3) return { dir: 'down', cross: false, from: A, to: B, text: 'A bit softer' };
     return { dir: 'same', cross: false, from: A, to: B, text: 'About the same' };
+  }
+  /* the next single step, as the headline: "Cut “i think” to make it Ready." Where the fix can be tried here (a hedge, a
+     warm-up), it's scored first, so the sentence only promises a state the line would really reach. Ready and Standout
+     lead with that, and offer the step as optional. */
+  function hookNext(raw, h) {
+    h = h || hookScore(raw); const T = hookTier(h.score), bar = HOOK_TIERS[2];
+    if (!String(raw || '').trim()) return { lead: 'Write your first line.', sub: 'It’s the hook. It’s read as you type.', state: T, to: null, step: h.step };
+    if (T.rank >= 3) return { lead: 'Ready to post. This one stands out.', sub: h.why || h.reason, state: T, to: null, step: null };
+    if (T.rank === 2) return { lead: 'Ready to post.', sub: `For ${HOOK_TIERS[3].word}: ${h.step.charAt(0).toLowerCase() + h.step.slice(1)}.`, state: T, to: HOOK_TIERS[3], step: h.step };
+    let to = null;
+    if (h.fix != null) { const f = hookTier(hookScore(h.fix).score); if (f.rank > T.rank) to = f; }
+    const verb = w => w.rank >= 2 ? `make it ${w.word}` : `get it to ${w.word}`;
+    const lead = to ? `${h.step} to ${verb(to)}.` : `${h.step} to get closer to ${bar.word}.`;
+    return { lead, sub: h.why || h.reason, state: T, to: to || bar, step: h.step };
   }
   /* one sub-check as a state: strong (filled), some (half), not yet (empty) */
   function partState(v) { return v >= 70 ? { key: 'full', word: 'Yes' } : v >= 45 ? { key: 'half', word: 'Some' } : { key: 'empty', word: 'Not yet' }; }
@@ -342,7 +362,7 @@
     const hours = Array.from({ length: 24 }, (_, h) => { const a = dated.filter(p => new Date(p.at).getHours() === h).map(eng); return { h, n: a.length, x: a.length ? +(median(a) / med).toFixed(2) : 0 }; });
     /* hook calibration: does a higher hook score actually earn more here? */
     const scored = P.map(p => ({ s: hookScore(p.text).score, e: eng(p) }));
-    const hi = scored.filter(x => x.s >= 70), lo = scored.filter(x => x.s < 45); /* Sharp or better vs Flat */
+    const hi = scored.filter(x => x.s >= 70), lo = scored.filter(x => x.s < 45); /* Ready or better vs Getting there */
     const calib = hi.length >= 3 && lo.length >= 3 ? { hiN: hi.length, loN: lo.length, x: +(median(hi.map(x => x.e)) / Math.max(1, median(lo.map(x => x.e)))).toFixed(2), r: +pearson(scored.map(x => x.s), scored.map(x => Math.log1p(x.e))).toFixed(2) } : null;
     /* cadence */
     const span = dated.length > 1 ? (Math.max(...dated.map(p => p.at)) - Math.min(...dated.map(p => p.at))) / 864e5 : 0;
@@ -1508,5 +1528,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function crSpend(st, c) { if (!(c > 0)) return st; if (!st || st.bal < c) return null; return { ...st, bal: st.bal - c }; }
   const CREDITS = { PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
 
-  return { CREDITS, HOOK_TIERS, hookTier, hookMove, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
+  return { CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
 });
