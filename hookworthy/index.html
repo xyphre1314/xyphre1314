@@ -501,6 +501,8 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 /* one line, always: a long client name ends in an ellipsis, and below 1400px the pill is just the dot and the name */
 .ws-pill{ flex:0 1 auto; min-width:0; max-width:220px; white-space:nowrap; } .ws-pill .avatar{ flex:none; } .ws-pill > span{ min-width:0; overflow:hidden; text-overflow:ellipsis; }
 @media (max-width:1399px){ .ws-pill .wsp-l, .c-top:has(.ws-pill) .plats-l{ display:none; } .ws-pill{ max-width:150px; margin-left:4px; } }
+/* writing as a client: the pill already names them, so the button says “Send for approval”, the name never truncates to “Writing …”, and icon buttons never get squeezed */
+.ws-pill .wsp-l{ display:none; } .c-top:has(.ws-pill) .pm-n{ display:none; } .c-top > .btn, .c-top > .checks-pill, .c-top > .review-pill{ flex:none; }
 /* queue tags */
 .qtags{ display:flex; gap:4px; flex-wrap:wrap; margin-top:6px; }
 .qt{ display:inline-flex; align-items:center; gap:5px; height:18px; padding:0 6px; border-radius:6px; font:500 11px/1 var(--font-ui); background:var(--surface-3); color:var(--text-2); white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
@@ -591,7 +593,7 @@ body.typing .fade-typing{ opacity:0; pointer-events:none; }
 .sharpen{ position:absolute; z-index:40; display:flex; align-items:center; gap:2px; padding:4px; border-radius:99px; background:var(--text-1); color:var(--bg); box-shadow:0 12px 30px -10px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.06); white-space:nowrap; font:500 var(--t-13)/1 var(--font-ui); opacity:0; transform:translateY(6px) scale(.97); transform-origin:50% 100%; transition:opacity .16s var(--ease-out),transform .28s var(--spring-snap); pointer-events:none; }
 .sharpen.on{ opacity:1; transform:none; pointer-events:auto; }
 .sharpen .sh-t{ display:inline-flex; align-items:center; gap:6px; padding:0 8px 0 6px; font-weight:600; }
-.sharpen .sh-t .icon{ color:var(--accent-text); }
+.sharpen .sh-t .icon{ color:var(--tier-warming-inv); } /* the ink pill flips with the theme, so its plum flips too (lilac on ink, plum on cream) */
 .sharpen button{ height:28px; padding:0 10px; border-radius:99px; color:inherit; opacity:.78; transition:background var(--d-micro),opacity var(--d-micro); }
 .sharpen button:hover, .sharpen button:focus-visible{ opacity:1; background:color-mix(in srgb,var(--bg) 14%,transparent); outline:none; }
 .sharpen .n{ min-width:40px; text-align:center; font:500 var(--t-12)/1 var(--font-mono); font-variant-numeric:tabular-nums; opacity:.7; }
@@ -1319,7 +1321,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .onb-try{ display:grid; gap:12px; padding:20px; }
 .onb-try .ot-h{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; } .onb-try .ot-h .faint{ font-size:13px; }
 .onb-try textarea{ font-size:16px; resize:none; min-height:64px; }
-.onb-try .ot-a{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; } .ot-note{ font-size:13px; color:var(--error); }
+.onb-try .ot-a{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; } .ot-note{ font-size:13px; color:var(--text-2); }
 .ot-out{ display:grid; gap:12px; } .ot-out:empty{ display:none; }
 .ot-row{ display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start; } .ot-row p{ font-size:15px; line-height:1.5; white-space:pre-wrap; min-width:0; }
 .ot-row .ot-k{ display:grid; gap:5px; justify-items:start; min-width:92px; } .ot-row .ot-l{ font:600 11px/1 var(--font-ui); letter-spacing:.08em; text-transform:uppercase; color:var(--text-3); } .ot-row.better{ padding:12px; border-radius:var(--r-md); background:var(--surface-2); }
@@ -2730,7 +2732,7 @@ button.ai-badge:hover{ color:var(--text-1); }
 .imp .seg{ justify-self:start; }
 .drop{ display:grid; gap:4px; place-items:center; text-align:center; padding:28px 16px; border-radius:14px; border:1.5px dashed var(--border-strong); background:var(--surface-2); cursor:pointer; transition:background .15s,border-color .15s; }
 .drop b{ font:600 var(--t-15)/1.3 var(--font-ui); } .drop span{ font-size:var(--t-13); color:var(--text-2); }
-.drop:hover, .drop.over{ border-color:var(--pl); background:color-mix(in srgb,var(--pa) 40%,var(--surface-2)); }
+.drop:hover, .drop.over{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 8%,var(--surface-2)); }
 .drop:focus-within{ box-shadow:var(--focus); }
 .imp-steps{ margin:0; padding-left:20px; display:grid; gap:6px; font-size:var(--t-13); color:var(--text-2); }
 .imp-steps a{ color:var(--accent-text); text-decoration:underline; text-underline-offset:2px; }
@@ -2863,7 +2865,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 
 /* your week */
 .dg{ display:grid; gap:12px; padding:18px 20px; margin-bottom:18px; }
-.dg.sun{ background:color-mix(in srgb,var(--pa) 35%,var(--surface)); }
+.dg.sun{ background:color-mix(in srgb,var(--accent) 7%,var(--surface)); } /* a plum wash that follows the theme (the fixed lilac turned grey-lilac on dark) */
 .dg-h{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; } .dg-h .h2{ margin-top:6px; max-width:52ch; }
 .dg-a{ display:flex; gap:6px; flex-wrap:wrap; }
 #dg-body{ display:grid; gap:8px; font-size:var(--t-14); line-height:1.5; } .dg-hl{ font:400 22px/1.3 var(--font-display); }
@@ -3142,6 +3144,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .input, textarea.input{ border-color:var(--border-strong); }
 /* targets: at least 24×24 */
 .words .w button{ min-width:24px; min-height:24px; display:inline-grid; place-items:center; } .nav-lk{ min-height:24px; padding:0 6px; } #q-why{ display:inline-flex; align-items:center; min-height:24px; }
+@media (pointer:coarse){ .words .w button{ position:relative; } .words .w button::after{ content:""; position:absolute; inset:-10px; } } /* a 44px hit area round the small ×, without moving the chips */
 /* 320px: tools wrap instead of overlapping */
 @media (max-width:360px){ .tw-tools{ flex-wrap:wrap; row-gap:4px; } .tw-tools .tw-meta{ margin-left:auto; } .starter .acts, .starter-list .acts{ flex-wrap:wrap; } }
 
@@ -3154,7 +3157,9 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .qcard{ container-type:inline-size; container-name:qc; }
 @container qc (max-width:110px){ .qt.ok > span{ display:none; } .qt.ok{ padding:0 4px; min-width:18px; justify-content:center; } .qt.needs{ height:auto; min-height:18px; padding:2px 4px; white-space:normal; } .qt.needs > span{ overflow:visible; line-height:1.2; } .qt.needs i{ display:none; } }
 /* the approval rail: a long client name gives way to the post */
-#q-side .upnext .when{ max-width:96px; overflow:hidden; text-overflow:ellipsis; }
+#q-side .upnext button, #q-side .upnext a{ grid-template-columns:minmax(0,1fr); gap:2px; } /* the side panel is narrow: who and when on top, two lines of the post under it */
+#q-side .upnext .when{ max-width:none; overflow:hidden; text-overflow:ellipsis; }
+#q-side .upnext p{ white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.4; }
 /* round 28: calendar cards stay readable at 1280–1440. The side rail gives up width, and a narrow card drops its time (the row already says it): Sent and Post by hand become a coloured dot before the title */
 @media (min-width:1181px){ .cal-wrap{ grid-template-columns:minmax(0,1fr) clamp(220px,19vw,290px); } }
 .cal{ grid-template-columns:64px repeat(7,minmax(0,1fr)); }
@@ -3172,7 +3177,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 /* touch: every control is a comfortable 44px target */
 @media (pointer:coarse){ .tool, .plat, .imp-tabs [role=tab], .hint-n{ min-width:44px; min-height:44px; } }
 /* touch: buttons, tabs and Today's rows reach 44px tall; the dense post-to toggles keep their width but get the height */
-@media (pointer:coarse){ .btn, .seg [role=tab], .ts-i, .ts-open, .chip{ min-height:44px; } .btn.icon-only{ min-width:44px; } }
+@media (pointer:coarse){ .btn, .btn.sm, .seg [role=tab], .ts-i, .ts-open, .chip, .ag-open{ min-height:44px; } .btn.icon-only, .btn.sm.icon-only{ min-width:44px; } } /* .btn.sm too: its own 36px rule outranked the plain .btn one */
 /* one look for a blank you still have to fill, everywhere in the app */
 .hkf i, .hk .t i, .br-blank{ font-style:normal; padding:0 .2em; border-radius:4px; background:var(--accent-soft); color:var(--accent-text); box-shadow:none; }
 @container qc (max-width:124px){
@@ -3271,7 +3276,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .hk-main{ display:flex; gap:10px; align-items:flex-start; } .hk-main p{ font-size:14px; }
 .hk-main .tier{ margin-top:-1px; } .hk-pips{ max-width:360px; } .hk-aim{ color:var(--text-3); white-space:nowrap; } .hk-pips{ margin:10px 0 8px; }
 .hk-how summary{ cursor:pointer; font-size:12px; color:var(--text-3); } .hk-how .bars{ margin-top:8px; } .hk-how p{ font-size:12px; margin-top:6px; }
-.vm-line{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .vm-line b{ color:var(--text-1); font-variant-numeric:tabular-nums; } .vm-line .icon{ color:var(--text-3); }
+.vm-line{ display:flex; gap:8px; align-items:flex-start; flex-wrap:wrap; font-size:13px; line-height:1.45; color:var(--text-2); } .vm-line > span{ flex:1 1 0; min-width:0; } .vm-line > .icon{ flex:none; margin-top:2px; } /* the icon stays beside the words when they wrap */ .vm-line b{ color:var(--text-1); font-variant-numeric:tabular-nums; } .vm-line .icon{ color:var(--text-3); }
 .start-line{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin:18px 0 0 48px; padding-top:14px; border-top:1px dashed var(--border); } .start-line .faint{ font-size:13px; margin-right:4px; }
 .sh-hook{ display:grid; gap:10px; padding:12px 14px; border-radius:12px; background:var(--surface-2); }
 .sh-hook.ok{ display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--text-2); background:none; padding:0; } .sh-hook.ok .icon{ color:var(--success); } .sh-hook.ok .btn{ margin-left:auto; }
@@ -3279,7 +3284,9 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .sh-alts{ display:grid; gap:6px; } .sh-alt{ display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:center; text-align:left; padding:9px 10px; border-radius:10px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:14px; transition:box-shadow var(--d-micro), transform var(--d-micro); }
 .sh-alt:hover{ box-shadow:0 0 0 1px var(--accent); } .sh-alt:active{ transform:scale(.99); }
 /* a low hook is never shown as a warning: it is a step toward ready, not a problem */
-@media (max-width:760px){ .start-line{ margin-left:0; } .hk-dial{ margin-top:8px; } .hk-dial .sc{ width:30px; height:30px; } }
+@media (max-width:760px){ .start-line{ margin-left:0; } .hk-dial{ margin-top:8px; } .hk-dial .sc{ width:30px; height:30px; }
+  /* the 30px gutter can't centre a 40px word without spilling past the page edge: the word starts at the gutter and runs into the 10px gap instead */
+  .tw-gutter .hk-dial{ align-self:flex-start; align-items:flex-start; } .tw-gutter .hk-dial small{ max-width:40px; font-size:10.5px; text-align:left; text-wrap:wrap; } }
 
 /* ==== Round 27: color and type system ==== */
 /* dark mode is aubergine night: the same plum family, lifted */
@@ -3422,7 +3429,9 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 /* the bar sizes itself to the editor column, not the window: with the preview open it tucks labels away before anything clips */
 .c-top{ container:ctop / inline-size; }
 @container ctop (max-width: 1000px){ .share-tog span, .pv-tog span, .plats-l{ display:none; } .share-tog, .pv-tog{ width:var(--bh); padding:0 !important; } }
-@container ctop (max-width: 690px){ .sched-btn span{ display:none; } .sched-btn{ width:var(--bh); padding:0 !important; } .fm-tog{ display:none; } .checks-pill .cp-l, .pm-n{ display:none; } }
+/* the save word goes before Schedule's label does: the dot still shows the state, and screen readers still hear it */
+@container ctop (max-width: 690px){ .fm-tog{ display:none; } .checks-pill .cp-l, .pm-n{ display:none; } .c-top .status .txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; } }
+@container ctop (max-width: 612px){ .sched-btn span{ display:none; } .sched-btn{ width:var(--bh); padding:0 !important; } }
 @media (max-width:760px){
   .c-top .sched-btn span{ display:none; } .c-top .sched-btn{ width:var(--bh); padding:0; }
   .c-top .post-main .pm-n{ display:none !important; }
@@ -3459,6 +3468,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .pn-t{ display:grid; gap:3px; justify-items:start; } .pn-t b{ font-weight:600; } .pn-t small{ color:var(--text-2); font-size:var(--t-13); line-height:1.45; }
 .pn-rest{ margin:4px 0 0 -8px; }
 .pn-note{ font-size:12.5px; margin-top:2px; }
+.pn-also{ display:flex; gap:8px; align-items:flex-start; padding:0 4px; font-size:13px; line-height:1.5; color:var(--text-2); } .pn-also .icon{ flex:none; margin-top:3px; color:var(--text-3); } .pn-also a{ white-space:nowrap; }
 @media (max-width:560px){ .pn-opt{ grid-template-columns:34px minmax(0,1fr); } .pn-opt > .btn{ grid-column:1 / -1; width:100%; } }
 .sendbar .sb-lnk{ color:#EADCFF; text-decoration:underline; text-underline-offset:3px; }
 @media (max-width:560px){ .sendbar .sb-now{ display:none; } }
@@ -3630,6 +3640,7 @@ html[data-meter="count"] .cr-tag{ display:inline-flex; }
 .cr-ex-head p{ margin:0; font-size:15.5px; line-height:1.55; }
 .cr-ex-grid{ display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,1fr); gap:16px; align-items:start; }
 .cr-cmp-w{ display:grid; gap:10px; min-width:0; }
+.cr-cmp-w:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:10px; }
 .cr-cmp{ width:100%; border-collapse:separate; border-spacing:0; font-size:14px; background:var(--surface); border-radius:16px; box-shadow:0 0 0 1px var(--border); overflow:hidden; }
 .cr-cmp th, .cr-cmp td{ padding:11px 14px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border); line-height:1.4; }
 .cr-cmp tbody tr:last-child > *{ border-bottom:0; }
@@ -3719,6 +3730,7 @@ body.focus-mode .c-top > .dsw{ opacity:0; pointer-events:none; }
 .dr-x:hover{ color:var(--error); background:var(--surface-3); } .dr-x:focus-visible{ box-shadow:var(--focus); }
 @media (hover:none){ .dr-x{ opacity:1; } }
 .dsw-empty{ display:grid; gap:6px; justify-items:center; padding:28px 16px 30px; text-align:center; }
+.dsw-more{ padding:10px 14px 12px; font-size:12.5px; text-align:center; }
 .dsw-empty b{ font:600 var(--t-14)/1.3 var(--font-ui); color:var(--text-1); } .dsw-empty span{ max-width:30ch; font-size:var(--t-13); line-height:1.45; color:var(--text-2); }
 .dsw-f{ display:flex; align-items:center; gap:12px; min-height:40px; padding:6px 12px; border-top:1px solid var(--border); font-size:12px; color:var(--text-3); }
 .dsw-f:not(:has(> :not(.grow))){ display:none; }
@@ -3748,6 +3760,7 @@ body.focus-mode .c-top > .dsw{ opacity:0; pointer-events:none; }
   .start-line{ gap:4px 2px; } .start-line .btn{ padding:0 8px; }
 }
 @media (pointer:coarse) and (max-width:760px){ .tw-tools{ margin-left:-12px; } }
+@media (max-width:760px){ .tw-tools .tw-rm{ display:none; } } /* on phones Remove lives in ··· so the tool row stays one line */
 
 /* ---------- link cards in the composer: compact, Hookworthy's own surfaces, × takes it off ---------- */
 .link-slot:empty{ display:none; }
@@ -4023,20 +4036,22 @@ mark.fill.blank{ background:transparent; box-shadow:none; outline:1px dashed col
 .t-comp .t-h .label{ font-size:12px; margin:0; }
 .t-comp .t-next{ display:inline-flex; align-items:center; gap:6px; }
 .t-comp .t-next .icon{ width:13px; height:13px; }
-.tc-box{ border-radius:14px; background:#FFFFF8; box-shadow:0 1px 0 rgba(0,0,0,.08), 0 16px 30px -24px rgba(0,0,0,.5); padding:4px; }
-.tc-box textarea{ display:block; width:100%; min-height:92px; resize:vertical; border:0; background:transparent; padding:14px 16px 8px; font:400 var(--t-17)/1.5 var(--font-ui); color:#1A1A1A; }
-.tc-box textarea::placeholder{ color:#76756D; }
+.tc-box{ border-radius:14px; background:var(--panel); box-shadow:0 1px 0 rgba(0,0,0,.08), 0 16px 30px -24px rgba(0,0,0,.5); padding:4px; }
+.tc-box textarea{ display:block; width:100%; min-height:92px; resize:vertical; border:0; background:transparent; padding:14px 16px 8px; font:400 var(--t-17)/1.5 var(--font-ui); color:var(--text-1); }
+.tc-box textarea::placeholder{ color:var(--text-3); }
 .tc-box textarea:focus{ outline:none; }
 .tc-box:focus-within{ box-shadow:0 0 0 2px var(--lilac,#E8DBFF), 0 16px 30px -24px rgba(0,0,0,.5); }
-.tc-meta{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:4px 12px 8px 14px; min-height:32px; font-size:13px; color:#4D4C46; }
+.tc-meta{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:4px 12px 8px 14px; min-height:32px; font-size:13px; color:var(--text-2); }
 .tc-meta #tc-score{ display:flex; align-items:center; gap:8px; min-width:0; }
-.tc-meta .faint{ color:#65645C; }
-.tc-why{ color:#4D4C46; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
-.tc-n{ font:500 12px/1 var(--font-mono); font-variant-numeric:tabular-nums; } .tc-n.over{ color:#B3313A; }
-/* the chip inside the cream box reads in its light colours whatever the theme */
-.t-write .tc-box .tier{ background:color-mix(in srgb,var(--tc) 12%,#FFFFF8); color:var(--tc); }
-.t-write .tc-box .t-flat{ --tc:#65645C; } .t-write .tc-box .t-warming{ --tc:#845608; } .t-write .tc-box .t-sharp{ --tc:#6A2FA0; } .t-write .tc-box .tier.t-honed{ --tc:#FFFFF8; background:#3A1E5C; box-shadow:none; }
-.t-write .tc-box .tier .tier-n{ color:#4D4C46; }
+.tc-meta .faint{ color:var(--text-3); }
+.tc-why{ color:var(--text-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.tc-n{ font:500 12px/1 var(--font-mono); font-variant-numeric:tabular-nums; } .tc-n.over{ color:var(--error); }
+/* the box is the writing page (it follows the theme), so its chip is the ordinary state chip: undo the plum card's light steps and cream chip */
+.t-write .tc-box{ --tier-flat:#545A80; --tier-warming:#6A3FA8; --tier-sharp:#166A59; --tier-honed:#7A5800; --tier-flat-f:#8187AE; --tier-warming-f:#9A6FDB; --tier-sharp-f:#2A9C82; --tier-honed-f:#B9861A; --tier-glow:rgba(214,162,42,.42); --tier-track:rgba(43,35,28,.09); }
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .t-write .tc-box{ --tier-flat:#B3B9DD; --tier-warming:#C5ADF6; --tier-sharp:#6FDCBE; --tier-honed:#F5D27E; --tier-flat-f:#9EA5CF; --tier-warming-f:#B699F2; --tier-sharp-f:#4FD1AE; --tier-honed-f:#F2C55C; --tier-glow:rgba(242,197,92,.38); --tier-track:rgba(255,244,228,.11); } }
+:root[data-theme="dark"] .t-write .tc-box{ --tier-flat:#B3B9DD; --tier-warming:#C5ADF6; --tier-sharp:#6FDCBE; --tier-honed:#F5D27E; --tier-flat-f:#9EA5CF; --tier-warming-f:#B699F2; --tier-sharp-f:#4FD1AE; --tier-honed-f:#F2C55C; --tier-glow:rgba(242,197,92,.38); --tier-track:rgba(255,244,228,.11); }
+.t-write .tc-box .tier{ background:color-mix(in srgb,var(--tc) var(--tier-tint,10%),var(--panel)); color:var(--tc); }
+.t-write .tc-box .tier .tier-n{ color:color-mix(in srgb,var(--tc) 78%,var(--text-2)); }
 .tc-a{ display:flex; flex-wrap:wrap; gap:8px; }
 .t-write .tc-sched{ background:rgba(251,247,239,.10); color:#FBF7EF; box-shadow:inset 0 0 0 1px rgba(251,247,239,.28); }
 .t-write .tc-sched:hover{ background:rgba(251,247,239,.16); }
@@ -4063,23 +4078,7 @@ mark.fill.blank{ background:transparent; box-shadow:none; outline:1px dashed col
 @media (max-width:1100px){ .today-grid.t3{ grid-template-columns:repeat(2,minmax(0,1fr)); } .today-grid.t3 .t-last{ grid-column:1 / -1; } }
 @media (max-width:860px){ .today-grid.t3{ grid-template-columns:1fr; } .tc-idea{ grid-template-columns:minmax(0,1fr) auto; } .tc-idea .label{ grid-column:1 / -1; } .t-smart{ flex-wrap:wrap; } .tc-why{ white-space:normal; } }
 .today-grid.t3 section > .btn, .today-grid.t3 section > a.btn{ justify-self:start; }
-.t-write .tc-box .tier.t-honed .tier-n{ color:rgba(255,255,248,.78); }
 
-/* dark: the composer box is the warm charcoal writing surface, not a cream slab */
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .tc-box{ background:#1C1B19; box-shadow:0 0 0 1px rgba(255,248,235,.12); }
-  :root:not([data-theme="light"]) .tc-box textarea{ color:#ECE7DC; } :root:not([data-theme="light"]) .tc-box textarea::placeholder{ color:#A09A8F; }
-  :root:not([data-theme="light"]) .tc-meta, :root:not([data-theme="light"]) .tc-why{ color:#BDB6AA; } :root:not([data-theme="light"]) .tc-meta .faint{ color:#A09A8F; }
-  :root:not([data-theme="light"]) .t-write .tc-box .tier{ background:rgba(251,247,239,.10); }
-  :root:not([data-theme="light"]) .t-write .tc-box .t-flat{ --tc:#D6CFDC; } :root:not([data-theme="light"]) .t-write .tc-box .t-warming{ --tc:#F0C373; } :root:not([data-theme="light"]) .t-write .tc-box .t-sharp{ --tc:#DCC8FF; } :root:not([data-theme="light"]) .t-write .tc-box .tier.t-honed{ --tc:#FFFFFF; background:#4A2A78; }
-  :root:not([data-theme="light"]) .t-write .tc-box .tier .tier-n{ color:rgba(251,247,239,.78); }
-}
-:root[data-theme="dark"] .tc-box{ background:#1C1B19; box-shadow:0 0 0 1px rgba(255,248,235,.12); }
-:root[data-theme="dark"] .tc-box textarea{ color:#ECE7DC; } :root[data-theme="dark"] .tc-box textarea::placeholder{ color:#A09A8F; }
-:root[data-theme="dark"] .tc-meta, :root[data-theme="dark"] .tc-why{ color:#BDB6AA; } :root[data-theme="dark"] .tc-meta .faint{ color:#A09A8F; }
-:root[data-theme="dark"] .t-write .tc-box .tier{ background:rgba(251,247,239,.10); }
-:root[data-theme="dark"] .t-write .tc-box .t-flat{ --tc:#D6CFDC; } :root[data-theme="dark"] .t-write .tc-box .t-warming{ --tc:#F0C373; } :root[data-theme="dark"] .t-write .tc-box .t-sharp{ --tc:#DCC8FF; } :root[data-theme="dark"] .t-write .tc-box .tier.t-honed{ --tc:#FFFFFF; background:#4A2A78; }
-:root[data-theme="dark"] .t-write .tc-box .tier .tier-n{ color:rgba(251,247,239,.78); }
 .rr-keys{ font-size:12px; margin-top:6px; display:flex; flex-wrap:wrap; gap:4px; align-items:center; }
 /* r34-tabs:end */
 </style>
@@ -4940,7 +4939,7 @@ function parseLink(url) {
   try {
     const u = new URL(url.trim()); const slug = u.pathname.split('/').filter(Boolean).pop() || u.hostname.split('.')[0];
     const words0 = slug.replace(/\.(html?|php|aspx?)$/, '').replace(/([a-z])([A-Z])/g, '$1 $2').split(/[-_+.\s]+/).filter(w => w && !/^\d+$/.test(w));
-    const title = words0.length ? cap(words0.join(' ').toLowerCase()) : cap(u.hostname.replace(/^www\./, ''));
+    const title = words0.length ? ACRO(cap(words0.join(' ').toLowerCase())) : cap(u.hostname.replace(/^www\./, ''));
     return { title, topic: topicOf(title) === 'this' ? title.toLowerCase() : topicOf(title), host: u.hostname.replace(/^www\./, '') };
   } catch (e) { return null; }
 }
@@ -5028,7 +5027,9 @@ function openMenu(anchor, items, { align = 'start', width } = {}) {
   const m = document.createElement('div'); m.className = 'menu'; m.setAttribute('role', 'menu'); if (width) m.style.minWidth = width + 'px';
   m.innerHTML = items.map((it, i) => it === '-' ? '<hr>' : it.header ? `<div class="mh label">${esc(it.header)}</div>` :
     `<button type="button" class="mi" role="menuitem" data-i="${i}" ${it.disabled ? 'disabled style="opacity:.45"' : ''}>${it.dot ? `<i class="mdot" style="--d:${it.dot}"></i>` : it.icon ? ic(it.icon) : ''}<span>${esc(it.label)}</span>${it.kbd ? kbd(...it.kbd) : ''}${it.hint ? `<small>${esc(it.hint)}</small>` : ''}${it.on ? `<span class="mon">${ic('check', 'sm')}</span>` : ''}</button>`).join('');
-  document.body.append(m);
+  /* menus live in a labelled region, so screen readers (and audits) find them inside a landmark */
+  let host = document.getElementById('menu-host'); if (!host) { host = document.createElement('div'); host.id = 'menu-host'; host.setAttribute('role', 'region'); host.setAttribute('aria-label', 'Menu'); document.body.append(host); }
+  host.append(m);
   const r = anchor.getBoundingClientRect(); const w = m.offsetWidth, h = m.offsetHeight;
   let x = align === 'end' ? r.right - w : r.left, y = r.bottom + 6, oy = 'top';
   if (y + h > innerHeight - 8) { y = Math.max(8, r.top - h - 6); oy = 'bottom'; }
@@ -5202,7 +5203,7 @@ function setTheme(t, { quiet = false } = {}) {
   schedulePreview();
   if (quiet) return;
   if (CURRENT === 'home') { toast(`${themeName()} theme is on in the app. This page stays light.`, { icon: isDarkFor(S.theme) ? 'moon' : 'sun', ms: 2400 }); return; }
-  toast(t === 'dark' ? 'Dark. Easier on the eyes after dark.' : t === 'light' ? 'Light. Warm paper, soft ink.' : 'Auto. Following your device.', { icon: t === 'dark' ? 'moon' : t === 'light' ? 'sun' : 'auto', tone: 'accent', ms: 1800 });
+  toast(t === 'dark' ? 'Dark. Easier on the eyes after dark.' : t === 'light' ? 'Light. Warm vellum, soft ink.' : 'Auto. Following your device.', { icon: t === 'dark' ? 'moon' : t === 'light' ? 'sun' : 'auto', tone: 'accent', ms: 1800 });
 }
 const isDarkFor = t => t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
 /* ⇧T and the command bar walk the three: Light → Dark → Auto */
@@ -5858,7 +5859,7 @@ function tweetHTML(tw, i, n) {
       <button class="tool" data-cact="toolsmore" data-tip="More: make a visual, read it aloud" aria-label="More tools" aria-haspopup="menu">${ic('more')}</button>
       <span class="tools-sep"></span>
       <button class="tool riff" data-cact="riff" data-tip="${i === 0 ? 'Improve: Hook score, Rewrites, Formulas' : 'Improve: Rewrites'}" data-kbd="${MOD} J" aria-expanded="${!!(UI.imp && UI.imp.id === tw.id)}">${ic('riff')}<span>Improve</span></button>
-      ${n > 1 ? `<button class="tool" data-cact="remove" data-tip="Remove this post">${ic('trash')}</button>` : ''}
+      ${n > 1 ? `<button class="tool tw-rm" data-cact="remove" data-tip="Remove this post" aria-label="Remove this post">${ic('trash')}</button>` : ''}
       <div class="tw-meta">
         <span class="ring" data-tip="0 characters"><svg viewBox="0 0 24 24"><circle class="trk" cx="12" cy="12" r="9.5"/><circle class="val" cx="12" cy="12" r="9.5" stroke-dasharray="59.69" stroke-dashoffset="59.69"/></svg><b></b></span>
       </div>
@@ -5998,7 +5999,7 @@ function hookReasonHTML() {
   const nx = hookNext(S.draft.tweets[0].text, h);
   const general = `<div class="hk-main${has0 ? ' t-' + TIER(h.score).key : ''}"><p class="hk-next">${H.me ? '<span class="hk-gl">General</span>' : ''}${esc(nx.lead)}</p><p class="hk-sub">${esc(nx.sub)}</p>${has0 ? tierScaleHTML(h.score) : tierScaleHTML(0, { empty: true })}</div><details class="hk-how"><summary>How it’s read</summary>${partsHTML(h.parts, 'hk-pips')}<p class="faint">Four steps toward a line worth stopping for: ${TIER_LIST}. It reads your line, not your reach. Bring your posts and it tunes itself to your audience.</p></details>`;
   const has = S.draft.tweets[0].text.trim();
-  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${H.me ? mineHTML(H) : general}${vmLineHTML()}${has ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Stronger hook</button>` : ''}<button class="btn sm" data-cact="imptab" data-t="formulas">${ic('layers', 'sm')} Start from a formula</button><button class="btn sm ghost" data-cact="hookvote" data-tip="Share a link. Friends vote on your first line">${ic('poll', 'sm')} Ask friends</button></div>` : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${tierText(h.score)}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : has ? mineHTML(H) : ''}</div></div>`;
+  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${H.me ? mineHTML(H) : general}${vmLineHTML()}${has ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Stronger hook</button>` : ''}<button class="btn sm" data-cact="imptab" data-t="formulas">${ic('layers', 'sm')} Start from a formula</button><button class="btn sm ghost" data-cact="hookvote" data-tip="Share a link. Friends vote on your first line">${ic('poll', 'sm')} Ask friends</button></div>` : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${tierText(h.score)}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : has ? mineHTML(H) : ''}</div></div>`;
 }
 /* hook formulas, offered right where a weak first line is: pick one, then type over the blanks */
 function formulasHTML() {
@@ -6074,6 +6075,8 @@ function renderExtras(id) {
 }
 function renderThread({ focusId, pos } = {}) {
   const th = $('#thread'); if (!th) return; const n = S.draft.tweets.length; refreshChecksSoon();
+  /* a Sharpen version on a post that's no longer in this draft (new text loaded from code, another draft opened) is dropped, never kept into the wrong draft */
+  if (SH.st && !tById(SH.st.id)) { const st = SH.st; SH.st = null; UI.sharp = null; clearTimeout(SH.revT); clearTimeout(SH.revT2); if (st.ctl) st.ctl.abort(); sharpenHide(); }
   th.innerHTML = S.draft.tweets.map((t, i) => tweetHTML(t, i, n)).join('');
   paintXPill();
   let k = 0;
@@ -6113,6 +6116,7 @@ function setTyping(on) { if (on && !FINE) return; clearTimeout(typingT); documen
 function onInput(e) {
   const ta = e.target; if (!ta.classList.contains('tw-input')) return;
   const tEl = ta.closest('.tw'); const id = tEl.dataset.id; const i = tIndex(id); const tw = S.draft.tweets[i];
+  if (!tw) return; /* a field left over from a draft that was just swapped out */
   tw.text = ta.value; UI.ghost = null;
   if (S.settings.split && !UI.noSplit && e.inputType === 'insertLineBreak' && threadable()) {
     const p = ta.selectionStart;
@@ -7156,7 +7160,7 @@ function sharpenCancel() {
   const ta = SH.ta; if (ta && document.contains(ta)) { ta.value = st.before; ta.setSelectionRange(st.sel0 ? st.sel0[0] : st.s, st.sel0 ? st.sel0[1] : st.e); paintField(ta); }
 }
 function sharpenKeep() {
-  const st = SH.st, ta = SH.ta; if (!st || st.pending) return; SH.st = null; clearTimeout(SH.revT); clearTimeout(SH.revT2); const tw = tById(st.id);
+  const st = SH.st, ta = SH.ta; if (!st || st.pending) return; if (!tById(st.id) || !ta || !document.contains(ta)) { SH.st = null; UI.sharp = null; sharpenHide(); return; } SH.st = null; clearTimeout(SH.revT); clearTimeout(SH.revT2); const tw = tById(st.id);
   const v = st.vars[st.i], len = v.text.length; UI.sharp = { id: st.id, s: v.s, len, flash: Date.now() };
   /* the kept text can push the post over the limit and split it: Undo restores the whole thread, not just this post */
   const snap = S.draft.tweets.map(t => (t.id === st.id ? { ...t, text: st.before } : { ...t }));
@@ -7458,7 +7462,8 @@ function closeDiff(accept) {
   if (i === 0) { const a = hookScore(before).score, b = hookScore(after).score; if (b >= 78 && b - a >= 12) setTimeout(() => showUpsell(a, b), 700); }
 }
 /* the diff a Basic version would make, for the out-of-credits sheet */
-const crDiffHTML = (a, b) => diffWords(a, b).map(c => c.eq !== undefined ? esc(c.eq) : `${c.del ? `<del>${esc(c.del)}</del>` : ''}${c.ins ? `<ins>${esc(c.ins)}</ins>` : ''}`).join('');
+/* a swap (words out, words in) keeps a space between the struck words and the new ones, so “going to” + “will” never reads “towill” */
+const crDiffHTML = (a, b) => diffWords(a, b).map(c => c.eq !== undefined ? esc(c.eq) : `${c.del ? `<del>${esc(c.del)}</del>` : ''}${c.del && c.ins && !/\s$/.test(c.del) && !/^\s/.test(c.ins) ? ' ' : ''}${c.ins ? `<ins>${esc(c.ins)}</ins>` : ''}`).join('');
 function showUpsell(a, b) {
   if (!PRICED() || planNow() !== 'free' || !aiOn() || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
   const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hookworthy Pro');
@@ -7903,12 +7908,22 @@ function postVia(how, btn, remembered = false) {
   }
   startSend(btn, { remembered });
 }
+/* the other platforms ticked for this draft, each with its own compose box (opened only when you press it) */
+function alsoIntents(it) {
+  const tws = S.draft.tweets.map(t => t.text.trim()).filter(Boolean), first = encodeURIComponent(tws[0] || ''), out = [];
+  if (S.platforms.threads) out.push({ name: 'Threads', url: `https://www.threads.net/intent/post?text=${first}` });
+  if (S.platforms.bsky) out.push({ name: 'Bluesky', url: `https://bsky.app/intent/compose?text=${first}` });
+  if (S.platforms.linkedin && (!it || it.key !== 'linkedin')) out.push({ name: 'LinkedIn', url: `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent((S.draft.li || tws.join('\n\n')).trim())}` });
+  return out;
+}
 function openPostSheet(btn) {
   const it = intentFor(), n = S.draft.tweets.filter(t => t.text.trim()).length, who = it ? it.name : 'X';
+  const also = it ? alsoIntents(it) : [];
   const openSub = !it ? '' : it.rest.length ? `${it.name} opens with post 1 filled in. Post it, then reply to it with ${n === 2 ? 'post 2. Copy the rest puts it' : `the other ${n - 1}. Copy the rest puts them`} on your clipboard.` : `${it.name} opens with your post filled in. Press Post there.`;
   const m = modal(`${modalHead(it ? `Post it on ${it.name}` : 'Post it', `${who} isn’t connected here, so Hookworthy can’t press Post for you. Pick a way and Post now remembers it.`)}
     <div class="modal-b pn">
       ${it ? `<div class="pn-opt pn-main"><span class="pn-i">${pic(PLAT[it.key].icon)}</span><div class="pn-t"><b>Open in ${it.name}</b><small>${openSub} It’s filed here as posted.</small>${it.rest.length ? `<button type="button" class="btn sm ghost pn-rest" data-pn="rest">${ic('copy', 'sm')} <span>Copy the rest</span></button>` : ''}</div><button type="button" class="btn primary" data-pn="open" autofocus>Open in ${it.name}</button></div>` : ''}
+      ${also.length ? `<p class="pn-also">${ic('layers', 'sm')}<span>Also going to ${esc(also.map(a => a.name).join(' and '))}${n > 1 ? ' (post 1 goes in; add the rest as replies)' : ''}: ${also.map(a => `<a class="lnk-u" href="${esc(a.url)}" target="_blank" rel="noopener">Open ${a.name}</a>`).join(' · ')}</span></p>` : ''}
       <div class="pn-opt"><span class="pn-i">${ic('check')}</span><div class="pn-t"><b>Mark as posted</b><small>You posted it yourself, or will from your phone. It’s filed as Marked and nothing leaves this browser.</small></div><button type="button" class="btn" data-pn="mark" ${it ? '' : 'autofocus'}>Mark as posted</button></div>
       <div class="pn-opt"><span class="pn-i">${ic('link')}</span><div class="pn-t"><b>Connect ${who} to post from here</b><small>Post and schedule straight from Hookworthy, through your own server.</small></div><button type="button" class="btn ghost" data-pn="connect">Connect</button></div>
       <p class="faint pn-note">You can change what Post now does in Settings.</p>
@@ -8160,6 +8175,7 @@ function weekNext(b) {
 function drawDigest() {
   const el = $('#digest'); if (!el) return; const w = weekData(); const d = S.digestNote; const sun = new Date().getDay() === 0;
   const tk = weekTakeaways(w), nx = weekNextAct(w), b = w.best, you = pvYou();
+  const lead = !$('.insight-hero .btn.primary'); /* one primary per screen: the hero's “Write a …” leads when it's there */
   const title = d && d.headline ? esc(d.headline) : w.n ? `${w.n} post${w.n > 1 ? 's' : ''}${w.nums ? `, ${fmtK(w.likes)} likes` : ''}, ${w.rhythm} posting day${w.rhythm === 1 ? '' : 's'}.` : 'A quiet week.';
   const sub = w.n ? `${w.planned ? `${w.planned} scheduled for the next seven days.` : 'Nothing scheduled for next week yet.'}` : w.planned ? `${w.planned} scheduled for the next seven days. Nothing went out in the last seven.` : 'Nothing went out and nothing is scheduled. One post is enough to start.';
   const post = b ? xPost({ t: clip(b.text, 280), c: w.nums ? [b.replies || 0, b.reposts || 0, b.likes || 0, b.views || 0] : [0, 0, 0, 0], ago: b.at ? agoShort(b.at, true) : 'this week' }, { you, dark: isDark(), counts: w.nums }) : '';
@@ -8169,8 +8185,8 @@ function drawDigest() {
     ${b ? `<div class="wk-grid"><div class="wk-post"><span class="label">Best post this week</span>${post}</div>
       <div class="wk-side">${weekChartHTML(w)}${items.length ? `<ul class="wk-tk">${items.map(x => `<li>${ic(x.i, 'sm')}<span>${x.t}</span></li>`).join('')}</ul>` : ''}
         ${d && d.try_next ? `<p class="wk-try"><span class="label">Try next week</span>${esc(d.try_next)}</p>` : ''}
-        <div class="wk-acts"><button class="btn primary" data-nact="dnext" data-k="${nx.k}">${ic(nx.i, 'sm')} ${nx.l}</button>${d && d.first_line ? `<button class="btn" data-nact="userw" data-t="${esc(d.first_line)}">${ic('write', 'sm')} Monday’s first line</button>` : ''}</div></div></div>`
-      : `<div class="wk-empty">${w.n ? weekChartHTML(w) : ''}<div class="wk-acts"><button class="btn primary" data-nact="dnext" data-k="${nx.k}">${ic(nx.i, 'sm')} ${nx.l}</button></div></div>`}
+        <div class="wk-acts"><button class="btn${lead ? ' primary' : ''}" data-nact="dnext" data-k="${nx.k}">${ic(nx.i, 'sm')} ${nx.l}</button>${d && d.first_line ? `<button class="btn" data-nact="userw" data-t="${esc(d.first_line)}">${ic('write', 'sm')} Monday’s first line</button>` : ''}</div></div></div>`
+      : `<div class="wk-empty">${w.n ? weekChartHTML(w) : ''}<div class="wk-acts"><button class="btn${lead ? ' primary' : ''}" data-nact="dnext" data-k="${nx.k}">${ic(nx.i, 'sm')} ${nx.l}</button></div></div>`}
     <form id="dg-mail" class="dg-mail" hidden><input class="input" type="email" placeholder="you@example.com" value="${esc(S.digestEmail || '')}" aria-label="Email for the Sunday note" required><button class="btn sm primary" type="submit">${S.digestEmail ? 'Update' : 'Send me Sundays'}</button>${S.digestEmail ? '<button class="btn sm ghost" type="button" id="dg-off">Stop</button>' : ''}<small class="faint">${LLM.server && LLM.server.digest ? (LLM.server.email ? 'Sunday 9 AM, from the server.' : 'Email isn’t set up on the server yet, so the note is logged, not sent.') : 'Needs Hookworthy’s server. Copy the note meanwhile.'}</small></form></section>`;
   const f = $('#dg-mail'); f.onsubmit = async e => { e.preventDefault(); const email = $('input', f).value.trim(); if (!(LLM.server && LLM.server.digest)) { toast('Emailing needs Hookworthy’s server. Copy the note for now.', { icon: 'inbox' }); return; } try { const r = await fetch('api/digest/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, digest: digestPayload() }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); S.digestEmail = email; save(); drawDigest(); toast(`Sundays at 9 AM, to ${esc(email)}.`, { icon: 'inbox', tone: 'accent' }); } catch (err) { toast(failMsg('set up the Sunday email', err), { icon: 'zapoff', tone: 'err' }); } };
   const off = $('#dg-off'); if (off) off.onclick = async () => { try { await fetch('api/digest/unsubscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: S.digestEmail }) }); } catch (e) { /* ok */ } S.digestEmail = ''; save(); drawDigest(); toast('No more Sunday emails.', { icon: 'check' }); };
@@ -8754,7 +8770,7 @@ async function openPlan() {
   const done = () => { if (planned.length) { toast(`${planned.length} post${planned.length > 1 ? 's' : ''} planned: ${planned.join(', ')}.`, { icon: 'cal', tone: 'accent', ms: 5000 }); if (CURRENT === 'queue') { drawCal(); drawQSide(); } burst(innerWidth / 2, innerHeight / 3); } };
   draw();
 }
-function weekGap() { const now = Date.now(); return myQ().filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now && slotDate(q.day, q.time) - now < 7 * DAY).length; }
+function weekGap(list = myQ()) { const now = Date.now(); return list.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now && slotDate(q.day, q.time) - now < 7 * DAY).length; }
 /* ==========================================================================
    FIRST-HOUR REPLY DESK: the replies worth answering, ranked, each with a draft in your voice.
    Live replies come from X through the server; otherwise it shows a labelled sample
@@ -9420,33 +9436,36 @@ function openDrafts(anchor) {
   const el = pop.el, inp = $('#dsw-q', el), list = $('#dsw-list', el), foot = $('#dsw-f', el); let active = 0, rows = [];
   const plats = d => draftPlats(d).map(k => `<span class="dr-pl" title="${PLAT[k].name}">${pic(PLAT[k].icon)}</span>`).join('');
   const row = (d, i, cur) => { const st = draftState(d), n = d.tweets.filter(x => x.text.trim() || x.media.length).length;
-    return `<div class="dr-w"><div class="dr${cur ? ' cur' : ''}${i === active ? ' active' : ''}" role="option" id="dsw-o${i}" aria-selected="${i === active}" data-i="${i}"><span class="dr-t">${esc(draftLine(d))}</span><span class="dr-m"><span class="dr-ps" aria-label="Posts to ${draftPlats(d).map(k => PLAT[k].name).join(', ') || 'nowhere yet'}">${plats(d)}</span><span>${cur ? (CURRENT === 'write' ? 'Open now' : 'Open in Write') : agoShort(draftAt(d))}</span>${n > 1 ? `<span>${n} posts</span>` : ''}${st ? `<span class="dr-st ${st.k}" title="${esc(st.tip)}">${st.k === 'blank' ? '' : ic('clock', 'xs')}${esc(st.k === 'plan' ? `For ${st.l}` : st.l)}</span>` : ''}</span></div>${cur ? '' : `<button type="button" class="dr-x" tabindex="-1" data-del="${esc(d.id)}" aria-label="Delete “${esc(clip(draftLine(d), 40))}”" data-tip="Delete draft" data-kbd="${MOD} ⌫">${ic('trash', 'sm')}</button>`}</div>`; };
+    return `<div class="dr-w"><div class="dr${cur ? ' cur' : ''}${i === active ? ' active' : ''}" role="option" id="dsw-o${i}" aria-selected="${i === active}" data-i="${i}"${cur ? '' : ' aria-keyshortcuts="Meta+Backspace Control+Backspace"'}><span class="dr-t">${esc(draftLine(d))}</span><span class="dr-m"><span class="dr-ps" aria-label="Posts to ${draftPlats(d).map(k => PLAT[k].name).join(', ') || 'nowhere yet'}">${plats(d)}</span><span>${cur ? (CURRENT === 'write' ? 'Open now' : 'Open in Write') : agoShort(draftAt(d))}</span>${n > 1 ? `<span>${n} posts</span>` : ''}${st ? `<span class="dr-st ${st.k}" title="${esc(st.tip)}">${st.k === 'blank' ? '' : ic('clock', 'xs')}${esc(st.k === 'plan' ? `For ${st.l}` : st.l)}</span>` : ''}</span></div>${cur ? '' : `<button type="button" class="dr-x" tabindex="-1" aria-hidden="true" data-del="${esc(d.id)}" aria-label="Delete “${esc(clip(draftLine(d), 40))}”" data-tip="Delete draft" data-kbd="${MOD} ⌫">${ic('trash', 'sm')}</button>`}</div>`; };
   const draw = () => {
     const q = inp.value.trim().toLowerCase(), cur = !isEmptyDraft() ? S.draft : null;
     const all = draftsByRecent(), hit = d => !q || d.tweets.some(x => x.text.toLowerCase().includes(q));
     rows = [...(cur && hit(cur) ? [{ d: cur, cur: true }] : []), ...all.filter(hit).map(d => ({ d }))];
+    /* a long drafts list draws the 60 most recent matches, so typing in the search stays instant; the rest are a search away */
+    const total = rows.length; rows = rows.slice(0, 60);
     active = clamp(active, 0, Math.max(0, rows.length - 1));
     let html = '';
     if (!all.length && !cur) html = `<div class="dsw-empty"><b>No drafts yet</b><span>Everything you start saves itself as you type, and waits here.</span></div>`;
     else if (!rows.length) html = `<div class="dsw-empty"><b>No drafts with “${esc(inp.value.trim())}”</b><span>Search looks through every post in each draft.</span></div>`;
     else { let k = 0; if (rows[0] && rows[0].cur) { html += `<div class="dsw-g label">${CURRENT === 'write' ? 'Writing now' : 'In Write'}</div>${row(rows[0].d, 0, true)}`; k = 1; }
-      if (rows.length > k) html += `<div class="dsw-g label">${q ? `${rows.length - k} match${rows.length - k === 1 ? '' : 'es'}` : `Drafts · ${all.length}`}</div>` + rows.slice(k).map((r, j) => row(r.d, j + k)).join(''); }
+      if (rows.length > k) html += `<div class="dsw-g label">${q ? `${total - k} match${total - k === 1 ? '' : 'es'}` : `Drafts · ${all.length}`}</div>` + rows.slice(k).map((r, j) => row(r.d, j + k)).join('');
+      if (total > rows.length) html += `<p class="dsw-more faint">${q ? 'The most recent 60 are here. Add a word to narrow it down.' : `The most recent 60 are here. Search finds the other ${total - rows.length}.`}</p>`; }
     list.innerHTML = html;
     const a = $('.dr.active', list); inp.setAttribute('aria-activedescendant', a ? a.id : ''); a && a.scrollIntoView({ block: 'nearest' });
     const sched = myQ().filter(x => x.status === 'scheduled').length;
     foot.innerHTML = `${FINE ? `<span class="dsw-k">${kbd('↑', '↓')} move</span><span class="dsw-k">${kbd('↵')} open</span>` : ''}<span class="grow"></span>${sched ? `<button type="button" class="nav-lk" data-dsw="queue" data-tip="Scheduled posts live in Queue">${sched} scheduled</button>` : ''}${all.length >= 3 ? `<button type="button" class="nav-lk" data-dsw="tidy" data-tip="One at a time: finish, schedule or delete">Tidy up</button>` : ''}`;
-    if (q) srSay(rows.length ? `${rows.length} draft${rows.length === 1 ? '' : 's'}.` : 'No drafts match.');
+    if (q) srSay(total ? `${total} draft${total === 1 ? '' : 's'}.` : 'No drafts match.');
   };
   const open = i => { const r = rows[i]; if (!r) return; closePop(); if (r.cur) { if (CURRENT === 'write') focusTweet(0, 'end'); else goThen('write', () => focusTweet(0, 'end')); return; } SFX.play('tick'); openDraft(S.drafts.indexOf(r.d)); };
   const del = id => { const i = S.drafts.findIndex(d => d.id === id); if (i < 0) return; const d = S.drafts.splice(i, 1)[0]; save(); refreshSide(); draw(); inp.focus({ preventScroll: true });
     toast(`Deleted “${esc(clip(draftLine(d), 40))}”.`, { icon: 'trash', action: 'Undo', onAction: () => { S.drafts.splice(Math.min(i, S.drafts.length), 0, d); save(); refreshSide(); if (el.isConnected) draw(); } }); };
   const setActive = i => { active = clamp(i, 0, Math.max(0, rows.length - 1)); $$('.dr', list).forEach(x => { const on = +x.dataset.i === active; x.classList.toggle('active', on); x.setAttribute('aria-selected', on); }); const a = $('.dr.active', list); inp.setAttribute('aria-activedescendant', a ? a.id : ''); a && a.scrollIntoView({ block: 'nearest' }); };
-  inp.addEventListener('input', () => { active = 0; draw(); });
+  let drawF = 0; inp.addEventListener('input', () => { active = 0; cancelAnimationFrame(drawF); drawF = requestAnimationFrame(() => { drawF = 0; draw(); }); });
   inp.addEventListener('keydown', e => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); setActive(active + (e.key === 'ArrowDown' ? 1 : -1)); }
     else if ((e.key === 'Home' || e.key === 'End') && !inp.value) { e.preventDefault(); setActive(e.key === 'Home' ? 0 : rows.length - 1); }
     else if (e.key === 'PageDown' || e.key === 'PageUp') { e.preventDefault(); setActive(active + (e.key === 'PageDown' ? 6 : -6)); }
-    else if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); open(active); }
+    else if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); if (drawF) { cancelAnimationFrame(drawF); drawF = 0; draw(); } open(active); }
     else if ((e.metaKey || e.ctrlKey) && (e.key === 'Backspace' || e.key === 'Delete') && rows[active] && !rows[active].cur) { e.preventDefault(); del(rows[active].d.id); }
   });
   el.addEventListener('click', e => {
@@ -9571,7 +9590,7 @@ function composerClick(e) {
     case 'starter': writeIdea(el.dataset.t, el.dataset.kind, el.dataset.topic); break;
     case 'gif': openGifs(i); break;
     case 'visual': openVisual(i); break;
-    case 'toolsmore': openMenu(el, [{ label: 'Make a visual', icon: 'spark', hint: 'Quote card or chart', run: () => openVisual(i) }, { label: 'Hook tournament', icon: 'bolt', hint: '10 lines, 30 seconds', run: () => openTournament() }, ...(S.draft.tweets.filter(t => t.text.trim()).length >= 2 || tlen(S.draft.tweets[0].text) > 200 ? [{ label: 'Read aloud', icon: 'volume', run: () => readAloud(i) }] : [])]); break;
+    case 'toolsmore': openMenu(el, [{ label: 'Make a visual', icon: 'spark', hint: 'Quote card or chart', run: () => openVisual(i) }, { label: 'Hook tournament', icon: 'bolt', hint: '10 lines, 30 seconds', run: () => openTournament() }, ...(S.draft.tweets.filter(t => t.text.trim()).length >= 2 || tlen(S.draft.tweets[0].text) > 200 ? [{ label: 'Read aloud', icon: 'volume', run: () => readAloud(i) }] : []), ...(S.draft.tweets.length > 1 && matchMedia('(max-width: 760px)').matches ? ['-', { label: 'Remove this post', icon: 'trash', run: () => removeTweet(i) }] : [])]); break;
     case 'moreriffs': openMenu(el, [{ header: 'More rewrites' }, ...RIFFS.filter(r => !RIFF_MAIN.includes(r.k)).map(r => ({ label: r.label, icon: r.icon, kbd: [ALT, r.key], run: () => r.k === 'translate' ? setTimeout(() => openTranslate(el, i >= 0 ? i : 0), 0) : runRiff(i >= 0 ? i : 0, r.k) }))]); break;
     case 'dictate': dictate(i); break;
     case 'readaloud': readAloud(i); break;
@@ -9902,7 +9921,7 @@ function creditsExplainHTML() {
     <div class="cr-ex-head"><span class="label">How credits work</span><h2 id="cr-ex-h">One credit, one rewrite. <em>Bigger jobs say so first.</em></h2>
       <p class="muted">Credits pay for Claude. Every button shows its price before you click, and a credit is used only when Claude answers, so an error or a cancel costs nothing. Basic mode runs on your device and Sharpen only touches the words you pick, so both are free on every plan.</p></div>
     <div class="cr-ex-grid">
-      <div class="cr-cmp-w" tabindex="0" role="region" aria-label="Free, Pro and Studio side by side"><table class="cr-cmp"><caption class="sr">Free, Pro and Studio side by side</caption><thead><tr><th scope="col"><span class="sr">Plan</span></th><th scope="col">Free</th><th scope="col" class="pro">Pro</th><th scope="col">Studio</th></tr></thead>
+      <div class="cr-cmp-w" tabindex="0" role="region" aria-label="Free, Pro and Studio side by side. Scroll sideways for more"><table class="cr-cmp"><caption class="sr">Free, Pro and Studio side by side</caption><thead><tr><th scope="col"><span class="sr">Plan</span></th><th scope="col">Free</th><th scope="col" class="pro">Pro</th><th scope="col">Studio</th></tr></thead>
         <tbody>${rows.map(r => `<tr><th scope="row">${r[0]}</th>${r.slice(1).map((c, i) => `<td${i === 1 ? ' class="pro"' : ''}>${c || '<span aria-label="Not applicable">–</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table>
         <p class="faint cr-fine">New to Pro? Try it free for 7 days with 250 credits. No card, and it ends on its own.</p></div>
       <div class="cr-costs"><h3 class="h2">What things cost</h3><ul>
@@ -11106,10 +11125,12 @@ function onbTry() {
       ${d.changed ? `<div class="ot-row better"><span class="ot-k"><span class="ot-l">Sharper</span>${tierChip(b.score)}</span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : `<p class="faint">${a.score >= 70 ? `${TIER(a.score).word}: ${esc(a.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so it stays as you wrote it.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`}
       <div class="ot-a"><button class="btn ${d.changed ? 'primary' : ''}" id="ot-use">${ic('write', 'sm')} ${d.changed ? 'Write it with this hook' : 'Write it'}</button>${d.changed ? '<button class="btn ghost" id="ot-mine">Keep mine</button>' : ''}</div>`;
     SFX.play(b.score >= 70 ? 'hook' : 'tick');
+    go.classList.remove('primary'); /* one primary per view: once there's a result, writing it is the next step */
     $('#ot-use').onclick = () => writeFrom([d.changed ? better : line]); const m = $('#ot-mine'); if (m) m.onclick = () => writeFrom([line]); };
   go.onclick = async () => {
-    const line = inp.value.trim(); if (!line) { inp.setAttribute('aria-invalid', 'true'); note.textContent = 'Type a line first. One rough sentence is plenty.'; inp.focus(); return; }
-    inp.removeAttribute('aria-invalid'); note.textContent = '';
+    /* the grey example reads like a real line, so pressing Score it on an empty box scores the example instead of scolding */
+    let line = inp.value.trim(), ex = false; if (!line) { line = inp.placeholder; inp.value = line; ex = true; }
+    inp.removeAttribute('aria-invalid'); note.textContent = ex ? 'That’s the example. Swap in your own line any time.' : '';
     if (aiOn()) { go.classList.add('is-loading'); try { const r = await ask(HWCore.prompts.critique({ text: line, voice: voiceSpec() }), { fresh: true, act: 'setup' }); const best = (r && r.better || []).map(String).filter(x => x && !/\[[^\]]+\]/.test(x)).sort((x, y) => hookScore(y).score - hookScore(x).score)[0]; if (best) { show(line, best, r.reason || ''); return; } } catch (e) { /* fall back to the offline rewrite */ } finally { go.classList.remove('is-loading'); } }
     riffNonce++; const cands = [AI.punchier(line), ...hookPool(line)].filter(Boolean).sort((x, y) => hookScore(y).score - hookScore(x).score); show(line, cands[0] || line, aiOn() ? '' : 'Basic mode rewrote this on your device. Connect Claude for a rewrite in your voice.');
   };
@@ -11214,7 +11235,7 @@ function todayHTML() {
   const day = n => dayKey(addDays(noonToday(), n)), list = n => S.queue.filter(q => q.day === day(n) && mineQ(q) && (q.status === 'scheduled' || (n === 0 && q.status === 'published'))).sort((a, b) => a.time.localeCompare(b.time));
   const open = n => Object.keys(BEST[dowIdx(fromKey(day(n)))] || {}).filter(t => slotDate(day(n), t).getTime() > now && !taken(day(n), t));
   const qRow = q => `<a class="ts-i" href="#queue"><span class="ts-t">${fmtTime(q.time)}</span><span class="ts-x">${firstLineHTML(clip(q.text, 70))}</span>${q.status === 'published' ? `<span class="ts-s">${q.marked ? 'Marked' : 'Sent'}</span>` : ''}</a>`;
-  const oRow = (n, t) => `<button class="ts-open" data-tact="slot" data-day="${day(n)}" data-time="${t}"><span class="ts-t">${fmtTime(t)}</span><span class="ts-x">Open. Write for it</span></button>`;
+  const oRow = (n, t) => `<button class="ts-open" data-tact="slot" data-day="${day(n)}" data-time="${t}"><span class="ts-t">${fmtTime(t)}</span><span class="ts-x">A good time, still free. Write for it</span></button>`;
   const qDay = (n, label) => { const its = list(n), op = open(n).slice(0, n ? 1 : 2), rows = [...its.map(q => ({ t: q.time, h: qRow(q) })), ...op.map(t => ({ t, h: oRow(n, t) }))].sort((a, b) => a.t.localeCompare(b.t)); return `<div class="tq-day"><span class="tq-l">${label}</span>${rows.map(r => r.h).join('') || `<p class="faint ts-none">${n ? 'Nothing planned.' : 'Nothing planned. That’s allowed.'}</p>`}</div>`; };
   const sm = todaySmart();
   return `${todayHeroHTML(st)}${todayCompHTML()}
@@ -11305,7 +11326,7 @@ ROUTES.ideas = () => {
       </div>
     </div>
     <div id="angles"></div>
-    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'Post ideas', 'Ideas'], ['radar', 'What’s working', 'Working'], ['inbox', `Saved · ${S.ideas.length}`, `Saved ${S.ideas.length}`]].map(([k, l, sl]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}" aria-label="${esc(l)}"><span class="ll">${l}</span><span class="sl">${sl}</span></button>`).join('')}</div></div>
+    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'Post ideas', 'Post ideas'], ['radar', 'What’s working', 'Working'], ['inbox', `Saved · ${S.ideas.length}`, `Saved ${S.ideas.length}`]].map(([k, l, sl]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}" aria-label="${esc(l)}"><span class="ll">${l}</span><span class="sl">${sl}</span></button>`).join('')}</div></div>
     <div id="tab-you" ${(UI.ideaTab || 'you') === 'you' ? '' : 'hidden'}>
     <section class="sec"><div class="sec-h"><div style="display:grid;gap:4px"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><h2 class="h2">Post ideas for you</h2><span class="pill">${esc(S.user.niche)}</span><button class="btn sm icon-only" data-iact="shuffle" data-tip="New batch" data-kbd="R" aria-label="New batch of post ideas">${ic('shuffle', 'sm')}</button></div><p class="fill-key">The <mark class="fill">marked words</mark> are examples. Swap in your own when you write it.</p></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="seg" id="eng-seg" role="tablist" aria-label="Filter ideas">${['All', ...new Set((UI.aiIdeas || genIdeas(24, ENGINE.seed)).map(x => x.kind).filter(Boolean))].slice(0, 7).map(k => `<button role="tab" data-ek="${k}" aria-selected="${ENGINE.kind === k}">${esc(k === 'All' ? 'All' : KIND_L(k))}</button>`).join('')}</div><button class="btn sm needs-ai" data-iact="claude" data-tip="Fresh ideas from your notes and best posts">${ic('spark', 'sm')} Ask Claude${crTag('ideas')}</button></div></div>
@@ -11405,7 +11426,7 @@ function radarHTML() {
       <div class="rp-post">${xPost({ ...q, m: q.m || null })}</div>
       <div class="rp-why"><h3>Why it worked</h3><ul>${q.why.map(([tag, w]) => `<li><span class="tag" data-t="${String(tag).toLowerCase()}">${tag === 'Contrarian' ? 'Hot take' : tag === 'List' ? 'List' : tag}</span>${esc(w)}</li>`).join('')}</ul>
         <div class="rp-pat"><span class="label">The formula behind it</span><p>${partsHTML2(patFill(q.pat, q.t))}</p><small class="faint">Marked: the parts that were theirs. Swap in yours.</small></div>
-        <div class="rp-a"><button class="btn primary sm" data-rd="take" data-i="${i}">${ic('write', 'sm')} Use this pattern</button><button class="btn ghost sm" data-rd="save" data-i="${i}">${ic('inbox', 'sm')} Save</button></div></div>
+        <div class="rp-a"><button class="btn sm" data-rd="take" data-i="${i}">${ic('write', 'sm')} Use this pattern</button><button class="btn ghost sm" data-rd="save" data-i="${i}">${ic('inbox', 'sm')} Save</button></div></div>
     </article>`).join('')}</div>
     <p class="fict" style="margin-top:18px">Sample accounts and numbers until live search is connected.</p>
   </div>`;
@@ -11435,7 +11456,7 @@ const LINK_PLAT = { x: ['X', 'x'], threads: ['Threads', 'threads'], bsky: ['Blue
 function linkInfo(raw) {
   let u; try { u = new URL(String(raw || '').trim()); } catch (e) { return null; } if (!/^https?:$/.test(u.protocol) || !/\./.test(u.hostname)) return null;
   const host = u.hostname.replace(/^(www|mobile|m)\./, ''), seg = u.pathname.split('/').filter(Boolean).map(s => { try { return decodeURIComponent(s); } catch (e) { return s; } });
-  const base = parseLink(u.href) || {}, slugTitle = s => cap(String(s || '').replace(/\.(html?|php)$/, '').replace(/[-_+]+/g, ' ').replace(/\s+\d{4,}.*$/, '').trim().toLowerCase());
+  const base = parseLink(u.href) || {}, slugTitle = s => ACRO(cap(String(s || '').replace(/\.(html?|php)$/, '').replace(/[-_+]+/g, ' ').replace(/\s+\d{4,}.*$/, '').trim().toLowerCase())); /* “saas” in a slug reads SaaS on the card (ACRO) */
   const L = { url: u.href, host, platform: 'web', kind: seg.length ? 'article' : 'page', title: base.title || host, topic: base.topic || host };
   const handle = h => String(h || '').replace(/^@/, '');
   if (/^(x|twitter)\.com$/.test(host)) { L.platform = 'x';
@@ -11463,6 +11484,8 @@ async function enrichLink(L) {
     if (j.title) add.title = j.title; if (j.description) add.description = j.description; if (j.image) add.image = j.image; if (j.site) add.site = j.site; if (j.text) add.text = j.text; if (j.author) add.author = j.author; if (j.handle) add.handle = j.handle;
     if (L.kind === 'post' && j.text) add.title = L.title; add.rich = true; UNF.set(L.url, add); return Object.assign(L, add); } catch (e) { return L; }
 }
+/* words from a URL come lowercased: put the usual acronyms back (SaaS, AI, BTC…) */
+function ACRO(s) { return String(s || '').replace(/\b(saas|ai|api|seo|ux|ui|ceo|cto|b2b|b2c|mrr|arr|vc|ios|btc|eth|sol|etf|defi|nft|fomc|cpi|llm)\b/gi, w => ({ saas: 'SaaS', ios: 'iOS', defi: 'DeFi' })[w.toLowerCase()] || w.toUpperCase()); }
 function linkSiteLabel(L) { const [name] = LINK_PLAT[L.platform] || []; return L.site || name || L.host; }
 /* the preview card: an X-style card for posts, a page card (picture, site, title, description) for everything else */
 function linkCardHTML(L, { mini = false } = {}) {
@@ -11471,14 +11494,14 @@ function linkCardHTML(L, { mini = false } = {}) {
   const isPost = L.kind === 'post' && (L.handle || L.author);
   if (isPost) {
     const who = L.author || (L.handle ? '@' + L.handle : ''), ini = esc(((L.author || L.handle || '?').replace(/^@/, '')[0] || '?').toUpperCase());
-    return `<article class="ilc ilc-post${mini ? ' mini' : ''}" data-platform="${L.platform}"><span class="ilc-av" style="--h:${hash(L.handle || L.author || 'x') % 360}" aria-hidden="true">${ini}</span><div class="ilc-b"><div class="ilc-hd"><b>${esc(who)}</b>${L.author && L.handle ? `<span class="faint">@${esc(L.handle)}</span>` : ''}<span class="ilc-plat" aria-label="${esc(pname || '')}">${icon}</span></div>${L.text ? `<p class="ilc-x">${esc(clip(L.text, mini ? 160 : 320))}</p>` : `<p class="ilc-x faint">A post on ${esc(pname || L.host)}. ${LLM.server && LLM.server.unfurl ? 'Its words show here once it loads.' : 'Open it to read the words; Hookworthy’s server can pull them in.'}</p>`}<a class="ilc-host" href="${esc(L.url)}" target="_blank" rel="noopener noreferrer">${esc(L.host)}${L.id ? ` · post ${esc(String(L.id).slice(-6))}` : ''} ${ic('arrow', 'xs')}</a></div></article>`;
+    return `<article class="ilc ilc-post${mini ? ' mini' : ''}" data-platform="${L.platform}"><span class="ilc-av" style="--h:${hash(L.handle || L.author || 'x') % 360}" aria-hidden="true">${ini}</span><div class="ilc-b"><div class="ilc-hd"><b>${esc(who)}</b>${L.author && L.handle ? `<span class="faint">@${esc(L.handle)}</span>` : ''}<span class="ilc-plat" aria-label="${esc(pname || '')}">${icon}</span></div>${L.text ? `<p class="ilc-x">${esc(clip(L.text, mini ? 160 : 320))}</p>` : `<p class="ilc-x faint">A post on ${esc(pname || L.host)}. ${LLM.server && LLM.server.unfurl ? 'Its words show here once it loads.' : 'Open it to read the words; Hookworthy’s server can pull them in.'}</p>`}<a class="ilc-host" href="${esc(L.url)}" target="_blank" rel="noopener noreferrer">${esc(L.host)} · Open the post ${ic('arrow', 'xs')}</a></div></article>`;
   }
-  return `<article class="ilc${L.image ? ' has-img' : ''}${mini ? ' mini' : ''}" data-platform="${L.platform}">${L.image ? `<div class="ilc-img"><img src="${esc(L.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>` : ''}<div class="ilc-b"><div class="ilc-src">${icon}<span>${esc(linkSiteLabel(L))}</span>${L.author ? `<span class="faint">· ${esc(L.author)}</span>` : ''}</div><p class="ilc-t">${esc(clip(L.title || L.host, 140))}</p>${L.description ? `<p class="ilc-d">${esc(clip(L.description, mini ? 110 : 220))}</p>` : ''}<a class="ilc-host" href="${esc(L.url)}" target="_blank" rel="noopener noreferrer">${esc(L.host)} ${ic('arrow', 'xs')}</a></div></article>`;
+  return `<article class="ilc${L.image ? ' has-img' : ''}${mini ? ' mini' : ''}" data-platform="${L.platform}">${L.image ? `<div class="ilc-img"><img src="${esc(L.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>` : ''}<div class="ilc-b"><div class="ilc-src">${icon}<span>${esc(linkSiteLabel(L))}</span>${L.author ? `<span class="faint">· ${esc(L.author)}</span>` : ''}</div><p class="ilc-t">${esc(clip(L.title || L.host, 140))}</p>${L.description ? `<p class="ilc-d">${esc(clip(L.description, mini ? 110 : 220))}</p>` : ''}<a class="ilc-host" href="${esc(L.url)}" target="_blank" rel="noopener noreferrer">${linkSiteLabel(L) === L.host ? 'Open the page' : esc(L.host)} ${ic('arrow', 'xs')}</a></div></article>`;
 }
 /* one-click things to do with a link: write about it, quote it or reply to it (posts), find angles, save */
 function linkActsHTML(L, { saved = false } = {}) {
   const post = L.kind === 'post' && L.platform === 'x';
-  return `<div class="ilc-acts"><button class="btn sm primary" data-la="write">${ic('write', 'sm')} Write about it</button>${post ? `<button class="btn sm" data-la="quote">${ic('quote', 'sm')} Quote it</button><button class="btn sm" data-la="reply">${ic('reply', 'sm')} Reply to it</button>` : ''}<button class="btn sm ghost" data-la="angles">${ic('layers', 'sm')} Five angles</button>${saved ? '' : `<button class="btn sm ghost" data-la="save">${ic('inbox', 'sm')} Save</button>`}</div>`;
+  return `<div class="ilc-acts"><button class="btn sm" data-la="write">${ic('write', 'sm')} Write about it</button>${post ? `<button class="btn sm" data-la="quote">${ic('quote', 'sm')} Quote it</button><button class="btn sm" data-la="reply">${ic('reply', 'sm')} Reply to it</button>` : ''}<button class="btn sm ghost" data-la="angles">${ic('layers', 'sm')} Five angles</button>${saved ? '' : `<button class="btn sm ghost" data-la="save">${ic('inbox', 'sm')} Save</button>`}</div>`;
 }
 let CAPL = null;
 function drawCapPreview(L) {
@@ -11496,7 +11519,9 @@ function linkAction(b) {
   if (a === 'angles') { showAngles({ title: L.kind === 'post' ? (L.text ? clip(L.text, 60) : L.title) : L.title, topic: L.topic }, 'link'); return; }
   /* the link goes in post 2: a link in the first post tends to cut reach on X and LinkedIn */
   if (a === 'write') { const said = L.kind === 'post' ? (L.text ? `“${clip(L.text.split('\n')[0], 90)}”` : `${who} posted something I keep thinking about.`) : null;
-    const first = said ? `${said}\n\n[What you think, in your words]` : `[Your line on ${L.topic && L.topic !== 'this' ? L.topic : 'it'}]. Here’s what this piece gets right, and the part it skips:`;
+    /* the note typed with the link is the writer's own angle: it leads, instead of a blank */
+    const note = String(L.note || (it ? it.note : ($('#cap-in') || {}).value) || '').replace(/https?:\/\/\S+/g, '').replace(/(^|\s)#[\w-]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/[.:;,]+$/, '');
+    const first = said ? `${said}\n\n[What you think, in your words]` : note && note.length > 3 && note !== L.title ? `${cap(note)}. Here’s what this piece gets right, and the part it skips:` : `[Your line on ${L.topic && L.topic !== 'this' ? ACRO(L.topic) : 'it'}]. Here’s what this piece gets right, and the part it skips:`;
     writeFrom([first, L.kind === 'post' ? `The post: ${L.url}` : `Source: ${L.url}`]); toast('Started a post with the link in a reply under it. Fill the [brackets].', { icon: 'write', tone: 'accent', ms: 4200 }); return; }
   if (a === 'quote') { writeFrom([`[What you’d add, in one line]\n\n${L.url}`]); toast('On X, a post link at the end shows as the quoted post. Say what you’d add above it.', { icon: 'quote', tone: 'accent', ms: 5200 }); return; }
   if (a === 'reply') { openLinkReply(L); return; }
@@ -11551,7 +11576,7 @@ function drawInbox({ flash, keepTools } = {}) {
 function showAngles(src, kind) {
   const list = anglesFor(src); const el = $('#angles'); if (!el) return;
   el.innerHTML = `<div class="sec" style="margin-top:24px"><div class="sec-h"><div><h2 class="h2">Five ways to post “${esc(clip(src.title, 70))}”</h2><p class="fill-key" style="margin-top:4px">The <mark class="fill">marked words</mark> are examples to swap.</p></div><button class="btn ghost sm" data-iact="angles-close">${ic('x', 'sm')} Close</button></div>
-  <div class="angles">${list.map((a, i) => `<div class="card angle" style="animation-delay:${i * 60}ms" data-t="${esc(a.t)}"><span class="k">${esc(a.k)}</span><p>${fillHTML(a.t)}</p><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="angle-save" data-tip="Save" aria-label="Save">${ic('inbox', 'sm')}</button><button class="btn sm primary" data-iact="angle-write">Write this${ic('arrow', 'xs')}</button></span></div>`).join('')}</div></div>`;
+  <div class="angles">${list.map((a, i) => `<div class="card angle" style="animation-delay:${i * 60}ms" data-t="${esc(a.t)}"><span class="k">${esc(a.k)}</span><p>${fillHTML(a.t)}</p><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="angle-save" data-tip="Save" aria-label="Save">${ic('inbox', 'sm')}</button><button class="btn sm" data-iact="angle-write">Write this${ic('arrow', 'xs')}</button></span></div>`).join('')}</div></div>`;
   el.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
 }
 function captureGo() {
@@ -11660,7 +11685,7 @@ ROUTES.queue = () => {
   /* the queue opens on this week, unless this week is over (late Sunday, no open times, nothing still to go out): then next week */
   WEEK = gapSlots().length || qList().some(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now()) ? 0 : 1; if (S.settings.evergreen) ensureEvergreen();
   mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p><div id="q-hint"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week${crTag('week')}</button></div></div>
-  ${weekGap() < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${weekGap() ? `Only ${weekGap()} post${weekGap() > 1 ? 's' : ''} scheduled for the next 7 days.` : 'Nothing scheduled for the next 7 days.'} Five minutes now saves the week.</span></div>` : ''}
+  <div id="q-nudge"></div>
   <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">This week</button><span class="range" id="q-range"></span><button class="btn sm q-times-b" data-qact="times" aria-haspopup="dialog">${ic('clock', 'sm')} Times</button>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="Week calendar. Each card is a post. Press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide(); checkQueuePrices();
@@ -11842,7 +11867,9 @@ function calGridHTML(days, list, { now = Date.now(), interactive = true } = {}) 
       const day = dayKey(d); const past = slotDate(day, t).getTime() < now; const best = BEST[dowIdx(d)] && BEST[dowIdx(d)][t], off = !slotOn(dowIdx(d), t);
       const items = list.filter(q => q.day === day && (q.status === 'scheduled' && SLOTS.includes(q.time) ? q.time === t : rowOf(q.time) === r));
       const sx = interactive && !past ? (SLOTX[dowIdx(d)] || {})[t] : null, xl = sx && sx.x != null ? `${sx.x}×` : '';
-      html += `<div class="slot ${past ? 'past' : ''} ${best ? 'best' : ''} ${off ? 'off' : ''}" data-day="${day}" data-time="${t}" ${best ? `data-tip="${esc(best)}"` : ''}>${interactive && !past && !off ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past && !off ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
+      /* a best time that has already gone by isn't a best time any more: no dot, no tip (the homepage passes now: 0, so nothing there is past) */
+      const bestOn = best && !past;
+      html += `<div class="slot ${past ? 'past' : ''} ${bestOn ? 'best' : ''} ${off ? 'off' : ''}" data-day="${day}" data-time="${t}" ${bestOn ? `data-tip="${esc(best)}"` : ''}>${interactive && !past && !off ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${interactive && !items.length && !past && !off ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
     });
   });
   return html;
@@ -11867,6 +11894,8 @@ function drawCal() {
   const open = gapSlots(w0).length, wname = WEEK === 0 ? 'This week' : WEEK === 1 ? 'Next week' : WEEK === -1 ? 'Last week' : `Week of ${MON[w0.getMonth()]} ${w0.getDate()}`;
   const why = $('#q-why'); if (why) { why.innerHTML = `<span class="dot" style="color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span> ${TIMES.src === 'you' ? 'Your best times, from your posts' : 'Good times to post, in general'}`; why.dataset.tip = TIMES.src === 'you' ? `Highlighted slots are when your audience engaged most with ${fmtN(TIMES.n)} of your posts. They update as you post.` : 'Highlighted slots are common good times, not yours yet. Bring your posts and they become your own best hours.'; }
   const qh = $('#q-hint'); if (qh && !qh.firstChild) qh.innerHTML = hintHTML('queue', { cls: 'page-hint' });
+  /* the nudge counts what the calendar shows (this voice, or every voice), so it never contradicts the line above it */
+  const qn = $('#q-nudge'); if (qn) { const g = weekGap(qList()); qn.innerHTML = g < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${g ? `Only ${g} post${g > 1 ? 's' : ''} scheduled for the next 7 days.` : 'Nothing scheduled for the next 7 days.'} Five minutes now saves the week.</span></div>` : ''; }
   const miss = qList().filter(q => q.status === 'due' || (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < now)).length;
   $('#q-sub').textContent = `${wname}: ${w1 <= now ? `${sent} posted.` : `${wk} scheduled${sent ? `, ${sent} posted` : ''}. ${open ? `${open} best time${open === 1 ? '' : 's'} open.` : `No open best times left ${WEEK === 0 ? 'this week' : WEEK === 1 ? 'next week' : 'that week'}.`}`}${miss ? ` ${miss} missed ${miss > 1 ? 'their' : 'its'} time and need${miss > 1 ? '' : 's'} a new one.` : ''}`; syncSeg($('#q-ws'));
   refreshSide(); /* every queue change lands here: keep the sidebar's drafts and Queue count true */
