@@ -210,6 +210,14 @@
     if (/\b(launch(ed|ing)?|introducing|announc|now live|out today|just shipped)\b/.test(lc)) return 'Announcement';
     return 'Take';
   }
+  /* the words people read for each kind (round 34): plain words anyone on X knows. The keys above stay put,
+     so saved data, prompts and the API don't change; only these labels do. */
+  const KIND_NAMES = { Contrarian: ['Hot take', 'hot takes'], Listicle: ['List', 'lists'], Curiosity: ['Teaser', 'teasers'], Take: ['Thought', 'thoughts'], Announcement: ['News', 'news posts'], Proof: ['Results', 'results posts'], 'How-to': ['How-to', 'how-tos'], Story: ['Story', 'stories'], Question: ['Question', 'questions'], Lesson: ['Lesson', 'lessons'], Thread: ['Thread', 'threads'] };
+  const kindName = k => (KIND_NAMES[k] || [k])[0];
+  const kindPlural = k => (KIND_NAMES[k] || [null, String(k || '').toLowerCase() + 's'])[1];
+  /* a post with no likes, reposts, replies or views has no numbers to rank: a draft, a deleted post, or an export
+     without metric columns. It still teaches your voice; it never counts as a flop (or a win). */
+  const measured = p => !!p && ((p.likes || 0) + (p.reposts || 0) + (p.replies || 0) + (p.views || 0)) > 0;
 
   /* ---------------- CSV ---------------- */
   function parseCSVRows(text) {
@@ -233,15 +241,18 @@
     likes: ['likes', 'like', 'favorite_count', 'favorites', 'reactions', 'likes_count', 'like count', 'hearts'],
     reposts: ['retweets', 'retweet_count', 'reposts', 'repost', 'shares', 'share count', 'quotes'],
     replies: ['replies', 'reply_count', 'comments', 'comment count'],
-    views: ['impressions', 'views', 'impression_count', 'view count', 'reach']
+    views: ['impressions', 'views', 'impression_count', 'view count', 'reach'],
+    status: ['status', 'state', 'post status', 'draft status']
   };
+  /* Typefully, Buffer and Hypefury exports carry drafts, queued and failed posts too: only posts that went out are posts */
+  const NOT_POSTED = /^(draft|drafts|scheduled|queued|queue|pending|failed|error|deleted|archived|idea|unpublished)$/i;
   function parseCSV(text, src = 'csv') {
     const rows = parseCSVRows(text); if (rows.length < 2) return [];
     const head = rows[0].map(h => h.trim().toLowerCase());
     const col = k => head.findIndex(h => COLS[k].includes(h));
-    const taken = new Map(); const ci = { text: col('text'), at: col('at'), likes: col('likes'), reposts: col('reposts'), replies: col('replies'), views: col('views') };
+    const taken = new Map(); const ci = { text: col('text'), at: col('at'), likes: col('likes'), reposts: col('reposts'), replies: col('replies'), views: col('views'), status: col('status') };
     if (ci.text < 0) { let best = -1, bl = 0; head.forEach((_, i) => { const l = rows.slice(1, 30).reduce((a, r) => a + (r[i] || '').length, 0); if (l > bl) { bl = l; best = i; } }); ci.text = best; }
-    return rows.slice(1).map((r, i) => normPost({ text: r[ci.text], at: ci.at >= 0 ? r[ci.at] : null, likes: ci.likes >= 0 ? num(r[ci.likes]) : 0, reposts: ci.reposts >= 0 ? num(r[ci.reposts]) : 0, replies: ci.replies >= 0 ? num(r[ci.replies]) : 0, views: ci.views >= 0 ? num(r[ci.views]) : 0, src, id: textId(src, r[ci.text], taken) })).filter(Boolean);
+    return rows.slice(1).filter(r => !(ci.status >= 0 && NOT_POSTED.test(String(r[ci.status] || '').trim()))).map((r, i) => normPost({ text: r[ci.text], at: ci.at >= 0 ? r[ci.at] : null, likes: ci.likes >= 0 ? num(r[ci.likes]) : 0, reposts: ci.reposts >= 0 ? num(r[ci.reposts]) : 0, replies: ci.replies >= 0 ? num(r[ci.replies]) : 0, views: ci.views >= 0 ? num(r[ci.views]) : 0, src, id: textId(src, r[ci.text], taken) })).filter(Boolean);
   }
   /* import ids come from the words, not the row number, so a second import never lands on an earlier post's id.
      Same text → same id (re-importing dedupes); two different texts that hash alike both stay (suffixed). */
@@ -263,9 +274,11 @@
       const name = (f.name || '').toLowerCase(), body = f.text || '';
       if (/account\.js$/.test(name)) { try { const a = JSON.parse(stripYTD(body))[0]; account = a && a.account ? { handle: a.account.username, name: a.account.accountDisplayName, id: a.account.accountId } : null; } catch (e) { /* keep going */ } continue; }
       if (/following\.js$/.test(name)) { try { following = JSON.parse(stripYTD(body)).map(x => x.following && x.following.accountId).filter(Boolean); } catch (e) { /* keep going */ } continue; }
+      /* deleted-tweets.js ends in "tweets.js" too: posts you deleted aren't your posts any more */
+      if (/deleted|note-tweet/.test(name) || /^\s*window\.YTD\.deleted/.test(body)) continue;
       if (/tweets?(-part\d+)?\.js$/.test(name) || /^\s*window\.YTD\.tweets?/.test(body)) { try { items = items.concat(JSON.parse(stripYTD(body))); } catch (e) { /* keep going */ } }
     }
-    const tw = items.map(x => x.tweet || x).filter(t => t && (t.full_text || t.text));
+    const tw = items.map(x => x.tweet || x).filter(t => t && (t.full_text || t.text) && !t.deleted_at);
     const byId = new Map(tw.map(t => [t.id_str || t.id, t]));
     const selfId = account && account.id;
     const isSelfReply = t => t.in_reply_to_status_id_str && (t.in_reply_to_user_id_str === selfId || byId.has(t.in_reply_to_status_id_str));
@@ -281,8 +294,10 @@
   function parseTypefully(json) {
     const arr = Array.isArray(json) ? json : (json && (json.results || json.drafts || json.data)) || [];
     const taken = new Map();
-    return arr.map(d => { const text = d.text || d.content || (Array.isArray(d.tweets) ? d.tweets.map(t => t.text || t).join('\n\n') : '') || (d.platforms && d.platforms.x && d.platforms.x.posts ? d.platforms.x.posts.map(p => p.text).join('\n\n') : '');
-      const parts = String(text).split(/\n{4,}/); return normPost({ id: d.id != null && d.id !== '' ? 'tf-' + d.id : textId('typefully', parts[0], taken), text: parts[0], thread: parts.slice(1), at: d.published_on || d.published_at || d.scheduled_date || d.created_at, likes: num(d.likes || d.favorite_count), reposts: num(d.retweets || d.reposts), replies: num(d.replies), views: num(d.impressions), src: 'typefully', url: d.twitter_url || d.x_published_url || d.share_url }); }).filter(Boolean);
+    /* the API returns drafts and scheduled posts as well: only ones that went out (a publish date, a live link or numbers) are posts */
+    const went = d => { const st = String(d.status || '').toLowerCase(); if (st) return st === 'published' || st === 'posted' || st === 'sent'; return !(d.scheduled_date && !d.published_on && !d.published_at); };
+    return arr.filter(went).map(d => { const text = d.text || d.content || (Array.isArray(d.tweets) ? d.tweets.map(t => t.text || t).join('\n\n') : '') || (d.platforms && d.platforms.x && d.platforms.x.posts ? d.platforms.x.posts.map(p => p.text).join('\n\n') : '');
+      const parts = String(text).split(/\n{4,}/); return normPost({ id: d.id != null && d.id !== '' ? 'tf-' + d.id : textId('typefully', parts[0], taken), text: parts[0], thread: parts.slice(1), at: d.published_on || d.published_at || d.scheduled_date, likes: num(d.likes || d.favorite_count), reposts: num(d.retweets || d.reposts), replies: num(d.replies), views: num(d.impressions), src: 'typefully', url: d.twitter_url || d.x_published_url || d.share_url }); }).filter(Boolean);
   }
   function parsePasted(text) {
     const taken = new Map();
@@ -318,8 +333,12 @@
   function analyze(posts, now = Date.now()) {
     const P = (posts || []).filter(p => p.text);
     if (!P.length) return null;
-    const E = P.map(eng), med = median(E) || 1;
-    const top = [...P].sort((a, b) => eng(b) - eng(a));
+    /* rankings, kinds, times and calibration use only posts that came with numbers; voice stats use every post */
+    const M = P.filter(measured), R = M.length ? M : P;
+    const E = R.map(eng), med = median(E) || 1;
+    const top = [...M].sort((a, b) => eng(b) - eng(a));
+    /* didn't land: well under your usual, old enough to have settled (2 days), and only once there's enough to compare */
+    const flops = M.length >= 8 ? [...M].filter(p => eng(p) < med * .5 && (!p.at || now - p.at > 2 * 864e5)).sort((a, b) => eng(a) - eng(b)).slice(0, 6) : [];
     /* voice stats */
     const sents = P.flatMap(p => p.text.split(/(?<=[.!?])\s+|\n+/).filter(s => words(s).length >= 2));
     const wps = sents.length ? sents.reduce((a, s) => a + words(s).length, 0) / sents.length : 0;
@@ -332,23 +351,24 @@
     const freq = {}; P.forEach(p => new Set(words(p.text).filter(w => w.length > 3 && !STOP.has(w))).forEach(w => { freq[w] = (freq[w] || 0) + 1; }));
     const lean = Object.entries(freq).filter(([, n]) => n >= Math.max(3, P.length * .03)).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([w, n]) => ({ w, n }));
     /* kinds */
-    const kinds = {}; P.forEach(p => { const k = kindOf(p.text); (kinds[k] = kinds[k] || []).push(eng(p)); });
+    const kinds = {}; M.forEach(p => { const k = kindOf(p.text); (kinds[k] = kinds[k] || []).push(eng(p)); });
     const kindStats = Object.entries(kinds).map(([k, arr]) => ({ k, n: arr.length, x: +(median(arr) / med).toFixed(2) })).sort((a, b) => b.x - a.x);
-    const bestKind = kindStats.find(k => k.n >= Math.max(3, P.length * .04) && k.x > 1.15) || null;
+    const bestKind = kindStats.find(k => k.n >= Math.max(3, M.length * .04) && k.x > 1.15) || null;
     /* times: day-of-week x hour, median engagement relative to overall */
-    const dated = P.filter(p => p.at);
+    const dated = M.filter(p => p.at);
     const grid = {}; dated.forEach(p => { const d = new Date(p.at); const key = `${d.getDay()}-${d.getHours()}`; (grid[key] = grid[key] || []).push(eng(p)); });
     const slots = Object.entries(grid).filter(([, a]) => a.length >= 2).map(([k, a]) => { const [dow, h] = k.split('-').map(Number); return { dow, h, n: a.length, x: +(median(a) / med).toFixed(2) }; }).sort((a, b) => b.x - a.x);
     const hours = Array.from({ length: 24 }, (_, h) => { const a = dated.filter(p => new Date(p.at).getHours() === h).map(eng); return { h, n: a.length, x: a.length ? +(median(a) / med).toFixed(2) : 0 }; });
     /* hook calibration: does a higher hook score actually earn more here? */
-    const scored = P.map(p => ({ s: hookScore(p.text).score, e: eng(p) }));
+    const scored = M.map(p => ({ s: hookScore(p.text).score, e: eng(p) }));
     const hi = scored.filter(x => x.s >= 70), lo = scored.filter(x => x.s < 45); /* Sharp or better vs Flat */
     const calib = hi.length >= 3 && lo.length >= 3 ? { hiN: hi.length, loN: lo.length, x: +(median(hi.map(x => x.e)) / Math.max(1, median(lo.map(x => x.e)))).toFixed(2), r: +pearson(scored.map(x => x.s), scored.map(x => Math.log1p(x.e))).toFixed(2) } : null;
     /* cadence */
-    const span = dated.length > 1 ? (Math.max(...dated.map(p => p.at)) - Math.min(...dated.map(p => p.at))) / 864e5 : 0;
-    const perWeek = span > 6 ? +(dated.length / (span / 7)).toFixed(1) : null;
+    const datedAll = P.filter(p => p.at);
+    const span = datedAll.length > 1 ? (Math.max(...datedAll.map(p => p.at)) - Math.min(...datedAll.map(p => p.at))) / 864e5 : 0;
+    const perWeek = span > 6 ? +(datedAll.length / (span / 7)).toFixed(1) : null;
     const oldTop = top.filter(p => p.at && now - p.at > 60 * 864e5).slice(0, 5);
-    return { n: P.length, median: med, top: top.slice(0, 12), flops: top.slice(-6).reverse(), oldTop, stats: { wps: +wps.toFixed(1), emojiPer: +emojiPer.toFixed(2), tagsPer: +tagsPer.toFixed(2), oneSentOpen: Math.round(oneSentOpen * 100), lower: Math.round(lower * 100), avgLen: Math.round(avgLen), threads: Math.round(threads * 100) }, lean, kindStats, bestKind, slots: slots.slice(0, 6), hours, calib, perWeek, span: Math.round(span) };
+    return { n: P.length, measured: M.length, unmeasured: P.length - M.length, median: med, top: top.slice(0, 12), flops, oldTop, stats: { wps: +wps.toFixed(1), emojiPer: +emojiPer.toFixed(2), tagsPer: +tagsPer.toFixed(2), oneSentOpen: Math.round(oneSentOpen * 100), lower: Math.round(lower * 100), avgLen: Math.round(avgLen), threads: Math.round(threads * 100) }, lean, kindStats, bestKind, slots: slots.slice(0, 6), hours, calib, perWeek, span: Math.round(span) };
   }
   function pearson(a, b) { const n = a.length; if (n < 3) return 0; const ma = a.reduce((x, y) => x + y, 0) / n, mb = b.reduce((x, y) => x + y, 0) / n; let num = 0, da = 0, db = 0; for (let i = 0; i < n; i++) { num += (a[i] - ma) * (b[i] - mb); da += (a[i] - ma) ** 2; db += (b[i] - mb) ** 2; } return da && db ? num / Math.sqrt(da * db) : 0; }
 
@@ -552,7 +572,7 @@ Write a short Sunday note to a creator about their week on social media. Plain, 
 
 This week: ${week}
 Best post: ${best ? `"${best.text}" (${best.likes} likes, ${best.replies || 0} replies)` : 'none'}
-Quietest post: ${worst ? `"${worst.text}" (${worst.likes} likes)` : 'none'}
+Post that didn't land: ${worst ? `"${worst.text}" (${worst.likes} likes)` : 'none'}
 Niche: ${niche || ''}
 ${voiceBlock(voice)}
 
@@ -834,7 +854,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
      YOUR posts (median with vs without, shrunk toward "no effect" when there are few examples), then scores
      a new line by where it would rank among your own posts. It is tested before it is trusted: fitted on
      your older posts, scored on your newest ones, and compared with the general score on the same posts. */
-  const KIND_PL = { Contrarian: 'contrarian posts', Listicle: 'lists', Question: 'questions', 'How-to': 'how-tos', Story: 'stories', Curiosity: 'open-loop posts', Announcement: 'announcements', Take: 'plain takes' };
+  const KIND_PL = Object.fromEntries(Object.keys(KIND_NAMES).map(k => [k, KIND_NAMES[k][1]]));
   const firstOf = t => { const ls = String(t || '').replace(/https?:\/\/\S+/g, '').split('\n').map(l => l.trim()).filter(Boolean); let f = ls[0] || ''; if (f.length < 40 && ls[1]) f += ' ' + ls[1]; return f; };
   const TRAITS = [
     { k: 'number', label: 'a number in line one', add: 'Put a real number in line one', f: f => /\d/.test(f) },
@@ -1508,5 +1528,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function crSpend(st, c) { if (!(c > 0)) return st; if (!st || st.bal < c) return null; return { ...st, bal: st.bal - c }; }
   const CREDITS = { PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
 
-  return { CREDITS, HOOK_TIERS, hookTier, hookMove, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
+  return { CREDITS, HOOK_TIERS, hookTier, hookMove, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
 });
