@@ -11423,7 +11423,7 @@ async function enrichLink(L) {
     if (L.kind === 'post' && j.text) add.title = L.title; add.rich = true; UNF.set(L.url, add); return Object.assign(L, add); } catch (e) { return L; }
 }
 /* words from a URL come lowercased: put the usual acronyms back (SaaS, AI, BTC…) */
-function ACRO(s) { return String(s || '').replace(/\b(saas|ai|api|seo|ux|ui|ceo|cto|b2b|b2c|mrr|arr|vc|ios|btc|eth|sol|etf|defi|nft|fomc|cpi|gpt|llm)\b/gi, w => ({ saas: 'SaaS', ios: 'iOS', defi: 'DeFi' })[w.toLowerCase()] || w.toUpperCase()); }
+function ACRO(s) { return String(s || '').replace(/\b(saas|ai|api|seo|ux|ui|ceo|cto|b2b|b2c|mrr|arr|vc|ios|btc|eth|sol|etf|defi|nft|fomc|cpi|llm)\b/gi, w => ({ saas: 'SaaS', ios: 'iOS', defi: 'DeFi' })[w.toLowerCase()] || w.toUpperCase()); }
 function linkSiteLabel(L) { const [name] = LINK_PLAT[L.platform] || []; return L.site || name || L.host; }
 /* the preview card: an X-style card for posts, a page card (picture, site, title, description) for everything else */
 function linkCardHTML(L, { mini = false } = {}) {
