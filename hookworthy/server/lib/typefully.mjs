@@ -13,6 +13,7 @@ export async function importDrafts(key) {
   };
   const pub = await get('/drafts/recently-published/');
   let sched = []; try { sched = await get('/drafts/recently-scheduled/'); } catch { /* optional */ }
-  const list = [...(Array.isArray(pub) ? pub : pub.results || []), ...(Array.isArray(sched) ? sched : sched.results || [])];
+  /* scheduled drafts haven't gone out: they come back tagged so the importer keeps them out of Your posts (they'd rank as 0-like flops) */
+  const list = [...(Array.isArray(pub) ? pub : pub.results || []), ...(Array.isArray(sched) ? sched : sched.results || []).map(d => ({ ...d, status: 'scheduled' }))];
   return list;
 }
