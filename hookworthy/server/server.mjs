@@ -30,6 +30,7 @@ const BO = await import('./lib/breakout.mjs');
 const VO = await import('./lib/votes.mjs');
 const PL = await import('./lib/plug.mjs');
 const CR = await import('./lib/credits.mjs');
+const UF = await import('./lib/unfurl.mjs');
 
 const ROOT = normalize(join(here, '..'));
 const PORT = +process.env.PORT || 8787, HOST = process.env.HOST || '127.0.0.1';
@@ -49,7 +50,7 @@ async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []
 const tokenOf = req => { const ok = CR.tokens(); const b = /^Bearer (.+)$/.exec(req.headers.authorization || ''); if (b && ok.has(b[1])) return b[1]; for (const c of (req.headers.cookie || '').split(/;\s*/)) { if (!c.startsWith('hw=')) continue; let v = c.slice(3); try { v = decodeURIComponent(v); } catch { /* as sent */ } if (ok.has(v)) return v; } return null; };
 const authed = req => !TOKEN && !CR.tokens().size || !!tokenOf(req);
 
-export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), plug: true, replySettings: true, vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), plug: true, unfurl: true, replySettings: true, vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
 
 /* drafts for a breakout's first replies, in your voice (only when Claude is on) */
 export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => (await AI.complete({ ...core.prompts.replies({ post, replies, voice }), json: true })).data : null;
@@ -93,6 +94,9 @@ export async function handle(req, res) {
     if (p === '/api/x/me') return send(res, 200, await X.refreshTier());
     if (p === '/api/x/replies') return send(res, 200, { replies: await X.replies(url.searchParams.get('id')) });
     if (p === '/api/x/reply' && req.method === 'POST') { const b = await body(req); if (!String(b.text || '').trim()) return send(res, 400, { error: 'Write the reply first' }); return send(res, 200, await X.reply(b.inReplyTo, String(b.text).slice(0, 1000))); }
+
+    /* link cards: a page's title, description and image, fetched safely (see lib/unfurl.mjs) */
+    if (p === '/api/unfurl' && req.method === 'GET') { if (!allow(ip, .25)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); return send(res, 200, await UF.unfurl(url.searchParams.get('url')), { 'cache-control': 'private, max-age=3600' }); }
 
     /* hook vote: a public link where friends pick the first line that stops them */
     if (p === '/api/vote' && req.method === 'POST') { const b = await body(req, 16 * 1024); const v = VO.createVote(b); return send(res, 200, { ...v, url: `${PUBLIC_URL}/v/${v.id}` }); }

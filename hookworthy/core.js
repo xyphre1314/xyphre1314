@@ -34,6 +34,57 @@
     return n;
   }
 
+  /* ---------------- links in a post ----------------
+     What a link card can say before anything is fetched: the site, what kind of page it is, and a title read
+     from the path. The same reading runs in the composer, the previews and the server's unfurl. */
+  const LK_TRAIL = /[.,!?;:'"’”…]+$/;
+  const LK_KNOWN = { 'substack.com': 'Substack', 'medium.com': 'Medium', 'linkedin.com': 'LinkedIn', 'threads.net': 'Threads', 'threads.com': 'Threads', 'bsky.app': 'Bluesky', 'tradingview.com': 'TradingView', 'coingecko.com': 'CoinGecko', 'coinmarketcap.com': 'CoinMarketCap', 'etherscan.io': 'Etherscan', 'solscan.io': 'Solscan', 'dune.com': 'Dune', 'defillama.com': 'DefiLlama', 'binance.com': 'Binance', 'coinbase.com': 'Coinbase', 'kraken.com': 'Kraken', 'bloomberg.com': 'Bloomberg', 'reuters.com': 'Reuters', 'ft.com': 'Financial Times', 'wsj.com': 'The Wall Street Journal', 'nytimes.com': 'The New York Times', 'coindesk.com': 'CoinDesk', 'theblock.co': 'The Block', 'reddit.com': 'Reddit', 'notion.site': 'Notion', 'producthunt.com': 'Product Hunt', 'news.ycombinator.com': 'Hacker News', 'wikipedia.org': 'Wikipedia', 'spotify.com': 'Spotify', 'gumroad.com': 'Gumroad', 'beehiiv.com': 'beehiiv', 'loom.com': 'Loom', 'figma.com': 'Figma', 'vimeo.com': 'Vimeo' };
+  const X_RESERVED = new Set(['home', 'explore', 'search', 'i', 'settings', 'notifications', 'messages', 'hashtag', 'intent', 'share', 'compose', 'login', 'signup', 'tos', 'privacy']);
+  /* every link in a text, in order, without the sentence punctuation stuck to its end */
+  function linkFind(text) {
+    const s = String(text || ''), out = [];
+    for (const m of s.matchAll(URL_RX)) {
+      let u = m[0].replace(LK_TRAIL, '');
+      /* a closing bracket belongs to the link only when the link opened one: "(see x.com/a)" vs "wiki/Foo_(bar)" */
+      while (/[)\]]$/.test(u) && (u.match(/[([]/g) || []).length < (u.match(/[)\]]/g) || []).length) u = u.slice(0, -1).replace(LK_TRAIL, '');
+      if (u) out.push({ url: u, at: m.index });
+    }
+    return out;
+  }
+  const lkWords = seg => { let s = seg.replace(/\.(html?|php|aspx?|jsp|md)$/i, '').replace(/^(?=[A-Za-z]*\d)[A-Za-z0-9]{5,12}-(?=[A-Za-z])/, '').replace(/[-_+]+/g, ' ').replace(/\s+/g, ' ').trim(); if (!s) return ''; if (s === s.toLowerCase()) s = (s[0].toUpperCase() + s.slice(1)).replace(/\bi(?=\b|[’'])/g, 'I'); return s.length > 90 ? s.slice(0, 89).replace(/\s+\S*$/, '') + '…' : s; };
+  /* the link read on its own: { url, domain, site, kind: 'post' | 'profile' | 'video' | 'repo' | 'link', title, handle?, id? } */
+  function linkGuess(raw) {
+    let u; try { u = new URL(/^https?:\/\//i.test(String(raw)) ? String(raw) : 'https://' + raw); } catch (e) { return null; }
+    if (!/^https?:$/.test(u.protocol) || !u.hostname.includes('.')) return null;
+    const host = u.hostname.toLowerCase().replace(/^(www|m|mobile)\./, '');
+    const segs = u.pathname.split('/').filter(Boolean).map(s => { try { return decodeURIComponent(s); } catch (e) { return s; } });
+    const base = { url: u.href, domain: host, site: null, kind: 'link', title: '' };
+    if (/^(x|twitter)\.com$/.test(host)) {
+      const h = segs[0] && /^\w{1,15}$/.test(segs[0]) && !X_RESERVED.has(segs[0].toLowerCase()) ? segs[0] : null;
+      if (h && segs[1] === 'status' && /^\d{5,25}$/.test(segs[2] || '')) return { ...base, domain: 'x.com', site: 'X', kind: 'post', handle: h, id: segs[2], title: `Post by @${h}` };
+      if (h && segs.length === 1) return { ...base, domain: 'x.com', site: 'X', kind: 'profile', handle: h, title: `@${h} on X` };
+      return { ...base, domain: 'x.com', site: 'X', title: 'X' };
+    }
+    let yt = null;
+    if (host === 'youtu.be') yt = segs[0]; else if (/(^|\.)youtube\.com$/.test(host)) yt = u.searchParams.get('v') || (/^(shorts|live|embed)$/.test(segs[0] || '') ? segs[1] : null);
+    if (yt && /^[\w-]{11}$/.test(yt)) return { ...base, domain: 'youtube.com', site: 'YouTube', kind: 'video', id: yt, short: segs[0] === 'shorts', title: segs[0] === 'shorts' ? 'YouTube Short' : 'YouTube video' };
+    if (host === 'github.com' && segs[0]) {
+      const sub = segs[2] === 'pull' && segs[3] ? `Pull request #${segs[3]}` : segs[2] === 'issues' && segs[3] ? `Issue #${segs[3]}` : segs[2] === 'releases' ? 'Releases' : '';
+      return { ...base, site: 'GitHub', kind: segs[1] ? 'repo' : 'profile', title: segs.slice(0, 2).join('/') + (sub ? ` · ${sub}` : '') };
+    }
+    const site = LK_KNOWN[host] || LK_KNOWN[host.split('.').slice(-2).join('.')] || null;
+    /* the title: the last part of the path that reads like words, skipping ids and hashes */
+    const wordy = segs.filter(s => !/^[\w-]{0,3}$/.test(s) && !/^[0-9a-f-]{8,}$/i.test(s) && !/^\d+$/.test(s) && /[a-z]{3}/i.test(s));
+    const title = lkWords(wordy[wordy.length - 1] || '') || site || host;
+    return { ...base, site, title };
+  }
+  /* how platforms print a link in the text: no scheme, no www, cut with an ellipsis */
+  function linkShow(raw, max = 26) {
+    const s = String(raw || '').replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, '');
+    return s.length > max ? s.slice(0, max - 1) + '…' : s;
+  }
+  const LINKS = { find: linkFind, guess: linkGuess, show: linkShow, RX: URL_RX };
+
   /* ---------------- hook score ----------------
      A transparent heuristic: five parts, each explainable in one sentence.
      calibrate() below checks it against the author's own results. */
@@ -1457,5 +1508,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function crSpend(st, c) { if (!(c > 0)) return st; if (!st || st.bal < c) return null; return { ...st, bal: st.bal - c }; }
   const CREDITS = { PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
 
-  return { CREDITS, HOOK_TIERS, hookTier, hookMove, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
+  return { CREDITS, HOOK_TIERS, hookTier, hookMove, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
 });
