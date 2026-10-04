@@ -60,6 +60,9 @@
   --wash:none;
   --success:#2B7A4B; --success-soft:rgba(43,122,75,.10);
   --warn:#A0560F; --warn-soft:rgba(160,86,15,.10);
+  /* hook tiers: grey, honey, plum, deep plum. Text on each tint passes AA (4.5:1+) */
+  --tier-flat:#65645C; --tier-warming:#845608; --tier-sharp:#6A2FA0; --tier-honed:#3A1E5C; --tier-honed-ink:#FEFDF1; --tier-glow:rgba(148,102,214,.42); --tier-track:rgba(26,26,26,.10); --tier-tint:10%;
+  --tier-flat-inv:#ADA6B4; --tier-warming-inv:#E8B35A; --tier-sharp-inv:#B494F0; --tier-honed-inv:#E2D0FF;
   --error:#B3313A; --error-soft:rgba(179,49,58,.09);
   --ins:rgba(31,143,95,.14); --del:rgba(214,63,63,.10);
   --backdrop:rgba(26,26,26,.24);
@@ -92,6 +95,7 @@
     --wash:none;
     --success:#6FCF97; --success-soft:rgba(111,207,151,.12);
     --warn:#F0A458; --warn-soft:rgba(240,164,88,.12);
+    --tier-flat:#ADA6B4; --tier-warming:#E8B35A; --tier-sharp:#B494F0; --tier-honed:#E2D0FF; --tier-honed-ink:#F6F2E8; --tier-glow:rgba(199,168,255,.45); --tier-track:rgba(240,232,255,.12); --tier-tint:14%; --tier-flat-inv:#65645C; --tier-warming-inv:#845608; --tier-sharp-inv:#6A2FA0; --tier-honed-inv:#3A1E5C;
     --error:#FF8A8A; --error-soft:rgba(255,138,138,.12);
     --ins:rgba(76,195,138,.16); --del:rgba(242,109,109,.14);
     --backdrop:rgba(0,0,0,.6);
@@ -116,6 +120,7 @@
   --wash:none;
   --success:#6FCF97; --success-soft:rgba(111,207,151,.12);
   --warn:#F0A458; --warn-soft:rgba(240,164,88,.12);
+  --tier-flat:#ADA6B4; --tier-warming:#E8B35A; --tier-sharp:#B494F0; --tier-honed:#E2D0FF; --tier-honed-ink:#F6F2E8; --tier-glow:rgba(199,168,255,.45); --tier-track:rgba(240,232,255,.12); --tier-tint:14%; --tier-flat-inv:#65645C; --tier-warming-inv:#845608; --tier-sharp-inv:#6A2FA0; --tier-honed-inv:#3A1E5C;
   --error:#FF8A8A; --error-soft:rgba(255,138,138,.12);
   --ins:rgba(76,195,138,.16); --del:rgba(242,109,109,.14);
   --backdrop:rgba(0,0,0,.6);
@@ -650,6 +655,36 @@ body.typing .tw-tools{ opacity:0!important; }
 .hook.hi .sc{ background:var(--accent); } .hook.hi .sc span{ color:var(--accent-ink); }
 .hook.hi{ box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 55%,var(--border-strong)); }
 @property --v{ syntax:'<number>'; inherits:true; initial-value:0; }
+/* ---------- hook tiers (Flat, Warming, Sharp, Honed): a word, a colour and a ring that fills with the score ---------- */
+.t-flat{ --tc:var(--tier-flat); } .t-warming{ --tc:var(--tier-warming); } .t-sharp{ --tc:var(--tier-sharp); } .t-honed{ --tc:var(--tier-honed); }
+.tier{ --tc:var(--tier-flat); display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px 0 5px; border-radius:99px; background:color-mix(in srgb,var(--tc) var(--tier-tint,10%),var(--surface,#FFFFF8)); color:var(--tc); font:600 12px/1 var(--font-ui); letter-spacing:0; white-space:nowrap; flex:none; vertical-align:middle; transition:background var(--d-spring,320ms) var(--ease-out),color var(--d-spring,320ms) var(--ease-out); }
+.tier .tier-r{ width:12px; height:12px; flex:none; border-radius:50%; background:conic-gradient(var(--tc) calc(var(--v) * 1%), var(--tier-track) 0); -webkit-mask:radial-gradient(circle,transparent 3.2px,#000 3.6px); mask:radial-gradient(circle,transparent 3.2px,#000 3.6px); }
+.tier .tier-n{ font-weight:500; color:color-mix(in srgb,var(--tc) 78%,var(--text-2,#4D4C46)); margin-left:-2px; }
+.tier.t-honed{ background:var(--tier-honed); color:var(--tier-honed-ink); box-shadow:0 0 0 1px color-mix(in srgb,var(--tier-honed) 60%,transparent),0 0 12px -2px var(--tier-glow); }
+.tier.t-honed .tier-r{ background:conic-gradient(var(--tier-honed-ink) calc(var(--v) * 1%), color-mix(in srgb,var(--tier-honed-ink) 25%,transparent) 0); } .tier.t-honed .tier-n{ color:color-mix(in srgb,var(--tier-honed-ink) 80%,transparent); }
+:root[data-theme="dark"] .tier.t-honed:not(.force-light .tier), .force-dark .tier.t-honed{ background:#4A2A78; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tier.t-honed:not(.force-light .tier){ background:#4A2A78; } }
+.tier.sm{ height:20px; padding:0 7px 0 4px; gap:5px; font-size:11.5px; } .tier.sm .tier-r{ width:10px; height:10px; -webkit-mask:radial-gradient(circle,transparent 2.6px,#000 3px); mask:radial-gradient(circle,transparent 2.6px,#000 3px); }
+.tmove{ display:inline-flex; align-items:center; gap:5px; font:600 12px/1 var(--font-ui); white-space:nowrap; color:var(--text-2); }
+.tmove .ico, .tmove svg{ opacity:.7; } .tmove .tword{ color:var(--tc,inherit); } .tmove .tfrom{ opacity:.72; } .tmove.down .tword:not(.tfrom), .tmove.same .tword{ color:var(--text-2); }
+.tmove .tnum{ font:500 11px/1 var(--font-mono); color:var(--text-3); margin-left:3px; }
+.tword.in, .wswap{ animation:tierin 260ms var(--ease-out,cubic-bezier(.16,1,.3,1)) both; }
+@keyframes tierin{ from{ opacity:0; transform:translateY(4px); } }
+.tg{ width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; } .tg-honed{ fill:currentColor; }
+.tscale{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; }
+.tscale li{ --tc:var(--tier-flat); position:relative; padding:9px 4px 0; text-align:center; font:500 11.5px/1 var(--font-ui); color:var(--text-3); white-space:nowrap; }
+.tscale li::before{ content:''; position:absolute; left:0; right:0; top:0; height:4px; border-radius:99px; background:color-mix(in srgb,var(--tc) 28%,transparent); }
+.tscale li.t-warming{ --tc:var(--tier-warming); } .tscale li.t-sharp{ --tc:var(--tier-sharp); } .tscale li.t-honed{ --tc:var(--tier-honed); }
+.tscale li.on{ color:var(--tc); font-weight:700; } .tscale li.on::before{ background:var(--tc); } .tscale li.on.t-honed::before{ box-shadow:0 0 8px var(--tier-glow); }
+.hg-move{ display:inline-flex; } .hg-move .tmove{ font-size:12.5px; }
+/* the five checks: one pip each, filled / half / empty, and the word */
+.pips{ list-style:none; margin:0; padding:0; display:grid; gap:7px; }
+.pips li{ display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:8px; font-size:13px; color:var(--text-2); }
+.pips .pk{ color:var(--text-1); font-weight:500; }
+.pip{ width:11px; height:11px; border-radius:50%; box-shadow:inset 0 0 0 1.5px var(--pc); --pc:var(--tier-flat); }
+.pip.p-full{ --pc:var(--tier-sharp); background:var(--pc); } .pip.p-half{ --pc:var(--tier-warming); background:linear-gradient(90deg,var(--pc) 50%,transparent 50%); }
+.pips .pw{ min-width:46px; font-size:12px; color:var(--text-3); } .pips .ps-full .pw{ color:var(--tier-sharp); font-weight:600; }
+@media (prefers-reduced-motion:reduce){ .tword.in, .wswap{ animation:none; } .tier{ transition:none; } }
 .hook-reason{ margin-top:10px; padding:14px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); font-size:var(--t-13); color:var(--text-2); animation:rise var(--d-spring) var(--ease-out) both; }
 .force-dark .hook-reason,:root[data-theme="dark"] .hook-reason:not(.force-light .hook-reason){ background:var(--surface-2); }
 .hook-reason b{ color:var(--text-1); font-weight:600; }
@@ -796,7 +831,7 @@ body:has(.scrim) #toasts{ z-index:1001; } @media (min-width:761px){ body:has(.sc
 .hk-mine{ display:grid; gap:10px; padding:12px; border-radius:12px; background:var(--tint-soft,var(--surface-2)); }
 .hk-mine.off{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--surface-2); } .hk-mine.off p{ flex:1 1 220px; margin:0; }
 .hk-mh{ display:flex; gap:12px; align-items:center; } .hk-mh p{ margin:0; }
-.hk-big{ flex:none; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:var(--accent); color:var(--accent-ink); font:600 17px/1 var(--font-mono); font-variant-numeric:tabular-nums; animation:pop var(--d-spring) var(--spring-snap) both; }
+.hk-big{ flex:none; }
 .hk-ts{ display:flex; flex-wrap:wrap; gap:6px; }
 .hk-t{ display:inline-flex; gap:5px; align-items:center; padding:4px 9px; border-radius:99px; font-size:12px; background:var(--surface); box-shadow:0 0 0 1px var(--border); }
 .hk-t.up b{ color:var(--success); } .hk-t.down b{ color:var(--error); }
@@ -847,6 +882,7 @@ body:has(.scrim) #toasts{ z-index:1001; } @media (min-width:761px){ body:has(.sc
 .diff-f .grow{ flex:1; }
 .delta{ font:600 var(--t-12)/1 var(--font-ui); font-variant-numeric:tabular-nums; white-space:nowrap; }
 .delta.up{ color:var(--success); } .delta.down{ color:var(--error); }
+.delta.hk{ display:inline-flex; align-items:center; gap:6px; color:var(--text-3); } .delta.hk .dl{ font-weight:500; }
 
 .add-tw{ display:flex; align-items:center; gap:14px; width:100%; padding:6px 0; color:var(--text-3); font-size:var(--t-14); border-radius:10px; transition:color var(--d-micro); }
 .add-tw .plus{ width:36px; display:grid; place-items:center; }
@@ -973,12 +1009,14 @@ body.typing .preview{ opacity:.7; }
 .grader textarea{ border:0; background:transparent; resize:none; width:100%; min-height:180px; padding:24px; font:500 var(--t-32)/1.2 var(--font-ui); letter-spacing:0; }
 .grader-side{ border-left:1px solid var(--border); padding:20px; display:grid; gap:14px; align-content:start; background:var(--bg-elev); }
 .force-dark .grader-side,:root[data-theme="dark"] .grader-side:not(.force-light .grader-side){ background:rgba(0,0,0,.15); }
-.bigscore{ display:flex; align-items:center; gap:14px; }
+.bigscore{ display:grid; grid-template-columns:72px minmax(0,1fr); column-gap:14px; row-gap:4px; align-items:center; }
+.bigscore svg{ grid-row:1 / span 2; } .bigscore b{ align-self:end; font-size:36px !important; overflow-wrap:anywhere; } .bigscore .bs-sub{ align-self:start; font-size:13px; } .bigscore .bs-sub .label{ margin-right:4px; }
 .bigscore svg{ width:72px; height:72px; transform:rotate(-90deg); flex:none; }
 .bigscore circle{ fill:none; stroke-width:5; }
 .bigscore .trk{ stroke:var(--track,var(--surface-3)); }
-.bigscore .val{ stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset var(--d-slow) var(--ease-out); }
-.bigscore b{ font:400 44px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
+.bigscore .val{ stroke:var(--tc,var(--accent)); stroke-linecap:round; transition:stroke-dashoffset var(--d-snap) var(--ease-out),stroke var(--d-spring) var(--ease-out); }
+.bigscore b{ font:400 44px/1 var(--font-display); letter-spacing:-.02em; font-variant-numeric:lining-nums tabular-nums; color:var(--tc,var(--text-1)); transition:color var(--d-spring) var(--ease-out); }
+.bigscore.t-honed svg{ filter:drop-shadow(0 0 8px var(--tier-glow)); }
 .bars{ display:grid; gap:9px; }
 .bar-row{ display:grid; grid-template-columns:78px 1fr 26px; gap:10px; align-items:center; font-size:var(--t-12); color:var(--text-2); }
 .bar-row .meter{ height:5px; }
@@ -1146,7 +1184,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 @keyframes upsellin{ from{ opacity:0; transform:translateY(16px) scale(.97); } }
 .jump{ display:flex; align-items:center; gap:12px; font:400 48px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; margin:12px 0 8px; }
 .jump .from{ color:var(--text-3); text-decoration:line-through; text-decoration-thickness:2px; font-size:32px; }
-.jump .to{ color:var(--accent-text); }
+.jump .to{ color:var(--tc,var(--accent-text)); }
 
 .cmdk{ width:min(620px,100%); background:var(--surface); border-radius:16px; box-shadow:var(--sh-4); overflow:hidden; animation:modalin var(--d-spring) var(--spring) both; }
 .force-dark .cmdk,:root[data-theme="dark"] .cmdk:not(.force-light .cmdk){ background:var(--surface-2); }
@@ -1243,7 +1281,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .onb-try .ot-a{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; } .ot-note{ font-size:13px; color:var(--error); }
 .ot-out{ display:grid; gap:12px; } .ot-out:empty{ display:none; }
 .ot-row{ display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start; } .ot-row p{ font-size:15px; line-height:1.5; white-space:pre-wrap; min-width:0; }
-.ot-row .hook{ height:24px; } .ot-row.better{ padding:12px; border-radius:var(--r-md); background:var(--surface-2); }
+.ot-row .ot-k{ display:grid; gap:5px; justify-items:start; min-width:92px; } .ot-row .ot-l{ font:600 11px/1 var(--font-ui); letter-spacing:.08em; text-transform:uppercase; color:var(--text-3); } .ot-row.better{ padding:12px; border-radius:var(--r-md); background:var(--surface-2); }
 .ot-diff .vw{ background:var(--marker-soft); border-radius:3px; box-shadow:0 0 0 1px var(--marker-soft); }
 .ot-diff del.vw{ background:none; box-shadow:none; color:var(--text-3); text-decoration:line-through; text-decoration-color:var(--accent); } .ot-diff ins{ text-decoration:none; background:var(--marker-soft); border-radius:3px; }
 .ot-why{ font-size:13px; }
@@ -1643,7 +1681,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .hw27 .h7-hero .hg-card{ gap:18px; padding:24px 26px; border-radius:26px; }
   .hw27 .h7-hero .hg-ed textarea, .hw27 .h7-hero .hg-mirror{ font-size:24px; padding:14px 16px; }
   .hw27 .h7-hero .hg-read{ grid-template-columns:76px minmax(0,1fr) auto; gap:16px; }
-  .hw27 .h7-hero .hg-dial{ width:76px; height:76px; } .hw27 .h7-hero .hg-dial b{ font-size:24px; }
+  .hw27 .h7-hero .hg-dial{ width:80px; height:80px; } .hw27 .h7-hero .hg-dial b{ font-size:12.5px; }
   .hw27 .h7-hero .hg-why p{ font-size:15.5px; } .hw27 .h7-hero .hg-sharp{ height:44px; padding:0 16px; font-size:15.5px; }
   .hw27 .h7-hero .hg-note{ font-size:14px; }
 }
@@ -1668,13 +1706,15 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .hg-tip b{ color:var(--pa); font-weight:600; margin-right:2px; }
 @keyframes h7tip{ from{ opacity:0; transform:translate(-50%,calc(-100% - 4px)); } }
 .hw27 .hg-read{ display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:14px; align-items:center; }
-.hw27 .hg-dial{ position:relative; width:64px; height:64px; display:grid; place-items:center; flex:none; }
+.hw27 .hg-dial{ position:relative; width:72px; height:72px; display:grid; place-items:center; flex:none; }
 .hw27 .hg-dial svg{ position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); overflow:visible; }
 .hw27 .hg-dial .trk{ fill:none; stroke:rgba(26,26,26,.08); stroke-width:6; }
-.hw27 .hg-dial .val{ fill:none; stroke:var(--c-ink); stroke-width:6; stroke-linecap:round; transition:stroke .3s; }
+.hw27 .hg-dial .val{ fill:none; stroke:var(--tc,var(--c-3)); stroke-width:6; stroke-linecap:round; transition:stroke .32s var(--ease-o); }
 .hw27 .hg-dial .bar70{ stroke:var(--c-3); stroke-width:1.5; stroke-linecap:round; }
-.hw27 .hg-dial b{ position:relative; font:600 21px/1 var(--font-mono); font-variant-numeric:tabular-nums; color:var(--c-ink); transition:color .3s; }
-.hw27 .hg-dial.hi .val{ stroke:var(--pl); } .hw27 .hg-dial.hi b{ color:var(--pl); }
+.hw27 .hg-dial b{ position:relative; max-width:84%; text-align:center; font:600 11.5px/1.05 var(--f-disp); letter-spacing:0; color:var(--tc,var(--c-ink)); transition:color .32s var(--ease-o); }
+.hw27 .hg-dial .dn{ position:absolute; left:0; right:0; bottom:24%; text-align:center; font:500 9.5px/1 var(--font-mono); color:var(--c-3); }
+.hw27 .hg-dial.t-honed svg{ filter:drop-shadow(0 0 6px var(--tier-glow)); } .hw27 .hg-dial{ transition:transform .3s var(--ease-o); } .hw27 .hg-dial.tgrow{ animation:hgrow 360ms var(--ease-o); } @keyframes hgrow{ 45%{ transform:scale(1.06); filter:drop-shadow(0 0 8px var(--tier-glow)); } }
+
 .hw27 .hg-why{ display:grid; gap:6px; min-width:0; }
 .hw27 .hg-why .of{ letter-spacing:0; text-transform:none; font-weight:500; }
 .hw27 .hg-why p{ display:grid; font-size:14.5px; line-height:1.4; color:var(--c-ink); }
@@ -1695,10 +1735,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .hg-same{ font-size:14.5px; color:var(--c-ink); }
 .hw27 .hg-note{ margin-top:12px; font-size:13px; color:var(--c-3); } .hw27 .hg-note b{ color:var(--c-ink); font-weight:600; }/* hook score chips (story, who, final) */
 
-.hw27 .hsc{ display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 9px 0 3px; border-radius:99px; background:var(--c-bg-2); font:500 12px/1 var(--f-disp); color:var(--c-2); white-space:nowrap; flex:none; }
-.hw27 .hsc b{ display:grid; place-items:center; min-width:21px; height:21px; padding:0 5px; border-radius:99px; background:var(--c-card); color:var(--c-ink); font:600 12px/1 var(--font-mono); font-variant-numeric:tabular-nums; box-shadow:0 0 0 1px var(--c-line); transition:background .3s,color .3s; }
-.hw27 .hsc.hi b, .hw27 .hsc b.hi{ background:var(--pl); color:#fff; box-shadow:none; }
-.hw27 .hsc.jump{ padding:0 3px; gap:5px; } .hw27 .hsc.jump > span{ color:var(--c-3); }/* ---------- 2. problem: one drifting row ---------- */
+/* ---------- 2. problem: one drifting row ---------- */
 
 
 .hw27 .h7-void{ padding-top:clamp(48px,6.4vw,92px); }
@@ -1761,16 +1798,11 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .bxs-line .hd{ text-decoration:underline wavy #C8402B; text-decoration-thickness:1.5px; text-underline-offset:5px; text-decoration-skip-ink:none; background:rgba(200,64,43,.07); border-radius:3px; }
 .hw27 .bxs-line .l1{ background:linear-gradient(transparent 60%,var(--pa) 60%,var(--pa) 94%,transparent 94%); -webkit-box-decoration-break:clone; box-decoration-break:clone; }
 .hw27 .bxs-body{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:clamp(16px,2.4vw,28px); align-items:center; padding:16px 18px; border-radius:14px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line); }
-.hw27 .bxs .hg-dial{ width:92px; height:92px; } .hw27 .bxs .hg-dial b{ font-size:27px; } .hw27 .bxs .hg-dial .trk, .hw27 .bxs .hg-dial .val{ stroke-width:5.5; }
+.hw27 .bxs .hg-dial{ width:92px; height:92px; } .hw27 .bxs .hg-dial b{ font-size:14.5px; } .hw27 .bxs .hg-dial .trk, .hw27 .bxs .hg-dial .val{ stroke-width:5.5; }
 .hw27 .bxs-parts{ display:grid; gap:9px; }
-.hw27 .bxs-parts .pt{ display:grid; grid-template-columns:70px minmax(0,1fr) 24px; gap:10px; align-items:center; font-size:13px; color:var(--c-2); }
-/* each bar has a mark at 70, the bar a line has to clear */
-.hw27 .bxs-parts .pt i{ position:relative; display:block; height:6px; border-radius:6px; background:rgba(26,26,26,.08); }
-.hw27 .bxs-parts .pt i::after{ content:''; position:absolute; left:70%; top:-3px; bottom:-3px; width:1.5px; border-radius:1px; background:rgba(26,26,26,.28); }
-.hw27 .bxs-parts .pt i b{ display:block; height:100%; border-radius:6px; background:var(--c-ink); transform-origin:left; transform:scaleX(var(--v,0)); transition:transform .8s var(--ease-o),background .3s; }
-.hw27 .bxs-parts .pt.hi i b{ background:var(--pl); }
-.hw27 .bxs-parts .pv{ font:500 12px/1 var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; color:var(--c-3); transition:color .3s; }
-.hw27 .bxs-parts .pt.hi .pv{ color:var(--pl); }
+.hw27 .bxs-parts .pt{ display:grid; grid-template-columns:minmax(0,1fr) auto 52px; gap:10px; align-items:center; font-size:13px; color:var(--c-2); }
+.hw27 .bxs-parts .pw{ font-size:12px; color:var(--c-3); transition:color .3s; } .hw27 .bxs-parts .ps-full .pw{ color:var(--tier-sharp); font-weight:600; } .hw27 .bxs-parts .pip{ transition:background .3s,box-shadow .3s; }
+/* the five checks as pips (filled, half, empty) with a state word */
 .hw27 .bxs-why{ min-height:1.45em; font-size:14px; line-height:1.45; color:var(--c-2); }/* voice */
 
 .hw27 .vx{ display:grid; gap:22px; align-content:center; }
@@ -1881,7 +1913,6 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .fl{ display:grid; gap:10px; padding:14px 16px; border-radius:14px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line); }
 .hw27 .fl-l{ font-size:12px; font-weight:600; color:var(--pl); }
 .hw27 .fl-a, .hw27 .fl-b{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:12px; align-items:start; }
-.hw27 .fl-a .hsc, .hw27 .fl-b .hsc{ margin-top:-1px; }
 .hw27 .fl-a s{ font-size:14.5px; line-height:1.5; color:var(--c-3); text-decoration-color:rgba(26,26,26,.3); }
 .hw27 .fl-b p{ font:500 16px/1.45 var(--f-disp); color:var(--c-ink); }
 .hw27 .fl-appr{ display:flex; gap:8px; align-items:center; padding:2px 4px 0; font-size:13.5px; color:var(--c-2); }
@@ -1930,7 +1961,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .hw27 .bx-score, .hw27 .bx-voice, .hw27 .bx-replies, .hw27 .bx-work{ grid-column:span 6; }
   /* a half-width card: the dial sits above the five checks */
   .hw27 .bxs-body{ grid-template-columns:minmax(0,1fr); gap:14px; padding:14px; }
-  .hw27 .bxs .hg-dial{ justify-self:center; width:76px; height:76px; } .hw27 .bxs .hg-dial b{ font-size:23px; }
+  .hw27 .bxs .hg-dial{ justify-self:center; width:76px; height:76px; } .hw27 .bxs .hg-dial b{ font-size:12px; }
   .hw27 .hg-hand{ display:none; }
 }
 @media (max-width:1060px) and (min-width:761px){ .hw27 .pl7{ grid-template-columns:repeat(3,minmax(0,1fr)); } .hw27 .pl7 .pl{ padding:20px; } .hw27 .pl7 .pl .pr b{ font-size:48px; } }
@@ -1957,7 +1988,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .hw27 .h7-hero .cta .hbtn{ flex:1 1 auto; justify-content:center; }
   .hw27 .hg-card{ padding:14px 14px 16px; border-radius:20px; }
   .hw27 .hg-read{ grid-template-columns:56px minmax(0,1fr); gap:12px; }
-  .hw27 .hg-read .hg-dial{ width:56px; height:56px; } .hw27 .hg-dial b{ font-size:18px; }
+  .hw27 .hg-read .hg-dial{ width:68px; height:68px; } .hw27 .hg-dial b{ font-size:11px; }
   .hw27 .hg-sharp{ grid-column:1/-1; justify-content:center; height:44px; }
   /* the four tools swipe on a phone, like the beats and the plans; the subgrid keeps their demos on one line */
   .hw27 .bento{ grid-template-columns:none; grid-template-rows:auto auto; grid-auto-flow:column; grid-auto-columns:min(84%,340px); overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; margin-inline:calc(-1 * clamp(16px,4vw,40px)); padding:4px clamp(16px,4vw,40px) 16px; scroll-padding-inline:clamp(16px,4vw,40px); scrollbar-width:none; }
@@ -1966,7 +1997,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .hw27 .bx.rv.armed{ opacity:1; transform:none; }
   .hw27 .bx-score, .hw27 .bx-voice, .hw27 .bx-replies, .hw27 .bx-work{ grid-column:auto; }
   .hw27 .bx-demo{ padding:12px; }
-  .hw27 .bxs-parts .pt{ grid-template-columns:68px minmax(0,1fr) 24px; }
+  .hw27 .bxs-parts .pt{ grid-template-columns:minmax(0,1fr) auto 52px; }
   .hw27 .bxs-line{ font-size:16.5px; }
   .hw27 .pv7-tabs{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%; }
   .hw27 .pv7-tabs button{ justify-content:center; gap:6px; padding:0 4px; font-size:13px; }
@@ -2007,7 +2038,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .hw27 .h7-copy > *, .hw27 .h7g, .hw27 .hg-ver, .hw27 .pv7-p, .hw27 .who7-p, .hw27 .bxs-line.in, .hw27 .pv7-phone .phone.pv-in, .hw27 .hw-nav .hbtn.keep, .hw27 .faq7-l details[open] p, .hw27 .hg-tip{ animation:none; }
   .hw27 .hg-mirror .l1.on.sweep{ animation:none; }
   .hw27 .vx-out .vw{ animation:h7vwhl 1.2s ease-out both; }
-  .hw27 .hg-why p span, .hw27 .bxs-parts .pt i b, .hw27 .pv7-meter i b{ transition:none; }
+  .hw27 .hg-why p span, .hw27 .pv7-meter i b{ transition:none; }
   .hw27 .vd .row{ transition:none; }
 }
 
@@ -2320,28 +2351,13 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .t8-in-h .icon{ width:12px; height:12px; color:#2B7A4B; }
 .hw27 .t8-row{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px; align-items:center; padding:6px 8px; border-radius:9px; background:var(--c-bg); transition:transform .5s var(--ease-o) calc(.55s + var(--i) * .1s),opacity .4s calc(.55s + var(--i) * .1s); }
 .hw27 .t8-row p{ font-size:12.5px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.hw27 .t8-hk{ display:grid; place-items:center; min-width:24px; height:20px; padding:0 5px; border-radius:99px; background:var(--c-card); box-shadow:0 0 0 1px rgba(26,26,26,.12); font:600 11px/1 var(--font-mono); font-variant-numeric:tabular-nums; color:var(--c-2); }
-.hw27 .t8-hk.hi{ background:var(--pl); color:#fff; box-shadow:none; }
 .hw27 .t8.armed .t8-f{ opacity:0; transform:translateY(-16px); }
 .hw27 .t8.armed .t8-row{ opacity:0; transform:translateY(8px); }
-/* 2. the score: five checks as bars, the total against the 70 line */
+/* 2. the score: five checks as pips, the line's word lit on the four-word scale */
 .hw27 .t8-sc{ gap:14px; }
 .hw27 .t8-line{ padding:10px 12px; border-radius:10px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line); font:500 13.5px/1.4 var(--f-disp); }
-.hw27 .t8-bars{ display:grid; gap:8px; }
-.hw27 .t8-b{ display:grid; grid-template-columns:68px minmax(0,1fr) 22px; gap:10px; align-items:center; font-size:12px; color:var(--c-2); }
-.hw27 .t8-b i, .hw27 .t8-tot i{ position:relative; display:block; height:6px; border-radius:99px; background:rgba(26,26,26,.08); }
-.hw27 .t8-b i b, .hw27 .t8-tot i b{ position:absolute; inset:0 auto 0 0; width:var(--tv); border-radius:inherit; background:var(--c-3); transform-origin:left; transition:transform .8s var(--ease-o) calc(.25s + var(--i) * .07s); }
-.hw27 .t8-b.ok i b{ background:var(--pl); }
-.hw27 .t8-b em{ font:600 11.5px/1 var(--font-mono); font-style:normal; font-variant-numeric:tabular-nums; text-align:right; color:var(--c-ink); }
-.hw27 .t8-tot{ display:grid; grid-template-columns:68px minmax(0,1fr) auto; gap:10px; align-items:center; padding-top:12px; border-top:1px dashed rgba(26,26,26,.18); font:600 12px/1.2 var(--f-disp); }
-.hw27 .t8-tot i{ height:10px; }
-.hw27 .t8-tot i b{ --i:6; background:var(--c-ink); transition-duration:1s; }
-.hw27 .t8-tot.hi i b{ background:var(--pl); }
-.hw27 .t8-tot u{ position:absolute; left:70%; top:-5px; bottom:-5px; width:2px; margin-left:-1px; border-radius:1px; background:var(--c-ink); text-decoration:none; }
-.hw27 .t8-tot u small{ position:absolute; bottom:calc(100% + 3px); left:50%; transform:translateX(-50%); font:600 10px/1 var(--font-mono); color:var(--c-ink); }
-.hw27 .t8-tot strong{ font:400 36px/.9 var(--f-serif); letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--c-ink); }
-.hw27 .t8-tot.hi strong{ color:var(--pl); }
-.hw27 .t8.armed .t8-b i b, .hw27 .t8.armed .t8-tot i b{ transform:scaleX(0); }
+.hw27 .t8-tot{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; align-items:center; padding-top:12px; border-top:1px dashed rgba(26,26,26,.18); font:600 12px/1.2 var(--f-disp); }
+.hw27 .t8-pips{ gap:6px; } .hw27 .t8-pips li{ font-size:12px; } .hw27 .t8-pips .pk{ font-weight:500; }
 /* 3. drafts stay here: a browser window with a lock on it */
 .hw27 .t8-loc{ justify-items:center; }
 .hw27 .t8-win{ position:relative; width:100%; max-width:320px; border-radius:12px; background:var(--c-card); box-shadow:0 0 0 1px rgba(26,26,26,.14),0 22px 36px -26px rgba(26,26,26,.55); }
@@ -2378,18 +2394,17 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .fin8-dial{ position:relative; display:grid; place-content:center; justify-items:center; width:136px; height:136px; }
 .hw27 .fin8-dial svg{ position:absolute; inset:0; width:100%; height:100%; }
 .hw27 .fin8-dial .trk{ fill:none; stroke:rgba(26,26,26,.09); stroke-width:8; }
-.hw27 .fin8-dial .val{ fill:none; stroke:var(--c-ink); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .55s var(--ease-o),stroke .3s,opacity .2s; }
+.hw27 .fin8-dial .val{ fill:none; stroke:var(--tc,var(--c-ink)); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .38s var(--ease-o),stroke .32s,opacity .2s; }
+.hw27 .fin8-dial.t-honed svg{ filter:drop-shadow(0 0 8px var(--tier-glow)); }
 .hw27 .fin8-dial:not(.on) .val{ opacity:0; }
-.hw27 .fin8-dial.hi .val{ stroke:var(--pl); }
+
 .hw27 .fin8-dial .t70{ stroke:var(--c-ink); stroke-width:2.5; stroke-linecap:round; }
-.hw27 .fin8-dial b{ font:400 56px/.9 var(--f-serif); letter-spacing:-.03em; font-variant-numeric:tabular-nums; color:var(--c-3); transition:color .3s; }
-.hw27 .fin8-dial.on b{ color:var(--c-ink); } .hw27 .fin8-dial.hi b{ color:var(--pl); }
+.hw27 .fin8-dial b{ font:400 24px/.95 var(--f-serif); letter-spacing:-.01em; color:var(--c-3); transition:color .3s; max-width:100px; text-align:center; }
+.hw27 .fin8-dial.on b{ color:var(--tc,var(--c-ink)); }
 .hw27 .fin8-dial small{ margin-top:6px; font:600 10.5px/1 var(--f-disp); letter-spacing:.1em; text-transform:uppercase; color:var(--c-3); }
 .hw27 .fin8-parts{ list-style:none; display:grid; gap:7px; width:100%; margin:0; padding:0; }
-.hw27 .fin8-parts li{ display:grid; grid-template-columns:64px minmax(0,1fr); gap:8px; align-items:center; font-size:12px; color:var(--c-2); }
-.hw27 .fin8-parts i{ position:relative; display:block; height:5px; border-radius:99px; background:rgba(26,26,26,.09); overflow:hidden; }
-.hw27 .fin8-parts b{ position:absolute; inset:0 auto 0 0; width:var(--fv,0%); border-radius:inherit; background:var(--c-3); transition:width .5s var(--ease-o),background .3s; }
-.hw27 .fin8-parts li.ok b{ background:var(--pl); }
+.hw27 .fin8-parts li{ display:grid; grid-template-columns:minmax(0,1fr) auto 50px; gap:8px; align-items:center; font-size:12px; color:var(--c-2); }
+.hw27 .fin8-parts .pw{ color:var(--c-3); } .hw27 .fin8-parts .ps-full .pw{ color:var(--tier-sharp); font-weight:600; }
 .hw27 .fin8-why{ grid-column:1/-1; min-height:calc(1.45em + 26px); padding:13px 26px; border-top:1px solid var(--c-line); font-size:15px; line-height:1.45; color:var(--c-2); }
 .hw27 .fin8-why.good{ color:var(--pl); font-weight:600; }
 .hw27 .fin8 .field-err{ color:#FFC2C2; font-size:14px; } .hw27 .fin8 .field-err:empty{ display:none; }
@@ -2439,7 +2454,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
   .hw27 .fin8-ed{ padding:18px 18px 8px; }
   .hw27 .fin8-ed textarea{ min-height:110px; font-size:18px; }
   .hw27 .fin8-read{ grid-template-columns:auto minmax(0,1fr); gap:16px; padding:14px 16px; border-radius:0; box-shadow:inset 0 1px 0 var(--c-line); }
-  .hw27 .fin8-dial{ width:96px; height:96px; } .hw27 .fin8-dial b{ font-size:40px; } .hw27 .fin8-dial small{ font-size:9px; margin-top:3px; }
+  .hw27 .fin8-dial{ width:96px; height:96px; } .hw27 .fin8-dial b{ font-size:17px; max-width:72px; } .hw27 .fin8-dial small{ font-size:9px; margin-top:3px; }
   .hw27 .fin8-why{ padding:12px 18px; font-size:14.5px; }
   .hw27 .fin8-go{ width:100%; justify-content:center; }
   .hw27 .hw-foot8{ padding-top:56px; }
@@ -2450,7 +2465,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 }
 @media (prefers-reduced-motion:reduce){
   .hw27 .t8-caret{ animation:none; }
-  .hw27 .t8-f, .hw27 .t8-row, .hw27 .t8-b i b, .hw27 .t8-tot i b, .hw27 .t8-lock, .hw27 .fin8-dial .val, .hw27 .fin8-parts b{ transition:none; }
+  .hw27 .t8-f, .hw27 .t8-row, .hw27 .t8-lock, .hw27 .fin8-dial .val{ transition:none; }
 }
 
 /* ==========================================================================
@@ -2960,7 +2975,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .side .newpost.btn.primary:hover{ background:var(--btn-bg); color:var(--btn-ink); box-shadow:inset 0 0 0 1px var(--btn-line),0 3px 0 -1px var(--btn-line); }
 /* accent only means "good": scores under 70 draw in ink, not plum */
 .meter i{ background:var(--text-3); } .meter i.hi, .bars.hi .meter i{ background:var(--accent); }
-.bigscore .val{ stroke:var(--text-3); } .bigscore.hi .val{ stroke:var(--accent); }
+.bigscore .val{ stroke:var(--tc,var(--text-3)); }
 .streak i.on{ background:var(--text-1); } .streak i.today{ box-shadow:inset 0 0 0 1.5px var(--text-1); }
 /* the character ring reads as a ring, not a spinner */
 .ring .trk{ stroke:color-mix(in srgb,var(--text-1) 15%,transparent); } .ring .val{ stroke:var(--text-2); }
@@ -3084,7 +3099,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 }
 .story .cap h3{ font-size:clamp(32px,6vw,62px); }
 /* the onboarding try card stacks on phones */
-@media (max-width:560px){ .ot-row{ grid-template-columns:1fr; gap:8px; } .ot-row .hook{ justify-self:start; } .onb-try .ot-a .btn{ flex:1 1 auto; } .up-hero .pill.accent{ border-radius:12px; text-align:center; line-height:1.45; } }
+@media (max-width:560px){ .ot-row{ grid-template-columns:1fr; gap:8px; } .ot-row .ot-k{ grid-auto-flow:column; align-items:center; justify-content:start; gap:8px; } .onb-try .ot-a .btn{ flex:1 1 auto; } .up-hero .pill.accent{ border-radius:12px; text-align:center; line-height:1.45; } }
 /* the LinkedIn fold chapter centres when it stacks */
 @media (max-width:1060px){ .fold .ed .hw-h{ text-align:center; justify-items:center; margin-inline:auto; } }
 @media (max-width:760px){ html{ scroll-padding-bottom:96px; scroll-padding-top:16px; } }
@@ -3094,10 +3109,13 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .hk-dial{ margin-top:10px; flex-direction:column; height:auto !important; padding:0 !important; gap:3px; background:none !important; box-shadow:none !important; border-radius:12px; position:relative; z-index:1; }
 .hk-dial .sc{ width:34px; height:34px; min-width:0; padding:0; border-radius:50%; background:conic-gradient(var(--dial,var(--text-3)) calc(var(--v) * 1%), color-mix(in srgb,var(--text-1) 10%,transparent) 0) !important; display:grid; place-items:center; transition:--v var(--d-spring) var(--ease-out), background var(--d-fast); }
 .hk-dial .sc::before{ content:""; position:absolute; width:28px; height:28px; border-radius:50%; background:var(--bg-elev,var(--surface)); }
-.hk-dial .sc span{ position:relative; font:700 12px/1 var(--font-ui) !important; font-variant-numeric:tabular-nums; color:var(--text-1) !important; }
-.hk-dial small{ font:600 10px/1 var(--font-ui); letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); }
-.hk-dial.lo{ --dial:var(--warn); } .hk-dial{ --dial:var(--text-2); } .hk-dial.hi{ --dial:var(--accent); } .hk-dial.hi small{ color:var(--accent-text); }
-.hk-dial.hi .sc{ animation:dialpop 280ms cubic-bezier(.34,1.56,.64,1); } @keyframes dialpop{ 40%{ transform:scale(1.08); } }
+.hk-dial .sc span{ position:relative; display:grid; place-items:center; font:700 12px/1 var(--font-ui) !important; font-variant-numeric:tabular-nums; color:var(--tc,var(--text-1)) !important; }
+.hk-dial .hk-n{ font:700 11px/1 var(--font-ui); }
+.hk-dial small{ font:600 11px/1 var(--font-ui); letter-spacing:0; color:var(--tc,var(--text-3)); white-space:nowrap; }
+@property --dial{ syntax:'<color>'; inherits:true; initial-value:#65645C; }
+.hk-dial{ --dial:var(--tc,var(--text-3)); transition:--dial var(--d-spring) var(--ease-out); } .hk-dial .sc{ transition:--v var(--d-spring) var(--ease-out),transform var(--d-spring) var(--spring-snap),filter var(--d-spring) var(--ease-out); }
+.hk-dial.t-honed .sc{ filter:drop-shadow(0 0 5px var(--tier-glow)); } .hk-dial .sc.tgrow{ animation:dialgrow 360ms var(--ease-out); } @keyframes dialgrow{ 40%{ transform:scale(1.07); filter:drop-shadow(0 0 6px var(--tier-glow)); } }
+.hk-dial.hi:not(.was-hi) .sc{ animation:dialpop 280ms cubic-bezier(.34,1.56,.64,1); } @keyframes dialpop{ 40%{ transform:scale(1.08); } }
 .hk-dial[aria-expanded="true"] .sc::before{ box-shadow:inset 0 0 0 1.5px var(--accent); }
 .hk-dial:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 @property --v{ syntax:'<number>'; inherits:true; initial-value:0; }
@@ -3144,20 +3162,23 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .sharpen .n .nn{ display:inline-block; }
 .sharpen .n .nn.fwd{ animation:shnf 200ms var(--ease-out) both; } .sharpen .n .nn.back{ animation:shnb 200ms var(--ease-out) both; }
 @keyframes shnf{ from{ opacity:0; transform:translateY(6px); } } @keyframes shnb{ from{ opacity:0; transform:translateY(-6px); } }
-.sharpen .sh-score{ display:inline-flex; align-items:center; gap:3px; padding:0 8px 0 6px; font:600 var(--t-12)/1 var(--font-mono); font-variant-numeric:tabular-nums; }
+.sharpen .sh-score{ display:inline-flex; align-items:center; gap:3px; padding:0 8px 0 6px; font:600 var(--t-12)/1 var(--font-ui); }
+.sharpen .tmove{ color:inherit; } .sharpen .tmove .tfrom{ opacity:.62; } .sharpen .t-flat{ --tc:var(--tier-flat-inv); } .sharpen .t-warming{ --tc:var(--tier-warming-inv); } .sharpen .t-sharp{ --tc:var(--tier-sharp-inv); } .sharpen .t-honed{ --tc:var(--tier-honed-inv); }
+.sharpen .tmove.down .tword, .sharpen .tmove .tfrom, .sharpen .tmove.same .tword{ color:inherit; } .sharpen .tmove .tnum{ color:inherit; opacity:.6; }
 .sharpen .sh-score .a{ opacity:.55; } .sharpen .sh-score .icon{ width:11px; height:11px; opacity:.6; } .sharpen .sh-score.down{ opacity:.7; }
 .sharpen .sh-score b, .delta b{ display:inline-block; min-width:2ch; font-weight:inherit; }
 .sharpen .sh-score b.pop, .delta b.pop{ animation:shpop 320ms var(--spring-snap); }
 @keyframes shpop{ 40%{ transform:scale(1.24); } }
 .sh-pop{ position:absolute; z-index:3; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; box-shadow:0 0 0 1.5px var(--accent); pointer-events:none; animation:shring 420ms var(--ease-out) forwards; }
 @keyframes shring{ from{ transform:scale(.2); opacity:.9; } to{ transform:scale(1.7); opacity:0; } }
-.hk-dial .sc.spring{ animation:dialspring 420ms var(--spring-snap); } @keyframes dialspring{ 35%{ transform:scale(1.12); } }
+.hk-dial .sc.spring{ animation:dialspring 380ms var(--spring-snap); } @keyframes dialspring{ 35%{ transform:scale(1.12); } }
 .diff.reveal .diff-b .chg ins{ animation:shinb 240ms var(--ease-out) both; animation-delay:var(--d, 0ms); }
 @keyframes shinb{ from{ opacity:0; filter:blur(4px); } }
 .diff.reveal .diff-b .chg del{ animation:shdel 160ms var(--ease-out) both; animation-delay:var(--d, 0ms); }
 @keyframes shdel{ from{ opacity:.35; } }
 @media (prefers-reduced-motion:reduce){ .tw-mirror .sv.think .tk{ animation:none; opacity:.75; } .tw-mirror .nw, .tw-mirror .ow, .sh-pop, .diff.reveal .diff-b .chg ins, .diff.reveal .diff-b .chg del{ animation:none; } }
 .hk-main{ display:flex; gap:10px; align-items:flex-start; } .hk-main p{ font-size:14px; }
+.hk-main .tier{ margin-top:-1px; } .hk-pips{ max-width:360px; } .hk-aim{ color:var(--text-3); white-space:nowrap; } .hk-pips{ margin:10px 0 8px; }
 .hk-how summary{ cursor:pointer; font-size:12px; color:var(--text-3); } .hk-how .bars{ margin-top:8px; } .hk-how p{ font-size:12px; margin-top:6px; }
 .vm-line{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .vm-line b{ color:var(--text-1); font-variant-numeric:tabular-nums; } .vm-line .icon{ color:var(--text-3); }
 .start-line{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin:18px 0 0 48px; padding-top:14px; border-top:1px dashed var(--border); } .start-line .faint{ font-size:13px; margin-right:4px; }
@@ -3190,6 +3211,9 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .t-write .pill{ background:rgba(251,247,239,.12); color:#FBF7EF; box-shadow:none; }
 .t-write .hook{ background:rgba(251,247,239,.10); color:#EDE6F7; box-shadow:none; } .t-write .hook .sc{ background:rgba(251,247,239,.14); } .t-write .hook .sc span{ color:#FBF7EF; }
 .t-write .hook.hi .sc{ background:var(--lilac); } .t-write .hook.hi .sc span{ color:#1A1A1A; }
+/* tier chips on the plum card: light tier colours so the word and ring read on plum */
+.t-write .tier{ background:rgba(251,247,239,.12); color:var(--tc); } .t-write .tier .tier-n{ color:rgba(251,247,239,.78); }
+.t-write .t-flat{ --tc:#D6CFDC; } .t-write .t-warming{ --tc:#F0C373; } .t-write .t-sharp{ --tc:#DCC8FF; } .t-write .tier.t-honed{ --tc:#FFFFFF; background:rgba(251,247,239,.18); box-shadow:0 0 12px -2px rgba(220,200,255,.6); } .t-write .tier.t-honed .tier-r{ background:conic-gradient(#fff calc(var(--v) * 1%), rgba(255,255,255,.25) 0); }
 .t-write .btn.ghost{ color:#FBF7EF; } .t-write .btn.ghost:hover{ background:rgba(251,247,239,.10); }
 .t-write .btn.primary{ box-shadow:none; } .t-write .btn.primary:hover{ box-shadow:0 3px 0 -1px rgba(0,0,0,.35); }
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .t-write{ background:#3A2159 !important; } } :root[data-theme="dark"] .t-write{ background:#3A2159 !important; }
@@ -3700,7 +3724,6 @@ function sentences(t) { return (t.match(/(?:[^.!?\n]|[.!?](?=[^\s.!?”"’)]))+
 /* hook score lives in core.js so the server and MCP grade the same way */
 const hookScore = HWCore.hookScore;
 /* one set of names for the five checks, everywhere (homepage, Improve, Hooks) */
-const PART_NAME = { clarity: 'Clear', curiosity: 'Open loop', specificity: 'Specific', tension: 'Tension', brevity: 'Short' };
 
 /* ---------- riffs (AI actions) ---------- */
 const CONTRACT = [[/\bit is\b/gi, "it’s"], [/\bdo not\b/gi, "don’t"], [/\bdoes not\b/gi, "doesn’t"], [/\bI am\b/g, 'I’m'], [/\bcannot\b/gi, "can’t"], [/\bwill not\b/gi, "won’t"], [/\bthat is\b/gi, "that’s"], [/\bthey are\b/gi, "they’re"], [/\bwe are\b/gi, "we’re"], [/\byou are\b/gi, "you’re"], [/\bis not\b/gi, "isn’t"], [/\bare not\b/gi, "aren’t"], [/\bI have\b/g, 'I’ve'], [/\bdid not\b/gi, "didn’t"], [/\bwas not\b/gi, "wasn’t"]];
@@ -3772,6 +3795,41 @@ const histKey = () => { const h = HIST(); let a = 0; for (const p of h) a += (p.
 let _ph = {}; function PHOOK() { const k = histKey(); if (_ph.key !== k) _ph = { key: k, v: HWCore.learnHooks(HIST()) }; return _ph.v; }
 /* the score the composer shows: tuned to you once there's enough history, the general one before */
 function hookFor(text, parts) { const m = PHOOK(), g = hookScore(text); const me = m.ready ? HWCore.personalScore(text, m, { parts }) : null; const trusted = !!me && (m.trust === 'better' || m.trust === 'similar'); return { score: trusted ? me.score : g.score, me: trusted ? me : null, hint: !trusted ? me : null, g, m }; }
+/* ---------- hook tiers: the 0–100 score shown as a word and a colour (Flat, Warming, Sharp, Honed) ----------
+   The number stays underneath for sorting and thresholds. The word is always shown, so colour is never the only
+   signal. Settings › "Show scores as numbers" adds the number after the word ("Sharp · 76") for power users. */
+const TIER = s => HWCore.hookTier(s);
+const BAR_WORD = HWCore.HOOK_TIERS[2].word;
+const hookNums = () => { try { return !!(S && S.settings && S.settings.hookNums); } catch (e) { return false; } };
+const tierText = s => { const t = TIER(s); return hookNums() ? `${t.word} · ${Math.round(s)}` : t.word; };
+/* one glyph per tier for the tight spots (the 34px gutter dial): a flat line, a soft peak, a sharp peak, a solid point */
+const TIER_PATH = { flat: 'M2.6 6.4h6.8', warming: 'M2.2 8 6 4.8 9.8 8', sharp: 'M2.6 9.4 6 2.8l3.4 6.6', honed: 'M6 1.8 9.8 9.6H2.2Z' };
+const tierGlyph = s => { const k = TIER(s).key; return `<svg class="tg tg-${k}" viewBox="0 0 12 12" aria-hidden="true"><path d="${TIER_PATH[k]}"/></svg>`; };
+/* the chip: a small ring that fills with the score (no number) and the word. noun adds "hook" where nothing else says it */
+function tierChip(s, { noun = false, cls = '', tip = '' } = {}) {
+  const t = TIER(s); return `<span class="tier t-${t.key}${cls ? ' ' + cls : ''}" style="--v:${clamp(Math.round(s), 0, 100)}"${tip ? ` data-tip="${esc(tip)}"` : ''}><i class="tier-r" aria-hidden="true"></i><span class="tier-w">${tierText(s)}</span>${noun ? '<span class="tier-n">hook</span>' : ''}</span>`;
+}
+/* what a change did, in words: "Warming → Sharp", "Sharper", "Less sharp" or "About the same" */
+const tierMove = (a, b) => HWCore.hookMove(a, b);
+function tierMoveHTML(a, b, { anim = false } = {}) {
+  const m = tierMove(a, b), n = hookNums() ? `<span class="tnum">${Math.round(a)} → ${Math.round(b)}</span>` : '', A = anim && !REDUCED ? ' in' : '';
+  if (m.cross) return `<span class="tmove ${m.dir}"><span class="tword tfrom t-${m.from.key}">${m.from.word}</span>${ic('arrow', 'xs')}<span class="tword t-${m.to.key}${A}">${m.to.word}</span>${n}</span>`;
+  return `<span class="tmove ${m.dir}"><span class="tword t-${m.to.key}${A}">${m.text}</span>${n}</span>`;
+}
+/* the sentence a screen reader hears */
+const tierSay = (a, b) => { const m = tierMove(a, b); return m.cross ? `Hook went from ${m.from.word} to ${m.to.word}.` : m.dir === 'up' ? `Hook is sharper, still ${m.to.word}.` : m.dir === 'down' ? `Hook is less sharp, still ${m.to.word}.` : `Hook is about the same, ${m.to.word}.`; };
+/* the five checks as pips: filled (strong), half (some), empty (not yet), with the word for anyone who can't see the shape */
+const PART_ORDER = [['clarity', 'Clear'], ['curiosity', 'Open loop'], ['specificity', 'Specific'], ['tension', 'Tension'], ['brevity', 'Short']];
+const pipHTML = v => { const p = HWCore.partState(v); return `<span class="pip p-${p.key}" aria-hidden="true"></span><span class="pw">${p.word}${hookNums() ? ` · ${Math.round(v)}` : ''}</span>`; };
+const partsHTML = (parts, cls = '') => `<ul class="pips${cls ? ' ' + cls : ''}">${PART_ORDER.map(([k, l]) => `<li data-k="${k}" class="ps-${HWCore.partState(parts[k] || 0).key}"><span class="pk">${l}</span>${pipHTML(parts[k] || 0)}</li>`).join('')}</ul>`;
+/* swap a word in place: the old one fades up and out, the new one rises in (under 300ms; instant with reduced motion) */
+/* the four words in order, the line's one lit: how the system reads at a glance (trust tile, tools) */
+const tierScaleHTML = s => { const k = TIER(s).key; return `<ol class="tscale" aria-label="Hook: ${TIER(s).word}, of Flat, Warming, ${BAR_WORD}, Honed">${HWCore.HOOK_TIERS.map(t => `<li class="t-${t.key}${t.key === k ? ' on' : ''}"${t.key === k ? ' aria-current="true"' : ''}>${t.word}</li>`).join('')}</ol>`; };
+function swapWord(el, text) {
+  if (!el) return; if (el.dataset.w === text) return; const had = el.dataset.w != null && el.dataset.w !== ''; el.dataset.w = text;
+  if (!had || REDUCED) { el.textContent = text; return; }
+  el.classList.remove('wswap'); void el.offsetWidth; el.textContent = text; el.classList.add('wswap');
+}
 function ANALYSIS() { const k = histKey(); if (_an.key !== k) _an = { key: k, v: HWCore.analyze(HIST()) }; return _an.v; }
 const AI = {
   punchier(t) {
@@ -4223,7 +4281,7 @@ const SFX = (() => {
     pop: () => { tone(380, 0, .1, { vol: .05, glide: 2.4 }); hiss(3000, .03, .04); },
     tick: () => tone(1800, 0, .03, { type: 'triangle', vol: .025 }),                       /* toggles, tabs */
     tap: () => tone(660, 0, .06, { vol: .04, glide: 1.25 }),                                  /* primary buttons */
-    hook: () => { tone(880, 0, .12, { vol: .05 }); tone(1320, .07, .16, { vol: .045 }); },     /* first line crosses 70 */
+    hook: () => { tone(880, 0, .12, { vol: .05 }); tone(1320, .07, .16, { vol: .045 }); },     /* first line reaches Sharp */
     swap: () => { tone(520, 0, .08, { type: 'triangle', vol: .04, glide: 1.5 }); tone(990, .06, .12, { vol: .035 }); }, /* rewrite accepted */
     done: () => { [523.3, 659.3, 784, 1046.5].forEach((f, i) => tone(f, i * .075, .32, { vol: .045 })); },                /* scheduled, published */
     sendX: () => { hiss(700, .04, .38, { q: .7, sweep: 4, secs: .45 }); tone(659.3, .05, .16, { type: 'triangle', vol: .045 }); tone(987.8, .15, .3, { vol: .045 }); },   /* the send-off, crisp */
@@ -4762,7 +4820,7 @@ function tweetHTML(tw, i, n) {
   const u = S.user;
   return `<div class="tw" data-id="${tw.id}" role="listitem">
   <button class="handle" data-tip="Drag to reorder" data-kbd="${ALT} ↑ ↓" aria-label="Move post ${i + 1} of ${n}. Use up and down arrows">${ic('drag', 'sm')}</button>
-  <div class="tw-gutter">${i === 0 ? `${avatar(u)}<button class="hook hk-dial" data-cact="hookinfo" aria-expanded="${!!(UI.imp && UI.imp.tab === 'score')}" aria-label="Hook score. Press for details"><span class="sc" style="--v:0"><span>–</span></span><small>Hook</small></button>` : `<span class="idx">${i + 1}/${n}</span>`}<span class="spine"></span></div>
+  <div class="tw-gutter">${i === 0 ? `${avatar(u)}<button class="hook hk-dial" data-cact="hookinfo" aria-expanded="${!!(UI.imp && UI.imp.tab === 'score')}" aria-label="Hook. Press for details"><span class="sc" style="--v:0"><span class="hk-g"></span></span><small class="hk-w">Hook</small></button>` : `<span class="idx">${i + 1}/${n}</span>`}<span class="spine"></span></div>
   <div class="tw-body">
     ${i === 0 ? `<div class="tw-head"><b>${esc(u.name)}</b><span>@${esc(u.handle)}</span></div>` : ''}
     <div class="field-wrap"><div class="tw-mirror" aria-hidden="true"></div><div class="caret" aria-hidden="true" style="opacity:0"></div><textarea class="tw-input" rows="1" aria-label="Post ${i + 1} of ${n}" placeholder="${i === 0 ? 'Start with a line you’d stop scrolling for' : 'Keep going…'}">${esc(tw.text)}</textarea></div>
@@ -4799,7 +4857,7 @@ function paintField(ta) {
     html = `<span class="cm"></span>${ph}`;
   } else {
     const p = ta.selectionEnd; const g = UI.ghost && UI.ghost.id === id ? UI.ghost.text : '';
-    /* a first line that scores 70+ gets the brand's marker under it, the same stroke as the logo and the homepage */
+    /* a first line that reaches Sharp gets the brand's marker under it, the same stroke as the logo and the homepage */
     const good = i === 0 && hookScore(v).score >= 70, fe = v.indexOf('\n') < 0 ? v.length : v.indexOf('\n');
     const since = Date.now() - (UI.hlAt || 0), hl = `<span class="hl${since < 700 ? ' draw" style="animation-delay:-' + since + 'ms' : ''}">`;
     /* past the limit: a dashed line where the platform cuts, and everything after it tinted */
@@ -4872,16 +4930,23 @@ function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
   const H = hookFor(t0.text, S.draft.tweets.filter(t => t.text.trim()).length), h = H; const sc = $('.sc', b); b.style.visibility = t0.text.trim() ? '' : 'hidden';
   b.classList.toggle('mine', !!H.me); b.dataset.tip = H.me ? `Tuned to your ${fmtN(H.m.n)} posts. Why this score?` : 'Why this score?';
-  if (UI.lastHook != null && Math.floor(h.score / 10) !== Math.floor(UI.lastHook / 10)) { clearTimeout(UI.hsT); UI.hsT = setTimeout(() => srSay(`Hook score ${hookFor(S.draft.tweets[0].text).score}.`), 1500); }
+  if (UI.lastHook != null && TIER(h.score).key !== TIER(UI.lastHook).key && UI.hookFrom == null) { clearTimeout(UI.hsT); UI.hsT = setTimeout(() => { const t = S.draft.tweets[0].text; srSay(t.trim() ? `Hook: ${TIER(hookFor(t).score).word}.` : 'No hook yet.'); }, 1500); }
   /* celebrate crossing 70 once; it re-arms only after the line drops clearly below (62), so a wobble at 69/70 doesn't replay it */
   if (h.score >= 70 && UI.hookArmed !== false && (UI.lastHook || 0) < 70 && UI.lastHook != null) { UI.hookArmed = false; SFX.play('hook'); UI.hlAt = Date.now(); const ta0 = $('.tw .tw-input'); ta0 && paintField(ta0); }
   if (h.score < 62) UI.hookArmed = true; UI.lastHook = h.score;
   sc.style.setProperty('--v', h.score);
-  /* after Keep, the dial counts from the old score to the new one and springs once */
-  const from = UI.hookFrom; UI.hookFrom = null;
-  if (from != null && h.score && from !== h.score && !REDUCED) { countTo($('span', sc), from, h.score); sc.classList.remove('spring'); void sc.offsetWidth; sc.classList.add('spring'); }
-  else $('span', sc).textContent = h.score || '–';
-  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 50); b.setAttribute('aria-label', `Hook score ${h.score || 'none yet'}. ${h.g ? h.g.reason : ''} Press for details`);
+  /* the ring fills with the score and takes the tier's colour; the glyph and the word under it name the tier */
+  const T = TIER(h.score), g = $('.hk-g', sc), w = $('.hk-w', b), gk = hookNums() ? 'n' + h.score : T.key;
+  if (g.dataset.k !== gk) { g.dataset.k = gk; g.innerHTML = hookNums() ? `<span class="hk-n">${h.score}</span>` : tierGlyph(h.score); }
+  ['flat', 'warming', 'sharp', 'honed'].forEach(k => b.classList.toggle('t-' + k, k === T.key)); b.dataset.tier = T.key;
+  /* after Keep: a new tier crossfades the word while the ring's colour sweeps; the same tier says "Sharper" for a moment, and the ring grows a little and glows */
+  const from = UI.hookFrom; UI.hookFrom = null; clearTimeout(UI.hkWT);
+  if (from != null && h.score && from !== h.score) { const m = tierMove(from, h.score);
+    if (!m.cross && m.dir !== 'same') { swapWord(w, m.text); UI.hkWT = setTimeout(() => swapWord(w, TIER(UI.lastHook).word), 1400); } else swapWord(w, T.word);
+    if (!REDUCED && m.dir === 'up') { sc.classList.remove('spring', 'tgrow'); void sc.offsetWidth; sc.classList.add(m.cross ? 'spring' : 'tgrow'); }
+    clearTimeout(UI.hsT); srSay(tierSay(from, h.score)); }
+  else swapWord(w, h.score ? T.word : 'Hook');
+  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 45); b.setAttribute('aria-label', `Hook: ${h.score ? T.word : 'nothing yet'}. ${h.g ? h.g.reason : ''} Press for details`);
   if (h.score >= 70 && !b.classList.contains('was-hi')) { b.classList.add('was-hi'); } else if (h.score < 70) b.classList.remove('was-hi');
   const p = $('#predict');
   if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
@@ -4895,17 +4960,17 @@ function mineHTML(H) {
   if (!m.ready) return `<div class="hk-mine off">${ic('trend', 'sm')}<p>${m.n ? `The score tunes itself to you after ${m.need} posts with likes. You have ${m.n}.` : 'Bring your posts and this score learns what works for your audience, not people in general.'}</p><button class="btn sm" data-act="import">${ic('upload', 'sm')} Bring your posts</button></div>`;
   const me = H.me, trait = t => `<span class="hk-t ${t.w > 0 ? 'up' : 'down'}" data-tip="${t.n} of your posts have it">${esc(cap(t.label))} <b>${t.x}×</b></span>`;
   const trust = m.trust === 'better' ? `Tested on your newest ${m.val.n} posts: it ranked them better than the general score did (${m.val.r} vs ${m.val.rGeneral}).` : m.trust === 'similar' ? `Tested on your newest ${m.val.n} posts: about as good as the general score so far.` : m.trust === 'weak' ? `Still learning: on your newest ${m.val.n} posts it didn’t predict much yet. Treat it as a hint.` : 'Not tested yet: your posts need dates for that.';
-  return `<div class="hk-mine"><div class="hk-mh"><span class="hk-big">${me.score}</span><p><b>For you.</b> Lines like this beat ${me.score}% of your ${fmtN(m.n)} posts, about <b>${me.x}×</b> your usual.</p></div>
+  return `<div class="hk-mine"><div class="hk-mh">${tierChip(me.score, { cls: 'hk-big' })}<p><b>For you.</b> Lines like this beat ${me.score}% of your ${fmtN(m.n)} posts, about <b>${me.x}×</b> your usual.</p></div>
     ${me.helps.length || me.hurts.length ? `<div class="hk-ts">${me.helps.map(trait).join('')}${me.hurts.map(trait).join('')}</div>` : ''}
     ${me.tryNext ? `<p class="hk-try">${ic('spark', 'sm')} <span><b>${esc(me.tryNext.add)}.</b> On your posts, ${esc(me.tryNext.label)} has earned ${me.tryNext.x}×.</span></p>` : ''}
     <p class="hk-trust">${esc(trust)}</p></div>`;
 }
 function hookReasonHTML() {
   const H = hookFor(S.draft.tweets[0].text, S.draft.tweets.filter(t => t.text.trim()).length), h = H.g;
-  const bars = Object.entries(h.parts).map(([k, v]) => `<div class="bar-row"><span>${PART_NAME[k] || cap(k)}</span><div class="meter"><i class="${v >= 70 ? 'hi' : ''}" style="width:${v}%"></i></div><span class="num">${v}</span></div>`).join('');
-  const general = `<div class="hk-main">${ic(h.tone === 'good' ? 'check' : 'target', 'sm')}<p><b>${H.me ? 'General score ' : ''}${h.score}/100.</b> ${esc(h.reason)}</p></div><details class="hk-how"><summary>How it’s scored</summary><div class="bars">${bars}</div><p class="faint">A simple rule of thumb: clear, specific, a little tension, short. Bring your posts and it tunes itself to your audience.</p></details>`;
+  const has0 = S.draft.tweets[0].text.trim();
+  const general = `<div class="hk-main">${has0 ? tierChip(h.score) : ic('target', 'sm')}<p>${H.me ? '<b>General:</b> ' : ''}${esc(h.reason)}${has0 && h.score < 70 ? ` <span class="hk-aim">Aim for ${BAR_WORD}.</span>` : ''}</p></div><details class="hk-how"><summary>How it’s scored</summary>${partsHTML(h.parts, 'hk-pips')}<p class="faint">Four words, one rule of thumb: Flat, Warming, ${BAR_WORD}, Honed. It reads your line, not your reach. Bring your posts and it tunes itself to your audience.</p></details>`;
   const has = S.draft.tweets[0].text.trim();
-  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${H.me ? mineHTML(H) : general}${vmLineHTML()}${has ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Stronger hook</button>` : ''}<button class="btn sm" data-cact="imptab" data-t="formulas">${ic('layers', 'sm')} Start from a formula</button><button class="btn sm ghost" data-cact="hookvote" data-tip="Share a link. Friends vote on your first line">${ic('poll', 'sm')} Ask friends</button></div>` : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${h.score}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : has ? mineHTML(H) : ''}</div></div>`;
+  return `<div class="hook-reason"><div style="display:grid;gap:12px;width:100%">${H.me ? mineHTML(H) : general}${vmLineHTML()}${has ? `<div class="hk-acts">${H.score < 76 ? `<button class="btn sm primary" data-cact="dorriff" data-k="hook">${ic('hook', 'sm')} Stronger hook</button>` : ''}<button class="btn sm" data-cact="imptab" data-t="formulas">${ic('layers', 'sm')} Start from a formula</button><button class="btn sm ghost" data-cact="hookvote" data-tip="Share a link. Friends vote on your first line">${ic('poll', 'sm')} Ask friends</button></div>` : ''}${H.me ? `<details class="hk-gen"><summary>The general score: ${tierText(h.score)}</summary><div style="display:grid;gap:12px;margin-top:10px">${general}</div></details>` : has ? mineHTML(H) : ''}</div></div>`;
 }
 /* hook formulas, offered right where a weak first line is: pick one, then type over the blanks */
 function formulasHTML() {
@@ -4931,7 +4996,7 @@ function diffHTML() {
   /* a fresh result reveals: changes resolve in left to right and the score counts up (under 400ms; instant with reduced motion) */
   const fresh = !REDUCED && d.reveal && Date.now() - d.reveal < 450, nChg = Math.max(1, n), gap = Math.min(28, Math.floor(170 / nChg));
   let delta = '';
-  if (i === 0) { const a = hookScore(d.before).score, b = hookScore(now).score, from = d.fromScore != null ? d.fromScore : a; delta = `<span class="delta ${b >= a ? 'up' : 'down'}" data-tip="Hook score, before and after">Hook ${a} → <b data-to="${b}">${fresh && b !== from ? from : b}</b></span>`; }
+  if (i === 0) { const a = hookScore(d.before).score, b = hookScore(now).score, m = tierMove(a, b), from = d.fromScore != null ? d.fromScore : a; delta = `<span class="delta hk ${m.dir}" data-tip="Your hook, before and after" aria-label="${tierSay(a, b)}"><span class="dl">Hook</span>${tierMoveHTML(a, b, { anim: fresh && b !== from })}</span>`; }
   else { const dl = now.length - d.before.length; delta = `<span class="delta ${dl <= 0 ? 'up' : 'down'}">${dl > 0 ? '+' : ''}${dl} chars</span>`; }
   const r = riffOf(d);
   let ci = 0;
@@ -4969,7 +5034,6 @@ function renderExtras(id) {
     }
   }
   el.innerHTML = (open ? improveHTML(id, i) : '') + (UI.diff && UI.diff.id === id ? diffHTML() : '');
-  const db = $('.diff.reveal .delta b', el); if (db && +db.textContent !== +db.dataset.to) countTo(db, +db.textContent, +db.dataset.to);
   const tEl = el.closest('.tw'); tEl.classList.toggle('has-meta', !!el.innerHTML);
   const rb = $('[data-cact="riff"]', tEl); rb && rb.setAttribute('aria-expanded', !!open); const tl = $('.imp-tabs', el); tl && syncSeg(tl);
 }
@@ -5984,13 +6048,15 @@ async function sharpenAI(k, ta, before, F, id, sel0) {
   if (!document.contains(ta) || ta.value !== before) { sharpenHide(); return; }
   sharpenOpen(k, ta, before, F, id, sel0, r, via, note);
 }
+/* what a version would do to the hook, as a sentence for screen readers ('' when it doesn't touch the first line) */
+const shHookSay = (st, v) => { if (!st || st.score0 == null || !v) return ''; const sc = sharpenScore(st, v.full, v); return sc == null || tierMove(st.score0, sc).dir === 'same' ? '' : ' ' + tierSay(st.score0, sc); };
 function sharpenOpen(k, ta, before, F, id, sel0, r, via, note = '') {
   if (!r.vars.length) { if (document.contains(ta)) { ta.setSelectionRange(sel0[0], sel0[1]); paintField(ta); sharpenCheck(ta); } sharpenNone(k, ta, F, r.msg); return; }
   SH.st = { id, s: F.s, e: F.e, before, sel0, vars: r.vars, i: 0, k, via, widened: !!r.widened, note };
   SH.st.score0 = sharpenScore(SH.st, before, r.vars[0]);
   sharpenShow(0, { first: true }); SFX.play('tap');
   const n = r.vars.length, v0 = r.vars[0];
-  srSay(`${SHE.LABEL[k]}${r.widened ? ', on the whole sentence' : ''}${via === 'basic' && aiOn() ? ', from Basic mode' : ''}: ${n === 1 ? 'one version' : `${n} versions, arrows flip`}. Version 1: ${v0.text || 'cut'}. Enter keeps, Escape cancels.${note ? ' ' + note : ''}`);
+  srSay(`${SHE.LABEL[k]}${r.widened ? ', on the whole sentence' : ''}${via === 'basic' && aiOn() ? ', from Basic mode' : ''}: ${n === 1 ? 'one version' : `${n} versions, arrows flip`}. Version 1: ${v0.text || 'cut'}.${shHookSay(SH.st, SH.st.vars[0])} Enter keeps, Escape cancels.${note ? ' ' + note : ''}`);
   if (note) toast(note, { icon: 'zapoff', ms: 3600 });
 }
 /* nothing passed: say exactly what was checked, and offer the sentence when the selection was a word or two */
@@ -6007,18 +6073,12 @@ function sharpenPill(dir = 0) {
   const label = st.k === 'ask' ? esc(st.label) : SHE.LABEL[st.k] + (st.widened ? ' · sentence' : '') + (st.via === 'basic' && aiOn() ? ' · Basic' : '');
   if (st.pending) { SH.el.innerHTML = `<span class="sh-t">${ic('riff', 'sm')}${label}</span><span class="sh-wait">Sharpening<i></i><i></i><i></i></span><button data-shx aria-label="Cancel" data-tip="Cancel" data-kbd="Esc">${ic('x', 'sm')}</button>`; SH.el.classList.add('busy'); requestAnimationFrame(sharpenPlace); return; }
   SH.el.classList.remove('busy');
-  const v = st.vars[st.i], sc = st.score0 != null ? sharpenScore(st, v.full, v) : null;
-  const score = sc != null && sc !== st.score0 ? `<span class="sh-score ${sc > st.score0 ? 'up' : 'down'}" aria-label="Hook score ${st.score0} to ${sc}"><span class="a">${st.score0}</span>${ic('arrow', 'xs')}<b data-to="${sc}">${st.shownScore != null ? st.shownScore : st.score0}</b></span>` : '';
+  const v = st.vars[st.i], sc = st.score0 != null ? sharpenScore(st, v.full, v) : null, mv = sc != null ? tierMove(st.score0, sc) : null;
+  /* what this version does to the hook, in words: a new tier crossfades in ("Warming → Sharp"), a step within one says "Sharper" */
+  const score = mv && mv.dir !== 'same' ? `<span class="sh-score ${mv.dir}" role="img" aria-label="${tierSay(st.score0, sc)}">${tierMoveHTML(st.score0, sc, { anim: st.shownScore !== sc })}</span>` : '';
+  st.shownScore = sc;
   SH.el.innerHTML = `<span class="sh-t">${ic(st.k === 'ask' ? 'write' : 'riff', 'sm')}${label}</span>${st.vars.length > 1 ? `<button data-shn="-1" aria-label="Previous version">${ic('left', 'sm')}</button><span class="n"><span class="nn${dir ? (dir > 0 ? ' fwd' : ' back') : ''}">${st.i + 1}</span> / ${st.vars.length}</span><button data-shn="1" aria-label="Next version">${ic('right', 'sm')}</button>` : ''}${score}<button class="keep" data-shk>Keep ${kbd('↵')}</button><button data-shx aria-label="Cancel">${ic('x', 'sm')}</button>`;
-  const b = $('.sh-score b', SH.el); if (b) countTo(b, +b.textContent, sc, v2 => { st.shownScore = v2; });
   requestAnimationFrame(sharpenPlace);
-}
-/* a number that counts to its new value in under 400ms, with a small spring at the end */
-function countTo(el, from, to, onStep) {
-  if (from === to || REDUCED) { el.textContent = to; onStep && onStep(to); return; }
-  const t0 = performance.now(), d = Math.min(380, 140 + Math.abs(to - from) * 8);
-  const step = () => { if (!el.isConnected) return; const p = clamp((performance.now() - t0) / d, 0, 1), e = 1 - Math.pow(1 - p, 3), v = Math.round(from + (to - from) * e); el.textContent = v; onStep && onStep(v); if (p < 1) requestAnimationFrame(step); else { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); } };
-  requestAnimationFrame(step);
 }
 function sharpenShow(i, { first = false } = {}) {
   const st = SH.st, ta = SH.ta, n = st.vars.length; const prev = first ? null : st.vars[st.i];
@@ -6030,7 +6090,7 @@ function sharpenShow(i, { first = false } = {}) {
   UI.sharp = { id: st.id, s: v.s, len: v.text.length, rev: REDUCED ? null : { at: Date.now(), oldFull, oa, ob, oldText: oldFull.slice(oa, ob), cycle: !first } };
   paintField(ta); sharpenPill(dir);
   if (!REDUCED) { clearTimeout(SH.revT); clearTimeout(SH.revT2); const r = UI.sharp.rev, f = shSlow(); SH.revT = setTimeout(() => { if (UI.sharp && UI.sharp.rev === r) paintField(ta); }, ((r.cycle ? 70 : SH_A) + 5) * f); SH.revT2 = setTimeout(() => { if (UI.sharp && UI.sharp.rev === r) { UI.sharp.rev = null; paintField(ta); } }, (SH_END + 20) * f); }
-  if (!first) srSay(`Version ${st.i + 1} of ${n}: ${v.text || 'cut'}.`);
+  if (!first) srSay(`Version ${st.i + 1} of ${n}: ${v.text || 'cut'}.${shHookSay(st, v)}`);
 }
 /* the mirror under the post while Sharpen is open: a shimmer while Claude writes, then the reveal, then a soft highlight */
 function sharpMirror(sh, v, seg, CM) {
@@ -6170,7 +6230,7 @@ function rewriteCompute(kind, text, first = true) {
     const ranked = [...new Set(cands)].map(x => ({ x, sc: hookScore(x).score })).filter(o => o.sc > a).sort((p, q) => q.sc - p.sc).map(o => o.x);
     const { kept } = X.checkPost(ranked, 'hook', t);
     if (kept.length) return { vers: kept.slice(0, 3) };
-    const h = hookScore(t); return { vers: [], msg: `Your hook scores ${h.score}${h.tone === 'good' ? `: ${h.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase()}` : ''}. None of Basic mode’s formulas score higher on this line, so nothing changed.${aiOn() ? '' : ' Claude can try a new angle.'}` };
+    const h = hookScore(t); return { vers: [], msg: `Your hook is ${TIER(h.score).word}${h.tone === 'good' ? `: ${h.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase()}` : ''}. None of Basic mode’s formulas score higher on this line, so nothing changed.${aiOn() ? '' : ' Claude can try a new angle.'}` };
   }
   /* frame-based rewrites (an open loop, a contrarian frame) try each of their frames, so you get real choices */
   const outs = ['contrarian', 'curiosity'].includes(kind) ? [0, 1, 2].map(() => { riffNonce++; return AI[kind](t); }) : [AI[kind](t)];
@@ -6178,7 +6238,7 @@ function rewriteCompute(kind, text, first = true) {
   const a = hookScore(t).score, ok = [...new Set(outs)].filter(x => !first || kind === 'grammar' || hookScore(x).score >= a).sort((p, q) => hookScore(q).score - hookScore(p).score);
   const { kept } = X.checkPost(ok, kind, t);
   if (kept.length) return { vers: kept.slice(0, 3) };
-  if (first && outs.some(x => x.trim() !== t.trim()) && kind !== 'grammar') return { vers: [], msg: `Your hook scores ${a}. Every ${kind === 'curiosity' ? 'open-loop' : 'contrarian'} frame Basic mode has would score lower on this line, so nothing changed.${aiOn() ? '' : ' Claude can try one in your words.'}` };
+  if (first && outs.some(x => x.trim() !== t.trim()) && kind !== 'grammar') return { vers: [], msg: `Your hook is ${TIER(a).word}. Every ${kind === 'curiosity' ? 'open-loop' : 'contrarian'} frame Basic mode has would score lower on this line, so nothing changed.${aiOn() ? '' : ' Claude can try one in your words.'}` };
   return { vers: [], msg: kind === 'grammar' ? 'No spelling or grammar mistakes found.' : `${(RIFFS.find(r => r.k === kind) || { label: 'Basic mode' }).label} found nothing it could change and still keep your claim.` };
 }
 /* note → steps, on the whole post (Improve › Rewrites, Basic mode); the checker calls this too */
@@ -6311,7 +6371,7 @@ function runRiff(i, kind, lang) {
 /* a result landed: focus on Keep, bring it into view, count the hook score up, and say it once */
 function diffLanded(d) {
   const y = $('#diff-yes'); y && y.focus({ preventScroll: true }); const el = $(`.tw[data-id="${d.id}"] .diff`); el && el.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
-  const n = d.chunks.filter(c => c.eq === undefined).length; srSay(`${(riffOf(d) || {}).label || 'Rewrite'}${d.basic && aiOn() ? ', from Basic mode' : ''}: ${d.alts ? `version ${d.alt + 1} of ${d.alts.length}, ` : ''}${n} change${n === 1 ? '' : 's'}. Enter keeps.`);
+  const n = d.chunks.filter(c => c.eq === undefined).length; srSay(`${(riffOf(d) || {}).label || 'Rewrite'}${d.basic && aiOn() ? ', from Basic mode' : ''}: ${d.alts ? `version ${d.alt + 1} of ${d.alts.length}, ` : ''}${n} change${n === 1 ? '' : 's'}.${tIndex(d.id) === 0 ? ' ' + tierSay(hookScore(d.before).score, hookScore(composeDiff(d.chunks)).score) : ''} Enter keeps.`);
 }
 /* Claude's options → only the ones that keep your words and facts, differ from your post and from each other */
 function checkedAlts(res, kind, before) {
@@ -6365,7 +6425,7 @@ function outOfRiffs() {
 function showUpsell(a, b) {
   if (!PRICED() || S.plan !== 'free' || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
   const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hookworthy Pro');
-  el.innerHTML = `<div class="jump"><span class="from">${a}</span>${ic('arrow', 'lg')}<span class="to">${b}</span></div><p class="muted">Your hook just went up ${b - a} points. Pro gives you unlimited rewrites in your voice, plus a ping when a post takes off.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
+  const um = tierMove(a, b); el.innerHTML = `<div class="jump">${um.cross ? `<span class="from">${um.from.word}</span>${ic('arrow', 'lg')}` : ''}<span class="to t-${um.to.key}">${um.cross ? um.to.word : 'Sharper'}</span></div><p class="muted">${um.cross ? `Your hook just went from ${um.from.word} to ${um.to.word}.` : `Your hook just got sharper. Still ${um.to.word}, with more edge.`} Pro gives you unlimited rewrites in your voice, plus a ping when a post takes off.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
   document.body.append(el); burstFrom($('.to', el));
   el.addEventListener('click', e => { if (e.target.closest('[data-up],a')) closeUpsell(); });
 }
@@ -6664,7 +6724,7 @@ function openSchedule() {
   const el = m.el; if (S.platforms.x) xoWire($('.xo', el), S.draft, S.draft.tweets[0].text);
   el.addEventListener('click', e => {
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
-    const ha = e.target.closest('[data-halt]'); if (ha) { const tw = S.draft.tweets[0], before = tw.text, a0 = hookFor(before).score; tw.text = UI.halts[+ha.dataset.halt]; save(); renderThread(); const a1 = hookFor(tw.text).score; $('#sh-hook', el).innerHTML = `<div class="sh-hook ok">${ic('check', 'sm')}<span>Hook ${a0} → <b>${a1}</b>. Swapped in.</span><button class="btn ghost sm" data-hundo>Undo</button></div>`; UI.hundo = before; SFX.play(a1 >= 70 ? 'hook' : 'swap'); return; }
+    const ha = e.target.closest('[data-halt]'); if (ha) { const tw = S.draft.tweets[0], before = tw.text, a0 = hookFor(before).score; tw.text = UI.halts[+ha.dataset.halt]; save(); renderThread(); const a1 = hookFor(tw.text).score; $('#sh-hook', el).innerHTML = `<div class="sh-hook ok">${ic('check', 'sm')}<span>Hook ${tierMoveHTML(a0, a1, { anim: true })}. Swapped in.</span><button class="btn ghost sm" data-hundo>Undo</button></div>`; UI.hundo = before; SFX.play(a1 >= 70 ? 'hook' : 'swap'); return; }
     if (e.target.closest('[data-hundo]')) { S.draft.tweets[0].text = UI.hundo; save(); renderThread(); $('#sh-hook', el).innerHTML = schedHookHTML(); return; }
     const s = e.target.closest('.stime'); if (s) { $$('.stime', el).forEach(x => { x.setAttribute('aria-checked', x === s); x.tabIndex = x === s ? 0 : -1; }); pickI = s.dataset.si; $('#custom-t', el).hidden = pickI !== 'custom'; const cl = () => { const d = $('#sd', el).value, t = $('#st', el).value; return d && t ? `Schedule for ${slotWhen(d, t)}` : 'Schedule'; }; $('#s-go-l', el).textContent = pickI === 'custom' ? cl() : goL(best[pickI]); if (pickI === 'custom') { $('#sd', el).oninput = $('#st', el).oninput = () => { $('#s-go-l', el).textContent = cl(); }; } }
     const sw = e.target.closest('[data-sw]'); if (sw) { const k = sw.dataset.sw; S.settings[k] = !S.settings[k]; sw.setAttribute('aria-checked', S.settings[k]); save(); }
@@ -6709,10 +6769,10 @@ function hookAlts(text, n = 3) {
 }
 function schedHookHTML() {
   const t = S.draft.tweets[0].text; if (!t.trim()) return ''; const H = hookFor(t, S.draft.tweets.filter(x => x.text.trim()).length);
-  if (H.score >= 60) return `<div class="sh-hook ok">${ic('check', 'sm')}<span>Hook <b>${H.score}</b>. ${H.score >= 70 ? 'A line worth stopping for.' : 'Good enough to post.'}</span></div>`;
+  if (H.score >= 60) return `<div class="sh-hook ok">${tierChip(H.score, { noun: true })}<span>${H.score >= 70 ? 'A line worth stopping for.' : 'Good enough to post.'}</span></div>`;
   UI.halts = hookAlts(t);
-  return `<div class="sh-hook"><div class="sh-hh"><span class="hook lo" style="height:24px"><span class="sc" style="--v:${H.score}"><span>${H.score}</span></span><span>Hook</span></span><span><b>Your first line could work harder.</b> ${esc((H.g || hookScore(t)).reason)}</span></div>
-    ${UI.halts.length ? `<div class="sh-alts">${UI.halts.map((a, i) => `<button class="sh-alt" data-halt="${i}"><span class="hook ${hookScore(a.split('\n')[0]).score >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc"><span>${hookScore(a.split('\n')[0]).score}</span></span></span><span>${esc(clip(a.split('\n')[0], 110))}</span></button>`).join('')}</div><p class="faint" style="font-size:12px">Pick one to use it, or keep yours.</p>` : ''}</div>`;
+  return `<div class="sh-hook"><div class="sh-hh">${tierChip(H.score, { noun: true })}<span><b>Your first line could work harder.</b> ${esc((H.g || hookScore(t)).reason)}</span></div>
+    ${UI.halts.length ? `<div class="sh-alts">${UI.halts.map((a, i) => `<button class="sh-alt" data-halt="${i}">${tierChip(hookScore(a.split('\n')[0]).score, { cls: 'sm' })}<span>${esc(clip(a.split('\n')[0], 110))}</span></button>`).join('')}</div><p class="faint" style="font-size:12px">Pick one to use it, or keep yours.</p>` : ''}</div>`;
 }
 function splitOverflow() { const lim = effLimit(); for (let i = S.draft.tweets.length - 1; i >= 0; i--) { const t = S.draft.tweets[i]; if (tlen(t.text) > lim) { const parts = splitText(t.text, lim); t.text = parts[0]; const tws = parts.slice(1).map(x => newTweet(x)); S.draft.tweets.splice(i + 1, 0, ...tws); tws.forEach(x => UI.fresh.add(x.id)); } } renderThread(); markSaving(); }
 /* with Hookworthy's server and a connected account, the queue is real: X and LinkedIn get the post */
@@ -6849,11 +6909,11 @@ function openTournament() {
   const finish = () => {
     if (done) return; done = true; clearInterval(timer); const pb = $('#ht-pause', el); pb && pb.remove(); const pool = (kept.length ? kept : lines).map(l => ({ l, s: hookFor(l).score, ev: shootEvidence(l) })).sort((a, b) => b.s - a.s || (b.ev ? b.ev.estimate : 0) - (a.ev ? a.ev.estimate : 0));
     const w = pool[0]; SFX.play(w.s >= 70 ? 'hook' : 'done');
-    stage.innerHTML = `<div class="ht-win"><span class="label">Winner</span><p class="ht-line">${esc(w.l)}</p><p class="faint">${w.ev ? `Your past posts most like it got about ${fmtN(w.ev.estimate)} engagements.` : `Hook ${w.s}. Bring your posts and the tournament checks your own history.`}</p>
-      <div class="t-a"><button class="btn primary" data-ht-use="0">${ic('check', 'sm')} Use it</button></div>${pool.length > 1 ? `<div class="ht-rest">${pool.slice(1, 4).map((x, k) => `<button class="sh-alt" data-ht-use="${k + 1}"><span class="hook ${x.s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc"><span>${x.s}</span></span></span><span>${esc(x.l)}</span></button>`).join('')}</div>` : ''}</div>`;
+    stage.innerHTML = `<div class="ht-win"><span class="label">Winner</span><p class="ht-line">${esc(w.l)}</p><p class="faint">${w.ev ? `Your past posts most like it got about ${fmtN(w.ev.estimate)} engagements.` : `${TIER(w.s).word} hook. Bring your posts and the tournament checks your own history.`}</p>
+      <div class="t-a"><button class="btn primary" data-ht-use="0">${ic('check', 'sm')} Use it</button></div>${pool.length > 1 ? `<div class="ht-rest">${pool.slice(1, 4).map((x, k) => `<button class="sh-alt" data-ht-use="${k + 1}">${tierChip(x.s, { cls: 'sm' })}<span>${esc(x.l)}</span></button>`).join('')}</div>` : ''}</div>`;
     stage.onclick = e => { const b = e.target.closest('[data-ht-use]'); if (!b) return; const pick = pool[+b.dataset.htUse].l, tw = S.draft.tweets[0], before = tw.text; tw.text = tw.text.replace(first, pick); save(); renderThread(); m.close(); toast('Swapped in the winner.', { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { tw.text = before; save(); renderThread(); } }); };
   };
-  const show = () => { if (i >= lines.length) return finish(); const h = hookScore(lines[i]).score; stage.innerHTML = `<div class="ht-card" id="ht-card"><span class="faint">${i + 1} of ${lines.length}</span><p class="ht-line">${esc(lines[i])}</p><span class="hook ${h >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc"><span>${h}</span></span><span>Hook</span></span></div><div class="ht-acts"><button class="btn lg" data-ht="pass">${ic('x', 'sm')} Pass <kbd>←</kbd></button><button class="btn primary lg" data-ht="keep">${ic('check', 'sm')} Keep <kbd>→</kbd></button></div>`; const k = $('[data-ht="keep"]', el); k && k.focus({ preventScroll: true }); };
+  const show = () => { if (i >= lines.length) return finish(); const h = hookScore(lines[i]).score; stage.innerHTML = `<div class="ht-card" id="ht-card"><span class="faint">${i + 1} of ${lines.length}</span><p class="ht-line">${esc(lines[i])}</p>${tierChip(h, { noun: true })}</div><div class="ht-acts"><button class="btn lg" data-ht="pass">${ic('x', 'sm')} Pass <kbd>←</kbd></button><button class="btn primary lg" data-ht="keep">${ic('check', 'sm')} Keep <kbd>→</kbd></button></div>`; const k = $('[data-ht="keep"]', el); k && k.focus({ preventScroll: true }); };
   vote = keep => { if (done || i >= lines.length) return; if (keep) kept.push(lines[i]); SFX.play(keep ? 'pop' : 'tick'); const c = $('#ht-card', el); if (c && !REDUCED) { c.style.transition = 'transform .18s, opacity .18s'; c.style.transform = `translateX(${keep ? 60 : -60}px) rotate(${keep ? 4 : -4}deg)`; c.style.opacity = 0; } i++; setTimeout(show, REDUCED ? 0 : 160); };
   stage.addEventListener('click', e => { const b = e.target.closest('[data-ht]'); if (b) vote(b.dataset.ht === 'keep'); });
   document.addEventListener('keydown', kh, true);
@@ -6875,14 +6935,14 @@ function drawHookCard(cv, line, score, user) {
   c.fillStyle = '#6E6873'; c.font = '600 22px Figtree, system-ui, sans-serif'; c.fillText('HOOK OF THE WEEK', 80, 110);
   c.fillStyle = '#1C1820'; let size = 64; const lines = n => { c.font = `400 ${n}px "EB Garamond", Georgia, serif`; const out = []; let cur = ''; line.split(' ').forEach(w => { const t = cur ? cur + ' ' + w : w; if (c.measureText(t).width > W - 160 - 220) { out.push(cur); cur = w; } else cur = t; }); out.push(cur); return out; };
   let L = lines(size); while (L.length > 4 && size > 40) { size -= 4; L = lines(size); } L.forEach((t, i) => c.fillText(t, 80, 190 + i * size * 1.15));
-  const cx = W - 160, cy = 200; c.lineWidth = 12; c.strokeStyle = 'rgba(28,24,32,.1)'; c.beginPath(); c.arc(cx, cy, 70, 0, Math.PI * 2); c.stroke(); c.strokeStyle = score >= 70 ? '#6A2FA0' : '#4A4550'; c.beginPath(); c.arc(cx, cy, 70, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * score / 100); c.stroke();
-  c.fillStyle = '#1C1820'; c.font = '400 64px "EB Garamond", Georgia, serif'; c.textAlign = 'center'; c.fillText(String(score), cx, cy + 22); c.font = '600 18px Figtree, system-ui, sans-serif'; c.fillStyle = '#6E6873'; c.fillText('HOOK SCORE', cx, cy + 110); c.textAlign = 'left';
+  const cx = W - 160, cy = 200; c.lineWidth = 12; c.strokeStyle = 'rgba(28,24,32,.1)'; c.beginPath(); c.arc(cx, cy, 70, 0, Math.PI * 2); c.stroke(); const T = TIER(score), tc = { flat: '#65645C', warming: '#845608', sharp: '#6A2FA0', honed: '#3A1E5C' }[T.key]; c.strokeStyle = tc; if (T.key === 'honed') { c.shadowColor = 'rgba(148,102,214,.55)'; c.shadowBlur = 18; } c.beginPath(); c.arc(cx, cy, 70, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * score / 100); c.stroke();
+  c.shadowBlur = 0; c.shadowColor = 'transparent'; c.fillStyle = tc; c.font = `400 ${hookNums() ? 28 : T.word.length > 5 ? 40 : 48}px "EB Garamond", Georgia, serif`; c.textAlign = 'center'; c.fillText(hookNums() ? `${T.word} · ${score}` : T.word, cx, cy + 14); c.font = '600 18px Figtree, system-ui, sans-serif'; c.fillStyle = '#6E6873'; c.fillText('HOOK', cx, cy + 110); c.textAlign = 'left';
   c.fillStyle = '#4A4550'; c.font = '500 24px Figtree, system-ui, sans-serif'; c.fillText(`@${user.handle}`, 80, H - 70); c.font = 'italic 400 30px "EB Garamond", Georgia, serif'; c.fillStyle = '#3A1E5C'; c.textAlign = 'right'; c.fillText('hookworthy', W - 80, H - 66); c.textAlign = 'left';
 }
 async function openHookCard() {
   const b = bestHookOfWeek(); if (!b) { toast('Nothing from this week yet. Write or schedule a post and its best line shows up here.', { icon: 'hook' }); return; }
   await (document.fonts ? document.fonts.ready : Promise.resolve());
-  const m = modal(`${modalHead('Hook of the week', 'Your best first line from the last seven days, as a card. Post it, or keep it as a reminder of what works.')}<div class="modal-b" style="display:grid;gap:12px"><canvas id="hc" class="hc-cv" role="img" aria-label="${esc(`Hook of the week: ${b.l.replace(/[.!?…]+$/, '')}. Hook score ${b.s}.`)}"></canvas></div><div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="hc-save">${ic('upload', 'sm')} Save image</button></div>`, { label: 'Hook of the week', box: 'modal wide' });
+  const m = modal(`${modalHead('Hook of the week', 'Your best first line from the last seven days, as a card. Post it, or keep it as a reminder of what works.')}<div class="modal-b" style="display:grid;gap:12px"><canvas id="hc" class="hc-cv" role="img" aria-label="${esc(`Hook of the week: ${b.l.replace(/[.!?…]+$/, '')}. ${TIER(b.s).word} hook.`)}"></canvas></div><div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="hc-save">${ic('upload', 'sm')} Save image</button></div>`, { label: 'Hook of the week', box: 'modal wide' });
   const cv = $('#hc', m.el); drawHookCard(cv, b.l, b.s, S.user);
   $('#hc-save', m.el).onclick = () => cv.toBlob(bl => saveFile(`hook-of-the-week-${dayKey(Date.now())}.png`, bl), 'image/png');
 }
@@ -6997,8 +7057,8 @@ async function runShootout(btn) {
   const a = $('#so-a').value.trim(), b = $('#so-b').value.trim(); if (!a || !b) { toast('Write both first lines.', { icon: 'hook' }); return; } if (a.toLowerCase() === b.toLowerCase()) { toast('That’s the same line twice. Change one word and try again.', { icon: 'hook' }); return; }
   S.shoot = { a, b }; save(); const out = $('#so-out');
   const ha = hookScore(a).score, hb = hookScore(b).score, pa = shootEvidence(a), pb = shootEvidence(b);
-  let winner = pa && pb ? (pa.estimate >= pb.estimate ? 'a' : 'b') : ha >= hb ? 'a' : 'b', why = pa && pb ? `Your posts most like ${winner.toUpperCase()} did ${fmtN(Math.max(pa.estimate, pb.estimate))} vs ${fmtN(Math.min(pa.estimate, pb.estimate))} engagements.` : `Hook ${Math.max(ha, hb)} vs ${Math.min(ha, hb)}. ${hookScore(winner === 'a' ? a : b).reason}`, conf = pa && pb ? Math.min(.9, .55 + Math.abs(pa.estimate - pb.estimate) / Math.max(1, pa.estimate + pb.estimate)) : Math.min(.85, .5 + Math.abs(ha - hb) / 100);
-  const paint = () => { const A = winner === 'a'; out.innerHTML = `<div class="so-res">${[['a', a, ha, pa], ['b', b, hb, pb]].map(([k, t, h, pr]) => `<div class="so-card ${winner === k ? 'so-win' : ''}"><span class="label">${k.toUpperCase()}${winner === k ? ' · predicted winner' : ''}</span><p>${esc(t)}</p><div class="so-st"><span>Hook ${h}</span>${pr ? `<span>~${fmtN(pr.estimate)} engagements</span>` : ''}</div><button class="btn sm ${winner === k ? 'primary' : ''}" data-hact="souse" data-t="${esc(t)}">Write with ${k.toUpperCase()}</button></div>`).join('')}</div><p class="so-why"><b>${Math.round(conf * 100)}% sure.</b> ${esc(why)}</p>`; };
+  let winner = pa && pb ? (pa.estimate >= pb.estimate ? 'a' : 'b') : ha >= hb ? 'a' : 'b', why = pa && pb ? `Your posts most like ${winner.toUpperCase()} did ${fmtN(Math.max(pa.estimate, pb.estimate))} vs ${fmtN(Math.min(pa.estimate, pb.estimate))} engagements.` : `${TIER(Math.max(ha, hb)).key !== TIER(Math.min(ha, hb)).key ? `${TIER(Math.max(ha, hb)).word} beats ${TIER(Math.min(ha, hb)).word}.` : `Both ${TIER(ha).word}${ha !== hb ? `, and ${winner.toUpperCase()} is a little sharper` : ''}.`} ${hookScore(winner === 'a' ? a : b).reason}`, conf = pa && pb ? Math.min(.9, .55 + Math.abs(pa.estimate - pb.estimate) / Math.max(1, pa.estimate + pb.estimate)) : Math.min(.85, .5 + Math.abs(ha - hb) / 100);
+  const paint = () => { const A = winner === 'a'; out.innerHTML = `<div class="so-res">${[['a', a, ha, pa], ['b', b, hb, pb]].map(([k, t, h, pr]) => `<div class="so-card ${winner === k ? 'so-win' : ''}"><span class="label">${k.toUpperCase()}${winner === k ? ' · predicted winner' : ''}</span><p>${esc(t)}</p><div class="so-st">${tierChip(h, { noun: true, cls: 'sm' })}${pr ? `<span>~${fmtN(pr.estimate)} engagements</span>` : ''}</div><button class="btn sm ${winner === k ? 'primary' : ''}" data-hact="souse" data-t="${esc(t)}">Write with ${k.toUpperCase()}</button></div>`).join('')}</div><p class="so-why"><b>${Math.round(conf * 100)}% sure.</b> ${esc(why)}</p>`; };
   paint();
   if (aiOn()) { btn.classList.add('is-loading'); try { const ev = [['A', pa], ['B', pb]].map(([k, pr]) => pr ? `${k}: ${pr.near.slice(0, 3).map(p => `"${clip(p.text.split('\n')[0], 90)}" (${p.likes} likes)`).join('; ')}` : `${k}: no similar posts`).join('\n'); const r = await ask(HWCore.prompts.shootout({ a, b, voice: voiceSpec(), evidence: HIST().length ? ev : '' }), { fresh: true }); if (r && (r.winner === 'a' || r.winner === 'b')) { winner = r.winner; why = r.why || why; conf = Math.max(.5, Math.min(.95, +r.confidence || conf)); paint(); } } catch (e) { aiError(e); } finally { btn.classList.remove('is-loading'); } }
   S.shootouts = [{ a, b, winner, conf: +conf.toFixed(2), at: Date.now() }, ...(S.shootouts || []).filter(x => !(x.a === a && x.b === b))].slice(0, 20); save();
@@ -7280,7 +7340,7 @@ function importSummaryHTML(added) {
   return `<div class="imp-sum"><div class="imp-big"><b class="mono">${fmtN(an.n)}</b><span>posts${added != null ? ` (${added} new)` : ''}${from ? ` · ${MON[from.getMonth()]} ${from.getFullYear()} to ${MON[to.getMonth()]} ${to.getFullYear()}` : ''}</span></div>
     <div class="imp-row"><span>Median post</span><b class="mono">${fmtN(an.median)}</b><span class="faint">engagements</span></div>
     ${an.bestKind ? `<div class="imp-row"><span>What works</span><b>${an.bestKind.k}</b><span class="faint">${an.bestKind.x}× your median</span></div>` : ''}
-    ${an.calib ? `<div class="imp-row"><span>Hook score check</span><b>${an.calib.x}×</b><span class="faint">hooks 70+ vs under 50, on your posts</span></div>` : ''}
+    ${an.calib ? `<div class="imp-row"><span>Hook score check</span><b>${an.calib.x}×</b><span class="faint">${BAR_WORD} or better vs Flat hooks, on your posts</span></div>` : ''}
     ${best ? `<blockquote class="imp-best">${esc(clip(best.text, 160))}<small>${fmtN(best.likes)} likes · your best</small></blockquote>` : ''}</div>`;
 }
 function openImport(tab = 'x') {
@@ -7669,8 +7729,11 @@ function openSettings() {
         ${sw('markets', marketsOn(), 'Market calendar', 'FOMC and CPI days marked in your queue, with a slot 30 minutes before for your take.')}
         ${sw('evergreen', S.settings.evergreen, 'Weekly reruns', 'Once a week, one of your best posts from 2+ months ago gets a new first line and a slot in your queue.')}
       </section>
+      <section><h3 class="label">Write</h3>
+        ${sw('hooknums', !!S.settings.hookNums, 'Show scores as numbers', `Hooks read as words: Flat, Warming, ${BAR_WORD}, Honed. Turn this on to see the number after the word too, like “${BAR_WORD} · 76”.`)}
+      </section>
       <section><h3 class="label">Sound and look</h3>
-        ${sw('sound', S.settings.sound !== false, 'Sounds', 'Quiet cues for scheduling, posting and a first line that reaches 70.')}
+        ${sw('sound', S.settings.sound !== false, 'Sounds', `Quiet cues for scheduling, posting and a first line that reaches ${BAR_WORD}.`)}
         ${sw('keys', !!S.settings.keys, 'Typing sounds', 'Soft key clicks while you write.')}
         ${sw('shortcuts', S.settings.shortcuts !== false, 'Single-key shortcuts', `C starts a post, I saves an idea, G then a letter jumps. Turn these off if you use voice control or hit them by accident. ${keys(MOD, 'K')} always works.`)}
         <div class="set-row"><div><b>Theme</b><small>Light is cream paper. Dark is deep plum.</small></div>${seg('theme', theme, [['light', 'Light'], ['dark', 'Dark'], ['system', 'System']])}</div>
@@ -7684,7 +7747,7 @@ function openSettings() {
         <form id="sy-join" class="sy-join" hidden><input class="input" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" aria-label="Sync code" autocomplete="off" spellcheck="false"><button class="btn sm primary" type="submit">Sync this device</button></form>
       </section>
       ${SHOWCASE() || DEV ? `<section><h3 class="label">Extras</h3><div class="set-demo"><button class="btn sm" data-setdemo="onb">${ic('play', 'sm')} Replay onboarding</button><button class="btn sm" data-setdemo="reset">${ic('undo', 'sm')} Reset sample data</button><button class="btn sm" data-setdemo="brand">${ic('palette', 'sm')} Design system</button></div></section>` : ''}
-    </div><div class="modal-f"><button class="btn" data-close>Done</button></div>`, { label: 'Settings', box: 'modal set-box' });
+    </div><div class="modal-f"><button class="btn" data-close>Done</button></div>`, { label: 'Settings', box: 'modal set-box', onClose: () => { if (UI.hookNumsDirty) { UI.hookNumsDirty = false; route(); } } });
   const el = m.el; requestAnimationFrame(() => $$('.set-seg', el).forEach(syncSeg));
   el.addEventListener('click', e => {
     const sg = e.target.closest('[data-set]'); if (sg) { const k = sg.dataset.set, v = sg.dataset.v; $$(`[data-set="${k}"]`, el).forEach(x => { x.setAttribute('aria-checked', x === sg); }); syncSeg(sg.closest('.seg'));
@@ -7694,6 +7757,7 @@ function openSettings() {
     const s2 = e.target.closest('[data-setsw]'); if (s2) { const k = s2.dataset.setsw, on = s2.getAttribute('aria-checked') !== 'true'; s2.setAttribute('aria-checked', on);
       if (k === 'sound') { S.settings.sound = on; if (!on) S.settings.keys = false; save(); if (on) SFX.play('tap'); const kk = $('[data-setsw="keys"]', el); kk && kk.setAttribute('aria-checked', !!S.settings.keys); }
       if (k === 'shortcuts') { S.settings.shortcuts = on; save(); }
+      if (k === 'hooknums') { S.settings.hookNums = on; save(); UI.hookNumsDirty = true; SFX.play('tick'); }
       if (k === 'markets') { S.settings.markets = on; save(); }
       if (k === 'keys') { S.settings.keys = on; if (on) S.settings.sound = true; save(); if (on) SFX.key('a'); const ss = $('[data-setsw="sound"]', el); ss && ss.setAttribute('aria-checked', S.settings.sound !== false); }
       if (k === 'evergreen') { S.settings.evergreen = on; save(); const q = on ? ensureEvergreen() : null; toast(on ? (q ? `Weekly reruns on. First one: ${slotWhen(q.day, q.time)}.` : 'Weekly reruns on. Nothing’s old enough to rerun yet.') : 'Weekly reruns off. Reruns already in your queue stay until you delete them.', { icon: 'repost', ms: 3000 }); }
@@ -7747,7 +7811,7 @@ function openTidy() {
     if (i >= list.length) { m.close(); return; }
     const d = list[i], t0 = d.tweets[0] ? d.tweets[0].text : '', h = hookScore(t0), more = d.tweets.length - 1;
     $('#td-n', m.el).textContent = `Draft ${i + 1} of ${list.length}`;
-    $('#td-card', m.el).innerHTML = `<article class="td-card"><div class="td-meta"><span>${age(d)}</span><span class="hook ${h.score >= 70 ? 'hi' : ''}"><span class="sc"><span>${h.score}</span></span><span>Hook</span></span></div><p class="td-t">${esc(clip(t0 || 'Untitled draft', 280))}</p>${more > 0 ? `<span class="faint td-more">+ ${more} more post${more > 1 ? 's' : ''} in this thread</span>` : ''}<p class="td-v">${esc(verdict(d, h))}</p></article>`;
+    $('#td-card', m.el).innerHTML = `<article class="td-card"><div class="td-meta"><span>${age(d)}</span>${tierChip(h.score, { noun: true })}</div><p class="td-t">${esc(clip(t0 || 'Untitled draft', 280))}</p>${more > 0 ? `<span class="faint td-more">+ ${more} more post${more > 1 ? 's' : ''} in this thread</span>` : ''}<p class="td-v">${esc(verdict(d, h))}</p></article>`;
     $('#td-card .td-card', m.el).animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: REDUCED ? 0 : 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
   };
   const act = a => {
@@ -8129,7 +8193,8 @@ function choosePlan(k, btn) {
   }, 800);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-plan]'); if (b) choosePlan(b.dataset.plan, b); });
-function bigScore(v) { const C = 2 * Math.PI * 32; return `<svg viewBox="0 0 72 72" aria-hidden="true"><circle class="trk" cx="36" cy="36" r="32"/><circle class="val" cx="36" cy="36" r="32" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C * (1 - v / 100)).toFixed(2)}"/></svg><b>${v}</b>`; }
+/* the big dial (Hooks): a ring that fills with the score, coloured by tier, and the tier word in display type beside it */
+function bigScore(v, empty = false) { const C = 2 * Math.PI * 32; return `<svg viewBox="0 0 72 72" aria-hidden="true"><circle class="trk" cx="36" cy="36" r="32"/><circle class="val" cx="36" cy="36" r="32" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C * (1 - (empty ? 0 : v) / 100)).toFixed(2)}"/></svg><b class="bs-w">${empty ? '–' : tierText(v)}</b>`; }
 const VOICE_SAMPLES = [
   ['shipped the pricing page today. kept it simple. we’ll see.', 'We shipped the new pricing page today. It’s simpler, and we’ll see how it performs.'],
   ['shipped the new pricing page. 3 plans → 1. already feels better.', 'We cut our pricing page from three plans to one. It already converts better.'],
@@ -8226,8 +8291,14 @@ function hwSpring(set, { k = 170, c = 20 } = {}) {
   return { to(t, from) { to = t; if (from != null) x = from; if (x == null || REDUCED) { x = t; set(t); return; } if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); } }, stop() { cancelAnimationFrame(raf); raf = 0; } };
 }
 const HG_C = 2 * Math.PI * 28;
-const dialHTML = (id = '') => `<span class="hg-dial" ${id ? `id="${id}"` : ''} aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="28"/><circle class="val" cx="32" cy="32" r="28" stroke-dasharray="${HG_C.toFixed(2)}" stroke-dashoffset="${HG_C.toFixed(2)}"/><line class="bar70" x1="32" y1="1.5" x2="32" y2="8.5" transform="rotate(252 32 32)"/></svg><b>0</b></span>`;
-const paintDial = (el, v) => { const n = clamp(v, 0, 100); $('.val', el).style.strokeDashoffset = (HG_C * (1 - n / 100)).toFixed(2); $('b', el).textContent = Math.round(n); };
+const dialHTML = (id = '') => `<span class="hg-dial" ${id ? `id="${id}"` : ''} aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="28"/><circle class="val" cx="32" cy="32" r="28" stroke-dasharray="${HG_C.toFixed(2)}" stroke-dashoffset="${HG_C.toFixed(2)}"/><line class="bar70" x1="32" y1="1.5" x2="32" y2="8.5" transform="rotate(252 32 32)"/></svg><b class="dw"></b><small class="dn"></small></span>`;
+const paintDial = (el, v) => { const n = clamp(v, 0, 100); $('.val', el).style.strokeDashoffset = (HG_C * (1 - n / 100)).toFixed(2); };
+/* the dial's word and colour follow where the score is going, never the spring's overshoot; the ring's colour sweeps with a transition */
+function dialTier(el, s, empty = false) { const T = TIER(s); el._s = s; el._e = empty; ['flat', 'warming', 'sharp', 'honed'].forEach(k => el.classList.toggle('t-' + k, !empty && k === T.key)); el.classList.toggle('hi', !empty && s >= 70); el.classList.toggle('on', !empty); if (!el._mt) swapWord($('.dw', el), empty ? '' : T.word); const n = $('.dn', el); if (n) n.textContent = !empty && hookNums() ? Math.round(s) : ''; }
+/* after Keep: a new tier crossfades in; within one tier the dial says "Sharper" for a moment, grows a little and glows */
+function dialMove(el, a, b) { const m = tierMove(a, b); clearTimeout(el._mt); el._mt = 0; dialTier(el, b);
+  if (!m.cross && m.dir !== 'same') { swapWord($('.dw', el), m.text); el._mt = setTimeout(() => { el._mt = 0; if (el.isConnected) swapWord($('.dw', el), el._e ? '' : TIER(el._s).word); }, 1300); }
+  if (!REDUCED && m.dir === 'up') { el.classList.remove('tgrow'); void el.offsetWidth; el.classList.add('tgrow'); } }
 
 /* ----- story: one post, three beats, nothing invented by the app ----- */
 const ST2 = { p: 19, draft: 'so i think funding rates are honestly the most underrated signal in crypto right now', filled: 'They flipped negative 4 times this year. I logged what price did after every one.' };
@@ -8347,13 +8418,13 @@ function trustHTML() {
         <div class="t8-files">${file(0, doc, 'Typefully', 'export')}${file(1, xl, 'X archive', '.zip')}${file(2, csv, 'CSV', '.csv')}</div>
         <svg class="t8-flow" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M50 0C50 22 150 16 150 40"/><path d="M150 0V40"/><path d="M250 0C250 22 150 16 150 40"/></svg>
         <div class="t8-in"><div class="t8-in-h"><b>Your posts</b><span>${ic('check', 'xs')} Read in your browser</span></div>
-          ${TR_POSTS.map((t, i) => { const s = hookScore(t).score; return `<div class="t8-row" style="--i:${i}"><span class="t8-hk ${s >= 70 ? 'hi' : ''}">${s}</span><p>${esc(t)}</p></div>`; }).join('')}</div>
+          ${TR_POSTS.map((t, i) => { const s = hookScore(t).score; return `<div class="t8-row" style="--i:${i}">${tierChip(s, { cls: 'sm' })}<p>${esc(t)}</p></div>`; }).join('')}</div>
       </div>`)}
-    ${tile(.06, 'A score that shows its work', 'Five plain checks on your first line. 70 is the bar. It reads your words, not your reach.',
+    ${tile(.06, 'A score that shows its work', `Five plain checks on your first line, one word for the result. Aim for ${BAR_WORD}. It reads your words, not your reach.`,
       `<div class="t8-v t8-sc" aria-hidden="true">
         <p class="t8-line">${esc(TR_LINE)}</p>
-        <div class="t8-bars">${TR_PARTS.map(([k, l], i) => `<div class="t8-b ${g.parts[k] >= 60 ? 'ok' : ''}" style="--tv:${g.parts[k]}%;--i:${i}"><span>${l}</span><i><b></b></i><em>${g.parts[k]}</em></div>`).join('')}</div>
-        <div class="t8-tot ${g.score >= 70 ? 'hi' : ''}" style="--tv:${g.score}%"><span>Hook score</span><i><b></b><u><small>70</small></u></i><strong>${g.score}</strong></div>
+        ${partsHTML(g.parts, 't8-pips')}
+        <div class="t8-tot"><span>Hook</span>${tierScaleHTML(g.score)}</div>
       </div>`)}
     ${tile(.12, 'Your drafts stay here', 'In your browser until you connect an account. Nothing posts unless you schedule it.',
       `<div class="t8-v t8-loc" aria-hidden="true">
@@ -8370,7 +8441,7 @@ function trustHTML() {
 
 /* ---------- round 30: the final call. Paste a line, watch it score, carry it in ---------- */
 const FIN_TRY = 'so i think funding flipping negative is kind of a big deal';
-const FIN_IDLE = 'Paste a line. It scores as you type, and 70 is the bar.';
+const FIN_IDLE = `Paste a line. It’s read as you type. Aim for ${BAR_WORD}.`;
 const FIN_C = 2 * Math.PI * 52;
 function finalFormHTML() {
   return `<form class="fin8-f" id="fin-f" novalidate>
@@ -8378,8 +8449,8 @@ function finalFormHTML() {
           <div class="fin8-ed"><label for="fin-t" class="sr">The post you almost wrote. It scores as you type.</label><textarea id="fin-t" rows="4" maxlength="2000" placeholder="so i think…" aria-describedby="fin-err"></textarea>
             <button type="button" class="fin8-try" id="fin-try">Or try a rough one</button></div>
           <div class="fin8-read" aria-hidden="true">
-            <span class="fin8-dial" id="fin-dial"><svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="52"/><circle class="val" cx="60" cy="60" r="52" transform="rotate(-90 60 60)" stroke-dasharray="${FIN_C.toFixed(2)}" stroke-dashoffset="${FIN_C.toFixed(2)}"/><line class="t70" x1="60" y1="3" x2="60" y2="15" transform="rotate(252 60 60)"/></svg><b id="fin-n">–</b><small>Hook</small></span>
-            <ul class="fin8-parts">${TR_PARTS.map(([k, l]) => `<li data-k="${k}"><span>${l}</span><i><b></b></i></li>`).join('')}</ul>
+            <span class="fin8-dial" id="fin-dial"><svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="52"/><circle class="val" cx="60" cy="60" r="52" transform="rotate(-90 60 60)" stroke-dasharray="${FIN_C.toFixed(2)}" stroke-dashoffset="${FIN_C.toFixed(2)}"/><line class="t70" x1="60" y1="3" x2="60" y2="15" transform="rotate(252 60 60)"/></svg><b id="fin-n" class="dw">–</b><small>Hook</small></span>
+            <ul class="fin8-parts">${TR_PARTS.map(([k, l]) => `<li data-k="${k}" class="ps-empty"><span>${l}</span><span class="pip p-empty"></span><span class="pw">–</span></li>`).join('')}</ul>
           </div>
           <p class="fin8-why" id="fin-why" aria-hidden="true">${FIN_IDLE}</p>
         </div>
@@ -8451,7 +8522,7 @@ function graderHTML(P, { hand = false, text = HG_DEFAULT, who = 'Your draft', su
           </div>
           <div class="hg-read">
             ${dialHTML(P + '-dial')}
-            <div class="hg-why"><span class="lbl">Hook score <span class="of">of 100</span></span><p id="${P}-why"><span class="on"></span><span></span></p></div>
+            <div class="hg-why"><span class="lbl">Hook</span><p id="${P}-why"><span class="on"></span><span></span></p></div>
             <button class="hg-sharp" id="${P}-sharp" type="button">${ic('bolt', 'sm')}<span>Sharpen</span></button>
           </div>
           <div class="hg-ver" id="${P}-ver" hidden aria-live="polite"></div>
@@ -8480,10 +8551,10 @@ function initGrader(P, { onChange = () => {} } = {}) {
   const update = () => {
     const t = ta.value, h = hookScore(t); G.cur = h; fit();
     marks = paintMirror(t, h.score >= 70);
-    dial.classList.toggle('hi', h.score >= 70); dialSpring.to(h.score);
+    if (G.keptFrom != null) { dialMove(dial, G.keptFrom, h.score); G.keptFrom = null; } else dialTier(dial, h.score, !t.trim()); dialSpring.to(t.trim() ? h.score : 0);
     setWhy(t.trim() ? h.reason : 'Type a first line. Anything you’d actually post.');
     nEl.textContent = `${HWCore.xLength(t)}/280`; nEl.classList.toggle('over', HWCore.xLength(t) > 280);
-    clearTimeout(liveT); liveT = setTimeout(() => { live.textContent = t.trim() ? `Hook score ${h.score} of 100. ${h.reason}${marks.length ? ` ${marks.length} soft word${marks.length === 1 ? '' : 's'} marked.` : ''}` : ''; }, 700);
+    clearTimeout(liveT); liveT = setTimeout(() => { live.textContent = t.trim() ? `Hook: ${tierText(h.score)}. ${h.reason}${marks.length ? ` ${marks.length} soft word${marks.length === 1 ? '' : 's'} marked.` : ''}` : ''; }, 700);
     if (G.typed) onChange(G);
   };
   ta.addEventListener('input', () => { G.typed = true; hideTip(); if (!ver.hidden && !ver.dataset.keep) ver.hidden = true; update(); });
@@ -8504,11 +8575,10 @@ function initGrader(P, { onChange = () => {} } = {}) {
     const t = ta.value.trim(); if (!t) { ta.focus(); setWhy('Type a first line, then Sharpen. One rough sentence is plenty.'); return; }
     const r = hgSharpen(t), a = hookScore(t).score, b = hookScore(r.text).score;
     delete ver.dataset.keep;
-    if (r.same || b < a) { ver.innerHTML = `<p class="hg-same">${a >= 70 ? `Scores ${a}: ${esc(hookScore(t).reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so the line stays yours.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`; ver.hidden = false; return; }
-    ver.innerHTML = `<div class="hg-vh"><span class="lbl">Sharper version</span><span class="hsc jump"><b>${a}</b><span>→</span><b class="to">${a}</b></span></div><p class="hg-diffx">${hgDiffHTML(r)}</p><p class="hg-vnote">${hgNote(r)}</p><div class="hg-va"><button type="button" class="hbtn sm" id="${P}-keep">${ic('check', 'sm')} Keep it</button><button type="button" class="lnk7" id="${P}-mine">Keep mine</button></div>`;
+    if (r.same || b < a) { ver.innerHTML = `<p class="hg-same">${a >= 70 ? `${TIER(a).word}: ${esc(hookScore(t).reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so the line stays yours.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`; ver.hidden = false; return; }
+    ver.innerHTML = `<div class="hg-vh"><span class="lbl">Sharper version</span><span class="hg-move" role="img" aria-label="${tierSay(a, b)}">${tierMoveHTML(a, b, { anim: true })}</span></div><p class="hg-diffx">${hgDiffHTML(r)}</p><p class="hg-vnote">${hgNote(r)}</p><div class="hg-va"><button type="button" class="hbtn sm" id="${P}-keep">${ic('check', 'sm')} Keep it</button><button type="button" class="lnk7" id="${P}-mine">Keep mine</button></div>`;
     ver.hidden = false; ver.dataset.keep = '';
-    const to = $('.to', ver); hwSpring(v => { to.textContent = Math.round(v); to.classList.toggle('hi', v >= 69.5); }).to(b, a);
-    el('keep').onclick = () => { ta.value = r.text; G.typed = true; ver.hidden = true; update(); ta.focus(); const k = ta.value.indexOf('[your number]'); if (k >= 0) ta.setSelectionRange(k, k + 13); else ta.setSelectionRange(ta.value.length, ta.value.length); ed.classList.remove('flash'); void ed.offsetWidth; ed.classList.add('flash'); };
+    el('keep').onclick = () => { ta.value = r.text; G.typed = true; ver.hidden = true; G.keptFrom = a; update(); ta.focus(); const k = ta.value.indexOf('[your number]'); if (k >= 0) ta.setSelectionRange(k, k + 13); else ta.setSelectionRange(ta.value.length, ta.value.length); ed.classList.remove('flash'); void ed.offsetWidth; ed.classList.add('flash'); };
     el('mine').onclick = () => { ver.hidden = true; ta.focus(); };
   });
   update(); if (document.fonts) document.fonts.ready.then(() => { if (ta.isConnected) { fit(); marks = paintMirror(ta.value, G.cur && G.cur.score >= 70); } });
@@ -8547,7 +8617,7 @@ const TP_LEN = [4200, 4600, 3800, 3400, 5000];
 function tourHTML() {
   const line = HG_DEFAULT, sh = hgSharpen(line), s0 = hookScore(line).score, s1 = hookScore(sh.first).score, first = sh.first;
   const enter = MOD === '⌘' ? '⌘↵' : 'Ctrl+Enter', W = homeWeek(), dk = i => dayKey(W.days[i]);
-  const CH = [['Score', 'Type a line. It’s scored as you go.'], ['Sharpen', `Sharpen cuts the soft words. ${s0} → ${s1}, same claim.`], ['Schedule', 'Pick a time when your people are up.'], ['Queue', 'It waits in your week until its time.'],
+  const CH = [['Score', 'Type a line. It’s scored as you go.'], ['Sharpen', `Sharpen cuts the soft words. ${tierMove(s0, s1).text}, same claim.`], ['Schedule', 'Pick a time when your people are up.'], ['Queue', 'It waits in your week until its time.'],
     ['Reply', COARSE ? 'Replies land in one list. Tap one to answer.' : `Replies land in one list. J and K move, ${enter} sends.`]];
   const q = (i, time, text, pl, n = 1) => ({ id: `tp${i}${time}`, day: dk(i), time, text, tweets: Array(n).fill(''), platforms: { x: !!pl.x, threads: !!pl.threads, linkedin: !!pl.linkedin, bsky: !!pl.bsky }, status: 'scheduled' });
   const wk = { mon12: q(0, '12:15', 'Leverage is a tool, not a strategy.', { x: 1, bsky: 1 }), wed8: q(2, '08:40', 'Funding rates are the most underrated signal in crypto.', { x: 1, threads: 1 }, 4), wed12: q(2, '12:15', 'My trading journal, week 31:', { x: 1, linkedin: 1 }), land: q(1, '08:40', first, { x: 1, threads: 1, linkedin: 1 }) };
@@ -8559,8 +8629,8 @@ function tourHTML() {
         <div class="tp-sc on" id="tp-g"><div class="hg-card">
           <div class="hg-top">${pfAv(HG_YOU, 'hg-av')}<div class="hg-who"><b>Your draft</b><span>First line, graded as you type</span></div><span class="hg-n" id="tp-n"></span></div>
           <div class="hg-ed"><p class="tp-line" id="tp-line"></p></div>
-          <div class="hg-read">${dialHTML('tp-dial')}<div class="hg-why"><span class="lbl">Hook score <span class="of">of 100</span></span><p id="tp-why"></p></div><span class="hg-sharp" id="tp-sharp">${ic('bolt', 'sm')}<span>Sharpen</span></span></div>
-          <div class="hg-ver" id="tp-ver" hidden><div class="hg-vh"><span class="lbl">Sharper version</span><span class="hsc jump"><b>${s0}</b><span>→</span><b class="to" id="tp-to">${s0}</b></span></div><p class="hg-diffx">${hgDiffHTML({ ...sh, add: '' })}</p><div class="hg-va"><span class="hbtn sm" id="tp-keep">${ic('check', 'sm')} Keep it</span></div></div>
+          <div class="hg-read">${dialHTML('tp-dial')}<div class="hg-why"><span class="lbl">Hook</span><p id="tp-why"></p></div><span class="hg-sharp" id="tp-sharp">${ic('bolt', 'sm')}<span>Sharpen</span></span></div>
+          <div class="hg-ver" id="tp-ver" hidden><div class="hg-vh"><span class="lbl">Sharper version</span><span class="hg-move" id="tp-to">${tierMoveHTML(s0, s1)}</span></div><p class="hg-diffx">${hgDiffHTML({ ...sh, add: '' })}</p><div class="hg-va"><span class="hbtn sm" id="tp-keep">${ic('check', 'sm')} Keep it</span></div></div>
         </div></div>
         <div class="tp-sc" id="tp-s2"><div class="tp-sheet" id="tp-sheet">
           <div class="tp-sh-h"><b>Schedule</b><span>Tuesday</span></div>
@@ -8589,7 +8659,7 @@ function initTour() {
   const chBtns = $$('[data-ch]', box), caps = chBtns.map(b => $('.tp-c', b).textContent), opts = $$('.tp-opt', box), cards = $$('.tp-r', box), stage = $('.tp-scs', box);
   const ease = x => 1 - Math.pow(1 - clamp(x, 0, 1), 3), memo = new Map(), put = (k, el, fn, v) => { if (memo.get(k) === v) return; memo.set(k, v); fn(el, v); };
   const html = (el, v) => { el.innerHTML = v; }, text = (el, v) => { el.textContent = v; };
-  const setDial = v => put('dial', dial, (d, x) => { paintDial(d, x); d.classList.toggle('hi', x >= 69.5); }, Math.round(v));
+  const setDial = (v, to) => { put('dial', dial, paintDial, Math.round(v)); put('dialt', dial, (d, x) => x < 0 ? dialTier(d, 0, true) : dialTier(d, x), to); };
   const setKey = v => put('key', keyEl, (el, k) => { el.textContent = k; el.classList.toggle('on', !!k); }, COARSE ? '' : v);
   const marked = on => { let o = '', k = 0; marks.forEach(([a, b], i) => { o += esc(line.slice(k, a)) + `<span class="hd${i < on ? ' on' : ''}">${esc(line.slice(a, b))}</span>`; k = b; }); return o + esc(line.slice(k)); };
   /* the stage keeps the height of its tallest moment (the sharper version), so nothing below it jumps */
@@ -8597,12 +8667,12 @@ function initTour() {
   const SC = [
     lt => { const n = Math.round(clamp((lt - 200) / 1500, 0, 1) * line.length), typed = lt >= 1700;
       put('line', lineEl, html, typed ? marked(marks.filter((_, i) => lt >= 2300 + i * 220).length) : esc(line.slice(0, n)) + '<span class="tp-caret"></span>');
-      put('n', E('tp-n'), text, `${HWCore.xLength(line.slice(0, n))}/280`); setDial(typed ? s0 * ease((lt - 1700) / 700) : 0); put('why', whyEl, text, typed ? h0.reason : 'Type a first line. Anything you’d actually post.');
+      put('n', E('tp-n'), text, `${HWCore.xLength(line.slice(0, n))}/280`); setDial(typed ? s0 * ease((lt - 1700) / 700) : 0, typed ? s0 : -1); put('why', whyEl, text, typed ? h0.reason : 'Type a first line. Anything you’d actually post.');
       ver.hidden = true; g.classList.remove('vering'); E('tp-sharp').classList.remove('press'); setKey(''); },
     lt => { const kept = lt >= 3700; E('tp-sharp').classList.toggle('press', lt >= 250 && lt < 650);
       put('line', lineEl, html, kept ? `<span class="l1 on">${esc(first)}</span>` : marked(marks.length)); put('n', E('tp-n'), text, `${HWCore.xLength(kept ? first : line)}/280`);
-      ver.hidden = kept || lt < 700; g.classList.toggle('vering', !ver.hidden); put('to', E('tp-to'), (el, v) => { el.textContent = v; el.classList.toggle('hi', v >= 70); }, Math.round(lt < 1200 ? s0 : s0 + (s1 - s0) * ease((lt - 1200) / 1000)));
-      E('tp-keep').classList.toggle('press', lt >= 3200 && lt < 3700); setDial(kept ? s0 + (s1 - s0) * ease((lt - 3700) / 700) : s0); put('why', whyEl, text, kept ? h1.reason : h0.reason); setKey(''); },
+      ver.hidden = kept || lt < 700; g.classList.toggle('vering', !ver.hidden); put('to', E('tp-to'), (el, v) => { const w = $$('.tword', el).pop(); if (w) w.classList.toggle('in', v && !REDUCED); }, lt >= 1200);
+      E('tp-keep').classList.toggle('press', lt >= 3200 && lt < 3700); setDial(kept ? s0 + (s1 - s0) * ease((lt - 3700) / 700) : s0, kept ? s1 : s0); put('why', whyEl, text, kept ? h1.reason : h0.reason); setKey(''); },
     lt => { opts.forEach((o, i) => o.classList.toggle('sel', i === 0 && lt >= 700)); E('tp-go').classList.toggle('press', lt >= 2000 && lt < 2400); E('tp-sheet').classList.toggle('done', lt >= 2400); setKey(''); },
     lt => { E('tp-land').hidden = lt < 700; setKey(''); },
     lt => { const at = lt >= 700 ? 1 : 0;
@@ -8638,7 +8708,7 @@ ROUTES.home = () => { loadSprite('ph');
   const sh = hgSharpen(ST2.draft), stFinal = `${sh.first}\n\n${ST2.filled}`;
   const s0 = hookScore(ST2.draft), s1 = hookScore(sh.text);
   const marked = (t) => { let o = '', k = 0; hgMarks(t).forEach(([a, b, why]) => { o += esc(t.slice(k, a)) + `<span class="hd" title="${esc(why)}">${esc(t.slice(a, b))}</span>`; k = b; }); return o + esc(t.slice(k)); };
-  const chip = (v, cls = '') => `<span class="hsc ${v >= 70 ? 'hi' : ''} ${cls}"><b>${v}</b><span>Hook</span></span>`;
+  const chip = (v, cls = '') => tierChip(v, { noun: true, cls });
   $('#root').innerHTML = `<div class="hw hw27 force-light">
   <aside aria-label="What’s new"><a class="hw-ann" href="#ideas"><span><b>What’s working</b> shows why posts in your niche took off, and the formula behind each.</span><span class="go">See it ›</span></a></aside>
   <div class="hw-veil" aria-hidden="true"></div>
@@ -8675,7 +8745,7 @@ ROUTES.home = () => { loadSprite('ph');
         <li class="beat rv"><span class="bn"><b>01</b> 11:04 PM · The draft</span><h3>Typed fast, three soft words deep.</h3>
           <div class="bt-card"><div class="bt-who">${pfAv(PRIYA)}<span><b>${esc(PRIYA.n)}</b> @${esc(PRIYA.h)}</span></div><p class="bt-tx">${marked(ST2.draft)}</p><div class="bt-foot">${chip(s0.score)}<span>${esc(s0.reason)}</span></div></div></li>
         <li class="beat rv" style="--d:.08s"><span class="bn"><b>02</b> Sharpen · in her voice</span><h3>Same claim, minus the soft words.</h3>
-          <div class="bt-card"><p class="bt-tx hg-diffx">${hgDiffHTML(sh)}</p><div class="bt-foot"><span class="hsc jump" id="st-jump"><b>${s0.score}</b><span>→</span><b class="to" id="st-to">${s1.score}</b></span><span>${esc(s1.reason)}</span></div><p class="bt-note">${hgNote(sh, 'her')}</p></div></li>
+          <div class="bt-card"><p class="bt-tx hg-diffx">${hgDiffHTML(sh)}</p><div class="bt-foot"><span class="hg-move" id="st-jump" role="img" aria-label="${tierSay(s0.score, s1.score)}">${tierMoveHTML(s0.score, s1.score)}</span><span>${esc(s1.reason)}</span></div><p class="bt-note">${hgNote(sh, 'her')}</p></div></li>
         <li class="beat rv" style="--d:.16s"><span class="bn"><b>03</b> Scheduled · Tue 8:40 AM</span><h3>She fills the blank. It goes out when her people are up.</h3>
           <div class="bt-card bt-post">${xPost({ p: ST2.p, t: stFinal, c: [0, 0, 0, 0], ago: 'Tue' })}<div class="bt-foot"><span class="bt-slot">${ic('clock', 'sm')} Scheduled for Tue at 8:40 AM</span><span>When her replies usually come in.</span></div></div></li>
       </ol>
@@ -8691,11 +8761,11 @@ ROUTES.home = () => { loadSprite('ph');
   <section class="h7-sec wrap" id="features" aria-labelledby="ft-h">
     <div class="h7-head"><div><span class="eyebrow">Built around the hook</span><h2 id="ft-h">Everything starts <em>at the first line.</em></h2></div><p>Four tools, all aimed at the line people decide on.</p></div>
     <div class="bento">
-      <article class="bx bx-score rv"><div class="bx-h"><span class="bx-k">${ic('hook', 'sm')} Hook score</span><h3>Five checks, one score. 70 is the bar.</h3></div>
+      <article class="bx bx-score rv"><div class="bx-h"><span class="bx-k">${ic('hook', 'sm')} Hook score</span><h3>Five checks, one word. Aim for ${BAR_WORD}.</h3></div>
         <div class="bx-demo bxs" id="bxs">
           <div class="bxs-seg" role="group" aria-label="Which version of the line"><button type="button" data-bxs="0" aria-pressed="true">Your draft</button><button type="button" data-bxs="1" aria-pressed="false">${ic('bolt', 'xs')} Sharpened</button></div>
           <p class="bxs-line" id="bxs-line"></p>
-          <div class="bxs-body">${dialHTML('bxs-dial')}<div class="bxs-parts" id="bxs-parts">${BX_PARTS.map(([k, l, d]) => `<div class="pt" data-k="${k}"><span class="pn">${l}</span><i><b></b></i><span class="pv" aria-hidden="true"></span><span class="sr">${d}</span></div>`).join('')}</div></div>
+          <div class="bxs-body">${dialHTML('bxs-dial')}<div class="bxs-parts" id="bxs-parts">${BX_PARTS.map(([k, l, d]) => `<div class="pt" data-k="${k}"><span class="pn">${l}</span><span class="pip" aria-hidden="true"></span><span class="pw"></span><span class="sr">${d}</span></div>`).join('')}</div></div>
           <p class="bxs-why" id="bxs-why"></p>
         </div></article>
       <article class="bx bx-voice rv" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('voice', 'sm')} Your voice</span><h3>Sounds like you on a good day.</h3></div>
@@ -8792,7 +8862,7 @@ function initHome() {
   /* ---------- hero: the live hook grader (a component; #tools mounts it too) ---------- */
   const cta = $('#hw-cta');
   const G = initGrader('hg', { onChange: () => { nav.classList.add('kept'); paintCta(); paintBar(); } });
-  const paintCta = () => { if (!G.text) { cta.innerHTML = 'Start free'; cta.removeAttribute('aria-label'); cta.classList.remove('keep'); return; } cta.innerHTML = `Open your line (${G.score}) ${ic('arrow', 'sm')}`; cta.setAttribute('aria-label', `Open your line in the app. Hook score ${G.score}`); cta.classList.add('keep'); };
+  const paintCta = () => { if (!G.text) { cta.innerHTML = 'Start free'; cta.removeAttribute('aria-label'); cta.classList.remove('keep'); return; } cta.innerHTML = `Open your line ${tierChip(G.score, { cls: 'sm' })} ${ic('arrow', 'sm')}`; cta.setAttribute('aria-label', `Open your line in the app. Hook: ${TIER(G.score).word}`); cta.classList.add('keep'); };
   /* every Start button carries the line once you've made it yours; untouched, they go to #start */
   const carry = e => { if (!G.typed || !G.text) return; e.preventDefault(); carryLine(G.text); };
   cta.addEventListener('click', carry); $('#hw-cta-hero').addEventListener('click', carry);
@@ -8813,7 +8883,7 @@ function initHome() {
   addEventListener('scroll', onDodge, { passive: true }); addEventListener('resize', onDodge); onDispose(() => { removeEventListener('scroll', onDodge); removeEventListener('resize', onDodge); cancelAnimationFrame(dgRaf); clearTimeout(dgT); });
   try { barOff = sessionStorage.getItem('hw.bar') === 'off'; } catch (e) { }
   const paintBar = () => {
-    if (G.typed && G.text) { barT.innerHTML = `<q><span>${esc(clip(G.text, 80))}</span></q>`; barCta.innerHTML = `Open your line (${G.score}) ${ic('arrow', 'sm')}`; barCta.setAttribute('aria-label', `Open your line in the app. Hook score ${G.score}`); }
+    if (G.typed && G.text) { barT.innerHTML = `<q><span>${esc(clip(G.text, 80))}</span></q>`; barCta.innerHTML = `Open your line ${tierChip(G.score, { cls: 'sm' })} ${ic('arrow', 'sm')}`; barCta.setAttribute('aria-label', `Open your line in the app. Hook: ${TIER(G.score).word}`); }
     else { barT.textContent = 'One good first line a day.'; barCta.textContent = 'Start free'; barCta.removeAttribute('aria-label'); }
     const on = !barOff && !seen.hero && !seen.fin && !seen.foot;
     bar.classList.toggle('on', on); nav.classList.toggle('bar-on', on); /* one call to action on screen at a time on phones */
@@ -8834,9 +8904,9 @@ function initHome() {
   if (!REDUCED) { addEventListener('scroll', onDrift, { passive: true }); addEventListener('resize', onDrift); onDispose(() => { removeEventListener('scroll', onDrift); removeEventListener('resize', onDrift); cancelAnimationFrame(vr); }); drift(); }
 
   /* ---------- story: the score jump counts up when beat two is on screen ---------- */
-  const jumpTo = $('#st-to'), sFrom = +$('#st-jump b').textContent, sTo = +jumpTo.textContent; let jumped = false;
-  jumpTo.classList.toggle('hi', sTo >= 70);
-  if (!REDUCED) { jumpTo.textContent = sFrom; whileSeen($('#st-jump'), () => { if (jumped) return; jumped = true; later(() => hwSpring(v => { jumpTo.textContent = Math.round(v); }).to(sTo, sFrom), 350); }); }
+  /* the story's jump: the new word crossfades in once, when the beat comes into view */
+  const stJump = $('#st-jump'), stTo = $$('.tword', stJump).pop(); let jumped = false;
+  if (!REDUCED && stTo) { stTo.style.opacity = '0'; whileSeen(stJump, () => { if (jumped) return; jumped = true; later(() => { stTo.style.opacity = ''; stTo.classList.add('in'); }, 350); }); }
 
   /* ---------- bento: hook score, your draft and its sharpened line. It flips by itself while on screen, until you pick one ---------- */
   const BXS = (() => { const sh = hgSharpen(HG_DEFAULT); return [HG_DEFAULT, sh.first]; })();
@@ -8845,9 +8915,9 @@ function initHome() {
     $$('[data-bxs]', bxsEl).forEach(b => b.setAttribute('aria-pressed', +b.dataset.bxs === i));
     const ln = $('#bxs-line'); ln.innerHTML = i ? `<span class="l1">${esc(t)}</span>` : (() => { let o = '', k = 0; hgMarks(t).forEach(([a, b]) => { o += esc(t.slice(k, a)) + `<span class="hd">${esc(t.slice(a, b))}</span>`; k = b; }); return o + esc(t.slice(k)); })();
     ln.classList.remove('in'); void ln.offsetWidth; ln.classList.add('in');
-    bxDial.classList.toggle('hi', h.score >= 70); bxSpring.to(h.score);
-    BX_PARTS.forEach(([k]) => { const r = $(`#bxs-parts [data-k="${k}"]`); r.style.setProperty('--v', h.parts[k] / 100); r.classList.toggle('hi', h.parts[k] >= 70); $('.pv', r).textContent = h.parts[k]; });
-    $('#bxs-why').innerHTML = `<span class="sr">Hook score ${h.score} of 100. </span>${esc(h.reason)}`; };
+    const was = bxDial.dataset.s; if (was != null && was !== '') dialMove(bxDial, +was, h.score); else dialTier(bxDial, h.score); bxDial.dataset.s = h.score; bxSpring.to(h.score);
+    BX_PARTS.forEach(([k]) => { const r = $(`#bxs-parts [data-k="${k}"]`), p = HWCore.partState(h.parts[k]); r.className = 'pt ps-' + p.key; $('.pip', r).className = 'pip p-' + p.key; swapWord($('.pw', r), p.word + (hookNums() ? ` · ${h.parts[k]}` : '')); });
+    $('#bxs-why').innerHTML = `<span class="sr">Hook: ${TIER(h.score).word}. </span>${esc(h.reason)}`; };
   const bxLoop = () => { clearTimeout(bxT); if (!bxOn || bxHeld || REDUCED) return; bxT = later(() => { bxShow(1 - bxI); bxLoop(); }, 3600); };
   $$('[data-bxs]', bxsEl).forEach(b => b.addEventListener('click', () => { bxHeld = true; clearTimeout(bxT); bxShow(+b.dataset.bxs); }));
   /* hovering or focusing the card holds it still, so you can read it */
@@ -8876,7 +8946,7 @@ function initHome() {
     $('#h7pv-li-n').innerHTML = over ? `<b>${n}</b> of ${all} characters show before “…more”` : `<b>All ${all}</b> characters show. Nothing gets cut.`;
     $('#h7pv-li-bar').style.width = (all ? Math.min(100, n / all * 100) : 0) + '%';
     const st = $('#h7pv-li-st'); st.classList.toggle('cut', !ok); st.textContent = !t.trim() ? '' : ok ? 'Your hook clears the fold' : 'Your hook gets cut off';
-    $('#h7pv-li-sc').textContent = t.trim() ? `Hook ${hookScore(t).score}` : '';
+    $('#h7pv-li-sc').innerHTML = t.trim() ? tierChip(hookScore(t).score, { noun: true, cls: 'sm' }) : '';
   };
   const drawPhone = () => { const k = pvKind; $('#h7pv-phone').innerHTML = phoneFeed(k, { you: PRIYA, mine: k === 'linkedin' ? { t: liT.value || ' ', c: [0, 0, 0, 0], ago: 'now' } : { t: k === 'bsky' ? `${hgSharpen(ST2.draft).first}\n\nFunding flipped negative 4 times this year. I logged what came next.` : stFinal, c: [0, 0, 0, 0], ago: 'now' }, others, w: phW() }); $('#h7pv-phone .phone').classList.add('pv-in'); drawFold(); };
   $('.pv7-tabs').addEventListener('click', e => { const b = e.target.closest('[data-pv]'); if (!b || b.getAttribute('aria-selected') === 'true') return;
@@ -8905,12 +8975,12 @@ function initHome() {
   let finLast = null, finSrT = 0; onDispose(() => clearTimeout(finSrT));
   const finPaint = () => { const t = fin.value.trim(); if (t === finLast) return; finLast = t;
     const g = t ? hookScore(t) : null, v = g ? g.score : 0;
-    finVal.style.strokeDashoffset = (FIN_C * (1 - v / 100)).toFixed(2); finN.textContent = g ? v : '–';
-    finDial.classList.toggle('on', !!g); finDial.classList.toggle('hi', v >= 70);
-    finParts.forEach(li => { const p = g ? g.parts[li.dataset.k] : 0; li.style.setProperty('--fv', p + '%'); li.classList.toggle('ok', p >= 60); });
+    finVal.style.strokeDashoffset = (FIN_C * (1 - v / 100)).toFixed(2); swapWord(finN, g ? tierText(v) : '–');
+    finDial.classList.toggle('on', !!g); finDial.classList.toggle('hi', v >= 70); ['flat', 'warming', 'sharp', 'honed'].forEach(k => finDial.classList.toggle('t-' + k, !!g && TIER(v).key === k));
+    finParts.forEach(li => { const p = g ? g.parts[li.dataset.k] : 0, st = HWCore.partState(p); li.className = g ? 'ps-' + st.key : 'ps-empty'; $('.pip', li).className = 'pip p-' + (g ? st.key : 'empty'); $('.pw', li).textContent = g ? st.word : '–'; });
     finWhy.textContent = g ? g.reason : FIN_IDLE; finWhy.classList.toggle('good', v >= 70);
     /* screen readers hear the score once typing settles, not on every key */
-    clearTimeout(finSrT); finSrT = setTimeout(() => { finSr.textContent = g ? `Hook score ${v}. ${g.reason}` : ''; }, 700);
+    clearTimeout(finSrT); finSrT = setTimeout(() => { finSr.textContent = g ? `Hook: ${TIER(v).word}. ${g.reason}` : ''; }, 700);
   };
   fin.addEventListener('input', () => { finErr.textContent = ''; fin.removeAttribute('aria-invalid'); finPaint(); });
   fin.addEventListener('focus', () => { if (!fin.value.trim() && G.typed && G.text) { fin.value = G.text; finPaint(); } });
@@ -8947,7 +9017,7 @@ ROUTES.tools = () => {
     <nav class="mk-jump" aria-label="Tools on this page">${HW_TOOLS.map(([id, l]) => `<a ${hwHref('tools', id)}>${l}</a>`).join('')}</nav>
   </section>
   <div class="wrap">
-  ${tool('tool-hook', 'Hook grader', 'Score your <em>first line.</em>', 'Five plain checks out of 100: clear, open loop, specific, tension, short. 70 is the bar. Under it, you get the one fix that matters, and Sharpen shows a tighter version without changing your claim.',
+  ${tool('tool-hook', 'Hook grader', 'Score your <em>first line.</em>', `Five plain checks: clear, open loop, specific, tension, short. The result is one word: Flat, Warming, ${BAR_WORD} or Honed. Aim for ${BAR_WORD}. Under it, you get the one fix that matters, and Sharpen shows a tighter version without changing your claim.`,
     graderHTML('tg', { who: 'Your line', sub: 'Graded as you type', note: '<b>Stays in this tab.</b>' }),
     `<p>The same score runs on every post in the app, with your own posts tuning it once you bring 20.</p>${hwOpenBtn('hook')}`)}
   ${tool('tool-split', 'Thread splitter', 'Long post in, <em>a thread out.</em>', 'Paste anything long. It splits at sentence ends, counts the way X does, and keeps each post under 280.',
@@ -9045,7 +9115,7 @@ ROUTES.teams = () => {
   /* the same two clients as the in-app demo, so the names and Ctrl+number keys match */
   const C = [{ n: 'Ledgerly', h: 'ledgerlyhq', hue: 190, k: 'Client · Priya’s voice', plats: ['x', 'li'], d: 3, line: 'I’ve hired 300 people. The best interview question is four words:' }, { n: 'Northwind', h: 'northwindco', hue: 150, k: 'Client · company voice', plats: ['li'], d: 2, line: 'We launched to 11 people. Here’s what that taught us:' }];
   const PN = { x: 'X', li: 'LinkedIn', threads: 'Threads', bsky: 'Bluesky' };
-  const chip = v => `<span class="hsc ${v >= 70 ? 'hi' : ''}"><b>${v}</b><span>Hook</span></span>`;
+  const chip = v => tierChip(v, { noun: true, cls: 'sm' });
   const mod = MOD === '⌘' ? '⌘' : 'Ctrl', modP = MOD === '⌘' ? '⌘' : 'Ctrl+';
   const W = homeWeek(), qa = { id: 'tm1', day: dayKey(W.days[3]), time: '12:15', text: C[0].line, tweets: [''], platforms: { x: true, linkedin: true }, status: 'scheduled' }, qb = { id: 'tm2', day: dayKey(W.days[4]), time: '08:40', text: C[1].line, tweets: [''], platforms: { linkedin: true }, status: 'scheduled' };
   const tag = (txt, k) => `<span class="qtags"><span class="qt ${k}"><i></i><span>${txt}</span></span></span>`;
@@ -9304,8 +9374,8 @@ function onbTry() {
   const inp = $('#ot-in'), out = $('#ot-out'), go = $('#ot-go'), note = $('#ot-note'); if (!inp) return;
   /* a better line that only cuts words shows the cut words struck through, so a pure trim never reads as "nothing changed" */
   const show = (line, better, why) => { const a = hookScore(line), b = hookScore(better), d0 = wordDiff(tokenize(line), tokenize(better)), d = d0.changed || better.trim() === line.trim() ? d0 : { changed: 1, html: hgDiff(line, better).replace(/<del>/g, '<del class="vw">') };
-    out.innerHTML = `<div class="ot-row"><span class="hook ${a.score >= 70 ? 'hi' : ''}"><span class="sc" style="--v:${a.score}"><span>${a.score}</span></span><span>Yours</span></span><p>${esc(a.reason)}</p></div>
-      ${d.changed ? `<div class="ot-row better"><span class="hook ${b.score >= 70 ? 'hi' : ''}"><span class="sc" style="--v:${b.score}"><span>${b.score}</span></span><span>Sharper</span></span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : `<p class="faint">${a.score >= 70 ? `Scores ${a.score}: ${esc(a.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so it stays as you wrote it.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`}
+    out.innerHTML = `<div class="ot-row"><span class="ot-k"><span class="ot-l">Yours</span>${tierChip(a.score)}</span><p>${esc(a.reason)}</p></div>
+      ${d.changed ? `<div class="ot-row better"><span class="ot-k"><span class="ot-l">Sharper</span>${tierChip(b.score)}</span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : `<p class="faint">${a.score >= 70 ? `${TIER(a.score).word}: ${esc(a.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so it stays as you wrote it.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`}
       <div class="ot-a"><button class="btn ${d.changed ? 'primary' : ''}" id="ot-use">${ic('write', 'sm')} ${d.changed ? 'Write it with this hook' : 'Write it'}</button>${d.changed ? '<button class="btn ghost" id="ot-mine">Keep mine</button>' : ''}</div>`;
     SFX.play(b.score >= 70 ? 'hook' : 'tick');
     $('#ot-use').onclick = () => writeFrom([d.changed ? better : line]); const m = $('#ot-mine'); if (m) m.onclick = () => writeFrom([line]); };
@@ -9319,7 +9389,7 @@ function onbTry() {
 }
 function onbIdeas(ideas) {
   return ideas.map((x, i) => { const s = hookScore(x.text).score;
-    return `<div class="card pidea" style="animation-delay:${i * 70}ms" data-t="${esc(x.text)}" data-k="${esc(x.kind)}" data-topic="${esc(x.topic)}"><div><p>${esc(x.text)}</p><div class="f"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(KIND_L(x.kind))}</span><span class="hook ${s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span><span>Hook</span></span></div></div><div style="display:flex;gap:6px"><button class="btn sm" data-oi="save" data-tip="Save to Ideas">${ic('inbox', 'sm')}</button><button class="btn sm" data-oi="open">Write it${ic('arrow', 'sm')}</button></div></div>`; }).join('');
+    return `<div class="card pidea" style="animation-delay:${i * 70}ms" data-t="${esc(x.text)}" data-k="${esc(x.kind)}" data-topic="${esc(x.topic)}"><div><p>${esc(x.text)}</p><div class="f"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(KIND_L(x.kind))}</span>${tierChip(s, { noun: true, cls: 'sm' })}</div></div><div style="display:flex;gap:6px"><button class="btn sm" data-oi="save" data-tip="Save to Ideas">${ic('inbox', 'sm')}</button><button class="btn sm" data-oi="open">Write it${ic('arrow', 'sm')}</button></div></div>`; }).join('');
 }
 
 /* ==========================================================================
@@ -9376,7 +9446,7 @@ function todayHeroHTML(st) {
   const idea = todayIdea(), h = hookScore(idea.text), slot = nextSlots(1)[0] || nextSlots(1, false)[0];
   return `<section class="card pad t-hero t-write"><div class="t-h"><span class="label">One post to write today</span><span class="pill">${idea.saved ? 'From your saved ideas' : esc(S.user.niche)}</span></div>
     <p class="t-idea">${esc(idea.text)}</p>
-    <div class="t-meta"><span class="hook ${h.score >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${h.score}"><span>${h.score}</span></span><span>Hook</span></span><span class="faint">${esc(h.reason)}</span></div>
+    <div class="t-meta">${tierChip(h.score, { noun: true })}<span class="faint">${esc(h.reason)}</span></div>
     <div class="t-a"><button class="btn primary" data-tact="write">${ic('write', 'sm')} Write it</button><button class="btn ghost" data-tact="another">${ic('shuffle', 'sm')} Another idea</button></div>
     ${slot ? `<p class="t-slot">${ic('clock', 'sm')} <span>Next good time: <b>${slotWhen(slot.day, slot.time)}</b>. ${esc(slot.reason)}.</span></p>` : ''}</section>`;
 }
@@ -9547,7 +9617,7 @@ function drawEngine() {
   if (ENGINE.kind !== 'All') list = list.filter(x => x.kind === ENGINE.kind);
   list = list.slice(0, 6);
   if (!list.length) { el.innerHTML = `<div class="empty" style="grid-column:1/-1">No ${KIND_L(ENGINE.kind).toLowerCase()} ideas in this batch. <button class="btn sm" data-iact="shuffle">${ic('shuffle', 'sm')} Shuffle</button></div>`; return; }
-  el.innerHTML = list.map((x, i) => { const s = hookScore(x.text).score; return `<div class="card idea hoverable" style="animation:rise var(--d-snap) ${i * 40}ms var(--spring) both" data-t="${esc(x.text)}" data-k="${esc(x.kind)}"><p class="t">${esc(x.text)}</p>${x.why ? `<p class="why">${esc(x.why)}</p>` : ''}<div class="f"><span style="display:flex;gap:6px;align-items:center"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(KIND_L(x.kind))}</span><span class="hook ${s >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc" style="--v:${s}"><span>${s}</span></span><span>Hook</span></span></span><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="save" data-tip="Save for later" aria-label="Save for later">${ic('inbox', 'sm')}</button><button class="btn sm" data-iact="write">Write${ic('arrow', 'xs')}</button></span></div></div>`; }).join('');
+  el.innerHTML = list.map((x, i) => { const s = hookScore(x.text).score; return `<div class="card idea hoverable" style="animation:rise var(--d-snap) ${i * 40}ms var(--spring) both" data-t="${esc(x.text)}" data-k="${esc(x.kind)}"><p class="t">${esc(x.text)}</p>${x.why ? `<p class="why">${esc(x.why)}</p>` : ''}<div class="f"><span style="display:flex;gap:6px;align-items:center"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(KIND_L(x.kind))}</span>${tierChip(s, { noun: true, cls: 'sm' })}</span><span style="display:flex;gap:4px"><button class="btn ghost sm icon-only" data-iact="save" data-tip="Save for later" aria-label="Save for later">${ic('inbox', 'sm')}</button><button class="btn sm" data-iact="write">Write${ic('arrow', 'xs')}</button></span></div></div>`; }).join('');
 }
 function drawInbox() {
   const el = $('#inbox'); if (!el) return; const n = $('#inbox-n'); if (n) n.textContent = S.ideas.length;
@@ -9627,9 +9697,12 @@ ROUTES.hooks = () => {
   </div>`);
   const t = $('#grader-t'); const draw = () => {
     const h = hookScore(t.value); S.graderText = t.value; save();
-    $('#g-score').innerHTML = `${bigScore(h.score)}<div><div class="label">Hook score</div><div class="faint" style="font-size:13px;margin-top:4px">${h.score >= 70 ? 'Strong' : h.score >= 55 ? 'Getting there' : h.score ? 'Needs work' : 'Waiting for words'}</div></div>`;
-    $('#g-reason').textContent = h.reason; $('#g-score').classList.toggle('hi', h.score >= 70);
-    $('#g-bars').innerHTML = Object.entries(h.parts).map(([k, v]) => `<div class="bar-row"><span>${PART_NAME[k] || cap(k)}</span><div class="meter"><i class="${v >= 70 ? 'hi' : ''}" style="width:${v}%"></i></div><span class="num">${v}</span></div>`).join('');
+    const gs = $('#g-score'), has = !!t.value.trim(), T = TIER(h.score), prev = gs.dataset.tier;
+    gs.innerHTML = `${bigScore(h.score, !has)}<div class="bs-sub"><span class="label">Hook</span> <span class="faint">${!has ? 'Waiting for words' : h.score >= 70 ? 'Clears the bar.' : `Aim for ${BAR_WORD}.`}</span></div>`;
+    ['flat', 'warming', 'sharp', 'honed'].forEach(k => gs.classList.toggle('t-' + k, has && k === T.key)); gs.dataset.tier = has ? T.key : '';
+    if (prev && has && prev !== T.key && !REDUCED) { const w = $('.bs-w', gs); w.classList.add('wswap'); }
+    $('#g-reason').textContent = h.reason; gs.classList.toggle('hi', h.score >= 70);
+    $('#g-bars').innerHTML = partsHTML(h.parts);
   };
   t.addEventListener('input', draw); draw(); drawHooks(); syncSeg($('#hk-seg'));
   $('#hk-q').addEventListener('input', e => { HOOKF.q = e.target.value; drawHooks(); });
@@ -9637,12 +9710,12 @@ ROUTES.hooks = () => {
     const tab = e.target.closest('[data-hk]'); if (tab) { HOOKF.k = tab.dataset.hk; $$('[data-hk]').forEach(b => b.setAttribute('aria-selected', b === tab)); syncSeg($('#hk-seg')); drawHooks(); return; }
     const b = e.target.closest('[data-hact]'); if (!b) return; const a = b.dataset.hact;
     if (a === 'improve' && aiOn() && t.value.trim() && aiLeft() > 0) { const box = $('#g-better'); b.classList.add('is-loading'); box.innerHTML = `<p class="faint g-wait">${esc(cap(AI_NAME()))} is writing three stronger first lines…</p>`;
-      ask(HWCore.prompts.critique({ text: t.value, voice: voiceSpec() }), { fresh: true }).then(r => { const lines = (r && r.better || []).map(String).filter(Boolean).slice(0, 3); if (!lines.length) throw { code: 'invalid_json' }; spendAI(); box.innerHTML = `<div class="g-better">${r.reason ? `<p class="muted">${esc(r.reason)}</p>` : ''}${lines.map(l => { const sc = hookScore(l).score; return `<button class="g-line" data-hact="pick" data-t="${esc(l)}"><span class="hook ${sc >= 70 ? 'hi' : ''}" style="height:22px"><span class="sc"><span>${sc}</span></span></span><span>${esc(l).replace(/\[([^\]]+)\]/g, '<mark>$1</mark>')}</span></button>`; }).join('')}</div>`; }).catch(err => { box.innerHTML = ''; aiError(err); }).finally(() => b.classList.remove('is-loading')); return; }
+      ask(HWCore.prompts.critique({ text: t.value, voice: voiceSpec() }), { fresh: true }).then(r => { const lines = (r && r.better || []).map(String).filter(Boolean).slice(0, 3); if (!lines.length) throw { code: 'invalid_json' }; spendAI(); box.innerHTML = `<div class="g-better">${r.reason ? `<p class="muted">${esc(r.reason)}</p>` : ''}${lines.map(l => { const sc = hookScore(l).score; return `<button class="g-line" data-hact="pick" data-t="${esc(l)}">${tierChip(sc, { cls: 'sm' })}<span>${esc(l).replace(/\[([^\]]+)\]/g, '<mark>$1</mark>')}</span></button>`; }).join('')}</div>`; }).catch(err => { box.innerHTML = ''; aiError(err); }).finally(() => b.classList.remove('is-loading')); return; }
     if (a === 'shoot') { runShootout(b); return; }
     if (a === 'vote') { openHookVote([$('#so-a').value.trim(), $('#so-b').value.trim()]); return; }
     if (a === 'souse') { writeFrom([b.dataset.t]); toast('Loaded the winner. Now write the rest.', { icon: 'hook', tone: 'accent' }); return; }
     if (a === 'pick') { const before = t.value; t.value = b.dataset.t; draw(); burstFrom($('#g-score b')); toast('Swapped in. Fill any [brackets] with yours.', { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); return; }
-    if (a === 'improve') { if (!t.value.trim()) { t.focus(); toast('Type a first line, then we’ll make it stronger.', { icon: 'hook' }); return; } if (aiLeft() <= 0) { outOfRiffs(); return; } riffNonce++; const before = t.value, a0 = hookScore(before).score; const out = AI.hook(before).split('\n')[0]; spendAI(); t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`Hook score ${a0} → ${a1}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); if (a1 >= 78 && a1 - a0 >= 12) setTimeout(() => showUpsell(a0, a1), 700); }
+    if (a === 'improve') { if (!t.value.trim()) { t.focus(); toast('Type a first line, then we’ll make it stronger.', { icon: 'hook' }); return; } if (aiLeft() <= 0) { outOfRiffs(); return; } riffNonce++; const before = t.value, a0 = hookScore(before).score; const out = AI.hook(before).split('\n')[0]; spendAI(); t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`Hook: ${tierMove(a0, a1).text}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); if (a1 >= 78 && a1 - a0 >= 12) setTimeout(() => showUpsell(a0, a1), 700); }
     if (a === 'send') { if (!t.value.trim()) { toast('Type a first line first.', { tone: 'err', icon: 'write' }); return; } writeFrom([t.value]); }
     if (a === 'use') useHook(b.closest('[data-t]').dataset.t);
     if (a === 'grade') { t.value = b.closest('[data-t]').dataset.t.replace(/\[([^\]]+)\]/g, '$1'); draw(); t.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' }); t.focus(); }
@@ -10029,7 +10102,7 @@ function drawInsightsReal() {
   const cells = [];
   const heat = (() => { const cols = [[6, 9, '6a'], [9, 12, '9a'], [12, 15, '12p'], [15, 18, '3p'], [18, 21, '6p'], [21, 24, '9p']]; const days = [1, 2, 3, 4, 5, 6, 0]; const vals = days.map(dw => cols.map(([a, b]) => { const ps = all.filter(p => p.at && new Date(p.at).getDay() === dw && new Date(p.at).getHours() >= a && new Date(p.at).getHours() < b); return { n: ps.length, v: ps.length ? HWCore.median(ps.map(E)) : 0 }; })); const mx = Math.max(1, ...vals.flat().map(x => x.v)); let peak = null; vals.forEach((r, di) => r.forEach((x, ci) => { if (x.n >= 2 && (!peak || x.v > peak.v)) peak = { ...x, d: DOW[days[di]], c: cols[ci][2] }; }));
     return `<div class="heat" role="img" aria-label="Median engagement by day and time of posting${peak ? `. Best: ${peak.d} ${peak.c}` : ''}"><span></span>${cols.map(c0 => `<span class="cl">${c0[2]}</span>`).join('')}${days.map((dw, di) => `<span class="rl">${DOW[dw]}</span>${cols.map((c0, ci) => { const x = vals[di][ci]; return `<span class="c" style="opacity:${x.n ? (.12 + x.v / mx * .88).toFixed(2) : .05}" data-tip="${DOW[dw]} ${c0[2]}: ${x.n ? `${x.n} post${x.n > 1 ? 's' : ''}, median ${fmtN(x.v)}` : 'no posts'}"></span>`; }).join('')}`).join('')}</div>`; })();
-  if (c) cells.push(`<div class="card ins-card calib"><p class="big">${c.x >= 1.15 ? `On your posts, hooks scoring 70+ earned <em>${c.x}×</em> the ones under 50.` : `On your posts, the hook score barely predicts results (<em>${c.x}×</em>).`}</p><p>${c.hiN} strong hooks vs ${c.loN} weak ones, correlation ${c.r}. ${c.x >= 1.15 ? 'The score is earning its place for you.' : 'Trust your own top posts over the number until you have more history.'}</p></div>`);
+  if (c) cells.push(`<div class="card ins-card calib"><p class="big">${c.x >= 1.15 ? `On your posts, ${BAR_WORD} and Honed hooks earned <em>${c.x}×</em> the Flat ones.` : `On your posts, the hook score barely predicts results (<em>${c.x}×</em>).`}</p><p>${c.hiN} strong hooks vs ${c.loN} weak ones, correlation ${c.r}. ${c.x >= 1.15 ? 'The score is earning its place for you.' : 'Trust your own top posts over the hook words until you have more history.'}</p></div>`);
   /* only real differences make a card: 20% either way */
   const said = (x, up, down) => x.x >= 1.2 ? up(`<em>${x.x}×</em>`) : x.x <= .83 ? down(`<em>${Math.round((1 - x.x) * 100)}% less</em>`) : null;
   const push = (x, up, down, sub, btn) => { if (!x) return; const h = said(x, up, down); if (h) cells.push(`<div class="card ins-card"><p class="big">${h}</p><p>${sub}</p>${btn || ''}</div>`); };
@@ -10053,7 +10126,7 @@ function drawInsightsReal() {
 /* post-mortem: why one post popped or flopped, from Claude, against your own median */
 async function postMortem(id, btn) {
   const p = HIST().find(x => x.id === id); if (!p) return; const box = $(`[data-pid="${CSS.escape(id)}"] .pm`); if (!box) return;
-  if (!aiOn()) { const h = hookScore(p.text), an = ANALYSIS(); box.hidden = false; box.innerHTML = `<p><b>${Math.round(HWCore.eng(p) / an.median * 10) / 10}× your median.</b> Hook ${h.score}: ${esc(h.reason)} ${p.at ? `Posted ${DOW[new Date(p.at).getDay()]} at ${fmtTime(`${new Date(p.at).getHours()}:${String(new Date(p.at).getMinutes()).padStart(2, '0')}`)}.` : ''}</p><small class="faint">Connect Claude for the full post-mortem.</small>`; return; }
+  if (!aiOn()) { const h = hookScore(p.text), an = ANALYSIS(); box.hidden = false; box.innerHTML = `<p><b>${Math.round(HWCore.eng(p) / an.median * 10) / 10}× your median.</b> ${TIER(h.score).word} hook: ${esc(h.reason)} ${p.at ? `Posted ${DOW[new Date(p.at).getDay()]} at ${fmtTime(`${new Date(p.at).getHours()}:${String(new Date(p.at).getMinutes()).padStart(2, '0')}`)}.` : ''}</p><small class="faint">Connect Claude for the full post-mortem.</small>`; return; }
   btn.classList.add('is-loading'); box.hidden = false; box.innerHTML = `<p class="faint">${esc(cap(AI_NAME()))} is comparing it with your best posts…</p>${hintHTML('insights', { rotate: true, cls: 'loading-hint' })}`;
   try { const an = ANALYSIS(); const r = await ask(HWCore.prompts.postmortem({ post: p, median: an.median, similar: an.top.filter(x => x.id !== id).slice(0, 5), voice: voiceSpec() }));
     box.innerHTML = `<p><b>${esc(r.verdict || '')}</b></p><ul>${(r.reasons || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${r.next_time ? `<p><span class="label">Next time</span> ${esc(r.next_time)}</p>` : ''}${r.rewrite ? `<div class="pm-rw"><span class="label">Try this first line</span><p>${esc(r.rewrite)}</p><button class="btn sm" data-nact="userw" data-t="${esc(r.rewrite)}">${ic('write', 'sm')} Write it</button></div>` : ''}`;
@@ -10063,7 +10136,7 @@ function MYTOP() { if (!HIST().length) return TOP_POSTS; return ANALYSIS().top.m
 /* Your posts: every post you brought (plus queue posts that came back with numbers), sortable and searchable, 20 to a page.
    Rows are built once per history change; sorting and search touch plain fields, and only the current page becomes HTML. */
 const PT = { k: 'at', dir: -1, q: '', pg: 0 }, PT_PER = 20;
-const PT_COLS = [['at', 'Date'], ['text', 'Post'], ['hook', 'Hook score'], ['likes', 'Likes'], ['replies', 'Replies'], ['reposts', 'Reposts'], ['views', 'Views'], ['rate', 'Engagement rate']];
+const PT_COLS = [['at', 'Date'], ['text', 'Post'], ['hook', 'Hook'], ['likes', 'Likes'], ['replies', 'Replies'], ['reposts', 'Reposts'], ['views', 'Views'], ['rate', 'Engagement rate']];
 let _pt = { key: '', v: null };
 function ptRow(p, extra) { const v = p.views || 0, e = (p.likes || 0) + (p.replies || 0) + (p.reposts || 0); return { id: p.id, text: p.text, thread: p.thread || [], at: p.at || null, likes: p.likes || 0, replies: p.replies || 0, reposts: p.reposts || 0, views: v, rate: v ? e / v : null, lc: p.text.toLowerCase(), hook: null, ...extra }; }
 function ptData() {
@@ -10089,7 +10162,7 @@ function ptView() {
 }
 const ptDate = t => { if (!t) return '—'; const x = new Date(t); return `${MON[x.getMonth()]} ${x.getDate()}${x.getFullYear() !== new Date().getFullYear() ? `, ${x.getFullYear()}` : ''}`; };
 const ptRate = r => r.rate == null ? '—' : (r.rate * 100).toFixed(r.rate >= .1 ? 1 : 2) + '%';
-const ptSortName = (k, d) => k === 'at' ? (d < 0 ? 'Newest first' : 'Oldest first') : k === 'text' ? (d > 0 ? 'Post, A to Z' : 'Post, Z to A') : k === 'hook' || k === 'rate' ? `${d < 0 ? 'Highest' : 'Lowest'} ${k === 'hook' ? 'hook score' : 'engagement rate'}` : `${d < 0 ? 'Most' : 'Fewest'} ${k}`;
+const ptSortName = (k, d) => k === 'at' ? (d < 0 ? 'Newest first' : 'Oldest first') : k === 'text' ? (d > 0 ? 'Post, A to Z' : 'Post, Z to A') : k === 'hook' ? (d < 0 ? 'Sharpest hooks first' : 'Flattest hooks first') : k === 'rate' ? `${d < 0 ? 'Highest' : 'Lowest'} engagement rate` : `${d < 0 ? 'Most' : 'Fewest'} ${k}`;
 /* the header tiles: the selected range against the one before it, counted back from your newest post when the history is old */
 const ptEnd = rows => { const last = Math.max(0, ...rows.filter(r => r.at).map(r => r.at)) || Date.now(); return Date.now() - last > 14 * DAY ? last : Date.now(); };
 function ptTiles(rows, views) {
@@ -10130,11 +10203,11 @@ function ptBody() {
   if (n) n.textContent = q ? `${fmtN(list.length)} of ${fmtN(rows.length)} posts match` : `${fmtN(rows.length)} post${rows.length === 1 ? '' : 's'}`;
   if (sel) { if (![...sel.options].some(o => o.value === v)) sel.add(new Option(ptSortName(PT.k, PT.dir), v)); sel.value = v; }
   if (!list.length) { body.innerHTML = `<div class="pt-empty"><p>No posts match “${esc(q)}”.</p><button class="btn sm" data-ptclear>Clear search</button></div>`; return; }
-  const num = (r, k) => k === 'hook' ? ptHook(r) : k === 'rate' ? ptRate(r) : k === 'views' && !r.views ? '—' : fmtN(r[k]), fl = r => firstLineHTML(clip(r.text.split('\n')[0], 160));
+  const num = (r, k) => k === 'hook' ? tierChip(ptHook(r), { cls: 'sm' }) : k === 'rate' ? ptRate(r) : k === 'views' && !r.views ? '—' : fmtN(r[k]), fl = r => firstLineHTML(clip(r.text.split('\n')[0], 160));
   body.innerHTML = `<table class="data pt-tbl"><caption class="sr">Your posts, sorted by ${esc(ptSortName(PT.k, PT.dir).toLowerCase())}. Page ${PT.pg + 1} of ${pages}. Choose a post to reuse or copy it.</caption>
     <thead><tr>${cols.map(([k, l]) => `<th scope="col" class="pt-${k}${k !== 'at' && k !== 'text' ? ' n' : ''}"${PT.k === k ? ` aria-sort="${PT.dir > 0 ? 'ascending' : 'descending'}"` : ''}><button type="button" data-pts="${k}">${l}<span class="pt-ar" aria-hidden="true">${PT.k === k ? (PT.dir > 0 ? '↑' : '↓') : ''}</span></button></th>`).join('')}</tr></thead>
     <tbody>${page.map(r => `<tr data-pr="${esc(r.id)}">${cols.map(([k]) => k === 'at' ? `<td class="pt-at">${ptDate(r.at)}</td>` : k === 'text' ? `<td class="pt-text"><button type="button" class="pt-open" aria-haspopup="menu" aria-expanded="false">${fl(r)}</button></td>` : `<td class="n">${num(r, k)}</td>`).join('')}</tr>`).join('')}</tbody></table>
-    <ul class="pt-cards" role="list">${page.map(r => `<li><button type="button" class="pt-open pt-card" data-pr="${esc(r.id)}" aria-haspopup="menu" aria-expanded="false"><span class="pt-fl">${fl(r)}</span><span class="pt-nums"><span>${ptDate(r.at)}</span><span>Hook score ${ptHook(r)}</span><span>${fmtN(r.likes)} likes</span><span>${fmtN(r.replies)} replies</span><span>${fmtN(r.reposts)} reposts</span>${r.views ? `<span>${fmtN(r.views)} views</span><span>${ptRate(r)} engagement</span>` : ''}</span></button></li>`).join('')}</ul>
+    <ul class="pt-cards" role="list">${page.map(r => `<li><button type="button" class="pt-open pt-card" data-pr="${esc(r.id)}" aria-haspopup="menu" aria-expanded="false"><span class="pt-fl">${fl(r)}</span><span class="pt-nums"><span>${ptDate(r.at)}</span><span>${tierChip(ptHook(r), { noun: true, cls: 'sm' })}</span><span>${fmtN(r.likes)} likes</span><span>${fmtN(r.replies)} replies</span><span>${fmtN(r.reposts)} reposts</span>${r.views ? `<span>${fmtN(r.views)} views</span><span>${ptRate(r)} engagement</span>` : ''}</span></button></li>`).join('')}</ul>
     ${pages > 1 ? `<nav class="pt-pg" aria-label="Pages of posts"><button type="button" class="btn sm" data-ptp="-1"${PT.pg ? '' : ' disabled'}>${ic('left', 'sm')} Previous</button><span class="pt-pn"><span aria-hidden="true">${PT.pg + 1}/${pages}</span><span class="sr">Page ${PT.pg + 1} of ${pages}</span></span><button type="button" class="btn sm" data-ptp="1"${PT.pg < pages - 1 ? '' : ' disabled'}>Next ${ic('right', 'sm')}</button></nav>` : ''}`;
 }
 function ptMenu(anchor, id) {
@@ -10249,7 +10322,7 @@ async function learnVoice(btn) {
 ROUTES.upgrade = () => {
   const n = S.ai.used; const h = hookScore(S.draft.tweets[0].text).score;
   mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited rewrites in your voice, a ping when a post takes off with replies drafted, and insights that say what to write next.</p>
-    ${!PRICED() ? '<p class="pill accent" style="height:auto;padding:6px 12px;white-space:normal">Every feature is on for this account.</p>' : n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free rewrites today${h ? ` · your current hook scores ${h}` : ''}</p>` : ''}
+    ${!PRICED() ? '<p class="pill accent" style="height:auto;padding:6px 12px;white-space:normal">Every feature is on for this account.</p>' : n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free rewrites today${h ? ` · your current hook: ${tierText(h)}` : ''}</p>` : ''}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing period"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
     <div class="pl-grid" id="up-plans" style="margin-top:32px">${plansHTML(true)}</div>
     <div class="faq"><h2 class="h2" style="margin-bottom:12px">Questions, answered plainly</h2>${[['Is the free plan actually free?', 'Yes. Five rewrites a day, hook scores on everything, unlimited drafts and ideas. No card.'], ['Will it sound like ChatGPT?', 'It shouldn’t. It learns from your posts, follows your tone sliders and never uses anything on your never-say list. If a word isn’t you, add it to that list.'], ...(BILLING ? [['Can I cancel anytime?', 'Yes, from Your plan in the account menu. Your drafts and ideas stay with you on Free.']] : []), ['Which platforms?', 'X and LinkedIn post on time once you connect them through your own Hookworthy server. Threads and Bluesky get their own preview and version, and you post those by hand.'], ['Do you post without asking?', 'Never. Only posts you schedule go out, at the time you picked, and you get a few seconds to take one back after Post now. Weekly reruns stay off unless you turn them on.']].map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>

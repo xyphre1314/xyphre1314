@@ -32,6 +32,14 @@ colors:
   success: "#16704A"
   warn: "#9A4F0A"
   error: "#B42A34"
+  tier-flat: "#65645C"
+  tier-warming: "#845608"
+  tier-sharp: "#6A2FA0"
+  tier-honed: "#3A1E5C"
+  tier-flat-dark: "#ADA6B4"
+  tier-warming-dark: "#E8B35A"
+  tier-sharp-dark: "#B494F0"
+  tier-honed-dark: "#E2D0FF"
   x-text: "#0F1419"
   x-text-dark: "#E7E9EA"
   x-secondary: "#536471"
@@ -174,13 +182,13 @@ The owner picked Lilac & Plum from the 20-palette exploration (round 10), so the
 | Role | Variable | Value |
 |---|---|---|
 | Action pastel (primary buttons, selection) | `--pa` | #EADCFF lilac |
-| Link on light / on dark (links, caret, switches, hook chip 70+, charts) | `--pl` / `--pl-d` | #6A2FA0 / #CDB2FF |
+| Link on light / on dark (links, caret, switches, charts) | `--pl` / `--pl-d` | #6A2FA0 / #CDB2FF |
 | Blocks (story, final call, Pro card, app-icon tile) | `--pb1` `--pb3` `--ppro` | #3B1F5C deep plum |
 | Ink block (voice chapter) | `--pb2` | #1A1A1A |
 | Spark (rare active states) | `--psp` | #FF9F6B apricot |
 | Squiggle | `--psq` | #A27BE0, drawn as SVG at load |
 
-**Plum ramp (app, round 27).** `--plum-900` #3A1E5C (Today's write block, Pro card), `--plum-600` #6A2FA0 (links, focus, hook 70+), `--plum-400` #9466D6 (dark: #A887E8; squiggle, dials), `--lilac` #E8DBFF and `--lilac-soft` (selection, chips), `--apricot` #F28A55 (spark, used rarely). Every app accent comes from this ramp.
+**Plum ramp (app, round 27).** `--plum-900` #3A1E5C (Today's write block, Pro card), `--plum-600` #6A2FA0 (links, focus, the Sharp tier), `--plum-400` #9466D6 (dark: #A887E8; squiggle, dials), `--lilac` #E8DBFF and `--lilac-soft` (selection, chips), `--apricot` #F28A55 (spark, used rarely). Every app accent comes from this ramp.
 
 Why plum: blue belongs to X, Typefully and Buffer; plum stands apart in a creator's tab bar, reads creative rather than corporate, stays warm next to cream, and its lilac buttons keep ink text readable in dark mode. The 20-palette board is kept as history in CRITIQUE.md round 10.
 
@@ -195,6 +203,19 @@ Round 9's harbor blue (#0B3A66) and periwinkle as the only brand colors; round 8
 ### Semantic (app)
 - **Success** #2B7A4B / dark #6FCF97, **Warn** #A0560F / #F0A458, **Error** #B3313A / #FF8A8A: state only, each passing AA on its theme.
 
+### Hook tiers (round 32)
+Four colours for the four hook words. They're on-brand: grey, honey and two plums, never traffic-light red and green. The word always shows, so colour is never the only signal. Contrast is text on the page / on the chip's own tint.
+
+| Tier | Variable | Light | Dark |
+|---|---|---|---|
+| Flat (under 45) | `--tier-flat` | #65645C, 5.8:1 on cream, 5.2:1 on its tint | #ADA6B4, 7.9:1 on #141118, 5.5:1 on its tint |
+| Warming (45–69) | `--tier-warming` | #845608 honey, 6.2:1 / 5.5:1 | #E8B35A, 9.8:1 / 6.6:1 |
+| Sharp (70–84) | `--tier-sharp` | #6A2FA0 plum, 8.1:1 / 7.0:1 | #B494F0, 7.5:1 / 5.3:1 |
+| Honed (85+) | `--tier-honed` | #3A1E5C deep plum. The chip is filled, with cream text (13.5:1) and a soft lilac glow (`--tier-glow`) | #E2D0FF ring and word (13.1:1). The chip is filled #4A2A78 with #F6F2E8 text (9.9:1) and a glow |
+
+- **Ink surfaces** (the Sharpen pill) use the opposite theme's set, as `--tier-*-inv`.
+- **Today's plum card** uses fixed light tints.
+
 ### Platform replicas
 These are not Hookworthy colors. They exist so a replica matches the real app, and they appear only inside a post, feed or phone.
 - **X**: text #0F1419 / #E7E9EA, secondary #536471 / #71767B, divider #EFF3F4 / #2F3336, media #CFD9DE, blue #1D9BF0, like #F91880, repost #00BA7C, counter warn #FFD400, over-limit #F4212E.
@@ -204,7 +225,8 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 
 ### Named Rules
 **The One Accent Rule.** The accent is solid in exactly two jobs (the one main button on a screen, and on/selected states) and a soft tint in one (the highlighter under words worth stopping for). Everything else is neutral. If two solid blue things compete on one screen, one of them is wrong.
-**The One Threshold Rule.** 70 is the only number that matters. At 70 or more, the hook chip fills with the accent, the tint sweeps under the first line, and a small sound plays. Below 70, nothing celebrates.
+**The One Threshold Rule.** Sharp is the bar ("Aim for Sharp"; 70 underneath). When a line reaches Sharp, the dial turns plum, the tint sweeps under the first line and a small sound plays. Below it, nothing celebrates.
+**The Words-Not-Numbers Rule.** People see the hook as a word (Flat, Warming, Sharp, Honed), never as "72" or "/100". The number stays underneath for sorting and thresholds, and it shows ("Sharp · 76") only when Settings › Write › Show scores as numbers is on.
 **The Replica Rule.** Platform colors never leave a platform replica, and Hookworthy colors never enter one.
 
 ## Typography
@@ -219,7 +241,7 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 - **Body** (400, 17–21px, max ~56ch): chapter intros.
 - **UI** (500, 13–15px): controls, captions.
 - **Hand** (Caveat 500, 20–24px, rotated 2–4°): at most two margin notes in the hero, with drawn arrows.
-- **Data** (Geist Mono 500, tabular): scores, counts, times, keys.
+- **Data** (Geist Mono 500, tabular): counts, times, keys, and hook numbers only when the numbers setting is on.
 
 ### Named Rules
 **The Numbers-Only Mono Rule.** Mono is for counts, times, scores and keys, never sentences.
@@ -230,17 +252,17 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 
 The homepage uses a 1180px wrap with a clamp(16px, 4vw, 40px) gutter. It is about 9 screens at 1440. Every rule is scoped under `.hw27`.
 
-1. **Hero**: "Good ideas die / in *bad* / *first lines.*" (three set lines; the squiggle sits under "first lines." only and never touches the sub) with one sub, one primary (Start free) and one ghost link (Look around the app). The visual is a live grader: soft words get a wavy underline with the reason, a dial scores the line, and **Sharpen** shows an honest rewrite as a word diff with the real score jump. **Keep it** opens Write with the line. After you type, the nav CTA reads "Keep your N →". From 1100px the hero fills most of the first screen with both halves centred on each other; the measure grows to 1360px at 1600px and 1520px at 2200px, and the grader card scales with it.
+1. **Hero**: "Good ideas die / in *bad* / *first lines.*" (three set lines; the squiggle sits under "first lines." only and never touches the sub) with one sub, one primary (Start free) and one ghost link (Look around the app). The visual is a live grader: soft words get a wavy underline with the reason, a dial scores the line, and **Sharpen** shows an honest rewrite as a word diff with the real change ("Warming → Sharp"). **Keep it** crossfades the dial's word and sweeps its colour. After you type, the nav CTA reads "Open your line" with the line's tier chip. From 1100px the hero fills most of the first screen with both halves centred on each other; the measure grows to 1360px at 1600px and 1520px at 2200px, and the grader card scales with it.
 2. **The problem**: one row of void posts that drifts with scroll (no lagging transition; cards min(330px, 100vw − 48px) on phones).
 3. **Story** (full-bleed plum, beats on a shared subgrid so the cards line up; they swipe sideways below 900px): Priya's post in three beats: the draft (48), sharpened in her voice (80, with `[your number]` left for her), scheduled Tue 8:40 AM. No likes or views.
-   **How it works** (round 30): an in-page player built from the app's own pieces (the dial, soft-word marks, the Sharpen diff and score jump, the schedule sheet, a queue card landing in the week, J/K replies). Five beats, about 21 seconds, looping. It plays only while on screen and the tab is visible, has a visible pause button, and the step list on the left (a row of bars below 1000px) jumps to any step. Under reduced motion it never plays: each step shows its finished frame.
-4. **Built around the hook**: a bento in two 7/5 rows. Each card is a label, one short line and one visual, with no paragraph: Hook score (a Your draft / Sharpened switch, the dial, five bars with a mark at 70; it flips by itself while on screen until you pick one or hover), Your voice (Tone and Polish sliders that re-say one sample line), What's working (one post, three tags, the formula, **Use this pattern**), and Reply radar (a breakout alert and one post with your drafted reply). Below 760px the cards swipe sideways.
+   **How it works** (round 30): an in-page player built from the app's own pieces (the dial, soft-word marks, the Sharpen diff and its tier change, the schedule sheet, a queue card landing in the week, J/K replies). Five beats, about 21 seconds, looping. It plays only while on screen and the tab is visible, has a visible pause button, and the step list on the left (a row of bars below 1000px) jumps to any step. Under reduced motion it never plays: each step shows its finished frame.
+4. **Built around the hook**: a bento in two 7/5 rows. Each card is a label, one short line and one visual, with no paragraph: Hook score ("Five checks, one word. Aim for Sharp.": a Your draft / Sharpened switch, the dial with its word, and the five checks as pips; it flips by itself while on screen until you pick one or hover), Your voice (Tone and Polish sliders that re-say one sample line), What's working (one post, three tags, the formula, **Use this pattern**), and Reply radar (a breakout alert and one post with your drafted reply). Below 760px the cards swipe sideways.
    **Sticky call** (round 30): a small pill at the bottom right on desktop, the 56px bar on phones. It steps aside whenever a link, button or field is under it, and comes back once the spot is clear.
 5. **Previews**: one phone with X / Threads / LinkedIn / Bluesky tabs. LinkedIn shows the fold check.
 6. **Scheduling**: the app's own calendar (`calGridHTML`) with a trading week, in the visitor's time zone.
-7. **Who it's for**: Crypto & trading first, then Founders, Creators, Ghostwriters. Each shows first lines before and after, with real hook scores.
-8. **Switching & trust** ("Everything comes in. *Nothing goes out without you.*"): three pictures, one line each. The import (Typefully, X archive and CSV dropping into Your posts, "Read in your browser"), the five checks as bars with the total against the 70 line (real hookScore numbers), and a browser window with two drafts and a plum lock ("Nothing scheduled · nothing posts"). **Pricing** ("Start free. *Size up when it’s working.*", Free trimmed to three items on the home card), **FAQ** (five questions).
-9. **Final call**: a deep plum block with cream text: "Paste the post you almost wrote" over a cream card. Type and a big dial scores the line, five bars show the checks and the reason sits underneath; "Or try a rough one" fills in an example. One lilac button ("Open it in Hookworthy") carries the line in with `carryLine()`, then "Free. Your line comes with you."
+7. **Who it's for**: Crypto & trading first, then Founders, Creators, Ghostwriters. Each shows first lines before and after, with their real tier chips.
+8. **Switching & trust** ("Everything comes in. *Nothing goes out without you.*"): three pictures, one line each. The import (Typefully, X archive and CSV dropping into Your posts, "Read in your browser"), the five checks as pips with the four-word scale under them and the line's word lit (real hookScore results), and a browser window with two drafts and a plum lock ("Nothing scheduled · nothing posts"). **Pricing** ("Start free. *Size up when it’s working.*", Free trimmed to three items on the home card), **FAQ** (five questions).
+9. **Final call**: a deep plum block with cream text: "Paste the post you almost wrote" over a cream card. Type and a big dial names the line's tier in Garamond, five pips show the checks and the reason sits underneath; "Or try a rough one" fills in an example. One lilac button ("Open it in Hookworthy") carries the line in with `carryLine()`, then "Free. Your line comes with you."
 10. **Footer** (every light-world page): "End of the page. *Start of the post.*" with a Start free link, four link columns (Product, Free tools, App, Legal), the wordmark at full width, then © · the promise · Back to top. Privacy and Terms live on `#legal`, in plain words.
 
 The header and footer sit outside `<main id="main">`; the announcement bar is an `<aside>`. Reveals run 600ms at most and never blur large cards. Phone length is about 11 screens at 390.
@@ -249,7 +271,7 @@ The app keeps its 232px sidebar and inset main panel. The composer's "In the fee
 
 ## Elevation & Depth
 
-Real-world depth only: phone frames with a machined edge, cards with a 1px hairline and a long soft drop (`0 16px 30px -24px rgba(0,0,0,.35)`), and 3D perspective in the ring. No glows and no glass, except the iOS notification, which copies iOS's own material.
+Real-world depth only: phone frames with a machined edge, cards with a 1px hairline and a long soft drop (`0 16px 30px -24px rgba(0,0,0,.35)`), and 3D perspective in the ring. No glows and no glass. There are two exceptions: the iOS notification, which copies iOS's own material, and the Honed hook tier, whose soft lilac glow is the reward for the top tier.
 
 ## Shapes
 
@@ -279,15 +301,46 @@ There is one primary button style everywhere: lilac with a 1.5px ink edge (the h
 It follows X, but stays hidden until you're near the limit: it appears at 20 remaining, turns to warning then error, shows the count, and hides the circle at 10 over.
 
 ### Improve panel (round 27)
-One panel beside the post, with three tabs: **Score** (the hook dial's reason, a fix, and the five sub-scores under "How it's scored"), **Takes** (Punchier, Shorter, Hook, then More angles and Get a second opinion), and **Formulas**. The hook dial sits in the first post's gutter, plum at 70+, warn under 50. Voice match is a single line under the post ("Sounds 82% like you"). A rewrite that adds a number you didn't write gets flagged before you keep it.
+One panel beside the post, with three tabs: **Score** (the tier chip, the reason, "Aim for Sharp" when it's under, and the five checks as pips under "How it's scored"), **Takes** (Punchier, Shorter, Hook, then More angles and Get a second opinion), and **Formulas**. The hook dial sits in the first post's gutter: a ring in the tier's colour, the tier's glyph inside, and the word under it. Voice match is a single line under the post ("Sounds 82% like you"). A rewrite that adds a number you didn't write gets flagged before you keep it.
 
 ### Sharpen (selection rewrite)
 Select three or more characters in a post and an ink pill appears above where the selection starts. It offers Punchier, Shorter, Clearer, Bolder and More human (⌥1–5), plus Custom… for a note. Picking one previews the first of up to three versions in place on a marker-soft background. You flip versions with ‹ › or the arrow keys, keep with ↵ (the accent Keep button), and cancel with Esc. Sharpen is free and unlimited, because it only touches the words you chose.
 - **One engine, one set of checks** (`HWCore.SHARPEN` in core.js). The selection snaps to whole words; sentence moves (a question, a split, a reorder) only run on sentences selected whole; the seams are fitted (spacing, casing, end punctuation, a/an, no word repeated across the join). Every version, Basic or Claude, must change something real, keep every number, ticker, name and "not", add no number, hype word, emoji or AI tell, do what its option says, keep the hook score on a first line, and differ from the other versions.
 - **Claude** writes the versions when it's on, from a prompt that asks for the selected words only. Quotes, labels, numbered lists, explanations and words echoed from around the selection are stripped; anything that still fails the checks is dropped, and Basic versions stand in (the pill says "· Basic").
 - **Nothing passes?** An honest note says what was checked and what's already working ("Nothing hedged to firm up in “…”. What’s working: a real number (40%), no hedges, 8 words."). Never "already good". A one- or two-word selection offers **Whole sentence**. Three or more words with nothing to change on their own widen to their sentence, and the pill says "· sentence".
-- **Motion** (all under 400ms, transform and opacity, typing cuts it short): while Claude writes, the chosen words pulse left to right in the accent tint and the pill breathes three dots. When a version lands, words that go strike through and fade (110ms), then new words resolve from a 4px blur one after another under a lilac tint that settles. Flipping versions crossfades the words and slides the count. A hook score that changes counts up in the pill ("61 → 77") with one small spring. Keep lands a plum ring where the words end, the dial counts to its new score and springs once, and the swap sound plays. Reduced motion: an instant swap with the plain highlight.
-- **Improve › Rewrites** uses the same checks and motion: changes resolve in left to right, the "Hook 61 → 82" figure counts up, the card rises once without blur and doesn't rise again when you flip versions.
+- **Motion** (all under 400ms, transform and opacity, typing cuts it short): while Claude writes, the chosen words pulse left to right in the accent tint and the pill breathes three dots. When a version lands, words that go strike through and fade (110ms), then new words resolve from a 4px blur one after another under a lilac tint that settles. Flipping versions crossfades the words and slides the count. When the hook changes, the pill says how: "Warming → Sharp" with the new word rising in, or "Sharper" / "Less sharp" within a tier. Keep lands a plum ring where the words end. The gutter dial either crossfades to its new word as its colour sweeps, or says "Sharper" for a moment as the ring grows and glows. The swap sound plays. Reduced motion: an instant swap with the plain highlight.
+- **Improve › Rewrites** uses the same checks and motion: changes resolve in left to right, the header says "Hook Warming → Sharp" (or "Sharper") with the new word rising in, the card rises once without blur and doesn't rise again when you flip versions.
+
+### Hook score: words, not numbers (round 32)
+The 0–100 heuristic in `HWCore.hookScore` is unchanged. People see it as one of four words. The words describe the line, never its reach ("Scroll-stopper" and "Hooked" were dropped for that reason).
+
+| Word | Score | Colour | Glyph |
+|---|---|---|---|
+| **Flat** | under 45 | grey | a flat line |
+| **Warming** | 45–69 | honey | a soft peak |
+| **Sharp** | 70–84 (the bar) | plum | a sharp peak |
+| **Honed** | 85+ | deep plum with a soft glow | a solid point |
+
+- **Core:** `HWCore.hookTier(score)`, `HWCore.hookMove(a, b)` and `HWCore.partState(v)`. `hookScore()` also returns `tier`.
+- **UI helpers** (index.html):
+  - `tierChip()` draws a small ring that fills with the score, then the word, with an optional "hook".
+  - `tierMoveHTML()` / `tierSay()` give the change and its screen-reader sentence.
+  - `partsHTML()` draws the five checks.
+  - `dialTier()` / `dialMove()` drive the homepage dials.
+  - `bigScore()` draws the Hooks dial.
+- **Dials:** the ring still fills in proportion to the score, with no number. Its colour follows the tier. The centre shows the word, or the glyph with the word under it in the 34px gutter dial.
+- **The five checks** (Clear, Open loop, Specific, Tension, Short) are pips: filled with "Yes" (70+), half with "Some" (45–69), empty with "Not yet". The one-line reason stays.
+- **Changes:**
+  - Up a tier: "Warming → Sharp". The new word rises in and the ring's colour sweeps.
+  - Same tier, 3+ points better: "Sharper", and the ring grows a little with a gentle glow.
+  - Worse: "Less sharp", or "Sharp → Warming" in neutral grey.
+  - A point or two either way is "About the same", because a rule of thumb shouldn't call noise better.
+  - Everything runs under 400ms and swaps instantly with reduced motion.
+- **Screen readers** hear the words ("Hook went from Warming to Sharp.").
+- **Copy:** the bar is "Aim for Sharp". Reason strings never mention numbers.
+- **Tables and sorting:** they keep the number internally ("Sharpest hooks first") and show tier chips.
+- **Settings › Write › Show scores as numbers** (off by default) appends the number for power users: "Sharp · 76", "Warming → Sharp 61 → 76", "Yes · 82".
+- **Honest by design:** the words grade the words on the page. Insights compares "Sharp or better vs Flat" on your own posts to show whether that holds for your audience.
 
 ### Visuals
 The spark-image tool opens four kinds of visual, each rendered to canvas in-browser:
@@ -313,7 +366,7 @@ The accounts are labelled Sample until live search is connected.
 Sounds are synthesized in Web Audio and never samples. Each is under 350 ms and very quiet:
 - **tick:** toggles and tabs.
 - **tap:** primary actions.
-- **hook:** a rising two-note cue when the first line crosses 70.
+- **hook:** a rising two-note cue when the first line reaches Sharp.
 - **swap:** a rewrite or take is kept.
 - **done:** a four-note arpeggio when a post is scheduled or published.
 
@@ -323,11 +376,11 @@ Sounds are on by default in the app and can be switched off in the account menu.
 - **Sidebar:** logo, a New post pill, Search (⌘K / Ctrl K), then Today, Write, Ideas, Replies, Queue and Insights. Your five most recent drafts sit below, and the account button (which also switches client voices) is at the bottom. There are no section headers.
 - **Composer top bar:** status, a “N things to check” pill when there is something to look at, Post to, Focus, a labelled Preview toggle (pressed when open), ··· and Schedule. The preview panel has its own **Hide** button top right, and ⌘\\ works from inside the editor.
 - **Navigation:** the daily loop only (**Today**, Write, Ideas, **Replies**, Queue, Insights). Hooks and Your voice live in ⌘K, G H / G V and the account menu. On phones the tab bar is Today, Replies, + (hold to capture an idea), Queue, More.
-- **Today** is one next action. A plum hero card picks it: reply while a post is live (first hour), rescue a missed post, or write the next one (your best saved idea, 70+ hooks first). Below it are a yesterday / today / tomorrow strip, how the last post did, and the weekly rhythm (goal 5).
+- **Today** is one next action. A plum hero card picks it: reply while a post is live (first hour), rescue a missed post, or write the next one (your best saved idea, Sharp and Honed hooks first). Below it are a yesterday / today / tomorrow strip, how the last post did, and the weekly rhythm (goal 5).
 - **Replies** is a triage list. One card is open and the rest are compact. J / K move, S skips, ⌘↵ (Ctrl+Enter on a PC) replies. The verb is always "Reply".
 - **Keyboard hints** follow the computer: ⌘ ⌥ ⇧ ↵ on a Mac, Ctrl Alt Shift Enter on a PC. They are hidden on touch.
 - **Ideas:** three tabs that say what they are: **Post ideas**, **What’s working** (why posts in your niche popped, sample data until real search backs it) and **Saved** (links, notes, screenshots and voice memos you parked).
-- **Hook formulas** are no longer a tab. When your first line scores under 70, the hook panel offers three formulas; picking one adds it above your line with the first blank selected. The full library stays reachable from ⌘K.
+- **Hook formulas** are no longer a tab. When your first line is under Sharp, the hook panel offers three formulas; picking one adds it above your line with the first blank selected. The full library stays reachable from ⌘K.
 
 ### Honest states (round 28)
 - **Practice mode.** With no account connected, nothing posts. Post now becomes "Marking as posted · nothing leaves this browser", with a Mark now button. The card reads **Marked**, never Live, and can go back to drafts. Connections opens with a practice-mode note.
@@ -345,7 +398,7 @@ Each voice (you plus up to eight clients) keeps its own drafts, counts, default 
 - Hints follow the platform (⌘ ⌥ ↵ on a Mac, Ctrl Alt Enter on a PC) and hide on touch.
 
 ### Before you post (checks)
-The small stuff people only notice once it’s live, checked on every keystroke and shown in the schedule sheet and the top-bar pill: leftover blanks ([brackets], TK, TODO), a link in the first post on X or LinkedIn (fix: move it to a reply), a word used three times, more than two hashtags, images without a description (fix: describe it), thread numbering that doesn’t match (fix: renumber), a thread ending on a colon or ellipsis, a post starting with @ on X, a first line that repeats something already queued, double spaces (fix: tidy up), and a quoted BTC/ETH/SOL price that has moved more than 3% (fix: update the price). The schedule sheet also checks the hook: under 60 it offers your own line tightened, then two formulas. Checks never block posting.
+The small stuff people only notice once it’s live, checked on every keystroke and shown in the schedule sheet and the top-bar pill: leftover blanks ([brackets], TK, TODO), a link in the first post on X or LinkedIn (fix: move it to a reply), a word used three times, more than two hashtags, images without a description (fix: describe it), thread numbering that doesn’t match (fix: renumber), a thread ending on a colon or ellipsis, a post starting with @ on X, a first line that repeats something already queued, double spaces (fix: tidy up), and a quoted BTC/ETH/SOL price that has moved more than 3% (fix: update the price). The schedule sheet also checks the hook: below upper Warming (60 underneath) it offers your own line tightened, then two formulas. Checks never block posting.
 
 ### Focus mode
 ⌘. (or the target button) hides the sidebar, preview and chrome, centers the editor and keeps the line you’re on at eye height (typewriter scrolling). Esc or ⌘. brings everything back. Desktop only.
@@ -378,7 +431,7 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
 
   | Say | Don't say |
   |---|---|
-  | **Hook** (the first line), **Hook score** | grade (as a noun) |
+  | **Hook** (the first line), **Hook score** (the feature); the four tier words **Flat**, **Warming**, **Sharp**, **Honed**; **Aim for Sharp** (the bar); **Sharper** / **Less sharp** (a change within a tier) | grade (as a noun); "Hook 72", "/100", "70 is the bar"; Hooked, Scroll-stopper (they forecast readers) |
   | **Rewrite** (the whole post), **Sharpen** (selected words), **version** | riff, take, option, "applied", AI edit |
   | **Formula** (a fill-in first line or post shape) | shape, structure, pattern (as a template), hook library |
   | **Pattern** (only what What's working finds) | |
@@ -396,7 +449,7 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
   | **Bring your posts** | Import it, Add posts |
   | **Breakout alert** | Follow-up reply |
   | **Plans** (the page), **Your plan** (paid), **Upgrade to Pro** (free users only) | Pricing (preview), Hookworthy Pro, Manage plan |
-  | **Tension** (the fourth sub-score) | Friction, Stakes |
+  | **Tension** (the fourth check) | Friction, Stakes |
   | **Keep** (accepts a version) / **version** (one result of Rewrite or Sharpen) | Accept, take, angle (for rewrites) |
   | **Add an open loop** (the rewrite) | Curiosity gap |
   | **Save an idea** | Capture an idea |

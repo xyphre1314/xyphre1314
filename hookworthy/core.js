@@ -117,9 +117,35 @@
     else if (parts.specificity < 45) { reason = 'No numbers or specifics yet. Concrete beats clever.'; tone = 'fix'; }
     else if (parts.curiosity < 45) { reason = 'It answers itself. Leave one question open.'; tone = 'fix'; }
     else if (parts.tension < 45) { reason = 'Safe take. What does everyone get wrong here?'; tone = 'fix'; }
-    else { reason = 'Solid. A sharper verb or a number would push it over 80.'; tone = 'ok'; }
-    return { score, parts, reason, tone };
+    else { reason = score >= 45 ? `Nearly there. A stronger verb or a number would make it ${HOOK_TIERS[2].word}.` : 'Nothing wrong with it, nothing strong yet. A stronger verb or a number would lift it.'; tone = 'ok'; }
+    return { score, parts, reason, tone, tier: hookTier(score).word };
   }
+
+  /* ---------------- hook tiers ----------------
+     The score stays 0–100 underneath (sorting, thresholds, the learning model). People see one of four words,
+     each describing the line, never its reach. 70 is the bar: "Aim for Sharp". */
+  const HOOK_TIERS = [
+    { key: 'flat', word: 'Flat', min: 0 },
+    { key: 'warming', word: 'Warming', min: 45 },
+    { key: 'sharp', word: 'Sharp', min: 70 },
+    { key: 'honed', word: 'Honed', min: 85 }
+  ];
+  function hookTier(score) {
+    const s = +score || 0; let i = 0;
+    for (let k = 1; k < HOOK_TIERS.length; k++) if (s >= HOOK_TIERS[k].min) i = k;
+    return { ...HOOK_TIERS[i], rank: i, next: HOOK_TIERS[i + 1] || null };
+  }
+  /* what a change did to the line, in words: a new tier ("Warming → Sharp"), a clear step within one ("Sharper",
+     "Less sharp"), or about the same (a point or two is noise in a rule of thumb, so it isn't called better) */
+  function hookMove(a, b) {
+    const A = hookTier(a), B = hookTier(b), d = (+b || 0) - (+a || 0);
+    if (B.rank !== A.rank) return { dir: B.rank > A.rank ? 'up' : 'down', cross: true, from: A, to: B, text: `${A.word} → ${B.word}` };
+    if (d >= 3) return { dir: 'up', cross: false, from: A, to: B, text: 'Sharper' };
+    if (d <= -3) return { dir: 'down', cross: false, from: A, to: B, text: 'Less sharp' };
+    return { dir: 'same', cross: false, from: A, to: B, text: 'About the same' };
+  }
+  /* one sub-check as a state: strong (filled), some (half), not yet (empty) */
+  function partState(v) { return v >= 70 ? { key: 'full', word: 'Yes' } : v >= 45 ? { key: 'half', word: 'Some' } : { key: 'empty', word: 'Not yet' }; }
 
   /* ---------------- post kinds (for "what's working") ---------------- */
   function kindOf(text) {
@@ -265,7 +291,7 @@
     const hours = Array.from({ length: 24 }, (_, h) => { const a = dated.filter(p => new Date(p.at).getHours() === h).map(eng); return { h, n: a.length, x: a.length ? +(median(a) / med).toFixed(2) : 0 }; });
     /* hook calibration: does a higher hook score actually earn more here? */
     const scored = P.map(p => ({ s: hookScore(p.text).score, e: eng(p) }));
-    const hi = scored.filter(x => x.s >= 70), lo = scored.filter(x => x.s < 50);
+    const hi = scored.filter(x => x.s >= 70), lo = scored.filter(x => x.s < 45); /* Sharp or better vs Flat */
     const calib = hi.length >= 3 && lo.length >= 3 ? { hiN: hi.length, loN: lo.length, x: +(median(hi.map(x => x.e)) / Math.max(1, median(lo.map(x => x.e)))).toFixed(2), r: +pearson(scored.map(x => x.s), scored.map(x => Math.log1p(x.e))).toFixed(2) } : null;
     /* cadence */
     const span = dated.length > 1 ? (Math.max(...dated.map(p => p.at)) - Math.min(...dated.map(p => p.at))) / 864e5 : 0;
@@ -1360,5 +1386,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   }
   const SHARPEN = { OPTS: SH_OPTS, LABEL: SH_LABEL, sharpen, fromModel, frame, fit, judge, styleOf, versionsFor, pickVersions, modelTexts, stripModel, deEcho, checkPost: checkPost2, whyNot, nearSame, tidy: tidyT, cutHedges, MOVES, sub, WORDY, CONTRACT_W, PLAIN_W, JARGON_W, SHORTHAND, IDIOM, numsOf, ticksOf };
 
-  return { learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
+  return { HOOK_TIERS, hookTier, hookMove, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
 });
