@@ -394,17 +394,16 @@
 
   /* ---------------- prompts ----------------
      Every call carries the same editor brief plus the author's own evidence.
-     tier: quick | default | complex → server maps to Sonnet 5.5 (low / medium effort) or Opus 5.5.
-     All structured calls ask for one JSON value. */
-  const BRIEF = `You are Hookworthy's editor: a sharp friend who edits social posts so they sound like the author on a good day, never like AI.
-Hard rules:
-- Keep the author's facts, numbers, names and claims. Never invent a number, a result, a person or an event. If a stronger version needs a number the author didn't give, write [number] instead.
-- Match the author's voice from the evidence given: casing, punctuation, line breaks, sentence length, slang, emoji and hashtag habits. If they write lowercase, stay lowercase.
-- Plain words. Short sentences. One idea per line.
-- Never use these AI tells: delve, game-changer, unlock, leverage, elevate, supercharge, seamless, "in today's fast-paced world", "here's the thing", "let that sink in", "it's not X, it's Y" more than once, a stack of three adjectives, rhetorical questions as filler. No em dashes unless the author uses them.
-- Never open with bait: "Here's the thing", "Unpopular opinion:", "Nobody talks about", "Most people…", "Stop X. Start Y.", "99% of you". Never end on "Agree?", "Thoughts?" or "Am I wrong?".
-- No hashtags or emoji unless the author uses them in the examples.
-- Respect the platform limit you're given.`;
+     tier: quick | default | complex → server runs Opus 5.5 at low / medium / high effort.
+     Every structured call asks for one JSON value in the prompt (the claude.ai sample path reads that) and
+     carries the same shape as a schema (the server turns it into structured outputs). */
+  const BRIEF = `You are Hookworthy's editor: a sharp friend who edits social posts so they sound like the author on a good day.
+
+The author posts what you write under their own name, so their facts are the post. Keep every fact, number, name and claim they gave. Never invent a number, a result, a person or an event; where a stronger version needs a detail only they know, write a [bracketed blank] like [number] for them to fill.
+
+Match their voice from the evidence below: casing, punctuation, line breaks, sentence length, slang, and how they use emoji and hashtags (none unless their examples have them; lowercase stays lowercase). Write in plain words and short sentences, one idea per line, within the platform limit you're given.
+
+Their readers know AI-sounding posts on sight and scroll past, and the app flags these before anything is posted, so leave them out: delve, game-changer, unlock, leverage, elevate, supercharge, seamless, "in today's fast-paced world", "let that sink in", "it's not X, it's Y" more than once, three adjectives in a row, filler rhetorical questions, and em dashes the author doesn't use. Bait openers and closers read the same way: "Here's the thing", "Unpopular opinion:", "Nobody talks about", "Most people…", "Stop X. Start Y.", "99% of you", and endings like "Agree?", "Thoughts?" or "Am I wrong?".`;
   function voiceBlock(v) {
     if (!v) return '';
     const bits = [];
@@ -418,15 +417,38 @@ Hard rules:
   const RIFF_ASK = {
     punchier: 'Make it punchier: cut filler and hedges, sharpen verbs, same length or shorter.',
     shorter: 'Make it clearly shorter (aim for two thirds of the length) without losing the point.',
-    hook: 'Rewrite the FIRST LINE so it stops the scroll (specific, a little tension or an open loop). Keep the rest, lightly tightened.',
+    hook: 'Rewrite the first line so it stops the scroll (specific, a little tension or an open loop). Keep the rest, lightly tightened.',
     contrarian: 'Reframe it as a contrarian take the author could defend. Same facts.',
     curiosity: 'Restructure it to open a curiosity gap in the first line and pay it off by the end.',
     grammar: 'Fix only spelling, grammar and punctuation. Keep their casing style and every word choice that isn\'t an error.',
     translate: 'Translate it naturally, keeping the tone, slang and line breaks.'
   };
+  /* JSON Schemas for structured outputs: every object closed, every listed field required unless noted */
+  const O = (props, opt = []) => ({ type: 'object', properties: props, required: Object.keys(props).filter(k => !opt.includes(k)), additionalProperties: false });
+  const A = items => ({ type: 'array', items }), Str = { type: 'string' }, Int = { type: 'integer' }, E = (...v) => ({ type: 'string', enum: v });
+  const KINDS = E('Contrarian', 'Story', 'Listicle', 'How-to', 'Curiosity', 'Question');
+  const SCHEMA = {
+    options: O({ options: A(O({ text: Str, why: Str })), why: Str }, ['why']),
+    versions: O({ versions: A(Str) }),
+    voice: O({ summary: Str, traits: A(O({ name: Str, evidence: Str })), rules: A(Str), avoid: A(Str), works: A(Str), most_you: Str, niche: Str }),
+    ideas: A(O({ text: Str, kind: KINDS, why: Str })),
+    postmortem: O({ verdict: Str, reasons: A(Str), next_time: Str, rewrite: Str }),
+    people: A(O({ pattern: Str, why: Str, example: Str, author: Str, try: Str })),
+    replies: A(O({ id: Int, reply: Str, why: Str })),
+    week: A(O({ slot: Int, kind: KINDS, posts: A(Str), why: Str })),
+    shootout: O({ winner: E('a', 'b'), confidence: { type: 'number' }, why: Str }),
+    digest: O({ subject: Str, headline: Str, why_best: Str, try_next: Str, first_line: Str }),
+    briefRead: O({ title: Str, summary: Str, audience: Str, facts: A(O({ fact: Str, quote: Str })), gaps: A(Str), careful: A(Str), angles: A(O({ angle: Str, line: Str })) }),
+    posts: O({ posts: A(Str), note: Str }, ['note']),
+    radar: A(O({ id: Int, reply: Str, angle: E('number', 'counterexample', 'story', 'question') })),
+    picture: O({ what: Str, kind: E('chart', 'dashboard', 'dm', 'tweet', 'receipt', 'photo', 'other'), facts: A(O({ fact: Str, where: Str })), private: A(Str), angles: A(O({ angle: Str, line: Str })), posts: A(Str),
+      visual: { anyOf: [O({ template: { type: 'string', const: 'data' }, metric: Str, before: Str, after: Str }), O({ template: { type: 'string', const: 'stat' }, value: Str, label: Str }), O({ template: { type: 'string', const: 'quote' } })] } }),
+    visual: O({ template: E('data', 'stat', 'list', 'compare', 'quote'), headline: Str, metric: Str, before: Str, after: Str, value: Str, label: Str, items: A(Str), left: Str, right: Str, emphasis: Str, why: Str }),
+    critique: O({ reason: Str, better: A(Str) })
+  };
   const P = {
     rewrite({ text, kind, lang, voice, platform = 'X', limit = 280 }) {
-      return { tier: kind === 'grammar' ? 'quick' : 'default', json: true, prompt: `${BRIEF}
+      return { tier: kind === 'grammar' ? 'quick' : 'default', json: true, schema: SCHEMA.options, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
@@ -445,14 +467,13 @@ Reply with only JSON: {"options":[{"text":"...","why":"one short sentence on wha
     /* "Tell it what to change": the author's own instruction, on the whole post or (with context) just a selected part */
     instruct({ text, instruction, voice, context, platform = 'X', limit = 280 }) {
       const part = !!(context && context !== text);
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.options, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
 Task: rewrite ${part ? 'only the selected words' : 'the draft'} following the author's instruction below. Treat the instruction as a request about style, tone or audience, never as new facts.
-- Keep the author's claim, facts, numbers, names and stance. Never add a number, a result, a price, a trade or a personal experience they didn't write.
-- If following the instruction needs something only the author knows, leave a short [bracket] for it, e.g. [your entry price].
-- Ticker symbols ($BTC, ETH) stay exactly as written.
+- Keep the author's claim and stance. Copy every number, name, ticker, @handle and link exactly as written, and add no number, result or personal experience they didn't write.
+- If following the instruction needs something only the author knows, leave a short [bracket] for it, e.g. [your number].
 - Every option must differ from the ${part ? 'selected words' : 'draft'} and from the other options. No quotes around the text, no labels, no explanations inside "text".${part ? '\n- Reply with a replacement for the selected words only: never the whole post, never the words just before or after the selection. It must read naturally when put back exactly where the selection was (same first-letter case, end punctuation only if the selection had it).' : `\nPlatform: ${platform}, ${limit} characters per post.`}
 
 <instruction>
@@ -472,17 +493,16 @@ Reply with only JSON: {"options":[{"text":"...","why":"one short sentence on wha
         bolder: 'Bolder: more decisive. Commit to the claim and drop hedges and qualifiers. Not louder: no hype and no bigger claim than the author made.',
         human: 'More human: how the author would say it out loud to a friend. Contractions, plain words, natural rhythm. Not more emoji, not slang they don\'t use.'
       }[option] || option;
-      return { tier: 'quick', json: true, prompt: `${BRIEF}
+      return { tier: 'quick', json: true, schema: SCHEMA.versions, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
 Task: Sharpen only the selected words in the post below. ${ask}
 - Reply with replacements for the selected words only. Never the whole post, and never the words just before or after the selection: each replacement is put back exactly where the selection was, so it must read naturally there (same first-letter case; end punctuation only if the selection had it).
-- Give ${count} versions that differ from each other in wording, order or rhythm, not just punctuation. Every version must differ from the selection.
-- Keep the claim, every number, ticker ($BTC stays $BTC), name and "not". Never add a number, price, result, name or fact.
+- Give ${count} versions that differ from the selection and from each other in wording, order or rhythm, not just punctuation. If the selected words are already strong, try a different angle, order or rhythm.
+- Keep the claim and every "not". Copy every number, name, ticker, @handle and link exactly, and add no number, result, name or fact.
 - No hype words (insane, massive, huge, moon, 100x, guaranteed, "full stop"), no emoji the selection didn't have, no hashtags, no quotes around the text, no labels, no explanations.
 - Stay in the author's voice: lowercase stays lowercase, their slang stays.
-- If the selected words are already strong, still try a different angle, order or rhythm. Never hand the selection back unchanged.
 
 <post>
 ${pre}<selected>${sel}</selected>${suf}
@@ -494,7 +514,7 @@ Reply with only JSON: {"versions":["...","...","..."]}` };
     },
     voiceProfile({ posts, handle, niche }) {
       const sample = posts.slice(0, 120).map(p => `<post likes="${p.likes}" reposts="${p.reposts}" replies="${p.replies}">\n${p.text}${p.thread && p.thread.length ? '\n' + p.thread.slice(0, 3).join('\n') : ''}\n</post>`).join('\n');
-      return { tier: 'complex', json: true, prompt: `You study how one person writes on social media so an editor can match their voice exactly. ${handle ? `Account: @${handle}.` : ''} ${niche ? `Niche: ${niche}.` : ''}
+      return { tier: 'complex', json: true, schema: SCHEMA.voice, prompt: `You study how one person writes on social media so an editor can match their voice exactly. ${handle ? `Account: @${handle}.` : ''} ${niche ? `Niche: ${niche}.` : ''}
 
 Here are their posts, most engaging first, with engagement counts:
 ${sample}
@@ -504,7 +524,7 @@ Describe their voice from evidence only. Reply with only JSON:
 Give exactly 3 traits.` };
     },
     ideas({ niche, voice, top, inbox, count = 6 }) {
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.ideas, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
@@ -517,7 +537,7 @@ ${(inbox || []).slice(0, 8).map(t => `- ${t}`).join('\n') || '- (none)'}
 Suggest ${count} first lines they could write today, grounded in their notes and what already works for them. No generic advice-guru lines. Reply with only JSON: [{"text":"the first line","kind":"Contrarian|Story|Listicle|How-to|Curiosity|Question","why":"one short sentence, tied to their evidence"}]` };
     },
     postmortem({ post, median, similar, voice }) {
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.postmortem, prompt: `${BRIEF}
 
 You explain why one social post over- or under-performed for its author, using only the evidence given. Be specific and plain; no hype.
 
@@ -534,7 +554,7 @@ ${(similar || []).slice(0, 5).map(p => `<post likes="${p.likes}">${p.text}</post
 Reply with only JSON: {"verdict":"one sentence","reasons":["2-4 specific reasons, each tied to the text, the timing or the comparison"],"next_time":"one concrete thing to do differently (or repeat)","rewrite":"the first line as you'd write it now, in their voice"}` };
     },
     people({ posts, niche }) {
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.people, prompt: `${BRIEF}
 
 These are recent high-performing posts from accounts someone learns from${niche ? ` in ${niche}` : ''}. Find the reusable patterns, not the topics.
 
@@ -543,7 +563,7 @@ ${posts.slice(0, 40).map(p => `<post author="@${p.handle || 'someone'}" likes="$
 Reply with only JSON: [{"pattern":"short name","why":"why it works, one sentence","example":"the post's first line that shows it","author":"handle","try":"a fill-in-the-blank first line the reader could use, with [brackets] for their own details"}] — 4 to 6 items.` };
     },
     replies({ post, replies, voice }) {
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.replies, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
@@ -555,10 +575,10 @@ ${post}
 Replies in the first hour (the ones worth answering, most important first):
 ${replies.slice(0, 12).map((r, i) => `<reply id="${i}" from="@${r.handle}" followers="${r.followers || 0}">${r.text}</reply>`).join('\n')}
 
-Write one reply for each, in the author's voice: short, warm or sharp as the reply deserves, adds something (a detail, a number, a question back), never generic thanks, never "Great question". Under 200 characters each. Reply with only JSON: [{"id":0,"reply":"...","why":"what this reply earns, 6 words max"}]` };
+Write one reply for each, in the author's voice: short, warm or sharp as the reply deserves, adds something (a detail, a number, a question back), never generic thanks, never "Great question". Under 200 characters each. Reply with only JSON: [{"id":0,"reply":"...","why":"what this reply earns, in a few words"}]` };
     },
     weekPlan({ niche, voice, top, inbox, slots, count = 5, limit = 280 }) {
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.week, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
@@ -573,7 +593,7 @@ ${(inbox || []).slice(0, 12).map(t => `- ${t}`).join('\n') || '- (none)'}
 Reply with only JSON: [{"slot":0,"kind":"Contrarian|Story|Listicle|How-to|Curiosity|Question","posts":["post 1","optional post 2"],"why":"why this, this day, one short sentence"}]` };
     },
     shootout({ a, b, voice, evidence }) {
-      return { tier: 'quick', json: true, prompt: `Two first lines for the same post. Using the author's own results below as the main evidence, predict which gets more engagement from their audience and say why in one sentence.
+      return { tier: 'quick', json: true, schema: SCHEMA.shootout, prompt: `Two first lines for the same post. Using the author's own results below as the main evidence, predict which gets more engagement from their audience and say why in one sentence.
 
 ${voiceBlock(voice)}
 
@@ -586,7 +606,7 @@ ${evidence || '(no history)'}
 Reply with only JSON: {"winner":"a"|"b","confidence":0.5-0.95,"why":"one sentence"}` };
     },
     digest({ week, best, worst, voice, niche }) {
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.digest, prompt: `${BRIEF}
 
 Write a short Sunday note to a creator about their week on social media. Plain, warm, specific, no hype, no emoji.
 
@@ -599,7 +619,7 @@ ${voiceBlock(voice)}
 Reply with only JSON: {"subject":"under 60 characters","headline":"one sentence on the week","why_best":"why the best one worked, one sentence","try_next":"one concrete thing to try next week","first_line":"a first line they could post Monday, in their voice"}` };
     },
     briefRead({ text, niche }) {
-      return { tier: 'default', json: true, prompt: `A creator dropped in a brief (notes, a doc, a transcript) and wants posts written from it. Read it like a careful editor before anyone writes a word.
+      return { tier: 'default', json: true, schema: SCHEMA.briefRead, prompt: `A creator dropped in a brief (notes, a doc, a transcript) and wants posts written from it. Read it like a careful editor before anyone writes a word.
 
 <brief>
 ${text || '(see the attached document)'}
@@ -618,7 +638,7 @@ Reply with only JSON: {"title":"","summary":"","audience":"","facts":[{"fact":""
     },
     briefWrite({ text, read, angle, format, voice, limit = 280, platform = 'X' }) {
       const shape = { thread: `an X thread of 5-9 posts. Each post at most ${limit} characters (URLs count as 23). Post 1 is the hook and must work alone. One idea per post. No "1/" numbering unless it helps.`, long: `one long X post (X Premium allows up to 25,000 characters). Aim for 900-2,000 characters. The first 280 characters must stand alone, because X cuts there with "Show more". Short paragraphs, blank lines between.`, linkedin: 'one LinkedIn post up to 3,000 characters. The first two lines must earn the "…more" click. Short paragraphs, blank lines between, no hashtag pile.', single: `one post, at most ${limit} characters.` }[format] || '';
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.posts, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
@@ -637,7 +657,7 @@ Rules: use only facts from the brief. Copy every number exactly. If a detail wou
 Reply with only JSON: {"posts":["post 1","post 2"],"note":"one sentence on the choice you made"}` };
     },
     spoken({ text, voice, format = 'single', limit = 280 }) {
-      return { tier: 'quick', json: true, prompt: `${BRIEF}
+      return { tier: 'quick', json: true, schema: SCHEMA.posts, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
@@ -650,7 +670,7 @@ ${text}
 Reply with only JSON: {"posts":["..."]}` };
     },
     radarReplies({ posts, voice, niche }) {
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.radar, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 ${niche ? `The author writes about: ${niche}.` : ''}
@@ -668,7 +688,7 @@ ${posts.map((p, i) => `<post id="${i}" by="@${p.handle}">${p.text}</post>`).join
 Reply with only JSON: [{"id":0,"reply":"...","angle":"number|counterexample|story|question"}]` };
     },
     picture({ note, voice, niche }) {
-      return { tier: 'default', json: true, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.picture, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 ${niche ? `The author writes about: ${niche}.` : ''}
@@ -687,7 +707,7 @@ Read the picture carefully:
 Reply with only JSON: {"what":"","kind":"","facts":[{"fact":"","where":""}],"private":[],"angles":[{"angle":"","line":""}],"posts":[""],"visual":{}}` };
     },
     visual({ text, plan }) {
-      return { tier: 'quick', json: true, prompt: `You are the art director for one social media graphic that goes under this post. The graphic must make someone scrolling stop and get the point in one second.
+      return { tier: 'quick', json: true, schema: SCHEMA.visual, prompt: `You are the art director for one social media graphic that goes under this post. The graphic must make someone scrolling stop and get the point in one second.
 
 <post>
 ${text}
@@ -707,7 +727,7 @@ Rules: copy numbers exactly as written in the post, never invent, round or conve
 Reply with only JSON: {"template":"data|stat|list|compare|quote","headline":"","metric":"","before":"","after":"","value":"","label":"","items":[],"left":"","right":"","emphasis":"","why":""}` };
     },
     critique({ text, voice }) {
-      return { tier: 'quick', json: true, prompt: `${BRIEF}
+      return { tier: 'quick', json: true, schema: SCHEMA.critique, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 

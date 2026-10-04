@@ -17,7 +17,7 @@ const call = (path, { method = 'GET', body } = {}) => new Promise((res, rej) => 
 test('health says what is on', async () => {
   const r = await call('/api/health');
   assert.equal(r.status, 200); assert.equal(r.json.ok, true); assert.equal(r.json.ai, false); assert.equal(r.json.x, true);
-  assert.equal(r.json.models.default, 'claude-sonnet-5-5'); assert.equal(r.json.models.complex, 'claude-opus-5-5');
+  assert.equal(r.json.models.default, 'claude-opus-5-5'); assert.equal(r.json.models.complex, 'claude-opus-5-5');
 });
 test('serves the app, and not the server folder', async () => {
   const r = await call('/'); assert.equal(r.status, 200); assert.match(r.type, /text\/html/); assert.match(r.text, /hookworthy/i);

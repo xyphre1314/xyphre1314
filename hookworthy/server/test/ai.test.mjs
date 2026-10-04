@@ -5,16 +5,32 @@ const AI = await import('../lib/ai.mjs');
 
 function fake(reply, extra = {}) { const calls = []; return { calls, beta: { messages: { create: async req => { calls.push(req); return { model: req.model, stop_reason: 'end_turn', content: [{ type: 'text', text: reply }], usage: {}, ...extra }; } } } }; }
 
-test('everyday writing goes to Sonnet 5.5, voice study to Opus 5.5, with effort per tier and default fallbacks', async () => {
+test('every tier runs on Opus 5.5 with its own effort and default fallbacks; thinking is never configured', async () => {
   const f = fake('{"options":[{"text":"a","why":"b"}]}'); AI.setClient(f);
   await AI.complete({ prompt: 'x', tier: 'default', json: true });
   await AI.complete({ prompt: 'x', tier: 'complex', json: true });
   await AI.complete({ prompt: 'x', tier: 'quick' });
-  assert.equal(f.calls[0].model, 'claude-sonnet-5-5'); assert.equal(f.calls[0].output_config.effort, 'medium');
+  assert.equal(f.calls[0].model, 'claude-opus-5-5'); assert.equal(f.calls[0].output_config.effort, 'medium');
   assert.equal(f.calls[1].model, 'claude-opus-5-5'); assert.equal(f.calls[1].output_config.effort, 'high');
-  assert.equal(f.calls[2].output_config.effort, 'low');
+  assert.equal(f.calls[2].model, 'claude-opus-5-5'); assert.equal(f.calls[2].output_config.effort, 'low');
+  assert.ok(f.calls.every(c => c.max_tokens >= 8000 && c.max_tokens <= 21333), 'room for thinking, under the non-streaming ceiling');
   assert.equal(f.calls[0].fallbacks, 'default'); assert.deepEqual(f.calls[0].betas, ['server-side-fallback-2026-07-01']);
   assert.equal(f.calls[0].thinking, undefined, 'no thinking config: adaptive by default, never disabled');
+});
+
+test('a schema becomes structured outputs; array schemas ride wrapped as {items} and come back unwrapped', async () => {
+  const obj = { type: 'object', properties: { posts: { type: 'array', items: { type: 'string' } } }, required: ['posts'], additionalProperties: false };
+  let f = fake('{"posts":["hi"]}'); AI.setClient(f);
+  assert.deepEqual((await AI.complete({ prompt: 'x', json: true, schema: obj })).data, { posts: ['hi'] });
+  assert.deepEqual(f.calls[0].output_config.format, { type: 'json_schema', schema: obj });
+  assert.doesNotMatch(f.calls[0].system, /only that JSON/, 'no JSON-only line when the schema does the work');
+  f = fake('{"items":[{"text":"a"}]}'); AI.setClient(f);
+  assert.deepEqual((await AI.complete({ prompt: 'x', json: true, schema: { type: 'array', items: { type: 'object', properties: { text: { type: 'string' } }, required: ['text'], additionalProperties: false } } })).data, [{ text: 'a' }]);
+  assert.equal(f.calls[0].output_config.format.schema.properties.items.type, 'array');
+  f = fake('{"a":1}'); AI.setClient(f);
+  await AI.complete({ prompt: 'x', json: true }); assert.equal(f.calls[0].output_config.format, undefined); assert.match(f.calls[0].system, /only that JSON/);
+  await AI.complete({ prompt: 'x', schema: obj }); assert.equal(f.calls[1].output_config.format, undefined, 'plain text calls ignore a schema');
+  await assert.rejects(AI.complete({ prompt: 'x', json: true, schema: { type: 'string' } }), e => e.code === 'invalid_request');
 });
 
 test('tolerant JSON: fenced, or wrapped in a sentence', async () => {

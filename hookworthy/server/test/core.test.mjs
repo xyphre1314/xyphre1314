@@ -215,3 +215,13 @@ test('a date-only CSV date is local midnight; full timestamps are kept as given'
     assert.equal(core.parseCSV('text,date\nfrom a csv,2026-03-10\n')[0].at, new Date(2026, 2, 10).getTime());
   } finally { if (tz === undefined) delete process.env.TZ; else process.env.TZ = tz; }
 });
+
+test('every structured prompt carries a closed schema the server can send as structured outputs', () => {
+  const check = (s, at) => {
+    if (s.anyOf) return s.anyOf.forEach((x, i) => check(x, `${at}|${i}`));
+    if (s.type === 'object') { assert.equal(s.additionalProperties, false, at); s.required.forEach(k => assert.ok(k in s.properties, `${at}.${k}`)); Object.entries(s.properties).forEach(([k, v]) => check(v, `${at}.${k}`)); }
+    if (s.type === 'array') check(s.items, `${at}[]`);
+  };
+  const args = { text: 'a', post: 'abc', s: 0, e: 1, posts: [], replies: [], a: 'x', b: 'y', plan: {} };
+  for (const [name, fn] of Object.entries(core.prompts)) { const p = fn(args); assert.equal(p.json, true, name); assert.ok(p.schema, name); check(p.schema, name); }
+});

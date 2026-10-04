@@ -76,7 +76,7 @@ export async function handle(req, res) {
       const b = await body(req, 24 * 1024 * 1024); const docs = Array.isArray(b.docs) ? b.docs : [];
       if (!allow(ip, (b.tier === 'complex' ? 5 : 1) + docs.length * 2)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' });
       if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' });
-      const { q, r } = await withCredits(req, { act: typeof b.act === 'string' ? b.act : '', docs: docs.length, chars: +b.chars || 0, tier: b.tier, bytes: Buffer.byteLength(String(b.prompt || '')) }, () => AI.complete({ prompt: b.prompt, tier: b.tier, json: !!b.json, docs }));
+      const { q, r } = await withCredits(req, { act: typeof b.act === 'string' ? b.act : '', docs: docs.length, chars: +b.chars || 0, tier: b.tier, bytes: Buffer.byteLength(String(b.prompt || '')) }, () => AI.complete({ prompt: b.prompt, tier: b.tier, json: !!b.json, schema: b.schema, docs }));
       if (!r) return outOfCredits(res, q);
       return send(res, 200, { text: r.text, data: r.data, model: r.model, truncated: r.truncated, ...spent(q) });
     }

@@ -38,7 +38,7 @@ Built in the prototype (`index.html`, all mocked locally): landing page, onboard
 
 Constraints:
 - Single-file HTML/CSS/JS, PWA-ready, no build step. Everything must work, no dead buttons.
-- AI is real Claude when available: the viewer's own account inside claude.ai (sample capability), or the Node server (`server/`, Sonnet 5.5 for writing, Opus 5.5 for voice study). Offline heuristics remain as the fallback.
+- AI is real Claude when available: the viewer's own account inside claude.ai (sample capability), or the Node server (`server/`, Opus 5.5 throughout: low effort for quick edits, medium for writing, high for voice study; structured outputs for every JSON reply). Offline heuristics remain as the fallback.
 - Publishing to X and LinkedIn, X reads and Typefully import run through `server/` with the user's own keys; history import (X archive, CSV, paste) runs in the browser.
 - Shared logic (hook score, importers, analytics, prompts) lives in `core.js`, used by the app, the server and the MCP server.
 - Undecided: real pricing, real integrations, team/workspace backend.

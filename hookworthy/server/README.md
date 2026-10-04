@@ -12,12 +12,15 @@ npm test                # 28 tests, no keys or network needed
 
 ## Which Claude does what
 
-| Work | Model | Why |
-|---|---|---|
-| Rewrites, hook critiques, ideas, post-mortems, people patterns | `claude-sonnet-5-5` (effort low/medium) | Runs many times a day per person; fast and affordable at scale, strong writer |
-| Learn my voice (reads up to 120 posts once) | `claude-opus-5-5` (effort high) | One deep read that every later rewrite depends on |
+Every tier runs on `claude-opus-5-5`; effort decides how much it thinks (thinking is always on).
 
-Every request opts into server-side refusal fallbacks (`fallbacks: "default"`). Prompts live in `../core.js`, shared with the browser and the MCP server, so every path asks the same way.
+| Work | Tier | Effort | Why |
+|---|---|---|---|
+| Grammar, Sharpen, hook critiques, A/B lines, visuals | `quick` | `low` | Small, fast edits |
+| Rewrites, ideas, post-mortems, people patterns, briefs, replies | `default` | `medium` | Everyday writing |
+| Learn my voice (reads up to 120 posts once) | `complex` | `high` | One deep read that every later rewrite depends on |
+
+Point a tier at another model with `HW_MODEL_QUICK`, `HW_MODEL_DEFAULT` or `HW_MODEL_COMPLEX`. Every request opts into server-side refusal fallbacks (`fallbacks: "default"`). Prompts live in `../core.js`, shared with the browser and the MCP server, so every path asks the same way. Each prompt also carries a JSON Schema, which the server sends as structured outputs (`output_config.format`), so replies parse every time.
 
 Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (the `sample` capability: `default` tier for writing, `complex` for voice study). No server or key needed.
 

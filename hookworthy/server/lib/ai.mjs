@@ -1,18 +1,22 @@
 /* Claude for Hookworthy.
-   Routing: everyday writing (rewrites, ideas, post-mortems, hook critiques) runs on Sonnet 5.5,
-   the balanced model that's fast and affordable at scale. Voice study, which reads a whole
-   post history once and shapes every later rewrite, runs on Opus 5.5.
-   Each tier sets its own effort. Refusals fall back server-side ("default" fallbacks). */
+   Every tier runs on Opus 5.5; effort is the dial. Thinking is always on there, so effort decides how much
+   it thinks: low for quick edits (grammar, sharpen, hook critiques), medium for everyday writing, high for
+   voice study, the one deep read every later rewrite depends on. Each tier can be pointed at another model
+   with HW_MODEL_QUICK / HW_MODEL_DEFAULT / HW_MODEL_COMPLEX. Refusals fall back server-side ("default").
+   Calls that send a schema get structured outputs, so the reply is valid JSON by construction. */
 import Anthropic from '@anthropic-ai/sdk';
 
 export const MODELS = {
-  quick: process.env.HW_MODEL_QUICK || 'claude-sonnet-5-5',
-  default: process.env.HW_MODEL_DEFAULT || 'claude-sonnet-5-5',
+  quick: process.env.HW_MODEL_QUICK || 'claude-opus-5-5',
+  default: process.env.HW_MODEL_DEFAULT || 'claude-opus-5-5',
   complex: process.env.HW_MODEL_COMPLEX || 'claude-opus-5-5'
 };
 const EFFORT = { quick: 'low', default: 'medium', complex: 'high' };
-const MAX_TOKENS = { quick: 2000, default: 8000, complex: 16000 };
-const SYSTEM = 'You are the writing engine inside Hookworthy, an app for people who post on X, Threads, LinkedIn and Bluesky. Follow the task exactly. When the task asks for JSON, reply with only that JSON value and nothing else.';
+/* thinking counts toward max_tokens, so each cap leaves room for it; 20000 stays under the SDK's non-streaming ceiling */
+const MAX_TOKENS = { quick: 8000, default: 16000, complex: 20000 };
+const SYSTEM = 'You are the writing engine inside Hookworthy, an app where creators write, schedule and grow on X, Threads, LinkedIn and Bluesky. The people reading your output post it under their own name, so it has to sound like them and stay true to what they wrote.';
+const JSON_ONLY = ' When the task asks for JSON, reply with only that JSON value.'; // only for calls without a schema
+const MAX_SCHEMA_BYTES = 16 * 1024;
 
 export class AIError extends Error { constructor(code, message, status = 502) { super(message); this.code = code; this.status = status; } }
 
@@ -47,18 +51,27 @@ function docBlocks(docs = []) {
   });
 }
 
-export async function complete({ prompt, tier = 'default', json = false, docs = [] }) {
+/* structured outputs take an object at the root: an array schema is wrapped as {items} and unwrapped after */
+function outputFormat(schema) {
+  if (!schema || typeof schema !== 'object' || Array.isArray(schema)) return null;
+  if (Buffer.byteLength(JSON.stringify(schema)) > MAX_SCHEMA_BYTES) throw new AIError('invalid_request', 'schema is too large', 400);
+  if (schema.type === 'array') return { wrapped: true, format: { type: 'json_schema', schema: { type: 'object', properties: { items: schema }, required: ['items'], additionalProperties: false } } };
+  if (schema.type !== 'object') throw new AIError('invalid_request', 'schema must describe an object or an array', 400);
+  return { wrapped: false, format: { type: 'json_schema', schema } };
+}
+
+export async function complete({ prompt, tier = 'default', json = false, docs = [], schema = null }) {
   if (!hasKey()) throw new AIError('no_key', 'Set ANTHROPIC_API_KEY in server/.env', 503);
   if (typeof prompt !== 'string' || !prompt.trim()) throw new AIError('invalid_request', 'prompt is required', 400);
   if (Buffer.byteLength(prompt) > 256 * 1024) throw new AIError('prompt_too_large', 'Prompt over 256 KB', 413);
-  const t = MODELS[tier] ? tier : 'default'; const blocks = docBlocks(docs);
+  const t = MODELS[tier] ? tier : 'default'; const blocks = docBlocks(docs); const out = json ? outputFormat(schema) : null;
   let res;
   try {
     res = await getClient().beta.messages.create({
       model: MODELS[t],
       max_tokens: MAX_TOKENS[t],
-      system: SYSTEM,
-      output_config: { effort: EFFORT[t] },
+      system: json && !out ? SYSTEM + JSON_ONLY : SYSTEM,
+      output_config: { effort: EFFORT[t], ...(out ? { format: out.format } : {}) },
       messages: [{ role: 'user', content: blocks.length ? [...blocks, { type: 'text', text: prompt }] : prompt }],
       betas: ['server-side-fallback-2026-07-01'],
       fallbacks: 'default'
@@ -73,5 +86,6 @@ export async function complete({ prompt, tier = 'default', json = false, docs = 
   if (res.stop_reason === 'refusal') throw new AIError('refused', (res.stop_details && res.stop_details.explanation) || 'Claude declined this request', 422);
   const text = (res.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim();
   if (!text) throw new AIError('empty_completion', 'Claude returned no text', 502);
-  return { text, data: json ? parseJSON(text) : undefined, model: res.model, usage: res.usage, truncated: res.stop_reason === 'max_tokens' };
+  let data; if (json) { data = parseJSON(text); if (out && out.wrapped) data = data && Array.isArray(data.items) ? data.items : data; }
+  return { text, data, model: res.model, usage: res.usage, truncated: res.stop_reason === 'max_tokens' };
 }
