@@ -19,16 +19,19 @@ colors:
   pastel-aqua: "#CDEFEA"
   pastel-peach: "#FFE0D2"
   pastel-mint: "#D5F2DC"
-  dark-bg: "#1C1C1B"
-  dark-surface: "#252523"
-  dark-raised: "#2C2C29"
-  dark-text-1: "#F6F4E6"
-  dark-text-2: "#B4B2A6"
-  dark-text-3: "#98968B"
+  dark-bg: "#151413"
+  dark-surface: "#1C1B19"
+  dark-raised: "#222120"
+  dark-text-1: "#ECE7DC"
+  dark-text-2: "#BDB6AA"
+  dark-text-3: "#A09A8F"
   dark-periwinkle: "#BCCBFF"
   accent: "#1E4FC2"
   marker: "#DDE5FF"
   app-surface-light: "#FFFFF8"
+  writing-surface-light: "#FDFBF5"
+  comment-light: "#C2410C #0F766E #BE185D #1D4ED8 #4D7C0F #A16207 #0E7490 #8B5E34"
+  comment-dark: "#F59E5B #2EC4B0 #F27AAE #6AA8F7 #9BD15A #F2C14E #4FC8E0 #D9A57A"
   success: "#16704A"
   warn: "#9A4F0A"
   error: "#B42A34"
@@ -194,7 +197,8 @@ Why plum: blue belongs to X, Typefully and Buffer; plum stands apart in a creato
 
 ### Neutrals
 - Light: cream #FEFDF1, card #FFFFF8, sunk #F2F0E3, ink #1A1A1A / #4D4C46 / #65645C.
-- **Dark (aubergine, round 27):** bg #141118, surfaces #201C26 / #29242F / #342E3B, panel #1C1820, warm text #F6F2E8 / #C9C2CF / #A29BA9. The neutrals lean toward plum so dark mode feels like the brand, not a generic black. Primary buttons keep the lilac pastel with ink text.
+- **Dark (warm charcoal, round 33):** bg #151413 (sidebar), panel #1C1B19 (the writing surface), surfaces #222120 / #2A2826 / #353330, text #ECE7DC / #BDB6AA / #A09A8F, hairlines in warm white at 8.5% and 16%. Low saturation and never pure black, so long writing sessions are easy on the eyes: body text sits at 14:1 on the panel. Plum stays the accent only (links, focus, the dial, 70+ chips); the neutrals no longer lean purple. Round 27's aubergine (#141118 / #1C1820) is retired.
+- **Light writing surface (round 33):** the panel is warm paper #FDFBF5, a touch softer than the cream around it (#FEFDF1), with ink at 16.8:1. Cards and menus stay #FFFFF8.
 - Text on colored blocks is cream at 84–100% opacity, never a fixed grey, so it reads on any block.
 
 ### Retired
@@ -301,7 +305,7 @@ There is one primary button style everywhere: lilac with a 1.5px ink edge (the h
 It follows X, but stays hidden until you're near the limit: it appears at 20 remaining, turns to warning then error, shows the count, and hides the circle at 10 over.
 
 ### Improve panel (round 27)
-One panel beside the post, with three tabs: **Score** (the tier chip, the reason, "Aim for Sharp" when it's under, and the five checks as pips under "How it's scored"), **Takes** (Punchier, Shorter, Hook, then More angles and Get a second opinion), and **Formulas**. The hook dial sits in the first post's gutter: a ring in the tier's colour, the tier's glyph inside, and the word under it. Voice match is a single line under the post ("Sounds 82% like you"). A rewrite that adds a number you didn't write gets flagged before you keep it.
+One panel beside the post, with three tabs: **Score** (the tier chip, the reason, "Aim for Sharp" when it's under, and the five checks as pips under "How it's scored"), **Takes** (Punchier, Shorter, Hook, then More angles), and **Formulas**. The hook dial sits in the first post's gutter: a ring in the tier's colour, the tier's glyph inside, and the word under it. Voice match is a single line under the post ("Sounds 82% like you"). A rewrite that adds a number you didn't write gets flagged before you keep it.
 
 ### Sharpen (selection rewrite)
 Select three or more characters in a post and an ink pill appears above where the selection starts. It offers Punchier, Shorter, Clearer, Bolder and More human (⌥1–5), plus Custom… for a note. Picking one previews the first of up to three versions in place on a marker-soft background. You flip versions with ‹ › or the arrow keys, keep with ↵ (the accent Keep button), and cancel with Esc. Sharpen is free and unlimited, because it only touches the words you chose.
@@ -374,7 +378,8 @@ Sounds are on by default in the app and can be switched off in the account menu.
 
 ### App shell
 - **Sidebar:** logo, a New post pill, Search (⌘K / Ctrl K), then Today, Write, Ideas, Replies, Queue and Insights. Your five most recent drafts sit below, and the account button (which also switches client voices) is at the bottom. There are no section headers.
-- **Composer top bar:** status, a “N things to check” pill when there is something to look at, Post to, Focus, a labelled Preview toggle (pressed when open), ··· and Schedule. The preview panel has its own **Hide** button top right, and ⌘\\ works from inside the editor.
+- **Composer top bar (round 33):** status, a “N things to check” pill, an “N comments” pill once people comment, then Post to, Focus, Preview, **Share**, ··· , **Schedule** (a plain secondary button) and **Post now** (the one primary). Writing as a client with approvals, the two become one primary: “Send to <client> for approval”. The bar sizes itself to the editor column (a container query): with the preview open, Share and Preview drop their labels first, then Schedule; on phones Share moves into ··· and Schedule is an icon. Shortcuts: Post now ⌘⇧↵ / Ctrl+Shift+Enter, Schedule ⌘↵ / Ctrl+Enter, shown in each tooltip. The preview panel has its own **Hide** button top right, and ⌘\\ works from inside the editor.
+- **··· menu:** X format, Share for review, LinkedIn carousel (3+ posts), Copy thread text. Posting is never in it; the soonest free time (“Next open”) is one of the times in the Schedule sheet.
 - **Navigation:** the daily loop only (**Today**, Write, Ideas, **Replies**, Queue, Insights). Hooks and Your voice live in ⌘K, G H / G V and the account menu. On phones the tab bar is Today, Replies, + (hold to capture an idea), Queue, More.
 - **Today** is one next action. A plum hero card picks it: reply while a post is live (first hour), rescue a missed post, or write the next one (your best saved idea, Sharp and Honed hooks first). Below it are a yesterday / today / tomorrow strip, how the last post did, and the weekly rhythm (goal 5).
 - **Replies** is a triage list. One card is open and the rest are compact. J / K move, S skips, ⌘↵ (Ctrl+Enter on a PC) replies. The verb is always "Reply".
@@ -383,9 +388,16 @@ Sounds are on by default in the app and can be switched off in the account menu.
 - **Hook formulas** are no longer a tab. When your first line is under Sharp, the hook panel offers three formulas; picking one adds it above your line with the first blank selected. The full library stays reachable from ⌘K.
 
 ### Honest states (round 28)
-- **Practice mode.** With no account connected, nothing posts. Post now becomes "Marking as posted · nothing leaves this browser", with a Mark now button. The card reads **Marked**, never Live, and can go back to drafts. Connections opens with a practice-mode note.
+- **Practice mode.** With no account connected, nothing posts from Hookworthy. **Post now** still works in one click: the first time, a small sheet offers **Open in X** (x.com's own compose box, prefilled with post 1; for a thread, “Copy the rest” puts posts 2+ on the clipboard), **Mark as posted**, and **Connect X to post from here**. Post now remembers the pick (change it in Settings, or with **Other ways** on the undo bar). Open in X also files the post as Marked, with the same 8-second undo. LinkedIn-only drafts use LinkedIn's share box the same way. The card reads **Marked**, never Live, and can go back to drafts. Connections opens with a practice-mode note.
 - **No predictions.** Your own post never shows predicted likes or views (preview, Today). Sample numbers appear only on seeded demo posts, labelled Sample.
 - **Queue card status.** Sent, Sending…, Marked, Post by hand and didn't go out. On narrow cards (≤124px) the time hides, since the row says it, and the status becomes a 6px dot before the title (success, text-3, warn, error).
+
+### Share & review (round 33)
+Modelled on Typefully's Share popover. **Share** (top bar, or ··· › Share for review) opens a popover: a **Public link** switch (“Anyone with the link can view and comment”), **View** and **Copy link** (enabled while public), an **Internal link** row (“Only you can open it”: the draft in Write, in this browser), and “Or let friends vote on your first line” (Hook vote).
+- **Review page:** the draft as it'll look, read-only, in the X post card with the thread rail. Select words for a **Comment** button, or press a post (“Comment on post 2”) or a picture. Comments sit in a right rail beside their highlight (a bottom sheet with a count below 1000px), each with name, colour dot, time, the quoted words, replies, Reply and **Resolve** / Reopen. The reviewer's name is asked once and remembered in that browser.
+- **Colours:** each commenter gets one of eight (`--cm-0`…`--cm-7`, a light and a dark family) in order of their first comment, so everyone sees the same person in the same colour. Highlights are a tint of that colour with a 2px underline; dots pass 4.5:1 on the writing surface and text stays 7:1+ over tints.
+- **In Write:** the same highlights sit under the live draft. The comments pill opens a panel (a sheet on phones) with open threads in reading order, Resolved (N) folded below, Reply, Resolve and jump-to-words. Anchors follow edits while the quoted words still exist; when they don't, the card says “on text that changed”. While the link is on, the shared copy follows the draft a few seconds after you stop typing.
+- **Where it lives:** your Hookworthy server (`/api/review`, with comment and resolve endpoints; switching the link off makes it read as gone), or a published claude.ai page (each person's comments in their own `notes/<id>` document, ids only, names resolved on screen), or, with neither, this browser only, said plainly in the popover.
 
 ### Ghostwriting (round 28)
 Each voice (you plus up to eight clients) keeps its own drafts, counts, default platforms and half-written post. Add, edit or remove a client from the account menu's "Write as" section or ⌘K. Writing as a client, Schedule reads "Send to <Client> for approval", and cards wait with a readable **To approve** tag.
@@ -463,6 +475,10 @@ The account menu’s Appearance item picks Light, Dark or Match my system. Brand
   | **Post by hand** (a post whose time came with nothing to send it) | Published (unless something sent it) |
   | **Open the app** (the link into the app from the light-world pages) | Open the demo |
   | **Reset sample data** | Reset demo data |
+  | **Post now** (the main button) / **Schedule** (secondary) | Publish, Send now |
+  | **Share**, **Share for review**, **Public link**, **Internal link** | Get a second opinion, review link (as a button) |
+  | **Comment**, **Reply**, **Resolve** / **Reopen**, “on text that changed” | Feedback, annotate, mark done |
+  | **Open in X** / **Mark as posted** (nothing connected) | Post manually, Publish elsewhere |
 
 - **Slots in sentences:** "Scheduled for tomorrow at 8:40 AM", never "Scheduled for Tomorrow · 8:40 AM". The "·" form is for labels and lists only.
 

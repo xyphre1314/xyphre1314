@@ -56,7 +56,9 @@ export async function handle(req, res) {
     let m;
     if (p === '/api/health') return send(res, 200, { ...health(), locked: !!TOKEN && !authed(req) });
     if (p === '/login') { if (!TOKEN || url.searchParams.get('token') !== TOKEN) return send(res, 401, { error: 'Wrong or missing token' }); res.writeHead(302, { 'set-cookie': `hw=${TOKEN}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${PUBLIC_URL.startsWith('https') ? '; Secure' : ''}`, location: '/#write' }); return res.end(); }
-    if (p.startsWith('/api/') && !/^\/api\/review\/[\w-]{6,20}(\/comments)?$/.test(p) && !/^\/api\/vote\/[\w-]{8,20}$/.test(p) && !authed(req)) return send(res, 401, { error: 'Missing HOOKWORTHY_TOKEN', code: 'auth' });
+    /* a review link is public: reading it, commenting and resolving. Changing the draft or switching the link off is yours alone */
+    const reviewPublic = (/^\/api\/review\/[\w-]{6,20}$/.test(p) && req.method === 'GET') || (/^\/api\/review\/[\w-]{6,20}\/comments(\/[\w-]{4,20})?$/.test(p) && (req.method === 'POST' || req.method === 'PATCH'));
+    if (p.startsWith('/api/') && !reviewPublic && !/^\/api\/vote\/[\w-]{8,20}$/.test(p) && !authed(req)) return send(res, 401, { error: 'Missing HOOKWORTHY_TOKEN', code: 'auth' });
 
     /* Claude */
     if (p === '/api/ai' && req.method === 'POST') {
@@ -93,8 +95,11 @@ export async function handle(req, res) {
 
     /* review links (the review page itself is public by link; comments too) */
     if (p === '/api/review' && req.method === 'POST') { const b = await body(req); const r = E.createReview(b); return send(res, 200, { id: r.id, url: `${PUBLIC_URL}/r/${r.id}` }); }
-    if ((m = p.match(/^\/api\/review\/([\w-]{6,20})$/))) { if (req.method === 'PUT') return send(res, 200, E.updateReview(m[1], await body(req))); return send(res, 200, E.getReview(m[1])); }
-    if ((m = p.match(/^\/api\/review\/([\w-]{6,20})\/comments$/)) && req.method === 'POST') { if (!allow(ip)) return send(res, 429, { error: 'Slow down a little' }); return send(res, 200, E.addComment(m[1], await body(req, 20 * 1024))); }
+    /* ?owner=1 (with the token, when one is set) reads a switched-off link and comments as the author */
+    const owner = url.searchParams.get('owner') === '1' && authed(req);
+    if ((m = p.match(/^\/api\/review\/([\w-]{6,20})$/))) { if (req.method === 'PUT') return send(res, 200, E.updateReview(m[1], await body(req))); return send(res, 200, E.getReview(m[1], { owner })); }
+    if ((m = p.match(/^\/api\/review\/([\w-]{6,20})\/comments$/)) && req.method === 'POST') { if (!allow(ip)) return send(res, 429, { error: 'Slow down a little' }); return send(res, 200, E.addComment(m[1], await body(req, 20 * 1024), { owner })); }
+    if ((m = p.match(/^\/api\/review\/([\w-]{6,20})\/comments\/([\w-]{4,20})$/)) && req.method === 'PATCH') { if (!allow(ip, .5)) return send(res, 429, { error: 'Slow down a little' }); return send(res, 200, E.resolveComment(m[1], m[2], await body(req, 4 * 1024), { owner })); }
 
     /* Sunday digest */
     if (p === '/api/digest/subscribe' && req.method === 'POST') return send(res, 200, E.subscribeDigest(await body(req)));

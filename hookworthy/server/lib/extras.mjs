@@ -5,22 +5,70 @@ import { read, write } from './store.mjs';
 export class HWError extends Error { constructor(status, message) { super(message); this.status = status; } }
 const clean = (s, n) => String(s || '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').slice(0, n);
 
-/* ---- review links: share a draft, collect comments per post ---- */
-export function createReview({ tweets, author }) {
-  const posts = (tweets || []).map(t => clean(typeof t === 'string' ? t : t.text, 4000)).filter(Boolean).slice(0, 30);
+/* ---- review links: share a draft, collect comments anchored to words, a post or a picture ----
+   A comment is { id, who, name, text, post, quote, start, prefix, suffix, el, parent, at, resolved }.
+   `quote` + `prefix`/`suffix` let the app find the words again after the draft is edited; `el` is
+   'post' or 'img:N' for a comment on a whole post or one picture; `parent` makes it a reply. */
+const MEDIA_MAX = 600 * 1024, MEDIA_TOTAL = 3 * 1024 * 1024;
+function cleanPosts(tweets) { return (tweets || []).map(t => clean(typeof t === 'string' ? t : t && t.text, 4000)).filter(Boolean).slice(0, 30); }
+/* pictures ride along only as small data URLs or the app's own assets, so a link never points somewhere else */
+function cleanMedia(media, n) {
+  let total = 0;
+  return Array.from({ length: n }, (_, i) => (Array.isArray(media && media[i]) ? media[i] : []).slice(0, 4).map(m => {
+    const src = String(m && m.src || ''); const ok = /^assets\/[\w/.-]+\.(jpg|png|webp|gif)$/.test(src) || (/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(src) && src.length <= MEDIA_MAX);
+    if (!ok || (total += src.length) > MEDIA_TOTAL) return { src: '', alt: clean(m && m.alt, 400) };
+    return { src, alt: clean(m && m.alt, 400) };
+  }));
+}
+const cleanAuthor = a => ({ name: clean(a && a.name, 80), handle: clean(a && a.handle, 30), pic: /^assets\/[\w/.-]+\.(jpg|png|webp)$/.test(a && a.pic || '') ? a.pic : '' });
+export function createReview({ tweets, author, media, public: pub = true }) {
+  const posts = cleanPosts(tweets);
   if (!posts.length) throw new HWError(400, 'Nothing to review yet');
   const id = randomBytes(9).toString('base64url'); const all = read('reviews', {});
-  all[id] = { id, posts, author: { name: clean(author && author.name, 80), handle: clean(author && author.handle, 30), pic: /^assets\/[\w/.-]+\.(jpg|png|webp)$/.test(author && author.pic || '') ? author.pic : '' }, comments: [], at: Date.now() };
+  all[id] = { id, posts, media: cleanMedia(media, posts.length), author: cleanAuthor(author), public: pub !== false, comments: [], at: Date.now() };
   write('reviews', all); return all[id];
 }
-export function updateReview(id, { tweets }) { const all = read('reviews', {}); const r = all[id]; if (!r) throw new HWError(404, 'No such review'); r.posts = (tweets || []).map(t => clean(typeof t === 'string' ? t : t.text, 4000)).filter(Boolean).slice(0, 30); r.updated = Date.now(); write('reviews', all); return r; }
-export function getReview(id) { const r = read('reviews', {})[id]; if (!r) throw new HWError(404, 'This review link doesn’t exist or was deleted'); return r; }
-export function addComment(id, { name, text, post }) {
+export function updateReview(id, { tweets, media, author, public: pub }) {
   const all = read('reviews', {}); const r = all[id]; if (!r) throw new HWError(404, 'No such review');
+  if (tweets !== undefined) { const posts = cleanPosts(tweets); if (!posts.length) throw new HWError(400, 'Nothing to review yet'); r.posts = posts; r.media = cleanMedia(media, posts.length); }
+  if (author) r.author = cleanAuthor(author);
+  if (pub !== undefined) r.public = !!pub;
+  r.updated = Date.now(); write('reviews', all); return r;
+}
+const OFF = 'This link is switched off. Ask for a new one.';
+/* a link that's switched off reads as gone to everyone but the person who shared it */
+export function getReview(id, { owner = false } = {}) {
+  const r = read('reviews', {})[id]; if (!r) throw new HWError(404, 'This review link doesn’t exist or was deleted');
+  if (r.public === false && !owner) throw new HWError(404, OFF);
+  return { ...r, public: r.public !== false, media: r.media || r.posts.map(() => []) };
+}
+export function addComment(id, { name, who, text, post, quote, start, prefix, suffix, el, parent }, { owner = false } = {}) {
+  const all = read('reviews', {}); const r = all[id]; if (!r) throw new HWError(404, 'No such review');
+  if (r.public === false && !owner) throw new HWError(404, OFF);
   const t = clean(text, 1000).trim(); if (!t) throw new HWError(400, 'Write a comment first');
   if (r.comments.length >= 300) throw new HWError(429, 'This review has enough comments');
-  const c = { id: randomBytes(6).toString('base64url'), name: clean(name, 60).trim() || 'Someone', text: t, post: Math.max(0, Math.min(r.posts.length - 1, +post || 0)), at: Date.now() };
+  const nm = clean(name, 60).trim();
+  const c = { id: randomBytes(6).toString('base64url'), who: owner ? 'owner' : (String(who || '').match(/^[\w-]{4,40}$/) || [''])[0] || 'n-' + (nm.toLowerCase().replace(/[^\w]+/g, '-').slice(0, 30) || 'someone'), name: owner ? (r.author.name || 'Author') : nm || 'Someone', text: t, at: Date.now() };
+  if (parent) {
+    const root = r.comments.find(x => x.id === parent); if (!root) throw new HWError(404, 'That comment is gone');
+    c.parent = root.parent || root.id; c.post = root.post;
+  } else {
+    c.post = Math.max(0, Math.min(r.posts.length - 1, +post || 0));
+    const q = clean(quote, 500);
+    if (q.trim()) { c.quote = q; c.start = Math.max(0, Math.min(40000, +start || 0)); c.prefix = clean(prefix, 32); c.suffix = clean(suffix, 32); }
+    else c.el = /^img:[0-3]$/.test(el) ? el : 'post';
+  }
   r.comments.push(c); write('reviews', all); return c;
+}
+/* anyone with the link can resolve a thread or open it again, like a shared doc */
+export function resolveComment(id, cid, { resolved, name }, { owner = false } = {}) {
+  const all = read('reviews', {}); const r = all[id]; if (!r) throw new HWError(404, 'No such review');
+  if (r.public === false && !owner) throw new HWError(404, OFF);
+  const c = r.comments.find(x => x.id === cid); if (!c) throw new HWError(404, 'That comment is gone');
+  if (c.parent) throw new HWError(400, 'Resolve the thread, not a reply');
+  c.resolved = !!resolved;
+  if (c.resolved) { c.resolvedAt = Date.now(); c.resolvedBy = owner ? (r.author.name || 'Author') : clean(name, 60).trim() || 'Someone'; } else { delete c.resolvedAt; delete c.resolvedBy; }
+  write('reviews', all); return c;
 }
 
 /* ---- Sunday digest: the app hands over its latest note; Sunday morning it goes out ---- */
