@@ -1386,5 +1386,76 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   }
   const SHARPEN = { OPTS: SH_OPTS, LABEL: SH_LABEL, sharpen, fromModel, frame, fit, judge, styleOf, versionsFor, pickVersions, modelTexts, stripModel, deEcho, checkPost: checkPost2, whyNot, nearSame, tidy: tidyT, cutHedges, MOVES, sub, WORDY, CONTRACT_W, PLAIN_W, JARGON_W, SHORTHAND, IDIOM, numsOf, ticksOf };
 
-  return { HOOK_TIERS, hookTier, hookMove, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
+  /* ---------------- Claude credits ----------------
+     One table for the app, the server and the tests. A credit is one everyday piece of Claude writing (a post rewrite).
+     Bigger jobs cost more, and the button says how much before you click. Basic mode runs on your device and never uses
+     a credit, and neither do Sharpen and the small automatic helpers. Free refills every day at midnight. Paid plans
+     refill monthly on the day you joined, and unused credits roll over up to one extra month's worth. */
+  const CR_DAY = 864e5;
+  const CR_PLANS = {
+    free: { name: 'Free', amount: 10, per: 'day', roll: 0 },
+    trial: { name: 'Pro trial', amount: 250, per: 'trial', roll: 0, days: 7 },
+    pro: { name: 'Pro', amount: 1000, per: 'month', roll: 1000 },
+    studio: { name: 'Studio', amount: 4000, per: 'month', roll: 4000, pooled: true }
+  };
+  const CR_ACTS = {
+    rewrite: { c: 1, label: 'Rewrite', does: 'Three versions in your voice that keep every number and name', long: true },
+    instruct: { c: 1, label: 'Rewrite with a note', does: 'Your note, done in your voice, with every fact kept', long: true },
+    hooks: { c: 1, label: 'Three stronger first lines', does: 'Three first lines in your voice, same facts' },
+    ideas: { c: 1, label: 'Post ideas', does: 'Fresh first lines from your notes and your best posts' },
+    why: { c: 1, label: 'Why it did what it did', does: 'Why this post popped or flopped, against your own median' },
+    digest: { c: 1, label: 'Your weekly note', does: 'What worked this week and what to try next' },
+    compare: { c: 1, label: 'Compare two lines', does: 'Which first line your people are likelier to stop for, and why' },
+    replies: { c: 1, label: 'Draft replies', does: 'Replies in your voice, up to ten at a time' },
+    brief: { c: 1, label: 'Read a brief', does: 'The facts, the quotes worth keeping and three angles' },
+    briefWrite: { c: 2, label: 'Write from a brief', does: 'A post or thread in your voice, facts checked against the brief' },
+    picture: { c: 1, label: 'Write from a picture', does: 'Reads the chart or screenshot and drafts the post around it' },
+    people: { c: 2, label: 'Patterns from accounts you learn from', does: 'What their best posts have in common, as formulas you can use' },
+    week: { c: 3, label: 'Plan my week', does: 'Five posts for your next open times, from your ideas and best posts' },
+    voice: { c: 5, label: 'Learn my voice', does: 'Reads up to 120 of your posts once, so every rewrite sounds like you' },
+    sharpen: { c: 0, label: 'Sharpen', assist: true },
+    visual: { c: 0, label: 'Pick a visual', assist: true },
+    tidy: { c: 0, label: 'Tidy what you said', assist: true },
+    setup: { c: 0, label: 'Setting up', assist: true }
+  };
+  const CR_LONG = 1000;
+  /* what one call costs: the action's price, +1 for a post over 1,000 characters, +1 per PDF or picture Claude reads.
+     The bigger model's tier never costs less than voice study, whatever the caller calls it */
+  function crCost(act, { docs = 0, chars = 0, tier } = {}) {
+    const a = CR_ACTS[act]; let c = a ? a.c : tier === 'complex' ? 5 : 1;
+    if (a && a.long && chars > CR_LONG) c += 1;
+    c += clamp(Math.floor(+docs || 0), 0, 3);
+    if (tier === 'complex') c = Math.max(c, 5);
+    return c;
+  }
+  function crAddMonths(t, k) { const a = new Date(t), d = a.getDate(); const x = new Date(a.getFullYear(), a.getMonth() + k, 1, a.getHours(), a.getMinutes(), a.getSeconds(), a.getMilliseconds()); x.setDate(Math.min(d, new Date(x.getFullYear(), x.getMonth() + 1, 0).getDate())); return x.getTime(); }
+  /* when the next refill lands: local midnight (Free), the end of the trial, or the next monthly anniversary of joining */
+  function crNext(plan, now, anchor = now) {
+    const P = CR_PLANS[plan] || CR_PLANS.free;
+    if (P.per === 'day') { const d = new Date(now); d.setHours(24, 0, 0, 0); return d.getTime(); }
+    if (P.per === 'trial') return anchor + P.days * CR_DAY;
+    let k = 1; while (crAddMonths(anchor, k) <= now && k < 2400) k++; return crAddMonths(anchor, k);
+  }
+  function crFresh(plan, now = Date.now()) { const P = CR_PLANS[plan] || CR_PLANS.free; return { plan: CR_PLANS[plan] ? plan : 'free', bal: P.amount, anchor: now, next: crNext(plan, now, now), warned: 0 }; }
+  /* bring a saved ledger up to now: a new plan starts fresh, a passed refill tops it up */
+  function crSettle(st, plan, now = Date.now()) {
+    const P = CR_PLANS[plan] || CR_PLANS.free;
+    if (!st || typeof st !== 'object' || st.plan !== plan || !(st.next > 0) || typeof st.bal !== 'number' || !isFinite(st.bal)) return crFresh(plan, now);
+    if (now < st.next || P.per === 'trial') return st;
+    if (P.per === 'day') return { ...st, bal: P.amount, next: crNext(plan, now), warned: 0 };
+    let bal = Math.max(0, st.bal), next = st.next, n = 0;
+    while (now >= next && n++ < 2400) { bal = Math.min(P.amount + P.roll, bal + P.amount); next = crNext(plan, next, st.anchor); }
+    return { ...st, bal, next, warned: 0 };
+  }
+  /* what the meter shows. low = about 80% used (the gentle heads-up), plenty = paid and at least a quarter left (no count) */
+  function crStatus(st, plan, now = Date.now()) {
+    const P = CR_PLANS[plan] || CR_PLANS.free; const s = crSettle(st, plan, now);
+    const left = Math.max(0, Math.floor(s.bal)), amount = P.amount;
+    return { plan, name: P.name, per: P.per, left, amount, next: s.next, rolled: Math.max(0, left - amount), frac: clamp(left / amount, 0, 1), empty: left <= 0, low: left <= Math.ceil(amount * .2), plenty: plan !== 'free' && left >= amount * .25, ended: P.per === 'trial' && now >= s.next, st: s };
+  }
+  /* take c credits, or null when there aren't enough (nothing is taken) */
+  function crSpend(st, c) { if (!(c > 0)) return st; if (!st || st.bal < c) return null; return { ...st, bal: st.bal - c }; }
+  const CREDITS = { PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
+
+  return { CREDITS, HOOK_TIERS, hookTier, hookMove, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
 });

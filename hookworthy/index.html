@@ -3446,6 +3446,116 @@ button.rv-q:hover{ background:color-mix(in srgb,var(--c) 20%,transparent); color
 @media (max-width:999px){ :root[data-theme="dark"] .rv-rail{ background:var(--surface-2); } }
 @media (max-width:999px) and (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .rv-rail{ background:var(--surface-2); } }
 @media (prefers-reduced-motion:reduce){ .rv-rail.float .rv-railb > *, .rv-rail.float .rv-list > .rv-card{ transition:none; } .cm-panel, .hw-pop{ animation:none; } }
+/* ---------- round 34: Claude credits (sidebar meter, cost tags, the out-of-credits sheet, the Plans page) ---------- */
+.cr-meter{ display:grid; gap:7px; margin:2px 2px 8px; padding:10px 11px; border-radius:12px; color:var(--text-2); background:var(--surface); box-shadow:inset 0 0 0 1px var(--border); text-decoration:none; transition:box-shadow var(--d-micro); }
+.cr-meter[hidden]{ display:none !important; }
+a.cr-meter:hover{ box-shadow:inset 0 0 0 1px var(--border-strong); }
+a.cr-meter:focus-visible{ outline:none; box-shadow:var(--focus); }
+.cr-row{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; min-width:0; }
+.cr-k{ font:600 12px/1 var(--font-ui); letter-spacing:.1em; text-transform:uppercase; color:var(--text-3); white-space:nowrap; }
+.cr-n{ font:600 13px/1 var(--font-ui); color:var(--text-1); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.cr-nn{ display:none; }
+.cr-bar{ position:relative; display:block; height:6px; border-radius:99px; background:var(--tier-track); overflow:hidden; }
+.cr-bar > i{ position:absolute; inset:0 auto 0 0; width:calc(var(--f) * 100%); border-radius:inherit; background:var(--accent); transition:width .5s var(--ease-out); }
+.cr-bar.seg{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:3px; background:none; overflow:visible; }
+.cr-bar.seg > i{ position:static; width:auto; height:6px; border-radius:99px; background:var(--tier-track); transition:background .3s var(--ease-out); }
+.cr-bar.seg > i.on{ background:var(--accent); }
+.cr-meter[data-s="plenty"] .cr-bar:not(.seg) > i{ background:color-mix(in srgb,var(--accent) 62%,transparent); }
+.cr-meter[data-s="low"] .cr-bar:not(.seg) > i, .cr-meter[data-s="low"] .cr-bar.seg > i.on{ background:var(--tier-warming); }
+.cr-meter[data-s="low"] .cr-n, .cr-meter[data-s="low"] .cr-nn{ color:var(--tier-warming); }
+.cr-meter[data-s="empty"] .cr-n{ color:var(--text-3); }
+.cr-sub{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:12px; line-height:1.3; color:var(--text-3); }
+.cr-sub > span{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cr-sub u{ flex:none; font-weight:600; color:var(--accent-text); text-decoration:none; }
+a.cr-meter:hover .cr-sub u{ text-decoration:underline; text-underline-offset:2px; }
+@media (min-width:761px) and (max-width:1180px){
+  .side .cr-meter{ width:44px; margin:0 0 8px; padding:8px 6px; justify-items:center; gap:6px; }
+  .side .cr-k, .side .cr-n, .side .cr-sub{ display:none; }
+  .side .cr-nn{ display:block; font:600 12px/1 var(--font-mono); color:var(--text-1); }
+  .side .cr-meter[data-s="plenty"] .cr-row{ display:none; }
+  .side .cr-bar{ width:100%; } .side .cr-bar.seg{ gap:1px; }
+}
+/* the price on a button: a small count after the label, only while the count matters */
+.cr-tag{ display:none; align-items:center; gap:3px; height:18px; margin-left:4px; padding:0 6px 0 5px; border-radius:99px; font:600 11px/1 var(--font-mono); font-variant-numeric:tabular-nums; letter-spacing:0; color:inherit; background:color-mix(in srgb,currentColor 11%,transparent); }
+.cr-tag::before{ content:""; width:5px; height:5px; border-radius:50%; background:currentColor; opacity:.65; }
+html[data-meter="count"] .cr-tag{ display:inline-flex; }
+.cr-line b{ font-weight:600; color:var(--text-1); }
+.cr-line[data-s="low"] b{ color:var(--tier-warming); }
+/* out of credits, mid-flow */
+.cr-box{ width:min(660px,100%); }
+.cr-sheet{ display:grid; gap:8px; padding:16px 22px 22px; }
+.cr-sh{ display:flex; align-items:center; justify-content:space-between; margin:0 -8px 2px 0; }
+.cr-sh .label{ letter-spacing:.1em; text-transform:uppercase; font-weight:600; }
+.cr-h{ margin:0; font:400 32px/1.08 var(--font-display); letter-spacing:-.012em; color:var(--text-1); text-wrap:balance; }
+.cr-h em{ font-style:italic; }
+.cr-when{ margin:0; font-size:var(--t-14,14px); }
+.cr-panes{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:8px; }
+.cr-pane{ display:grid; grid-template-rows:auto 1fr auto; gap:10px; align-content:start; padding:14px; border-radius:14px; background:var(--surface-2); min-width:0; }
+.cr-pane > p{ margin:0; font-size:14px; line-height:1.5; color:var(--text-2); }
+.cr-pane .label{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.cr-prev{ font-size:15px; line-height:1.5; color:var(--text-1); white-space:pre-wrap; overflow-wrap:anywhere; max-height:190px; overflow:auto; }
+.cr-prev del{ color:var(--text-3); text-decoration:line-through; text-decoration-color:color-mix(in srgb,currentColor 60%,transparent); }
+.cr-prev ins{ text-decoration:none; background:var(--accent-soft); border-radius:3px; box-shadow:0 0 0 1px var(--accent-soft); }
+.cr-basic .btn{ justify-self:start; }
+.cr-claude{ background:var(--accent-soft); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 22%,transparent); grid-template-rows:auto auto 1fr; }
+.cr-blur{ display:grid; gap:9px; padding:6px 0 2px; filter:blur(2.5px); opacity:.9; }
+.cr-blur i{ display:block; height:10px; border-radius:99px; background:color-mix(in srgb,var(--accent) 34%,transparent); }
+.cr-blur i:nth-child(2){ width:88%; } .cr-blur i:nth-child(3){ width:58%; }
+.cr-cost{ flex:none; padding:3px 7px; border-radius:99px; font:600 11px/1 var(--font-mono); color:var(--accent-text); background:var(--surface); }
+.cr-acts{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.cr-fine{ margin:2px 0 0; font-size:12.5px; line-height:1.45; }
+@media (max-width:600px){ .cr-sheet{ padding:14px 16px 18px; } .cr-panes{ grid-template-columns:minmax(0,1fr); } .cr-acts .btn{ flex:1 1 100%; justify-content:center; } .cr-prev{ max-height:140px; } }
+/* Plans page */
+.cr-page{ width:min(540px,100%); margin:4px auto 0; padding:16px 18px; border-radius:16px; background:var(--surface); box-shadow:0 0 0 1px var(--border); text-align:left; gap:10px; }
+.cr-ph{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
+.cr-big{ font:400 32px/1 var(--font-display); letter-spacing:-.01em; color:var(--text-1); font-variant-numeric:lining-nums tabular-nums; }
+.cr-big small{ font:500 13px/1 var(--font-ui); letter-spacing:0; color:var(--text-3); }
+.cr-page .cr-bar, .cr-page .cr-bar.seg > i{ height:8px; }
+.cr-page .cr-sub{ display:block; margin:0; font-size:13.5px; line-height:1.45; color:var(--text-2); }
+.cr-page[data-s="low"] .cr-big{ color:var(--tier-warming); }
+.up-trial{ display:flex; align-items:center; gap:12px; width:min(540px,100%); padding:12px 12px 12px 16px; border-radius:14px; background:var(--accent-soft); text-align:left; }
+.up-trial > .icon{ flex:none; color:var(--accent-text); }
+.up-trial p{ flex:1; margin:0; font-size:14px; line-height:1.45; color:var(--text-2); } .up-trial b{ color:var(--text-1); font-weight:600; }
+@media (max-width:560px){ .up-trial{ flex-wrap:wrap; } .up-trial .btn{ flex:1 1 100%; } }
+.cr-ex{ margin-top:72px; display:grid; gap:24px; }
+.cr-ex-head{ display:grid; gap:10px; max-width:62ch; }
+.cr-ex-head .label{ letter-spacing:.1em; text-transform:uppercase; font-weight:600; }
+.cr-ex-head h2{ margin:0; font:400 clamp(34px,4vw,48px)/1.04 var(--font-display); letter-spacing:-.014em; color:var(--text-1); text-wrap:balance; }
+.cr-ex-head h2 em{ font-style:italic; }
+.cr-ex-head p{ margin:0; font-size:15.5px; line-height:1.55; }
+.cr-ex-grid{ display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,1fr); gap:16px; align-items:start; }
+.cr-cmp-w{ display:grid; gap:10px; min-width:0; }
+.cr-cmp{ width:100%; border-collapse:separate; border-spacing:0; font-size:14px; background:var(--surface); border-radius:16px; box-shadow:0 0 0 1px var(--border); overflow:hidden; }
+.cr-cmp th, .cr-cmp td{ padding:11px 14px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border); line-height:1.4; }
+.cr-cmp tbody tr:last-child > *{ border-bottom:0; }
+.cr-cmp thead th{ font:600 13px/1.2 var(--font-ui); color:var(--text-1); background:var(--surface-2); }
+.cr-cmp tbody th{ font-weight:500; color:var(--text-3); width:30%; }
+.cr-cmp td{ color:var(--text-2); }
+.cr-cmp .pro{ background:var(--accent-soft); color:var(--text-1); }
+.cr-cmp thead th.pro{ background:color-mix(in srgb,var(--accent) 16%,var(--surface-2)); }
+.cr-costs{ padding:16px 18px; border-radius:16px; background:var(--surface); box-shadow:0 0 0 1px var(--border); }
+.cr-costs ul{ list-style:none; margin:10px 0 0; padding:0; display:grid; }
+.cr-costs li{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:8px 0; border-top:1px solid var(--border); font-size:14px; color:var(--text-1); }
+.cr-costs li:first-child{ border-top:0; }
+.cr-costs li small{ display:block; font-size:12.5px; color:var(--text-3); }
+.cr-costs li b{ flex:none; min-width:26px; text-align:center; padding:3px 7px; border-radius:99px; font:600 12px/1 var(--font-mono); background:var(--surface-2); }
+.cr-costs li.free b{ font-family:var(--font-ui); color:var(--success); background:color-mix(in srgb,var(--success) 12%,transparent); }
+@media (max-width:860px){ .cr-ex-grid{ grid-template-columns:minmax(0,1fr); } .cr-cmp-w{ overflow-x:auto; } .cr-cmp{ min-width:520px; } }
+@media (max-width:560px){ .cr-ex{ margin-top:48px; } .cr-cmp{ font-size:13px; min-width:480px; } .cr-cmp th, .cr-cmp td{ padding:9px 10px; } }
+/* plan cards: the allowance, what yearly saves, and the trial link */
+.pl-grid .pl{ grid-template-rows:auto auto auto auto 1fr auto; }
+.pl-save{ margin:-12px 0 0; font-size:13px; font-weight:600; opacity:.8; }
+.pl-cr{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:color-mix(in srgb,currentColor 6%,transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb,currentColor 12%,transparent); }
+.pl-cr b{ font:400 34px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
+.pl-cr span{ display:grid; gap:2px; font-size:14px; font-weight:600; line-height:1.25; }
+.pl-cr small{ font-size:12.5px; font-weight:400; opacity:.78; }
+.pl-go{ display:grid; gap:8px; justify-items:center; }
+.pl-trial{ font:600 13px/1.2 var(--font-ui); color:inherit; opacity:.86; text-decoration:underline; text-underline-offset:3px; text-decoration-color:color-mix(in srgb,currentColor 40%,transparent); padding:4px 6px; border-radius:6px; }
+.pl-trial:hover{ opacity:1; }
+.pl .btn[aria-current="true"]{ pointer-events:none; opacity:.72; }
+.hw27 .pl7 .pl-save{ margin-top:-8px; }
+.hw27 .pl7-all{ display:flex; flex-wrap:wrap; gap:6px 10px; align-items:baseline; color:var(--c-2); }
+@media (prefers-reduced-motion:reduce){ .cr-bar > i, .cr-bar.seg > i{ transition:none; } }
 </style>
 </head>
 <body>
@@ -3680,7 +3790,8 @@ const DEFAULT_STATE = {
     { id: 'northwind', name: 'Northwind', handle: 'northwindco', kind: 'Client · company voice', hue: 150, approvals: true, niche: 'Marketing', platforms: { x: false, threads: false, linkedin: true, bsky: false } }
   ],
   plan: 'free',
-  ai: { used: 0, day: dayKey(Date.now()), limit: 5 },
+  cr: null, /* Claude credits: the ledger (core.js CREDITS) */
+  trial: null, /* the 7-day Pro trial: { start, until }, once */
   upsellShown: false,
   draft: null,
   platforms: { x: true, threads: true, linkedin: false, bsky: true },
@@ -3710,7 +3821,8 @@ S.queue = S.queue.filter(q => q && typeof q === 'object').map(q => { const tw = 
 const fixTweet = t => ({ id: t && t.id || uid(), text: String(t && t.text || ''), media: Array.isArray(t && t.media) ? t.media : [], poll: t && t.poll || null });
 if (S.draft) S.draft.tweets = S.draft.tweets.map(fixTweet);
 S.drafts = S.drafts.filter(d => d && Array.isArray(d.tweets)).map(d => ({ ...d, tweets: d.tweets.length ? d.tweets.map(fixTweet) : [fixTweet({})] }));
-if (!S.ai || S.ai.day !== dayKey(Date.now())) S.ai = { used: 0, day: dayKey(Date.now()), limit: 5 };
+/* round 34: the daily rewrite count became Claude credits (S.cr); a used-up day carries over so nobody gets a fresh 10 by updating */
+if (S.ai) { if (!S.cr && S.ai.day === dayKey(Date.now()) && S.ai.used) S.cr = { ...HWCore.CREDITS.fresh('free'), bal: Math.max(0, 10 - 2 * S.ai.used) }; delete S.ai; }
 /* round 28: 'leverage' left the default never-say list (traders mean margin by it); drop it from saved lists that still carry the old default set */
 if (S.voice && Array.isArray(S.voice.never) && !S.migr28) { if (S.voice.never.includes('synergy') && S.voice.never.includes('delve')) S.voice.never = S.voice.never.filter(w => w !== 'leverage'); S.migr28 = true; }
 const HIST_K = { k: null };
@@ -3872,10 +3984,11 @@ let riffNonce = 0;
 const pick = (arr, t) => arr[(hash(t) + riffNonce) % arr.length];
 /* ==========================================================================
    CLAUDE: three ways in, best first.
-   1. Hookworthy's own server (/api/ai): Sonnet 5.5 for everyday writing, Opus 5.5 for voice study.
+   1. Hookworthy's own server (/api/ai): the everyday model for writing, the bigger one for voice study.
    2. Opened as a claude.ai artifact: the viewer's own Claude (sample capability, asks once).
    3. Neither: the built-in offline editor (instant, heuristic).
    Prompts live in core.js so every path asks the same way.
+   Every call names its action (act), so it's priced the same way everywhere: checked before, charged when Claude answers.
    ========================================================================== */
 const LLM = { mode: 'offline', sample: null, server: null, why: '' };
 LLM.ready = (async () => {
@@ -3886,16 +3999,23 @@ LLM.ready = (async () => {
 })();
 const aiOn = () => LLM.mode !== 'offline';
 const AI_NAME = () => LLM.mode === 'server' || LLM.mode === 'claude' ? 'Claude' : 'basic mode';
-async function ask(spec, { signal, onText, fresh } = {}) {
+async function ask(spec, { signal, onText, fresh, act, chars = 0, basic = false, resume } = {}) {
   await LLM.ready;
+  /* Claude credits: priced before the call (the button already said so), refused before anything is sent when there aren't
+     enough, and used only when Claude answers. Basic mode never comes through here */
+  const docs = spec.docs ? spec.docs.length : 0, cost = aiOn() ? crCost(act, { docs, chars, tier: spec.tier }) : 0;
+  if (aiOn() && METERED() && cost > crLeft()) throw { code: 'out_of_credits', act, cost, basic, resume, message: 'Not enough credits' };
   if (LLM.mode === 'server') {
-    const r = await fetch('api/ai', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt: spec.prompt, tier: spec.tier, json: !!spec.json, ...(spec.docs && spec.docs.length ? { docs: spec.docs } : {}) }), signal });
-    const j = await r.json().catch(() => ({})); if (!r.ok) throw { code: j.code || 'upstream_error', message: j.error || r.statusText };
+    const r = await fetch('api/ai', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt: spec.prompt, tier: spec.tier, json: !!spec.json, act: act || '', chars, ...(spec.docs && spec.docs.length ? { docs: spec.docs } : {}) }), signal });
+    const j = await r.json().catch(() => ({}));
+    if (j && j.credits && LLM.server) { const before = crState(); LLM.server.credits = j.credits; crAfter(before); }
+    if (j.code === 'out_of_credits' && !j.credits && LLM.server && LLM.server.credits) LLM.server.credits = { ...LLM.server.credits, left: 0 };
+    if (!r.ok) throw { code: j.code || 'upstream_error', message: j.error || r.statusText, ...(j.code === 'out_of_credits' ? { act, cost: j.cost || cost, basic, resume } : {}) };
     return spec.json ? j.data : j.text;
   }
   if (LLM.mode === 'claude') {
     const o = { modelTier: spec.tier || 'default', signal, cache: fresh ? false : true }; if (onText) o.onText = onText;
-    try { return spec.json ? await LLM.sample.json(spec.prompt, o) : (await LLM.sample(spec.prompt, o)).text; }
+    try { const out = spec.json ? await LLM.sample.json(spec.prompt, o) : (await LLM.sample(spec.prompt, o)).text; crCharge(cost); return out; }
     catch (e) { if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(e && e.code)) { LLM.mode = 'offline'; LLM.why = e.code; document.documentElement.dataset.ai = 'offline'; refreshAIBadge(); } throw e; }
   }
   throw { code: 'offline', message: 'No Claude connection' };
@@ -3905,11 +4025,12 @@ const failMsg = (what, e) => `Couldn’t ${what}: ${esc(String((e && e.message) 
 function aiError(e) {
   const c = e && e.code;
   if (c === 'cancelled') return;
+  if (c === 'out_of_credits') { crOut(e); return; }
   const m = { not_granted: 'Claude is off for this page. Using basic mode.', sampling_disabled: 'Claude isn’t available on this account. Using basic mode.', rate_limited: 'Claude is busy. Try again in a minute.', refused: 'Claude passed on that one. Try different wording.', invalid_json: 'Claude’s answer came back garbled. Try again.', prompt_too_large: 'That’s too much to send at once. Try fewer posts.', session_expired: 'Your Claude sign-in expired. Sign in again, then retry.', offline: 'No Claude connection. Using basic mode.' }[c] || 'Claude didn’t answer. Try again.';
   toast(m, { icon: 'zapoff', tone: c === 'rate_limited' ? 'accent' : 'err' });
 }
-const aiBadgeTip = () => LLM.mode === 'server' ? 'Claude on your server: Sonnet for writing, Opus for voice study' : LLM.mode === 'claude' ? 'Claude, through your own claude.ai account' : 'Basic mode: instant suggestions without AI. Tap to connect Claude';
-function refreshAIBadge() { $$('.plan-card').forEach(c => { c.hidden = !PRICED(); }); $$('.ai-badge').forEach(b => { b.dataset.mode = LLM.mode; b.innerHTML = aiBadgeInner(); if (b.classList.contains('side-ai')) b.dataset.tip = aiBadgeTip(); }); }
+const aiBadgeTip = () => LLM.mode === 'server' ? 'Claude, on your Hookworthy server' : LLM.mode === 'claude' ? 'Claude, through your own claude.ai account' : 'Basic mode: instant suggestions without AI. Tap to connect Claude';
+function refreshAIBadge() { crPaint(); $$('.ai-badge').forEach(b => { b.dataset.mode = LLM.mode; b.innerHTML = aiBadgeInner(); if (b.classList.contains('side-ai')) b.dataset.tip = aiBadgeTip(); }); }
 function aiBadgeInner() { return `<i></i><span>${LLM.mode === 'server' || LLM.mode === 'claude' ? 'Claude on' : 'Basic mode · AI off'}</span>`; }
 /* what Claude gets to know about your voice: dials, habits it learned, never-say words, your best posts */
 function voiceSpec() {
@@ -4451,20 +4572,140 @@ function setTheme(t) {
 }
 function toggleTheme() { setTheme(isDark() ? 'light' : 'dark'); }
 
-/* plans: nothing is charged yet, so nothing is capped. Flip BILLING on when real checkout exists:
-   the daily rewrite count, the sidebar card and the upgrade nudges all come back with it. */
+/* plans: nothing is charged yet, so real accounts aren't capped. Flip BILLING on when real checkout exists and the
+   credit meter, the cost on each button and the upgrade sheets all come back with it. A Hookworthy server that meters
+   (HW_PLAN or HOOKWORTHY_TOKENS) turns them on too, with its own numbers. */
 const BILLING = false;
 /* the showcase: the claude.ai preview, or anyone who hasn't brought posts or connected a server yet.
    Sample numbers, the pricing demo and coming-soon features show here, always labelled; real accounts never see them. */
 const SHOWCASE = () => LLM.mode !== 'server' && !HIST().length;
 const PRICED = () => BILLING || SHOWCASE();
-function aiLeft() { return !aiOn() || !PRICED() || S.plan !== 'free' ? Infinity : Math.max(0, S.ai.limit - S.ai.used); }
-function spendAI() { if (!aiOn()) return; /* Basic mode rewrites on your device: free, never counted */ if (PRICED() && S.plan === 'free') S.ai.used++; save(); refreshPlanCard(); }
-function refreshPlanCard() {
-  const c = $('.plan-card'); if (!c) return;
-  const used = Math.min(S.ai.used, S.ai.limit);
-  $('.pc-count', c).textContent = `${S.ai.limit - used}/${S.ai.limit} rewrites left`;
+/* ---------- Claude credits (the table and the refill rules live in core.js, shared with the server) ----------
+   Free: 10 a day, back at midnight. Pro: 1,000 a month, unused ones roll over (up to 1,000 more). Studio: 4,000, shared
+   by every voice. A 7-day Pro trial (250, once, no card) ends on its own. Basic mode and Sharpen never use a credit. */
+const CR = HWCore.CREDITS;
+const SRV_CR = () => LLM.mode === 'server' && LLM.server && LLM.server.credits && LLM.server.credits.metered ? LLM.server.credits : null;
+const METERED = () => aiOn() && (!!SRV_CR() || PRICED());
+const TRIAL_ON = () => S.plan === 'free' && S.trial && S.trial.until > Date.now();
+function planNow() { if (SRV_CR()) return SRV_CR().plan; if (TRIAL_ON()) return 'trial'; return CR.PLANS[S.plan] && S.plan !== 'trial' ? S.plan : 'free'; }
+/* where the meter stands now (null when nothing is metered: Basic mode, a real account before billing, an unmetered server) */
+function crState() {
+  if (!METERED()) return null;
+  const s = SRV_CR();
+  if (s) { const left = Math.max(0, s.left | 0), amount = s.amount || 1; return { plan: s.plan, name: s.name || cap(s.plan), per: s.per, left, amount, next: s.next, rolled: s.rolled || 0, frac: Math.min(1, left / amount), empty: left <= 0, low: left <= Math.ceil(amount * .2), plenty: s.plan !== 'free' && left >= amount * .25, server: true }; }
+  const plan = planNow(), st = CR.status(S.cr, plan);
+  if (st.st !== S.cr) { S.cr = st.st; save(); }
+  return st;
 }
+const crLeft = () => { const s = crState(); return s ? s.left : Infinity; };
+const crCost = (act, o) => CR.cost(act, o);
+const crCan = (act, o) => !METERED() || crCost(act, o) <= crLeft();
+const crN = n => `${fmtN(n)} credit${n === 1 ? '' : 's'}`;
+/* a menu hint: "7 left" or "Plenty" */
+const crHint = () => { const st = crState(); return !st ? '' : st.plenty ? 'Plenty' : `${fmtN(st.left)} left`; };
+/* "in 6 h", "in 25 min", "in 3 days" */
+function crRel(t) { const m = Math.max(1, Math.round((t - Date.now()) / 60e3)); if (m < 60) return `in ${m} min`; const h = Math.round(m / 60); if (h < 36) return `in ${h} h`; return `in ${Math.round(h / 24)} days`; }
+const crDate = t => { const d = new Date(t); return `${MON[d.getMonth()]} ${d.getDate()}`; };
+/* when more arrive, said the way a person would */
+function crWhen(st, long = false) {
+  if (!st) return '';
+  if (st.per === 'day') { const h = (st.next - Date.now()) / 36e5; return long ? `They’re back at midnight, ${crRel(st.next)}.` : h <= 1 ? `Back ${crRel(st.next)}` : 'Back at midnight'; }
+  if (st.per === 'trial') { const d = Math.max(0, Math.ceil((st.next - Date.now()) / DAY)); return long ? `Your trial has ${d} day${d === 1 ? '' : 's'} left.` : `${d} day${d === 1 ? '' : 's'} left`; }
+  return long ? `${fmtN(st.amount)} more land on ${crDate(st.next)}, and unused ones roll over.` : `Refills ${crDate(st.next)}`;
+}
+function crSay(st) {
+  if (!st) return '';
+  const span = st.per === 'day' ? ' today' : st.per === 'trial' ? ' in your trial' : ' this month';
+  return st.plenty ? `Claude credits: plenty left${span} (${fmtN(st.left)}). ${crWhen(st, true)}` : `Claude credits: ${fmtN(st.left)} of ${fmtN(st.amount)} left${span}. ${crWhen(st, true)}`;
+}
+/* the meter: in the sidebar, and bigger on the Plans page */
+function crMeterHTML(where = 'side') {
+  const st = crState(); if (!st) return where === 'side' ? '<a class="cr-meter" data-where="side" href="#upgrade" hidden></a>' : '<div class="cr-meter" data-where="page" hidden></div>';
+  const s = st.empty ? 'empty' : st.low ? 'low' : st.plenty ? 'plenty' : 'ok';
+  const seg = st.amount <= 20;
+  const bar = seg ? `<span class="cr-bar seg" aria-hidden="true">${Array.from({ length: st.amount }, (_, i) => `<i${i < st.left ? ' class="on"' : ''}></i>`).join('')}</span>` : `<span class="cr-bar" aria-hidden="true"><i style="--f:${Math.max(st.empty ? 0 : .03, st.frac).toFixed(3)}"></i></span>`;
+  if (where === 'page') {
+    return `<section class="cr-meter cr-page" data-where="page" data-s="${s}" aria-label="Your Claude credits">
+      <div class="cr-ph"><span class="label">${st.plan === 'free' ? 'Your credits today' : `Your credits · ${esc(st.name)}`}</span><span class="cr-big">${st.plenty ? 'Plenty left' : `${fmtN(st.left)} <small>of ${fmtN(st.amount)}${st.rolled ? ` + ${fmtN(st.rolled)} rolled over` : ''}</small>`}</span></div>
+      ${bar}<p class="cr-sub">${st.plenty ? `${fmtN(st.left)} to use. ` : ''}${esc(crWhen(st, true))} ${st.plan === 'free' ? 'Basic mode and Sharpen stay free and unlimited.' : 'Basic mode and Sharpen never use one.'}</p></section>`;
+  }
+  const sub = crWhen(st);
+  return `<a class="cr-meter" data-where="side" data-s="${s}" href="#upgrade" aria-label="${esc(crSay(st))} Open Plans." data-tip="${esc(st.plenty ? `${fmtN(st.left)} credits · ${crWhen(st)}` : 'A rewrite uses 1 · Sharpen is free')}">
+    <span class="cr-row"><span class="cr-k">${esc(st.plan === 'free' ? 'Credits' : st.name)}</span><b class="cr-n">${st.plenty ? 'Plenty left' : `${fmtN(st.left)} left`}</b><b class="cr-nn" aria-hidden="true">${st.plenty ? '' : fmtN(st.left)}</b></span>${bar}<span class="cr-sub"><span>${esc(sub)}</span>${st.plan === 'free' && !st.server ? '<u>Get more</u>' : ''}</span></a>`;
+}
+/* the price of an action, on its button (hidden on paid plans with plenty left, and whenever nothing is metered) */
+const crTag = (act, o) => { const c = crCost(act, o); return c > 0 ? `<span class="cr-tag" data-tip="${c === 1 ? 'Uses 1 credit' : `Uses ${c} credits`}"><span class="sr"> (uses </span>${c}<span class="sr"> credit${c === 1 ? '' : 's'})</span></span>` : ''; };
+/* Improve › Rewrites: one line that says what a rewrite costs and what's left */
+function crLineHTML() {
+  const st = crState(); if (!st || st.plenty) return '<p class="faint imp-tip cr-line">Select a few words to Sharpen just those.</p>';
+  return `<p class="faint imp-tip cr-line" data-s="${st.empty ? 'empty' : st.low ? 'low' : 'ok'}">${st.empty ? `No credits left${st.per === 'day' ? ' today' : ''}, so rewrites come from Basic mode. ${esc(crWhen(st))}.` : `Each rewrite uses 1 credit · <b>${fmtN(st.left)} left${st.per === 'day' ? ' today' : ''}</b>.`} Sharpen is free: select a few words.</p>`;
+}
+function crPaint() {
+  const st = crState(); document.documentElement.dataset.meter = !st ? 'off' : st.plenty ? 'plenty' : 'count';
+  $$('.cr-meter').forEach(el => {
+    const t = document.createElement('div'); t.innerHTML = crMeterHTML(el.dataset.where || 'side'); const nu = t.firstElementChild;
+    if (el.contains(document.activeElement)) { [...el.attributes].forEach(a => el.removeAttribute(a.name)); [...nu.attributes].forEach(a => el.setAttribute(a.name, a.value)); el.innerHTML = nu.innerHTML; } else el.replaceWith(nu);
+  });
+  $$('.cr-line').forEach(el => { const t = document.createElement('div'); t.innerHTML = crLineHTML(); el.replaceWith(t.firstElementChild); });
+}
+/* a credit is used when Claude answers. Local ledger only: a metering server keeps its own and sends the balance back */
+function crCharge(c) {
+  if (!(c > 0) || !METERED() || SRV_CR()) return;
+  const before = crState(); S.cr = CR.spend(S.cr, c) || { ...S.cr, bal: 0 }; save(); crAfter(before);
+}
+/* the gentle heads-up: once per refill, at about 80% used. A toast with a way to see plans, never a popup */
+function crAfter(before) {
+  crPaint(); const st = crState(); if (!st || !st.low || st.empty) return;
+  const key = `${st.plan}:${st.next}`; if (S.crWarned === key) return;
+  S.crWarned = key; save(); if (before && before.low) return;
+  const msg = st.plan === 'free' ? `${crN(st.left)} left today. They’re back at midnight, and Basic mode and Sharpen stay unlimited.` : st.plan === 'trial' ? `${crN(st.left)} left in your trial. Pro has 1,000 a month.` : `${crN(st.left)} left this month. More land on ${crDate(st.next)}, and unused ones roll over.`;
+  toast(msg, { icon: 'spark', tone: 'accent', ...(st.server ? {} : { action: st.plan === 'free' || st.plan === 'trial' ? 'See plans' : 'Your plan', onAction: () => go('upgrade') }) });
+}
+/* plan changes: a new plan starts a fresh allowance (Free → Pro gets the full 1,000 today) */
+function setPlan(k) { S.plan = k; S.cr = CR.fresh(planNow()); save(); crPaint(); }
+function crStartTrial() {
+  if (S.trial || S.plan !== 'free') return false;
+  const now = Date.now(); S.trial = { start: now, until: now + CR.PLANS.trial.days * DAY }; S.cr = CR.fresh('trial', now); save(); crPaint();
+  return true;
+}
+/* the trial ends on its own: back to Free, everything kept, said once */
+function crTrialCheck() {
+  if (!S.trial || S.trial.told || S.trial.until > Date.now() || S.plan !== 'free') return;
+  S.trial.told = true; S.cr = CR.fresh('free'); save(); crPaint();
+  if (PRICED()) toast('Your Pro trial ended. You’re on Free again, with 10 credits a day, and everything you wrote stays.', { icon: 'gift', tone: 'accent', action: 'See plans', onAction: () => go('upgrade') });
+}
+/* out of credits, mid-flow: what Basic mode can do right now beside what Claude would do, and a one-click way to finish
+   it with Claude. Shown once per action each session; after that, Basic runs quietly with a short note */
+function crSheet({ act, cost = 1, basicHTML, onBasic, basicDone, resume } = {}) {
+  const st = crState(); if (!st) { onBasic && onBasic(); return; }
+  const A = CR.ACTS[act] || { label: 'This', does: 'Claude writes it in your voice' };
+  UI.crSeen = UI.crSeen || {};
+  if (UI.crSeen[act]) { if (onBasic) onBasic(); toast(`${st.left ? `${esc(A.label)} needs ${crN(cost)} and you have ${st.left}` : 'Out of credits'}${st.per === 'day' ? ' until midnight' : ''}, so ${onBasic || basicDone ? 'this one is from Basic mode' : 'this one needs to wait'}.`, { icon: 'zapoff', ...(st.server ? {} : { action: 'See plans', onAction: () => go('upgrade') }) }); return; }
+  UI.crSeen[act] = 1; $$('#toasts .toast').forEach(t => t.remove()); /* a stale "2 left" never sits under the sheet */
+  const srv = !!st.server, plan = st.plan, canTrial = !srv && PRICED() && !S.trial && plan === 'free', canPro = !srv && PRICED() && (plan === 'free' || plan === 'trial');
+  const head = st.left > 0 ? `${esc(A.label)} needs ${crN(cost)}. <em>You have ${st.left}.</em>` : plan === 'free' ? 'That’s today’s credits. <em>Your post isn’t stuck.</em>' : plan === 'trial' ? 'That’s your trial’s credits. <em>Nothing is lost.</em>' : 'That’s this month’s credits. <em>Nothing is lost.</em>';
+  const left = basicHTML ? `<div class="cr-pane cr-basic"><span class="label">Basic version · ready now · free</span><div class="cr-prev">${basicHTML}</div><button class="btn" data-crs="basic">${ic('check', 'sm')} Use the Basic version</button></div>`
+    : `<div class="cr-pane cr-basic"><span class="label">${basicDone ? 'Done in Basic mode · free' : 'Still free, still yours'}</span><p>${basicDone ? 'We did this one on your device, so you can keep going. It’s in place now.' : 'This one needs Claude. Hook scores, the checks, Sharpen and Basic mode keep working, as much as you like.'}</p></div>`;
+  const right = `<div class="cr-pane cr-claude"><span class="label">Claude, in your voice <span class="cr-cost">${crN(cost)}</span></span><div class="cr-blur" aria-hidden="true"><i></i><i></i><i></i></div><p>${esc(A.does || '')}.</p></div>`;
+  const acts = canTrial ? `<button class="btn primary" data-crs="trial">${ic('gift', 'sm')} Try Pro free for 7 days</button><button class="btn" data-crs="pro">Upgrade to Pro · $${PRICES.pro[0]}/mo</button>`
+    : canPro ? `<button class="btn primary" data-crs="pro">${ic('spark', 'sm')} Upgrade to Pro · $${PRICES.pro[0]}/mo</button>`
+    : srv ? '' : `<a class="btn primary" href="#upgrade" data-crs="plans">${plan === 'pro' ? 'See Studio' : 'See plans'}</a>`;
+  const fine = canTrial ? `No card. The trial ends on its own after 7 days and you’re back on Free with everything you wrote.${resume ? ' Either button finishes this one with Claude right away.' : ''}` : canPro ? `1,000 credits a month, and unused ones roll over.${resume ? ' We’ll finish this one with Claude right away.' : ''}` : srv ? 'Your plan is set on your Hookworthy server. Ask whoever runs it for more.' : '';
+  const m = modal(`<div class="cr-sheet"><div class="cr-sh"><span class="label">Claude credits</span><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div>
+    <h2 class="cr-h">${head}</h2><p class="muted cr-when">${esc(crWhen(st, true))}</p>
+    <div class="cr-panes">${left}${right}</div>
+    <div class="cr-acts">${acts}<button class="btn ghost" data-close>Not now</button></div>${fine ? `<p class="faint cr-fine">${esc(fine)}</p>` : ''}</div>`, { label: 'Out of credits', box: 'modal cr-box' });
+  m.el.addEventListener('click', e => {
+    const b = e.target.closest('[data-crs]'); if (!b) return; const k = b.dataset.crs;
+    if (k === 'basic') { m.close(); onBasic && onBasic(); return; }
+    if (k === 'plans') { m.close(); return; }
+    if (k === 'trial') { crStartTrial(); burstFrom(b); m.close(); SFX.play('done'); toast(resume ? 'Pro trial on: 250 credits for 7 days. Writing it with Claude now.' : 'Pro trial on: 250 credits and every Pro feature for 7 days. Nothing to cancel.', { icon: 'gift', tone: 'accent' }); if (resume) setTimeout(resume, 260); return; }
+    if (k === 'pro') { b.classList.add('is-loading'); setTimeout(() => { b.classList.remove('is-loading'); setPlan('pro'); m.close(); SFX.play('done'); toast(resume ? 'You’re on Pro. Writing it with Claude now.' : 'You’re on Pro: 1,000 credits a month.', { icon: 'spark', tone: 'accent' }); if (resume) setTimeout(resume, 260); }, 700); }
+  });
+}
+/* ask() threw out_of_credits where there's no richer sheet: the same sheet, told whether Basic already stepped in */
+function crOut(e) { crSheet({ act: e.act, cost: e.cost || 1, basicDone: !!e.basic, resume: e.resume }); }
+setInterval(() => { crTrialCheck(); if (document.visibilityState === 'visible') crPaint(); }, 60e3);
 
 /* ==========================================================================
    ROUTER + SHELL
@@ -4530,7 +4771,7 @@ const TOOLS = [
 const isRest = t => (S.settings.rest || []).includes(new Date(t).getDay());
 function shell(active, inner) {
   const counts = { ideas: S.ideas.length, queue: myQ().filter(q => q.status === 'scheduled').length }, MD = myDrafts();
-  const used = Math.min(S.ai.used, S.ai.limit); const w = WS();
+  const w = WS();
   return `<div class="shell"><a class="skip" href="#main" onclick="event.preventDefault();const m=document.getElementById('main');m.tabIndex=-1;m.focus()">Skip to content</a>
   <aside class="side" aria-label="Sidebar">
     <div class="top"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a><a class="rail-mark" href="#home" aria-label="Hookworthy home">${LOGO_MARK}</a></div>
@@ -4541,7 +4782,7 @@ function shell(active, inner) {
     </nav>
     ${MD.length ? `<div class="side-drafts"><div class="nav-l">Drafts${MD.length >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or delete">Tidy up</button>` : ''}</div>${MD.slice(0, 5).map(d => `<button class="sd" data-act="opendraft" data-i="${S.drafts.indexOf(d)}" title="${esc(clip((d.tweets[0] && d.tweets[0].text) || 'Untitled draft', 120))}${d.created ? ` · started ${agoLabel(d.created)}` : ''}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}"><span>${esc((d.tweets[0] && d.tweets[0].text.split('\n')[0]) || 'Untitled draft')}</span></button>`).join('')}${MD.length > 5 ? `<button class="sd sd-all" data-act="alldrafts">All drafts · ${MD.length}</button>` : ''}</div>` : ''}
     <div class="spacer"></div>
-    <div class="side-status"><button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="${aiBadgeTip()}">${aiBadgeInner()}</button>${S.plan === 'free' ? `<a class="side-plan plan-card" ${PRICED() && aiOn() ? '' : 'hidden'} href="#upgrade" data-tip="${SHOWCASE() ? 'How the free plan’s daily limit works' : 'Unlimited rewrites on Pro'}"><span class="pc-count">${S.ai.limit - used}/${S.ai.limit} rewrites left</span></a>` : ''}</div>
+    <div class="side-status"><button class="ai-badge side-ai" data-mode="${LLM.mode}" data-act="connections" data-tip="${aiBadgeTip()}">${aiBadgeInner()}</button></div>${crMeterHTML('side')}
     <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc(S.ws === 'me' ? S.user.name : S.workspaces[0].name)}</b><span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span></span>${ic('more', 'sm')}</button>
   </aside>
   <main class="main" id="main"><div class="view" id="view">${inner}</div></main>
@@ -4583,7 +4824,7 @@ const ACT = {
     { label: 'Connections', icon: 'link', hint: LLM.mode === 'offline' ? 'Claude off' : 'Claude on', run: () => openConnections() },
     { label: 'Settings', icon: 'sliders', run: () => openSettings() },
     { label: 'Keyboard shortcuts', icon: 'kbd', kbd: ['?'], run: openShortcuts },
-    ...(PRICED() ? [{ label: S.plan === 'free' ? 'See plans' : 'Your plan', icon: 'riff', run: () => go('upgrade') }] : []),
+    ...(PRICED() || crState() ? [{ label: S.plan === 'free' ? 'Plans & credits' : 'Your plan', icon: 'riff', hint: crHint(), run: () => go('upgrade') }] : []),
     '-',
     { label: 'Homepage', icon: 'arrow', run: () => go('home') }
   ], { width: 240 }),
@@ -4602,7 +4843,7 @@ const ACT = {
     { label: 'Save an idea', icon: 'plus', run: openCapture },
     { label: 'Search', icon: 'search', run: () => openPalette() },
     { label: 'Settings', icon: 'sliders', run: () => openSettings() },
-    ...(PRICED() ? [{ label: S.plan === 'free' ? 'See plans' : 'Your plan', icon: 'riff', run: () => go('upgrade') }] : [])
+    ...(PRICED() || crState() ? [{ label: S.plan === 'free' ? 'Plans & credits' : 'Your plan', icon: 'riff', hint: crHint(), run: () => go('upgrade') }] : [])
   ], { align: 'end' })
 };
 /* hold the + tab to save an idea instead */
@@ -5148,12 +5389,12 @@ function diffHTML() {
 function improveHTML(id, i) {
   const tabs = i === 0 ? [['score', 'Hook score'], ['takes', 'Rewrites'], ['formulas', 'Formulas']] : [['takes', 'Rewrites']], t = UI.imp.tab;
   return `<div class="imp" role="region" aria-label="Improve this post"><div class="imp-h"><div class="seg imp-tabs" role="tablist" aria-label="Improve">${tabs.map(([k, l]) => `<button role="tab" data-cact="imptab" data-t="${k}" aria-selected="${t === k}">${l}</button>`).join('')}</div><button class="btn ghost icon-only sm" data-cact="impclose" aria-label="Close" data-tip="Close" data-kbd="Esc">${ic('x', 'sm')}</button></div>
-    <div class="imp-b">${t === 'score' ? hookReasonHTML() : t === 'formulas' ? formulasHTML() : instrHTML(id) + riffbarHTML(id) + '<p class="faint imp-tip">Select a few words to Sharpen just those.</p>'}</div></div>`;
+    <div class="imp-b">${t === 'score' ? hookReasonHTML() : t === 'formulas' ? formulasHTML() : instrHTML(id) + riffbarHTML(id) + crLineHTML()}</div></div>`;
 }
 /* the free-text ask: a field, a Rewrite button, your last five asks (or three starters) */
 function instrHTML(id) {
   const recent = (S.settings.recentInstr || []).slice(0, 5), chips = recent.length ? recent : ['Calmer', 'For beginners', 'Add an open loop'];
-  return `<div class="instr"><label class="sr" for="instr-${id}">Say what to change</label><input class="input instr-in" id="instr-${id}" type="text" maxlength="200" autocomplete="off" enterkeyhint="go" placeholder="${NARROW() ? 'e.g. calmer' : 'Say what to change, e.g. calmer'}"><button class="btn sm" data-cact="instr" data-tip="Rewrite with your note" data-kbd="↵">Rewrite</button></div>
+  return `<div class="instr"><label class="sr" for="instr-${id}">Say what to change</label><input class="input instr-in" id="instr-${id}" type="text" maxlength="200" autocomplete="off" enterkeyhint="go" placeholder="${NARROW() ? 'e.g. calmer' : 'Say what to change, e.g. calmer'}"><button class="btn sm" data-cact="instr" data-tip="Rewrite with your note" data-kbd="↵">Rewrite${crTag('instruct')}</button></div>
     <div class="instr-recent" role="group" aria-label="${recent.length ? 'Your recent changes' : 'Try one'}"><span class="instr-try" aria-hidden="true">${recent.length ? 'Recent:' : 'Try:'}</span>${chips.map(c => `<button class="chip" data-cact="instrgo" data-t="${esc(c)}">${esc(cap(clip(c, 32)))}</button>`).join('')}</div><p class="instr-note" role="status"></p>`;
 }
 function setImprove(id, tab) { const cur = UI.imp; UI.imp = cur && cur.id === id && cur.tab === tab ? null : { id, tab }; renderExtras(id); $$('.tw .tw-extra').forEach(x => { const o = x.closest('.tw').dataset.id; if (o !== id && x.querySelector('.imp')) renderExtras(o); }); const d = $('.hk-dial'); d && d.setAttribute('aria-expanded', !!(UI.imp && UI.imp.tab === 'score')); }
@@ -5568,7 +5809,7 @@ function openVisual(i) {
   const fields = () => { const p = cur(); const h = $('#vis-h', el), mm = $('#vis-m', el); if (document.activeElement !== h) h.value = p.headline || ''; if (document.activeElement !== mm) mm.value = VIS.kind === 'stat' ? (p.label || '') : (p.metric || ''); $('#vis-mw', el).hidden = !['data', 'stat'].includes(VIS.kind); $('#vis-edit', el).hidden = ['post', 'frame'].includes(VIS.kind); $('#vis-look', el).hidden = VIS.kind !== 'data'; };
   const draw = () => { visRender(cv, VIS.kind, cur(), { style: VIS.style, size: VIS.size, look: VIS.look, user: S.user, text: text(), frameImg: VIS.frameImg }); $('#vis-stage', el).classList.toggle('drop', VIS.kind === 'frame'); why(); fields(); };
   visFonts().then(draw, draw);
-  if (aiOn() && !sel) { $('#vis-why', el).classList.add('thinking'); ask(HWCore.prompts.visual({ text: all, plan }), { fresh: true }).then(r => { const np = visMergeAI(all, plan, r && (r.data || r)); if (np !== plan) { const moved = np.template !== plan.template && VIS.kind === plan.template; plan = np; if (moved) { VIS.kind = plan.template; $$('.vk', el).forEach(x => { x.setAttribute('aria-selected', x.dataset.kind === VIS.kind); const b = $('b', x); b.innerHTML = VIS_KINDS.find(k => k[0] === x.dataset.kind)[1] + (x.dataset.kind === plan.template ? ' <span class="vk-pick">Picked</span>' : ''); }); } draw(); } }).catch(() => { }).finally(() => $('#vis-why', el) && $('#vis-why', el).classList.remove('thinking')); }
+  if (aiOn() && !sel) { $('#vis-why', el).classList.add('thinking'); ask(HWCore.prompts.visual({ text: all, plan }), { fresh: true, act: 'visual' }).then(r => { const np = visMergeAI(all, plan, r && (r.data || r)); if (np !== plan) { const moved = np.template !== plan.template && VIS.kind === plan.template; plan = np; if (moved) { VIS.kind = plan.template; $$('.vk', el).forEach(x => { x.setAttribute('aria-selected', x.dataset.kind === VIS.kind); const b = $('b', x); b.innerHTML = VIS_KINDS.find(k => k[0] === x.dataset.kind)[1] + (x.dataset.kind === plan.template ? ' <span class="vk-pick">Picked</span>' : ''); }); } draw(); } }).catch(() => { }).finally(() => $('#vis-why', el) && $('#vis-why', el).classList.remove('thinking')); }
   el.addEventListener('click', e => {
     const k = e.target.closest('.vk'); if (k) { VIS.kind = k.dataset.kind; $$('.vk', el).forEach(x => x.setAttribute('aria-selected', x === k)); SFX.play('tick'); draw(); if (VIS.kind === 'frame' && !VIS.frameImg) $('#vis-file', el).click(); return; }
     const o = e.target.closest('.vis-seg [data-v]'); if (o) { const g = o.parentElement.dataset.vk; VIS[g] = o.dataset.v; $$('[data-v]', o.parentElement).forEach(x => x.setAttribute('aria-selected', x === o)); SFX.play('tick'); draw(); return; }
@@ -5707,7 +5948,7 @@ async function tidyDictation(i, said) {
   parts.forEach((part, k) => { const tw = S.draft.tweets[i + k]; if (!tw) return; const at = tw.text.indexOf(part); if (at < 0) return; tw.text = tw.text.slice(0, at) + HWCore.tidySpoken(part) + tw.text.slice(at + part.length); k0++; });
   renderThread(); markSaving();
   const undo = () => { before.forEach((t, k) => { if (S.draft.tweets[k]) S.draft.tweets[k].text = t; }); renderThread(); markSaving(); };
-  if (aiOn() && parts.length === 1) { const tw = S.draft.tweets[i], clean = HWCore.tidySpoken(parts[0]); try { const r = await ask(HWCore.prompts.spoken({ text: parts[0], voice: voiceSpec(), limit: effLimit() }), { fresh: true }); const post = r && r.posts && r.posts[0]; if (post && tw.text.includes(clean)) { tw.text = tw.text.replace(clean, post); renderThread(); markSaving(); toast(`${cap(AI_NAME())} tidied it in your voice.`, { icon: 'riff', tone: 'accent', action: 'Undo', onAction: undo }); return; } } catch (e) { aiError(e); } }
+  if (aiOn() && parts.length === 1) { const tw = S.draft.tweets[i], clean = HWCore.tidySpoken(parts[0]); try { const r = await ask(HWCore.prompts.spoken({ text: parts[0], voice: voiceSpec(), limit: effLimit() }), { fresh: true, act: 'tidy' }); const post = r && r.posts && r.posts[0]; if (post && tw.text.includes(clean)) { tw.text = tw.text.replace(clean, post); renderThread(); markSaving(); toast(`${cap(AI_NAME())} tidied it in your voice.`, { icon: 'riff', tone: 'accent', action: 'Undo', onAction: undo }); return; } } catch (e) { aiError(e); } }
   toast('Tidied: fillers and repeats out, your words kept.', { icon: 'check', action: 'Undo', onAction: undo });
 }
 
@@ -5777,7 +6018,7 @@ function openBrief(files) {
         <div class="br-or"><span>or paste it, or say it</span></div>
         <div class="br-paste" id="br-ph"><textarea class="input" id="br-t" rows="6" placeholder="Trade notes, launch notes, a transcript, a messy voice note…">${esc(B.paste)}</textarea><button class="btn sm br-mic" data-br="mic" aria-pressed="false" data-tip="Say it instead of typing">${ic('mic', 'sm')} Say it</button></div>
       </div>
-      <div class="modal-f"><span class="faint br-count" id="br-count"></span><button class="btn" data-close>Cancel</button><button class="btn primary" data-br="read">${ic('riff', 'sm')} Read it</button></div>`;
+      <div class="modal-f"><span class="faint br-count" id="br-count"></span><button class="btn" data-close>Cancel</button><button class="btn primary" data-br="read">${ic('riff', 'sm')} Read it${crTag('brief', { docs: pdfs().length })}</button></div>`;
       const count = () => { const w = (src().match(/\S+/g) || []).length; $('#br-count', el).textContent = w ? `${fmtN(w)} words${pdfs().length ? ` + ${pdfs().length} PDF` : ''}` : pdfs().length ? `${pdfs().length} PDF` : ''; };
       $('#br-t', el).oninput = e => { B.paste = e.target.value; count(); }; count();
       $('#br-file', el).onchange = e => addFiles2([...e.target.files]);
@@ -5796,7 +6037,7 @@ function openBrief(files) {
         <section><h3 class="label">Way in</h3><div class="br-angles" role="radiogroup">${(r.angles || []).map((a, k) => `<button class="br-ang" role="radio" data-ang="${k}" aria-checked="${B.angle === k}"><b>${esc(a.angle)}</b><span>${esc(a.line)}</span></button>`).join('')}</div></section>
         <section><h3 class="label">Shape</h3><div class="br-fmts" role="radiogroup">${fmts}</div></section>
       </div>
-      <div class="modal-f"><button class="btn" data-br="back">${ic('left', 'sm')} Back</button><span class="grow"></span><button class="btn primary" data-br="write">${ic('write', 'sm')} Write it in my voice</button></div>`;
+      <div class="modal-f"><button class="btn" data-br="back">${ic('left', 'sm')} Back</button><span class="grow"></span><button class="btn primary" data-br="write">${ic('write', 'sm')} Write it in my voice${crTag('briefWrite', { docs: pdfs().length })}</button></div>`;
       $$('[data-gap]', el).forEach(f => f.onsubmit = e => { e.preventDefault(); const v = $('input', f).value.trim(); if (!v) return; B.paste = (B.paste ? B.paste + '\n\n' : '') + v; f.closest('.br-gap').classList.add('added'); f.outerHTML = `<p class="br-added">${ic('check', 'sm')} Added: ${esc(clip(v, 90))}</p>`; SFX.play('tick'); });
       return;
     }
@@ -5810,7 +6051,7 @@ function openBrief(files) {
         <div class="br-check ${unsourced.length ? 'warn' : 'ok'}">${unsourced.length ? `${ic('zapoff', 'sm')}<span><b>Check ${unsourced.length === 1 ? 'this number' : 'these numbers'}:</b> ${unsourced.map(esc).join(', ')} ${unsourced.length === 1 ? 'isn’t' : 'aren’t'} in your brief.</span>` : `${ic('check', 'sm')}<span><b>Every number is from your brief.</b>${blanks ? ` ${blanks} blank${blanks > 1 ? 's' : ''} to fill before it posts.` : ''}</span>`}</div>
         <div class="br-posts">${B.posts.map((p, k) => `<article class="br-post"><header>${B.posts.length > 1 ? `<span class="label">${k + 1}/${B.posts.length}</span>` : `<span class="label">${B.format === 'long' ? 'Long post' : B.format === 'linkedin' ? 'LinkedIn' : 'Post'}</span>`}<span class="br-len ${len(p) > lim ? 'over' : ''}">${fmtN(len(p))} / ${fmtN(lim)}</span></header><p>${mark(p)}</p>${B.format === 'long' && HWCore.xLength(p) > X_SHORT ? '<span class="br-fold">Feed cuts here with “Show more”. The part above has to hook them.</span>' : ''}</article>`).join('')}</div>
       </div>
-      <div class="modal-f"><button class="btn" data-br="back">${ic('left', 'sm')} Change angle or shape</button><span class="grow"></span><button class="btn" data-br="write">${ic('shuffle', 'sm')} Another version</button><button class="btn primary" data-br="open">${ic('write', 'sm')} Open in editor</button></div>`;
+      <div class="modal-f"><button class="btn" data-br="back">${ic('left', 'sm')} Change angle or shape</button><span class="grow"></span><button class="btn" data-br="write">${ic('shuffle', 'sm')} Another version${crTag('briefWrite', { docs: pdfs().length })}</button><button class="btn primary" data-br="open">${ic('write', 'sm')} Open in editor</button></div>`;
     }
   };
   const addFiles2 = async list => {
@@ -5822,14 +6063,14 @@ function openBrief(files) {
   const doRead = async () => {
     if (!src().trim() && !pdfs().length) { const t = $('#br-t', el); if (t) fieldErr(t, 'Drop a file or paste something first.'); else toast('Drop a file or paste something first.', { icon: 'upload', tone: 'err' }); return; }
     busy('read', true); let r = null;
-    if (aiOn()) { try { const spec = HWCore.prompts.briefRead({ text: src(), niche: S.user.niche }); if (pdfs().length) spec.docs = pdfs(); r = await ask(spec, { fresh: true }); } catch (e) { aiError(e); } }
+    if (aiOn()) { try { const spec = HWCore.prompts.briefRead({ text: src(), niche: S.user.niche }); if (pdfs().length) spec.docs = pdfs(); r = await ask(spec, { fresh: true, act: 'brief', basic: !!src().trim() }); } catch (e) { aiError(e); } }
     if (!r || typeof r !== 'object') { if (!src().trim()) { busy('read', false); toast('That PDF needs Claude to read it. Paste the text, or run the server.', { icon: 'zapoff', tone: 'err' }); return; } r = HWCore.briefRead(src()); }
     r.facts = (r.facts || []).filter(f => f && (f.fact || f.quote)).map(f => ({ fact: f.fact || f.quote, quote: f.quote || f.fact })); r.angles = (r.angles || []).filter(a => a && a.line); if (!r.angles.length) r.angles = HWCore.briefRead(src() || r.summary || '').angles;
     B.read = r; B.angle = 0; B.step = 'read'; busy('read', false); SFX.play('swap'); draw();
   };
   const doWrite = async () => {
     busy('write', true); const lim = limitFor(B.format), a = B.read.angles[B.angle]; let posts = null, note = '';
-    if (aiOn()) { try { const spec = HWCore.prompts.briefWrite({ text: src(), read: B.read, angle: a ? `${a.angle}: ${a.line}` : '', format: B.format, voice: voiceSpec(), limit: lim, platform: B.format === 'linkedin' ? 'LinkedIn' : 'X' }); if (pdfs().length) spec.docs = pdfs(); const r = await ask(spec, { fresh: true }); if (r && Array.isArray(r.posts) && r.posts.length) { posts = r.posts.map(String).filter(p => p.trim()); note = r.note || ''; } } catch (e) { aiError(e); } }
+    if (aiOn()) { try { const spec = HWCore.prompts.briefWrite({ text: src(), read: B.read, angle: a ? `${a.angle}: ${a.line}` : '', format: B.format, voice: voiceSpec(), limit: lim, platform: B.format === 'linkedin' ? 'LinkedIn' : 'X' }); if (pdfs().length) spec.docs = pdfs(); const r = await ask(spec, { fresh: true, act: 'briefWrite', basic: true }); if (r && Array.isArray(r.posts) && r.posts.length) { posts = r.posts.map(String).filter(p => p.trim()); note = r.note || ''; } } catch (e) { aiError(e); } }
     if (!posts) { posts = HWCore.briefDraft(src() || [B.read.summary, ...B.read.facts.map(f => f.quote)].join(' '), { format: B.format === 'linkedin' ? 'long' : B.format, limit: lim, angle: B.angle }); note = aiOn() ? '' : 'Drafted in basic mode from your own sentences. Connect Claude for a draft in your voice.'; }
     if (B.format === 'thread') posts = posts.flatMap(p => HWCore.xLength(p) > X_SHORT ? splitText(p, X_SHORT) : [p]);
     B.posts = posts; B.note = note; B.step = 'draft'; busy('write', false); SFX.play('swap'); draw();
@@ -5903,7 +6144,7 @@ function rrCardHTML(p, i) {
     <p class="rr-t" id="${rid}-t">${esc(p.text)}</p>
     <div class="rr-why">${(p.why || []).map(w => rrAgeChip(age, w) ? `<span class="rr-agechip" data-w="${esc(w)}">${esc(rrAgeChip(age, w))}</span>` : `<span>${esc(w)}</span>`).join('')}</div>
     ${done ? `<p class="rr-done">${ic('check', 'sm')} Replied${S.radar.done[p.id] !== true ? `: “${esc(clip(S.radar.done[p.id], 80))}”` : ''}</p>` : `<div class="rr-me">${avatar(S.user)}<div class="rr-box"><textarea class="input" rows="2" data-rrt="${esc(p.id)}" placeholder="${d.hint ? esc(d.hint) : 'Add a number, a counterexample, or a real question. Not “great post”.'}" aria-label="Your reply to @${esc(p.handle)}">${esc(d.text || '')}</textarea><span class="rr-n" data-rrn="${esc(p.id)}">${d.text ? HWCore.xLength(d.text) : 0}/280</span></div></div>
-    <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip" data-tip="S">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${ic('shuffle', 'sm')} Another version</button>` : ''}<button class="btn sm primary" data-rra="send" data-tip="${keys(MOD, '↵')}">${ic('reply', 'sm')} Reply</button></div>`}
+    <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip" data-tip="S">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${d.text ? `${ic('shuffle', 'sm')} Another version` : `${ic('spark', 'sm')} Draft in my voice`}${crTag('replies')}</button>` : ''}<button class="btn sm primary" data-rra="send" data-tip="${keys(MOD, '↵')}">${ic('reply', 'sm')} Reply</button></div>`}
   </article>`;
 }
 function drawRadar() {
@@ -5926,10 +6167,12 @@ async function loadRadar(force) {
 async function draftRadar(only) {
   const todo = RRADAR.posts.filter(p => (!only || p.id === only) && !(S.radar && S.radar.done && S.radar.done[p.id]));
   if (!todo.length) return;
-  if (!aiOn()) { const hints = { Contrarian: 'Push back with one case where it didn’t hold for you.', Story: 'Add the moment it happened to you, in one line.', Listicle: 'Add the item you’d put first, and why.', Proof: 'Share your own number for the same thing.', Question: 'Answer it with something specific.' }; todo.forEach(p => { const sh = p.sample && tradingNiche() && (RADAR_TRADING[+String(p.id).replace('sample-', '')] || {}).hint; RRADAR.drafts[p.id] = { hint: sh || hints[HWCore.kindOf(p.text)] || 'Add one thing the post doesn’t have: a number, a story, or a sharp question.' }; }); drawRadar(); return; }
+  /* on Free, replies aren't drafted behind your back (each batch is a credit): each card offers "Draft in my voice" instead */
+  const st = crState(), auto = aiOn() && (only || !st || st.plan !== 'free');
+  if (!auto) { const hints = { Contrarian: 'Push back with one case where it didn’t hold for you.', Story: 'Add the moment it happened to you, in one line.', Listicle: 'Add the item you’d put first, and why.', Proof: 'Share your own number for the same thing.', Question: 'Answer it with something specific.' }; todo.forEach(p => { const sh = p.sample && tradingNiche() && (RADAR_TRADING[+String(p.id).replace('sample-', '')] || {}).hint; RRADAR.drafts[p.id] = { hint: sh || hints[HWCore.kindOf(p.text)] || 'Add one thing the post doesn’t have: a number, a story, or a sharp question.' }; }); drawRadar(); return; }
   const rl = $('#rr-list'); if (rl) $$('.rr-card', rl).forEach(c => { if (!only || c.dataset.rid === only) c.classList.add('drafting'); });
   try {
-    const r = await ask(HWCore.prompts.radarReplies({ posts: todo.slice(0, 10), voice: voiceSpec(), niche: S.user.niche }), { fresh: !!only });
+    const r = await ask(HWCore.prompts.radarReplies({ posts: todo.slice(0, 10), voice: voiceSpec(), niche: S.user.niche }), { fresh: !!only, act: 'replies', resume: () => draftRadar(only) });
     (Array.isArray(r) ? r : []).forEach(x => { const p = todo[+x.id]; if (p && x.reply) RRADAR.drafts[p.id] = { text: String(x.reply).trim(), angle: x.angle || '' }; });
   } catch (e) { aiError(e); }
   drawRadar();
@@ -6025,7 +6268,7 @@ function openPicture(file) {
       <div class="modal-b pic-b">${P.img ? `<figure class="pic-prev"><img src="${P.img.data}" alt="Your picture"><button class="btn sm" data-pc="change">${ic('image', 'sm')} Change</button></figure>` : `<label class="br-drop" id="pic-drop" tabindex="0"><input type="file" id="pic-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden><span class="br-ic">${ic('image')}</span><b><span class="desk-only">Drop a picture, paste one, or click to choose</span><span class="touch-only">Tap to choose a picture</span></b><small>PNG, JPEG, WebP or GIF. Screenshots work best.</small></label>`}
         <label class="vis-f"><span>${canRead ? 'What should people take from it? (optional)' : 'What’s the point, in your words? Include the number.'}</span><textarea class="input" id="pic-note" rows="2" placeholder="${canRead ? 'e.g. the week I stopped trading the open' : 'e.g. My win rate went from 41% to 58% after I halved my size'}">${esc(P.note)}</textarea></label>
       </div>
-      <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" data-pc="read">${ic('riff', 'sm')} ${canRead ? 'Read it' : 'Draft it'}</button></div>`;
+      <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" data-pc="read">${ic('riff', 'sm')} ${canRead ? `Read it${crTag('picture', { docs: 1 })}` : 'Draft it'}</button></div>`;
       $('#pic-note', el).oninput = e => { P.note = e.target.value; };
       const f = $('#pic-file', el); if (f) f.onchange = e => take(e.target.files[0]);
       const dz = $('#pic-drop', el); if (dz) { dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); }); dz.addEventListener('dragleave', () => dz.classList.remove('over')); dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); take(e.dataTransfer.files[0]); }); dz.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f.click(); } }); }
@@ -6054,7 +6297,7 @@ function openPicture(file) {
   const read = async () => {
     if (!P.img) { const f = $('#pic-file', el); f && f.click(); return; }
     const b = $('[data-pc="read"]', el); b && b.classList.add('is-loading'); let r = null; if (canRead) { const mb = $('.modal-b', el); mb && mb.insertAdjacentHTML('beforeend', hintHTML('loading', { rotate: true, cls: 'loading-hint' })); }
-    if (canRead) { try { const spec = HWCore.prompts.picture({ note: P.note.trim(), voice: voiceSpec(), niche: S.user.niche }); spec.docs = [{ name: P.name || 'picture', mime: P.img.mime, data: P.img.data }]; const j = await ask(spec, { fresh: true }); if (j && typeof j === 'object' && (j.what || j.posts)) r = { ...j, ai: true }; } catch (e) { aiError(e); } }
+    if (canRead) { try { const spec = HWCore.prompts.picture({ note: P.note.trim(), voice: voiceSpec(), niche: S.user.niche }); spec.docs = [{ name: P.name || 'picture', mime: P.img.mime, data: P.img.data }]; const j = await ask(spec, { fresh: true, act: 'picture', basic: !!P.note.trim(), resume: read }); if (j && typeof j === 'object' && (j.what || j.posts)) r = { ...j, ai: true }; } catch (e) { aiError(e); } }
     if (!r) {
       const note = P.note.trim(); if (!note) { b && b.classList.remove('is-loading'); const t = $('#pic-note', el); t.setAttribute('aria-invalid', 'true'); t.focus(); toast(canRead ? 'Claude couldn’t read it. Tell us the point in a line and we’ll draft around it.' : 'Tell us the point in a line, with the number.', { icon: 'image' }); return; }
       const br = HWCore.briefRead(note), vp = HWCore.visualPlan(note);
@@ -6171,7 +6414,7 @@ async function sharpenAI(k, ta, before, F, id, sel0) {
   srSay(`${SHE.LABEL[k]}: Claude is writing versions of the selected words. Escape cancels.`);
   let r = null, via = 'claude', note = '';
   try {
-    const res = await ask(HWCore.prompts.sharpen({ post: before, s: F.s, e: F.e, option: k, voice: voiceSpec() }), { signal: ctl.signal });
+    const res = await ask(HWCore.prompts.sharpen({ post: before, s: F.s, e: F.e, option: k, voice: voiceSpec() }), { signal: ctl.signal, act: 'sharpen' });
     if (SH.st !== st) return;
     r = SHE.fromModel(res, k, before, F.s, F.e);
     if (!r.vars.length) { r = SHE.sharpen(k, before, F.s, F.e); via = 'basic'; if (r.vars.length) note = 'Claude’s versions didn’t keep your words and numbers, so these come from Basic mode.'; }
@@ -6387,14 +6630,18 @@ function instructCompute(instr, text) {
   return { vers: ok, did, idle, plan };
 }
 function rememberInstr(instr) { S.settings.recentInstr = [instr, ...(S.settings.recentInstr || []).filter(x => x.toLowerCase() !== instr.toLowerCase())].slice(0, 5); save(); }
-function runInstruct(i, instr, { from, fresh } = {}) {
+function runInstruct(i, instr, { from, fresh, basic = false } = {}) {
   if (CURRENT !== 'write') return;
   instr = String(instr || '').replace(/\s+/g, ' ').trim().slice(0, 200); const tw = S.draft.tweets[i]; if (!tw) return;
   const note = from && from.closest && from.closest('.imp') ? $('.instr-note', from.closest('.imp')) : null;
   const say = (html, opts) => { if (note) note.innerHTML = html; else toast(html.replace(/<[^>]+>.*$/, '').trim(), opts); };
   if (!instr) { say('Type what to change first, like “calmer” or “for beginners”.', { icon: 'write' }); from && from.focus && from.focus(); return; }
   if (!tw.text.trim()) { toast('Write a line first. There’s nothing to rewrite yet.', { icon: 'riff', tone: 'accent' }); focusTweet(i); return; }
-  if (aiOn()) { if (aiLeft() <= 0) { outOfRiffs(); return; } rememberInstr(instr); runInstructAI(i, instr, { fresh }); return; }
+  if (aiOn() && !basic) {
+    const o = { chars: tw.text.length };
+    if (!crCan('instruct', o)) { const b = instructCompute(instr, tw.text); crSheet({ act: 'instruct', cost: crCost('instruct', o), basicHTML: b.vers.length ? crDiffHTML(tw.text, b.vers[0]) : '', onBasic: b.vers.length ? () => runInstruct(i, instr, { from, basic: true }) : null, resume: () => runInstruct(i, instr, { from, fresh }) }); return; }
+    rememberInstr(instr); runInstructAI(i, instr, { fresh }); return;
+  }
   const plan = instrPlan(instr);
   if (!plan.steps.length) { say(`${BASIC_CAN} <button data-cact="instrconn">Open Connections</button>`, { icon: 'zapoff', ms: 6000, action: 'Connections', onAction: () => openConnections() }); return; }
   riffNonce++;
@@ -6423,7 +6670,7 @@ async function runInstructAI(i, instr, { fresh } = {}) {
   renderExtras(tw.id);
   const plat = Object.keys(PLAT).filter(k => S.platforms[k]).map(k => PLAT[k].name).join(', ') || 'X';
   try {
-    const res = await ask(HWCore.prompts.instruct({ text: before, instruction: instr, voice: voiceSpec(), platform: plat, limit: effLimit() }), { signal: ctl.signal, fresh });
+    const res = await ask(HWCore.prompts.instruct({ text: before, instruction: instr, voice: voiceSpec(), platform: plat, limit: effLimit() }), { signal: ctl.signal, fresh, act: 'instruct', chars: before.length });
     if (UI.diff !== d) return;
     const opts = checkedAlts(res, instrOpt(instr), before);
     if (!opts.length) {
@@ -6432,9 +6679,8 @@ async function runInstructAI(i, instr, { fresh } = {}) {
       if (!b.vers.length) { UI.diff = null; renderExtras(tw.id); toast(res && res.why && !(res.options || []).length ? esc(String(res.why)) : b.msg, { icon: 'check', ms: 5200 }); return; }
       Object.assign(d, { pending: false, alts: b.vers.map(t => ({ text: t, why: 'Basic mode: Claude’s versions didn’t keep your words and facts.' })), alt: 0, basic: true, reveal: Date.now() }); setAlt(d, 0); instrReady(d, 'From Basic mode.'); return;
     }
-    spendAI();
     Object.assign(d, { pending: false, alts: opts, alt: 0, reveal: Date.now() }); setAlt(d, 0); instrReady(d, opts.length > 1 ? `${opts.length} versions.` : '');
-  } catch (e) { if (UI.diff === d) { UI.diff = null; renderExtras(tw.id); } aiError(e); if (e && e.code !== 'cancelled' && !aiOn()) runInstruct(i, instr); }
+  } catch (e) { if (UI.diff === d) { UI.diff = null; renderExtras(tw.id); } if (e && e.code === 'out_of_credits') { runInstruct(i, instr); return; } aiError(e); if (e && e.code !== 'cancelled' && !aiOn()) runInstruct(i, instr); }
 }
 /* Sharpen › Custom…: the pill becomes one line for a note about just the selected words */
 function sharpenAskOpen() {
@@ -6452,16 +6698,15 @@ async function sharpenAskRun() {
   const X = HWCore.SHARPEN, F = X.frame(a.before, a.s, a.e), id = ta.closest('.tw').dataset.id;
   let r = null, label = '', note = '', via = 'basic';
   if (aiOn()) {
-    if (aiLeft() <= 0) { outOfRiffs(); return; }
     a.busy = true; a.ctl = new AbortController(); SH.el.classList.add('busy'); inp.readOnly = true; const go = $('[data-shgo]', SH.el); if (go) go.textContent = 'Rewriting…'; srSay('Rewriting the selected words…');
     UI.sharp = { id, s: F.s, len: F.e - F.s, think: Date.now() }; paintField(ta);
     let fallback = false;
     try {
-      const res = await ask(HWCore.prompts.instruct({ text: F.core, instruction: instr, voice: voiceSpec(), context: a.before }), { signal: a.ctl.signal });
+      const res = await ask(HWCore.prompts.instruct({ text: F.core, instruction: instr, voice: voiceSpec(), context: a.before }), { signal: a.ctl.signal, act: 'sharpen' });
       if (SH.ask !== a) return;
       /* every version passes the same checks as the pill: only these words, nothing echoed, no new numbers, no repeats */
       r = X.fromModel(res, instrOpt(instr), a.before, F.s, F.e);
-      if (r.vars.length) { spendAI(); via = 'claude'; label = `“${clip(instr, 22)}”`; rememberInstr(instr); }
+      if (r.vars.length) { via = 'claude'; label = `“${clip(instr, 22)}”`; rememberInstr(instr); }
       else { const b = sharpenAskBasic(instr, a.before, a.s, a.e); if (b.vars.length) { r = b; label = b.label; note = 'Claude’s versions didn’t keep your words and numbers, so these come from Basic mode.'; rememberInstr(instr); } else { toast(res && res.why && !r.total ? esc(String(res.why)) : b.msg, { icon: 'check', ms: 4600 }); r = null; } }
     } catch (e) {
       if (SH.ask !== a) return; aiError(e);
@@ -6489,16 +6734,19 @@ function openTranslate(anchor, i) {
   if (!aiOn()) { toast('Translating in your tone needs Claude. Basic mode would only swap words, so it’s off here.', { icon: 'globe', ms: 5200, action: 'Connections', onAction: () => openConnections() }); return; }
   openMenu(anchor, [{ header: 'Translate, keep your tone' }, ...[['es', 'Spanish'], ['fr', 'French'], ['de', 'German']].map(([k, l]) => ({ label: l, icon: 'globe', run: () => runRiff(i, 'translate', k) }))]);
 }
-function runRiff(i, kind, lang) {
+function runRiff(i, kind, lang, { basic = false } = {}) {
   if (CURRENT !== 'write') return;
   if (kind === 'translate' && !aiOn()) { openTranslate(null, i); return; }
   const tw = S.draft.tweets[i]; if (!tw) return;
   if (!tw.text.trim()) { toast('Write a line first. There’s nothing to rewrite yet.', { icon: 'riff', tone: 'accent' }); focusTweet(i); return; }
-  if (aiLeft() <= 0) { outOfRiffs(); return; }
-  if (aiOn()) { runRiffAI(i, kind, lang); return; }
+  if (aiOn() && !basic) {
+    /* out of credits: the Basic version, ready to keep, beside a one-click way to have Claude finish it */
+    const o = { chars: tw.text.length };
+    if (!crCan('rewrite', o)) { const b = kind === 'translate' ? { vers: [] } : rewriteCompute(kind, tw.text, i === 0); crSheet({ act: 'rewrite', cost: crCost('rewrite', o), basicHTML: b.vers.length ? crDiffHTML(tw.text, b.vers[0]) : '', onBasic: b.vers.length ? () => runRiff(i, kind, lang, { basic: true }) : null, resume: () => runRiff(i, kind, lang) }); return; }
+    runRiffAI(i, kind, lang); return;
+  }
   const before = tw.text, r = kind === 'translate' ? { vers: [AI.translate(before, lang)] } : rewriteCompute(kind, before, i === 0);
   if (!r.vers.length) { toast(esc(r.msg), { icon: kind === 'hook' ? 'hook' : 'check', ms: 5200 }); return; }
-  spendAI();
   UI.imp = null; UI.ghost = null;
   const oldD = UI.diff && UI.diff.id !== tw.id ? UI.diff.id : null;
   const d = UI.diff = { id: tw.id, kind, lang, before, after: r.vers[0], chunks: diffWords(before, r.vers[0]), shown: null, basic: true, reveal: Date.now(), ...(r.vers.length > 1 ? { alts: r.vers.map(t => ({ text: t, why: '' })), alt: 0 } : {}) }; if (oldD) renderExtras(oldD);
@@ -6524,7 +6772,7 @@ async function runRiffAI(i, kind, lang, { fresh } = {}) {
   renderExtras(tw.id);
   const lim = effLimit(); const plat = Object.keys(PLAT).filter(k => S.platforms[k]).map(k => PLAT[k].name).join(', ') || 'X';
   try {
-    const res = await ask(HWCore.prompts.rewrite({ text: before, kind, lang: { es: 'Spanish', fr: 'French', de: 'German' }[lang] || lang, voice: voiceSpec(), platform: plat, limit: lim }), { signal: ctl.signal, fresh });
+    const res = await ask(HWCore.prompts.rewrite({ text: before, kind, lang: { es: 'Spanish', fr: 'French', de: 'German' }[lang] || lang, voice: voiceSpec(), platform: plat, limit: lim }), { signal: ctl.signal, fresh, act: 'rewrite', chars: before.length });
     if (UI.diff !== d) return;
     const opts = kind === 'translate' ? (res && res.options || []).map(o => ({ text: String(o.text || '').trim(), why: String(o.why || '') })).filter(o => o.text && o.text !== before.trim()) : checkedAlts(res, kind, before);
     if (!opts.length) {
@@ -6533,9 +6781,8 @@ async function runRiffAI(i, kind, lang, { fresh } = {}) {
       if (!b.vers.length) { UI.diff = null; renderExtras(tw.id); toast(kind === 'grammar' ? 'No spelling or grammar mistakes found.' : res && res.why && !(res.options || []).length ? esc(String(res.why)) : esc(b.msg || 'Claude’s versions changed your facts, so none are shown. Try again.'), { icon: 'check', ms: 5200 }); return; }
       Object.assign(d, { pending: false, alts: b.vers.map(t => ({ text: t, why: 'Basic mode: Claude’s versions repeated your post or changed your facts.' })), alt: 0, basic: true, reveal: Date.now() }); setAlt(d, 0); diffLanded(d); return;
     }
-    spendAI();
     Object.assign(d, { pending: false, alts: opts, alt: 0, reveal: Date.now() }); setAlt(d, 0); diffLanded(d);
-  } catch (e) { if (UI.diff === d) { UI.diff = null; renderExtras(tw.id); } aiError(e); if (e && e.code !== 'cancelled' && !aiOn()) runRiff(i, kind, lang); }
+  } catch (e) { if (UI.diff === d) { UI.diff = null; renderExtras(tw.id); } if (e && e.code === 'out_of_credits') { runRiff(i, kind, lang); return; } aiError(e); if (e && e.code !== 'cancelled' && !aiOn()) runRiff(i, kind, lang); }
 }
 function setAlt(d, k) { const prevAfter = d.after; const o = d.alts[k]; const cyc = k !== d.alt && d.chunks && d.chunks.length > 1; d.alt = k; d.after = o.text; d.why = o.why; d.chunks = diffWords(d.before, o.text); d.shown = null; if (cyc) { d.reveal = Date.now(); d.fromScore = tIndex(d.id) === 0 ? hookScore(prevAfter).score : null; } renderExtras(d.id); const y = $('#diff-yes'); y && y.focus({ preventScroll: true }); if (cyc) srSay(`Version ${k + 1} of ${d.alts.length}.`); }
 function closeDiff(accept) {
@@ -6550,18 +6797,12 @@ function closeDiff(accept) {
   toast(d.kind === 'instruct' ? 'Swapped in your rewrite.' : `Swapped in the ${RIFFS.find(r => r.k === d.kind).label.toLowerCase()} version.`, { icon: 'riff', tone: 'accent', action: 'Undo', onAction: () => { S.draft.tweets = snap; renderThread({ focusId: tw.id }); markSaving(); } });
   if (i === 0) { const a = hookScore(before).score, b = hookScore(after).score; if (b >= 78 && b - a >= 12) setTimeout(() => showUpsell(a, b), 700); }
 }
-function outOfRiffs() {
-  closeUpsell();
-  const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Out of free rewrites');
-  const freebie = !S.ai.freebie;
-  el.innerHTML = `<h3 class="h2">That’s today’s free rewrites.</h3><p class="muted" style="margin-top:8px">They refill at midnight. Sharpen still works on any line, and Pro rewrites are unlimited.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See Pro</a>${freebie ? '<button class="btn" data-up="free">One more, on us</button>' : ''}<button class="btn ghost" data-up="x">Not now</button></div>`;
-  document.body.append(el);
-  el.addEventListener('click', e => { const b = e.target.closest('[data-up]'); if (e.target.closest('a')) closeUpsell(); if (!b) return; if (b.dataset.up === 'free') { S.ai.freebie = 1; S.ai.used = Math.max(0, S.ai.used - 1); save(); refreshPlanCard(); toast('One on the house. Make it count.', { icon: 'gift', tone: 'accent' }); } closeUpsell(); });
-}
+/* the diff a Basic version would make, for the out-of-credits sheet */
+const crDiffHTML = (a, b) => diffWords(a, b).map(c => c.eq !== undefined ? esc(c.eq) : `${c.del ? `<del>${esc(c.del)}</del>` : ''}${c.ins ? `<ins>${esc(c.ins)}</ins>` : ''}`).join('');
 function showUpsell(a, b) {
-  if (!PRICED() || S.plan !== 'free' || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
+  if (!PRICED() || planNow() !== 'free' || !aiOn() || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
   const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hookworthy Pro');
-  const um = tierMove(a, b); el.innerHTML = `<div class="jump">${um.cross ? `<span class="from">${um.from.word}</span>${ic('arrow', 'lg')}` : ''}<span class="to t-${um.to.key}">${um.cross ? um.to.word : 'Sharper'}</span></div><p class="muted">${um.cross ? `Your hook just went from ${um.from.word} to ${um.to.word}.` : `Your hook just got sharper. Still ${um.to.word}, with more edge.`} Pro gives you unlimited rewrites in your voice, plus a ping when a post takes off.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
+  const um = tierMove(a, b); el.innerHTML = `<div class="jump">${um.cross ? `<span class="from">${um.from.word}</span>${ic('arrow', 'lg')}` : ''}<span class="to t-${um.to.key}">${um.cross ? um.to.word : 'Sharper'}</span></div><p class="muted">${um.cross ? `Your hook just went from ${um.from.word} to ${um.to.word}.` : `Your hook just got sharper. Still ${um.to.word}, with more edge.`} Pro gives you 1,000 credits a month for rewrites like that, in your voice, plus a ping when a post takes off.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
   document.body.append(el); burstFrom($('.to', el));
   el.addEventListener('click', e => { if (e.target.closest('[data-up],a')) closeUpsell(); });
 }
@@ -7219,7 +7460,7 @@ function weekData() {
 function drawDigest() {
   const el = $('#digest'); if (!el) return; const w = weekData(); const d = S.digestNote; const sun = new Date().getDay() === 0;
   el.innerHTML = `<section class="card dg ${sun ? 'sun' : ''}"><div class="dg-h"><div><span class="label">${sun ? 'Sunday note' : 'Your week so far'}</span><h2 class="h2">${w.n ? `${w.n} post${w.n > 1 ? 's' : ''}${w.real ? `, ${fmtK(w.likes)} likes` : ''}, ${w.rhythm} posting day${w.rhythm === 1 ? '' : 's'}, ${w.planned} scheduled.` : `A quiet week. ${w.planned ? `${w.planned} scheduled for the next seven days.` : 'Nothing scheduled yet.'}`}</h2></div>
-    <div class="dg-a"><button class="btn sm needs-ai" data-nact="dnote">${ic('spark', 'sm')} ${d ? 'Rewrite the note' : 'Write my Sunday note'}</button><button class="btn sm" data-nact="hcard">${ic('hook', 'sm')} Hook of the week</button><button class="btn sm" data-nact="dmail">${ic('inbox', 'sm')} ${S.digestEmail ? 'Emailing Sundays' : 'Email me Sundays'}</button>${d ? `<button class="btn sm ghost" data-nact="dcopy">${ic('copy', 'sm')}</button>` : ''}</div></div>
+    <div class="dg-a"><button class="btn sm needs-ai" data-nact="dnote">${ic('spark', 'sm')} ${d ? 'Rewrite the note' : 'Write my Sunday note'}${crTag('digest')}</button><button class="btn sm" data-nact="hcard">${ic('hook', 'sm')} Hook of the week</button><button class="btn sm" data-nact="dmail">${ic('inbox', 'sm')} ${S.digestEmail ? 'Emailing Sundays' : 'Email me Sundays'}</button>${d ? `<button class="btn sm ghost" data-nact="dcopy">${ic('copy', 'sm')}</button>` : ''}</div></div>
     <div id="dg-body">${d ? `<p class="dg-hl">${esc(d.headline)}</p>${w.best ? `<p><b>Best:</b> “${esc(clip(w.best.text, 110))}” ${esc(d.why_best || '')}</p>` : ''}<p><b>Try next week:</b> ${esc(d.try_next)}</p>${d.first_line ? `<div class="dg-fl"><span>Monday’s first line</span><p>${esc(d.first_line)}</p><button class="btn sm" data-nact="userw" data-t="${esc(d.first_line)}">${ic('write', 'sm')} Write it</button></div>` : ''}` : w.best ? `<p><b>Best:</b> “${esc(clip(w.best.text, 110))}”${w.real ? ` · ${fmtN(w.best.likes)} likes` : ''}</p>` : '<p class="faint">Post something and this fills in.</p>'}</div>
     <form id="dg-mail" class="dg-mail" hidden><input class="input" type="email" placeholder="you@example.com" value="${esc(S.digestEmail || '')}" aria-label="Email for the Sunday note" required><button class="btn sm primary" type="submit">${S.digestEmail ? 'Update' : 'Send me Sundays'}</button>${S.digestEmail ? '<button class="btn sm ghost" type="button" id="dg-off">Stop</button>' : ''}<small class="faint">${LLM.server && LLM.server.digest ? (LLM.server.email ? 'Sunday 9 AM, from the server.' : 'Email isn’t set up on the server yet, so the note is logged, not sent.') : 'Needs the server. Copy the note meanwhile.'}</small></form></section>`;
   const f = $('#dg-mail'); f.onsubmit = async e => { e.preventDefault(); const email = $('input', f).value.trim(); if (!(LLM.server && LLM.server.digest)) { toast('Emailing needs the server. Copy the note for now.', { icon: 'inbox' }); return; } try { const r = await fetch('api/digest/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, digest: digestPayload() }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); S.digestEmail = email; save(); drawDigest(); toast(`Sundays at 9 AM, to ${esc(email)}.`, { icon: 'inbox', tone: 'accent' }); } catch (err) { toast(failMsg('set up the Sunday email', err), { icon: 'zapoff', tone: 'err' }); } };
@@ -7228,7 +7469,7 @@ function drawDigest() {
 function digestPayload() { const d = S.digestNote, w = weekData(); return d ? { subject: d.subject, headline: d.headline, best: w.best && clip(w.best.text, 140), why_best: d.why_best, try_next: d.try_next, first_line: d.first_line } : null; }
 async function digestNote(btn) {
   const w = weekData(); btn.classList.add('is-loading');
-  try { const d = await ask(HWCore.prompts.digest({ week: `${w.n} posts, ${w.likes} likes, ${w.rhythm} posting days this week, ${w.planned} scheduled next week`, best: w.best, worst: w.worst, voice: voiceSpec(), niche: S.user.niche }), { fresh: true }); if (!d || !d.headline) throw { code: 'invalid_json' }; S.digestNote = { ...d, at: Date.now() }; save(); drawDigest();
+  try { const d = await ask(HWCore.prompts.digest({ week: `${w.n} posts, ${w.likes} likes, ${w.rhythm} posting days this week, ${w.planned} scheduled next week`, best: w.best, worst: w.worst, voice: voiceSpec(), niche: S.user.niche }), { fresh: true, act: 'digest', resume: () => digestNote(btn) }); if (!d || !d.headline) throw { code: 'invalid_json' }; S.digestNote = { ...d, at: Date.now() }; save(); drawDigest();
     if (S.digestEmail && LLM.server && LLM.server.digest) fetch('api/digest/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: S.digestEmail, digest: digestPayload() }) }).catch(() => {}); }
   catch (e) { aiError(e); } finally { btn.classList.remove('is-loading'); }
 }
@@ -7244,7 +7485,7 @@ async function runShootout(btn) {
   let winner = pa && pb ? (pa.estimate >= pb.estimate ? 'a' : 'b') : ha >= hb ? 'a' : 'b', why = pa && pb ? `Your posts most like ${winner.toUpperCase()} did ${fmtN(Math.max(pa.estimate, pb.estimate))} vs ${fmtN(Math.min(pa.estimate, pb.estimate))} engagements.` : `${TIER(Math.max(ha, hb)).key !== TIER(Math.min(ha, hb)).key ? `${TIER(Math.max(ha, hb)).word} beats ${TIER(Math.min(ha, hb)).word}.` : `Both ${TIER(ha).word}${ha !== hb ? `, and ${winner.toUpperCase()} is a little sharper` : ''}.`} ${hookScore(winner === 'a' ? a : b).reason}`, conf = pa && pb ? Math.min(.9, .55 + Math.abs(pa.estimate - pb.estimate) / Math.max(1, pa.estimate + pb.estimate)) : Math.min(.85, .5 + Math.abs(ha - hb) / 100);
   const paint = () => { const A = winner === 'a'; out.innerHTML = `<div class="so-res">${[['a', a, ha, pa], ['b', b, hb, pb]].map(([k, t, h, pr]) => `<div class="so-card ${winner === k ? 'so-win' : ''}"><span class="label">${k.toUpperCase()}${winner === k ? ' · predicted winner' : ''}</span><p>${esc(t)}</p><div class="so-st">${tierChip(h, { noun: true, cls: 'sm' })}${pr ? `<span>~${fmtN(pr.estimate)} engagements</span>` : ''}</div><button class="btn sm ${winner === k ? 'primary' : ''}" data-hact="souse" data-t="${esc(t)}">Write with ${k.toUpperCase()}</button></div>`).join('')}</div><p class="so-why"><b>${Math.round(conf * 100)}% sure.</b> ${esc(why)}</p>`; };
   paint();
-  if (aiOn()) { btn.classList.add('is-loading'); try { const ev = [['A', pa], ['B', pb]].map(([k, pr]) => pr ? `${k}: ${pr.near.slice(0, 3).map(p => `"${clip(p.text.split('\n')[0], 90)}" (${p.likes} likes)`).join('; ')}` : `${k}: no similar posts`).join('\n'); const r = await ask(HWCore.prompts.shootout({ a, b, voice: voiceSpec(), evidence: HIST().length ? ev : '' }), { fresh: true }); if (r && (r.winner === 'a' || r.winner === 'b')) { winner = r.winner; why = r.why || why; conf = Math.max(.5, Math.min(.95, +r.confidence || conf)); paint(); } } catch (e) { aiError(e); } finally { btn.classList.remove('is-loading'); } }
+  if (aiOn()) { btn.classList.add('is-loading'); try { const ev = [['A', pa], ['B', pb]].map(([k, pr]) => pr ? `${k}: ${pr.near.slice(0, 3).map(p => `"${clip(p.text.split('\n')[0], 90)}" (${p.likes} likes)`).join('; ')}` : `${k}: no similar posts`).join('\n'); const r = await ask(HWCore.prompts.shootout({ a, b, voice: voiceSpec(), evidence: HIST().length ? ev : '' }), { fresh: true, act: 'compare', basic: true }); if (r && (r.winner === 'a' || r.winner === 'b')) { winner = r.winner; why = r.why || why; conf = Math.max(.5, Math.min(.95, +r.confidence || conf)); paint(); } } catch (e) { aiError(e); } finally { btn.classList.remove('is-loading'); } }
   S.shootouts = [{ a, b, winner, conf: +conf.toFixed(2), at: Date.now() }, ...(S.shootouts || []).filter(x => !(x.a === a && x.b === b))].slice(0, 20); save();
   const h = $('#so-hist'); if (h) h.outerHTML = shootHistoryHTML();
 }
@@ -7769,7 +8010,7 @@ async function openPlan() {
   const inbox = S.ideas.map(x => cleanIdea(x.text));
   try {
     if (!aiOn()) throw { code: 'offline' };
-    const res = await ask(HWCore.prompts.weekPlan({ niche: S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox, slots, limit: effLimit() }), { fresh: true });
+    const res = await ask(HWCore.prompts.weekPlan({ niche: S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox, slots, limit: effLimit() }), { fresh: true, act: 'week', basic: true });
     items = (Array.isArray(res) ? res : []).map(x => ({ slot: slots[Math.min(slots.length - 1, +x.slot || 0)], kind: x.kind || 'Take', posts: (x.posts || []).map(String).filter(Boolean), why: x.why })).filter(x => x.posts.length);
     if (!items.length) throw { code: 'invalid_json' };
   } catch (e) {
@@ -7831,7 +8072,7 @@ async function openReplyDesk(q, preset) {
   const m = modal(`${modalHead('Replies to your post', `For “${esc(clip(q.text, 70))}”. Answer the ones worth answering while the post is new.`)}
     <div class="modal-b rd"><div class="rd-note" id="rd-note"></div><div id="rd-list" class="rd-list"><p class="faint">Loading replies…</p>${hintHTML('live', { rotate: true, cls: 'loading-hint' })}</div>
     <details class="rd-paste"><summary>Paste replies instead</summary><textarea class="input" id="rd-t" rows="4" placeholder="@someone: their reply&#10;@another: another reply"></textarea><button class="btn sm" id="rd-use">Use these</button></details></div>
-    <div class="modal-f"><span class="faint rd-count" id="rd-count"></span><span class="grow"></span><button class="btn needs-ai" id="rd-draft">${ic('spark', 'sm')} Draft all in my voice</button><button class="btn" data-close>Done</button></div>`, { label: 'Replies to your post', box: 'modal wide' });
+    <div class="modal-f"><span class="faint rd-count" id="rd-count"></span><span class="grow"></span><button class="btn needs-ai" id="rd-draft">${ic('spark', 'sm')} Draft all in my voice${crTag('replies')}</button><button class="btn" data-close>Done</button></div>`, { label: 'Replies to your post', box: 'modal wide' });
   const el = m.el; let list = [];
   const draw = () => {
     $('#rd-list', el).innerHTML = list.length ? list.map((r, i) => `<article class="rd-item ${r.done ? 'done' : ''}" data-i="${i}"><div class="rd-who"><b>${esc(r.name || '@' + r.handle)}</b><span>@${esc(r.handle)} · ${fmtN(r.followers)} followers</span><span class="pill rd-k" data-k="${replyKind(r).toLowerCase().replace(' ', '-')}">${replyKind(r)}</span></div><p class="rd-t">${esc(r.text)}</p>
@@ -7848,7 +8089,7 @@ async function openReplyDesk(q, preset) {
   localDrafts(); draw();
   const draftAll = async btn => {
     if (!aiOn() || !list.length) return; btn && btn.classList.add('is-loading');
-    try { const res = await ask(HWCore.prompts.replies({ post: q.tweets.join('\n\n'), replies: list, voice: voiceSpec() }), { fresh: true }); (Array.isArray(res) ? res : []).forEach(x => { const r = list[+x.id]; if (r && x.reply) { r.draft = String(x.reply); r.why = x.why; } }); draw(); }
+    try { const res = await ask(HWCore.prompts.replies({ post: q.tweets.join('\n\n'), replies: list, voice: voiceSpec() }), { fresh: true, act: 'replies', resume: () => draftAll($('#rd-draft', el)) }); (Array.isArray(res) ? res : []).forEach(x => { const r = list[+x.id]; if (r && x.reply) { r.draft = String(x.reply); r.why = x.why; } }); draw(); }
     catch (e) { aiError(e); } finally { btn && btn.classList.remove('is-loading'); }
   };
   el.addEventListener('input', e => { const t = e.target.closest('[data-rt]'); if (t) list[+t.dataset.rt].draft = t.value; });
@@ -7968,7 +8209,7 @@ function openPeople() {
       <textarea class="input" id="pp-t" rows="6" placeholder="Paste posts, one per block, split by a line with ---"></textarea>
       <div id="pp-out" aria-live="polite"></div>
     </div>
-    <div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="pp-go">${ic('spark', 'sm')} Find the patterns</button></div>`, { label: 'Accounts you learn from', box: 'modal wide' });
+    <div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="pp-go">${ic('spark', 'sm')} Find the patterns${crTag('people')}</button></div>`, { label: 'Accounts you learn from', box: 'modal wide' });
   const el = m.el, out = $('#pp-out', el);
   const posts = () => { const pasted = HWCore.parsePasted($('#pp-t', el).value).map(p => { const h = p.text.match(/^@(\w+)\s*\n/); return h ? { ...p, handle: h[1], text: p.text.slice(h[0].length).trim() } : p; }); return [...(S.people || []).flatMap(x => x.posts || []), ...pasted]; };
   el.addEventListener('click', async e => {
@@ -7977,7 +8218,7 @@ function openPeople() {
       const ps = posts(); if (ps.length < 2) { out.innerHTML = '<p class="imp-err">Add at least two posts to learn from.</p>'; return; }
       if (!aiOn()) { out.innerHTML = '<p class="imp-err">Finding patterns needs Claude. Open this in claude.ai or connect the server.</p>'; return; }
       const b = e.target.closest('button'); b.classList.add('is-loading'); out.innerHTML = `<p class="faint">${esc(cap(AI_NAME()))} is reading ${ps.length} posts…</p>`;
-      try { const res = await ask(HWCore.prompts.people({ posts: ps, niche: S.user.niche })); if (!Array.isArray(res) || !res.length) throw { code: 'invalid_json' }; S.peoplePatterns = { at: Date.now(), items: res.slice(0, 6) }; save(); m.close(); UI.ideaTab = 'radar'; if (CURRENT === 'ideas') route(); else go('ideas'); toast(`${res.length} patterns from accounts you learn from, now in What’s working.`, { icon: 'spark', tone: 'accent' }); }
+      try { const res = await ask(HWCore.prompts.people({ posts: ps, niche: S.user.niche }), { act: 'people' }); if (!Array.isArray(res) || !res.length) throw { code: 'invalid_json' }; S.peoplePatterns = { at: Date.now(), items: res.slice(0, 6) }; save(); m.close(); UI.ideaTab = 'radar'; if (CURRENT === 'ideas') route(); else go('ideas'); toast(`${res.length} patterns from accounts you learn from, now in What’s working.`, { icon: 'spark', tone: 'accent' }); }
       catch (err) { out.innerHTML = ''; aiError(err); } finally { b.classList.remove('is-loading'); }
     }
   });
@@ -8738,29 +8979,69 @@ function phoneFeed(kind, { dark = false, you, mine, others = [], w = 320, id = '
 /* ----- shared bits other routes use (onboarding feed, pricing, voice) ----- */
 /* onboarding backdrop: the same real-looking feed as the homepage, drifting and faded */
 const ghostFeedHTML = () => { const all = [...VOID_POSTS, ...HOOK_POSTS.map(q => ({ ...q, m: null }))]; return `<div class="ghostfeed" aria-hidden="true">${[0, 1, 2].map(c => { const items = all.filter((_, i) => i % 3 === c); return `<div class="col">${[...items, ...items].map(q => xPost(q, { dark: isDark() })).join('')}</div>`; }).join('')}</div>`; };
-/* placeholder prices, one source for Plans and #teams: [yearly, monthly] per month */
+/* prices, one source for Plans, the homepage and #teams: [yearly, monthly] per month */
 const PRICES = { pro: [12, 16], studio: [27, 36] };
+const SAVE = k => (PRICES[k][1] - PRICES[k][0]) * 12; /* dollars a year saved by paying yearly */
+const PLAN_CR = { free: ['10', 'Claude credits a day', 'Back every midnight'], pro: ['1,000', 'Claude credits a month', 'Unused ones roll over'], studio: ['4,000', 'Claude credits a month', 'Shared by you and every client'] };
 function plansHTML(yearly) {
   const P = [
-    { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score on every post', 'Sharpen any sentence, unlimited', '5 full rewrites a day', 'Checks before it posts, and 8 seconds to undo', 'Quote cards and charts', 'Up to 10 scheduled posts'] },
-    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For posting most days.', cta: 'Start with Pro', hero: true, feats: ['Unlimited rewrites in your voice', 'What’s working in your niche, and why', 'Your voice keeps learning', 'Reruns of your best posts', 'Breakout alerts, with replies drafted', 'Insights that say why', 'Unlimited queue'] },
+    { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score and checks on every post', 'Sharpen any sentence, free and unlimited', 'Basic mode rewrites, unlimited', 'Quote cards and charts', 'Up to 10 scheduled posts'] },
+    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For posting most days.', cta: 'Start with Pro', hero: true, feats: ['Room for about 30 rewrites a day', 'Your voice keeps learning', 'Replies drafted as posts come in', 'What’s working in your niche, and why', 'Breakout alerts and insights that say why', 'Reruns of your best posts', 'Unlimited queue'] },
     { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Up to eight client voices', 'Approvals before anything ships', ['Shared saved ideas', 1], ['Help from a real person', 1]] }
   ];
-  return P.map(p => `<div class="pl ${p.hero ? 'pro' : ''}">
+  const app = !LIGHT.has(CURRENT), mine = app && PRICED() ? planNow() : null, trial = PRICED() && !S.trial && S.plan === 'free';
+  return P.map(p => {
+    const cur = mine && (mine === p.k || (mine === 'trial' && p.k === 'pro'));
+    return `<div class="pl ${p.hero ? 'pro' : ''}">
     <div class="nm"><b>${p.name}</b><span>${p.blurb}</span></div>
     <div class="pr"><b>$${p.price}</b><span>${p.price ? `per month${yearly ? ', billed yearly' : ''}` : 'forever'}</span></div>
+    ${p.price ? `<p class="pl-save">${yearly ? `You save $${SAVE(p.k)} a year` : `Yearly saves $${SAVE(p.k)}`}</p>` : '<p class="pl-save">No card, ever</p>'}
+    <div class="pl-cr"><b>${PLAN_CR[p.k][0]}</b><span>${PLAN_CR[p.k][1]}<small>${PLAN_CR[p.k][2]}</small></span></div>
     <ul>${p.feats.map(f => Array.isArray(f) ? `<li class="soon">${ic('clock')}<span>${f[0]}</span><small>Soon</small></li>` : `<li>${ic('check')}<span>${f}</span></li>`).join('')}</ul>
-    <button class="btn ${p.hero ? 'primary' : ''} lg" data-plan="${p.k}">${p.cta}</button></div>`).join('');
+    <div class="pl-go"><button class="btn ${p.hero ? 'primary' : ''} lg" data-plan="${p.k}" ${cur ? 'aria-current="true"' : ''}>${cur ? (mine === 'trial' ? 'On your trial' : 'Your plan') : p.cta}</button>${p.k === 'pro' && trial ? '<button class="pl-trial" data-plan="trial">or try it free for 7 days</button>' : ''}</div></div>`;
+  }).join('');
+}
+/* how credits work: the allowance per plan side by side, and what each thing costs (Plans page) */
+function creditsExplainHTML() {
+  const rows = [
+    ['Claude credits', '10 a day', '1,000 a month', '4,000 a month, shared'],
+    ['When they refill', 'Every midnight', 'Monthly, on the day you joined', 'Monthly, on the day you joined'],
+    ['Unused credits', 'Start fresh each day', 'Roll over, up to 1,000 more', 'Roll over, up to 4,000 more'],
+    ['Voices', 'You', 'You', 'You and up to eight clients'],
+    ['Replies drafted for you', 'When you ask', 'As posts come in', 'As posts come in'],
+    ['Basic mode and Sharpen', 'Free, unlimited', 'Free, unlimited', 'Free, unlimited'],
+    ['Price', '$0', `$${PRICES.pro[0]} a month yearly, $${PRICES.pro[1]} monthly`, `$${PRICES.studio[0]} a month yearly, $${PRICES.studio[1]} monthly`],
+    ['Paying yearly saves', '', `$${SAVE('pro')} a year`, `$${SAVE('studio')} a year`]
+  ];
+  const A = CR.ACTS, cost = (k, extra = '') => `<li><span>${esc(A[k].label)}${extra ? `<small>${extra}</small>` : ''}</span><b>${A[k].c}</b></li>`;
+  return `<section class="cr-ex" aria-labelledby="cr-ex-h">
+    <div class="cr-ex-head"><span class="label">How credits work</span><h2 id="cr-ex-h">One credit, one rewrite. <em>Bigger jobs say so first.</em></h2>
+      <p class="muted">Credits pay for Claude. Every button shows its price before you click, and a credit is used only when Claude answers, so an error or a cancel costs nothing. Basic mode runs on your device and Sharpen only touches the words you pick, so both are free on every plan.</p></div>
+    <div class="cr-ex-grid">
+      <div class="cr-cmp-w"><table class="cr-cmp"><caption class="sr">Free, Pro and Studio side by side</caption><thead><tr><th scope="col"><span class="sr">Plan</span></th><th scope="col">Free</th><th scope="col" class="pro">Pro</th><th scope="col">Studio</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><th scope="row">${r[0]}</th>${r.slice(1).map((c, i) => `<td${i === 1 ? ' class="pro"' : ''}>${c || '<span aria-label="Not applicable">–</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table>
+        <p class="faint cr-fine">New to Pro? Try it free for 7 days with 250 credits. No card, and it ends on its own.</p></div>
+      <div class="cr-costs"><h3 class="h2">What things cost</h3><ul>
+        ${cost('rewrite', '2 for a post over 1,000 characters')}${cost('instruct')}${cost('hooks')}${cost('ideas')}${cost('why')}${cost('replies', 'Up to ten at a time')}${cost('brief', '+1 for each PDF')}${cost('briefWrite')}<li><span>${esc(A.picture.label)}<small>Includes the picture</small></span><b>2</b></li>${cost('people')}${cost('week')}${cost('voice', 'Reads up to 120 posts once')}
+        <li class="free"><span>Sharpen, picking a visual, tidying what you said</span><b>Free</b></li></ul></div>
+    </div></section>`;
 }
 function choosePlan(k, btn) {
+  if (k === 'trial') {
+    if (!PRICED()) { toast('Every feature is already on for this account.', { icon: 'gift', tone: 'accent', ms: 4200 }); return; }
+    if (!crStartTrial()) { toast(S.plan === 'free' ? `You’ve had your trial. Pro is $${PRICES.pro[0]} a month, billed yearly.` : `You’re already on ${cap(S.plan)}.`, { icon: 'gift' }); return; }
+    burstFrom(btn); SFX.play('done'); toast('Pro trial on: 250 credits and every Pro feature for 7 days. No card, nothing to cancel.', { icon: 'gift', tone: 'accent', ms: 5200 });
+    if (LIGHT.has(CURRENT)) go(S.onboarded ? 'write' : 'start'); else route();
+    return;
+  }
   if (k === 'free' || !PRICED()) { if (!PRICED() && k !== 'free') toast('Every feature is already on for this account.', { icon: 'gift', tone: 'accent', ms: 4200 }); go(S.onboarded ? 'write' : 'start'); return; }
   if (S.plan === k) { toast(`You’re already on ${cap(k)}.`, { icon: 'check' }); return; }
   btn.classList.add('is-loading');
   setTimeout(() => {
-    btn.classList.remove('is-loading'); S.plan = k; save(); burstFrom(btn);
+    btn.classList.remove('is-loading'); setPlan(k); burstFrom(btn);
     modal(`<div class="modal-b" style="text-align:center;display:grid;gap:14px;justify-items:center;padding:36px 28px">
       <div class="appicon" style="width:72px;height:72px;border-radius:18px">${LOGO_MARK.replace('class="mark"', 'class="mark" style="width:40px;height:40px"')}</div>
-      <h2 class="display" style="font-size:40px">You’re on ${cap(k)}.</h2><p class="muted" style="max-width:36ch">${k === 'studio' ? 'Client voices and approvals are on.' : 'Unlimited rewrites, and your voice keeps learning.'}</p>
+      <h2 class="display" style="font-size:40px">You’re on ${cap(k)}.</h2><p class="muted" style="max-width:36ch">${k === 'studio' ? 'Client voices and approvals are on, with 4,000 Claude credits a month shared by every voice.' : '1,000 Claude credits a month, and unused ones roll over. Your voice keeps learning.'}</p>
       <button class="btn primary lg" data-close style="margin-top:6px">${S.onboarded ? 'Back to writing' : 'Set up your account'}</button></div>`, { center: true, label: 'Plan changed', onClose: () => go(S.onboarded ? 'write' : 'start') });
   }, 800);
 }
@@ -8932,7 +9213,7 @@ const FAQ = [
   ['Will it make things up?', 'No. Rewrites keep your claim and show every changed word for you to keep or undo. If a line needs a number you didn’t give, it writes [your number] and waits for yours.'],
   ['Is it only for crypto?', 'No. Crypto and trading writers came first, so the examples lean that way. Founders, creators and ghostwriters get the same tools, and What’s working covers other niches too.'],
   ['Can I bring my old posts?', 'Yes. Drop in your X archive, a Typefully or CSV export, or paste posts in. They’re read in your browser, and they teach Hookworthy how you open and when your people reply.'],
-  ['What happens when I hit the free limit?', 'Nothing breaks. Hook scores, Sharpen and the checks keep working, and full rewrites come back tomorrow. Pro takes the daily cap off.']
+  ['What happens when my free credits run out?', 'Nothing breaks. Hook scores, the checks, Sharpen and Basic mode keep working, and your 10 Claude credits come back at midnight. Pro has 1,000 a month, and the ones you don’t use roll over.']
 ];
 
 /* ---------- round 29: one nav and one footer for the light-world pages (#home, #tools, #teams, #developers) ---------- */
@@ -9398,9 +9679,9 @@ ROUTES.home = () => { loadSprite('ph');
   </section>
 
   <section class="h7-sec wrap" id="pricing" aria-labelledby="pr-h">
-    <div class="h7-head"><div><span class="eyebrow">Plans</span><h2 id="pr-h">Start free. <em>Size up when it’s working.</em></h2></div><div class="pr7-side"><p>Every plan scores every line and checks every post. Pick by how often you post.</p><div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div></div></div>
+    <div class="h7-head"><div><span class="eyebrow">Plans</span><h2 id="pr-h">Start free. <em>Size up when it’s working.</em></h2></div><div class="pr7-side"><p>Every plan scores every line, checks every post and rewrites in Basic mode for free. Credits pay for Claude: 10 a day on Free, 1,000 a month on Pro.</p><div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div></div></div>
     <div class="pl-grid pl7" id="plans">${plansHTML(true)}</div>
-    <p class="pl7-all"><a href="#upgrade">Open the Plans page ${ic('arrow', 'xs')}</a></p>
+    <p class="pl7-all"><span>A credit is one rewrite in your voice. Bigger jobs, like Learn my voice, show what they cost before you click.</span> <a href="#upgrade">How credits work ${ic('arrow', 'xs')}</a></p>
     <div class="faq7" id="faq"><div><span class="eyebrow">Questions</span><h2 class="faq7-h" id="faq-h">Fair questions. <em>Straight answers.</em></h2></div><div class="faq7-l">${FAQ.map(([q, a]) => `<details><summary><span>${q}</span>${ic('plus', 'sm')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div>
   </section>
 
@@ -9733,7 +10014,7 @@ ROUTES.teams = () => {
       </div></div>
     </section>
     <section class="tm-price" aria-labelledby="tm-p-h">
-      <div><span class="eyebrow">Plans</span><h2 id="tm-p-h">Studio is <em>built for this.</em></h2><p>Client voices and approvals before anything ships, on top of everything in Pro. Studio is $${PRICES.studio[0]} a month billed yearly, or $${PRICES.studio[1]} monthly.</p></div>
+      <div><span class="eyebrow">Plans</span><h2 id="tm-p-h">Studio is <em>built for this.</em></h2><p>Client voices and approvals before anything ships, and 4,000 Claude credits a month shared by every voice, on top of everything in Pro. Studio is $${PRICES.studio[0]} a month billed yearly, or $${PRICES.studio[1]} monthly.</p></div>
       <div class="mk-cta"><a class="hbtn lg" ${hwHref('home', 'pricing')}>See plans ${ic('arrow', 'sm')}</a><a href="#upgrade">Open the Plans page</a></div>
     </section>
   </div>`);
@@ -9875,7 +10156,7 @@ function onbStep2() {
   /* the real work runs alongside the animation: fetch posts if the server can, then ask Claude for five */
   ONB.ideas = null; ONB.job = (async () => {
     if (live) { try { const r = await fetch(`api/x/posts?handle=${encodeURIComponent(ONB.handle)}&max=400`); const j = await r.json(); if (r.ok) absorb(j.posts.map(HWCore.normPost).filter(Boolean), { account: j.account }); } catch (e) { /* fall back to niche */ } }
-    if (aiOn()) { try { const res = await ask(HWCore.prompts.ideas({ niche: ONB.niche || S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox: S.ideas.map(i => cleanIdea(i.text)), count: 5 })); if (Array.isArray(res) && res.length) ONB.ideas = res.slice(0, 5).map(x => ({ text: String(x.text), kind: x.kind || 'Curiosity', topic: topicOf(String(x.text)) })); } catch (e) { /* offline ideas it is */ } }
+    if (aiOn()) { try { const res = await ask(HWCore.prompts.ideas({ niche: ONB.niche || S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox: S.ideas.map(i => cleanIdea(i.text)), count: 5 }), { act: 'setup' }); if (Array.isArray(res) && res.length) ONB.ideas = res.slice(0, 5).map(x => ({ text: String(x.text), kind: x.kind || 'Curiosity', topic: topicOf(String(x.text)) })); } catch (e) { /* offline ideas it is */ } }
   })();
   $('#onb').innerHTML = `${ghostFeedHTML()}<div class="onb-card" style="position:relative"><h2 class="display" style="font-size:clamp(34px,5vw,48px)">Reading the room…</h2><div class="reading" role="status" aria-live="polite">${steps.map((s, i) => `<div class="st" data-i="${i}"><span class="ck">${ic('check')}</span><span>${esc(s)}</span></div>`).join('')}</div><button class="btn ghost sm" id="onb-skip">Skip the suspense</button></div>`;
   onbFocusHead();
@@ -9954,7 +10235,7 @@ function onbTry() {
   go.onclick = async () => {
     const line = inp.value.trim(); if (!line) { inp.setAttribute('aria-invalid', 'true'); note.textContent = 'Type a line first. One rough sentence is plenty.'; inp.focus(); return; }
     inp.removeAttribute('aria-invalid'); note.textContent = '';
-    if (aiOn()) { go.classList.add('is-loading'); try { const r = await ask(HWCore.prompts.critique({ text: line, voice: voiceSpec() }), { fresh: true }); const best = (r && r.better || []).map(String).filter(x => x && !/\[[^\]]+\]/.test(x)).sort((x, y) => hookScore(y).score - hookScore(x).score)[0]; if (best) { show(line, best, r.reason || ''); return; } } catch (e) { /* fall back to the offline rewrite */ } finally { go.classList.remove('is-loading'); } }
+    if (aiOn()) { go.classList.add('is-loading'); try { const r = await ask(HWCore.prompts.critique({ text: line, voice: voiceSpec() }), { fresh: true, act: 'setup' }); const best = (r && r.better || []).map(String).filter(x => x && !/\[[^\]]+\]/.test(x)).sort((x, y) => hookScore(y).score - hookScore(x).score)[0]; if (best) { show(line, best, r.reason || ''); return; } } catch (e) { /* fall back to the offline rewrite */ } finally { go.classList.remove('is-loading'); } }
     riffNonce++; const cands = [AI.punchier(line), ...hookPool(line)].filter(Boolean).sort((x, y) => hookScore(y).score - hookScore(x).score); show(line, cands[0] || line, aiOn() ? '' : 'Basic mode rewrote this on your device. Connect Claude for a rewrite in your voice.');
   };
   inp.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); go.click(); } });
@@ -10082,7 +10363,7 @@ ROUTES.ideas = () => {
     <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'Post ideas', 'Ideas'], ['radar', 'What’s working', 'Working'], ['inbox', `Saved · ${S.ideas.length}`, `Saved ${S.ideas.length}`]].map(([k, l, sl]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}" aria-label="${esc(l)}"><span class="ll">${l}</span><span class="sl">${sl}</span></button>`).join('')}</div></div>
     <div id="tab-you" ${(UI.ideaTab || 'you') === 'you' ? '' : 'hidden'}>
     <section class="sec"><div class="sec-h"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><h2 class="h2">Post ideas for you</h2><span class="pill">${esc(S.user.niche)}</span><button class="btn sm icon-only" data-iact="shuffle" data-tip="Shuffle" data-kbd="R" aria-label="Shuffle post ideas">${ic('shuffle', 'sm')}</button></div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="seg" id="eng-seg" role="tablist" aria-label="Filter ideas">${['All', ...new Set((UI.aiIdeas || genIdeas(24, ENGINE.seed)).map(x => x.kind).filter(Boolean))].slice(0, 7).map(k => `<button role="tab" data-ek="${k}" aria-selected="${ENGINE.kind === k}">${KIND_L(k)}</button>`).join('')}</div><button class="btn sm needs-ai" data-iact="claude" data-tip="Fresh ideas from your notes and best posts">${ic('spark', 'sm')} Ask Claude</button></div></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="seg" id="eng-seg" role="tablist" aria-label="Filter ideas">${['All', ...new Set((UI.aiIdeas || genIdeas(24, ENGINE.seed)).map(x => x.kind).filter(Boolean))].slice(0, 7).map(k => `<button role="tab" data-ek="${k}" aria-selected="${ENGINE.kind === k}">${KIND_L(k)}</button>`).join('')}</div><button class="btn sm needs-ai" data-iact="claude" data-tip="Fresh ideas from your notes and best posts">${ic('spark', 'sm')} Ask Claude${crTag('ideas')}</button></div></div>
       <div class="grid-3" id="engine"></div></section>
     </div>
     <div id="tab-radar" ${UI.ideaTab === 'radar' ? '' : 'hidden'}>${UI.ideaTab === 'radar' ? radarHTML() : ''}</div>
@@ -10125,7 +10406,7 @@ ROUTES.ideas = () => {
 function shuffleEngine() { UI.aiIdeas = null; ENGINE.seed++; drawEngine(); }
 async function claudeIdeas(btn) {
   btn.classList.add('is-loading');
-  try { const res = await ask(HWCore.prompts.ideas({ niche: S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox: S.ideas.map(i => cleanIdea(i.text)) }), { fresh: true }); const list = (Array.isArray(res) ? res : []).map(x => ({ text: String(x.text || '').trim(), kind: ['Contrarian', 'Story', 'Listicle', 'How-to', 'Curiosity', 'Question'].includes(x.kind) ? x.kind : 'Curiosity', why: x.why })).filter(x => x.text); if (!list.length) throw { code: 'invalid_json' }; UI.aiIdeas = list; ENGINE.kind = 'All'; $$('[data-ek]').forEach(b => b.setAttribute('aria-selected', b.dataset.ek === 'All')); syncSeg($('#eng-seg')); drawEngine(); toast(`${list.length} ideas from ${AI_NAME()}, built on your notes and best posts.`, { icon: 'spark', tone: 'accent' }); }
+  try { const res = await ask(HWCore.prompts.ideas({ niche: S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox: S.ideas.map(i => cleanIdea(i.text)) }), { fresh: true, act: 'ideas', resume: () => claudeIdeas(btn) }); const list = (Array.isArray(res) ? res : []).map(x => ({ text: String(x.text || '').trim(), kind: ['Contrarian', 'Story', 'Listicle', 'How-to', 'Curiosity', 'Question'].includes(x.kind) ? x.kind : 'Curiosity', why: x.why })).filter(x => x.text); if (!list.length) throw { code: 'invalid_json' }; UI.aiIdeas = list; ENGINE.kind = 'All'; $$('[data-ek]').forEach(b => b.setAttribute('aria-selected', b.dataset.ek === 'All')); syncSeg($('#eng-seg')); drawEngine(); toast(`${list.length} ideas from ${AI_NAME()}, built on your notes and best posts.`, { icon: 'spark', tone: 'accent' }); }
   catch (e) { aiError(e); } finally { btn.classList.remove('is-loading'); }
 }
 /* ---------- Niche radar: what popped in your niche this week, and why ----------
@@ -10258,12 +10539,12 @@ ROUTES.hooks = () => {
   const start = S.graderText || 'I think risk management is really important for new traders.';
   mount('hooks', `<div class="page">
     <div class="page-h"><div><h1 class="display">Hooks</h1><p>Your first line decides whether anyone reads the rest. Score it, compare it, or start from a formula.</p></div></div>
-    <div class="card grader"><div style="display:grid;grid-template-rows:1fr auto"><textarea id="grader-t" aria-label="Hook to grade" placeholder="Type a first line…">${esc(start)}</textarea><div style="display:flex;gap:8px;padding:0 18px 18px;flex-wrap:wrap"><button class="btn primary" data-hact="improve">${ic('hook', 'sm')} Stronger hook</button><button class="btn" data-hact="send">${ic('write', 'sm')} Open in Write</button></div></div>
+    <div class="card grader"><div style="display:grid;grid-template-rows:1fr auto"><textarea id="grader-t" aria-label="Hook to grade" placeholder="Type a first line…">${esc(start)}</textarea><div style="display:flex;gap:8px;padding:0 18px 18px;flex-wrap:wrap"><button class="btn primary" data-hact="improve">${ic('hook', 'sm')} Stronger hook${crTag('hooks')}</button><button class="btn" data-hact="send">${ic('write', 'sm')} Open in Write</button></div></div>
       <div class="grader-side" aria-live="polite"><div class="bigscore" id="g-score"></div><p id="g-reason" class="muted" style="font-size:14px"></p><div class="bars" id="g-bars"></div></div></div>
     <div id="g-better" aria-live="polite"></div>
     <section class="sec shoot"><div class="sec-h"><div><h2 class="h2">Compare two lines</h2><p class="muted" style="margin-top:4px">Two first lines, one post. Let your past posts pick, or ask friends.</p></div></div>
       <div class="shoot-in"><label><span class="label">A</span><textarea class="input" id="so-a" rows="2" placeholder="${esc(SHOOT_EX()[0])}">${esc((S.shoot || {}).a || '')}</textarea></label><label><span class="label">B</span><textarea class="input" id="so-b" rows="2" placeholder="${esc(SHOOT_EX()[1])}">${esc((S.shoot || {}).b || '')}</textarea></label></div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn" data-hact="shoot" data-tip="${HIST().length ? `Checks against your ${fmtN(HIST().length)} posts` : 'Uses the hook score until you bring your posts'}">${ic('bolt', 'sm')} Ask my past posts</button><button class="btn" data-hact="vote" data-tip="A link friends tap to vote">${ic('poll', 'sm')} Ask friends</button></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn" data-hact="shoot" data-tip="${HIST().length ? `Checks against your ${fmtN(HIST().length)} posts` : 'Uses the hook score until you bring your posts'}">${ic('bolt', 'sm')} Ask my past posts${crTag('compare')}</button><button class="btn" data-hact="vote" data-tip="A link friends tap to vote">${ic('poll', 'sm')} Ask friends</button></div>
       <div id="so-out" aria-live="polite"></div>${shootHistoryHTML()}</section>
     <section class="sec"><div class="sec-h" style="margin-bottom:12px"><div><h2 class="h2">Formulas</h2><p class="muted" style="margin-top:4px">First-line formulas to start from. Pick one and fill in the blanks.</p></div></div><div class="sec-h"><div class="seg" id="hk-seg" role="tablist" aria-label="Hook types">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity', 'Proof', 'Question'].map(k => `<button role="tab" data-hk="${k}" aria-selected="${HOOKF.k === k}">${KIND_L(k)}</button>`).join('')}</div><input class="input" id="hk-q" placeholder="Search formulas" aria-label="Search formulas" style="width:220px" value="${esc(HOOKF.q)}"></div><div class="hooklib" id="hooklib"></div></section>
   </div>`);
@@ -10281,13 +10562,16 @@ ROUTES.hooks = () => {
   $('#view').addEventListener('click', e => {
     const tab = e.target.closest('[data-hk]'); if (tab) { HOOKF.k = tab.dataset.hk; $$('[data-hk]').forEach(b => b.setAttribute('aria-selected', b === tab)); syncSeg($('#hk-seg')); drawHooks(); return; }
     const b = e.target.closest('[data-hact]'); if (!b) return; const a = b.dataset.hact;
-    if (a === 'improve' && aiOn() && t.value.trim() && aiLeft() > 0) { const box = $('#g-better'); b.classList.add('is-loading'); box.innerHTML = `<p class="faint g-wait">${esc(cap(AI_NAME()))} is writing three stronger first lines…</p>`;
-      ask(HWCore.prompts.critique({ text: t.value, voice: voiceSpec() }), { fresh: true }).then(r => { const lines = (r && r.better || []).map(String).filter(Boolean).slice(0, 3); if (!lines.length) throw { code: 'invalid_json' }; spendAI(); box.innerHTML = `<div class="g-better">${r.reason ? `<p class="muted">${esc(r.reason)}</p>` : ''}${lines.map(l => { const sc = hookScore(l).score; return `<button class="g-line" data-hact="pick" data-t="${esc(l)}">${tierChip(sc, { cls: 'sm' })}<span>${esc(l).replace(/\[([^\]]+)\]/g, '<mark>$1</mark>')}</span></button>`; }).join('')}</div>`; }).catch(err => { box.innerHTML = ''; aiError(err); }).finally(() => b.classList.remove('is-loading')); return; }
+    if (a === 'improve' && aiOn() && t.value.trim() && crCan('hooks')) { const box = $('#g-better'); b.classList.add('is-loading'); box.innerHTML = `<p class="faint g-wait">${esc(cap(AI_NAME()))} is writing three stronger first lines…</p>`;
+      ask(HWCore.prompts.critique({ text: t.value, voice: voiceSpec() }), { fresh: true, act: 'hooks', resume: () => b.click() }).then(r => { const lines = (r && r.better || []).map(String).filter(Boolean).slice(0, 3); if (!lines.length) throw { code: 'invalid_json' }; box.innerHTML = `<div class="g-better">${r.reason ? `<p class="muted">${esc(r.reason)}</p>` : ''}${lines.map(l => { const sc = hookScore(l).score; return `<button class="g-line" data-hact="pick" data-t="${esc(l)}">${tierChip(sc, { cls: 'sm' })}<span>${esc(l).replace(/\[([^\]]+)\]/g, '<mark>$1</mark>')}</span></button>`; }).join('')}</div>`; }).catch(err => { box.innerHTML = ''; aiError(err); }).finally(() => b.classList.remove('is-loading')); return; }
     if (a === 'shoot') { runShootout(b); return; }
     if (a === 'vote') { openHookVote([$('#so-a').value.trim(), $('#so-b').value.trim()]); return; }
     if (a === 'souse') { writeFrom([b.dataset.t]); toast('Loaded the winner. Now write the rest.', { icon: 'hook', tone: 'accent' }); return; }
     if (a === 'pick') { const before = t.value; t.value = b.dataset.t; draw(); burstFrom($('#g-score b')); toast('Swapped in. Fill any [brackets] with yours.', { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); return; }
-    if (a === 'improve') { if (!t.value.trim()) { t.focus(); toast('Type a first line, then we’ll make it stronger.', { icon: 'hook' }); return; } if (aiLeft() <= 0) { outOfRiffs(); return; } riffNonce++; const before = t.value, a0 = hookScore(before).score; const out = AI.hook(before).split('\n')[0]; spendAI(); t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`Hook: ${tierMove(a0, a1).text}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); if (a1 >= 78 && a1 - a0 >= 12) setTimeout(() => showUpsell(a0, a1), 700); }
+    if (a === 'improve') { if (!t.value.trim()) { t.focus(); toast('Type a first line, then we’ll make it stronger.', { icon: 'hook' }); return; } riffNonce++; const before = t.value, a0 = hookScore(before).score; const out = AI.hook(before).split('\n')[0];
+      const keep = () => { t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`Hook: ${tierMove(a0, a1).text}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); };
+      if (aiOn() && !crCan('hooks')) { crSheet({ act: 'hooks', cost: crCost('hooks'), basicHTML: crDiffHTML(before, out), onBasic: keep, resume: () => b.click() }); return; }
+      t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`Hook: ${tierMove(a0, a1).text}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); if (a1 >= 78 && a1 - a0 >= 12) setTimeout(() => showUpsell(a0, a1), 700); }
     if (a === 'send') { if (!t.value.trim()) { toast('Type a first line first.', { tone: 'err', icon: 'write' }); return; } writeFrom([t.value]); }
     if (a === 'use') useHook(b.closest('[data-t]').dataset.t);
     if (a === 'grade') { t.value = b.closest('[data-t]').dataset.t.replace(/\[([^\]]+)\]/g, '$1'); draw(); t.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' }); t.focus(); }
@@ -10309,7 +10593,7 @@ const qList = () => S.workspaces.length > 1 && QF.mine ? S.queue.filter(q => (q.
 ROUTES.queue = () => {
   WEEK = 0; /* the queue always opens on this week */
   settleQueue(); if (S.settings.evergreen) ensureEvergreen();
-  mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p><div id="q-hint"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week</button></div></div>
+  mount('queue', `<div class="page" style="max-width:1280px"><div class="page-h"><div><h1 class="display">Queue</h1><p id="q-sub"></p><div id="q-hint"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-qact="plan">${ic('spark', 'sm')} Plan my week${crTag('week')}</button></div></div>
   ${weekGap() < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${weekGap() ? `Only ${weekGap()} post${weekGap() > 1 ? 's' : ''} scheduled for the next 7 days.` : 'Nothing scheduled for the next 7 days.'} Five minutes now saves the week.</span></div>` : ''}
   <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">This week</button><span class="range" id="q-range"></span><button class="btn sm q-times-b" data-qact="times" aria-haspopup="dialog">${ic('clock', 'sm')} Times</button>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#insights"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="Week calendar. Each card is a post. Press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
@@ -10682,7 +10966,7 @@ function drawInsightsReal() {
   push(thr, v => `Threads get ${v} your single posts.`, v => `Your threads get ${v} engagement than single posts.`, `${thr && thr.n} threads in your history.`, '<button class="btn sm" data-nact="thread" style="justify-self:start">Draft a thread</button>');
   push(lower, v => `Lowercase openers get ${v}.`, v => `Lowercase openers get ${v} engagement; capitals work better for you.`, `${lower && lower.n} posts start lowercase. Hookworthy keeps whichever you use.`, '<button class="btn sm" data-nact="lower" style="justify-self:start">Tune your voice</button>');
   push(qEnd, v => `A question in line one gets ${v}.`, v => `A question in line one gets ${v}.`, `${qEnd && qEnd.n} of your posts open with one.`);
-  const row = (p, i, tag) => `<div class="top-post" data-pid="${esc(p.id)}"><span class="rk">${tag || String(i + 1).padStart(2, '0')}</span><div><p>${esc(clip(p.text.split('\n')[0], 140))}</p><div class="st">${p.views ? `<span>${fmtN(p.views)} views</span>` : ''}<span>${fmtN(p.likes)} likes</span><span>${fmtN(p.reposts)} reposts</span>${p.replies ? `<span>${fmtN(p.replies)} replies</span>` : ''}<span>${HWCore.kindOf(p.text)}</span>${p.at ? `<span>${agoLabel(p.at)}</span>` : ''}</div><div class="pm" hidden></div></div><div class="tp-a"><button class="btn sm ghost" data-nact="why" data-id="${esc(p.id)}">${ic('q', 'sm')} Why?</button><button class="btn sm" data-nact="remix" data-id="${esc(p.id)}">${ic('layers', 'sm')} Remix</button></div></div>`;
+  const row = (p, i, tag) => `<div class="top-post" data-pid="${esc(p.id)}"><span class="rk">${tag || String(i + 1).padStart(2, '0')}</span><div><p>${esc(clip(p.text.split('\n')[0], 140))}</p><div class="st">${p.views ? `<span>${fmtN(p.views)} views</span>` : ''}<span>${fmtN(p.likes)} likes</span><span>${fmtN(p.reposts)} reposts</span>${p.replies ? `<span>${fmtN(p.replies)} replies</span>` : ''}<span>${HWCore.kindOf(p.text)}</span>${p.at ? `<span>${agoLabel(p.at)}</span>` : ''}</div><div class="pm" hidden></div></div><div class="tp-a"><button class="btn sm ghost" data-nact="why" data-id="${esc(p.id)}">${ic('q', 'sm')} Why?${crTag('why')}</button><button class="btn sm" data-nact="remix" data-id="${esc(p.id)}">${ic('layers', 'sm')} Remix</button></div></div>`;
   $('#ins').innerHTML = `${stale ? `<div class="ins-demo"><span>${ic('clock', 'sm')} Your history ends ${agoLabel(last)}, so ranges count back from ${MON[new Date(last).getMonth()]} ${new Date(last).getDate()}.</span><button class="btn sm" data-act="import">Add newer posts</button></div>` : ''}
   <div class="insight-hero">${(() => { const m = String(hero.h).match(/(\d+(?:\.\d+)?)×/); return m && hero.kind ? ihVs(hero.kind, +m[1], 'engagement') : ''; })()}<h2 class="display">${hero.h}</h2><p>${hero.p}</p><div class="acts">${hero.kind ? `<button class="btn primary" data-nact="kind" data-k="${hero.kind}">${ic('write', 'sm')} Write a ${hero.kind.toLowerCase()} post</button>` : ''}<button class="btn" data-nact="posts">See the posts</button></div></div>
   ${noDates ? `<p class="kpi-line">${fmtN(all.length)} posts imported without dates, so there’s no timeline yet. What works, by type, is below.</p>` : ''}<p class="kpi-line" ${noDates ? 'hidden' : ''}>Last ${RANGE} days${stale ? ' of your history' : ''}: <b>${win.length}</b> posts${dl(win.length, prev.length)}, <b>${fmtN(sum(win, p => p.likes))}</b> likes${dl(sum(win, p => p.likes), sum(prev, p => p.likes))}, <b>${fmtN(sum(win, p => p.reposts))}</b> reposts${dl(sum(win, p => p.reposts), sum(prev, p => p.reposts))}${an.perWeek ? `, and you post about <b>${an.perWeek}</b> times a week` : ''}.</p>
@@ -10700,7 +10984,7 @@ async function postMortem(id, btn) {
   const p = HIST().find(x => x.id === id); if (!p) return; const box = $(`[data-pid="${CSS.escape(id)}"] .pm`); if (!box) return;
   if (!aiOn()) { const h = hookScore(p.text), an = ANALYSIS(); box.hidden = false; box.innerHTML = `<p><b>${Math.round(HWCore.eng(p) / an.median * 10) / 10}× your median.</b> ${TIER(h.score).word} hook: ${esc(h.reason)} ${p.at ? `Posted ${DOW[new Date(p.at).getDay()]} at ${fmtTime(`${new Date(p.at).getHours()}:${String(new Date(p.at).getMinutes()).padStart(2, '0')}`)}.` : ''}</p><small class="faint">Connect Claude for the full post-mortem.</small>`; return; }
   btn.classList.add('is-loading'); box.hidden = false; box.innerHTML = `<p class="faint">${esc(cap(AI_NAME()))} is comparing it with your best posts…</p>${hintHTML('insights', { rotate: true, cls: 'loading-hint' })}`;
-  try { const an = ANALYSIS(); const r = await ask(HWCore.prompts.postmortem({ post: p, median: an.median, similar: an.top.filter(x => x.id !== id).slice(0, 5), voice: voiceSpec() }));
+  try { const an = ANALYSIS(); const r = await ask(HWCore.prompts.postmortem({ post: p, median: an.median, similar: an.top.filter(x => x.id !== id).slice(0, 5), voice: voiceSpec() }), { act: 'why', resume: () => postMortem(id, btn) });
     box.innerHTML = `<p><b>${esc(r.verdict || '')}</b></p><ul>${(r.reasons || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${r.next_time ? `<p><span class="label">Next time</span> ${esc(r.next_time)}</p>` : ''}${r.rewrite ? `<div class="pm-rw"><span class="label">Try this first line</span><p>${esc(r.rewrite)}</p><button class="btn sm" data-nact="userw" data-t="${esc(r.rewrite)}">${ic('write', 'sm')} Write it</button></div>` : ''}`;
   } catch (e) { box.hidden = true; aiError(e); } finally { btn.classList.remove('is-loading'); }
 }
@@ -10840,7 +11124,7 @@ ROUTES.voice = () => {
   const lean = real ? an.lean.slice(0, 8).map(x => [x.w, x.n]) : [['size', 48], ['journal', 64], ['honestly', 31], ['boring', 22], ['stop loss', 29], ['the rule', 17], ['patience', 26], ['exit', 19]];
   const works = pr && pr.works && pr.works.length ? pr.works : real ? an.kindStats.filter(k => k.n >= 3).slice(0, 4).map(k => `${k.k} posts: ${k.x}× your median (${k.n} posts)`) : null;
   const status = pr ? `Learned ${agoLabel(pr.at)} from ${pr.n} of your posts, by ${pr.by || 'Claude'}.` : real ? `${an.n} posts brought in. Choose “Learn my voice” and this page becomes yours.` : 'This is a sample voice. Bring your posts and it becomes yours.';
-  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Bring your posts and Hookworthy learns how you write. Until then, this is a sample voice you can tune.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${real ? 'primary' : ''}" id="learn" ${real ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${real ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Bring at least 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}</button></div></div>
+  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Bring your posts and Hookworthy learns how you write. Until then, this is a sample voice you can tune.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${real ? 'primary' : ''}" id="learn" ${real ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${real ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Bring at least 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}${real && aiOn() ? crTag('voice') : ''}</button></div></div>
   <p class="v-status"><span class="ai-badge" data-mode="${LLM.mode}">${aiBadgeInner()}</span><span>${esc(status)}</span>${real ? '' : '<span class="faint" id="learn-why">“Learn my voice” turns on after you bring 8 or more posts.</span>'}</p>
   <div class="voice-hero">
     <div class="card pad" style="display:grid;gap:14px;grid-template-rows:auto auto auto 1fr"><span class="label">${real || pr ? 'You sound' : 'Sample voice'}</span><div>${traits.map(([t, s]) => `<div class="trait"><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join('')}</div>
@@ -10880,7 +11164,7 @@ async function learnVoice(btn) {
   btn && btn.classList.add('is-loading');
   const t = toast(`Claude is reading ${pool.length} posts. This takes about a minute.`, { icon: 'voice', tone: 'accent', ms: 90000 });
   try {
-    const res = await ask(HWCore.prompts.voiceProfile({ posts: pool, handle: S.user.handle, niche: S.user.niche }));
+    const res = await ask(HWCore.prompts.voiceProfile({ posts: pool, handle: S.user.handle, niche: S.user.niche }), { act: 'voice', resume: () => learnVoice(btn) });
     if (!res || !res.summary) throw { code: 'invalid_json' };
     S.profile = { ...res, n: an.n, at: Date.now(), by: 'Claude' };
     if (res.niche && /building in public|^$/i.test(S.user.niche || '')) S.user.niche = res.niche;
@@ -10892,12 +11176,28 @@ async function learnVoice(btn) {
    UPGRADE
    ========================================================================== */
 ROUTES.upgrade = () => {
-  const n = S.ai.used; const h = hookScore(S.draft.tweets[0].text).score;
-  mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">Write like this <em>every</em> day.</h1><p class="muted" style="font-size:18px;max-width:52ch">Unlimited rewrites in your voice, a ping when a post takes off with replies drafted, and insights that say what to write next.</p>
-    ${!PRICED() ? '<p class="pill accent" style="height:auto;padding:6px 12px;white-space:normal">Every feature is on for this account.</p>' : n ? `<p class="pill accent" style="height:28px;padding:0 12px">You’ve used ${Math.min(n, S.ai.limit)} of ${S.ai.limit} free rewrites today${h ? ` · your current hook: ${tierText(h)}` : ''}</p>` : ''}
+  const st = crState(), plan = planNow(), trial = PRICED() && !S.trial && S.plan === 'free';
+  const lede = plan === 'free' ? 'Free gives you 10 Claude credits a day. Pro gives you 1,000 a month that roll over, so a big news day never runs dry, plus a ping when a post takes off and insights that say what to write next.'
+    : plan === 'trial' ? `You’re trying Pro: every Pro feature and ${fmtN(st ? st.left : 250)} credits to go. When the week’s up you’re back on Free, with everything you wrote.`
+    : 'Your plan, your credits, and what everything costs.';
+  const faq = [
+    ['Is the free plan actually free?', 'Yes. 10 Claude credits a day (a rewrite is 1), hook scores and checks on everything, Basic mode and Sharpen as much as you like, and unlimited drafts and ideas. No card.'],
+    ['What’s a credit?', 'One everyday piece of Claude writing, like a rewrite with three versions to pick from. Bigger jobs cost more and say so on the button: Plan my week is 3, Learn my voice is 5. A credit is used only when Claude answers.'],
+    ['What happens when I run out?', 'Nothing breaks. You get the Basic version on the spot, free, and Free’s credits come back at midnight. Pro’s 1,000 a month roll over, so a quiet week saves up for a busy one.'],
+    ['Is the trial really free?', 'Yes. Seven days of Pro with 250 credits, no card. It ends on its own and you’re back on Free with everything you wrote. One trial per account.'],
+    ['Will it sound like ChatGPT?', 'It shouldn’t. It learns from your posts, follows your tone sliders and never uses anything on your never-say list. If a word isn’t you, add it to that list.'],
+    ...(BILLING ? [['Can I cancel anytime?', 'Yes, from Your plan in the account menu. Your drafts and ideas stay with you on Free.']] : []),
+    ['Which platforms?', 'X and LinkedIn post on time once you connect them through your own Hookworthy server. Threads and Bluesky get their own preview and version, and you post those by hand.'],
+    ['Do you post without asking?', 'Never. Only posts you schedule go out, at the time you picked, and you get a few seconds to take one back after Post now. Weekly reruns stay off unless you turn them on.']
+  ];
+  mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">${plan === 'free' ? 'Write like this <em>every</em> day.' : `Your plan: <em>${esc(st ? st.name : cap(S.plan))}.</em>`}</h1><p class="muted" style="font-size:18px;max-width:54ch">${lede}</p>
+    ${!PRICED() && !st ? '<p class="pill accent" style="height:auto;padding:6px 12px;white-space:normal">Every feature is on for this account.</p>' : ''}
+    ${crMeterHTML('page')}
+    ${trial ? `<div class="up-trial">${ic('gift')}<p><b>Try Pro free for 7 days.</b> 250 credits and every Pro feature. No card, nothing to cancel.</p><button class="btn" data-plan="trial">Start the trial</button></div>` : ''}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing period"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
     <div class="pl-grid" id="up-plans" style="margin-top:32px">${plansHTML(true)}</div>
-    <div class="faq"><h2 class="h2" style="margin-bottom:12px">Questions, answered plainly</h2>${[['Is the free plan actually free?', 'Yes. Five rewrites a day, hook scores on everything, unlimited drafts and ideas. No card.'], ['Will it sound like ChatGPT?', 'It shouldn’t. It learns from your posts, follows your tone sliders and never uses anything on your never-say list. If a word isn’t you, add it to that list.'], ...(BILLING ? [['Can I cancel anytime?', 'Yes, from Your plan in the account menu. Your drafts and ideas stay with you on Free.']] : []), ['Which platforms?', 'X and LinkedIn post on time once you connect them through your own Hookworthy server. Threads and Bluesky get their own preview and version, and you post those by hand.'], ['Do you post without asking?', 'Never. Only posts you schedule go out, at the time you picked, and you get a few seconds to take one back after Post now. Weekly reruns stay off unless you turn them on.']].map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
+    ${creditsExplainHTML()}
+    <div class="faq"><h2 class="h2" style="margin-bottom:12px">Questions, answered plainly</h2>${faq.map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
     </div>`);
   syncSeg($('#up-bill'));
   $('#up-bill').addEventListener('click', e => { const b = e.target.closest('[data-bill]'); if (!b) return; $$('#up-bill [data-bill]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#up-bill')); $('#up-plans').innerHTML = plansHTML(b.dataset.bill === 'y'); });

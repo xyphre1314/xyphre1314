@@ -85,6 +85,17 @@ Or on Render: New → Blueprint, point it at this repo (`hookworthy/server/rende
 
 Static files go out with an ETag per encoding (a repeat visit gets a 304) and brotli or gzip for text, so the 0.9 MB page travels as about 220 KB. Compressed copies are cached in memory.
 
+## Claude credits
+
+Off by default: a server running on your own Anthropic key doesn't meter you. To host other people, give each one a token and a plan:
+
+```bash
+HOOKWORTHY_TOKENS=alice-token:pro,bob-token:free   # each signs in once at /login?token=…
+HW_PLAN=pro                                        # optional: meter the main HOOKWORTHY_TOKEN too
+```
+
+The prices and refill rules come from `core.js` (`CREDITS`), the same table the app shows on its buttons: Free is 10 a day, back at local midnight; Pro is 1,000 a month and Studio 4,000, refilling on the day they joined, with unused credits rolling over up to one extra month. A rewrite is 1 (2 for a post over 1,000 characters), each PDF or picture adds 1, the bigger-model tier is never under 5, and Sharpen and the small helpers are free up to 300 a day. `/api/ai`, `/api/v1/rewrite` and `/api/v1/ideas` take the credits before calling Claude and give them back if the call fails. Out of credits is a `402` with `code: "out_of_credits"`, the price and the balance. `/api/health` and every metered answer carry `credits: {plan, left, amount, per, next, rolled}`, which drives the app's meter. Balances live in `data/credits.json`, filed under a hash of each token.
+
 ## Security notes
 
 - Binds to `127.0.0.1` by default. If you open it up, set `HOOKWORTHY_TOKEN`.

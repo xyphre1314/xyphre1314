@@ -29,6 +29,7 @@ const E = await import('./lib/extras.mjs');
 const BO = await import('./lib/breakout.mjs');
 const VO = await import('./lib/votes.mjs');
 const PL = await import('./lib/plug.mjs');
+const CR = await import('./lib/credits.mjs');
 
 const ROOT = normalize(join(here, '..'));
 const PORT = +process.env.PORT || 8787, HOST = process.env.HOST || '127.0.0.1';
@@ -38,24 +39,33 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 
 /* per-IP token bucket for Claude calls: 30 a minute */
 const buckets = new Map();
+export const resetRateLimits = () => buckets.clear(); // tests
 function allow(ip, cost = 1) { const now = Date.now(); const b = buckets.get(ip) || { t: 30, at: now }; b.t = Math.min(30, b.t + (now - b.at) / 2000); b.at = now; if (b.t < cost) { buckets.set(ip, b); return false; } b.t -= cost; buckets.set(ip, b); return true; }
 
 const send = (res, status, body, headers = {}) => { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...headers }); res.end(JSON.stringify(body)); };
 const fail = (res, e) => send(res, e.status || 500, { error: e.message || 'Something went wrong', code: e.code || 'error' });
 async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []; for await (const c of req) { n += c.length; if (n > limit) throw Object.assign(new Error('Request too large'), { status: 413 }); chunks.push(c); } try { return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}'); } catch { throw Object.assign(new Error('Send JSON'), { status: 400 }); } }
-const authed = req => !TOKEN || req.headers.authorization === `Bearer ${TOKEN}` || (req.headers.cookie || '').split(/;\s*/).includes(`hw=${TOKEN}`);
+/* who's calling: the main HOOKWORTHY_TOKEN, or one of HOOKWORTHY_TOKENS (people you host, each with their own credits) */
+const tokenOf = req => { const ok = CR.tokens(); const b = /^Bearer (.+)$/.exec(req.headers.authorization || ''); if (b && ok.has(b[1])) return b[1]; for (const c of (req.headers.cookie || '').split(/;\s*/)) { if (!c.startsWith('hw=')) continue; let v = c.slice(3); try { v = decodeURIComponent(v); } catch { /* as sent */ } if (ok.has(v)) return v; } return null; };
+const authed = req => !TOKEN && !CR.tokens().size || !!tokenOf(req);
 
 export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), plug: true, replySettings: true, vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
 
 /* drafts for a breakout's first replies, in your voice (only when Claude is on) */
 export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => (await AI.complete({ ...core.prompts.replies({ post, replies, voice }), json: true })).data : null;
 
+/* every Claude call someone makes goes through their credits (when this server meters them): priced from the action, the
+   files and the tier with the same table as the app, taken before the call, given back if the call fails */
+const outOfCredits = (res, q) => send(res, 402, { error: `That needs ${q.cost} credit${q.cost === 1 ? '' : 's'} and ${q.credits.left} ${q.credits.left === 1 ? 'is' : 'are'} left`, code: 'out_of_credits', cost: q.cost, credits: q.credits });
+async function withCredits(req, info, run) { const q = CR.reserve(tokenOf(req), info); if (!q.ok) return { q }; try { return { q, r: await run() }; } catch (e) { q.refund(); throw e; } }
+const spent = q => q.metered ? { cost: q.cost, credits: q.credits } : {};
+
 export async function handle(req, res) {
   const url = new URL(req.url, 'http://x'); const p = url.pathname; const ip = req.socket.remoteAddress || 'local';
   try {
     let m;
-    if (p === '/api/health') return send(res, 200, { ...health(), locked: !!TOKEN && !authed(req) });
-    if (p === '/login') { if (!TOKEN || url.searchParams.get('token') !== TOKEN) return send(res, 401, { error: 'Wrong or missing token' }); res.writeHead(302, { 'set-cookie': `hw=${TOKEN}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${PUBLIC_URL.startsWith('https') ? '; Secure' : ''}`, location: '/#write' }); return res.end(); }
+    if (p === '/api/health') { const locked = !authed(req); return send(res, 200, { ...health(), locked, ...(locked ? {} : { credits: CR.status(tokenOf(req)) }) }); }
+    if (p === '/login') { const tk = url.searchParams.get('token') || ''; if (!CR.tokens().size || !CR.tokens().has(tk)) return send(res, 401, { error: 'Wrong or missing token' }); res.writeHead(302, { 'set-cookie': `hw=${encodeURIComponent(tk)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${PUBLIC_URL.startsWith('https') ? '; Secure' : ''}`, location: '/#write' }); return res.end(); }
     /* a review link is public: reading it, commenting and resolving. Changing the draft or switching the link off is yours alone */
     const reviewPublic = (/^\/api\/review\/[\w-]{6,20}$/.test(p) && req.method === 'GET') || (/^\/api\/review\/[\w-]{6,20}\/comments(\/[\w-]{4,20})?$/.test(p) && (req.method === 'POST' || req.method === 'PATCH'));
     if (p.startsWith('/api/') && !reviewPublic && !/^\/api\/vote\/[\w-]{8,20}$/.test(p) && !authed(req)) return send(res, 401, { error: 'Missing HOOKWORTHY_TOKEN', code: 'auth' });
@@ -64,8 +74,10 @@ export async function handle(req, res) {
     if (p === '/api/ai' && req.method === 'POST') {
       const b = await body(req, 24 * 1024 * 1024); const docs = Array.isArray(b.docs) ? b.docs : [];
       if (!allow(ip, (b.tier === 'complex' ? 5 : 1) + docs.length * 2)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' });
-      const r = await AI.complete({ prompt: b.prompt, tier: b.tier, json: !!b.json, docs });
-      return send(res, 200, { text: r.text, data: r.data, model: r.model, truncated: r.truncated });
+      if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' });
+      const { q, r } = await withCredits(req, { act: typeof b.act === 'string' ? b.act : '', docs: docs.length, chars: +b.chars || 0, tier: b.tier, bytes: Buffer.byteLength(String(b.prompt || '')) }, () => AI.complete({ prompt: b.prompt, tier: b.tier, json: !!b.json, docs }));
+      if (!r) return outOfCredits(res, q);
+      return send(res, 200, { text: r.text, data: r.data, model: r.model, truncated: r.truncated, ...spent(q) });
     }
 
     /* imports */
@@ -121,8 +133,8 @@ export async function handle(req, res) {
 
     /* the same checks and rewrites, for other apps and AI assistants */
     if (p === '/api/v1/check' && req.method === 'POST') { const b = await body(req); const text = String(b.text || ''); const hist = Array.isArray(b.history) ? b.history.slice(0, 3000).map(core.normPost).filter(Boolean) : null; const tuned = hist ? core.learnHooks(hist) : null; return send(res, 200, { hook: core.hookScore(text), ...(tuned ? { mine: tuned.ready ? { ...core.personalScore(text, tuned), tested: tuned.val } : { ready: false, n: tuned.n, need: tuned.need } } : {}), kind: core.kindOf(text), checks: core.checkPost(text, { never: b.never || [], limit: b.limit || 280, platform: b.platform || 'x' }) }); }
-    if (p === '/api/v1/rewrite' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); const spec = core.prompts.rewrite({ text: b.text, kind: b.kind || 'punchier', lang: b.lang, voice: b.voice || null, platform: b.platform || 'X', limit: b.limit || 280 }); const r = await AI.complete({ ...spec, json: true }); return send(res, 200, r.data); }
-    if (p === '/api/v1/ideas' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); const r = await AI.complete({ ...core.prompts.ideas({ niche: b.niche, voice: b.voice, top: b.top || [], inbox: b.notes || [], count: b.count || 6 }), json: true }); return send(res, 200, { ideas: r.data }); }
+    if (p === '/api/v1/rewrite' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' }); const spec = core.prompts.rewrite({ text: b.text, kind: b.kind || 'punchier', lang: b.lang, voice: b.voice || null, platform: b.platform || 'X', limit: b.limit || 280 }); const { q, r } = await withCredits(req, { act: 'rewrite', chars: String(b.text || '').length }, () => AI.complete({ ...spec, json: true })); if (!r) return outOfCredits(res, q); return send(res, 200, r.data, q.metered ? { 'x-credits-left': String(q.credits.left) } : {}); }
+    if (p === '/api/v1/ideas' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' }); const { q, r } = await withCredits(req, { act: 'ideas' }, () => AI.complete({ ...core.prompts.ideas({ niche: b.niche, voice: b.voice, top: b.top || [], inbox: b.notes || [], count: b.count || 6 }), json: true })); if (!r) return outOfCredits(res, q); return send(res, 200, { ideas: r.data, ...spent(q) }); }
 
     /* OAuth */
     if (p === '/auth/x/start') { if (!X.xConfigured().post) return send(res, 503, { error: 'Set X_CLIENT_ID in server/.env' }); res.writeHead(302, { location: X.authStart(`${PUBLIC_URL}/auth/x/callback`) }); return res.end(); }
