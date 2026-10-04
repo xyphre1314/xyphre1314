@@ -47,7 +47,7 @@ Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (th
 | `POST /api/v1/ideas` `{niche, notes, top}` | First lines to write today |
 | `GET /api/x/replies?id=` | First-hour replies to a post, ranked (questions and reach first) |
 | `POST /api/x/reply` `{inReplyTo, text}` | Reply as you |
-| `POST /api/review`, `PUT/GET /api/review/:id`, `POST /api/review/:id/comments`, `GET /r/:id` | Review links: a public-by-link draft page with comments per post |
+| `POST /api/review`, `PUT/GET /api/review/:id`, `POST /api/review/:id/comments`, `PATCH /api/review/:id/comments/:cid`, `GET /r/:id` | Share & review: a public-by-link draft page. Comments anchor to words (`quote`, `start`, `prefix`, `suffix`), a whole post or a picture (`el`); `parent` makes a reply; PATCH `{ resolved }` resolves or reopens a thread. `PUT { public: false }` switches the link off (it reads as gone); `?owner=1` with the token reads it anyway and comments as the author |
 | `POST /api/digest/subscribe` `{email, digest}`, `/api/digest/unsubscribe` | Sunday 9 AM email of the week's note (Resend, or logged) |
 | `PUT/GET /api/sync/:id` | End-to-end encrypted sync: the browser encrypts with a key derived from your sync code; the server stores ciphertext only |
 | `/auth/x/start`, `/auth/linkedin/start` | Connect accounts for posting |
@@ -94,6 +94,6 @@ Static files go out with an ETag per encoding (a repeat visit gets a 304) and br
 - Hook votes are public by their random link, rate limited per IP, store only an anonymous browser id per vote, and expire after 14 days.
 - X asks for the `media.write` scope. If you connected X before this was added, connect it again so pictures can post.
 - `/api/ai` is rate limited per IP (30 a minute; voice study costs 5).
-- Review links are readable by anyone with the link (random 12-character ids); they carry only the draft and the author's name.
+- Review links are readable by anyone with the link (random 12-character ids) while the link is on; they carry only the draft, its pictures (small data URLs only) and the author's name. Reading, commenting and resolving need no token; changing the draft or switching the link off does.
 - Sync payloads are AES-GCM encrypted in the browser with a key derived (PBKDF2, 200k rounds) from a 100-bit code the server never sees.
 - The service worker never caches `/api`, `/auth`, `/login` or review pages.

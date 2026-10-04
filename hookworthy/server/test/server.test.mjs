@@ -92,6 +92,38 @@ test('review links: create, redirect, comment, read back', async () => {
   const g = await call('/api/review/' + c.json.id); assert.equal(g.json.comments.length, 1); assert.equal(g.json.comments[0].post, 1); assert.equal(g.json.author.pic, 'assets/people/you.jpg');
   const miss = await call('/api/review/doesnotexist'); assert.equal(miss.status, 404);
 });
+test('review comments: anchored to words, a post or a picture; replies and resolve', async () => {
+  const c = await call('/api/review', { method: 'POST', body: { tweets: ['Most traders lose on the exit.', 'Plan it before the entry.'], media: [[], [{ src: 'data:image/png;base64,iVBORw0KGgo=', alt: 'Chart' }, { src: 'https://evil.example/x.png', alt: 'Elsewhere' }]], author: { name: 'Sam', handle: 'samtrades' } } });
+  assert.equal(c.status, 200); const id = c.json.id;
+  const g0 = await call('/api/review/' + id); assert.equal(g0.json.public, true); assert.equal(g0.json.media[1][0].src.slice(0, 15), 'data:image/png;'); assert.equal(g0.json.media[1][1].src, '', 'only data URLs or app assets');
+  const words = await call(`/api/review/${id}/comments`, { method: 'POST', body: { who: 'rk-priya-1', name: 'Priya', text: 'Say which exit.', post: 0, quote: 'on the exit', start: 18, prefix: 'traders lose ', suffix: '.' } });
+  assert.equal(words.status, 200); assert.equal(words.json.quote, 'on the exit'); assert.equal(words.json.start, 18); assert.equal(words.json.who, 'rk-priya-1'); assert.equal(words.json.el, undefined);
+  const pic = await call(`/api/review/${id}/comments`, { method: 'POST', body: { who: 'rk-lena-22', name: 'Lena', text: 'Crop the chart.', post: 1, el: 'img:0' } });
+  assert.equal(pic.json.el, 'img:0'); assert.equal(pic.json.quote, undefined);
+  const whole = await call(`/api/review/${id}/comments`, { method: 'POST', body: { name: 'Lena', text: 'Strong close.', post: 1, el: 'nonsense' } }); assert.equal(whole.json.el, 'post'); assert.match(whole.json.who, /^n-lena/);
+  /* a reply joins the thread's root, even when it answers a reply */
+  const rep = await call(`/api/review/${id}/comments`, { method: 'POST', body: { who: 'rk-lena-22', name: 'Lena', text: 'Agree.', parent: words.json.id } });
+  const rep2 = await call(`/api/review/${id}/comments`, { method: 'POST', body: { who: 'rk-priya-1', name: 'Priya', text: 'Thanks.', parent: rep.json.id } });
+  assert.equal(rep.json.parent, words.json.id); assert.equal(rep2.json.parent, words.json.id); assert.equal(rep2.json.post, 0);
+  assert.equal((await call(`/api/review/${id}/comments`, { method: 'POST', body: { name: 'X', text: 'hi', parent: 'nope00' } })).status, 404);
+  /* resolve and reopen, threads only */
+  const rs = await call(`/api/review/${id}/comments/${words.json.id}`, { method: 'PATCH', body: { resolved: true, name: 'Lena' } });
+  assert.equal(rs.status, 200); assert.equal(rs.json.resolved, true); assert.equal(rs.json.resolvedBy, 'Lena');
+  assert.equal((await call(`/api/review/${id}/comments/${rep.json.id}`, { method: 'PATCH', body: { resolved: true } })).status, 400);
+  const re = await call(`/api/review/${id}/comments/${words.json.id}`, { method: 'PATCH', body: { resolved: false } }); assert.equal(re.json.resolved, false); assert.equal(re.json.resolvedBy, undefined);
+  /* the author comments from Write */
+  const own = await call(`/api/review/${id}/comments?owner=1`, { method: 'POST', body: { name: 'Pretender', text: 'Fixed it.', parent: pic.json.id } }); assert.equal(own.json.who, 'owner'); assert.equal(own.json.name, 'Sam');
+  const g = await call('/api/review/' + id); assert.equal(g.json.comments.length, 6);
+});
+test('review links switch off and on: off reads as gone, except to the author', async () => {
+  const c = await call('/api/review', { method: 'POST', body: { tweets: ['A draft'], author: { name: 'Sam' } } }); const id = c.json.id;
+  const off = await call('/api/review/' + id, { method: 'PUT', body: { public: false } }); assert.equal(off.status, 200); assert.equal(off.json.public, false); assert.deepEqual(off.json.posts, ['A draft'], 'switching off keeps the draft');
+  const g = await call('/api/review/' + id); assert.equal(g.status, 404); assert.match(g.json.error, /switched off/);
+  assert.equal((await call(`/api/review/${id}/comments`, { method: 'POST', body: { name: 'P', text: 'hello' } })).status, 404);
+  const mine = await call(`/api/review/${id}?owner=1`); assert.equal(mine.status, 200); assert.equal(mine.json.public, false);
+  await call('/api/review/' + id, { method: 'PUT', body: { public: true, tweets: ['A sharper draft'] } });
+  const back = await call('/api/review/' + id); assert.equal(back.status, 200); assert.deepEqual(back.json.posts, ['A sharper draft']);
+});
 test('sync stores only ciphertext and refuses older overwrites', async () => {
   const id = 'a'.repeat(32);
   assert.equal((await call('/api/sync/' + id)).status, 404);
