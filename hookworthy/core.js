@@ -427,7 +427,7 @@ Their readers know AI-sounding posts on sight and scroll past, and the app flags
   const O = (props, opt = []) => ({ type: 'object', properties: props, required: Object.keys(props).filter(k => !opt.includes(k)), additionalProperties: false });
   const A = items => ({ type: 'array', items }), Str = { type: 'string' }, Int = { type: 'integer' }, E = (...v) => ({ type: 'string', enum: v });
   const KINDS = E('Contrarian', 'Story', 'Listicle', 'How-to', 'Curiosity', 'Question');
-  /* the Room: six writers, each with one way into a first line. The app shows them; the prompt casts them */
+  /* the Room: six agents, each with one way into a first line. The app shows them; the prompt casts them */
   const ROOM = [
     { k: 'mo', n: 'Mo', role: 'The Straight Shooter', how: 'Says the claim plainly and first. No warm-up, no hedges.' },
     { k: 'rex', n: 'Rex', role: 'The Contrarian', how: 'Pushes against what people usually assume, with the same facts.' },
@@ -736,13 +736,13 @@ Rules: copy numbers exactly as written in the post, never invent, round or conve
 
 Reply with only JSON: {"template":"data|stat|list|compare|quote","headline":"","metric":"","before":"","after":"","value":"","label":"","items":[],"left":"","right":"","emphasis":"","why":""}` };
     },
-    /* the hook tournament: every writer in the Room pitches one first line for the same post */
+    /* the hook tournament: every agent in the Room pitches one first line for the same post */
     room({ text, voice }) {
       return { tier: 'default', json: true, schema: SCHEMA.room, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
-You're running a writers' room for this post's first line. Each writer below pitches exactly one first line, in the author's voice, keeping every fact, number and name. Each pitch should sound like that writer's approach, so the six are clearly different from each other and from the draft.
+You're running a room of six agents competing over this post's first line. Each agent below pitches exactly one first line, in the author's voice, keeping every fact, number and name. Each pitch should sound like that agent's approach, so the six are clearly different from each other and from the draft.
 
 ${ROOM.map(r => `- ${r.k} (${r.n}, ${r.role}): ${r.how}`).join('\n')}
 
@@ -750,7 +750,7 @@ ${ROOM.map(r => `- ${r.k} (${r.n}, ${r.role}): ${r.how}`).join('\n')}
 ${text}
 </draft>
 
-Reply with only JSON: {"lines":[{"agent":"mo","line":"..."}]} with one line for each of the six writers.` };
+Reply with only JSON: {"lines":[{"agent":"mo","line":"..."}]} with one line for each of the six agents.` };
     },
     critique({ text, voice }) {
       return { tier: 'quick', json: true, schema: SCHEMA.critique, prompt: `${BRIEF}
@@ -1539,7 +1539,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     rewrite: { c: 1, label: 'Rewrite', does: 'Three versions in your voice that keep every number and name', long: true },
     instruct: { c: 1, label: 'Rewrite with a note', does: 'Your note, done in your voice, with every fact kept', long: true },
     hooks: { c: 1, label: 'Three stronger first lines', does: 'Three first lines in your voice, same facts' },
-    room: { c: 2, label: 'Hook tournament', does: 'Six writers in the Room each pitch a first line, and the best one wins' },
+    room: { c: 2, label: 'Hook tournament', does: 'Six agents in the Room each pitch a first line, and the best one wins' },
     ideas: { c: 1, label: 'Post ideas', does: 'Fresh first lines from your notes and your best posts' },
     why: { c: 1, label: 'Why it did what it did', does: 'Why this post popped or flopped, against your own median' },
     digest: { c: 1, label: 'Your weekly note', does: 'What worked this week and what to try next' },
