@@ -187,6 +187,7 @@ Wispr Flow's editorial calm, in plum, for people who write in public. A cream pa
 ## Colors
 
 ### Brand color: Lilac & Plum (locked, round 12)
+Round 42: every brand colour now comes from the :root tokens (`--plum-900/600/400`, `--lilac`, `--lilac-soft`, `--pl-d`, and `--warm-*` for the Almost state), so a palette swap is one block. The names are historical; the values are the palette.
 The owner picked Lilac & Plum from the 20-palette exploration (round 10), so the switcher is gone. The structure never changes: cream canvas, ink text, EB Garamond + Figtree, bordered pastel buttons, color arriving in big blocks. The variables stay so the brand lives in one place.
 
 | Role | Variable | Value |
@@ -372,8 +373,8 @@ Each comes in 16:9, 1:1 or 4:5, and is added as an image with alt text.
 ### Primary audience
 The homepage (round 41) speaks to creators who write and grow on X: a creator line in the hero grader, creator examples in every demo, and Creators first in Who it’s for, with Markets as one tab. Inside the app, market writers keep their first-class support: the default niche in onboarding, the trader demo persona (Sam Okafor, @samtrades), market events and a stale-price guard in the queue, and What’s working defaulting to trading. Every niche gets the same craft.
 
-### Homepage voice (round 41)
-Each section head is two short beats that rhyme or chime, warm and a little playful: “Posted with joy. Lost in the void.” “Nail the first line. The rest falls in line.” “Write any time. Post at their prime.” The meaning comes first and the rhyme second, so a head that rhymes but says less gets rewritten. Ledes stay plain. Under each head sits the section’s inner features (chips that point at cards, or a row of small feature tiles), so the hierarchy reads eyebrow → head → lede → features → demo.
+### Homepage voice (round 42)
+Section heads are two short beats. A head rhymes only where the rhyme lands on its own (“Good ideas die in bad first lines.” “Nail the first line. The rest falls in line.” “Never stuck on what to say. Fresh ideas every day.”). Where a plain line says more, it stays plain (“Everything comes in. Nothing goes out without you.” “Paste the post you almost wrote.”). Usefulness comes first, then rhythm, then rhyme. Ledes stay plain. Under each head sit the section’s inner features (chips that point at cards, or a row of small feature tiles), so the hierarchy reads eyebrow → head → lede → features → demo.
 
 ### Homepage motion (round 41)
 Section heads arm below the fold: the eyebrow, then the headline rising out of a light blur, then the lede, about 70 ms apart. Feature chips and tiles stagger in at 45–60 ms. Ideas on tap advances by itself every 5.2 s while it’s on screen, pauses on hover or focus, and stops for good once a tab is picked. Panels crossfade in place (the stage keeps its tallest panel’s height, so nothing jumps). Presses scale to .96–.98. Hover lifts only on fine pointers. Reduced motion keeps every state and drops the movement.
