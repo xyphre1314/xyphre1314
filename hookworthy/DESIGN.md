@@ -186,7 +186,24 @@ Wispr Flow's editorial calm, in plum, for people who write in public. A cream pa
 
 ## Colors
 
-### Brand color: Lilac & Plum (locked, round 12)
+### Brand: Ink & Ember (round 43, current)
+**Promise:** the spark of being heard. People come to us scared of posting into the void; the product earns its keep the moment a post lands and someone replies.
+**How color carries that:** paper and ink do the work (calm, like Wispr Flow and iA Writer; restraint like Linear). One warm signal, ember, appears only when something good happens: your hook gets sharper, Post now, a reply comes in, a post takes off. Like Arc, the one color is the personality. Purple is out: it reads as a generic AI product.
+**Personality:** warm, confident, alive. **Icon:** an ink tile with a paper h and an ember dot: a notification, someone heard you.
+
+| Role | Token (historical name) | Light | Dark |
+|---|---|---|---|
+| Paper | `--bg`, `.hw --c-bg` | #F4F1EA / #FAF8F2 | #161412 |
+| Ink, blocks | `--plum-900` (`--pb1`) | #17140F | lifted to ~#25211D on blocks |
+| Ember, signal (squiggle, sparks, ember buttons on ink) | `--plum-400`, `--apricot` | #F2592A | #FF7A4E |
+| Text accent (links, eyebrows, wordmark italic) | `--plum-600` (`--pl`) | #B33F19 | `--pl-d` #FF9068 |
+| Fill (highlights, selected pills) | `--lilac` (`--pa`) | #FFE7DC | |
+| Soft wash | `--lilac-soft` | #FFF3EC | rgba(255,144,104,.14) |
+| Almost (hook state) | `--warm-*` | #3554C2 | #AFC0FF |
+
+**Buttons:** primary is ink on paper (paper on ink in dark). On an ink block the one bright thing is the ember button (Post now, Try Pro, Open it in Hookworthy). Secondary stays paper with a hairline. **Rules:** ember never fills a large area; it marks a moment. No new hues without a reason a reader can name.
+
+### Brand color: Lilac & Plum (locked, round 12) (retired round 43)
 Round 42: every brand colour now comes from the :root tokens (`--plum-900/600/400`, `--lilac`, `--lilac-soft`, `--pl-d`, and `--warm-*` for the Almost state), so a palette swap is one block. The names are historical; the values are the palette.
 The owner picked Lilac & Plum from the 20-palette exploration (round 10), so the switcher is gone. The structure never changes: cream canvas, ink text, EB Garamond + Figtree, bordered pastel buttons, color arriving in big blocks. The variables stay so the brand lives in one place.
 
