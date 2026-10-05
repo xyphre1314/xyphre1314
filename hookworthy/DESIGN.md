@@ -186,26 +186,22 @@ Wispr Flow's editorial calm, in plum, for people who write in public. A cream pa
 
 ## Colors
 
-### Brand: Harbor & Cream (round 45, current)
-The owner went back to the first blue (round 9, the Wispr Flow system translated to blue) after Lilac & Plum, Vellum & Plum, Ink & Ember and a cobalt variant. Cream paper, ink text, deep harbor-blue blocks, periwinkle buttons with an ink border, link blue for text accents.
-**Icon:** a harbor tile with a cream h and a periwinkle dot.
+### Brand: Ink & Ember (round 43, current)
+**Promise:** the spark of being heard. People come to us scared of posting into the void; the product earns its keep the moment a post lands and someone replies.
+**How color carries that:** paper and ink do the work (calm, like Wispr Flow and iA Writer; restraint like Linear). One warm signal, ember, appears only when something good happens: your hook gets sharper, Post now, a reply comes in, a post takes off. Like Arc, the one color is the personality. Purple is out: it reads as a generic AI product.
+**Personality:** warm, confident, alive. **Icon:** an ink tile with a paper h and an ember dot: a notification, someone heard you.
 
 | Role | Token (historical name) | Light | Dark |
 |---|---|---|---|
-| Paper | `--bg`, `.hw --c-bg` | #FEFDF1 | #1C1C1B (warm charcoal) |
-| Ink | `--text-1` | #1A1A1A | #F6F4E6 |
-| Harbor blocks (story, final call, Pro card, Today hero, icon tile) | `--plum-900` (`--pb1`) | #0B3A66 | #14497F tile |
-| Link blue (links, eyebrows, wordmark italic, data) | `--plum-600` (`--pl`) | #1E4FC2 | `--pl-d` #A9BDFF |
-| Signal (squiggle, logo dot) | `--plum-400` | #3D6FE3 | #8FA8FF |
-| Periwinkle fill (highlights, selected pills) | `--lilac` (`--pa`) | #DDE5FF | |
-| Soft wash | `--lilac-soft` | #EEF2FF | rgba(188,203,255,.14) |
-| Spark (today chip, sparks) | `--apricot` | #9FB4FF | #8FA8FF |
+| Paper | `--bg`, `.hw --c-bg` | #F4F1EA / #FAF8F2 | #161412 |
+| Ink, blocks | `--plum-900` (`--pb1`) | #17140F | lifted to ~#25211D on blocks |
+| Ember, signal (squiggle, sparks, ember buttons on ink) | `--plum-400`, `--apricot` | #F2592A | #FF7A4E |
+| Text accent (links, eyebrows, wordmark italic) | `--plum-600` (`--pl`) | #B33F19 | `--pl-d` #FF9068 |
+| Fill (highlights, selected pills) | `--lilac` (`--pa`) | #FFE7DC | |
+| Soft wash | `--lilac-soft` | #FFF3EC | rgba(255,144,104,.14) |
 | Almost (hook state) | `--warm-*` | #3554C2 | #AFC0FF |
 
-**Buttons:** one primary everywhere (`--cta`): periwinkle #DDE5FF, ink text, 1.5px ink border (`--cta-line`), 10px radius; in dark #BCCBFF with no border. The same on paper, on harbor blocks and in the app. Secondary stays paper with a hairline.
-
-### Brand: Ink & Ember (round 43) (retired round 45)
-Ink tile, paper, a burnt-orange ember signal and a cobalt primary. Retired: the owner found the ember and the cobalt harsh.
+**Buttons:** one primary everywhere (round 45): ember #F2592A with ink text, hover #FF6B3D, the same on paper, in dark mode and on ink blocks. Secondary stays paper with a hairline. **Rules:** ember never fills a large area; it marks a moment or the one action. No new hues without a reason a reader can name. (Round 44 tried a cobalt primary and Harbor & Cream blue; the owner kept Ink & Ember.)
 
 ### Brand color: Lilac & Plum (locked, round 12) (retired round 43)
 Round 42: every brand colour now comes from the :root tokens (`--plum-900/600/400`, `--lilac`, `--lilac-soft`, `--pl-d`, and `--warm-*` for the Almost state), so a palette swap is one block. The names are historical; the values are the palette.
@@ -396,13 +392,20 @@ The homepage (round 41) speaks to creators who write and grow on X: a creator li
 
 ### The Room (round 44)
 The AI is a team, not a tool: **the Room**, six AI agents who pitch first lines and fight for the best one. Mo, the Straight Shooter; Rex, the Contrarian; Juno, the Storyteller; Ace, the Numbers Nerd; Kit, the Teaser; Sol, the Minimalist. Copy says "the Room writes it", not "Claude writes it"; Claude stays named where it's a fact (connections, privacy, the server). The unit of work is a **pitch** (10 a day on Free, 1,000 a month on Pro, 4,000 on Studio).
-**Hook tournament:** all six write at once, three round-one face-offs, a semifinal (the top seed waits), then a final the author judges, with the Room's pick marked. Rounds are decided by the hook checks plus the author's own history. Without the Room online, each agent's rule runs locally and the log says so.
+**Hook tournament:** all six write at once, three round-one face-offs, a semifinal (the top seed waits), then a final the Room calls (round 45: no choice for the author, just the best line, Use this line or Keep mine). Rounds are decided by the hook checks plus the author's own history. Without the Room online, each agent's rule runs locally and the log says so.
 
 ### Demo account (round 44)
 Every demo, mockup and empty state is **heycape (@heycape_)** with his own picture (`assets/people/you.jpg`), never "You", "Your draft" or "@yourhandle". Other people in feeds are the cast in `PEOPLE`.
 
 ### One primary button (round 44)
-Post now, Start free, Try Pro and Open it all use `--cta` / `--cta-ink` / `--cta-hover` / `--cta-line`, identical on paper, in dark mode and on harbor blocks (round 45: periwinkle with an ink border).
+Post now, Start free, Try Pro and Open it all use `--cta` / `--cta-ink` / `--cta-hover`, identical on paper, in dark mode and on ink blocks. Round 45: the primary is ember (`--cta` #F2592A, ink text); nothing else is filled with it.
+
+### Round 45: simpler homepage, one-answer tournament, quieter generating
+- **Hero:** one centred sentence in Figtree 700, "Where [creator] creators and teams [team] write posts [platform] that land", with live tiles inside it (a creator photo, a team of four, the X/Threads/LinkedIn/Bluesky icon) that take turns every 2.6s while on screen. Two buttons: Start free (the one ember primary) and See plans (a soft grey pill). No stats.
+- **Try it:** the live grader sits centred right under the hero.
+- **Cut:** the problem row, Ideas, Previews, Scheduling and Trust sections. The page is now Hero, Try it, How it works, Features, Who it's for, Plans + FAQ, Final call.
+- **Hook tournament:** the Room calls the final. The author sees one best line with Use this line or Keep mine, never a choice between two.
+- **Generating:** one ember light travels the card's edge; the draft goes soft under a moving sheen (no per-word boxes); the result clears in from a blur, then its changes mark themselves left to right.
 
 ### Homepage voice (round 42)
 Section heads are two short beats. A head rhymes only where the rhyme lands on its own (“Good ideas die in bad first lines.” “Nail the first line. The rest falls in line.” “Never stuck on what to say. Fresh ideas every day.”). Where a plain line says more, it stays plain (“Everything comes in. Nothing goes out without you.” “Paste the post you almost wrote.”). Usefulness comes first, then rhythm, then rhyme. Ledes stay plain. Under each head sit the section’s inner features (chips that point at cards, or a row of small feature tiles), so the hierarchy reads eyebrow → head → lede → features → demo.
