@@ -390,6 +390,16 @@ Each comes in 16:9, 1:1 or 4:5, and is added as an image with alt text.
 ### Primary audience
 The homepage (round 41) speaks to creators who write and grow on X: a creator line in the hero grader, creator examples in every demo, and Creators first in Who it’s for, with Markets as one tab. Inside the app, market writers keep their first-class support: the default niche in onboarding, the trader demo persona (Sam Okafor, @samtrades), market events and a stale-price guard in the queue, and What’s working defaulting to trading. Every niche gets the same craft.
 
+### The Room (round 44)
+The AI is a team, not a tool: **the Room**, a writers' room of six who pitch first lines and fight for the best one. Mo, the Straight Shooter; Rex, the Contrarian; Juno, the Storyteller; Ace, the Numbers Nerd; Kit, the Teaser; Sol, the Minimalist. Copy says "the Room writes it", not "Claude writes it"; Claude stays named where it's a fact (connections, privacy, the server). The unit of work is a **pitch** (10 a day on Free, 1,000 a month on Pro, 4,000 on Studio).
+**Hook tournament:** all six write at once, three round-one face-offs, a semifinal (the top seed waits), then a final the author judges, with the Room's pick marked. Rounds are decided by the hook checks plus the author's own history. Without the Room online, each writer's rule runs locally and the log says so.
+
+### Demo account (round 44)
+Every demo, mockup and empty state is **heycape (@heycape_)** with his own picture (`assets/people/you.jpg`), never "You", "Your draft" or "@yourhandle". Other people in feeds are the cast in `PEOPLE`.
+
+### One primary button (round 44)
+Post now, Start free, Try Pro and Open it all use `--cta` / `--cta-ink` / `--cta-hover`, identical on paper, in dark mode and on ink blocks. Nothing else is filled with the brand blue.
+
 ### Homepage voice (round 42)
 Section heads are two short beats. A head rhymes only where the rhyme lands on its own (“Good ideas die in bad first lines.” “Nail the first line. The rest falls in line.” “Never stuck on what to say. Fresh ideas every day.”). Where a plain line says more, it stays plain (“Everything comes in. Nothing goes out without you.” “Paste the post you almost wrote.”). Usefulness comes first, then rhythm, then rhyme. Ledes stay plain. Under each head sit the section’s inner features (chips that point at cards, or a row of small feature tiles), so the hierarchy reads eyebrow → head → lede → features → demo.
 

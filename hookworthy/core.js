@@ -427,6 +427,15 @@ Their readers know AI-sounding posts on sight and scroll past, and the app flags
   const O = (props, opt = []) => ({ type: 'object', properties: props, required: Object.keys(props).filter(k => !opt.includes(k)), additionalProperties: false });
   const A = items => ({ type: 'array', items }), Str = { type: 'string' }, Int = { type: 'integer' }, E = (...v) => ({ type: 'string', enum: v });
   const KINDS = E('Contrarian', 'Story', 'Listicle', 'How-to', 'Curiosity', 'Question');
+  /* the Room: six writers, each with one way into a first line. The app shows them; the prompt casts them */
+  const ROOM = [
+    { k: 'mo', n: 'Mo', role: 'The Straight Shooter', how: 'Says the claim plainly and first. No warm-up, no hedges.' },
+    { k: 'rex', n: 'Rex', role: 'The Contrarian', how: 'Pushes against what people usually assume, with the same facts.' },
+    { k: 'juno', n: 'Juno', role: 'The Storyteller', how: 'Opens on a moment or a turn, so the reader wants what happened.' },
+    { k: 'ace', n: 'Ace', role: 'The Numbers Nerd', how: 'Leads with the most specific thing: a number, a name, a timeframe. Leaves [your number] if the author never gave one.' },
+    { k: 'kit', n: 'Kit', role: 'The Teaser', how: 'Opens a loop the reader needs closed, and the post pays it off.' },
+    { k: 'sol', n: 'Sol', role: 'The Minimalist', how: 'The fewest words that still land. Under 60 characters when it can.' }
+  ];
   const SCHEMA = {
     options: O({ options: A(O({ text: Str, why: Str })), why: Str }, ['why']),
     versions: O({ versions: A(Str) }),
@@ -444,7 +453,8 @@ Their readers know AI-sounding posts on sight and scroll past, and the app flags
     picture: O({ what: Str, kind: E('chart', 'dashboard', 'dm', 'tweet', 'receipt', 'photo', 'other'), facts: A(O({ fact: Str, where: Str })), private: A(Str), angles: A(O({ angle: Str, line: Str })), posts: A(Str),
       visual: { anyOf: [O({ template: { type: 'string', const: 'data' }, metric: Str, before: Str, after: Str }), O({ template: { type: 'string', const: 'stat' }, value: Str, label: Str }), O({ template: { type: 'string', const: 'quote' } })] } }),
     visual: O({ template: E('data', 'stat', 'list', 'compare', 'quote'), headline: Str, metric: Str, before: Str, after: Str, value: Str, label: Str, items: A(Str), left: Str, right: Str, emphasis: Str, why: Str }),
-    critique: O({ reason: Str, better: A(Str) })
+    critique: O({ reason: Str, better: A(Str) }),
+    room: O({ lines: A(O({ agent: E(...ROOM.map(r => r.k)), line: Str })) })
   };
   const P = {
     rewrite({ text, kind, lang, voice, platform = 'X', limit = 280 }) {
@@ -725,6 +735,22 @@ Pick the template that fits what the post is really about:
 Rules: copy numbers exactly as written in the post, never invent, round or convert one. Headline is at most 9 words, plain, in the author's words where possible, and doesn't repeat the big number. metric is 1-3 words naming what the number measures. emphasis is the 1-3 word phrase in the headline that carries the tension. why is one short sentence to the author on why this picture fits.
 
 Reply with only JSON: {"template":"data|stat|list|compare|quote","headline":"","metric":"","before":"","after":"","value":"","label":"","items":[],"left":"","right":"","emphasis":"","why":""}` };
+    },
+    /* the hook tournament: every writer in the Room pitches one first line for the same post */
+    room({ text, voice }) {
+      return { tier: 'default', json: true, schema: SCHEMA.room, prompt: `${BRIEF}
+
+${voiceBlock(voice)}
+
+You're running a writers' room for this post's first line. Each writer below pitches exactly one first line, in the author's voice, keeping every fact, number and name. Each pitch should sound like that writer's approach, so the six are clearly different from each other and from the draft.
+
+${ROOM.map(r => `- ${r.k} (${r.n}, ${r.role}): ${r.how}`).join('\n')}
+
+<draft>
+${text}
+</draft>
+
+Reply with only JSON: {"lines":[{"agent":"mo","line":"..."}]} with one line for each of the six writers.` };
     },
     critique({ text, voice }) {
       return { tier: 'quick', json: true, schema: SCHEMA.critique, prompt: `${BRIEF}
@@ -1513,6 +1539,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     rewrite: { c: 1, label: 'Rewrite', does: 'Three versions in your voice that keep every number and name', long: true },
     instruct: { c: 1, label: 'Rewrite with a note', does: 'Your note, done in your voice, with every fact kept', long: true },
     hooks: { c: 1, label: 'Three stronger first lines', does: 'Three first lines in your voice, same facts' },
+    room: { c: 2, label: 'Hook tournament', does: 'Six writers in the Room each pitch a first line, and the best one wins' },
     ideas: { c: 1, label: 'Post ideas', does: 'Fresh first lines from your notes and your best posts' },
     why: { c: 1, label: 'Why it did what it did', does: 'Why this post popped or flopped, against your own median' },
     digest: { c: 1, label: 'Your weekly note', does: 'What worked this week and what to try next' },
@@ -1568,5 +1595,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function crSpend(st, c) { if (!(c > 0)) return st; if (!st || st.bal < c) return null; return { ...st, bal: st.bal - c }; }
   const CREDITS = { PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
 
-  return { CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
+  return { ROOM, CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN };
 });
