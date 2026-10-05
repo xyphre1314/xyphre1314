@@ -2429,6 +2429,147 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 /* ---------- round 30: switching & trust (pictures first), the final call, the footer, #legal ---------- */
 /* the trust headline runs wide: roman on one line, italic on the next */
 .hw27 #trust .h7-head{ grid-template-columns:minmax(0,1fr); }
+/* ---------- round 41: hierarchy, sub-features, ideas on tap, and motion ---------- */
+.hw27{ --e-out:cubic-bezier(.23,1,.32,1); --e-io:cubic-bezier(.77,0,.175,1); }
+@media (prefers-reduced-motion:no-preference){ html:has(.hw27){ scroll-behavior:smooth; } }
+@keyframes h41in{ from{ opacity:0; transform:translateY(10px); } }
+/* section heads: eyebrow, then the headline rising out of a soft blur, then the line beside it */
+.hw27 .h7-head.rv, .hw27 .h7-head.rv.armed{ opacity:1; transform:none; filter:none; }
+.hw27 .h7-head.rv .eyebrow, .hw27 .h7-head.rv h2, .hw27 .h7-head.rv > p{ transition:opacity .7s var(--e-out),transform .8s var(--e-out),filter .7s var(--e-out); }
+.hw27 .h7-head.rv h2{ transition-delay:.07s; } .hw27 .h7-head.rv > p{ transition-delay:.18s; }
+.hw27 .h7-head.rv.armed .eyebrow{ opacity:0; transform:translateY(8px); }
+.hw27 .h7-head.rv.armed h2{ opacity:0; transform:translateY(18px); filter:blur(6px); }
+.hw27 .h7-head.rv.armed > p{ opacity:0; transform:translateY(10px); }
+
+/* hero: three small steps under the buttons */
+.hw27 .h7-steps{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px 22px; align-items:center; }
+.hw27 .h7-steps li{ position:relative; display:inline-flex; align-items:center; gap:6px; font:500 14px/1 var(--f-disp); color:var(--c-2); animation:h41in .6s var(--e-out) both; animation-delay:calc(.55s + var(--i) * 90ms); }
+.hw27 .h7-steps li .icon{ width:14px; height:14px; color:var(--pl); }
+.hw27 .h7-steps li + li::before{ content:""; position:absolute; left:-15px; top:50%; width:8px; height:1.5px; border-radius:1px; background:var(--c-3); opacity:.45; }
+
+/* the chips under a section head that point at its cards */
+.hw27 .subnav{ display:flex; flex-wrap:wrap; gap:8px; margin:calc(-1 * clamp(8px,1.2vw,16px)) 0 clamp(18px,2vw,24px); }
+.hw27 .subnav.rv, .hw27 .subnav.rv.armed{ opacity:1; transform:none; filter:none; }
+.hw27 .subnav button{ display:inline-flex; align-items:center; gap:7px; height:34px; padding:0 14px 0 11px; border-radius:99px; font:500 14px/1 var(--f-disp); color:var(--c-2); background:var(--c-card); box-shadow:0 0 0 1px var(--c-line); transition:transform .16s var(--e-out),background .2s ease,color .2s ease,box-shadow .2s ease; }
+.hw27 .subnav.rv:not(.armed) button{ animation:h41in .5s var(--e-out) both; animation-delay:calc(var(--i) * 45ms); }
+.hw27 .subnav.rv.armed button{ opacity:0; }
+.hw27 .subnav button .icon{ width:14px; height:14px; color:var(--pl); }
+.hw27 .subnav button:active{ transform:scale(.96); }
+.hw27 .subnav button[aria-pressed="true"]{ color:var(--c-ink); background:var(--lilac); box-shadow:0 0 0 1px color-mix(in srgb,var(--pl) 40%,transparent); }
+@media (hover:hover) and (pointer:fine){ .hw27 .subnav button:hover{ color:var(--c-ink); background:var(--lilac-soft); box-shadow:0 0 0 1px color-mix(in srgb,var(--pl) 30%,transparent); } }
+.hw27 .bx{ transition:opacity .6s var(--ease-o) var(--d,0s),transform .5s var(--e-out),box-shadow .35s var(--e-out); }
+.hw27 .bx.lit{ box-shadow:0 0 0 1.5px color-mix(in srgb,var(--pl) 50%,transparent),0 30px 60px -40px rgba(58,30,92,.45); }
+.hw27 .bx.flash{ animation:bxflash 1.2s var(--e-out); }
+@keyframes bxflash{ 25%{ box-shadow:0 0 0 4px color-mix(in srgb,var(--pl) 30%,transparent),0 30px 60px -40px rgba(58,30,92,.45); } }
+@media (hover:hover) and (pointer:fine){ .hw27 .bx:not(.armed):hover{ transform:translateY(-3px); box-shadow:0 0 0 1px var(--c-line),0 34px 60px -40px rgba(26,26,26,.42); } }
+
+/* a row of the features inside a section */
+.hw27 .subs{ list-style:none; margin:0 0 clamp(20px,2.4vw,30px); padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.hw27 .subs.rv, .hw27 .subs.rv.armed{ opacity:1; transform:none; filter:none; }
+.hw27 .subs li{ display:flex; gap:12px; align-items:flex-start; min-width:0; padding:16px; border-radius:16px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line); }
+.hw27 .subs.rv:not(.armed) li{ animation:h41in .6s var(--e-out) both; animation-delay:calc(var(--i) * 60ms); }
+.hw27 .subs.rv.armed li{ opacity:0; }
+.hw27 .subs-ic{ flex:none; display:grid; place-items:center; width:32px; height:32px; border-radius:10px; background:var(--lilac-soft); color:var(--pl); }
+.hw27 .subs-ic .icon{ width:16px; height:16px; }
+.hw27 .subs-tx{ display:grid; gap:4px; min-width:0; }
+.hw27 .subs-tx b{ font:600 15px/1.25 var(--f-disp); color:var(--c-ink); }
+.hw27 .subs-tx span{ font-size:14px; line-height:1.45; color:var(--c-2); }
+.hw27 .pv7-feats{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px 18px; }
+.hw27 .pv7-feats li{ display:inline-flex; align-items:center; gap:6px; font-size:14px; color:var(--c-2); }
+.hw27 .pv7-feats .icon{ width:14px; height:14px; color:var(--pl); }
+
+/* ideas on tap: six ways in, one at a time */
+.hw27 .id8{ display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:clamp(14px,2vw,28px); align-items:stretch; }
+.hw27 .id8-tabs{ display:grid; gap:4px; align-content:center; }
+.hw27 .id8-tabs button{ position:relative; display:grid; grid-template-columns:38px minmax(0,1fr); gap:12px; align-items:center; width:100%; padding:12px 14px 14px; border-radius:16px; text-align:left; color:var(--c-2); overflow:hidden; transition:background .25s var(--e-out),box-shadow .25s var(--e-out),transform .16s var(--e-out); }
+.hw27 .id8-tabs button:active{ transform:scale(.98); }
+.hw27 .id8-tabs button[aria-selected="true"]{ background:var(--c-card); color:var(--c-ink); box-shadow:0 0 0 1px var(--c-line),0 18px 36px -30px rgba(58,30,92,.45); }
+@media (hover:hover) and (pointer:fine){ .hw27 .id8-tabs button[aria-selected="false"]:hover{ background:color-mix(in srgb,var(--c-card) 60%,transparent); } }
+.hw27 .id8-ic{ display:grid; place-items:center; width:38px; height:38px; border-radius:12px; background:var(--c-bg-2); color:var(--c-2); transition:background .25s ease,color .25s ease; }
+.hw27 .id8-tabs [aria-selected="true"] .id8-ic{ background:var(--lilac); color:var(--plum-900); }
+.hw27 .id8-ic .icon{ width:17px; height:17px; }
+.hw27 .id8-tx{ display:grid; gap:3px; min-width:0; }
+.hw27 .id8-tx b{ font:600 16px/1.2 var(--f-disp); color:var(--c-ink); }
+.hw27 .id8-tx span{ font-size:14px; line-height:1.4; }
+.hw27 .id8-bar{ position:absolute; left:16px; right:16px; bottom:6px; height:2px; border-radius:2px; overflow:hidden; }
+.hw27 .id8-bar b{ display:block; width:100%; height:100%; background:var(--pl); transform:scaleX(0); transform-origin:0 50%; }
+.hw27 .id8-tabs button.run .id8-bar b{ animation:id8bar var(--dur,5200ms) linear forwards; }
+@keyframes id8bar{ to{ transform:scaleX(1); } }
+.hw27 .id8-stage{ display:grid; min-width:0; padding:clamp(16px,2.2vw,28px); border-radius:24px; background:var(--c-bg-2); }
+.hw27 .id8-p{ grid-area:1/1; min-width:0; display:grid; gap:12px; align-content:center; transition:opacity .18s ease,visibility 0s linear .18s; }
+.hw27 .id8-p:not(.on){ opacity:0; visibility:hidden; }
+.hw27 .id8-p.on{ transition:opacity .2s ease,visibility 0s; }
+.hw27 .id8-p.on .st{ animation:id8in .55s var(--e-out) both; animation-delay:calc(var(--i,0) * 70ms + 40ms); }
+@keyframes id8in{ from{ opacity:0; transform:translateY(10px); filter:blur(4px); } }
+.hw27 .id8-lbl{ display:block; margin-bottom:8px; font:600 11.5px/1 var(--f-disp); letter-spacing:.12em; text-transform:uppercase; color:var(--c-3); }
+.hw27 .id8-cols{ display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:14px; align-items:center; }
+.hw27 .id8-in, .hw27 .id8-card, .hw27 .id8-idea, .hw27 .id8-tw, .hw27 .id8-slot{ background:var(--c-card); border-radius:14px; box-shadow:0 0 0 1px var(--c-line),0 14px 30px -26px rgba(26,26,26,.35); }
+.hw27 .id8-in{ display:grid; gap:8px; padding:14px; }
+.hw27 .id8-out{ display:grid; gap:8px; min-width:0; }
+.hw27 .id8-note{ padding:9px 11px; border-radius:10px; background:#FFF6D8; color:#4A4033; font-size:14px; line-height:1.4; transform:rotate(-.7deg); }
+.hw27 .id8-note + .id8-note{ transform:rotate(.6deg); }
+.hw27 .id8-idea{ display:grid; gap:7px; justify-items:start; padding:12px 14px; }
+.hw27 .id8-idea p, .hw27 .id8-tw p{ font-size:15px; line-height:1.4; color:var(--c-ink); }
+.hw27 .id8-kind{ font:600 11.5px/1 var(--f-disp); padding:5px 8px; border-radius:99px; background:var(--lilac-soft); color:var(--pl); white-space:nowrap; }
+.hw27 .id8-card{ display:grid; gap:8px; justify-items:start; padding:16px 18px; }
+.hw27 .id8-yours{ box-shadow:0 0 0 1.5px color-mix(in srgb,var(--pl) 40%,transparent),0 18px 36px -30px rgba(58,30,92,.45); }
+.hw27 .id8-big{ font:500 clamp(17px,1.5vw,20px)/1.45 var(--f-disp); color:var(--c-ink); }
+.hw27 .id8 mark{ padding:1px 5px; border-radius:6px; }
+.hw27 .id8 mark.blank{ background:transparent; color:var(--pl); box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--pl) 45%,transparent); }
+.hw27 .id8 mark.fill{ background:var(--lilac); color:var(--plum-900); }
+.hw27 .id8-more{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:13.5px; color:var(--c-3); }
+.hw27 .id8-more b{ font:500 13px/1 var(--f-disp); padding:7px 10px; border-radius:99px; background:var(--c-card); color:var(--c-2); box-shadow:0 0 0 1px var(--c-line); }
+.hw27 .id8-doc{ display:flex; align-items:center; gap:8px; padding:10px 11px; border-radius:10px; background:var(--c-bg-2); font-size:14px; }
+.hw27 .id8-doc .icon{ color:var(--pl); } .hw27 .id8-doc small{ margin-left:auto; font-size:12.5px; color:var(--c-3); }
+.hw27 .id8-facts{ list-style:none; margin:0; padding:0; display:grid; gap:7px; font-size:14px; color:var(--c-2); }
+.hw27 .id8-facts li, .hw27 .id8-ok{ display:flex; gap:7px; align-items:center; }
+.hw27 .id8-facts .icon, .hw27 .id8-ok .icon{ width:13px; height:13px; color:var(--pl); flex:none; }
+.hw27 .id8-ok{ font-size:13.5px; color:var(--c-2); }
+.hw27 .id8-tw{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px; align-items:baseline; padding:11px 13px; }
+.hw27 .id8-n{ font:600 13px/1 var(--f-disp); color:var(--c-3); }
+.hw27 .id8-chart{ display:block; width:100%; height:auto; }
+.hw27 .id8-chart rect{ fill:color-mix(in srgb,var(--c-3) 28%,transparent); transform-box:fill-box; transform-origin:50% 100%; }
+.hw27 .id8-chart rect.up{ fill:var(--pl); }
+.hw27 .id8-p.on .id8-chart rect{ animation:id8grow .7s var(--e-out) both; animation-delay:calc(var(--i) * 55ms + .15s); }
+@keyframes id8grow{ from{ transform:scaleY(.1); } }
+.hw27 .id8-chart text{ font:600 11px var(--f-disp); fill:var(--c-3); } .hw27 .id8-chart text.hi{ fill:var(--pl); }
+.hw27 .id8-wave{ display:flex; align-items:center; gap:3px; height:44px; }
+.hw27 .id8-wave i{ flex:1; height:var(--h); border-radius:3px; background:var(--pl); opacity:.7; }
+.hw27 .id8-p.on .id8-wave i{ animation:id8wave 1.3s var(--e-io) infinite alternate; animation-delay:calc(var(--i) * -95ms); }
+@keyframes id8wave{ to{ transform:scaleY(.4); } }
+.hw27 .id8-raw{ font-size:13.5px; line-height:1.5; font-style:italic; color:var(--c-3); }
+.hw27 .id8-week{ display:grid; gap:6px; }
+.hw27 .id8-slot{ display:grid; grid-template-columns:72px auto minmax(0,1fr); gap:12px; align-items:center; padding:10px 14px; }
+.hw27 .id8-d{ display:grid; gap:3px; } .hw27 .id8-d b{ font:600 14px/1 var(--f-disp); color:var(--c-ink); } .hw27 .id8-d small{ font-size:12px; color:var(--c-3); }
+.hw27 .id8-slot p{ font-size:14.5px; line-height:1.35; color:var(--c-ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* press feedback on the page's other tabs and segments */
+.hw27 :is(.who7-tabs, .pv7-tabs, .seg2) button{ transition:transform .16s var(--e-out),background .2s ease,color .2s ease,box-shadow .2s ease; }
+.hw27 :is(.who7-tabs, .pv7-tabs, .seg2) button:active{ transform:scale(.97); }
+.hw27 .who7-p:not([hidden]), .hw27 .pv7-p:not([hidden]){ animation:h41in .45s var(--e-out) both; }
+
+@media (max-width:1100px){ .hw27 .subs{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:760px){
+  .hw27 .subs{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .hw27 .subs li{ flex-direction:column; gap:10px; padding:14px 12px; }
+  .hw27 .subs-tx span{ font-size:13.5px; }
+  .hw27 .subnav{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin-inline:calc(-1 * clamp(16px,4vw,40px)); padding:2px clamp(16px,4vw,40px) 4px; }
+  .hw27 .subnav::-webkit-scrollbar{ display:none; }
+  .hw27 .subnav button{ flex:none; }
+  .hw27 .id8{ grid-template-columns:minmax(0,1fr); gap:12px; }
+  .hw27 .id8-tabs{ grid-auto-flow:column; grid-auto-columns:max-content; overflow-x:auto; scrollbar-width:none; margin-inline:calc(-1 * clamp(16px,4vw,40px)); padding:2px clamp(16px,4vw,40px) 6px; }
+  .hw27 .id8-tabs::-webkit-scrollbar{ display:none; }
+  .hw27 .id8-tabs button{ grid-template-columns:28px auto; gap:8px; padding:7px 14px 9px 7px; border-radius:99px; }
+  .hw27 .id8-tabs button[aria-selected="false"]{ background:color-mix(in srgb,var(--c-card) 55%,transparent); }
+  .hw27 .id8-ic{ width:28px; height:28px; border-radius:99px; } .hw27 .id8-ic .icon{ width:14px; height:14px; }
+  .hw27 .id8-tx span{ display:none; } .hw27 .id8-tx b{ font-size:14.5px; white-space:nowrap; }
+  .hw27 .id8-bar{ left:14px; right:14px; bottom:3px; }
+  .hw27 .id8-cols{ grid-template-columns:minmax(0,1fr); }
+  .hw27 .id8-stage{ padding:14px; border-radius:20px; }
+  .hw27 .id8-slot{ grid-template-columns:56px minmax(0,1fr); } .hw27 .id8-slot .id8-kind{ display:none; }
+  .hw27 .h7-steps{ gap:8px 20px; }
+}
+
 .hw27 #trust h2 em, .hw27 #pricing #pr-h em{ display:block; }
 .hw27 .tr8{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
 .hw27 .t8{ display:grid; grid-template-rows:auto 1fr; gap:22px; padding:10px 10px 26px; border-radius:24px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line),0 30px 60px -48px rgba(26,26,26,.45); }
@@ -3683,6 +3824,12 @@ html[data-meter="count"] .cr-tag{ display:inline-flex; }
 .side-drafts .sd:hover .sd-a, .side-drafts .sd:focus-visible .sd-a{ opacity:1; }
 .side-drafts .sd-c{ flex:none; display:inline-grid; color:var(--accent-text); } .side-drafts .sd-c.late{ color:var(--warn); } .side-drafts .sd-c .icon{ width:12px; height:12px; }
 .side-drafts .sd-all{ display:block; }
+.side-drafts .sd-w{ position:relative; min-width:0; }
+.side-drafts .sd-x{ position:absolute; top:3px; right:3px; width:24px; height:24px; border-radius:6px; display:grid; place-items:center; color:var(--text-3); background:var(--surface-2); opacity:0; transition:opacity var(--d-micro),color var(--d-micro),background var(--d-micro),transform 120ms var(--ease-o); }
+.side-drafts .sd-w:hover .sd-x, .side-drafts .sd-x:focus-visible{ opacity:1; }
+.side-drafts .sd-w:hover .sd-a{ opacity:0; }
+.side-drafts .sd-x:hover{ color:var(--error); background:var(--surface-3); } .side-drafts .sd-x:active{ transform:scale(.92); } .side-drafts .sd-x:focus-visible{ box-shadow:var(--focus); }
+@media (hover:none){ .side-drafts .sd-x{ opacity:1; } .side-drafts .sd-a{ display:none; } }
 .sd-h{ display:inline-flex; align-items:center; gap:6px; margin:-3px -6px; padding:3px 6px; border-radius:6px; font:inherit; color:inherit; }
 .sd-h:hover{ background:var(--surface-2); color:var(--text-1); } .sd-h:focus-visible{ box-shadow:var(--focus); }
 .sd-n{ font:500 12px/1 var(--font-ui); font-variant-numeric:tabular-nums; color:var(--text-3); }
@@ -5452,6 +5599,11 @@ const ACT = {
   ws: el => openMenu(el, wsItems(el), { width: 260 }),
   newpost: () => newPost(),
   opendraft: el => openDraft(+el.dataset.i),
+  /* the sidebar's trash: gone in one click, with Undo in the toast */
+  deldraft: el => { const i = S.drafts.findIndex(d => d.id === el.dataset.id); if (i < 0) return; const next = el.closest('.sd-w'), nx = next && (next.nextElementSibling || next.previousElementSibling), keep = nx && $('.sd', nx) ? +$('.sd', nx).dataset.i : null;
+    const d = S.drafts.splice(i, 1)[0]; save(); refreshSide(); SFX.play('tick');
+    const f = keep != null && $(`.side-drafts .sd[data-i="${keep > i ? keep - 1 : keep}"]`) || $('.side .sd-h') || $('.side-dr'); f && f.focus({ preventScroll: true });
+    toast(`Deleted “${esc(clip(draftLine(d), 40))}”.`, { icon: 'trash', action: 'Undo', onAction: () => { S.drafts.splice(Math.min(i, S.drafts.length), 0, d); save(); refreshSide(); } }); },
   tidy: () => openTidy(),
   alldrafts: el => openDrafts(el),
   drafts: el => openDrafts(el),
@@ -9415,7 +9567,7 @@ function sideDraftsHTML(MD) {
   const n = MD.length, list = draftsByRecent().slice(0, 5);
   const rail = `<button class="side-dr" data-act="drafts" aria-haspopup="dialog" aria-expanded="false" aria-label="Drafts${n ? `, ${n}` : ''}" data-tip="Drafts" data-kbd="${MOD} O">${ic('drafts')}${n ? `<span class="count">${n > 99 ? '99+' : n}</span>` : ''}</button>`;
   if (!n) return rail;
-  return `${rail}<div class="side-drafts"><div class="nav-l"><button class="sd-h" data-act="drafts" aria-haspopup="dialog" aria-expanded="false" data-tip="Find any draft" data-kbd="${MOD} O">Drafts<span class="sd-n">${n}</span></button>${n >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or delete">Tidy up</button>` : ''}</div>${list.map(d => { const st = draftState(d), t = draftLine(d); return `<button class="sd" data-act="opendraft" data-i="${S.drafts.indexOf(d)}" title="${esc(clip(t, 120))}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}${st ? ` · ${esc(st.tip)}` : ''}"><span class="sd-t">${esc(t)}</span>${st && st.k !== 'blank' ? `<span class="sd-c ${st.k}">${ic('clock', 'xs')}</span>` : ''}<small class="sd-a">${agoShort(draftAt(d), true)}</small></button>`; }).join('')}${n > 5 ? `<button class="sd sd-all" data-act="drafts" aria-haspopup="dialog">All drafts · ${n}</button>` : ''}</div>`;
+  return `${rail}<div class="side-drafts"><div class="nav-l"><button class="sd-h" data-act="drafts" aria-haspopup="dialog" aria-expanded="false" data-tip="Find any draft" data-kbd="${MOD} O">Drafts<span class="sd-n">${n}</span></button>${n >= 3 ? `<button class="nav-lk" data-act="tidy" data-tip="One at a time: finish, schedule or delete">Tidy up</button>` : ''}</div>${list.map(d => { const st = draftState(d), t = draftLine(d); return `<div class="sd-w"><button class="sd" data-act="opendraft" data-i="${S.drafts.indexOf(d)}" title="${esc(clip(t, 120))}${d.tweets.length > 1 ? ` · ${d.tweets.length} posts` : ''}${st ? ` · ${esc(st.tip)}` : ''}"><span class="sd-t">${esc(t)}</span>${st && st.k !== 'blank' ? `<span class="sd-c ${st.k}">${ic('clock', 'xs')}</span>` : ''}<small class="sd-a">${agoShort(draftAt(d), true)}</small></button><button type="button" class="sd-x" data-act="deldraft" data-id="${esc(d.id)}" aria-label="Delete “${esc(clip(t, 40))}”" data-tip="Delete draft">${ic('trash', 'xs')}</button></div>`; }).join('')}${n > 5 ? `<button class="sd sd-all" data-act="drafts" aria-haspopup="dialog">All drafts · ${n}</button>` : ''}</div>`;
 }
 function draftsBtnHTML() {
   const n = myDrafts().length;
@@ -9982,7 +10134,7 @@ function armReveals(root) {
    that carries your line into the app. No ring, no keynote, no fictional reach. */
 
 /* ----- honest local rewrite: keep the claim, cut the soft words, never invent a fact ----- */
-const HG_DEFAULT = 'so i think risk management is honestly the most important thing in trading';
+const HG_DEFAULT = 'so i think consistency is honestly the most underrated way to grow on X';
 const HG_HEDGES = [
   [/\b(i think|i feel like|i believe|i guess|in my opinion|imo)\b/gi, 'Hedge. It’s your post, so it’s already what you think.'],
   [/\b(honestly|to be honest|tbh|ngl)\b/gi, 'Implies the rest wasn’t honest. Cut it.'],
@@ -10056,22 +10208,22 @@ function dialMove(el, a, b) { const m = tierMove(a, b); clearTimeout(el._mt); el
   if (!REDUCED && m.dir === 'up') { el.classList.remove('tgrow'); void el.offsetWidth; el.classList.add('tgrow'); } }
 
 /* ----- story: one post, three beats, nothing invented by the app ----- */
-const ST2 = { p: 19, draft: 'so i think funding rates are honestly the most underrated signal in crypto right now', filled: 'They flipped negative 4 times this year. I logged what price did after every one.' };
+const ST2 = { p: 4, draft: 'so i think the first line is honestly the most underrated part of a post', filled: 'I rewrote the openers on my last 20 posts. Here’s what changed, and what didn’t.' };
 /* the relatable row */
-const VOID_ROW = [12, 13, 0, 7, 3, 6, 11, 4].map(i => VOID_POSTS[i]);
+const VOID_ROW = [0, 2, 7, 3, 11, 6, 10, 4].map(i => VOID_POSTS[i]);
 
 /* ----- bento ----- */
 const BX_PARTS = [['clarity', 'Clear', 'Says one thing, without warming up'], ['curiosity', 'Open loop', 'Leaves a question they want answered'], ['specificity', 'Specific', 'A number, a name, something real'], ['tension', 'Tension', 'Pushes against what people assume'], ['brevity', 'Short', 'Lands in under 100 characters']];
 const VX_SPICE = ['Calm', 'Direct', 'Spicy'], VX_POLISH = ['Loose', 'Casual', 'Polished'];
 const VX = [
-  ['been skipping the first hour after the open lately. fewer trades, calmer days.', 'Been skipping the first hour after the open lately. Fewer trades, calmer days.', 'Lately I’ve stopped trading the first hour after the open. I take fewer trades, and my days are calmer.'],
-  ['i stopped trading the first hour after the open. fewer trades. better ones.', 'I stopped trading the first hour after the open. Fewer trades. Better ones.', 'I no longer trade the first hour after the open. I take fewer trades, and better ones.'],
-  ['the first hour after the open is a casino. i stopped playing. my journal looks better for it.', 'The first hour after the open is a casino. I stopped playing. My journal looks better for it.', 'The first hour after the open is a casino, and I’ve stopped playing it. My journal is better for it.']
+  ['been writing tomorrow’s post the night before lately. less rushing, better posts.', 'Been writing tomorrow’s post the night before lately. Less rushing, better posts.', 'Lately I’ve been writing tomorrow’s post the night before. I rush less, and the posts are better.'],
+  ['i write tomorrow’s post tonight. less rushing. better posts.', 'I write tomorrow’s post tonight. Less rushing. Better posts.', 'I now write tomorrow’s post the night before. I rush less, and the posts are better.'],
+  ['posting the minute you finish writing is a trap. i write tonight, post tomorrow. never going back.', 'Posting the minute you finish writing is a trap. I write tonight, post tomorrow. Never going back.', 'Posting the minute you finish writing is a trap, so I write tonight and post tomorrow. I’m not going back.']
 ];
-const H7_RADAR = { p: 21, ago: '3m', t: 'Funding flipped negative on most majors overnight. Here’s what I’m watching:', r: 'Which pair are you watching first? I’m starting with ETH.' };
+const H7_RADAR = { p: 9, ago: '3m', t: 'Most people quit posting right before it starts working.', r: 'What kept you going? For me it was one reply from a stranger.' };
 
 /* ----- previews ----- */
-const PV_LI = 'I journaled 400 trades last year. The costliest pattern wasn’t a setup.\n\nIt was the hour I traded in. Most of my worst days started before 10 AM.\n\nHere’s what I changed, and what it did to my drawdowns:';
+const PV_LI = 'I posted on LinkedIn every weekday for a year. My best post wasn’t my best writing.\n\nIt had the clearest first line. Most of my flops opened with a warm-up.\n\nHere’s what I changed, and what it did to my replies:';
 const PV_TABS = [
   ['x', 'X', 'x', '280 characters a post. A long post splits into a thread at sentence breaks, never mid-word, and each part is scored.'],
   ['threads', 'Threads', 'threads', '500 characters a post. Your handle leads, there’s no display name, and replies hang off a thread rail.'],
@@ -10083,8 +10235,8 @@ const PV_TABS = [
 function homeWeek() {
   const w0 = startOfWeek(new Date()), days = Array.from({ length: 7 }, (_, i) => addDays(w0, i));
   const mk = (i, time, text, pl, n = 1) => ({ id: 'h' + i + time, day: dayKey(days[i]), time, text, tweets: Array(n).fill(''), platforms: { x: !!pl.x, threads: !!pl.threads, linkedin: !!pl.linkedin, bsky: !!pl.bsky }, status: 'scheduled' });
-  return { days, list: [mk(0, '17:30', 'Leverage is a tool, not a strategy.', { x: 1, bsky: 1 }), mk(2, '17:30', 'Funding rates are the most underrated signal in crypto.', { x: 1, threads: 1 }, 4), mk(3, '12:15', 'My trading journal, week 31:', { x: 1, linkedin: 1 }), mk(4, '08:40', 'Stop moving your stop loss.', { x: 1, threads: 1, bsky: 1 })],
-    land: mk(1, '08:40', 'Risk management is the most important thing in trading. Here’s why:', { x: 1, threads: 1, linkedin: 1, bsky: 1 }) };
+  return { days, list: [mk(0, '17:30', 'Show up daily. Talent catches up.', { x: 1, bsky: 1 }), mk(2, '17:30', 'Write the hook first. The post second.', { x: 1, threads: 1 }, 4), mk(3, '12:15', 'What 100 days of posting taught me:', { x: 1, linkedin: 1 }), mk(4, '08:40', 'Stop warming up. Start with the point.', { x: 1, threads: 1, bsky: 1 })],
+    land: mk(1, '08:40', 'Consistency is the most underrated way to grow on X. Here’s why:', { x: 1, threads: 1, linkedin: 1, bsky: 1 }) };
 }
 /* the homepage calendar: the next seven days from today, with posts only in slots still ahead, so nothing sits on a day that's gone */
 function homeWeekAhead() {
@@ -10093,9 +10245,9 @@ function homeWeekAhead() {
   /* the new post lands on the first best time from tomorrow on; the rest keep clear of it */
   refreshBest(); let li = 1, lt = '08:40';
   for (let i = 1; i < 7; i++) { const ts = Object.keys(BEST[dowIdx(days[i])] || {}).filter(t => SLOTS.includes(t)).sort(); if (ts.length) { li = i; lt = ts[0]; break; } }
-  const list = [[2, '17:30', 'Leverage is a tool, not a strategy.', { x: 1, bsky: 1 }], [3, '17:30', 'Funding rates are the most underrated signal in crypto.', { x: 1, threads: 1 }, 4], [4, '12:15', 'My trading journal, week 31:', { x: 1, linkedin: 1 }], [5, '08:40', 'Stop moving your stop loss.', { x: 1, threads: 1, bsky: 1 }]]
+  const list = [[2, '17:30', 'Show up daily. Talent catches up.', { x: 1, bsky: 1 }], [3, '17:30', 'Write the hook first. The post second.', { x: 1, threads: 1 }, 4], [4, '12:15', 'What 100 days of posting taught me:', { x: 1, linkedin: 1 }], [5, '08:40', 'Stop warming up. Start with the point.', { x: 1, threads: 1, bsky: 1 }]]
     .map(([i, t, ...r]) => mk(i === li && t === lt ? Math.min(6, i + 1) : i, t, ...r));
-  return { days, list, land: mk(li, lt, 'Risk management is the most important thing in trading. Here’s why:', { x: 1, threads: 1, linkedin: 1, bsky: 1 }) };
+  return { days, list, land: mk(li, lt, 'Consistency is the most underrated way to grow on X. Here’s why:', { x: 1, threads: 1, linkedin: 1, bsky: 1 }) };
 }
 /* the next good slot, in the visitor's own clock */
 function nextGoodSlot() {
@@ -10108,23 +10260,23 @@ const tzCity = () => { try { const z = Intl.DateTimeFormat().resolvedOptions().t
 
 /* ----- who it's for: first lines and hook scores, never likes or views ----- */
 const WHO = [
-  { k: 'crypto', t: 'Crypto & trading', p: 20, h: 'Your edge, in the first line.', d: 'Jay journals every trade and posts most days. Same charts, sharper openings, no shill-speak.',
-    li: ['Hedges flagged as you type, with the reason', 'Missing numbers left as [your number], never invented', 'What’s working in crypto this week, and why it popped'],
-    rows: [['so another red day. broke my one rule again tbh', 'Red day. Here’s the one rule I broke:'], ['i think journaling is kind of underrated for traders tbh', 'Journaling is underrated for traders. Here’s why:'], ['honestly i think most people read funding rates backwards', 'Most people read funding rates backwards. Here’s how I read them:']] },
-  { k: 'founder', t: 'Founders', p: 17, h: 'Release notes in. A story out.', d: 'Tobi pastes the changelog on Friday. Hookworthy finds the line worth leading with, then fits it to each feed.',
-    li: ['Paste notes, get the line worth leading with', 'A LinkedIn version that clears the fold', 'Slots picked from when buyers reply'],
-    rows: [['excited to share 2.4 is live! we also stopped roadmap voting 🎉', '2.4 is live. We also stopped roadmap voting. Here’s why:'], ['so we kind of made sync 38% faster in this release', 'We made sync 38% faster in this release. Here’s how:'], ['just wanted to share some thoughts on our launch. only 11 people came lol', 'We launched to 11 people. Here’s what that taught us:']] },
-  { k: 'creator', t: 'Creators', p: 4, h: 'The idea was fine. Now the opening is too.', d: 'Hannah writes a Sunday newsletter and posts the best bits. Hookworthy turns “new issue is out” into a reason to click.',
+  { k: 'creator', t: 'Creators', p: 4, h: 'The idea was fine. Now so is the line.', d: 'Hannah writes a Sunday newsletter and posts the best bits. Hookworthy turns “new issue is out” into a reason to click.',
     li: ['A hook score on every draft, before you post', 'Rewrites in your voice, every word yours to keep', 'Ready for X, Threads, LinkedIn and Bluesky at once'],
     rows: [['new issue is out!! been doing this every sunday for 3 years lol', '3 years of Sunday issues. Here’s the new one:'], ['some thoughts after writing every day for a year', 'I wrote every day for a year. Here’s what stuck:']] },
+  { k: 'founder', t: 'Founders', p: 17, h: 'Release notes in. A story that stands out.', d: 'Tobi pastes the changelog on Friday. Hookworthy finds the line worth leading with, then fits it to each feed.',
+    li: ['Paste notes, get the line worth leading with', 'A LinkedIn version that clears the fold', 'Slots picked from when buyers reply'],
+    rows: [['excited to share 2.4 is live! we also stopped roadmap voting 🎉', '2.4 is live. We also stopped roadmap voting. Here’s why:'], ['so we kind of made sync 38% faster in this release', 'We made sync 38% faster in this release. Here’s how:'], ['just wanted to share some thoughts on our launch. only 11 people came lol', 'We launched to 11 people. Here’s what that taught us:']] },
   { k: 'ghost', t: 'Ghostwriters', p: 16, h: 'Six voices. None of them yours.', d: 'Noah writes for six founders. Each has their own voice, never-say list and a yes-or-no before anything ships.',
     li: ['A separate voice for every client', 'Approvals before anything ships', 'One queue across every account'],
-    rows: [['So I think after hiring 300 people the best interview question is really just four words', 'I’ve hired 300 people. The best interview question is four words:', 'For Ledgerly · direct, numbers first'], ['honestly so grateful to everyone who tried the beta 🙏 40 signups!', '40 people signed up for our beta. Here’s my thank-you:', 'For Northwind · warm, specific']], appr: 'Approved by Ledgerly. Scheduled for Thu at 12:15 PM.' }
+    rows: [['So I think after hiring 300 people the best interview question is really just four words', 'I’ve hired 300 people. The best interview question is four words:', 'For Ledgerly · direct, numbers first'], ['honestly so grateful to everyone who tried the beta 🙏 40 signups!', '40 people signed up for our beta. Here’s my thank-you:', 'For Northwind · warm, specific']], appr: 'Approved by Ledgerly. Scheduled for Thu at 12:15 PM.' },
+  { k: 'crypto', t: 'Markets', p: 20, h: 'Your edge, in the first line.', d: 'Jay journals every trade and posts most days. Same charts, sharper openings, no shill-speak.',
+    li: ['Hedges flagged as you type, with the reason', 'Missing numbers left as [your number], never invented', 'What’s working in crypto this week, and why it popped'],
+    rows: [['so another red day. broke my one rule again tbh', 'Red day. Here’s the one rule I broke:'], ['i think journaling is kind of underrated for traders tbh', 'Journaling is underrated for traders. Here’s why:'], ['honestly i think most people read funding rates backwards', 'Most people read funding rates backwards. Here’s how I read them:']] }
 ];
 const FAQ = [
   ['Does it post for me?', 'On X and LinkedIn, yes: connect them through your own Hookworthy server and scheduled posts go out on time. Threads and Bluesky get everything ready and a nudge to post by hand.'],
   ['Will it make things up?', 'No. Rewrites keep your claim and show every changed word for you to keep or undo. If a line needs a number you didn’t give, it writes [your number] and waits for yours.'],
-  ['Is it only for crypto?', 'No. Crypto and trading writers came first, so the examples lean that way. Founders, creators and ghostwriters get the same tools, and What’s working covers other niches too.'],
+  ['Is it for my niche?', 'Yes. Creators, founders, ghostwriters and market writers all get the same tools, and What’s working reads the accounts you pick, in your niche.'],
   ['Can I bring my old posts?', 'Yes. Drop in your X archive, a Typefully or CSV export, or paste posts in. They’re read in your browser, and they teach Hookworthy how you open and when your people reply.'],
   ['What happens when my free credits run out?', 'Nothing breaks. Hook scores, the checks, Sharpen and Basic mode keep working, and your 10 Claude credits come back at midnight. Pro has 1,000 a month, and the ones you don’t use roll over.']
 ];
@@ -10169,9 +10321,9 @@ function hwFootHTML() {
 document.addEventListener('click', e => { if (!e.target.closest || !e.target.closest('[data-hwtop]')) return; scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' }); const l = $('#hwnav .logo'); if (l) l.focus({ preventScroll: true }); });
 
 /* ---------- round 30: switching & trust, shown rather than told ---------- */
-const TR_LINE = 'I journaled 400 trades last year. The costliest pattern wasn’t a setup.';
+const TR_LINE = 'I posted every weekday for a year. My best post wasn’t my best writing.';
 const TR_PARTS = [['clarity', 'Clear'], ['curiosity', 'Open loop'], ['specificity', 'Specific'], ['tension', 'Tension'], ['brevity', 'Short']];
-const TR_POSTS = ['Funding flipped negative 4 times this year. I logged what came next.', 'I sold the top once. Here’s the rule that did it:', 'gm. charts look interesting today'];
+const TR_POSTS = ['I rewrote one first line. The same post finally landed. Here’s the change:', 'I posted daily for 90 days. Here’s what actually grew the account:', 'gm. thinking about posting more this week'];
 function trustHTML() {
   const g = hookScore(TR_LINE), xl = X_LOGO.replace('class="logo"', 'class="t8-xl"');
   const file = (i, glyph, name, ext) => `<span class="t8-f" style="--i:${i}"><span class="t8-fi">${glyph}</span><b>${name}</b><small>${ext}</small></span>`;
@@ -10197,7 +10349,7 @@ function trustHTML() {
         <div class="t8-win"><div class="t8-wb"><span class="t8-dots"><i></i><i></i><i></i></span><span class="t8-url">${ic('lock', 'xs')} hookworthy</span></div>
           <div class="t8-body">
             <div class="t8-dr"><p class="t8-dh"><b>Draft</b><span>Saved in this browser</span></p><p class="t8-dt">3 rules I wrote after my worst week<span class="t8-caret"></span></p></div>
-            <div class="t8-dr t8-dr2"><p class="t8-dh"><b>Draft</b><span>Saved in this browser</span></p><p class="t8-dt">The chart I keep coming back to</p></div>
+            <div class="t8-dr t8-dr2"><p class="t8-dh"><b>Draft</b><span>Saved in this browser</span></p><p class="t8-dt">The note I keep coming back to</p></div>
             <p class="t8-q"><i></i>Nothing scheduled · nothing posts</p>
           </div>
           <span class="t8-lock"><svg viewBox="0 0 40 40"><rect x="10" y="18" width="20" height="15" rx="3.5"/><path d="M14.5 18v-3.5a5.5 5.5 0 0 1 11 0V18"/><circle cx="20" cy="25.5" r="1.8"/></svg></span></div>
@@ -10206,12 +10358,12 @@ function trustHTML() {
 }
 
 /* ---------- round 30: the final call. Paste a line, watch it score, carry it in ---------- */
-const FIN_TRY = 'so i think funding flipping negative is kind of a big deal';
+const FIN_TRY = 'so i think posting every day is kind of overrated tbh';
 const FIN_IDLE = `Paste a line. It’s read as you type, with the next step to ${BAR_WORD}.`;
 function finalFormHTML() {
   return `<form class="fin8-f" id="fin-f" novalidate>
         <div class="fin8-card">
-          <div class="fin8-ed"><label for="fin-t" class="sr">The post you almost wrote. It scores as you type.</label><textarea id="fin-t" rows="3" maxlength="2000" placeholder="so i think…" aria-describedby="fin-err"></textarea>
+          <div class="fin8-ed"><label for="fin-t" class="sr">The post you held back. It scores as you type.</label><textarea id="fin-t" rows="3" maxlength="2000" placeholder="so i think…" aria-describedby="fin-err"></textarea>
             <button type="button" class="fin8-try" id="fin-try">Or try a rough one</button></div>
           <div class="fin8-read" aria-hidden="true">
             <span class="fin8-dial" id="fin-dial" style="--v:0">${ringHTML(null)}<b id="fin-n" class="dw">–</b><small>Hook</small></span>
@@ -10378,9 +10530,9 @@ function liFold(me, t, you) {
    Plays on its own while it's on screen and loops (about 21 seconds). It stops off-screen and in a hidden tab,
    has a visible pause button, and under reduced motion each step shows its finished frame and waits for a click. */
 const TP_REPLIES = [
-  { p: 20, ago: '2m', t: 'What’s your max risk per trade? 1% felt slow until it didn’t.' },
-  { p: 23, ago: '6m', t: 'Do you size from the stop, or pick the size first?', r: 'From the stop, always. The stop decides the size, never the other way round.' },
-  { p: 18, ago: '11m', t: 'The day I stopped moving my stop, my month changed.' }
+  { p: 1, ago: '2m', t: 'How often do you post? Daily felt like a lot until it didn’t.' },
+  { p: 15, ago: '6m', t: 'Do you write the hook first, or the post first?', r: 'Hook first, always. If the first line doesn’t land, nobody reads the rest.' },
+  { p: 4, ago: '11m', t: 'The day I stopped deleting my drafts, my month changed.' }
 ];
 const TP_LEN = [4200, 4600, 3800, 3400, 5000];
 function tourHTML() {
@@ -10389,7 +10541,7 @@ function tourHTML() {
   const CH = [['Score', 'Type a line. It’s scored as you go.'], ['Sharpen', `Sharpen cuts the soft words. ${tierMove(s0, s1).text}, same claim.`], ['Schedule', 'Pick a time when your people are up.'], ['Queue', 'It waits in your week until its time.'],
     ['Reply', COARSE ? 'Replies land in one list. Tap one to answer.' : `Replies land in one list. J and K move, ${enter} sends.`]];
   const q = (i, time, text, pl, n = 1) => ({ id: `tp${i}${time}`, day: dk(i), time, text, tweets: Array(n).fill(''), platforms: { x: !!pl.x, threads: !!pl.threads, linkedin: !!pl.linkedin, bsky: !!pl.bsky }, status: 'scheduled' });
-  const wk = { mon12: q(0, '12:15', 'Leverage is a tool, not a strategy.', { x: 1, bsky: 1 }), wed8: q(2, '08:40', 'Funding rates are the most underrated signal in crypto.', { x: 1, threads: 1 }, 4), wed12: q(2, '12:15', 'My trading journal, week 31:', { x: 1, linkedin: 1 }), land: q(1, '08:40', first, { x: 1, threads: 1, linkedin: 1 }) };
+  const wk = { mon12: q(0, '12:15', 'Show up daily. Talent catches up.', { x: 1, bsky: 1 }), wed8: q(2, '08:40', 'Write the hook first. The post second.', { x: 1, threads: 1 }, 4), wed12: q(2, '12:15', 'What 100 days of posting taught me:', { x: 1, linkedin: 1 }), land: q(1, '08:40', first, { x: 1, threads: 1, linkedin: 1 }) };
   const sl = c => `<div class="sl">${c ? qcardHTML(c, false) : ''}</div>`;
   return `<div class="tp${REDUCED ? ' still' : ''}" id="tp">
     <ol class="tp-ch" aria-label="How it works, step by step">${CH.map(([t, c], i) => `<li><button type="button" data-ch="${i}"${i ? '' : ' aria-current="step"'}><span class="tp-n">0${i + 1}</span><span class="tp-tx"><b>${t}</b><span class="tp-c">${esc(c)}</span></span><i class="tp-bar" aria-hidden="true"><b></b></i></button></li>`).join('')}</ol>
@@ -10404,7 +10556,7 @@ function tourHTML() {
         <div class="tp-sc" id="tp-s2"><div class="tp-sheet" id="tp-sheet">
           <div class="tp-sh-h"><b>Schedule</b><span>Tuesday</span></div>
           <p class="tp-sh-post">${esc(first)}</p>
-          <div class="tp-opts"><div class="tp-opt"><i></i><div><b>8:40 AM</b><span>When your replies usually come in</span></div><span class="tp-best">Best</span></div><div class="tp-opt"><i></i><div><b>8:35 AM</b><span>Right after CPI</span></div></div><div class="tp-opt"><i></i><div><b>12:15 PM</b><span>The lunch scroll</span></div></div></div>
+          <div class="tp-opts"><div class="tp-opt"><i></i><div><b>8:40 AM</b><span>When your replies usually come in</span></div><span class="tp-best">Best</span></div><div class="tp-opt"><i></i><div><b>12:15 PM</b><span>The lunch scroll</span></div></div><div class="tp-opt"><i></i><div><b>6:30 PM</b><span>The ride home</span></div></div></div>
           <span class="tp-go" id="tp-go">${ic('clock', 'sm')} Schedule for Tue at 8:40 AM</span><span class="tp-done">${ic('check')} Scheduled for Tue at 8:40 AM</span>
         </div></div>
         <div class="tp-sc" id="tp-s3"><div class="tp-wk">
@@ -10472,6 +10624,73 @@ function initTour() {
   paint(); sync();
 }
 
+/* ---------- round 41: ideas on tap, and the small feature rows under each section head ---------- */
+/* a row of the features inside a section: icon, name, one line. Staggers in with the section */
+const subsHTML = (items, cls = '') => `<ul class="subs rv ${cls}" role="list">${items.map(([icn, h, p], i) => `<li style="--i:${i}"><span class="subs-ic">${ic(icn, 'sm')}</span><span class="subs-tx"><b>${h}</b><span>${p}</span></span></li>`).join('')}</ul>`;
+const ID8 = [
+  ['ideas', 'ideas', 'Post ideas', 'Fresh first lines from your notes and best posts.'],
+  ['formula', 'quote', 'Formulas', 'Openers that already work. Fill in the blanks.'],
+  ['brief', 'upload', 'Brief to thread', 'Paste a doc. Get a thread that sounds like you.'],
+  ['picture', 'image', 'Picture to post', 'A screenshot in. A post out, every number exact.'],
+  ['talk', 'mic', 'Talk it out', 'Ramble out loud. Get one tidy post.'],
+  ['week', 'cal', 'Week plan', 'Five posts, one per slot, planned in a click.']
+];
+const ID8_IDEAS = [['Story', 'I write for 20 minutes before I touch my phone. Here’s the whole routine:'], ['Results', '3 years of Sunday issues. Here’s what grew it the most:'], ['Hot take', 'You don’t need more time to write. You need a smaller first draft.']];
+const ID8_WEEK = [['Mon', '8:40 AM', 'Story', 'The post I almost didn’t publish:'], ['Tue', '12:15 PM', 'List', '5 openers I steal from my own best posts'], ['Wed', '8:40 AM', 'Hot take', 'Posting daily is overrated. Posting clearly isn’t.'], ['Thu', '6:30 PM', 'Results', '100 days of posting, in 4 honest numbers:'], ['Fri', '12:15 PM', 'Thought', 'The best first line I wrote this week was the shortest.']];
+function ideasHTML() {
+  const st = (i, html, cls = '') => `<div class="st ${cls}" style="--i:${i}">${html}</div>`;
+  const lbl = t => `<span class="id8-lbl">${t}</span>`;
+  const chip = t => tierChip(hookScore(t).score, { cls: 'sm' });
+  const P = {
+    ideas: `<div class="id8-cols">${st(0, `${lbl('From your notes')}<p class="id8-note">people keep asking how I find time to write</p><p class="id8-note">the newsletter turns 3 this week</p>`, 'id8-in')}
+      <div class="id8-out">${lbl('Ideas for today')}${ID8_IDEAS.map(([k, t], i) => st(i + 1, `<span class="id8-kind">${k}</span><p>${esc(t)}</p>${chip(t)}`, 'id8-idea')).join('')}</div></div>`,
+    formula: `${st(0, `${lbl('The formula')}<p class="id8-big">I spent <mark class="blank">[time]</mark> on <mark class="blank">[thing]</mark>. Here’s what I’d do differently:</p>`, 'id8-card')}
+      ${st(1, `${lbl('Yours, filled in')}<p class="id8-big">I spent <mark class="fill">a year</mark> on <mark class="fill">my newsletter</mark>. Here’s what I’d do differently:</p>${chip('I spent a year on my newsletter. Here’s what I’d do differently:')}`, 'id8-card id8-yours')}
+      ${st(2, `<span>Also on tap:</span><b>The confession</b><b>The turnaround</b><b>The list</b><b>The before and after</b>`, 'id8-more')}`,
+    brief: `<div class="id8-cols">${st(0, `${lbl('Your brief')}<span class="id8-doc">${ic('drafts', 'sm')}<b>launch-notes.pdf</b><small>4 pages</small></span><ul class="id8-facts"><li>${ic('check', 'xs')} Dark mode is live</li><li>${ic('check', 'xs')} Sync is 38% faster</li><li>${ic('check', 'xs')} 1,200 people asked for it</li></ul>`, 'id8-in')}
+      <div class="id8-out">${lbl('Your thread')}${['1,200 of you asked for dark mode. It’s live. Here’s what else shipped:', 'Sync is 38% faster. Same app, less waiting.', 'Thank you to everyone who kept asking. You were right.'].map((t, i) => st(i + 1, `<span class="id8-n">${i + 1}/</span><p>${esc(t)}</p>`, 'id8-tw')).join('')}</div></div>`,
+    picture: `<div class="id8-cols">${st(0, `${lbl('Your screenshot')}<svg class="id8-chart" viewBox="0 0 220 120" role="img" aria-label="Signups by day, from 120 to 410"><text x="8" y="16">Signups</text><text x="212" y="16" text-anchor="end" class="hi">410</text>${[18, 22, 20, 26, 48, 70, 84].map((h, i) => `<rect x="${14 + i * 29}" y="${112 - h}" width="20" height="${h}" rx="3" class="${i > 3 ? 'up' : ''}" style="--i:${i}"/>`).join('')}<text x="8" y="108" class="lo">120</text></svg>`, 'id8-in')}
+      <div class="id8-out">${lbl('Your post')}${st(1, `<p>Signups went from 120 to 410 in one week. Here’s the one change:</p>${chip('Signups went from 120 to 410 in one week. Here’s the one change:')}`, 'id8-idea')}${st(2, `${ic('check', 'xs')} Numbers copied from the picture, never guessed.`, 'id8-ok')}</div></div>`,
+    talk: `<div class="id8-cols">${st(0, `${lbl('You, out loud')}<span class="id8-wave" aria-hidden="true">${Array.from({ length: 28 }, (_, i) => `<i style="--h:${(18 + Math.round(70 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * .6)))) }%;--i:${i}"></i>`).join('')}</span><p class="id8-raw">so um, basically the thing is, i write better when i, like, don’t edit while i’m writing? like draft first and then fix it later</p>`, 'id8-in')}
+      <div class="id8-out">${lbl('One tidy post')}${st(1, `<p>I write better when I don’t edit while I write. Draft first. Fix later.</p>${chip('I write better when I don’t edit while I write. Draft first. Fix later.')}`, 'id8-idea')}${st(2, `${ic('check', 'xs')} Your words, minus the ums.`, 'id8-ok')}</div></div>`,
+    week: `${lbl('Your week, planned')}<div class="id8-week">${ID8_WEEK.map(([d, t, k, x], i) => st(i, `<span class="id8-d"><b>${d}</b><small>${t}</small></span><span class="id8-kind">${k}</span><p>${esc(x)}</p>`, 'id8-slot')).join('')}</div>`
+  };
+  return `<div class="id8" id="id8">
+    <div class="id8-tabs" role="tablist" aria-label="Ways to find what to post" aria-orientation="vertical">${ID8.map(([k, icn, h, p], i) => `<button type="button" role="tab" id="id8t-${k}" aria-controls="id8p-${k}" aria-selected="${i === 0}" tabindex="${i ? -1 : 0}" data-id8="${k}"><span class="id8-ic">${ic(icn, 'sm')}</span><span class="id8-tx"><b>${h}</b><span>${p}</span></span><i class="id8-bar" aria-hidden="true"><b></b></i></button>`).join('')}</div>
+    <div class="id8-stage">${ID8.map(([k, , h], i) => `<div class="id8-p${i ? '' : ' on'}" role="tabpanel" id="id8p-${k}" aria-labelledby="id8t-${k}" ${i ? 'inert' : ''}>${P[k]}</div>`).join('')}</div>
+  </div>`;
+}
+/* the ideas demo: one tab at a time, advancing by itself while on screen, until you pick one */
+function initIdeas(root, whileSeen, later) {
+  const box = $('#id8', root); if (!box) return;
+  const tabs = $$('[data-id8]', box), panels = $$('.id8-p', box), DUR = 5200; let at = 0, held = false, seen = false, hover = false, t = 0;
+  const show = (i, focus) => { at = (i + tabs.length) % tabs.length;
+    tabs.forEach((b, k) => { const on = k === at; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; b.classList.remove('run'); });
+    panels.forEach((p, k) => { const on = k === at; p.inert = !on; if (on) { p.classList.remove('on'); void p.offsetWidth; p.classList.add('on'); } else p.classList.remove('on'); });
+    /* on phones the tabs are one scrolling row: keep the live one in view without moving the page */
+    const row = tabs[at].parentElement; if (row.scrollWidth > row.clientWidth + 4) row.scrollTo({ left: tabs[at].offsetLeft - 16, behavior: REDUCED ? 'auto' : 'smooth' });
+    if (focus) tabs[at].focus({ preventScroll: true }); loop(); };
+  const loop = () => { clearTimeout(t); tabs.forEach(b => b.classList.remove('run')); if (held || !seen || hover || REDUCED) return; const b = tabs[at]; void b.offsetWidth; b.style.setProperty('--dur', DUR + 'ms'); b.classList.add('run'); t = later(() => show(at + 1), DUR); };
+  tabs.forEach((b, i) => b.addEventListener('click', () => { held = true; show(i); }));
+  box.addEventListener('keydown', e => { const k = e.key; if (!e.target.closest('[data-id8]')) return; const d = k === 'ArrowDown' || k === 'ArrowRight' ? 1 : k === 'ArrowUp' || k === 'ArrowLeft' ? -1 : 0; if (k === 'Home' || k === 'End') { e.preventDefault(); held = true; show(k === 'Home' ? 0 : tabs.length - 1, true); } else if (d) { e.preventDefault(); held = true; show(at + d, true); } });
+  box.addEventListener('pointerenter', () => { hover = true; loop(); }); box.addEventListener('pointerleave', () => { hover = false; loop(); });
+  box.addEventListener('focusin', () => { hover = true; loop(); }); box.addEventListener('focusout', e => { if (!box.contains(e.relatedTarget)) { hover = false; loop(); } });
+  whileSeen(box, () => { seen = true; loop(); }, () => { seen = false; loop(); });
+  onDispose(() => clearTimeout(t));
+}
+/* section chips that point at the cards below: hover lights the card, a click brings it into view */
+function initSubnav(root) {
+  $$('.subnav', root).forEach(nav => {
+    const card = b => $('#' + b.dataset.to, root), lit = (b, on) => { const c = card(b); if (c) c.classList.toggle('lit', on); };
+    nav.addEventListener('pointerover', e => { const b = e.target.closest('[data-to]'); if (b) lit(b, true); });
+    nav.addEventListener('pointerout', e => { const b = e.target.closest('[data-to]'); if (b) lit(b, false); });
+    nav.addEventListener('click', e => { const b = e.target.closest('[data-to]'); if (!b) return; const c = card(b); if (!c) return;
+      $$('[data-to]', nav).forEach(x => x.setAttribute('aria-pressed', x === b));
+      c.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center', inline: 'center' });
+      c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash'); });
+  });
+}
+
 ROUTES.home = () => { loadSprite('ph');
   const chip = (v, cls = '') => tierChip(v, { noun: true, cls });
   $('#root').innerHTML = `<div class="hw hw27 force-light">
@@ -10482,53 +10701,54 @@ ROUTES.home = () => { loadSprite('ph');
   <section class="h7-hero" aria-labelledby="h7-h1">
     <div class="wrap h7-grid">
       <div class="h7-copy">
-        <span class="eyebrow">For people who post about markets on X</span>
+        <span class="eyebrow">For creators who write and grow on X</span>
         <h1 id="h7-h1"><span class="ln">Good ideas die</span> <span class="ln">in <em><span class="mk draw">bad first lines.</span></em></span></h1>
-        <p class="sub">Hookworthy scores your first line as you type, cuts the soft words, and schedules the post for when your people are up.</p>
+        <p class="sub">Type a thought. Hookworthy scores the first line, trims the fluff, and posts it when your people are up. Easy as that.</p>
         <div class="cta"><a class="hbtn lg" id="hw-cta-hero" href="#start">Start free ${ic('arrow', 'sm')}</a><a class="ghost" href="#today"><span class="play">${ic('panel', 'sm')}</span>Look around the app</a></div>
-        <p class="h7-for">Crypto and trading first. Founders, creators and ghostwriters too.</p>
+        <ol class="h7-steps" aria-label="How it goes">${[['write', 'Write it'], ['bolt', 'Sharpen it'], ['clock', 'Post it on time']].map(([icn, t], i) => `<li style="--i:${i}">${ic(icn, 'xs')}<span>${t}</span></li>`).join('')}</ol>
       </div>
       ${graderHTML('hg', { hand: true })}
     </div>
   </section>
 
   <section class="h7-void" id="void" aria-labelledby="void-h">
-    <div class="wrap h7-head">
-      <div><span class="eyebrow">The problem</span><h2 id="void-h">We’ve all posted <em>into the void.</em></h2></div>
-      <p>Three hours on a thread. Four likes, one of them your mom. Usually the idea was fine. The first line wasn’t.</p>
+    <div class="wrap h7-head rv">
+      <div><span class="eyebrow">The problem</span><h2 id="void-h">Posted with joy. <em>Lost in the void.</em></h2></div>
+      <p>Three hours on a thread. Four likes, one from your mom. The idea was fine. The first line just didn’t shine.</p>
     </div>
     <div class="vd" aria-label="Example posts about posting into the void"><div class="row">${VOID_ROW.map((q, i) => (i % 3 === 1 ? thPost : xPost)(q)).join('')}</div></div>
   </section>
 
   <section class="h7-story h7-tour" id="tour" aria-labelledby="tour-h">
     <div class="wrap">
-      <div class="h7-head on-plum"><div><span class="eyebrow">How it works</span><h2 id="tour-h">From an 11&nbsp;PM thought <em>to Tuesday morning.</em></h2></div><p>One post, start to finish. The claim stays yours. Only the soft words go.</p></div>
+      <div class="h7-head on-plum rv"><div><span class="eyebrow">How it works</span><h2 id="tour-h">Thought up at night. <em>Posted just right.</em></h2></div><p>One post, start to finish. Your idea stays. The fluff goes away.</p></div>
       ${tourHTML()}
     </div>
   </section>
 
   <section class="h7-sec wrap" id="features" aria-labelledby="ft-h">
-    <div class="h7-head"><div><span class="eyebrow">Built around the hook</span><h2 id="ft-h">Everything starts <em>at the first line.</em></h2></div><p>Four tools, all aimed at the line people decide on.</p></div>
+    <div class="h7-head rv"><div><span class="eyebrow">Built around the hook</span><h2 id="ft-h">Nail the first line. <em>The rest falls in line.</em></h2></div><p>Every tool aims at one spot: the line that makes thumbs stop.</p></div>
+    <div class="subnav rv" role="group" aria-label="What’s inside">${[['hook', 'Hook score', 'bx-score'], ['bolt', 'Sharpen', 'bx-score'], ['voice', 'Your voice', 'bx-voice'], ['trend', 'What’s working', 'bx-work'], ['reply', 'Reply radar', 'bx-replies'], ['bell', 'Breakout alerts', 'bx-replies']].map(([icn, t, to], i) => `<button type="button" data-to="${to}" aria-pressed="false" style="--i:${i}">${ic(icn, 'xs')}<span>${t}</span></button>`).join('')}</div>
     <div class="bento">
-      <article class="bx bx-score rv"><div class="bx-h"><span class="bx-k">${ic('hook', 'sm')} Hook score</span><h3>Five checks. One next step to ${BAR_WORD}.</h3></div>
+      <article class="bx bx-score rv" id="bx-score"><div class="bx-h"><span class="bx-k">${ic('hook', 'sm')} Hook score · Sharpen</span><h3>Five checks. One fix. Then it clicks.</h3></div>
         <div class="bx-demo bxs" id="bxs">
           <div class="bxs-seg" role="group" aria-label="Which version of the line"><button type="button" data-bxs="0" aria-pressed="true">Your draft</button><button type="button" data-bxs="1" aria-pressed="false">${ic('bolt', 'xs')} Sharpened</button></div>
           <p class="bxs-line" id="bxs-line"></p>
           <div class="bxs-body">${dialHTML('bxs-dial')}<div class="bxs-parts" id="bxs-parts">${BX_PARTS.map(([k, l, d]) => `<div class="pt" data-k="${k}"><span class="pn">${l}</span><span class="pip" aria-hidden="true"></span><span class="pw"></span><span class="sr">${d}</span></div>`).join('')}</div></div>
           <p class="bxs-why" id="bxs-why"></p>
         </div></article>
-      <article class="bx bx-voice rv" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('voice', 'sm')} Your voice</span><h3>Sounds like you on a good day.</h3></div>
+      <article class="bx bx-voice rv" id="bx-voice" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('voice', 'sm')} Your voice</span><h3>Your voice, your way, on your best day.</h3></div>
         <div class="bx-demo vx">
           <div class="vx-post">${pfAv(HG_YOU, 'vx-av')}<p class="vx-out" id="vx-out" aria-live="polite"></p></div>
           <div class="vx-sls">${[['sp', 'Tone', VX_SPICE], ['po', 'Polish', VX_POLISH]].map(([k, l, names]) => `<div class="vx-sl"><label for="vx-${k}">${l}</label><div class="vx-rng"><input type="range" id="vx-${k}" min="0" max="2" step="1" value="1"><div class="vx-ticks" id="vx-${k}t" aria-hidden="true">${names.map(n => `<span>${n}</span>`).join('')}</div></div></div>`).join('')}</div>
         </div></article>
-      <article class="bx bx-work rv"><div class="bx-h"><span class="bx-k">${ic('trend', 'sm')} What’s working</span><h3>Why posts in your niche popped.</h3></div>
+      <article class="bx bx-work rv" id="bx-work"><div class="bx-h"><span class="bx-k">${ic('trend', 'sm')} What’s working</span><h3>Their post popped. Here’s the plot.</h3></div>
         <div class="bx-demo ww">
-          <div class="ww-pop"><div class="ww-who">${pfAv(PEOPLE[18])}<span><b>${esc(PEOPLE[18].n)}</b> @${esc(PEOPLE[18].h)}</span></div><p>I lost <mark>$41K</mark> on one trade. It was the best money I ever spent.</p><div class="ww-why"><span>A real loss</span><span>One number</span><span>Open loop</span></div></div>
+          <div class="ww-pop"><div class="ww-who">${pfAv(PEOPLE[3])}<span><b>${esc(PEOPLE[3].n)}</b> @${esc(PEOPLE[3].h)}</span></div><p>My podcast had <mark>11 listeners</mark> for 8 months. Then I changed one thing.</p><div class="ww-why"><span>A real number</span><span>A turn</span><span>Open loop</span></div></div>
           <span class="ww-arr" aria-hidden="true">${ic('arrow', 'sm')}</span>
-          <div class="ww-f"><span class="lbl">The formula</span><p>I lost <mark class="blank">[amount]</mark> on <mark class="blank">[one mistake]</mark>. Here’s the rule it taught me:</p><a class="bx-link" href="#ideas">Use this pattern ${ic('arrow', 'xs')}</a></div>
+          <div class="ww-f"><span class="lbl">The formula</span><p>My <mark class="blank">[thing]</mark> had <mark class="blank">[small number]</mark> fans for <mark class="blank">[time]</mark>. Then I changed one thing:</p><a class="bx-link" href="#ideas">Use this pattern ${ic('arrow', 'xs')}</a></div>
         </div></article>
-      <article class="bx bx-replies rv" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('reply', 'sm')} Reply radar · Breakout alerts</span><h3>Show up early. Hear when yours is moving.</h3></div>
+      <article class="bx bx-replies rv" id="bx-replies" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('reply', 'sm')} Reply radar · Breakout alerts</span><h3>Be first to reply. Watch yours fly.</h3></div>
         <div class="bx-demo h7rr" id="h7rr">
           <div class="h7rr-alert"><span class="h7rr-ic">${LOGO_MARK || ''}</span><div><p><b>Breakout alert</b><span>now</span></p><span>Your 8:40 AM post is moving faster than usual. Replies drafted, in your voice.</span></div></div>
           <div class="h7rr-post"><div class="h7rr-who">${pfAv(PEOPLE[H7_RADAR.p])}<p><b>${esc(PEOPLE[H7_RADAR.p].n)}</b><span>· ${H7_RADAR.ago}</span></p></div><p class="t">${esc(H7_RADAR.t)}</p>
@@ -10538,12 +10758,18 @@ ROUTES.home = () => { loadSprite('ph');
     </div>
   </section>
 
+  <section class="h7-sec wrap" id="ideas-sec" aria-labelledby="id8-h">
+    <div class="h7-head rv"><div><span class="eyebrow">Ideas on tap</span><h2 id="id8-h">Never stuck on what to say. <em>Fresh ideas every day.</em></h2></div><p>Drop in a note, a doc, a voice memo or a screenshot. Out come posts in your voice, ready to go.</p></div>
+    ${ideasHTML()}
+  </section>
+
   <section class="h7-sec wrap" id="previews" aria-labelledby="h7pv-h">
     <div class="pv7">
       <div class="pv7-copy">
         <span class="eyebrow">Platform previews</span>
-        <h2 id="h7pv-h">See it the way <em>their feed will.</em></h2>
-        <p class="pv7-lede">X, Threads, LinkedIn and Bluesky each count, cut and wrap differently. Hookworthy shows your post the way each app will, before it ships.</p>
+        <h2 id="h7pv-h">Peek at each feed <em>before they read.</em></h2>
+        <p class="pv7-lede">X, Threads, LinkedIn and Bluesky each count, cut and wrap their own way. See exactly how yours lands, before it ships.</p>
+        <ul class="pv7-feats" role="list">${['Live character counts', 'Threads split at sentences', 'LinkedIn fold check', 'Link cards, as they’ll show'].map((t, i) => `<li style="--i:${i}">${ic('check', 'xs')}${t}</li>`).join('')}</ul>
         <div class="pv7-tabs" role="tablist" aria-label="Platform">${PV_TABS.map(([k, n, icn], i) => `<button role="tab" id="h7pvt-${k}" aria-controls="h7pvp-${k}" aria-selected="${i === 0}" data-pv="${k}">${pic(icn)}<span>${n}</span></button>`).join('')}</div>
         ${PV_TABS.map(([k, n, , note], i) => `<div class="pv7-p" role="tabpanel" id="h7pvp-${k}" aria-labelledby="h7pvt-${k}" ${i ? 'hidden' : ''}>${k === 'linkedin' ? `<p>LinkedIn shows about three lines, then “…more”. Type here and watch where your post gets cut. When the hook clears it, the line turns plum.</p>
           <label for="h7pv-li" class="pv7-lbl"><span>Your LinkedIn post</span><span id="h7pv-li-sc"></span></label><textarea id="h7pv-li" spellcheck="false" rows="5">${esc(PV_LI)}</textarea>
@@ -10554,13 +10780,14 @@ ROUTES.home = () => { loadSprite('ph');
   </section>
 
   <section class="h7-sec wrap" id="schedule" aria-labelledby="wk-h">
-    <div class="h7-head"><div><span class="eyebrow">Scheduling</span><h2 id="wk-h">Write when you can. <em>Post when they’re up.</em></h2></div><p>Connect X and LinkedIn and they post on their own, at your best times. Threads and Bluesky get a nudge to post by hand. Bring 20 old posts and the times come from your own audience.</p></div>
+    <div class="h7-head rv"><div><span class="eyebrow">Scheduling</span><h2 id="wk-h">Write any time. <em>Post at their prime.</em></h2></div><p>Write whenever it suits you. Hookworthy holds the post and sends it out when your people are actually scrolling.</p></div>
+    ${subsHTML([['clock', 'Best times', 'Learned from when your people reply. Bring 20 old posts to start.'], ['send', 'Posts itself', 'X and LinkedIn go out on time, on their own.'], ['bell', 'Friendly nudges', 'Threads and Bluesky get a tap when it’s time.'], ['cal', 'Your week, at a glance', 'Drag a post to a new slot. Done.']])}
     <div class="wk wk7 rv" id="wk" role="region" aria-label="The next seven days, with scheduled posts" tabindex="0"></div>
     <div class="wk-legend"><span class="wk-hint">Swipe for the whole week →</span><span><b class="bd"></b>Best time: when your people reply</span><span id="wk-tz"></span></div>
   </section>
 
   <section class="h7-sec wrap" id="who" aria-labelledby="who-h">
-    <div class="h7-head"><div><span class="eyebrow">Who it’s for</span><h2 id="who-h">Built for markets. <em>Good for anyone who posts.</em></h2></div><p>Pick yours. Same idea, sharper first line.</p></div>
+    <div class="h7-head rv"><div><span class="eyebrow">Who it’s for</span><h2 id="who-h">For anyone with a take <em>and a post to make.</em></h2></div><p>Pick yours. Same idea, a sharper first line.</p></div>
     <div class="who7">
       <div class="who7-tabs" role="tablist" aria-label="Who it’s for" id="who-tabs">${WHO.map((w, i) => `<button role="tab" id="wht-${w.k}" aria-controls="whp-${w.k}" aria-selected="${i === 0}" data-who="${w.k}">${w.t}</button>`).join('')}</div>
       ${WHO.map((w, i) => `<div class="who7-p" role="tabpanel" id="whp-${w.k}" aria-labelledby="wht-${w.k}" ${i ? 'hidden' : ''}>
@@ -10570,27 +10797,27 @@ ROUTES.home = () => { loadSprite('ph');
   </section>
 
   <section class="h7-sec wrap" id="trust" aria-labelledby="tr-h">
-    <div class="h7-head"><div><span class="eyebrow">Switching &amp; trust</span><h2 id="tr-h">Everything comes in. <em>Nothing goes out without you.</em></h2></div></div>
+    <div class="h7-head rv"><div><span class="eyebrow">Switching &amp; trust</span><h2 id="tr-h">Move in with ease. <em>Post only when you please.</em></h2></div></div>
     ${trustHTML()}
   </section>
 
   <section class="h7-sec wrap" id="pricing" aria-labelledby="pr-h">
-    <div class="h7-head"><div><span class="eyebrow">Plans</span><h2 id="pr-h">Start free. <em>Size up when it’s working.</em></h2></div><div class="pr7-side"><p>Scores, checks, Sharpen and Basic mode are free on every plan. Credits pay for Claude: 10 a day on Free, 1,000 a month on Pro, 4,000 shared on Studio.</p><div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div></div></div>
+    <div class="h7-head rv"><div><span class="eyebrow">Plans</span><h2 id="pr-h">Free to begin. <em>Size up when you win.</em></h2></div><div class="pr7-side"><p>Scores, checks, Sharpen and Basic mode are free on every plan. Credits pay for Claude: 10 a day on Free, 1,000 a month on Pro, 4,000 shared on Studio.</p><div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div></div></div>
     <div class="pl-grid pl7" id="plans">${plansHTML(true)}</div>
     <p class="pl7-all"><span>A credit is one rewrite in your voice. Bigger jobs, like Learn my voice, show what they cost before you click.</span> <a href="#upgrade">How credits work ${ic('arrow', 'xs')}</a></p>
-    <div class="faq7" id="faq"><div><span class="eyebrow">Questions</span><h2 class="faq7-h" id="faq-h">Fair questions. <em>Straight answers.</em></h2></div><div class="faq7-l">${FAQ.map(([q, a]) => `<details><summary><span>${q}</span>${ic('plus', 'sm')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div>
+    <div class="faq7" id="faq"><div><span class="eyebrow">Questions</span><h2 class="faq7-h" id="faq-h">Ask away. <em>Here’s what we’d say.</em></h2></div><div class="faq7-l">${FAQ.map(([q, a]) => `<details><summary><span>${q}</span>${ic('plus', 'sm')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div>
   </section>
 
   <section class="h7-fin" id="final" aria-labelledby="fin-h">
     <div class="wrap"><div class="fin7 fin8">
       <span class="eyebrow">Start with one post</span>
-      <h2 id="fin-h">Paste the post <em>you almost wrote.</em></h2>
+      <h2 id="fin-h">Paste the post you held back. <em>Get it on track.</em></h2>
       ${finalFormHTML()}
     </div></div>
   </section>
   </main>
   ${hwFootHTML()}
-  <aside class="h7-bar" id="h7-bar" aria-label="Quick start"><p class="h7-bar-t" id="h7-bar-t">One good first line a day.</p><a class="hbtn sm" id="h7-bar-cta" href="#start">Start free</a><button type="button" class="h7-bar-x" id="h7-bar-x" aria-label="Hide this bar for now">${ic('x', 'sm')}</button></aside>
+  <aside class="h7-bar" id="h7-bar" aria-label="Quick start"><p class="h7-bar-t" id="h7-bar-t">One good line a day keeps the void away.</p><a class="hbtn sm" id="h7-bar-cta" href="#start">Start free</a><button type="button" class="h7-bar-x" id="h7-bar-x" aria-label="Hide this bar for now">${ic('x', 'sm')}</button></aside>
 </div>`;
   initHome();
 };
@@ -10615,7 +10842,7 @@ function initHome() {
   /* every Start button carries the line once you've made it yours; untouched, they go to #start */
   const carry = e => { if (!G.typed || !G.text) return; e.preventDefault(); carryLine(G.text); };
   cta.addEventListener('click', carry); $('#hw-cta-hero').addEventListener('click', carry);
-  initTour();
+  initTour(); initIdeas(root, whileSeen, later); initSubnav(root);
 
   /* ---------- sticky call: arrives after the hero, leaves for the final call and the footer ---------- */
   const bar = $('#h7-bar'), barT = $('#h7-bar-t'), barCta = $('#h7-bar-cta'), seen = { hero: true, fin: false, foot: false }; let barOff = false;
@@ -10633,7 +10860,7 @@ function initHome() {
   try { barOff = sessionStorage.getItem('hw.bar') === 'off'; } catch (e) { }
   const paintBar = () => {
     if (G.typed && G.text) { barT.innerHTML = `<q><span>${esc(clip(G.text, 80))}</span></q>`; barCta.innerHTML = `Open your line ${tierChip(G.score, { cls: 'sm' })} ${ic('arrow', 'sm')}`; barCta.setAttribute('aria-label', `Open your line in the app. Hook: ${TIER(G.score).word}`); }
-    else { barT.textContent = 'One good first line a day.'; barCta.textContent = 'Start free'; barCta.removeAttribute('aria-label'); }
+    else { barT.textContent = 'One good line a day keeps the void away.'; barCta.textContent = 'Start free'; barCta.removeAttribute('aria-label'); }
     const on = !barOff && !seen.hero && !seen.fin && !seen.foot;
     bar.classList.toggle('on', on); nav.classList.toggle('bar-on', on); /* one call to action on screen at a time on phones */
     /* one primary per view: while the hero's, the pill's or the final call's button is on screen, the nav's goes quiet */
@@ -10682,7 +10909,7 @@ function initHome() {
 
   /* ---------- previews: one phone, four tabs; LinkedIn holds the fold ---------- */
   const PRIYA = PEOPLE[ST2.p], stFinal = (() => { const r = hgSharpen(ST2.draft); return `${r.first}\n\n${ST2.filled}`; })();
-  const others = [HOOK_POSTS[16], HOOK_POSTS[17]].map(q => ({ ...q, c: [0, 0, 0, 0] }));
+  const others = [HOOK_POSTS[13], HOOK_POSTS[4]].map(q => ({ ...q, c: [0, 0, 0, 0] }));
   const phW = () => innerWidth >= 1100 ? 300 : innerWidth >= 761 ? 280 : Math.min(290, innerWidth - 80);
   let pvKind = 'x';
   const liT = $('#h7pv-li');
@@ -10694,7 +10921,7 @@ function initHome() {
     const st = $('#h7pv-li-st'); st.classList.toggle('cut', !ok); st.textContent = !t.trim() ? '' : ok ? 'Your hook clears the fold' : 'Your hook gets cut off';
     $('#h7pv-li-sc').innerHTML = t.trim() ? tierChip(hookScore(t).score, { noun: true, cls: 'sm' }) : '';
   };
-  const drawPhone = () => { const k = pvKind; $('#h7pv-phone').innerHTML = phoneFeed(k, { you: PRIYA, mine: k === 'linkedin' ? { t: liT.value || ' ', c: [0, 0, 0, 0], ago: 'now' } : { t: k === 'bsky' ? `${hgSharpen(ST2.draft).first}\n\nFunding flipped negative 4 times this year. I logged what came next.` : stFinal, c: [0, 0, 0, 0], ago: 'now' }, others, w: phW() }); $('#h7pv-phone .phone').classList.add('pv-in'); drawFold(); };
+  const drawPhone = () => { const k = pvKind; $('#h7pv-phone').innerHTML = phoneFeed(k, { you: PRIYA, mine: k === 'linkedin' ? { t: liT.value || ' ', c: [0, 0, 0, 0], ago: 'now' } : { t: stFinal, c: [0, 0, 0, 0], ago: 'now' }, others, w: phW() }); $('#h7pv-phone .phone').classList.add('pv-in'); drawFold(); };
   $('.pv7-tabs').addEventListener('click', e => { const b = e.target.closest('[data-pv]'); if (!b || b.getAttribute('aria-selected') === 'true') return;
     $$('[data-pv]').forEach(x => x.setAttribute('aria-selected', x === b)); pvKind = b.dataset.pv; $$('.pv7-p').forEach(p => { p.hidden = p.id !== `h7pvp-${pvKind}`; }); drawPhone(); });
   liT.addEventListener('input', () => { if (!('fieldSizing' in liT.style)) { liT.style.height = 'auto'; liT.style.height = liT.scrollHeight + 'px'; } drawFold(); });
