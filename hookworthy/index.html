@@ -2430,6 +2430,35 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 /* ---------- round 30: switching & trust (pictures first), the final call, the footer, #legal ---------- */
 /* the trust headline runs wide: roman on one line, italic on the next */
 .hw27 #trust .h7-head{ grid-template-columns:minmax(0,1fr); }
+/* round 42: the phone's feed runs off the bottom like a real one; a note points at the post that's yours */
+.hw27 .pv7-phone{ position:relative; }
+.hw27 .pv7-hand{ display:inline-flex; align-items:flex-start; gap:2px; transform:rotate(3deg); font-size:22px; line-height:1; color:var(--c-2); white-space:normal; }
+.hw27 .pv7-hand svg path{ fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.hw27 .pv7-phone .me-post.me-lit{ animation:meglow 2.6s var(--e-out) .35s both; }
+@keyframes meglow{ 0%{ background:color-mix(in srgb,var(--lilac) 0%,transparent); } 18%{ background:color-mix(in srgb,var(--lilac) 70%,transparent); } 100%{ background:transparent; } }
+@media (max-width:1240px){ .hw27 .pv7-hand{ display:none; } }
+/* round 42: the final call transforms the line you paste */
+.hw27 .fin8-sub{ max-width:36rem; font-size:clamp(17px,1.4vw,19px); line-height:1.5; color:rgba(254,253,241,.86); }
+.hw27 .fin8-tries{ display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px; margin-top:6px; font-size:14px; color:rgba(254,253,241,.75); }
+.hw27 .fin8-chip{ height:34px; padding:0 14px; border-radius:99px; font:500 14px/1 var(--f-disp); color:#FEFDF1; background:rgba(254,253,241,.1); box-shadow:inset 0 0 0 1px rgba(254,253,241,.24); transition:background .2s ease,transform .16s var(--e-out); }
+.hw27 .fin8-chip:active{ transform:scale(.96); }
+@media (hover:hover) and (pointer:fine){ .hw27 .fin8-chip:hover{ background:rgba(254,253,241,.18); } }
+.hw27 .fin8-acts{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; }
+.hw27 .fin8-sharp{ display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 15px; border-radius:10px; font:600 14.5px/1 var(--f-disp); color:var(--c-ink); background:var(--pa); box-shadow:inset 0 0 0 1.5px var(--c-ink); transition:transform .16s var(--e-out),opacity .2s ease; }
+.hw27 .fin8-sharp:active{ transform:scale(.97); }
+.hw27 .fin8-sharp:disabled{ opacity:.45; cursor:default; }
+.hw27 .fin8-sharp.busy .icon{ animation:finspin .9s linear infinite; }
+@keyframes finspin{ to{ transform:rotate(360deg); } }
+.hw27 .fin8-after{ grid-column:1 / -1; padding:16px 26px 20px; border-top:1px solid var(--c-line); background:color-mix(in srgb,var(--lilac) 35%,var(--c-card)); }
+.hw27 .fin8-after.in{ animation:id8in .55s var(--e-out) both; }
+.hw27 .fin8-al{ display:block; margin-bottom:6px; font:600 11.5px/1 var(--f-disp); letter-spacing:.12em; text-transform:uppercase; color:var(--c-3); }
+.hw27 .fin8-diff{ font:500 17px/1.5 var(--f-disp); color:var(--c-ink); white-space:pre-wrap; }
+.hw27 .fin8-diff del{ color:var(--c-3); text-decoration-thickness:1.5px; }
+.hw27 .fin8-after.in .fin8-diff del{ animation:findel .5s var(--e-out) .25s both; }
+@keyframes findel{ from{ text-decoration-color:transparent; opacity:1; } to{ opacity:.55; } }
+.hw27 .fin8-diff ins{ text-decoration:none; background:color-mix(in srgb,var(--tier-sharp-f) 22%,transparent); border-radius:4px; padding:0 2px; }
+@media (max-width:760px){ .hw27 .fin8-tries{ justify-content:flex-start; } }
+
 /* ---------- round 41: hierarchy, sub-features, ideas on tap, and motion ---------- */
 .hw27{ --e-out:cubic-bezier(.23,1,.32,1); --e-io:cubic-bezier(.77,0,.175,1); }
 @media (prefers-reduced-motion:no-preference){ html:has(.hw27){ scroll-behavior:smooth; } }
@@ -10211,7 +10240,14 @@ function dialMove(el, a, b) { const m = tierMove(a, b); clearTimeout(el._mt); el
   if (!REDUCED && m.dir === 'up') { el.classList.remove('tgrow'); void el.offsetWidth; el.classList.add('tgrow'); } }
 
 /* ----- story: one post, three beats, nothing invented by the app ----- */
-const ST2 = { p: 4, draft: 'so i think the first line is honestly the most underrated part of a post', filled: 'I rewrote the openers on my last 20 posts. Here’s what changed, and what didn’t.' };
+const ST2 = { p: 4, draft: 'so i think the issue that grew my newsletter most was honestly the shortest one i ever wrote', filled: '3 years of Sundays. That one took 20 minutes.' };
+/* the rest of the phone's feed: everyday X, nothing about writing, with real counts and pictures, running off the bottom */
+const PV_FEED = [
+  { p: 5, t: 'I deleted 1,400 lines of code today and the app got faster.', c: [96, 240, 2900, 188000], ago: '5h' },
+  { p: 0, t: 'Tally Notes 3.0 is live 🎉\n\nOffline sync, a faster editor, and the dark mode you asked for 400 times.', m: 'desk', c: [61, 132, 1480, 64000], ago: '2h' },
+  { p: 7, t: 'Ran 5km every morning for 365 days.\n\nThe hardest part was never the running.', m: 'run', c: [212, 530, 8800, 612000], ago: '9h' },
+  { p: 8, t: 'found the quietest café in lisbon. not telling anyone where.', m: 'cafe', c: [34, 12, 860, 21000], ago: '1d' }
+];
 /* the relatable row */
 const VOID_ROW = [0, 2, 7, 3, 11, 6, 10, 4].map(i => VOID_POSTS[i]);
 
@@ -10362,17 +10398,22 @@ function trustHTML() {
 
 /* ---------- round 30: the final call. Paste a line, watch it score, carry it in ---------- */
 const FIN_TRY = 'so i think posting every day is kind of overrated tbh';
-const FIN_IDLE = `Paste a line. It’s read as you type, with the next step to ${BAR_WORD}.`;
+const FIN_IDLE = `Paste a line, then hit Sharpen. It’s read as you type, with the next step to ${BAR_WORD}.`;
+/* the three to try, with the rewrite Claude gives in the app; your own lines go through the same local Sharpen as the hero */
+const FIN_ROUGH = [['so i think posting every day is kind of overrated tbh', 'Posting every day is overrated. Here’s what I do instead:'], ['just wanted to share some thoughts on our launch. only 11 people came lol', 'We launched to 11 people. Here’s what that taught us:'], ['new issue is out!! been doing this every sunday for 3 years lol', '3 years of Sunday issues. Here’s the new one:']];
 function finalFormHTML() {
-  return `<form class="fin8-f" id="fin-f" novalidate>
+  return `<p class="fin8-sub">Then watch it transform. Soft words out, the point up front, your voice kept.</p>
+      <div class="fin8-tries" role="group" aria-label="Or try one of these"><span>Try one:</span>${FIN_ROUGH.map(([t], i) => `<button type="button" class="fin8-chip" data-try="${i}">${esc(clip(t, 38))}</button>`).join('')}</div>
+      <form class="fin8-f" id="fin-f" novalidate>
         <div class="fin8-card">
           <div class="fin8-ed"><label for="fin-t" class="sr">The post you almost wrote. It scores as you type.</label><textarea id="fin-t" rows="3" maxlength="2000" placeholder="so i think…" aria-describedby="fin-err"></textarea>
-            <button type="button" class="fin8-try" id="fin-try">Or try a rough one</button></div>
+            <div class="fin8-acts"><button type="button" class="fin8-sharp" id="fin-sharp" disabled>${ic('bolt', 'sm')}<span>Sharpen it</span></button><button type="button" class="fin8-try" id="fin-try">Or try a rough one</button></div></div>
           <div class="fin8-read" aria-hidden="true">
             <span class="fin8-dial" id="fin-dial" style="--v:0">${ringHTML(null)}<b id="fin-n" class="dw">–</b><small>Hook</small></span>
             <ul class="fin8-parts">${TR_PARTS.map(([k, l]) => `<li data-k="${k}" class="ps-empty"><span>${l}</span><span class="pip p-empty"></span><span class="pw">–</span></li>`).join('')}</ul>
           </div>
           <p class="fin8-why" id="fin-why" aria-hidden="true">${FIN_IDLE}</p>
+          <div class="fin8-after" id="fin-after" hidden><span class="fin8-al">Before → after</span><p class="fin8-diff" id="fin-diff"></p></div>
         </div>
         <p class="sr" id="fin-sr" aria-live="polite"></p>
         <span class="field-err" id="fin-err" role="alert"></span>
@@ -10912,7 +10953,7 @@ function initHome() {
 
   /* ---------- previews: one phone, four tabs; LinkedIn holds the fold ---------- */
   const PRIYA = PEOPLE[ST2.p], stFinal = (() => { const r = hgSharpen(ST2.draft); return `${r.first}\n\n${ST2.filled}`; })();
-  const others = [HOOK_POSTS[13], HOOK_POSTS[4]].map(q => ({ ...q, c: [0, 0, 0, 0] }));
+  const others = PV_FEED;
   const phW = () => innerWidth >= 1100 ? 300 : innerWidth >= 761 ? 280 : Math.min(290, innerWidth - 80);
   let pvKind = 'x';
   const liT = $('#h7pv-li');
@@ -10924,7 +10965,12 @@ function initHome() {
     const st = $('#h7pv-li-st'); st.classList.toggle('cut', !ok); st.textContent = !t.trim() ? '' : ok ? 'Your hook clears the fold' : 'Your hook gets cut off';
     $('#h7pv-li-sc').innerHTML = t.trim() ? tierChip(hookScore(t).score, { noun: true, cls: 'sm' }) : '';
   };
-  const drawPhone = () => { const k = pvKind; $('#h7pv-phone').innerHTML = phoneFeed(k, { you: PRIYA, mine: k === 'linkedin' ? { t: liT.value || ' ', c: [0, 0, 0, 0], ago: 'now' } : { t: stFinal, c: [0, 0, 0, 0], ago: 'now' }, others, w: phW() }); $('#h7pv-phone .phone').classList.add('pv-in'); drawFold(); };
+  const drawPhone = () => { const k = pvKind; $('#h7pv-phone').innerHTML = phoneFeed(k, { you: PRIYA, mine: k === 'linkedin' ? { t: liT.value || ' ', c: [0, 0, 0, 0], ago: 'now' } : { t: stFinal, c: [0, 0, 0, 0], ago: 'now' }, others, w: phW() }); $('#h7pv-phone .phone').classList.add('pv-in'); drawFold(); pointAtMine(); };
+  /* a handwritten note beside the phone points at the one post that's yours */
+  const pointAtMine = () => { const box = $('#h7pv-phone'), me = $('#h7pv-phone .me-post'); if (!box || !me) return; let n = $('.pv7-hand', box);
+    if (!n) { box.insertAdjacentHTML('beforeend', '<span class="hand pv7-hand" aria-hidden="true"><svg width="64" height="30" viewBox="0 0 64 30"><path d="M62 8C42 2 22 6 6 20M14 23l-9-2 4-8" style="--len:80"/></svg><span>yours,<br>sharpened</span></span>'); n = $('.pv7-hand', box); }
+    const b = box.getBoundingClientRect(), r = me.getBoundingClientRect(), ph = $('.phone', box).getBoundingClientRect();
+    n.style.top = Math.round(r.top - b.top + Math.min(r.height / 2, 46) - 22) + 'px'; n.style.left = Math.round(ph.right - b.left - 18) + 'px'; me.classList.remove('me-lit'); void me.offsetWidth; me.classList.add('me-lit'); };
   $('.pv7-tabs').addEventListener('click', e => { const b = e.target.closest('[data-pv]'); if (!b || b.getAttribute('aria-selected') === 'true') return;
     $$('[data-pv]').forEach(x => x.setAttribute('aria-selected', x === b)); pvKind = b.dataset.pv; $$('.pv7-p').forEach(p => { p.hidden = p.id !== `h7pvp-${pvKind}`; }); drawPhone(); });
   liT.addEventListener('input', () => { if (!('fieldSizing' in liT.style)) { liT.style.height = 'auto'; liT.style.height = liT.scrollHeight + 'px'; } drawFold(); });
@@ -10961,9 +11007,21 @@ function initHome() {
   };
   fin.addEventListener('input', () => { finErr.textContent = ''; fin.removeAttribute('aria-invalid'); finPaint(); });
   /* your hero line comes along, selected, so typing or pasting replaces it instead of landing on the end of it */
-  fin.addEventListener('focus', () => { if (!fin.value.trim() && G.typed && G.text) { fin.value = G.text; finPaint(); setTimeout(() => { if (document.activeElement === fin) fin.select(); }, 0); } });
+  fin.addEventListener('focus', () => { if (!fin.value.trim() && G.typed && G.text) { fin.value = G.text; finPaint(); sharpState(); setTimeout(() => { if (document.activeElement === fin) fin.select(); }, 0); } });
   fin.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $('#fin-f').requestSubmit(); } });
-  $('#fin-try').addEventListener('click', () => { fin.value = FIN_TRY; finErr.textContent = ''; fin.removeAttribute('aria-invalid'); finPaint(); fin.focus(); fin.setSelectionRange(fin.value.length, fin.value.length); });
+  /* Sharpen: the before and after appear, the soft words strike through, then the line becomes the sharper one and the dial climbs */
+  const finSharp = $('#fin-sharp'), finAfter = $('#fin-after'), finDiff = $('#fin-diff'); let finT = 0; onDispose(() => clearTimeout(finT));
+  const sharpState = () => { const t = fin.value.trim(), r = t ? hgSharpen(t) : null; finSharp.disabled = !(finPair && finPair[0] === t) && (!r || (r.first === r.orig && !r.add)); };
+  let finPair = null; /* a "Try one" line carries its rewrite */
+  const transform = () => { const t = fin.value.trim(); const r = finPair && finPair[0] === t ? { orig: t, first: finPair[1], rest: '', add: '' } : hgSharpen(t); if (!r) return; const next = [r.first, r.rest].filter(Boolean).join('\n\n');
+    finDiff.innerHTML = hgDiffHTML({ ...r, add: '' }); finAfter.hidden = false; finAfter.classList.remove('in'); void finAfter.offsetWidth; finAfter.classList.add('in');
+    finSharp.disabled = true; finSharp.classList.add('busy'); clearTimeout(finT);
+    finT = later(() => { fin.value = next; finPaint(); finSharp.classList.remove('busy'); $('span', finSharp).textContent = 'Sharpened'; finSr.textContent = `Sharpened. Hook: ${TIER(hookScore(next).score).word}.`; }, REDUCED ? 0 : 900); };
+  finSharp.addEventListener('click', transform);
+  fin.addEventListener('input', () => { $('span', finSharp).textContent = 'Sharpen it'; sharpState(); });
+  const tryLine = (t, pair = null) => { finPair = pair; fin.value = t; finErr.textContent = ''; fin.removeAttribute('aria-invalid'); finAfter.hidden = true; $('span', finSharp).textContent = 'Sharpen it'; finPaint(); sharpState(); clearTimeout(finT); finT = later(transform, REDUCED ? 0 : 700); };
+  $('#fin-try').addEventListener('click', () => tryLine(FIN_TRY));
+  $$('[data-try]', root).forEach(b => b.addEventListener('click', () => { const pr = FIN_ROUGH[+b.dataset.try]; tryLine(pr[0], pr); }));
   $('#fin-f').addEventListener('submit', e => { e.preventDefault(); const t = fin.value.trim(); if (!t) { fin.setAttribute('aria-invalid', 'true'); finErr.textContent = 'Paste a line first. One rough sentence is plenty.'; fin.focus(); return; } carryLine(t); });
   hwLanded();
 }
