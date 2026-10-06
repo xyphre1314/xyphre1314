@@ -2536,33 +2536,38 @@ html:has(.scrim){ overflow:hidden; }
 /* ---------- round 49: hook tag, post sheet, balanced pages ---------- */
 /* every page centres in the space beside the sidebar, so left and right margins match (Queue included) */
 .page{ margin-left:auto; margin-right:auto; }
-/* the hook state is a tag in the post's header: signal bars and a word, tinted by state. No ring */
-.tw-head{ align-items:center; height:28px; }
-.hk-tag{ margin-left:auto; display:inline-flex; align-items:center; gap:7px; height:28px; padding:0 8px 0 10px; border-radius:8px; border:1px solid color-mix(in srgb,var(--tc,var(--text-3)) 22%,transparent); background:color-mix(in srgb,var(--tf,var(--surface-2)) 9%,var(--surface)); color:var(--tc,var(--text-2)); font:600 12.5px/1 var(--font-ui); white-space:nowrap; cursor:pointer;
-  transition:background var(--d-snap) var(--ease-out), border-color var(--d-snap) var(--ease-out), color var(--d-snap) var(--ease-out), transform var(--d-micro) var(--ease-out), box-shadow var(--d-snap) var(--ease-out); }
-.hk-tag, .hk-tag.hi, .hk-tag:hover{ box-shadow:none; }
-.hk-tag .sc, .hk-tag.hi .sc, .hk-tag.mine .sc{ background:none !important; box-shadow:none !important; min-width:0; border-radius:0; }
-.hk-tag .sc span, .hk-tag.hi .sc span{ color:inherit; }
-.hk-tag:hover{ background:color-mix(in srgb,var(--tf,var(--surface-2)) 15%,var(--surface)); }
-.hk-tag:active{ transform:scale(.97); }
-.hk-tag .sc{ position:relative; display:inline-grid; place-items:center; width:auto; height:auto; padding:0; background:none; }
-.hk-tag .sc .sbars{ height:12px; gap:2px; } .hk-tag .sc .sbars b{ width:3px; border-radius:1px; }
-.hk-tag .sc .hk-g:empty{ display:none; } .hk-tag .sc .hk-g:not(:empty) + .sbars{ display:none; }
-.hk-tag .hk-n{ font:700 12px/1 var(--font-ui); font-variant-numeric:tabular-nums; }
-.hk-tag small{ font:inherit; color:inherit; }
-.hk-tag > svg{ width:12px; height:12px; opacity:.55; margin-left:-2px; transition:transform var(--d-snap) var(--ease-out), opacity var(--d-micro); }
-.hk-tag:hover > svg{ opacity:.9; transform:translateX(1px); }
-.hk-tag[aria-expanded="true"]{ box-shadow:0 0 0 3px color-mix(in srgb,var(--tc,var(--accent)) 16%,transparent); } .hk-tag[aria-expanded="true"] > svg{ transform:rotate(90deg); }
-.hk-tag:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-.hk-tag:not(.t-flat):not(.t-warming):not(.t-sharp):not(.t-honed){ --tc:var(--text-3); }
-/* Outstanding: a gold edge and a slow sheen, the one state that shines */
-.hk-tag.t-honed{ border-color:color-mix(in srgb,var(--tf) 60%,transparent); background:linear-gradient(100deg,color-mix(in srgb,var(--tf) 14%,var(--surface)) 0%,color-mix(in srgb,var(--tf) 26%,var(--surface)) 50%,color-mix(in srgb,var(--tf) 14%,var(--surface)) 100%) 0 0/220% 100%; box-shadow:0 0 16px -6px var(--tier-glow); }
-@media (prefers-reduced-motion:no-preference){ .hk-tag.t-honed{ animation:tagsheen 3.2s var(--ease-out) infinite; } }
-@keyframes tagsheen{ 0%,40%{ background-position:100% 0; } 100%{ background-position:-120% 0; } }
-.hk-tag .sc.spring, .hk-tag .sc.tgrow{ animation:tagpop 380ms var(--spring-snap); } @keyframes tagpop{ 35%{ transform:scale(1.25); } }
-.hk-tag.hi:not(.was-hi){ animation:tagbump 300ms cubic-bezier(.34,1.56,.64,1); } @keyframes tagbump{ 40%{ transform:scale(1.06); } }
-.hk-tag .rdy-burst b{ width:3px; height:3px; margin:-1.5px 0 0 -1.5px; }
-body.typing .hk-tag{ opacity:1 !important; }
+/* round 50: no grade while writing. The first line gets a coach at the bottom of the post: quiet until there is something useful to say */
+.tw-head{ align-items:baseline; height:22px; }
+.hk-coach{ margin-left:auto; display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 10px 0 8px; border:0; border-radius:8px; background:none; box-shadow:none; color:var(--text-3); font:500 12.5px/1 var(--font-ui); white-space:nowrap; cursor:pointer; opacity:1;
+  transition:opacity .35s var(--ease-out), color var(--d-snap) var(--ease-out), background var(--d-micro) var(--ease-out), transform var(--d-micro) var(--ease-out); }
+.hk-coach:hover, .hk-coach[aria-expanded="true"]{ background:var(--surface-2); color:var(--text-1); box-shadow:none; }
+.hk-coach:active{ transform:scale(.97); }
+.hk-coach:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.hk-coach .sc, .hk-coach.hi .sc, .hk-coach.mine .sc{ position:relative; display:inline-grid; place-items:center; width:16px; height:16px; min-width:0; padding:0; border-radius:0; background:none !important; box-shadow:none !important; }
+.hk-coach .sc > *{ grid-area:1/1; }
+.hk-coach .hk-g{ display:none; }
+.hk-coach .hk-i{ display:grid; place-items:center; transition:opacity .25s var(--ease-out), transform .35s var(--spring-snap); } .hk-coach .hk-i svg{ width:15px; height:15px; }
+.hk-coach .hk-i-tip{ color:var(--accent-text); } .hk-coach .hk-i-ok{ opacity:0; transform:scale(.4); color:var(--tier-sharp); }
+.hk-coach.t-sharp .hk-i-tip, .hk-coach.t-honed .hk-i-tip{ opacity:0; transform:scale(.4); } .hk-coach.t-sharp .hk-i-ok, .hk-coach.t-honed .hk-i-ok{ opacity:1; transform:none; }
+.hk-coach small{ font:inherit; color:inherit; }
+.hk-coach.t-sharp{ color:var(--tier-sharp); }
+.hk-coach.t-honed{ color:var(--tier-honed); } .hk-coach.t-honed .hk-i-ok{ color:var(--tier-honed); }
+.hk-coach.t-honed small{ background:linear-gradient(100deg,currentColor 0 40%,color-mix(in srgb,currentColor 35%,#fff) 50%,currentColor 60% 100%) 0 0/250% 100%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+@media (prefers-reduced-motion:no-preference){ .hk-coach.t-honed.hi:not(.was-hi) small, .hk-coach.t-honed .sc.spring + small{ animation:coachsheen 1.4s var(--ease-out) 1; } }
+@keyframes coachsheen{ from{ background-position:100% 0; } to{ background-position:-60% 0; } }
+.hk-coach .sc.spring .hk-i-ok, .hk-coach .sc.tgrow .hk-i-ok{ animation:coachpop 420ms var(--spring-snap); } @keyframes coachpop{ 35%{ transform:scale(1.35); } }
+.hk-coach .rdy-burst b{ width:3px; height:3px; margin:-1.5px 0 0 -1.5px; }
+/* a tip waits until you pause: nothing nags mid-sentence */
+body.typing .hk-coach.t-flat, body.typing .hk-coach.t-warming, .hk-coach:not(.t-flat):not(.t-warming):not(.t-sharp):not(.t-honed){ opacity:0; pointer-events:none; }
+.tw-tools .hk-coach + .tw-meta{ margin-left:4px; }
+/* beat the older .hook rules (ring, white ink on .hi) */
+.tw-tools .hk-coach, .tw-tools .hk-coach.hi, .tw-tools .hk-coach:hover{ box-shadow:none !important; }
+.tw-tools .hk-coach .sc span.hk-i-tip{ color:var(--accent-text) !important; }
+.tw-tools .hk-coach .sc span.hk-i-ok{ color:var(--tier-sharp) !important; }
+.tw-tools .hk-coach.t-honed .sc span.hk-i-ok{ color:var(--tier-honed) !important; }
+.hkc-h .hkc-ic{ display:grid; place-items:center; color:var(--accent-text); } .hkc.t-sharp .hkc-ic, .hkc.t-honed .hkc-ic{ color:var(--tier-sharp); }
+.sh-hook.soft{ background:var(--surface-2); border-color:transparent; } .sh-hook .sh-hh > svg, .sh-hook.ok > svg{ flex:none; margin-top:2px; color:var(--accent-text); } .sh-hook.ok > svg{ color:var(--tier-sharp); }
+.tc-ok{ display:inline-flex; align-items:center; gap:6px; color:var(--tier-sharp); font-weight:500; }
 /* the post sits on a sheet, so the page has a clear object to write on */
 @media (min-width:761px){
   .editor .thread{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 22px 10px 16px; box-shadow:0 1px 2px rgba(15,15,15,.04), 0 12px 32px -18px rgba(15,15,15,.16); transition:box-shadow var(--d-snap) var(--ease-out), border-color var(--d-snap) var(--ease-out); }
@@ -6300,7 +6305,7 @@ function tweetHTML(tw, i, n) {
   <button class="handle" data-tip="Drag to reorder" data-kbd="${ALT} ↑ ↓" aria-label="Move post ${i + 1} of ${n}. Use up and down arrows">${ic('drag', 'sm')}</button>
   <div class="tw-gutter">${i === 0 ? avatar(u) : `<span class="idx">${i + 1}/${n}</span>`}<span class="spine"></span></div>
   <div class="tw-body">
-    ${i === 0 ? `<div class="tw-head"><b>${esc(u.name)}</b><span>@${esc(u.handle)}</span><button class="hook hk-tag" data-cact="hookinfo" aria-expanded="${!!(UI.imp && UI.imp.tab === 'score')}" aria-label="Hook. Press for details"><span class="sc" style="--v:0"><span class="hk-g"></span>${barsHTML('')}</span><small class="hk-w">Hook</small>${ic('right', 'xs')}</button></div>` : ''}
+    ${i === 0 ? `<div class="tw-head"><b>${esc(u.name)}</b><span>@${esc(u.handle)}</span></div>` : ''}
     <div class="field-wrap"><div class="tw-mirror" aria-hidden="true"></div><div class="tw-cmts" aria-hidden="true"></div><div class="caret" aria-hidden="true" style="opacity:0"></div><textarea class="tw-input" rows="1" aria-label="Post ${i + 1} of ${n}" placeholder="${i === 0 ? 'Start with a line you’d stop scrolling for' : 'Keep going…'}">${esc(tw.text)}</textarea></div>
     <div class="media-slot">${mediaHTML(tw)}</div>
     <div class="poll-slot">${pollHTML(tw)}</div>
@@ -6314,6 +6319,7 @@ function tweetHTML(tw, i, n) {
       <span class="tools-sep"></span>
       <button class="tool riff" data-cact="riff" data-tip="${i === 0 ? 'Improve: Hook score, Rewrites, Formulas' : 'Improve: Rewrites'}" data-kbd="${MOD} J" aria-expanded="${!!(UI.imp && UI.imp.id === tw.id)}">${ic('riff')}<span>Improve</span></button>
       ${n > 1 ? `<button class="tool tw-rm" data-cact="remove" data-tip="Remove this post" aria-label="Remove this post">${ic('trash')}</button>` : ''}
+      ${i === 0 ? `<button class="hook hk-coach" data-cact="hookinfo" aria-expanded="${!!(UI.imp && UI.imp.tab === 'score')}" aria-label="First line. Press for tips"><span class="sc" style="--v:0"><span class="hk-g"></span><span class="hk-i hk-i-tip">${ic('riff', 'sm')}</span><span class="hk-i hk-i-ok">${ic('check', 'sm')}</span></span><small class="hk-w"></small></button>` : ''}
       <div class="tw-meta">
         <span class="ring" data-tip="0 characters"><svg viewBox="0 0 24 24"><circle class="trk" cx="12" cy="12" r="9.5"/><circle class="val" cx="12" cy="12" r="9.5" stroke-dasharray="59.69" stroke-dashoffset="59.69"/></svg><b></b></span>
       </div>
@@ -6423,11 +6429,11 @@ function paintHook() {
   /* after Keep: a new state crossfades the word while the ring's colour sweeps; the same state says "Stronger" for a moment, and the ring grows a little */
   const from = UI.hookFrom; UI.hookFrom = null; clearTimeout(UI.hkWT);
   if (from != null && h.score && from !== h.score) { const m = tierMove(from, h.score);
-    if (!m.cross && m.dir !== 'same') { swapWord(w, m.text); UI.hkWT = setTimeout(() => swapWord(w, TIER(UI.lastHook).word), 1400); } else swapWord(w, T.word);
+    if (!m.cross && m.dir !== 'same' && T.rank >= 2) { swapWord(w, m.text); UI.hkWT = setTimeout(() => swapWord(w, COACH[TIER(UI.lastHook).key]), 1400); } else swapWord(w, COACH[T.key]);
     if (!REDUCED && m.dir === 'up') { sc.classList.remove('spring', 'tgrow'); void sc.offsetWidth; sc.classList.add(m.cross ? 'spring' : 'tgrow'); }
     clearTimeout(UI.hsT); srSay(tierSay(from, h.score)); }
-  else swapWord(w, h.score ? T.word : 'Hook');
-  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 45); b.setAttribute('aria-label', `Hook: ${h.score ? T.word : 'nothing yet'}. ${h.g ? h.g.reason : ''} Press for details`);
+  else swapWord(w, h.score ? COACH[T.key] : '');
+  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 45); b.setAttribute('aria-label', `${h.score ? COACH[T.key] : 'First line'}. Press for tips`);
   if (h.score >= 70 && !b.classList.contains('was-hi')) { b.classList.add('was-hi'); } else if (h.score < 70) b.classList.remove('was-hi');
   const p = $('#predict');
   if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
@@ -6451,13 +6457,16 @@ function mineHTML(H) {
    that does it, and the header names where you are. A to-do list reads like help, not a grade */
 const CHK_FIX = { clarity: 'Say it plainly, no warm-up', curiosity: 'Give them a reason to read on', specificity: 'Add a number or a name', tension: 'Push against what people assume', brevity: 'Trim it down' };
 const CHK_RIFF = { clarity: 'punchier', curiosity: 'hook', specificity: 'hook', tension: 'hook', brevity: 'shorter' };
-const CHK_HEAD = { flat: 'Getting there', warming: 'Almost there', sharp: 'Ready to post', honed: 'Outstanding' };
+const CHK_HEAD = { flat: 'A few quick wins', warming: 'Nearly there', sharp: 'Strong opener', honed: 'Outstanding opener' };
+/* round 50: the composer never grades. It stays quiet, offers one tweak when there is one, and says so when the opener is strong */
+const coachLead = (T, h) => T.rank >= 3 ? 'This one stands out. Good to go.' : T.rank === 2 ? 'Good to go. Want more? Tick another box below.' : h && h.step ? `Try this: ${h.step.charAt(0).toLowerCase() + h.step.slice(1)}.` : 'Tick a box below to make it stronger.';
+const COACH = { flat: 'One tweak to try', warming: 'One tweak to try', sharp: 'Strong opener', honed: 'Outstanding opener' };
 function checklistHTML(h, has, nx, me) {
   const T = TIER(has ? h.score : 0), st = PART_ORDER.map(([k, l]) => ({ k, l, p: HWCore.partState(has ? h.parts[k] || 0 : 0) })), done = st.filter(x => x.p.key === 'full').length;
   const next = has && T.key !== 'honed' ? st.filter(x => x.p.key !== 'full').sort((a, b) => (h.parts[a.k] || 0) - (h.parts[b.k] || 0))[0] : null;
   return `<div class="hk-main hkc t-${T.key}${has ? '' : ' empty'}">
-    <div class="hkc-h">${barsHTML(has ? T.key : '')}<b>${has ? (me ? '<span class="hk-gl">General</span>' : '') + CHK_HEAD[T.key] : 'Type your first line'}</b><span class="hkc-n">${has ? `${done} of 5` : ''}</span></div>
-    ${has && nx && nx.lead && nx.lead.replace(/[.!]+$/, '').toLowerCase() !== CHK_HEAD[T.key].toLowerCase() ? `<p class="hkc-lead">${esc(nx.lead)}</p>` : ''}
+    <div class="hkc-h"><span class="hkc-ic">${ic(has && TIER_N[T.key] >= 3 ? 'check' : 'riff', 'sm')}</span><b>${has ? (me ? '<span class="hk-gl">General</span>' : '') + CHK_HEAD[T.key] : 'Type your first line'}</b><span class="hkc-n">${has ? `${done} of 5` : ''}</span></div>
+    ${has ? `<p class="hkc-lead">${esc(coachLead(T, h))}</p>` : ''}
     <ul class="hkc-l">${st.map(x => `<li class="hkc-i ${x.p.key}${next && next.k === x.k ? ' next' : ''}"><span class="hkc-box" aria-hidden="true">${x.p.key === 'full' ? ic('check', 'xs') : ''}</span><span class="hkc-t">${x.l}${x.p.key !== 'full' && has ? `<small>: ${CHK_FIX[x.k].toLowerCase()}</small>` : ''}</span><span class="sr">${x.p.key === 'full' ? 'done' : x.p.key === 'half' ? 'partly' : 'not yet'}</span>${next && next.k === x.k ? `<button class="btn sm primary hkc-fix" data-cact="dorriff" data-k="${CHK_RIFF[x.k]}">Fix it</button>` : ''}</li>`).join('')}</ul>
     <p class="faint hkc-note">It reads your line, not your reach. Bring your posts and it tunes itself to your audience.</p></div>`;
 }
@@ -8362,11 +8371,12 @@ function hookAlts(text, n = 3) {
 }
 function schedHookHTML() {
   const t = S.draft.tweets[0].text; if (!t.trim()) return ''; const H = hookFor(t, S.draft.tweets.filter(x => x.text.trim()).length);
-  if (H.score >= 60) return `<div class="sh-hook ok">${tierChip(H.score, { noun: true })}<span>${H.score >= 70 ? 'Ready to post.' : 'Almost there, and fine to post as it is.'}</span></div>`;
+  if (H.score >= 70) return `<div class="sh-hook ok">${ic('check', 'sm')}<span>${COACH[TIER(H.score).key]}. Good to go.</span></div>`;
+  if (H.score >= 60) return '';
   /* only lines that move up a step: a same-step swap is just noise */
   const rk = x => TIER(x).rank, r0 = rk(hookScore(sentences(t)[0] || t).score); UI.halts = hookAlts(t).filter(a => rk(hookScore(a.split('\n')[0]).score) > r0);
-  return `<div class="sh-hook"><div class="sh-hh">${tierChip(H.score, { noun: true })}<span><b>${esc(hookNext(t, H.g || hookScore(t)).lead)}</b> ${esc((H.g || hookScore(t)).why || '')}</span></div>
-    ${UI.halts.length ? `<div class="sh-alts">${UI.halts.map((a, i) => `<button class="sh-alt" data-halt="${i}">${tierChip(hookScore(a.split('\n')[0]).score, { cls: 'sm' })}<span>${esc(clip(a.split('\n')[0], 110))}</span></button>`).join('')}</div><p class="faint" style="font-size:12px">Pick one to use it, or keep yours.</p>` : ''}</div>`;
+  return `<div class="sh-hook soft"><div class="sh-hh">${ic('riff', 'sm')}<span><b>One tweak to try:</b> ${esc(((H.g || hookScore(t)).step || 'make the first line more specific').replace(/^./, c => c.toLowerCase()))}.</span></div>
+    ${UI.halts.length ? `<div class="sh-alts">${UI.halts.map((a, i) => `<button class="sh-alt" data-halt="${i}"><span>${esc(clip(a.split('\n')[0], 110))}</span></button>`).join('')}</div><p class="faint" style="font-size:12px">Tap one to use it, or post yours as it is.</p>` : ''}</div>`;
 }
 function splitOverflow() { const lim = effLimit(); for (let i = S.draft.tweets.length - 1; i >= 0; i--) { const t = S.draft.tweets[i]; if (tlen(t.text) > lim) { const parts = splitText(t.text, lim); t.text = parts[0]; const tws = parts.slice(1).map(x => newTweet(x)); S.draft.tweets.splice(i + 1, 0, ...tws); tws.forEach(x => UI.fresh.add(x.id)); } } renderThread(); markSaving(); }
 /* with Hookworthy's server and a connected account, the queue is real: X and LinkedIn get the post */
@@ -11883,8 +11893,8 @@ function todayCompHTML() {
 }
 function tcPaint() {
   const ta = $('#tc-in'); if (!ta) return; const v = ta.value, sc = $('#tc-score'), n = $('#tc-n');
-  if (!v.trim()) { sc.innerHTML = '<span class="faint">Your hook shows up as you type.</span>'; n.textContent = ''; return; }
-  const h = hookScore(v); sc.innerHTML = `${tierChip(h.score, { noun: true })}<span class="tc-why">${esc(h.reason)}</span>`;
+  if (!v.trim()) { sc.innerHTML = ''; n.textContent = ''; return; }
+  const h = hookScore(v); sc.innerHTML = h.score >= 70 ? `<span class="tc-ok">${ic('check', 'sm')} ${COACH[TIER(h.score).key]}</span>` : '';
   const k = HWCore.xLength(v.split(/\n\s*\n/)[0]), lim = PLAT.x.limit; n.textContent = k > lim - 40 ? `${k}/${lim}` : ''; n.classList.toggle('over', k > lim);
 }
 /* one smart suggestion: the single most useful thing to do besides writing */

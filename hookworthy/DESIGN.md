@@ -615,3 +615,11 @@ A three-way switch, **Light · Dark · Auto**, sits in the sidebar footer above 
 - **The post sits on a sheet.** On desktop the thread is a white card with a hairline border and soft shadow; the tools row stays visible inside it at reduced opacity.
 - **Pages centre beside the sidebar.** Every `.page` uses auto margins, so left and right gaps match (Queue included).
 - **Insights rhythm.** One 16px gap between every block; side-by-side charts end on the same line; insight cards put the body under the title and the button on the bottom edge.
+
+## Round 50: a coach, not a grade
+
+- The composer never shows a score or a state word while you write. The header tag is gone.
+- One quiet line sits in the post's tools row: **One tweak to try** (only after you pause), **Strong opener** (green check) or **Outstanding opener** (gold, one sheen when you get there). It opens the tips panel.
+- The tips panel leads with what to do ("Try this: …"), headers read A few quick wins / Nearly there / Strong opener / Outstanding opener, and no signal bars.
+- Schedule and Post now: a strong opener gets "Strong opener. Good to go."; a middling one says nothing; a weak one gets an optional "One tweak to try" with stronger lines to tap. No chips or grades.
+- Today's quick composer only speaks up to say an opener is strong.
