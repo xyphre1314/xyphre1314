@@ -421,6 +421,9 @@ Post now, Start free, Try Pro and Open it all use `--cta` / `--cta-ink` / `--cta
 - **Wordmark:** hook**worthy** in Figtree 800, tight (-0.045em), "worthy" in grey: the same two-tone move as every heading. EB Garamond is no longer used anywhere.
 - Explored and passed over: a line with a hook hanging from it (read as a J), a caret hook, a hook in a speech bubble, a stop-the-scroll feed, a quote-mark hook.
 
+### Round 48: QA sweep (site and app, light and dark, desktop and phone)
+Fixed: field errors line up with the text you type; the phone composer drops the score word beside the post; pages behind a modal no longer scroll; modal footers line up with their bodies; fields and buttons in a row share a height; Tools stacks to one column on phones; the final call carries your hero line before checking it; pricing buttons line up across cards; "Who it's for" tabs no longer move the page; eyebrows, card labels and the affiliate heading follow the grey rule; every site button is a pill; no cream or ember left in text or fields; code blocks use Geist Mono; onboarding errors reserve their space and turn the field red; an empty handle shows no made-up name ("Up late.", "You", "Add your handle in Settings"); the import sheet no longer borrows the Improve panel's padding and its tabs scroll on phones; the design-system page describes the current brand.
+
 ### Round 47: one system
 - **Type:** Figtree everywhere: bold, tight headings (700, -0.035em); the second half of a heading is the same weight in a quieter grey, not a serif italic. EB Garamond survives only in the wordmark. Generated images (thumbnails, quote cards, carousels) use the same Figtree bold.
 - **Scale:** site page titles clamp(42–68px), section heads clamp(32–52px), app page titles clamp(30–40px).
