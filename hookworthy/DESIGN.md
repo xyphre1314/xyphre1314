@@ -424,6 +424,7 @@ Post now, Start free, Try Pro and Open it all use `--cta` / `--cta-ink` / `--cta
 - **Sharpen waits:** the pill appears only after a selection sits still for 1.8s. Alt+1–5 still works at once.
 - **Recently deleted:** deleted drafts wait 7 days (Drafts switcher footer, command palette) with Restore.
 - **Earn with Hookworthy:** 30% of every payment for 12 months from people you bring; your link, three steps, honest stats. In the account menu, the palette, the footer (#earn) and a homepage band.
+- **Flows, simpler (round 46 audit):** editing a scheduled post keeps it scheduled until **Save changes** swaps it in place; a saved idea opens as one post (tags stripped) with "Outline as thread" one tap away, and the whole row is tappable; Mark as posted copies the text for you; Improve opens on the checklist while the first line isn't Ready; the schedule sheet only suggests lines that move up a step; an empty handle in onboarding just continues; Replies hides the empty "your posts" section; Move to… sits right after Edit; the Write toolbar never pushes Post now under the preview.
 - **Thumbnails:** Make a visual › Thumbnail, or "Make a thumbnail" in the post's tools. Your profile photo or a photo you drop in, a bold title from your first line with one word marked (a number if there is one). Three layouts (Face, Cover with a soft blur behind the title, Split), three palettes, three sizes. Add to post or Download.
 
 ### Round 45: simpler homepage, one-answer tournament, quieter generating

@@ -2491,6 +2491,9 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .er-stats{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding-top:14px; border-top:1px solid var(--border); }
 .er-stats div{ display:grid; gap:4px; } .er-stats b{ font:600 20px/1 var(--font-ui); color:var(--text-1); font-variant-numeric:tabular-nums; }
 @media (max-width:520px){ .er-steps{ grid-template-columns:minmax(0,1fr); } }
+.inbox-row[data-id]{ cursor:pointer; } .inbox-row[data-id]:hover{ background:color-mix(in srgb,var(--text-1) 3%,transparent); }
+/* onboarding on phones: the post ideas come before the voice card */
+@media (max-width:760px){ .onb-result .grid > .voice-card{ order:2; } }
 /* Recently deleted */
 .tr-l{ list-style:none; margin:0; padding:0; display:grid; gap:4px; }
 .tr-i{ display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px; background:var(--surface-2); }
@@ -3733,7 +3736,8 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .c-top{ container:ctop / inline-size; }
 @container ctop (max-width: 1000px){ .share-tog span, .pv-tog span, .plats-l{ display:none; } .share-tog, .pv-tog{ width:var(--bh); padding:0 !important; } }
 /* the save word goes before Schedule's label does: the dot still shows the state, and screen readers still hear it */
-@container ctop (max-width: 690px){ .fm-tog{ display:none; } .checks-pill .cp-l, .pm-n{ display:none; } .c-top .status .txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; } }
+@container ctop (max-width: 780px){ .checks-pill .cp-l, .pm-n{ display:none; } .c-top .status .txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; } }
+@container ctop (max-width: 690px){ .fm-tog{ display:none; } .sched-btn span{ display:none; } .sched-btn{ width:var(--bh); padding:0 !important; } }
 @container ctop (max-width: 612px){ .sched-btn span{ display:none; } .sched-btn{ width:var(--bh); padding:0 !important; } }
 @media (max-width:760px){
   .c-top .sched-btn span{ display:none; } .c-top .sched-btn{ width:var(--bh); padding:0; }
@@ -5329,6 +5333,7 @@ function toast(msg, { icon = 'check', tone = 'ok', action, onAction, ms = 3800 }
   const host = $('#toasts'); $$('.toast', host).forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); });
   const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status');
   el.innerHTML = `${ic(icon, 't-' + tone)}<span>${msg}</span>${action ? `<button type="button">${esc(action)}</button>` : ''}`;
+  if (action && /^view queue$/i.test(action)) el.dataset.goto = 'queue'; /* a 'View queue' toast steps aside once you're in Queue */
   host.append(el);
   const close = () => { if (el.classList.contains('out')) return; el.classList.add('out'); if (UNDO.el === el) { UNDO.fn = null; UNDO.el = null; } setTimeout(() => el.remove(), 190); };
   if (UNDO.el && UNDO.el !== el) { UNDO.fn = null; UNDO.el = null; }
@@ -5710,7 +5715,7 @@ function route() {
   const same = CURRENT && !LIGHT.has(CURRENT) && CURRENT !== 'start' && !LIGHT.has(name) && name !== 'start';
   const render = () => {
     DISPOSE.forEach(f => { try { f(); } catch (e) { } }); DISPOSE = [];
-    CURRENT = name;
+    CURRENT = name; $$('#toasts .toast[data-goto]').forEach(t => { if (t.dataset.goto === name) t.remove(); });
     document.body.classList.toggle('force-light', LIGHT.has(name)); /* the homepage is a light world; its menus and modals follow */
     /* a screen that throws while rendering says so and falls back to Today, instead of leaving the old screen up */
     try { ROUTES[name]({ same }); } catch (err) { console.error('Hookworthy: couldn’t render', name, err); if (name !== 'today') { CURRENT = 'today'; try { ROUTES.today({}); } catch (e2) { console.error(e2); } toast('That screen hit an error, so you’re on Today. Your posts are safe.', { icon: 'zapoff', tone: 'err', ms: 5000 }); } }
@@ -6120,7 +6125,8 @@ const slotLabel = (day, time) => { const d = fromKey(day); const diff = Math.rou
 /* the two ways out of a draft: Post now is the main button, Schedule sits beside it. A client with approvals gets one button that sends it to them */
 function postBtnsHTML() {
   if (WS().approvals) return `<button class="btn primary post-main" data-cact="schedule" data-tip="They approve it, then it goes out at the time you pick" data-kbd="${MOD} ↵">${ic('send', 'sm')}<span>Send<span class="pm-n"> to ${esc(WS().name)}</span> for approval</span></button>`;
-  const u = S.settings.undoSecs ?? 8;
+  const u = S.settings.undoSecs ?? 8, eq = editTarget();
+  if (eq) return `<button class="btn sched-btn" data-cact="schedule" data-tip="Pick a different time" aria-label="Change time">${ic('clock', 'sm')}<span>Change time</span></button><button class="btn primary post-main" data-cact="savequeued" data-tip="Update it in Queue, same slot" aria-label="Save changes, ${esc(slotWhen(eq.day, eq.time))}">${ic('check', 'sm')}<span>Save<span class="pm-n"> changes</span></span></button>`;
   return `<button class="btn sched-btn" data-cact="schedule" data-tip="Pick when it goes out" data-kbd="${MOD} ↵" aria-label="Schedule">${ic('clock', 'sm')}<span>Schedule</span></button><button class="btn primary post-main" data-cact="postnow" data-tip="${u ? `Post it now. ${u}s to undo` : 'Post it now'}" data-kbd="${MOD} ${SHIFT} ↵" aria-label="Post now">${ic('send', 'sm')}<span>Post<span class="pm-now"> now</span></span></button>`;
 }
 function composerHTML() {
@@ -7263,13 +7269,15 @@ function rrVisible() { return RRADAR.posts.filter(x => !(S.radar && S.radar.skip
 function rrFocus(i, field = true) { const v = rrVisible(); if (!v.length) { drawRadar(); const em = $('#rr-empty'); em && em.focus({ preventScroll: true }); return; } RRADAR.active = (i + v.length) % v.length; drawRadar(); const c = $(`.rr-card[data-rid="${CSS.escape(v[RRADAR.active].id)}"]`); if (c) { c.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }); const t = $('textarea', c); (field && t ? t : c).focus({ preventScroll: true }); } }
 function rrStep(dir) { const v = rrVisible(), done = S.radar && S.radar.done || {}; if (!v.length) return rrFocus(0); for (let n = 1; n <= v.length; n++) { const k = ((RRADAR.active || 0) + dir * n + v.length * n) % v.length; if (!done[v[k].id]) return rrFocus(k); } rrNext(); }
 function rrNext() { const v = rrVisible(), done = S.radar && S.radar.done || {}; const nxt = v.findIndex((x, k) => k > (RRADAR.active || 0) && !done[x.id]); const any = v.findIndex(x => !done[x.id]); if (nxt < 0 && any < 0) { drawRadar(); const a = $('#rr-all'); if (a) { a.focus({ preventScroll: true }); return; } } rrFocus(nxt >= 0 ? nxt : any >= 0 ? any : RRADAR.active || 0); }
+/* round 46: Replies to your posts, shown only when there are some (otherwise one quiet line under the radar) */
+const rpMineHTML = (mine, srv) => `<section class="sec rp-mine"><div class="sec-h"><div><h2 class="h2">Replies to your posts</h2><p class="muted" style="margin-top:4px">${mine.length ? 'Answer the first few yourself, while the post is new.' : 'Nothing posted from here yet. Once you post, its replies show up here.'}</p></div></div>
+      ${mine.length && !UI.rpOpen ? `<button class="rp-sum" data-rp="more"><span><b>${mine.length}</b> post${mine.length > 1 ? 's' : ''} · <b>${mine.reduce((a, q) => a + 2 + hash(q.id) % 5, 0)}</b> replies to answer${SHOWCASE() ? ' (sample)' : ''}</span><span class="rp-go">${ic('right', 'sm')} Open</span></button>` : mine.length ? `<div class="rp-list">${mine.map(q => `<button class="rp-post" data-rp="desk" data-id="${q.id}"><span class="rp-t">${firstLineHTML(clip(q.text, 140))}</span><span class="rp-m">Went out ${slotWhen(q.day, q.time)}${q.xIds && q.xIds[0] && srv.replies ? '' : SHOWCASE() ? ' · sample replies' : ''}</span><span class="rp-go">${ic('reply', 'sm')} Reply</span></button>${questionsFor(q).length ? `<button class="btn sm ghost rp-ask" data-rp="ask" data-id="${q.id}">${ic('write', 'sm')} They asked ${questionsFor(q).length} question${questionsFor(q).length > 1 ? 's' : ''}: answer in a post</button>` : ''}`).join('')}</div>` : `<a class="btn sm" href="#write">${ic('write', 'sm')} Write a post</a>`}</section>`;
 ROUTES.replies = () => {
   settleQueue(); const mine = myQ().filter(q => q.status === 'published' && !q.marked).slice(-4).reverse(), srv = LLM.server || {};
   mount('replies', `<div class="page"><div class="page-h"><div><h1 class="display">Replies</h1><p>Answer the replies on your own posts, and add an early, useful reply to other people’s while they’re fresh.</p></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-rp="alerts">${ic('bell', 'sm')} Breakout alerts</button></div></div>
-    <section class="sec rp-mine"><div class="sec-h"><div><h2 class="h2">Replies to your posts</h2><p class="muted" style="margin-top:4px">${mine.length ? 'Answer the first few yourself, while the post is new.' : 'Nothing posted from here yet. Once you post, its replies show up here.'}</p></div></div>
-      ${mine.length && !UI.rpOpen ? `<button class="rp-sum" data-rp="more"><span><b>${mine.length}</b> post${mine.length > 1 ? 's' : ''} · <b>${mine.reduce((a, q) => a + 2 + hash(q.id) % 5, 0)}</b> replies to answer${SHOWCASE() ? ' (sample)' : ''}</span><span class="rp-go">${ic('right', 'sm')} Open</span></button>` : mine.length ? `<div class="rp-list">${mine.map(q => `<button class="rp-post" data-rp="desk" data-id="${q.id}"><span class="rp-t">${firstLineHTML(clip(q.text, 140))}</span><span class="rp-m">Went out ${slotWhen(q.day, q.time)}${q.xIds && q.xIds[0] && srv.replies ? '' : SHOWCASE() ? ' · sample replies' : ''}</span><span class="rp-go">${ic('reply', 'sm')} Reply</span></button>${questionsFor(q).length ? `<button class="btn sm ghost rp-ask" data-rp="ask" data-id="${q.id}">${ic('write', 'sm')} They asked ${questionsFor(q).length} question${questionsFor(q).length > 1 ? 's' : ''}: answer in a post</button>` : ''}`).join('')}</div>` : `<a class="btn sm" href="#write">${ic('write', 'sm')} Write a post</a>`}</section>
-    ${radarPaneHTML()}</div>`);
+    ${mine.length ? rpMineHTML(mine, srv) : ''}
+    ${radarPaneHTML()}${mine.length ? '' : '<p class="faint rp-none">Replies to your own posts show up here once you post.</p>'}</div>`);
   radarPaneInit($('#view'));
   $('#view').addEventListener('input', e => { const t = e.target.closest('[data-rrt]'); if (!t) return; const id = t.dataset.rrt; RRADAR.drafts[id] = { ...(RRADAR.drafts[id] || {}), text: t.value }; const n = $(`[data-rrn="${CSS.escape(id)}"]`); if (n) { const k = HWCore.xLength(t.value); n.textContent = `${k}/280`; n.classList.toggle('over', k > 280); } });
   const rk = e => { if (CURRENT !== 'replies' || MODALS.length || e.defaultPrevented) return; const inField = e.target.matches && e.target.matches('textarea[data-rrt]');
@@ -7819,7 +7827,8 @@ async function sharpenAskRun() {
 }
 
 /* riffs */
-function toggleRiff(id) { setImprove(id, 'takes'); }
+/* round 46: Improve opens on the one next fix (the checklist) while the first line isn't Ready yet; otherwise on Rewrites */
+function toggleRiff(id) { const i = tIndex(id), t = S.draft.tweets[i]; const weak = i === 0 && t && t.text.trim() && hookScore(t.text).score < 70; setImprove(id, UI.imp && UI.imp.id === id ? UI.imp.tab : weak ? 'score' : 'takes'); }
 function openTranslate(anchor, i) {
   if (!aiOn()) { toast('Translating in your tone needs the Room. Basic mode would only swap words, so it’s off here.', { icon: 'globe', ms: 5200, action: 'Connections', onAction: () => openConnections() }); return; }
   openMenu(anchor, [{ header: 'Translate, keep your tone' }, ...[['es', 'Spanish'], ['fr', 'French'], ['de', 'German']].map(([k, l]) => ({ label: l, icon: 'globe', run: () => runRiff(i, 'translate', k) }))]);
@@ -8098,6 +8107,7 @@ function draftProblems() {
 }
 const platList = () => Object.keys(PLAT).filter(k => S.platforms[k]).map(k => PLAT[k].name).join(', ').replace(/, ([^,]*)$/, ' and $1');
 function commitDraft({ day, time, status = 'scheduled' }) {
+  const old = editTarget(); if (old) { S.queue = S.queue.filter(x => x !== old); serverDrop(old); }
   const tws = S.draft.tweets.filter(t => t.text.trim() || t.media.length);
   const media = tws.map(t => t.media.slice());
   const quoted = pricesIn(tws.map(t => t.text).join('\n'));
@@ -8182,7 +8192,7 @@ function openSchedule() {
   const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times in ${esc(tzName())}`)}
   <div class="modal-b" style="display:grid;gap:18px">
     <div id="sh-hook">${schedHookHTML()}</div>${(() => { const ps = pricesIn(S.draft.tweets.map(t => t.text).join('\n')); return ps.length ? `<div class="sh-price">${ic('clock', 'sm')}<span>This post quotes ${ps.map(p => `<b>${p.sym} ${esc(p.raw)}</b>`).join(', ')}. Prices move. Your queue shows the price then and now, with one tap to update.</span></div>` : ''; })()}
-    ${checksHTML(preflight())}
+    ${(() => { const pf = preflight(), t0 = S.draft.tweets[0].text; return !pf.length && t0.trim() && hookFor(t0).score < 60 ? '' : checksHTML(pf); })()}
     <div style="display:grid;gap:8px"><span class="label">${mk.length ? `${mkShort(mk[0].ev)} today, then ${TIMES.src === 'you' ? 'your best times' : 'good times in general'}` : TIMES.src === 'you' ? 'Best times for you' : 'Good times to post, in general'}</span>
       <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" tabindex="${i === pickI ? 0 : -1}" ${i === pickI ? 'autofocus' : ''} data-si="${i}"><span class="radio"></span><span><b>${esc(s.label || slotLabel(s.day, s.time))}</b><small>${esc(s.reason)}</small></span>${s.ev ? `<span class="pill accent">${esc(s.ev.name.replace(' decision', ''))}${s.ev.est ? ' est.' : ''}</span>` : s.top ? '<span class="pill accent">Best</span>' : s.next ? '<span class="pill">Next open</span>' : ''}</button>`).join('')}
       <button class="stime" role="radio" aria-checked="false" tabindex="-1" data-si="custom"><span class="radio"></span><span><b>Another time</b><small>Pick any date and time</small></span></button></div>
@@ -8241,7 +8251,8 @@ function hookAlts(text, n = 3) {
 function schedHookHTML() {
   const t = S.draft.tweets[0].text; if (!t.trim()) return ''; const H = hookFor(t, S.draft.tweets.filter(x => x.text.trim()).length);
   if (H.score >= 60) return `<div class="sh-hook ok">${tierChip(H.score, { noun: true })}<span>${H.score >= 70 ? 'Ready to post.' : 'Almost there, and fine to post as it is.'}</span></div>`;
-  UI.halts = hookAlts(t);
+  /* only lines that move up a step: a same-step swap is just noise */
+  const rk = x => TIER(x).rank, r0 = rk(hookScore(sentences(t)[0] || t).score); UI.halts = hookAlts(t).filter(a => rk(hookScore(a.split('\n')[0]).score) > r0);
   return `<div class="sh-hook"><div class="sh-hh">${tierChip(H.score, { noun: true })}<span><b>${esc(hookNext(t, H.g || hookScore(t)).lead)}</b> ${esc((H.g || hookScore(t)).why || '')}</span></div>
     ${UI.halts.length ? `<div class="sh-alts">${UI.halts.map((a, i) => `<button class="sh-alt" data-halt="${i}">${tierChip(hookScore(a.split('\n')[0]).score, { cls: 'sm' })}<span>${esc(clip(a.split('\n')[0], 110))}</span></button>`).join('')}</div><p class="faint" style="font-size:12px">Pick one to use it, or keep yours.</p>` : ''}</div>`;
 }
@@ -8388,7 +8399,7 @@ function finishSend(snap, names, btn, opts = {}) {
   if (CURRENT === 'write' || CURRENT === 'queue' || CURRENT === 'insights') route(); sendOff(so, { count, plats, published: true }); if (sent) liveStart(mine);
   if (sent) toast(`Sending to ${esc(names)}. Stay close for the first replies.`, { icon: 'send', tone: 'accent', action: 'Answer replies', onAction: () => openReplyDesk(S.queue.filter(q => q.status === 'published').slice(-1)[0]), ms: 8000 });
   else if (opts.opened) { const rest = opts.opened.rest || []; toast(rest.length ? `Marked as posted. Post 1 is waiting in ${esc(opts.opened.name)}: post it, then reply to it with ${rest.length === 1 ? 'post 2' : `the other ${rest.length}`}.` : `Marked as posted. Press Post in ${esc(opts.opened.name)} to send it.`, { icon: 'send', tone: 'accent', ...(rest.length ? { action: 'Copy the rest', onAction: () => copyText(rest.join('\n\n')) } : {}), ms: rest.length ? 14000 : 6000 }); }
-  else toast(srv.xUser || srv.liUser ? `Marked as posted. ${esc(names)} ${/ and /.test(names) ? 'don’t' : 'doesn’t'} post from here, so copy it and post it yourself.` : 'Marked as posted. Practice mode, so nothing went out. Copy it to post it yourself, or move it back to drafts from the queue.', { icon: 'send', tone: 'accent', action: 'Copy text', onAction: () => copyText(snap.tweets.map(t => t.text.trim()).filter(Boolean).join('\n\n')), ms: 14000 });
+  else { copyText(snap.tweets.map(t => t.text.trim()).filter(Boolean).join('\n\n')); toast(srv.xUser || srv.liUser ? `Marked as posted and copied. ${esc(names)} ${/ and /.test(names) ? 'don’t' : 'doesn’t'} post from here, so paste it in.` : 'Marked as posted and copied. Nothing went out from here, so paste it where you post.', { icon: 'copy', tone: 'accent', ms: 8000 }); }
 }
 function undoLast() { const q = S.queue.pop(); if (!q) return; serverDrop(q); S.draft = { ...freshDraft(q.tweets), id: S.draft.id }; save(); route(); toast('Unscheduled. Back in the editor.', { icon: 'undo' }); }
 
@@ -10063,6 +10074,7 @@ function composerClick(e) {
     case 'preview': togglePreview(); break;
     case 'schedule': openSchedule(); break;
     case 'postnow': postNow(el); break;
+    case 'savequeued': saveQueued(); break;
     case 'share': openShare(el); break;
     /* posting lives on the two buttons beside this; the menu keeps the rest */
     case 'schedmenu': openMenu(el, [
@@ -11567,7 +11579,8 @@ function onbStep1() {
   const inp = $('#onb-h'); inp.oninput = () => { inp.removeAttribute('aria-invalid'); $('#onb-err').textContent = ''; ONB.t0 = ONB.t0 || Date.now(); };
   $('#onb-f').onsubmit = e => {
     e.preventDefault(); const v = inp.value.trim().replace(/^@/, '');
-    if (!v) { inp.parentElement.style.boxShadow = ''; inp.setAttribute('aria-invalid', 'true'); $('#onb-err').textContent = ONB.plat === 'li' ? 'Type your name, or start from your niche below.' : 'Type your handle, or start from your niche below.'; inp.focus(); return; }
+    /* round 46: no handle is fine: it's the same as Start from your niche, never an error */
+    if (!v) { ONB.handle = ''; onbStep2(); return; }
     if (ONB.plat === 'li') { if (v.length < 2) { inp.setAttribute('aria-invalid', 'true'); $('#onb-err').textContent = 'A name needs at least two letters.'; inp.focus(); return; } ONB.name = v.replace(/\s+/g, ' '); ONB.handle = v.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '').slice(0, 30) || 'you'; onbStep2(); return; }
     if (!/^[A-Za-z0-9_.]{2,30}$/.test(v)) { inp.setAttribute('aria-invalid', 'true'); $('#onb-err').textContent = 'Handles can only have letters, numbers, dots and underscores.'; inp.focus(); return; }
     ONB.handle = v; onbStep2();
@@ -11615,7 +11628,8 @@ function onbStep3() {
   PH_IDEAS = genIdeas(6, hash(handle) % 1000);
   const ideas = ONB.ideas || genIdeas(5, hash(handle + ONB.niche) % 9999); const an = ANALYSIS();
   const traits = S.profile && S.profile.traits ? S.profile.traits.map(t => [t.name, t.evidence]) : an ? heuristicTraits(an) : sliderTraits();
-  const secs = Math.max(4, Math.round((Date.now() - ONB.t0) / 1000)), read = !!an;
+  const secs = Math.max(4, Math.round((Date.now() - (ONB.t0 || Date.now())) / 1000)), read = !!an;
+  const skip = $('.onb-top a[href="#write"]'); if (skip) skip.hidden = true; /* setup is done: nothing left to skip */
   $('#onb').innerHTML = `<div class="onb-result">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><h1 class="display" style="font-size:clamp(36px,5vw,56px)">${an || (S.profile && S.profile.traits) ? (name && !S.user.nameGuessed ? `Here’s how you sound, ${esc(name.split(' ')[0])}.` : 'Here’s how you sound.') : (name && !S.user.nameGuessed ? `Your starting voice, ${esc(name.split(' ')[0])}.` : 'Your starting voice.')}</h1></div>${read ? `<span class="timer" data-tip="How long the read took">${ic('clock', 'xs')} ${secs < 60 ? `${secs} seconds` : `${Math.round(secs / 60)} min`} to read ${fmtN(an.n)} posts</span>` : ''}</div>
     <div class="card onb-try" id="onb-try"><div class="ot-h"><span class="label">Try it on your own line</span><span class="faint">The post you almost wrote this week. Rough is fine.</span></div>
@@ -11685,6 +11699,12 @@ const SRC_ICON = { link: 'link', note: 'ideas', voice: 'mic', shot: 'shot' };
 const SRC_NAME = { link: 'Link', note: 'Note', voice: 'Voice memo', shot: 'Screenshot' };
 let ENGINE = { seed: 21, kind: 'All' };
 const cleanIdea = t => t.replace(/^(Voice memo|Screenshot) · (\d:\d\d · )?/, '');
+/* round 46: a saved idea becomes one post from your own words (idea tags like #pricing stay out of it); the outline is one tap away */
+function ideaToDraft(it) {
+  if (!it) return; const text = cleanIdea(it.text).replace(/(^|\s)#[\p{L}\p{N}_-]+/gu, '').replace(/\s{2,}/g, ' ').trim();
+  writeFrom([text]); toast('Started from your note.', { icon: 'write', tone: 'accent', ms: 5200, action: 'Outline as thread', onAction: () => { writeFrom(expandIdea(text, 'How-to')); toast(OUTLINE_MSG, { icon: 'write', tone: 'accent', ms: 4200 }); } });
+}
+
 /* Today: the one screen to open each morning. One post to write, the week at a glance, fresh posts worth a reply, and how the last one did */
 /* weekly rhythm, not a daily streak: a good week is a few good posts, not seven rushed ones */
 function weekRhythm() {
@@ -11703,7 +11723,7 @@ const mineQ = q => (q.ws || 'me') === S.ws;
 function todayIdea() {
   /* your own notes only: a saved link or post is someone else's words */
   const saved = S.ideas.filter(i => i.src !== 'link' && !/^Formula: /.test(i.text)).map(i => ({ text: cleanIdea(i.text), kind: 'How-to', saved: true })).filter(x => x.text.length > 12);
-  const gen = genIdeas(16, hash(dayKey(Date.now())) % 997);
+  const gen0 = genIdeas(16, hash(dayKey(Date.now())) % 997), gen1 = gen0.filter(x => !/:\s*$/.test(x.text)), gen = gen1.length ? gen1 : gen0; /* a one-line idea never ends on a dangling colon */
   const pool = [...saved, ...gen].map(x => ({ ...x, s: hookScore(x.text).score })).sort((a, b) => (b.s >= 70) - (a.s >= 70) || (b.saved || 0) - (a.saved || 0) || b.s - a.s);
   return pool[TODAY.k % pool.length];
 }
@@ -11895,13 +11915,16 @@ ROUTES.ideas = () => {
     const tab = e.target.closest('[data-ek]'); if (tab) { ENGINE.kind = tab.dataset.ek; $$('[data-ek]').forEach(b => b.setAttribute('aria-selected', b === tab)); syncSeg($('#eng-seg')); drawEngine(); return; }
     const f = e.target.closest('[data-idf]'); if (f) { const [k, v] = f.dataset.idf.split(':'); if (k === 'src') IDF.src = v; if (k === 'tag') IDF.tag = IDF.tag === v ? '' : v; if (k === 'sort') IDF.sort = IDF.sort === 'new' ? 'old' : 'new'; SFX.play('tick'); drawInbox(); return; }
     const la = e.target.closest('[data-la]'); if (la) { linkAction(la); return; }
-    const b = e.target.closest('[data-iact]'); if (!b) return; const a = b.dataset.iact;
+    const b = e.target.closest('[data-iact]');
+    /* round 46: a saved idea's whole row opens it in Write (the buttons, links and tags inside keep their own jobs) */
+    if (!b) { const row = e.target.closest('.inbox-row[data-id]'); if (row && !e.target.closest('a, button, input, textarea, [data-idf]')) { const it = S.ideas.find(x => x.id === row.dataset.id); if (it) ideaToDraft(it); } return; }
+    const a = b.dataset.iact;
     if (a === 'shuffle') shuffleEngine();
     if (a === 'claude') claudeIdeas(b);
     if (a === 'write') { const c = b.closest('[data-t]'); writeIdea(c.dataset.t, c.dataset.k, c.dataset.topic); }
     if (a === 'save') { const c = b.closest('[data-t]'); addIdea({ src: 'note', text: fillText(c.dataset.t, { topic: c.dataset.topic }) }, true); drawInbox(); b.innerHTML = ic('check', 'sm'); b.disabled = true; b.dataset.tip = 'Saved'; toast('Saved. It’s in the Saved tab.', { icon: 'inbox', action: 'Open', onAction: () => ideaTab('inbox') }); }
     if (a === 'expand') { const it = S.ideas.find(x => x.id === b.closest('[data-id]').dataset.id); showAngles(it.src === 'link' ? linkAngleSrc(it) : { title: cleanIdea(it.text), topic: topicOf(cleanIdea(it.text)) }, it.src); }
-    if (a === 'draft') { const it = S.ideas.find(x => x.id === b.closest('[data-id]').dataset.id); writeFrom(expandIdea(cleanIdea(it.text), 'How-to')); toast(OUTLINE_MSG, { icon: 'write', tone: 'accent', ms: 4200 }); }
+    if (a === 'draft') { const it = S.ideas.find(x => x.id === b.closest('[data-id]').dataset.id); ideaToDraft(it); }
     if (a === 'archive') { const id = b.closest('[data-id]').dataset.id; const k = S.ideas.findIndex(x => x.id === id); const [it] = S.ideas.splice(k, 1); save(); const row = b.closest('.inbox-row'); row.style.transition = 'opacity .18s, transform .18s'; row.style.opacity = 0; row.style.transform = 'translateX(12px)'; setTimeout(drawInbox, 180); toast('Idea deleted.', { icon: 'trash', action: 'Undo', onAction: () => { S.ideas.splice(k, 0, it); save(); drawInbox(); } }); }
     if (a === 'remix') { const p = MYTOP().find(x => x.id === b.closest('[data-tp]').dataset.tp); openMenu(b, [{ header: 'Remix as' }, ...[['thread', 'A thread', 'layers'], ['oneliner', 'A one-liner', 'minus'], ['listicle', 'A list', 'poll'], ['contrarian', 'A hot take', 'swap'], ['linkedin', 'A LinkedIn story', 'write']].map(([f, l, icn]) => ({ label: l, icon: icn, run: () => { writeFrom(remix(p, f)); if (f === 'linkedin') { S.platforms.linkedin = true; save(); } toast(`Remixed as ${l.toLowerCase()}.`, { icon: 'layers', tone: 'accent' }); } }))], { align: 'end' }); }
     if (a === 'angle-write') { const c = b.closest('[data-t]'); writeFilled(c.dataset.t, {}); }
@@ -12108,7 +12131,7 @@ function drawInbox({ flash, keepTools } = {}) {
   el.innerHTML = list.map(it => { const L = linkOfIdea(it), tg = it.tags || tagsOf(it.text), txt = it.text.replace(/^(Voice memo|Screenshot|Link|Note) · (\d+:\d\d · )?/, '');
     const meta = `<small>${SRC_NAME[it.src] || 'Note'}${L ? ` · ${esc(linkSiteLabel(L))}` : ''} · ${ago(it.at)}${tg.length ? ' · ' + tg.map(t => `<button class="ib-tagl" data-idf="tag:${esc(t)}">#${esc(t)}</button>`).join(' ') : ''}</small>`;
     if (L) return `<div class="inbox-row is-link${flash === it.id ? ' flash' : ''}" data-id="${it.id}">${linkCardHTML(L, { mini: true })}<div class="ib-meta">${it.note ? `<p class="ib-note">${esc(it.note)}</p>` : ''}${meta}</div><div class="ib-la">${linkActsHTML(L, { saved: true })}<button class="btn ghost sm icon-only" data-iact="archive" data-tip="Delete" aria-label="Delete idea">${ic('trash', 'sm')}</button></div></div>`;
-    return `<div class="inbox-row${flash === it.id ? ' flash' : ''}" data-id="${it.id}"><span class="src" data-tip="${SRC_NAME[it.src] || 'Note'}">${ic(SRC_ICON[it.src] || 'ideas')}</span><div style="min-width:0"><p>${esc(txt)}</p>${meta}</div><div class="acts"><button class="btn ghost sm" data-iact="draft" data-tip="Start a draft with an outline">${ic('write', 'sm')}<span class="hide-sm">Write about it</span></button><button class="btn ghost sm" data-iact="expand" data-tip="Five ways to post it">${ic('layers', 'sm')}<span class="hide-sm">Angles</span></button><button class="btn ghost sm icon-only" data-iact="archive" data-tip="Delete" aria-label="Delete idea">${ic('trash', 'sm')}</button></div></div>`; }).join('');
+    return `<div class="inbox-row${flash === it.id ? ' flash' : ''}" data-id="${it.id}"><span class="src" data-tip="${SRC_NAME[it.src] || 'Note'}">${ic(SRC_ICON[it.src] || 'ideas')}</span><div style="min-width:0"><p>${esc(txt)}</p>${meta}</div><div class="acts"><button class="btn ghost sm" data-iact="draft" data-tip="Start a post from this note" aria-label="Write about it">${ic('write', 'sm')}<span>Write<span class="hide-sm"> about it</span></span></button><button class="btn ghost sm" data-iact="expand" data-tip="Five ways to post it">${ic('layers', 'sm')}<span class="hide-sm">Angles</span></button><button class="btn ghost sm icon-only" data-iact="archive" data-tip="Delete" aria-label="Delete idea">${ic('trash', 'sm')}</button></div></div>`; }).join('');
 }
 function showAngles(src, kind) {
   const list = anglesFor(src); const el = $('#angles'); if (!el) return;
@@ -12324,9 +12347,9 @@ function moveQ(id, day, time) {
   const undo = () => { const cur = S.queue.find(x => x.id === id); if (!cur) return; Object.assign(cur, was); if (other && S.queue.includes(other)) { Object.assign(other, owas); serverResync(other); } save(); serverResync(cur); drawCal(); drawQSide(); };
   const swapped = other ? (oldLive ? ', swapped with the post that was there' : `. The post that was there moved to ${slotWhen(oto.day, oto.time)}`) : '';
   const card = $(`.qcard[data-id="${id}"]`); card && card.classList.add('landed');
-  const si = slotInfo(day, time), alt = !si.best ? nextSlots(6).find(x => slotDate(x.day, x.time) - slotDate(day, time) < 3 * DAY && slotDate(x.day, x.time) > Date.now()) : null, ai = alt && slotInfo(alt.day, alt.time);
+  const si = slotInfo(day, time);
   if (si.best) { SFX.play('pop'); toast(`Moved to ${slotWhen(day, time)}${swapped}. ${si.general ? 'A good time to post.' : `One of your best times: ${si.x}× your usual.`}`, { icon: 'target', tone: 'accent', ms: 3000, action: 'Undo', onAction: undo }); }
-  else toast(`Moved to ${slotWhen(day, time)}${swapped}.${alt && ai.x && (si.x == null || ai.x > si.x) ? ` ${cap(slotWhen(alt.day, alt.time))} usually gets ${ai.x}× your usual${si.x != null ? ` vs ${si.x}×` : ''}.` : ''}`, { icon: 'cal', ms: 4200, action: 'Undo', onAction: undo });
+  else toast(`Moved to ${slotWhen(day, time)}${swapped}.`, { icon: 'cal', ms: 4200, action: 'Undo', onAction: undo });
 }
 /* "Pick a time": the first sensible time, never 9 AM tomorrow when this afternoon is still open */
 function pickDefault() {
@@ -12342,17 +12365,22 @@ function moveToTime(q) {
   $('#mv-go', m.el).onclick = go; m.el.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); go(); } });
 }
 /* editing a queued post: everything about it comes back to the editor, and the server forgets the old job */
+/* round 46: editing a scheduled post leaves it in the queue. Save changes swaps it in place, in the same slot;
+   leave without saving and the original still goes out as planned. Nothing is ever lost */
 function editQueued(q) {
-  S.queue = S.queue.filter(x => x !== q); serverDrop(q);
   switchWs(q.ws || 'me', { quiet: true }); /* the full switch, so your own name and platforms never get swapped for a client's */
   if (q.platforms) S.platforms = { ...q.platforms };
   writeFrom(q.tweets); (q.media || []).forEach((list, i) => { const tw = S.draft.tweets[i]; if (tw && list) tw.media = list.slice(); });
-  S.draft.slot = q.status === 'scheduled' ? { day: q.day, time: q.time } : null; const was = S.draft.id; save(); if (CURRENT === 'write') renderThread();
-  if (q.status !== 'scheduled') return;
-  toast(`Unscheduled while you edit. Schedule it again and ${slotWhen(q.day, q.time)} is picked for you.`, { icon: 'clock', ms: 6000, action: 'Put it back', onAction: () => {
-    /* keep any edits as a draft, and put the original back where it was */
-    if (S.draft.id === was && S.draft.tweets.map(t => t.text.trim()).join('\n') !== q.tweets.map(t => t.trim()).join('\n') && !isEmptyDraft()) { S.drafts.unshift(S.draft); toast('Put back. Your edits are saved in Drafts.', { icon: 'archive' }); }
-    S.queue.push(q); S.draft = freshDraft(); save(); serverResync(q); go('queue'); } });
+  S.draft.slot = q.status === 'scheduled' ? { day: q.day, time: q.time } : null; S.draft.editOf = q.status === 'scheduled' ? q.id : null; save(); if (CURRENT === 'write') renderThread();
+  if (q.status !== 'scheduled') { S.queue = S.queue.filter(x => x !== q); serverDrop(q); save(); return; }
+  toast(`Still scheduled for ${slotWhen(q.day, q.time)}. Save changes when you’re done.`, { icon: 'clock', ms: 4200 });
+}
+/* the queued post this draft is editing, while it's still waiting to go out */
+const editTarget = () => { const id = S.draft && S.draft.editOf; return id ? S.queue.find(x => x.id === id && x.status === 'scheduled') || null : null; };
+function saveQueued() {
+  const q = editTarget(); if (!q) { openSchedule(); return; }
+  if (!S.draft.tweets.some(t => t.text.trim() || t.media.length)) { toast('Write something first.', { icon: 'write', tone: 'err' }); return; }
+  const when = slotWhen(q.day, q.time); commitDraft({ day: q.day, time: q.time }); toast(`Saved. Still going out ${when}.`, { icon: 'check', tone: 'accent' }); go('queue');
 }
 function qMenu(c) {
   const q = S.queue.find(x => x.id === c.dataset.id); if (!q) return;
@@ -12366,12 +12394,12 @@ function qMenu(c) {
     ...(late ? [] : [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }]),
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => { moveQ(q.id, next.day, next.time); keepFocus(`.qcard[data-id="${q.id}"]`); } } : { label: 'No best times left', icon: 'target', disabled: true },
     ...(late ? [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }] : []),
-    ...(late ? [] : xoItems(q, c)),
     { label: 'Move to…', icon: 'clock', run: () => setTimeout(() => openMenu(c, [{ header: 'Move to an open time' }, ...nextSlots(10, false).map(x => ({ label: slotLabel(x.day, x.time), icon: slotInfo(x.day, x.time).best ? 'target' : 'cal', hint: slotInfo(x.day, x.time).best ? 'Best' : '', run: () => { moveQ(q.id, x.day, x.time); requestAnimationFrame(() => { const nc = $(`.qcard[data-id="${q.id}"]`); nc && nc.focus(); }); } })), '-', { label: 'Pick a time…', icon: 'clock', run: () => moveToTime(q) }], { width: 260 }), 0) },
+    ...(late ? [] : xoItems(q, c)),
     { label: ((q.platforms.x && (LLM.server || {}).xUser) || (q.platforms.linkedin && (LLM.server || {}).liUser)) ? 'Post now' : 'Mark as posted now', icon: 'send', run: () => { if (q.approval === 'needs') { toast(`${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'The client')} hasn’t approved this yet. Approve it first, then post.`, { icon: 'send', tone: 'err' }); return; } const was = { day: q.day, time: q.time }; serverDrop(q); q.status = 'published'; const d = new Date(); q.day = dayKey(d); q.time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; S.streak[dayKey(d)] = 1; const srv = LLM.server || {}, wired = (q.platforms.x && srv.xUser) || (q.platforms.linkedin && srv.liUser);
       /* nothing connected: marked as posted, never live, never sample likes (same rule as Post now in Write) */
-      if (!wired) q.marked = true; save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide();
-      toast(wired ? 'Sending now. Stay close for the first replies.' : 'Marked as posted. Nothing went out: no account is connected. Copy it from the card to post it yourself.', { icon: 'send', tone: 'accent', ...(wired ? {} : { action: 'Undo', onAction: () => { Object.assign(q, was, { status: 'scheduled' }); delete q.marked; unmarkDay(dayKey(Date.now())); save(); drawCal(); drawQSide(); toast('Back in the queue.', { icon: 'undo' }); } }), ms: wired ? 3800 : 14000 });
+      if (!wired) { q.marked = true; copyText(q.tweets.join('\n\n')); } save(); burstFrom(c); SFX.play(q.platforms.linkedin && !q.platforms.x ? 'sendLi' : 'sendX'); drawCal(); drawQSide();
+      toast(wired ? 'Sending now. Stay close for the first replies.' : 'Marked as posted and copied. Nothing went out from here, so paste it where you post.', { icon: 'send', tone: 'accent', ...(wired ? {} : { action: 'Undo', onAction: () => { Object.assign(q, was, { status: 'scheduled' }); delete q.marked; unmarkDay(dayKey(Date.now())); save(); drawCal(); drawQSide(); toast('Back in the queue.', { icon: 'undo' }); } }), ms: wired ? 3800 : 14000 });
       if (wired) { syncToServer(q, q.mediaIds ? null : q.media); liveStart(q); } } },
     { label: 'Duplicate', icon: 'copy', run: () => { const s = nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } const copy = { ...q, id: uid(), day: s.day, time: s.time, serverId: null }; delete copy.xIds; delete copy.urls; S.queue.push(copy); save(); syncToServer(copy, copy.mediaIds ? null : copy.media); drawCal(); drawQSide(); toast(`Duplicated to ${slotWhen(s.day, s.time)}.`, { icon: 'copy' }); } }, '-',
     { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); serverDrop(q); save(); drawCal(); drawQSide(); requestAnimationFrame(() => { const nc = $('#cal .qcard') || $('#cal .slot .add'); nc && nc.focus(); }); toast(`Gone from the queue.`, { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); save(); serverResync(q); drawCal(); drawQSide(); } }); } }
