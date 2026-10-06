@@ -185,7 +185,7 @@
     { key: 'flat', word: 'Getting there', min: 0 },
     { key: 'warming', word: 'Almost', min: 45 },
     { key: 'sharp', word: 'Ready', min: 70 },
-    { key: 'honed', word: 'Standout', min: 85 }
+    { key: 'honed', word: 'Outstanding', min: 85 }
   ];
   function hookTier(score) {
     const s = +score || 0; let i = 0;
@@ -202,7 +202,7 @@
     return { dir: 'same', cross: false, from: A, to: B, text: 'About the same' };
   }
   /* the next single step, as the headline: "Cut “i think” to make it Ready." Where the fix can be tried here (a hedge, a
-     warm-up), it's scored first, so the sentence only promises a state the line would really reach. Ready and Standout
+     warm-up), it's scored first, so the sentence only promises a state the line would really reach. Ready and Outstanding
      lead with that, and offer the step as optional. */
   function hookNext(raw, h) {
     h = h || hookScore(raw); const T = hookTier(h.score), bar = HOOK_TIERS[2];

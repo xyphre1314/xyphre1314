@@ -43,12 +43,12 @@ colors:
   state-getting-there: "#545A80"
   state-almost: "#6A3FA8"
   state-ready: "#166A59"
-  state-standout: "#7A5800"
+  state-outstanding: "#7A5800"
   state-fill-light: "#8187AE #9A6FDB #2A9C82 #B9861A"
   state-getting-there-dark: "#B3B9DD"
   state-almost-dark: "#C5ADF6"
   state-ready-dark: "#6FDCBE"
-  state-standout-dark: "#F5D27E"
+  state-outstanding-dark: "#F5D27E"
   state-fill-dark: "#9EA5CF #B699F2 #4FD1AE #F2C55C"
   x-text: "#0F1419"
   x-text-dark: "#E7E9EA"
@@ -272,10 +272,10 @@ Four steps toward a line worth stopping for, coloured as an aurora that rises wi
 | **Getting there** | under 45 | #545A80 (6.3:1) / #B3B9DD | #8187AE / #9EA5CF |
 | **Almost** | 45–69 | #6A3FA8 (6.9:1) / #C5ADF6 | #9A6FDB / #B699F2 |
 | **Ready** (the bar) | 70–84 | #166A59 (6.2:1) / #6FDCBE | #2A9C82 / #4FD1AE |
-| **Standout** | 85+ | #7A5800 (6.2:1) / #F5D27E | #B9861A / #F2C55C, with a soft gold glow |
+| **Outstanding** | 85+ | #7A5800 (6.2:1) / #F5D27E | #B9861A / #F2C55C, with a soft gold glow |
 
 - Every word passes 4.5:1 on the page, on cards, on the sunk surface and on its own chip tint.
-- Rings draw an arc from the start colour through the middle to the state's colour at the score (`--ga`, `--gb`, `--tf`), with round ends; Standout runs violet → rose → gold.
+- Rings draw an arc from the start colour through the middle to the state's colour at the score (`--ga`, `--gb`, `--tf`), with round ends; Outstanding runs violet → rose → gold.
 - **Ink surfaces** (the Sharpen pill) use the opposite theme's words, as `--tier-*-inv`. **Today's plum card** uses fixed light steps, except inside its writing box, which is the theme's own writing page and so uses the ordinary state chip (round 35).
 
 ### Platform replicas
@@ -289,7 +289,7 @@ These are not Hookworthy colors. They exist so a replica matches the real app, a
 **The One Accent Rule.** The accent is solid in exactly two jobs (the one main button on a screen, and on/selected states) and a soft tint in one (the highlighter under words worth stopping for). Everything else is neutral. If two solid blue things compete on one screen, one of them is wrong.
 **The One Threshold Rule.** Ready is the bar (70 underneath). When a line reaches Ready, the ring turns teal, echoes outward with eight small sparks, the tint sweeps under the first line and a small sound plays. Below it, nothing celebrates, and nothing scolds.
 **The Next-Step Rule.** The headline is always the one next step ("Cut “i think” to make it Ready."), never the label. A step that can be tried here (a hedge, a warm-up) is scored first, so the sentence only promises a state the line would really reach; otherwise it says "to get closer to Ready".
-**The Words-Not-Numbers Rule.** People see the hook as a step (Getting there, Almost, Ready, Standout), never as "72" or "/100". The number stays underneath for sorting and thresholds, and it shows ("Ready · 76") only when Settings › Write › Show scores as numbers is on.
+**The Words-Not-Numbers Rule.** People see the hook as a step (Getting there, Almost, Ready, Outstanding), never as "72" or "/100". The number stays underneath for sorting and thresholds, and it shows ("Ready · 76") only when Settings › Write › Show scores as numbers is on.
 **The Replica Rule.** Platform colors never leave a platform replica, and Hookworthy colors never enter one.
 
 ## Typography
@@ -335,7 +335,7 @@ The app keeps its 232px sidebar and inset main panel. The composer's "In the fee
 
 ## Elevation & Depth
 
-Real-world depth only: phone frames with a machined edge, cards with a 1px hairline and a long soft drop (`0 16px 30px -24px rgba(0,0,0,.35)`), and 3D perspective in the ring. No glows and no glass. There are three exceptions: the iOS notification, which copies iOS's own material, the Standout state, whose soft gold glow is the reward for the top step, and the generating aurora (below), which exists only while Claude is writing.
+Real-world depth only: phone frames with a machined edge, cards with a 1px hairline and a long soft drop (`0 16px 30px -24px rgba(0,0,0,.35)`), and 3D perspective in the ring. No glows and no glass. There are three exceptions: the iOS notification, which copies iOS's own material, the Outstanding state, whose soft gold glow is the reward for the top step, and the generating aurora (below), which exists only while Claude is writing.
 
 ## Shapes
 
@@ -384,13 +384,13 @@ The 0–100 heuristic in `HWCore.hookScore` is unchanged. The owner found "Flat"
 | **Getting there** | under 45 | dusk slate |
 | **Almost** | 45–69 | plum violet |
 | **Ready** | 70–84 (the bar) | aurora teal |
-| **Standout** | 85+ | gold, with a soft glow |
+| **Outstanding** | 85+ | gold, with a soft glow |
 
 - **Core:** `HWCore.hookTier(score)`, `HWCore.hookMove(a, b)`, `HWCore.hookNext(text, h)` and `HWCore.partState(v)`. `hookScore()` also returns `tier`, `step` (the one next move: "Cut “i think”"), `why` ("It softens the claim.") and `fix` (the line without the hedge or warm-up, so `hookNext` can score it).
 - **UI helpers** (index.html): `tierChip()` (a small aurora ring and the word; `noun` adds "Hook:" for screen readers only), `ringHTML()` (the big progress ring with round ends and a teal tick where Ready starts), `tierScaleHTML()` (the journey bar: four equal steps, each filled by how far the score is through it), `tierMoveHTML()` / `tierSay()`, `hookNext()`, `partsHTML()`, `dialTier()` / `dialMove()`, `bigScore()`, `readyBurst()`.
 - **The five checks** (Clear, Open loop, Specific, Tension, Short) are pips: filled teal with "Yes" (70+), half violet with "Some" (45–69), an empty slate ring with "Not yet".
 - **Changes:** up a state, "Almost → Ready" (the earlier word in neutral grey, no strike-through); within a state, "Stronger" (3+) or "A bit softer"; a point or two is "About the same". Reaching Ready: ring echo, eight sparks, the tint under the first line, the hook sound. Reduced motion: an instant swap.
-- **Copy:** the next step leads ("Cut “i think” to make it Ready.", "Add a number or a name to get closer to Ready.", "Ready to post. For Standout: leave one question open.", "Ready to post. This one stands out."). Reason strings never mention numbers.
+- **Copy:** the next step leads ("Cut “i think” to make it Ready.", "Add a number or a name to get closer to Ready.", "Ready to post. For Outstanding: leave one question open.", "Ready to post. This one stands out."). Reason strings never mention numbers.
 - **Settings › Write › Show scores as numbers** (off by default) appends the number: "Ready · 76", "Almost → Ready 61 → 76", "Yes · 82".
 - **Honest by design:** the words grade the words on the page. Insights compares "Ready or better vs Getting there" on your own posts.
 
@@ -561,7 +561,7 @@ A three-way switch, **Light · Dark · Auto**, sits in the sidebar footer above 
 
   | Say | Don't say |
   |---|---|
-  | **Hook** (the first line), **Hook score** (the feature); the four steps **Getting there**, **Almost**, **Ready**, **Standout**; **the next step to Ready** (the bar); **Stronger** / **A bit softer** (a change within a step) | grade (as a noun); "Hook 72", "/100", "70 is the bar"; Flat, Warming, Sharp, Honed (retired); Hooked, Scroll-stopper (they forecast readers) |
+  | **Hook** (the first line), **Hook score** (the feature); the four steps **Getting there**, **Almost**, **Ready**, **Outstanding**; **the next step to Ready** (the bar); **Stronger** / **A bit softer** (a change within a step) | grade (as a noun); "Hook 72", "/100", "70 is the bar"; Flat, Warming, Sharp, Honed (retired); Hooked, Scroll-stopper (they forecast readers) |
   | **Rewrite** (the whole post), **Sharpen** (selected words), **version** | riff, take, option, "applied", AI edit |
   | **Formula** (a fill-in first line or post shape) | shape, structure, pattern (as a template), hook library |
   | Post kinds: **Hot take**, **List**, **Teaser**, **Story**, **How-to**, **Question**, **Results**, **News**, **Lesson**, **Thought**; in sentences “hot takes”, “lists”, “teasers” | Contrarian, Listicle, Curiosity / Open loop (as a kind), Proof, Announcement, Take (as a kind) |
@@ -608,3 +608,10 @@ A three-way switch, **Light · Dark · Auto**, sits in the sidebar footer above 
 
 - **Time format:** 8:40 AM, with a space and capitals, as on X.
 - **Voice:** a coworker who writes too: warm, plain, a little dry. Say what happened and what to do next (“Gone from the queue.”, “Added on top. Your old line is right below it.”), never “Operation successful”. Creator to creator; short sentences; numbers beat adjectives; no "unlock / supercharge / leverage / elevate / seamless / AI-powered".
+
+## Round 49: hook tag, post sheet, balanced pages
+
+- **Hook state is a tag, not a ring.** It sits at the right of the post header: signal bars, the state word and a chevron, tinted by state. Outstanding (renamed from Standout) gets a gold edge and a slow sheen. The gutter keeps only the avatar.
+- **The post sits on a sheet.** On desktop the thread is a white card with a hairline border and soft shadow; the tools row stays visible inside it at reduced opacity.
+- **Pages centre beside the sidebar.** Every `.page` uses auto margins, so left and right gaps match (Queue included).
+- **Insights rhythm.** One 16px gap between every block; side-by-side charts end on the same line; insight cards put the body under the title and the button on the bottom edge.
