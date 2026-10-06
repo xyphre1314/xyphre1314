@@ -27,7 +27,7 @@
 <link rel="preload" href="fonts/Figtree-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/EBGaramond-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* Fonts are self-hosted (EB Garamond for display, Figtree for UI, Geist Mono for keys); the Geist fallback is Arial tuned to Geist's metrics so a slow or blocked font never reflows a line */
+/* Fonts are self-hosted (Figtree for display and UI, EB Garamond for the wordmark only, Geist Mono for keys); the Geist fallback is Arial tuned to Geist's metrics so a slow or blocked font never reflows a line */
 @font-face{ font-family:"Geist Mono"; src:url(fonts/GeistMono-Variable.woff2) format("woff2"); font-weight:100 900; font-display:swap; }
 @font-face{ font-family:"EB Garamond"; src:url(fonts/EBGaramond-Regular.woff2) format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
 @font-face{ font-family:"EB Garamond"; src:url(fonts/EBGaramond-Italic.woff2) format("woff2"); font-weight:400 800; font-style:italic; font-display:swap; }
@@ -40,7 +40,7 @@
    Color: "Graphite". Cool, near-neutral greys (Linear). The accent is ink itself:
          near-black on light, near-white on dark. Hue is reserved for meaning
          (green good, amber warning, red error).
-   Type: EB Garamond 400 for display (32px and up, roman + italic), Figtree for UI and
+   Type (round 47): Figtree for display and UI, EB Garamond only in the wordmark;
          writing (and the wordmark), Geist Mono for numbers and keys, Caveat for margin notes.
    Light tokens live on :root and .force-light; dark tokens on [data-theme=dark],
    .force-dark and the prefers-color-scheme block. Springs are generated at boot.
@@ -54,7 +54,8 @@
   --cta:#0075DE; --cta-ink:#FFFFFF; --cta-hover:#005BAB; /* one primary button, the same on every page, theme and block */ --pb1:var(--plum-900); --pb2:#1A1A1A; --pb3:var(--plum-900); --ppro:var(--plum-900); --psp:var(--apricot); --psq:none;
   --acc-l:var(--pl); --acc-l-text:var(--pl); --acc-l-ink:#FFFFFF; --acc-d:var(--pl-d); --acc-d-ink:#1A1A1A; }
 :root, .force-light{
-  --font-display:"EB Garamond","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --font-display:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-brand:"EB Garamond","Iowan Old Style","Palatino Linotype",Georgia,serif; /* the wordmark only */
   --font-ui:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-mono:"Geist Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
   --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-15:15px; --t-17:17px; --t-18:18px;
@@ -203,10 +204,10 @@ a{ color:inherit; text-decoration:none; }
 .tnum{ font-variant-numeric:tabular-nums; }
 .icon{ width:20px; height:20px; flex:none; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
 .icon.sm{ width:16px; height:16px; } .icon.xs{ width:14px; height:14px; } .icon.lg{ width:24px; height:24px; }
-.display{ margin:0; font-family:var(--font-display); font-weight:400; letter-spacing:-.012em; line-height:1.02; text-wrap:balance; hanging-punctuation:first last; font-feature-settings:"liga","dlig","onum"; }
+.display{ margin:0; font-family:var(--font-display); font-weight:700; letter-spacing:-.03em; line-height:1.04; text-wrap:balance; hanging-punctuation:first last; font-feature-settings:"liga","dlig","onum"; }
 .display em, .display .mk{ font-style:italic; background:var(--psq) no-repeat 0 100% / 100% .24em; padding:0 .02em .08em; margin:0; -webkit-box-decoration-break:clone; box-decoration-break:clone; animation:mkin .8s .25s var(--ease-out) both; }
 @keyframes mkin{ from{ background-size:0% .24em; } }
-.h1{ font:400 40px/1.05 var(--font-display); letter-spacing:-.01em; text-wrap:balance; margin:0; }
+.h1{ font:650 40px/1.05 var(--font-display); letter-spacing:-.01em; text-wrap:balance; margin:0; }
 .h2{ font:600 19px/1.25 var(--font-ui); letter-spacing:0; text-wrap:balance; margin:0; }
 .h3{ font:600 var(--t-15)/1.35 var(--font-ui); letter-spacing:0; margin:0; }
 .label{ font:500 var(--t-12)/1.2 var(--font-ui); letter-spacing:0; color:var(--text-3); }
@@ -379,7 +380,7 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
    LOGO
    ========================================================================== */
 .logo{ display:inline-flex; align-items:center; gap:8px; color:var(--text-1); }
-.logo .word{ font:500 26px/1 var(--font-display); letter-spacing:-.018em; padding-right:.04em; transform:translateY(-1px); } .logo .word i{ color:var(--accent-text); font-style:italic; font-weight:500; letter-spacing:-.01em; }
+.logo .word{ font:500 26px/1 var(--font-brand,'EB Garamond',serif); letter-spacing:-.018em; padding-right:.04em; transform:translateY(-1px); } .logo .word i{ color:var(--accent-text); font-style:italic; font-weight:500; letter-spacing:-.01em; }
 .mark .tile{ fill:var(--pb1); } .mark .hg{ fill:#FFFFFF; } .mark .dot{ fill:var(--plum-400); }
 
 /* ==========================================================================
@@ -766,7 +767,7 @@ body:has(.scrim) #toasts{ z-index:1001; } @media (min-width:761px){ body:has(.sc
 .ra-eq{ display:inline-flex; gap:2px; align-items:flex-end; height:12px; margin-right:4px; } .ra-eq i{ width:3px; border-radius:2px; background:var(--accent); animation:ra-eq 900ms ease-in-out infinite; } .ra-eq i:nth-child(2){ animation-delay:-.3s; } .ra-eq i:nth-child(3){ animation-delay:-.6s; }
 .ra.fin .ra-eq i{ animation:none; height:3px; }
 @keyframes ra-eq{ 0%,100%{ height:3px; } 50%{ height:12px; } }
-.ra-t{ margin:10px 0 0; max-height:7.5em; overflow:auto; font:400 18px/1.5 var(--font-display); color:var(--text-3); white-space:pre-wrap; scroll-behavior:smooth; }
+.ra-t{ margin:10px 0 0; max-height:7.5em; overflow:auto; font:650 18px/1.5 var(--font-display); color:var(--text-3); white-space:pre-wrap; scroll-behavior:smooth; }
 .ra-t .w{ transition:color 160ms,background 160ms; border-radius:4px; } .ra-t .w.done{ color:var(--text-1); } .ra-t .w.now{ color:var(--accent-ink); background:var(--accent); box-shadow:0 0 0 2px var(--accent); }
 .ra-tip{ margin:8px 0 0; font-size:12px; color:var(--text-3); }
 .hk-acts{ display:flex; gap:8px; flex-wrap:wrap; }
@@ -783,7 +784,7 @@ body:has(.scrim) #toasts{ z-index:1001; } @media (min-width:761px){ body:has(.sc
 .vt-list{ display:grid; gap:12px; margin-top:24px; }
 .vt-opt{ position:relative; overflow:hidden; display:flex; gap:12px; align-items:center; justify-content:space-between; width:100%; text-align:left; padding:20px 22px; border-radius:18px; background:var(--surface); box-shadow:0 0 0 1px var(--border-strong); transition:transform var(--d-micro),box-shadow var(--d-micro); }
 .vt-opt:hover{ transform:translateY(-1px); box-shadow:0 0 0 1.5px var(--accent); } .vt-opt:active{ transform:scale(.99); }
-.vt-t{ position:relative; font:400 22px/1.35 var(--font-display); color:var(--text-1); text-wrap:balance; }
+.vt-t{ position:relative; font:650 22px/1.35 var(--font-display); color:var(--text-1); text-wrap:balance; }
 .vt-c{ position:relative; flex:none; font:600 13px/1 var(--font-mono); color:var(--text-2); }
 .vt-opt.mine{ box-shadow:0 0 0 2px var(--accent); } .vt-opt.mine .vt-c{ color:var(--accent-text); }
 .vt-foot{ margin-top:18px; font-size:13px; } .vt-foot a{ color:var(--accent-text); }
@@ -1060,7 +1061,7 @@ body.typing .preview{ opacity:.7; }
 .bigscore circle{ fill:none; stroke-width:5; }
 .bigscore .trk{ stroke:var(--track,var(--surface-3)); }
 .bigscore .val{ stroke:var(--tc,var(--accent)); stroke-linecap:round; transition:stroke-dashoffset var(--d-snap) var(--ease-out),stroke var(--d-spring) var(--ease-out); }
-.bigscore b{ font:400 44px/1 var(--font-display); letter-spacing:-.02em; font-variant-numeric:lining-nums tabular-nums; color:var(--tc,var(--text-1)); transition:color var(--d-spring) var(--ease-out); }
+.bigscore b{ font:650 44px/1 var(--font-display); letter-spacing:-.02em; font-variant-numeric:lining-nums tabular-nums; color:var(--tc,var(--text-1)); transition:color var(--d-spring) var(--ease-out); }
 .bigscore.t-honed svg{ filter:drop-shadow(0 0 8px var(--tier-glow)); }
 .bars{ display:grid; gap:9px; }
 .bar-row{ display:grid; grid-template-columns:78px 1fr 26px; gap:10px; align-items:center; font-size:var(--t-12); color:var(--text-2); }
@@ -1140,7 +1141,7 @@ body.typing .preview{ opacity:.7; }
 .kpi-line b{ font-weight:600; color:var(--text-1); font-variant-numeric:tabular-nums; }
 .kpi-line .delta{ font:600 var(--t-13)/1 var(--font-ui); font-variant-numeric:tabular-nums; }
 .kpi{ padding:16px; display:grid; gap:8px; }
-.kpi b{ font:400 var(--t-40)/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
+.kpi b{ font:650 var(--t-40)/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
 .kpi .delta{ font-size:var(--t-12); }
 .chart-card{ padding:20px; position:relative; }
 .chart-h{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
@@ -1169,7 +1170,7 @@ body.typing .preview{ opacity:.7; }
 .heat .rl{ display:flex; align-items:center; }
 .heat .cl{ text-align:center; padding-bottom:4px; }
 .ins-card{ padding:18px; display:grid; gap:10px; align-content:start; grid-template-rows:auto 1fr auto; } .ins-card > .btn:last-child, .ins-card > :last-child:is(.btn,button){ justify-self:start; align-self:end; }
-.ins-card .big,.ih-tune .big{ font:400 28px/1.1 var(--f-serif,'EB Garamond',serif); letter-spacing:-.01em; color:var(--text-1); text-wrap:balance; }
+.ins-card .big,.ih-tune .big{ font:700 28px/1.1 var(--font-display); letter-spacing:-.01em; color:var(--text-1); text-wrap:balance; }
 .ins-card .big em,.ih-tune .big em{ color:var(--accent-text); }
 .ins-card p{ color:var(--text-2); font-size:var(--t-13); }
 .top-post{ display:grid; grid-template-columns:28px 1fr auto; gap:14px; align-items:center; padding:14px 6px; border-bottom:1px solid var(--border); }
@@ -1185,7 +1186,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 
 .voice-hero{ display:grid; grid-template-columns:1fr 1fr; gap:14px; } .voice-hero + .grid-2.sec{ margin-top:14px; }
 .trait{ display:flex; align-items:baseline; gap:10px; padding:12px 0; border-bottom:1px solid var(--border); }
-.trait b{ font:400 var(--t-32)/1 var(--font-display); letter-spacing:-.01em; }
+.trait b{ font:650 var(--t-32)/1 var(--font-display); letter-spacing:-.01em; }
 .trait span{ color:var(--text-2); font-size:var(--t-13); margin-left:auto; text-align:right; }
 .slider-row{ display:grid; gap:6px; }
 .slider-row .ends{ display:flex; justify-content:space-between; font-size:var(--t-12); color:var(--text-3); }
@@ -1200,14 +1201,14 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 
 .up-wrap{ max-width:1060px; margin:0 auto; padding:64px 40px 96px; }
 .up-hero{ text-align:center; display:grid; justify-items:center; gap:16px; }
-.up-hero .display{ font-size:clamp(48px,7vw,88px); }
+.up-hero .display{ font-size:clamp(40px,5.4vw,64px); }
 .plans{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:44px; align-items:stretch; }
 .plan{ position:relative; padding:24px; border-radius:20px; background:var(--surface); box-shadow:0 0 0 1px var(--border); display:flex; flex-direction:column; gap:18px; transition:transform var(--d-spring) var(--spring),box-shadow var(--d-fast); }
 .plan:hover{ transform:translateY(-3px); box-shadow:0 0 0 1px var(--border-strong),var(--sh-3); }
 .plan.featured{ box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 60%,transparent),0 30px 70px -24px var(--accent-glow); }
 .plan.featured::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:radial-gradient(90% 60% at 50% 0%,var(--accent-soft),transparent 70%); pointer-events:none; }
 .plan .price{ display:flex; align-items:baseline; gap:6px; }
-.plan .price b{ font:400 56px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
+.plan .price b{ font:650 56px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
 .plan ul{ list-style:none; padding:0; margin:0; display:grid; gap:10px; font-size:var(--t-14); }
 .plan li{ display:flex; gap:10px; align-items:flex-start; }
 .plan li .icon{ width:16px; height:16px; margin-top:2px; color:var(--accent-text); }
@@ -1227,7 +1228,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .upsell > *{ position:relative; }
 .upsell.out{ animation:toastout 200ms var(--ease-out) both; }
 @keyframes upsellin{ from{ opacity:0; transform:translateY(16px) scale(.97); } }
-.jump{ display:flex; align-items:center; gap:12px; font:400 48px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; margin:12px 0 8px; }
+.jump{ display:flex; align-items:center; gap:12px; font:650 48px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; margin:12px 0 8px; }
 .jump .from{ color:var(--text-3); text-decoration:line-through; text-decoration-thickness:2px; font-size:32px; }
 .jump .to{ color:var(--tc,var(--accent-text)); }
 
@@ -1308,7 +1309,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .today-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:8px; }
 .today-grid > .card{ display:grid; gap:12px; align-content:start; min-width:0; }
 .t-h{ display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
-.t-idea{ font:400 26px/1.25 var(--font-display); letter-spacing:-.01em; text-wrap:balance; color:var(--text-1); }
+.t-idea{ font:650 26px/1.25 var(--font-display); letter-spacing:-.01em; text-wrap:balance; color:var(--text-1); }
 .t-meta{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px; } .t-a{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 .t-slot{ display:flex; gap:8px; align-items:flex-start; font-size:13px; color:var(--text-2); } .t-slot .icon{ margin-top:2px; flex:none; }
 .t-big{ font-size:15px; } .t-big b{ font-size:22px; }
@@ -1500,7 +1501,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
    grammar (tokens, nav, buttons, eyebrows, reveals, week, pricing).
    ========================================================================== */
 .hw{ --c-bg:#FFFFFF; --c-bg-2:#F6F5F4; --c-ink:#191918; --c-2:#55534E; --c-3:#6B6A66; --c-line:rgba(55,53,47,.1); --c-card:#FFFFFF; --c-dark:var(--pb1); --c-dark-2:color-mix(in srgb,var(--pb1),#fff 9%); --c-black:var(--pb2); --c-peri:var(--pa); --c-ember:var(--psp); --c-mark:var(--pa); --c-acc:var(--acc-l); --c-acc-ink:var(--acc-l-ink); --c-lt:#F6F5F4;
-  --f-disp:'Figtree',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; --f-serif:'EB Garamond','Iowan Old Style','Palatino Linotype',Georgia,serif; --f-hand:'Caveat','Bradley Hand',cursive;
+  --f-disp:'Figtree',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; --f-serif:'Figtree',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; --f-brand:'EB Garamond','Iowan Old Style','Palatino Linotype',Georgia,serif; --f-hand:'Caveat','Bradley Hand',cursive;
   --ease-o:cubic-bezier(.22,1,.36,1); --ease-io:cubic-bezier(.65,0,.35,1);
   background:var(--c-bg); color:var(--c-ink); font:400 16px/1.55 var(--f-disp); overflow-x:clip; -webkit-font-smoothing:antialiased; }
 .hw p, .hw h2, .hw h3{ text-wrap:pretty; }
@@ -1604,10 +1605,10 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw .pl{ background:var(--c-card); color:var(--c-ink); box-shadow:0 0 0 1px var(--c-line); }
 .pl.pro{ background:var(--ppro); color:#FEFDF1; box-shadow:0 30px 60px -34px rgba(26,26,26,.35); }
 .pl.pro .nm span, .pl.pro .pr span{ opacity:.94; } .pl.pro li .icon{ opacity:.9; }
-.pl .nm b{ display:block; font:400 32px/1.05 var(--font-display); letter-spacing:-.01em; }
+.pl .nm b{ display:block; font:650 32px/1.05 var(--font-display); letter-spacing:-.01em; }
 .pl .nm span{ font-size:14.5px; opacity:.8; }
 .pl .pr{ display:flex; align-items:baseline; gap:8px; }
-.pl .pr b{ font:400 64px/.9 var(--font-display); letter-spacing:-.015em; font-variant-numeric:lining-nums tabular-nums; }
+.pl .pr b{ font:650 64px/.9 var(--font-display); letter-spacing:-.015em; font-variant-numeric:lining-nums tabular-nums; }
 .pl .pr span{ font-size:13.5px; opacity:.78; }
 .pl ul{ list-style:none; margin:0; padding:0; display:grid; gap:10px; align-content:start; font-size:14.5px; }
 .pl li{ display:flex; gap:10px; align-items:baseline; }
@@ -1709,7 +1710,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .h7-grid{ display:grid; grid-template-columns:minmax(0,1.04fr) minmax(0,1fr); gap:clamp(32px,5.2vw,112px); align-items:center; }
 .hw27 .h7-copy{ display:grid; gap:22px; justify-items:start; }
 .hw27 .h7-copy > *{ animation:h7in .7s var(--ease-o) both; } .hw27 .h7-copy > :nth-child(2){ animation-delay:.05s; } .hw27 .h7-copy > :nth-child(3){ animation-delay:.12s; } .hw27 .h7-copy > :nth-child(4){ animation-delay:.18s; } .hw27 .h7-copy > :nth-child(5){ animation-delay:.24s; }
-.hw27 .h7-copy .eyebrow{ margin:0; color:var(--pl); line-height:1.45; text-wrap:balance; }
+.hw27 .h7-copy .eyebrow{ margin:0; color:var(--c-3); line-height:1.45; text-wrap:balance; }
 .hw27 .h7-hero h1{ font-size:clamp(48px,6.2vw,112px); line-height:.98; letter-spacing:-.026em; padding-bottom:.16em; margin-bottom:-.06em; }
 .hw27 .h7-hero h1 .ln{ display:block; white-space:nowrap; }
 /* two lines at every width (round 34): "Good ideas die / in bad first lines." The longer line is about 5.9em of Garamond, so the size
@@ -2251,7 +2252,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 /* Plans page: the side-by-side table scrolls on phones and can take focus; the questions get the same heading as the section above */
 .cr-cmp-w:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:12px; }
 .up-faq > .label{ display:block; letter-spacing:.1em; text-transform:uppercase; font-weight:600; }
-.up-faq > h2{ margin:8px 0 12px; font:400 clamp(34px,4vw,48px)/1.04 var(--font-display); letter-spacing:-.014em; color:var(--text-1); }
+.up-faq > h2{ margin:8px 0 12px; font:650 clamp(34px,4vw,48px)/1.04 var(--font-display); letter-spacing:-.014em; color:var(--text-1); }
 /* #teams: the hero shows the Write as menu beside the words */
 .hw27 .mk-hero.tm-hero{ grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); align-items:center; column-gap:clamp(32px,5vw,80px); justify-items:stretch; }
 .hw27 .tm-hero > .tm-hcopy{ display:grid; gap:20px; justify-items:start; }
@@ -2263,7 +2264,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .lg-l > .lg-i:last-child:nth-child(odd){ grid-column:1/-1; }
 /* the light-world pages: one hero, then sections */
 .hw27 .mk-hero{ padding-block:clamp(44px,7vw,96px) clamp(8px,2vw,24px); display:grid; gap:20px; justify-items:start; }
-.hw27 .mk-hero .eyebrow{ margin:0; color:var(--pl); }
+.hw27 .mk-hero .eyebrow{ margin:0; color:var(--c-3); }
 .hw27 .mk-hero h1{ font-size:clamp(44px,6vw,92px); line-height:.98; letter-spacing:-.024em; max-width:15ch; }
 .hw27 .mk-sub{ max-width:40rem; font-size:clamp(17px,1.4vw,19.5px); line-height:1.5; color:var(--c-2); }
 .hw27 .mk-cta{ display:flex; gap:10px 18px; align-items:center; flex-wrap:wrap; }
@@ -2456,7 +2457,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .rm-c.win{ box-shadow:0 0 0 1.5px var(--tier-sharp-f); }
 .rm-log{ margin-top:12px; min-height:1.4em; font-size:13.5px; }
 .rm-win{ display:grid; justify-items:center; gap:12px; padding:10px 0 4px; text-align:center; animation:rmIn .5s var(--ease-out) both; }
-.rm-wl{ max-width:34ch; font:500 clamp(20px,2.4vw,26px)/1.35 var(--font-display); color:var(--text-1); }
+.rm-wl{ max-width:34ch; font:650 clamp(20px,2.4vw,26px)/1.35 var(--font-display); color:var(--text-1); }
 @media (max-width:640px){ .rm-grid{ grid-template-columns:minmax(0,1fr); } .rm-c{ min-height:0; } }
 
 /* round 46: the homepage dials are signal bars over the word, the same read as the app's chips */
@@ -2502,6 +2503,27 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .tr-i{ display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px; background:var(--surface-2); }
 .tr-t{ flex:1; min-width:0; display:grid; gap:2px; } .tr-t p{ margin:0; font-size:14.5px; color:var(--text-1); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .tr-t span{ font-size:12px; }
 .tr-empty{ display:grid; gap:4px; padding:28px 8px; text-align:center; } .tr-empty span{ color:var(--text-3); font-size:13.5px; }
+/* ---------- round 47: one system across the site and the app ----------
+   Type: Figtree for everything; bold, tight headings; the second half of a heading is the same weight in a quieter grey
+   (no serif italics). EB Garamond lives only in the wordmark. Sizes: one scale for page titles and section heads.
+   Buttons on the site are pills; the app keeps its 10px rounded rectangles. Eyebrows are grey everywhere. */
+.hw h1, .hw h2, .hw h3, .display, .hw27 .who7-copy h3, .hw27 .ft8-line{ font-family:var(--font-display); font-weight:700; letter-spacing:-.035em; }
+.hw h1 em, .hw h2 em, .hw h3 em, .display em, .hw27 .ft8-line em, .h3 em, .h2 em{ font-style:normal; color:color-mix(in srgb,currentColor 50%,transparent); }
+.hw main h1:not(.h8-h){ font-size:clamp(42px,5.4vw,68px); line-height:1.04; }
+.hw main h2:not(.ft-h){ font-size:clamp(32px,3.8vw,52px); line-height:1.06; }
+.hw27 .h8-earn h2{ font-size:clamp(22px,2.2vw,30px); line-height:1.1; }
+.hw27 .who7-copy h3{ font-size:clamp(26px,2.4vw,34px); line-height:1.1; }
+.hw27 .ft8-line{ font-size:clamp(30px,3vw,44px); line-height:1.06; }
+h1.display{ font-size:clamp(30px,3vw,40px); line-height:1.08; letter-spacing:-.03em; }
+.onb h1.display, .onb-result h1.display{ font-size:clamp(34px,4.4vw,56px); }
+.hw .eyebrow{ color:var(--c-3); letter-spacing:.12em; font-weight:600; font-size:12px; }
+/* the old hand-drawn squiggle under heading words is retired with the serif: the grey second half does that job now */
+.display em, .display .mk, .hw h1 .mk, .hw h2 .mk, .hw h1 em, .hw h2 em{ background:none !important; padding:0; }
+.hw .mk::after, .display .mk::after{ display:none; }
+.hw27 .fin8 .hbtn, .hw27 .fin8 button[type=submit], .hw27 .hg-sharp{ border-radius:999px; }
+.hw .on-plum .eyebrow, .hw27 .h7-story .eyebrow, .hw27 .h7-fin .eyebrow{ color:rgba(255,255,255,.62); }
+.hw .hbtn, .hw .btn, .hw27 .pl7 .btn, .hw27 .pl7 .btn.primary, .hw-nav .hbtn{ border-radius:999px; }
+.hw27 .fin8-dial b, .hw27 .hg-dial b{ font-family:var(--font-display); font-weight:600; letter-spacing:-.01em; }
 /* ---------- round 46: hook as signal bars (lists, chips, the composer gutter) and a checklist (the composer's panel) ---------- */
 .sbars{ display:inline-flex; align-items:flex-end; gap:1.5px; height:11px; flex:none; }
 .sbars b{ display:block; width:3px; border-radius:1px; background:var(--tier-track); transition:background .3s var(--ease-out); }
@@ -2515,7 +2537,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hook.t-flat .sbars b:nth-child(-n+1), .hook.t-warming .sbars b:nth-child(-n+2), .hook.t-sharp .sbars b:nth-child(-n+3), .hook.t-honed .sbars b:nth-child(-n+4){ background:var(--tf); }
 .hkc{ display:grid; gap:10px; }
 .hkc-h{ display:flex; align-items:center; gap:10px; } .hkc-h .sbars{ height:16px; gap:2px; } .hkc-h .sbars b{ width:4px; }
-.hkc-h b{ font:500 22px/1.1 var(--font-display); color:var(--text-1); letter-spacing:-.01em; } .hkc-n{ margin-left:auto; font-size:12.5px; color:var(--text-3); font-variant-numeric:tabular-nums; }
+.hkc-h b{ font:650 22px/1.1 var(--font-display); color:var(--text-1); letter-spacing:-.01em; } .hkc-n{ margin-left:auto; font-size:12.5px; color:var(--text-3); font-variant-numeric:tabular-nums; }
 .hkc-lead{ font-size:13.5px; color:var(--text-2); margin:-2px 0 2px; }
 .hkc-l{ list-style:none; margin:0; padding:0; display:grid; gap:2px; }
 .hkc-i{ display:flex; align-items:center; gap:10px; min-height:34px; padding:4px 8px; border-radius:9px; font-size:14px; color:var(--text-1); transition:background .25s var(--ease-out); }
@@ -2556,7 +2578,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 /* try it: the live grader, centred, right under the promise */
 .hw27 .h8-try{ display:grid; justify-items:center; gap:28px; padding-block:clamp(8px,2vh,24px) clamp(64px,10vh,120px); text-align:center; }
 .hw27 .h8-try h2{ font-size:clamp(30px,3.4vw,48px); }
-.hw27 .h8-try h2 em{ color:var(--pl); }
+
 .hw27 .h8-g{ width:100%; max-width:640px; text-align:left; }
 .hw27 .h8-g .h7g{ max-width:none; }
 @media (max-width:600px){ .hw27 .h8 .h8-h{ font-size:clamp(30px,10.4vw,48px); } .hw27 .h8{ min-height:0; } }
@@ -2812,7 +2834,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .fin8-dial:not(.on) .val{ opacity:0; }
 
 .hw27 .fin8-dial .t70{ stroke:var(--c-ink); stroke-width:2.5; stroke-linecap:round; }
-.hw27 .fin8-dial b{ font:400 24px/.95 var(--f-serif); letter-spacing:-.01em; color:var(--c-3); transition:color .3s; max-width:100px; text-align:center; }
+.hw27 .fin8-dial b{ font:650 24px/.95 var(--f-serif); letter-spacing:-.01em; color:var(--c-3); transition:color .3s; max-width:100px; text-align:center; }
 .hw27 .fin8-dial.on b{ color:var(--tc,var(--c-ink)); }
 .hw27 .fin8-dial small{ margin-top:6px; font:600 10.5px/1 var(--f-disp); letter-spacing:.1em; text-transform:uppercase; color:var(--c-3); }
 .hw27 .fin8-parts{ list-style:none; display:grid; gap:7px; width:100%; margin:0; padding:0; }
@@ -2830,12 +2852,12 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .hw-foot8{ display:block; border-top:0; padding:clamp(64px,7vw,104px) max(clamp(16px,4vw,40px),calc((100vw - 1200px) / 2 + 40px)) 22px; overflow:hidden; }
 .hw27 .ft8-top{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:40px clamp(32px,5vw,80px); align-items:start; }
 .hw27 .ft8-say{ display:grid; gap:18px; justify-items:start; }
-.hw27 .ft8-line{ font:400 clamp(34px,3.6vw,52px)/1.02 var(--f-serif); letter-spacing:-.02em; color:var(--c-ink); }
-.hw27 .ft8-line em{ display:block; font-style:italic; }
+.hw27 .ft8-line{ font:650 clamp(34px,3.6vw,52px)/1.02 var(--f-serif); letter-spacing:-.02em; color:var(--c-ink); }
+.hw27 .ft8-line em{ display:block; font-style:normal; color:color-mix(in srgb,currentColor 50%,transparent); }
 .hw27 .ft8-cta{ display:inline-flex; align-items:center; gap:6px; padding:6px 0; font:600 15px/1 var(--f-disp); color:var(--c-ink); text-decoration:underline; text-underline-offset:4px; text-decoration-color:color-mix(in srgb,currentColor 30%,transparent); }
 .hw27 .ft8-cta:hover{ text-decoration-color:currentColor; } .hw27 .ft8-cta .icon{ width:15px; height:15px; transition:transform .2s var(--ease-o); } .hw27 .ft8-cta:hover .icon{ transform:translateX(3px); }
 .hw27 .hw-foot8 .ft-cols{ display:grid; grid-template-columns:repeat(4,auto); gap:24px clamp(28px,4vw,56px); font-size:14px; }
-.hw27 .ft8-word{ margin:clamp(48px,6vw,88px) 0 0; padding-bottom:.14em; font:500 min(20.5vw,252px)/.86 var(--f-serif); letter-spacing:-.045em; text-align:center; white-space:nowrap; color:var(--c-ink); user-select:none; }
+.hw27 .ft8-word{ margin:clamp(48px,6vw,88px) 0 0; padding-bottom:.14em; font:500 min(20.5vw,252px)/.86 var(--f-brand); letter-spacing:-.045em; text-align:center; white-space:nowrap; color:var(--c-ink); user-select:none; }
 .hw27 .ft8-word i{ font-style:italic; letter-spacing:-.03em; color:var(--pl); }
 .hw27 .ft8-b{ display:flex; justify-content:space-between; align-items:center; gap:4px 20px; flex-wrap:wrap; margin-top:clamp(18px,2.4vw,30px); padding-top:14px; border-top:1px solid var(--c-line); font-size:13px; color:var(--c-3); }
 .hw27 .ft8-up{ display:inline-flex; align-items:center; gap:6px; min-height:32px; font:600 13px/1 var(--f-disp); color:var(--c-2); }
@@ -3013,7 +3035,7 @@ body.sending .tabbar{ visibility:hidden; }
 .q-why{ font-size:12px; display:inline-flex; gap:6px; align-items:center; } .q-why:hover{ color:var(--text-1); }
 
 .most-you{ align-self:end; display:grid; gap:8px; margin:6px 0 0; padding:16px 18px; border-radius:12px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); }
-.most-you blockquote{ margin:0; font:400 22px/1.3 var(--font-display); color:var(--text-1); text-wrap:pretty; }
+.most-you blockquote{ margin:0; font:650 22px/1.3 var(--font-display); color:var(--text-1); text-wrap:pretty; }
 .most-you figcaption{ font-size:12px; color:var(--text-2); }
 
 :root[data-theme="dark"] .sendbar{ background:var(--surface-3); box-shadow:0 18px 40px -16px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,235,.12); }
@@ -3180,7 +3202,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .dg.sun{ background:color-mix(in srgb,var(--accent) 7%,var(--surface)); } /* a plum wash that follows the theme (the fixed lilac turned grey-lilac on dark) */
 .dg-h{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; } .dg-h .h2{ margin-top:6px; max-width:52ch; }
 .dg-a{ display:flex; gap:6px; flex-wrap:wrap; }
-#dg-body{ display:grid; gap:8px; font-size:var(--t-14); line-height:1.5; } .dg-hl{ font:400 22px/1.3 var(--font-display); }
+#dg-body{ display:grid; gap:8px; font-size:var(--t-14); line-height:1.5; } .dg-hl{ font:650 22px/1.3 var(--font-display); }
 .dg-fl{ display:grid; gap:6px; justify-items:start; padding:12px 14px; border-radius:12px; background:var(--surface-2); } .dg-fl span{ font-size:12px; color:var(--text-2); } .dg-fl p{ font-size:var(--t-15); }
 .dg-mail{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; } .dg-mail .input{ flex:1; min-width:200px; } .dg-mail small{ width:100%; font-size:12px; }
 
@@ -3611,13 +3633,13 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 /* labels are small caps eyebrows everywhere, the homepage's voice in the app */
 .label{ font:600 12px/1.2 var(--font-ui); letter-spacing:.1em; text-transform:uppercase; color:var(--text-3); }
 /* big numbers are always Garamond */
-.t-big b, .v-stats b, .kpi b, .kpi .v{ font:400 32px/1 var(--font-display) !important; font-variant-numeric:lining-nums tabular-nums; letter-spacing:-.01em; }
+.t-big b, .v-stats b, .kpi b, .kpi .v{ font:650 32px/1 var(--font-display) !important; font-variant-numeric:lining-nums tabular-nums; letter-spacing:-.01em; }
 .page-h .display{ font-size:44px; } @media (max-width:760px){ .page-h .display{ font-size:38px; } }
 /* streak: ink days, apricot only on today */
 .streak i.on{ background:var(--text-1); } .streak i.today{ box-shadow:inset 0 0 0 1.5px var(--apricot); } .streak i.today.on{ background:var(--apricot); box-shadow:none; }
 /* one plum block per screen: on Today it's the post to write */
 .t-write{ background:var(--plum-900) !important; color:#FFFFFF; box-shadow:none !important; border:0; }
-.t-write .label, .t-write .faint, .t-write .t-slot{ color:rgba(255,255,255,.72); } .t-write .t-idea{ color:#FFFFFF; font:400 28px/1.15 var(--font-display); letter-spacing:-.01em; text-wrap:balance; }
+.t-write .label, .t-write .faint, .t-write .t-slot{ color:rgba(255,255,255,.72); } .t-write .t-idea{ color:#FFFFFF; font:650 28px/1.15 var(--font-display); letter-spacing:-.01em; text-wrap:balance; }
 .t-write .pill{ background:rgba(255,255,255,.12); color:#FFFFFF; box-shadow:none; }
 .t-write .hook{ background:rgba(255,255,255,.10); color:#EDE6F7; box-shadow:none; } .t-write .hook .sc{ background:rgba(255,255,255,.14); } .t-write .hook .sc span{ color:#FFFFFF; }
 .t-write .hook.hi .sc{ background:var(--lilac); } .t-write .hook.hi .sc span{ color:#1A1A1A; }
@@ -3639,9 +3661,9 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .rh-days{ display:flex; gap:4px; } .rh-days i{ width:22px; height:22px; border-radius:6px; display:grid; place-items:center; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); }
 .rh-days i b{ font:600 10.5px/1 var(--font-ui); color:var(--text-3); } .rh-days i.on{ background:var(--text-1); box-shadow:none; } .rh-days i.on b{ color:var(--bg); }
 .rh-days i.sched{ box-shadow:inset 0 0 0 1.5px var(--text-2); background:none; } .rh-days i.now{ box-shadow:inset 0 0 0 1.5px var(--apricot); } .rh-days i.now.on{ background:var(--apricot); box-shadow:none; } .rh-days i.now.on b{ color:#1A1A1A; } .rh-days i.now.sched{ box-shadow:inset 0 0 0 1.5px var(--apricot); }
-.rh-t b{ font:400 24px/1 var(--font-display); color:var(--text-1); margin-right:2px; }
+.rh-t b{ font:650 24px/1 var(--font-display); color:var(--text-1); margin-right:2px; }
 .t-hero{ display:grid; gap:12px; margin-top:4px; } .t-hero .t-idea{ max-width:44ch; } .t-sub{ font-size:14px; color:var(--text-2); }
-.t-live, .t-miss{ background:var(--surface); box-shadow:0 0 0 1px var(--border-strong); } .t-live .t-idea, .t-miss .t-idea{ font:400 28px/1.15 var(--font-display); letter-spacing:-.01em; color:var(--text-1); }
+.t-live, .t-miss{ background:var(--surface); box-shadow:0 0 0 1px var(--border-strong); } .t-live .t-idea, .t-miss .t-idea{ font:650 28px/1.15 var(--font-display); letter-spacing:-.01em; color:var(--text-1); }
 .t-live .label::before{ content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--success); margin-right:6px; vertical-align:1px; animation:livepulse 1.6s ease-in-out infinite; } @keyframes livepulse{ 50%{ opacity:.35; } }
 .t-miss{ box-shadow:0 0 0 1.5px color-mix(in srgb,var(--warn) 55%,transparent); }
 .t-strip{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; margin-top:20px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
@@ -3650,7 +3672,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .ts-i:hover, .ts-open:hover{ background:var(--surface-2); } .ts-t{ font-variant-numeric:tabular-nums; color:var(--text-3); white-space:nowrap; } .ts-x{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .ts-open .ts-x{ color:var(--accent-text); } .ts-none{ font-size:13px; }
 .today-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:32px; margin-top:24px; } .today-grid > section{ display:grid; gap:12px; align-content:start; min-width:0; }
-.t-stats{ display:flex; gap:16px; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .t-stats b{ font:400 26px/1 var(--font-display); color:var(--text-1); margin-right:3px; font-variant-numeric:lining-nums tabular-nums; } .t-stats .up b{ color:var(--success); } .t-stats .down b{ color:var(--text-2); }
+.t-stats{ display:flex; gap:16px; flex-wrap:wrap; font-size:13px; color:var(--text-2); } .t-stats b{ font:650 26px/1 var(--font-display); color:var(--text-1); margin-right:3px; font-variant-numeric:lining-nums tabular-nums; } .t-stats .up b{ color:var(--success); } .t-stats .down b{ color:var(--text-2); }
 @media (max-width:860px){ .today .page-h{ align-items:flex-start; flex-direction:column; gap:12px; } .t-strip{ grid-template-columns:1fr; } .ts-col + .ts-col{ border-left:0; border-top:1px solid var(--border); } .today-grid{ grid-template-columns:1fr; } .t-live .t-idea, .t-miss .t-idea{ font-size:24px; } }
 
 .qd-list{ display:grid; gap:6px; } .qd{ padding:9px 11px; border-radius:10px; background:var(--bg-elev); box-shadow:0 0 0 1px var(--border-strong); font-size:13px; cursor:grab; display:grid; gap:2px; } .qd:hover{ box-shadow:0 0 0 1px var(--accent); } .qd.drag{ opacity:.4; } .qd[draggable="false"]{ cursor:default; } .qd[draggable="false"] .fl1{ opacity:.75; } .qd small{ color:var(--warn); font-size:12px; }
@@ -3659,7 +3681,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .rr-card.mini{ padding:0; } .rr-mini{ display:grid; grid-template-columns:auto auto minmax(0,1fr) auto; gap:4px 10px; align-items:baseline; width:100%; text-align:left; padding:12px 16px; border-radius:inherit; font-size:13.5px; color:inherit; }
 .rr-mini:hover{ background:var(--surface-2); } .rr-mt{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-2); }
 @media (max-width:560px){ .rr-mini{ grid-template-columns:auto 1fr; } .rr-mt{ grid-column:1 / -1; white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; } .rr-mini .pill{ display:none; } }
-.rp-sum{ display:flex; justify-content:space-between; align-items:center; gap:12px; width:100%; padding:14px 16px; border-radius:var(--r-lg); border:1px solid var(--border); background:var(--surface); font-size:14.5px; color:inherit; text-align:left; } .rp-sum:hover{ background:var(--surface-2); } .rp-sum b{ font:400 22px/1 var(--font-display); }
+.rp-sum{ display:flex; justify-content:space-between; align-items:center; gap:12px; width:100%; padding:14px 16px; border-radius:var(--r-lg); border:1px solid var(--border); background:var(--surface); font-size:14.5px; color:inherit; text-align:left; } .rp-sum:hover{ background:var(--surface-2); } .rp-sum b{ font:650 22px/1 var(--font-display); }
 
 /* ==== Round 27: app cleanups ==== */
 .tab-new{ display:grid; justify-items:center; gap:3px; padding:4px 10px; font:500 12px/1 var(--font-ui); color:var(--text-2); }
@@ -3724,7 +3746,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .rp-ask{ justify-self:start; margin:-2px 0 6px 6px; }
 .ht-top{ display:flex; align-items:center; gap:10px; } .ht-top .ht-bar{ flex:1; } .ht-bar{ height:4px; border-radius:4px; background:var(--surface-3); overflow:hidden; } .ht-bar i{ display:block; height:100%; width:100%; background:var(--accent); transition:width 1s linear; }
 .ht-stage{ display:grid; gap:16px; padding:16px 0 4px; min-height:220px; align-content:start; touch-action:pan-y; }
-.ht-card{ display:grid; gap:12px; justify-items:start; padding:20px; border-radius:16px; background:var(--surface-2); user-select:none; } .ht-line{ font:400 26px/1.2 var(--font-display); letter-spacing:-.01em; color:var(--text-1); text-wrap:balance; }
+.ht-card{ display:grid; gap:12px; justify-items:start; padding:20px; border-radius:16px; background:var(--surface-2); user-select:none; } .ht-line{ font:650 26px/1.2 var(--font-display); letter-spacing:-.01em; color:var(--text-1); text-wrap:balance; }
 .ht-acts{ display:grid; grid-template-columns:1fr 1fr; gap:10px; } .ht-acts kbd{ margin-left:6px; } .ht-win{ display:grid; gap:10px; } .ht-rest{ display:grid; gap:6px; margin-top:8px; }
 .hc-cv{ width:100%; height:auto; border-radius:12px; box-shadow:0 0 0 1px var(--border); }
 /* ==========================================================================
@@ -3914,8 +3936,8 @@ html[data-meter="count"] .cr-tag{ display:inline-flex; }
 .cr-sheet{ display:grid; gap:8px; padding:16px 22px 22px; }
 .cr-sh{ display:flex; align-items:center; justify-content:space-between; margin:0 -8px 2px 0; }
 .cr-sh .label{ letter-spacing:.1em; text-transform:uppercase; font-weight:600; }
-.cr-h{ margin:0; font:400 32px/1.08 var(--font-display); letter-spacing:-.012em; color:var(--text-1); text-wrap:balance; }
-.cr-h em{ font-style:italic; }
+.cr-h{ margin:0; font:650 32px/1.08 var(--font-display); letter-spacing:-.012em; color:var(--text-1); text-wrap:balance; }
+.cr-h em{ font-style:normal; color:color-mix(in srgb,currentColor 50%,transparent); }
 .cr-when{ margin:0; font-size:var(--t-14,14px); }
 .cr-panes{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:8px; }
 .cr-pane{ display:grid; grid-template-rows:auto 1fr auto; gap:10px; align-content:start; padding:14px; border-radius:14px; background:var(--surface-2); min-width:0; }
@@ -3936,7 +3958,7 @@ html[data-meter="count"] .cr-tag{ display:inline-flex; }
 /* Plans page */
 .cr-page{ width:min(540px,100%); margin:4px auto 0; padding:16px 18px; border-radius:16px; background:var(--surface); box-shadow:0 0 0 1px var(--border); text-align:left; gap:10px; }
 .cr-ph{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
-.cr-big{ font:400 32px/1 var(--font-display); letter-spacing:-.01em; color:var(--text-1); font-variant-numeric:lining-nums tabular-nums; }
+.cr-big{ font:650 32px/1 var(--font-display); letter-spacing:-.01em; color:var(--text-1); font-variant-numeric:lining-nums tabular-nums; }
 .cr-big small{ font:500 13px/1 var(--font-ui); letter-spacing:0; color:var(--text-3); }
 .cr-page .cr-bar, .cr-page .cr-bar.seg > i{ height:8px; }
 .cr-page .cr-sub{ display:block; margin:0; font-size:13.5px; line-height:1.45; color:var(--text-2); }
@@ -3948,8 +3970,8 @@ html[data-meter="count"] .cr-tag{ display:inline-flex; }
 .cr-ex{ margin-top:72px; display:grid; gap:24px; }
 .cr-ex-head{ display:grid; gap:10px; max-width:62ch; }
 .cr-ex-head .label{ letter-spacing:.1em; text-transform:uppercase; font-weight:600; }
-.cr-ex-head h2{ margin:0; font:400 clamp(34px,4vw,48px)/1.04 var(--font-display); letter-spacing:-.014em; color:var(--text-1); text-wrap:balance; }
-.cr-ex-head h2 em{ font-style:italic; }
+.cr-ex-head h2{ margin:0; font:650 clamp(34px,4vw,48px)/1.04 var(--font-display); letter-spacing:-.014em; color:var(--text-1); text-wrap:balance; }
+.cr-ex-head h2 em{ font-style:normal; color:color-mix(in srgb,currentColor 50%,transparent); }
 .cr-ex-head p{ margin:0; font-size:15.5px; line-height:1.55; }
 .cr-ex-grid{ display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,1fr); gap:16px; align-items:start; }
 .cr-cmp-w{ display:grid; gap:10px; min-width:0; }
@@ -3975,7 +3997,7 @@ html[data-meter="count"] .cr-tag{ display:inline-flex; }
 .pl-grid .pl{ grid-template-rows:auto auto auto auto 1fr auto; }
 .pl-save{ margin:-12px 0 0; font-size:13px; font-weight:600; opacity:.8; }
 .pl-cr{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:color-mix(in srgb,currentColor 6%,transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb,currentColor 12%,transparent); }
-.pl-cr b{ font:400 34px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
+.pl-cr b{ font:650 34px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
 .pl-cr span{ display:grid; gap:2px; font-size:14px; font-weight:600; line-height:1.25; }
 .pl-cr small{ font-size:12.5px; font-weight:400; opacity:.78; }
 .pl-go{ display:grid; gap:8px; justify-items:center; }
@@ -4395,7 +4417,7 @@ mark.fill.blank{ background:transparent; box-shadow:none; outline:1px dashed col
 .ts-i .ts-s{ font-size:11px; color:var(--text-3); }
 .ts-i{ grid-template-columns:62px minmax(0,1fr) auto; }
 .t-wait{ display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:baseline; padding:10px 12px; border-radius:10px; background:var(--surface-2); color:inherit; text-decoration:none; font-size:13px; color:var(--text-2); }
-.t-wait b{ font:400 26px/1 var(--font-display); color:var(--text-1); }
+.t-wait b{ font:650 26px/1 var(--font-display); color:var(--text-1); }
 .t-wait:hover{ background:var(--surface-3); }
 .t-sub2{ font-size:12px; color:var(--text-3); margin-top:2px; }
 @media (max-width:1100px){ .today-grid.t3{ grid-template-columns:repeat(2,minmax(0,1fr)); } .today-grid.t3 .t-last{ grid-column:1 / -1; } }
@@ -5637,7 +5659,7 @@ function crAfter(before) {
   crPaint(); const st = crState(); if (!st || !st.low || st.empty) return;
   const key = `${st.plan}:${st.next}`; if (S.crWarned === key) return;
   S.crWarned = key; save(); if (before && before.low) return;
-  const msg = st.plan === 'free' ? 'You’ve used most of today’s AI usage. It resets at midnight, and Basic mode and Sharpen stay unlimited.' : st.plan === 'trial' ? 'You’ve used most of your trial’s AI usage. Pro comes with higher usage.' : `You’ve used most of this month’s AI usage. It refills on ${crDate(st.next)}.`;
+  const msg = st.plan === 'free' ? 'You’ve used most of today’s AI usage. It resets at midnight, and Basic mode and Sharpen stay unlimited.' : st.plan === 'trial' ? 'You’ve used most of your trial’s AI usage. Pro gives you 3× as much as Free.' : `You’ve used most of this month’s AI usage. It refills on ${crDate(st.next)}.`;
   toast(msg, { icon: 'spark', tone: 'accent', ...(st.server ? {} : { action: st.plan === 'free' || st.plan === 'trial' ? 'See plans' : 'Your plan', onAction: () => go('upgrade') }) });
 }
 /* plan changes: a new plan starts a fresh allowance (Free → Pro gets the full 1,000 today) */
@@ -5651,7 +5673,7 @@ function crStartTrial() {
 function crTrialCheck() {
   if (!S.trial || S.trial.told || S.trial.until > Date.now() || S.plan !== 'free') return;
   S.trial.told = true; S.cr = CR.fresh('free'); save(); crPaint();
-  if (PRICED()) toast('Your Pro trial ended. You’re on Free again, with everyday usage, and everything you wrote stays.', { icon: 'gift', tone: 'accent', action: 'See plans', onAction: () => go('upgrade') });
+  if (PRICED()) toast('Your Pro trial ended. You’re on Free again, with Lite usage, and everything you wrote stays.', { icon: 'gift', tone: 'accent', action: 'See plans', onAction: () => go('upgrade') });
 }
 /* out of credits, mid-flow: what Basic mode can do right now beside what Claude would do, and a one-click way to finish
    it with Claude. Shown once per action each session; after that, Basic runs quietly with a short note */
@@ -5669,7 +5691,7 @@ function crSheet({ act, cost = 1, basicHTML, onBasic, basicDone, resume } = {}) 
   const acts = canTrial ? `<button class="btn primary" data-crs="trial">${ic('gift', 'sm')} Try Pro free for 7 days</button><button class="btn" data-crs="pro">Upgrade to Pro · $${PRICES.pro[0]}/mo</button>`
     : canPro ? `<button class="btn primary" data-crs="pro">${ic('spark', 'sm')} Upgrade to Pro · $${PRICES.pro[0]}/mo</button>`
     : srv ? '' : `<a class="btn primary" href="#upgrade" data-crs="plans">${plan === 'pro' ? 'See Studio' : 'See plans'}</a>`;
-  const fine = canTrial ? `No card. The trial ends on its own after 7 days and you’re back on Free with everything you wrote.${resume ? ' Either button finishes this one with the Room right away.' : ''}` : canPro ? `Higher usage every month, and your first month’s leftovers roll over.${resume ? ' We’ll finish this one with the Room right away.' : ''}` : srv ? 'Your plan is set on your Hookworthy server. Ask whoever runs it for more.' : '';
+  const fine = canTrial ? `No card. The trial ends on its own after 7 days and you’re back on Free with everything you wrote.${resume ? ' Either button finishes this one with the Room right away.' : ''}` : canPro ? `Power usage, 3× Free, every month. Your first month’s leftovers roll over.${resume ? ' We’ll finish this one with the Room right away.' : ''}` : srv ? 'Your plan is set on your Hookworthy server. Ask whoever runs it for more.' : '';
   const m = modal(`<div class="cr-sheet"><div class="cr-sh"><span class="label">AI usage</span><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div>
     <h2 class="cr-h">${head}</h2><p class="muted cr-when">${esc(crWhen(st, true))}</p>
     <div class="cr-panes">${left}${right}</div>
@@ -5678,8 +5700,8 @@ function crSheet({ act, cost = 1, basicHTML, onBasic, basicDone, resume } = {}) 
     const b = e.target.closest('[data-crs]'); if (!b) return; const k = b.dataset.crs;
     if (k === 'basic') { m.close(); onBasic && onBasic(); return; }
     if (k === 'plans') { m.close(); return; }
-    if (k === 'trial') { crStartTrial(); burstFrom(b); m.close(); SFX.play('done'); toast(resume ? 'Pro trial on: higher usage for 7 days. The Room is on it.' : 'Pro trial on: higher usage and every Pro feature for 7 days. Nothing to cancel.', { icon: 'gift', tone: 'accent' }); if (resume) setTimeout(resume, 260); return; }
-    if (k === 'pro') { b.classList.add('is-loading'); setTimeout(() => { b.classList.remove('is-loading'); setPlan('pro'); m.close(); SFX.play('done'); toast(resume ? 'You’re on Pro. The Room is on it.' : 'You’re on Pro: higher usage, every month.', { icon: 'spark', tone: 'accent' }); if (resume) setTimeout(resume, 260); }, 700); }
+    if (k === 'trial') { crStartTrial(); burstFrom(b); m.close(); SFX.play('done'); toast(resume ? 'Pro trial on: Power usage for 7 days. The Room is on it.' : 'Pro trial on: Power usage and every Pro feature for 7 days. Nothing to cancel.', { icon: 'gift', tone: 'accent' }); if (resume) setTimeout(resume, 260); return; }
+    if (k === 'pro') { b.classList.add('is-loading'); setTimeout(() => { b.classList.remove('is-loading'); setPlan('pro'); m.close(); SFX.play('done'); toast(resume ? 'You’re on Pro. The Room is on it.' : 'You’re on Pro: Power usage, 3× Free.', { icon: 'spark', tone: 'accent' }); if (resume) setTimeout(resume, 260); }, 700); }
   });
 }
 /* ask() threw out_of_credits where there's no richer sheet: the same sheet, told whether Basic already stepped in */
@@ -6624,7 +6646,7 @@ const VIS_PAL = {
 };
 const VIS_KINDS = [['thumb', 'Thumbnail', 'Your face or photo, a bold title'], ['data', 'Numbers', 'Before → after, charted'], ['stat', 'Big number', 'One figure, huge'], ['list', 'List', 'Points people save'], ['compare', 'Side by side', 'Two ways, compared'], ['quote', 'Quote card', 'Your line, set big'], ['post', 'Post screenshot', 'For LinkedIn and Threads'], ['frame', 'Frame a screenshot', 'Padding, round corners and a shadow']];
 const visA = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
-const SERIF = s => `400 ${s}px "EB Garamond", Georgia, serif`, SANS = (w, s) => `${w} ${s}px Figtree, system-ui, sans-serif`, HAND = s => `500 ${s}px Caveat, cursive`;
+const SERIF = s => `700 ${s}px Figtree, system-ui, sans-serif`, SANS = (w, s) => `${w} ${s}px Figtree, system-ui, sans-serif`, HAND = s => `500 ${s}px Caveat, cursive`;
 function visFit(ctx, text, font, max, min, maxW, maxLines) {
   let size = max, lines = [];
   for (; size >= min; size -= 2) { ctx.font = font(size); lines = visWrap(ctx, text, maxW); if (lines.length <= maxLines) break; }
@@ -8512,14 +8534,14 @@ function drawHookCard(cv, line, score, user) {
   const W = 1200, H = 675, c = cv.getContext('2d'); cv.width = W; cv.height = H;
   const INK = getComputedStyle(document.documentElement).getPropertyValue('--plum-900').trim() || '#191918'; c.fillStyle = '#FDFBF2'; c.fillRect(0, 0, W, H); c.fillStyle = INK; c.fillRect(0, 0, W, 10);
   c.fillStyle = '#6E6873'; c.font = '600 22px Figtree, system-ui, sans-serif'; c.fillText('HOOK OF THE WEEK', 80, 110);
-  c.fillStyle = '#1C1820'; let size = 64; const lines = n => { c.font = `400 ${n}px "EB Garamond", Georgia, serif`; const out = []; let cur = ''; line.split(' ').forEach(w => { const t = cur ? cur + ' ' + w : w; if (c.measureText(t).width > W - 160 - 220) { out.push(cur); cur = w; } else cur = t; }); out.push(cur); return out; };
+  c.fillStyle = '#1C1820'; let size = 64; const lines = n => { c.font = `700 ${n}px Figtree, system-ui, sans-serif`; const out = []; let cur = ''; line.split(' ').forEach(w => { const t = cur ? cur + ' ' + w : w; if (c.measureText(t).width > W - 160 - 220) { out.push(cur); cur = w; } else cur = t; }); out.push(cur); return out; };
   let L = lines(size); while (L.length > 4 && size > 40) { size -= 4; L = lines(size); } L.forEach((t, i) => c.fillText(t, 80, 190 + i * size * 1.15));
   const WF = getComputedStyle(document.documentElement).getPropertyValue('--warm-fill').trim() || '#8F66D6'; const cx = W - 160, cy = 200; c.lineWidth = 12; c.strokeStyle = 'rgba(28,24,32,.1)'; c.beginPath(); c.arc(cx, cy, 70, 0, Math.PI * 2); c.stroke(); const T = TIER(score), F = { flat: '#8187AE', warming: WF, sharp: '#2A9C82', honed: '#B9861A' }, G = { flat: ['#8187AE', '#8187AE'], warming: ['#8187AE', '#8D7CC6'], sharp: ['#8187AE', WF], honed: [WF, '#D27A72'] }[T.key];
   /* the same aurora arc as the app's rings: start, middle, the state's colour at the score */
   let tc = F[T.key]; if (c.createConicGradient) { const g = c.createConicGradient(-Math.PI / 2, cx, cy), f = clamp(score, 1, 100) / 100; g.addColorStop(0, G[0]); g.addColorStop(f * .55, G[1]); g.addColorStop(f, F[T.key]); g.addColorStop(Math.min(1, f + .001), F[T.key]); tc = g; }
   c.strokeStyle = tc; c.lineCap = 'round'; if (T.key === 'honed') { c.shadowColor = 'rgba(214,162,42,.5)'; c.shadowBlur = 18; } c.beginPath(); c.arc(cx, cy, 70, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * score / 100); c.stroke();
-  c.shadowBlur = 0; c.shadowColor = 'transparent'; c.fillStyle = tc; c.font = `400 ${hookNums() ? 28 : T.word.length > 5 ? 40 : 48}px "EB Garamond", Georgia, serif`; c.textAlign = 'center'; c.fillText(hookNums() ? `${T.word} · ${score}` : T.word, cx, cy + 14); c.font = '600 18px Figtree, system-ui, sans-serif'; c.fillStyle = '#6E6873'; c.fillText('HOOK', cx, cy + 110); c.textAlign = 'left';
-  c.fillStyle = '#4A4550'; c.font = '500 24px Figtree, system-ui, sans-serif'; c.fillText(`@${user.handle}`, 80, H - 70); c.font = 'italic 400 30px "EB Garamond", Georgia, serif'; c.fillStyle = INK; c.textAlign = 'right'; c.fillText('hookworthy', W - 80, H - 66); c.textAlign = 'left';
+  c.shadowBlur = 0; c.shadowColor = 'transparent'; c.fillStyle = tc; c.font = `400 ${hookNums() ? 28 : T.word.length > 5 ? 40 : 48}px Figtree, system-ui, sans-serif`; c.textAlign = 'center'; c.fillText(hookNums() ? `${T.word} · ${score}` : T.word, cx, cy + 14); c.font = '600 18px Figtree, system-ui, sans-serif'; c.fillStyle = '#6E6873'; c.fillText('HOOK', cx, cy + 110); c.textAlign = 'left';
+  c.fillStyle = '#4A4550'; c.font = '500 24px Figtree, system-ui, sans-serif'; c.fillText(`@${user.handle}`, 80, H - 70); c.font = '500 30px Figtree, system-ui, sans-serif'; c.fillStyle = INK; c.textAlign = 'right'; c.fillText('hookworthy', W - 80, H - 66); c.textAlign = 'left';
 }
 async function openHookCard() {
   const b = bestHookOfWeek(); if (!b) { toast('Nothing from this week yet. Write or schedule a post and its best line shows up here.', { icon: 'hook' }); return; }
@@ -8722,10 +8744,10 @@ function drawSlide(cv, sl, i, n) {
   c.fillStyle = st.mu; c.font = '500 26px Figtree, sans-serif'; c.fillText(`${i + 1} / ${n}`, P, H - P + 8);
   if (i < n - 1) { c.textAlign = 'right'; c.fillStyle = st.acc; c.font = '600 28px Figtree, sans-serif'; c.fillText(i === 0 ? 'Swipe →' : '→', W - P, H - P + 8); c.textAlign = 'left'; }
   const fit = (text, font, max, min, top, bottom) => { let size = max, lines; do { c.font = font(size); lines = visWrap(c, text, W - P * 2); size -= 4; } while (lines.length * size * 1.22 > bottom - top && size > min); size += 4; return { size, lines }; };
-  if (sl.k === 'cover') { const { size, lines } = fit(sl.t, s0 => `400 ${s0}px "EB Garamond", Georgia, serif`, 110, 54, 260, H - 260); const lh = size * 1.12; let y = (H - lines.length * lh) / 2 + size * .8; c.fillStyle = st.fg; lines.forEach(l => { c.font = `400 ${size}px "EB Garamond", Georgia, serif`; c.fillText(l, P, y); y += lh; }); }
+  if (sl.k === 'cover') { const { size, lines } = fit(sl.t, s0 => `700 ${s0}px Figtree, system-ui, sans-serif`, 110, 54, 260, H - 260); const lh = size * 1.12; let y = (H - lines.length * lh) / 2 + size * .8; c.fillStyle = st.fg; lines.forEach(l => { c.font = `400 ${size}px "EB Garamond", Georgia, serif`; c.fillText(l, P, y); y += lh; }); }
   else if (sl.k === 'body') { c.fillStyle = st.chip; visRound(c, P, 250, 110, 64, 32); c.fill(); c.fillStyle = st.fg; c.font = '600 30px Figtree, sans-serif'; c.textAlign = 'center'; c.fillText(String(i).padStart(2, '0'), P + 55, 293); c.textAlign = 'left';
-    const { size, lines } = fit(sl.t, s0 => `400 ${s0}px "EB Garamond", Georgia, serif`, sl.t.length < 60 ? 104 : sl.t.length < 140 ? 84 : 64, 38, 380, H - 200); let y = 380 + size; c.fillStyle = st.fg; lines.forEach(l => { c.font = `400 ${size}px "EB Garamond", Georgia, serif`; c.fillText(l, P, y); y += size * 1.18; }); }
-  else { c.fillStyle = st.fg; c.font = '400 88px "EB Garamond", Georgia, serif'; visWrap(c, 'Found this useful?', W - P * 2).forEach((l, k) => c.fillText(l, P, 560 + k * 100)); c.fillStyle = st.mu; c.font = '400 40px Figtree, sans-serif'; visWrap(c, sl.t, W - P * 2).forEach((l, k) => c.fillText(l, P, 760 + k * 54)); visAvatar(c, P, 900, 60, u); }
+    const { size, lines } = fit(sl.t, s0 => `700 ${s0}px Figtree, system-ui, sans-serif`, sl.t.length < 60 ? 104 : sl.t.length < 140 ? 84 : 64, 38, 380, H - 200); let y = 380 + size; c.fillStyle = st.fg; lines.forEach(l => { c.font = `400 ${size}px "EB Garamond", Georgia, serif`; c.fillText(l, P, y); y += size * 1.18; }); }
+  else { c.fillStyle = st.fg; c.font = '700 80px Figtree, system-ui, sans-serif'; visWrap(c, 'Found this useful?', W - P * 2).forEach((l, k) => c.fillText(l, P, 560 + k * 100)); c.fillStyle = st.mu; c.font = '400 40px Figtree, sans-serif'; visWrap(c, sl.t, W - P * 2).forEach((l, k) => c.fillText(l, P, 760 + k * 54)); visAvatar(c, P, 900, 60, u); }
 }
 async function openCarousel() {
   const slides = carouselSlides(); if (slides.length < 3 || !slides[1].t) { toast('Carousels need a few points. Write a thread, or a post with a few paragraphs.', { icon: 'layers' }); return; }
@@ -10388,12 +10410,12 @@ const ghostFeedHTML = () => { const all = [...VOID_POSTS, ...HOOK_POSTS.map(q =>
 /* prices, one source for Plans, the homepage and #teams: [yearly, monthly] per month */
 const PRICES = { pro: [12, 16], studio: [27, 36] };
 const SAVE = k => (PRICES[k][1] - PRICES[k][0]) * 12; /* dollars a year saved by paying yearly */
-const PLAN_CR = { free: ['Standard', 'AI usage', 'Resets every midnight'], pro: ['Higher', 'AI usage', 'First month’s leftovers roll over'], studio: ['Highest', 'AI usage', 'Shared by you and every client'] };
+const PLAN_CR = { free: ['Lite', 'AI usage', 'Resets every day'], pro: ['Power', 'AI usage · 3× Free', 'First month’s leftovers roll over'], studio: ['Max', 'AI usage · 13× Free', 'Shared across your clients'] };
 function plansHTML(yearly) {
   const P = [
-    { k: 'free', name: 'Free', price: 0, blurb: 'For finding your voice.', cta: 'Start free', feats: ['Hook score and checks on every post', 'Sharpen any sentence, free and unlimited', 'Basic mode rewrites, unlimited', 'Quote cards and charts', 'Up to 10 scheduled posts'] },
-    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For posting most days.', cta: 'Start with Pro', hero: true, feats: ['Room for about 30 rewrites a day', 'Your voice keeps learning', 'Replies drafted as posts come in', 'What’s working in your niche, and why', 'Breakout alerts and insights that say why', 'Reruns of your best posts', 'Unlimited queue'] },
-    { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Up to eight client voices', 'Approvals before anything ships', ['Shared saved ideas', 1], ['Help from a real person', 1]] }
+    { k: 'free', name: 'Free', price: 0, blurb: 'Try it on your next post.', cta: 'Start free', feats: ['Instant checks on every draft', 'Sharpen any line, unlimited', 'Quick rewrites on your device, unlimited', 'Thumbnails, quote cards and charts', 'Schedule up to 10 posts'] },
+    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For creators posting most days.', cta: 'Start with Pro', hero: true, feats: ['AI rewrites that sound like you', 'Replies drafted for you, ready to send', 'What’s working in your niche, and why', 'A ping when a post starts taking off', 'Reshare your best posts to new followers', 'Schedule as many posts as you like'] },
+    { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Up to 8 client accounts, each in their own voice', 'Clients approve before anything posts', ['Shared idea boards', 1], ['A real person to help', 1]] }
   ];
   const app = !LIGHT.has(CURRENT), mine = app && PRICED() ? planNow() : null, trial = PRICED() && !S.trial && S.plan === 'free';
   return P.map(p => {
@@ -10413,7 +10435,7 @@ function plansHTML(yearly) {
 /* how credits work: the allowance per plan side by side, and what each thing costs (Plans page) */
 function creditsExplainHTML() {
   const rows = [
-    ['AI usage', 'Standard, every day', 'Higher', 'Highest, shared'],
+    ['AI usage', 'Lite, resets daily', 'Power, 3× Free', 'Max, 13× Free, shared'],
     ['When they refill', 'Every midnight', 'Monthly, on the day you joined', 'Monthly, on the day you joined'],
     ['Leftovers', 'Start fresh each day', 'First month rolls over', 'First month rolls over'],
     ['Voices', 'You', 'You', 'You and up to eight clients'],
@@ -10439,7 +10461,7 @@ function choosePlan(k, btn) {
   if (k === 'trial') {
     if (!PRICED()) { toast('Every feature is already on for this account.', { icon: 'gift', tone: 'accent', ms: 4200 }); return; }
     if (!crStartTrial()) { toast(S.plan === 'free' ? `You’ve had your trial. Pro is $${PRICES.pro[0]} a month, billed yearly.` : `You’re already on ${cap(S.plan)}.`, { icon: 'gift' }); return; }
-    burstFrom(btn); SFX.play('done'); toast('Pro trial on: higher usage and every Pro feature for 7 days. No card, nothing to cancel.', { icon: 'gift', tone: 'accent', ms: 5200 });
+    burstFrom(btn); SFX.play('done'); toast('Pro trial on: Power usage and every Pro feature for 7 days. No card, nothing to cancel.', { icon: 'gift', tone: 'accent', ms: 5200 });
     if (LIGHT.has(CURRENT)) go(S.onboarded ? 'write' : 'start'); else route();
     return;
   }
@@ -10450,7 +10472,7 @@ function choosePlan(k, btn) {
     btn.classList.remove('is-loading'); setPlan(k); burstFrom(btn);
     modal(`<div class="modal-b" style="text-align:center;display:grid;gap:14px;justify-items:center;padding:36px 28px">
       <div class="appicon" style="width:72px;height:72px;border-radius:18px">${LOGO_MARK.replace('class="mark"', 'class="mark" style="width:40px;height:40px"')}</div>
-      <h2 class="display" style="font-size:40px">You’re on ${cap(k)}.</h2><p class="muted" style="max-width:36ch">${k === 'studio' ? 'Client voices and approvals are on, with the highest usage, shared by every voice.' : 'Higher usage every month. Your voice keeps learning.'}</p>
+      <h2 class="display" style="font-size:40px">You’re on ${cap(k)}.</h2><p class="muted" style="max-width:36ch">${k === 'studio' ? 'Client accounts and approvals are on, with Max usage shared across them.' : 'Power usage every month, and rewrites in your voice.'}</p>
       <button class="btn primary lg" data-close style="margin-top:6px">${S.onboarded ? 'Back to writing' : 'Set up your account'}</button></div>`, { center: true, label: 'Plan changed', onClose: () => go(S.onboarded ? 'write' : 'start') });
   }, 800);
 }
@@ -10639,7 +10661,7 @@ const FAQ = [
   ['Will it make things up?', 'No. Rewrites keep your claim and show every changed word for you to keep or undo. If a line needs a number you didn’t give, it writes [your number] and waits for yours.'],
   ['Is it for my niche?', 'Yes. Creators, founders, ghostwriters and market writers all get the same tools, and What’s working reads the accounts you pick, in your niche.'],
   ['Can I bring my old posts?', 'Yes. Drop in your X archive, a Typefully or CSV export, or paste posts in. They’re read in your browser, and they teach Hookworthy how you open and when your people reply.'],
-  ['What happens when I hit my free usage?', 'Nothing breaks. The checks, Sharpen and Basic mode keep working, and your usage resets at midnight. Pro has higher usage, and your first month’s leftovers roll over.']
+  ['What happens when I hit my free usage?', 'Nothing breaks. The checks, Sharpen and Basic mode keep working, and your usage resets at midnight. Pro gives you 3× as much, and your first month’s leftovers roll over.']
 ];
 
 /* ---------- round 29: one nav and one footer for the light-world pages (#home, #tools, #teams, #developers) ---------- */
@@ -11106,28 +11128,28 @@ ROUTES.home = () => { loadSprite('ph');
   </section>
 
   <section class="h7-sec wrap" id="features" aria-labelledby="ft-h">
-    <div class="h7-head rv"><div><span class="eyebrow">What you get</span><h2 id="ft-h">Everything a post needs. <em>Nothing it doesn’t.</em></h2></div><p>Polish it, keep your voice, find what’s working, catch the moment. Four tools, one place.</p></div>
-    <div class="subnav rv" role="group" aria-label="What’s inside">${[['bolt', 'Polish', 'bx-score'], ['voice', 'Your voice', 'bx-voice'], ['trend', 'Ideas that work', 'bx-work'], ['reply', 'Replies', 'bx-replies'], ['bell', 'Alerts', 'bx-replies']].map(([icn, t, to], i) => `<button type="button" data-to="${to}" aria-pressed="false" style="--i:${i}">${ic(icn, 'xs')}<span>${t}</span></button>`).join('')}</div>
+    <div class="h7-head rv"><div><span class="eyebrow">What you get</span><h2 id="ft-h">Turn rough ideas <em>into posts people read.</em></h2></div><p>See what’s holding a post back and fix it in a tap, in your own voice. Then borrow what’s working in your niche and reply while it counts.</p></div>
+    <div class="subnav rv" role="group" aria-label="What’s inside">${[['bolt', 'Sharpen', 'bx-score'], ['voice', 'Your voice', 'bx-voice'], ['trend', 'What’s working', 'bx-work'], ['reply', 'Replies', 'bx-replies'], ['bell', 'Alerts', 'bx-replies']].map(([icn, t, to], i) => `<button type="button" data-to="${to}" aria-pressed="false" style="--i:${i}">${ic(icn, 'xs')}<span>${t}</span></button>`).join('')}</div>
     <div class="bento">
-      <article class="bx bx-score rv" id="bx-score"><div class="bx-h"><span class="bx-k">${ic('bolt', 'sm')} Polish</span><h3>Rough draft in. Great post out.</h3><p class="bx-p">One tap cuts the filler and keeps what you meant.</p></div>
+      <article class="bx bx-score rv" id="bx-score"><div class="bx-h"><span class="bx-k">${ic('bolt', 'sm')} Sharpen</span><h3>Spot the weak line. Fix it in one tap.</h3><p class="bx-p">Five quick checks show what’s holding your post back. Sharpen rewrites it: same point, a stronger opening.</p></div>
         <div class="bx-demo bxs" id="bxs">
           <div class="bxs-seg" role="group" aria-label="Which version of the line"><button type="button" data-bxs="0" aria-pressed="true">Draft</button><button type="button" data-bxs="1" aria-pressed="false">${ic('bolt', 'xs')} Sharpened</button></div>
           <p class="bxs-line" id="bxs-line"></p>
           <div class="bxs-body">${dialHTML('bxs-dial')}<div class="bxs-parts" id="bxs-parts">${BX_PARTS.map(([k, l, d]) => `<div class="pt" data-k="${k}"><span class="pn">${l}</span><span class="pip" aria-hidden="true"></span><span class="pw"></span><span class="sr">${d}</span></div>`).join('')}</div></div>
           <p class="bxs-why" id="bxs-why"></p>
         </div></article>
-      <article class="bx bx-voice rv" id="bx-voice" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('voice', 'sm')} Your voice</span><h3>Sounds like you. On a good day.</h3><p class="bx-p">Slide the tone. Every word stays yours to keep.</p></div>
+      <article class="bx bx-voice rv" id="bx-voice" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('voice', 'sm')} Your voice</span><h3>Rewrites that sound like you, not a bot.</h3><p class="bx-p">It reads your past posts first, so every rewrite sounds like you wrote it. Pick calm, direct or spicy.</p></div>
         <div class="bx-demo vx">
           <div class="vx-post">${pfAv(HG_YOU, 'vx-av')}<p class="vx-out" id="vx-out" aria-live="polite"></p></div>
           <div class="vx-sls">${[['sp', 'Tone', VX_SPICE], ['po', 'Polish', VX_POLISH]].map(([k, l, names]) => `<div class="vx-sl"><label for="vx-${k}">${l}</label><div class="vx-rng"><input type="range" id="vx-${k}" min="0" max="2" step="1" value="1"><div class="vx-ticks" id="vx-${k}t" aria-hidden="true">${names.map(n => `<span>${n}</span>`).join('')}</div></div></div>`).join('')}</div>
         </div></article>
-      <article class="bx bx-work rv" id="bx-work"><div class="bx-h"><span class="bx-k">${ic('trend', 'sm')} Ideas that work</span><h3>See what’s working. Make it yours.</h3><p class="bx-p">Posts that popped in your niche, turned into a pattern you can fill.</p></div>
+      <article class="bx bx-work rv" id="bx-work"><div class="bx-h"><span class="bx-k">${ic('trend', 'sm')} What’s working</span><h3>Find out why posts blow up in your niche.</h3><p class="bx-p">The posts getting traction this week, why they worked, and a fill-in template to write your own.</p></div>
         <div class="bx-demo ww">
           <div class="ww-pop"><div class="ww-who">${pfAv(PEOPLE[3])}<span><b>${esc(PEOPLE[3].n)}</b> @${esc(PEOPLE[3].h)}</span></div><p>My podcast had <mark>11 listeners</mark> for 8 months. Then I changed one thing.</p><div class="ww-why"><span>A real number</span><span>A turn</span><span>Open loop</span></div></div>
           <span class="ww-arr" aria-hidden="true">${ic('arrow', 'sm')}</span>
           <div class="ww-f"><span class="lbl">The formula</span><p>My <mark class="blank">[thing]</mark> had <mark class="blank">[small number]</mark> fans for <mark class="blank">[time]</mark>. Then I changed one thing:</p><a class="bx-link" href="#ideas">Use this pattern ${ic('arrow', 'xs')}</a></div>
         </div></article>
-      <article class="bx bx-replies rv" id="bx-replies" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('reply', 'sm')} Replies &amp; alerts</span><h3>Reply first. Know when you’re taking off.</h3><p class="bx-p">Fresh posts worth answering, and a ping when yours starts moving.</p></div>
+      <article class="bx bx-replies rv" id="bx-replies" style="--d:.06s"><div class="bx-h"><span class="bx-k">${ic('reply', 'sm')} Replies &amp; alerts</span><h3>Get seen by replying first.</h3><p class="bx-p">Fresh posts from bigger accounts in your niche, with a reply drafted. Plus a ping the moment your own post starts taking off.</p></div>
         <div class="bx-demo h7rr" id="h7rr">
           <div class="h7rr-alert"><span class="h7rr-ic">${LOGO_MARK || ''}</span><div><p><b>Breakout alert</b><span>now</span></p><span>Your 8:40 AM post is moving faster than usual. Replies drafted, in your voice.</span></div></div>
           <div class="h7rr-post"><div class="h7rr-who">${pfAv(PEOPLE[H7_RADAR.p])}<p><b>${esc(PEOPLE[H7_RADAR.p].n)}</b><span>· ${H7_RADAR.ago}</span></p></div><p class="t">${esc(H7_RADAR.t)}</p>
@@ -11148,7 +11170,7 @@ ROUTES.home = () => { loadSprite('ph');
   </section>
 
   <section class="h7-sec wrap" id="pricing" aria-labelledby="pr-h">
-    <div class="h7-head rv"><div><span class="eyebrow">Plans</span><h2 id="pr-h">Start free. <em>Size up when it’s working.</em></h2></div><div class="pr7-side"><p>Scores, checks, Sharpen and Basic mode are free on every plan. The Room does the rest: standard usage on Free, higher on Pro, highest on Studio.</p><div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div></div></div>
+    <div class="h7-head rv"><div><span class="eyebrow">Plans</span><h2 id="pr-h">Start free. <em>Upgrade when you’re growing.</em></h2></div><div class="pr7-side"><p>Checks, Sharpen and quick rewrites are free forever. Pro adds AI that writes in your voice, drafts your replies and tells you what’s working.</p><div class="bill2"><div class="seg2" id="bill-seg" role="tablist" aria-label="Billing"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div></div></div>
     <div class="pl-grid pl7" id="plans">${plansHTML(true)}</div>
     <p class="pl7-all"><span>Everyday rewrites use a little. Bigger jobs, like Learn my voice, are marked before you click.</span> <a href="#upgrade">How usage works ${ic('arrow', 'xs')}</a></p>
     <div class="faq7" id="faq"><div><span class="eyebrow">Questions</span><h2 class="faq7-h" id="faq-h">Good questions. <em>Plain answers.</em></h2></div><div class="faq7-l">${FAQ.map(([q, a]) => `<details><summary><span>${q}</span>${ic('plus', 'sm')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div>
@@ -11463,7 +11485,7 @@ ROUTES.teams = () => {
       </div></div>
     </section>
     <section class="tm-price" aria-labelledby="tm-p-h">
-      <div><span class="eyebrow">Plans</span><h2 id="tm-p-h">Studio is <em>built for this.</em></h2><p>Client voices and approvals before anything ships, and the highest usage, shared by every voice, on top of everything in Pro. Studio is $${PRICES.studio[0]} a month billed yearly, or $${PRICES.studio[1]} monthly.</p></div>
+      <div><span class="eyebrow">Plans</span><h2 id="tm-p-h">Studio is <em>built for this.</em></h2><p>Client voices and approvals before anything ships, and Max usage (13× Free) shared by every voice, on top of everything in Pro. Studio is $${PRICES.studio[0]} a month billed yearly, or $${PRICES.studio[1]} monthly.</p></div>
       <div class="mk-cta"><a class="hbtn lg" ${hwHref('home', 'pricing')}>See plans ${ic('arrow', 'sm')}</a></div>
     </section>
   </div>`);
@@ -12854,14 +12876,14 @@ async function learnVoice(btn) {
    ========================================================================== */
 ROUTES.upgrade = () => {
   const st = crState(), plan = planNow(), trial = PRICED() && !S.trial && S.plan === 'free';
-  const lede = plan === 'free' ? 'Free comes with standard usage every day. Pro has higher usage, so a big news day never runs dry.'
-    : plan === 'trial' ? `You’re trying Pro: every Pro feature and higher usage. When the week’s up you’re back on Free, with everything you wrote.`
+  const lede = plan === 'free' ? 'Free comes with Lite usage that resets every day. Pro gives you 3× as much, so a big news day never runs dry.'
+    : plan === 'trial' ? `You’re trying Pro: every Pro feature and Power usage. When the week’s up you’re back on Free, with everything you wrote.`
     : 'Your plan, your usage, and what’s a bigger job.';
   const faq = [
-    ['Is the free plan actually free?', 'Yes. Standard AI usage every day, quick reads and checks on everything, Basic mode and Sharpen as much as you like, and unlimited drafts and ideas. No card.'],
+    ['Is the free plan actually free?', 'Yes. Lite AI usage every day, quick reads and checks on everything, Basic mode and Sharpen as much as you like, and unlimited drafts and ideas. No card.'],
     ['How does usage work?', 'Everyday jobs, like a rewrite with three versions to pick from, use a little. Bigger jobs, like Plan my week or Learn my voice, use more and say so on the button. Nothing counts unless the Room answers.'],
     ['What happens when I run out?', 'Nothing breaks. You get the Basic version on the spot, free, and Free resets at midnight. On Pro, your first month’s leftovers roll over into the second.'],
-    ['Is the trial really free?', 'Yes. Seven days of Pro with higher usage, no card. It ends on its own and you’re back on Free with everything you wrote. One trial per account.'],
+    ['Is the trial really free?', 'Yes. Seven days of Pro with Power usage, no card. It ends on its own and you’re back on Free with everything you wrote. One trial per account.'],
     ['Will it sound like ChatGPT?', 'It shouldn’t. It learns from your posts, follows your tone sliders and never uses anything on your never-say list. If a word isn’t you, add it to that list.'],
     ...(BILLING ? [['Can I cancel anytime?', 'Yes, from Your plan in the account menu. Your drafts and ideas stay with you on Free.']] : []),
     ['Which platforms?', 'X and LinkedIn post on time once you connect them through your own Hookworthy server. Threads and Bluesky get their own preview and version, and you post those by hand.'],
@@ -12870,7 +12892,7 @@ ROUTES.upgrade = () => {
   mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">${plan === 'free' ? 'Write like this <em>every</em> day.' : `Your plan: <em>${esc(st ? st.name : cap(S.plan))}.</em>`}</h1><p class="muted" style="font-size:18px;max-width:54ch">${lede}</p>
     ${!PRICED() && !st ? '<p class="pill accent" style="height:auto;padding:6px 12px;white-space:normal">Every feature is on for this account.</p>' : ''}
     ${crMeterHTML('page')}
-    ${trial ? `<div class="up-trial">${ic('gift')}<p><b>Try Pro free for 7 days.</b> Higher usage and every Pro feature. No card, nothing to cancel.</p><button class="btn" data-plan="trial">Start the trial</button></div>` : ''}
+    ${trial ? `<div class="up-trial">${ic('gift')}<p><b>Try Pro free for 7 days.</b> Power usage and every Pro feature. No card, nothing to cancel.</p><button class="btn" data-plan="trial">Start the trial</button></div>` : ''}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing period"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
     <div class="pl-grid" id="up-plans" style="margin-top:32px">${plansHTML(true)}</div>
     ${creditsExplainHTML()}
@@ -12898,8 +12920,8 @@ ROUTES.brand = () => {
   <section class="sec"><div class="sec-h"><h2 class="h2">Color</h2><span class="faint" style="font-size:13px">Plum is the brand: lilac buttons, plum links and blocks, one apricot spark. Pastels color-code kinds of posts. Green, amber and red only mean good, warning and error. Showing ${isDark() ? 'dark' : 'light'} values.</span></div>
     <div class="swatches">${tokens.map(t => `<div class="sw"><i style="background:var(${t})"></i><div><b style="font-size:13px">${t.replace('--', '')}</b><code>${cs.getPropertyValue(t).trim()}</code></div></div>`).join('')}</div></section>
   <section class="sec"><div class="sec-h"><h2 class="h2">Type</h2></div><div class="card pad typespec">
-    <div class="r"><span class="label">Display<br>EB Garamond 400</span><span class="display" style="font-size:56px">Say it well.</span></div>
-    <div class="r"><span class="label">Heading<br>EB Garamond 400</span><span class="h1">Posts that sound like you on a good day</span></div>
+    <div class="r"><span class="label">Display<br>Figtree 700</span><span class="display" style="font-size:56px">Say it well.</span></div>
+    <div class="r"><span class="label">Heading<br>Figtree 700</span><span class="h1">Posts that sound like you on a good day</span></div>
     <div class="r"><span class="label">Editor<br>Figtree 18/1.6</span><span style="font-size:18px;line-height:1.6;max-width:62ch">Nobody tells you the hardest part of a side project is month three. Not the start. Not the launch. Month three.</span></div>
     <div class="r"><span class="label">UI<br>Figtree 14</span><span>Schedule for Tue 8:40 AM · Auto-plug at 100 likes</span></div>
     <div class="r"><span class="label">Mono<br>Geist Mono</span><span class="mono">0123456789 · 12.4k views · ${keys(MOD, 'K')}</span></div></div></section>

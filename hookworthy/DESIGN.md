@@ -416,6 +416,13 @@ Every demo, mockup and empty state is **heycape (@heycape_)** with his own pictu
 ### One primary button (round 44)
 Post now, Start free, Try Pro and Open it all use `--cta` / `--cta-ink` / `--cta-hover`, identical on paper, in dark mode and on ink blocks. Round 45: the primary is ember (`--cta` #F2592A, ink text); nothing else is filled with it.
 
+### Round 47: one system
+- **Type:** Figtree everywhere: bold, tight headings (700, -0.035em); the second half of a heading is the same weight in a quieter grey, not a serif italic. EB Garamond survives only in the wordmark. Generated images (thumbnails, quote cards, carousels) use the same Figtree bold.
+- **Scale:** site page titles clamp(42–68px), section heads clamp(32–52px), app page titles clamp(30–40px).
+- **Buttons:** pills on the site, 10px rounded rectangles in the app. **Eyebrows:** grey, 12px, letter-spaced, everywhere.
+- **Copy:** every header says what it does for you. Features: "Turn rough ideas into posts people read"; Sharpen, Your voice, What's working, Replies & alerts each lead with the outcome.
+- **Plans:** AI usage is Lite (Free), Power (Pro, 3× Free) and Max (Studio, 13× Free). Plan features read as benefits ("AI rewrites that sound like you", "Replies drafted for you, ready to send").
+
 ### Round 46
 - **Hook score:** signal bars everywhere a score is small (chips, lists, the composer gutter, homepage dials): one bar per step. The composer's panel is a checklist: five checks that tick as you fix them, the next one highlighted with a **Fix it** button, and the header naming the step ("Almost there · 1 of 5").
 - **Less hook talk:** the homepage leads with outcomes (posts that take off, polish, voice, ideas, replies); the hook is one tool among them.
