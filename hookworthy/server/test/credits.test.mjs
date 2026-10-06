@@ -44,7 +44,7 @@ test('credits: what each action costs, before the click', () => {
   assert.equal(C.cost('nonsense'), 1);
   assert.equal(C.cost('rewrite', { docs: 99 }), 4, 'files are capped at three');
 });
-test('credits: Free refills at local midnight; paid plans on the monthly anniversary, rolling over up to a month', () => {
+test('credits: Free refills at local midnight; paid plans on the monthly anniversary, rolling over once, after the first month', () => {
   const t = new Date(2026, 9, 4, 15, 30).getTime();
   assert.equal(C.next('free', t), new Date(2026, 9, 5, 0, 0).getTime());
   const jan31 = new Date(2027, 0, 31, 9).getTime();
@@ -55,7 +55,9 @@ test('credits: Free refills at local midnight; paid plans on the monthly anniver
   const s2 = C.status({ ...st, bal: 1900 }, 'pro', new Date(2027, 1, 28, 10).getTime());
   assert.equal(s2.left, 2000, 'rollover stops at one extra month');
   const s3 = C.status({ ...st, bal: 900 }, 'pro', new Date(2027, 4, 1).getTime());
-  assert.equal(s3.left, 2000, 'three missed refills still stop at the cap');
+  assert.equal(s3.left, 1000, 'only the first month rolls over: later refills start at the plan amount');
+  const s4 = C.status({ ...st, bal: 1500, next: new Date(2027, 2, 31, 9).getTime() }, 'pro', new Date(2027, 2, 31, 10).getTime());
+  assert.equal(s4.left, 1000, 'the second refill drops leftovers');
   let f = C.fresh('free', t); f = C.spend(f, 9); assert.equal(C.status(f, 'free', t + 3600e3).left, 1);
   assert.equal(C.status(f, 'free', new Date(2026, 9, 5, 0, 1).getTime()).left, 10, 'Free comes back to 10, never more');
   assert.equal(C.spend(f, 2), null, 'not enough: nothing is taken');

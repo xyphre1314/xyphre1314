@@ -1527,7 +1527,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
      One table for the app, the server and the tests. A credit is one everyday piece of Claude writing (a post rewrite).
      Bigger jobs cost more, and the button says how much before you click. Basic mode runs on your device and never uses
      a credit, and neither do Sharpen and the small automatic helpers. Free refills every day at midnight. Paid plans
-     refill monthly on the day you joined, and unused credits roll over up to one extra month's worth. */
+     refill monthly on the day you joined. Unused usage from the first month rolls over once, up to one extra month's worth. */
   const CR_DAY = 864e5;
   const CR_PLANS = {
     free: { name: 'Free', amount: 10, per: 'day', roll: 0 },
@@ -1582,7 +1582,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (now < st.next || P.per === 'trial') return st;
     if (P.per === 'day') return { ...st, bal: P.amount, next: crNext(plan, now), warned: 0 };
     let bal = Math.max(0, st.bal), next = st.next, n = 0;
-    while (now >= next && n++ < 2400) { bal = Math.min(P.amount + P.roll, bal + P.amount); next = crNext(plan, next, st.anchor); }
+    /* round 46: only the first month's leftovers carry over; from the second refill on, each month starts at the plan's amount */
+    while (now >= next && n++ < 2400) { const first = next <= crAddMonths(st.anchor, 1); bal = first ? Math.min(P.amount + P.roll, bal + P.amount) : P.amount; next = crNext(plan, next, st.anchor); }
     return { ...st, bal, next, warned: 0 };
   }
   /* what the meter shows. low = about 80% used (the gentle heads-up), plenty = paid and at least a quarter left (no count) */
