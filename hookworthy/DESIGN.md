@@ -186,7 +186,23 @@ Wispr Flow's editorial calm, in plum, for people who write in public. A cream pa
 
 ## Colors
 
-### Brand: Ink & Ember (round 43, current)
+### Brand: Paper & Blue (round 46, current)
+Minimal, the way Notion and Linear use colour: neutral paper, white surfaces, near-black blocks and one blue for the primary action and links. Everything else is grey.
+
+| Role | Token (historical name) | Light | Dark |
+|---|---|---|---|
+| App paper / surface | `--bg` / `--surface` | #F7F7F5 / #FFFFFF | #191919 / #252525 |
+| Homepage paper | `.hw --c-bg` / `--c-bg-2` | #FFFFFF / #F6F5F4 | |
+| Ink | `--text-1` | #1F1F1E | #EBEBEA |
+| Blocks (Today hero, tour, final call, icon tile) | `--plum-900` (`--pb1`) | #191918 | #2C2C2C tile |
+| Link blue (links, eyebrows, wordmark italic) | `--plum-600` (`--pl`) | #0070D6 | `--pl-d` #5EA6EC |
+| Signal (squiggle, logo dot, sparks) | `--plum-400`, `--apricot` | #2383E2 | #4C9BEA |
+| Fill / soft wash | `--lilac` / `--lilac-soft` | #E2EEFB / #F1F6FD | rgba(35,131,226,.16) |
+| Primary button | `--cta` / `--cta-ink` / `--cta-hover` | #0075DE / #FFFFFF / #005BAB | hover #1A86E8 |
+
+**Retired:** Ink & Ember (round 43–45: the owner found the ember harsh), Harbor & Cream revisit (round 45), cobalt CTA (round 44).
+
+### Brand: Ink & Ember (round 43) (retired round 46)
 **Promise:** the spark of being heard. People come to us scared of posting into the void; the product earns its keep the moment a post lands and someone replies.
 **How color carries that:** paper and ink do the work (calm, like Wispr Flow and iA Writer; restraint like Linear). One warm signal, ember, appears only when something good happens: your hook gets sharper, Post now, a reply comes in, a post takes off. Like Arc, the one color is the personality. Purple is out: it reads as a generic AI product.
 **Personality:** warm, confident, alive. **Icon:** an ink tile with a paper h and an ember dot: a notification, someone heard you.
@@ -399,6 +415,16 @@ Every demo, mockup and empty state is **heycape (@heycape_)** with his own pictu
 
 ### One primary button (round 44)
 Post now, Start free, Try Pro and Open it all use `--cta` / `--cta-ink` / `--cta-hover`, identical on paper, in dark mode and on ink blocks. Round 45: the primary is ember (`--cta` #F2592A, ink text); nothing else is filled with it.
+
+### Round 46
+- **Hook score:** signal bars everywhere a score is small (chips, lists, the composer gutter, homepage dials): one bar per step. The composer's panel is a checklist: five checks that tick as you fix them, the next one highlighted with a **Fix it** button, and the header naming the step ("Almost there · 1 of 5").
+- **Less hook talk:** the homepage leads with outcomes (posts that take off, polish, voice, ideas, replies); the hook is one tool among them.
+- **AI usage, not pitches:** plans are Standard, Higher and Highest usage. The meter shows a share left, never a count. Bigger jobs are marked "Bigger job" on the button.
+- **Rollover:** only the first month's leftovers carry into the second month; after that each month starts at the plan amount.
+- **Sharpen waits:** the pill appears only after a selection sits still for 1.8s. Alt+1–5 still works at once.
+- **Recently deleted:** deleted drafts wait 7 days (Drafts switcher footer, command palette) with Restore.
+- **Earn with Hookworthy:** 30% of every payment for 12 months from people you bring; your link, three steps, honest stats. In the account menu, the palette, the footer (#earn) and a homepage band.
+- **Thumbnails:** Make a visual › Thumbnail, or "Make a thumbnail" in the post's tools. Your profile photo or a photo you drop in, a bold title from your first line with one word marked (a number if there is one). Three layouts (Face, Cover with a soft blur behind the title, Split), three palettes, three sizes. Add to post or Download.
 
 ### Round 45: simpler homepage, one-answer tournament, quieter generating
 - **Hero:** one centred sentence in Figtree 700, "Where [creator] creators and teams [team] write posts [platform] that land", with live tiles inside it (a creator photo, a team of four, the X/Threads/LinkedIn/Bluesky icon) that take turns every 2.6s while on screen. Two buttons: Start free (the one ember primary) and See plans (a soft grey pill). No stats.

@@ -4456,6 +4456,7 @@ mark.fill.blank{ background:transparent; box-shadow:none; outline:1px dashed col
     <symbol id="i-focus" viewBox="0 0 20 20"><path d="M3 7V4.5A1.5 1.5 0 0 1 4.5 3H7M13 3h2.5A1.5 1.5 0 0 1 17 4.5V7M17 13v2.5a1.5 1.5 0 0 1-1.5 1.5H13M7 17H4.5A1.5 1.5 0 0 1 3 15.5V13"/></symbol>
     <symbol id="i-target" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.2"/><circle cx="10" cy="10" r=".5" fill="currentColor"/></symbol>
     <symbol id="i-upload" viewBox="0 0 20 20"><path d="M10 13V3.5M6.5 7L10 3.5 13.5 7M4 12.5v2A2.5 2.5 0 0 0 6.5 17h7a2.5 2.5 0 0 0 2.5-2.5v-2"/></symbol>
+    <symbol id="i-download" viewBox="0 0 20 20"><path d="M10 3.5V13M6.5 9.5L10 13l3.5-3.5M4 12.5v2A2.5 2.5 0 0 0 6.5 17h7a2.5 2.5 0 0 0 2.5-2.5v-2"/></symbol>
     <symbol id="i-trend" viewBox="0 0 20 20"><path d="M3 14.5l5-5 3 3 6-6.5M12.5 6h4.5v4.5"/></symbol>
     <symbol id="i-layers" viewBox="0 0 20 20"><path d="M10 3l7 4-7 4-7-4z"/><path d="M3 11l7 4 7-4"/></symbol>
     <symbol id="i-cmd" viewBox="0 0 20 20"><path d="M7.5 7.5h5v5h-5zM7.5 7.5V5.8a1.8 1.8 0 1 0-1.8 1.7h1.8zM12.5 7.5V5.8a1.8 1.8 0 1 1 1.8 1.7h-1.8zM7.5 12.5v1.7a1.8 1.8 0 1 1-1.8-1.7h1.8zM12.5 12.5v1.7a1.8 1.8 0 1 0 1.8-1.7h-1.8z"/></symbol>
@@ -5842,6 +5843,7 @@ function paletteCommands() {
     { g: 'Actions', label: 'New post', icon: 'write', kbd: ['C'], run: newPost },
     { g: 'Actions', label: 'Save an idea', icon: 'plus', kbd: ['I'], run: openCapture },
     { g: 'Actions', label: 'Schedule this draft', icon: 'clock', kbd: [MOD, '↵'], run: () => { goThen('write', () => openSchedule()); } },
+    { g: 'Actions', label: 'Make a thumbnail for this post', icon: 'image', run: () => goThen('write', () => openVisual(0, 'thumb')) },
     { g: 'Actions', label: 'Tidy up drafts', icon: 'archive', run: () => openTidy() },
     { g: 'Actions', label: 'Recently deleted drafts', icon: 'trash', hint: `Kept ${TRASH_DAYS} days`, run: () => openTrash() },
     { g: 'Actions', label: 'Replies to your post', icon: 'reply', run: () => openReplyDesk() },
@@ -6602,13 +6604,13 @@ const PIC_CACHE = {};
 function picImg(src) { if (!PIC_CACHE[src]) { const im = new Image(); im.src = src; PIC_CACHE[src] = im; } return PIC_CACHE[src]; }
 const VIS = { kind: 'auto', style: 'paper', size: 'wide', look: 0, frameImg: null };
 const VIS_SIZES = { wide: [1200, 675], square: [1080, 1080], tall: [1080, 1350] };
-/* three looks, all from the brand: cream paper, deep plum ink, lilac tint */
+/* three looks, all from the brand (round 46): white paper, near-black ink, a light blue tint. One blue accent */
 const VIS_PAL = {
-  paper: { bg: '#FCFAF0', bg2: '#F2EDDA', fg: '#1A1A1A', mu: '#6B6A61', acc: '#6A2FA0', acc2: '#A27BE0', tint: '#EADCFF', line: 'rgba(26,26,26,.09)', card: '#FFFFFF', on: '#FFFFFF', hatch: 'rgba(26,26,26,.16)' },
-  ink: { bg: '#2A1545', bg2: '#120A1F', fg: '#FEFDF1', mu: 'rgba(254,253,241,.64)', acc: '#CDB2FF', acc2: '#8D5CD6', tint: 'rgba(205,178,255,.26)', line: 'rgba(254,253,241,.1)', card: 'rgba(254,253,241,.06)', on: '#1A1030', hatch: 'rgba(254,253,241,.2)' },
-  marker: { bg: '#EFE4FF', bg2: '#DCC6FF', fg: '#1A1A1A', mu: '#4D4461', acc: '#3B1F5C', acc2: '#6A2FA0', tint: '#FFFFFF', line: 'rgba(59,31,92,.12)', card: 'rgba(255,255,255,.6)', on: '#FFFFFF', hatch: 'rgba(59,31,92,.22)' }
+  paper: { bg: '#FFFFFF', bg2: '#F6F5F4', fg: '#191918', mu: '#6B6A66', acc: '#0075DE', acc2: '#5EA6EC', tint: '#E2EEFB', line: 'rgba(55,53,47,.1)', card: '#FFFFFF', on: '#FFFFFF', hatch: 'rgba(55,53,47,.16)' },
+  ink: { bg: '#191918', bg2: '#0F0F0E', fg: '#FFFFFF', mu: 'rgba(255,255,255,.62)', acc: '#5EA6EC', acc2: '#2383E2', tint: 'rgba(94,166,236,.22)', line: 'rgba(255,255,255,.1)', card: 'rgba(255,255,255,.06)', on: '#0F0F0E', hatch: 'rgba(255,255,255,.2)' },
+  marker: { bg: '#E2EEFB', bg2: '#CFE3F8', fg: '#191918', mu: '#4A5563', acc: '#0062BA', acc2: '#2383E2', tint: '#FFFFFF', line: 'rgba(0,98,186,.14)', card: 'rgba(255,255,255,.65)', on: '#FFFFFF', hatch: 'rgba(0,98,186,.22)' }
 };
-const VIS_KINDS = [['data', 'Numbers', 'Before → after, charted'], ['stat', 'Big number', 'One figure, huge'], ['list', 'List', 'Points people save'], ['compare', 'Side by side', 'Two ways, compared'], ['quote', 'Quote card', 'Your line, set big'], ['post', 'Post screenshot', 'For LinkedIn and Threads'], ['frame', 'Frame a screenshot', 'Padding, round corners and a shadow']];
+const VIS_KINDS = [['thumb', 'Thumbnail', 'Your face or photo, a bold title'], ['data', 'Numbers', 'Before → after, charted'], ['stat', 'Big number', 'One figure, huge'], ['list', 'List', 'Points people save'], ['compare', 'Side by side', 'Two ways, compared'], ['quote', 'Quote card', 'Your line, set big'], ['post', 'Post screenshot', 'For LinkedIn and Threads'], ['frame', 'Frame a screenshot', 'Padding, round corners and a shadow']];
 const visA = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
 const SERIF = s => `400 ${s}px "EB Garamond", Georgia, serif`, SANS = (w, s) => `${w} ${s}px Figtree, system-ui, sans-serif`, HAND = s => `500 ${s}px Caveat, cursive`;
 function visFit(ctx, text, font, max, min, maxW, maxLines) {
@@ -6780,12 +6782,75 @@ function visRender(cv, kind, pl, { style = 'paper', size = 'wide', look = 0, use
     ctx.fillStyle = tx; ctx.font = SANS(400, 34); lines.forEach((l, i) => ctx.fillText(l, P + 32, cy + 160 + i * 46));
     ctx.fillStyle = t2; ctx.font = SANS(400, 24); ctx.fillText(new Date().toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' }) + ' · ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), P + 32, cy + ch - 34); return;
   }
+  if (kind === 'thumb') { visThumb(ctx, W, H, P, c, u, pl, text, frameImg, look, wide); return; }
   if (kind === 'frame') {
     visBg(ctx, W, H, c, [.5, .5]); const im = frameImg;
     if (!im) { ctx.fillStyle = c.mu; ctx.font = SANS(500, 32); ctx.textAlign = 'center'; ctx.fillText('Drop a screenshot here, or click to choose one.', W / 2, H / 2); ctx.textAlign = 'left'; return; }
     const pad = P * .9, r = Math.min((W - pad * 2) / im.width, (H - pad * 2) / im.height), w = im.width * r, h = im.height * r, x = (W - w) / 2, y = (H - h) / 2;
     ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.3)'; ctx.shadowBlur = 70; ctx.shadowOffsetY = 26; visRound(ctx, x, y, w, h, 22); ctx.fillStyle = '#fff'; ctx.fill(); ctx.restore();
     ctx.save(); visRound(ctx, x, y, w, h, 22); ctx.clip(); ctx.drawImage(im, x, y, w, h); ctx.restore();
+  }
+}
+/* ---------- round 46: thumbnails. Your profile photo (or a photo you drop in) and a bold title, three layouts:
+   Face (a big round portrait beside the title), Cover (the photo full-bleed, the title over a dark fade), Split (photo on one side).
+   One word is marked in the accent: a number if the title has one, else its longest word ---------- */
+const thumbTitle = (pl, text) => { const t = (pl.headline || String(text || '').split('\n').find(x => x.trim()) || '').trim().replace(/\s+/g, ' '); return t.length > 90 ? t.slice(0, 88).replace(/\s+\S*$/, '') + '…' : t; };
+function thumbHi(t) { const num = t.match(/[$€£]?\d[\d,.]*\s?(?:%|[kKmMx×]\b)?/); if (num) return num[0].trim().split(/\s+/)[0]; const w = t.split(/\s+/).map(x => x.replace(/[^\p{L}\p{N}'’-]/gu, '')).filter(x => x.length >= 5 && !HWCore.STOP.has(x.toLowerCase())); return w.sort((a, b) => b.length - a.length)[0] || ''; }
+function visCover(ctx, im, x, y, w, h) { const r = Math.max(w / im.width, h / im.height), iw = im.width * r, ih = im.height * r; ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.drawImage(im, x + (w - iw) / 2, y + (h - ih) / 2.6, iw, ih); ctx.restore(); }
+function visTitle(ctx, lines, x, y, size, fg, hi, c, align = 'left', maxW = 0) {
+  ctx.save(); ctx.font = SANS(800, size); ctx.letterSpacing = `${-size * .03}px`; ctx.textBaseline = 'alphabetic';
+  const hiK = hi ? hi.toLowerCase() : '';
+  lines.forEach((ln, i) => {
+    const by = y + size * 1.04 * (i + 1); const words = ln.split(' '); const sp = ctx.measureText(' ').width;
+    const isHi = w => hiK && w.replace(/[^\p{L}\p{N}$€£%,.'’×-]/gu, '').replace(/[.,]+$/, '').toLowerCase() === hiK, pad = size * .14;
+    let lw = 0; words.forEach((w, k) => { lw += ctx.measureText(w).width + (k ? sp : 0) + (isHi(w) ? pad * 2 : 0); });
+    let cx = align === 'center' ? x + (maxW - lw) / 2 : x;
+    words.forEach(w => { const ww = ctx.measureText(w).width;
+      if (isHi(w)) { cx += pad; ctx.save(); ctx.shadowColor = 'transparent'; ctx.fillStyle = c.acc; visRound(ctx, cx - pad * .8, by - size * .82, ww + pad * 1.6, size * 1.0, size * .16); ctx.fill(); ctx.restore(); ctx.fillStyle = c.on; ctx.fillText(w, cx, by); cx += pad; }
+      else { ctx.fillStyle = fg; ctx.fillText(w, cx, by); }
+      cx += ww + sp; });
+  });
+  ctx.restore(); return y + size * 1.04 * lines.length;
+}
+function visThumb(ctx, W, H, P, c, u, pl, text, frameImg, look, wide) {
+  const im = frameImg || (u.pic && picImg(u.pic)), ok = im && im.complete !== false && (im.naturalWidth || im.width);
+  const t = thumbTitle(pl, text) || 'Your title goes here', hi = thumbHi(t), L = look % 3;
+  const s = W / 1200;
+  if ((L === 1 || L === 2) && ok) {
+    if (L === 1) { /* cover */
+      visCover(ctx, im, 0, 0, W, H);
+      /* the photo softens where the title sits, so a busy picture never fights the words */
+      ctx.save(); ctx.beginPath(); ctx.rect(0, H * .4, W, H * .6); ctx.clip(); ctx.filter = `blur(${Math.round(16 * s)}px)`; visCover(ctx, im, 0, 0, W, H); ctx.restore();
+      const g = ctx.createLinearGradient(0, H * .2, 0, H); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.45, 'rgba(0,0,0,.55)'); g.addColorStop(1, 'rgba(0,0,0,.9)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 24 * s;
+      ctx.font = SANS(800, 10); const f = visFit(ctx, t, z => SANS(800, z), (wide ? 92 : 104) * s, 48 * s, W - P * 2, 3);
+      visTitle(ctx, f.lines, P, H - P - f.size * 1.04 * f.lines.length - 70 * s, f.size, '#FFFFFF', hi, { ...c, acc: c.acc, on: '#FFFFFF' }); ctx.restore();
+      const r = 22 * s; visAvatar(ctx, P, H - P - r * 2 + 6 * s, r, u); ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = SANS(600, 24 * s); ctx.textBaseline = 'middle'; ctx.fillText(`@${u.handle}`, P + r * 2 + 14 * s, H - P - r + 6 * s); ctx.textBaseline = 'alphabetic';
+      return;
+    }
+    /* split */
+    const iw = wide ? W * .44 : W, ih = wide ? H : H * .48;
+    visBg(ctx, W, H, c); if (wide) visCover(ctx, im, W - iw, 0, iw, ih); else visCover(ctx, im, 0, 0, iw, ih);
+    const tx = P, tw = wide ? W - iw - P * 1.6 : W - P * 2, ty = wide ? P : ih + P * .7, th = wide ? H - P * 2 - 70 * s : H - ih - P * 1.7 - 60 * s;
+    const f = visFit(ctx, t, z => SANS(800, z), (wide ? 84 : 96) * s, 40 * s, tw, Math.max(2, Math.floor(th / ((wide ? 84 : 96) * s * 1.04))));
+    visTitle(ctx, f.lines, tx, ty + (wide ? (th - f.size * 1.04 * f.lines.length) / 2 : 0), f.size, c.fg, hi, c);
+    visFoot(ctx, wide ? W - iw : W, H, P, c, u, s * .9); return;
+  }
+  /* face: the default. A big round portrait with a soft accent disc behind it */
+  visBg(ctx, W, H, c);
+  const D = wide ? Math.min(H * .7, W * .33) : W * .5, cx = wide ? W - P - D / 2 : W / 2, cy = wide ? H / 2 : P + D / 2 + 10 * s;
+  ctx.save(); ctx.fillStyle = c.tint; ctx.beginPath(); ctx.arc(cx + D * .14, cy + D * .08, D * .56, 0, 7); ctx.fill(); ctx.restore();
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.22)'; ctx.shadowBlur = 50 * s; ctx.shadowOffsetY = 18 * s; ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(cx, cy, D / 2 + 8 * s, 0, 7); ctx.fill(); ctx.restore();
+  if (ok) { ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, D / 2, 0, 7); ctx.clip(); visCover(ctx, im, cx - D / 2, cy - D / 2, D, D); ctx.restore(); }
+  else { visAvatar(ctx, cx - D / 2, cy - D / 2, D / 2, u); }
+  if (wide) {
+    const tw = W - D - P * 2.6, f = visFit(ctx, t, z => SANS(800, z), 96 * s, 44 * s, tw, 4);
+    const top = (H - f.size * 1.04 * f.lines.length) / 2 - 24 * s; visTitle(ctx, f.lines, P, top, f.size, c.fg, hi, c);
+    ctx.fillStyle = c.mu; ctx.font = SANS(600, 26 * s); ctx.fillText(`@${u.handle}`, P, top + f.size * 1.04 * f.lines.length + 54 * s);
+  } else {
+    const ty = cy + D / 2 + 50 * s, f = visFit(ctx, t, z => SANS(800, z), 84 * s, 40 * s, W - P * 2, 4);
+    visTitle(ctx, f.lines, P, ty, f.size, c.fg, hi, c, 'center', W - P * 2);
+    ctx.save(); ctx.fillStyle = c.mu; ctx.font = SANS(600, 26 * s); ctx.textAlign = 'center'; ctx.fillText(`@${u.handle}`, W / 2, ty + f.size * 1.04 * f.lines.length + 50 * s); ctx.restore();
   }
 }
 const visFonts = () => document.fonts ? Promise.all(['800 40px Figtree', '600 40px Figtree', '400 40px "EB Garamond"', '500 40px Caveat'].map(f => document.fonts.load(f).catch(() => 0))) : Promise.resolve();
@@ -6800,11 +6865,11 @@ function visMergeAI(text, pl, r) {
   if (tpl === 'compare' && r.left && r.right) Object.assign(out, { left: r.left, right: r.right });
   return out;
 }
-function openVisual(i) {
+function openVisual(i, want) {
   const tw = S.draft.tweets[i]; if (!tw) return; const ta = $(`.tw[data-id="${tw.id}"] .tw-input`);
   const sel = ta && ta.selectionEnd > ta.selectionStart ? ta.value.slice(ta.selectionStart, ta.selectionEnd) : '';
   const all = S.draft.tweets.map(t => t.text).join('\n\n').trim();
-  let plan = HWCore.visualPlan(sel || all); const edit = {}; VIS.kind = plan.template; VIS.look = 0;
+  let plan = HWCore.visualPlan(sel || all); const edit = {}; VIS.kind = want || plan.template; VIS.look = 0; if (S.user.pic) picImg(S.user.pic).decode?.().then(() => m.el.isConnected && draw(), () => 0);
   const cur = () => ({ ...plan, ...Object.fromEntries(Object.entries(edit).filter(([, v]) => v !== undefined)) });
   const text = () => VIS.kind === 'post' ? tw.text : sel || all;
   const seg = (k, opts) => `<div class="seg vis-seg" role="tablist" data-vk="${k}">${opts.map(([v, l]) => `<button role="tab" data-v="${v}" aria-selected="${VIS[k] === v}">${l}</button>`).join('')}</div>`;
@@ -6813,27 +6878,29 @@ function openVisual(i) {
     <div class="vis-kinds" role="tablist">${VIS_KINDS.map(([k, l, d]) => `<button class="vk" role="tab" data-kind="${k}" aria-selected="${VIS.kind === k}"><b>${l}${plan.template === k ? ' <span class="vk-pick">Picked</span>' : ''}</b><small>${d}</small></button>`).join('')}</div>
     <p class="vis-why" id="vis-why"></p>
     <div class="vis-stage" id="vis-stage"><canvas id="vis-cv" aria-label="Preview of the image"></canvas><input type="file" accept="image/*" id="vis-file" hidden></div>
-    <div class="vis-edit" id="vis-edit"><label class="vis-f"><span>Headline</span><input class="input" id="vis-h" maxlength="120"></label><label class="vis-f" id="vis-mw"><span>Label</span><input class="input" id="vis-m" maxlength="40"></label><button class="btn" id="vis-look">${ic('shuffle', 'sm')} Another look</button></div>
+    <div class="vis-edit" id="vis-edit"><label class="vis-f"><span>Headline</span><input class="input" id="vis-h" maxlength="120"></label><label class="vis-f" id="vis-mw"><span>Label</span><input class="input" id="vis-m" maxlength="40"></label><button class="btn" id="vis-look">${ic('shuffle', 'sm')} Another look</button><button class="btn" id="vis-photo" hidden>${ic('image', 'sm')} Use a photo</button></div>
     <div class="vis-opts">${seg('style', [['paper', 'Paper'], ['ink', 'Ink'], ['marker', 'Tint']])}${seg('size', [['wide', '16:9'], ['square', '1:1'], ['tall', '4:5']])}</div>
   </div>
-  <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="vis-add">${ic('image', 'sm')} Add to post</button></div>`, { label: 'Make a visual', box: 'modal vis-modal' });
-  const el = m.el, cv = $('#vis-cv', el); if (VIS.kind !== 'frame') VIS.frameImg = null;
+  <div class="modal-f"><button class="btn" data-close>Cancel</button><span class="grow"></span><button class="btn" id="vis-dl">${ic('download', 'sm')} Download</button><button class="btn primary" id="vis-add">${ic('image', 'sm')} Add to post</button></div>`, { label: 'Make a visual', box: 'modal vis-modal' });
+  const el = m.el, cv = $('#vis-cv', el); if (VIS.kind !== 'frame' && VIS.kind !== 'thumb') VIS.frameImg = null;
   const why = () => { const k = VIS_KINDS.find(x => x[0] === VIS.kind); $('#vis-why', el).innerHTML = VIS.kind === plan.template ? `${ic('riff', 'sm')}<span><b>${plan.ai ? `${cap(AI_NAME())} picked` : 'Picked for you'}: ${k[1]}.</b> ${esc(plan.why || '')}</span>` : `${ic('image', 'sm')}<span><b>${k[1]}.</b> ${esc(k[2])}.</span>`; };
-  const fields = () => { const p = cur(); const h = $('#vis-h', el), mm = $('#vis-m', el); if (document.activeElement !== h) h.value = p.headline || ''; if (document.activeElement !== mm) mm.value = VIS.kind === 'stat' ? (p.label || '') : (p.metric || ''); $('#vis-mw', el).hidden = !['data', 'stat'].includes(VIS.kind); $('#vis-edit', el).hidden = ['post', 'frame'].includes(VIS.kind); $('#vis-look', el).hidden = VIS.kind !== 'data'; };
-  const draw = () => { visRender(cv, VIS.kind, cur(), { style: VIS.style, size: VIS.size, look: VIS.look, user: S.user, text: text(), frameImg: VIS.frameImg }); $('#vis-stage', el).classList.toggle('drop', VIS.kind === 'frame'); why(); fields(); };
+  const fields = () => { const p = cur(); const h = $('#vis-h', el), mm = $('#vis-m', el); if (document.activeElement !== h) h.value = p.headline || ''; if (document.activeElement !== mm) mm.value = VIS.kind === 'stat' ? (p.label || '') : (p.metric || ''); $('#vis-mw', el).hidden = !['data', 'stat'].includes(VIS.kind); $('#vis-edit', el).hidden = ['post', 'frame'].includes(VIS.kind); $('#vis-look', el).hidden = !['data', 'thumb'].includes(VIS.kind); };
+  const draw = () => { visRender(cv, VIS.kind, cur(), { style: VIS.style, size: VIS.size, look: VIS.look, user: S.user, text: text(), frameImg: VIS.frameImg }); $('#vis-stage', el).classList.toggle('drop', VIS.kind === 'frame' || VIS.kind === 'thumb'); const ph = $('#vis-photo', el); ph.hidden = VIS.kind !== 'thumb'; ph.innerHTML = `${ic('image', 'sm')} ${VIS.frameImg ? 'Use my profile photo' : 'Use a photo'}`; why(); fields(); };
   visFonts().then(draw, draw);
   if (aiOn() && !sel) { $('#vis-why', el).classList.add('thinking'); ask(HWCore.prompts.visual({ text: all, plan }), { fresh: true, act: 'visual' }).then(r => { const np = visMergeAI(all, plan, r && (r.data || r)); if (np !== plan) { const moved = np.template !== plan.template && VIS.kind === plan.template; plan = np; if (moved) { VIS.kind = plan.template; $$('.vk', el).forEach(x => { x.setAttribute('aria-selected', x.dataset.kind === VIS.kind); const b = $('b', x); b.innerHTML = VIS_KINDS.find(k => k[0] === x.dataset.kind)[1] + (x.dataset.kind === plan.template ? ' <span class="vk-pick">Picked</span>' : ''); }); } draw(); } }).catch(() => { }).finally(() => $('#vis-why', el) && $('#vis-why', el).classList.remove('thinking')); }
   el.addEventListener('click', e => {
     const k = e.target.closest('.vk'); if (k) { VIS.kind = k.dataset.kind; $$('.vk', el).forEach(x => x.setAttribute('aria-selected', x === k)); SFX.play('tick'); draw(); if (VIS.kind === 'frame' && !VIS.frameImg) $('#vis-file', el).click(); return; }
     const o = e.target.closest('.vis-seg [data-v]'); if (o) { const g = o.parentElement.dataset.vk; VIS[g] = o.dataset.v; $$('[data-v]', o.parentElement).forEach(x => x.setAttribute('aria-selected', x === o)); SFX.play('tick'); draw(); return; }
     if (e.target.closest('#vis-look')) { VIS.look = (VIS.look + 1) % 3; SFX.play('swap'); draw(); return; }
-    if (e.target.closest('#vis-stage') && VIS.kind === 'frame') $('#vis-file', el).click();
+    if (e.target.closest('#vis-photo')) { if (VIS.frameImg) { VIS.frameImg = null; draw(); } else $('#vis-file', el).click(); return; }
+    if (e.target.closest('#vis-dl')) { const a = document.createElement('a'); a.download = `hookworthy-${VIS.kind}.png`; a.href = cv.toDataURL('image/png'); document.body.append(a); a.click(); a.remove(); SFX.play('tick'); return; }
+    if (e.target.closest('#vis-stage') && (VIS.kind === 'frame' || VIS.kind === 'thumb')) $('#vis-file', el).click();
   });
   $('#vis-h', el).addEventListener('input', e => { edit.headline = e.target.value; draw(); });
   $('#vis-m', el).addEventListener('input', e => { edit[VIS.kind === 'stat' ? 'label' : 'metric'] = e.target.value; draw(); });
   const load = f => { if (!f || !f.type.startsWith('image/')) return; const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { VIS.frameImg = im; draw(); }; im.src = r.result; }; r.readAsDataURL(f); };
   $('#vis-file', el).addEventListener('change', e => load(e.target.files[0]));
-  const st = $('#vis-stage', el); st.addEventListener('dragover', e => { e.preventDefault(); st.classList.add('over'); }); st.addEventListener('dragleave', () => st.classList.remove('over')); st.addEventListener('drop', e => { e.preventDefault(); st.classList.remove('over'); VIS.kind = 'frame'; $$('.vk', el).forEach(x => x.setAttribute('aria-selected', x.dataset.kind === 'frame')); load(e.dataTransfer.files[0]); });
+  const st = $('#vis-stage', el); st.addEventListener('dragover', e => { e.preventDefault(); st.classList.add('over'); }); st.addEventListener('dragleave', () => st.classList.remove('over')); st.addEventListener('drop', e => { e.preventDefault(); st.classList.remove('over'); if (VIS.kind !== 'thumb') VIS.kind = 'frame'; $$('.vk', el).forEach(x => x.setAttribute('aria-selected', x.dataset.kind === VIS.kind)); load(e.dataTransfer.files[0]); });
   $('#vis-add', el).onclick = () => {
     if (tw.poll) { toast('Polls and images don’t mix on X. Remove the poll first.', { icon: 'poll', tone: 'err' }); return; }
     if (tw.media.length >= 4) { toast('A post can hold four images. Remove one first.', { icon: 'image', tone: 'err' }); return; }
@@ -6842,7 +6909,7 @@ function openVisual(i) {
     const missing = VIS.kind === 'data' && !(isFinite(p.a) && isFinite(p.b)) ? 'Numbers needs a before and after in your post, like “21% → 38%”.' : VIS.kind === 'stat' && !(p.value || /\d/.test(text())) ? 'Big number needs a number in your post, like “71% win rate” or “$12k MRR”.' : VIS.kind === 'compare' && !(p.left && p.right) ? 'Side by side needs two sides, like “Before: … / After: …” on two lines.' : '';
     if (missing) { toast(missing, { icon: 'image', tone: 'err', ms: 4200 }); return; }
     const statV = p.value || (text().match(/[$€£]?\d[\d,.]*\s?(?:%|[kKmM]\b)?/) || [''])[0];
-    const alt = { data: `Chart: ${p.metric ? p.metric + ' went' : 'went'} from ${p.before} to ${p.after}${p.delta ? ` (${p.delta})` : ''}.`, stat: `${statV}${p.label ? ' ' + p.label : ''}. ${p.headline || ''}`, list: `${p.headline || 'List'}: ${(p.items || []).join('; ')}`, compare: `${p.leftLabel || 'Before'}: ${p.left}. ${p.rightLabel || 'After'}: ${p.right}.`, list: `${p.headline || 'List'}: ${(p.items && p.items.length ? p.items : text().split('\n').filter(Boolean).slice(1, 6)).join('; ')}`, quote: `Quote card: ${p.headline || ''}`, post: 'Screenshot of the post: ' + tw.text.slice(0, 120), frame: 'Screenshot' }[VIS.kind];
+    const alt = { thumb: `Thumbnail: ${thumbTitle(p, text())}, with ${VIS.frameImg ? 'a photo' : `${S.user.name}’s profile photo`}.`, data: `Chart: ${p.metric ? p.metric + ' went' : 'went'} from ${p.before} to ${p.after}${p.delta ? ` (${p.delta})` : ''}.`, stat: `${statV}${p.label ? ' ' + p.label : ''}. ${p.headline || ''}`, list: `${p.headline || 'List'}: ${(p.items || []).join('; ')}`, compare: `${p.leftLabel || 'Before'}: ${p.left}. ${p.rightLabel || 'After'}: ${p.right}.`, list: `${p.headline || 'List'}: ${(p.items && p.items.length ? p.items : text().split('\n').filter(Boolean).slice(1, 6)).join('; ')}`, quote: `Quote card: ${p.headline || ''}`, post: 'Screenshot of the post: ' + tw.text.slice(0, 120), frame: 'Screenshot' }[VIS.kind];
     tw.media.push({ type: 'img', src: cv.toDataURL('image/png'), alt: alt.trim().slice(0, 400) });
     refreshMedia(tw.id); m.close(); SFX.play('swap'); toast('Added under your words, with alt text filled in.', { icon: 'image', tone: 'accent' });
   };
@@ -10011,7 +10078,7 @@ function composerClick(e) {
     case 'starter': writeIdea(el.dataset.t, el.dataset.kind, el.dataset.topic); break;
     case 'gif': openGifs(i); break;
     case 'visual': openVisual(i); break;
-    case 'toolsmore': openMenu(el, [{ label: 'Make a visual', icon: 'spark', hint: 'Quote card or chart', run: () => openVisual(i) }, { label: 'Hook tournament', icon: 'bolt', hint: 'Six agents, one best line', run: () => openTournament() }, ...(S.draft.tweets.filter(t => t.text.trim()).length >= 2 || tlen(S.draft.tweets[0].text) > 200 ? [{ label: 'Read aloud', icon: 'volume', run: () => readAloud(i) }] : []), ...(S.draft.tweets.length > 1 && matchMedia('(max-width: 760px)').matches ? ['-', { label: 'Remove this post', icon: 'trash', run: () => removeTweet(i) }] : [])]); break;
+    case 'toolsmore': openMenu(el, [{ label: 'Make a thumbnail', icon: 'image', hint: 'Your face, a bold title', run: () => openVisual(i, 'thumb') }, { label: 'Make a visual', icon: 'spark', hint: 'Quote card or chart', run: () => openVisual(i) }, { label: 'Hook tournament', icon: 'bolt', hint: 'Six agents, one best line', run: () => openTournament() }, ...(S.draft.tweets.filter(t => t.text.trim()).length >= 2 || tlen(S.draft.tweets[0].text) > 200 ? [{ label: 'Read aloud', icon: 'volume', run: () => readAloud(i) }] : []), ...(S.draft.tweets.length > 1 && matchMedia('(max-width: 760px)').matches ? ['-', { label: 'Remove this post', icon: 'trash', run: () => removeTweet(i) }] : [])]); break;
     case 'moreriffs': openMenu(el, [{ header: 'More rewrites' }, ...RIFFS.filter(r => !RIFF_MAIN.includes(r.k)).map(r => ({ label: r.label, icon: r.icon, kbd: [ALT, r.key], run: () => r.k === 'translate' ? setTimeout(() => openTranslate(el, i >= 0 ? i : 0), 0) : runRiff(i >= 0 ? i : 0, r.k) }))]); break;
     case 'dictate': dictate(i); break;
     case 'readaloud': readAloud(i); break;
