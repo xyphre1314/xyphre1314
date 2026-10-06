@@ -22,12 +22,12 @@
 <meta name="theme-color" content="#F7F7F5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#191919" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23191918'/%3E%3Cpath d='M9.62 26Q9.05 26 9.05 25.66Q9.05 25.37 9.7 25.16Q10.13 25.02 10.49 24.82Q10.85 24.61 10.87 24.03V10.09Q10.87 9.33 10.63 8.75Q10.4 8.18 9.67 8.06Q9.4 8 9.4 7.64Q9.4 7.36 9.65 7.28Q10.13 7.14 10.79 6.93Q11.44 6.73 12.1 6.49Q12.76 6.25 13.21 6.06Q13.36 6 13.44 6Q13.56 6 13.62 6.07Q13.67 6.15 13.67 6.25Q13.67 6.41 13.61 6.7Q13.56 7 13.51 7.62Q13.46 8.25 13.45 9.42V14.91Q13.45 15.3 13.49 15.51Q13.53 15.71 13.63 15.87Q14.08 15.52 14.72 15.1Q15.36 14.68 16.16 14.36Q16.97 14.04 17.87 14.04Q19.29 14.04 20.25 15.12Q21.2 16.2 21.2 17.94V23.95Q21.2 24.53 21.55 24.77Q21.9 25.02 22.31 25.16Q22.62 25.26 22.78 25.36Q22.95 25.47 22.95 25.66Q22.95 26 22.37 26Q21.76 26 21.42 25.96Q21.08 25.92 20.77 25.89Q20.46 25.86 19.92 25.86Q19.39 25.86 19.08 25.89Q18.78 25.92 18.46 25.96Q18.14 26 17.53 26Q16.93 26 16.93 25.65Q16.93 25.44 17.1 25.35Q17.27 25.26 17.55 25.16Q17.96 25.03 18.29 24.77Q18.61 24.52 18.61 23.94V18.24Q18.61 17.57 18.26 17.02Q17.9 16.47 17.37 16.14Q16.84 15.82 16.27 15.82Q15.78 15.82 15.14 15.97Q14.5 16.12 14.08 16.44Q13.71 16.74 13.59 17.07Q13.46 17.4 13.46 18.12V24.01Q13.48 24.58 13.79 24.8Q14.1 25.01 14.5 25.16Q14.79 25.24 14.95 25.35Q15.11 25.46 15.11 25.65Q15.11 26 14.57 26Q14 26 13.65 25.96Q13.29 25.92 12.97 25.89Q12.64 25.86 12.14 25.86Q11.66 25.86 11.3 25.89Q10.95 25.92 10.57 25.96Q10.18 26 9.62 26Z' fill='%23FAF8F2'/%3E%3Ccircle cx='23.2' cy='9' r='2.6' fill='%23F2592A'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230075DE'/%3E%3Cpath d='M9.5 5.5V26.5M9.5 16.5a5.25 5.25 0 0 1 10.5 0V22a3.25 3.25 0 0 0 6.5 0V19' fill='none' stroke='%23fff' stroke-width='3.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="assets/app-icon.png">
 <link rel="preload" href="fonts/Figtree-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/EBGaramond-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* Fonts are self-hosted (Figtree for display and UI, EB Garamond for the wordmark only, Geist Mono for keys); the Geist fallback is Arial tuned to Geist's metrics so a slow or blocked font never reflows a line */
+/* Fonts are self-hosted (Figtree for display and UI, EB Garamond kept only for older shared images, Geist Mono for keys); the Geist fallback is Arial tuned to Geist's metrics so a slow or blocked font never reflows a line */
 @font-face{ font-family:"Geist Mono"; src:url(fonts/GeistMono-Variable.woff2) format("woff2"); font-weight:100 900; font-display:swap; }
 @font-face{ font-family:"EB Garamond"; src:url(fonts/EBGaramond-Regular.woff2) format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
 @font-face{ font-family:"EB Garamond"; src:url(fonts/EBGaramond-Italic.woff2) format("woff2"); font-weight:400 800; font-style:italic; font-display:swap; }
@@ -40,7 +40,7 @@
    Color: "Graphite". Cool, near-neutral greys (Linear). The accent is ink itself:
          near-black on light, near-white on dark. Hue is reserved for meaning
          (green good, amber warning, red error).
-   Type (round 47): Figtree for display and UI, EB Garamond only in the wordmark;
+   Type (round 47): Figtree for display and UI, the wordmark too (round 48);
          writing (and the wordmark), Geist Mono for numbers and keys, Caveat for margin notes.
    Light tokens live on :root and .force-light; dark tokens on [data-theme=dark],
    .force-dark and the prefers-color-scheme block. Springs are generated at boot.
@@ -55,7 +55,7 @@
   --acc-l:var(--pl); --acc-l-text:var(--pl); --acc-l-ink:#FFFFFF; --acc-d:var(--pl-d); --acc-d-ink:#1A1A1A; }
 :root, .force-light{
   --font-display:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --font-brand:"EB Garamond","Iowan Old Style","Palatino Linotype",Georgia,serif; /* the wordmark only */
+  --font-brand:var(--font-display); /* round 48: the wordmark joined the sans system */
   --font-ui:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-mono:"Geist Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
   --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-15:15px; --t-17:17px; --t-18:18px;
@@ -285,7 +285,9 @@ kbd,.kbd{ display:inline-flex; align-items:center; justify-content:center; min-w
 .input[disabled]{ opacity:.5; }
 textarea.input{ height:auto; min-height:88px; padding:10px 12px; resize:vertical; line-height:1.5; }
 select.input{ appearance:none; padding-right:32px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2380858E' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center; background-size:18px; }
-.field-err{ font-size:var(--t-12); color:var(--error); }
+.field-err{ margin:6px 0 0; font-size:var(--t-13); line-height:1.4; color:var(--error); } .field-err:empty{ display:none; }
+/* inside a composer box the message lines up with the text you type, not the box edge */
+.tc-box .field-err{ margin:0; padding:2px 16px 2px; }
 
 input[type=range].range{ -webkit-appearance:none; appearance:none; width:100%; height:24px; background:transparent; }
 input[type=range].range::-webkit-slider-runnable-track{ height:4px; border-radius:4px; background:linear-gradient(90deg,var(--accent) 0 var(--p,50%),var(--surface-3) var(--p,50%)); }
@@ -380,8 +382,8 @@ input[type=range].range:focus-visible::-webkit-slider-thumb{ box-shadow:var(--fo
    LOGO
    ========================================================================== */
 .logo{ display:inline-flex; align-items:center; gap:8px; color:var(--text-1); }
-.logo .word{ font:500 26px/1 var(--font-brand,'EB Garamond',serif); letter-spacing:-.018em; padding-right:.04em; transform:translateY(-1px); } .logo .word i{ color:var(--accent-text); font-style:italic; font-weight:500; letter-spacing:-.01em; }
-.mark .tile{ fill:var(--pb1); } .mark .hg{ fill:#FFFFFF; } .mark .dot{ fill:var(--plum-400); }
+.logo .mark{ width:24px; height:24px; flex:none; } .logo .word{ font:800 21px/1 var(--font-display); letter-spacing:-.045em; } .logo .word i{ font-style:normal; color:var(--text-3); }
+.mark .tile{ fill:var(--cta,#0075DE); } .mark .hg{ fill:none; stroke:#FFFFFF; } .mark .dot{ display:none; }
 
 /* ==========================================================================
    APP SHELL: Linear-style inset panel
@@ -1641,7 +1643,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .brand-tile.paper{ background:#FEFDF1; color:#1A1A1A; }
 .brand-tile .cap{ position:absolute; left:16px; bottom:14px; font:500 var(--t-12)/1 var(--font-ui); opacity:.78; }
 .appicon{ width:128px; height:128px; border-radius:30px; background:var(--pb1); display:grid; place-items:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.06); }
-.appicon .mark .tile{ fill:transparent; } .appicon .mark .hg{ fill:#FFFFFF; }
+.appicon .mark .tile{ fill:transparent; } .appicon .mark .hg{ fill:none; stroke:#FFFFFF; }
 .swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; }
 .sw{ border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px var(--border); background:var(--surface); }
 .sw i{ display:block; height:64px; box-shadow:inset 0 -1px 0 var(--border); }
@@ -1879,7 +1881,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .hw27 .h7rr{ display:flex; flex-direction:column; gap:12px; }
 .hw27 .h7rr-alert{ display:grid; grid-template-columns:34px minmax(0,1fr); gap:10px; align-items:center; padding:10px 12px 11px; border-radius:18px; background:rgba(255,255,252,.92); box-shadow:0 10px 26px -14px rgba(0,0,0,.35),0 0 0 .5px rgba(0,0,0,.08); font:400 13px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:#1c1c1e; }
 .hw27 .h7rr-ic{ display:block; width:34px; height:34px; border-radius:8px; overflow:hidden; }
-.hw27 .h7rr-ic .mark{ display:block; width:34px; height:34px; } .hw27 .h7rr-ic .mark .tile{ fill:var(--pb1); } .hw27 .h7rr-ic .mark .hg{ fill:#fff; }
+.hw27 .h7rr-ic .mark{ display:block; width:34px; height:34px; } .hw27 .h7rr-ic .mark .tile{ fill:var(--cta,#0075DE); } .hw27 .h7rr-ic .mark .hg{ fill:none; stroke:#fff; }
 .hw27 .h7rr-alert p{ display:flex; justify-content:space-between; gap:8px; } .hw27 .h7rr-alert p b{ font-weight:600; } .hw27 .h7rr-alert p span{ color:rgba(60,60,67,.82); font-size:12px; }
 .hw27 .h7rr-post{ display:grid; gap:8px; padding:12px 14px; border-radius:14px; background:var(--c-card); box-shadow:0 0 0 1px var(--c-line); }
 .hw27 .h7rr-who{ display:flex; gap:8px; align-items:center; font-size:13px; } .hw27 .h7rr-who .av{ width:28px; height:28px; font-size:11px; }
@@ -2505,7 +2507,7 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .tr-empty{ display:grid; gap:4px; padding:28px 8px; text-align:center; } .tr-empty span{ color:var(--text-3); font-size:13.5px; }
 /* ---------- round 47: one system across the site and the app ----------
    Type: Figtree for everything; bold, tight headings; the second half of a heading is the same weight in a quieter grey
-   (no serif italics). EB Garamond lives only in the wordmark. Sizes: one scale for page titles and section heads.
+   (no serif italics). Since round 48 the wordmark is Figtree too. Sizes: one scale for page titles and section heads.
    Buttons on the site are pills; the app keeps its 10px rounded rectangles. Eyebrows are grey everywhere. */
 .hw h1, .hw h2, .hw h3, .display, .hw27 .who7-copy h3, .hw27 .ft8-line{ font-family:var(--font-display); font-weight:700; letter-spacing:-.035em; }
 .hw h1 em, .hw h2 em, .hw h3 em, .display em, .hw27 .ft8-line em, .h3 em, .h2 em{ font-style:normal; color:color-mix(in srgb,currentColor 50%,transparent); }
@@ -2587,8 +2589,8 @@ h1.display{ font-size:clamp(30px,3vw,40px); line-height:1.08; letter-spacing:-.0
 .hw .hbtn, .hw27 .pl7 .btn.primary, .pl.pro .btn.primary, .hw27 .pl7 .pl.pro .btn.primary, .hw27 .fin8 .hbtn, .t-write .btn.primary, .hw-nav.on-dark .hbtn{ background:var(--cta); color:var(--cta-ink); box-shadow:none; }
 .hw .hbtn:hover, .hw27 .pl7 .btn.primary:hover, .pl.pro .btn.primary:hover, .hw27 .pl7 .pl.pro .btn.primary:hover, .hw27 .fin8 .hbtn:hover, .t-write .btn.primary:hover{ background:var(--cta-hover); box-shadow:0 3px 0 -1px rgba(0,0,0,.25); }
 /* the dark theme's ink blocks lift a step off the page, so they still read as blocks */
-@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .mark .tile{ fill:#2C2C2C; } :root:not([data-theme="light"]) .logo .word i{ color:var(--pl-d); } }
-:root[data-theme="dark"] .mark .tile{ fill:#2C2C2C; } :root[data-theme="dark"] .logo .word i{ color:var(--pl-d); }
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .logo .word i{ color:var(--text-3); } }
+:root[data-theme="dark"] .logo .word i{ color:var(--text-3); }
 
 /* round 42: the phone's feed runs off the bottom like a real one; a note points at the post that's yours */
 .hw27 .pv7-phone{ position:relative; }
@@ -2857,8 +2859,8 @@ h1.display{ font-size:clamp(30px,3vw,40px); line-height:1.08; letter-spacing:-.0
 .hw27 .ft8-cta{ display:inline-flex; align-items:center; gap:6px; padding:6px 0; font:600 15px/1 var(--f-disp); color:var(--c-ink); text-decoration:underline; text-underline-offset:4px; text-decoration-color:color-mix(in srgb,currentColor 30%,transparent); }
 .hw27 .ft8-cta:hover{ text-decoration-color:currentColor; } .hw27 .ft8-cta .icon{ width:15px; height:15px; transition:transform .2s var(--ease-o); } .hw27 .ft8-cta:hover .icon{ transform:translateX(3px); }
 .hw27 .hw-foot8 .ft-cols{ display:grid; grid-template-columns:repeat(4,auto); gap:24px clamp(28px,4vw,56px); font-size:14px; }
-.hw27 .ft8-word{ margin:clamp(48px,6vw,88px) 0 0; padding-bottom:.14em; font:500 min(20.5vw,252px)/.86 var(--f-brand); letter-spacing:-.045em; text-align:center; white-space:nowrap; color:var(--c-ink); user-select:none; }
-.hw27 .ft8-word i{ font-style:italic; letter-spacing:-.03em; color:var(--pl); }
+.hw27 .ft8-word{ margin:clamp(48px,6vw,88px) 0 0; padding-bottom:.14em; font:800 min(15vw,196px)/.86 var(--font-display); letter-spacing:-.055em; letter-spacing:-.045em; text-align:center; white-space:nowrap; color:var(--c-ink); user-select:none; }
+.hw27 .ft8-word i{ font-style:normal; color:var(--c-3); }
 .hw27 .ft8-b{ display:flex; justify-content:space-between; align-items:center; gap:4px 20px; flex-wrap:wrap; margin-top:clamp(18px,2.4vw,30px); padding-top:14px; border-top:1px solid var(--c-line); font-size:13px; color:var(--c-3); }
 .hw27 .ft8-up{ display:inline-flex; align-items:center; gap:6px; min-height:32px; font:600 13px/1 var(--f-disp); color:var(--c-2); }
 .hw27 .ft8-up:hover{ color:var(--c-ink); } .hw27 .ft8-up .icon{ width:14px; height:14px; transform:rotate(-90deg); }
@@ -5301,9 +5303,9 @@ function parseLink(url) {
 /* ==========================================================================
    UI KIT
    ========================================================================== */
-/* the logo is the wordmark: hook (roman) + worthy (italic) in EB Garamond 500. The h monogram exists only for app icons and favicons. */
-const LOGO_MARK = `<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="8"/><path class="hg" d="M9.62 26Q9.05 26 9.05 25.66Q9.05 25.37 9.7 25.16Q10.13 25.02 10.49 24.82Q10.85 24.61 10.87 24.03V10.09Q10.87 9.33 10.63 8.75Q10.4 8.18 9.67 8.06Q9.4 8 9.4 7.64Q9.4 7.36 9.65 7.28Q10.13 7.14 10.79 6.93Q11.44 6.73 12.1 6.49Q12.76 6.25 13.21 6.06Q13.36 6 13.44 6Q13.56 6 13.62 6.07Q13.67 6.15 13.67 6.25Q13.67 6.41 13.61 6.7Q13.56 7 13.51 7.62Q13.46 8.25 13.45 9.42V14.91Q13.45 15.3 13.49 15.51Q13.53 15.71 13.63 15.87Q14.08 15.52 14.72 15.1Q15.36 14.68 16.16 14.36Q16.97 14.04 17.87 14.04Q19.29 14.04 20.25 15.12Q21.2 16.2 21.2 17.94V23.95Q21.2 24.53 21.55 24.77Q21.9 25.02 22.31 25.16Q22.62 25.26 22.78 25.36Q22.95 25.47 22.95 25.66Q22.95 26 22.37 26Q21.76 26 21.42 25.96Q21.08 25.92 20.77 25.89Q20.46 25.86 19.92 25.86Q19.39 25.86 19.08 25.89Q18.78 25.92 18.46 25.96Q18.14 26 17.53 26Q16.93 26 16.93 25.65Q16.93 25.44 17.1 25.35Q17.27 25.26 17.55 25.16Q17.96 25.03 18.29 24.77Q18.61 24.52 18.61 23.94V18.24Q18.61 17.57 18.26 17.02Q17.9 16.47 17.37 16.14Q16.84 15.82 16.27 15.82Q15.78 15.82 15.14 15.97Q14.5 16.12 14.08 16.44Q13.71 16.74 13.59 17.07Q13.46 17.4 13.46 18.12V24.01Q13.48 24.58 13.79 24.8Q14.1 25.01 14.5 25.16Q14.79 25.24 14.95 25.35Q15.11 25.46 15.11 25.65Q15.11 26 14.57 26Q14 26 13.65 25.96Q13.29 25.92 12.97 25.89Q12.64 25.86 12.14 25.86Q11.66 25.86 11.3 25.89Q10.95 25.92 10.57 25.96Q10.18 26 9.62 26Z"/><circle class="dot" cx="23.2" cy="9" r="2.6"/></svg>`;
-const LOGO = `<span class="word">hook<i>worthy</i></span>`;
+/* round 48 logo: the mark is an h whose right leg curls into a hook (white stroke on the blue tile); the wordmark is hook + worthy in Figtree 800, worthy in grey */
+const LOGO_MARK = `<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="8"/><path class="hg" d="M9.5 5.5V26.5M9.5 16.5a5.25 5.25 0 0 1 10.5 0V22a3.25 3.25 0 0 0 6.5 0V19" fill="none" stroke-width="3.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const LOGO = `${LOGO_MARK}<span class="word">hook<i>worthy</i></span>`;
 const PLAT = { x: { name: 'X', get limit() { return typeof xLong === 'function' && xLong() ? 25000 : 280; }, icon: 'x' }, threads: { name: 'Threads', limit: 500, icon: 'threads' }, linkedin: { name: 'LinkedIn', limit: 3000, icon: 'li' }, bsky: { name: 'Bluesky', limit: 300, icon: 'bsky' } };
 const avatar = (u = S.user, cls = '') => u.pic ? `<span class="avatar pic ${cls}"><img src="${u.pic}" alt="" decoding="async"></span>` : `<span class="avatar ${cls}" style="--h:${u.hue}">${esc((u.name || u.handle || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase())}</span>`;
 
@@ -12913,7 +12915,7 @@ ROUTES.brand = () => {
     <div class="brand-tile ink"><div class="appicon">${LOGO_MARK.replace('class="mark"', 'class="mark" style="width:72px;height:72px"')}</div><span class="cap">App icon</span></div>
     <div class="brand-tile paper force-light"><span class="logo" style="color:#1A1A1A;transform:scale(2.4)">${LOGO}</span><span class="cap">Wordmark</span></div>
   </div>
-  <section class="sec"><div class="sec-h"><h2 class="h2">The wordmark</h2><span class="faint" style="font-size:13px">hook<i>worthy</i> in EB Garamond 500, roman then italic, the same move as every headline. The h on a plum tile only stands in where an icon is required.</span></div>
+  <section class="sec"><div class="sec-h"><h2 class="h2">The wordmark</h2><span class="faint" style="font-size:13px">The mark: an h whose right leg curls into a hook, white on the blue tile. The wordmark: hook<i>worthy</i> in Figtree 800, the second half in grey, the same move as every heading.</span></div>
     <div class="card pad" style="display:flex;gap:36px;align-items:flex-end;flex-wrap:wrap">${[18, 27, 40, 64].map(s => `<div style="display:grid;gap:8px;justify-items:start"><span class="logo"><span class="word" style="font-size:${s}px">hook<i>worthy</i></span></span><span class="mono faint" style="font-size:11px">${s}px</span></div>`).join('')}
     <div style="display:grid;gap:8px;justify-items:center">${LOGO_MARK.replace('class="mark"', 'class="mark" width="40" height="40"')}<span class="mono faint" style="font-size:11px">Icon</span></div>
     <div style="display:grid;gap:8px;justify-items:center;margin-left:auto"><button class="btn" id="play-reward">${ic('play', 'sm')} Play the reward</button><span class="faint" style="font-size:11px">The publish reward</span></div></div></section>

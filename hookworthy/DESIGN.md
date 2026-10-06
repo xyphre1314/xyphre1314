@@ -416,6 +416,11 @@ Every demo, mockup and empty state is **heycape (@heycape_)** with his own pictu
 ### One primary button (round 44)
 Post now, Start free, Try Pro and Open it all use `--cta` / `--cta-ink` / `--cta-hover`, identical on paper, in dark mode and on ink blocks. Round 45: the primary is ember (`--cta` #F2592A, ink text); nothing else is filled with it.
 
+### Round 48: logo
+- **Mark:** a lowercase h whose right leg drops and curls up into a hook: the h of hookworthy and the hook in one stroke. White, round-capped, on a blue (#0075DE) tile with 8/32 corners. Same drawing for the favicon, app icon, sidebar and the breakout alert.
+- **Wordmark:** hook**worthy** in Figtree 800, tight (-0.045em), "worthy" in grey: the same two-tone move as every heading. EB Garamond is no longer used anywhere.
+- Explored and passed over: a line with a hook hanging from it (read as a J), a caret hook, a hook in a speech bubble, a stop-the-scroll feed, a quote-mark hook.
+
 ### Round 47: one system
 - **Type:** Figtree everywhere: bold, tight headings (700, -0.035em); the second half of a heading is the same weight in a quieter grey, not a serif italic. EB Garamond survives only in the wordmark. Generated images (thumbnails, quote cards, carousels) use the same Figtree bold.
 - **Scale:** site page titles clamp(42–68px), section heads clamp(32–52px), app page titles clamp(30–40px).
