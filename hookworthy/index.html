@@ -185,7 +185,7 @@ body{
   margin:0; background:var(--bg); color:var(--text-1);
   font:400 var(--t-14)/1.5 var(--font-ui); letter-spacing:0;
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+  overflow-x:hidden; overflow-x:clip; /* clip, not hidden: hidden turns body into its own scroll box when a modal locks html, and a scrolled page went blank */
 }
 body.on-dark{ background:#1A1A1A; }
 ::selection{ background:var(--marker); color:var(--marker-ink); }
@@ -746,7 +746,7 @@ body.typing .tw-tools{ opacity:0!important; }
 .grow{ flex:1 1 auto; min-width:0; }
 .modal-h{ padding-bottom:12px; transition:box-shadow var(--d-micro); } .modal-h + .modal-b{ padding-top:4px; } .scrim .scrolled .modal-h{ box-shadow:0 1px 0 var(--border); }
 /* with a sheet open, toasts move out of its way: above it on desktop, above its footer on phones */
-body:has(.scrim) #toasts{ z-index:1001; } @media (min-width:761px){ body:has(.scrim) #toasts{ bottom:auto; top:calc(14px + env(safe-area-inset-top,0px)); } } @media (max-width:760px){ body:has(.scrim) #toasts{ bottom:calc(96px + env(safe-area-inset-bottom,0px)); } }
+body:has(.scrim) #toasts{ z-index:1001; } @media (min-width:761px){ body:has(.scrim) #toasts{ bottom:auto; top:calc(14px + env(safe-area-inset-top,0px)); } } @media (max-width:760px){ body:has(.scrim) #toasts{ bottom:auto; top:calc(12px + env(safe-area-inset-top,0px)); } }
 .set-b .cx-row{ padding:0; border-bottom:0; } .set-b .cx-row b{ font:inherit; color:var(--text-1); } .set-b .cx-row small{ font-size:var(--t-12); color:var(--text-3); line-height:1.4; } .set-b .cx-dot{ display:none; }
 .vt-title{ max-width:none; margin-bottom:14px; }
 .hv-link{ align-items:center; } .hv-link .btn{ height:40px; }
@@ -2572,6 +2572,10 @@ body.typing .hk-coach.t-flat, body.typing .hk-coach.t-warming, .hk-coach:not(.t-
 .hw27 .hg-read, .hw27 .h7-hero .hg-read{ grid-template-columns:minmax(0,1fr) auto !important; }
 @media (max-width:600px){ .hw27 .hg-read, .hw27 .h7-hero .hg-read{ grid-template-columns:minmax(0,1fr) !important; } }
 .tier.ok{ gap:4px; padding:0 9px 0 7px; } .tier.ok svg{ width:12px; height:12px; flex:none; }
+.c-top .pn-edit{ width:34px; padding:0; justify-content:center; } .c-top .pn-edit span{ display:none; }
+.sh-deliv{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; background:var(--surface-2); font-size:13px; color:var(--text-2); line-height:1.45; }
+.sh-deliv > svg{ flex:none; color:var(--text-3); } .sh-deliv b{ color:var(--text-1); font-weight:600; } .sh-deliv .btn{ margin-left:auto; flex:none; }
+.sh-deliv.ok{ background:color-mix(in srgb,var(--success) 9%,var(--surface)); } .sh-deliv.ok > svg{ color:var(--success); }
 .tc-ok{ display:inline-flex; align-items:center; gap:6px; color:var(--tier-sharp); font-weight:500; }
 /* the post sits on a sheet, so the page has a clear object to write on */
 @media (min-width:761px){
@@ -2594,6 +2598,77 @@ body.typing .hk-coach.t-flat, body.typing .hk-coach.t-warming, .hk-coach:not(.t-
 #ins-posts > .pt{ margin-top:16px; }
 /* one 16px rhythm between every block on Insights */
 .ins-page #digest > *{ margin-bottom:0; } .ins-page #ins > *{ margin-top:16px; margin-bottom:0; } .ins-page #digest:empty + #ins > :first-child{ margin-top:0; }
+
+/* ---------- round 52: Teams ---------- */
+.avatar.sm{ width:22px; height:22px; min-width:22px; font-size:9.5px; }
+.as-bar{ position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:10px; padding:8px 16px; background:color-mix(in srgb,var(--accent) 9%,var(--surface)); border-bottom:1px solid color-mix(in srgb,var(--accent) 22%,var(--border)); font-size:13px; color:var(--text-2); }
+.as-bar b{ color:var(--text-1); } .as-bar > span:not(.avatar){ min-width:0; flex:1; } .as-bar .btn{ flex:none; }
+.tmx-page .page-h{ align-items:flex-start; }
+.tmx-tabs{ margin:4px 0 16px; width:max-content; max-width:100%; } .tmx-n{ display:inline-grid; place-items:center; min-width:18px; height:18px; padding:0 5px; margin-left:4px; border-radius:99px; background:var(--accent); color:var(--accent-ink,#fff); font-size:11px; font-weight:600; }
+.tmx-grid{ display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; align-items:start; }
+@media (max-width:1100px){ .tmx-grid{ grid-template-columns:minmax(0,1fr); } }
+.tmx-ph{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:6px; } .tmx-ph .faint{ font-size:12px; }
+.tmx-list, .tmx-aps, .tmx-log{ list-style:none; margin:0; padding:0; }
+.tmx-row{ display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--border); }
+.tmx-row:first-child{ border-top:0; }
+.tmx-row .avatar{ width:34px; height:34px; min-width:34px; }
+.tmx-inv-av{ display:grid; place-items:center; background:var(--surface-2) !important; color:var(--text-3); border:1px dashed var(--border-strong); }
+.tmx-who{ display:grid; gap:2px; min-width:0; } .tmx-who b{ font-weight:600; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .tmx-who span{ font-size:12.5px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tmx-row.inv .tmx-who b{ color:var(--text-2); font-weight:500; }
+.tmx-you{ display:inline-block; margin-left:6px; padding:1px 6px; border-radius:99px; background:var(--surface-2); color:var(--text-3); font-size:11px; font-weight:500; vertical-align:1px; }
+.tmx-role{ height:30px; padding:0 28px 0 10px; font-size:13px; width:auto; }
+.tmx-rl{ font-size:13px; color:var(--text-2); padding:0 4px; }
+.tmx-acts{ display:flex; gap:4px; justify-content:flex-end; min-width:34px; }
+.tmx-roles{ display:grid; gap:12px; }
+.tmx-mx{ width:100%; border-collapse:collapse; font-size:12.5px; } .tmx-mx th{ font-weight:600; font-size:11.5px; color:var(--text-2); padding:0 4px 8px; text-align:center; } .tmx-mx th:first-child{ text-align:left; }
+.tmx-mx td{ padding:7px 4px; border-top:1px solid var(--border); text-align:center; color:var(--text-2); } .tmx-mx td:first-child{ text-align:left; color:var(--text-1); }
+.tmx-y{ display:inline-grid; place-items:center; width:18px; height:18px; border-radius:99px; background:color-mix(in srgb,var(--success) 14%,var(--surface)); color:var(--success); } .tmx-y svg{ width:11px; height:11px; } .tmx-no{ color:var(--text-3); }
+.tmx-tip{ font-size:12px; margin:0; } .tmx-tip svg{ width:12px; height:12px; vertical-align:-2px; }
+.tmx-aps{ display:grid; } .tmx-ap{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:12px; padding:14px 0; border-top:1px solid var(--border); } .tmx-ap:first-child{ border-top:0; padding-top:8px; }
+.tmx-ap .avatar{ width:32px; height:32px; min-width:32px; } .tmx-ap-b{ display:grid; gap:6px; min-width:0; }
+.tmx-ap-m{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; } .tmx-ap-m span{ color:var(--text-3); } .tmx-ap.late .tmx-ap-m span{ color:var(--warn); }
+.tmx-ap p{ margin:0; font-size:15px; line-height:1.45; color:var(--text-1); text-wrap:pretty; }
+.tmx-cc{ display:inline-flex; align-items:center; gap:3px; } .tmx-cc svg{ width:12px; height:12px; }
+.tmx-ap-a{ display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:2px; }
+.tmx-empty{ display:grid; justify-items:center; gap:6px; padding:40px 20px; text-align:center; } .tmx-empty > svg{ color:var(--success); } .tmx-empty p{ margin:0; color:var(--text-3); max-width:42ch; font-size:13.5px; }
+.tmx-log li{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:center; padding:10px 0; border-top:1px solid var(--border); font-size:13.5px; color:var(--text-2); } .tmx-log li:first-child{ border-top:0; } .tmx-log b{ color:var(--text-1); font-weight:600; } .tmx-log time{ font-size:12px; color:var(--text-3); white-space:nowrap; }
+.tmx-q{ margin:0; padding:10px 12px; border-left:3px solid var(--border-strong); background:var(--surface-2); border-radius:0 8px 8px 0; font-size:13.5px; color:var(--text-2); }
+.iv-roles{ display:grid; grid-template-columns:1fr 1fr; gap:8px; } @media (max-width:560px){ .iv-roles{ grid-template-columns:1fr; } }
+.iv-r small{ white-space:normal; }
+.qt.changes{ color:var(--warn); background:var(--warn-soft); }
+.composer.ro .tw-tools, .composer.ro .add-tw, .composer.ro .starters, .composer.ro .handle{ display:none !important; }
+#sh-hook:empty{ display:none; }
+.tmx-page .card{ padding:18px 20px; }
+.tmx-row{ grid-template-columns:34px minmax(0,1fr) 128px 168px; }
+.tmx-row .tmx-rl{ justify-self:start; padding:0 2px; } .tmx-role{ justify-self:start; }
+.tmx-who b{ display:flex; align-items:center; gap:6px; } .tmx-you{ margin-left:0; vertical-align:0; }
+.tmx-tabs .tmx-n.plain{ background:none; color:var(--text-3); min-width:0; padding:0; margin-left:2px; font-weight:500; }
+
+.ro-note{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-3); padding:0 6px; white-space:nowrap; }
+.tcm-tog{ position:relative; } .tcm-tog .tcm-cnt:empty{ display:none; } .tcm-tog .tcm-cnt{ min-width:16px; height:16px; padding:0 4px; border-radius:99px; background:var(--accent); color:var(--accent-ink,#fff); font-size:10.5px; font-weight:600; display:inline-grid; place-items:center; margin-left:2px; }
+.tcm{ position:fixed; z-index:700; top:12px; right:12px; bottom:12px; width:min(380px,calc(100vw - 24px)); display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:0 24px 60px -24px rgba(15,15,15,.35), 0 2px 6px rgba(15,15,15,.06); opacity:0; transform:translateX(12px); transition:opacity .2s var(--ease-out), transform .26s var(--ease-out); }
+.tcm.in{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){ .tcm{ transition:none; transform:none; } }
+.tcm-h{ display:flex; align-items:center; gap:8px; padding:12px 12px 12px 16px; border-bottom:1px solid var(--border); } .tcm-h b{ font-size:14px; } .tcm-h .btn{ margin-left:auto; }
+.tcm-n{ font-size:12px; color:var(--text-3); }
+.tcm-l{ list-style:none; margin:0; padding:8px 12px; overflow:auto; flex:1; display:grid; align-content:start; gap:8px; }
+.tcm-c{ padding:12px; border-radius:10px; background:var(--surface-2); display:grid; gap:8px; } .tcm-c.done{ opacity:.7; }
+.tcm-ch{ display:flex; align-items:center; gap:7px; font-size:12.5px; } .tcm-ch b{ font-weight:600; } .tcm-ch time{ margin-left:auto; color:var(--text-3); font-size:11.5px; }
+.tcm-r{ font-size:11px; color:var(--text-3); padding:1px 6px; border-radius:99px; background:var(--surface); }
+.tcm-c p, .tcm-k p{ margin:0; font-size:13.5px; line-height:1.5; color:var(--text-1); white-space:pre-wrap; overflow-wrap:anywhere; }
+.tcm-q, .tcm-to q{ display:block; padding:4px 0 4px 10px; border-left:2px solid var(--accent); font-size:12.5px; color:var(--text-2); quotes:none; }
+.tcm-k{ display:grid; gap:4px; padding:8px 0 0 12px; border-left:1px solid var(--border-strong); margin-left:10px; }
+.tcm-ca{ display:flex; gap:2px; margin:-2px -6px -4px; } .tcm-ca .btn{ height:26px; }
+.tcm-at{ color:var(--accent-text); font-weight:600; }
+.tcm-e{ display:grid; justify-items:center; gap:4px; padding:36px 12px; text-align:center; color:var(--text-3); font-size:13px; } .tcm-e > svg{ color:var(--text-3); margin-bottom:4px; } .tcm-e b{ color:var(--text-1); }
+.tcm-dn summary{ cursor:pointer; font-size:12.5px; color:var(--text-3); padding:6px 2px; } .tcm-dn ul{ list-style:none; margin:6px 0 0; padding:0; display:grid; gap:8px; }
+.tcm-f{ border-top:1px solid var(--border); padding:10px 12px 12px; display:grid; gap:8px; position:relative; }
+.tcm-f textarea{ resize:none; min-height:64px; font-size:13.5px; }
+.tcm-to{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-3); } .tcm-to q{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tcm-fa{ display:flex; align-items:center; justify-content:space-between; } .tcm-fa .faint{ font-size:11.5px; }
+.tcm-at-l{ position:absolute; left:12px; right:12px; bottom:calc(100% - 4px); display:grid; padding:4px; background:var(--bg-elev,var(--surface)); border:1px solid var(--border); border-radius:10px; box-shadow:var(--sh-3,0 10px 30px -12px rgba(0,0,0,.3)); }
+.tcm-at-l button{ display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:7px; font-size:13px; text-align:left; } .tcm-at-l button:hover, .tcm-at-l button:focus-visible{ background:var(--surface-2); } .tcm-at-l small{ margin-left:auto; color:var(--text-3); font-size:11.5px; }
+@media (max-width:760px){ .tcm{ top:auto; left:8px; right:8px; bottom:calc(8px + env(safe-area-inset-bottom,0px)); width:auto; height:min(78vh,620px); } .tmx-row{ grid-template-columns:34px minmax(0,1fr) auto; row-gap:8px; } .tmx-row > .tmx-role, .tmx-row > .tmx-rl{ grid-column:2; grid-row:2; } .tmx-row .tmx-acts{ grid-column:3; grid-row:1; } .tmx-row.inv .tmx-acts{ grid-column:2 / -1; grid-row:3; justify-content:flex-start; margin-left:-8px; } }
 /* ---------- round 47: one system across the site and the app ----------
    Type: Figtree for everything; bold, tight headings; the second half of a heading is the same weight in a quieter grey
    (no serif italics). Since round 48 the wordmark is Figtree too. Sizes: one scale for page titles and section heads.
@@ -3781,7 +3856,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .ghost-acc{ position:absolute; right:0; bottom:-30px; z-index:3; display:inline-flex; gap:4px; align-items:center; height:28px; padding:0 10px; border-radius:99px; background:var(--text-1); color:var(--bg); font:600 12px/1 var(--font-ui); box-shadow:var(--sh-2); animation:rise var(--d-fast) var(--ease-out) both; }
 .side-status{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:4px 2px; } .side-status .plan-card{ margin:0; padding:0; background:none; box-shadow:none; border:0; font-size:12px; color:var(--text-3); } .side-status .plan-card:hover{ color:var(--text-1); text-decoration:underline; } .side-status .plan-card .pc-count{ font-size:12px; }
 @media (pointer:coarse){ .desk-only, .kbd-only{ display:none !important; } }
-@media (min-width:761px){ body:has(.scrim) #toasts{ top:auto !important; bottom:calc(20px + env(safe-area-inset-bottom,0px)) !important; } }
+/* round 52: with a modal open, toasts sit at the top so they never cover the modal's main button */
 
 .chg.newnum{ outline:1.5px dashed var(--warn); outline-offset:1px; border-radius:4px; } .diff-num{ display:flex; gap:8px; align-items:flex-start; font-size:13px; color:var(--warn); background:var(--warn-soft); padding:8px 10px; border-radius:10px; margin:0; }
 
@@ -4714,7 +4789,7 @@ const TOP_POSTS = [
 
 function seedQueue() {
   const w = startOfWeek(new Date());
-  const mk = (d, time, text, extra = {}) => ({ id: uid(), day: dayKey(addDays(w, d)), time, text, tweets: [text], platforms: { x: true, threads: true, linkedin: d % 2 === 0, bsky: true }, status: 'scheduled', ws: 'me', ...extra });
+  const mk = (d, time, text, extra = {}) => ({ id: uid(), day: dayKey(addDays(w, d)), time, text, tweets: [text], platforms: { x: true, threads: false, linkedin: d % 2 === 0, bsky: false }, status: 'scheduled', ws: 'me', ...extra });
   return [
     mk(0, '08:40', 'I sized every trade at 1% for a year. Boring. Also the first year I didn’t blow up.'),
     mk(1, '08:40', 'My trading journal has one column most people skip: “what was I feeling?”', { autoPlug: true }),
@@ -4760,7 +4835,7 @@ const DEFAULT_STATE = {
   trial: null, /* the 7-day Pro trial: { start, until }, once */
   upsellShown: false,
   draft: null,
-  platforms: { x: true, threads: true, linkedin: false, bsky: true },
+  platforms: { x: true, threads: false, linkedin: false, bsky: false },
   preview: { on: true, tab: 'x' },
   ideas: [
     { id: uid(), src: 'note', text: 'The trade I didn’t take last month taught me more than the ones I did', at: now0 - 2 * 3600e3 },
@@ -5849,7 +5924,7 @@ function route() {
   if (!CURRENT || !document.startViewTransition || REDUCED) render();
   else if (same) document.startViewTransition(render);
   else { const r = document.documentElement; r.dataset.vt = 'cross'; document.startViewTransition(render).finished.finally(() => delete r.dataset.vt); }
-  document.title = { home: 'Hookworthy: first lines worth stopping for', start: 'Find your voice · Hookworthy', today: 'Today · Hookworthy', replies: 'Replies · Hookworthy', write: 'Write · Hookworthy', ideas: 'Ideas · Hookworthy', hooks: 'Hooks · Hookworthy', queue: 'Queue · Hookworthy', insights: 'Insights · Hookworthy', voice: 'Your voice · Hookworthy', brand: 'Design system · Hookworthy', upgrade: 'Plans · Hookworthy', tools: 'Free tools for X and LinkedIn · Hookworthy', teams: 'For ghostwriters and teams · Hookworthy', developers: 'Developers · Hookworthy', legal: 'Privacy and terms · Hookworthy' }[name];
+  document.title = { home: 'Hookworthy: first lines worth stopping for', start: 'Find your voice · Hookworthy', today: 'Today · Hookworthy', team: 'Team · Hookworthy', replies: 'Replies · Hookworthy', write: 'Write · Hookworthy', ideas: 'Ideas · Hookworthy', hooks: 'Hooks · Hookworthy', queue: 'Queue · Hookworthy', insights: 'Insights · Hookworthy', voice: 'Your voice · Hookworthy', brand: 'Design system · Hookworthy', upgrade: 'Plans · Hookworthy', tools: 'Free tools for X and LinkedIn · Hookworthy', teams: 'For ghostwriters and teams · Hookworthy', developers: 'Developers · Hookworthy', legal: 'Privacy and terms · Hookworthy' }[name];
 }
 addEventListener('hashchange', route);
 
@@ -5859,7 +5934,8 @@ const NAV = [
   { k: 'ideas', label: 'Ideas', icon: 'ideas', key: 'I' },
   { k: 'replies', label: 'Replies', icon: 'reply', key: 'R' },
   { k: 'queue', label: 'Queue', icon: 'cal', key: 'Q' },
-  { k: 'insights', label: 'Insights', icon: 'chart', key: 'A' }
+  { k: 'insights', label: 'Insights', icon: 'chart', key: 'A' },
+  { k: 'team', label: 'Team', icon: 'user', key: 'M' }
 ];
 const TOOLS = [
   { k: 'hooks', label: 'Hooks', icon: 'hook', key: 'H' },
@@ -5867,7 +5943,7 @@ const TOOLS = [
 ];
 const isRest = t => (S.settings.rest || []).includes(new Date(t).getDay());
 function shell(active, inner) {
-  const counts = { ideas: S.ideas.length, queue: myQ().filter(q => q.status === 'scheduled').length }, MD = myDrafts();
+  const counts = { ideas: S.ideas.length, queue: myQ().filter(q => q.status === 'scheduled').length, team: tmBadge() }, MD = myDrafts();
   const w = WS();
   return `<div class="shell"><a class="skip" href="#main" onclick="event.preventDefault();const m=document.getElementById('main');m.tabIndex=-1;m.focus()">Skip to content</a>
   <aside class="side" aria-label="Sidebar">
@@ -5883,7 +5959,7 @@ function shell(active, inner) {
     ${themeSegHTML('side-thm')}
     <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc((S.ws === 'me' ? S.user.name : S.workspaces[0].name) || 'You')}</b>${(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle) ? `<span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span>` : '<span class="faint" style="font-size:12px">Add your handle in Settings</span>'}</span>${ic('more', 'sm')}</button>
   </aside>
-  <main class="main" id="main"><div class="view" id="view">${inner}</div></main>
+  <main class="main" id="main">${asBarHTML()}<div class="view" id="view">${inner}</div></main>
   <nav class="tabbar" aria-label="Main">
     ${[['today', 'sun', 'Today'], ['replies', 'reply', 'Replies']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}<button class="tab-new" data-act="tabnew" aria-label="New post. Hold to save an idea">${ic('plus')}<span>New</span></button>${[['queue', 'cal', 'Queue']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}
     <button data-act="mobilemore">${ic('more')}<span>More</span></button>
@@ -5919,12 +5995,14 @@ const ACT = {
   import: () => openImport(),
   people: () => openPeople(),
   connections: () => openConnections(),
+  asme: () => viewAs('me'),
   account: el => openMenu(el, [
     ...wsItems(el), '-',
     { header: S.user.handle ? `@${S.user.handle}` : 'Your account' },
     { label: 'Your voice', icon: 'voice', run: () => go('voice') },
     { label: 'Hooks', icon: 'hook', run: () => go('hooks') },
     { label: 'Bring your posts', icon: 'upload', hint: HIST().length ? fmtN(HIST().length) : 'X, Typefully, CSV', run: () => openImport() },
+    { label: 'Team', icon: 'user', hint: `${TM().members.filter(m => m.status === 'active').length} people`, run: () => go('team') },
     { label: 'Connections', icon: 'link', hint: LLM.mode === 'offline' ? 'The Room is off' : 'The Room is on', run: () => openConnections() },
     { label: 'Settings', icon: 'sliders', run: () => openSettings() },
     { label: 'Keyboard shortcuts', icon: 'kbd', kbd: ['?'], run: openShortcuts },
@@ -5938,6 +6016,7 @@ const ACT = {
     { label: 'Write', icon: 'write', run: () => go('write') },
     { label: 'Ideas', icon: 'ideas', run: () => go('ideas') },
     { label: 'Insights', icon: 'chart', run: () => go('insights') },
+    { label: 'Team', icon: 'user', run: () => go('team') },
     '-',
     { label: 'Hooks', icon: 'hook', run: () => go('hooks') },
     { label: 'Your voice', icon: 'voice', run: () => go('voice') },
@@ -5969,6 +6048,8 @@ function paletteCommands() {
   const nav = [...NAV, ...TOOLS].map(n => ({ g: 'Go to', label: n.label, icon: n.icon, kbd: ['G', n.key], run: () => go(n.k) }));
   const acts = [
     { g: 'Actions', label: 'New post', icon: 'write', kbd: ['C'], run: newPost },
+    { g: 'Actions', label: 'Invite people to your team', icon: 'user', run: () => { go('team'); setTimeout(openInvite, 300); } },
+    { g: 'Actions', label: 'New thread', icon: 'layers', run: () => { newPost(); setTimeout(() => { const b = $('[data-cact="add"]'); b && b.click(); const f = $('#thread .tw-input'); f && f.focus(); }, 260); } },
     { g: 'Actions', label: 'Save an idea', icon: 'plus', kbd: ['I'], run: openCapture },
     { g: 'Actions', label: 'Schedule this draft', icon: 'clock', kbd: [MOD, '↵'], run: () => { goThen('write', () => openSchedule()); } },
     { g: 'Actions', label: 'Make a thumbnail for this post', icon: 'image', run: () => goThen('write', () => openVisual(0, 'thumb')) },
@@ -5989,17 +6070,14 @@ function paletteCommands() {
     { g: 'Actions', label: 'Learn my voice', icon: 'voice', run: () => { go('voice'); setTimeout(() => learnVoice($('#learn')), 120); } },
     { g: 'Actions', label: 'Accounts you learn from', icon: 'trend', run: () => openPeople() },
     { g: 'Actions', label: 'Connections and Claude', icon: 'link', run: () => openConnections() },
-    { g: 'Actions', label: 'Post now', icon: 'send', kbd: [MOD, SHIFT, '↵'], run: () => { goThen('write', publishNow); } },
+    { g: 'Actions', label: 'Post now', icon: 'send', kbd: [MOD, SHIFT, '↵'], risky: true, run: () => { goThen('write', publishNow); } },
     { g: 'Actions', label: 'Show or hide preview', icon: 'panel', kbd: [MOD, '\\'], run: () => { goThen('write', togglePreview); } },
     { g: 'Actions', label: 'Shuffle post ideas', icon: 'shuffle', kbd: ['R'], run: () => { goThen('write', shuffleStarters); } },
-    { g: 'Actions', label: 'Hooks: score a first line, use a formula', icon: 'hook', run: () => go('hooks') },
+    { g: 'Actions', label: 'Hooks: formulas for a first line', icon: 'hook', run: () => go('hooks') },
     { g: 'Actions', label: `Theme: ${themeName()} (switch to ${themeName(THEMES[(THEMES.findIndex(x => x[0] === themeKey()) + 1) % 3][0])})`, icon: themeKey() === 'system' ? 'auto' : themeKey() === 'dark' ? 'moon' : 'sun', kbd: [SHIFT, 'T'], run: toggleTheme },
     { g: 'Actions', label: 'Keyboard shortcuts', icon: 'kbd', kbd: ['?'], run: openShortcuts },
     { g: 'Actions', label: 'Earn with Hookworthy: invite people, get 30%', icon: 'gift', run: () => openEarn() },
     ...(PRICED() ? [{ g: 'Actions', label: 'Plans', icon: 'riff', run: () => go('upgrade') }] : []),
-    { g: 'Actions', label: 'Hook tournament: six agents in the Room fight over your first line', icon: 'bolt', run: () => goThen('write', openTournament) },
-    { g: 'Actions', label: 'Hook of the week card', icon: 'hook', run: () => openHookCard() },
-    { g: 'Actions', label: 'Say a post (talk instead of typing)', icon: 'mic', run: () => goThen('write', () => dictate(0)) },
     { g: 'Actions', label: 'Settings', icon: 'sliders', run: () => openSettings() },
     { g: 'Actions', label: 'Drafts: find one and keep going', icon: 'drafts', kbd: [MOD, 'O'], run: () => openDrafts() },
     { g: 'Actions', label: 'Homepage', icon: 'arrow', run: () => go('home') },
@@ -6031,7 +6109,11 @@ function openPalette(initial = '') {
     const q = inp.value.trim();
     /* everyday words find the right command: thread/tweet → post, calendar → queue, analytics → insights */
     const qq = q.replace(/\b(thread|tweet)\b/gi, 'post').replace(/\bcalendar\b/gi, 'queue').replace(/\banalytics\b/gi, 'insights');
-    const res = cmds.map(c => ({ c, f: c.g === 'Formulas' && q && !c.label.toLowerCase().includes(q.toLowerCase()) ? null : (fuzzy(q, c.label) || (qq !== q ? fuzzy(qq, c.label) : null)) })).filter(x => x.f).sort((a, b) => q ? b.f.score - a.f.score : 0);
+    const res0 = cmds.map(c => ({ c, f: c.g === 'Formulas' && q && !c.label.toLowerCase().includes(q.toLowerCase()) ? null : (fuzzy(q, c.label) || (qq !== q ? (r => r && { ...r, score: r.score - 5 })(fuzzy(qq, c.label)) : null)) })).filter(x => x.f);
+    /* round 52: a command that sends something is never the Enter default unless you typed its name; and each group stays in one block */
+    res0.forEach(x => { x.s = x.f.score - (x.c.risky && !x.c.label.toLowerCase().startsWith(q.toLowerCase()) ? 200 : 0); });
+    const gBest = {}; res0.forEach(x => { gBest[x.c.g] = Math.max(gBest[x.c.g] ?? -1e9, x.s); });
+    const res = q ? res0.sort((a, b) => a.c.g === b.c.g ? b.s - a.s : gBest[b.c.g] - gBest[a.c.g]) : res0;
     shown = (q ? res.slice(0, 40) : res.filter(x => x.c.g !== 'Formulas' && x.c.g !== 'Saved ideas' && x.c.g !== 'Drafts').concat(res.filter(x => x.c.g === 'Saved ideas').slice(0, 3)));
     active = clamp(active, 0, Math.max(0, shown.length - 1));
     if (!shown.length) { inp.removeAttribute('aria-activedescendant'); list.removeAttribute('role'); srSay('No results. Press the button to save it as an idea.'); list.innerHTML = `<div class="cmdk-empty">Nothing matches “${esc(q)}”.<br><button class="btn sm" style="margin-top:12px" data-cap>${ic('plus', 'sm')} Save it as an idea</button></div>`; $('[data-cap]', list).onclick = () => { m.close(); addIdea({ src: 'note', text: q }); }; return; }
@@ -6248,14 +6330,15 @@ const slotLabel = (day, time) => { const d = fromKey(day); const diff = Math.rou
 
 /* the two ways out of a draft: Post now is the main button, Schedule sits beside it. A client with approvals gets one button that sends it to them */
 function postBtnsHTML() {
-  if (WS().approvals) return `<button class="btn primary post-main" data-cact="schedule" data-tip="They approve it, then it goes out at the time you pick" data-kbd="${MOD} ↵">${ic('send', 'sm')}<span>Send<span class="pm-n"> to ${esc(WS().name)}</span> for approval</span></button>`;
+  if (!can('write')) return `<span class="ro-note">${ic('lock', 'sm')} ${ROLES[ME().role].label}s comment and approve</span>`;
+  if (needsApproval()) return `<button class="btn primary post-main" data-cact="schedule" data-tip="${WS().approvals ? 'They approve it' : 'An Editor approves it'}, then it goes out at the time you pick" data-kbd="${MOD} ↵">${ic('send', 'sm')}<span>Send<span class="pm-n">${WS().approvals ? ` to ${esc(WS().name)}` : ''}</span> for approval</span></button>`;
   const u = S.settings.undoSecs ?? 8, eq = editTarget();
-  if (eq) return `<button class="btn sched-btn" data-cact="schedule" data-tip="Pick a different time" aria-label="Change time">${ic('clock', 'sm')}<span>Change time</span></button><button class="btn primary post-main" data-cact="savequeued" data-tip="Update it in Queue, same slot" aria-label="Save changes, ${esc(slotWhen(eq.day, eq.time))}">${ic('check', 'sm')}<span>Save<span class="pm-n"> changes</span></span></button>`;
+  if (eq) return `<button class="btn sched-btn" data-cact="schedule" data-tip="Pick a different time" aria-label="Change time">${ic('clock', 'sm')}<span>Change time</span></button><button class="btn ghost sched-btn pn-edit" data-cact="postnow" data-tip="Post it now instead of at ${esc(slotWhen(eq.day, eq.time))}" aria-label="Post now">${ic('send', 'sm')}<span>Post now</span></button><button class="btn primary post-main" data-cact="savequeued" data-tip="Update it in Queue, same slot" aria-label="Save changes, ${esc(slotWhen(eq.day, eq.time))}">${ic('check', 'sm')}<span>Save<span class="pm-n"> changes</span></span></button>`;
   return `<button class="btn sched-btn" data-cact="schedule" data-tip="Pick when it goes out" data-kbd="${MOD} ↵" aria-label="Schedule">${ic('clock', 'sm')}<span>Schedule</span></button><button class="btn primary post-main" data-cact="postnow" data-tip="${u ? `Post it now. ${u}s to undo` : 'Post it now'}" data-kbd="${MOD} ${SHIFT} ↵" aria-label="Post now">${ic('send', 'sm')}<span>Post<span class="pm-now"> now</span></span></button>`;
 }
 function composerHTML() {
   const empty = isEmptyDraft();
-  return `<div class="composer ${S.preview.on ? '' : 'no-preview'} ${FINE && S.settings.caret && !REDUCED ? 'fancy-caret' : ''}" id="composer">
+  return `<div class="composer ${can('write') ? '' : 'ro'} ${S.preview.on ? '' : 'no-preview'} ${FINE && S.settings.caret && !REDUCED ? 'fancy-caret' : ''}" id="composer">
   <div class="editor-col"><h1 class="sr">Write a post</h1>
     <div class="c-top fade-typing">
       ${draftsBtnHTML()}<div class="status ${isEmptyDraft() ? 'is-new' : ''}"><span class="dot"></span><span class="txt" id="save-state">${isEmptyDraft() ? 'New draft' : 'Saved'}</span></div><button class="checks-pill" id="checks" data-cact="checks" hidden></button><button class="review-pill" id="review-pill" data-cact="reviews" hidden></button>
@@ -6263,7 +6346,7 @@ function composerHTML() {
       <div class="grow"></div>
       <span class="plats-l">Post to</span><div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}${k === 'threads' || k === 'bsky' ? ' (you paste this one yourself)' : ''}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>${S.platforms.x && xPaid() ? `<button class="xfmt-pill" data-cact="xfmt" data-tip="Thread or one long post on X" aria-haspopup="menu">${xLong() ? 'Long post' : 'Thread'}</button>` : ''}
       <button class="btn ghost icon-only sm fm-tog" data-cact="focus" data-tip="Focus: just you and the words" data-kbd="${MOD} ." aria-label="Focus mode" aria-pressed="${document.body.classList.contains('focus-mode')}">${ic('focus', 'sm')}</button><button class="btn ghost sm pv-tog" data-cact="preview" aria-label="Preview" aria-pressed="${!!S.preview.on}" data-tip="${S.preview.on ? 'Hide' : 'Show'} the preview" data-kbd="${MOD} \\">${ic('panel', 'sm')}<span>Preview</span></button>
-      <button class="btn ghost sm share-tog" data-cact="share" aria-label="Share" data-tip="Share a link for comments" aria-haspopup="dialog" aria-expanded="false">${ic('link', 'sm')}<span>Share</span></button>
+      ${tcmBtnHTML()}<button class="btn ghost sm share-tog" data-cact="share" aria-label="Share" data-tip="Share a link for comments" aria-haspopup="dialog" aria-expanded="false">${ic('link', 'sm')}<span>Share</span></button>
       <button class="btn ghost icon-only" data-cact="schedmenu" data-tip="More" aria-label="More" aria-haspopup="menu">${ic('more')}</button>
       ${postBtnsHTML()}
     </div>
@@ -6313,7 +6396,7 @@ function tweetHTML(tw, i, n) {
   <div class="tw-gutter">${i === 0 ? avatar(u) : `<span class="idx">${i + 1}/${n}</span>`}<span class="spine"></span></div>
   <div class="tw-body">
     ${i === 0 ? `<div class="tw-head"><b>${esc(u.name)}</b><span>@${esc(u.handle)}</span></div>` : ''}
-    <div class="field-wrap"><div class="tw-mirror" aria-hidden="true"></div><div class="tw-cmts" aria-hidden="true"></div><div class="caret" aria-hidden="true" style="opacity:0"></div><textarea class="tw-input" rows="1" aria-label="Post ${i + 1} of ${n}" placeholder="${i === 0 ? 'Start with a line you’d stop scrolling for' : 'Keep going…'}">${esc(tw.text)}</textarea></div>
+    <div class="field-wrap"><div class="tw-mirror" aria-hidden="true"></div><div class="tw-cmts" aria-hidden="true"></div><div class="caret" aria-hidden="true" style="opacity:0"></div><textarea class="tw-input" rows="1" ${can('write') ? '' : 'readonly'} aria-label="Post ${i + 1} of ${n}" placeholder="${i === 0 ? 'Start with a line you’d stop scrolling for' : 'Keep going…'}">${esc(tw.text)}</textarea></div>
     <div class="media-slot">${mediaHTML(tw)}</div>
     <div class="poll-slot">${pollHTML(tw)}</div>
     <div class="link-slot"></div>
@@ -7399,7 +7482,7 @@ function rrStep(dir) { const v = rrVisible(), done = S.radar && S.radar.done || 
 function rrNext() { const v = rrVisible(), done = S.radar && S.radar.done || {}; const nxt = v.findIndex((x, k) => k > (RRADAR.active || 0) && !done[x.id]); const any = v.findIndex(x => !done[x.id]); if (nxt < 0 && any < 0) { drawRadar(); const a = $('#rr-all'); if (a) { a.focus({ preventScroll: true }); return; } } rrFocus(nxt >= 0 ? nxt : any >= 0 ? any : RRADAR.active || 0); }
 /* round 46: Replies to your posts, shown only when there are some (otherwise one quiet line under the radar) */
 const rpMineHTML = (mine, srv) => `<section class="sec rp-mine"><div class="sec-h"><div><h2 class="h2">Replies to your posts</h2><p class="muted" style="margin-top:4px">${mine.length ? 'Answer the first few yourself, while the post is new.' : 'Nothing posted from here yet. Once you post, its replies show up here.'}</p></div></div>
-      ${mine.length && !UI.rpOpen ? `<button class="rp-sum" data-rp="more"><span><b>${mine.length}</b> post${mine.length > 1 ? 's' : ''} · <b>${mine.reduce((a, q) => a + 2 + hash(q.id) % 5, 0)}</b> replies to answer${SHOWCASE() ? ' (sample)' : ''}</span><span class="rp-go">${ic('right', 'sm')} Open</span></button>` : mine.length ? `<div class="rp-list">${mine.map(q => `<button class="rp-post" data-rp="desk" data-id="${q.id}"><span class="rp-t">${firstLineHTML(clip(q.text, 140))}</span><span class="rp-m">Went out ${slotWhen(q.day, q.time)}${q.xIds && q.xIds[0] && srv.replies ? '' : SHOWCASE() ? ' · sample replies' : ''}</span><span class="rp-go">${ic('reply', 'sm')} Reply</span></button>${questionsFor(q).length ? `<button class="btn sm ghost rp-ask" data-rp="ask" data-id="${q.id}">${ic('write', 'sm')} They asked ${questionsFor(q).length} question${questionsFor(q).length > 1 ? 's' : ''}: answer in a post</button>` : ''}`).join('')}</div>` : `<a class="btn sm" href="#write">${ic('write', 'sm')} Write a post</a>`}</section>`;
+      ${mine.length && !UI.rpOpen ? `<button class="rp-sum" data-rp="more"><span><b>${mine.length}</b> post${mine.length > 1 ? 's' : ''} · <b>${mine.reduce((a, q) => a + 2 + hash(q.text || q.id) % 5, 0)}</b> replies to answer${SHOWCASE() ? ' (sample)' : ''}</span><span class="rp-go">${ic('right', 'sm')} Open</span></button>` : mine.length ? `<div class="rp-list">${mine.map(q => `<button class="rp-post" data-rp="desk" data-id="${q.id}"><span class="rp-t">${firstLineHTML(clip(q.text, 140))}</span><span class="rp-m">Went out ${slotWhen(q.day, q.time)}${q.xIds && q.xIds[0] && srv.replies ? '' : SHOWCASE() ? ' · sample replies' : ''}</span><span class="rp-go">${ic('reply', 'sm')} Reply</span></button>${questionsFor(q).length ? `<button class="btn sm ghost rp-ask" data-rp="ask" data-id="${q.id}">${ic('write', 'sm')} They asked ${questionsFor(q).length} question${questionsFor(q).length > 1 ? 's' : ''}: answer in a post</button>` : ''}`).join('')}</div>` : `<a class="btn sm" href="#write">${ic('write', 'sm')} Write a post</a>`}</section>`;
 ROUTES.replies = () => {
   settleQueue(); const mine = myQ().filter(q => q.status === 'published' && !q.marked).slice(-4).reverse(), srv = LLM.server || {};
   mount('replies', `<div class="page"><div class="page-h"><div><h1 class="display">Replies</h1><p>Answer the replies on your own posts, and add an early, useful reply to other people’s while they’re fresh.</p></div>
@@ -8163,7 +8246,7 @@ function preflight() {
   if (n && /[:…]\s*$|\.\.\.\s*$/.test(tws[n - 1].text.trim())) out.push({ k: 'end', msg: n > 1 ? 'Your thread ends mid-thought.' : 'Your post ends mid-thought.', why: n > 1 ? 'The last post ends with a colon or an ellipsis. Missing a final post?' : 'It ends with a colon or an ellipsis, as if more is coming. Add the rest, or end the sentence.' });
   if (on('x') && /^@\w/.test(tws[0].text.trim())) out.push({ k: 'at', msg: 'Your post starts with an @.', why: 'On X that can read like a reply. Put a word in front of it.' });
   const key = x => x.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim().slice(0, 42); const k0 = key(tws[0].text.split('\n')[0]);
-  if (k0.length > 16) { const dup = S.queue.find(q => key((q.text || '').split('\n')[0]) === k0); if (dup) out.push({ k: 'dup', msg: 'This opens like a post already in your queue.', why: `Same first line as the post going out ${slotWhen(dup.day, dup.time)}. On purpose?` }); }
+  if (k0.length > 16) { const self = editTarget(), dup = S.queue.find(q => q !== self && key((q.text || '').split('\n')[0]) === k0); if (dup) out.push({ k: 'dup', msg: 'This opens like a post already in your queue.', why: `Same first line as the post going out ${slotWhen(dup.day, dup.time)}. On purpose?` }); }
   const all = tws.map(t => t.text).join('\n');
   /* words you banned on Your voice */
   const banned = S.voice.never.filter(w => new RegExp(`(^|[^\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(all));
@@ -8239,7 +8322,8 @@ function commitDraft({ day, time, status = 'scheduled' }) {
   const tws = S.draft.tweets.filter(t => t.text.trim() || t.media.length);
   const media = tws.map(t => t.media.slice());
   const quoted = pricesIn(tws.map(t => t.text).join('\n'));
-  S.queue.push({ id: uid(), day, time, ...(quoted.length ? { prices: quoted } : {}), text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), ...(media.some(x => x.length) ? { media } : {}), platforms: { ...S.platforms }, status, ...xoFor(S.draft, S.platforms), autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
+  S.queue.push({ id: uid(), day, time, ...(quoted.length ? { prices: quoted } : {}), text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), ...(media.some(x => x.length) ? { media } : {}), platforms: { ...S.platforms }, status, ...xoFor(S.draft, S.platforms), autoRepost: S.settings.autoRepost, ws: S.ws, by: ME().id, ...(S.draft.comments && S.draft.comments.length ? { comments: S.draft.comments } : {}), ...(needsApproval() && status === 'scheduled' ? { approval: 'needs' } : {}) });
+  if (needsApproval() && status === 'scheduled' && !WS().approvals) tmLog('sent a post for approval', S.queue[S.queue.length - 1].id);
   /* scheduling isn't posting: only something that went out (or was marked posted) counts toward the week */
   if (status === 'published') S.streak[dayKey(Date.now())] = 1; if (UI.quietDone) UI.quietDone = false; else SFX.play('done');
   syncToServer(S.queue[S.queue.length - 1], media);
@@ -8301,6 +8385,13 @@ function xoWire(root, st, first = '') {
 }
 /* switched on with a reply that can't go out: say so under the box, and don't go ahead */
 function xoBlocked(root, st) { if (!st.plug || !st.plug.on) return false; const b = plugBad(st.plug.text); if (!b) return false; const el = $('#plug-t', root); if (el) { const er = $('#plug-t-err', root); fieldErr(el, b); er && (er.textContent = b); } return true; }
+/* round 52: say up front what happens at the time you pick. Connected: it posts itself. Not connected: it waits on Today for one tap */
+function deliveryHTML() {
+  if (needsApproval()) return `<div class="sh-deliv">${ic('send', 'sm')}<span><b>Needs a yes first.</b> It goes to ${esc(approverName())}. Once approved, it goes out at the time you pick.</span></div>`;
+  const pl = esc(platList());
+  if (wiredNow()) return `<div class="sh-deliv ok">${ic('check', 'sm')}<span><b>Posts by itself.</b> It goes out to ${pl} at the time you pick.</span></div>`;
+  return `<div class="sh-deliv">${ic('bell', 'sm')}<span><b>You’ll press Post.</b> ${pl} isn’t connected yet, so at that time it waits on Today, ready to post in one tap.</span><button type="button" class="btn sm" data-sh-conn>Connect</button></div>`;
+}
 function openSchedule() {
   if (CURRENT !== 'write') return; refreshBest();
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
@@ -8309,7 +8400,7 @@ function openSchedule() {
   /* the strongest of the three gets the badge and the default, not just the soonest */
   { const xs = best.map(b => slotInfo(b.day, b.time).x || 0); const top = xs.indexOf(Math.max(...xs)); if (TIMES.src === 'you' && top > 0) pickI = top; if (best[top]) best[top].top = true; }
   /* approval voices can't post 'Now': it has to wait for the client */
-  const mk = marketSlots().filter(x => !(x.now && WS().approvals)), ps = S.draft.slot, psMk = ps && mk.find(x => x.day === ps.day && x.time === ps.time); if (ps && !psMk && slotDate(ps.day, ps.time).getTime() > Date.now() && !taken(ps.day, ps.time) && !best.some(b => b.day === ps.day && b.time === ps.time)) { best.unshift({ day: ps.day, time: ps.time, reason: ps.why || 'The slot you picked in your queue' }); best.length = Math.min(best.length, 3); pickI = 0; }
+  const mk = marketSlots().filter(x => !(x.now && needsApproval())), ps = S.draft.slot, psMk = ps && mk.find(x => x.day === ps.day && x.time === ps.time); if (ps && !psMk && slotDate(ps.day, ps.time).getTime() > Date.now() && !taken(ps.day, ps.time) && !best.some(b => b.day === ps.day && b.time === ps.time)) { best.unshift({ day: ps.day, time: ps.time, reason: ps.why || 'The slot you picked in your queue' }); best.length = Math.min(best.length, 3); pickI = 0; }
   /* the soonest free time is one more option here, not a second Schedule button */
   { const nx = nextSlots(1, false)[0], def = best[pickI]; if (nx && !best.some(b => b.day === nx.day && b.time === nx.time)) { best.push({ ...nx, reason: 'The soonest free time in your week', next: true }); best.sort((a, c) => slotDate(a.day, a.time) - slotDate(c.day, c.time)); pickI = Math.max(0, best.indexOf(def)); } }
   /* a CPI or FOMC day: a take is worth most right around the print, so those times come first */
@@ -8319,6 +8410,7 @@ function openSchedule() {
   const goL = s => s.now ? 'Post now' : `Schedule for ${slotWhen(s.day, s.time)}`, pd = pickDefault(); const n = S.draft.tweets.filter(t => t.text.trim()).length;
   const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times in ${esc(tzName())}`)}
   <div class="modal-b" style="display:grid;gap:18px">
+    ${deliveryHTML()}
     <div id="sh-hook">${schedHookHTML()}</div>${(() => { const ps = pricesIn(S.draft.tweets.map(t => t.text).join('\n')); return ps.length ? `<div class="sh-price">${ic('clock', 'sm')}<span>This post quotes ${ps.map(p => `<b>${p.sym} ${esc(p.raw)}</b>`).join(', ')}. Prices move. Your queue shows the price then and now, with one tap to update.</span></div>` : ''; })()}
     ${(() => { const pf = preflight(), t0 = S.draft.tweets[0].text; return !pf.length && t0.trim() && hookFor(t0).score < 60 ? '' : checksHTML(pf); })()}
     <div style="display:grid;gap:8px"><span class="label">${mk.length ? `${mkShort(mk[0].ev)} today, then ${TIMES.src === 'you' ? 'your best times' : 'good times in general'}` : TIMES.src === 'you' ? 'Best times for you' : 'Good times to post, in general'}</span>
@@ -8329,9 +8421,10 @@ function openSchedule() {
     </div>
     ${S.platforms.x ? xoHTML(S.draft, { first: S.draft.tweets[0].text }) : ''}
   </div>
-  <div class="modal-f"><button class="btn primary" id="s-go" data-kbd="${MOD} ↵">${ic('clock', 'sm')} <span id="s-go-l" ${WS().approvals ? 'hidden' : ''}>${best[pickI] ? goL(best[pickI]) : 'Schedule for later'}</span>${WS().approvals ? `<span>Send to ${esc(WS().name)} for approval</span>` : ''}</button></div>`, { label: 'Schedule' });
+  <div class="modal-f"><button class="btn primary" id="s-go" data-kbd="${MOD} ↵">${ic('clock', 'sm')} <span id="s-go-l" ${needsApproval() ? 'hidden' : ''}>${best[pickI] ? goL(best[pickI]) : 'Schedule for later'}</span>${needsApproval() ? `<span>Send${WS().approvals ? ` to ${esc(WS().name)}` : ''} for approval</span>` : ''}</button></div>`, { label: 'Schedule' });
   const el = m.el; if (S.platforms.x) xoWire($('.xo', el), S.draft, S.draft.tweets[0].text);
   el.addEventListener('click', e => {
+    if (e.target.closest('[data-sh-conn]')) { m.close(); openConnections(); return; }
     const fx = e.target.closest('[data-fix]'); if (fx) { runFix(fx.dataset.fix); const box = $('.pf', el); if (box) box.outerHTML = checksHTML(preflight()); return; }
     const ha = e.target.closest('[data-halt]'); if (ha) { const tw = S.draft.tweets[0], before = tw.text, a0 = hookFor(before).score; tw.text = UI.halts[+ha.dataset.halt]; save(); renderThread(); const a1 = hookFor(tw.text).score; $('#sh-hook', el).innerHTML = `<div class="sh-hook ok">${ic('check', 'sm')}<span>Hook ${tierMoveHTML(a0, a1, { anim: true })}. Swapped in.</span><button class="btn ghost sm" data-hundo>Undo</button></div>`; UI.hundo = before; SFX.play(a1 >= 70 ? 'hook' : 'swap'); return; }
     if (e.target.closest('[data-hundo]')) { S.draft.tweets[0].text = UI.hundo; save(); renderThread(); $('#sh-hook', el).innerHTML = schedHookHTML(); return; }
@@ -8346,7 +8439,7 @@ function openSchedule() {
   el.addEventListener('keydown', e => { if (e.key !== 'Enter' || e.isComposing) return; if (e.metaKey || e.ctrlKey || e.target.matches('#sd,#st')) { e.preventDefault(); e.stopPropagation(); $('#s-go', el).click(); } });
   const finish = (slot, btn) => {
     btn.classList.add('is-loading');
-    const so = composerSnap(), count = S.draft.tweets.filter(t => t.text.trim() || t.media.length).length, plats = { ...S.platforms }, cw = WS().approvals ? WS() : null;
+    const so = composerSnap(), count = S.draft.tweets.filter(t => t.text.trim() || t.media.length).length, plats = { ...S.platforms }, cw = WS().approvals ? WS() : needsApproval() ? { name: 'your team' } : null;
     setTimeout(() => { UI.quietDone = true; commitDraft(slot); m.close(); route(); sendOff(so, { count, plats }); const si = slotInfo(slot.day, slot.time); if (cw) { toast(`Waiting on ${esc(cw.name)}. It goes out once they approve.`, { icon: 'clock', tone: 'accent', action: 'View queue', onAction: () => go('queue') }); return; } toast(`Scheduled for ${slotWhen(slot.day, slot.time)}.${si.best && !si.general ? ` One of your best times: ${si.x}× your usual so far.` : si.best ? ' A good time to post.' : ''}`, { icon: 'clock', tone: 'accent', action: 'View queue', onAction: () => go('queue') }); }, 420);
   };
   $('#s-go', el).onclick = e => {
@@ -8427,7 +8520,7 @@ async function syncToServer(q, media) {
 function publishNow(btn, { anyway = false } = {}) {
   if (CURRENT !== 'write' || SEND.t) return;
   /* a client voice with approvals never posts straight away: it goes to them first */
-  if (WS().approvals) { toast(`Writing as ${esc(WS().name)}: posts wait for their approval. Schedule it and it goes to them first.`, { icon: 'send', tone: 'err', action: 'Schedule', onAction: () => openSchedule(), ms: 8000 }); return; }
+  if (needsApproval()) { toast(`${WS().approvals ? `Writing as ${esc(WS().name)}` : `As ${ROLES[ME().role].label === 'Writer' ? 'a Writer' : ROLES[ME().role].label}`}: posts wait for approval. Schedule it and it goes to them first.`, { icon: 'send', tone: 'err', action: 'Schedule', onAction: () => openSchedule(), ms: 8000 }); return; }
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   /* 1 AM guard: most of your people are asleep; offer the next best time instead */
   const h = new Date().getHours();
@@ -8457,7 +8550,7 @@ function intentFor() {
 function postNow(btn, { anyway = false } = {}) {
   if (CURRENT !== 'write' || SEND.t) return;
   /* a client voice with approvals never posts straight away: it goes to them first */
-  if (WS().approvals) { openSchedule(); return; }
+  if (needsApproval()) { openSchedule(); return; }
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   if (fillAsk(() => postNow(btn, { anyway }))) return;
   if (wiredNow()) { publishNow(btn, { anyway }); return; }
@@ -8736,7 +8829,7 @@ function weekData() {
   const pubQ = myQ().filter(q => q.status === 'published' && slotDate(q.day, q.time) > from);
   const sample = !hist.length && SHOWCASE();
   /* the showcase's seeded posts carry sample numbers, labelled Sample; a real account's own queue posts show none until X reports them */
-  const posts = hist.length ? hist : pubQ.map(q => { const h = hash(q.id || q.text), m = q.metrics || {}; return { id: q.id, text: q.text, at: slotDate(q.day, q.time).getTime(), likes: sample ? 40 + h % 180 : m.likes || 0, reposts: sample ? 3 + h % 20 : m.reposts || 0, replies: sample ? 4 + h % 26 : m.replies || 0, views: sample ? (2 + h % 9) * 1000 + h % 997 : m.views || 0, q: true, marked: q.marked }; });
+  const posts = hist.length ? hist : pubQ.map(q => { const h = hash(q.text || q.id), m = q.metrics || {}; return { id: q.id, text: q.text, at: slotDate(q.day, q.time).getTime(), likes: sample ? 40 + h % 180 : m.likes || 0, reposts: sample ? 3 + h % 20 : m.reposts || 0, replies: sample ? 4 + h % 26 : m.replies || 0, views: sample ? (2 + h % 9) * 1000 + h % 997 : m.views || 0, q: true, marked: q.marked }; });
   const E = HWCore.eng; const sorted = [...posts].filter(p => !p.marked).sort((a, b) => E(b) - E(a)); const withNums = sorted.filter(HWCore.measured);
   const planned = myQ().filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now && slotDate(q.day, q.time) - now < 7 * DAY).length;
   const days = Array.from({ length: 7 }, (_, i) => { const t = now - (6 - i) * DAY, k = dayKey(t); const ps = posts.filter(p => p.at && dayKey(p.at) === k); return { k, d: DOW[new Date(t).getDay()], n: ps.length, e: ps.reduce((a, p) => a + E(p), 0) }; });
@@ -10204,6 +10297,7 @@ function composerClick(e) {
     case 'postnow': postNow(el); break;
     case 'savequeued': saveQueued(); break;
     case 'share': openShare(el); break;
+    case 'tcomments': if (TCM) closeTcm(); else { const ta = $('.tw-input:focus') || UI.lastTa; UI.tcmQuote = ta && ta.selectionEnd > ta.selectionStart ? ta.value.slice(ta.selectionStart, ta.selectionEnd) : ''; openTcm(() => S.draft, 'Comments on this draft'); } break;
     /* posting lives on the two buttons beside this; the menu keeps the rest */
     case 'schedmenu': openMenu(el, [
       ...(innerWidth <= 560 ? [{ label: ($('#composer') && $('#composer').classList.contains('show-sheet')) ? 'Hide preview' : 'Show preview', icon: 'panel', run: togglePreview }] : []),
@@ -11568,7 +11662,7 @@ ROUTES.teams = () => {
       <div class="tm-demo"><div class="tm-voices">${C.map(c => `<div class="tm-v"><div class="tm-vh">${pfAv(c)}<span><b>${esc(c.n)}</b><small>${c.d} drafts</small></span></div><span class="tm-plat">${c.plats.map(k => `<span>${pic(k)}${PN[k]}</span>`).join('')}</span><div class="tm-d"><p>${esc(c.line)}</p><span class="tm-dm"><span>Draft</span>${chip(hookScore(c.line).score)}</span></div></div>`).join('')}</div></div>
     </section>
     <section class="tm-row" id="approvals" aria-labelledby="tm-a-h">
-      <div class="tm-copy"><span class="eyebrow">Approvals</span><h2 id="tm-a-h">Nothing ships <em>without a yes.</em></h2><p>When you write as a client, Schedule becomes “Send to Ledgerly for approval”. The post waits in your Queue with a To approve tag, and goes out on time once it’s approved.</p><ul><li>On a self-hosted server, a review link lets clients comment on each post without an account</li><li>If the yes comes after the post’s time, it tells you and asks for a new one</li></ul></div>
+      <div class="tm-copy"><span class="eyebrow">Approvals</span><h2 id="tm-a-h">Nothing ships <em>without a yes.</em></h2><p>When you write as a client, Schedule becomes “Send to Ledgerly for approval”. The post waits in your Queue with a To approve tag, and goes out on time once it’s approved.</p><ul><li>Invite your team as Admins, Editors, Writers or Reviewers. A Writer’s post waits for a yes; anyone can comment on a draft and @mention a teammate.</li><li>On a self-hosted server, a review link lets clients comment on each post without an account</li><li>If the yes comes after the post’s time, it tells you and asks for a new one</li></ul></div>
       <div class="tm-demo">
         <div class="tm-sheet"><span class="lbl">Schedule · writing as Ledgerly</span><p class="tm-sp">${esc(C[0].line)}</p><div class="tm-sf"><span>Thu at ${fmtTime('12:15')} · X, LinkedIn</span><span class="tm-send">${ic('send', 'sm')} Send to Ledgerly for approval</span></div></div>
         <div class="tm-q">${withTag(qa, 'To approve', 'needs')}${withTag(qb, 'Approved', 'ok')}</div>
@@ -11867,7 +11961,7 @@ function lastPostStats() {
   const newestH = HIST().filter(p => p.at && HWCore.measured(p)).reduce((a, p) => !a || p.at > a.at ? p : a, null);
   if (lastQ && newestH && newestH.at > slotDate(lastQ.day, lastQ.time).getTime()) lastQ = null;
   if (lastQ && lastQ.marked) return { text: lastQ.text, when: `Marked as posted ${slotWhen(lastQ.day, lastQ.time)}. Nothing was sent`, q: lastQ };
-  if (lastQ && SHOWCASE()) { const h = hash(lastQ.id || lastQ.text); return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, likes: 40 + h % 180, replies: 4 + h % 26, x: Math.round((7 + h % 18) ) / 10, sample: true, q: lastQ }; }
+  if (lastQ && SHOWCASE()) { const h = hash(lastQ.text || lastQ.id); return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, likes: 40 + h % 180, replies: 4 + h % 26, x: Math.round((7 + h % 18) ) / 10, sample: true, q: lastQ }; }
   if (lastQ) return { text: lastQ.text, when: `Went out ${slotWhen(lastQ.day, lastQ.time)}`, q: lastQ };
   const lastH = newestH || (HIST().length ? [...HIST()].filter(p => p.at).sort((a, b) => new Date(b.at) - new Date(a.at))[0] : null); if (!lastH) return null;
   const an = ANALYSIS(), eng = HWCore.eng(lastH), med = an && an.median || 0;
@@ -11916,7 +12010,7 @@ function todayHTML() {
   refreshBest(); const st = todayState(), lp = lastPostStats(), now = Date.now();
   const rr = (RRADAR.posts.length ? RRADAR.posts : RADAR_SAMPLE()).filter(p => !(S.radar && ((S.radar.skip || {})[p.id] || (S.radar.done || {})[p.id]))).slice(0, 2);
   const rrPic = p => Number.isInteger(p.img) ? pfAv({ n: p.name, img: p.img }, 'rr-av') : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
-  const mine = myQ().filter(q => q.status === 'published' && !q.marked).slice(-4), waiting = mine.reduce((a, q) => a + (Array.isArray(q.replies) ? q.replies.length : SHOWCASE() ? 2 + hash(q.id) % 5 : 0), 0);
+  const mine = myQ().filter(q => q.status === 'published' && !q.marked).slice(-4), waiting = mine.reduce((a, q) => a + (Array.isArray(q.replies) ? q.replies.length : SHOWCASE() ? 2 + hash(q.text || q.id) % 5 : 0), 0);
   const day = n => dayKey(addDays(noonToday(), n)), list = n => S.queue.filter(q => q.day === day(n) && mineQ(q) && (q.status === 'scheduled' || (n === 0 && q.status === 'published'))).sort((a, b) => a.time.localeCompare(b.time));
   const open = n => Object.keys(BEST[dowIdx(fromKey(day(n)))] || {}).filter(t => slotDate(day(n), t).getTime() > now && !taken(day(n), t));
   const qRow = q => `<a class="ts-i" href="#queue"><span class="ts-t">${fmtTime(q.time)}</span><span class="ts-x">${firstLineHTML(clip(q.text, 70))}</span>${q.status === 'published' ? `<span class="ts-s">${q.marked ? 'Marked' : 'Sent'}</span>` : ''}</a>`;
@@ -12435,7 +12529,7 @@ function qTags(q) {
   /* the voice tag only marks someone else's post: writing as Ledgerly, Ledgerly's cards don't need to say so */
   const w = q.ws && q.ws !== 'me' && q.ws !== S.ws ? S.workspaces.find(x => x.id === q.ws) : null, drift = q.status === 'scheduled' ? priceDrift(q) : null, xo = xoTags(q); if (!w && !q.approval && !q.rerun && !drift && !xo) return '';
   if (drift && !w && !q.approval && !q.rerun) return `<span class="qtags"><span class="qt price" title="${esc(drift.map(p => `${p.sym} was ${fmtUSD(p.quoted)}, now ${fmtUSD(p.now)}`).join('; '))}"><i></i><span>${drift[0].sym} price moved</span></span>${xo}</span>`;
-  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now() ? `<span class="qt missed" title="Its time passed before it was approved. Move it to a new time."><i></i><span>Missed</span></span>` : `<span class="qt ${q.approval}" title="${q.approval === 'needs' ? 'To approve' : 'Approved'}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>`) : ''}${xo}</span>`;
+  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now() ? `<span class="qt missed" title="Its time passed before it was approved. Move it to a new time."><i></i><span>Missed</span></span>` : `<span class="qt ${q.approval}" title="${{ needs: 'To approve', changes: 'Changes asked', ok: 'Approved' }[q.approval] || ''}"><i></i><span>${{ needs: 'To approve', changes: 'Changes asked', ok: 'Approved' }[q.approval] || ''}</span></span>`) : ''}${xo}</span>`;
 }
 /* the card menu's X options: who can reply and the auto-plug, while the post is still waiting */
 function xoItems(q, c) {
@@ -12498,7 +12592,7 @@ function moveToTime(q) {
 function editQueued(q) {
   switchWs(q.ws || 'me', { quiet: true }); /* the full switch, so your own name and platforms never get swapped for a client's */
   if (q.platforms) S.platforms = { ...q.platforms };
-  writeFrom(q.tweets); (q.media || []).forEach((list, i) => { const tw = S.draft.tweets[i]; if (tw && list) tw.media = list.slice(); });
+  writeFrom(q.tweets); (q.media || []).forEach((list, i) => { const tw = S.draft.tweets[i]; if (tw && list) tw.media = list.slice(); }); if (q.comments) S.draft.comments = q.comments;
   S.draft.slot = q.status === 'scheduled' ? { day: q.day, time: q.time } : null; S.draft.editOf = q.status === 'scheduled' ? q.id : null; save(); if (CURRENT === 'write') renderThread();
   if (q.status !== 'scheduled') { S.queue = S.queue.filter(x => x !== q); serverDrop(q); save(); return; }
   toast(`Still scheduled for ${slotWhen(q.day, q.time)}. Save changes when you’re done.`, { icon: 'clock', ms: 4200 });
@@ -12516,9 +12610,10 @@ function qMenu(c) {
   if (q.status === 'due') { openMenu(c, [{ header: 'Post by hand. Nothing sent it' }, { label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Mark as posted', icon: 'check', run: () => { q.status = 'published'; S.streak[dayKey(Date.now())] = 1; save(); drawCal(); drawQSide(); toast('Marked as posted. It counts toward your week.', { icon: 'check' }); } }, { label: 'Move to next best time', icon: 'clock', run: () => { const s = nextSlots(1)[0] || nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } moveQ(q.id, s.day, s.time); } }, { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }, '-', { label: 'Delete', icon: 'trash', run: () => { S.queue = S.queue.filter(x => x !== q); serverDrop(q); save(); drawCal(); drawQSide(); } }], { width: 250 }); return; }
   if (q.status === 'published') { fetchPlugs(); openMenu(c, [{ header: q.marked ? `Marked as posted ${slotWhen(q.day, q.time)}. Nothing was sent` : `Went out ${slotWhen(q.day, q.time)}` }, ...plugPubItems(q), ...(q.marked ? [{ label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Move back to drafts', icon: 'undo', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); const d = { ...freshDraft(q.tweets), ws: q.ws || 'me' }; (q.media || []).forEach((m, i) => { if (d.tweets[i] && Array.isArray(m)) d.tweets[i].media = m.slice(); }); d.platforms = { ...q.platforms }; S.drafts.unshift(d); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Back in your drafts.', { icon: 'undo', action: 'Undo', onAction: () => { S.drafts = S.drafts.filter(x => x !== d); S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Deleted.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, '-'] : [{ label: 'Replies to this post', icon: 'reply', run: () => openReplyDesk(q) }]), ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
   const next = nextSlots(1)[0];
-  const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { if (slotDate(q.day, q.time) < Date.now()) { toast('Its time already passed. Move it to a new time, then approve it.', { icon: 'clock', tone: 'err' }); return; } q.approval = 'ok'; save(); syncToServer(q, q.mediaIds ? null : q.media); drawCal(); drawQSide(); toast(`Approved. It goes out ${slotWhen(q.day, q.time)}.`, { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; serverDrop(q); save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
+  const apv = q.approval === 'needs' ? (can('approve') ? [{ label: 'Approve', icon: 'check', run: () => approveQ(q) }, { label: 'Ask for changes', icon: 'reply', run: () => askChanges(q) }] : [{ label: 'Waiting for a yes', icon: 'clock', disabled: true }]) : q.approval === 'changes' ? [{ label: 'Changes asked. Edit it, then send again', icon: 'reply', disabled: true }] : q.approval === 'ok' && can('approve') ? [{ label: 'Send back for changes', icon: 'undo', run: () => askChanges(q) }] : [];
+  const cmt = [{ label: `Comments${openCount(q.comments) ? ` (${openCount(q.comments)})` : ''}`, icon: 'reply', run: () => openTcm(() => S.queue.find(x => x.id === q.id), 'Comments on this post') }];
   const late = slotDate(q.day, q.time) < Date.now(), drift = priceDrift(q);
-  openMenu(c, [{ header: late ? `Missed: ${slotLabel(q.day, q.time)}` : slotLabel(q.day, q.time) }, ...(drift ? [{ label: `Update the price: ${drift.map(p => `${p.sym} ${fmtUSD(p.quoted)} → ${fmtUSD(p.now)}`).join(', ')}`, icon: 'swap', hint: PRICE.live ? '' : 'sample', run: () => updatePrices(q) }] : []), ...(late ? [] : apv),
+  openMenu(c, [{ header: late ? `Missed: ${slotLabel(q.day, q.time)}` : slotLabel(q.day, q.time) }, ...(drift ? [{ label: `Update the price: ${drift.map(p => `${p.sym} ${fmtUSD(p.quoted)} → ${fmtUSD(p.now)}`).join(', ')}`, icon: 'swap', hint: PRICE.live ? '' : 'sample', run: () => updatePrices(q) }] : []), ...(late ? [] : apv), ...cmt,
     ...(late ? [] : [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }]),
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => { moveQ(q.id, next.day, next.time); keepFocus(`.qcard[data-id="${q.id}"]`); } } : { label: 'No best times left', icon: 'target', disabled: true },
     ...(late ? [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }] : []),
@@ -12615,7 +12710,7 @@ const numWord = n => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'sev
 function drawQSide() {
   const el = $('#q-side'); if (!el) return;
   const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled' && (!QF.mine || q.ws === S.ws)), MD = myDrafts(); fetchPlugs();
-  el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}" data-tip="Approve it, or send it back"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')} · ${esc(slotWhen(q.day, q.time))}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
+  el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}" data-tip="Approve it, or send it back"><span class="when">${esc(q.by && q.by !== 'me' ? tmName(tmById(q.by)) : (S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')} · ${esc(slotWhen(q.day, q.time))}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
   <div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span><span class="faint" style="font-size:12px">${MD.length}</span></div>
     ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd" draggable="${!blank}" data-di="${i}" tabindex="0" role="button" aria-label="${esc(clip(t, 80).replace(/[\s.!?:;,…]+$/, ''))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">No drafts waiting.</p>${mnote('ideas become drafts')}`}</div>
   <div class="card q-times"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Your posting times</span><button class="btn ghost sm" data-qact="times" aria-haspopup="dialog" aria-label="Edit your posting times">Edit</button></div>
@@ -12678,6 +12773,237 @@ function series(days) {
   });
 }
 function niceTicks(max, n = 4) { if (!(max > 0)) return [0, 1]; const raw = max / n; const mag = Math.pow(10, Math.floor(Math.log10(raw))); const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw); return Array.from({ length: Math.ceil(max / step) + 1 }, (_, i) => i * step); }
+/* ---------- round 52: Teams. People (not voices): invites, four roles, comments on drafts, and a yes before a Writer's post goes out ----------
+   Voices (Write as) are the accounts you post as. The team is the people who work on them with you. Everything lives in S.team;
+   "View as" previews what a teammate sees, so a role is something you can try, not just read about */
+const ROLES = {
+  admin: { label: 'Admin', desc: 'Everything, plus people and billing.', can: ['write', 'comment', 'publish', 'approve', 'manage'] },
+  editor: { label: 'Editor', desc: 'Writes, schedules and posts. Approves posts from Writers.', can: ['write', 'comment', 'publish', 'approve'] },
+  writer: { label: 'Writer', desc: 'Writes and comments. Their posts wait for a yes before they go out.', can: ['write', 'comment'] },
+  reviewer: { label: 'Reviewer', desc: 'Reads, comments and approves. Can’t write or post. Good for clients.', can: ['comment', 'approve'] }
+};
+const ROLE_KEYS = ['admin', 'editor', 'writer', 'reviewer'];
+const PERMS = [['write', 'Write and edit drafts'], ['comment', 'Comment'], ['publish', 'Schedule and post without a yes'], ['approve', 'Approve posts'], ['manage', 'Invite people and change roles']];
+function seedTeam() {
+  const now = Date.now(), H = 3600e3;
+  return {
+    name: `${S.user.name || 'Your'}’s team`,
+    members: [
+      { id: 'me', name: S.user.name || 'You', email: S.user.handle ? `${S.user.handle.replace(/_+$/, '')}@hookworthy.app` : 'you@hookworthy.app', role: 'admin', owner: true, status: 'active', seen: now },
+      { id: 'priya', name: 'Priya Raman', email: 'priya@ledgerly.co', role: 'editor', hue: 280, status: 'active', seen: now - 2 * H },
+      { id: 'sam', name: 'Sam Okafor', email: 'sam@heycape.co', role: 'writer', hue: 28, status: 'active', seen: now - .3 * H },
+      { id: 'lena', name: 'Lena Vogt', email: 'lena@northwind.co', role: 'reviewer', hue: 150, status: 'active', seen: now - 26 * H },
+      { id: 'inv1', name: '', email: 'ana@northwind.co', role: 'writer', status: 'invited', at: now - 3 * H, code: 'j7k2q9' }
+    ],
+    log: [
+      { at: now - .3 * H, who: 'sam', what: 'sent a post for approval', ref: 'tq-sam' },
+      { at: now - 2 * H, who: 'priya', what: 'commented on a draft' },
+      { at: now - 3 * H, who: 'me', what: 'invited ana@northwind.co as a Writer' },
+      { at: now - 26 * H, who: 'lena', what: 'approved a post' }
+    ],
+    as: null
+  };
+}
+if (!S.team || typeof S.team !== 'object' || !Array.isArray(S.team.members)) {
+  S.team = seedTeam();
+  /* the sample account gets a teammate's post waiting for a yes and a couple of comments, so the flow is there to try */
+  if (SHOWCASE()) {
+    const d = new Date(Date.now() + 2 * DAY);
+    S.queue.push({ id: 'tq-sam', day: dayKey(d), time: '12:15', text: 'Nobody tells you the hardest trade is the one you don’t take.', tweets: ['Nobody tells you the hardest trade is the one you don’t take.'], platforms: { x: true }, status: 'scheduled', ws: 'me', approval: 'needs', by: 'sam', comments: [{ id: 'c1', by: 'sam', text: 'Tried a shorter opener this time. Too blunt?', at: Date.now() - .3 * 3600e3 }] });
+    const dr = S.drafts.find(x => (x.ws || 'me') === 'me');
+    if (dr && !dr.comments) dr.comments = [{ id: 'c2', by: 'priya', text: 'Love this one. Could the second line name the actual number?', at: Date.now() - 2 * 3600e3, quote: clip((dr.tweets[0] && dr.tweets[0].text) || '', 60) }, { id: 'c3', by: 'sam', text: '@Priya agreed, I’ll add it.', at: Date.now() - 1.5 * 3600e3, parent: 'c2' }];
+  }
+}
+const TM = () => S.team;
+const tmById = id => TM().members.find(m => m.id === id);
+const ME = () => tmById(TM().as) || tmById('me') || TM().members[0];
+const can = p => { const m = ME(); return !!m && (ROLES[m.role] || ROLES.admin).can.includes(p); };
+/* a client voice or a Writer: the post waits for a yes */
+const needsApproval = () => !!(WS().approvals || !can('publish'));
+const approverName = () => WS().approvals ? WS().name : 'your team';
+const tmName = m => m ? (m.name || m.email) : 'Someone';
+const tmFirst = m => tmName(m).split(/[\s@]/)[0];
+const tmAv = (m, cls = '') => avatar({ name: tmName(m), pic: m && m.id === 'me' ? S.user.pic : m && m.pic, hue: m && m.hue != null ? m.hue : 210 }, cls);
+const tmAgo = t => { const s = Math.max(0, (Date.now() - t) / 1000); return s < 60 ? 'just now' : s < 3600 ? `${Math.round(s / 60)}m ago` : s < 86400 ? `${Math.round(s / 3600)}h ago` : `${Math.round(s / 86400)}d ago`; };
+const tmLog = (what, ref) => { TM().log.unshift({ at: Date.now(), who: ME().id, what, ref }); TM().log = TM().log.slice(0, 80); };
+const tmWaiting = () => S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled');
+const tmMine = () => S.queue.filter(q => q.approval === 'changes' && q.status === 'scheduled' && (q.by || 'me') === ME().id);
+const tmBadge = () => can('approve') ? tmWaiting().length : tmMine().length;
+const openCount = list => (list || []).filter(c => !c.resolved && !c.parent).length;
+
+/* the bar that says you're previewing someone else's seat */
+function asBarHTML() {
+  if (!TM().as || TM().as === 'me') return '';
+  const m = ME(); return `<div class="as-bar" role="status">${tmAv(m, 'sm')}<span>Viewing as <b>${esc(tmName(m))}</b> · ${ROLES[m.role].label}. ${esc(ROLES[m.role].desc)}</span><button class="btn sm" data-act="asme">Back to you</button></div>`;
+}
+function viewAs(id) { TM().as = id === 'me' ? null : id; save(); route(); if (id !== 'me') toast(`Viewing as ${esc(tmName(tmById(id)))}. Everything you do now is what they could do.`, { icon: 'user', ms: 4200 }); }
+
+/* ---------- the Team page ---------- */
+let TMTAB = 'people';
+ROUTES.team = () => {
+  const w = tmWaiting().length;
+  mount('team', `<div class="page tmx-page"><div class="page-h"><div><h1 class="display">Team</h1><p>Write together. Nothing goes out without a yes.</p></div>
+    <div class="tmx-h-a">${can('manage') ? `<button class="btn primary" data-tmact="invite">${ic('plus', 'sm')} Invite people</button>` : ''}</div></div>
+    <div class="seg tmx-tabs" role="tablist" aria-label="Team">${[['people', 'People', TM().members.length], ['approvals', 'Approvals', w], ['activity', 'Activity', 0]].map(([k, l, n]) => `<button role="tab" data-tmtab="${k}" aria-selected="${TMTAB === k}">${l}${n ? ` <span class="tmx-n${k === 'approvals' ? '' : ' plain'}">${n}</span>` : ''}</button>`).join('')}</div>
+    <div id="tm-body"></div></div>`);
+  drawTeam();
+  $('#view').addEventListener('click', teamClick);
+  $('#view').addEventListener('change', e => { const s = e.target.closest('[data-tmrole]'); if (!s) return; const m = tmById(s.dataset.tmrole); if (!m) return; m.role = s.value; tmLog(`made ${tmName(m)} ${/^[aeiou]/i.test(ROLES[m.role].label) ? 'an' : 'a'} ${ROLES[m.role].label}`); save(); drawTeam(); toast(`${esc(tmFirst(m))} is now ${/^[aeiou]/i.test(ROLES[m.role].label) ? 'an' : 'a'} ${ROLES[m.role].label}.`, { icon: 'check' }); });
+};
+function drawTeam() {
+  const el = $('#tm-body'); if (!el) return;
+  $$('[data-tmtab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tmtab === TMTAB));
+  if (TMTAB === 'people') el.innerHTML = peopleHTML();
+  else if (TMTAB === 'approvals') el.innerHTML = approvalsHTML();
+  else el.innerHTML = activityHTML();
+}
+function peopleHTML() {
+  const ms = TM().members, mg = can('manage');
+  const row = m => {
+    const inv = m.status === 'invited', self = m.id === ME().id;
+    const role = mg && !m.owner && !self ? `<select class="input sm tmx-role" data-tmrole="${m.id}" aria-label="Role for ${esc(tmName(m))}">${ROLE_KEYS.map(k => `<option value="${k}" ${m.role === k ? 'selected' : ''}>${ROLES[k].label}</option>`).join('')}</select>` : `<span class="tmx-rl">${ROLES[m.role].label}${m.owner ? ' · Owner' : ''}</span>`;
+    return `<li class="tmx-row${inv ? ' inv' : ''}">${inv ? `<span class="avatar tmx-inv-av">${ic('user', 'sm')}</span>` : tmAv(m)}
+      <div class="tmx-who"><b>${esc(inv ? m.email : tmName(m))}${self ? ' <span class="tmx-you">You</span>' : ''}</b><span>${inv ? `Invited ${tmAgo(m.at)}` : `${esc(m.email)} · ${m.id === 'me' && !TM().as ? 'active now' : `active ${tmAgo(m.seen || Date.now())}`}`}</span></div>
+      ${role}
+      <div class="tmx-acts">${inv ? (mg ? `<button class="btn sm ghost" data-tmact="copy" data-id="${m.id}">${ic('link', 'sm')} Copy link</button><button class="btn sm ghost" data-tmact="revoke" data-id="${m.id}">Revoke</button>` : '') : `<button class="btn sm ghost icon-only" data-tmact="more" data-id="${m.id}" aria-label="More for ${esc(tmName(m))}" aria-haspopup="menu">${ic('more', 'sm')}</button>`}</div></li>`;
+  };
+  return `<div class="tmx-grid"><div class="card tmx-people"><div class="tmx-ph"><span class="label">${esc(TM().name)}</span><span class="faint">${ms.filter(m => m.status === 'active').length} people${ms.some(m => m.status === 'invited') ? ` · ${ms.filter(m => m.status === 'invited').length} invited` : ''}</span></div><ul class="tmx-list">${ms.map(row).join('')}</ul></div>
+    <div class="card tmx-roles"><span class="label">What each role can do</span>
+      <table class="tmx-mx"><thead><tr><th></th>${ROLE_KEYS.map(k => `<th>${ROLES[k].label}</th>`).join('')}</tr></thead><tbody>${PERMS.map(([p, l]) => `<tr><td>${l}</td>${ROLE_KEYS.map(k => `<td>${ROLES[k].can.includes(p) ? `<span class="tmx-y" aria-label="Yes">${ic('check', 'xs')}</span>` : '<span class="tmx-no" aria-label="No">–</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table>
+      <p class="faint tmx-tip">Try a seat: open a teammate’s ${ic('more', 'xs')} menu and pick View as.</p></div></div>`;
+}
+function approvalsHTML() {
+  const list = tmWaiting().sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)), mine = tmMine();
+  const card = (q, changes) => { const vw = !q.by && q.ws && q.ws !== 'me' ? S.workspaces.find(w => w.id === q.ws) : null, by = vw ? { name: vw.name, label: `${vw.name} · client voice`, hue: vw.hue, pic: vw.pic } : tmById(q.by || 'me'), late = slotDate(q.day, q.time) < Date.now(), nc = openCount(q.comments);
+    return `<li class="tmx-ap${late ? ' late' : ''}" data-id="${q.id}">${tmAv(by)}<div class="tmx-ap-b"><div class="tmx-ap-m"><b>${esc(by.label || tmName(by))}</b><span>${late ? 'Its time passed. Move it, then approve' : `for ${esc(slotWhen(q.day, q.time))}`}</span>${nc ? `<span class="tmx-cc">${ic('reply', 'xs')} ${nc}</span>` : ''}</div><p>${esc(clip(q.text, 220))}</p>
+      <div class="tmx-ap-a">${changes ? `<span class="qt changes"><i></i><span>Changes asked</span></span><button class="btn sm primary" data-tmact="open" data-id="${q.id}">${ic('write', 'sm')} Edit it</button>` : can('approve') && !late ? `<button class="btn sm primary" data-tmact="approve" data-id="${q.id}">${ic('check', 'sm')} Approve</button><button class="btn sm" data-tmact="changes" data-id="${q.id}">Ask for changes</button>` : ''}<button class="btn sm ghost" data-tmact="comments" data-id="${q.id}">${ic('reply', 'sm')} Comments</button>${can('write') && !changes ? `<button class="btn sm ghost" data-tmact="open" data-id="${q.id}">Open in Write</button>` : ''}</div></div></li>`; };
+  if (!list.length && !mine.length) return `<div class="card tmx-empty">${ic('check')}<b>Nothing waiting for a yes.</b><p>When a Writer schedules a post, it lands here first. Approve it and it goes out at its time.</p></div>`;
+  return `${mine.length ? `<div class="card"><span class="label">Sent back to you</span><ul class="tmx-aps">${mine.map(q => card(q, true)).join('')}</ul></div>` : ''}
+    ${list.length ? `<div class="card"><span class="label">${can('approve') ? 'Waiting for your yes' : 'Waiting for a yes'}</span><ul class="tmx-aps">${list.map(q => card(q, false)).join('')}</ul></div>` : ''}`;
+}
+function activityHTML() {
+  const L = TM().log; if (!L.length) return `<div class="card tmx-empty"><b>No activity yet.</b><p>Comments, approvals and invites show up here.</p></div>`;
+  return `<div class="card"><ul class="tmx-log">${L.slice(0, 40).map(e => { const m = tmById(e.who); return `<li>${tmAv(m, 'sm')}<span><b>${esc(tmName(m))}</b> ${esc(e.what)}</span><time>${tmAgo(e.at)}</time></li>`; }).join('')}</ul></div>`;
+}
+function teamClick(e) {
+  const t = e.target.closest('[data-tmtab]'); if (t) { TMTAB = t.dataset.tmtab; drawTeam(); return; }
+  const b = e.target.closest('[data-tmact]'); if (!b) return; const a = b.dataset.tmact, id = b.dataset.id, m = id && tmById(id), q = id && S.queue.find(x => x.id === id);
+  if (a === 'invite') openInvite();
+  if (a === 'copy' && m) { copyText(`https://hookworthy.app/join/${m.code}`); toast(`Invite link for ${esc(m.email)} copied.`, { icon: 'link' }); }
+  if (a === 'revoke' && m) { TM().members = TM().members.filter(x => x !== m); save(); drawTeam(); toast(`Invite for ${esc(m.email)} revoked. That link no longer works.`, { icon: 'trash', action: 'Undo', onAction: () => { TM().members.push(m); save(); drawTeam(); } }); }
+  if (a === 'more' && m) openMenu(b, [
+    { header: tmName(m) },
+    ...(m.id !== ME().id ? [{ label: `View as ${tmFirst(m)}`, icon: 'user', hint: ROLES[m.role].label, run: () => viewAs(m.id) }] : []),
+    ...(TM().as && m.id === 'me' ? [{ label: 'Back to you', icon: 'undo', run: () => viewAs('me') }] : []),
+    ...(can('manage') && !m.owner && m.id !== ME().id ? ['-', { label: 'Remove from team', icon: 'trash', run: () => { const i = TM().members.indexOf(m); TM().members.splice(i, 1); tmLog(`removed ${tmName(m)}`); save(); drawTeam(); toast(`${esc(tmName(m))} is off the team. Their posts stay.`, { icon: 'trash', action: 'Undo', onAction: () => { TM().members.splice(i, 0, m); save(); drawTeam(); } }); } }] : [])
+  ], { width: 220 });
+  if (a === 'approve' && q) approveQ(q);
+  if (a === 'changes' && q) askChanges(q);
+  if (a === 'comments' && q) openTcm(() => S.queue.find(x => x.id === id), 'Comments on this post');
+  if (a === 'open' && q) editQueued(q);
+}
+function approveQ(q) {
+  if (!can('approve')) { toast('Your role can’t approve posts. An Admin, Editor or Reviewer can.', { icon: 'lock', tone: 'err' }); return; }
+  if (slotDate(q.day, q.time) < Date.now()) { toast('Its time already passed. Move it to a new time, then approve it.', { icon: 'clock', tone: 'err' }); return; }
+  q.approval = 'ok'; q.approvedBy = ME().id; q.approvedAt = Date.now(); tmLog('approved a post', q.id); save(); syncToServer(q, q.mediaIds ? null : q.media);
+  if (CURRENT === 'team') { drawTeam(); refreshSide(); } if (CURRENT === 'queue') { drawCal(); drawQSide(); }
+  toast(`Approved. It goes out ${slotWhen(q.day, q.time)}.`, { icon: 'check', tone: 'accent' });
+}
+function askChanges(q) {
+  const m = modal(`${modalHead('Ask for changes', `${esc(tmName(tmById(q.by || 'me')))} sees this note on the post, and it waits until they send it again.`)}
+    <div class="modal-b" style="display:grid;gap:10px"><blockquote class="tmx-q">${esc(clip(q.text, 160))}</blockquote><textarea class="input" id="tm-ch" rows="3" placeholder="What should change? One line is plenty." aria-label="What should change"></textarea><p class="field-err" id="tm-ch-err"></p></div>
+    <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="tm-ch-go">Send it back</button></div>`, { label: 'Ask for changes' });
+  const ta = $('#tm-ch', m.el); setTimeout(() => ta.focus(), 60);
+  $('#tm-ch-go', m.el).addEventListener('click', () => {
+    const v = ta.value.trim(); if (!v) { $('#tm-ch-err', m.el).textContent = 'Say what to change, so they know what to fix.'; ta.focus(); return; }
+    q.comments = q.comments || []; q.comments.push({ id: uid(), by: ME().id, text: v, at: Date.now() }); q.approval = 'changes'; serverDrop(q);
+    tmLog('asked for changes on a post', q.id); save(); m.close(); if (CURRENT === 'team') { drawTeam(); refreshSide(); } if (CURRENT === 'queue') { drawCal(); drawQSide(); }
+    toast(`Sent back to ${esc(tmFirst(tmById(q.by || 'me')))} with your note.`, { icon: 'reply' });
+  });
+}
+function openInvite() {
+  if (!can('manage')) { toast('Only Admins can invite people.', { icon: 'lock', tone: 'err' }); return; }
+  let role = 'writer';
+  const m = modal(`${modalHead('Invite people', 'They get a link to join this team. You can change their role any time.')}
+    <div class="modal-b" style="display:grid;gap:16px">
+      <label style="display:grid;gap:6px"><span class="label">Emails</span><textarea class="input" id="iv-e" rows="2" placeholder="sam@studio.co, ana@client.com" aria-describedby="iv-err"></textarea><p class="field-err" id="iv-err"></p></label>
+      <div style="display:grid;gap:6px"><span class="label">Role</span><div class="iv-roles" role="radiogroup" aria-label="Role">${ROLE_KEYS.map(k => `<button type="button" class="stime iv-r" role="radio" aria-checked="${k === role}" data-r="${k}"><span class="radio"></span><span><b>${ROLES[k].label}</b><small>${ROLES[k].desc}</small></span></button>`).join('')}</div></div>
+    </div>
+    <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="iv-go">${ic('send', 'sm')} Send invites</button></div>`, { label: 'Invite people' });
+  const ta = $('#iv-e', m.el); setTimeout(() => ta.focus(), 60);
+  m.el.addEventListener('click', e => { const r = e.target.closest('[data-r]'); if (!r) return; role = r.dataset.r; $$('.iv-r', m.el).forEach(x => x.setAttribute('aria-checked', x === r)); });
+  $('#iv-go', m.el).addEventListener('click', () => {
+    const raw = ta.value.split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean), bad = raw.filter(x => !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(x)), have = new Set(TM().members.map(x => x.email.toLowerCase()));
+    const err = $('#iv-err', m.el);
+    if (!raw.length) { err.textContent = 'Add at least one email.'; ta.focus(); return; }
+    if (bad.length) { err.textContent = `${bad.length === 1 ? `“${bad[0]}” doesn’t look like an email` : `${bad.length} of these don’t look like emails`}. Fix ${bad.length === 1 ? 'it' : 'them'} and try again.`; ta.focus(); return; }
+    const fresh = [...new Set(raw)].filter(x => !have.has(x)); if (!fresh.length) { err.textContent = 'They’re already on the team or invited.'; return; }
+    fresh.forEach(x => TM().members.push({ id: 'i' + uid(), name: '', email: x, role, status: 'invited', at: Date.now(), code: uid() }));
+    tmLog(`invited ${fresh.length === 1 ? fresh[0] : `${fresh.length} people`} as ${/^[aeiou]/i.test(ROLES[role].label) ? 'an' : 'a'} ${ROLES[role].label}`);
+    save(); m.close(); TMTAB = 'people'; if (CURRENT === 'team') drawTeam(); else go('team');
+    const last = TM().members[TM().members.length - 1];
+    toast(`Invited ${fresh.length === 1 ? esc(fresh[0]) : `${fresh.length} people`} as ${ROLES[role].label}${fresh.length > 1 ? 's' : ''}.`, { icon: 'send', tone: 'accent', action: fresh.length === 1 ? 'Copy link' : undefined, onAction: () => copyText(`https://hookworthy.app/join/${last.code}`) });
+  });
+}
+
+/* ---------- comments on a draft (or a queued post): threads, @mentions, resolve ---------- */
+let TCM = null;
+document.addEventListener('focusin', e => { if (e.target.classList && e.target.classList.contains('tw-input')) UI.lastTa = e.target; });
+function openTcm(get = () => S.draft, title = 'Comments') {
+  closeTcm(); const el = document.createElement('aside'); el.className = 'tcm'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', title);
+  TCM = { el, get, title, reply: null, quote: UI.tcmQuote || '' }; UI.tcmQuote = '';
+  document.body.appendChild(el); paintTcm(); requestAnimationFrame(() => el.classList.add('in'));
+  el.addEventListener('click', tcmClick); el.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); closeTcm(); } if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && e.target.id === 'tcm-in') { e.preventDefault(); e.stopPropagation(); tcmSend(); } if (e.target.id === 'tcm-in') e.stopPropagation(); });
+  el.addEventListener('input', e => { if (e.target.id === 'tcm-in') tcmMention(e.target); });
+  onDispose(closeTcm); setTimeout(() => { const i = $('#tcm-in', el); i && i.focus(); }, 80);
+}
+function closeTcm() { if (!TCM) return; const el = TCM.el; TCM = null; el.classList.remove('in'); setTimeout(() => el.remove(), 200); const b = $('.tcm-tog'); b && b.setAttribute('aria-expanded', 'false'); }
+const tcmText = t => esc(t).replace(/@([A-Z][\w’']+)/g, (all, n) => TM().members.some(m => tmFirst(m).toLowerCase() === n.toLowerCase()) ? `<b class="tcm-at">@${n}</b>` : all);
+function paintTcm() {
+  if (!TCM) return; const o = TCM.get(); const list = (o && o.comments) || [];
+  const top = list.filter(c => !c.parent), open = top.filter(c => !c.resolved), done = top.filter(c => c.resolved);
+  const one = c => { const m = tmById(c.by), kids = list.filter(x => x.parent === c.id);
+    return `<li class="tcm-c${c.resolved ? ' done' : ''}" data-cid="${c.id}"><div class="tcm-ch">${tmAv(m, 'sm')}<b>${esc(tmName(m))}</b><span class="tcm-r">${ROLES[(m || {}).role || 'writer'].label}</span><time>${tmAgo(c.at)}</time></div>
+      ${c.quote ? `<q class="tcm-q">${esc(c.quote)}</q>` : ''}<p>${tcmText(c.text)}</p>
+      ${kids.map(k => { const km = tmById(k.by); return `<div class="tcm-k"><div class="tcm-ch">${tmAv(km, 'sm')}<b>${esc(tmName(km))}</b><time>${tmAgo(k.at)}</time></div><p>${tcmText(k.text)}</p></div>`; }).join('')}
+      <div class="tcm-ca">${c.resolved ? `<button class="btn sm ghost" data-tc="reopen">Reopen</button>` : `${can('comment') ? '<button class="btn sm ghost" data-tc="reply">Reply</button>' : ''}<button class="btn sm ghost" data-tc="resolve">${ic('check', 'sm')} Resolve</button>`}</div></li>`; };
+  const rp = TCM.reply && list.find(c => c.id === TCM.reply);
+  TCM.el.innerHTML = `<div class="tcm-h"><b>${esc(TCM.title)}</b>${open.length ? `<span class="tcm-n">${open.length} open</span>` : ''}<button class="btn ghost icon-only sm" data-tc="close" aria-label="Close comments">${ic('x', 'sm')}</button></div>
+    <ul class="tcm-l">${open.length ? open.map(one).join('') : `<li class="tcm-e">${ic('reply')}<b>No comments yet.</b><span>Ask a question, suggest a line, or @mention someone.</span></li>`}
+    ${done.length ? `<li class="tcm-dn"><details><summary>${done.length} resolved</summary><ul>${done.map(one).join('')}</ul></details></li>` : ''}</ul>
+    ${can('comment') ? `<div class="tcm-f">${rp ? `<div class="tcm-to">Replying to ${esc(tmFirst(tmById(rp.by)))} <button class="lnk-u" data-tc="noreply">Cancel</button></div>` : TCM.quote ? `<div class="tcm-to"><q>${esc(clip(TCM.quote, 70))}</q><button class="lnk-u" data-tc="noquote">Remove</button></div>` : ''}
+      <textarea id="tcm-in" class="input" rows="2" placeholder="${rp ? 'Reply…' : 'Comment, or @mention someone'}" aria-label="Write a comment"></textarea><div class="tcm-at-l" id="tcm-at" hidden></div>
+      <div class="tcm-fa"><span class="faint desk-only">${kbd(MOD, '↵')} to send</span><button class="btn sm primary" data-tc="send">Comment</button></div></div>` : ''}`;
+  const tg = $('.tcm-tog'); if (tg) { tg.setAttribute('aria-expanded', 'true'); const n = $('.tcm-cnt', tg); if (n) n.textContent = open.length || ''; }
+}
+function tcmMention(ta) {
+  const box = $('#tcm-at'), m = /@(\w*)$/.exec(ta.value.slice(0, ta.selectionStart)); if (!box) return;
+  if (!m) { box.hidden = true; return; }
+  const q = m[1].toLowerCase(), hits = TM().members.filter(x => x.status === 'active' && x.id !== ME().id && tmFirst(x).toLowerCase().startsWith(q)).slice(0, 4);
+  box.hidden = !hits.length; box.innerHTML = hits.map(x => `<button type="button" data-tc="at" data-n="${esc(tmFirst(x))}">${tmAv(x, 'sm')}${esc(tmName(x))}<small>${ROLES[x.role].label}</small></button>`).join('');
+}
+function tcmClick(e) {
+  const b = e.target.closest('[data-tc]'); if (!b || !TCM) return; const k = b.dataset.tc, li = b.closest('[data-cid]'), o = TCM.get(), c = li && o && (o.comments || []).find(x => x.id === li.dataset.cid);
+  if (k === 'close') closeTcm();
+  if (k === 'send') tcmSend();
+  if (k === 'reply' && c) { TCM.reply = c.id; paintTcm(); $('#tcm-in').focus(); }
+  if (k === 'noreply') { TCM.reply = null; paintTcm(); }
+  if (k === 'noquote') { TCM.quote = ''; paintTcm(); }
+  if (k === 'resolve' && c) { c.resolved = true; c.resolvedBy = ME().id; c.resolvedAt = Date.now(); save(); paintTcm(); toast('Resolved.', { icon: 'check', ms: 1600 }); }
+  if (k === 'reopen' && c) { delete c.resolved; save(); paintTcm(); }
+  if (k === 'at') { const ta = $('#tcm-in'); const pos = ta.selectionStart, v = ta.value.slice(0, pos).replace(/@\w*$/, `@${b.dataset.n} `); ta.value = v + ta.value.slice(pos); ta.focus(); ta.setSelectionRange(v.length, v.length); $('#tcm-at').hidden = true; }
+}
+function tcmSend() {
+  const ta = $('#tcm-in'); if (!ta || !TCM) return; const v = ta.value.trim(); if (!v) { ta.focus(); return; }
+  const o = TCM.get(); if (!o) return; o.comments = o.comments || [];
+  o.comments.push({ id: uid(), by: ME().id, text: v, at: Date.now(), ...(TCM.reply ? { parent: TCM.reply } : TCM.quote ? { quote: clip(TCM.quote, 140) } : {}) });
+  const ats = [...v.matchAll(/@(\w+)/g)].map(x => x[1]).filter(n => TM().members.some(m => tmFirst(m).toLowerCase() === n.toLowerCase()));
+  tmLog(ats.length ? `mentioned ${ats.map(n => '@' + n).join(', ')} in a comment` : TCM.reply ? 'replied to a comment' : 'commented on a draft');
+  TCM.reply = null; TCM.quote = ''; save(); paintTcm(); const i = $('#tcm-in'); i && i.focus();
+}
+/* the composer's comments button: a count of open threads */
+const tcmBtnHTML = () => { const n = openCount(S.draft && S.draft.comments); return `<button class="btn ghost sm tcm-tog" data-cact="tcomments" aria-label="Comments${n ? `, ${n} open` : ''}" data-tip="Comments from your team" aria-expanded="false">${ic('reply', 'sm')}<span class="tcm-cnt">${n || ''}</span></button>`; };
+
 ROUTES.insights = () => {
   mount('insights', `<div class="page ins-page"><div class="page-h"><div><h1 class="display">Insights</h1><p>What your audience rewards, from your own posts. Plain sentences first, numbers when you want them.</p></div><div class="seg" id="rng" role="tablist" aria-label="Range">${[7, 30, 90].map(d => `<button role="tab" data-r="${d}" aria-selected="${RANGE === d}">${d} days</button>`).join('')}</div></div><div id="digest"></div><div id="ins"></div><div id="ins-posts"></div></div>`);
   syncSeg($('#rng')); drawInsights(); drawDigest();

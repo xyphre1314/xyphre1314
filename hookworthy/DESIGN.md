@@ -630,3 +630,21 @@ A three-way switch, **Light · Dark · Auto**, sits in the sidebar footer above 
 - Removed: the Hook column in the Insights posts table, every dial on the homepage and tools page, the four-step grade scale, and the "Show scores as numbers" setting.
 - Change labels read Stronger / Now strong / About the same / A different angle; sentences talk about "strong openers", never tier words.
 - The homepage try box is a sharpener: a tip and a Sharpen button, no score.
+
+## Round 52: trust fixes + Teams
+
+**Trust fixes**
+- Schedule says what happens at the time you pick: "Posts by itself" when an account is connected, otherwise "You'll press Post… it waits on Today", with Connect. Threads and Bluesky start off.
+- Toasts move to the top while a modal is open, so they never cover its main button.
+- A modal on a scrolled page no longer blanks the app (`body{overflow-x:clip}` instead of `hidden`, which turned body into its own scroll box when html was locked).
+- Editing a scheduled post: no false "same first line" warning against itself; Change time · Post now · Save changes.
+- Command palette: commands that send something sink unless typed by name; groups stay in one block; New thread added; novelty commands trimmed.
+- Sample numbers are seeded from the post text, so they hold still across loads.
+
+**Teams** (`S.team`, route `#team`, sidebar item with a badge)
+- Four roles: Admin (everything + people), Editor (write, post, approve), Writer (write, comment; posts need a yes), Reviewer (comment, approve; read-only composer). A permissions table shows it at a glance.
+- Invites by email with a role; pending rows have Copy link and Revoke. Roles change inline; Remove has Undo.
+- "View as" previews any teammate's seat, with a bar to get back.
+- Comments on drafts and queued posts: a side panel with threads, replies, @mentions, quotes from selected text, resolve/reopen. They travel with the post from draft to queue and back.
+- Approvals: a Writer's Schedule becomes "Send for approval"; approvers get Approve / Ask for changes (with a note) on the Team page and in the queue menu. "Changes asked" goes back to the writer. Activity logs it all.
+- App classes use the `tmx-` prefix (the marketing Teams page owns `tm-`).
