@@ -623,3 +623,10 @@ A three-way switch, **Light · Dark · Auto**, sits in the sidebar footer above 
 - The tips panel leads with what to do ("Try this: …"), headers read A few quick wins / Nearly there / Strong opener / Outstanding opener, and no signal bars.
 - Schedule and Post now: a strong opener gets "Strong opener. Good to go."; a middling one says nothing; a weak one gets an optional "One tweak to try" with stronger lines to tap. No chips or grades.
 - Today's quick composer only speaks up to say an opener is strong.
+
+## Round 51: no grades anywhere
+
+- `tierChip()` is positive-only: strong openers get a small check chip (Strong / Outstanding); anything else renders nothing. No line is ever labelled weak.
+- Removed: the Hook column in the Insights posts table, every dial on the homepage and tools page, the four-step grade scale, and the "Show scores as numbers" setting.
+- Change labels read Stronger / Now strong / About the same / A different angle; sentences talk about "strong openers", never tier words.
+- The homepage try box is a sharpener: a tip and a Sharpen button, no score.

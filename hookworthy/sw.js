@@ -1,5 +1,5 @@
 // Hookworthy service worker: cache-first for the app shell, network-first for fonts.
-const CACHE = 'hookworthy-v34';
+const CACHE = 'hookworthy-v35';
 let SLOW = 0; /* when the network just timed out, core.js comes from the cache right away instead of waiting again */
 /* the page is cached once (as ./index.html); the big photo sprite is cached when a page first uses it */
 const SHELL = ['./index.html', './core.js', './manifest.webmanifest', './assets/icon.svg', './assets/app-icon.svg', './assets/app-icon.png', './fonts/GeistMono-Variable.woff2', './fonts/EBGaramond-Regular.woff2', './fonts/EBGaramond-Italic.woff2', './fonts/Figtree-Regular.woff2', './fonts/Caveat-500.woff2', './fonts/Inter-400.woff2', './fonts/Inter-600.woff2', './assets/people/avatars.jpg', './assets/people/avatars-2.jpg', './assets/people/you.jpg'];

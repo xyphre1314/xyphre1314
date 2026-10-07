@@ -2567,6 +2567,11 @@ body.typing .hk-coach.t-flat, body.typing .hk-coach.t-warming, .hk-coach:not(.t-
 .tw-tools .hk-coach.t-honed .sc span.hk-i-ok{ color:var(--tier-honed) !important; }
 .hkc-h .hkc-ic{ display:grid; place-items:center; color:var(--accent-text); } .hkc.t-sharp .hkc-ic, .hkc.t-honed .hkc-ic{ color:var(--tier-sharp); }
 .sh-hook.soft{ background:var(--surface-2); border-color:transparent; } .sh-hook .sh-hh > svg, .sh-hook.ok > svg{ flex:none; margin-top:2px; color:var(--accent-text); } .sh-hook.ok > svg{ color:var(--tier-sharp); }
+/* round 51: no dials or grade scales on the site either. Strong lines get a small check chip; drafts get nothing */
+.hg-dial, .fin8-dial{ display:none !important; }
+.hw27 .hg-read, .hw27 .h7-hero .hg-read{ grid-template-columns:minmax(0,1fr) auto !important; }
+@media (max-width:600px){ .hw27 .hg-read, .hw27 .h7-hero .hg-read{ grid-template-columns:minmax(0,1fr) !important; } }
+.tier.ok{ gap:4px; padding:0 9px 0 7px; } .tier.ok svg{ width:12px; height:12px; flex:none; }
 .tc-ok{ display:inline-flex; align-items:center; gap:6px; color:var(--tier-sharp); font-weight:500; }
 /* the post sits on a sheet, so the page has a clear object to write on */
 @media (min-width:761px){
@@ -5020,25 +5025,28 @@ const TOP_WORD = HWCore.HOOK_TIERS[3].word;
 const TIER_WORDS = HWCore.HOOK_TIERS.map(t => t.word);
 const TIER_LIST = `${TIER_WORDS.slice(0, -1).join(', ')} and ${TIER_WORDS[TIER_WORDS.length - 1]}`;
 const hookNums = () => { try { return !!(S && S.settings && S.settings.hookNums); } catch (e) { return false; } };
-const tierText = s => { const t = TIER(s); return hookNums() ? `${t.word} · ${Math.round(s)}` : t.word; };
+/* round 51: no grades anywhere. A line is either a draft (no label) or a strong opener; nothing is ever called weak */
+const isStrong = s => TIER(s).rank >= 2;
+const goodWord = s => TIER(s).rank >= 3 ? 'Outstanding' : 'Strong';
+const tierText = s => isStrong(s) ? `${goodWord(s)} opener` : 'Draft';
 /* round 46: signal bars. One bar per step (Getting there 1, Almost 2, Ready 3, Outstanding 4), read at a glance like phone signal */
 const TIER_N = { flat: 1, warming: 2, sharp: 3, honed: 4 };
 const barsHTML = key => `<i class="sbars n${TIER_N[key] || 0}" aria-hidden="true"><b></b><b></b><b></b><b></b></i>`;
 /* the chip: signal bars and the word. noun tells screen readers it's the hook */
 function tierChip(s, { noun = false, cls = '', tip = '' } = {}) {
-  const t = TIER(s); return `<span class="tier t-${t.key}${cls ? ' ' + cls : ''}" style="--v:${clamp(Math.round(s), 0, 100)}"${tip ? ` data-tip="${esc(tip)}"` : ''}>${barsHTML(t.key)}${noun ? '<span class="sr">Hook: </span>' : ''}<span class="tier-w">${tierText(s)}</span></span>`;
+  if (!isStrong(s)) return ''; const t = TIER(s); return `<span class="tier ok t-${t.key}${cls ? ' ' + cls : ''}"${tip ? ` data-tip="${esc(tip)}"` : ''}>${ic('check', 'xs')}${noun ? '<span class="sr">Opener: </span>' : ''}<span class="tier-w">${goodWord(s)}</span></span>`;
 }
 /* a progress ring for the big dials: the aurora arc with round ends, and a tick where Ready starts */
 const ringHTML = (v = null, tick = true) => `<span class="pring" aria-hidden="true"${v == null ? '' : ` style="--v:${clamp(Math.round(v), 0, 100)}"`}><i class="pr-a"></i><i class="pr-s"></i><i class="pr-e"></i>${tick ? '<i class="pr-70"></i>' : ''}</span>`;
 /* what a change did, in words: "Almost → Ready", "Stronger", "A bit softer" or "About the same" */
 const tierMove = (a, b) => HWCore.hookMove(a, b);
 function tierMoveHTML(a, b, { anim = false } = {}) {
-  const m = tierMove(a, b), n = hookNums() ? `<span class="tnum">${Math.round(a)} → ${Math.round(b)}</span>` : '', A = anim && !REDUCED ? ' in' : '';
-  if (m.cross) return `<span class="tmove ${m.dir}"><span class="tword tfrom t-${m.from.key}">${m.from.word}</span>${ic('arrow', 'xs')}<span class="tword t-${m.to.key}${A}">${m.to.word}</span>${n}</span>`;
-  return `<span class="tmove ${m.dir}"><span class="tword t-${m.to.key}${A}">${m.text}</span>${n}</span>`;
+  const m = tierMove(a, b), A = anim && !REDUCED ? ' in' : '';
+  const w = m.dir === 'up' && isStrong(b) && !isStrong(a) ? `Now ${goodWord(b).toLowerCase()}` : m.dir === 'up' && m.cross ? `Now ${goodWord(b).toLowerCase()}` : m.dir === 'up' ? 'Stronger' : m.dir === 'down' ? 'A different angle' : 'About the same';
+  return `<span class="tmove ${m.dir}"><span class="tword t-${m.to.key}${A}">${w}</span></span>`;
 }
 /* the sentence a screen reader hears */
-const tierSay = (a, b) => { const m = tierMove(a, b); return m.cross ? `Hook went from ${m.from.word} to ${m.to.word}.` : m.dir === 'up' ? `Hook is stronger, still ${m.to.word}.` : m.dir === 'down' ? `Hook is a bit softer, still ${m.to.word}.` : `Hook is about the same, ${m.to.word}.`; };
+const tierSay = (a, b) => { const m = tierMove(a, b); return m.dir === 'up' ? (isStrong(b) ? `Now a ${goodWord(b).toLowerCase()} opener.` : 'Stronger.') : m.dir === 'down' ? 'A different angle.' : 'About the same.'; };
 /* the next single step, as the headline ("Cut “i think” to make it Ready."), with why underneath */
 const hookNext = (t, h) => HWCore.hookNext(t, h);
 /* the five checks as pips: filled (strong), half (some), empty (not yet), with the word for anyone who can't see the shape */
@@ -5048,7 +5056,6 @@ const partsHTML = (parts, cls = '') => `<ul class="pips${cls ? ' ' + cls : ''}">
 /* the journey: four equal steps that fill as the line gets better, the words under them, the line's one lit.
    Each step fills by how far the score is through that state, so moving up always shows. */
 const journeyFill = s => { const T = HWCore.HOOK_TIERS, v = clamp(+s || 0, 0, 100); return T.map((t, i) => { const lo = t.min, hi = T[i + 1] ? T[i + 1].min : 100; return v >= hi ? 1 : v <= lo ? (i === 0 && v > 0 ? .06 : 0) : Math.max(.08, (v - lo) / (hi - lo)); }); };
-const tierScaleHTML = (s, { empty = false } = {}) => { const k = empty ? '' : TIER(s).key, f = empty ? [0, 0, 0, 0] : journeyFill(s); return `<div class="tscale${k ? ' t-' + k : ''}" role="img" aria-label="${empty ? `Hook: four steps, ${TIER_LIST}.` : `Hook: ${TIER(s).word}, step ${TIER(s).rank + 1} of 4: ${TIER_LIST}.`}"><span class="ts-bar" aria-hidden="true">${f.map(x => `<i style="--f:${x.toFixed(2)}"></i>`).join('')}</span><ol aria-hidden="true">${HWCore.HOOK_TIERS.map(t => `<li class="t-${t.key}${t.key === k ? ' on' : ''}">${t.word}</li>`).join('')}</ol></div>`; };
 /* reaching Ready: the ring echoes outward and eight sparks lift off in the aurora's colours (transform and opacity only, under 800ms).
    Reduced motion gets nothing extra: the word and the colour already say it. */
 function readyBurst(host) {
@@ -7828,7 +7835,7 @@ function rewriteCompute(kind, text, first = true) {
     const ranked = [...new Set(cands)].map(x => ({ x, sc: hookScore(x).score })).filter(o => o.sc > a).sort((p, q) => q.sc - p.sc).map(o => o.x);
     const { kept } = X.checkPost(ranked, 'hook', t);
     if (kept.length) return { vers: kept.slice(0, 3) };
-    const h = hookScore(t); return { vers: [], msg: `Your hook is ${TIER(h.score).word}${h.tone === 'good' ? `: ${h.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase()}` : ''}. None of Basic mode’s formulas score higher on this line, so nothing changed.${aiOn() ? '' : ' The Room can try a new angle.'}` };
+    const h = hookScore(t); return { vers: [], msg: `${isStrong(h.score) ? `${goodWord(h.score)} opener already` : 'This line is already as strong as Basic mode’s formulas can make it'}${isStrong(h.score) && h.tone === 'good' ? `: ${h.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase()}` : ''}. Nothing changed.${aiOn() ? '' : ' The Room can try a new angle.'}` };
   }
   /* frame-based rewrites (an open loop, a contrarian frame) try each of their frames, so you get real choices */
   const outs = ['contrarian', 'curiosity'].includes(kind) ? [0, 1, 2].map(() => { riffNonce++; return AI[kind](t); }) : [AI[kind](t)];
@@ -7836,7 +7843,7 @@ function rewriteCompute(kind, text, first = true) {
   const a = hookScore(t).score, ok = [...new Set(outs)].filter(x => !first || kind === 'grammar' || hookScore(x).score >= a).sort((p, q) => hookScore(q).score - hookScore(p).score);
   const { kept } = X.checkPost(ok, kind, t);
   if (kept.length) return { vers: kept.slice(0, 3) };
-  if (first && outs.some(x => x.trim() !== t.trim()) && kind !== 'grammar') return { vers: [], msg: `Your hook is ${TIER(a).word}. Every ${kind === 'curiosity' ? 'open-loop' : 'hot-take'} frame Basic mode has would score lower on this line, so nothing changed.${aiOn() ? '' : ' The Room can try one in your words.'}` };
+  if (first && outs.some(x => x.trim() !== t.trim()) && kind !== 'grammar') return { vers: [], msg: `Your line already beats every ${kind === 'curiosity' ? 'open-loop' : 'hot-take'} frame Basic mode has, so nothing changed.${aiOn() ? '' : ' The Room can try one in your words.'}` };
   return { vers: [], msg: kind === 'grammar' ? 'No spelling or grammar mistakes found.' : `${(RIFFS.find(r => r.k === kind) || { label: 'Basic mode' }).label} found nothing it could change and still keep your claim.` };
 }
 /* note → steps, on the whole post (Improve › Rewrites, Basic mode); the checker calls this too */
@@ -8023,7 +8030,7 @@ const crDiffHTML = (a, b) => diffWords(a, b).map(c => c.eq !== undefined ? esc(c
 function showUpsell(a, b) {
   if (!PRICED() || planNow() !== 'free' || !aiOn() || S.upsellShown) return; S.upsellShown = true; save(); closeUpsell();
   const el = document.createElement('div'); el.className = 'upsell'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hookworthy Pro');
-  const um = tierMove(a, b); el.innerHTML = `<div class="jump">${um.cross ? `<span class="from">${um.from.word}</span>${ic('arrow', 'lg')}` : ''}<span class="to t-${um.to.key}">${um.cross ? um.to.word : 'Stronger'}</span></div><p class="muted">${um.cross ? `Your hook just went from ${um.from.word} to ${um.to.word}.` : `Your hook just got stronger. Still ${um.to.word}${um.to.next ? `, a step closer to ${um.to.next.word}` : ''}.`} Pro gives you higher usage for rewrites like that, in your voice, plus a ping when a post takes off.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
+  const um = tierMove(a, b); el.innerHTML = `<div class="jump"><span class="to t-${um.to.key}">${isStrong(b) ? `${goodWord(b)} opener` : 'Stronger'}</span></div><p class="muted">Your opener just got stronger. Pro gives you higher usage for rewrites like that, in your voice, plus a ping when a post takes off.</p><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a href="#upgrade" class="btn primary">See what Pro does</a><button class="btn ghost" data-up="x">Keep writing</button></div>`;
   document.body.append(el); burstFrom($('.to', el));
   el.addEventListener('click', e => { if (e.target.closest('[data-up],a')) closeUpsell(); });
 }
@@ -8609,7 +8616,7 @@ async function openTournament() {
   if (!alive) return; const w = await bout(finals[0], finals[1], 'Final'); if (!alive) return;
   const beat = pitches.length - 1;
   phase.textContent = `Best line · ${w.a.n} wins`; SFX.play(w.s >= 70 ? 'hook' : 'done'); $('#rm-skip', el).remove();
-  grid.outerHTML = `<div class="rm-win">${roomAv(w.a, 'lg')}<span class="label">${w.a.n}, ${w.a.role} · beat ${beat} agents</span><p class="rm-wl">${esc(w.l)}</p>${w.ev ? `<p class="faint">Your past posts most like it got about ${fmtN(w.ev.estimate)} engagements.</p>` : `<p class="faint">${TIER(w.s).word} hook. Import your past posts and your own history judges the next one.</p>`}
+  grid.outerHTML = `<div class="rm-win">${roomAv(w.a, 'lg')}<span class="label">${w.a.n}, ${w.a.role} · beat ${beat} agents</span><p class="rm-wl">${esc(w.l)}</p>${w.ev ? `<p class="faint">Your past posts most like it got about ${fmtN(w.ev.estimate)} engagements.</p>` : `<p class="faint">${isStrong(w.s) ? `${goodWord(w.s)} opener. ` : ''}Bring your past posts and your own history picks the next one.</p>`}
     <div class="t-a"><button class="btn primary" data-use>${ic('check', 'sm')} Use this line</button><button class="btn ghost" data-keep>Keep mine</button></div></div>`;
   log.textContent = '';
   const win = $('.rm-win', el); $('[data-use]', win).focus({ preventScroll: true });
@@ -8640,7 +8647,7 @@ function drawHookCard(cv, line, score, user) {
 async function openHookCard() {
   const b = bestHookOfWeek(); if (!b) { toast('Nothing from this week yet. Write or schedule a post and its best line shows up here.', { icon: 'hook' }); return; }
   await (document.fonts ? document.fonts.ready : Promise.resolve());
-  const m = modal(`${modalHead('Hook of the week', 'Your best first line from the last seven days, as a card. Post it, or keep it as a reminder of what works.')}<div class="modal-b" style="display:grid;gap:12px"><canvas id="hc" class="hc-cv" role="img" aria-label="${esc(`Hook of the week: ${b.l.replace(/[.!?…]+$/, '')}. ${TIER(b.s).word} hook.`)}"></canvas></div><div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="hc-save">${ic('upload', 'sm')} Save image</button></div>`, { label: 'Hook of the week', box: 'modal wide' });
+  const m = modal(`${modalHead('Hook of the week', 'Your best first line from the last seven days, as a card. Post it, or keep it as a reminder of what works.')}<div class="modal-b" style="display:grid;gap:12px"><canvas id="hc" class="hc-cv" role="img" aria-label="${esc(`Hook of the week: ${b.l.replace(/[.!?…]+$/, '')}. ${isStrong(b.s) ? `${goodWord(b.s)} opener.` : ''}`)}"></canvas></div><div class="modal-f"><button class="btn" data-close>Close</button><button class="btn primary" id="hc-save">${ic('upload', 'sm')} Save image</button></div>`, { label: 'Hook of the week', box: 'modal wide' });
   const cv = $('#hc', m.el); drawHookCard(cv, b.l, b.s, S.user);
   $('#hc-save', m.el).onclick = () => cv.toBlob(bl => saveFile(`hook-of-the-week-${dayKey(Date.now())}.png`, bl), 'image/png');
 }
@@ -8742,7 +8749,7 @@ function weekTakeaways(w) {
   if (w.med && HWCore.eng(p) > 0) { const x = Math.round(HWCore.eng(p) / w.med * 10) / 10; if (x >= 1.2) out.push({ i: 'trend', t: `<b>${x}× your usual.</b> Your best this week by a clear margin.` }); }
   if (/\d/.test(first)) out.push({ i: 'target', t: '<b>A real number in line one.</b> People stop for specifics.' });
   if (an && an.bestKind && an.bestKind.k === k) out.push({ i: 'layers', t: `<b>${esc(cap(kindA(k)))}.</b> Your strongest kind: ${an.bestKind.x}× your usual.` });
-  else if (h.score >= 70) out.push({ i: 'hook', t: `<b>${esc(TIER(h.score).word)} hook.</b> ${esc(h.reason)}` });
+  else if (h.score >= 70) out.push({ i: 'hook', t: `<b>${goodWord(h.score)} opener.</b> ${esc(h.reason)}` });
   if (p.at) { const dt = new Date(p.at), hm = `${dt.getHours()}:${String(dt.getMinutes()).padStart(2, '0')}`, top = TIMES.src === 'you' && TIMES.top && TIMES.top.d === dowIdx(dt); out.push({ i: 'clock', t: `<b>Went out ${WKD[(dt.getDay() + 6) % 7] || DOW[dt.getDay()]} at ${fmtTime(hm)}.</b> ${top ? 'One of your best times.' : 'Note the time: try it again.'}` }); }
   return out.slice(0, 3);
 }
@@ -8799,7 +8806,7 @@ async function runShootout(btn) {
   const a = $('#so-a').value.trim(), b = $('#so-b').value.trim(); if (!a || !b) { toast('Write both first lines.', { icon: 'hook' }); return; } if (a.toLowerCase() === b.toLowerCase()) { toast('That’s the same line twice. Change one word and try again.', { icon: 'hook' }); return; }
   S.shoot = { a, b }; save(); const out = $('#so-out');
   const ha = hookScore(a).score, hb = hookScore(b).score, pa = shootEvidence(a), pb = shootEvidence(b);
-  let winner = pa && pb ? (pa.estimate >= pb.estimate ? 'a' : 'b') : ha >= hb ? 'a' : 'b', why = pa && pb ? `Your posts most like ${winner.toUpperCase()} did ${fmtN(Math.max(pa.estimate, pb.estimate))} vs ${fmtN(Math.min(pa.estimate, pb.estimate))} engagements.` : `${TIER(Math.max(ha, hb)).key !== TIER(Math.min(ha, hb)).key ? `${TIER(Math.max(ha, hb)).word} beats ${TIER(Math.min(ha, hb)).word}.` : `Both ${TIER(ha).word}${ha !== hb ? `, and ${winner.toUpperCase()} is a little stronger` : ''}.`} ${hookScore(winner === 'a' ? a : b).reason}`, conf = pa && pb ? Math.min(.9, .55 + Math.abs(pa.estimate - pb.estimate) / Math.max(1, pa.estimate + pb.estimate)) : Math.min(.85, .5 + Math.abs(ha - hb) / 100);
+  let winner = pa && pb ? (pa.estimate >= pb.estimate ? 'a' : 'b') : ha >= hb ? 'a' : 'b', why = pa && pb ? `Your posts most like ${winner.toUpperCase()} did ${fmtN(Math.max(pa.estimate, pb.estimate))} vs ${fmtN(Math.min(pa.estimate, pb.estimate))} engagements.` : `${ha !== hb ? `${winner.toUpperCase()} is the stronger opener.` : 'Both open about as strong.'} ${hookScore(winner === 'a' ? a : b).reason}`, conf = pa && pb ? Math.min(.9, .55 + Math.abs(pa.estimate - pb.estimate) / Math.max(1, pa.estimate + pb.estimate)) : Math.min(.85, .5 + Math.abs(ha - hb) / 100);
   const paint = () => { const A = winner === 'a'; out.innerHTML = `<div class="so-res">${[['a', a, ha, pa], ['b', b, hb, pb]].map(([k, t, h, pr]) => `<div class="so-card ${winner === k ? 'so-win' : ''}"><span class="label">${k.toUpperCase()}${winner === k ? ' · predicted winner' : ''}</span><p>${esc(t)}</p><div class="so-st">${tierChip(h, { noun: true, cls: 'sm' })}${pr ? `<span>~${fmtN(pr.estimate)} engagements</span>` : ''}</div><button class="btn sm ${winner === k ? 'primary' : ''}" data-hact="souse" data-t="${esc(t)}">Write with ${k.toUpperCase()}</button></div>`).join('')}</div><p class="so-why"><b>${Math.round(conf * 100)}% sure.</b> ${esc(why)}</p>`; };
   paint();
   if (aiOn()) { btn.classList.add('is-loading'); try { const ev = [['A', pa], ['B', pb]].map(([k, pr]) => pr ? `${k}: ${pr.near.slice(0, 3).map(p => `"${clip(p.text.split('\n')[0], 90)}" (${p.likes} likes)`).join('; ')}` : `${k}: no similar posts`).join('\n'); const r = await ask(HWCore.prompts.shootout({ a, b, voice: voiceSpec(), evidence: HIST().length ? ev : '' }), { fresh: true, act: 'compare', basic: true }); if (r && (r.winner === 'a' || r.winner === 'b')) { winner = r.winner; why = r.why || why; conf = Math.max(.5, Math.min(.95, +r.confidence || conf)); paint(); } } catch (e) { aiError(e); } finally { btn.classList.remove('is-loading'); } }
@@ -9470,7 +9477,7 @@ function importSummaryHTML(added) {
   return `<div class="imp-sum"><div class="imp-big"><b class="mono">${fmtN(an.n)}</b><span>posts${added != null ? ` (${added} new)` : ''}${from ? ` · ${MON[from.getMonth()]} ${from.getFullYear()} to ${MON[to.getMonth()]} ${to.getFullYear()}` : ''}</span></div>
     <div class="imp-row"><span>Median post</span><b class="mono">${fmtN(an.median)}</b><span class="faint">engagements</span></div>
     ${an.bestKind ? `<div class="imp-row"><span>What works</span><b>${esc(KIND_L(an.bestKind.k))}</b><span class="faint">${an.bestKind.x}× your median</span></div>` : ''}
-    ${an.calib ? `<div class="imp-row"><span>Hook score check</span><b>${an.calib.x}×</b><span class="faint">${BAR_WORD} or better vs ${TIER_WORDS[0]}, on your posts</span></div>` : ''}
+    ${an.calib ? `<div class="imp-row"><span>Strong openers</span><b>${an.calib.x}×</b><span class="faint">vs the rest, on your posts</span></div>` : ''}
     ${best ? `<blockquote class="imp-best">${esc(clip(best.text, 160))}<small>${fmtN(best.likes)} likes · your best</small></blockquote>` : ''}</div>`;
 }
 function openImport(tab = 'x') {
@@ -9861,10 +9868,9 @@ function openSettings() {
         ${sw('evergreen', S.settings.evergreen, 'Weekly reruns', 'Once a week, one of your best posts from 2+ months ago gets a new first line and a slot in your queue.')}
       </section>
       <section><h3 class="label">Write</h3>
-        ${sw('hooknums', !!S.settings.hookNums, 'Show scores as numbers', `Hooks read as steps: ${TIER_LIST}. Turn this on to see the number after the word too, like “${BAR_WORD} · 76”.`)}
       </section>
       <section><h3 class="label">Sound and look</h3>
-        ${sw('sound', S.settings.sound !== false, 'Sounds', `Quiet cues for scheduling, posting and a first line that reaches ${BAR_WORD}.`)}
+        ${sw('sound', S.settings.sound !== false, 'Sounds', `Quiet cues for scheduling, posting and a strong first line.`)}
         ${sw('keys', !!S.settings.keys, 'Typing sounds', 'Soft key clicks while you write.')}
         ${sw('shortcuts', S.settings.shortcuts !== false, 'Single-key shortcuts', `C starts a post, I saves an idea, G then a letter jumps. Turn these off if you use voice control or hit them by accident. ${keys(MOD, 'K')} always works.`)}
         <div class="set-row"><div><b>Theme</b><small>Light is warm vellum. Dark is soft charcoal. Auto follows your device. The switch in the sidebar and ${SHIFT}T set the same thing.</small></div>${seg('theme', theme, [['light', 'Light'], ['dark', 'Dark'], ['system', 'Auto']])}</div>
@@ -10674,7 +10680,7 @@ const paintDial = (el, v) => { el.style.setProperty('--v', clamp(v, 0, 100).toFi
 function dialTier(el, s, empty = false) { const T = TIER(s); el._s = s; el._e = empty; ['flat', 'warming', 'sharp', 'honed'].forEach(k => el.classList.toggle('t-' + k, !empty && k === T.key)); el.classList.toggle('hi', !empty && s >= 70); el.classList.toggle('on', !empty); if (!el._mt) swapWord($('.dw', el), empty ? '' : T.word); const n = $('.dn', el); if (n) n.textContent = !empty && hookNums() ? Math.round(s) : ''; }
 /* after Keep: a new state crossfades in (reaching Ready lifts a few sparks); within one state the dial says "Stronger" for a moment and grows a little */
 function dialMove(el, a, b) { const m = tierMove(a, b); clearTimeout(el._mt); el._mt = 0; dialTier(el, b); if (m.cross && m.dir === 'up' && m.to.rank >= 2 && m.from.rank < 2) readyBurst(el);
-  if (!m.cross && m.dir !== 'same') { swapWord($('.dw', el), m.text); el._mt = setTimeout(() => { el._mt = 0; if (el.isConnected) swapWord($('.dw', el), el._e ? '' : TIER(el._s).word); }, 1300); }
+  if (!m.cross && m.dir !== 'same') { swapWord($('.dw', el), m.text); el._mt = setTimeout(() => { el._mt = 0; if (el.isConnected) swapWord($('.dw', el), el._e ? '' : tierText(el._s)); }, 1300); }
   if (!REDUCED && m.dir === 'up') { el.classList.remove('tgrow'); void el.offsetWidth; el.classList.add('tgrow'); } }
 
 /* ----- story: one post, three beats, nothing invented by the app ----- */
@@ -10815,11 +10821,10 @@ function trustHTML() {
         <div class="t8-in"><div class="t8-in-h"><b>Your posts</b><span>${ic('check', 'xs')} Read in your browser</span></div>
           ${TR_POSTS.map((t, i) => { const s = hookScore(t).score; return `<div class="t8-row" style="--i:${i}">${tierChip(s, { cls: 'sm' })}<p>${esc(t)}</p></div>`; }).join('')}</div>
       </div>`)}
-    ${tile(.06, 'A score that shows its work', `Five plain checks on your first line, and the next step to ${BAR_WORD}. It reads your words, not your reach.`,
+    ${tile(.06, 'Checks that show their work', `Five plain checks on your first line, and the one next step to make it stronger. It reads your words, not your reach.`,
       `<div class="t8-v t8-sc" aria-hidden="true">
         <p class="t8-line">${esc(TR_LINE)}</p>
         ${partsHTML(g.parts, 't8-pips')}
-        <div class="t8-tot"><span>Hook</span>${tierScaleHTML(g.score)}</div>
       </div>`)}
     ${tile(.12, 'Your drafts stay here', 'In your browser until you connect an account. Nothing posts unless you schedule it.',
       `<div class="t8-v t8-loc" aria-hidden="true">
@@ -10836,7 +10841,7 @@ function trustHTML() {
 
 /* ---------- round 30: the final call. Paste a line, watch it score, carry it in ---------- */
 const FIN_TRY = 'so i think posting every day is kind of overrated tbh';
-const FIN_IDLE = `Paste a line, then hit Sharpen. It’s read as you type, with the next step to ${BAR_WORD}.`;
+const FIN_IDLE = `Paste a line, then hit Sharpen. You get the same point, said stronger.`;
 /* the three to try, with the rewrite Claude gives in the app; your own lines go through the same local Sharpen as the hero */
 const FIN_ROUGH = [['so i think posting every day is kind of overrated tbh', 'Posting every day is overrated. Here’s what I do instead:'], ['just wanted to share some thoughts on our launch. only 11 people came lol', 'We launched to 11 people. Here’s what that taught us:'], ['new issue is out!! been doing this every sunday for 3 years lol', '3 years of Sunday issues. Here’s the new one:']];
 function finalFormHTML() {
@@ -10912,7 +10917,7 @@ const hwOpen = texts => { const list = texts.map(x => String(x).trim()).filter(B
 
 /* ---------- the hook grader, as a component: the homepage hero and #tools both mount it ---------- */
 const HG_YOU = { n: 'heycape', h: 'heycape_', pic: ME_PIC }; /* the demo account, everywhere */
-function graderHTML(P, { hand = false, text = HG_DEFAULT, who = 'heycape', sub = '@heycape_ · first line, graded as you type', note = '' } = {}) {
+function graderHTML(P, { hand = false, text = HG_DEFAULT, who = 'heycape', sub = '@heycape_ · first line, read as you type', note = '' } = {}) {
   return `<div class="h7g" id="${P}">
         ${hand ? '<span class="hand hg-hand" aria-hidden="true">try your own line<svg width="60" height="44" viewBox="0 0 60 44"><path d="M4 6c18 0 34 8 42 26M38 30l8 6 3-10" style="--len:90"/></svg></span>' : ''}
         <div class="hg-card">
@@ -10925,7 +10930,7 @@ function graderHTML(P, { hand = false, text = HG_DEFAULT, who = 'heycape', sub =
           </div>
           <div class="hg-read">
             ${dialHTML(P + '-dial')}
-            <div class="hg-why"><span class="lbl">Hook</span><p id="${P}-why"><span class="on"></span><span></span></p></div>
+            <div class="hg-why"><span class="lbl">Tip</span><p id="${P}-why"><span class="on"></span><span></span></p></div>
             <button class="hg-sharp" id="${P}-sharp" type="button">${ic('bolt', 'sm')}<span>Sharpen</span></button>
           </div>
           <div class="hg-ver" id="${P}-ver" hidden aria-live="polite"></div>
@@ -10955,9 +10960,9 @@ function initGrader(P, { onChange = () => {} } = {}) {
     const t = ta.value, h = hookScore(t); G.cur = h; fit();
     marks = paintMirror(t, h.score >= 70);
     if (G.keptFrom != null) { dialMove(dial, G.keptFrom, h.score); G.keptFrom = null; } else dialTier(dial, h.score, !t.trim()); dialSpring.to(t.trim() ? h.score : 0);
-    setWhy(t.trim() ? hookNext(t, h).lead : 'Type a first line. Anything you’d actually post.');
+    setWhy(t.trim() ? coachLead(TIER(h.score), h) : 'Type a first line. Anything you’d actually post.');
     nEl.textContent = `${HWCore.xLength(t)}/280`; nEl.classList.toggle('over', HWCore.xLength(t) > 280);
-    clearTimeout(liveT); liveT = setTimeout(() => { live.textContent = t.trim() ? `Hook: ${tierText(h.score)}. ${h.reason}${marks.length ? ` ${marks.length} soft word${marks.length === 1 ? '' : 's'} marked.` : ''}` : ''; }, 700);
+    clearTimeout(liveT); liveT = setTimeout(() => { live.textContent = t.trim() ? `${tierText(h.score)}. ${h.reason}${marks.length ? ` ${marks.length} soft word${marks.length === 1 ? '' : 's'} marked.` : ''}` : ''; }, 700);
     if (G.typed) onChange(G);
   };
   ta.addEventListener('input', () => { G.typed = true; hideTip(); if (!ver.hidden && !ver.dataset.keep) ver.hidden = true; update(); });
@@ -10978,7 +10983,7 @@ function initGrader(P, { onChange = () => {} } = {}) {
     const t = ta.value.trim(); if (!t) { ta.focus(); setWhy('Type a first line, then Sharpen. One rough sentence is plenty.'); return; }
     const r = hgSharpen(t), a = hookScore(t).score, b = hookScore(r.text).score;
     delete ver.dataset.keep;
-    if (r.same || b < a) { ver.innerHTML = `<p class="hg-same">${a >= 70 ? `${TIER(a).word}: ${esc(hookScore(t).reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so the line stays yours.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`; ver.hidden = false; return; }
+    if (r.same || b < a) { ver.innerHTML = `<p class="hg-same">${a >= 70 ? `${goodWord(a)} opener: ${esc(hookScore(t).reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so the line stays yours.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`; ver.hidden = false; return; }
     ver.innerHTML = `<div class="hg-vh"><span class="lbl">Sharper version</span><span class="hg-move" role="img" aria-label="${tierSay(a, b)}">${tierMoveHTML(a, b, { anim: true })}</span></div><p class="hg-diffx">${hgDiffHTML(r)}</p><p class="hg-vnote">${hgNote(r)}</p><div class="hg-va"><button type="button" class="hbtn sm" id="${P}-keep">${ic('check', 'sm')} Keep it</button><button type="button" class="lnk7" id="${P}-mine">Keep mine</button></div>`;
     ver.hidden = false; ver.dataset.keep = '';
     el('keep').onclick = () => { ta.value = r.text; G.typed = true; ver.hidden = true; G.keptFrom = a; update(); ta.focus(); const k = ta.value.indexOf('[your number]'); if (k >= 0) ta.setSelectionRange(k, k + 13); else ta.setSelectionRange(ta.value.length, ta.value.length); ed.classList.remove('flash'); void ed.offsetWidth; ed.classList.add('flash'); };
@@ -11030,9 +11035,9 @@ function tourHTML() {
     <div class="tp-stage" id="tp-stage">
       <div class="tp-scs" aria-hidden="true">
         <div class="tp-sc on" id="tp-g"><div class="hg-card">
-          <div class="hg-top">${pfAv(HG_YOU, 'hg-av')}<div class="hg-who"><b>heycape</b><span>@heycape_ · first line, graded as you type</span></div><span class="hg-n" id="tp-n"></span></div>
+          <div class="hg-top">${pfAv(HG_YOU, 'hg-av')}<div class="hg-who"><b>heycape</b><span>@heycape_ · first line, read as you type</span></div><span class="hg-n" id="tp-n"></span></div>
           <div class="hg-ed"><p class="tp-line" id="tp-line"></p></div>
-          <div class="hg-read">${dialHTML('tp-dial')}<div class="hg-why"><span class="lbl">Hook</span><p id="tp-why"></p></div><span class="hg-sharp" id="tp-sharp">${ic('bolt', 'sm')}<span>Sharpen</span></span></div>
+          <div class="hg-read">${dialHTML('tp-dial')}<div class="hg-why"><span class="lbl">Tip</span><p id="tp-why"></p></div><span class="hg-sharp" id="tp-sharp">${ic('bolt', 'sm')}<span>Sharpen</span></span></div>
           <div class="hg-ver" id="tp-ver" hidden><div class="hg-vh"><span class="lbl">Sharper version</span><span class="hg-move" id="tp-to">${tierMoveHTML(s0, s1)}</span></div><p class="hg-diffx">${hgDiffHTML({ ...sh, add: '' })}</p><div class="hg-va"><span class="hbtn sm" id="tp-keep">${ic('check', 'sm')} Keep it</span></div></div>
         </div></div>
         <div class="tp-sc" id="tp-s2"><div class="tp-sheet" id="tp-sheet">
@@ -11210,7 +11215,7 @@ ROUTES.home = () => { loadSprite('ph');
   </section>
 
   <section class="h8-try wrap" id="try" aria-labelledby="try-h">
-    <div class="h8-try-h rv"><h2 id="try-h">Type a line. <em>Watch it level up.</em></h2></div>
+    <div class="h8-try-h rv"><h2 id="try-h">Type a line. <em>Watch it get sharper.</em></h2></div>
     <div class="h8-g">${graderHTML('hg')}</div>
   </section>
 
@@ -11304,7 +11309,7 @@ function initHome() {
   /* ---------- hero: the live hook grader (a component; #tools mounts it too) ---------- */
   const cta = $('#hw-cta');
   const G = initGrader('hg', { onChange: () => { nav.classList.add('kept'); paintCta(); paintBar(); } });
-  const paintCta = () => { if (!G.text) { cta.innerHTML = 'Start free'; cta.removeAttribute('aria-label'); cta.classList.remove('keep'); return; } cta.innerHTML = `Open your line ${tierChip(G.score, { cls: 'sm' })} ${ic('arrow', 'sm')}`; cta.setAttribute('aria-label', `Open your line in the app. Hook: ${TIER(G.score).word}`); cta.classList.add('keep'); };
+  const paintCta = () => { if (!G.text) { cta.innerHTML = 'Start free'; cta.removeAttribute('aria-label'); cta.classList.remove('keep'); return; } cta.innerHTML = `Open your line ${ic('arrow', 'sm')}`; cta.setAttribute('aria-label', 'Open your line in the app'); cta.classList.add('keep'); };
   /* every Start button carries the line once you've made it yours; untouched, they go to #start */
   const carry = e => { if (!G.typed || !G.text) return; e.preventDefault(); carryLine(G.text); };
   cta.addEventListener('click', carry); $('#hw-cta-hero').addEventListener('click', carry);
@@ -11325,7 +11330,7 @@ function initHome() {
   addEventListener('scroll', onDodge, { passive: true }); addEventListener('resize', onDodge); onDispose(() => { removeEventListener('scroll', onDodge); removeEventListener('resize', onDodge); cancelAnimationFrame(dgRaf); clearTimeout(dgT); });
   try { barOff = sessionStorage.getItem('hw.bar') === 'off'; } catch (e) { }
   const paintBar = () => {
-    if (G.typed && G.text) { barT.innerHTML = `<q><span>${esc(clip(G.text, 80))}</span></q>`; barCta.innerHTML = `Open your line ${tierChip(G.score, { cls: 'sm' })} ${ic('arrow', 'sm')}`; barCta.setAttribute('aria-label', `Open your line in the app. Hook: ${TIER(G.score).word}`); }
+    if (G.typed && G.text) { barT.innerHTML = `<q><span>${esc(clip(G.text, 80))}</span></q>`; barCta.innerHTML = `Open your line ${ic('arrow', 'sm')}`; barCta.setAttribute('aria-label', 'Open your line in the app'); }
     else { barT.textContent = 'One good line a day keeps the void away.'; barCta.textContent = 'Start free'; barCta.removeAttribute('aria-label'); }
     const on = !barOff && !seen.hero && !seen.fin && !seen.foot;
     bar.classList.toggle('on', on); nav.classList.toggle('bar-on', on); /* one call to action on screen at a time on phones */
@@ -11350,7 +11355,7 @@ function initHome() {
     ln.classList.remove('in'); void ln.offsetWidth; ln.classList.add('in');
     const was = bxDial.dataset.s; if (was != null && was !== '') dialMove(bxDial, +was, h.score); else dialTier(bxDial, h.score); bxDial.dataset.s = h.score; bxSpring.to(h.score);
     BX_PARTS.forEach(([k]) => { const r = $(`#bxs-parts [data-k="${k}"]`), p = HWCore.partState(h.parts[k]); r.className = 'pt ps-' + p.key; $('.pip', r).className = 'pip p-' + p.key; swapWord($('.pw', r), p.word + (hookNums() ? ` · ${h.parts[k]}` : '')); });
-    $('#bxs-why').innerHTML = `<span class="sr">Hook: ${TIER(h.score).word}. </span>${esc(h.reason)}`; };
+    $('#bxs-why').innerHTML = `<span class="sr">${tierText(h.score)}. </span>${esc(h.reason)}`; };
   const bxLoop = () => { clearTimeout(bxT); if (!bxOn || bxHeld || REDUCED) return; bxT = later(() => { bxShow(1 - bxI); bxLoop(); }, 3600); };
   $$('[data-bxs]', bxsEl).forEach(b => b.addEventListener('click', () => { bxHeld = true; clearTimeout(bxT); bxShow(+b.dataset.bxs); }));
   /* hovering or focusing the card holds it still, so you can read it */
@@ -11386,7 +11391,7 @@ function initHome() {
     finParts.forEach(li => { const p = g ? g.parts[li.dataset.k] : 0, st = HWCore.partState(p); li.className = g ? 'ps-' + st.key : 'ps-empty'; $('.pip', li).className = 'pip p-' + (g ? st.key : 'empty'); $('.pw', li).textContent = g ? st.word : '–'; });
     finWhy.textContent = g ? hookNext(t, g).lead : FIN_IDLE; finWhy.classList.toggle('good', v >= 70);
     /* screen readers hear the score once typing settles, not on every key */
-    clearTimeout(finSrT); finSrT = setTimeout(() => { finSr.textContent = g ? `Hook: ${TIER(v).word}. ${g.reason}` : ''; }, 700);
+    clearTimeout(finSrT); finSrT = setTimeout(() => { finSr.textContent = g ? `${tierText(v)}. ${g.reason}` : ''; }, 700);
   };
   fin.addEventListener('input', () => { finErr.textContent = ''; fin.removeAttribute('aria-invalid'); finPaint(); });
   /* your hero line comes along, selected, so typing or pasting replaces it instead of landing on the end of it */
@@ -11399,7 +11404,7 @@ function initHome() {
   const transform = () => { const t = fin.value.trim(); const r = finPair && finPair[0] === t ? { orig: t, first: finPair[1], rest: '', add: '' } : hgSharpen(t); if (!r) return; const next = [r.first, r.rest].filter(Boolean).join('\n\n');
     finDiff.innerHTML = hgDiffHTML({ ...r, add: '' }); finAfter.hidden = false; finAfter.classList.remove('in'); void finAfter.offsetWidth; finAfter.classList.add('in');
     finSharp.disabled = true; finSharp.classList.add('busy'); clearTimeout(finT);
-    finT = later(() => { fin.value = next; finPaint(); finSharp.classList.remove('busy'); $('span', finSharp).textContent = 'Sharpened'; finSr.textContent = `Sharpened. Hook: ${TIER(hookScore(next).score).word}.`; }, REDUCED ? 0 : 900); };
+    finT = later(() => { fin.value = next; finPaint(); finSharp.classList.remove('busy'); $('span', finSharp).textContent = 'Sharpened'; finSr.textContent = `Sharpened. ${tierText(hookScore(next).score)}.`; }, REDUCED ? 0 : 900); };
   finSharp.addEventListener('click', transform);
   fin.addEventListener('input', () => { $('span', finSharp).textContent = 'Sharpen it'; sharpState(); });
   const tryLine = (t, pair = null) => { finPair = pair; fin.value = t; finErr.textContent = ''; fin.removeAttribute('aria-invalid'); finAfter.hidden = true; $('span', finSharp).textContent = 'Sharpen it'; finPaint(); sharpState(); clearTimeout(finT); finT = later(transform, REDUCED ? 0 : 700); };
@@ -11437,7 +11442,7 @@ ROUTES.tools = () => {
     <nav class="mk-jump" aria-label="Tools on this page">${HW_TOOLS.map(([id, l]) => `<a ${hwHref('tools', id)}>${l}</a>`).join('')}</nav>
   </section>
   <div class="wrap">
-  ${tool('tool-hook', 'Hook grader', 'Score your <em>first line.</em>', `Five plain checks: clear, open loop, specific, tension, short. The result is one of four steps: ${TIER_LIST}. Under it, you get the one next step to ${BAR_WORD}, and Sharpen shows a tighter version without changing your claim.`,
+  ${tool('tool-hook', 'First-line sharpener', 'Sharpen your <em>first line.</em>', `Five plain checks: clear, open loop, specific, tension, short. You get the one next step to make it stronger, and Sharpen shows a tighter version without changing your claim.`,
     graderHTML('tg', { who: 'Your line', sub: 'Graded as you type', note: '<b>Stays in this tab.</b>' }),
     `<p>The same score runs on every post in the app, with your own posts tuning it once you bring 20.</p>${hwOpenBtn('hook')}`)}
   ${tool('tool-split', 'Thread splitter', 'Long post in, <em>a thread out.</em>', 'Paste anything long. It splits at sentence ends, counts the way X does, and keeps each post under 280.',
@@ -11641,7 +11646,7 @@ ROUTES.developers = () => {
       </div>
     </section>
     <section class="mk-sec" id="dv-mcp" aria-labelledby="dv-mcp-h">
-      <div class="h7-head"><div><span class="eyebrow">MCP</span><h2 id="dv-mcp-h">Let the Room <em>grade the hook.</em></h2></div><p>The MCP server runs over stdio and reads server/.env too, so the same keys switch the same tools on.</p></div>
+      <div class="h7-head"><div><span class="eyebrow">MCP</span><h2 id="dv-mcp-h">Let the Room <em>check the first line.</em></h2></div><p>The MCP server runs over stdio and reads server/.env too, so the same keys switch the same tools on.</p></div>
       <div class="dv-two">
         <div class="dv-txt"><h3>Claude Code</h3><p>One command. Use the real path to your checkout.</p></div>
         <div>${code('dv-c-cc', 'Shell', 'claude mcp add hookworthy -- node /path/to/hookworthy/server/mcp.mjs')}</div>
@@ -11796,7 +11801,7 @@ function onbTry() {
   /* a better line that only cuts words shows the cut words struck through, so a pure trim never reads as "nothing changed" */
   const show = (line, better, why) => { const a = hookScore(line), b = hookScore(better), d0 = wordDiff(tokenize(line), tokenize(better)), d = d0.changed || better.trim() === line.trim() ? d0 : { changed: 1, html: hgDiff(line, better).replace(/<del>/g, '<del class="vw">') };
     out.innerHTML = `<div class="ot-row"><span class="ot-k"><span class="ot-l">Yours</span>${tierChip(a.score)}</span><p>${esc(a.reason)}</p></div>
-      ${d.changed ? `<div class="ot-row better"><span class="ot-k"><span class="ot-l">Sharper</span>${tierChip(b.score)}</span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : `<p class="faint">${a.score >= 70 ? `${TIER(a.score).word}: ${esc(a.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so it stays as you wrote it.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`}
+      ${d.changed ? `<div class="ot-row better"><span class="ot-k"><span class="ot-l">Sharper</span>${tierChip(b.score)}</span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : `<p class="faint">${a.score >= 70 ? `${goodWord(a.score)} opener: ${esc(a.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so it stays as you wrote it.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`}
       <div class="ot-a"><button class="btn ${d.changed ? 'primary' : ''}" id="ot-use">${ic('write', 'sm')} ${d.changed ? 'Write it with this hook' : 'Write it'}</button>${d.changed ? '<button class="btn ghost" id="ot-mine">Keep mine</button>' : ''}</div>`;
     SFX.play(b.score >= 70 ? 'hook' : 'tick');
     go.classList.remove('primary'); /* one primary per view: once there's a result, writing it is the next step */
@@ -12750,7 +12755,7 @@ function drawInsightsReal() {
   const cells = [];
   const heat = (() => { const cols = [[6, 9, '6a'], [9, 12, '9a'], [12, 15, '12p'], [15, 18, '3p'], [18, 21, '6p'], [21, 24, '9p']]; const days = [1, 2, 3, 4, 5, 6, 0]; const vals = days.map(dw => cols.map(([a, b]) => { const ps = M.filter(p => p.at && new Date(p.at).getDay() === dw && new Date(p.at).getHours() >= a && new Date(p.at).getHours() < b); return { n: ps.length, v: ps.length ? HWCore.median(ps.map(E)) : 0 }; })); const mx = Math.max(1, ...vals.flat().map(x => x.v)); let peak = null; vals.forEach((r, di) => r.forEach((x, ci) => { if (x.n >= 2 && (!peak || x.v > peak.v)) peak = { ...x, d: DOW[days[di]], c: cols[ci][2] }; }));
     return `<div class="heat" role="img" aria-label="Median engagement by day and time of posting${peak ? `. Best: ${peak.d} ${peak.c}` : ''}"><span></span>${cols.map(c0 => `<span class="cl">${c0[2]}</span>`).join('')}${days.map((dw, di) => `<span class="rl">${DOW[dw]}</span>${cols.map((c0, ci) => { const x = vals[di][ci]; return `<span class="c" style="opacity:${x.n ? (.12 + x.v / mx * .88).toFixed(2) : .05}" data-tip="${DOW[dw]} ${c0[2]}: ${x.n ? `${x.n} post${x.n > 1 ? 's' : ''}, median ${fmtN(x.v)}` : 'no posts'}"></span>`; }).join('')}`).join('')}</div>`; })();
-  if (c) cells.push(`<div class="card ins-card calib"><p class="big">${c.x >= 1.15 ? `On your posts, ${BAR_WORD} and ${TOP_WORD} hooks earned <em>${c.x}×</em> the ones still ${TIER_WORDS[0].toLowerCase()}.` : `On your posts, the hook score barely predicts results (<em>${c.x}×</em>).`}</p><p>${c.hiN} strong hooks vs ${c.loN} weak ones, correlation ${c.r}. ${c.x >= 1.15 ? 'The score is earning its place for you.' : 'Trust your own top posts over the hook words until you have more history.'}</p></div>`);
+  if (c) cells.push(`<div class="card ins-card calib"><p class="big">${c.x >= 1.15 ? `On your posts, strong openers earned <em>${c.x}×</em> the rest.` : `On your posts, the hook score barely predicts results (<em>${c.x}×</em>).`}</p><p>${c.hiN} strong hooks vs ${c.loN} weak ones, correlation ${c.r}. ${c.x >= 1.15 ? 'The score is earning its place for you.' : 'Trust your own top posts over the hook words until you have more history.'}</p></div>`);
   /* only real differences make a card: 20% either way */
   const said = (x, up, down) => x.x >= 1.2 ? up(`<em>${x.x}×</em>`) : x.x <= .83 ? down(`<em>${Math.round((1 - x.x) * 100)}% less</em>`) : null;
   const push = (x, up, down, sub, btn) => { if (!x) return; const h = said(x, up, down); if (h) cells.push(`<div class="card ins-card"><p class="big">${h}</p><p>${sub}</p>${btn || ''}</div>`); };
@@ -12776,7 +12781,7 @@ function drawInsightsReal() {
 /* post-mortem: why one post popped or flopped, from Claude, against your own median */
 async function postMortem(id, btn) {
   const p = HIST().find(x => x.id === id); if (!p) return; const box = $(`[data-pid="${CSS.escape(id)}"] .pm`); if (!box) return;
-  if (!aiOn()) { const h = hookScore(p.text), an = ANALYSIS(); box.hidden = false; box.innerHTML = `<p><b>${Math.round(HWCore.eng(p) / an.median * 10) / 10}× your median.</b> ${TIER(h.score).word} hook: ${esc(h.reason)} ${p.at ? `Posted ${DOW[new Date(p.at).getDay()]} at ${fmtTime(`${new Date(p.at).getHours()}:${String(new Date(p.at).getMinutes()).padStart(2, '0')}`)}.` : ''}</p><small class="faint">Turn on the Room for the full post-mortem.</small>`; return; }
+  if (!aiOn()) { const h = hookScore(p.text), an = ANALYSIS(); box.hidden = false; box.innerHTML = `<p><b>${Math.round(HWCore.eng(p) / an.median * 10) / 10}× your median.</b> ${isStrong(h.score) ? `${goodWord(h.score)} opener: ` : ''}${esc(h.reason)} ${p.at ? `Posted ${DOW[new Date(p.at).getDay()]} at ${fmtTime(`${new Date(p.at).getHours()}:${String(new Date(p.at).getMinutes()).padStart(2, '0')}`)}.` : ''}</p><small class="faint">Turn on the Room for the full post-mortem.</small>`; return; }
   btn.classList.add('is-loading'); box.hidden = false; box.innerHTML = `<p class="faint">${esc(cap(AI_NAME()))} is comparing it with your best posts…</p>${hintHTML('insights', { rotate: true, cls: 'loading-hint' })}`;
   try { const an = ANALYSIS(); const r = await ask(HWCore.prompts.postmortem({ post: p, median: an.median, similar: an.top.filter(x => x.id !== id).slice(0, 5), voice: voiceSpec() }), { act: 'why', resume: () => postMortem(id, btn) });
     box.innerHTML = `<p><b>${esc(r.verdict || '')}</b></p><ul>${(r.reasons || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${r.next_time ? `<p><span class="label">Next time</span> ${esc(r.next_time)}</p>` : ''}${r.rewrite ? `<div class="pm-rw"><span class="label">Try this first line</span><p>${esc(r.rewrite)}</p><button class="btn sm" data-nact="userw" data-t="${esc(r.rewrite)}">${ic('write', 'sm')} Write it</button></div>` : ''}`;
@@ -12786,7 +12791,7 @@ function MYTOP() { if (!HIST().length) return TOP_POSTS; return ANALYSIS().top.m
 /* Your posts: every post you brought (plus queue posts that came back with numbers), sortable and searchable, 20 to a page.
    Rows are built once per history change; sorting and search touch plain fields, and only the current page becomes HTML. */
 const PT = { k: 'at', dir: -1, q: '', pg: 0 }, PT_PER = 20, PT_NUM = ['likes', 'replies', 'reposts', 'views', 'rate'];
-const PT_COLS = [['at', 'Date'], ['text', 'Post'], ['hook', 'Hook'], ['likes', 'Likes'], ['replies', 'Replies'], ['reposts', 'Reposts'], ['views', 'Views'], ['rate', 'Engagement rate']];
+const PT_COLS = [['at', 'Date'], ['text', 'Post'], ['likes', 'Likes'], ['replies', 'Replies'], ['reposts', 'Reposts'], ['views', 'Views'], ['rate', 'Engagement rate']];
 let _pt = { key: '', v: null };
 function ptRow(p, extra) { const v = p.views || 0, e = (p.likes || 0) + (p.replies || 0) + (p.reposts || 0); return { id: p.id, text: p.text, thread: p.thread || [], at: p.at || null, likes: p.likes || 0, replies: p.replies || 0, reposts: p.reposts || 0, views: v, rate: v ? e / v : null, lc: p.text.toLowerCase(), hook: null, none: !HWCore.measured(p), ...extra }; }
 function ptData() {
@@ -12857,7 +12862,7 @@ function ptBody() {
   body.innerHTML = `<table class="data pt-tbl"><caption class="sr">Your posts, sorted by ${esc(ptSortName(PT.k, PT.dir).toLowerCase())}. Page ${PT.pg + 1} of ${pages}. Choose a post to reuse or copy it.</caption>
     <thead><tr>${cols.map(([k, l]) => `<th scope="col" class="pt-${k}${k !== 'at' && k !== 'text' ? ' n' : ''}"${PT.k === k ? ` aria-sort="${PT.dir > 0 ? 'ascending' : 'descending'}"` : ''}><button type="button" data-pts="${k}">${l}<span class="pt-ar" aria-hidden="true">${PT.k === k ? (PT.dir > 0 ? '↑' : '↓') : ''}</span></button></th>`).join('')}</tr></thead>
     <tbody>${page.map(r => `<tr data-pr="${esc(r.id)}">${cols.map(([k]) => k === 'at' ? `<td class="pt-at">${ptDate(r.at)}</td>` : k === 'text' ? `<td class="pt-text"><button type="button" class="pt-open" aria-haspopup="menu" aria-expanded="false">${fl(r)}</button></td>` : `<td class="n">${num(r, k)}</td>`).join('')}</tr>`).join('')}</tbody></table>
-    <ul class="pt-cards" role="list">${page.map(r => `<li><button type="button" class="pt-open pt-card" data-pr="${esc(r.id)}" aria-haspopup="menu" aria-expanded="false"><span class="pt-fl">${fl(r)}</span><span class="pt-nums"><span>${ptDate(r.at)}</span><span>${tierChip(ptHook(r), { noun: true, cls: 'sm' })}</span>${r.none ? '<span class="faint">No numbers</span>' : `<span>${fmtN(r.likes)} likes</span><span>${fmtN(r.replies)} replies</span><span>${fmtN(r.reposts)} reposts</span>`}${r.views ? `<span>${fmtN(r.views)} views</span><span>${ptRate(r)} engagement</span>` : ''}</span></button></li>`).join('')}</ul>
+    <ul class="pt-cards" role="list">${page.map(r => `<li><button type="button" class="pt-open pt-card" data-pr="${esc(r.id)}" aria-haspopup="menu" aria-expanded="false"><span class="pt-fl">${fl(r)}</span><span class="pt-nums"><span>${ptDate(r.at)}</span>${r.none ? '<span class="faint">No numbers</span>' : `<span>${fmtN(r.likes)} likes</span><span>${fmtN(r.replies)} replies</span><span>${fmtN(r.reposts)} reposts</span>`}${r.views ? `<span>${fmtN(r.views)} views</span><span>${ptRate(r)} engagement</span>` : ''}</span></button></li>`).join('')}</ul>
     ${pages > 1 ? `<nav class="pt-pg" aria-label="Pages of posts"><button type="button" class="btn sm" data-ptp="-1"${PT.pg ? '' : ' disabled'}>${ic('left', 'sm')} Previous</button><span class="pt-pn"><span aria-hidden="true">${PT.pg + 1}/${pages}</span><span class="sr">Page ${PT.pg + 1} of ${pages}</span></span><button type="button" class="btn sm" data-ptp="1"${PT.pg < pages - 1 ? '' : ' disabled'}>Next ${ic('right', 'sm')}</button></nav>` : ''}`;
 }
 function ptMenu(anchor, id) {
