@@ -648,3 +648,12 @@ A three-way switch, **Light · Dark · Auto**, sits in the sidebar footer above 
 - Comments on drafts and queued posts: a side panel with threads, replies, @mentions, quotes from selected text, resolve/reopen. They travel with the post from draft to queue and back.
 - Approvals: a Writer's Schedule becomes "Send for approval"; approvers get Approve / Ask for changes (with a note) on the Team page and in the queue menu. "Changes asked" goes back to the writer. Activity logs it all.
 - App classes use the `tmx-` prefix (the marketing Teams page owns `tm-`).
+
+## Round 53: comments beside the draft, automatic X format, no Teams
+
+- **Teams is gone** (people, roles, View as, Writer approvals). What stays: client voices (Write as) with their own approvals, and review links. Saved team data and its sample post are cleaned up on load.
+- **Comments sit beside the draft.** The right column has two tabs, Comments and Preview; Comments opens by itself when there are open threads, even if the preview was hidden. Each thread is a card with its quoted words, replies and Resolve; a box at the bottom adds a note or a comment on the selected words.
+- **Highlight to comment.** Select words in a post: the selection bar now starts with Comment (or press Mod Alt M). The words stay highlighted in the post in the commenter's colour.
+- **Review links: sign in with X or Google.** Reviewers pick Continue with X (their @handle) or Continue with Google (their email) instead of typing a name; the chip shows which. No `prompt()` anywhere on the review page.
+- **X format is automatic.** The plan comes from the connected X account only. Free (or not connected): 280 a post, longer text becomes a thread as you type. Premium: any post can run long. A thread is only posts you add. The format menu, the pill and the "I have Premium / I'm on free X" switches are removed.
+- **Today's composer is light**: a normal card with a bordered field, like everything else.
