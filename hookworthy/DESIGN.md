@@ -706,3 +706,26 @@ The brand, the site and the app were rebuilt in the style of mailcheap.ai: a nea
 - Leaving a page while something on it was still animating (Results' bars, for one) held the page transition's snapshot for about 4 seconds. Finite animations on the old page now jump to their end before the transition starts; leaving Results takes about 0.2 s.
 - ⌘↵ in Write schedules for the next good open time (or the time you were writing for) in one keystroke, with Undo. The Schedule button still opens the picker; ⇧⌘↵ is still Post now.
 - Plans speak in plain limits: 10 AI rewrites a day on Free, 1,000 a month on Pro, 4,000 shared on Studio. The usage tiers and the credit table are gone.
+
+## Round 56: our own layout, the editor's red pen
+
+Round 55's colours, type and logo stay. The page layouts borrowed from mailcheap.ai (browser-frame demo, bento grid, pricing picker, thrown-note toy, split sign-in, dot grid) are gone, replaced by a structure built around one idea: Hookworthy is the editor who marks up your draft, then hands back a clean line with a time on it.
+
+**The idea in the system**
+- `--pen`: the one warm colour, an editor's red (`#C93A2B` light, `#FF7A66` dark) with `--pen-soft`. It's only used for marks: struck soft words, margin notes, the hand-drawn underline, section keys.
+- `.ruled`: writing paper (faint rules plus a red margin line) behind the hero, the close and sign-in. Replaces the dot grid.
+- `.pen-u`: a hand-drawn underline that draws itself once. Newsreader italic (self-hosted) carries the emphasis words.
+- Section keys (`.hz-k`) are mono with a short red dash, like a proof mark.
+
+**The site, top to bottom**
+- Nav: a floating capsule. How it works · Pricing · Questions · Developers, Sign in, Get started.
+- Hero, split: "Your week of posts, *written in your voice.*" on the left. On the right, the pen card: a real draft gets its soft words struck one by one with a note in the margin ("so i think": hedge), the cuts close up, and the clean line lands as heycape's post with "Scheduled · Tue, 8:40 AM". Three drafts take turns. "Try yours" lets you paste a line: soft words strike as you type, Sharpen writes the clean line into the post, and "Open it in Hookworthy" carries it into sign-up.
+- How it works, a scroll story: six steps (Catch it, Draft it in your voice, Sharpen the first line, Fit every network, Out when they’re scrolling, See what worked) on the left; one pinned stage on the right plays the step that's in the middle of the screen. On phones each scene sits under its step.
+- And the rest, an index: six numbered rows (Sharpen any line, Review links, Inbox, Client voices, Formulas, Bring your posts). Hover or focus a row and its live look shows in the pinned pane; on phones a tap opens it in place.
+- The never list: five things Hookworthy will never do, each struck through in red as it comes on screen.
+- Pricing as a ledger: one table, features down the side, Free · Pro · Studio across, Pro marked with a red top rule, Monthly or Yearly. On phones it tightens to fit with no sideways scroll.
+- Questions, all open in two columns (no accordions to click).
+- The close: "Post it ~~someday~~ *this week.*" on writing paper.
+
+**Sign in**
+- One calm column on writing paper: "Welcome back.", Continue with X, Continue with Google, or an email code, then a small "Next out" card with the next three posts. No marketing beside it. In this demo every way in opens heycape's account.
