@@ -556,7 +556,7 @@ A three-way switch, **Light · Dark · Auto**, sits in the sidebar footer above 
 ## Brand and Voice
 
 - **Name:** Hookworthy. **Promise:** Good ideas die in bad first lines.
-- **Logo: the wordmark.** hook*worthy*: EB Garamond 500, lowercase, "hook" roman and "worthy" italic, the same move every headline makes. No symbol in the UI. Where a square is unavoidable (favicon, app icon), a roman Garamond h in cream on a harbor tile. Files: `assets/wordmark.svg` (outlined), `assets/icon.svg`, `assets/app-icon.svg` / `.png`.
+- **Logo** (since round 55): the hook-h glyph, bare, in the ink colour, beside "Hookworthy" in Inter 600. App icons put the glyph on a near-black tile. Files: `assets/wordmark.svg` (outlined), `assets/icon.svg`, `assets/app-icon.svg` / `.png`, `assets/og.png`.
 - **Glossary (say it this way):**
 
   | Say | Don't say |
@@ -657,3 +657,52 @@ A three-way switch, **Light · Dark · Auto**, sits in the sidebar footer above 
 - **Review links: sign in with X or Google.** Reviewers pick Continue with X (their @handle) or Continue with Google (their email) instead of typing a name; the chip shows which. No `prompt()` anywhere on the review page.
 - **X format is automatic.** The plan comes from the connected X account only. Free (or not connected): 280 a post, longer text becomes a thread as you type. Premium: any post can run long. A thread is only posts you add. The format menu, the pill and the "I have Premium / I'm on free X" switches are removed.
 - **Today's composer is light**: a normal card with a bordered field, like everything else.
+
+## Round 55: one system, dark first, five places
+
+The brand, the site and the app were rebuilt in the style of mailcheap.ai: a near-black ground, quiet grey cards with hairlines, a light primary button, a serif for the one big line on a page and a clean sans for everything else. Claims are plain and checkable.
+
+**Colour** (bare `:root` light; `[data-theme="dark"]` and the dark media query dark; dark is the default)
+- Dark: desk `#0A0A0A`, page `#0D0D0D` (`--panel`), cards `#171717` (`--surface`), raised `#1C1C1C` / `#262626`, hairlines `rgba(255,255,255,.07)` and `.12`, text `#EDEDED` / `#A3A3A3` / `#8C8C8C`.
+- Light is the same system inverted: desk `#F2F2F1`, page `#FAFAFA`, cards white, ink `#111111`.
+- The primary button is the only filled control: `#E5E5E5` on near-black text in dark, `#111111` with white text in light. Everything else is a hairline outline.
+- Colour is spent on meaning only: green `#4ADE80` for good (deltas, Active, Resolved), amber for wait, red for wrong. Comment highlights keep their eight colours.
+- A faint dot grid (`.dotgrid`, 22px, fading at the edges) sits behind the hero, the principles panel and nowhere else.
+
+**Type**
+- Newsreader (variable, self-hosted) for display: hero, section heads, page titles (`.display`), sign-in. Weight 400, tracking about -0.03em.
+- Inter (variable, self-hosted) for the interface and body. Geist Mono for URLs, keys, times and API chips.
+- The old grey second half of headings is retired; a headline is one colour. The hero's key phrase sits on a soft highlight block instead.
+
+**Logo**
+- The mark is the h whose right leg curls into a hook, drawn as a bare glyph in the ink colour. The wordmark is "Hookworthy" in Inter 600, one colour. App icons put the glyph on a near-black tile.
+
+**Theme**
+- `S.theme` defaults to `'dark'`; saves from before the redesign start dark once (`S.r55`). Light and Auto stay in Settings, the footer switch and Shift T. A tiny script in `<head>` applies the saved theme before the first paint. The site follows the theme like the app (no more forced-light homepage).
+
+**The site** (`hx-` classes; `hxPage` gives every marketing page the same nav and footer)
+- Nav: logo, Features · Pricing · Questions · Developers, Sign in, Get started.
+- Hero: "A week of posts for [X], written in your voice." The platform tile and name turn over (X, Threads, LinkedIn, Bluesky); the line never jumps because the slot's width eases.
+- The product in a browser frame with four tabs (Write, Week, Review, Results). It moves on by itself while on screen and stops when you pick a tab. Each screen has one small moment: the soft words get underlined and the first line is sharpened; a post lands on Tuesday 8:40 with an Undo toast; review comments slide in; the followers line draws itself.
+- "Everything you need to post every day": a bento of eight real UI slices (Write, Schedule with working day and time pills, Sharpen, Review links, Ideas, Results, Every network, Client voices).
+- "Nothing goes out that you didn't approve": no auto-DMs, auto-retweets, auto-deletes or bought reach.
+- Pricing: pick Free, Pro or Studio on the left, read it on the right; Monthly or Yearly.
+- Questions, the final call ("Bring your ideas. Keep your voice."), a toy (throw a note you never posted), and the footer with the theme switch.
+- Sign in (`#signin`): the form on the left (Continue with X, Continue with Google, or an email code), the product on the right. In this demo every way in opens heycape's account.
+
+**The app: five places**
+- Week (`#week`, was Today + Queue): the greeting, what goes out next, then the week grid and the drafts tray. One nudge at most.
+- Write (`#write`), Ideas (`#ideas`, now with a Formulas tab that replaces the Hooks page), Inbox (`#inbox`, was Replies), Results (`#results`, was Insights; numbers sit in one strip with green deltas).
+- Settings is one page (`#settings`): Accounts, Voices, Posting, Sound and look, Alerts, Your data.
+- Old addresses (`#today`, `#queue`, `#replies`, `#insights`, `#hooks`, `#teams`) land on their new homes.
+- Sidebar: the logo, a "Writing as" switcher for client voices, New post, Search, the five places, one drafts list, and the account. The theme switch and the AI pill left the sidebar.
+- Phones: a top bar (mark, search, your avatar for the account menu) and a tab bar of Week · Ideas · ＋ · Inbox · Results.
+- Keys: G then H (Week), W, I, N (Inbox), R (Results), V (Your voice), S (Settings).
+
+**Cut**
+- The hook tournament, Hook of the week, Compare two lines, Hook vote, the thumbnail maker (one "Make an image" remains), the Hooks page and its grader, the market calendar outside trading niches, and Earn in the account menu.
+
+**Fixed along the way**
+- Leaving a page while something on it was still animating (Results' bars, for one) held the page transition's snapshot for about 4 seconds. Finite animations on the old page now jump to their end before the transition starts; leaving Results takes about 0.2 s.
+- ⌘↵ in Write schedules for the next good open time (or the time you were writing for) in one keystroke, with Undo. The Schedule button still opens the picker; ⇧⌘↵ is still Post now.
+- Plans speak in plain limits: 10 AI rewrites a day on Free, 1,000 a month on Pro, 4,000 shared on Studio. The usage tiers and the credit table are gone.
