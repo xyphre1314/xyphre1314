@@ -392,12 +392,12 @@ Not Hookworthy colours. They exist so a replica matches the real app and appear 
 
 ## Layout
 
-**Site.** A 1200px measure (`.hx-w`) with a clamp(16px, 4vw, 40px) gutter. The nav is a floating capsule (max 1100px, 56px tall), sticky 12px from the top. Sections open with clamp(104px, 15vh, 168px) of space. Section heads sit in a 1.35fr / 1fr grid with the lede bottom-right, aligned to the head's last line; below 980px they stack.
+**Site.** A 1200px measure (`.hx-w`) with a clamp(16px, 4vw, 40px) gutter. The nav is a floating capsule (max 1100px, 56px tall), sticky 12px from the top. Sections open with clamp(104px, 15vh, 168px) of space. Section heads sit in a 1.35fr / 1fr grid with the lede bottom-right, aligned to the head's last line; the "For anyone" head runs wide (the head takes the row, the lede at most 22rem beside it). Below 980px they stack.
 - **Hero:** centred. Headline, one-line sub, two pills, then the app window (max 1120px, 560px tall: a 208px sidebar and the screen) whose tab row and top edge rise into the bottom of the first screen.
 - **Chapter:** a rounded sheet inset 8–14px from the page edges, 80–128px of inner padding; steps .82fr beside a 1.18fr photographic stage (aspect 1.18).
 - **Slices:** a 6-column grid with 16px gaps, paired 4+2, 3+3, 2+4, so no two rows share a rhythm.
 - **Personas** .9fr / 1.1fr; **trust** 1.1fr / .9fr; **pricing** three equal cards; **questions** .85fr / 1.3fr with the head sticky at 110px; **paste box** a 920px card, centred; **close** left-aligned; **footer** brand plus four link columns, then the giant wordmark bleeding off the bottom.
-- **Breakpoints:** 980px stacks every two-column grid, makes every slice full width, single-columns pricing (max 520px) and hides the window's sidebar; 760px swaps the nav links for a menu button, shrinks the window to 460px, drops the preview and side panels, and lets the week grid scroll sideways; 900px drops sign-in's photo side.
+- **Breakpoints:** 980px stacks every two-column grid, makes every slice full width, single-columns pricing (max 520px) and hides the window's sidebar; 760px swaps the nav links for a menu button, shrinks the window to 420px, drops the preview, the thread and the side panels, moves the toast to sit over the tool row, and lets the week grid scroll sideways; 900px drops sign-in's photo side.
 
 **App.** A 232px sidebar on the desk, and the page as one inset panel (14px radius, hairline edge). Five places: Week, Write, Ideas, Inbox, Results, plus Settings. Pages centre beside the sidebar with auto margins. On phones: a top bar (mark, search, avatar) and a tab bar of Week · Ideas · ＋ · Inbox · Results.
 
