@@ -1045,7 +1045,7 @@ body.typing .preview{ opacity:.7; }
 .inbox-row .src .icon{ width:16px; height:16px; }
 .inbox-row p{ font-size:var(--t-14); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
 .inbox-row small{ color:var(--text-3); font-size:var(--t-12); }
-.inbox-row .acts{ display:flex; gap:2px; opacity:0; transition:opacity var(--d-micro); }
+.inbox-row .acts{ display:flex; gap:2px; opacity:.5; transition:opacity var(--d-micro); }
 .inbox-row:hover .acts,.inbox-row:focus-within .acts{ opacity:1; }
 .empty{ display:grid; place-items:center; text-align:center; gap:10px; padding:40px 16px; color:var(--text-2); }
 .empty .flock-big{ display:flex; align-items:flex-end; gap:6px; }
@@ -5300,7 +5300,8 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 }
 .wk-head{ align-items:flex-end; }
 .wk-head .t-greet{ font-size:clamp(32px,3.4vw,44px); }
-.wk-next{ display:flex; align-items:center; flex-wrap:wrap; gap:6px 8px; margin-top:12px !important; font-size:15px; color:var(--text-2); }
+.wk-next{ display:flex; align-items:center; flex-wrap:wrap; gap:6px 8px; margin-top:12px !important; font-size:15px; color:var(--text-2); min-width:0; }
+.wk-head > div:first-child{ min-width:0; max-width:100%; } #q-sub{ overflow-wrap:anywhere; }
 .wk-next b{ color:var(--text-1); font-weight:500; }
 .wk-np{ max-width:100%; color:var(--text-2); text-align:left; text-decoration:underline; text-decoration-color:var(--border-strong); text-underline-offset:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .wk-np:hover{ color:var(--text-1); }
 .wk-dot{ width:8px; height:8px; border-radius:50%; background:var(--success); box-shadow:0 0 0 3px var(--success-soft); flex:none; } .wk-dot.off{ background:var(--text-3); box-shadow:none; }
@@ -6273,7 +6274,7 @@ function toast(msg, { icon = 'check', tone = 'ok', action, onAction, ms = 3800 }
   const host = $('#toasts'); $$('.toast', host).forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); });
   const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status');
   el.innerHTML = `${ic(icon, 't-' + tone)}<span>${msg}</span>${action ? `<button type="button">${esc(action)}</button>` : ''}`;
-  if (action && /^view queue$/i.test(action)) el.dataset.goto = 'week'; /* a 'View week' toast steps aside once you're on Week */
+  if (action && /^view (queue|week)$/i.test(action)) el.dataset.goto = 'week'; /* a 'View week' toast steps aside once you're on Week */
   host.append(el);
   const close = () => { if (el.classList.contains('out')) return; el.classList.add('out'); if (UNDO.el === el) { UNDO.fn = null; UNDO.el = null; } setTimeout(() => el.remove(), 190); };
   if (UNDO.el && UNDO.el !== el) { UNDO.fn = null; UNDO.el = null; }
@@ -6801,8 +6802,9 @@ function openProfile() {
 function signOut() { S.onboarded = false; save(); go('home'); toast('Signed out. Your drafts stay on this device for next time.', { icon: 'check' }); }
 function resetDemo() {
   if (S.live) liveEnd();
-  const theme = S.theme; S = structuredClone(DEFAULT_STATE); S.theme = theme; S.draft = freshDraft(); S.queue = seedQueue(); S.streak = seedStreak(); save(); route();
-  toast('Sample data is back.', { icon: 'undo' });
+  const before = structuredClone(S), theme = S.theme; S = structuredClone(DEFAULT_STATE); S.theme = theme; S.draft = freshDraft(); S.queue = seedQueue(); S.streak = seedStreak(); save(); route();
+  /* it replaces everything on this device, so it can be taken back */
+  toast('Sample data is back. Your own drafts and posts are one tap away.', { icon: 'undo', action: 'Undo', onAction: () => { S = before; save(); route(); toast('Everything is back as it was.', { icon: 'check' }); } });
 }
 
 /* ---------- command palette ---------- */
@@ -6831,7 +6833,7 @@ function paletteCommands() {
     { g: 'Actions', label: 'Connections and Claude', icon: 'link', run: () => openConnections() },
     { g: 'Actions', label: 'Post now', icon: 'send', kbd: [MOD, SHIFT, '↵'], risky: true, run: () => { goThen('write', publishNow); } },
     { g: 'Actions', label: 'Show or hide preview', icon: 'panel', kbd: [MOD, '\\'], run: () => { goThen('write', togglePreview); } },
-    { g: 'Actions', label: 'Shuffle post ideas', icon: 'shuffle', kbd: ['R'], run: () => { goThen('write', shuffleStarters); } },
+    { g: 'Actions', label: 'Shuffle post ideas', icon: 'shuffle', kbd: ['R'], run: () => { if (CURRENT === 'write' && $('#starters') && !$('#starters').hidden) { shuffleStarters(); return; } goThen('ideas', () => { ideaTab('you'); const b = $('[data-iact="shuffle"]'); b && b.click(); }); } },
     { g: 'Actions', label: 'Formulas for a first line', icon: 'hook', run: () => goFormulas() },
     { g: 'Actions', label: `Theme: ${themeName()} (switch to ${themeName(THEMES[(THEMES.findIndex(x => x[0] === themeKey()) + 1) % 3][0])})`, icon: themeKey() === 'system' ? 'auto' : themeKey() === 'dark' ? 'moon' : 'sun', kbd: [SHIFT, 'T'], run: toggleTheme },
     { g: 'Actions', label: 'Keyboard shortcuts', icon: 'kbd', kbd: ['?'], run: openShortcuts },
@@ -6842,7 +6844,7 @@ function paletteCommands() {
     { g: 'Actions', label: 'Homepage', icon: 'arrow', run: () => go('home') },
     ...(SHOWCASE() || DEV ? [{ g: 'Actions', label: 'Replay onboarding', icon: 'play', run: () => go('start') }, { g: 'Actions', label: 'Reset sample data', icon: 'undo', run: resetDemo }] : [])
   ];
-  const voices = [...S.workspaces.map((w, i) => ({ g: 'Write as', label: w.id === 'me' ? `Write as yourself (${w.name})` : `Write as ${w.name}`, icon: w.id === S.ws ? 'check' : w.id === 'me' ? 'write' : 'voice', kbd: i < 9 ? [MOD, String(i + 1)] : null, run: () => switchWs(w.id) })),
+  const voices = [...S.workspaces.map((w, i) => ({ g: 'Write as', label: w.id === 'me' ? `Write as yourself${w.name ? ` (${w.name})` : ''}` : `Write as ${w.name}`, icon: w.id === S.ws ? 'check' : w.id === 'me' ? 'write' : 'voice', kbd: i < 9 ? [MOD, String(i + 1)] : null, run: () => switchWs(w.id) })),
     { g: 'Write as', label: 'Add a client', icon: 'plus', run: () => openClient() }, ...S.workspaces.slice(1).map(w => ({ g: 'Write as', label: `Edit ${w.name}`, icon: 'sliders', run: () => openClient(w) }))];
   const riffs = RIFFS.map(r => ({ g: 'Rewrite your draft', label: r.label, icon: r.icon, kbd: [ALT, r.key], run: () => { goThen('write', () => runRiff(0, r.k)); } }));
   const ideas = S.ideas.map(i => ({ g: 'Saved ideas', label: i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), icon: { link: 'link', note: 'ideas', voice: 'mic', shot: 'shot' }[i.src] || 'ideas', run: () => writeFrom(expandIdea(i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), 'How-to')) }));
@@ -8192,7 +8194,7 @@ function rrCardHTML(p, i) {
     <header>${pic}<div class="rr-who" id="${rid}-who"><b>${esc(p.name || '@' + p.handle)}</b><span>@${esc(p.handle)} · ${fmtN(p.followers)} followers</span></div><span class="rr-clock ${left ? 'live' : ''}" style="--p:${Math.min(1, age / 15)}" title="${left ? `${left} of its first 15 minutes left` : 'Past the first 15 minutes'}"><i></i><span aria-hidden="true">${rrAgeShort(age)}</span></span></header>
     <p class="rr-t" id="${rid}-t">${esc(p.text)}</p>
     <div class="rr-why">${(p.why || []).map(w => rrAgeChip(age, w) ? `<span class="rr-agechip" data-w="${esc(w)}">${esc(rrAgeChip(age, w))}</span>` : `<span>${esc(w)}</span>`).join('')}</div>
-    ${done ? `<p class="rr-done">${ic('check', 'sm')} Replied${S.radar.done[p.id] !== true ? `: “${esc(clip(S.radar.done[p.id], 80))}”` : ''}</p>` : `<div class="rr-me">${avatar(S.user)}<div class="rr-box"><textarea class="input" rows="2" data-rrt="${esc(p.id)}" placeholder="${d.hint ? esc(d.hint) : 'Add a number, a counterexample, or a real question. Not “great post”.'}" aria-label="Your reply to @${esc(p.handle)}">${esc(d.text || '')}</textarea><span class="rr-n" data-rrn="${esc(p.id)}">${d.text ? HWCore.xLength(d.text) : 0}/280</span></div></div>
+    ${done ? `<p class="rr-done">${ic(p.sample ? 'copy' : 'check', 'sm')} ${p.sample ? 'Copied' : 'Replied'}${S.radar.done[p.id] !== true ? `: “${esc(clip(S.radar.done[p.id], 80))}”` : ''}</p>` : `<div class="rr-me">${avatar(S.user)}<div class="rr-box"><textarea class="input" rows="2" data-rrt="${esc(p.id)}" placeholder="${d.hint ? esc(d.hint) : 'Add a number, a counterexample, or a real question. Not “great post”.'}" aria-label="Your reply to @${esc(p.handle)}">${esc(d.text || '')}</textarea><span class="rr-n" data-rrn="${esc(p.id)}">${d.text ? HWCore.xLength(d.text) : 0}/280</span></div></div>
     <div class="rr-a">${d.angle ? `<span class="pill">${esc(d.angle)}</span>` : ''}<span class="grow"></span><button class="btn ghost sm" data-rra="skip" data-tip="S">Skip</button>${aiOn() ? `<button class="btn ghost sm" data-rra="again">${d.text ? `${ic('shuffle', 'sm')} Another version` : `${ic('spark', 'sm')} Draft in my voice`}${crTag('replies')}</button>` : ''}${(c => `<button class="btn sm primary" data-rra="send" data-tip="${keys(MOD, '↵')}">${ic(c ? 'copy' : 'reply', 'sm')} ${c ? 'Copy reply' : LLM.server && LLM.server.xUser ? 'Reply' : 'Reply on X'}</button>`)(p.sample)}</div>`}
   </article>`;
 }
@@ -11025,7 +11027,7 @@ function openTrash() {
 }
 function openDrafts(anchor) {
   const byKey = !(anchor && anchor.isConnected && anchor.getClientRects().length);
-  anchor = byKey ? draftsAnchor() : anchor; if (!anchor) return;
+  anchor = byKey ? draftsAnchor() || $('.side .searchbtn') || $('.m-top [data-act="palette"]') || $('[data-act="palette"]') : anchor; if (!anchor) { go('write'); return; }
   const sheet = matchMedia('(max-width: 760px)').matches, rail = !!anchor.closest('.side');
   const prevFocus = document.activeElement;
   const pop = openPop(anchor, `<div class="dsw-h"><label class="dsw-s">${ic('search', 'sm')}<input id="dsw-q" type="search" role="combobox" aria-expanded="true" aria-controls="dsw-list" aria-autocomplete="list" placeholder="Search drafts" aria-label="Search drafts" autocomplete="off" spellcheck="false" enterkeyhint="go"></label><button type="button" class="btn sm dsw-new" data-dsw="new" data-tip="${isEmptyDraft() ? 'Start a new post' : 'Keep this one in Drafts and start a new post'}">${ic('plus', 'sm')}<span>New draft</span></button></div><div class="dsw-list" id="dsw-list" role="listbox" aria-label="Drafts"></div><div class="dsw-f" id="dsw-f"></div>`, { label: 'Drafts', width: 400, side: rail && !sheet ? 'right' : null, align: rail ? 'start' : 'start', cls: 'dpop' + (sheet ? ' sheet' : '') });
@@ -11498,7 +11500,7 @@ function plansHTML(yearly) {
     <div class="pl-go">${p.k === 'pro' && trial
       /* on the light pages a new visitor's best first step is the trial, so it leads, with paying straight away under it */
       ? '<button class="btn primary lg" data-plan="trial">Try Pro free for 7 days</button><button class="pl-trial" data-plan="pro">or start with Pro</button>'
-      : `<button class="btn ${p.hero ? 'primary' : ''} lg" data-plan="${p.k}" ${cur ? 'aria-current="true"' : ''}>${cur ? (mine === 'trial' ? 'On your trial' : 'Your plan') : p.cta}</button>${p.k === 'pro' && trial ? '<button class="pl-trial" data-plan="trial">or try it free for 7 days</button>' : ''}`}</div></div>`;
+      : `<button class="btn ${p.hero ? 'primary' : ''} lg" data-plan="${p.k}" ${cur ? 'aria-current="true" disabled' : ''}>${cur ? (mine === 'trial' ? 'On your trial' : 'Your plan') : p.cta}</button>${p.k === 'pro' && trial ? '<button class="pl-trial" data-plan="trial">or try it free for 7 days</button>' : ''}`}</div></div>`;
   }).join('');
 }
 /* how credits work: the allowance per plan side by side, and what each thing costs (Plans page) */
