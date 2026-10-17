@@ -3057,7 +3057,7 @@ h1.display{ font-size:clamp(30px,3vw,40px); line-height:1.08; letter-spacing:-.0
   .side{ display:none; }
   .main{ margin:0; border-radius:0; box-shadow:none; min-height:100dvh; }
   .composer,.preview{ min-height:100dvh; }
-  .tabbar{ display:flex; position:fixed; z-index:70; left:0; right:0; bottom:0; justify-content:space-around; padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px)); background:color-mix(in srgb,var(--panel) 86%,transparent); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-top:1px solid var(--border); }
+  .tabbar{ display:flex; position:fixed; z-index:70; left:0; right:0; bottom:0; justify-content:space-around; padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px)); background:color-mix(in srgb,var(--panel) 96%,transparent); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-top:1px solid var(--border); }
   .tabbar a,.tabbar button{ display:grid; justify-items:center; gap:3px; padding:6px 10px; border-radius:10px; font:500 10.5px/1 var(--font-ui); color:var(--text-3); transition:color var(--d-micro),transform var(--d-spring) var(--spring-snap); }
   .tabbar a:active,.tabbar button:active{ transform:scale(.92); }
   .tabbar a[aria-current="page"]{ color:var(--text-1); }
@@ -6794,6 +6794,7 @@ function openProfile() {
     Object.assign(S.user, { name, handle, nameGuessed: false, hue: handle ? hash(handle) % 360 : S.user.hue }); const me = S.workspaces.find(w => w.id === 'me'); if (me) Object.assign(me, { name, handle, hue: S.user.hue });
     save(); m.close(); refreshSide && refreshSide(); route(); toast(handle ? `Saved. Your previews now show @${esc(handle)}.` : 'Saved.', { icon: 'check' }); };
   $('#pf-go', m.el).onclick = done; $('#pf-f', m.el).onsubmit = e => { e.preventDefault(); done(); };
+  $('#pf-f', m.el).addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); done(); } }); /* two fields and no submit button: Enter saves from either */
   hIn.oninput = () => { hIn.removeAttribute('aria-invalid'); err.textContent = ''; };
 }
 /* signing out of the demo: your drafts stay in this browser for next time */
