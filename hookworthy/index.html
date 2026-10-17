@@ -1208,17 +1208,6 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .up-hero{ text-align:center; display:grid; justify-items:center; gap:16px; }
 .up-hero .display{ font-size:clamp(40px,5.4vw,64px); }
 .plans{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:44px; align-items:stretch; }
-.plan{ position:relative; padding:24px; border-radius:20px; background:var(--surface); box-shadow:0 0 0 1px var(--border); display:flex; flex-direction:column; gap:18px; transition:transform var(--d-spring) var(--spring),box-shadow var(--d-fast); }
-.plan:hover{ transform:translateY(-3px); box-shadow:0 0 0 1px var(--border-strong),var(--sh-3); }
-.plan.featured{ box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 60%,transparent),0 30px 70px -24px var(--accent-glow); }
-.plan.featured::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:radial-gradient(90% 60% at 50% 0%,var(--accent-soft),transparent 70%); pointer-events:none; }
-.plan .price{ display:flex; align-items:baseline; gap:6px; }
-.plan .price b{ font:650 56px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
-.plan ul{ list-style:none; padding:0; margin:0; display:grid; gap:10px; font-size:var(--t-14); }
-.plan li{ display:flex; gap:10px; align-items:flex-start; }
-.plan li .icon{ width:16px; height:16px; margin-top:2px; color:var(--accent-text); }
-.plan .grow{ flex:1; }
-.plan .tag{ position:absolute; top:-11px; left:24px; background:var(--accent); color:var(--accent-ink); }
 .faq{ max-width:720px; margin:72px auto 0; }
 .faq details{ border-bottom:1px solid var(--border); }
 .faq summary{ list-style:none; cursor:pointer; padding:18px 4px; font:500 var(--t-17)/1.4 var(--font-ui); display:flex; justify-content:space-between; align-items:center; gap:12px; }
@@ -10319,8 +10308,8 @@ async function openPlan() {
     const it = items[i]; if (!it) return; $$('.pl-t', m.el).forEach(t => { it.posts[+t.dataset.k] = t.value; });
     if (a === 'ok') { const tw = it.posts.map(x => x.trim()).filter(Boolean); if (!tw.length) { toast('That one’s empty. Write something or skip it.', { icon: 'write', tone: 'err' }); return; }
       /* an outline with [blanks] isn't a post yet: it goes to Write, not the queue */
-      if (tw.some(x => /\[[^\]\n]{1,40}\]/.test(x))) { const d = freshDraft(tw); d.slot = { day: it.slot.day, time: it.slot.time }; S.drafts.unshift(d); save(); planned.push({ l: it.slot.label, draft: true }); SFX.play('tick'); }
-      else { const q = { id: uid(), day: it.slot.day, time: it.slot.time, text: tw[0], tweets: tw, platforms: { ...S.platforms }, status: 'scheduled', ws: S.ws, planned: true, ...(WS().approvals ? { approval: 'needs' } : {}) }; S.queue.push(q); save(); syncToServer(q); planned.push({ l: it.slot.label }); SFX.play('tick'); } }
+      if (tw.some(x => /\[[^\]\n]{1,40}\]/.test(x))) { const d = freshDraft(tw); d.slot = { day: it.slot.day, time: it.slot.time }; S.drafts.unshift(d); save(); planned.push({ l: it.slot.label, draft: true, day: it.slot.day }); SFX.play('tick'); }
+      else { const q = { id: uid(), day: it.slot.day, time: it.slot.time, text: tw[0], tweets: tw, platforms: { ...S.platforms }, status: 'scheduled', ws: S.ws, planned: true, ...(WS().approvals ? { approval: 'needs' } : {}) }; S.queue.push(q); save(); syncToServer(q); planned.push({ l: it.slot.label, day: it.slot.day }); SFX.play('tick'); } }
     if (a === 'edit') { list0 = true; const it0 = it; m.close(); writeFrom(it0.posts); S.draft.slot = { day: it0.slot.day, time: it0.slot.time }; save(); return; }
     i++; draw();
   };
@@ -10329,7 +10318,9 @@ async function openPlan() {
   document.addEventListener('keydown', key, true);
   m.el.addEventListener('click', e => { const b = e.target.closest('[data-pl]'); if (b) act(b.dataset.pl); });
   const done = () => { if (planned.length) { const nS = planned.filter(x => !x.draft).length, nD = planned.length - nS;
-    toast(`${nS ? `${nS} scheduled` : ''}${nS && nD ? ', ' : ''}${nD ? `${nD} ready to fill on Week` : ''}. ${nD ? 'The dashed cards are yours to finish.' : 'Plan once, post all week.'}`, { icon: 'cal', tone: 'accent', ms: 5000 }); if (CURRENT === 'week') { drawCal(); drawQSide(); } burst(innerWidth / 2, innerHeight / 3); } };
+    toast(`${nS ? `${nS} scheduled` : ''}${nS && nD ? ', ' : ''}${nD ? `${nD} ready to fill` : ''}. ${nD ? 'The dashed cards are yours to finish.' : 'Plan once, post all week.'}`, { icon: 'cal', tone: 'accent', ms: 5000 });
+    /* the calendar turns to the week the plan landed in, so the new cards are in view */
+    if (CURRENT === 'week') { const d0 = planned.map(x => x.day).filter(Boolean).sort()[0]; if (d0) WEEK = Math.round((startOfWeek(fromKey(d0)) - startOfWeek(new Date())) / (7 * DAY)); drawCal(); drawQSide(); } burst(innerWidth / 2, innerHeight / 3); } };
   draw();
 }
 function weekGap(list = myQ()) { const now = Date.now(); return list.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now && slotDate(q.day, q.time) - now < 7 * DAY).length; }
