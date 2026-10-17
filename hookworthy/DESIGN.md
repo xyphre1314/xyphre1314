@@ -752,3 +752,23 @@ The owner found round 56 weaker than round 55 and asked for the two to be combin
 **Sign in** (`#signin`): the form on the left ("Welcome back.", Continue with X, Continue with Google, or an email code as a pill field); on the right, the run photo with the clock chip at Tue 8:40 AM, "Your week is right where you left it." and a Next out card with three posts. Below 900px only the form remains. In this demo every way in opens heycape's account.
 
 **Review fixes (same round):** the first screen, quieter status and calmer slices.
+
+## Round 58: everything earns its place
+
+The owner asked for another hard critique of the app, not the site: cut anything that is only there to be there, promote features in positive words (a little rhyme where it lands), make the demo content relatable, and make every flow land somewhere real. Two assessments ran separately: design, copy and flow from screenshots, and a detector plus scripted flows in a browser.
+
+**Identity:** a new user can set their name and @handle from the account menu or Settings › Accounts (`openProfile()`); previews use "You" until they do. Sign out keeps drafts on the device.
+
+**No dead ends:** Connect, Turn on, Email Sundays, Breakout alerts and Self-hosting show only when the server can do them. Without a server, a post "waits on Week; one tap and it's out". Names are now consistent: Claude (rewrites) and Quick mode (on your device).
+
+**Write carries the homepage's signature:** soft words in the first line get the amber wavy line in the composer mirror (`.tw-mirror .sw`, from `hgMarks`), and the coach button becomes "Sharpen · N". One tap cuts them in place (`sharpenFirst()`, shared `hgClean()`), keeps the writer's case, and offers Undo. With no soft words, the button opens Improve as before. The Improve › First line panel drops the "N of 5" count and the grade words, ticks instead of strikethrough, "Do it for me" instead of "Fix it", and one note: "It reads your line, not your likes." It no longer shows a voice match against the sample voice.
+
+**Week:** one positive line ("A clear week ahead. Plan it once, post all week."), one header action (Draft my week), past days dimmed, no handwritten note, no zero counts. Draft my week says what its button does: "Save for Tue" when a post has [blanks], "Schedule" once they're filled. Saved drafts show on their time as dashed cards (`.qcard.draftc`) that open the draft. Starter topics read as actions (e.g. "trading after a loss", "pacing a solo build"), and formula fills read as English in every template that uses them.
+
+**Results, Voice, Inbox for a new user:** Results leads with your own week ("A clean slate. First post, first lesson.", Write your first post, Already posting? Bring your posts); the sample account folds behind "See an example account" with no Remix. Voice shows "Your starting voice" from the tone sliders (it follows them live) and a progress bar toward 8 posts, never a stranger's words. Inbox: "Your replies first", a sample radar button that says Copy reply, keys behind a "?" that opens the shortcuts sheet, and "2 replies so far: room for yours".
+
+**Clients:** Week greets "Morning. Writing as Ledgerly." and Next out skips posts still waiting on a yes.
+
+**Plans:** "Sound like you. Show up every day.", one trial button (on the Pro card), no Soon rows, "Claude rewrites" everywhere, and the trial headline counts the days left.
+
+**Drift and phone:** eyebrows are sentence case (no uppercase labels in the app), the Upgrade FAQ head is Newsreader, the ⌘K list hides Tidy and Recently deleted when there's nothing to tidy or restore, Design system is a developer extra, the Ideas save icon is a bookmark, and "Saved" drops its zero. On phone, Schedule keeps its label beside a send arrow, the Ideas tabs sit on one row, and the agenda skips past empty days.
