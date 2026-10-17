@@ -4742,6 +4742,7 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 .hz-lede{ max-width:31rem; margin:0; font-size:clamp(16.5px,1.25vw,18px); line-height:1.55; color:var(--text-2); text-wrap:pretty; }
 .hz-head{ display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:24px 64px; align-items:end; }
 .hz-head .hz-lede{ justify-self:end; }
+.hz-head.wide{ grid-template-columns:minmax(0,1fr) auto; } .hz-head.wide .hz-lede{ max-width:22rem; }
 .hx-rv{ transition:opacity .9s var(--hx-e),transform 1s var(--hx-e),filter .9s var(--hx-e); }
 .hx-rv:not(.in){ opacity:0; transform:translateY(22px); filter:blur(6px); }
 
@@ -4761,7 +4762,7 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .hx{ --tile-ink:#1E1E1E; } }
 .hz-tm{ position:absolute; inset:0; display:grid; grid-template-columns:1fr 1fr; gap:.035em; padding:.045em; background:var(--surface-2); }
 .hz-tm i{ position:relative; overflow:hidden; border-radius:.07em; background:var(--surface-3); } .hz-tm .avp{ position:absolute; inset:0; background:var(--spr-av) no-repeat 0 0 / 100% 1800%; } .hz-tm .avp2{ background-image:var(--spr-av2); background-size:100% 600%; }
-.hz-h2 .hz-t{ width:.8em; height:.8em; animation:none; }
+.hz-h2 .hz-t{ width:.86em; height:.86em; vertical-align:-.12em; animation:none; }
 @keyframes hztile{ from{ opacity:0; transform:rotate(var(--r,-4deg)) scale(.35); } }
 .hz-f{ position:absolute; inset:0; display:grid; place-items:center; opacity:0; transform:translateY(40%) scale(.9); transition:opacity .45s var(--hx-e),transform .7s var(--hx-e); }
 .hz-f.on{ opacity:1; transform:none; } .hz-f.off{ opacity:0; transform:translateY(-40%) scale(.9); }
@@ -5212,7 +5213,7 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 @media (max-width:980px){
   .hx-app{ grid-template-columns:minmax(0,1fr); } .hx-aside{ display:none; }
   .hx-wk, .hx-rvw{ grid-template-columns:minmax(0,1fr); } .hx-wks, .hx-rvc{ display:none; }
-  .hz-head{ grid-template-columns:minmax(0,1fr); } .hz-head .hz-lede{ justify-self:start; }
+  .hz-head, .hz-head.wide{ grid-template-columns:minmax(0,1fr); } .hz-head .hz-lede{ justify-self:start; }
   .st{ grid-template-columns:minmax(0,1fr); } .st-stage{ order:-1; aspect-ratio:1.1; } .st-cap{ grid-column:1; }
   .hx-b-sharp, .hx-b-nets, .hx-b-review, .hx-b-voices, .hx-b-ideas, .hx-b-inbox{ grid-column:span 6; }
   .wh-p{ grid-template-columns:minmax(0,1fr); }
@@ -5225,12 +5226,12 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
   .hx-links, .hx-in{ display:none; } .hx-mb{ display:grid; } .hx-nav .hx-nav-in{ gap:10px; padding-left:16px; }
   .hz-h1{ font-size:min(9.7vw,58px); }
   .hx-tabs button{ height:34px; padding:0 12px; font-size:13.5px; gap:6px; }
-  .hx-app{ height:460px; font-size:12.5px; }
-  .hx-wr{ grid-template-columns:minmax(0,1fr); } .hx-pv{ display:none; } .hx-ed{ border-right:0; padding:26px 18px 16px; }
+  .hx-app{ height:420px; font-size:12.5px; }
+  .hx-wr{ grid-template-columns:minmax(0,1fr); } .hx-pv{ display:none; } .hx-ed{ border-right:0; padding:26px 18px 16px; } .hx-thr, .hx-edw::before{ display:none; }
   .hx-sch{ padding:0 12px; gap:6px; } .hx-sch .hx-gb:not(#hx-sched){ display:none; } .hx-sch .hx-wb{ display:none; }
   .hx-cal{ overflow-x:auto; } .hx-calh, .hx-calr{ grid-template-columns:52px repeat(7,92px); }
   .hx-kpis{ grid-template-columns:repeat(2,minmax(0,1fr)); } .hx-kpis > div:nth-child(3){ box-shadow:0 -1px 0 var(--border); } .hx-kpis > div:nth-child(4){ box-shadow:-1px 0 0 var(--border),0 -1px 0 var(--border); }
-  .hx-toast{ left:12px; right:12px; top:62px; bottom:auto; justify-content:space-between; }
+  .hx-toast{ left:12px; right:12px; bottom:10px; justify-content:space-between; }
   .st-stage{ aspect-ratio:.86; } .st-sc{ padding:60px 14px 16px; } .st-days{ gap:4px; } .st-day{ min-height:110px; padding:6px 3px; } .st-pc{ font-size:9.5px; padding:4px; }
   .hx-card{ padding:26px 20px 0; border-radius:20px; } .hx-ib{ grid-template-columns:minmax(0,1fr); } .hx-ibl{ display:none; }
   .wh-v{ aspect-ratio:auto; padding:18px; }
@@ -12402,7 +12403,7 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   </div></section>
 
   <section class="hz-sec" id="who" aria-labelledby="hz-w-h"><div class="hx-w">
-    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-w-h">For anyone <span class="hz-t" style="--r:5deg" aria-hidden="true"><span class="hz-tm">${[4, 0, 16, 18].map(i => `<i>${i < AV_N ? `<i class="avp" style="background-position:0 ${sprY(i, AV_N)}"></i>` : `<i class="avp avp2" style="background-position:0 ${sprY(i - AV_N, AV2_N)}"></i>`}</i>`).join('')}</span></span> with a take and a post to make.</h2><p class="hz-lede">Pick yours. Same idea every time: a post people stop for, in a voice that’s still yours.</p></div>
+    <div class="hz-head wide hx-rv"><h2 class="hz-h2" id="hz-w-h">For anyone <span class="hz-t hz-tw" style="--r:5deg" aria-hidden="true">${[0, 16, 18, 4].map(face).join('')}</span> with a take<br>and a post to make.</h2><p class="hz-lede">Pick yours. Same idea every time: a post people stop for, in a voice that’s still yours.</p></div>
     ${hzWhoHTML()}
   </div></section>
 
@@ -12458,6 +12459,11 @@ function hxInitHome() {
     was.classList.remove('on'); was.classList.add('off'); tg.later(() => was.classList.remove('off'), 720); nx.classList.remove('off'); nx.classList.add('on'); }, n * 200));
   const loopTiles = () => { if (!heroOn) return; tg.later(() => { turnTiles(); loopTiles(); }, 2800); };
   if (!REDUCED) seen(hero, () => { if (!heroOn) { heroOn = true; loopTiles(); } }, () => { heroOn = false; tg.clear(); $$('.hz-f.off', hero).forEach(f => f.classList.remove('off')); }, .15);
+  /* the face in the "For anyone" head turns over the same way, while that head is on screen */
+  const wtile = $('.hz-tw'), wg = group(); let wOn = false;
+  const turnW = () => { const fs = $$('.hz-f', wtile), i = Math.max(0, fs.findIndex(f => f.classList.contains('on'))), was = fs[i], nx = fs[(i + 1) % fs.length];
+    was.classList.remove('on'); was.classList.add('off'); wg.later(() => was.classList.remove('off'), 720); nx.classList.remove('off'); nx.classList.add('on'); if (wOn) wg.later(turnW, 2600); };
+  if (!REDUCED && wtile) seen(wtile, () => { if (!wOn) { wOn = true; wg.later(turnW, 1400); } }, () => { wOn = false; wg.clear(); $$('.hz-f.off', wtile).forEach(f => f.classList.remove('off')); }, .5);
 
   /* ---------- the app: four screens in one window. The write screen plays the whole move: soft words marked,
      a cursor presses Sharpen, the first line resets, the preview follows, Schedule, done. Then it moves on by
