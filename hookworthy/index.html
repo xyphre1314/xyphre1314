@@ -468,6 +468,8 @@ body.focus-mode .shell{ grid-template-columns:0 minmax(0,1fr); }
 body.focus-mode .composer{ grid-template-columns:minmax(0,1fr) 0!important; }
 body.focus-mode .composer .preview{ display:none; }
 body.focus-mode .c-top > :not(.fm-tog):not(.grow){ opacity:0; pointer-events:none; }
+/* r63: Focus and Share live in More; the toggle shows only in focus mode, as the way back out */
+.c-top .fm-tog{ display:none; } body.focus-mode .c-top .fm-tog{ display:inline-flex; }
 body.focus-mode .c-top{ background:transparent; border-color:transparent; }
 body.focus-mode .editor .starters, body.focus-mode .editor-foot, body.focus-mode .tw .tools{ opacity:0; pointer-events:none; }
 body.focus-mode .editor{ padding-bottom:45vh; }
@@ -1326,9 +1328,13 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 .ot-diff del.vw{ background:none; box-shadow:none; color:var(--text-3); text-decoration:line-through; text-decoration-color:var(--accent); } .ot-diff ins{ text-decoration:none; background:var(--marker-soft); border-radius:3px; }
 .ot-why{ font-size:13px; }
 .onb-result > *{ animation:rise var(--d-slow) var(--ease-out) both; }
-.onb-result > *:nth-child(2){ animation-delay:80ms } .onb-result > *:nth-child(3){ animation-delay:160ms }
-.onb-result .grid{ display:grid; grid-template-columns:320px 1fr; gap:14px; align-items:start; }
-.voice-card{ padding:20px; display:grid; gap:14px; position:sticky; top:20px; }
+.onb-result > *:nth-child(2){ animation-delay:80ms } .onb-result > *:nth-child(3){ animation-delay:160ms } .onb-result > *:nth-child(4){ animation-delay:240ms } .onb-result > *:nth-child(5){ animation-delay:300ms }
+/* r63: the voice is one quiet line, not a card; the page's job is your first post */
+.onb-me{ display:flex; gap:12px 16px; align-items:center; flex-wrap:wrap; }
+.onb-me .om-who{ display:grid; gap:2px; min-width:0; } .onb-me .om-who .faint{ font-size:13px; }
+.onb-me .om-v{ display:grid; gap:4px; margin-left:auto; min-width:0; } .onb-me .om-t{ display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; font-size:15px; } .onb-me .om-t b{ font-weight:600; cursor:help; } .onb-me .om-t i{ font-style:normal; color:var(--text-3); }
+.onb-ideas-w{ display:grid; gap:12px; }
+@media (max-width:560px){ .onb-me .om-v{ margin-left:0; flex:1 1 auto; } }
 .post-ideas{ display:grid; gap:10px; }
 .pidea{ display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center; padding:16px 16px 16px 18px; text-align:left; animation:rise var(--d-slow) var(--ease-out) both; }
 .pidea p{ font:400 var(--t-15)/1.5 var(--font-ui); white-space:pre-wrap; }
@@ -2491,7 +2497,6 @@ table.data td.n,table.data th.n{ text-align:right; font-family:var(--font-mono);
 @media (max-width:520px){ .er-steps{ grid-template-columns:minmax(0,1fr); } }
 .inbox-row[data-id]{ cursor:pointer; } .inbox-row[data-id]:hover{ background:color-mix(in srgb,var(--text-1) 3%,transparent); }
 /* onboarding on phones: the post ideas come before the voice card */
-@media (max-width:760px){ .onb-result .grid > .voice-card{ order:2; } }
 /* Recently deleted */
 .tr-l{ list-style:none; margin:0; padding:0; display:grid; gap:4px; }
 .tr-i{ display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px; background:var(--surface-2); }
@@ -3048,8 +3053,6 @@ h1.display{ font-size:clamp(30px,3vw,40px); line-height:1.08; letter-spacing:-.0
 @media (max-width:980px){
   .kpis{ grid-template-columns:1fr 1fr; }
   .voice-hero,.brand-hero{ grid-template-columns:1fr; }
-  .onb-result .grid{ grid-template-columns:1fr; }
-  .voice-card{ position:static; }
   .grader{ grid-template-columns:1fr; }
   .grader-side{ border-left:0; border-top:1px solid var(--border); }
 }
@@ -3301,7 +3304,6 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .plan .td-card{ gap:10px; }
 .pl-t{ width:100%; border:0; resize:vertical; background:var(--surface-2); border-radius:10px; padding:10px 12px; font:400 16px/1.5 var(--font-ui); color:var(--text-1); box-shadow:inset 0 0 0 1px var(--border); }
 .pl-t:focus{ outline:none; box-shadow:var(--focus); }
-.plan-nudge{ margin-top:-6px; }
 
 /* review links */
 .review-pill{ height:24px; padding:0 10px; border-radius:99px; font-size:var(--t-12); font-weight:500; color:var(--text-2); background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); margin-left:6px; white-space:nowrap; }
@@ -3898,7 +3900,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .c-top .sched-btn .icon, .c-top .post-main .icon{ margin-inline:-2px 0; }
 /* the bar sizes itself to the editor column, not the window: with the preview open it tucks labels away before anything clips */
 .c-top{ container:ctop / inline-size; }
-@container ctop (max-width: 1000px){ .share-tog span, .pv-tog span, .plats-l{ display:none; } .share-tog, .pv-tog{ width:var(--bh); padding:0 !important; } }
+@container ctop (max-width: 1000px){ .pv-tog span, .plats-l{ display:none; } .pv-tog{ width:var(--bh); padding:0 !important; } }
 /* the save word goes before Schedule's label does: the dot still shows the state, and screen readers still hear it */
 @container ctop (max-width: 780px){ .checks-pill .cp-l, .pm-n{ display:none; } .c-top .status .txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; } }
 @container ctop (max-width: 690px){ .fm-tog{ display:none; } .sched-btn span{ display:none; } .sched-btn{ width:var(--bh); padding:0 !important; } }
@@ -3907,7 +3909,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
   .c-top .sched-btn span{ display:none; } .c-top .sched-btn{ width:var(--bh); padding:0; }
   .c-top .post-main .pm-n{ display:none !important; }
 }
-@media (max-width:560px){ .c-top .share-tog{ display:none; } .c-top .post-main{ padding:0 10px !important; gap:5px; } }
+@media (max-width:560px){ .c-top .post-main{ padding:0 10px !important; gap:5px; } }
 /* the smallest phones: everything still fits, Post now just says Post */
 @media (max-width:420px){ .c-top .plats .plat{ min-width:30px; width:30px; } .c-top{ gap:3px; padding:0 8px; } }
 @media (max-width:370px){ .c-top .pm-now{ display:none; } }
@@ -7319,7 +7321,6 @@ function composerHTML() {
       <div class="grow"></div>
       <span class="plats-l">Post to</span><div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}${k === 'threads' || k === 'bsky' ? ' (you paste this one yourself)' : ''}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>${S.platforms.x && xPaid() ? `<button class="xfmt-pill" data-cact="xfmt" data-tip="Thread or one long post on X" aria-haspopup="menu">${xLong() ? 'Long post' : 'Thread'}</button>` : ''}
       <button class="btn ghost icon-only sm fm-tog" data-cact="focus" data-tip="Focus: just you and the words" data-kbd="${MOD} ." aria-label="Focus mode" aria-pressed="${document.body.classList.contains('focus-mode')}">${ic('focus', 'sm')}</button><button class="btn ghost sm pv-tog" data-cact="preview" aria-label="Preview" aria-pressed="${!!S.preview.on}" data-tip="${S.preview.on ? 'Hide' : 'Show'} the preview" data-kbd="${MOD} \\">${ic('panel', 'sm')}<span>Preview</span></button>
-      <button class="btn ghost sm share-tog" data-cact="share" aria-label="Share" data-tip="Share a link for comments" aria-haspopup="dialog" aria-expanded="false">${ic('link', 'sm')}<span>Share</span></button>
       <button class="btn ghost icon-only" data-cact="schedmenu" data-tip="More" aria-label="More" aria-haspopup="menu">${ic('more')}</button>
       ${postBtnsHTML()}
     </div>
@@ -9989,7 +9990,9 @@ function weekNext(b) {
 /* Receipts: every price call you post, kept. You mark it hit or missed (nothing here watches prices), and the follow-up is
    one tap: the misses too, because receipts both ways are why people trust the next call */
 function drawCalls() {
-  const el = $('#calls'); if (!el) return; if (!S.calls) S.calls = SHOWCASE() ? seedCalls() : [];
+  const el = $('#calls'); if (!el) return; if (!S.calls) S.calls = SHOWCASE() && tradingNiche() ? seedCalls() : [];
+  /* r63: the sample $BTC calls belong to a trading account; a newsletter writer never sees them. Your own calls (they carry a qid) stay */
+  if (!tradingNiche() && S.calls.some(c => !c.qid)) S.calls = S.calls.filter(c => c.qid);
   const C = [...S.calls].sort((a, b) => (a.status === 'open' ? 0 : 1) - (b.status === 'open' ? 0 : 1) || b.at - a.at);
   if (!C.length) { el.innerHTML = tradingNiche() ? `<section class="card calls empty"><span class="label">Receipts</span><p>Post a call with a ticker and a level (“$SOL tags 180 by Friday”) and it lands here. Mark it hit or missed later, and the follow-up writes itself.</p></section>` : ''; return; }
   const done = C.filter(c => c.status !== 'open'), hit = done.filter(c => c.status === 'hit').length, day = t => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -10700,7 +10703,6 @@ async function openPlan() {
     if (CURRENT === 'week') { const d0 = planned.map(x => x.day).filter(Boolean).sort()[0]; if (d0) WEEK = Math.round((startOfWeek(fromKey(d0)) - startOfWeek(new Date())) / (7 * DAY)); drawCal(); drawQSide(); } burst(innerWidth / 2, innerHeight / 3); } };
   draw();
 }
-function weekGap(list = myQ()) { const now = Date.now(); return list.filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now && slotDate(q.day, q.time) - now < 7 * DAY).length; }
 /* ==========================================================================
    FIRST-HOUR REPLY DESK: the replies worth answering, ranked, each with a draft in your voice.
    Live replies come from X through the server; otherwise it shows a labelled sample
@@ -11554,6 +11556,7 @@ function composerClick(e) {
     case 'schedmenu': openMenu(el, [
       ...(innerWidth <= 560 ? [{ label: ($('#composer') && $('#composer').classList.contains('show-sheet')) ? 'Hide preview' : 'Show preview', icon: 'panel', run: togglePreview }] : []),
       { label: 'Share for review', icon: 'link', hint: S.draft.reviewPublic ? 'Link is on' : 'A link for comments', run: () => setTimeout(() => openShare(el), 0) },
+      ...(innerWidth > 760 ? [{ label: document.body.classList.contains('focus-mode') ? 'Leave focus mode' : 'Focus mode', icon: 'focus', kbd: [MOD, '.'], run: toggleFocus }] : []),
       ...(S.platforms.linkedin && S.draft.tweets.filter(t => t.text.trim()).length >= 3 ? [{ label: 'LinkedIn carousel (PDF)', icon: 'layers', run: openCarousel }] : []),
       { label: 'Copy thread text', icon: 'copy', run: copyThread }
     ], { align: 'end', width: 250 }); break;
@@ -13601,27 +13604,19 @@ function onbStep3() {
   const secs = Math.max(4, Math.round((Date.now() - (ONB.t0 || Date.now())) / 1000)), read = !!an;
   const skip = $('.onb-top a[href="#write"]'); if (skip) skip.hidden = true; /* setup is done: nothing left to skip */
   $('#onb').innerHTML = `<div class="onb-result">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><h1 class="display" style="font-size:clamp(36px,5vw,56px)">${an || (S.profile && S.profile.traits) ? (name && !S.user.nameGuessed ? `Here’s how you sound, <em>${esc(name.split(' ')[0])}.</em>` : 'Here’s how <em>you sound.</em>') : (name && !S.user.nameGuessed ? `Your starting voice, <em>${esc(name.split(' ')[0])}.</em>` : 'Your starting <em>voice.</em>')}</h1></div>${read ? `<span class="timer" data-tip="How long the read took">${ic('clock', 'xs')} ${secs < 60 ? `${secs} seconds` : `${Math.round(secs / 60)} min`} to read ${fmtN(an.n)} posts</span>` : ''}</div>
-    <div class="card onb-try" id="onb-try"><div class="ot-h"><span class="label">Try it on your own line</span><span class="faint">The post you almost sent this week. Rough is fine; we’ll sharpen the line.</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><h1 class="display" style="font-size:clamp(36px,5vw,56px)">${an || (S.profile && S.profile.traits) ? (name && !S.user.nameGuessed ? `Here’s how you sound, <em>${esc(name.split(' ')[0])}.</em>` : 'Here’s how <em>you sound.</em>') : (name && !S.user.nameGuessed ? `Your first post, <em>${esc(name.split(' ')[0])}.</em>` : 'Your first <em>post.</em>')}</h1></div>${read ? `<span class="timer" data-tip="How long the read took">${ic('clock', 'xs')} ${secs < 60 ? `${secs} seconds` : `${Math.round(secs / 60)} min`} to read ${fmtN(an.n)} posts</span>` : ''}</div>
+    <div class="onb-me">${avatar(S.user, 'lg')}<div class="om-who"><b>${esc(name || 'You')}</b><span class="faint">${handle ? `@${esc(handle)} · ` : ''}${esc(ONB.niche)}</span></div><div class="om-v"><span class="label">${an ? 'You sound' : 'Starting voice'}</span><span class="om-t">${traits.map(([t, ev]) => `<b data-tip="${esc(ev)}" tabindex="0">${esc(t)}</b>`).join('<i aria-hidden="true">·</i>')}</span></div><a class="btn ghost sm" href="#voice">${ic('sliders', 'sm')} Tune</a></div>
+    <div class="card onb-try" id="onb-try"><div class="ot-h"><span class="label">The post you almost sent</span><span class="faint">Rough is fine. We’ll sharpen the first line.</span></div>
       <textarea class="input" id="ot-in" rows="2" maxlength="600" placeholder="${/crypto|trad/i.test(S.user.niche || '') ? 'i think btc is probably going to break 100k soon tbh' : 'so i think pricing is really important for early startups'}" aria-label="A post you almost wrote">${esc(S.pendingLine || '')}</textarea>
       <div class="ot-a"><button class="btn primary" id="ot-go">${ic('bolt', 'sm')} Sharpen it</button><span class="faint ot-note" id="ot-note"></span></div>
       <div class="ot-out" id="ot-out" aria-live="polite"></div></div>
-    <div class="grid">
-      <div class="card voice-card">
-        <div style="display:flex;gap:12px;align-items:center">${avatar(S.user, 'lg')}<div><b>${esc(name || 'You')}</b><div class="faint" style="font-size:13px">${handle ? `@${esc(handle)} · ` : ''}${esc(ONB.niche)}</div></div></div>
-        <div>${traits.map(([t, s]) => `<div class="trait"><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join('')}</div>
-        ${an ? `<p class="faint" style="font-size:13px">From ${fmtN(an.n)} of your posts. <a href="#voice" class="lnk-u">Let Claude study them</a> and it picks up the rest.</p>` : `<p class="faint" style="font-size:13px">Your starting voice. <button class="lnk-u" data-act="import">Bring a few posts</button>: your words in, your voice out.</p>`}
-        <div style="display:grid;gap:8px"><span class="label">Never-say list</span><div class="words">${S.voice.never.slice(0, 4).map(w => `<span class="w no">${esc(w)}</span>`).join('')}</div></div>
-        <a class="btn sm" href="#voice">${ic('sliders', 'sm')} Tune your voice</a>
-      </div>
-      <div style="display:grid;gap:12px;align-content:start"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Or start from one of these</span><button class="btn ghost sm" id="onb-more">${ic('shuffle', 'sm')} Five more</button></div>
-        <div class="post-ideas" id="onb-ideas">${onbIdeas(ideas)}</div></div>
-    </div>
+    <div class="onb-ideas-w"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">No post in mind? Start from one of these</span><button class="btn ghost sm" id="onb-more">${ic('shuffle', 'sm')} Three more</button></div>
+      <div class="post-ideas" id="onb-ideas">${onbIdeas(ideas.slice(0, 3))}</div></div>
     <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">${S.pendingLine ? `<button class="btn primary lg" id="onb-line">${ic('write', 'sm')} Open your line in Write</button>` : ''}<a class="btn lg" href="#week">Plan my week${ic('arrow')}</a></div>
   </div>`;
   onbFocusHead();
   let seed = hash(handle) % 9999; onbTry();
-  $('#onb-more').onclick = () => { $('#onb-ideas').innerHTML = onbIdeas(genIdeas(5, ++seed)); };
+  $('#onb-more').onclick = () => { $('#onb-ideas').innerHTML = onbIdeas(genIdeas(3, ++seed)); };
   $('#onb-ideas').onclick = e => {
     const b = e.target.closest('[data-oi]'); if (!b) return; const card = b.closest('.pidea');
     if (b.dataset.oi === 'open') writeIdea(card.dataset.t, card.dataset.k, card.dataset.topic);
@@ -14226,7 +14221,6 @@ ROUTES.week = () => {
   const nm = greetName();
   const cl = S.ws !== 'me' ? WS() : null; /* writing as a client: the greeting says whose week this is */
   mount('week', `<div class="page wk-page" style="max-width:1280px"><div class="page-h wk-head"><div><h1 class="display t-greet">${greetWord()}${cl ? `. Writing as ${esc(cl.name)}` : nm ? `, <span class="t-name" id="t-name" tabindex="0" role="button" aria-label="${esc(`Your name here: ${nm}. Press Enter to change it`)}" data-tip="Double-click to change">${esc(nm)}</span>` : ''}.</h1><p class="wk-next" id="wk-next"></p><p id="q-sub"></p></div><div class="wk-acts"><button class="btn primary" data-qact="plan" data-tip="Five minutes in, five posts out">${ic('spark', 'sm')} Draft my week${crTag('week')}</button></div></div>
-  <div id="q-nudge"></div>
   <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">This week</button><span class="range" id="q-range"></span><button class="btn sm q-times-b" data-qact="times" aria-haspopup="dialog">${ic('clock', 'sm')} Times</button>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#results"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="Week calendar. Each card is a post. Press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide(); checkQueuePrices();
@@ -14451,7 +14445,7 @@ function drawCal() {
   const wn = $('#wk-next'); if (wn) { const up = myQ().filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now).sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)), nx = up.find(q => q.approval !== 'needs'), wait = up.filter(q => q.approval === 'needs').length;
     wn.innerHTML = !nx && wait ? `<span class="wk-dot off"></span>${wait} waiting on ${esc(WS().name)}’s yes. Once they nod, it goes out on time.` : nx ? `<span class="wk-dot"></span>Next out <b>${esc(slotWhen(nx.day, nx.time))}</b> <button type="button" class="wk-np" data-up-id="${esc(nx.id)}">“${esc(clip(nx.text, 64))}”</button>` : drafts.length ? `<span class="wk-dot off"></span>${drafts.length} draft${drafts.length > 1 ? 's' : ''} planned, yours to finish. Tap a dashed card to fill it in.` : `<span class="wk-dot off"></span>A clear week ahead. Plan it once, post all week.`; }
   /* the nudge counts what the calendar shows (this voice, or every voice), so it never contradicts the line above it */
-  const qn = $('#q-nudge'); if (qn) { const g = weekGap(qList()); qn.innerHTML = g && g < 3 ? `<div class="ins-demo plan-nudge"><span>${ic('cal', 'sm')} ${g} lined up for the next 7 days. One more keeps the rhythm going.</span></div>` : ''; }
+  /* r63: the sub line under the heading already counts what's lined up; a second banner saying it again was noise */
   const miss = qList().filter(q => q.status === 'due' || (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < now)).length;
   const did = [wk ? `${wk} scheduled` : '', sent ? `${sent} posted` : ''].filter(Boolean).join(', ');
   $('#q-sub').textContent = `${wname}: ${w1 <= now ? `${sent} posted.` : `${did ? did + '. ' : ''}${open ? `${open} good time${open === 1 ? '' : 's'} still open.` : `Every good time is taken ${WEEK === 0 ? 'this week' : WEEK === 1 ? 'next week' : 'that week'}.`}`}${miss ? ` ${miss} missed ${miss > 1 ? 'their' : 'its'} time and need${miss > 1 ? '' : 's'} a new one.` : ''}`; syncSeg($('#q-ws'));
