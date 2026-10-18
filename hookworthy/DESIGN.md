@@ -879,3 +879,30 @@ You can keep typing during it, and your keys land in the new text. Reduced motio
 - **Getting there:** it's flicked past, stamped "Scrolled past".
 
 The result is read from the hook score and says so ("not a forecast"). When the line isn't ready yet, Sharpen is one tap from the result.
+
+## Round 62: copy that sells (pain, then promise)
+
+The homepage now sells instead of rhyming. It was studied against Descript, Wispr Flow, Grammarly, Notion, Linktree and Superhuman on Mobbin. The best of them name a real pain or outcome and show the product doing it. The owner picked "pain → promise".
+
+- **Hero:** "Most posts die in the first line. / Yours won't." The problem is set in grey and the promise in full ink. "first line" gets the editor's highlighter.
+  - Sub: "Hookworthy turns your rough idea into a post people stop for. In your voice, sharpened in one tap, out when your people scroll."
+  - CTA: "Sharpen my first post" and "Watch it work", with "Free plan · No card · Nothing posts without you" under them.
+- **Proof strip** under the demo. These are facts about the product, not invented stats:
+  - 1 tap · 4 networks · 0 posts without you · $0 to start.
+- **Section heads:**
+  - "Write it at 11 PM. Land it at 8:40 AM."
+  - "People decide in one second. Make it count."
+  - "Made for people with something to say."
+  - "It does the work. You press the button."
+  - "Start free. Upgrade when it's working."
+  - "Questions, answered."
+  - "Paste a post you almost didn't send."
+  - Close: "Your next post could be the one. Make it hookworthy."
+- **Feature slices lead with the benefit:**
+  - One tap. A sharper first line.
+  - See it in their feed first.
+  - Feedback on the exact words.
+  - Every client, in their own voice.
+  - Never start from a blank page.
+  - Answer while it's hot.
+- **Title, meta and social cards:** "Hookworthy: posts people stop for".
