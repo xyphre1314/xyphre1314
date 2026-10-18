@@ -906,3 +906,53 @@ The homepage now sells instead of rhyming. It was studied against Descript, Wisp
   - Never start from a blank page.
   - Answer while it's hot.
 - **Title, meta and social cards:** "Hookworthy: posts people stop for".
+
+## Round 63: stronger hooks, less on screen
+
+### Hooks that sound like a person
+- **Sharpen cuts more of the warm-ups people actually write:**
+  - "hot take", "unpopular opinion";
+  - "excited / thrilled / humbled to share";
+  - "idk who needs to hear this";
+  - "I'm not an expert";
+  - "this might be controversial";
+  - doubled hedges ("really really").
+- **New moves:**
+  - result first ("Got 10k followers. Took 2 years.");
+  - "Here's what it taught me:";
+  - "X. Not anymore.";
+  - a year up front ("2021: …");
+  - "X isn't Y".
+- **Fixes:**
+  - A question mark is added only when the line reads as a question.
+  - Personal lines are never forced into a "Stat: …" shape.
+  - Disclaimers like "not financial advice" no longer block a version.
+- **One shared brief for the AI writers.** The brief is: use the one move that fits; sound like a person talking to a friend; keep every fact; no bait, no hype words, no new emoji. The Room's six agents get the same rule.
+- **Benchmarks:**
+  - 45 fresh realistic lines: 40 clearly lifted, 42 with the extra-strength version.
+  - The round 60 set: still 30/30.
+
+### Less on screen for a first-timer
+These come from a first-session audit: four walks from the homepage to a scheduled post, on desktop and phone. Every feature is still reachable from More, Search (Ctrl K) or Settings.
+
+- **Scheduling confirms itself.** The "Scheduled for tomorrow at 8:40 AM · View week" toast used to be removed by the re-render a moment later. It now stays.
+- **Onboarding:**
+  - **Step 1** asks what you write about first, with nothing preselected, so nobody gets crypto ideas by not tapping. Then it asks for your handle.
+  - "No posts yet?" is gone; it did the same as Continue. "Skip setup" is now "See an example first".
+  - **After setup** the page says "Your first post." Your voice is one quiet line (Direct · Casual · Brief · Tune), followed by the try box and three starter ideas instead of five. The only other way out is "Skip for now".
+- **Write:**
+  - **One helper for the first line.** "Improve" merged into the first-line button: "Sharpen: 3 soft words" when there's something to cut, otherwise the tips, rewrites and formulas panel. Later posts in a thread keep Improve.
+  - **Top bar:** Share and Focus moved into More, and Focus shows only while it's on. Schedule is now the primary button, since it's the everyday move and ⌘↵; Post now sits beside it.
+  - **Preview:** the Comments tab appears only once there's a review link or a comment. X / All appears only when you post to two networks.
+  - **Phone:** the Sharpen button gets its own line under the tools.
+  - **"From a chart"** shows only for trading accounts.
+- **Schedule sheet:** reply settings and auto-plug sit under one closed "More options" row, and the rotating tip is gone. That's 8 controls instead of 12.
+- **Sidebar:** "Writing as" appears once there's a second voice. Add a client lives in the account menu.
+- **Week:**
+  - The banner that repeated the line above it is gone.
+  - The empty Drafts card is hidden until there's a draft.
+- **Results:**
+  - The sample $BTC price calls show only to trading accounts.
+  - "Write my note" and copy wait until a post has gone out.
+- **One name for the planner:** "Plan my week" everywhere.
+- **One score vocabulary:** toasts say "Now strong" or "Stronger", the same words as the chips, not "Almost → Ready".

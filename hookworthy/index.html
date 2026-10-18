@@ -3298,6 +3298,8 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .rd-t{ font-size:var(--t-15); line-height:1.45; }
 .rd-me{ display:flex; gap:10px; align-items:flex-start; } .rd-me textarea{ flex:1; min-height:44px; resize:vertical; font-size:var(--t-14); }
 .rd-a{ display:flex; gap:8px; align-items:center; font-size:12px; } .rd-a .grow{ flex:1; }
+.side-one{ display:inline-flex; align-items:center; gap:6px; font-size:var(--t-13); font-weight:500; color:var(--text-1); padding:0 4px; }
+.sh-more > summary{ cursor:pointer; list-style:none; display:flex; align-items:baseline; gap:8px; font-size:var(--t-13); color:var(--text-2); padding:4px 0; } .sh-more > summary::-webkit-details-marker{ display:none; } .sh-more > summary small{ color:var(--text-3); font-size:12px; } .sh-more > summary .icon{ align-self:center; } .sh-more[open] > summary{ margin-bottom:12px; color:var(--text-1); }
 .rd-paste summary, .dev-note summary{ cursor:pointer; font-size:var(--t-13); color:var(--text-2); list-style:none; display:inline-flex; align-items:center; gap:6px; } .rd-paste summary::-webkit-details-marker, .dev-note summary::-webkit-details-marker{ display:none; } .rd-paste summary::before, .dev-note summary::before{ content:'+'; display:grid; place-items:center; width:18px; height:18px; border-radius:6px; background:var(--surface-2); font-weight:600; } .rd-paste[open] summary::before, .dev-note[open] summary::before{ content:'−'; } .dev-note{ margin-top:4px; } .rd-paste[open]{ display:grid; gap:8px; } .rd-paste button{ justify-self:start; }
 .rd-count{ font-size:var(--t-13); }
 
@@ -3610,6 +3612,8 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .words .w button{ min-width:24px; min-height:24px; display:inline-grid; place-items:center; } .nav-lk{ min-height:24px; padding:0 6px; } #q-why{ display:inline-flex; align-items:center; min-height:24px; }
 @media (pointer:coarse){ .words .w button{ position:relative; } .words .w button::after{ content:""; position:absolute; inset:-10px; } } /* a 44px hit area round the small ×, without moving the chips */
 /* 320px: tools wrap instead of overlapping */
+/* r63: on a phone the first-line button gets its own line under the tools, never squeezed beside Add to thread */
+@media (max-width:560px){ .tw-tools{ height:auto; flex-wrap:wrap; row-gap:8px; } .tw-tools .hk-coach{ margin-left:0; } .tw-tools .hk-coach.soft{ order:9; flex-basis:auto; } .tw-tools .tw-meta{ margin-left:auto; } }
 @media (max-width:360px){ .tw-tools{ flex-wrap:wrap; row-gap:4px; } .tw-tools .tw-meta{ margin-left:auto; } .starter .acts, .starter-list .acts{ flex-wrap:wrap; } }
 
 /* ==== Round 26 QA: visual follow-ups ==== */
@@ -6061,6 +6065,8 @@ function tierMoveHTML(a, b, { anim = false } = {}) {
   const w = m.dir === 'up' && isStrong(b) && !isStrong(a) ? `Now ${goodWord(b).toLowerCase()}` : m.dir === 'up' && m.cross ? `Now ${goodWord(b).toLowerCase()}` : m.dir === 'up' ? 'Stronger' : m.dir === 'down' ? 'A different angle' : 'About the same';
   return `<span class="tmove ${m.dir}"><span class="tword t-${m.to.key}${A}">${w}</span></span>`;
 }
+/* r63: the same words the chips use (Strong, Outstanding), never a second scale: "Now strong", "Stronger" */
+const moveWord = (a, b) => { const m = tierMove(a, b); return m.dir === 'up' && isStrong(b) && (!isStrong(a) || m.cross) ? `Now ${goodWord(b).toLowerCase()}` : m.dir === 'up' ? 'Stronger' : m.dir === 'down' ? 'A different angle' : 'About the same'; };
 /* the sentence a screen reader hears */
 const tierSay = (a, b) => { const m = tierMove(a, b); return m.dir === 'up' ? (isStrong(b) ? `Now a ${goodWord(b).toLowerCase()} opener.` : 'Stronger.') : m.dir === 'down' ? 'A different angle.' : 'About the same.'; };
 /* the next single step, as the headline ("Cut “i think” to make it Ready."), with why underneath */
@@ -6482,7 +6488,7 @@ function fieldErr(el, msg) {
 function toast(msg, { icon = 'check', tone = 'ok', action, onAction, action2, onAction2, ms = 3800 } = {}) {
   if (action) ms = Math.max(ms, 14000);
   const host = $('#toasts'); $$('.toast', host).forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); });
-  const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status');
+  const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); el.dataset.at = performance.now();
   el.innerHTML = `${ic(icon, 't-' + tone)}<span>${msg}</span>${action2 ? `<button type="button" class="t2">${esc(action2)}</button>` : ''}${action ? `<button type="button" class="t1">${esc(action)}</button>` : ''}`;
   if (action && /^view (queue|week)$/i.test(action)) el.dataset.goto = 'week'; /* a 'View week' toast steps aside once you're on Week */
   host.append(el);
@@ -6854,6 +6860,7 @@ function goThen(name, fn) {
   const t0 = performance.now(); const wait = () => { if (ready()) requestAnimationFrame(() => fn()); else if (performance.now() - t0 < 3000) requestAnimationFrame(wait); }; requestAnimationFrame(wait);
 }
 function route() {
+  const asked = performance.now(); /* r63: a toast raised after this route was asked for (Scheduled for…) belongs to the new screen, not the old one */
   const h = location.hash.replace(/^#\/?/, '') || 'home';
   if (h === 'main') return; /* the skip link's target, not a page */
   /* #settings is a sheet, not a page; any other unknown hash lands on Today once you're in, never on the marketing page */
@@ -6869,7 +6876,7 @@ function route() {
   const render = () => {
     DISPOSE.forEach(f => { try { f(); } catch (e) { } }); DISPOSE = [];
     /* a toast's button belongs to the screen it came from: leaving takes it along (an Undo stays, it still means what it says) */
-    CURRENT = name; $$('#toasts .toast').forEach(t => { if (t.dataset.goto === name || (t.querySelector('button') && t !== UNDO.el)) t.remove(); });
+    CURRENT = name; $$('#toasts .toast').forEach(t => { if (t.dataset.goto === name || (t.querySelector('button') && t !== UNDO.el && !(+t.dataset.at >= asked))) t.remove(); });
     document.body.classList.remove('force-light'); /* round 55: the site follows the theme like the app (dark first) */
     /* a screen that throws while rendering says so and falls back to Today, instead of leaving the old screen up */
     try { ROUTES[name]({ same }); } catch (err) { console.error('Hookworthy: couldn’t render', name, err); if (name !== 'week') { CURRENT = 'week'; try { ROUTES.week({}); } catch (e2) { console.error(e2); } toast('That screen hit an error, so you’re on Week. Your posts are safe.', { icon: 'zapoff', tone: 'err', ms: 5000 }); } }
@@ -6908,7 +6915,7 @@ function shell(active, inner) {
   return `<div class="shell"><a class="skip" href="#main" onclick="event.preventDefault();const m=document.getElementById('main');m.tabIndex=-1;m.focus()">Skip to content</a>
   <aside class="side" aria-label="Sidebar">
     <div class="top"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a><a class="rail-mark" href="#home" aria-label="Hookworthy home">${LOGO_MARK}</a></div>
-    <button class="wsw" data-act="voices" aria-haspopup="menu" data-tip="Write as yourself or a client">${avatar(me, 'sm')}<span><small>Writing as</small><b>${esc(me.name || 'You')}</b></span>${ic('down', 'sm')}</button>
+    ${/* r63: the voice switcher shows once there's a second voice to switch to; Add a client lives in the account menu */ S.workspaces.length > 1 ? `<button class="wsw" data-act="voices" aria-haspopup="menu" data-tip="Write as yourself or a client">${avatar(me, 'sm')}<span><small>Writing as</small><b>${esc(me.name || 'You')}</b></span>${ic('down', 'sm')}</button>` : ''}
     <button class="btn primary newpost" data-act="newpost" data-tip="New post" data-kbd="C">${ic('plus', 'sm')}<span>New post</span></button>
     <button class="searchbtn" data-act="palette">${ic('search', 'sm')}<span>Search</span>${kbd(MOD, 'K')}</button>
     <nav class="nav" aria-label="Main">
@@ -7033,7 +7040,7 @@ function paletteCommands() {
     ...(myDrafts().length > 1 ? [{ g: 'Actions', label: 'Tidy up drafts', icon: 'archive', run: () => openTidy() }] : []),
     ...(myTrash().length ? [{ g: 'Actions', label: 'Recently deleted drafts', icon: 'trash', hint: `Kept ${TRASH_DAYS} days`, run: () => openTrash() }] : []),
     { g: 'Actions', label: 'Replies to your post', icon: 'reply', run: () => openReplyDesk() },
-    { g: 'Actions', label: 'Draft my week', icon: 'cal', run: () => openPlan() },
+    { g: 'Actions', label: 'Plan my week', icon: 'cal', run: () => openPlan() },
     { g: 'Actions', label: 'Write from a picture (screenshot, chart, DM)', icon: 'image', run: () => openPicture() },
     { g: 'Actions', label: 'Reply radar: fresh posts worth an early reply', icon: 'reply', run: () => openRadar() },
     { g: 'Actions', label: 'Breakout alerts: a ping when a post takes off', icon: 'bell', run: () => openBreakoutSetup() },
@@ -7309,7 +7316,8 @@ function postBtnsHTML() {
   if (WS().approvals) return `<button class="btn primary post-main" data-cact="schedule" data-tip="They approve it, then it goes out at the time you pick" data-kbd="${MOD} ↵">${ic('send', 'sm')}<span>Send<span class="pm-n"> to ${esc(WS().name)}</span> for approval</span></button>`;
   const u = S.settings.undoSecs ?? 8, eq = editTarget();
   if (eq) return `<button class="btn sched-btn" data-cact="schedule" data-tip="Pick a different time" aria-label="Change time">${ic('clock', 'sm')}<span>Change time</span></button><button class="btn ghost sched-btn pn-edit" data-cact="postnow" data-tip="Post it now instead of at ${esc(slotWhen(eq.day, eq.time))}" aria-label="Post now">${ic('send', 'sm')}<span>Post now</span></button><button class="btn primary post-main" data-cact="savequeued" data-tip="Update it on Week, same slot" aria-label="Save changes, ${esc(slotWhen(eq.day, eq.time))}">${ic('check', 'sm')}<span>Save<span class="pm-n"> changes</span></span></button>`;
-  return `<button class="btn sched-btn" data-cact="schedule" data-tip="Pick when it goes out" data-kbd="${MOD} ↵" aria-label="Schedule">${ic('clock', 'sm')}<span>Schedule</span></button><button class="btn primary post-main" data-cact="postnow" data-tip="${u ? `Post it now. ${u}s to undo` : 'Post it now'}" data-kbd="${MOD} ${SHIFT} ↵" aria-label="Post now">${ic('send', 'sm')}<span>Post<span class="pm-now"> now</span></span></button>`;
+  /* r63: Schedule is the everyday move (and ⌘↵), so it's the one primary; Post now sits beside it */
+  return `<button class="btn primary sched-btn" data-cact="schedule" data-tip="Pick when it goes out" data-kbd="${MOD} ↵" aria-label="Schedule">${ic('clock', 'sm')}<span>Schedule</span></button><button class="btn post-main" data-cact="postnow" data-tip="${u ? `Post it now. ${u}s to undo` : 'Post it now'}" data-kbd="${MOD} ${SHIFT} ↵" aria-label="Post now">${ic('send', 'sm')}<span>Post<span class="pm-now"> now</span></span></button>`;
 }
 function composerHTML() {
   const empty = isEmptyDraft();
@@ -7335,9 +7343,9 @@ function composerHTML() {
 </div>`;
 }
 function startersHTML() {
-  if (!UI.startOpen) return `<div class="start-line"><span class="faint">Need a start?</span><button class="btn ghost sm" data-cact="startopen">${ic('ideas', 'sm')} Post ideas</button><button class="btn ghost sm" data-cact="brief" data-tip="Turn notes, a doc or a PDF into a draft in your voice">${ic('upload', 'sm')} From notes</button><button class="btn ghost sm" data-cact="picture" data-tip="Turn a screenshot or chart into a draft">${ic('image', 'sm')} From a chart</button></div>`;
+  if (!UI.startOpen) return `<div class="start-line"><span class="faint">Need a start?</span><button class="btn ghost sm" data-cact="startopen">${ic('ideas', 'sm')} Post ideas</button><button class="btn ghost sm" data-cact="brief" data-tip="Turn notes, a doc or a PDF into a draft in your voice">${ic('upload', 'sm')} From notes</button>${tradingNiche() ? `<button class="btn ghost sm" data-cact="picture" data-tip="Turn a screenshot or chart into a draft">${ic('image', 'sm')} From a chart</button>` : ''}</div>`;
   const ideas = genIdeas(3, S.starterSeed);
-  return `<div class="starters-h"><span class="starters-t">Post ideas for you</span><span style="display:flex;gap:6px"><button class="btn ghost sm" data-cact="brief" data-tip="Turn notes, a doc or a PDF into a draft in your voice">${ic('upload', 'sm')} From notes</button><button class="btn ghost sm" data-cact="picture" data-tip="Turn a screenshot or chart into a draft">${ic('image', 'sm')} From a chart</button><button class="btn ghost sm" data-cact="shuffle" data-tip="Three new ideas" data-kbd="R">${ic('shuffle', 'sm')} Shuffle</button></span></div>
+  return `<div class="starters-h"><span class="starters-t">Post ideas for you</span><span style="display:flex;gap:6px"><button class="btn ghost sm" data-cact="brief" data-tip="Turn notes, a doc or a PDF into a draft in your voice">${ic('upload', 'sm')} From notes</button>${tradingNiche() ? `<button class="btn ghost sm" data-cact="picture" data-tip="Turn a screenshot or chart into a draft">${ic('image', 'sm')} From a chart</button>` : ''}<button class="btn ghost sm" data-cact="shuffle" data-tip="Three new ideas" data-kbd="R">${ic('shuffle', 'sm')} Shuffle</button></span></div>
   <div class="starter-list">${ideas.map(i => `<button class="starter" data-cact="starter" data-t="${esc(i.text)}" data-kind="${esc(i.kind)}" data-topic="${esc(i.topic)}"><p>${fillHTML(i.text, { topic: i.topic })}</p><span class="meta"><span class="pill kp" data-kind="${String(i.kind).toLowerCase()}">${esc(KIND_L(i.kind))}</span><span class="faint" style="font-size:12px;display:inline-flex;gap:4px;align-items:center">Draft it ${ic('arrow', 'xs')}</span></span></button>`).join('')}</div>${hintHTML('write', { cls: 'starters-hint' })}`;
 }
 function mediaHTML(tw) {
@@ -7380,8 +7388,8 @@ function tweetHTML(tw, i, n) {
       <button class="tool" data-cact="poll" data-tip="Add a poll" aria-label="Add a poll">${ic('poll')}</button>
       <button class="tool mic-t" data-cact="dictate" data-tip="Say it: talk instead of typing" aria-pressed="false" aria-label="Say it: talk instead of typing">${ic('mic')}</button>
       <button class="tool" data-cact="toolsmore" data-tip="More: make a visual, read it aloud" aria-label="More tools" aria-haspopup="menu">${ic('more')}</button>
-      <span class="tools-sep"></span>
-      <button class="tool riff" data-cact="riff" data-tip="${i === 0 ? 'Improve: First line, Rewrites, Formulas' : 'Improve: Rewrites'}" data-kbd="${MOD} J" aria-expanded="${!!(UI.imp && UI.imp.id === tw.id)}">${ic('riff')}<span>Improve</span></button>
+      ${i > 0 ? '<span class="tools-sep"></span>' : ''}
+      ${/* r63: the first post has one helper, the first-line button (Sharpen, or tips + rewrites + formulas); the rest keep Improve */ ''}${i > 0 ? `<button class="tool riff" data-cact="riff" data-tip="${i === 0 ? 'Improve: First line, Rewrites, Formulas' : 'Improve: Rewrites'}" data-kbd="${MOD} J" aria-expanded="${!!(UI.imp && UI.imp.id === tw.id)}">${ic('riff')}<span>Improve</span></button>` : ''}
       ${n > 1 ? `<button class="tool tw-rm" data-cact="remove" data-tip="Remove this post" aria-label="Remove this post">${ic('trash')}</button>` : ''}
       ${i === 0 ? `<button class="hook hk-coach" data-cact="hookinfo" aria-expanded="${!!(UI.imp && UI.imp.tab === 'score')}" aria-label="First line. Press for tips"><span class="sc" style="--v:0"><span class="hk-g"></span><span class="hk-i hk-i-tip">${ic('riff', 'sm')}</span><span class="hk-i hk-i-ok">${ic('check', 'sm')}</span><span class="hk-i hk-i-sw">${ic('bolt', 'sm')}</span></span><small class="hk-w"></small></button>` : ''}
       <div class="tw-meta">
@@ -7596,7 +7604,7 @@ function sharpenFirst() {
   /* the caret goes back to the end of the first line, so the next keystroke lands in the post, not on the page */
   const show = () => { const v = list[i], was = tw.text, ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(was).score; tw.text = v.text; save(); if (ta) ta.value = v.text; /* typing during the replay lands in the new text */
     watchEdit(ta, was, v.text, { label: v.say.split(' · ').slice(-1)[0], done: () => renderThread({ focusId: tw.id, pos: firstLine(v.text).length }) }); const a1 = hookFor(tw.text).score; SFX.play(a1 >= 70 ? 'hook' : 'swap');
-    toast(`<b>${esc(tierMove(r.from, a1).text)}.</b> ${esc(v.say)}.`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); },
+    toast(`<b>${esc(moveWord(r.from, a1))}.</b> ${esc(v.say)}.`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); },
       ...(list.length > 1 ? { action2: 'Another', onAction2: () => { i = (i + 1) % list.length; show(); } } : {}) }); };
   show();
 }
@@ -7612,8 +7620,8 @@ function paintHook() {
   /* the ring fills with the score in the aurora's colours; the word under it names the state (the number sits inside only with Show scores as numbers) */
   const T = TIER(h.score), g = $('.hk-g', sc), w = $('.hk-w', b), gk = hookNums() ? 'n' + h.score : '';
   /* soft words in the opener: the coach turns into the one-tap fix, the same Sharpen as the homepage */
-  const swN = softN(), hk = t0.text.trim() && !fillRanges(t0).length ? hookUpFor(t0.text) : null; b.classList.toggle('soft', !!hk); const CW = k => hk ? (swN ? `Sharpen · ${swN}` : 'Sharpen') : COACH[k];
-  b.dataset.tip = hk ? `One tap: ${tierMove(hk.from, hk.to).text}. ${hk.say}` : b.dataset.tip;
+  const swN = softN(), hk = t0.text.trim() && !fillRanges(t0).length ? hookUpFor(t0.text) : null; b.classList.toggle('soft', !!hk); const CW = k => hk ? (swN ? `Sharpen: ${swN} soft word${swN === 1 ? '' : 's'}` : 'Sharpen') : COACH[k];
+  b.dataset.tip = hk ? `One tap: ${moveWord(hk.from, hk.to).replace(/^N/, 'n')}. ${hk.say}` : 'Tips, rewrites and formulas for your first line';
   if (g.dataset.k !== gk) { g.dataset.k = gk; g.innerHTML = hookNums() ? `<span class="hk-n">${h.score}</span>` : ''; }
   ['flat', 'warming', 'sharp', 'honed'].forEach(k => b.classList.toggle('t-' + k, k === T.key)); b.dataset.tier = T.key;
   /* after Keep: a new state crossfades the word while the ring's colour sweeps; the same state says "Stronger" for a moment, and the ring grows a little */
@@ -7623,7 +7631,7 @@ function paintHook() {
     if (!REDUCED && m.dir === 'up') { sc.classList.remove('spring', 'tgrow'); void sc.offsetWidth; sc.classList.add(m.cross ? 'spring' : 'tgrow'); }
     clearTimeout(UI.hsT); srSay(tierSay(from, h.score)); }
   else swapWord(w, h.score || swN ? CW(T.key) : '');
-  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 45); b.setAttribute('aria-label', hk ? `Sharpen your first line: ${tierMove(hk.from, hk.to).text}. ${hk.say}` : `${h.score ? COACH[T.key] : 'First line'}. Press for tips`);
+  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 45); b.setAttribute('aria-label', hk ? `Sharpen your first line: ${moveWord(hk.from, hk.to).toLowerCase()}. ${hk.say}` : `${h.score ? COACH[T.key] : 'First line'}. Press for tips`);
   if (h.score >= 70 && !b.classList.contains('was-hi')) { b.classList.add('was-hi'); } else if (h.score < 70) b.classList.remove('was-hi');
   const p = $('#predict');
   if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
@@ -9204,9 +9212,10 @@ const schedulePreview = (() => { let raf = 0; return () => { cancelAnimationFram
 const schedulePreviewTyping = (() => { let t = 0; return () => { clearTimeout(t); t = setTimeout(schedulePreview, 280); }; })();
 function renderPreviewHead() {
   const h = $('#pv-h'); if (!h) return; syncPreviewSheet(); const on = Object.keys(PLAT).filter(k => S.platforms[k]);
-  let tab = S.preview.tab; if (tab !== 'all' && !on.includes(tab)) tab = S.preview.tab = on[0] || 'x';
-  h.innerHTML = `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}">${k === 'all' ? 'All' : PLAT[k].name}</button>`).join('')}</div><button type="button" class="btn ghost sm pv-st" data-cact="scrolltest" data-tip="Watch a fast thumb meet your first line">${ic('down', 'sm')} Scroll test</button>`;
-  requestAnimationFrame(() => syncSeg($('.seg', h))); paintSide();
+  let tab = S.preview.tab; if ((tab !== 'all' && !on.includes(tab)) || (tab === 'all' && on.length < 2)) tab = S.preview.tab = on[0] || 'x';
+  /* r63: one network, no switcher: X / All only shows once you post to two */
+  h.innerHTML = `${on.length > 1 ? `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}">${k === 'all' ? 'All' : PLAT[k].name}</button>`).join('')}</div>` : '<span></span>'}<button type="button" class="btn ghost sm pv-st" data-cact="scrolltest" data-tip="Watch a fast thumb meet your first line">${ic('down', 'sm')} Scroll test</button>`;
+  requestAnimationFrame(() => { const sg = $('.seg', h); sg && syncSeg(sg); }); paintSide();
 }
 function renderPreviewBody() {
   const b = $('#pv-b'); if (!b) return; if (b.contains(document.activeElement) && document.activeElement.tagName === 'TEXTAREA') return;
@@ -9532,9 +9541,8 @@ function openSchedule() {
       <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" tabindex="${i === pickI ? 0 : -1}" ${i === pickI ? 'autofocus' : ''} data-si="${i}"><span class="radio"></span><span><b>${esc(s.label || slotLabel(s.day, s.time))}</b><small>${esc(s.reason)}</small></span>${s.ev ? `<span class="pill accent">${esc(s.ev.name.replace(' decision', ''))}${s.ev.est ? ' est.' : ''}</span>` : s.top ? '<span class="pill accent">Best</span>' : s.next ? '<span class="pill">Next open</span>' : ''}</button>`).join('')}
       <button class="stime" role="radio" aria-checked="false" tabindex="-1" data-si="custom"><span class="radio"></span><span><b>Another time</b><small>Pick any date and time</small></span></button></div>
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${pd.day}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="${pd.time}" aria-label="Time"></div>
-      ${hintHTML('schedule', { cls: 'in-modal' })}
     </div>
-    ${S.platforms.x ? xoHTML(S.draft, { first: S.draft.tweets[0].text }) : ''}
+    ${/* r63: reply settings and auto-plug are power moves: one closed row until you want them */ S.platforms.x ? `<details class="sh-more" ${(S.draft.replySettings && S.draft.replySettings !== 'everyone') || (S.draft.plug && S.draft.plug.on) ? 'open' : ''}><summary>${ic('sliders', 'sm')} More options<small>Who can reply, auto-plug</small></summary>${xoHTML(S.draft, { first: S.draft.tweets[0].text })}</details>` : ''}
   </div>
   <div class="modal-f"><button class="btn primary" id="s-go" data-kbd="${MOD} ↵">${ic('clock', 'sm')} <span id="s-go-l" ${needsApproval() ? 'hidden' : ''}>${best[pickI] ? goL(best[pickI]) : 'Schedule for later'}</span>${needsApproval() ? `<span>Send${WS().approvals ? ` to ${esc(WS().name)}` : ''} for approval</span>` : ''}</button></div>`, { label: 'Schedule' });
   const el = m.el; if (S.platforms.x) xoWire($('.xo', el), S.draft, S.draft.tweets[0].text);
@@ -9978,7 +9986,7 @@ function weekChartHTML(w) {
 function weekNextAct(w) {
   if (w.best && w.nums && (w.real || w.sample)) return { k: 'again', l: 'Write another like it', i: 'layers' };
   if (!w.n && !w.planned) return { k: 'write', l: 'Write your first post', i: 'write' };
-  if (w.planned < 3) return { k: 'plan', l: w.planned ? 'Fill next week' : 'Plan next week', i: 'cal' };
+  if (w.planned < 3) return { k: 'plan', l: 'Plan my week', i: 'cal' }; /* r63: one planner, one name */
   return { k: 'write', l: 'Write the next one', i: 'write' };
 }
 function weekNext(b) {
@@ -10020,12 +10028,12 @@ function drawDigest() {
   const post = b ? xPost({ t: clip(b.text, 280), c: w.nums ? [b.replies || 0, b.reposts || 0, b.likes || 0, b.views || 0] : [0, 0, 0, 0], ago: b.at ? agoShort(b.at, true) : 'this week' }, { you, dark: isDark(), counts: w.nums }) : '';
   const items = d && d.why_best ? [{ i: 'spark', t: `<b>Why it worked.</b> ${esc(d.why_best)}` }, ...tk.slice(0, 2)] : tk;
   el.innerHTML = `<section class="card dg wk ${sun ? 'sun' : ''}" aria-labelledby="dg-t"><div class="dg-h"><div><span class="label">${sun ? 'Sunday note' : 'Your week so far'}${w.sample && w.best ? ' · <span class="pill ex-chip">Sample numbers</span>' : ''}</span><h2 class="h2" id="dg-t">${title}</h2><p class="faint dg-sub">${sub}</p></div>
-    <div class="dg-a"><button class="btn sm ghost needs-ai" data-nact="dnote" data-tip="Claude writes a short note on your week">${ic('spark', 'sm')} ${d ? 'Rewrite the note' : 'Write my note'}${crTag('digest')}</button>${LLM.server && LLM.server.digest ? `<button class="btn sm ghost" data-nact="dmail">${ic('send', 'sm')} ${S.digestEmail ? 'Emailing Sundays' : 'Email me Sundays'}</button>` : ''}${w.n || w.planned ? `<button class="btn sm ghost icon-only" data-nact="dcopy" data-tip="Copy your week as text" aria-label="Copy your week as text">${ic('copy', 'sm')}</button>` : ''}</div></div>
+    <div class="dg-a">${/* r63: nothing out yet, nothing to write up or copy */ w.n || d ? `<button class="btn sm ghost needs-ai" data-nact="dnote" data-tip="Claude writes a short note on your week">${ic('spark', 'sm')} ${d ? 'Rewrite the note' : 'Write my note'}${crTag('digest')}</button>` : ''}${LLM.server && LLM.server.digest ? `<button class="btn sm ghost" data-nact="dmail">${ic('send', 'sm')} ${S.digestEmail ? 'Emailing Sundays' : 'Email me Sundays'}</button>` : ''}${w.n ? `<button class="btn sm ghost icon-only" data-nact="dcopy" data-tip="Copy your week as text" aria-label="Copy your week as text">${ic('copy', 'sm')}</button>` : ''}</div></div>
     ${b ? `<div class="wk-grid"><div class="wk-post"><span class="label">Best post this week</span>${post}</div>
       <div class="wk-side">${weekChartHTML(w)}${items.length ? `<ul class="wk-tk">${items.map(x => `<li>${ic(x.i, 'sm')}<span>${x.t}</span></li>`).join('')}</ul>` : ''}
         ${d && d.try_next ? `<p class="wk-try"><span class="label">Try next week</span>${esc(d.try_next)}</p>` : ''}
         <div class="wk-acts"><button class="btn${lead ? ' primary' : ''}" data-nact="dnext" data-k="${nx.k}">${ic(nx.i, 'sm')} ${nx.l}</button>${d && d.first_line ? `<button class="btn" data-nact="userw" data-t="${esc(d.first_line)}">${ic('write', 'sm')} Monday’s first line</button>` : ''}</div></div></div>`
-      : `<div class="wk-empty${w.n ? '' : ' solo'}">${w.n ? weekChartHTML(w) : ''}<div class="wk-acts"><button class="btn${lead ? ' primary' : ''}" data-nact="dnext" data-k="${nx.k}">${ic(nx.i, 'sm')} ${nx.l}</button>${HIST().length ? '' : `<button class="btn" data-act="import">${ic('upload', 'sm')} Already posting? Bring your posts</button>`}</div></div>`}
+      : `<div class="wk-empty${w.n ? '' : ' solo'}">${w.n ? weekChartHTML(w) : ''}<div class="wk-acts">${!w.n && w.planned ? '' : `<button class="btn${lead ? ' primary' : ''}" data-nact="dnext" data-k="${nx.k}">${ic(nx.i, 'sm')} ${nx.l}</button>`}${HIST().length ? '' : `<button class="btn" data-act="import">${ic('upload', 'sm')} Already posting? Bring your posts</button>`}</div></div>`}
     <form id="dg-mail" class="dg-mail" hidden><input class="input" type="email" placeholder="you@example.com" value="${esc(S.digestEmail || '')}" aria-label="Email for the Sunday note" required><button class="btn sm primary" type="submit">${S.digestEmail ? 'Update' : 'Send me Sundays'}</button>${S.digestEmail ? '<button class="btn sm ghost" type="button" id="dg-off">Stop</button>' : ''}<small class="faint">${LLM.server && LLM.server.digest ? (LLM.server.email ? 'Sunday 9 AM, from the server.' : 'Email isn’t set up on the server yet, so the note is logged, not sent.') : 'Needs Hookworthy’s server. Copy the note meanwhile.'}</small></form></section>`;
   const f = $('#dg-mail'); f.onsubmit = async e => { e.preventDefault(); const email = $('input', f).value.trim(); if (!(LLM.server && LLM.server.digest)) { toast('Emailing needs Hookworthy’s server. Copy the note for now.', { icon: 'inbox' }); return; } try { const r = await fetch('api/digest/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, digest: digestPayload() }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); S.digestEmail = email; save(); drawDigest(); toast(`Sundays at 9 AM, to ${esc(email)}.`, { icon: 'inbox', tone: 'accent' }); } catch (err) { toast(failMsg('set up the Sunday email', err), { icon: 'zapoff', tone: 'err' }); } };
   const off = $('#dg-off'); if (off) off.onclick = async () => { try { await fetch('api/digest/unsubscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: S.digestEmail }) }); } catch (e) { /* ok */ } S.digestEmail = ''; save(); drawDigest(); toast('No more Sunday emails.', { icon: 'check' }); };
@@ -10400,9 +10408,11 @@ const sideTab = () => UI.sideTab || (rvOpenCount() || UI.cmPend ? 'comments' : '
 function paintSide() {
   const c = $('#composer'), tabs = $('#side-tabs'), cs = $('#cm-side'); if (!c || !tabs || !cs) return;
   const t = sideTab(), n = rvOpenCount(), cm = t === 'comments';
+  /* r63: Comments is a tab only once there's something to discuss: a review link, a comment, or one you're writing */
+  const hasCm = cm || n || (RV.data && !RV.data.gone) || S.draft.reviewPublic;
   c.classList.toggle('side-cm', cm);
-  tabs.innerHTML = `<div class="seg side-seg" role="tablist" aria-label="Side panel"><button role="tab" data-side="comments" aria-selected="${cm}">${ic('reply', 'sm')}<span>Comments</span>${n ? `<span class="side-n">${n}</span>` : ''}</button><button role="tab" data-side="preview" aria-selected="${!cm}">${ic('panel', 'sm')}<span>Preview</span></button></div><button class="btn ghost sm pv-close" data-cact="preview" data-tip="Hide the ${cm ? 'comments' : 'preview'}" data-kbd="${MOD} \\">${ic('x', 'sm')}<span>Hide</span></button>`;
-  requestAnimationFrame(() => syncSeg($('.side-seg', tabs)));
+  tabs.innerHTML = `${hasCm ? `<div class="seg side-seg" role="tablist" aria-label="Side panel"><button role="tab" data-side="comments" aria-selected="${cm}">${ic('reply', 'sm')}<span>Comments</span>${n ? `<span class="side-n">${n}</span>` : ''}</button><button role="tab" data-side="preview" aria-selected="${!cm}">${ic('panel', 'sm')}<span>Preview</span></button></div>` : `<span class="side-one">${ic('panel', 'sm')} Preview</span>`}<button class="btn ghost sm pv-close" data-cact="preview" data-tip="Hide the ${cm ? 'comments' : 'preview'}" data-kbd="${MOD} \\">${ic('x', 'sm')}<span>Hide</span></button>`;
+  requestAnimationFrame(() => { const sg = $('.side-seg', tabs); sg && syncSeg(sg); });
   cs.hidden = !cm; $('#pv-h').hidden = cm; $('#pv-b').hidden = cm;
   if (cm) paintCmSide();
 }
@@ -10659,7 +10669,7 @@ async function openPlan() {
   slots = slots.sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)).map(x => ({ ...x, label: slotLabel(x.day, x.time) }));
   if (!slots.length) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; }
   const m = modal(`<div class="tidy plan"><div class="tidy-h"><span class="label" id="pl-n">Planning your week</span><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div><div id="pl-card"><div class="td-card"><p class="faint">${aiOn() ? `${esc(cap(AI_NAME()))} is drafting ${slots.length} posts from your ideas and best posts…` : 'Drafting from your ideas…'}</p><span class="skel"></span><span class="skel" style="width:70%"></span></div></div>
-    <div class="tidy-f"><button class="btn" data-pl="skip">Skip<kbd>K</kbd></button><button class="btn" data-pl="edit">${ic('write', 'sm')} Edit in Write<kbd>E</kbd></button><span class="grow"></span><button class="btn primary" data-pl="ok">${ic('clock', 'sm')} Schedule<kbd>↵</kbd></button></div></div>`, { autofocus: false, label: 'Draft my week', box: 'modal tidy-box', onClose: () => { document.removeEventListener('keydown', key, true); done(); } });
+    <div class="tidy-f"><button class="btn" data-pl="skip">Skip<kbd>K</kbd></button><button class="btn" data-pl="edit">${ic('write', 'sm')} Edit in Write<kbd>E</kbd></button><span class="grow"></span><button class="btn primary" data-pl="ok">${ic('clock', 'sm')} Schedule<kbd>↵</kbd></button></div></div>`, { autofocus: false, label: 'Plan my week', box: 'modal tidy-box', onClose: () => { document.removeEventListener('keydown', key, true); done(); } });
   let items = [], i = 0; const planned = [];
   const inbox = S.ideas.map(x => cleanIdea(x.text));
   try {
@@ -11588,7 +11598,7 @@ function composerClick(e) {
     case 'reviews': toggleCmPanel(); break;
     case 'hookinfo': hookUpFor(S.draft.tweets[0].text) ? sharpenFirst() : setImprove(S.draft.tweets[0].id, 'score'); break;
     case 'imptab': { const tid = (el.closest('.tw') || {}).dataset ? el.closest('.tw').dataset.id : S.draft.tweets[0].id; UI.imp = { id: tid, tab: el.dataset.t }; renderExtras(tid); SFX.play('tick'); break; }
-    case 'impclose': { const tw = el.closest('.tw'), tid = tw.dataset.id; UI.imp = null; renderExtras(tid); const rb = $('[data-cact="riff"]', tw); rb && rb.focus({ preventScroll: true }); break; }
+    case 'impclose': { const tw = el.closest('.tw'), tid = tw.dataset.id; UI.imp = null; renderExtras(tid); const rb = $('[data-cact="riff"]', tw) || $('[data-cact="hookinfo"]', tw); rb && rb.focus({ preventScroll: true }); break; }
     /* a number or a name is the one thing only the writer knows: the caret goes to the front of line one, ready for it */
     case 'addnum': { const t0 = S.draft.tweets[0], ta0 = t0 && $(`.tw[data-id="${t0.id}"] .tw-input`); if (!ta0) break; ta0.focus(); ta0.setSelectionRange(0, 0); toast('Lead with the number only you know: the %, the $, the days. “3 years…”, “$1,200…”, “41 replies…”.', { icon: 'target', ms: 6000 }); break; }
     case 'scrolltest': scrollTest(); break;
@@ -12371,7 +12381,7 @@ const TP_LEN = [4200, 4600, 3800, 3400, 5000];
 function tourHTML() {
   const line = HG_DEFAULT, sh = hgSharpen(line), s0 = hookScore(line).score, s1 = hookScore(sh.first).score, first = sh.first;
   const enter = MOD === '⌘' ? '⌘↵' : 'Ctrl+Enter', W = homeWeek(), dk = i => dayKey(W.days[i]);
-  const CH = [['Write', 'Type a thought. See how it reads as you go.'], ['Sharpen', `Sharpen cuts the soft words. ${tierMove(s0, s1).text}, same claim.`], ['Schedule', 'Pick a time when your people are up.'], ['Queue', 'It waits in your week until its time.'],
+  const CH = [['Write', 'Type a thought. See how it reads as you go.'], ['Sharpen', `Sharpen cuts the soft words. ${moveWord(s0, s1)}, same claim.`], ['Schedule', 'Pick a time when your people are up.'], ['Queue', 'It waits in your week until its time.'],
     ['Reply', COARSE ? 'Replies land in one list. Tap one to answer.' : `Replies land in one list. J and K move, ${enter} sends.`]];
   const q = (i, time, text, pl, n = 1) => ({ id: `tp${i}${time}`, day: dk(i), time, text, tweets: Array(n).fill(''), platforms: { x: !!pl.x, threads: !!pl.threads, linkedin: !!pl.linkedin, bsky: !!pl.bsky }, status: 'scheduled' });
   const wk = { mon12: q(0, '12:15', 'Show up daily. Talent catches up.', { x: 1, bsky: 1 }), wed8: q(2, '08:40', 'Write the hook first. The post second.', { x: 1, threads: 1 }, 4), wed12: q(2, '12:15', 'What 100 days of posting taught me:', { x: 1, linkedin: 1 }), land: q(1, '08:40', first, { x: 1, threads: 1, linkedin: 1 }) };
@@ -12647,7 +12657,7 @@ function hxScreenWrite() {
 }
 function hxScreenWeek() {
   return `<div class="hx-sc hx-sc-week" data-sc="week">
-    <div class="hx-sch"><b class="hx-sct">This week</b><span class="grow"></span><span class="hx-seg2"><i class="on">Week</i><i>Month</i></span><button type="button" class="hx-wb" id="hx-dmw">${ic('cal', 'xs')} Draft my week</button></div>
+    <div class="hx-sch"><b class="hx-sct">This week</b><span class="grow"></span><span class="hx-seg2"><i class="on">Week</i><i>Month</i></span><button type="button" class="hx-wb" id="hx-dmw">${ic('cal', 'xs')} Plan my week</button></div>
     <div class="hx-wk">
       <div class="hx-cal"><div class="hx-calh"><span></span>${HX_DAYS.map((d, i) => `<span${i === 1 ? ' class="on"' : ''}><b>${d}</b></span>`).join('')}</div>
         ${HX_SLOTS.map((t, s) => `<div class="hx-calr"><span class="hx-calt">${t}</span>${HX_DAYS.map((d, i) => { const p = HX_WEEK.find(x => x.d === i && x.s === s); return `<span class="hx-cell" data-d="${i}" data-s="${s}">${p ? `<button type="button" class="hx-chip${p.land ? ' land' : ''}" aria-label="${esc(`${d} ${t}: ${p.t}. Arrow keys move it`)}"><i>${pic(p.p)}<b>${t}</b></i><span>${esc(p.t)}</span></button>` : i === 5 && s === 1 ? '<span class="hx-rest">Rest day</span>' : ''}</span>`; }).join('')}</div>`).join('')}
@@ -13526,21 +13536,21 @@ ROUTES.developers = () => {
 const ONB = { handle: '', plat: 'x', niche: null, t0: 0 };
 ROUTES.start = () => {
   ONB.t0 = 0;
-  $('#root').innerHTML = `<main class="onb"><div class="onb-top"><a class="logo" href="#home">${LOGO}</a><a class="btn ghost sm" href="#write">Skip setup${ic('arrow', 'sm')}</a></div><div class="onb-stage" id="onb" style="position:relative"></div></main>`;
+  $('#root').innerHTML = `<main class="onb"><div class="onb-top"><a class="logo" href="#home">${LOGO}</a><a class="btn ghost sm" href="#write">See an example first${ic('arrow', 'sm')}</a></div><div class="onb-stage" id="onb" style="position:relative"></div></main>`;
   /* skipping lands in the example account: say so, so heycape's week never reads as yours */
   const sk = $('.onb-top a[href="#write"]'); if (sk && SHOWCASE()) sk.addEventListener('click', () => setTimeout(() => toast('You’re in heycape’s example account. Make it yours any time: Settings, then Your account.', { icon: 'user', ms: 7000 }), 300));
   if (ONB.auto) { ONB.auto = false; ONB.niche = ONB.niche || S.user.niche; ONB.t0 = Date.now(); onbStep2(); } else onbStep1();
 };
 function onbStep1() {
-  const niches = Object.keys(NICHES); const cur = ONB.niche || (S.onboarded ? S.user.niche : 'Crypto & trading');
+  const niches = Object.keys(NICHES); const cur = ONB.niche || (S.onboarded ? S.user.niche : ''); /* r63: nothing preselected, so nobody gets crypto ideas by not tapping */
   $('#onb').innerHTML = `<div class="onb-card">
     <h1 class="display">Let’s find your <em>voice.</em></h1>
-    <p class="muted" style="font-size:17px;max-width:46ch">${LLM.server && LLM.server.x ? 'Type your handle. We’ll read your recent posts and give you five post ideas for today.' : 'Pick where you post and what you write about. You’ll get a starting voice and five post ideas for today.'}</p>
+    <p class="muted" style="font-size:17px;max-width:46ch">${LLM.server && LLM.server.x ? 'Pick what you write about and type your handle. We’ll read your recent posts, then sharpen your first one with you.' : 'Pick what you write about and where. Then we’ll sharpen your first post together.'}</p>
     <div class="seg" id="onb-plat" role="tablist" aria-label="Where you post">${['x', 'threads', 'li', 'bsky'].map(k => `<button role="tab" data-p="${k}" aria-selected="${ONB.plat === k}" aria-label="${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}">${pic(k, 'icon sm')}${`<span>${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}</span>`}</button>`).join('')}</div>
+    <div style="display:grid;gap:10px;justify-items:center"><span class="label">What do you write about?</span><div class="niches">${niches.map(n => `<button class="chip" aria-pressed="${n === cur}" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>
     <form class="handle-in" id="onb-f" novalidate><span class="at">@</span><input id="onb-h" autofocus placeholder="yourhandle" value="${esc(ONB.handle)}" aria-label="Your handle" aria-describedby="onb-err" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">${LLM.server && LLM.server.x ? 'Read my posts' : 'Continue'}${ic('arrow', 'sm')}</button></form>
     <span id="onb-err" class="field-err" role="alert" style="min-height:16px;margin-top:-14px"></span>
-    <div style="display:grid;gap:10px;justify-items:center"><span class="label">What do you write about?</span><div class="niches">${niches.map(n => `<button class="chip" aria-pressed="${n === cur}" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>
-    <div class="onb-alt"><button class="btn ghost sm" id="onb-arch">${ic('upload', 'sm')} Use your X archive instead</button><button class="btn ghost sm" id="onb-fresh">No posts yet? Start from your niche</button></div>
+    <div class="onb-alt"><button class="btn ghost sm" id="onb-arch">${ic('upload', 'sm')} Use your X archive instead</button></div>
   </div>`;
   ONB.niche = cur; syncSeg($('#onb-plat'));
   /* LinkedIn has names, not @handles: the field follows the platform */
@@ -13548,17 +13558,18 @@ function onbStep1() {
   platField();
   if (FINE) requestAnimationFrame(() => { const h = $('#onb-h'); h && h.focus({ preventScroll: true }); });
   $('#onb-plat').onclick = e => { const b = e.target.closest('[data-p]'); if (!b) return; ONB.plat = b.dataset.p; $$('#onb-plat [data-p]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#onb-plat')); platField(); $('#onb-err').textContent = ''; if (e.detail) $('#onb-h').focus(); };
-  $('.niches').onclick = e => { const b = e.target.closest('[data-n]'); if (!b) return; ONB.niche = b.dataset.n; $$('.niches .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); };
+  $('.niches').onclick = e => { const b = e.target.closest('[data-n]'); if (!b) return; ONB.niche = b.dataset.n; $$('.niches .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#onb-err').textContent = ''; };
   const inp = $('#onb-h'); inp.oninput = () => { inp.removeAttribute('aria-invalid'); $('#onb-err').textContent = ''; ONB.t0 = ONB.t0 || Date.now(); };
   $('#onb-f').onsubmit = e => {
     e.preventDefault(); const v = inp.value.trim().replace(/^@/, '');
-    /* round 46: no handle is fine: it's the same as Start from your niche, never an error */
+    /* r63: the niche shapes every idea you get next, so it's the one thing we ask for */
+    if (!ONB.niche) { $('#onb-err').textContent = 'Pick what you write about first. Your ideas come from it.'; const c = $('.niches .chip'); c && c.focus(); return; }
+    /* round 46: no handle is fine, never an error */
     if (!v) { ONB.handle = ''; onbStep2(); return; }
     if (ONB.plat === 'li') { if (v.length < 2) { inp.setAttribute('aria-invalid', 'true'); $('#onb-err').textContent = 'A name needs at least two letters.'; inp.focus(); return; } ONB.name = v.replace(/\s+/g, ' '); ONB.handle = v.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '').slice(0, 30) || 'you'; onbStep2(); return; }
     if (!/^[A-Za-z0-9_.]{2,30}$/.test(v)) { inp.setAttribute('aria-invalid', 'true'); $('#onb-err').textContent = 'Handles can only have letters, numbers, dots and underscores.'; inp.focus(); return; }
     ONB.handle = v; onbStep2();
   };
-  $('#onb-fresh').onclick = () => { ONB.handle = ''; onbStep2(); };
   $('#onb-arch').onclick = () => { openImport('x'); const iv = setInterval(() => { if (!MODALS.length) { clearInterval(iv); if (HIST().length) { ONB.handle = S.user.handle; ONB.niche = ONB.niche || S.user.niche; onbStep2(); } } }, 400); onDispose(() => clearInterval(iv)); };
   if (ONB.handle) { ONB.t0 = Date.now(); }
 }
@@ -13612,7 +13623,7 @@ function onbStep3() {
       <div class="ot-out" id="ot-out" aria-live="polite"></div></div>
     <div class="onb-ideas-w"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">No post in mind? Start from one of these</span><button class="btn ghost sm" id="onb-more">${ic('shuffle', 'sm')} Three more</button></div>
       <div class="post-ideas" id="onb-ideas">${onbIdeas(ideas.slice(0, 3))}</div></div>
-    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">${S.pendingLine ? `<button class="btn primary lg" id="onb-line">${ic('write', 'sm')} Open your line in Write</button>` : ''}<a class="btn lg" href="#week">Plan my week${ic('arrow')}</a></div>
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">${S.pendingLine ? `<button class="btn primary lg" id="onb-line">${ic('write', 'sm')} Open your line in Write</button>` : ''}<a class="btn ghost" href="#week">Skip for now</a></div>
   </div>`;
   onbFocusHead();
   let seed = hash(handle) % 9999; onbTry();
@@ -13654,7 +13665,7 @@ function onbTry() {
 }
 function onbIdeas(ideas) {
   return ideas.map((x, i) => { const s = hookScore(fillText(x.text, { topic: x.topic })).score;
-    return `<div class="card pidea" style="animation-delay:${i * 70}ms" data-t="${esc(x.text)}" data-k="${esc(x.kind)}" data-topic="${esc(x.topic)}"><div><p>${fillHTML(x.text, { topic: x.topic })}</p><div class="f"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(KIND_L(x.kind))}</span>${tierChip(s, { noun: true, cls: 'sm' })}</div></div><div style="display:flex;gap:6px"><button class="btn sm" data-oi="save" data-tip="Save to Ideas">${ic('bookmark', 'sm')}</button><button class="btn sm" data-oi="open">Write it${ic('arrow', 'sm')}</button></div></div>`; }).join('');
+    return `<div class="card pidea" style="animation-delay:${i * 70}ms" data-t="${esc(x.text)}" data-k="${esc(x.kind)}" data-topic="${esc(x.topic)}"><div><p>${fillHTML(x.text, { topic: x.topic })}</p><div class="f"><span class="pill kp" data-kind="${String(x.kind).toLowerCase()}">${esc(KIND_L(x.kind))}</span>${tierChip(s, { noun: true, cls: 'sm' })}</div></div><button class="btn sm" data-oi="open">Write it${ic('arrow', 'sm')}</button></div>`; }).join('');
 }
 
 /* ==========================================================================
@@ -13746,7 +13757,7 @@ function todaySmart() {
   if (old) return { i: 'repost', t: `“${esc(clip(old.text, 70))}” went out ${agoDays(old.days)}. Anyone who followed since hasn’t seen it.`, b: 'Bring it back', a: 'rerun', id: old.id };
   if (an && an.bestKind) return { i: 'trend', t: `Your ${esc(KIND_PLS(an.bestKind.k))} earn ${an.bestKind.x}× your usual. Today’s a good day for one.`, b: `Write ${kindA(an.bestKind.k)}`, a: 'kind', k: an.bestKind.k };
   const left = r.goal - r.n, daysLeft = 7 - ((new Date().getDay() + 6) % 7) - 1;
-  if (left > 0 && daysLeft >= 0 && left <= daysLeft + 1) return { i: 'cal', t: `${r.n ? `${r.n} day${r.n === 1 ? '' : 's'} planned or posted this week.` : 'Nothing planned this week yet.'} ${left} more meets your goal of ${r.goal}.`, b: 'Draft my week', a: 'plan' };
+  if (left > 0 && daysLeft >= 0 && left <= daysLeft + 1) return { i: 'cal', t: `${r.n ? `${r.n} day${r.n === 1 ? '' : 's'} planned or posted this week.` : 'Nothing planned this week yet.'} ${left} more meets your goal of ${r.goal}.`, b: 'Plan my week', a: 'plan' };
   if (S.ideas.length) { const o = [...S.ideas].sort((a, b) => a.at - b.at)[0]; return { i: 'inbox', t: `You have ${S.ideas.length} saved idea${S.ideas.length === 1 ? '' : 's'}. The oldest: “${esc(clip(cleanIdea(o.text), 60))}”`, b: 'Open Saved', a: 'saved' }; }
   return { i: 'hook', t: esc(GEN_TIPS.write[hash(dayKey(Date.now())) % GEN_TIPS.write.length]), b: 'Open Formulas', a: 'hooks' };
 }
@@ -14190,9 +14201,9 @@ function hooksPageRetired() {
     if (a === 'souse') { writeFrom([b.dataset.t]); toast('Loaded the winner. Now write the rest.', { icon: 'hook', tone: 'accent' }); return; }
     if (a === 'pick') { const before = t.value; t.value = b.dataset.t; draw(); burstFrom($('#g-score b')); toast(/\[[^\]]+\]/.test(b.dataset.t) ? 'Swapped in. Fill the [brackets] with yours.' : 'Swapped in.', { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); return; }
     if (a === 'improve') { if (!t.value.trim()) { t.focus(); toast('Type a first line, then we’ll make it stronger.', { icon: 'hook' }); return; } riffNonce++; const before = t.value, a0 = hookScore(before).score; const out = AI.hook(before).split('\n')[0];
-      const keep = () => { t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`Hook: ${tierMove(a0, a1).text}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); };
+      const keep = () => { t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`${moveWord(a0, a1)}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); };
       if (aiOn() && !crCan('hooks')) { crSheet({ act: 'hooks', cost: crCost('hooks'), basicHTML: crDiffHTML(before, out), onBasic: keep, resume: () => b.click() }); return; }
-      t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`Hook: ${tierMove(a0, a1).text}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); if (a1 >= 78 && a1 - a0 >= 12) setTimeout(() => showUpsell(a0, a1), 700); }
+      t.value = out; draw(); const a1 = hookScore(out).score; burstFrom($('#g-score b')); toast(`${moveWord(a0, a1)}.`, { icon: 'hook', tone: 'accent', action: 'Undo', onAction: () => { t.value = before; draw(); } }); if (a1 >= 78 && a1 - a0 >= 12) setTimeout(() => showUpsell(a0, a1), 700); }
     if (a === 'send') { if (!t.value.trim()) { toast('Type a first line first.', { tone: 'err', icon: 'write' }); return; } writeFrom([t.value]); }
     if (a === 'use') useHook(b.closest('[data-t]').dataset.t);
     if (a === 'grade') { t.value = fillText(b.closest('[data-t]').dataset.t).replace(/\[([^\]]+)\]/g, '$1'); draw(); t.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' }); t.focus(); }
@@ -14220,7 +14231,7 @@ ROUTES.week = () => {
   WEEK = gapSlots().length || qList().some(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now() && slotDate(q.day, q.time) < wkEnd) ? 0 : 1; if (S.settings.evergreen) ensureEvergreen();
   const nm = greetName();
   const cl = S.ws !== 'me' ? WS() : null; /* writing as a client: the greeting says whose week this is */
-  mount('week', `<div class="page wk-page" style="max-width:1280px"><div class="page-h wk-head"><div><h1 class="display t-greet">${greetWord()}${cl ? `. Writing as ${esc(cl.name)}` : nm ? `, <span class="t-name" id="t-name" tabindex="0" role="button" aria-label="${esc(`Your name here: ${nm}. Press Enter to change it`)}" data-tip="Double-click to change">${esc(nm)}</span>` : ''}.</h1><p class="wk-next" id="wk-next"></p><p id="q-sub"></p></div><div class="wk-acts"><button class="btn primary" data-qact="plan" data-tip="Five minutes in, five posts out">${ic('spark', 'sm')} Draft my week${crTag('week')}</button></div></div>
+  mount('week', `<div class="page wk-page" style="max-width:1280px"><div class="page-h wk-head"><div><h1 class="display t-greet">${greetWord()}${cl ? `. Writing as ${esc(cl.name)}` : nm ? `, <span class="t-name" id="t-name" tabindex="0" role="button" aria-label="${esc(`Your name here: ${nm}. Press Enter to change it`)}" data-tip="Double-click to change">${esc(nm)}</span>` : ''}.</h1><p class="wk-next" id="wk-next"></p><p id="q-sub"></p></div><div class="wk-acts"><button class="btn primary" data-qact="plan" data-tip="Five minutes in, five posts out">${ic('spark', 'sm')} Plan my week${crTag('week')}</button></div></div>
   <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">This week</button><span class="range" id="q-range"></span><button class="btn sm q-times-b" data-qact="times" aria-haspopup="dialog">${ic('clock', 'sm')} Times</button>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#results"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="Week calendar. Each card is a post. Press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide(); checkQueuePrices();
@@ -14476,8 +14487,8 @@ function drawQSide() {
   const el = $('#q-side'); if (!el) return;
   const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled' && (!QF.mine || q.ws === S.ws)), MD = myDrafts(); fetchPlugs();
   el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}" data-tip="Approve it, or send it back"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')} · ${esc(slotWhen(q.day, q.time))}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
-  <div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span>${MD.length ? `<span class="faint" style="font-size:12px">${MD.length}</span>` : ''}</div>
-    ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd${blank ? ' qd-blank' : ''}" draggable="${!blank}" data-di="${i}"${blank ? ' data-tip="Fill the [blanks] first, then drag it onto a time"' : ''} tabindex="0" role="button" aria-label="${esc(clip(t, 80).replace(/[\s.!?:;,…]+$/, ''))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">Nothing waiting. Ideas you write up land here.</p>`}</div>
+  ${MD.length ? `<div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span>${MD.length ? `<span class="faint" style="font-size:12px">${MD.length}</span>` : ''}</div>
+    ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd${blank ? ' qd-blank' : ''}" draggable="${!blank}" data-di="${i}"${blank ? ' data-tip="Fill the [blanks] first, then drag it onto a time"' : ''} tabindex="0" role="button" aria-label="${esc(clip(t, 80).replace(/[\s.!?:;,…]+$/, ''))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : ''}</div>` : ''}
   <div class="card q-times"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Your posting times</span><button class="btn ghost sm" data-qact="times" aria-haspopup="dialog" aria-label="Edit your posting times">Edit</button></div>
     <ul class="qtm-list">${(() => { const g = new Map(); SLOTS.forEach(t => { const l = daysLabel(S.slots ? S.slots[t] : null); g.set(l, [...(g.get(l) || []), fmtTime(t)]); }); return [...g].map(([l, ts]) => `<li class="qtm-g"><span>${esc(l)}</span><b class="mono">${ts.join(' · ')}</b></li>`).join(''); })()}</ul>
     <p class="faint" style="font-size:12px">${S.slots ? 'Your times. New posts are suggested here first.' : 'Suggested times. Change them to match your day.'}</p></div>`;
@@ -14850,7 +14861,7 @@ ROUTES.upgrade = () => {
     : 'Your plan, your usage, and what’s a bigger job.';
   const faq = [
     ['Is the free plan actually free?', 'Yes. 10 Claude rewrites a day, Sharpen and quick rewrites as much as you like, and unlimited drafts and ideas. No card.'],
-    ['What counts as a rewrite?', 'One Claude rewrite of a post, with three versions to pick from. Bigger jobs, like Draft my week or Learn my voice, count as a few and say so on the button. Sharpen never counts.'],
+    ['What counts as a rewrite?', 'One Claude rewrite of a post, with three versions to pick from. Bigger jobs, like Plan my week or Learn my voice, count as a few and say so on the button. Sharpen never counts.'],
     ['What happens when I run out?', 'Nothing breaks. You get the quick version on the spot, free, and Free resets at midnight. On Pro, your first month’s leftovers roll over into the second.'],
     ['Is the trial really free?', 'Yes. Seven days of Pro, no card. It ends on its own and you’re back on Free with everything you wrote. One trial per account.'],
     ['Will it sound like ChatGPT?', 'It shouldn’t. It learns from your posts, follows your tone sliders and never uses anything on your never-say list. If a word isn’t you, add it to that list.'],
