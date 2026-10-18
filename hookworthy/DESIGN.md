@@ -808,3 +808,45 @@ The sidebar gained a Drafts list, and screens out of view are `inert`.
 - The features lede is "Every tool here serves one line: the one that stops the scroll."
 - The audience tabs fit at 390px, and the Sharpen slice keeps its full stop with its words.
 
+
+## Round 60: every Sharpen lands, one set of numbers, nothing in the way
+
+**Sharpen is one engine (`HWCore.hookUp` in core.js).** The composer's coach button, the selection pill (Punchier and Bolder on a whole sentence), onboarding, hook ideas and every homepage demo use the same engine. It tries all of these moves at once:
+- cut the warm-up, the hedges and the bait;
+- ask then answer ("Most underrated thing in trading? Sizing down after a loss.");
+- lead with the number or the result ("200 → 4,000 followers in 90 days. The move: …", "Trials up 22% in a week. What changed: …");
+- say the contrast in two beats;
+- say advice as an instruction ("Stop chasing green candles.");
+- open a loop, only when more of the post follows and the line still needs a push.
+
+It keeps every number, ticker, name and "not". It adds no number and no claim. It keeps the writer's casing: a lowercase writer stays lowercase, and with a body the body decides. Each version is scored and the best one wins. A full stop on its own never counts as a sharpen. The toast names the move ("Almost → Ready. Cut 3 soft words · Asked, then answered."). **Another** cycles through the other strong versions, and **Undo** puts your line back. The coach says "Sharpen" whenever a move would lift the line, not only when there are soft words. Benchmark: 30 real creator and trader lines, 30 of 30 lifted, average +13, 25 Ready (was 7 of 30, +2.6, 11 Ready).
+
+**The hook score credits structure.** It now counts each of these once, and only in a short line: ask-then-answer, a two-beat contrast, the number up front, a turn ("Then I…"), and a reveal after a colon.
+
+**One account, one set of numbers.** heycape: 4,812 followers, a usual post about 4.4K views and 75 likes. Likes run 1.6–2.2% of views, replies 1 in 8 likes, reposts 1 in 12.
+- The example week is anchored to today: the last six days went out, the next four are planned.
+- The hero post is the homepage's own line, word for word. 18.4K views and 402 likes, 4.2× usual. At one hour in: 3.1K and 74.
+- The homepage, Results, Inbox, the radar and the Sunday note all agree.
+- No dated calendars on the homepage.
+- No [blanks] in seeded drafts.
+- Each person has one follower count.
+- Ledgerly is voiced by Tobi.
+- CPI and FOMC never contradict the market calendar.
+
+**Nothing in the way.**
+- On phones, the tool row keeps its place, so "Add to thread" is one tap.
+- Week opens on a week that has time left.
+- The phone sheet is opaque, and Comments has Hide.
+- Sharpen keeps the caret.
+- The selection pill comes up after 650ms. It sits in one row above the words, never on them, and dims options that can't change the selection.
+- A toast's buttons leave with their screen and never cover a menu.
+- Draft my week shows on phones.
+- "Add yours" replaces "Do it for me" where only you know the number.
+- Formula examples score as blanks until they're yours.
+- "Write another like it" starts from a fresh formula of the same kind.
+- Marking as posted takes 3 seconds, not 8.
+- The top bar stays clickable while you type.
+
+**New, for traders.**
+- **Receipts** (Results): every price call you post is tracked. You mark it hit or missed, since nothing watches prices. The honest follow-up is one tap, misses too.
+- **Promise check** (Before you post): flags a guaranteed return, "NFA" doing a plan's job, and a paid or referral link without the Paid Partnership label.

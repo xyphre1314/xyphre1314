@@ -3852,7 +3852,7 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .cl-a{ display:flex; gap:6px; align-items:center; } .cl-s{ display:inline-flex; gap:4px; align-items:center; font-size:12px; font-weight:600; color:var(--text-3); padding-right:4px; } .call.hit .cl-s{ color:var(--success); }
 .call.missed .cl-t p{ color:var(--text-2); } .calls-f{ font-size:12px; }
 @media (max-width:640px){ .call{ grid-template-columns:52px minmax(0,1fr); } .cl-a{ grid-column:2; } }
-.qtm-list{ list-style:none; margin:0; padding:0; display:grid; gap:6px; } .qtm-list li{ display:flex; justify-content:space-between; gap:10px; font-size:13px; color:var(--text-2); } .qtm-list b{ color:var(--text-1); font-size:12.5px; }
+.qtm-list li.qtm-g{ display:grid; gap:3px; justify-content:start; } .qtm-list li.qtm-g b{ line-height:1.5; } .qtm-list{ list-style:none; margin:0; padding:0; display:grid; gap:6px; } .qtm-list li{ display:flex; justify-content:space-between; gap:10px; font-size:13px; color:var(--text-2); } .qtm-list b{ color:var(--text-1); font-size:12.5px; }
 .tm-modal{ width:min(860px, calc(100vw - 32px)); max-width:none; }
 .tm-b{ display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:24px; align-items:start; }
 @media (max-width:760px){ .tm-b{ grid-template-columns:1fr; } }
@@ -9792,7 +9792,7 @@ function weekTakeaways(w) {
   if (w.med && HWCore.eng(p) > 0) { const x = Math.round(HWCore.eng(p) / w.med * 10) / 10; if (x >= 1.2) out.push({ i: 'trend', t: `<b>${x}× your usual.</b> Your best this week by a clear margin.` }); }
   if (/\d/.test(first)) out.push({ i: 'target', t: '<b>A real number in line one.</b> People stop for specifics.' });
   if (an && an.bestKind && an.bestKind.k === k) out.push({ i: 'layers', t: `<b>${esc(cap(kindA(k)))}.</b> Your strongest kind: ${an.bestKind.x}× your usual.` });
-  else if (h.score >= 70) out.push({ i: 'hook', t: `<b>${goodWord(h.score)} opener.</b> ${esc(h.reason)}` });
+  else if (h.score >= 70) out.push({ i: 'hook', t: `<b>${goodWord(h.score)} opener.</b> ${esc(h.reason.replace(/\s*A strong first line\.$/, ''))}` });
   if (p.at) { const dt = new Date(p.at), hm = `${dt.getHours()}:${String(dt.getMinutes()).padStart(2, '0')}`, top = TIMES.src === 'you' && TIMES.top && TIMES.top.d === dowIdx(dt); out.push({ i: 'clock', t: `<b>Went out ${WKD[(dt.getDay() + 6) % 7] || DOW[dt.getDay()]} at ${fmtTime(hm)}.</b> ${top ? 'One of your best times.' : 'Note the time: try it again.'}` }); }
   return out.slice(0, 3);
 }
@@ -12611,7 +12611,7 @@ const HZ_WHO = [
     li: ['Up to 8 client voices on Studio', 'Clients comment on the exact words', 'Nothing posts until it’s approved'],
     ba: [['<s>i feel like</s> we should talk more about burnout in startups', 'We should talk more about burnout in startups.'], ['<s>honestly</s> the best hire we made was <s>basically</s> a former teacher', 'The best hire we made was a former teacher.']] },
   { k: 'traders', bio: 'Swing trader, 7 years', tab: 'Traders', p: 18, ph: PHOTO.cafe, h: 'Your trade log, posted before the open.', d: 'Theo journals every trade. Hookworthy turns the lesson into a first line and lines it up before the bell.',
-    li: ['Charts and P&L screenshots become drafts', 'Posts timed before the market opens', 'A ping when a post takes off'],
+    li: ['Charts and P&L screenshots become drafts', 'Posts timed before the market opens', 'Receipts for every call, hits and misses'],
     ba: [['<s>honestly</s> the best trade i made this month was <s>probably</s> the one i skipped', hgSharpen('honestly the best trade i made this month was probably the one i skipped').first], ['<s>not financial advice but</s> i <s>basically</s> stopped trading the open', hgSharpen('not financial advice but i basically stopped trading the open', { more: true }).first]] }
 ];
 function hzWhoHTML() {
@@ -14310,7 +14310,7 @@ function drawQSide() {
   <div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span>${MD.length ? `<span class="faint" style="font-size:12px">${MD.length}</span>` : ''}</div>
     ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd${blank ? ' qd-blank' : ''}" draggable="${!blank}" data-di="${i}"${blank ? ' data-tip="Fill the [blanks] first, then drag it onto a time"' : ''} tabindex="0" role="button" aria-label="${esc(clip(t, 80).replace(/[\s.!?:;,…]+$/, ''))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">Nothing waiting. Ideas you write up land here.</p>`}</div>
   <div class="card q-times"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Your posting times</span><button class="btn ghost sm" data-qact="times" aria-haspopup="dialog" aria-label="Edit your posting times">Edit</button></div>
-    <ul class="qtm-list">${(() => { const g = new Map(); SLOTS.forEach(t => { const l = daysLabel(S.slots ? S.slots[t] : null); g.set(l, [...(g.get(l) || []), fmtTime(t)]); }); return [...g].map(([l, ts]) => `<li><b class="mono">${ts.join(' · ')}</b><span>${esc(l)}</span></li>`).join(''); })()}</ul>
+    <ul class="qtm-list">${(() => { const g = new Map(); SLOTS.forEach(t => { const l = daysLabel(S.slots ? S.slots[t] : null); g.set(l, [...(g.get(l) || []), fmtTime(t)]); }); return [...g].map(([l, ts]) => `<li class="qtm-g"><span>${esc(l)}</span><b class="mono">${ts.join(' · ')}</b></li>`).join(''); })()}</ul>
     <p class="faint" style="font-size:12px">${S.slots ? 'Your times. New posts are suggested here first.' : 'Suggested times. Change them to match your day.'}</p></div>`;
 }
 /* "Every day", "Weekdays", "Mon, Wed, Fri" */
@@ -14490,14 +14490,15 @@ const PT_COLS = [['at', 'Date'], ['text', 'Post'], ['likes', 'Likes'], ['replies
 let _pt = { key: '', v: null };
 function ptRow(p, extra) { const v = p.views || 0, e = (p.likes || 0) + (p.replies || 0) + (p.reposts || 0); return { id: p.id, text: p.text, thread: p.thread || [], at: p.at || null, likes: p.likes || 0, replies: p.replies || 0, reposts: p.reposts || 0, views: v, rate: v ? e / v : null, lc: p.text.toLowerCase(), hook: null, none: !HWCore.measured(p), ...extra }; }
 function ptData() {
-  const pub = S.queue.filter(q => q.status === 'published' && !q.marked && mineQ(q)).map(q => ({ q, m: q.metrics || q })).filter(({ m }) => ['likes', 'replies', 'reposts', 'views'].some(k => typeof m[k] === 'number'));
+  const pub = S.queue.filter(q => q.status === 'published' && !q.marked && mineQ(q)).map(q => ({ q, m: q.metrics || (q.demo && SHOWCASE() ? sampleNums(q, true) : q) })).filter(({ m }) => ['likes', 'replies', 'reposts', 'views'].some(k => typeof m[k] === 'number'));
   const key = histKey() + '|' + pub.map(({ q, m }) => q.id + ':' + (m.likes || 0) + ':' + (m.replies || 0) + ':' + (m.views || 0)).join(',') + '|' + SHOWCASE();
   if (_pt.key === key) return _pt.v;
   const h = HIST(), seen = new Set(h.map(p => p.text.trim())), ids = new Set(h.map(p => p.id));
   let rows = h.map(p => ptRow(p)), sample = false;
   pub.forEach(({ q, m }) => { if (seen.has(q.text.trim()) || (q.xIds && ids.has('x-' + q.xIds[0]))) return; rows.push(ptRow({ id: q.id, text: q.text, thread: q.tweets.slice(1), at: slotDate(q.day, q.time).getTime(), likes: m.likes, replies: m.replies, reposts: m.reposts, views: m.views })); });
   /* the showcase has no posts of its own: the sample account's top posts stand in, labelled Sample */
-  if (!rows.length && SHOWCASE()) { sample = true; rows = TOP_POSTS.map(p => ptRow({ ...p, at: Date.now() - p.days * DAY, reposts: Math.round(p.likes * .09) })); }
+  /* the showcase: its sent week (sample numbers) and the sample account's all-time best, labelled Sample, so the 30-day tiles cover the last 30 days */
+  if (!h.length && SHOWCASE()) { sample = true; rows = [...rows, ...TOP_POSTS.map(p => ptRow({ ...p, at: Date.now() - p.days * DAY, reposts: Math.round(p.likes * .09) }))]; }
   _pt = { key, v: { rows, sample, views: rows.some(r => r.views > 0) } }; return _pt.v;
 }
 const ptHook = r => r.hook == null ? (r.hook = hookScore(r.text).score) : r.hook;
