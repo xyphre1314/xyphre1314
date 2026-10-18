@@ -5422,6 +5422,76 @@ button.st-day{ font:inherit; cursor:pointer; transition:background .2s,box-shado
 .hx .hx-old h1 em, .hx .hx-old h2 em{ color:inherit; font-style:normal; }
 .hx .hx-old .eyebrow{ font-family:var(--font-mono); font-weight:500; letter-spacing:.04em; text-transform:none; }
 .idea-tabs .seg{ flex-wrap:nowrap; }
+/* ==========================================================================
+   ROUND 61: AN EDITOR'S INKS, AND WRITING TYPE FOR WRITING
+   Colour now carries three meanings, the way an editor marks a page: highlighter yellow on the words that soften
+   a line, red ink on what gets cut, green when a line is ready. Everything else stays quiet.
+   Drafts are set in Newsreader, so writing feels like writing; numbers and tickers read in Geist Mono.
+   ========================================================================== */
+:root, .force-light{ --ink-soft:#A16207; --ink-soft-band:rgba(250,204,21,.38); --ink-cut:#C9372C; --ink-cut-soft:rgba(201,55,44,.09); --ink-ready:#15803D; --ink-ready-band:rgba(21,128,61,.13);
+  --font-write:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --ink-soft:#FACC15; --ink-soft-band:rgba(250,204,21,.22); --ink-cut:#FF6B5E; --ink-cut-soft:rgba(255,107,94,.12); --ink-ready:#4ADE80; --ink-ready-band:rgba(74,222,128,.14); } }
+:root[data-theme="dark"], .force-dark{ --ink-soft:#FACC15; --ink-soft-band:rgba(250,204,21,.22); --ink-cut:#FF6B5E; --ink-cut-soft:rgba(255,107,94,.12); --ink-ready:#4ADE80; --ink-ready-band:rgba(74,222,128,.14); }
+/* the homepage's soft-word dot and line follow the same ink */
+.hx{ --soft:var(--ink-soft); }
+
+/* drafts: Newsreader, a size up so its smaller x-height reads like the sans did */
+.composer .field-wrap{ font:400 20px/1.55 var(--font-write); letter-spacing:.002em; font-optical-sizing:auto; font-variant-ligatures:common-ligatures; }
+.composer .tw-input, .composer .tw-mirror{ font-variant-ligatures:common-ligatures; }
+@media (max-width:640px){ .composer .field-wrap{ font-size:19px; } }
+
+/* highlighter on soft words: a marker swipe under the lower half of the word, not an error squiggle */
+.tw-mirror .sw{ text-decoration:none; background:linear-gradient(transparent 52%, var(--ink-soft-band) 52%, var(--ink-soft-band) 94%, transparent 94%) no-repeat 0 0 / 100% 100%; border-radius:2px; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+.hx-sw{ text-decoration:none; background:linear-gradient(transparent 52%, var(--ink-soft-band) 52%, var(--ink-soft-band) 94%, transparent 94%) no-repeat 0 0 / 0% 100%; transition:background-size .5s var(--hx-e, ease); }
+.hx-sw.on, .hx-lm .hx-sw.on{ background-size:100% 100%; }
+.st-before s, .wait .st-before s{ text-decoration:none; background:linear-gradient(transparent 52%, var(--ink-soft-band) 52%, var(--ink-soft-band) 94%, transparent 94%); border-radius:2px; }
+
+/* red ink on cuts, green on what's new, in every before → after */
+.ot-diff del.vw, .hg-diffx del, .fin8-diff del, .diff-b .chg del, .shd del{ color:var(--text-3); background:none; text-decoration:line-through; text-decoration-color:var(--ink-cut); text-decoration-thickness:1.5px; }
+.ot-diff ins, .hg-diffx ins, .fin8-diff ins, .diff-b .chg ins{ text-decoration:none; color:inherit; background:var(--ink-ready-band); border-radius:3px; padding:0 2px; box-shadow:none; }
+.tw-mirror .ow{ text-decoration-color:var(--ink-cut); }
+
+/* ready is green, everywhere the coach says so */
+.tw .hk-coach.t-sharp, .tw .hk-coach.t-honed{ color:var(--ink-ready); }
+.tw .hk-coach.soft{ color:var(--text-1); background:var(--ink-soft-band); }
+.tw .hk-coach.soft:hover{ background:color-mix(in srgb,var(--ink-soft-band) 100%,var(--ink-soft) 12%); }
+.hk-coach .hk-i-sw{ color:var(--ink-soft); }
+
+/* watchable Sharpen (watchEdit) */
+.wt-on > textarea{ color:transparent !important; caret-color:transparent !important; } .wt-on > .tw-mirror, .wt-on > .hx-lm, .wt-on > .tw-cmts, .wt-on > .caret{ visibility:hidden; }
+.wt-ov{ position:absolute; z-index:3; margin:0; border:0; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word; color:var(--text-1); pointer-events:none; }
+.wt-w{ display:inline-block; position:relative; white-space:pre; } .wt-ov.nofx .wt-w, .wt-ov.nofx .wt-rest{ transition:none !important; }
+.wt-rest{ display:block; transition:transform .45s cubic-bezier(.2,.8,.2,1); }
+.wt-w.cut::after{ content:""; position:absolute; left:-1px; right:-1px; top:56%; height:2px; border-radius:2px; background:var(--ink-cut); transform:scaleX(0); transform-origin:left center; transition:transform .24s cubic-bezier(.3,.7,.2,1); }
+.wt-ov.strike .wt-w.cut{ color:var(--text-3); transition:color .2s; } .wt-ov.strike .wt-w.cut::after{ transform:none; }
+.wt-w.kept{ transition:transform .5s cubic-bezier(.2,.8,.2,1); }
+.wt-w.gone{ position:absolute; color:var(--text-3); animation:wtgone .42s cubic-bezier(.3,.7,.2,1) both; }
+.wt-w.gone::after{ content:""; position:absolute; left:-1px; right:-1px; top:56%; height:2px; border-radius:2px; background:var(--ink-cut); }
+@keyframes wtgone{ to{ opacity:0; transform:translateY(-10px); filter:blur(2px); } }
+.wt-w.new{ opacity:0; }
+.wt-ov.play .wt-w.new{ animation:wtnew .5s cubic-bezier(.2,.8,.2,1) both; background:linear-gradient(transparent 52%, var(--ink-ready-band) 52%, var(--ink-ready-band) 94%, transparent 94%); border-radius:2px; }
+@keyframes wtnew{ from{ opacity:0; transform:translateY(7px); } to{ opacity:1; transform:none; } }
+.wt-chip{ position:absolute; right:0; top:-30px; z-index:4; display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:99px; font:600 11.5px/1 var(--font-ui); letter-spacing:.01em; color:var(--ink-ready); background:var(--ink-ready-band); pointer-events:none; animation:wtchip 2.2s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes wtchip{ 0%{ opacity:0; transform:translateY(4px); } 12%,78%{ opacity:1; transform:none; } 100%{ opacity:0; transform:translateY(-3px); } }
+/* Scroll test */
+.stt{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:20px; align-items:center; }
+.stt-phone{ position:relative; width:300px; height:min(500px,58vh); overflow:hidden; border-radius:28px; background:#FFFFFF; box-shadow:0 0 0 7px var(--surface-3),0 0 0 8px var(--border-strong),var(--sh-3); }
+.stt-phone.dark{ background:#000000; }
+.stt-phone::after{ content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(to bottom,rgba(0,0,0,.18),transparent 14%,transparent 86%,rgba(0,0,0,.18)); }
+.stt-feed{ will-change:transform; display:grid; gap:0; } .stt-feed .pf{ font-size:14px; border-radius:0 !important; margin:0 !important; border:0 !important; box-shadow:inset 0 -1px 0 rgba(127,127,127,.2) !important; }
+.stt-mine{ position:relative; } .stt-done .stt-mine::before{ content:""; position:absolute; inset:0; z-index:1; pointer-events:none; box-shadow:inset 0 0 0 2px var(--ink-ready); border-radius:4px; animation:sttglow 1.2s ease-out both; }
+@keyframes sttglow{ from{ opacity:0; } to{ opacity:1; } }
+.stt-stamp{ position:absolute; z-index:2; left:50%; bottom:22%; padding:6px 14px; border:3px solid currentColor; border-radius:8px; font:800 22px/1 var(--font-ui); letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; opacity:0; transform:translateX(-50%) rotate(-7deg) scale(1.6); pointer-events:none; mix-blend-mode:normal; background:color-mix(in srgb,var(--surface) 70%,transparent); }
+.stt-stamp.stop{ color:var(--ink-ready); } .stt-stamp.slow{ color:var(--ink-soft); } .stt-stamp.past{ color:var(--ink-cut); }
+.stt-stamp.on{ animation:sttstamp .42s cubic-bezier(.2,1.4,.4,1) both; }
+@keyframes sttstamp{ 0%{ opacity:0; transform:translateX(-50%) rotate(-7deg) scale(1.7); } 100%{ opacity:.95; transform:translateX(-50%) rotate(-7deg) scale(1); } }
+.stt-out{ display:grid; gap:8px; align-content:center; min-width:0; } .stt-h{ font:400 30px/1.1 var(--font-serif); letter-spacing:-.02em; color:var(--text-1); min-height:33px; } .stt-p{ color:var(--text-2); font-size:14px; line-height:1.5; max-width:34ch; }
+.pv-st{ margin-left:auto; }
+@media (max-width:640px){ .stt{ grid-template-columns:1fr; justify-items:center; } .stt-phone{ width:min(300px,100%); height:min(420px,52vh); } .stt-out{ text-align:center; justify-items:center; } }
+/* numbers and tickers in mono, tabular so they line up */
+.kpi-chips .kc b, .hx-kpis b, .calls-sc b, .call .sym, .cr-n, .rd-who span, .st .num, .hbar .num{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+.kpi-chips .kc b{ font-weight:500; }
+
 </style>
 </head>
 <body>
@@ -6939,6 +7009,7 @@ function paletteCommands() {
   const nav = [...NAV, ...TOOLS].map(n => ({ g: 'Go to', label: n.label, icon: n.icon, kbd: ['G', n.key], run: () => go(n.k) }));
   const acts = [
     { g: 'Actions', label: 'New post', icon: 'write', kbd: ['C'], run: newPost },
+    ...(isEmptyDraft() ? [] : [{ g: 'Actions', label: 'Scroll test', icon: 'down', run: () => goThen('write', scrollTest) }]),
     { g: 'Actions', label: 'New thread', icon: 'layers', run: () => { newPost(); setTimeout(() => { const b = $('[data-cact="add"]'); b && b.click(); const f = $('#thread .tw-input'); f && f.focus(); }, 260); } },
     { g: 'Actions', label: 'Save an idea', icon: 'plus', kbd: ['I'], run: openCapture },
     ...(isEmptyDraft() ? [] : [{ g: 'Actions', label: 'Schedule for the next good time', icon: 'clock', kbd: [MOD, '↵'], run: () => { goThen('write', () => quickSchedule()); } }]),
@@ -7398,6 +7469,93 @@ function selectFrag(frag) {
 }
 const firstLine = t => { const v = String(t || ''), n = v.indexOf('\n'); return n < 0 ? v : v.slice(0, n); };
 const softN = () => { const t0 = S.draft.tweets[0]; return t0 ? hgMarks(firstLine(t0.text)).length : 0; };
+/* ---------- round 61: Scroll test ----------
+   A fast thumb runs through a feed with your post in it. A line that would hold someone brakes the feed and stops
+   on your post; an Almost slows it, then lets go; a line with nothing to catch on gets flicked past. It's read from
+   the hook score (your line, not your likes), and it says so: a feel for the first line, never a forecast */
+function scrollTest() {
+  const t0 = S.draft.tweets[0]; if (!t0 || !t0.text.trim()) { toast('Write a first line, then run the scroll test.', { icon: 'write' }); return; }
+  const sc = hookFor(hookText(t0)).score, T = TIER(sc), dark = isDark(), you = pvYou(), h = hash(t0.text);
+  const pick = k => VOID_POSTS[(h + k * 5) % VOID_POSTS.length], above = [0, 1, 2, 3].map(pick), below = [4, 5, 6].map(pick);
+  const fate = T.rank >= 2 ? 'stop' : T.rank === 1 ? 'slow' : 'past';
+  const R = { stop: ['Stopped', 'Stopped the scroll.', 'A fast thumb stopped on your first line. That’s the whole job of a hook.'], slow: ['Slowed', 'Slowed them down.', 'They paused on it, then kept going. One more move and it holds.'], past: ['Scrolled past', 'Scrolled past.', 'Nothing in the first line caught a fast thumb. Lead with the number, or the surprise.'] }[fate];
+  const canSharpen = fate !== 'stop' && !!hookUpFor(t0.text);
+  const m = modal(`${modalHead('Scroll test', 'A fast thumb meets your first line. Read from your hook score, not a forecast.')}
+    <div class="modal-b stt"><div class="stt-phone${dark ? ' dark' : ''}" aria-hidden="true"><div class="stt-feed">${above.map(p => xPost(p, { dark })).join('')}<div class="stt-mine">${xPost({ t: clip(t0.text, 280), ago: 'now' }, { you, dark, counts: false })}</div>${below.map(p => xPost(p, { dark })).join('')}</div><span class="stt-stamp ${fate}">${R[0]}</span></div>
+    <div class="stt-out"><p class="stt-h" aria-live="polite"></p><p class="stt-p"></p></div></div>
+    <div class="modal-f"><button class="btn" id="stt-again">${ic('undo', 'sm')} Run it again</button><span class="grow"></span>${canSharpen ? `<button class="btn primary" id="stt-sharp">${ic('bolt', 'sm')} Sharpen it</button>` : '<button class="btn primary" data-close>Done</button>'}</div>`, { label: 'Scroll test' });
+  const el = m.el, phone = $('.stt-phone', el), feed = $('.stt-feed', el), mine = $('.stt-mine', el), stamp = $('.stt-stamp', el), out = $('.stt-out', el);
+  let raf = 0;
+  const run = () => {
+    cancelAnimationFrame(raf); el.classList.remove('stt-done'); stamp.classList.remove('on'); $('.stt-h', el).textContent = ''; $('.stt-p', el).textContent = '';
+    const ph = phone.clientHeight, end = Math.max(0, feed.scrollHeight - ph), target = Math.min(end, Math.max(0, mine.offsetTop - ph * .22));
+    const finish = () => { el.classList.add('stt-done'); stamp.classList.add('on'); $('.stt-h', el).textContent = R[1]; $('.stt-p', el).textContent = R[2]; SFX.play(fate === 'stop' ? 'hook' : 'tick'); };
+    const at = y => { feed.style.transform = `translateY(${-y}px)`; };
+    if (REDUCED) { at(target); finish(); return; }
+    const V = 1.25; /* px per ms: a fast thumb */
+    const outC = x => 1 - Math.pow(1 - x, 3), inC = x => x * x * x;
+    const plan = fate === 'stop' ? [[0, target, target / V * 1.9, outC], ['hold', 900]]
+      : fate === 'slow' ? [[0, target, target / V * 1.5, outC], ['hold', 380], [target, end, (end - target) / V * 1.6, inC]]
+      : [[0, end, end / V, x => x]];
+    let i = 0, t0s = 0;
+    const step = now => {
+      if (!el.isConnected) return; if (!t0s) t0s = now; const seg = plan[i]; if (!seg) { finish(); return; }
+      const e = now - t0s;
+      if (seg[0] === 'hold') { if (e >= seg[1]) { i++; t0s = now; } raf = requestAnimationFrame(step); return; }
+      const [a, b, d, ease] = seg, x = Math.min(1, e / Math.max(1, d)); at(a + (b - a) * ease(x));
+      if (x >= 1) { i++; t0s = now; } raf = requestAnimationFrame(step);
+    };
+    at(0); raf = requestAnimationFrame(now => { t0s = now; raf = requestAnimationFrame(step); });
+  };
+  $('#stt-again', el).onclick = run;
+  const sb = $('#stt-sharp', el); if (sb) sb.onclick = () => { m.close(); sharpenFirst(); };
+  requestAnimationFrame(run);
+}
+/* ---------- round 61: a Sharpen you can watch ----------
+   The edit plays out on the line before it lands: the cut words take a red stroke and lift away, the words that stay
+   glide to their new places (even across the line, so "Risk management is the most important thing" visibly turns
+   into "Most important thing? Risk management."), and the new words arrive with a green swipe. Under a second, then
+   the real text takes over. Reduced motion skips straight to the result. Works on any textarea in a positioned box */
+function watchEdit(ta, before, after, { label = '', done } = {}) {
+  const fin = () => { done && done(); };
+  if (REDUCED || !ta || !ta.isConnected || !ta.parentElement) { fin(); return; }
+  const box = ta.parentElement, cs = getComputedStyle(ta);
+  const l0 = firstLine(before), l1 = firstLine(after), rest = after.slice(l1.length);
+  const key = w => w.toLowerCase().replace(/[^\p{L}\p{N}$%]/gu, '');
+  const toks = t => t.split(/(\s+)/).filter(x => x !== '');
+  const A = toks(l0), B = toks(l1), used = new Set();
+  /* each word that survives finds its old self, wherever it was: order doesn't matter, so moved words travel */
+  const match = B.map(w => { if (/^\s+$/.test(w) || !key(w)) return -1; const k = key(w); const j = A.findIndex((x, i) => !used.has(i) && key(x) === k); if (j >= 0) used.add(j); return j; });
+  const span = (w, i, cls) => /^\s+$/.test(w) ? esc(w) : `<span class="wt-w${cls ? ' ' + cls : ''}" data-i="${i}">${esc(w)}</span>`;
+  const ov = document.createElement('div'); ov.className = 'wt-ov'; ov.setAttribute('aria-hidden', 'true');
+  for (const k of ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'lineHeight', 'letterSpacing', 'wordSpacing', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'boxSizing', 'textAlign', 'fontVariantLigatures', 'fontKerning']) ov.style[k] = cs[k];
+  ov.style.left = ta.offsetLeft + 'px'; ov.style.top = ta.offsetTop + 'px'; ov.style.width = ta.offsetWidth + 'px';
+  const restHTML = rest ? `<span class="wt-rest">${esc(rest.replace(/^\n/, ''))}</span>` : '';
+  /* 1. the old line, with the cuts struck in red ink */
+  ov.innerHTML = A.map((w, i) => span(w, i, used.has(i) ? '' : 'cut')).join('') + restHTML;
+  box.append(ov); box.classList.add('wt-on');
+  const o0 = ov.getBoundingClientRect(), at = el => { const r = el.getBoundingClientRect(); return { x: r.left - o0.left, y: r.top - o0.top, w: r.width, h: r.height }; };
+  const posA = {}; $$('.wt-w', ov).forEach(el => { posA[el.dataset.i] = at(el); }); const restA = $('.wt-rest', ov) ? at($('.wt-rest', ov)) : null;
+  requestAnimationFrame(() => ov.classList.add('strike'));
+  setTimeout(() => {
+    if (!ov.isConnected) return;
+    /* 2. the new line: survivors glide from where they were, new words arrive */
+    ov.innerHTML = B.map((w, i) => /^\s+$/.test(w) ? esc(w) : span(w, match[i], match[i] < 0 ? 'new' : 'kept')).join('') + restHTML;
+    /* FLIP: measure every new place first, then pin each survivor back where it was with transitions off, then let go */
+    ov.classList.add('nofx'); const o1 = ov.getBoundingClientRect(), at1 = el => { const r = el.getBoundingClientRect(); return { x: r.left - o1.left, y: r.top - o1.top }; };
+    const kept = $$('.wt-w.kept', ov).map(el => [el, posA[el.dataset.i], at1(el)]), rs = $('.wt-rest', ov), rb = rs && restA ? at1(rs) : null;
+    kept.forEach(([el, a, b]) => { if (a) el.style.transform = `translate(${a.x - b.x}px,${a.y - b.y}px)`; }); if (rb) rs.style.transform = `translateY(${restA.y - rb.y}px)`;
+    void ov.offsetWidth; ov.classList.remove('nofx');
+    /* the cut words, left where they stood, lift away */
+    A.forEach((w, i) => { if (used.has(i) || /^\s+$/.test(w) || !posA[i]) return; const g = document.createElement('span'); g.className = 'wt-w gone'; g.textContent = w; const a = posA[i]; g.style.left = a.x + 'px'; g.style.top = a.y + 'px'; ov.append(g); });
+    let n = 0; $$('.wt-w.new', ov).forEach(el => { el.style.animationDelay = `${180 + 40 * n++}ms`; });
+    ov.classList.add('play'); requestAnimationFrame(() => { kept.forEach(([el]) => { el.style.transform = ''; }); if (rs) rs.style.transform = ''; });
+  }, 300);
+  setTimeout(() => {
+    box.classList.remove('wt-on'); ov.remove(); fin();
+    if (label && box.isConnected) { const c = document.createElement('span'); c.className = 'wt-chip'; c.textContent = label; box.append(c); setTimeout(() => c.remove(), 2200); }
+  }, 1150);
+}
 /* the composer's Sharpen: the soft words out first (the count on the button), then the editor's moves on what's left.
    Their casing and their facts stay; a reason to read on only when more of the post follows. Cached per text */
 function hookUpFor(text) {
@@ -7422,7 +7580,8 @@ function sharpenFirst() {
   if (!r) { setImprove(tw.id, 'score'); return; }
   const list = [{ text: r.text, say: r.say }, ...r.alts]; let i = 0;
   /* the caret goes back to the end of the first line, so the next keystroke lands in the post, not on the page */
-  const show = () => { const v = list[i]; UI.hookFrom = hookFor(tw.text).score; tw.text = v.text; save(); renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); const a1 = hookFor(tw.text).score; SFX.play(a1 >= 70 ? 'hook' : 'swap');
+  const show = () => { const v = list[i], was = tw.text, ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(was).score; tw.text = v.text; save(); if (ta) ta.value = v.text; /* typing during the replay lands in the new text */
+    watchEdit(ta, was, v.text, { label: v.say.split(' · ').slice(-1)[0], done: () => renderThread({ focusId: tw.id, pos: firstLine(v.text).length }) }); const a1 = hookFor(tw.text).score; SFX.play(a1 >= 70 ? 'hook' : 'swap');
     toast(`<b>${esc(tierMove(r.from, a1).text)}.</b> ${esc(v.say)}.`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); },
       ...(list.length > 1 ? { action2: 'Another', onAction2: () => { i = (i + 1) % list.length; show(); } } : {}) }); };
   show();
@@ -7485,7 +7644,7 @@ function checklistHTML(h, has, nx, me) {
     <div class="hkc-h"><span class="hkc-ic">${ic(has && TIER_N[T.key] >= 3 ? 'check' : 'riff', 'sm')}</span><b>${has ? (me ? '<span class="hk-gl">General</span>' : '') + CHK_HEAD[T.key] : 'Type your first line'}</b></div>
     ${has && coachLead(T, h) ? `<p class="hkc-lead">${esc(coachLead(T, h))}</p>` : ''}
     <ul class="hkc-l">${st.map(x => `<li class="hkc-i ${x.p.key}${next && next.k === x.k ? ' next' : ''}"><span class="hkc-box" aria-hidden="true">${x.p.key === 'full' ? ic('check', 'xs') : ''}</span><span class="hkc-t">${x.l}${x.p.key !== 'full' && has ? `<small>: ${CHK_FIX[x.k].toLowerCase()}</small>` : ''}</span><span class="sr">${x.p.key === 'full' ? 'done' : x.p.key === 'half' ? 'partly' : 'not yet'}</span>${next && next.k === x.k ? `<button class="btn sm primary hkc-fix" data-cact="${x.k === 'specificity' ? 'addnum' : 'dorriff'}" data-k="${CHK_RIFF[x.k]}">${x.k === 'specificity' ? 'Add yours' : 'Do it for me'}</button>` : ''}</li>`).join('')}</ul>
-    <p class="faint hkc-note">It reads your line, not your likes.</p></div>`;
+    <p class="faint hkc-note">It reads your line, not your likes.${has ? ' <button type="button" class="lnk-u" data-cact="scrolltest">Run the scroll test</button>' : ''}</p></div>`;
 }
 function hookReasonHTML() {
   const H = hookFor(hookText(S.draft.tweets[0]), S.draft.tweets.filter(t => t.text.trim()).length), h = H.g;
@@ -9032,7 +9191,7 @@ const schedulePreviewTyping = (() => { let t = 0; return () => { clearTimeout(t)
 function renderPreviewHead() {
   const h = $('#pv-h'); if (!h) return; syncPreviewSheet(); const on = Object.keys(PLAT).filter(k => S.platforms[k]);
   let tab = S.preview.tab; if (tab !== 'all' && !on.includes(tab)) tab = S.preview.tab = on[0] || 'x';
-  h.innerHTML = `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}">${k === 'all' ? 'All' : PLAT[k].name}</button>`).join('')}</div>`;
+  h.innerHTML = `<div class="seg" role="tablist" aria-label="Preview platform">${[...on, 'all'].map(k => `<button role="tab" data-pv="${k}" aria-selected="${tab === k}">${k === 'all' ? 'All' : PLAT[k].name}</button>`).join('')}</div><button type="button" class="btn ghost sm pv-st" data-cact="scrolltest" data-tip="Watch a fast thumb meet your first line">${ic('down', 'sm')} Scroll test</button>`;
   requestAnimationFrame(() => syncSeg($('.seg', h))); paintSide();
 }
 function renderPreviewBody() {
@@ -11416,6 +11575,7 @@ function composerClick(e) {
     case 'impclose': { const tw = el.closest('.tw'), tid = tw.dataset.id; UI.imp = null; renderExtras(tid); const rb = $('[data-cact="riff"]', tw); rb && rb.focus({ preventScroll: true }); break; }
     /* a number or a name is the one thing only the writer knows: the caret goes to the front of line one, ready for it */
     case 'addnum': { const t0 = S.draft.tweets[0], ta0 = t0 && $(`.tw[data-id="${t0.id}"] .tw-input`); if (!ta0) break; ta0.focus(); ta0.setSelectionRange(0, 0); toast('Lead with the number only you know: the %, the $, the days. “3 years…”, “$1,200…”, “41 replies…”.', { icon: 'target', ms: 6000 }); break; }
+    case 'scrolltest': scrollTest(); break;
     case 'dorriff': { const k = el.dataset.k; const idx = i >= 0 ? i : 0; if (k === 'translate') openTranslate(el, idx); else runRiff(idx, k); break; }
     case 'diffyes': closeDiff(true); break;
     case 'diffno': closeDiff(false); break;
@@ -12813,8 +12973,8 @@ function hxInitHome() {
   $('#hx-try').addEventListener('click', () => goLive(true));
   const sharpenLive = () => { goLive(false); const v = lin.value, r = hgSharpen(v + '\n' + HX_BODY); if (!r || r.same) { k3.classList.remove('nudge'); void k3.offsetWidth; k3.classList.add('nudge'); return; }
     const before = v, outL = r.first;
-    wsc.classList.add('swapping'); setTimeout(() => { lin.value = outL; paintLive(); wsc.classList.remove('swapping'); wsc.classList.add('fresh'); setTimeout(() => wsc.classList.remove('fresh'), 1300);
-      wtoast(`${r.say}.`, 'Undo', () => { lin.value = before; paintLive(); }); }, REDUCED ? 0 : 200); };
+    watchEdit(lin, before, outL, { label: r.say.split(' · ').slice(-1)[0], done: () => { lin.value = outL; paintLive();
+      wtoast(`${r.say}.`, 'Undo', () => { lin.value = before; paintLive(); }); } }); };
   sbtn.addEventListener('click', () => { if (!W.live) { goLive(false); return; } sharpenLive(); });
   $('.hx-nets', wsc).addEventListener('click', e => { const b = e.target.closest('[data-pvn]'); if (!b) return; goLive(false); W.pv = b.dataset.pvn;
     $$('[data-pvn]', wsc).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });

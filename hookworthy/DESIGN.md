@@ -850,3 +850,32 @@ It keeps every number, ticker, name and "not". It adds no number and no claim. I
 **New, for traders.**
 - **Receipts** (Results): every price call you post is tracked. You mark it hit or missed, since nothing watches prices. The honest follow-up is one tap, misses too.
 - **Promise check** (Before you post): flags a guaranteed return, "NFA" doing a plan's job, and a paid or referral link without the Paid Partnership label.
+
+## Round 61: an editor's inks, a Sharpen you can watch, and the scroll test
+
+**Three inks, each with one meaning.**
+- Highlighter yellow marks the words that soften a line. It's a marker swipe under the word, not an error squiggle.
+- Red ink strikes what gets cut.
+- Green marks what's new, and what's ready.
+
+The tokens are `--ink-soft`, `--ink-cut` and `--ink-ready`, plus their bands. Each has light and dark values. Everything else stays quiet.
+
+**Type.**
+- Drafts are set in Newsreader at 20px (19px on phones), so the composer reads like a page.
+- Numbers and tickers read in Geist Mono, tabular: the KPI chips, the homepage KPIs, Receipts and the per-kind bars.
+- The platform previews keep each network's own type.
+
+**A Sharpen you can watch** (`watchEdit`). The edit plays out on the line before it lands, in about a second:
+- the cut words take a red stroke and lift away;
+- the words that stay glide to their new places, even across lines, so "Risk management is the most important thing" visibly becomes "Most important thing? Risk management.";
+- the new words arrive with a green swipe;
+- a small chip names the move.
+
+You can keep typing during it, and your keys land in the new text. Reduced motion skips straight to the result. The composer and the homepage window both use it.
+
+**Scroll test** (in the preview header, in the hook checklist, and in ⌘K). A fast thumb runs through an X-like feed with your post in it:
+- **Ready:** the feed brakes, stops on your post and stamps it "Stopped".
+- **Almost:** it slows, then lets go, stamped "Slowed".
+- **Getting there:** it's flicked past, stamped "Scrolled past".
+
+The result is read from the hook score and says so ("not a forecast"). When the line isn't ready yet, Sharpen is one tap from the result.
