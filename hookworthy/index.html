@@ -6253,6 +6253,8 @@ function writeIdea(text, kind, topic) {
 /* Basic-mode hook frames: every one is the writer's own claim, reshaped. No invented backstory, numbers or results */
 function hookPool(t) {
   const first = (sentences(String(t || '').trim())[0] || '').trim(); if (!first) return [];
+  /* the Sharpen engine's versions lead: asked-then-answered, number first, the contrast in two beats */
+  const H = HWCore.hookUp(first, { more: false }), eng = H && H.best ? [H.best.line, ...H.alts.map(a => a.line)] : [];
   const p = AI.punchier(first).replace(/\s+$/, ''), bare = p.replace(/[.!…]+$/, ''), out = [];
   const nxt = (sentences(String(t).trim())[1] || '').trim();
   const looped = /[:?]$/.test(p) || /\bhere(’|')?s (why|how|what)\b|\bhere is (why|how|what)\b/i.test(p) || /^here(’|')?s\b|^here is\b|:$/i.test(nxt);
@@ -6263,7 +6265,7 @@ function hookPool(t) {
   if (more && !looped && bare.length < 110 && /\b(i|we|my|our)\b/i.test(bare)) out.push(`${bare}. Here’s what happened:`);
   if (S.voice.spice > 60 && !looped && bare.length < 100) out.push(`I’ll say it plainly: ${lcFirst(bare)}.`);
   if (p !== first) out.push(p);
-  return [...new Set(out)];
+  return [...new Set([...eng, ...out])];
 }
 function remix(post, format) {
   const t = post.text; const topic = topicOf(t); const first = sentences(t)[0].trim();
@@ -6355,11 +6357,11 @@ function fieldErr(el, msg) {
   p.textContent = msg; el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', id); el.focus();
   el.addEventListener('input', () => { p.textContent = ''; el.removeAttribute('aria-invalid'); }, { once: true });
 }
-function toast(msg, { icon = 'check', tone = 'ok', action, onAction, ms = 3800 } = {}) {
+function toast(msg, { icon = 'check', tone = 'ok', action, onAction, action2, onAction2, ms = 3800 } = {}) {
   if (action) ms = Math.max(ms, 14000);
   const host = $('#toasts'); $$('.toast', host).forEach(t => { t.classList.add('out'); setTimeout(() => t.remove(), 170); });
   const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status');
-  el.innerHTML = `${ic(icon, 't-' + tone)}<span>${msg}</span>${action ? `<button type="button">${esc(action)}</button>` : ''}`;
+  el.innerHTML = `${ic(icon, 't-' + tone)}<span>${msg}</span>${action2 ? `<button type="button" class="t2">${esc(action2)}</button>` : ''}${action ? `<button type="button" class="t1">${esc(action)}</button>` : ''}`;
   if (action && /^view (queue|week)$/i.test(action)) el.dataset.goto = 'week'; /* a 'View week' toast steps aside once you're on Week */
   host.append(el);
   const close = () => { if (el.classList.contains('out')) return; el.classList.add('out'); if (UNDO.el === el) { UNDO.fn = null; UNDO.el = null; } setTimeout(() => el.remove(), 190); };
@@ -6367,7 +6369,8 @@ function toast(msg, { icon = 'check', tone = 'ok', action, onAction, ms = 3800 }
   let t = setTimeout(close, ms);
   el.addEventListener('mouseenter', () => clearTimeout(t)); el.addEventListener('mouseleave', () => { if (!el.contains(document.activeElement)) t = setTimeout(close, 1600); });
   el.addEventListener('focusin', () => clearTimeout(t)); el.addEventListener('focusout', () => { t = setTimeout(close, 1600); });
-  if (action) { el.querySelector('button').addEventListener('click', () => { onAction && onAction(); UNDO.fn = null; close(); keepFocus(); }); if (/^undo$/i.test(action)) { UNDO.fn = onAction; UNDO.close = close; UNDO.el = el; } }
+  if (action2) el.querySelector('button.t2').addEventListener('click', () => { onAction2 && onAction2(); });
+  if (action) { el.querySelector('button.t1').addEventListener('click', () => { onAction && onAction(); UNDO.fn = null; close(); keepFocus(); }); if (/^undo$/i.test(action)) { UNDO.fn = onAction; UNDO.close = close; UNDO.el = el; } }
   return close;
 }
 
@@ -7357,13 +7360,33 @@ function selectFrag(frag) {
 }
 const firstLine = t => { const v = String(t || ''), n = v.indexOf('\n'); return n < 0 ? v : v.slice(0, n); };
 const softN = () => { const t0 = S.draft.tweets[0]; return t0 ? hgMarks(firstLine(t0.text)).length : 0; };
-/* one tap: the soft words leave the first line, everything else stays yours; Undo puts them back */
+/* the composer's Sharpen: the soft words out first (the count on the button), then the editor's moves on what's left.
+   Their casing and their facts stay; a reason to read on only when more of the post follows. Cached per text */
+function hookUpFor(text) {
+  const t = String(text || ''); if (UI.hkC && UI.hkC.t === t) return UI.hkC.r;
+  const line = firstLine(t), rest = t.slice(line.length), cut = hgMarks(line).length;
+  const more = !!rest.trim() || S.draft.tweets.filter(x => x.text.trim()).length > 1;
+  const H = HWCore.hookUp((cut ? hgClean(line).s : line) + rest, { more }), r = H && hookUpPack(H, cut, rest, t => hookFor(t).score, hookFor(t).score);
+  UI.hkC = { t, r: r && r.to > r.from ? r : null }; return UI.hkC.r;
+}
+/* what Sharpen says it did, in the moves' own words; a full stop alone is never a sharpen */
+function hookUpPack(H, cut, rest, sc, from) {
+  const sayCut = cut ? `Cut ${cut} soft word${cut === 1 ? '' : 's'}` : '';
+  const sayOf = o => [sayCut, ...String(o.say || '').split(' · ').filter(w => w && w !== 'Gave it an end')].filter(Boolean).slice(0, 3).join(' · ');
+  const real = o => o && (o.moves.some(k => k !== 'end') || cut);
+  const b = real(H.best) ? H.best : cut ? { line: H.base.line, moves: ['end'], say: '' } : null; if (!b) return null;
+  const r = { text: b.line + rest, line: b.line, say: sayOf(b) || 'Tightened it', cut, from, alts: (H.alts || []).filter(real).map(a => ({ text: a.line + rest, line: a.line, say: sayOf(a) || 'Tightened it' })) };
+  r.to = sc(r.text); return r;
+}
+/* one tap: a sharper first line, everything else stays yours. Another cycles the other strong versions; Undo puts yours back */
 function sharpenFirst() {
-  const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text, line = firstLine(before), n = hgMarks(line).length, r = hgClean(line);
-  if (!n || !r.cut || r.s === line) { setImprove(tw.id, 'score'); return; }
-  UI.hookFrom = hookFor(before).score; tw.text = r.s + before.slice(line.length); save(); renderThread();
-  const a1 = hookFor(tw.text).score; SFX.play(a1 >= 70 ? 'hook' : 'swap');
-  toast(`Sharpened. ${n} soft word${n === 1 ? '' : 's'} out, your point stays in.`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { tw.text = before; save(); renderThread(); } });
+  const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text, r = hookUpFor(before);
+  if (!r) { setImprove(tw.id, 'score'); return; }
+  const list = [{ text: r.text, say: r.say }, ...r.alts]; let i = 0;
+  const show = () => { const v = list[i]; UI.hookFrom = hookFor(tw.text).score; tw.text = v.text; save(); renderThread(); const a1 = hookFor(tw.text).score; SFX.play(a1 >= 70 ? 'hook' : 'swap');
+    toast(`<b>${esc(tierMove(r.from, a1).text)}.</b> ${esc(v.say)}.`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; tw.text = before; save(); renderThread(); },
+      ...(list.length > 1 ? { action2: 'Another', onAction2: () => { i = (i + 1) % list.length; show(); } } : {}) }); };
+  show();
 }
 function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
@@ -7377,8 +7400,8 @@ function paintHook() {
   /* the ring fills with the score in the aurora's colours; the word under it names the state (the number sits inside only with Show scores as numbers) */
   const T = TIER(h.score), g = $('.hk-g', sc), w = $('.hk-w', b), gk = hookNums() ? 'n' + h.score : '';
   /* soft words in the opener: the coach turns into the one-tap fix, the same Sharpen as the homepage */
-  const swN = softN(); b.classList.toggle('soft', swN > 0); const CW = k => swN ? `Sharpen · ${swN}` : COACH[k];
-  b.dataset.tip = swN ? `${swN} soft word${swN === 1 ? '' : 's'} in your first line. One tap cuts ${swN === 1 ? 'it' : 'them'}` : b.dataset.tip;
+  const swN = softN(), hk = t0.text.trim() ? hookUpFor(t0.text) : null; b.classList.toggle('soft', !!hk); const CW = k => hk ? (swN ? `Sharpen · ${swN}` : 'Sharpen') : COACH[k];
+  b.dataset.tip = hk ? `One tap: ${tierMove(hk.from, hk.to).text}. ${hk.say}` : b.dataset.tip;
   if (g.dataset.k !== gk) { g.dataset.k = gk; g.innerHTML = hookNums() ? `<span class="hk-n">${h.score}</span>` : ''; }
   ['flat', 'warming', 'sharp', 'honed'].forEach(k => b.classList.toggle('t-' + k, k === T.key)); b.dataset.tier = T.key;
   /* after Keep: a new state crossfades the word while the ring's colour sweeps; the same state says "Stronger" for a moment, and the ring grows a little */
@@ -7388,7 +7411,7 @@ function paintHook() {
     if (!REDUCED && m.dir === 'up') { sc.classList.remove('spring', 'tgrow'); void sc.offsetWidth; sc.classList.add(m.cross ? 'spring' : 'tgrow'); }
     clearTimeout(UI.hsT); srSay(tierSay(from, h.score)); }
   else swapWord(w, h.score || swN ? CW(T.key) : '');
-  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 45); b.setAttribute('aria-label', swN ? `Sharpen: cut ${swN} soft word${swN === 1 ? '' : 's'} from your first line` : `${h.score ? COACH[T.key] : 'First line'}. Press for tips`);
+  if (h.score >= 70) b.classList.add('hi'); else if (h.score < 66) b.classList.remove('hi'); b.classList.toggle('lo', h.score > 0 && h.score < 45); b.setAttribute('aria-label', hk ? `Sharpen your first line: ${tierMove(hk.from, hk.to).text}. ${hk.say}` : `${h.score ? COACH[T.key] : 'First line'}. Press for tips`);
   if (h.score >= 70 && !b.classList.contains('was-hi')) { b.classList.add('was-hi'); } else if (h.score < 70) b.classList.remove('was-hi');
   const p = $('#predict');
   if (p && H.me) { p.textContent = `~${H.me.x}× your usual`; p.dataset.tip = `Compared with a typical post of yours, from ${fmtN(H.m.n)} posts you brought in`; }
@@ -11295,7 +11318,7 @@ function composerClick(e) {
     case 'fmore': UI.fOff = (UI.fOff || 0) + 1; renderExtras(S.draft.tweets[0].id); SFX.play('swap'); break;
     case 'vminfo': openVoiceMatch(el); break;
     case 'reviews': toggleCmPanel(); break;
-    case 'hookinfo': softN() ? sharpenFirst() : setImprove(S.draft.tweets[0].id, 'score'); break;
+    case 'hookinfo': hookUpFor(S.draft.tweets[0].text) ? sharpenFirst() : setImprove(S.draft.tweets[0].id, 'score'); break;
     case 'imptab': { const tid = (el.closest('.tw') || {}).dataset ? el.closest('.tw').dataset.id : S.draft.tweets[0].id; UI.imp = { id: tid, tab: el.dataset.t }; renderExtras(tid); SFX.play('tick'); break; }
     case 'impclose': { const tw = el.closest('.tw'), tid = tw.dataset.id; UI.imp = null; renderExtras(tid); const rb = $('[data-cact="riff"]', tw); rb && rb.focus({ preventScroll: true }); break; }
     case 'dorriff': { const k = el.dataset.k; const idx = i >= 0 ? i : 0; if (k === 'translate') openTranslate(el, idx); else runRiff(idx, k); break; }
@@ -11692,24 +11715,13 @@ function hgClean(line) {
   /* keep their case: a line that started lowercase on purpose stays lowercase */
   const up = /^\P{L}*\p{Lu}/u.test(String(line || '')); return { s: cut && up ? cap(s) : s, cut };
 }
-function hgSharpen(raw) {
+/* the homepage's Sharpen: the same engine as the composer, so what the site shows is what the app does */
+function hgSharpen(raw, { more } = {}) {
   const text = String(raw || '').trim(); if (!text) return null;
-  const lines = text.split('\n'), orig = lines[0].trim(), rest = lines.slice(1).join('\n').trim();
-  let { s, cut } = hgClean(orig);
-  s = s.replace(/\bi\b/g, 'I').replace(/\bi[’'](m|ve|ll|d)\b/g, 'I’$1').replace(/\bim\b/g, 'I’m').replace(/\bdont\b/g, 'don’t').replace(/\bcant\b/g, 'can’t').replace(/\bdoesnt\b/g, 'doesn’t').replace(/\bisnt\b/g, 'isn’t');
-  s = s.replace(/!+$/, '.').replace(/^here is\b/i, 'Here’s').replace(/\bit is\b/gi, m => m[0] === 'I' ? 'It’s' : 'it’s').replace(/\bdo not\b/gi, 'don’t');
-  s = cap(s);
-  if (/[\p{L}\p{N}%)]$/u.test(s)) s += '.';
-  let first = s, loop = false;
-  /* an open loop only on a claim, and only when it earns its place */
-  const claim = /\b(is|are|was|isn’t|aren’t|should|shouldn’t|must|matters?|beats?|wins?|never|always|most|best|worst|only|don’t|stop|nobody|everyone|overrated|underrated|wrong)\b/i.test(first) && !/\b(feedback|check (it )?out|link|dm me|thoughts|agree)\b/i.test(first);
-  if (claim && hookScore(first).score < 70 && !/[:?…]$/.test(first) && !/\bhere(’|')?s why\b|\bhere is why\b/i.test(first) && first.length < 110 && hookScore(first + ' Here’s why:').score > hookScore(first).score) { first += ' Here’s why:'; loop = true; }
-  /* no number in the post? leave a blank for theirs. Never make one up */
-  const add = loop && !/\d/.test(text) && !rest && first.length >= 40 ? 'The proof, in one number: [your number]' : '';
-  /* an open loop with nothing after it would end the post on a colon: drop it */
-  if (loop && !rest && !add) { first = first.replace(/ Here’s why:$/, ''); loop = false; }
-  const out = [first, rest, add].filter(Boolean).join('\n\n');
-  return { text: out, orig, first, rest, add, cut, loop, same: out === text };
+  const lines = text.split('\n'), orig = lines[0].trim(), rest = lines.slice(1).join('\n').trim(), tail = rest ? '\n' + rest : '', cut = hgMarks(orig).length;
+  const H = HWCore.hookUp((cut ? hgClean(orig).s : orig) + tail, { more: more != null ? more : !!rest });
+  const P = H && hookUpPack(H, cut, '', x => hookScore(x + tail).score, hookScore(text).score), ok = !!P && P.to > P.from, first = ok ? P.line : orig;
+  return { text: [first, rest].filter(Boolean).join('\n\n'), orig, first, rest, add: '', cut, loop: ok && /\bhere[’']s (why|how|what)\b/i.test(first) && !/\bhere[’']s\b/i.test(orig), same: !ok, say: ok ? P.say : '', alts: ok ? P.alts.map(a => a.line) : [] };
 }
 /* word diff that ignores case when lining words up, so "risk" → "Risk" reads as kept, not cut and re-added */
 function hgDiff(a, b) {
@@ -11730,7 +11742,7 @@ const hgDiffHTML = r => {
   const head = hgDiff(r.orig, r.first);
   return head + (r.rest ? '\n\n' + esc(r.rest) : '') + (r.add ? `\n\n<ins>${blank(esc(r.add))}</ins>` : '');
 };
-const hgNote = (r, who = 'your') => [`Kept ${who} claim.`, r.cut ? `Cut ${r.cut} soft word${r.cut === 1 ? '' : 's'}.` : '', r.loop ? 'Added an open loop, so they read on.' : '', r.add ? `The <mark class="blank">[your number]</mark> is ${who === 'your' ? 'yours' : 'hers'} to fill. Hookworthy never makes one up.` : ''].filter(Boolean).join(' ');
+const hgNote = r => r.say ? `${esc(r.say)}. Same facts, your words.` : '';
 /* spring: score numbers and rings settle like something physical, with one small overshoot */
 function hwSpring(set, { k = 170, c = 20 } = {}) {
   let x = null, v = 0, to = 0, raf = 0, last = 0;
@@ -12320,8 +12332,9 @@ function hxInitPage(root) {
    slices of the product, a tab for each kind of writer, three plans, open questions, a paste box, and the big wordmark.
    heycape is the example account throughout; every number on the page is illustrative ---------- */
 const HX_DRAFT = ['so', ' ', 'i think', ' the most underrated thing in trading is ', 'honestly', ' ', 'just', ' sizing down after a loss.'];
-const HX_SHARP = 'The most underrated skill in trading: sizing down after a loss.';
 const HX_BODY = 'I lost $4,000 in March doubling my size to win it back. Now I cut size in half after any red day. Boring. My account is still here.';
+/* the demo's sharper line is the engine's own output, so pressing Sharpen yourself lands on the same words */
+const HX_SHARP = (() => { try { return hgSharpen(HX_DRAFT.join('') + '\n' + HX_BODY).first; } catch (e) { return 'Most underrated thing in trading? Sizing down after a loss.'; } })();
 const HX_THREAD2 = 'The rule is simple: half size until I have a green day. Then back to normal.';
 const HX_N0 = HX_DRAFT.join('').length + 2 + HX_BODY.length, HX_N1 = HX_SHARP.length + 2 + HX_BODY.length;
 const HX_WEEK = [
@@ -12702,10 +12715,10 @@ function hxInitHome() {
   lin.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sharpenLive(); } });
   $('.hx-l1', wsc).addEventListener('pointerdown', () => { if (!W.live) { goLive(false); requestAnimationFrame(() => goLive(true)); } });
   $('#hx-try').addEventListener('click', () => goLive(true));
-  const sharpenLive = () => { goLive(false); const v = lin.value; if (!hgMarks(v).length) { k3.classList.remove('nudge'); void k3.offsetWidth; k3.classList.add('nudge'); return; }
-    const r = hgSharpen(v); if (!r) return; const before = v, outL = r.first.replace(/ Here’s why:$/, '');
+  const sharpenLive = () => { goLive(false); const v = lin.value, r = hgSharpen(v + '\n' + HX_BODY); if (!r || r.same) { k3.classList.remove('nudge'); void k3.offsetWidth; k3.classList.add('nudge'); return; }
+    const before = v, outL = r.first;
     wsc.classList.add('swapping'); setTimeout(() => { lin.value = outL; paintLive(); wsc.classList.remove('swapping'); wsc.classList.add('fresh'); setTimeout(() => wsc.classList.remove('fresh'), 1300);
-      wtoast(`${r.cut} soft word${r.cut === 1 ? '' : 's'} out. Your facts stayed.`, 'Undo', () => { lin.value = before; paintLive(); }); }, REDUCED ? 0 : 200); };
+      wtoast(`${r.say}.`, 'Undo', () => { lin.value = before; paintLive(); }); }, REDUCED ? 0 : 200); };
   sbtn.addEventListener('click', () => { if (!W.live) { goLive(false); return; } sharpenLive(); });
   $('.hx-nets', wsc).addEventListener('click', e => { const b = e.target.closest('[data-pvn]'); if (!b) return; goLive(false); W.pv = b.dataset.pvn;
     $$('[data-pvn]', wsc).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
@@ -12814,7 +12827,7 @@ function hxInitHome() {
   tin.addEventListener('input', () => { mark(); out.classList.remove('on'); });
   $('.tz-try').addEventListener('click', e => { const b = e.target.closest('[data-tz]'); if (!b) return; tin.value = HZ_SAMPLES[+b.dataset.tz]; mark(); out.classList.remove('on'); tin.focus(); tin.setSelectionRange(tin.value.length, tin.value.length); });
   $('#tz-go').addEventListener('click', () => { const r = hgSharpen(tin.value); if (!r) { tin.focus(); return; }
-    res.textContent = r.first; $('#tz-ok').lastChild.textContent = r.cut ? ' Sharper' : ' Already sharp'; out.classList.add('on'); SFX.play && SFX.play('tick'); });
+    res.textContent = r.first; $('#tz-ok').lastChild.textContent = r.same ? ' Already sharp' : ' Sharper'; out.classList.add('on'); SFX.play && SFX.play('tick'); });
   $('#tz-carry').addEventListener('click', () => carryLine(res.textContent));
   $('#tz-copy').addEventListener('click', () => { const t = res.textContent; const done = () => toast('Copied'); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(done, () => { const r = document.createRange(); r.selectNodeContents(res); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }); });
   mark();
@@ -12959,7 +12972,7 @@ function initHome() {
   fin.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $('#fin-f').requestSubmit(); } });
   /* Sharpen: the before and after appear, the soft words strike through, then the line becomes the sharper one and the dial climbs */
   const finSharp = $('#fin-sharp'), finAfter = $('#fin-after'), finDiff = $('#fin-diff'); let finT = 0; onDispose(() => clearTimeout(finT));
-  const sharpState = () => { const t = fin.value.trim(), r = t ? hgSharpen(t) : null; finSharp.disabled = !(finPair && finPair[0] === t) && (!r || (r.first === r.orig && !r.add)); };
+  const sharpState = () => { const t = fin.value.trim(), r = t ? hgSharpen(t) : null; finSharp.disabled = !(finPair && finPair[0] === t) && (!r || r.same); };
   let finPair = null; /* a "Try one" line carries its rewrite */
   const transform = () => { const t = fin.value.trim(); const r = finPair && finPair[0] === t ? { orig: t, first: finPair[1], rest: '', add: '' } : hgSharpen(t); if (!r) return; const next = [r.first, r.rest].filter(Boolean).join('\n\n');
     finDiff.innerHTML = hgDiffHTML({ ...r, add: '' }); finAfter.hidden = false; finAfter.classList.remove('in'); void finAfter.offsetWidth; finAfter.classList.add('in');
@@ -13367,7 +13380,7 @@ function onbTry() {
     let line = inp.value.trim(), ex = false; if (!line) { line = inp.placeholder; inp.value = line; ex = true; }
     inp.removeAttribute('aria-invalid'); note.textContent = ex ? 'That’s the example. Swap in your own line any time.' : '';
     if (aiOn()) { go.classList.add('is-loading'); try { const r = await ask(HWCore.prompts.critique({ text: line, voice: voiceSpec() }), { fresh: true, act: 'setup' }); const best = (r && r.better || []).map(String).filter(x => x && !/\[[^\]]+\]/.test(x)).sort((x, y) => hookScore(y).score - hookScore(x).score)[0]; if (best) { show(line, best, r.reason || ''); return; } } catch (e) { /* fall back to the offline rewrite */ } finally { go.classList.remove('is-loading'); } }
-    riffNonce++; const cands = [AI.punchier(line), ...hookPool(line)].filter(Boolean).sort((x, y) => hookScore(y).score - hookScore(x).score); show(line, cands[0] || line, aiOn() ? '' : 'Sharpened right here on your device. Bring a few posts and the next one sounds like you.');
+    riffNonce++; const r = hgSharpen(line); show(line, r && !r.same ? r.first : line, r && !r.same ? `${r.say}. Same facts, your words.` : '');
   };
   inp.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); go.click(); } });
 }
