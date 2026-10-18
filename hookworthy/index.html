@@ -531,6 +531,7 @@ body.typing .fade-typing{ opacity:.25; } body.typing .fade-typing:hover,body.typ
 .c-top .status{ display:flex; align-items:center; gap:8px; color:var(--text-3); font-size:var(--t-13); }
 .c-top .status .dot{ color:var(--success); } .c-top .status.is-new .dot{ color:var(--text-3); }
 .c-top .grow{ flex:1; }
+.plat-one{ display:inline-flex; align-items:center; gap:4px; height:32px; padding:0 8px 0 10px; border-radius:10px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); color:var(--text-1); } .plat-one:hover{ box-shadow:inset 0 0 0 1px var(--border-strong); } .plat-one > svg:first-child{ width:16px; height:16px; fill:currentColor; } .plat-one .icon{ color:var(--text-3); } .plat-one:focus-visible{ box-shadow:var(--focus); }
 .plats{ display:flex; gap:2px; padding:2px; border-radius:10px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); }
 .plat{ width:30px; height:28px; display:grid; place-items:center; border-radius:8px; color:var(--text-3); transition:all var(--d-fast) var(--ease-out); position:relative; opacity:.55; }
 .plat:hover{ color:var(--text-1); opacity:1; }
@@ -7319,6 +7320,12 @@ function postBtnsHTML() {
   /* r63: Schedule is the everyday move (and ⌘↵), so it's the one primary; Post now sits beside it */
   return `<button class="btn primary sched-btn" data-cact="schedule" data-tip="Pick when it goes out" data-kbd="${MOD} ↵" aria-label="Schedule">${ic('clock', 'sm')}<span>Schedule</span></button><button class="btn post-main" data-cact="postnow" data-tip="${u ? `Post it now. ${u}s to undo` : 'Post it now'}" data-kbd="${MOD} ${SHIFT} ↵" aria-label="Post now">${ic('send', 'sm')}<span>Post<span class="pm-now"> now</span></span></button>`;
 }
+/* r63: one network on, one quiet pill ("X ▾") that opens the list; two or more, the toggles you can see at a glance */
+function platsHTML() {
+  const on = Object.keys(PLAT).filter(k => S.platforms[k]);
+  if (on.length === 1 && !UI.platsOpen) { const p = PLAT[on[0]]; return `<button class="plat-one" data-cact="platmenu" aria-haspopup="menu" aria-label="Posting to ${p.name}. Change networks" data-tip="Posting to ${p.name}. Add another network">${pic(p.icon)}${ic('down', 'xs')}</button>`; }
+  return `<span class="plats-l">Post to</span><div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}${k === 'threads' || k === 'bsky' ? ' (you paste this one yourself)' : ''}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>`;
+}
 function composerHTML() {
   const empty = isEmptyDraft();
   return `<div class="composer ${S.preview.on ? '' : 'no-preview'} ${FINE && S.settings.caret && !REDUCED ? 'fancy-caret' : ''}" id="composer">
@@ -7327,7 +7334,7 @@ function composerHTML() {
       ${draftsBtnHTML()}<div class="status ${isEmptyDraft() ? 'is-new' : ''}"><span class="dot"></span><span class="txt" id="save-state">${isEmptyDraft() ? 'New draft' : 'Saved'}</span></div><button class="checks-pill" id="checks" data-cact="checks" hidden></button><button class="review-pill" id="review-pill" data-cact="reviews" hidden></button>
       ${S.ws !== 'me' ? `<button class="ws-pill" data-act="ws" aria-haspopup="menu" aria-label="Writing as ${esc(WS().name)}. Switch voice" data-tip="Writing as ${esc(WS().name)}${WS().note ? `: ${esc(clip(WS().note, 60))}` : ''}">${avatar(WS())}<span><span class="wsp-l">Writing as </span><b>${esc(WS().name)}</b></span></button>` : ''}
       <div class="grow"></div>
-      <span class="plats-l">Post to</span><div class="plats" role="group" aria-label="Post to">${Object.entries(PLAT).map(([k, p]) => `<button class="plat" data-cact="plat" data-k="${k}" aria-pressed="${!!S.platforms[k]}" data-tip="${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${p.name}${k === 'threads' || k === 'bsky' ? ' (you paste this one yourself)' : ''}" aria-label="${p.name}">${pic(p.icon)}</button>`).join('')}</div>${S.platforms.x && xPaid() ? `<button class="xfmt-pill" data-cact="xfmt" data-tip="Thread or one long post on X" aria-haspopup="menu">${xLong() ? 'Long post' : 'Thread'}</button>` : ''}
+      ${platsHTML()}${S.platforms.x && xPaid() ? `<button class="xfmt-pill" data-cact="xfmt" data-tip="Thread or one long post on X" aria-haspopup="menu">${xLong() ? 'Long post' : 'Thread'}</button>` : ''}
       <button class="btn ghost icon-only sm fm-tog" data-cact="focus" data-tip="Focus: just you and the words" data-kbd="${MOD} ." aria-label="Focus mode" aria-pressed="${document.body.classList.contains('focus-mode')}">${ic('focus', 'sm')}</button><button class="btn ghost sm pv-tog" data-cact="preview" aria-label="Preview" aria-pressed="${!!S.preview.on}" data-tip="${S.preview.on ? 'Hide' : 'Show'} the preview" data-kbd="${MOD} \\">${ic('panel', 'sm')}<span>Preview</span></button>
       <button class="btn ghost icon-only" data-cact="schedmenu" data-tip="More" aria-label="More" aria-haspopup="menu">${ic('more')}</button>
       ${postBtnsHTML()}
@@ -11556,6 +11563,7 @@ function composerClick(e) {
   switch (a) {
     case 'drafts': openDrafts(el); break;
     case 'cardoff': case 'cardon': linkCardToggle(tEl, a === 'cardon'); break;
+    case 'platmenu': openMenu(el, [{ header: 'Post to' }, ...Object.entries(PLAT).map(([k, p]) => ({ label: p.name, hint: k === 'threads' || k === 'bsky' ? 'You paste it' : '', on: !!S.platforms[k], run: () => { if (S.platforms[k]) return; S.platforms[k] = true; S.draft.platforms = { ...S.platforms }; UI.platsOpen = true; save(); const one = $('.c-top .plat-one'); if (one) one.outerHTML = platsHTML(); $$('#thread .tw').forEach(paintLink); renderPreviewHead(); renderPreviewBody(); $$('#thread .tw').forEach(paintRing); SFX.play('tick'); toast(`Posting to ${PLAT[k].name} too.`, { icon: 'check', ms: 1600 }); } }))], { width: 200 }); break;
     case 'plat': { const k = el.dataset.k; S.platforms[k] = !S.platforms[k]; S.draft.platforms = { ...S.platforms }; $$('#thread .tw').forEach(paintLink); SFX.play('tick'); el.setAttribute('aria-pressed', S.platforms[k]); el.dataset.tip = `${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${PLAT[k].name}`; { const tp = $('#tip'); if (tp && tp.classList.contains('on')) { const sp = $('span', tp); if (sp) sp.textContent = el.dataset.tip; } } save(); renderPreviewHead(); renderPreviewBody(); $$('#thread .tw').forEach(paintRing); toast(`${S.platforms[k] ? 'Posting to' : 'Not posting to'} ${PLAT[k].name}.`, { icon: 'check', ms: 1600 }); break; }
     case 'preview': togglePreview(); break;
     case 'schedule': openSchedule(); break;

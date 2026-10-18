@@ -943,6 +943,7 @@ These come from a first-session audit: four walks from the homepage to a schedul
 - **Write:**
   - **One helper for the first line.** "Improve" merged into the first-line button: "Sharpen: 3 soft words" when there's something to cut, otherwise the tips, rewrites and formulas panel. Later posts in a thread keep Improve.
   - **Top bar:** Share and Focus moved into More, and Focus shows only while it's on. Schedule is now the primary button, since it's the everyday move and ⌘↵; Post now sits beside it.
+  - **Networks:** with one network on, the four toggles become one "X ▾" pill that opens the list. Turn on a second network and the toggles come back.
   - **Preview:** the Comments tab appears only once there's a review link or a comment. X / All appears only when you post to two networks.
   - **Phone:** the Sharpen button gets its own line under the tools.
   - **"From a chart"** shows only for trading accounts.
