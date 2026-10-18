@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hookworthy: a week of posts, written in your voice</title>
-<meta name="description" content="Turn your ideas into a week of posts that sound like you, with sharper first lines, out when your people are scrolling. For X, Threads, LinkedIn and Bluesky. Free to start.">
+<title>Hookworthy: the writer in your corner</title>
+<meta name="description" content="Sound like you. Show up every day. Hookworthy is the writer in your corner: it sharpens your first line, keeps your voice and posts on time to X, Threads, LinkedIn and Bluesky. Free to start.">
 <link rel="canonical" href="https://hookworthy.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hookworthy">
-<meta property="og:title" content="Hookworthy: a week of posts, written in your voice">
-<meta property="og:description" content="Turn your ideas into posts that sound like you, with sharper first lines, out when your people are scrolling. Free to start.">
+<meta property="og:title" content="Hookworthy: the writer in your corner">
+<meta property="og:description" content="Sound like you. Show up every day. Sharper first lines, your voice, out on time. Free to start.">
 <meta property="og:url" content="https://hookworthy.com/">
 <meta property="og:image" content="https://hookworthy.com/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A week of posts for X, written in your voice. The Hookworthy logo on a near-black page.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Hookworthy: a week of posts, written in your voice">
-<meta name="twitter:description" content="Turn your ideas into posts that sound like you, out when your people are scrolling. Free to start.">
+<meta name="twitter:title" content="Hookworthy: the writer in your corner">
+<meta name="twitter:description" content="Sound like you. Show up every day. Sharper first lines, your voice, out on time. Free to start.">
 <meta name="twitter:image" content="https://hookworthy.com/assets/og.png">
 <meta name="theme-color" content="#0D0D0D">
 <script>/* round 55: dark first. The saved choice (Light, Dark or Auto) is applied before the first paint, so nothing flashes */try{var s=JSON.parse(localStorage.getItem('hookworthy:state')||'null'),t=s&&s.r55?s.theme:'dark';if(t)document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='dark'}</script>
@@ -4745,6 +4745,9 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 /* section rhythm and the two-tone heads */
 .hz-sec{ padding-block:clamp(104px,15vh,168px) 0; }
 .hz-h2{ margin:0; font:400 clamp(38px,4.6vw,64px)/1.03 var(--font-serif); letter-spacing:-.032em; text-wrap:balance; font-optical-sizing:auto; }
+/* a two-tone head's second line balances on its own, so it never strands a word */
+.hz-h2 br + .mute{ display:block; text-wrap:balance; }
+@media (max-width:760px){ #hz-p-h .mute{ display:block; } }
 .hz-h2 .mute{ display:inline; }
 .hz-lede{ max-width:31rem; margin:0; font-size:clamp(16.5px,1.25vw,18px); line-height:1.55; color:var(--text-2); text-wrap:pretty; }
 .hz-head{ display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:24px 64px; align-items:end; }
@@ -4826,8 +4829,14 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 .hx-gb .icon, .hx-wb .icon{ width:13px; height:13px; }
 .hx-gb.press, .hx-wb.press{ transform:scale(.93); }
 .hx-seg2{ display:inline-flex; padding:2px; border-radius:8px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); }
-.hx-seg2 i{ font-style:normal; height:24px; padding:0 10px; display:inline-flex; align-items:center; border-radius:6px; font-size:12.5px; color:var(--text-3); }
-.hx-seg2 i.on{ background:var(--surface-3); color:var(--text-1); }
+.hx-seg2 i, .hx-seg2 button{ font-style:normal; height:24px; padding:0 10px; display:inline-flex; align-items:center; border-radius:6px; font:500 12.5px/1 var(--font-ui); color:var(--text-3); }
+.hx-seg2 button{ cursor:pointer; } .hx-seg2 button:hover{ color:var(--text-1); }
+.hx-seg2 i.on, .hx-seg2 button.on{ background:var(--surface-3); color:var(--text-1); }
+.hx-chw{ position:relative; cursor:crosshair; }
+.hx-guide{ position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .2s; } .hx-guide.on{ opacity:1; }
+.hx-guide::before{ content:""; position:absolute; top:0; bottom:0; left:var(--x); width:1px; background:var(--border-strong); }
+.hx-guide i{ position:absolute; left:var(--x); top:var(--y); width:9px; height:9px; margin:-4.5px 0 0 -4.5px; border-radius:50%; background:var(--text-1); box-shadow:0 0 0 3px var(--surface); }
+.hx-guide b{ position:absolute; left:var(--x); top:-6px; transform:translate(-50%,-100%); padding:4px 8px; border-radius:6px; background:var(--surface-3); box-shadow:0 0 0 1px var(--border-strong); font:500 11.5px/1.2 var(--font-mono); white-space:nowrap; color:var(--text-1); }
 
 /* the cursor that does the demo */
 .hx-cur{ position:absolute; left:0; top:0; z-index:9; width:22px; height:22px; pointer-events:none; opacity:0; transform:translate(var(--x,600px),var(--y,300px)); transition:transform .95s var(--hx-io),opacity .35s; filter:drop-shadow(0 4px 8px rgba(0,0,0,.45)); }
@@ -4881,6 +4890,43 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 .sched .hx-toast{ opacity:1; transform:none; }
 
 
+/* ---------- round 59: the window is yours after one run ---------- */
+.hx-nets{ display:inline-flex; gap:2px; padding:2px; border-radius:9px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); }
+.hx-net{ display:grid; place-items:center; width:28px; height:26px; border-radius:7px; color:var(--text-3); transition:background .2s,color .2s; }
+.hx-net svg{ width:13px; height:13px; fill:currentColor; } .hx-net:hover{ color:var(--text-1); }
+.hx-net.on{ background:var(--surface-3); color:var(--text-1); box-shadow:inset 0 0 0 1px var(--border-strong); }
+.hx-net:focus-visible, .hx-sharpb:focus-visible, .hx-gb:focus-visible, .hx-wb:focus-visible, .hx-chip:focus-visible, .hx-try:focus-visible, .hx-seg2 button:focus-visible{ outline:2px solid var(--text-1); outline-offset:2px; }
+button.hx-gb, button.hx-wb, button.hx-sharpb{ cursor:pointer; } button.hx-gb:hover{ background:var(--surface-2); } button.hx-wb:hover{ filter:brightness(1.08); } button.hx-sharpb:hover{ background:color-mix(in srgb,var(--text-1) 10%,var(--surface-3)); }
+.hx-l1e{ display:none; position:relative; grid-area:1/1; }
+.hx-l1e > *{ grid-area:1/1; display:block; width:100%; margin:0; padding:0; border:0; font:inherit; line-height:inherit; letter-spacing:inherit; white-space:pre-wrap; overflow-wrap:break-word; }
+.hx-lm{ color:transparent; pointer-events:none; } .hx-lm .hx-sw.on{ text-decoration-color:var(--soft); }
+.hx-lin{ position:absolute; inset:0; resize:none; overflow:hidden; background:transparent; color:var(--text-1); outline:0; caret-color:var(--text-1); }
+.hx-lin::selection{ background:color-mix(in srgb,var(--text-1) 18%,transparent); }
+.live .hx-l1d, .live .hx-l1s{ display:none; } .live .hx-l1e{ display:grid; }
+.live .hx-l1{ border-radius:8px; box-shadow:0 0 0 6px transparent; transition:box-shadow .25s; } .live .hx-l1:focus-within{ box-shadow:0 0 0 6px color-mix(in srgb,var(--text-1) 5%,transparent); background:color-mix(in srgb,var(--text-1) 5%,transparent); }
+.swapping .hx-l1e{ opacity:0; filter:blur(5px); transform:translateY(-4px); } .hx-l1e{ transition:opacity .2s,filter .2s,transform .2s; }
+.fresh .hx-lm{ border-radius:4px; animation:hxfresh 1.3s var(--hx-e) both; }
+@keyframes hxfresh{ 0%{ background-color:transparent; } 25%{ background-color:var(--success-soft); } 100%{ background-color:transparent; } }
+.hx-hint .k3{ display:none; color:var(--text-2); align-items:center; gap:7px; } .hx-hint .k3 i{ width:7px; height:7px; border-radius:50%; background:var(--soft); } .hx-hint .k3 .icon{ width:13px; height:13px; }
+.hx-hint .k3.ok{ color:var(--success); } .live .hx-hint .k1, .live .hx-hint .k2{ display:none; } .live .hx-hint .k3{ display:inline-flex; }
+.hx-hint .k3.nudge{ animation:hxnudge .45s var(--hx-e); } @keyframes hxnudge{ 25%{ transform:translateX(-4px); } 50%{ transform:translateX(4px); } 75%{ transform:translateX(-2px); } }
+.hx-ring{ width:18px; height:18px; margin-right:-6px; } .hx-ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+.hx-ring circle{ fill:none; stroke-width:2.4; } .hx-ring .t{ stroke:var(--border-strong); } .hx-ring .v{ stroke:var(--text-2); stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:calc(100 - var(--p,0)); transition:stroke-dashoffset .4s var(--hx-e),stroke .3s; }
+.over .hx-ring .v{ stroke:var(--error); } .over .hx-cnt{ color:var(--error); }
+.hx-ed{ position:relative; }
+.hx-try{ position:absolute; top:14px; right:18px; z-index:3; display:inline-flex; align-items:center; gap:7px; height:30px; padding:0 12px; border-radius:999px; background:var(--cta); color:var(--cta-ink); font:500 12.5px/1 var(--font-ui); cursor:pointer;
+  box-shadow:0 10px 24px -10px rgba(0,0,0,.5); opacity:0; transform:translateY(-6px) scale(.96); pointer-events:none; transition:opacity .4s var(--hx-e),transform .5s var(--hx-spring); }
+.hx-try .icon{ width:13px; height:13px; }
+.tryable .hx-try{ opacity:1; transform:none; pointer-events:auto; } .live .hx-try{ display:none; }
+@media (prefers-reduced-motion:no-preference){ .tryable .hx-try{ animation:hxtry 2.4s 1s var(--hx-e) infinite; } @keyframes hxtry{ 0%,70%,100%{ box-shadow:0 10px 24px -10px rgba(0,0,0,.5),0 0 0 0 color-mix(in srgb,var(--cta) 45%,transparent); } 85%{ box-shadow:0 10px 24px -10px rgba(0,0,0,.5),0 0 0 8px transparent; } } }
+.hx-ltoast{ pointer-events:none; } .hx-ltoast.on{ opacity:1; transform:none; pointer-events:auto; }
+.hx-toast button{ height:28px; padding:0 10px; display:inline-flex; align-items:center; border-radius:8px; background:color-mix(in srgb,var(--text-1) 8%,transparent); font:500 13px/1 var(--font-ui); color:var(--text-1); cursor:pointer; white-space:nowrap; }
+.hx-toast button:hover{ background:color-mix(in srgb,var(--text-1) 14%,transparent); } .hx-ltoast span{ max-width:46ch; }
+.live .hx-pv .pf{ border-radius:14px; box-shadow:0 0 0 1px var(--border); overflow:hidden; border-bottom:0; animation:hxin .35s var(--hx-e); }
+.live .hx-pv .lip{ box-shadow:0 0 0 1px var(--border); }
+.hx-asl{ margin:16px 9px 4px; font-size:12px; color:var(--text-3); }
+.hx-asd{ padding:6px 9px; border-radius:7px; font-size:12.5px; color:var(--text-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .hx-asd.on{ color:var(--text-1); background:color-mix(in srgb,var(--text-1) 5%,transparent); }
+.hz-cap b{ font-weight:600; color:var(--text-1); }
 /* week screen */
 .hx-wk{ display:grid; grid-template-columns:minmax(0,1fr) 224px; flex:1; min-height:0; }
 .hx-cal{ padding:14px 16px; overflow:hidden; border-right:1px solid var(--border); }
@@ -4906,6 +4952,12 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 .hx-heat b{ font:500 8px/1 var(--font-mono); color:var(--text-3); text-align:center; margin-top:3px; } .hx-heat b.on{ color:var(--text-1); }
 .hx-mini{ display:grid; gap:6px; } .hx-dr{ padding:8px 10px; border-radius:8px; font-size:12px; color:var(--text-2); box-shadow:inset 0 0 0 1px var(--border); }
 
+button.hx-chip{ width:100%; text-align:left; font:inherit; font-size:11.5px; line-height:1.35; cursor:grab; touch-action:none; transition:box-shadow .2s,background .2s,transform .2s var(--hx-e); }
+button.hx-chip:hover{ box-shadow:inset 0 0 0 1px var(--border-strong); } button.hx-chip.land:hover{ box-shadow:inset 0 0 0 1px var(--text-1); }
+.hx-chip b{ font-weight:inherit; }
+.hx-chip.drag{ position:relative; z-index:6; cursor:grabbing; transition:none; box-shadow:0 0 0 1px var(--text-2),0 18px 32px -12px rgba(0,0,0,.55); background:var(--surface-3); }
+.hx-cell{ border-radius:9px; transition:background .15s,box-shadow .15s; } .hx-cell.over{ background:color-mix(in srgb,var(--text-1) 6%,transparent); outline:1.5px dashed var(--text-3); outline-offset:-1.5px; }
+.hx-chip.draft{ background:transparent; box-shadow:none; outline:1.5px dashed var(--border-strong); outline-offset:-1.5px; color:var(--text-2); animation:hxland .7s var(--hx-spring) both; }
 /* review screen */
 .hx-avs{ display:inline-flex; } .hx-avs .av{ width:24px; height:24px; box-shadow:0 0 0 2px var(--surface); } .hx-avs .av + .av{ margin-left:-6px; }
 .hx-rvw{ display:grid; grid-template-columns:minmax(0,1fr) 300px; flex:1; min-height:0; }
@@ -4926,6 +4978,10 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 .hx-cm .hx-ok::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
 .hx-cin{ padding:10px 12px; border-radius:10px; font-size:12.5px; color:var(--text-3); box-shadow:inset 0 0 0 1px var(--border-strong); }
 
+.hx-cinf{ margin:0; } input.hx-cin{ width:100%; background:transparent; border:0; outline:0; font:inherit; font-size:12.5px; color:var(--text-1); } input.hx-cin::placeholder{ color:var(--text-3); } input.hx-cin:focus{ box-shadow:inset 0 0 0 1px var(--text-2); }
+.hx-cm.c2{ --c:var(--cm-3); } .hx-cm.new{ animation:hxin .45s var(--hx-e) both; }
+.hx-cm.flash{ animation:hxflash .9s var(--hx-e); } @keyframes hxflash{ 30%{ box-shadow:inset 0 0 0 1.5px var(--c); } }
+.hx mark[data-cm]{ cursor:pointer; }
 /* results screen */
 .hx-res{ padding:16px 18px; display:grid; gap:12px; align-content:start; overflow:hidden; }
 .hx-kpis{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-radius:12px; box-shadow:inset 0 0 0 1px var(--border); overflow:hidden; }
@@ -5020,6 +5076,22 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
 .st-res .hx-post{ background:rgba(255,255,255,.04); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); color:#EDEDED; } .st-res .hx-pw span{ color:#8C8C8C; } .st-res .hx-pt{ color:#EDEDED; }
 .st-res .hx-pa{ color:#A3A3A3; }
 .st-res .hx-pa span{ display:inline-flex; align-items:center; gap:5px; font:500 12px/1 var(--font-ui); font-variant-numeric:tabular-nums; }
+.st-act{ display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:10px 12px; border-top:1px solid rgba(255,255,255,.08); }
+.st-go{ display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 13px; border-radius:999px; background:#EDEDED; color:#111; font:500 13px/1 var(--font-ui); cursor:pointer; text-decoration:none; white-space:nowrap; transition:transform .18s var(--hx-e),background .2s; }
+.st-go:hover{ background:#fff; } .st-go:active{ transform:scale(.96); } .st-go .icon{ width:13px; height:13px; }
+.st-go.ghost{ background:transparent; color:#D4D4D4; box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); } .st-go.ghost:hover{ background:rgba(255,255,255,.08); color:#fff; }
+.st-go:focus-visible, button.st-row:focus-visible, button.st-day:focus-visible{ outline:2px solid #EDEDED; outline-offset:2px; }
+button.st-row{ width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer; transition:background .2s,box-shadow .2s; } button.st-row:hover{ background:rgba(255,255,255,.08); }
+.st-row > .st-pk{ flex:none; } .st a.st-go, .st a.st-go:hover{ color:#111; text-decoration:none; }
+.st-pk{ flex:none; display:grid; place-items:center; width:20px; height:20px; border-radius:50%; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22); color:transparent; transition:background .2s,color .2s,box-shadow .2s; } .st-pk .icon{ width:12px; height:12px; }
+.st-row.picked{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.3); background:rgba(255,255,255,.09); } .st-row.picked .st-pk{ background:#EDEDED; color:#111; box-shadow:none; }
+button.st-day{ font:inherit; cursor:pointer; transition:background .2s,box-shadow .2s; } button.st-day:hover{ background:rgba(255,255,255,.08); }
+.st-pc.moved{ animation:hxland .6s var(--hx-spring) both; }
+.st-note{ margin:2px 0 0; font-size:12.5px; color:#A3A3A3; }
+.st-shb{ display:none; } .wait .st-shb{ display:inline-flex; } .wait .st-shn{ display:none; }
+.wait .st-before s{ animation:none; text-decoration:underline wavy rgba(245,180,76,.85); }
+.wait .st-arrow, .wait .st-after, .wait .st-ok{ opacity:0; animation:none; }
+.go .st-before s{ animation-delay:0s; } .go .st-arrow{ animation-delay:.2s; } .go .st-after{ animation-delay:.4s; } .go .st-ok{ animation-delay:.75s; }
 .st-up{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:12px; background:rgba(74,222,128,.1); color:#4ADE80; font-size:13px; font-weight:500; }
 .st-up small{ color:#A3A3A3; font-weight:400; }
 .on .st-up{ animation:stin .7s .5s var(--hx-e) both; }
@@ -5236,6 +5308,8 @@ kbd,.kbd{ background:var(--surface-2); border-color:var(--border); color:var(--t
   .hx-app{ height:420px; font-size:12.5px; }
   .hx-wr{ grid-template-columns:minmax(0,1fr); } .hx-pv{ display:none; } .hx-ed{ border-right:0; padding:26px 18px 16px; } .hx-thr, .hx-edw::before{ display:none; }
   .hx-sch{ padding:0 12px; gap:6px; } .hx-sch .hx-gb:not(#hx-sched){ display:none; } .hx-sch .hx-wb{ display:none; }
+  .hx-sc-write .hx-crumb{ display:none; } .hx-net{ width:26px; } #hx-sched{ padding:0 9px; }
+  .hx-ed{ padding-top:52px !important; } .hx-try{ top:12px; left:18px; right:auto; }
   .hx-cal{ overflow-x:auto; } .hx-calh, .hx-calr{ grid-template-columns:52px repeat(7,92px); }
   .hx-kpis{ grid-template-columns:repeat(2,minmax(0,1fr)); } .hx-kpis > div:nth-child(3){ box-shadow:0 -1px 0 var(--border); } .hx-kpis > div:nth-child(4){ box-shadow:-1px 0 0 var(--border),0 -1px 0 var(--border); }
   .hx-toast{ left:12px; right:12px; bottom:10px; justify-content:space-between; }
@@ -6671,7 +6745,7 @@ function route() {
   if (!CURRENT || !document.startViewTransition || REDUCED) render();
   else if (same) document.startViewTransition(render);
   else { const r = document.documentElement; r.dataset.vt = 'cross'; document.startViewTransition(render).finished.finally(() => delete r.dataset.vt); }
-  document.title = { home: 'Hookworthy: a week of posts, written in your voice', start: 'Find your voice · Hookworthy', week: 'Week · Hookworthy', inbox: 'Inbox · Hookworthy', write: 'Write · Hookworthy', ideas: 'Ideas · Hookworthy', results: 'Results · Hookworthy', settings: 'Settings · Hookworthy', signin: 'Sign in · Hookworthy', voice: 'Your voice · Hookworthy', brand: 'Design system · Hookworthy', upgrade: 'Plans · Hookworthy', tools: 'Free tools for X and LinkedIn · Hookworthy', teams: 'For ghostwriters and teams · Hookworthy', developers: 'Developers · Hookworthy', legal: 'Privacy and terms · Hookworthy' }[name];
+  document.title = { home: 'Hookworthy: the writer in your corner', start: 'Find your voice · Hookworthy', week: 'Week · Hookworthy', inbox: 'Inbox · Hookworthy', write: 'Write · Hookworthy', ideas: 'Ideas · Hookworthy', results: 'Results · Hookworthy', settings: 'Settings · Hookworthy', signin: 'Sign in · Hookworthy', voice: 'Your voice · Hookworthy', brand: 'Design system · Hookworthy', upgrade: 'Plans · Hookworthy', tools: 'Free tools for X and LinkedIn · Hookworthy', teams: 'For ghostwriters and teams · Hookworthy', developers: 'Developers · Hookworthy', legal: 'Privacy and terms · Hookworthy' }[name];
 }
 addEventListener('hashchange', route);
 
@@ -11484,9 +11558,9 @@ const SAVE = k => (PRICES[k][1] - PRICES[k][0]) * 12; /* dollars a year saved by
 const PLAN_CR = { free: ['10', 'Claude rewrites a day', 'Sharpen and quick rewrites are unlimited'], pro: ['1,000', 'Claude rewrites a month', 'Leftovers from your first month roll over'], studio: ['4,000', 'Claude rewrites a month', 'Shared across your clients'] };
 function plansHTML(yearly) {
   const P = [
-    { k: 'free', name: 'Free', price: 0, blurb: 'Try it on your next post.', cta: 'Start free', feats: ['Instant checks on every draft', 'Sharpen any line, unlimited', 'Quick rewrites on your device, unlimited', 'Quote cards and charts', 'Schedule up to 10 posts'] },
-    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For creators posting most days.', cta: 'Start with Pro', hero: true, feats: ['Claude rewrites in your voice', 'Replies drafted for you, ready to send', 'What’s working in your niche, and why', 'A ping when a post starts taking off', 'Reshare your best posts to new followers', 'Schedule as many posts as you like'] },
-    { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For ghostwriters and small teams.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Up to 8 client accounts, each in their own voice', 'Clients approve before anything posts'] }
+    { k: 'free', name: 'Free', price: 0, blurb: 'Your next post, on us.', cta: 'Start free', feats: ['Instant checks on every draft', 'Sharpen any line, unlimited', 'Quick rewrites on your device, unlimited', 'Quote cards and charts', 'Schedule up to 10 posts'] },
+    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For showing up most days.', cta: 'Start with Pro', hero: true, feats: ['Claude rewrites in your voice', 'Replies drafted for you, ready to send', 'What’s working in your niche, and why', 'A ping when a post starts taking off', 'Reshare your best posts to new followers', 'Schedule as many posts as you like'] },
+    { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For writing as your clients.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Up to 8 client accounts, each in their own voice', 'Clients approve before anything posts'] }
   ];
   const app = !LIGHT.has(CURRENT), mine = app && PRICED() ? planNow() : null, trial = PRICED() && !S.trial && S.plan === 'free';
   return P.map(p => {
@@ -11726,7 +11800,7 @@ const WHO = [
   { k: 'founder', t: 'Founders', p: 17, h: 'Release notes in. A story that stands out.', d: 'Tobi pastes the changelog on Friday. Hookworthy finds the line worth leading with, then fits it to each feed.',
     li: ['Paste notes, get the line worth leading with', 'A LinkedIn version that clears the fold', 'Slots picked from when buyers reply'],
     rows: [['excited to share 2.4 is live! we also stopped roadmap voting 🎉', '2.4 is live. We also stopped roadmap voting. Here’s why:'], ['so we kind of made sync 38% faster in this release', 'We made sync 38% faster in this release. Here’s how:'], ['just wanted to share some thoughts on our launch. only 11 people came lol', 'We launched to 11 people. Here’s what that taught us:']] },
-  { k: 'ghost', t: 'Ghostwriters', p: 16, h: 'Six voices. None of them yours.', d: 'Noah writes for six founders. Each has their own voice, never-say list and a yes-or-no before anything ships.',
+  { k: 'ghost', t: 'Ghostwriters', p: 16, h: 'Six clients. Six voices. Zero mix-ups.', d: 'Noah writes for six founders. Each has their own voice, never-say list and a yes-or-no before anything ships.',
     li: ['A separate voice for every client', 'Approvals before anything ships', 'One queue across every account'],
     rows: [['So I think after hiring 300 people the best interview question is really just four words', 'I’ve hired 300 people. The best interview question is four words:', 'For Ledgerly · direct, numbers first'], ['honestly so grateful to everyone who tried the beta 🙏 40 signups!', '40 people signed up for our beta. Here’s my thank-you:', 'For Northwind · warm, specific']], appr: 'Approved by Ledgerly. Scheduled for Thu at 12:15 PM.' },
   { k: 'crypto', t: 'Markets', p: 20, h: 'Your edge, in the first line.', d: 'Jay journals every trade and posts most days. Same charts, sharper openings, no shill-speak.',
@@ -12202,7 +12276,7 @@ function hxFootHTML() {
   const col = (h, items) => `<div class="hx-fcol"><h2>${h}</h2><ul>${items.map(x => `<li>${x}</li>`).join('')}</ul></div>`;
   return `<footer class="hx-foot"><div class="hx-w">
     <div class="hx-ftop">
-      <div class="hx-fme"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a><p>The writing app for X, Threads, LinkedIn and Bluesky. In your voice.</p><p class="hx-fsm">Never auto‑DMs, auto‑retweets or auto‑deletes. Nothing posts unless you scheduled it.</p></div>
+      <div class="hx-fme"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a><p>The writer in your corner, for X, Threads, LinkedIn and Bluesky.</p><p class="hx-fsm">One good line a day keeps the void away.</p></div>
       <nav class="hx-fcols" aria-label="Footer">
         ${col('Product', [`<a ${hwHref('home', 'how')}>How it works</a>`, `<a ${hwHref('home', 'features')}>Features</a>`, `<a ${hwHref('home', 'pricing')}>Pricing</a>`, `<a ${hwHref('home', 'faq')}>Questions</a>`, '<a href="#tools">Free tools</a>', '<a href="#developers">Developers</a>'])}
         ${col('App', ['<a href="#week">Open the app</a>', '<a href="#signin">Sign in</a>', '<a href="#brand">Design system</a>', '<button type="button" data-act="shortcuts">Keyboard shortcuts</button>'])}
@@ -12233,7 +12307,7 @@ function hxInitPage(root) {
    faces in it, the app at work in a window, one paper chapter that runs from an 11 PM thought to Tuesday morning,
    slices of the product, a tab for each kind of writer, three plans, open questions, a paste box, and the big wordmark.
    heycape is the example account throughout; every number on the page is illustrative ---------- */
-const HX_DRAFT = ['so i think', ' the most underrated thing in trading is ', 'honestly', ' ', 'just', ' sizing down after a loss.'];
+const HX_DRAFT = ['so', ' ', 'i think', ' the most underrated thing in trading is ', 'honestly', ' ', 'just', ' sizing down after a loss.'];
 const HX_SHARP = 'The most underrated skill in trading: sizing down after a loss.';
 const HX_BODY = 'I lost $4,000 in March doubling my size to win it back. Now I cut size in half after any red day. Boring. My account is still here.';
 const HX_N0 = HX_DRAFT.join('').length + 2 + HX_BODY.length, HX_N1 = HX_SHARP.length + 2 + HX_BODY.length;
@@ -12258,29 +12332,30 @@ const CURSOR_SVG = '<svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 2.5 
 /* ---------- the four screens in the window ---------- */
 function hxScreenWrite() {
   return `<div class="hx-sc hx-sc-write" data-sc="write">
-    <div class="hx-sch"><span class="hx-crumb">Drafts ${ic('right', 'xs')} <b>Sizing down</b></span><span class="hx-tag" id="hx-tag">Draft</span><span class="grow"></span><span class="hx-gb">${ic('link', 'xs')} Share</span><span class="hx-gb" id="hx-sched">${ic('clock', 'xs')} Schedule</span><span class="hx-wb">${ic('send', 'xs')} Post</span></div>
+    <div class="hx-sch"><span class="hx-crumb">Drafts ${ic('right', 'xs')} <b>Sizing down</b></span><span class="hx-tag" id="hx-tag">Draft</span><span class="grow"></span><span class="hx-nets" role="group" aria-label="Preview on">${HX_PLATS.map(([k, n], i) => `<button type="button" class="hx-net${i ? '' : ' on'}" data-pvn="${k}" aria-pressed="${!i}" aria-label="Preview on ${n}" data-tip="${n}">${pic(k)}</button>`).join('')}</span><button type="button" class="hx-gb" id="hx-sched">${ic('clock', 'xs')} Schedule</button><button type="button" class="hx-wb" id="hx-post">${ic('send', 'xs')} Post</button></div>
     <div class="hx-wr">
       <div class="hx-ed"><div class="hx-edw">${hxAv('me', 'hx-pav')}<div class="hx-edt">
-          <p class="hx-l1"><span class="hx-l1d">${hxSoft()}</span><span class="hx-l1s"><b>${esc(HX_SHARP)}</b></span></p>
+          <p class="hx-l1"><span class="hx-l1d">${hxSoft()}</span><span class="hx-l1s"><b>${esc(HX_SHARP)}</b></span><span class="hx-l1e"><span class="hx-lm" aria-hidden="true"></span><textarea class="hx-lin" id="hx-lin" rows="1" maxlength="200" spellcheck="false" tabindex="-1" aria-label="First line of the example post" aria-describedby="hx-k3"></textarea></span></p>
           <p class="hx-l2">${esc(HX_BODY)}</p>
-          <p class="hx-hint"><span class="k1"><i></i>3 soft words in your first line</span><span class="k2">${ic('check', 'xs')} Sharper first line. Your facts stayed.</span></p>
+          <p class="hx-hint"><span class="k1"><i></i>4 soft words in your first line</span><span class="k2">${ic('check', 'xs')} Sharper first line. Your facts stayed.</span><span class="k3" id="hx-k3" aria-live="polite"></span></p>
         </div></div>
         <div class="hx-thr">${hxAv('me', 'hx-pav')}<div><p>The rule is simple: half size until I have a green day. Then back to normal.</p><small>2 of 2 in this thread</small></div></div>
-        <div class="hx-edtools">${ic('image', 'xs')}${ic('mic', 'xs')}${ic('poll', 'xs')}<span class="hx-cnt" id="hx-cnt">${HX_N0} / 280</span><span class="grow"></span><span class="hx-sharpb" id="hx-sharpb">${ic('bolt', 'xs')} Sharpen<em>3</em></span></div>
+        <div class="hx-edtools">${ic('image', 'xs')}${ic('mic', 'xs')}${ic('poll', 'xs')}<span class="hx-ring" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="t" cx="10" cy="10" r="8"/><circle class="v" cx="10" cy="10" r="8" pathLength="100" style="--p:${Math.round(HX_N0 / 2.8)}"/></svg></span><span class="hx-cnt" id="hx-cnt">${HX_N0} / 280</span><span class="grow"></span><button type="button" class="hx-sharpb" id="hx-sharpb">${ic('bolt', 'xs')} Sharpen<em>4</em></button></div>
+        <button type="button" class="hx-try" id="hx-try">${ic('write', 'xs')} Your turn: edit the first line</button>
       </div>
-      <div class="hx-pv"><div class="hx-pvh">${pic('x')}<span>Live preview</span></div>${hxPost(`<span class="hx-swap"><span class="a">${hxSoft(false)}</span><span class="b">${esc(HX_SHARP)}</span></span><span class="hx-p2">${esc(HX_BODY)}</span>`)}</div>
+      <div class="hx-pv"><div class="hx-pvh"><span id="hx-pvi">${pic('x')}</span><span id="hx-pvn">Live preview on X</span></div><div id="hx-pvb">${hxPost(`<span class="hx-swap"><span class="a">${hxSoft(false)}</span><span class="b">${esc(HX_SHARP)}</span></span><span class="hx-p2">${esc(HX_BODY)}</span>`)}</div></div>
     </div>
     <div class="hx-toast" aria-hidden="true">${ic('check', 'xs')}<span>Scheduled for Tue, 8:40&nbsp;AM</span><b>Undo</b></div>
   </div>`;
 }
 function hxScreenWeek() {
   return `<div class="hx-sc hx-sc-week" data-sc="week">
-    <div class="hx-sch"><b class="hx-sct">This week</b><span class="hx-sub2">Oct 12 – 18</span><span class="grow"></span><span class="hx-seg2"><i class="on">Week</i><i>Month</i></span><span class="hx-wb">${ic('cal', 'xs')} Draft my week</span></div>
+    <div class="hx-sch"><b class="hx-sct">This week</b><span class="hx-sub2">Oct 12 – 18</span><span class="grow"></span><span class="hx-seg2"><i class="on">Week</i><i>Month</i></span><button type="button" class="hx-wb" id="hx-dmw">${ic('cal', 'xs')} Draft my week</button></div>
     <div class="hx-wk">
       <div class="hx-cal"><div class="hx-calh"><span></span>${HX_DAYS.map((d, i) => `<span${i === 1 ? ' class="on"' : ''}>${d} <b>${12 + i}</b></span>`).join('')}</div>
-        ${HX_SLOTS.map((t, s) => `<div class="hx-calr"><span class="hx-calt">${t}</span>${HX_DAYS.map((d, i) => { const p = HX_WEEK.find(x => x.d === i && x.s === s); return `<span class="hx-cell">${p ? `<span class="hx-chip${p.land ? ' land' : ''}"><i>${pic(p.p)}${t}</i><span>${esc(p.t)}</span></span>` : i === 5 && s === 1 ? '<span class="hx-rest">Rest day</span>' : ''}</span>`; }).join('')}</div>`).join('')}
+        ${HX_SLOTS.map((t, s) => `<div class="hx-calr"><span class="hx-calt">${t}</span>${HX_DAYS.map((d, i) => { const p = HX_WEEK.find(x => x.d === i && x.s === s); return `<span class="hx-cell" data-d="${i}" data-s="${s}">${p ? `<button type="button" class="hx-chip${p.land ? ' land' : ''}" aria-label="${esc(`${d} ${t}: ${p.t}. Arrow keys move it`)}"><i>${pic(p.p)}<b>${t}</b></i><span>${esc(p.t)}</span></button>` : i === 5 && s === 1 ? '<span class="hx-rest">Rest day</span>' : ''}</span>`; }).join('')}</div>`).join('')}
       </div>
-      <div class="hx-wks">${hxBest()}<div class="hx-mini"><span class="hx-lab">Drafts</span>${['Funding flipped negative. Here’s my log.', 'Three charts I check before the open.'].map(t => `<span class="hx-dr">${esc(t)}</span>`).join('')}</div></div>
+      <div class="hx-wks">${hxBest()}<div class="hx-mini" id="hx-mini"><span class="hx-lab">Drafts</span>${['Funding flipped negative. Here’s my log.', 'Three charts I check before the open.'].map(t => `<span class="hx-dr">${esc(t)}</span>`).join('')}</div></div>
     </div>
   </div>`;
 }
@@ -12289,17 +12364,18 @@ function hxScreenReview() {
     <div class="hx-sch"><span class="hx-crumb">Review ${ic('right', 'xs')} <b>Sizing down</b></span><span class="grow"></span><span class="hx-avs">${hxAv(19)}${hxAv(11)}</span><span class="hx-gb">${ic('link', 'xs')} Copy link</span></div>
     <div class="hx-rvw">
       <div class="hx-rvd">${hxAv('me', 'hx-pav')}<div><p class="hx-pw"><b>heycape</b> <span>@heycape_</span></p>
-        <p class="hx-rvt">The most underrated skill in trading: sizing down after a loss.<br><br>I lost <mark class="c0">$4,000 in March</mark> doubling my size to win it back. Now I cut size in half after any red day. <mark class="c1 done">Boring.</mark> My account is still here.</p></div></div>
+        <p class="hx-rvt">The most underrated skill in trading: sizing down after a loss.<br><br>I lost <mark class="c0" data-cm="c0">$4,000 in March</mark> doubling my size to win it back. Now I cut size in half after any red day. <mark class="c1 done" data-cm="c1">Boring.</mark> My account is still here.</p></div></div>
       <div class="hx-rvc">
-        <div class="hx-cm c0"><div class="hx-cmh">${hxAv(19)}<b>Priya Nair</b><span>2m</span></div><q>$4,000 in March</q><p>Lead with this. The number is the hook.</p><div class="hx-cmb"><span class="hx-gb">Reply</span><span class="hx-gb">${ic('check', 'xs')} Resolve</span></div></div>
+        <div class="hx-cm c0"><div class="hx-cmh">${hxAv(19)}<b>Priya Nair</b><span>2m</span></div><q>$4,000 in March</q><p>Lead with this. The number is the hook.</p><div class="hx-cmb"><button type="button" class="hx-gb" data-rv="reply">Reply</button><button type="button" class="hx-gb" data-rv="resolve">${ic('check', 'xs')} <span>Resolve</span></button></div></div>
         <div class="hx-cm c1 done"><div class="hx-cmh">${hxAv(11)}<b>Marcus Reid</b><span>9m</span></div><q>Boring.</q><p>Keep it. It’s the most you thing in here.</p><span class="hx-ok">Resolved</span></div>
-        <div class="hx-cin">Reply, or select words to comment…</div>
+        <form class="hx-cinf" id="hx-cinf"><input class="hx-cin" id="hx-cin" maxlength="160" autocomplete="off" placeholder="Reply, or select words to comment…" aria-label="Add a comment"></form>
       </div>
     </div></div>`;
 }
 const HX_KPI = [['Views', '48.2K', '+12%'], ['Likes', '1,904', '+8%'], ['Replies', '312', '+21%'], ['New followers', '186', '+9%']];
 /* a smooth followers line and the dashed "your usual" line under it, drawn to one scale */
-const hxChart = (id) => { const pts = [12, 14, 13, 17, 18, 21, 20, 24, 27, 26, 31, 34, 33, 38, 42, 44, 47, 52, 55, 58], base = pts.map((_, i) => 10 + i * 1.5);
+const HX_SERIES = { 30: [12, 14, 13, 17, 18, 21, 20, 24, 27, 26, 31, 34, 33, 38, 42, 44, 47, 52, 55, 58], 7: [40, 41, 44, 46, 45, 51, 58] };
+const hxChart = (id, pts = HX_SERIES[30]) => { const base = pts.map((_, i) => pts[0] - 2 + i * ((pts[pts.length - 1] - pts[0]) * .55 / Math.max(1, pts.length - 1)));
   const W = 600, H = 100, x = i => (i / (pts.length - 1)) * W, y = v => H - 8 - (v / 64) * (H - 16);
   const line = a => a.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
   return `<svg class="hx-chart" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".16"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
@@ -12309,8 +12385,8 @@ const hxKpis = () => `<div class="hx-kpis">${HX_KPI.map(([l, v, d]) => `<div><sp
 function hxScreenResults() {
   const rows = [['The most underrated skill in trading: sizing down after a loss.', '18.4K', '612', '2.1× your usual'], ['Most of my losses came from trades I took because I was bored.', '9.7K', '301', ''], ['Weekend reminder: no position is also a position.', '6.2K', '188', '']];
   return `<div class="hx-sc hx-sc-results" data-sc="results">
-    <div class="hx-sch"><b class="hx-sct">Results</b><span class="grow"></span><span class="hx-seg2"><i>7 days</i><i class="on">30 days</i></span></div>
-    <div class="hx-res">${hxKpis()}<div class="hx-grow"><span class="hx-lab">Followers</span><p><b>4,812</b> <i>+186 in 30 days</i></p>${hxChart('hxg1')}<span class="hx-leg"><i class="a"></i>This month <i class="b"></i>Your usual</span></div>
+    <div class="hx-sch"><b class="hx-sct">Results</b><span class="grow"></span><span class="hx-seg2" role="group" aria-label="Range"><button type="button" data-rr="7" aria-pressed="false">7 days</button><button type="button" class="on" data-rr="30" aria-pressed="true">30 days</button></span></div>
+    <div class="hx-res">${hxKpis()}<div class="hx-grow"><span class="hx-lab">Followers</span><p><b id="hx-fol">4,812</b> <i id="hx-fold">+186 in 30 days</i></p><div class="hx-chw" id="hx-chw">${hxChart('hxg1')}<span class="hx-guide" aria-hidden="true"><i></i><b></b></span></div><span class="hx-leg"><i class="a"></i><span id="hx-legn">This month</span> <i class="b"></i>Your usual</span></div>
       <div class="hx-rows"><div class="hx-rowh"><span>Recent posts</span><span>Views</span><span>Likes</span></div>${rows.map(([t, v, l, n]) => `<div class="hx-row"><span>${esc(t)}${n ? ` <em>${n}</em>` : ''}</span><span>${v}</span><span>${l}</span></div>`).join('')}</div>
     </div></div>`;
 }
@@ -12321,53 +12397,56 @@ function hxDemoHTML() {
     <div class="hx-tabs" role="tablist" aria-label="See it work"><span class="hx-thumb" aria-hidden="true"></span>${HX_TABS.map(([k, i, l], n) => `<button type="button" role="tab" id="hxt-${k}" aria-controls="hx-frame" aria-selected="${n === 0}" tabindex="${n ? -1 : 0}" data-hxt="${k}">${ic(i, 'sm')}<span>${l}</span></button>`).join('')}</div>
     <div class="hx-frame" id="hx-frame" role="tabpanel" aria-labelledby="hxt-write">
       <div class="hx-fbar" aria-hidden="true"><span class="hx-dots"><i></i><i></i><i></i></span><span class="hx-url">${ic('lock', 'xs')}<span id="hx-url">hookworthy.com/write/8f2c1a</span></span><span></span></div>
-      <div class="hx-app" aria-hidden="true">
-        <div class="hx-aside"><span class="logo">${LOGO}</span><span class="hx-new">${ic('plus', 'xs')} New post</span>${side.map(([i, l, n]) => `<span class="hx-si" data-si="${l.toLowerCase()}">${ic(i, 'sm')}${l}${n ? `<i>${n}</i>` : ''}</span>`).join('')}<span class="grow"></span><span class="hx-me">${hxAv('me')}<span><b>heycape</b><small>@heycape_</small></span></span></div>
-        <div class="hx-panes">${hxScreenWrite()}${hxScreenWeek()}${hxScreenReview()}${hxScreenResults()}</div>
+      <div class="hx-app">
+        <div class="hx-aside" aria-hidden="true"><span class="logo">${LOGO}</span><span class="hx-new">${ic('plus', 'xs')} New post</span>${side.map(([i, l, n]) => `<span class="hx-si" data-si="${l.toLowerCase()}">${ic(i, 'sm')}${l}${n ? `<i>${n}</i>` : ''}</span>`).join('')}<span class="hx-asl">Drafts</span>${['Sizing down', 'Funding flipped negative', 'Three charts before the open', 'Why I journal every trade'].map((t, i) => `<span class="hx-asd${i ? '' : ' on'}">${t}</span>`).join('')}<span class="grow"></span><span class="hx-me">${hxAv('me')}<span><b>heycape</b><small>@heycape_</small></span></span></div>
+        <div class="hx-panes">${hxScreenWrite()}${hxScreenWeek()}${hxScreenReview()}${hxScreenResults()}<div class="hx-toast hx-ltoast" id="hx-toast" role="status"></div></div>
       </div>
       <span class="hx-cur" id="hx-cur" aria-hidden="true">${CURSOR_SVG}</span>
       <p class="sr" id="hx-demo-sr" aria-live="polite">A draft by heycape, an example account. Three soft words in the first line get a wavy underline, Sharpen rewrites it to “${esc(HX_SHARP)}”, and the post is scheduled for Tuesday at 8:40 AM.</p>
     </div>
-    <p class="hz-cap">The app, with an example account.</p>
+    <p class="hz-cap"><b>It’s live.</b> Type over the first line, press Sharpen, switch networks. heycape is an example account.</p>
   </div>`;
 }
 
 /* ---------- the paper chapter: one post, from an 11 PM thought to Tuesday morning ---------- */
 const HZ_STEPS = [
-  ['catch', 'Catch it', 'Save the thought the second you have it: a voice note, a link, a screenshot of your P&L. It waits in Ideas.', PHOTO.desk, 'Mon 11:47 PM'],
-  ['draft', 'Draft it in your voice', 'It comes back the way you write on a good day, because it learned from your own posts, not everyone else’s.', PHOTO.desk, 'Mon 11:52 PM'],
+  ['catch', 'Catch it', 'Save the thought the second it lands: a voice note, a link, a screenshot of your P&L. It waits in Ideas, safe till morning.', PHOTO.desk, 'Mon 11:47 PM'],
+  ['draft', 'Draft it in your voice', 'It writes the way you do on a good day, because it learned from your posts, not from everyone else’s.', PHOTO.desk, 'Mon 11:52 PM'],
   ['sharpen', 'Sharpen the first line', 'Soft words get a wavy line. One tap and the line says it straight. Your facts and numbers stay put.', PHOTO.desk, 'Mon 11:54 PM'],
-  ['time', 'Out when they’re scrolling', 'It lands in your week at the hour your people are awake, with a version that fits X, Threads, LinkedIn and Bluesky.', PHOTO.run, 'Tue 8:40 AM'],
-  ['learn', 'See what landed', 'An hour later: your post against your own usual, in plain words. Then write the next one.', PHOTO.run, 'Tue 9:41 AM']
+  ['time', 'Out when they’re scrolling', 'Write when you can, post when they’re up. It lands at your best hour, fitted to X, Threads, LinkedIn and Bluesky.', PHOTO.run, 'Tue 8:40 AM'],
+  ['learn', 'See what landed', 'An hour later, in plain words: how it did against your usual, and what to write next.', PHOTO.run, 'Tue 9:41 AM']
 ];
 const HZ_TYPED = 'so i think the most underrated thing in trading is honestly just sizing down after a loss.\n\nI lost $4,000 in March doubling my size to win it back.';
 function hzSceneHTML(k) {
   if (k === 'catch') { const bars = [6, 10, 14, 9, 16, 12, 7, 13, 17, 11, 8, 15, 10, 6, 12, 16, 9, 13, 7, 11, 15, 8, 12, 6];
     return `<div class="st-card"><div class="st-ch">${ic('ideas', 'xs')}<b>Ideas</b><span class="grow"></span><span class="st-tm">3 new</span></div><div class="st-cb">
-      <div class="st-row"><span class="st-ico">${ic('mic', 'xs')}</span><span><b>Sizing down after a loss</b><span class="st-wave">${bars.map((h, i) => `<i style="--h:${h};--k:${i}"></i>`).join('')}</span></span><span class="st-tm">0:14</span></div>
-      <div class="st-row"><span class="st-ico">${ic('link', 'xs')}</span><span><b>Funding flipped negative</b><small>A link, saved at 11:31 PM</small></span><span class="st-tm">Link</span></div>
-      <div class="st-row"><span class="st-ico">${ic('shot', 'xs')}</span><span><b>My $4,000 week in March</b><small>A screenshot of the P&amp;L</small></span><span class="st-tm">Image</span></div>
-    </div></div>`; }
+      <button type="button" class="st-row picked" data-sx="pick" aria-pressed="true"><span class="st-ico">${ic('mic', 'xs')}</span><span><b>Sizing down after a loss</b><span class="st-wave">${bars.map((h, i) => `<i style="--h:${h};--k:${i}"></i>`).join('')}</span></span><span class="st-tm">0:14</span><span class="st-pk">${ic('check', 'xs')}</span></button>
+      <button type="button" class="st-row" data-sx="pick" aria-pressed="false"><span class="st-ico">${ic('link', 'xs')}</span><span><b>Funding flipped negative</b><small>A link, saved at 11:31 PM</small></span><span class="st-tm">Link</span><span class="st-pk">${ic('check', 'xs')}</span></button>
+      <button type="button" class="st-row" data-sx="pick" aria-pressed="false"><span class="st-ico">${ic('shot', 'xs')}</span><span><b>My $4,000 week in March</b><small>A screenshot of the P&amp;L</small></span><span class="st-tm">Image</span><span class="st-pk">${ic('check', 'xs')}</span></button>
+    </div><div class="st-act"><button type="button" class="st-go" data-go="1">Draft it in my voice ${ic('arrow', 'xs')}</button></div></div>`; }
   if (k === 'draft') return `<div class="st-card"><div class="st-ch">${hxAv('me')}<b>heycape</b><span>@heycape_</span><span class="grow"></span><span class="st-tm">Draft</span></div>
-      <div class="st-cb"><p class="st-typed" id="st-typed">${esc(HZ_TYPED)}</p></div><div class="st-foot">${ic('voice', 'xs')} Written from your voice note, in your voice</div></div>`;
+      <div class="st-cb"><p class="st-typed" id="st-typed">${esc(HZ_TYPED)}</p></div><div class="st-foot">${ic('voice', 'xs')} Written from your voice note, in your voice</div><div class="st-act"><button type="button" class="st-go ghost" data-sx="retype">${ic('undo', 'xs')} Write it again</button><button type="button" class="st-go" data-go="2">Sharpen the first line ${ic('arrow', 'xs')}</button></div></div>`;
   if (k === 'sharpen') return `<div class="st-card"><div class="st-ch">${ic('bolt', 'xs')}<b>Sharpen</b><span class="grow"></span><span class="st-tm">First line</span></div><div class="st-cb">
       <p class="st-before"><s>so i think</s> the most underrated thing in trading is <s>honestly</s> <s>just</s> sizing down after a loss.</p>
-      <div class="st-arrow">Sharpened</div><p class="st-after">${esc(HX_SHARP)}</p><span class="st-ok">${ic('check', 'xs')} Same facts, said straight</span></div></div>`;
+      <div class="st-arrow">Sharpened</div><p class="st-after">${esc(HX_SHARP)}</p><span class="st-ok">${ic('check', 'xs')} Same facts, said straight</span></div>
+      <div class="st-act"><button type="button" class="st-go st-shb" data-sx="sharpen">${ic('bolt', 'xs')} Sharpen it</button><button type="button" class="st-go st-shn" data-go="3">Line it up ${ic('arrow', 'xs')}</button></div></div>`;
   if (k === 'time') return `<div class="st-card st-wide"><div class="st-ch">${ic('cal', 'xs')}<b>This week</b><span class="grow"></span><span class="st-tm">Oct 12 – 18</span></div><div class="st-cb">
-      <div class="st-days">${HX_DAYS.map((d, i) => { const p = HX_WEEK.find(x => x.d === i); return `<div class="st-day${i === 1 ? ' on' : ''}"><span>${d}</span><b>${12 + i}</b>${p ? `<span class="st-pc${p.land ? ' land' : ''}"><i>${HX_SLOTS[p.s]}</i>${esc(clip(p.t, 34))}</span>` : ''}</div>`; }).join('')}</div>
-      <div class="st-nets">${['x', 'threads', 'li', 'bsky'].map(k => hxTile(k, 'xs')).join('')}<span>One draft, fitted to each network</span></div></div></div>`;
+      <div class="st-days">${HX_DAYS.map((d, i) => { const p = HX_WEEK.find(x => x.d === i); return `<button type="button" class="st-day${i === 1 ? ' on' : ''}" data-sx="day" data-day="${i}" aria-label="Post it on ${d}"><span>${d}</span><b>${12 + i}</b>${p ? `<span class="st-pc${p.land ? ' land' : ''}"><i>${HX_SLOTS[p.s]}</i>${esc(clip(p.t, 34))}</span>` : ''}</button>`; }).join('')}</div>
+      <p class="st-note" id="st-note">Tuesday, 8:40 AM: when your people scroll most. Tap a day to move it.</p>
+      <div class="st-nets">${['x', 'threads', 'li', 'bsky'].map(k => hxTile(k, 'xs')).join('')}<span>One draft, fitted to each network</span></div></div><div class="st-act"><button type="button" class="st-go" data-go="4">See how it landed ${ic('arrow', 'xs')}</button></div></div>`;
   return `<div class="st-card st-res"><div class="st-ch">${ic('chart', 'xs')}<b>Results</b><span class="grow"></span><span class="st-tm">1 hour in</span></div><div class="st-cb">
       <div class="hx-post"><span class="av hx-pav"><img src="${ME_PIC}" alt=""></span><div class="hx-pb"><p class="hx-pw"><b>heycape</b> <span>@heycape_ · 1h</span></p><div class="hx-pt">${esc(HX_SHARP)}</div>
         <div class="hx-pa"><span>${ic('reply', 'xs')}41</span><span>${ic('repost', 'xs')}28</span><span>${ic('heart', 'xs')}612</span><span>${ic('views', 'xs')}18.4K</span></div></div></div>
-      <div class="st-up"><span>2.1× your usual replies</span><small>vs. your last 30 posts</small></div></div></div>`;
+      <div class="st-up"><span>2.1× your usual replies</span><small>vs. your last 30 posts</small></div></div>
+      <div class="st-act"><button type="button" class="st-go ghost" data-go="0">${ic('undo', 'xs')} Start again</button><a class="st-go" href="#start">Start free ${ic('arrow', 'xs')}</a></div></div>`;
 }
 function hzStoryHTML() {
   return `<div class="st">
     <ol class="st-list" role="list">${HZ_STEPS.map(([k, t, d], i) => `<li class="st-i${i ? '' : ' on'}"><button type="button" class="st-b" data-st="${i}" aria-expanded="${!i}" aria-controls="st-stage"><span class="st-n">${i + 1}</span><span class="st-t">${t}</span><span class="st-d"><p>${d}</p></span><span class="st-p" aria-hidden="true"><i></i></span></button></li>`).join('')}</ol>
-    <div class="st-stage" id="st-stage" aria-hidden="true">
-      ${[PHOTO.desk, PHOTO.run].map((p, i) => `<span class="st-ph${i ? '' : ' on'}" data-ph="${p}" style="--py:${sprY(p, PH_N)}"></span>`).join('')}
-      <span class="st-clock">${ic('clock', 'xs')}<span>${HZ_STEPS.map(([, , , , c], i) => `<b${i ? '' : ' class="on"'}>${c}</b>`).join('')}</span></span>
-      ${HZ_STEPS.map(([k], i) => `<div class="st-sc${i ? '' : ' on'}" data-sc="${k}">${hzSceneHTML(k)}</div>`).join('')}
+    <div class="st-stage" id="st-stage">
+      ${[PHOTO.desk, PHOTO.run].map((p, i) => `<span class="st-ph${i ? '' : ' on'}" data-ph="${p}" style="--py:${sprY(p, PH_N)}" aria-hidden="true"></span>`).join('')}
+      <span class="st-clock" aria-hidden="true">${ic('clock', 'xs')}<span>${HZ_STEPS.map(([, , , , c], i) => `<b${i ? '' : ' class="on"'}>${c}</b>`).join('')}</span></span>
+      ${HZ_STEPS.map(([k], i) => `<div class="st-sc${i ? '' : ' on'}" data-sc="${k}"${i ? ' inert' : ''}>${hzSceneHTML(k)}</div>`).join('')}
     </div>
     <p class="st-cap">heycape is an example account; the photos are illustrations.</p>
   </div>`;
@@ -12380,18 +12459,18 @@ function hxBentoHTML() {
   const nets = [['x', 'X', '280&nbsp;characters', 1], ['threads', 'Threads', '500&nbsp;characters', .44], ['li', 'LinkedIn', '3,000&nbsp;characters', .07], ['bsky', 'Bluesky', '300&nbsp;characters', .7]];
   const ideas = [['mic', 'Sizing down after a loss', 'Drafted'], ['link', 'Funding flipped negative', 'Saved'], ['shot', 'My $4,000 week in March', 'Drafted'], ['write', 'Indicators, ranked', 'Saved']];
   return `<div class="hx-bento">
-    ${card('hx-b-sharp', '<b>Sharpen any line.</b> Select a few words and flip through three better versions of just those words. Your facts and numbers stay put.',
+    ${card('hx-b-sharp', '<b>Sharpen any line.</b> Pick a few words and flip through three better versions. Keep the one that sounds like you; your facts stay put.',
       `<div class="hx-ui hx-ui-pad hx-shw" id="hx-shw"><p class="hx-pw hx-shw-who">${hxAv('me')}<b>heycape</b> <span>@heycape_</span></p><p class="hx-shl0">${esc(HX_SHARP)}</p><p class="hx-shl">I lost $4,000 in March <span class="hx-sel"><span class="hx-swap">${['because I kept doubling my size', 'doubling my size to win it back', 'trying to win it all back by Friday'].map((t, i) => `<span class="hx-alt${i === 0 ? ' on' : ''}">${t}</span>`).join('')}</span></span>.</p><div class="hx-shbar"><span class="hx-gb">${ic('left', 'xs')}</span><span class="hx-shn" id="hx-shn">1 of 3</span><span class="hx-gb">${ic('right', 'xs')}</span><span class="hx-wb">Use this</span><span class="hx-gb">${ic('reply', 'xs')} Comment</span></div><p class="hx-shl2">Now I cut size in half after any red day. Boring. My account is still here.</p></div>`)}
-    ${card('hx-b-nets', '<b>One draft, every network.</b> Each version fits X, Threads, LinkedIn and Bluesky, and long posts on free X become a thread by themselves.',
+    ${card('hx-b-nets', '<b>Peek at every feed before they read.</b> X, Threads, LinkedIn and Bluesky each get a version that fits, and long posts on free X become a thread by themselves.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-nets">${nets.map(([k, n, lim, f]) => `<div class="hx-li">${hxTile(k, 'sm')}<span><b>${n}</b><small>${lim}</small></span><span class="hx-bar"><i style="--f:${f}"></i></span><span class="hx-ck">${ic('check', 'xs')}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-review', '<b>Review links.</b> Send one link. People sign in with X or Google and comment on the exact words, right beside your draft.',
+    ${card('hx-b-review', '<b>Notes on the exact words.</b> Send one review link. People sign in with X or Google and comment right beside your draft.',
       `<div class="hx-ui hx-ui-flow"><div class="hx-chips"><span>${pic('x')} Sign in with X</span><span>${G_LOGO} Sign in with Google</span></div><div class="hx-link"><span class="hx-mono">hookworthy.com/r/8f2c1a</span><span class="hx-wb">${ic('copy', 'xs')} Copy</span></div><span class="hx-wire" aria-hidden="true"></span><span class="hx-call"><b>Comment</b> on “$4,000 in March” <i>new</i></span><span class="hx-wire" aria-hidden="true"></span>
       <div class="hx-list">${[[19, 'Priya Nair', 'Lead with the number. It’s the hook.', 'Open'], [11, 'Marcus Reid', 'Keep “Boring.” It’s the most you line.', 'Resolved']].map(([i, n, t, s]) => `<div class="hx-li">${hxAv(i)}<span><b>${n}</b>${esc(t)}</span><span class="hx-st${s === 'Open' ? ' open' : ''}">${s}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-voices', '<b>Client voices.</b> Ghostwriting? Write as each client, in their voice, not yours, and switch with one key.',
+    ${card('hx-b-voices', '<b>A voice for every client.</b> Ghostwriting? Write as each one, sound like them, and switch with one key.',
       `<div class="hx-ui hx-ui-pad"><span class="hx-lab">Writing as</span><div class="hx-radio">${voices.map(([i, n, k, t], j) => `<div class="hx-ro${j === 1 ? ' on' : ''}"><i class="hx-rd"></i>${hxAv(i)}<span class="hx-rt"><b>${n}</b><small>${t}</small></span><span class="hx-st${j === 1 ? '' : ' muted'}">${k}</span><kbd>${MOD}${IS_MAC ? '' : ' '}${j + 1}</kbd></div>`).join('')}</div></div>`)}
-    ${card('hx-b-ideas', '<b>Ideas from anywhere.</b> Voice notes, links and screenshots. The best ones become drafts in your voice.',
+    ${card('hx-b-ideas', '<b>Fresh ideas every day.</b> Voice notes, links and screenshots turn into drafts in your voice, so you’re never stuck on what to say.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-ideas">${ideas.map(([i, t, s]) => `<div class="hx-li"><span class="hx-ii">${ic(i, 'xs')}</span><span>${esc(t)}</span><span class="hx-st${s === 'Drafted' ? '' : ' open'}">${s}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-inbox', '<b>Replies, drafted.</b> Replies to your posts land in Inbox with an answer already written in your voice. Edit it, send it, next.',
+    ${card('hx-b-inbox', '<b>Be first to reply.</b> Replies to your posts arrive with an answer already written in your voice. Edit it, send it, next.',
       `<div class="hx-ui hx-ib"><div class="hx-ibl">${[[20, 'Jay Kim', 'Same. What size do you drop to?', 1], [21, 'Lena Vogt', 'Saving this for the next red week', 0], [3, 'Kwame Mensah', 'Boring is underrated too', 0]].map(([p, n, t, on]) => `<div class="hx-ibr${on ? ' on' : ''}">${hxAv(p)}<span><b>${n}</b><small>${esc(t)}</small></span>${on ? '<i></i>' : ''}</div>`).join('')}</div>
       <div class="hx-ibx"><div class="hx-q">${hxAv(20)}<div><p class="hx-pw"><b>Jay Kim</b> <span>@jaytradesdaily · 4m</span></p><p>Same. What size do you drop to?</p></div></div>
         <div class="hx-dra"><span class="hx-lab">${ic('voice', 'xs')} Drafted in your voice</span><p>Half, until I have a green day. Then back to normal. No exceptions, that’s the whole trick.</p><div class="hx-cmb"><span class="hx-wb">${ic('send', 'xs')} Send</span><span class="hx-gb">Edit</span><span class="hx-gb">Skip</span></div></div></div></div>`)}
@@ -12403,13 +12482,13 @@ const HZ_WHO = [
   { k: 'creators', bio: 'Writes a Sunday newsletter', tab: 'Creators', p: 4, ph: PHOTO.notes, h: 'The idea was fine. Now so is the line.', d: 'Hannah writes a Sunday newsletter and posts the best part every day. Hookworthy turns “new issue is out” into a reason to read it.',
     li: ['Soft words flagged as you type', 'Rewrites in your voice, word by word', 'One draft, fitted to every network'],
     ba: [['new issue is out!! been doing this every sunday for 3 years <s>lol</s>', 'Three years of Sunday issues. Here’s this week’s:'], ['<s>honestly</s> <s>i think</s> writing every day for a year changed how i think', 'Writing every day for a year changed how I think.']] },
-  { k: 'founders', bio: 'Founder, Tally Notes', tab: 'Founders', p: 0, ph: PHOTO.whiteboard, h: 'Build in public, between meetings.', d: 'Maya posts what she’s building. Ideas go in as voice notes on the walk to work; a week of posts comes out, timed for when her customers are online.',
+  { k: 'founders', bio: 'Founder, Tally Notes', tab: 'Founders', p: 0, ph: PHOTO.whiteboard, h: 'Ship it. Share it. Same day.', d: 'Maya posts what she’s building. Ideas go in as voice notes on the walk to work; a week of posts comes out, timed for when her customers are online.',
     li: ['Voice notes become drafts', 'Your week, drafted from your ideas', 'A review link for your cofounder'],
     ba: [['<s>so</s> excited to announce we <s>just</s> shipped dark mode!!', 'We shipped dark mode. Here’s what we learned building it:'], ['<s>i think</s> hiring is <s>probably</s> the hardest part of building a startup', 'Hiring is the hardest part of building a startup.']] },
-  { k: 'ghost', bio: 'Ghostwriter for six founders', tab: 'Ghostwriters', p: 16, ph: PHOTO.team, h: 'Six voices. None of them yours.', d: 'Noah writes for six founders. Each one gets their own voice, and a review link to approve the exact words before anything posts.',
+  { k: 'ghost', bio: 'Ghostwriter for six founders', tab: 'Ghostwriters', p: 16, ph: PHOTO.team, h: 'Six clients. Six voices. Zero mix-ups.', d: 'Noah writes for six founders. Each one gets their own voice, and a review link to approve the exact words before anything posts.',
     li: ['Up to 8 client voices on Studio', 'Clients comment on the exact words', 'Nothing posts until it’s approved'],
     ba: [['<s>i feel like</s> we should talk more about burnout in startups', 'We should talk more about burnout in startups.'], ['<s>honestly</s> the best hire we made was <s>basically</s> a former teacher', 'The best hire we made was a former teacher.']] },
-  { k: 'traders', bio: 'Swing trader, journals every trade', tab: 'Traders', p: 18, ph: PHOTO.cafe, h: 'Your trade log, as posts people read.', d: 'Theo journals every trade. Hookworthy turns the lesson into a first line and posts it before the open.',
+  { k: 'traders', bio: 'Swing trader, journals every trade', tab: 'Traders', p: 18, ph: PHOTO.cafe, h: 'Your trade log, posted before the open.', d: 'Theo journals every trade. Hookworthy turns the lesson into a first line and lines it up before the bell.',
     li: ['Charts and P&L screenshots become drafts', 'Posts timed before the market opens', 'A ping when a post takes off'],
     ba: [['<s>so i think</s> the most underrated thing in trading is <s>honestly</s> <s>just</s> sizing down after a loss', HX_SHARP], ['<s>not financial advice but</s> i <s>basically</s> stopped trading the open', 'I stopped trading the open. Here’s why:']] }
 ];
@@ -12423,9 +12502,9 @@ function hzWhoHTML() {
 
 /* ---------- pricing: three cards, Pro on the other theme ---------- */
 const HX_PLANS = [
-  { k: 'free', name: 'Free', blurb: 'Try it on your next post.', inc: ['Sharpen any line, unlimited', 'Quick rewrites on your device', 'Live previews for every network', 'Review links', 'Schedule up to 10 posts'] },
-  { k: 'pro', name: 'Pro', blurb: 'For creators posting most days.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice', 'Your week, drafted from your ideas', 'Replies drafted in your voice', 'A ping when a post takes off', 'Unlimited scheduling'] },
-  { k: 'studio', name: 'Studio', blurb: 'For ghostwriters and small teams.', inc: ['Everything in Pro, and:', 'Up to 8 client voices', 'Clients approve before anything posts', 'Review links per client'] }
+  { k: 'free', name: 'Free', blurb: 'Your next post, on us.', inc: ['Sharpen any line, unlimited', 'Quick rewrites on your device', 'Live previews for every network', 'Review links', 'Schedule up to 10 posts'] },
+  { k: 'pro', name: 'Pro', blurb: 'For showing up most days.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice', 'Your week, drafted from your ideas', 'Replies drafted in your voice', 'A ping when a post takes off', 'Unlimited scheduling'] },
+  { k: 'studio', name: 'Studio', blurb: 'For writing as your clients.', inc: ['Everything in Pro, and:', 'Up to 8 client voices', 'Clients approve before anything posts', 'Review links per client'] }
 ];
 const hzBillNote = (k, y) => k === 'free' ? 'No card, ever' : y ? `Billed yearly, $${PRICES[k][0] * 12} a year` : `Billed monthly, or $${PRICES[k][0]} a month yearly`;
 function hzPricingHTML() {
@@ -12438,13 +12517,13 @@ function hzPricingHTML() {
     <p class="pz-f">Prices in US dollars. Cancel anytime; your drafts and ideas stay yours on every plan. Writing for more than 8 clients? <a href="mailto:hello@hookworthy.com">Talk to us</a>.</p>`;
 }
 const HX_FAQ = [
-  ['Will it sound like me?', 'That’s the point. It reads your past posts first, follows your tone, and never uses a word on your never-say list. If a draft doesn’t sound like you, Sharpen any line or tell it what to change.'],
-  ['Does anything post without me?', 'No. Only posts you schedule go out, at the time you picked, and you get a few seconds to take one back. Hookworthy never sends DMs, retweets or deletes anything on its own.'],
+  ['Will it sound like me?', 'That’s the whole point. It reads your past posts first, follows your tone and skips every word on your never-say list. Anything off? Sharpen the line, or tell it what to change.'],
+  ['Does anything post without me?', 'Never. Only posts you schedule go out, at the time you picked, with a few seconds to take one back. You send every DM, pick every repost and keep every post.'],
   ['Which networks does it work with?', 'X, Threads, LinkedIn and Bluesky. Every draft gets a version that fits each one, with a live preview of how it will look in the feed.'],
   ['What about long posts on free X?', 'Over 280 characters, a post becomes a thread by itself, split where it reads best. With X Premium it stays one long post.'],
   ['Can I write for clients?', 'Yes, on Studio. Each client gets their own voice, and you send them a review link to comment on the exact words before anything posts.'],
-  ['Can I bring my old posts?', 'Yes. Import your X archive or a Typefully export, and your best posts teach it how you write.'],
-  ['Is there a free plan?', 'Yes, with no card. Sharpen, quick rewrites, previews and review links are free for good, and you can schedule up to 10 posts.'],
+  ['Can I bring my old posts?', 'Please do. Import your X archive or a Typefully export, and your best posts teach it how you write.'],
+  ['Is there a free plan?', 'Yes, and no card. Sharpen, quick rewrites, previews and review links stay free for good, with up to 10 posts scheduled.'],
   ['Can I cancel anytime?', 'Yes, in two clicks. Your drafts and ideas stay with you on Free.']
 ];
 const HZ_SAMPLES = ['so i think posting every day is kind of the whole game', 'just wanted to share some thoughts on what i learned this year', 'honestly the best trade i made this month was the one i skipped'];
@@ -12456,47 +12535,47 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   $('#root').innerHTML = hxPage('home', `
   <section class="hz-hero" aria-labelledby="hz-h1"><div class="hx-w">
     <h1 class="hz-h1" id="hz-h1"><span class="ln">Sound like <span class="hz-t" aria-hidden="true">${[4, 18, 0, 16, 2].map(face).join('')}</span> you.</span> <span class="ln">Show up <span class="hz-t p" aria-hidden="true">${HX_PLATS.map(([k], i) => `<span class="hz-f pl${i ? '' : ' on'}" style="--bg-c:${PLC[k]}">${pic(k)}</span>`).join('')}</span> every day.</span></h1>
-    <p class="hz-sub">Your ideas, turned into a week of posts in your voice, out on time.</p>
+    <p class="hz-sub">The writer in your corner. Your ideas in, your best posts out, right on time.</p>
     <div class="hz-cta"><a class="hx-btn lg" href="#start">Start free ${ic('arrow', 'sm')}</a><a class="hx-btn lg ghost" ${hwHref('home', 'how')}>See how it works</a></div>
     ${hxDemoHTML()}
   </div></section>
 
   <section class="hz-story inv" id="how" aria-labelledby="hz-how-h"><div class="hx-w">
-    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-how-h">From an 11&nbsp;PM thought<br><span class="mute">to Tuesday morning.</span></h2><p class="hz-lede">One post, start to finish. Your idea stays. The fluff goes, and it’s out before you’re back from your run.</p></div>
+    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-how-h">From an 11&nbsp;PM thought<br><span class="mute">to Tuesday morning.</span></h2><p class="hz-lede">Thought up at night, posted just right. Your idea stays, the fluff goes, and it’s live before you’re back from your run.</p></div>
     ${hzStoryHTML()}
   </div></section>
 
   <section class="hz-sec" id="features" aria-labelledby="hz-f-h"><div class="hx-w">
-    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-f-h">Built around the first line.</h2><p class="hz-lede">Six tools, each there to get a sharper first line out on time, in a voice that’s still yours.</p></div>
+    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-f-h">Nail the first line.<br><span class="mute">The rest falls in line.</span></h2><p class="hz-lede">Every tool aims at one spot: the line that makes thumbs stop.</p></div>
     ${hxBentoHTML()}
   </div></section>
 
   <section class="hz-sec" id="who" aria-labelledby="hz-w-h"><div class="hx-w">
-    <div class="hz-head wide hx-rv"><h2 class="hz-h2" id="hz-w-h">For anyone <span class="hz-t hz-tw" style="--r:5deg" aria-hidden="true">${[0, 16, 18, 4].map(face).join('')}</span> with a take<br>and a post to make.</h2><p class="hz-lede">Pick yours. Same idea every time: a post people stop for, in a voice that’s still yours.</p></div>
+    <div class="hz-head wide hx-rv"><h2 class="hz-h2" id="hz-w-h">For anyone <span class="hz-t hz-tw" style="--r:5deg" aria-hidden="true">${[0, 16, 18, 4].map(face).join('')}</span> with a take<br>and a post to make.</h2><p class="hz-lede">Pick yours. Different days, same win: a first line people stop for, in a voice that’s still yours.</p></div>
     ${hzWhoHTML()}
   </div></section>
 
   <section class="hz-sec" aria-labelledby="hz-t-h"><div class="hx-w"><div class="hz-trust hx-rv">
-    <div><h2 class="hz-h2" id="hz-t-h">Nothing goes out that you didn’t approve.</h2>
-      <p class="hz-lede">Hookworthy drafts, sharpens and schedules. You decide what posts and when. Your results are your posts against your own usual, never a promise of reach.</p>
+    <div><h2 class="hz-h2" id="hz-t-h">Everything comes in.<br><span class="mute">Nothing goes out without you.</span></h2>
+      <p class="hz-lede">It drafts, sharpens and lines up your week. You decide what posts, and when. Results compare you with your own usual, never with a promise.</p>
       <div class="hz-links"><a ${hwHref('home', 'faq')}>How posting works ${ic('arrow', 'xs')}</a><a href="#developers">Use it from Claude ${ic('arrow', 'xs')}</a><a ${hwHref('legal', 'privacy')}>Your data ${ic('arrow', 'xs')}</a></div></div>
-    <ul class="nv" role="list">${[['No auto‑DMs', 'Not to new followers, not to anyone'], ['No auto‑retweets', 'Your feed stays yours'], ['No auto‑deletes', 'Old posts stay until you remove them'], ['No bought reach', 'And no promises of it'], ['Nothing you haven’t seen', 'Every post is one you scheduled']].map(([t, s]) => `<li><span>${ic('x', 'xs')}</span>${t}<small>${s}</small></li>`).join('')}</ul>
+    <ul class="nv" role="list">${[['You send every DM', 'Not one goes out on its own'], ['You pick every repost', 'Your feed stays yours'], ['Your posts stay put', 'Nothing deleted behind your back'], ['Reach you earned', 'None bought, none promised'], ['You see it first', 'Every post is one you scheduled']].map(([t, s]) => `<li><span>${ic('check', 'xs')}</span>${t}<small>${s}</small></li>`).join('')}</ul>
   </div></div></section>
 
   <section class="hz-sec" id="pricing" aria-labelledby="hz-p-h"><div class="hx-w">
-    <div class="pz-top hx-rv"><h2 class="hz-h2" id="hz-p-h">Free to start. <span class="mute">Pro when you post daily.</span></h2>
+    <div class="pz-top hx-rv"><h2 class="hz-h2" id="hz-p-h">Free to start. <span class="mute">Pay when it pays.</span></h2>
       <div class="hx-bill" id="hz-bill" role="radiogroup" aria-label="Billing"><span class="hx-thumb" aria-hidden="true"></span><button type="button" role="radio" aria-checked="false" tabindex="-1" data-hxb="m">Monthly</button><button type="button" role="radio" aria-checked="true" data-hxb="y">Yearly <i>save 25%</i></button></div></div>
     ${hzPricingHTML()}
   </div></section>
 
   <section class="hz-sec" id="faq" aria-labelledby="hz-q-h"><div class="hx-w hz-faq">
-    <div class="hz-faq-l hx-rv"><h2 class="hz-h2" id="hz-q-h">Good questions, plain answers.</h2><p>Something else? Write to <a href="mailto:hello@hookworthy.com">hello@hookworthy.com</a>.</p></div>
+    <div class="hz-faq-l hx-rv"><h2 class="hz-h2" id="hz-q-h">Ask away.<br><span class="mute">Here’s what we’d say.</span></h2><p>Something else? Write to <a href="mailto:hello@hookworthy.com">hello@hookworthy.com</a>.</p></div>
     <div class="hx-qs hx-rv">${HX_FAQ.map(([q, a]) => `<details><summary>${q}<span class="hx-plus" aria-hidden="true"></span></summary><p>${a}</p></details>`).join('')}</div>
   </div></section>
 
   <section class="hz-sec" id="try" aria-labelledby="hz-try-h"><div class="hx-w"><div class="tz hx-rv">
     <h2 class="hz-h2" id="hz-try-h">Paste the post you almost didn’t send.</h2>
-    <p class="hz-lede">Soft words get a wavy line as you type. Sharpen says it straight and keeps your facts. Nothing you type leaves this page.</p>
+    <p class="hz-lede">Soft words get a wavy line as you type. Sharpen says it straight and keeps your facts. It all stays on this page.</p>
     <div class="tz-try"><span>Try one:</span>${HZ_SAMPLES.map((s, i) => `<button type="button" data-tz="${i}">${esc(s)}</button>`).join('')}</div>
     <div class="tz-box"><div class="tz-ed"><div class="tz-mirror" id="tz-mirror" aria-hidden="true"></div><textarea class="tz-in" id="tz-in" rows="2" maxlength="400" spellcheck="false" aria-label="Your first line" aria-describedby="tz-cnt" placeholder="Paste a first line you’re not sure about…">${esc(HG_DEFAULT)}</textarea></div>
       <div class="tz-bar"><span class="tz-cnt" id="tz-cnt" aria-live="polite"><i></i><span></span></span><span class="grow"></span><button type="button" class="hx-btn" id="tz-go">${ic('bolt', 'sm')} Sharpen it</button></div></div>
@@ -12541,7 +12620,7 @@ function hxInitHome() {
   const URLS = { write: 'hookworthy.com/write/8f2c1a', week: 'hookworthy.com/week', review: 'hookworthy.com/r/8f2c1a', results: 'hookworthy.com/results' };
   const SIDE = { write: 'write', week: 'week', review: 'write', results: 'results' };
   const SAYS = { write: 'Write: a draft gets a sharper first line, then it’s scheduled for Tuesday at 8:40 AM.', week: 'Week: the post lands on Tuesday at 8:40 AM, the best time for your people.', review: 'Review: two people commented on the exact words of the draft.', results: 'Results: views, likes, replies and followers against your own usual.' };
-  let curK = 'write', held = false, vis = false;
+  let curK = 'write', held = false, vis = false; const hxW = { live: false, pv: 'x' }, W = hxW;
   const moveTo = (el, dx = .5, dy = .6) => { const f = frame.getBoundingClientRect(), r = el.getBoundingClientRect(); cur.style.setProperty('--x', (r.left - f.left + r.width * dx - 4) + 'px'); cur.style.setProperty('--y', (r.top - f.top + r.height * dy - 3) + 'px'); };
   const click = el => { cur.classList.remove('click'); void cur.offsetWidth; cur.classList.add('click'); el.classList.add('press'); dg.later(() => { cur.classList.remove('click'); el.classList.remove('press'); }, 220); };
   const countTo = (el, a, b, ms = 520) => { const t0 = performance.now(); const f = now => { const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = `${Math.round(a + (b - a) * e)} / 280`; if (k < 1 && el.isConnected) requestAnimationFrame(f); }; requestAnimationFrame(f); };
@@ -12549,7 +12628,8 @@ function hxInitHome() {
     const sc = $('.hx-sc-write', demo), sw = $$('.hx-sw', sc), sb = $('#hx-sharpb'), sch = $('#hx-sched'), cnt = $('#hx-cnt');
     const tag = $('#hx-tag'), done = () => { tag.textContent = 'Scheduled'; tag.classList.add('ok'); };
     sc.classList.remove('hinted', 'sharp', 'pv', 'sched'); sw.forEach(s => s.classList.remove('on')); cnt.textContent = `${HX_N0} / 280`; cur.classList.remove('show'); tag.textContent = 'Draft'; tag.classList.remove('ok');
-    if (REDUCED) { sw.forEach(s => s.classList.add('on')); sc.classList.add('hinted', 'sharp', 'pv', 'sched'); cnt.textContent = `${HX_N1} / 280`; done(); return; }
+    if (W.live) return;
+    if (REDUCED) { sw.forEach(s => s.classList.add('on')); sc.classList.add('hinted', 'sharp', 'pv', 'sched', 'tryable'); cnt.textContent = `${HX_N1} / 280`; done(); return; }
     cur.style.transition = 'none'; moveTo($('.hx-l2', sc), .62, .5); void cur.offsetWidth; cur.style.transition = '';
     sw.forEach((s, i) => dg.later(() => s.classList.add('on'), 650 + i * 360));
     dg.later(() => sc.classList.add('hinted'), 1800);
@@ -12560,37 +12640,131 @@ function hxInitHome() {
     dg.later(() => moveTo(sch), 4800);
     dg.later(() => click(sch), 5800);
     dg.later(() => { sc.classList.add('sched'); done(); }, 5960);
-    dg.later(() => cur.classList.remove('show'), 6900);
+    dg.later(() => { cur.classList.remove('show'); sc.classList.add('tryable'); held = true; }, 6900);
   };
   const show = (k, user) => { curK = k; dg.clear(); cur.classList.remove('show');
     $$('[data-hxt]', demo).forEach(b => { const on = b.dataset.hxt === k; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
     hxThumb(tabs, $(`[data-hxt="${k}"]`, demo));
     frame.setAttribute('aria-labelledby', 'hxt-' + k); url.textContent = URLS[k];
     $$('.hx-si', demo).forEach(s => s.classList.toggle('on', s.dataset.si === SIDE[k]));
-    $$('.hx-sc', demo).forEach(s => { const on = s.dataset.sc === k; s.classList.toggle('on', on); s.classList.remove('play'); if (on) { void s.offsetWidth; s.classList.add('play'); } });
+    $$('.hx-sc', demo).forEach(s => { const on = s.dataset.sc === k; s.classList.toggle('on', on); s.inert = !on; if (on && s.dataset.touched) return; s.classList.remove('play'); if (on) { void s.offsetWidth; s.classList.add('play'); } });
     if (k === 'write') playWrite();
     if (user) sr.textContent = SAYS[k];
-    if (!held && vis && !REDUCED) dg.later(() => { const i = HX_TABS.findIndex(t => t[0] === curK); show(HX_TABS[(i + 1) % HX_TABS.length][0]); }, k === 'write' ? 8600 : 6600);
+    if (!held && vis && !REDUCED && k !== 'write') dg.later(() => { if (held) return; const i = HX_TABS.findIndex(t => t[0] === curK); show(HX_TABS[(i + 1) % HX_TABS.length][0]); }, 6600);
   };
   tabs.addEventListener('click', e => { const b = e.target.closest('[data-hxt]'); if (!b) return; held = true; show(b.dataset.hxt, true); });
   tabs.addEventListener('keydown', e => { if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return; e.preventDefault(); const bs = $$('[data-hxt]', demo), i = bs.findIndex(b => b.dataset.hxt === curK);
     const n = bs[e.key === 'Home' ? 0 : e.key === 'End' ? bs.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : bs.length - 1)) % bs.length]; n.focus(); n.click(); });
   $$('.hx-si', demo).forEach(s => s.classList.toggle('on', s.dataset.si === 'write'));
+  $$('.hx-sc', demo).forEach(s => { s.inert = s.dataset.sc !== 'write'; });
   seen(frame, () => { if (vis) return; vis = true; show(curK); }, () => { vis = false; dg.clear(); cur.classList.remove('show'); }, .3);
+
+  /* ---------- your turn: after one run the window is yours. Everything in it works on this page: the soft-word
+     line, Sharpen, the network previews, moving posts on the week, comments, the results range ---------- */
+  const wsc = $('.hx-sc-write', demo), lin = $('#hx-lin'), lm = $('.hx-lm', wsc), k3 = $('#hx-k3'), sbtn = $('#hx-sharpb'), pvb = $('#hx-pvb'), wcnt = $('#hx-cnt'), ringV = $('.hx-ring .v', wsc);
+  const YOU = { n: 'heycape', h: 'heycape_', pic: ME_PIC, bio: 'Trader. Journals every trade.' };
+  const PVK = { x: 'x', threads: 'threads', li: 'linkedin', bsky: 'bsky' }, LIM = { x: 280, threads: 500, li: 3000, bsky: 300 }, PVN = Object.fromEntries(HX_PLATS);
+  const hold = () => { held = true; dg.clear(); cur.classList.remove('show'); };
+  const toastEl = $('#hx-toast'); let toastT = 0;
+  const wtoast = (msg, act, fn) => { clearTimeout(toastT); toastEl.innerHTML = `${ic('check', 'xs')}<span>${msg}</span>${act ? `<button type="button">${act}</button>` : ''}`; toastEl.classList.add('on');
+    const b = $('button', toastEl); if (b) b.onclick = () => { toastEl.classList.remove('on'); fn && fn(); }; toastT = setTimeout(() => toastEl.classList.remove('on'), act ? 5200 : 2600); sr.textContent = msg; };
+  const wFull = () => `${lin.value.trim()}\n\n${HX_BODY}`;
+  const renderPv = () => { if (!W.live) return; pvb.innerHTML = PF_RENDER[PVK[W.pv]]({ t: wFull(), ago: 'now', c: [0, 0, 0, 0] }, { you: YOU, dark: isDark() }); };
+  const paintLive = () => {
+    const v = lin.value, ms = hgMarks(v); let o = '', at = 0; ms.forEach(([a, b]) => { o += esc(v.slice(at, a)) + `<span class="hx-sw on">${esc(v.slice(a, b))}</span>`; at = b; }); lm.innerHTML = o + esc(v.slice(at)) + '\u200b';
+    lin.style.height = lm.offsetHeight + 'px';
+    const n = ms.length; $('em', sbtn).textContent = n || ''; wsc.classList.toggle('hinted', n > 0);
+    k3.className = 'k3' + (!n && v.trim() ? ' ok' : ''); k3.innerHTML = n ? `<i></i>${n} soft word${n > 1 ? 's' : ''} in your first line` : v.trim() ? `${ic('check', 'xs')} Says it straight. Ready when you are.` : 'Type a first line';
+    const len = W.pv === 'x' ? HWCore.xLength(wFull()) : [...wFull()].length, lim = LIM[W.pv]; wcnt.textContent = `${len} / ${lim.toLocaleString()}`; ringV.style.setProperty('--p', Math.min(100, Math.round(len / lim * 100)));
+    wsc.classList.toggle('over', len > lim); renderPv(); };
+  const goLive = focus => {
+    if (!W.live) { W.live = true; hold(); wsc.dataset.touched = '1'; wsc.classList.remove('sharp', 'pv', 'sched', 'tryable'); wsc.classList.add('live');
+      lin.value = HX_DRAFT.join(''); lin.tabIndex = 0; paintLive(); sr.textContent = 'Your turn. The first line of the example post is yours to edit. Soft words are marked as you type, and Sharpen says it straight.'; }
+    if (focus) { lin.focus({ preventScroll: true }); lin.setSelectionRange(lin.value.length, lin.value.length); } };
+  lin.addEventListener('input', paintLive);
+  lin.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sharpenLive(); } });
+  $('.hx-l1', wsc).addEventListener('pointerdown', () => { if (!W.live) { goLive(false); requestAnimationFrame(() => goLive(true)); } });
+  $('#hx-try').addEventListener('click', () => goLive(true));
+  const sharpenLive = () => { goLive(false); const v = lin.value; if (!hgMarks(v).length) { k3.classList.remove('nudge'); void k3.offsetWidth; k3.classList.add('nudge'); return; }
+    const r = hgSharpen(v); if (!r) return; const before = v, outL = r.first.replace(/ Here’s why:$/, '');
+    wsc.classList.add('swapping'); setTimeout(() => { lin.value = outL; paintLive(); wsc.classList.remove('swapping'); wsc.classList.add('fresh'); setTimeout(() => wsc.classList.remove('fresh'), 1300);
+      wtoast(`${r.cut} soft word${r.cut === 1 ? '' : 's'} out. Your facts stayed.`, 'Undo', () => { lin.value = before; paintLive(); }); }, REDUCED ? 0 : 200); };
+  sbtn.addEventListener('click', () => { if (!W.live) { goLive(false); return; } sharpenLive(); });
+  $('.hx-nets', wsc).addEventListener('click', e => { const b = e.target.closest('[data-pvn]'); if (!b) return; goLive(false); W.pv = b.dataset.pvn;
+    $$('[data-pvn]', wsc).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+    $('#hx-pvi').innerHTML = pic(W.pv); $('#hx-pvn').textContent = `Live preview on ${PVN[W.pv]}`; paintLive(); });
+  $('#hx-sched').addEventListener('click', () => { goLive(false); const tag = $('#hx-tag'); tag.textContent = 'Scheduled'; tag.classList.add('ok');
+    wtoast('Scheduled for Tue, 8:40 AM. Your best time.', 'Undo', () => { tag.textContent = 'Draft'; tag.classList.remove('ok'); }); });
+  $('#hx-post').addEventListener('click', () => { goLive(false); wtoast('Example account, so it stays here. Yours goes out the moment you press Post.', 'Start free', () => go('start')); });
+
+  /* the week: drag a post to another time (or move it with the arrow keys); Draft my week fills the open best times */
+  const wk = $('.hx-sc-week', demo), calEl = $('.hx-cal', wk);
+  const cellAt = (d, s) => $(`.hx-cell[data-d="${d}"][data-s="${s}"]`, wk);
+  const moved = (chip, cell) => { const t = HX_SLOTS[+cell.dataset.s], d = HX_DAYS[+cell.dataset.d]; $('b', chip).textContent = t; chip.classList.remove('land'); cell.append(chip); chip.setAttribute('aria-label', `${d} ${t}: ${$('span', chip).textContent}. Arrow keys move it`); wk.dataset.touched = '1'; return `${d}, ${t}`; };
+  calEl.addEventListener('pointerdown', e => { const chip = e.target.closest('.hx-chip'); if (!chip || e.button) return; hold(); e.preventDefault(); const x0 = e.clientX, y0 = e.clientY; let over = null, live = false;
+    const mv = ev => { const dx = ev.clientX - x0, dy = ev.clientY - y0; if (!live && Math.hypot(dx, dy) < 4) return; live = true; chip.classList.add('drag'); chip.style.pointerEvents = 'none'; chip.style.transform = `translate(${dx}px,${dy}px) rotate(-1.5deg)`;
+      const el = document.elementFromPoint(ev.clientX, ev.clientY), c = el && el.closest('.hx-cell'); const ok = c && !$('.hx-chip,.hx-rest', c) ? c : null; if (over !== ok) { over && over.classList.remove('over'); ok && ok.classList.add('over'); over = ok; } };
+    const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); chip.classList.remove('drag'); chip.style.transform = ''; chip.style.pointerEvents = '';
+      if (over) { over.classList.remove('over'); wtoast(`Moved to ${moved(chip, over)}.`); chip.focus({ preventScroll: true }); } };
+    addEventListener('pointermove', mv); addEventListener('pointerup', up); addEventListener('pointercancel', up); });
+  calEl.addEventListener('keydown', e => { const chip = e.target.closest('.hx-chip'); const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key]; if (!chip || !dir) return; e.preventDefault(); hold();
+    const c = chip.parentElement; let d = +c.dataset.d, s0 = +c.dataset.s;
+    for (;;) { d += dir[0]; s0 += dir[1]; const n = cellAt(d, s0); if (!n) return; if (!$('.hx-chip,.hx-rest', n)) { wtoast(`Moved to ${moved(chip, n)}.`); chip.focus(); return; } } });
+  $('#hx-dmw').addEventListener('click', () => { hold(); const mini = $('#hx-mini'), drs = $$('.hx-dr', mini); if (!drs.length) { wtoast('Your week is full. Nice.'); return; }
+    const open = []; for (let s0 = 0; s0 < HX_SLOTS.length && open.length < drs.length; s0++) for (let d = 0; d < 7 && open.length < drs.length; d++) { const c = cellAt(d, s0); if (c && !$('.hx-chip,.hx-rest', c)) open.push(c); }
+    drs.forEach((dr, i) => { const c = open[i]; if (!c) return; setTimeout(() => { const ch = document.createElement('button'); ch.type = 'button'; ch.className = 'hx-chip draft'; ch.innerHTML = `<i>${pic('x')}<b>${HX_SLOTS[+c.dataset.s]}</b></i><span>${esc(dr.textContent)}</span>`; c.append(ch); moved(ch, c); dr.remove(); }, REDUCED ? 0 : i * 260); });
+    wtoast(`${Math.min(open.length, drs.length)} drafts placed at your best times. Fill them, and the week takes care of itself.`); });
+
+  /* review: resolve, reply, or select words in the draft and comment on them */
+  const rv = $('.hx-sc-review', demo), cin = $('#hx-cin'), rvc = $('.hx-rvc', rv);
+  rv.addEventListener('click', e => { const b = e.target.closest('[data-rv]'), m = e.target.closest('mark[data-cm]');
+    if (m) { const c = $(`.hx-cm.${m.dataset.cm}`, rv); if (c) { c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash'); } return; }
+    if (!b) return; hold(); rv.dataset.touched = '1'; const cm = b.closest('.hx-cm');
+    if (b.dataset.rv === 'reply') { cin.focus(); return; }
+    const done = !cm.classList.contains('done'); cm.classList.toggle('done', done); $('span', b).textContent = done ? 'Reopen' : 'Resolve'; const mk = $('mark[data-cm="c0"]', rv); mk && mk.classList.toggle('done', done); wtoast(done ? 'Resolved. Priya sees it on her side.' : 'Reopened.'); });
+  let rvSel = '';
+  $('.hx-rvt', rv).addEventListener('mouseup', () => { const t = String(getSelection()).trim(); if (t) { rvSel = t.slice(0, 60); cin.placeholder = `Comment on “${clip(rvSel, 28)}”…`; cin.focus(); } });
+  $('#hx-cinf').addEventListener('submit', e => { e.preventDefault(); const t = cin.value.trim(); if (!t) { cin.focus(); return; } hold(); rv.dataset.touched = '1';
+    const c = document.createElement('div'); c.className = 'hx-cm c2 new'; c.innerHTML = `<div class="hx-cmh">${hxAv('me')}<b>heycape</b><span>now</span></div>${rvSel ? `<q>${esc(rvSel)}</q>` : ''}<p>${esc(t)}</p>`;
+    rvc.insertBefore(c, $('#hx-cinf')); cin.value = ''; rvSel = ''; cin.placeholder = 'Reply, or select words to comment…'; wtoast('Comment added. Everyone with the link sees it.'); });
+
+  /* results: 7 or 30 days, and a chart you can read by hovering */
+  const rs = $('.hx-sc-results', demo), chw = $('#hx-chw'), guide = $('.hx-guide', chw);
+  const KP = { 30: HX_KPI, 7: [['Views', '12.6K', '+18%'], ['Likes', '488', '+11%'], ['Replies', '96', '+24%'], ['New followers', '58', '+12%']] }, FOL = { 30: ['4,812', '+186 in 30 days', 'This month'], 7: ['4,812', '+58 this week', 'This week'] };
+  let rng = 30;
+  $('.hx-seg2', rs).addEventListener('click', e => { const b = e.target.closest('[data-rr]'); if (!b) return; hold(); rs.dataset.touched = '1'; rng = +b.dataset.rr;
+    $$('[data-rr]', rs).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+    $('.hx-kpis', rs).outerHTML = `<div class="hx-kpis">${KP[rng].map(([l, v, d]) => `<div><span>${l}</span><b>${v}</b><i>${d}</i></div>`).join('')}</div>`;
+    const [f, fd, ln] = FOL[rng]; $('#hx-fol').textContent = f; $('#hx-fold').textContent = fd; $('#hx-legn').textContent = ln;
+    $('svg', chw).outerHTML = hxChart('hxg1', HX_SERIES[rng]); });
+  chw.addEventListener('pointermove', e => { const r = chw.getBoundingClientRect(), pts = HX_SERIES[rng], k = Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * (pts.length - 1)), x = k / (pts.length - 1) * r.width;
+    const y = r.height - (8 + pts[k] / 64 * (100 - 16)) / 100 * r.height, total = 4812 - (pts[pts.length - 1] - pts[k]) * (rng === 30 ? 3.2 : 3.2);
+    guide.style.setProperty('--x', x + 'px'); guide.style.setProperty('--y', y + 'px'); $('b', guide).textContent = `${rng === 30 ? `Day ${k + 1}` : HX_DAYS[k]} · ${Math.round(total).toLocaleString()}`; guide.classList.add('on'); });
+  chw.addEventListener('pointerleave', () => guide.classList.remove('on'));
+  frame.addEventListener('focusin', e => { if (e.target.closest('.hx-panes')) hold(); });
 
   /* ---------- the chapter: five steps; the step in play sets the stage, and the clock in the corner keeps time ---------- */
   const story = $('#how'), items = $$('.st-i', story), scenes = $$('.st-sc', story), phs = $$('.st-ph', story), clocks = $$('.st-clock b', story), sg = group();
-  let si = 0, stVis = false;
+  let si = 0, stVis = false, stHeld = false;
   const DUR = 5800;
   const typeDraft = () => { const el = $('#st-typed'); if (REDUCED) { el.textContent = HZ_TYPED; return; } el.textContent = ''; let n = 0;
     const tick = () => { n = Math.min(HZ_TYPED.length, n + 1 + (Math.random() < .35 ? 1 : 0)); el.textContent = HZ_TYPED.slice(0, n); if (n < HZ_TYPED.length) sg.later(tick, 20 + Math.random() * 28); }; sg.later(tick, 420); };
   const setStep = i => { si = i; sg.clear(); const [k, , , ph] = HZ_STEPS[i];
     items.forEach((it, n) => { it.classList.toggle('on', n === i); it.classList.remove('run'); $('.st-b', it).setAttribute('aria-expanded', String(n === i)); });
-    scenes.forEach(s => { const on = s.dataset.sc === k; if (on) { s.classList.remove('on'); void s.offsetWidth; } s.classList.toggle('on', on); });
+    scenes.forEach(s => { const on = s.dataset.sc === k; if (on) { s.classList.remove('on', 'go'); s.classList.toggle('wait', k === 'sharpen' && stHeld); void s.offsetWidth; } s.classList.toggle('on', on); s.inert = !on; });
     phs.forEach(p => p.classList.toggle('on', +p.dataset.ph === ph)); clocks.forEach((c, n) => c.classList.toggle('on', n === i));
     if (k === 'draft') typeDraft();
-    if (stVis && !REDUCED) { const it = items[i]; it.style.setProperty('--dur', DUR + 'ms'); void it.offsetWidth; it.classList.add('run'); sg.later(() => setStep((i + 1) % items.length), DUR); } };
-  $('.st-list', story).addEventListener('click', e => { const b = e.target.closest('[data-st]'); if (b) setStep(+b.dataset.st); });
+    if (stVis && !REDUCED && !stHeld) { const it = items[i]; it.style.setProperty('--dur', DUR + 'ms'); void it.offsetWidth; it.classList.add('run'); sg.later(() => setStep((i + 1) % items.length), DUR); } };
+  const stHold = () => { stHeld = true; sg.clear(); items.forEach(it => it.classList.remove('run')); };
+  $('.st-list', story).addEventListener('click', e => { const b = e.target.closest('[data-st]'); if (b) { stHold(); setStep(+b.dataset.st); } });
+  $('#st-stage').addEventListener('click', e => {
+    const go = e.target.closest('[data-go]'); if (go) { stHold(); setStep(+go.dataset.go); const sc = $('.st-sc.on .st-go, .st-sc.on .st-row, .st-sc.on .st-day', story); sc && sc.focus({ preventScroll: true }); return; }
+    const x = e.target.closest('[data-sx]'); if (!x) return; stHold(); const a = x.dataset.sx;
+    if (a === 'pick') { const on = !x.classList.contains('picked'); x.classList.toggle('picked', on); x.setAttribute('aria-pressed', String(on)); }
+    if (a === 'retype') typeDraft();
+    if (a === 'sharpen') { const sc = x.closest('.st-sc'); sc.classList.remove('wait'); sc.classList.add('go'); $('.st-shn', sc).focus({ preventScroll: true }); }
+    if (a === 'day') { const sc = x.closest('.st-sc'), pc = $('.st-pc.land', sc), d = +x.dataset.day; $$('.st-day', sc).forEach(b => b.classList.toggle('on', b === x)); if (pc) { pc.classList.remove('moved'); x.append(pc); void pc.offsetWidth; pc.classList.add('moved'); }
+      $('#st-note').textContent = d === 1 ? 'Tuesday, 8:40 AM: when your people scroll most.' : `Moved to ${HX_DAYS[d]}, 8:40 AM. Tuesday is still your busiest morning.`; } });
   seen($('#st-stage'), () => { if (stVis) return; stVis = true; setStep(si); }, () => { stVis = false; sg.clear(); items.forEach(it => it.classList.remove('run')); }, .35);
 
   /* ---------- the sharpen slice: three versions of the selected words, turning over while it's on screen ---------- */

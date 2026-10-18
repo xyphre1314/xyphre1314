@@ -774,3 +774,26 @@ The owner asked for another hard critique of the app, not the site: cut anything
 **Drift and phone:** eyebrows are sentence case (no uppercase labels in the app), the Upgrade FAQ head is Newsreader, the ⌘K list hides Tidy and Recently deleted when there's nothing to tidy or restore, Design system is a developer extra, the Ideas save icon is a bookmark, and "Saved" drops its zero. On phone, Schedule keeps its label beside a send arrow, the Ideas tabs sit on one row, and the agenda skips past empty days.
 
 **Second assessment fixes (same round):** Reset sample data can be undone. Ctrl O opens the drafts list from any page. "Shuffle post ideas" lands on a fresh batch in Ideas. A sample radar card says Copied, not Replied. The "View week" toast steps aside on Week. Ideas row actions sit at half strength until hover instead of hiding. "Your plan" is a disabled state, not a dead button. The phone Week header keeps its next-post line inside the screen. The old `.plan` pricing-card rules, which leaked onto the Draft my week modal and the sidebar clock, are gone, and the phone tab bar is opaque enough to pass contrast.
+
+## Round 59: the writer in your corner
+
+The owner asked for stronger words that rhyme only where it lands, a consistent voice that stays positive, a less plain and more interactive app window, and a positioning that reads as more than another scheduler. Their picks: **"The writer in your corner."** and **"Free to start. Pay when it pays."** The best lines from rounds 41–42 came back.
+
+**The words, top to bottom**
+- Hero sub: "The writer in your corner. Your ideas in, your best posts out, right on time."
+- Story: "Thought up at night, posted just right." The steps read as moves: catch it before it's gone, draft it in your voice, sharpen the first line, "Write when you can, post when they're up."
+- Features: "Nail the first line. / The rest falls in line." "Every tool aims at one spot: the line that makes thumbs stop." The slices: Sharpen any line · Peek at every feed before they read · Notes on the exact words · A voice for every client · Fresh ideas every day · Be first to reply.
+- Who: same win every day; founders "Ship it. Share it. Same day."; ghostwriters "Six clients. Six voices. Zero mix-ups."; traders "Your trade log, posted before the open."
+- Trust: "Everything comes in. / Nothing goes out without you." The never-list is said as what you keep: You send every DM · You pick every repost · Your posts stay put · Reach you earned · You see it first (check marks, not crosses).
+- Pricing: "Free to start. / Pay when it pays." Free "Your next post, on us." · Pro "For showing up most days." · Studio "For writing as your clients." The app's plans read the same.
+- FAQ: "Ask away. / Here's what we'd say." Footer: "The writer in your corner…" and "One good line a day keeps the void away." The page title and social cards say "the writer in your corner".
+- A two-tone head's second line balances on its own (`.hz-h2 br + .mute`), so no word is stranded.
+
+**The window is yours after one run.** It plays the move once (soft words, Sharpen, preview, Schedule), then waits with a "Your turn: edit the first line" pill instead of moving on by itself. In your turn everything works on the page:
+- **Write:** type over the first line (live wavy marks from `hgMarks`), Sharpen cuts the soft words with Undo, a ring counts against the network's limit, and the header switches the preview between real X, Threads, LinkedIn and Bluesky cards (`PF_RENDER`). Schedule and Post answer in a toast.
+- **Week:** drag a post to another time (or move it with the arrow keys); Draft my week drops the drafts into the open best times as dashed cards.
+- **Review:** Resolve and Reopen, select words in the draft to quote them, type a comment and press Enter.
+- **Results:** 7 or 30 days, and hover the chart for the day's count.
+The sidebar gained a Drafts list, and screens out of view are `inert`.
+
+**The story is walkable.** Every scene has a next button (Draft it in my voice → Sharpen the first line → Line it up → See how it landed → Start again / Start free). Catch rows can be picked, Sharpen waits for your tap once you've taken over, and tapping a day moves the post with a note on your best hour. Clicking anything holds the chapter on your step.
