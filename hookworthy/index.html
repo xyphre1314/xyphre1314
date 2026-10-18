@@ -4927,6 +4927,16 @@ button.hx-gb, button.hx-wb, button.hx-sharpb{ cursor:pointer; } button.hx-gb:hov
 .hx-asl{ margin:16px 9px 4px; font-size:12px; color:var(--text-3); }
 .hx-asd{ padding:6px 9px; border-radius:7px; font-size:12.5px; color:var(--text-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .hx-asd.on{ color:var(--text-1); background:color-mix(in srgb,var(--text-1) 5%,transparent); }
 .hz-cap b{ font-weight:600; color:var(--text-1); }
+.hx-post2{ position:relative; margin-top:10px; } .hx-post1{ position:relative; }
+.hx-post1::after{ content:""; position:absolute; left:31px; top:54px; bottom:-14px; width:2px; border-radius:2px; background:var(--border-strong); }
+.hx-pvs{ display:grid; gap:0; border-radius:14px; box-shadow:0 0 0 1px var(--border); overflow:hidden; } .hx-pvs .pf{ box-shadow:none !important; border-radius:0 !important; animation:none !important; }
+.hx-pvs.hx-pvt .pf + .pf{ border-top:0; } .hx-pvs:not(.hx-pvt) .pf + .pf{ border-top:1px solid var(--border); }
+.hx-pvback{ display:none; align-items:center; gap:4px; height:26px; padding:0 9px 0 6px; margin-right:6px; border-radius:7px; font:500 12.5px/1 var(--font-ui); color:var(--text-1); box-shadow:inset 0 0 0 1px var(--border-strong); cursor:pointer; } .hx-pvback .icon{ width:12px; height:12px; }
+@media (max-width:760px){
+  .hx-sc-write.pvshow .hx-ed{ display:none; } .hx-sc-write.pvshow .hx-pv{ display:block !important; overflow-y:auto; } .pvshow .hx-pvback{ display:inline-flex; }
+  .st-stage{ aspect-ratio:auto !important; min-height:440px; } .st-sc.on{ position:relative; min-height:440px; }
+  .hz-tabs button{ height:34px; padding:0 11px; font-size:14px; } .hz-tabs{ gap:0; }
+}
 /* week screen */
 .hx-wk{ display:grid; grid-template-columns:minmax(0,1fr) 224px; flex:1; min-height:0; }
 .hx-cal{ padding:14px 16px; overflow:hidden; border-right:1px solid var(--border); }
@@ -12310,6 +12320,7 @@ function hxInitPage(root) {
 const HX_DRAFT = ['so', ' ', 'i think', ' the most underrated thing in trading is ', 'honestly', ' ', 'just', ' sizing down after a loss.'];
 const HX_SHARP = 'The most underrated skill in trading: sizing down after a loss.';
 const HX_BODY = 'I lost $4,000 in March doubling my size to win it back. Now I cut size in half after any red day. Boring. My account is still here.';
+const HX_THREAD2 = 'The rule is simple: half size until I have a green day. Then back to normal.';
 const HX_N0 = HX_DRAFT.join('').length + 2 + HX_BODY.length, HX_N1 = HX_SHARP.length + 2 + HX_BODY.length;
 const HX_WEEK = [
   { d: 0, s: 0, t: 'Most of my losses came from trades I took because I was bored.', p: 'x' },
@@ -12343,7 +12354,7 @@ function hxScreenWrite() {
         <div class="hx-edtools">${ic('image', 'xs')}${ic('mic', 'xs')}${ic('poll', 'xs')}<span class="hx-ring" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="t" cx="10" cy="10" r="8"/><circle class="v" cx="10" cy="10" r="8" pathLength="100" style="--p:${Math.round(HX_N0 / 2.8)}"/></svg></span><span class="hx-cnt" id="hx-cnt">${HX_N0} / 280</span><span class="grow"></span><button type="button" class="hx-sharpb" id="hx-sharpb">${ic('bolt', 'xs')} Sharpen<em>4</em></button></div>
         <button type="button" class="hx-try" id="hx-try">${ic('write', 'xs')} Your turn: edit the first line</button>
       </div>
-      <div class="hx-pv"><div class="hx-pvh"><span id="hx-pvi">${pic('x')}</span><span id="hx-pvn">Live preview on X</span></div><div id="hx-pvb">${hxPost(`<span class="hx-swap"><span class="a">${hxSoft(false)}</span><span class="b">${esc(HX_SHARP)}</span></span><span class="hx-p2">${esc(HX_BODY)}</span>`)}</div></div>
+      <div class="hx-pv"><div class="hx-pvh"><button type="button" class="hx-pvback" id="hx-pvback">${ic('left', 'xs')} Draft</button><span id="hx-pvi">${pic('x')}</span><span id="hx-pvn">Live preview on X</span></div><div id="hx-pvb">${hxPost(`<span class="hx-swap"><span class="a">${hxSoft(false)}</span><span class="b">${esc(HX_SHARP)}</span></span><span class="hx-p2">${esc(HX_BODY)}</span>`, { cls: 'hx-post1' })}<div class="hx-post hx-post2">${hxAv('me', 'hx-pav')}<div class="hx-pb"><p class="hx-pw"><b>heycape</b> <span>@heycape_ · now</span></p><div class="hx-pt">${esc(HX_THREAD2)}</div></div></div></div></div>
     </div>
     <div class="hx-toast" aria-hidden="true">${ic('check', 'xs')}<span>Scheduled for Tue, 8:40&nbsp;AM</span><b>Undo</b></div>
   </div>`;
@@ -12402,7 +12413,7 @@ function hxDemoHTML() {
         <div class="hx-panes">${hxScreenWrite()}${hxScreenWeek()}${hxScreenReview()}${hxScreenResults()}<div class="hx-toast hx-ltoast" id="hx-toast" role="status"></div></div>
       </div>
       <span class="hx-cur" id="hx-cur" aria-hidden="true">${CURSOR_SVG}</span>
-      <p class="sr" id="hx-demo-sr" aria-live="polite">A draft by heycape, an example account. Three soft words in the first line get a wavy underline, Sharpen rewrites it to “${esc(HX_SHARP)}”, and the post is scheduled for Tuesday at 8:40 AM.</p>
+      <p class="sr" id="hx-demo-sr" aria-live="polite">A draft by heycape, an example account. Four soft words in the first line get a wavy underline, Sharpen rewrites it to “${esc(HX_SHARP)}”, and the post is scheduled for Tuesday at 8:40 AM.</p>
     </div>
     <p class="hz-cap"><b>It’s live.</b> Type over the first line, press Sharpen, switch networks. heycape is an example account.</p>
   </div>`;
@@ -12460,7 +12471,7 @@ function hxBentoHTML() {
   const ideas = [['mic', 'Sizing down after a loss', 'Drafted'], ['link', 'Funding flipped negative', 'Saved'], ['shot', 'My $4,000 week in March', 'Drafted'], ['write', 'Indicators, ranked', 'Saved']];
   return `<div class="hx-bento">
     ${card('hx-b-sharp', '<b>Sharpen any line.</b> Pick a few words and flip through three better versions. Keep the one that sounds like you; your facts stay put.',
-      `<div class="hx-ui hx-ui-pad hx-shw" id="hx-shw"><p class="hx-pw hx-shw-who">${hxAv('me')}<b>heycape</b> <span>@heycape_</span></p><p class="hx-shl0">${esc(HX_SHARP)}</p><p class="hx-shl">I lost $4,000 in March <span class="hx-sel"><span class="hx-swap">${['because I kept doubling my size', 'doubling my size to win it back', 'trying to win it all back by Friday'].map((t, i) => `<span class="hx-alt${i === 0 ? ' on' : ''}">${t}</span>`).join('')}</span></span>.</p><div class="hx-shbar"><span class="hx-gb">${ic('left', 'xs')}</span><span class="hx-shn" id="hx-shn">1 of 3</span><span class="hx-gb">${ic('right', 'xs')}</span><span class="hx-wb">Use this</span><span class="hx-gb">${ic('reply', 'xs')} Comment</span></div><p class="hx-shl2">Now I cut size in half after any red day. Boring. My account is still here.</p></div>`)}
+      `<div class="hx-ui hx-ui-pad hx-shw" id="hx-shw"><p class="hx-pw hx-shw-who">${hxAv('me')}<b>heycape</b> <span>@heycape_</span></p><p class="hx-shl0">${esc(HX_SHARP)}</p><p class="hx-shl">I lost $4,000 in March <span class="hx-sel"><span class="hx-swap">${['because I kept doubling my size', 'doubling my size to win it back', 'trying to win it all back by Friday'].map((t, i) => `<span class="hx-alt${i === 0 ? ' on' : ''}">${t}</span>`).join('')}</span></span>&#8288;.</p><div class="hx-shbar"><span class="hx-gb">${ic('left', 'xs')}</span><span class="hx-shn" id="hx-shn">1 of 3</span><span class="hx-gb">${ic('right', 'xs')}</span><span class="hx-wb">Use this</span><span class="hx-gb">${ic('reply', 'xs')} Comment</span></div><p class="hx-shl2">Now I cut size in half after any red day. Boring. My account is still here.</p></div>`)}
     ${card('hx-b-nets', '<b>Peek at every feed before they read.</b> X, Threads, LinkedIn and Bluesky each get a version that fits, and long posts on free X become a thread by themselves.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-nets">${nets.map(([k, n, lim, f]) => `<div class="hx-li">${hxTile(k, 'sm')}<span><b>${n}</b><small>${lim}</small></span><span class="hx-bar"><i style="--f:${f}"></i></span><span class="hx-ck">${ic('check', 'xs')}</span></div>`).join('')}</div></div>`)}
     ${card('hx-b-review', '<b>Notes on the exact words.</b> Send one review link. People sign in with X or Google and comment right beside your draft.',
@@ -12535,7 +12546,7 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   $('#root').innerHTML = hxPage('home', `
   <section class="hz-hero" aria-labelledby="hz-h1"><div class="hx-w">
     <h1 class="hz-h1" id="hz-h1"><span class="ln">Sound like <span class="hz-t" aria-hidden="true">${[4, 18, 0, 16, 2].map(face).join('')}</span> you.</span> <span class="ln">Show up <span class="hz-t p" aria-hidden="true">${HX_PLATS.map(([k], i) => `<span class="hz-f pl${i ? '' : ' on'}" style="--bg-c:${PLC[k]}">${pic(k)}</span>`).join('')}</span> every day.</span></h1>
-    <p class="hz-sub">The writer in your corner. Your ideas in, your best posts out, right on time.</p>
+    <p class="hz-sub">The writer in your corner.<br>Your ideas in, your best posts out, right&nbsp;on&nbsp;time.</p>
     <div class="hz-cta"><a class="hx-btn lg" href="#start">Start free ${ic('arrow', 'sm')}</a><a class="hx-btn lg ghost" ${hwHref('home', 'how')}>See how it works</a></div>
     ${hxDemoHTML()}
   </div></section>
@@ -12546,7 +12557,7 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   </div></section>
 
   <section class="hz-sec" id="features" aria-labelledby="hz-f-h"><div class="hx-w">
-    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-f-h">Nail the first line.<br><span class="mute">The rest falls in line.</span></h2><p class="hz-lede">Every tool aims at one spot: the line that makes thumbs stop.</p></div>
+    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-f-h">Nail the first line.<br><span class="mute">The rest falls in line.</span></h2><p class="hz-lede">Every tool here serves one line: the one that stops the scroll.</p></div>
     ${hxBentoHTML()}
   </div></section>
 
@@ -12556,10 +12567,10 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   </div></section>
 
   <section class="hz-sec" aria-labelledby="hz-t-h"><div class="hx-w"><div class="hz-trust hx-rv">
-    <div><h2 class="hz-h2" id="hz-t-h">Everything comes in.<br><span class="mute">Nothing goes out without you.</span></h2>
+    <div><h2 class="hz-h2" id="hz-t-h">Your ideas come in.<br><span class="mute">Nothing goes out without you.</span></h2>
       <p class="hz-lede">It drafts, sharpens and lines up your week. You decide what posts, and when. Results compare you with your own usual, never with a promise.</p>
       <div class="hz-links"><a ${hwHref('home', 'faq')}>How posting works ${ic('arrow', 'xs')}</a><a href="#developers">Use it from Claude ${ic('arrow', 'xs')}</a><a ${hwHref('legal', 'privacy')}>Your data ${ic('arrow', 'xs')}</a></div></div>
-    <ul class="nv" role="list">${[['You send every DM', 'Not one goes out on its own'], ['You pick every repost', 'Your feed stays yours'], ['Your posts stay put', 'Nothing deleted behind your back'], ['Reach you earned', 'None bought, none promised'], ['You see it first', 'Every post is one you scheduled']].map(([t, s]) => `<li><span>${ic('check', 'xs')}</span>${t}<small>${s}</small></li>`).join('')}</ul>
+    <ul class="nv" role="list">${[['You send every DM', 'Not one goes out on its own'], ['You pick every repost', 'Your feed stays yours'], ['Your posts stay put', 'Every post stays where you put it'], ['Reach you earned', 'None bought, none promised'], ['You see it first', 'Every post is one you scheduled']].map(([t, s]) => `<li><span>${ic('check', 'xs')}</span>${t}<small>${s}</small></li>`).join('')}</ul>
   </div></div></section>
 
   <section class="hz-sec" id="pricing" aria-labelledby="hz-p-h"><div class="hx-w">
@@ -12625,10 +12636,10 @@ function hxInitHome() {
   const click = el => { cur.classList.remove('click'); void cur.offsetWidth; cur.classList.add('click'); el.classList.add('press'); dg.later(() => { cur.classList.remove('click'); el.classList.remove('press'); }, 220); };
   const countTo = (el, a, b, ms = 520) => { const t0 = performance.now(); const f = now => { const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = `${Math.round(a + (b - a) * e)} / 280`; if (k < 1 && el.isConnected) requestAnimationFrame(f); }; requestAnimationFrame(f); };
   const playWrite = () => {
+    if (W.live) return; /* your turn is yours: coming back into view never resets your line */
     const sc = $('.hx-sc-write', demo), sw = $$('.hx-sw', sc), sb = $('#hx-sharpb'), sch = $('#hx-sched'), cnt = $('#hx-cnt');
     const tag = $('#hx-tag'), done = () => { tag.textContent = 'Scheduled'; tag.classList.add('ok'); };
     sc.classList.remove('hinted', 'sharp', 'pv', 'sched'); sw.forEach(s => s.classList.remove('on')); cnt.textContent = `${HX_N0} / 280`; cur.classList.remove('show'); tag.textContent = 'Draft'; tag.classList.remove('ok');
-    if (W.live) return;
     if (REDUCED) { sw.forEach(s => s.classList.add('on')); sc.classList.add('hinted', 'sharp', 'pv', 'sched', 'tryable'); cnt.textContent = `${HX_N1} / 280`; done(); return; }
     cur.style.transition = 'none'; moveTo($('.hx-l2', sc), .62, .5); void cur.offsetWidth; cur.style.transition = '';
     sw.forEach((s, i) => dg.later(() => s.classList.add('on'), 650 + i * 360));
@@ -12669,7 +12680,11 @@ function hxInitHome() {
   const wtoast = (msg, act, fn) => { clearTimeout(toastT); toastEl.innerHTML = `${ic('check', 'xs')}<span>${msg}</span>${act ? `<button type="button">${act}</button>` : ''}`; toastEl.classList.add('on');
     const b = $('button', toastEl); if (b) b.onclick = () => { toastEl.classList.remove('on'); fn && fn(); }; toastT = setTimeout(() => toastEl.classList.remove('on'), act ? 5200 : 2600); sr.textContent = msg; };
   const wFull = () => `${lin.value.trim()}\n\n${HX_BODY}`;
-  const renderPv = () => { if (!W.live) return; pvb.innerHTML = PF_RENDER[PVK[W.pv]]({ t: wFull(), ago: 'now', c: [0, 0, 0, 0] }, { you: YOU, dark: isDark() }); };
+  const renderPv = () => { if (!W.live) return; const k = PVK[W.pv], R = PF_RENDER[k], o = { you: YOU, dark: isDark() };
+    /* X and Threads join a thread with a line; Bluesky stacks the replies; LinkedIn has no threads, so it's one post */
+    pvb.innerHTML = k === 'linkedin' ? R({ t: `${wFull()}\n\n${HX_THREAD2}`, ago: 'now' }, o)
+      : k === 'bsky' ? `<div class="hx-pvs">${R({ t: wFull(), ago: 'now' }, o)}${R({ t: HX_THREAD2, ago: 'now' }, o)}</div>`
+      : `<div class="hx-pvs hx-pvt">${R({ t: wFull(), ago: 'now' }, { ...o, rail: true })}${R({ t: HX_THREAD2, ago: 'now' }, o)}</div>`; };
   const paintLive = () => {
     const v = lin.value, ms = hgMarks(v); let o = '', at = 0; ms.forEach(([a, b]) => { o += esc(v.slice(at, a)) + `<span class="hx-sw on">${esc(v.slice(a, b))}</span>`; at = b; }); lm.innerHTML = o + esc(v.slice(at)) + '\u200b';
     lin.style.height = lm.offsetHeight + 'px';
@@ -12692,7 +12707,8 @@ function hxInitHome() {
   sbtn.addEventListener('click', () => { if (!W.live) { goLive(false); return; } sharpenLive(); });
   $('.hx-nets', wsc).addEventListener('click', e => { const b = e.target.closest('[data-pvn]'); if (!b) return; goLive(false); W.pv = b.dataset.pvn;
     $$('[data-pvn]', wsc).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
-    $('#hx-pvi').innerHTML = pic(W.pv); $('#hx-pvn').textContent = `Live preview on ${PVN[W.pv]}`; paintLive(); });
+    $('#hx-pvi').innerHTML = pic(W.pv); $('#hx-pvn').textContent = `Live preview on ${PVN[W.pv]}`; paintLive(); if (matchMedia('(max-width: 760px)').matches) wsc.classList.add('pvshow'); });
+  $('#hx-pvback').addEventListener('click', () => { wsc.classList.remove('pvshow'); lin.focus({ preventScroll: true }); });
   $('#hx-sched').addEventListener('click', () => { goLive(false); const tag = $('#hx-tag'); tag.textContent = 'Scheduled'; tag.classList.add('ok');
     wtoast('Scheduled for Tue, 8:40 AM. Your best time.', 'Undo', () => { tag.textContent = 'Draft'; tag.classList.remove('ok'); }); });
   $('#hx-post').addEventListener('click', () => { goLive(false); wtoast('Example account, so it stays here. Yours goes out the moment you press Post.', 'Start free', () => go('start')); });
