@@ -4944,7 +4944,7 @@ button.hx-gb, button.hx-wb, button.hx-sharpb{ cursor:pointer; } button.hx-gb:hov
 .hx-cal{ padding:14px 16px; overflow:hidden; border-right:1px solid var(--border); }
 .hx-calh, .hx-calr{ display:grid; grid-template-columns:62px repeat(7,minmax(0,1fr)); gap:6px; }
 .hx-calh span{ padding:4px 2px 10px; font-size:12px; color:var(--text-3); text-align:center; } .hx-calh b{ display:block; font:500 17px/1.3 var(--font-ui); color:var(--text-1); }
-.hx-calh .on{ color:var(--text-1); } .hx-calh .on b{ display:grid; place-items:center; width:28px; height:28px; margin:-3px auto 0; border-radius:50%; background:var(--cta); color:var(--cta-ink); }
+.hx-calh .on{ color:var(--text-1); } .hx-calh b{ font-size:14px; } .hx-calh .on b{ display:inline-grid; place-items:center; height:26px; padding:0 9px; margin-top:-3px; border-radius:999px; background:var(--cta); color:var(--cta-ink); }
 .hx-calr{ min-height:146px; padding:8px 0; border-top:1px solid var(--border); }
 .hx-calt{ padding-top:6px; font:500 11.5px/1 var(--font-mono); color:var(--text-3); }
 .hx-cell{ min-width:0; }
@@ -5600,25 +5600,33 @@ const NICHES = {
 };
 
 const TOP_POSTS = [
-  { id: 'tp1', days: 118, text: 'I cut my position size in half and made more.\n\nSize is a feeling, not a number.', views: 184200, likes: 3210, replies: 412, kind: 'Contrarian' },
-  { id: 'tp2', days: 64, text: '12 months of journaling every trade, in 12 posts. What worked, what flopped, and the one habit I’d keep:', views: 96400, likes: 1840, replies: 140, kind: 'Listicle' },
+  { id: 'tp1', days: 118, text: 'I cut my position size in half and made more.\n\nsmaller size, fewer panic exits. that’s the whole edge.', views: 184200, likes: 3210, replies: 412, kind: 'Contrarian' },
+  { id: 'tp2', days: 64, text: '6 months of journaling every trade, in 6 posts. What worked, what flopped, and the one habit I’d keep:', views: 96400, likes: 1840, replies: 140, kind: 'Listicle' },
   { id: 'tp3', days: 203, text: 'The hardest part of trading isn’t the losses. It’s the week after a big win.', views: 71300, likes: 2105, replies: 230, kind: 'Story' },
   { id: 'tp4', days: 21, text: 'The best trading plan I’ve used fits on an index card.', views: 48100, likes: 962, replies: 88, kind: 'How-to' },
-  { id: 'tp5', days: 37, text: 'You don’t need 12 indicators. You need one rule you actually follow.', views: 44000, likes: 1104, replies: 301, kind: 'Contrarian' }
+  { id: 'tp5', days: 37, text: 'You don’t need 12 indicators. You need one rule you actually follow.', views: 44000, likes: 1104, replies: 152, kind: 'Contrarian' }
 ];
 
 function seedQueue() {
-  const w = startOfWeek(new Date());
-  const mk = (d, time, text, extra = {}) => ({ id: uid(), day: dayKey(addDays(w, d)), time, text, tweets: [text], platforms: { x: true, threads: false, linkedin: d % 2 === 0, bsky: false }, status: 'scheduled', ws: 'me', ...extra });
+  /* anchored to today, not to Monday: the last six days went out (one a day, the streak's six), the next four are planned.
+     Sample numbers sit on each sent post and keep one account's ratios: likes ~2% of views, replies ~1 in 8 likes, reposts ~1 in 12 */
+  const t0 = noonToday();
+  const mk = (d, time, text, extra = {}) => ({ id: uid(), day: dayKey(addDays(t0, d)), time, text, tweets: [text], platforms: { x: true, threads: false, linkedin: false, bsky: false }, status: 'scheduled', ws: 'me', ...extra });
+  /* the homepage's hero post, word for word: the line Sharpen gives the demo draft, then its body */
+  const hero = 'Most underrated thing in trading? Sizing down after a loss.\n\nI lost $4,000 in March doubling my size to win it back. Now I cut size in half after any red day. Boring. My account is still here.';
   return [
-    mk(0, '08:40', 'I sized every trade at 1% for a year. Boring. Also the first year I didn’t blow up.'),
+    mk(-6, '08:40', 'I sized every trade at 1% for a year. Boring. Also the first year I didn’t blow up.', { demo: [4900, 84, 11, 7] }),
+    mk(-5, '08:40', hero, { tweets: [hero, 'The rule is simple: half size until I have a green day. Then back to normal.'], demo: [18400, 402, 41, 28] }),
+    mk(-4, '12:15', '5 rules I stopped breaking after a $4,000 month:', { tweets: ['5 rules I stopped breaking after a $4,000 month:', '1. no stop, no trade.\n2. 1% risk. every trade.\n3. one loss and i’m done for the day.\n4. no new trade within an hour of a red one.\n5. journal it before i close the chart.'], demo: [3900, 64, 9, 6] }),
+    mk(-3, '17:30', 'Your edge isn’t the entry. It’s the exit you planned before you clicked buy.', { demo: [4600, 88, 12, 7] }),
+    mk(-2, '08:40', 'Most of my losses came from trades I took because I was bored.', { demo: [6100, 131, 17, 9] }),
+    mk(-1, '12:15', 'Reminder: no position is also a position.', { demo: [5200, 97, 8, 9] }),
     mk(1, '08:40', 'My trading journal has one column most people skip: “what was I feeling?”', { autoPlug: true }),
-    mk(2, '17:30', '5 rules I stopped breaking after my worst month in 2022:'),
-    mk(3, '12:15', 'Your edge isn’t the entry. It’s the exit you planned before you clicked buy.'),
-    mk(4, '08:40', 'Most of my losses came from trades I took because I was bored.'),
-    mk(5, '12:15', 'Weekend reminder: no position is also a position.'),
-    mk(2, '12:15', 'We hired 9 people last year. 3 were mistakes. Here’s the pattern.', { ws: 'ledgerly', approval: 'needs' }),
-    mk(4, '17:30', 'Stop pricing like a coward. Here’s the math:', { ws: 'northwind', approval: 'ok' })
+    mk(2, '12:15', 'funding flipped negative on most majors overnight. i don’t short into that. i log it and wait.'),
+    mk(3, '17:30', 'three things i check before i size up. none of them are the chart.'),
+    mk(4, '08:40', 'your stop is a decision you make once. moving it is a decision you make scared.'),
+    mk(2, '12:15', 'We hired 9 people last year. 3 were mistakes. Here’s the pattern.', { ws: 'ledgerly', approval: 'needs', platforms: { x: true, threads: false, linkedin: true, bsky: false } }),
+    mk(4, '17:30', 'We raised prices 20% in March. Churn didn’t move. Here’s the math:', { ws: 'northwind', approval: 'ok', platforms: { x: false, threads: false, linkedin: true, bsky: false }, tweets: ['We raised prices 20% in March. Churn didn’t move. Here’s the math:', '$49 → $59. Monthly churn: 2.1% before, 2.0% after. Revenue per customer: +20%.'] })
   ];
 }
 function seedDrafts() {
@@ -5626,9 +5634,9 @@ function seedDrafts() {
   return [
     mk(2, ['revenge trading is just losing twice']),
     mk(9, ['Things I’d tell myself before my first leveraged trade:', '1. The liquidation price is a real place.']),
-    mk(36, ['I lost [amount] on [mistake].']),
+    mk(36, ['lost 2.3k on a trade i didn’t even like. the setup was fine. i wasn’t.']),
     mk(58, ['why I stopped posting my entries']),
-    mk(93, ['the stop loss I moved that'])
+    mk(93, ['the stop loss i moved three times on the same trade'])
   ];
 }
 function seedStreak() {
@@ -5647,7 +5655,7 @@ const DEFAULT_STATE = {
   ws: 'me',
   workspaces: [
     { id: 'me', name: 'heycape', handle: 'heycape_', kind: 'Personal', hue: 28, pic: ME_PIC },
-    { id: 'ledgerly', name: 'Ledgerly', handle: 'ledgerlyhq', kind: 'Client · Priya’s voice', hue: 190, approvals: true, niche: 'Startups & founders', platforms: { x: true, threads: false, linkedin: true, bsky: false } },
+    { id: 'ledgerly', name: 'Ledgerly', handle: 'ledgerlyhq', kind: 'Client · Tobi’s voice', hue: 190, approvals: true, niche: 'Startups & founders', platforms: { x: true, threads: false, linkedin: true, bsky: false } },
     { id: 'northwind', name: 'Northwind', handle: 'northwindco', kind: 'Client · company voice', hue: 150, approvals: true, niche: 'Marketing', platforms: { x: false, threads: false, linkedin: true, bsky: false } }
   ],
   plan: 'free',
@@ -5659,9 +5667,9 @@ const DEFAULT_STATE = {
   preview: { on: true, tab: 'x' },
   ideas: [
     { id: uid(), src: 'note', text: 'The trade I didn’t take last month taught me more than the ones I did', at: now0 - 2 * 3600e3 },
-    { id: uid(), src: 'link', text: 'Most traders don’t lose on bad setups. They lose on good setups with the wrong size.', url: 'https://x.com/lenavogt/status/1842110934562201600', meta: { platform: 'x', kind: 'post', handle: 'lenavogt', author: 'Lena Vogt', text: 'Most traders don’t lose on bad setups. They lose on good setups with the wrong size.' }, tags: ['sizing'], at: now0 - 5 * 3600e3 },
-    { id: uid(), src: 'voice', text: 'Voice memo · 0:42 · Position sizing. Halving my size made me twice as patient.', at: now0 - 26 * 3600e3 },
-    { id: uid(), src: 'shot', text: 'Screenshot · A follower DM’d: my journal template saved them from a revenge trade.', at: now0 - 50 * 3600e3 },
+    { id: uid(), src: 'link', text: 'Most traders don’t lose on bad setups. They lose on good setups with the wrong size.', url: 'https://x.com/lenavogt/status/2111656684814340417', meta: { platform: 'x', kind: 'post', handle: 'lenavogt', author: 'Lena Vogt', text: 'Most traders don’t lose on bad setups. They lose on good setups with the wrong size.' }, tags: ['sizing'], at: now0 - 5 * 3600e3 },
+    { id: uid(), src: 'voice', text: 'Voice memo · 0:14 · Sizing down after a loss. Half size until a green day.', at: now0 - 26 * 3600e3 },
+    { id: uid(), src: 'shot', text: 'Screenshot · March P&L, down $4,000. The week I doubled size to win it back.', at: now0 - 50 * 3600e3 },
     { id: uid(), src: 'note', text: 'Every indicator I’ve used, ranked by how much I’d actually miss it.', at: now0 - 80 * 3600e3 }
   ],
   queue: seedQueue(),
@@ -6126,7 +6134,7 @@ function tradingNiche(n = S && S.user && S.user.niche) { return /crypto|trad|def
    the first one is selected, and Tab jumps to the next. Blanks with no honest example ([what happened]) stay blanks, and
    a blank still never posts. An example left as it came gets one gentle question before posting ("Is 5 your number?"). */
 const FILL_SHARED = { n: '5', x: '58', y: '1.8', 'n years': '3 years', 'n months': '6 months', 'n weeks': '8 weeks', time: 'a year', week: 'week', things: 'things', 'my worst trade': 'my worst trade', 'my first leveraged trade': 'my first leveraged trade', 'an account': 'an account', 'one setup': 'one setup', 'revenge trades': 'revenge trades', 'stop losses': 'stop losses', 'price moves': 'price moves', risk: 'risk', entry: 'entry' };
-const FILL_TRADING = { 'what it cost': 'a month of gains gone', amount: '$4,000', 'one trade': 'one ETH long', ticker: '$BTC', 'ticker a': '$ETH', 'ticker b': '$SOL', 'option a': '$ETH', 'option b': '$SOL', indicator: 'RSI', 'n indicators': '12 indicators', 'n trades': '200 trades', 'common trading advice': 'buying every dip', market: 'crypto', 'popular strategy': 'Copy trading', advice: '“always buy the dip”', 'what changed': 'my win rate', pattern: 'wicking below the weekly open', 'kind of trader': 'new trader', 'did what': 'flipped negative', 'obvious skill': 'chart reading', price: ['$62,400', '$60,900', '$66,000'], 'risk %': '1%', rule: 'no stop, no trade', timeframe: 'week', event: 'a 40% drawdown', result: 'a month of gains', mistake: 'moved my stop', 'the one number that matters': 'my average loss', 'the obvious one': 'price', field: 'trading', 'common belief': 'that more indicators mean better entries', 'common advice': 'buying every dip', metric: 'my account', group: 'new trader', role: 'trader' };
+const FILL_TRADING = { 'what it cost': 'a month of gains gone', amount: '$1,200', 'stop cost': '$1,850', 'mistakes cost': '$2,600', 'month pnl': '+$2,140', share: '71', 'one trade': 'one ETH long', ticker: '$BTC', 'ticker a': '$ETH', 'ticker b': '$SOL', 'option a': '$ETH', 'option b': '$SOL', indicator: 'RSI', 'n indicators': '12 indicators', 'n trades': '200 trades', 'common trading advice': 'buying every dip', market: 'crypto', 'popular strategy': 'Copy trading', advice: '“always buy the dip”', 'what changed': 'my win rate', pattern: 'wicking below the weekly open', 'kind of trader': 'new trader', 'did what': 'flipped negative', 'obvious skill': 'chart reading', price: ['$62,400', '$60,900', '$66,000'], 'risk %': '1%', rule: 'no stop, no trade', timeframe: 'week', event: 'a 40% drawdown', result: 'a month of gains', mistake: 'moved my stop', 'the one number that matters': 'my average loss', 'the obvious one': 'price', field: 'trading', 'common belief': 'that more indicators mean better entries', 'common advice': 'buying every dip', metric: 'my account', group: 'new trader', role: 'trader' };
 const FILL_GENERAL = { goal: 'grow an audience', 'got the result': 'got my first 100 customers', 'what broke': 'lost half our signups in a day', 'where you are now': 'do it full time', amount: '$2,000', 'common belief': 'that you have to post every day', 'common advice': 'posting every day', 'popular advice': '“niche down”', 'popular thing': 'Growth hacking', result: 'my first 100 customers', 'did hard thing': 'built in public', 'low point': 'broke and burned out', event: 'one customer email', product: 'product', mistake: 'shipped without talking to users', verb: 'build', job: 'my first job', milestone: 'my first launch', activity: 'posting every day', process: 'writing', decision: 'quit your job', 'surprising fact': 'the best posts take five minutes', group: 'founder', role: 'writer', metric: 'followers', constraint: 'no ads', results: 'growth', document: 'cold email', 'common practice': 'post every day', 'obvious thing': 'talent', 'obvious skill': 'talent', 'option a': 'Notion', 'option b': 'Obsidian', 'the one number that matters': 'churn', 'the obvious one': 'the first one', market: 'this market', indicator: 'metric', ticker: 'product' };
 const MON_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const fillField = () => { const n = S.user.niche || ''; return tradingNiche(n) ? 'trading' : /building in public/i.test(n) ? 'startups' : n.toLowerCase().replace(/ & /g, ' and ') || 'your field'; };
@@ -6200,12 +6208,12 @@ function bySet(sets) { const pick = () => tradingNiche() ? sets.trading : sets.g
    {topic} reads in the second person or neutral; {mt} is the same topic in the first person ("your first hire" → "my first hire") */
 const IDEA_T = [
   { k: 'Contrarian', t: 'The advice on {topic} I stopped following, and what I do instead' },
-  { k: 'Story', t: 'The mistake I made with {mt} for [N years], and what finally fixed it' },
+  { k: 'Story', t: '{mt}: the mistake I made for [N years], and what finally fixed it' },
   { k: 'Listicle', t: '[N] things I wish I knew about {mt} before I started' },
   { k: 'How-to', t: 'How I’d approach {mt} if I started from zero today' },
-  { k: 'Lesson', t: 'What [N months] of mistakes with {mt} taught me' },
+  { k: 'Lesson', t: '{mt}: what [N months] of mistakes taught me' },
   { k: 'Contrarian', t: 'I disagree with the usual take on {topic}. Here’s my case.' },
-  { k: 'Proof', t: 'What my own numbers say about {mt}: [the one number that matters]' },
+  { k: 'Proof', t: 'What my own numbers say about {mt}, in one number' },
   { k: 'Question', t: 'What’s the worst advice you’ve heard about {topic}?' },
   { k: 'Question', t: 'What do you wish someone had told you about {topic}?' },
   { k: 'Story', t: 'The day I changed my mind about {mt}: [what happened]' },
@@ -7336,7 +7344,7 @@ function paintRing(tEl) {
   ring.dataset.tip = state === 'over' ? `${-rem} over. Split the rest into the next post` : `${len} / ${lim} characters${S.platforms.x && /https?:\/\/|\.\w{2,3}\//.test(ta.value) ? ' · X counts each link as 23' : ''}${S.platforms.x && /\p{Extended_Pictographic}/u.test(ta.value) ? ' · X counts each emoji as 2' : ''}`;
 }
 /* "sounds like you": the draft against your measured habits; tap it to jump to what sounds off */
-const DEMO_STATS = { wps: 11, emojiPer: .3, tagsPer: 0, oneSentOpen: 82, lower: 35 };
+const DEMO_STATS = { wps: 10, emojiPer: 0, tagsPer: 0, oneSentOpen: 82, lower: 55 };
 const paintVoiceSoon = (() => { let t = 0; return () => { clearTimeout(t); t = setTimeout(() => (window.requestIdleCallback || setTimeout)(() => paintVoice()), 220); }; })();
 function paintVoice() {
   const txt = S.draft.tweets.map(t => t.text).join('\n'); const an = ANALYSIS(); const b = $('.vm-line');
@@ -8270,18 +8278,18 @@ const mediaCount = q => (q.mcount || []).reduce((a, b) => a + b, 0);
 /* sample radar for trading niches: fictional traders, written for this demo. Market colour, not calls: nothing here tells anyone to buy.
    p is an index into PEOPLE, or an inline fictional person; hint is the reply starter shown in the empty reply box (blanks are yours) */
 const RADAR_TRADING = [
-  { p: 21, t: 'CPI came in hot. BTC wicked 4% in ten minutes and gave half of it back.\n\nI’m not trading the first candle. Waiting for the daily close.', c: [40, 120, 900, 52000], hint: 'Say what you do on CPI days: [your rule], and why.' },
+  { p: 21, t: 'BTC wicked 4% in ten minutes on no news and gave half of it back.\n\nI’m not trading the first candle. Waiting for the daily close.', c: [40, 120, 900, 52000], hint: 'Say what you do after a wick like that: [your rule], and why.' },
   { p: { n: 'Rafael Costa', h: 'rafaperps' }, t: 'Funding flipped negative on most majors overnight while open interest kept climbing.\n\nThat’s a lot of people paying to be short. Watching for a squeeze, not betting on one.', c: [28, 90, 640, 38000], hint: 'Add what you watch next to funding: [your signal], and what it told you last time.' },
   { p: 22, t: 'The Arclight bridge exploit is still unfolding, and the team’s latest count is about $30M drained.\n\nIf you bridged through it this month: revoke approvals first, read threads second.', c: [60, 410, 1800, 140000], hint: 'Add one useful step: how you check approvals, or [what you did when it happened to you].' },
   { p: 20, t: 'Went back through 6 months of my trade journal.\n\nMost of my losses came in the hour after another loss. Same day, same mistake. New rule: one loss and I’m done for the day.', c: [52, 160, 2300, 96000], hint: 'Share your own rule after a loss: [your rule], and when you started using it.' },
   { p: 23, t: 'Beginner lesson I repeat every week:\n\nYour stop is decided before you enter. If you set it after, it isn’t a stop. It’s a hope.', c: [35, 220, 3100, 120000], hint: 'Add the stop rule you’d give a beginner: [yours], in one line.' },
   { p: 19, t: 'Exchange balances for ETH just hit a multi-year low on the dashboard I track.\n\nNot a signal on its own. Less supply sitting one click from a sell button. Context, not a call.', c: [22, 70, 820, 41000], hint: 'Add the context you pair it with: [your metric], and why.' },
   { p: { n: 'Mei Tanaka', h: 'meiriskdesk' }, t: '$400M in longs liquidated in an hour, and my timeline is calling it a “healthy reset.”\n\nHealthy for whoever sized right. Here’s how I size so a wick doesn’t decide for me:', c: [44, 130, 1500, 70000], hint: 'Share how you size: [risk per trade], and what it saved you from.' },
-  { p: 18, t: 'FOMC tomorrow. I’m flat into it.\n\nNot because I know the outcome. Because I know I trade worse when I’m guessing.', c: [30, 85, 1200, 58000], hint: 'Say how you handle FOMC days: [flat, hedged or sized down], and why.' }
+  { p: 18, t: 'I don’t hold positions into macro prints anymore.\n\nNot because I know the outcome. Because I know I trade worse when I’m guessing.', c: [30, 85, 1200, 58000], hint: 'Say how you handle macro days: [flat, hedged or sized down], and why.' }
 ];
 const RADAR_SAMPLE = () => { const P = typeof PEOPLE !== 'undefined' ? PEOPLE : []; const posts = tradingNiche() ? RADAR_TRADING : (typeof HOOK_POSTS !== 'undefined' ? HOOK_POSTS : []).slice(0, 8); const now = Date.now();
   return posts.map((p, i) => { const who = (typeof p.p === 'object' ? p.p : P[p.p]) || { n: 'Someone', h: 'someone' }; const age = [4, 9, 13, 22, 31, 48, 70, 95][i] || 60; const c = p.c || [0, 0, 0, 0];
-    return { id: 'sample-' + i, text: p.t, at: new Date(now - age * 60e3).toISOString(), handle: who.h, name: who.n, pic: who.pic || null, img: who.img, followers: [182000, 41000, 12600, 96000, 8800, 300000, 22000, 5400][i] || 10000, likes: Math.round((c[2] || 40) * .08), replies: [2, 6, 1, 14, 3, 40, 9, 2][i] || 3, reposts: Math.round((c[1] || 10) * .05), sample: true, why: [(n => `${n} repl${n > 1 ? 'ies' : 'y'} so far: room for yours`)([2, 6, 1, 14, 3, 40, 9, 2][i] || 3), ...(i % 2 ? ['moving fast'] : [])] }; }); };
+    return { id: 'sample-' + i, text: p.t, at: new Date(now - age * 60e3).toISOString(), handle: who.h, name: who.n, pic: who.pic || null, img: who.img, followers: { lenavogt: 41000, rafaperps: 23500, damidefi: 12600, jaytradesdaily: 18400, camilateaches: 8800, priyaonchain: 6700, meiriskdesk: 22000, theocharts: 9200 }[who.h] || [182000, 41000, 12600, 96000, 8800, 300000, 22000, 5400][i] || 10000, likes: Math.round((c[2] || 40) * .08), replies: [2, 6, 1, 9, 3, 4, 9, 2][i] || 3, reposts: Math.round((c[1] || 10) * .05), sample: true, why: [(n => `${n} repl${n > 1 ? 'ies' : 'y'} so far: room for yours`)([2, 6, 1, 9, 3, 4, 9, 2][i] || 3), ...(([2, 6, 1, 9, 3, 4, 9, 2][i] || 3) / Math.max(1, age) > .3 ? ['moving fast'] : [])] }; }); };
 const RRADAR = { posts: [], live: false, at: 0, loading: false, drafts: {}, why: '' };
 function radarPaneHTML() {
   const live = !!(LLM.server && LLM.server.radar), people = (S.people || []).map(p => p.handle).filter(Boolean);
@@ -8345,7 +8353,7 @@ function rrStep(dir) { const v = rrVisible(), done = S.radar && S.radar.done || 
 function rrNext() { const v = rrVisible(), done = S.radar && S.radar.done || {}; const nxt = v.findIndex((x, k) => k > (RRADAR.active || 0) && !done[x.id]); const any = v.findIndex(x => !done[x.id]); if (nxt < 0 && any < 0) { drawRadar(); const a = $('#rr-all'); if (a) { a.focus({ preventScroll: true }); return; } } rrFocus(nxt >= 0 ? nxt : any >= 0 ? any : RRADAR.active || 0); }
 /* round 46: Replies to your posts, shown only when there are some (otherwise one quiet line under the radar) */
 const rpMineHTML = (mine, srv) => `<section class="sec rp-mine"><div class="sec-h"><div><h2 class="h2">Replies to your posts</h2><p class="muted" style="margin-top:4px">${mine.length ? 'Answer the first few yourself, while the post is new.' : 'Nothing posted from here yet. Once you post, its replies show up here.'}</p></div></div>
-      ${mine.length && !UI.rpOpen ? `<button class="rp-sum" data-rp="more"><span><b>${mine.length}</b> post${mine.length > 1 ? 's' : ''} · <b>${mine.reduce((a, q) => a + 2 + hash(q.text || q.id) % 5, 0)}</b> replies to answer${SHOWCASE() ? ' (sample)' : ''}</span><span class="rp-go">${ic('right', 'sm')} Open</span></button>` : mine.length ? `<div class="rp-list">${mine.map(q => `<button class="rp-post" data-rp="desk" data-id="${q.id}"><span class="rp-t">${firstLineHTML(clip(q.text, 140))}</span><span class="rp-m">Went out ${slotWhen(q.day, q.time)}${q.xIds && q.xIds[0] && srv.replies ? '' : SHOWCASE() ? ' · sample replies' : ''}</span><span class="rp-go">${ic('reply', 'sm')} Reply</span></button>${questionsFor(q).length ? `<button class="btn sm ghost rp-ask" data-rp="ask" data-id="${q.id}">${ic('write', 'sm')} They asked ${questionsFor(q).length} question${questionsFor(q).length > 1 ? 's' : ''}: answer in a post</button>` : ''}`).join('')}</div>` : `<a class="btn sm" href="#write">${ic('write', 'sm')} Write a post</a>`}</section>`;
+      ${mine.length && !UI.rpOpen ? `<button class="rp-sum" data-rp="more"><span><b>${mine.length}</b> post${mine.length > 1 ? 's' : ''} · <b>${SHOWCASE() ? mine.length * SAMPLE_REPLIES.length : mine.reduce((a, q) => a + (Array.isArray(q.replies) ? q.replies.length : 0), 0)}</b> replies to answer${SHOWCASE() ? ' (sample)' : ''}</span><span class="rp-go">${ic('right', 'sm')} Open</span></button>` : mine.length ? `<div class="rp-list">${mine.map(q => `<button class="rp-post" data-rp="desk" data-id="${q.id}"><span class="rp-t">${firstLineHTML(clip(q.text, 140))}</span><span class="rp-m">Went out ${slotWhen(q.day, q.time)}${q.xIds && q.xIds[0] && srv.replies ? '' : SHOWCASE() ? ' · sample replies' : ''}</span><span class="rp-go">${ic('reply', 'sm')} Reply</span></button>${questionsFor(q).length ? `<button class="btn sm ghost rp-ask" data-rp="ask" data-id="${q.id}">${ic('write', 'sm')} They asked ${questionsFor(q).length} question${questionsFor(q).length > 1 ? 's' : ''}: answer in a post</button>` : ''}`).join('')}</div>` : `<a class="btn sm" href="#write">${ic('write', 'sm')} Write a post</a>`}</section>`;
 ROUTES.inbox = () => {
   settleQueue(); const mine = myQ().filter(q => q.status === 'published' && !q.marked).slice(-4).reverse(), srv = LLM.server || {};
   mount('inbox', `<div class="page"><div class="page-h"><div><h1 class="display">Inbox</h1><p>Your replies first. Then an early, useful word where your people already read.</p></div>
@@ -9701,6 +9709,13 @@ function syncShowCode(first) {
 /* ==========================================================================
    YOUR WEEK / SUNDAY DIGEST: the week in one card, a note from Claude, and an email every Sunday.
    ========================================================================== */
+/* a seeded post's sample numbers: its own when it has them, else views and ratios this account could really have */
+function sampleNums(q, sample, m = {}) {
+  if (!sample) return { views: m.views || 0, likes: m.likes || 0, replies: m.replies || 0, reposts: m.reposts || 0 };
+  if (q.demo) { const [views, likes, replies, reposts] = q.demo; return { views, likes, replies, reposts }; }
+  const h = hash(q.text || q.id), views = 3000 + h % 5000, likes = Math.round(views * (.012 + h % 9 / 1000));
+  return { views, likes, replies: Math.round(likes * (.08 + h % 8 / 100)), reposts: Math.round(likes * (.06 + h % 7 / 100)) };
+}
 function weekData() {
   const now = Date.now(), from = now - 7 * DAY;
   /* only posts that came with numbers can be "best" or "worst"; a draft or a deleted post with 0 likes is neither */
@@ -9708,12 +9723,12 @@ function weekData() {
   const pubQ = myQ().filter(q => q.status === 'published' && slotDate(q.day, q.time) > from);
   const sample = !hist.length && SHOWCASE();
   /* the showcase's seeded posts carry sample numbers, labelled Sample; a real account's own queue posts show none until X reports them */
-  const posts = hist.length ? hist : pubQ.map(q => { const h = hash(q.text || q.id), m = q.metrics || {}; return { id: q.id, text: q.text, at: slotDate(q.day, q.time).getTime(), likes: sample ? 40 + h % 180 : m.likes || 0, reposts: sample ? 3 + h % 20 : m.reposts || 0, replies: sample ? 4 + h % 26 : m.replies || 0, views: sample ? (2 + h % 9) * 1000 + h % 997 : m.views || 0, q: true, marked: q.marked }; });
+  const posts = hist.length ? hist : pubQ.map(q => { const h = hash(q.text || q.id), m = q.metrics || {}; return { id: q.id, text: q.text, at: slotDate(q.day, q.time).getTime(), ...sampleNums(q, sample, m), q: true, marked: q.marked }; });
   const E = HWCore.eng; const sorted = [...posts].filter(p => !p.marked).sort((a, b) => E(b) - E(a)); const withNums = sorted.filter(HWCore.measured);
   const planned = myQ().filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now && slotDate(q.day, q.time) - now < 7 * DAY).length;
   const days = Array.from({ length: 7 }, (_, i) => { const t = now - (6 - i) * DAY, k = dayKey(t); const ps = posts.filter(p => p.at && dayKey(p.at) === k); return { k, d: DOW[new Date(t).getDay()], n: ps.length, e: ps.reduce((a, p) => a + E(p), 0) }; });
   const an = HIST().length >= 8 ? ANALYSIS() : null;
-  return { n: posts.length, likes: posts.reduce((a, p) => a + (p.likes || 0), 0), best: withNums[0] || sorted[0] || null, worst: withNums.length > 2 ? withNums[withNums.length - 1] : null, planned, rhythm: weekRhythm().done, real: !!hist.length, sample, nums: !!withNums.length, days, med: an && an.median };
+  return { n: posts.length, likes: posts.reduce((a, p) => a + (p.likes || 0), 0), best: withNums[0] || sorted[0] || null, worst: withNums.length > 2 ? withNums[withNums.length - 1] : null, planned, rhythm: new Set(posts.filter(p => p.at).map(p => dayKey(p.at))).size, real: !!hist.length, sample, nums: !!withNums.length, days, med: an && an.median };
 }
 /* 1–3 short reasons the best post worked, from what's actually in it: never a guess about its reach */
 function weekTakeaways(w) {
@@ -10444,10 +10459,10 @@ function weekGap(list = myQ()) { const now = Date.now(); return list.filter(q =>
 /* sample replies to your own post, by niche (trading first). Fictional people, written for this demo */
 const SAMPLE_REPLIES = bySet({
   trading: [
-    { handle: 'jaytradesdaily', name: 'Jay Kim', followers: 18400, text: 'What would you do differently if you could go back to that week?', question: true, likes: 14 },
-    { handle: 'theocharts', name: 'Theo Marchetti', followers: 9200, text: 'Painfully relatable. Took three trades out of boredom last Friday alone.', likes: 22 },
-    { handle: 'lenavogt', name: 'Lena Vogt', followers: 41000, text: 'How did you notice? Your journal, or the P&L?', question: true, likes: 9 },
-    { handle: 'camilateaches', name: 'Camila Reyes', followers: 1300, text: 'Do you have a rule for it now, or just awareness?', question: true, likes: 3 },
+    { handle: 'jaytradesdaily', name: 'Jay Kim', followers: 18400, text: 'do you journal the trades you skip too, or only the ones you take?', question: true, likes: 14 },
+    { handle: 'theocharts', name: 'Theo Marchetti', followers: 9200, text: 'Took me two blown accounts to learn this. Boring is the edge.', likes: 22 },
+    { handle: 'lenavogt', name: 'Lena Vogt', followers: 41000, text: 'How do you hold the rule on days the setup looks perfect?', question: true, likes: 9 },
+    { handle: 'camilateaches', name: 'Camila Reyes', followers: 8800, text: 'Sending this to my students. Is it a written rule for you, or just habit by now?', question: true, likes: 6 },
     { handle: 'priyaonchain', name: 'Priya Nair', followers: 6700, text: 'Saving this for my next journal review.', likes: 5 }
   ],
   general: [
@@ -10459,7 +10474,7 @@ const SAMPLE_REPLIES = bySet({
   ]
 });
 function replyKind(r) { return r.question ? 'Question' : r.followers >= 10000 ? 'Big account' : /\b(same|relatable|this|so true)\b/i.test(r.text) ? 'Agrees' : 'Reply'; }
-function localReply(r, post) { const k = replyKind(r); const topic = topicOf(post); return k === 'Question' ? '' : k === 'Agrees' ? `Glad it’s not just me. What was the moment it clicked for you?` : k === 'Big account' ? `Thanks. The [${topic}] part is where I’d start next time.` : `Thanks for reading. What would you add?`; }
+function localReply(r, post) { const k = replyKind(r); const topic = topicOf(post); return k === 'Question' ? '' : k === 'Agrees' ? `same. took me longer than i’d like to admit.` : k === 'Big account' ? `Thanks. The ${topic} part is where I’d start next time.` : `appreciate it. tell me how it goes.`; }
 async function openReplyDesk(q, preset) {
   q = q || [...myQ()].reverse().find(x => x.status === 'published'); if (!q) { toast('Post something first. Replies to it show up here.', { icon: 'reply' }); return; }
   const srv = LLM.server || {}; const live = !!(srv.replies && q.xIds && q.xIds[0]);
@@ -12342,7 +12357,7 @@ const HX_WEEK = [
   { d: 1, s: 0, t: HX_SHARP, land: true, p: 'x' },
   { d: 2, s: 1, t: '5 rules I stopped breaking after a $4,000 month.', p: 'threads' },
   { d: 3, s: 2, t: 'Your edge isn’t the entry. It’s the exit.', p: 'x' },
-  { d: 4, s: 0, t: 'Weekend reminder: no position is also a position.', p: 'li' },
+  { d: 4, s: 0, t: 'Reminder: no position is also a position.', p: 'li' },
   { d: 6, s: 1, t: 'What I’m watching this week, in one chart.', p: 'bsky' }
 ];
 const HX_SLOTS = ['8:40 AM', '12:15 PM', '5:30 PM'], HX_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -12376,12 +12391,12 @@ function hxScreenWrite() {
 }
 function hxScreenWeek() {
   return `<div class="hx-sc hx-sc-week" data-sc="week">
-    <div class="hx-sch"><b class="hx-sct">This week</b><span class="hx-sub2">Oct 12 – 18</span><span class="grow"></span><span class="hx-seg2"><i class="on">Week</i><i>Month</i></span><button type="button" class="hx-wb" id="hx-dmw">${ic('cal', 'xs')} Draft my week</button></div>
+    <div class="hx-sch"><b class="hx-sct">This week</b><span class="grow"></span><span class="hx-seg2"><i class="on">Week</i><i>Month</i></span><button type="button" class="hx-wb" id="hx-dmw">${ic('cal', 'xs')} Draft my week</button></div>
     <div class="hx-wk">
-      <div class="hx-cal"><div class="hx-calh"><span></span>${HX_DAYS.map((d, i) => `<span${i === 1 ? ' class="on"' : ''}>${d} <b>${12 + i}</b></span>`).join('')}</div>
+      <div class="hx-cal"><div class="hx-calh"><span></span>${HX_DAYS.map((d, i) => `<span${i === 1 ? ' class="on"' : ''}><b>${d}</b></span>`).join('')}</div>
         ${HX_SLOTS.map((t, s) => `<div class="hx-calr"><span class="hx-calt">${t}</span>${HX_DAYS.map((d, i) => { const p = HX_WEEK.find(x => x.d === i && x.s === s); return `<span class="hx-cell" data-d="${i}" data-s="${s}">${p ? `<button type="button" class="hx-chip${p.land ? ' land' : ''}" aria-label="${esc(`${d} ${t}: ${p.t}. Arrow keys move it`)}"><i>${pic(p.p)}<b>${t}</b></i><span>${esc(p.t)}</span></button>` : i === 5 && s === 1 ? '<span class="hx-rest">Rest day</span>' : ''}</span>`; }).join('')}</div>`).join('')}
       </div>
-      <div class="hx-wks">${hxBest()}<div class="hx-mini" id="hx-mini"><span class="hx-lab">Drafts</span>${['Funding flipped negative. Here’s my log.', 'Three charts I check before the open.'].map(t => `<span class="hx-dr">${esc(t)}</span>`).join('')}</div></div>
+      <div class="hx-wks">${hxBest()}<div class="hx-mini" id="hx-mini"><span class="hx-lab">Drafts</span>${['Funding flipped negative. Here’s my log.', 'Three charts I check before the US open.'].map(t => `<span class="hx-dr">${esc(t)}</span>`).join('')}</div></div>
     </div>
   </div>`;
 }
@@ -12390,15 +12405,16 @@ function hxScreenReview() {
     <div class="hx-sch"><span class="hx-crumb">Review ${ic('right', 'xs')} <b>Sizing down</b></span><span class="grow"></span><span class="hx-avs">${hxAv(19)}${hxAv(11)}</span><span class="hx-gb">${ic('link', 'xs')} Copy link</span></div>
     <div class="hx-rvw">
       <div class="hx-rvd">${hxAv('me', 'hx-pav')}<div><p class="hx-pw"><b>heycape</b> <span>@heycape_</span></p>
-        <p class="hx-rvt">The most underrated skill in trading: sizing down after a loss.<br><br>I lost <mark class="c0" data-cm="c0">$4,000 in March</mark> doubling my size to win it back. Now I cut size in half after any red day. <mark class="c1 done" data-cm="c1">Boring.</mark> My account is still here.</p></div></div>
+        <p class="hx-rvt">${esc(HX_SHARP)}<br><br>I lost <mark class="c0" data-cm="c0">$4,000 in March</mark> doubling my size to win it back. Now I cut size in half after any red day. <mark class="c1 done" data-cm="c1">Boring.</mark> My account is still here.</p></div></div>
       <div class="hx-rvc">
         <div class="hx-cm c0"><div class="hx-cmh">${hxAv(19)}<b>Priya Nair</b><span>2m</span></div><q>$4,000 in March</q><p>Lead with this. The number is the hook.</p><div class="hx-cmb"><button type="button" class="hx-gb" data-rv="reply">Reply</button><button type="button" class="hx-gb" data-rv="resolve">${ic('check', 'xs')} <span>Resolve</span></button></div></div>
-        <div class="hx-cm c1 done"><div class="hx-cmh">${hxAv(11)}<b>Marcus Reid</b><span>9m</span></div><q>Boring.</q><p>Keep it. It’s the most you thing in here.</p><span class="hx-ok">Resolved</span></div>
+        <div class="hx-cm c1 done"><div class="hx-cmh">${hxAv(18)}<b>Theo Marchetti</b><span>9m</span></div><q>Boring.</q><p>Keep it. It’s the most you thing in here.</p><span class="hx-ok">Resolved</span></div>
         <form class="hx-cinf" id="hx-cinf"><input class="hx-cin" id="hx-cin" maxlength="160" autocomplete="off" placeholder="Reply, or select words to comment…" aria-label="Add a comment"></form>
       </div>
     </div></div>`;
 }
-const HX_KPI = [['Views', '48.2K', '+12%'], ['Likes', '1,904', '+8%'], ['Replies', '312', '+21%'], ['New followers', '186', '+9%']];
+/* one account, one set of numbers: 4,812 followers, a usual post ~4.4K views and ~75 likes; the same posts and totals as the app's example week */
+const HX_KPI = [['Views', '152K', '+12%'], ['Likes', '2,980', '+8%'], ['Replies', '341', '+21%'], ['New followers', '186', '+9%']];
 /* a smooth followers line and the dashed "your usual" line under it, drawn to one scale */
 const HX_SERIES = { 30: [12, 14, 13, 17, 18, 21, 20, 24, 27, 26, 31, 34, 33, 38, 42, 44, 47, 52, 55, 58], 7: [40, 41, 44, 46, 45, 51, 58] };
 const hxChart = (id, pts = HX_SERIES[30]) => { const base = pts.map((_, i) => pts[0] - 2 + i * ((pts[pts.length - 1] - pts[0]) * .55 / Math.max(1, pts.length - 1)));
@@ -12409,16 +12425,16 @@ const hxChart = (id, pts = HX_SERIES[30]) => { const base = pts.map((_, i) => pt
     <path d="${line(pts)} L${W} ${H} L0 ${H}Z" fill="url(#${id})"/><path class="u" d="${line(base)}" pathLength="1"/><path class="l" d="${line(pts)}" pathLength="1"/></svg>`; };
 const hxKpis = () => `<div class="hx-kpis">${HX_KPI.map(([l, v, d]) => `<div><span>${l}</span><b>${v}</b><i>${d}</i></div>`).join('')}</div>`;
 function hxScreenResults() {
-  const rows = [['The most underrated skill in trading: sizing down after a loss.', '18.4K', '612', '2.1× your usual'], ['Most of my losses came from trades I took because I was bored.', '9.7K', '301', ''], ['Weekend reminder: no position is also a position.', '6.2K', '188', '']];
+  const rows = [[HX_SHARP, '18.4K', '402', '4.2× your usual'], ['Most of my losses came from trades I took because I was bored.', '6.1K', '131', ''], ['Reminder: no position is also a position.', '5.2K', '97', '']];
   return `<div class="hx-sc hx-sc-results" data-sc="results">
     <div class="hx-sch"><b class="hx-sct">Results</b><span class="grow"></span><span class="hx-seg2" role="group" aria-label="Range"><button type="button" data-rr="7" aria-pressed="false">7 days</button><button type="button" class="on" data-rr="30" aria-pressed="true">30 days</button></span></div>
     <div class="hx-res">${hxKpis()}<div class="hx-grow"><span class="hx-lab">Followers</span><p><b id="hx-fol">4,812</b> <i id="hx-fold">+186 in 30 days</i></p><div class="hx-chw" id="hx-chw">${hxChart('hxg1')}<span class="hx-guide" aria-hidden="true"><i></i><b></b></span></div><span class="hx-leg"><i class="a"></i><span id="hx-legn">This month</span> <i class="b"></i>Your usual</span></div>
-      <div class="hx-rows"><div class="hx-rowh"><span>Recent posts</span><span>Views</span><span>Likes</span></div>${rows.map(([t, v, l, n]) => `<div class="hx-row"><span>${esc(t)}${n ? ` <em>${n}</em>` : ''}</span><span>${v}</span><span>${l}</span></div>`).join('')}</div>
+      <div class="hx-rows"><div class="hx-rowh"><span>Best this week</span><span>Views</span><span>Likes</span></div>${rows.map(([t, v, l, n]) => `<div class="hx-row"><span>${esc(t)}${n ? ` <em>${n}</em>` : ''}</span><span>${v}</span><span>${l}</span></div>`).join('')}</div>
     </div></div>`;
 }
 const HX_TABS = [['write', 'write', 'Write'], ['week', 'cal', 'Week'], ['review', 'reply', 'Review'], ['results', 'chart', 'Results']];
 function hxDemoHTML() {
-  const side = [['cal', 'Week', '6'], ['write', 'Write', ''], ['ideas', 'Ideas', '12'], ['inbox', 'Inbox', '3'], ['chart', 'Results', '']];
+  const side = [['cal', 'Week', '5'], ['write', 'Write', ''], ['ideas', 'Ideas', '5'], ['inbox', 'Inbox', ''], ['chart', 'Results', '']];
   return `<div class="hx-demo" id="hx-demo">
     <div class="hx-tabs" role="tablist" aria-label="See it work"><span class="hx-thumb" aria-hidden="true"></span>${HX_TABS.map(([k, i, l], n) => `<button type="button" role="tab" id="hxt-${k}" aria-controls="hx-frame" aria-selected="${n === 0}" tabindex="${n ? -1 : 0}" data-hxt="${k}">${ic(i, 'sm')}<span>${l}</span></button>`).join('')}</div>
     <div class="hx-frame" id="hx-frame" role="tabpanel" aria-labelledby="hxt-write">
@@ -12448,7 +12464,7 @@ function hzSceneHTML(k) {
     return `<div class="st-card"><div class="st-ch">${ic('ideas', 'xs')}<b>Ideas</b><span class="grow"></span><span class="st-tm">3 new</span></div><div class="st-cb">
       <button type="button" class="st-row picked" data-sx="pick" aria-pressed="true"><span class="st-ico">${ic('mic', 'xs')}</span><span><b>Sizing down after a loss</b><span class="st-wave">${bars.map((h, i) => `<i style="--h:${h};--k:${i}"></i>`).join('')}</span></span><span class="st-tm">0:14</span><span class="st-pk">${ic('check', 'xs')}</span></button>
       <button type="button" class="st-row" data-sx="pick" aria-pressed="false"><span class="st-ico">${ic('link', 'xs')}</span><span><b>Funding flipped negative</b><small>A link, saved at 11:31 PM</small></span><span class="st-tm">Link</span><span class="st-pk">${ic('check', 'xs')}</span></button>
-      <button type="button" class="st-row" data-sx="pick" aria-pressed="false"><span class="st-ico">${ic('shot', 'xs')}</span><span><b>My $4,000 week in March</b><small>A screenshot of the P&amp;L</small></span><span class="st-tm">Image</span><span class="st-pk">${ic('check', 'xs')}</span></button>
+      <button type="button" class="st-row" data-sx="pick" aria-pressed="false"><span class="st-ico">${ic('shot', 'xs')}</span><span><b>March: down $4,000</b><small>A screenshot of the P&amp;L</small></span><span class="st-tm">Image</span><span class="st-pk">${ic('check', 'xs')}</span></button>
     </div><div class="st-act"><button type="button" class="st-go" data-go="1">Draft it in my voice ${ic('arrow', 'xs')}</button></div></div>`; }
   if (k === 'draft') return `<div class="st-card"><div class="st-ch">${hxAv('me')}<b>heycape</b><span>@heycape_</span><span class="grow"></span><span class="st-tm">Draft</span></div>
       <div class="st-cb"><p class="st-typed" id="st-typed">${esc(HZ_TYPED)}</p></div><div class="st-foot">${ic('voice', 'xs')} Written from your voice note, in your voice</div><div class="st-act"><button type="button" class="st-go ghost" data-sx="retype">${ic('undo', 'xs')} Write it again</button><button type="button" class="st-go" data-go="2">Sharpen the first line ${ic('arrow', 'xs')}</button></div></div>`;
@@ -12456,14 +12472,14 @@ function hzSceneHTML(k) {
       <p class="st-before"><s>so i think</s> the most underrated thing in trading is <s>honestly</s> <s>just</s> sizing down after a loss.</p>
       <div class="st-arrow">Sharpened</div><p class="st-after">${esc(HX_SHARP)}</p><span class="st-ok">${ic('check', 'xs')} Same facts, said straight</span></div>
       <div class="st-act"><button type="button" class="st-go st-shb" data-sx="sharpen">${ic('bolt', 'xs')} Sharpen it</button><button type="button" class="st-go st-shn" data-go="3">Line it up ${ic('arrow', 'xs')}</button></div></div>`;
-  if (k === 'time') return `<div class="st-card st-wide"><div class="st-ch">${ic('cal', 'xs')}<b>This week</b><span class="grow"></span><span class="st-tm">Oct 12 – 18</span></div><div class="st-cb">
-      <div class="st-days">${HX_DAYS.map((d, i) => { const p = HX_WEEK.find(x => x.d === i); return `<button type="button" class="st-day${i === 1 ? ' on' : ''}" data-sx="day" data-day="${i}" aria-label="Post it on ${d}"><span>${d}</span><b>${12 + i}</b>${p ? `<span class="st-pc${p.land ? ' land' : ''}"><i>${HX_SLOTS[p.s]}</i>${esc(clip(p.t, 34))}</span>` : ''}</button>`; }).join('')}</div>
+  if (k === 'time') return `<div class="st-card st-wide"><div class="st-ch">${ic('cal', 'xs')}<b>This week</b><span class="grow"></span><span class="st-tm">Next 7 days</span></div><div class="st-cb">
+      <div class="st-days">${HX_DAYS.map((d, i) => { const p = HX_WEEK.find(x => x.d === i); return `<button type="button" class="st-day${i === 1 ? ' on' : ''}" data-sx="day" data-day="${i}" aria-label="Post it on ${d}"><b>${d}</b>${p ? `<span class="st-pc${p.land ? ' land' : ''}"><i>${HX_SLOTS[p.s]}</i>${esc(clip(p.t, 34))}</span>` : ''}</button>`; }).join('')}</div>
       <p class="st-note" id="st-note">Tuesday, 8:40 AM: when your people scroll most. Tap a day to move it.</p>
       <div class="st-nets">${['x', 'threads', 'li', 'bsky'].map(k => hxTile(k, 'xs')).join('')}<span>One draft, fitted to each network</span></div></div><div class="st-act"><button type="button" class="st-go" data-go="4">See how it landed ${ic('arrow', 'xs')}</button></div></div>`;
   return `<div class="st-card st-res"><div class="st-ch">${ic('chart', 'xs')}<b>Results</b><span class="grow"></span><span class="st-tm">1 hour in</span></div><div class="st-cb">
       <div class="hx-post"><span class="av hx-pav"><img src="${ME_PIC}" alt=""></span><div class="hx-pb"><p class="hx-pw"><b>heycape</b> <span>@heycape_ · 1h</span></p><div class="hx-pt">${esc(HX_SHARP)}</div>
-        <div class="hx-pa"><span>${ic('reply', 'xs')}41</span><span>${ic('repost', 'xs')}28</span><span>${ic('heart', 'xs')}612</span><span>${ic('views', 'xs')}18.4K</span></div></div></div>
-      <div class="st-up"><span>2.1× your usual replies</span><small>vs. your last 30 posts</small></div></div>
+        <div class="hx-pa"><span>${ic('reply', 'xs')}11</span><span>${ic('repost', 'xs')}6</span><span>${ic('heart', 'xs')}74</span><span>${ic('views', 'xs')}3.1K</span></div></div></div>
+      <div class="st-up"><span>2.1× your usual first hour</span><small>vs. your last 30 posts</small></div></div>
       <div class="st-act"><button type="button" class="st-go ghost" data-go="0">${ic('undo', 'xs')} Start again</button><a class="st-go" href="#start">Start free ${ic('arrow', 'xs')}</a></div></div>`;
 }
 function hzStoryHTML() {
@@ -12483,7 +12499,7 @@ function hxBentoHTML() {
   const card = (cls, p, ui) => `<article class="hx-card ${cls} hx-rv"><p>${p}</p>${ui}</article>`;
   const voices = [['me', 'heycape', 'Personal', 'Direct · dry · short'], [17, 'Ledgerly', 'Client', 'Warm · plain · no jargon'], [11, 'Northwind', 'Client', 'Confident · precise']];
   const nets = [['x', 'X', '280&nbsp;characters', 1], ['threads', 'Threads', '500&nbsp;characters', .44], ['li', 'LinkedIn', '3,000&nbsp;characters', .07], ['bsky', 'Bluesky', '300&nbsp;characters', .7]];
-  const ideas = [['mic', 'Sizing down after a loss', 'Drafted'], ['link', 'Funding flipped negative', 'Saved'], ['shot', 'My $4,000 week in March', 'Drafted'], ['write', 'Indicators, ranked', 'Saved']];
+  const ideas = [['mic', 'Sizing down after a loss', 'Drafted'], ['link', 'Funding flipped negative', 'Saved'], ['shot', 'March: down $4,000', 'Drafted'], ['write', 'Indicators, ranked', 'Saved']];
   return `<div class="hx-bento">
     ${card('hx-b-sharp', '<b>Sharpen any line.</b> Pick a few words and flip through three better versions. Keep the one that sounds like you; your facts stay put.',
       `<div class="hx-ui hx-ui-pad hx-shw" id="hx-shw"><p class="hx-pw hx-shw-who">${hxAv('me')}<b>heycape</b> <span>@heycape_</span></p><p class="hx-shl0">${esc(HX_SHARP)}</p><p class="hx-shl">I lost $4,000 in March <span class="hx-sel"><span class="hx-swap">${['because I kept doubling my size', 'doubling my size to win it back', 'trying to win it all back by Friday'].map((t, i) => `<span class="hx-alt${i === 0 ? ' on' : ''}">${t}.</span>`).join('')}</span></span></p><div class="hx-shbar"><span class="hx-gb">${ic('left', 'xs')}</span><span class="hx-shn" id="hx-shn">1 of 3</span><span class="hx-gb">${ic('right', 'xs')}</span><span class="hx-wb">Use this</span><span class="hx-gb">${ic('reply', 'xs')} Comment</span></div><p class="hx-shl2">Now I cut size in half after any red day. Boring. My account is still here.</p></div>`)}
@@ -12491,13 +12507,13 @@ function hxBentoHTML() {
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-nets">${nets.map(([k, n, lim, f]) => `<div class="hx-li">${hxTile(k, 'sm')}<span><b>${n}</b><small>${lim}</small></span><span class="hx-bar"><i style="--f:${f}"></i></span><span class="hx-ck">${ic('check', 'xs')}</span></div>`).join('')}</div></div>`)}
     ${card('hx-b-review', '<b>Notes on the exact words.</b> Send one review link. People sign in with X or Google and comment right beside your draft.',
       `<div class="hx-ui hx-ui-flow"><div class="hx-chips"><span>${pic('x')} Sign in with X</span><span>${G_LOGO} Sign in with Google</span></div><div class="hx-link"><span class="hx-mono">hookworthy.com/r/8f2c1a</span><span class="hx-wb">${ic('copy', 'xs')} Copy</span></div><span class="hx-wire" aria-hidden="true"></span><span class="hx-call"><b>Comment</b> on “$4,000 in March” <i>new</i></span><span class="hx-wire" aria-hidden="true"></span>
-      <div class="hx-list">${[[19, 'Priya Nair', 'Lead with the number. It’s the hook.', 'Open'], [11, 'Marcus Reid', 'Keep “Boring.” It’s the most you line.', 'Resolved']].map(([i, n, t, s]) => `<div class="hx-li">${hxAv(i)}<span><b>${n}</b>${esc(t)}</span><span class="hx-st${s === 'Open' ? ' open' : ''}">${s}</span></div>`).join('')}</div></div>`)}
+      <div class="hx-list">${[[19, 'Priya Nair', 'Lead with the number. It’s the hook.', 'Open'], [18, 'Theo Marchetti', 'Keep “Boring.” It’s the most you line.', 'Resolved']].map(([i, n, t, s]) => `<div class="hx-li">${hxAv(i)}<span><b>${n}</b>${esc(t)}</span><span class="hx-st${s === 'Open' ? ' open' : ''}">${s}</span></div>`).join('')}</div></div>`)}
     ${card('hx-b-voices', '<b>A voice for every client.</b> Ghostwriting? Write as each one, sound like them, and switch with one key.',
       `<div class="hx-ui hx-ui-pad"><span class="hx-lab">Writing as</span><div class="hx-radio">${voices.map(([i, n, k, t], j) => `<div class="hx-ro${j === 1 ? ' on' : ''}"><i class="hx-rd"></i>${hxAv(i)}<span class="hx-rt"><b>${n}</b><small>${t}</small></span><span class="hx-st${j === 1 ? '' : ' muted'}">${k}</span><kbd>${MOD}${IS_MAC ? '' : ' '}${j + 1}</kbd></div>`).join('')}</div></div>`)}
     ${card('hx-b-ideas', '<b>Fresh ideas every day.</b> Voice notes, links and screenshots turn into drafts in your voice, so you’re never stuck on what to say.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-ideas">${ideas.map(([i, t, s]) => `<div class="hx-li"><span class="hx-ii">${ic(i, 'xs')}</span><span>${esc(t)}</span><span class="hx-st${s === 'Drafted' ? '' : ' open'}">${s}</span></div>`).join('')}</div></div>`)}
     ${card('hx-b-inbox', '<b>Be first to reply.</b> Replies to your posts arrive with an answer already written in your voice. Edit it, send it, next.',
-      `<div class="hx-ui hx-ib"><div class="hx-ibl">${[[20, 'Jay Kim', 'Same. What size do you drop to?', 1], [21, 'Lena Vogt', 'Saving this for the next red week', 0], [3, 'Kwame Mensah', 'Boring is underrated too', 0]].map(([p, n, t, on]) => `<div class="hx-ibr${on ? ' on' : ''}">${hxAv(p)}<span><b>${n}</b><small>${esc(t)}</small></span>${on ? '<i></i>' : ''}</div>`).join('')}</div>
+      `<div class="hx-ui hx-ib"><div class="hx-ibl">${[[20, 'Jay Kim', 'Same. What size do you drop to?', 1], [21, 'Lena Vogt', 'Saving this for the next red week', 0], [23, 'Camila Reyes', 'boring is the strategy. sending this to my students.', 0]].map(([p, n, t, on]) => `<div class="hx-ibr${on ? ' on' : ''}">${hxAv(p)}<span><b>${n}</b><small>${esc(t)}</small></span>${on ? '<i></i>' : ''}</div>`).join('')}</div>
       <div class="hx-ibx"><div class="hx-q">${hxAv(20)}<div><p class="hx-pw"><b>Jay Kim</b> <span>@jaytradesdaily · 4m</span></p><p>Same. What size do you drop to?</p></div></div>
         <div class="hx-dra"><span class="hx-lab">${ic('voice', 'xs')} Drafted in your voice</span><p>Half, until I have a green day. Then back to normal. No exceptions, that’s the whole trick.</p><div class="hx-cmb"><span class="hx-wb">${ic('send', 'xs')} Send</span><span class="hx-gb">Edit</span><span class="hx-gb">Skip</span></div></div></div></div>`)}
   </div>`;
@@ -12514,9 +12530,9 @@ const HZ_WHO = [
   { k: 'ghost', bio: 'Ghostwriter for six founders', tab: 'Ghostwriters', p: 16, ph: PHOTO.team, h: 'Six clients. Six voices. Zero mix-ups.', d: 'Noah writes for six founders. Each one gets their own voice, and a review link to approve the exact words before anything posts.',
     li: ['Up to 8 client voices on Studio', 'Clients comment on the exact words', 'Nothing posts until it’s approved'],
     ba: [['<s>i feel like</s> we should talk more about burnout in startups', 'We should talk more about burnout in startups.'], ['<s>honestly</s> the best hire we made was <s>basically</s> a former teacher', 'The best hire we made was a former teacher.']] },
-  { k: 'traders', bio: 'Swing trader, journals every trade', tab: 'Traders', p: 18, ph: PHOTO.cafe, h: 'Your trade log, posted before the open.', d: 'Theo journals every trade. Hookworthy turns the lesson into a first line and lines it up before the bell.',
+  { k: 'traders', bio: 'Swing trader, 7 years', tab: 'Traders', p: 18, ph: PHOTO.cafe, h: 'Your trade log, posted before the open.', d: 'Theo journals every trade. Hookworthy turns the lesson into a first line and lines it up before the bell.',
     li: ['Charts and P&L screenshots become drafts', 'Posts timed before the market opens', 'A ping when a post takes off'],
-    ba: [['<s>so i think</s> the most underrated thing in trading is <s>honestly</s> <s>just</s> sizing down after a loss', HX_SHARP], ['<s>not financial advice but</s> i <s>basically</s> stopped trading the open', 'I stopped trading the open. Here’s why:']] }
+    ba: [['<s>honestly</s> the best trade i made this month was <s>probably</s> the one i skipped', hgSharpen('honestly the best trade i made this month was probably the one i skipped').first], ['<s>not financial advice but</s> i <s>basically</s> stopped trading the open', hgSharpen('not financial advice but i basically stopped trading the open', { more: true }).first]] }
 ];
 function hzWhoHTML() {
   return `<div class="hz-tabs" id="hz-who-tabs" role="tablist" aria-label="Who it’s for"><span class="hx-thumb" aria-hidden="true"></span>${HZ_WHO.map((w, i) => `<button type="button" role="tab" id="wht-${w.k}" aria-controls="whp-${w.k}" aria-selected="${!i}" tabindex="${i ? -1 : 0}" data-wh="${w.k}">${w.tab}</button>`).join('')}</div>
@@ -12528,8 +12544,8 @@ function hzWhoHTML() {
 
 /* ---------- pricing: three cards, Pro on the other theme ---------- */
 const HX_PLANS = [
-  { k: 'free', name: 'Free', blurb: 'Your next post, on us.', inc: ['Sharpen any line, unlimited', 'Quick rewrites on your device', 'Live previews for every network', 'Review links', 'Schedule up to 10 posts'] },
-  { k: 'pro', name: 'Pro', blurb: 'For showing up most days.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice', 'Your week, drafted from your ideas', 'Replies drafted in your voice', 'A ping when a post takes off', 'Unlimited scheduling'] },
+  { k: 'free', name: 'Free', blurb: 'Your next post, on us.', inc: ['Sharpen any line, unlimited', 'Claude rewrites, 10 a day', 'Live previews for every network', 'Review links', 'Schedule up to 10 posts'] },
+  { k: 'pro', name: 'Pro', blurb: 'For showing up most days.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice, 1,000 a month', 'Your week, drafted from your ideas', 'Replies drafted in your voice', 'A ping when a post takes off', 'Unlimited scheduling'] },
   { k: 'studio', name: 'Studio', blurb: 'For writing as your clients.', inc: ['Everything in Pro, and:', 'Up to 8 client voices', 'Clients approve before anything posts', 'Review links per client'] }
 ];
 const hzBillNote = (k, y) => k === 'free' ? 'No card, ever' : y ? `Billed yearly, $${PRICES[k][0] * 12} a year` : `Billed monthly, or $${PRICES[k][0]} a month yearly`;
@@ -12761,7 +12777,7 @@ function hxInitHome() {
 
   /* results: 7 or 30 days, and a chart you can read by hovering */
   const rs = $('.hx-sc-results', demo), chw = $('#hx-chw'), guide = $('.hx-guide', chw);
-  const KP = { 30: HX_KPI, 7: [['Views', '12.6K', '+18%'], ['Likes', '488', '+11%'], ['Replies', '96', '+24%'], ['New followers', '58', '+12%']] }, FOL = { 30: ['4,812', '+186 in 30 days', 'This month'], 7: ['4,812', '+58 this week', 'This week'] };
+  const KP = { 30: HX_KPI, 7: [['Views', '43.1K', '+38%'], ['Likes', '866', '+29%'], ['Replies', '98', '+24%'], ['New followers', '58', '+12%']] }, FOL = { 30: ['4,812', '+186 in 30 days', 'This month'], 7: ['4,812', '+58 this week', 'This week'] };
   let rng = 30;
   $('.hx-seg2', rs).addEventListener('click', e => { const b = e.target.closest('[data-rr]'); if (!b) return; hold(); rs.dataset.touched = '1'; rng = +b.dataset.rr;
     $$('[data-rr]', rs).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
@@ -12769,8 +12785,8 @@ function hxInitHome() {
     const [f, fd, ln] = FOL[rng]; $('#hx-fol').textContent = f; $('#hx-fold').textContent = fd; $('#hx-legn').textContent = ln;
     $('svg', chw).outerHTML = hxChart('hxg1', HX_SERIES[rng]); });
   chw.addEventListener('pointermove', e => { const r = chw.getBoundingClientRect(), pts = HX_SERIES[rng], k = Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * (pts.length - 1)), x = k / (pts.length - 1) * r.width;
-    const y = r.height - (8 + pts[k] / 64 * (100 - 16)) / 100 * r.height, total = 4812 - (pts[pts.length - 1] - pts[k]) * (rng === 30 ? 3.2 : 3.2);
-    guide.style.setProperty('--x', x + 'px'); guide.style.setProperty('--y', y + 'px'); $('b', guide).textContent = `${rng === 30 ? `Day ${k + 1}` : HX_DAYS[k]} · ${Math.round(total).toLocaleString()}`; guide.classList.add('on'); });
+    const y = r.height - (8 + pts[k] / 64 * (100 - 16)) / 100 * r.height, total = 4812 - (pts[pts.length - 1] - pts[k]) * (rng === 30 ? 186 / 46 : 58 / 18);
+    guide.style.setProperty('--x', x + 'px'); guide.style.setProperty('--y', y + 'px'); $('b', guide).textContent = `${rng === 30 ? `Day ${Math.round(k * 29 / (pts.length - 1)) + 1}` : HX_DAYS[k]} · ${Math.round(total).toLocaleString()}`; guide.classList.add('on'); });
   chw.addEventListener('pointerleave', () => guide.classList.remove('on'));
   frame.addEventListener('focusin', e => { if (e.target.closest('.hx-panes')) hold(); });
 
@@ -13107,7 +13123,7 @@ function initTools() {
 
 ROUTES.teams = () => {
   /* the same two clients as the in-app demo, so the names and Ctrl+number keys match */
-  const C = [{ n: 'Ledgerly', h: 'ledgerlyhq', hue: 190, k: 'Client · Priya’s voice', plats: ['x', 'li'], d: 3, line: 'I’ve hired 300 people. The best interview question is four words:' }, { n: 'Northwind', h: 'northwindco', hue: 150, k: 'Client · company voice', plats: ['li'], d: 2, line: 'We launched to 11 people. Here’s what that taught us:' }];
+  const C = [{ n: 'Ledgerly', h: 'ledgerlyhq', hue: 190, k: 'Client · Tobi’s voice', plats: ['x', 'li'], d: 3, line: 'I’ve hired 300 people. The best interview question is four words:' }, { n: 'Northwind', h: 'northwindco', hue: 150, k: 'Client · company voice', plats: ['li'], d: 2, line: 'We launched to 11 people. Here’s what that taught us:' }];
   const PN = { x: 'X', li: 'LinkedIn', threads: 'Threads', bsky: 'Bluesky' };
   const chip = v => tierChip(v, { noun: true, cls: 'sm' });
   const mod = MOD === '⌘' ? '⌘' : 'Ctrl', modP = MOD === '⌘' ? '⌘' : 'Ctrl+';
@@ -13485,7 +13501,7 @@ function todayHTML() {
   refreshBest(); const st = todayState(), lp = lastPostStats(), now = Date.now();
   const rr = (RRADAR.posts.length ? RRADAR.posts : RADAR_SAMPLE()).filter(p => !(S.radar && ((S.radar.skip || {})[p.id] || (S.radar.done || {})[p.id]))).slice(0, 2);
   const rrPic = p => Number.isInteger(p.img) ? pfAv({ n: p.name, img: p.img }, 'rr-av') : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
-  const mine = myQ().filter(q => q.status === 'published' && !q.marked).slice(-4), waiting = mine.reduce((a, q) => a + (Array.isArray(q.replies) ? q.replies.length : SHOWCASE() ? 2 + hash(q.text || q.id) % 5 : 0), 0);
+  const mine = myQ().filter(q => q.status === 'published' && !q.marked).slice(-4), waiting = mine.reduce((a, q) => a + (Array.isArray(q.replies) ? q.replies.length : SHOWCASE() ? SAMPLE_REPLIES.length : 0), 0);
   const day = n => dayKey(addDays(noonToday(), n)), list = n => S.queue.filter(q => q.day === day(n) && mineQ(q) && (q.status === 'scheduled' || (n === 0 && q.status === 'published'))).sort((a, b) => a.time.localeCompare(b.time));
   const open = n => Object.keys(BEST[dowIdx(fromKey(day(n)))] || {}).filter(t => slotDate(day(n), t).getTime() > now && !taken(day(n), t));
   const qRow = q => `<a class="ts-i" href="#week"><span class="ts-t">${fmtTime(q.time)}</span><span class="ts-x">${firstLineHTML(clip(q.text, 70))}</span>${q.status === 'published' ? `<span class="ts-s">${q.marked ? 'Marked' : 'Sent'}</span>` : ''}</a>`;
@@ -13653,11 +13669,11 @@ const RADAR = {
   crypto: { label: 'Crypto trading', trends: [['ETH ETF inflows', '+212%', 'You’re early: 38 posts so far', 1], ['Stablecoin yields', '+41%', '640 posts this week', 0], ['Memecoin fatigue', '+64%', 'Crowded: 1.2K posts', 0]],
     posts: [
       { p: 18, t: 'I lost $41,000 on one trade in 2021.\n\nIt was the best money I ever spent. Here’s the rule it taught me:', c: [640, 2100, 18400, 1400000], ago: '3h', why: [['Relatable', 'Admits a real loss with a real number. People trust scars more than wins.'], ['Hook', 'A specific dollar figure, then a twist in line two.'], ['Format', 'The rule lands in post two, so people open the thread.']], pat: 'I lost {amount} on {mistake}.\n\nIt was the best money I ever spent. Here’s the rule it taught me:' },
-      { p: 19, t: 'ETH ETF inflows just flipped positive 5 days in a row.\n\nLast time that happened, here’s what price did over the next 30 days:', c: [212, 980, 7400, 520000], ago: '5h', why: [['Early', 'Posted three hours before the story trended. The first chart gets the quote-posts.'], ['Proof', 'The chart does the arguing, so the text can stay short.'], ['Timing', '8:10 AM ET, twenty minutes before the US open.']], pat: '{Signal} just happened {n} days in a row.\n\nLast time, here’s what followed over the next 30 days:' },
+      { p: 19, t: 'ETH ETF flows came in positive 5 days in a row.\n\nLast time that happened, here’s what price did over the next 30 days:', c: [212, 980, 7400, 520000], ago: '5h', why: [['Early', 'Posted three hours before the story trended. The first chart gets the quote-posts.'], ['Proof', 'The chart does the arguing, so the text can stay short.'], ['Timing', '9:10 AM ET, twenty minutes before the US open.']], pat: '{Signal} came in positive {n} days in a row.\n\nLast time that happened, here’s what price did over the next 30 days:' },
       { p: 20, t: 'my trading journal this week:\n\nmon: +3%\ntue: +2%\nwed: -9% (revenge trade)\n\nstop revenge trading. that’s the tweet.', c: [390, 1600, 22000, 1900000], ago: '1d', why: [['Relatable', 'Everyone has a Wednesday. The loss is the point.'], ['Voice', 'Lowercase journal format. Reads unfiltered, not produced.'], ['Shareable', 'Short enough to screenshot, which is how it spread.']], pat: 'my {thing} this week:\n\nmon: {win}\ntue: {win}\nwed: {loss} ({mistake})\n\n{lesson}. that’s the tweet.' },
-      { p: 21, t: 'Everyone is watching the Fed.\n\nThe number that actually moved Bitcoin this month was stablecoin supply. Here’s how to read it in 60 seconds:', c: [180, 740, 5200, 410000], ago: '2d', why: [['Contrarian', 'Pulls attention from the obvious story to the overlooked one.'], ['Promise', '“In 60 seconds” is a small, clear payoff.'], ['Authority', 'Calm macro voice. No rockets, no hype words.']], pat: 'Everyone is watching {obvious thing}.\n\nThe thing that actually moved {outcome} was {overlooked thing}. Here’s how to read it in 60 seconds:' },
+      { p: 21, t: 'Everyone is watching the Fed.\n\nThe number that actually moved Bitcoin this month was stablecoin supply. Here’s how to read it in 60 seconds:', c: [180, 740, 5200, 410000], ago: '2d', why: [['Contrarian', 'Pulls attention from the obvious story to the overlooked one.'], ['Promise', '“In 60 seconds” is a small, clear payoff.'], ['Authority', 'Calm macro voice. No rockets, no hype words.']], pat: 'Everyone is watching {obvious thing}.\n\nThe number that actually moved {outcome} this month was {overlooked thing}. Here’s how to read it in 60 seconds:' },
       { p: 22, t: 'I read every audit from the 10 biggest DeFi exploits this year.\n\nSeven had the same bug. It’s not the one you think.', c: [260, 1100, 9100, 760000], ago: '2d', why: [['Effort', 'Signals work nobody else did: “I read every…”.'], ['Open loop', 'Withholds the answer and flips your guess.'], ['Specific', 'Ten exploits, seven with the bug. Numbers make it credible.']], pat: 'I read every {source} from {set}.\n\n{n} had the same {pattern}. It’s not the one you think.' },
-      { p: 23, t: 'Beginners ask me which coin to buy.\n\nWrong question. Here are the 3 questions I make every student answer first:', c: [150, 520, 4800, 300000], ago: '3d', why: [['Reframe', '“Wrong question” turns a common ask into a lesson.'], ['List', 'Three items: easy to save, easy to finish.'], ['Audience', 'Speaks to beginners without talking down.']], pat: '{Audience} ask me {common question}.\n\nWrong question. Here are the 3 I make everyone answer first:' }
+      { p: 23, t: 'Beginners ask me which coin to buy.\n\nWrong question. Here are the 3 questions I make every student answer first:', c: [150, 520, 4800, 300000], ago: '3d', why: [['Reframe', '“Wrong question” turns a common ask into a lesson.'], ['List', 'Three items: easy to save, easy to finish.'], ['Audience', 'Speaks to beginners without talking down.']], pat: '{Audience} ask me {common question}.\n\nWrong question. Here are the 3 questions I make every student answer first:' }
     ] },
   bip: { label: 'Building in public', trends: [['Pricing experiments', '+88%', 'You’re early: 51 posts so far', 1], ['AI wrappers', '+23%', 'Crowded: 3.4K posts', 0], ['Solo SaaS revenue', '+37%', '900 posts this week', 0]],
     posts: [
@@ -13874,10 +13890,10 @@ const HOOKS_GENERAL = [
 /* trading formulas: the ticker, the entry, the stop, the amount and the count are always the writer's, so they're always blanks */
 const HOOKS_TRADING = [
   ['Contrarian', 'I stopped using [indicator]. Here’s what I watch instead.'], ['Contrarian', 'I tried [common trading advice] for [N months]. Here’s what I do instead.'], ['Contrarian', 'You don’t need [N indicators] to trade [market]. You need one rule you follow.'], ['Contrarian', '[Popular strategy] isn’t an edge. Here’s why.'], ['Contrarian', 'The worst trading advice I ever took: [advice].'], ['Contrarian', 'Buying the dip on [ticker] isn’t a plan. This is:'],
-  ['Story', 'I lost [amount] on [one trade]. Here’s the rule it taught me:'], ['Story', 'I moved my stop on [ticker] once. It cost me [amount].'], ['Story', 'My worst week: [N trades], [what it cost]. What I changed after:'], ['Story', '[N years] ago I blew up [an account]. Here’s what I do differently now.'], ['Story', 'I almost quit trading after [event]. One rule kept me in:'], ['Story', 'The day I [mistake] changed how I size every trade.'],
-  ['Listicle', '[N] rules I wrote after [my worst trade]:'], ['Listicle', '[N] questions I ask before every [entry]:'], ['Listicle', '[N] mistakes that cost me [amount] in [year]:'], ['Listicle', 'The [N]-step checklist I run before I buy [ticker]:'], ['Listicle', '[N] lessons from [N trades] in my journal:'], ['Listicle', '[N] things I wish I knew before [my first leveraged trade]:'],
+  ['Story', 'I lost [amount] on [one trade]. Here’s the rule it taught me:'], ['Story', 'I moved my stop on [ticker] once. It cost me [stop cost].'], ['Story', 'My worst week: [N] trades, [what it cost]. What I changed after:'], ['Story', '[N years] ago I blew up [an account]. Here’s what I do differently now.'], ['Story', 'I almost quit trading after [event]. One rule kept me in:'], ['Story', 'The day I [mistake] changed how I size every trade.'],
+  ['Listicle', '[N] rules I wrote after [my worst trade]:'], ['Listicle', '[N] questions I ask before every [entry]:'], ['Listicle', '[N] mistakes that cost me [mistakes cost] in [year]:'], ['Listicle', 'The [N]-step checklist I run before I buy [ticker]:'], ['Listicle', '[N] lessons from [N trades] in my journal:'], ['Listicle', '[N] things I wish I knew before [my first leveraged trade]:'],
   ['Curiosity', 'The one column in my trading journal that changed [what changed]:'], ['Curiosity', 'Why does [ticker] keep [pattern]? It took me [time] to see it.'], ['Curiosity', 'There’s one thing every [kind of trader] gets wrong about [stop losses].'], ['Curiosity', 'I journaled [N trades] for [N weeks]. Here’s the pattern I found.'], ['Curiosity', 'Funding on [ticker] just [did what]. Here’s how I read it:'], ['Curiosity', 'The most underrated skill in trading isn’t [obvious skill].'],
-  ['Proof', 'Entry [price], stop [price], target [price] on [ticker]. Here’s my reasoning:'], ['Proof', '[N] trades, [X]% win rate, [Y]R average. The full breakdown:'], ['Proof', '[X]% of my P&L came from [one setup]:'], ['Proof', 'Exactly how I size a trade at [risk %] risk, step by step:'], ['Proof', 'My [month] P&L: [amount]. What worked, what didn’t:'], ['Proof', 'The journal template that stopped my [revenge trades]:'],
+  ['Proof', 'Entry [price], stop [price], target [price] on [ticker]. Here’s my reasoning:'], ['Proof', '[N trades], [X]% win rate, [Y]R average. The full breakdown:'], ['Proof', '[share]% of my P&L came from [one setup]:'], ['Proof', 'Exactly how I size a trade at [risk %] risk, step by step:'], ['Proof', 'My [month] P&L: [month pnl]. What worked, what didn’t:'], ['Proof', 'The journal template that stopped my [revenge trades]:'],
   ['Question', 'What’s one rule you’d never trade without? Mine is [rule].'], ['Question', 'Be honest: do you set your stop before you enter, or after [price moves]?'], ['Question', 'If you started trading over with [amount], what’s the first thing you’d do?'], ['Question', 'What’s the most overrated indicator in [market]?'], ['Question', '[Ticker A] or [ticker B] for the next [timeframe]? Tell me why.'], ['Question', 'What did your worst trade teach you about [risk]?']
 ];
 const hookRows = (rows, set) => rows.map(([k, t]) => ({ k, t, set, s: hookScore(fillText(t, { set }).replace(/\[([^\]]+)\]/g, '$1')).score }));
@@ -14205,7 +14221,7 @@ function drawQSide() {
   <div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span>${MD.length ? `<span class="faint" style="font-size:12px">${MD.length}</span>` : ''}</div>
     ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd" draggable="${!blank}" data-di="${i}" tabindex="0" role="button" aria-label="${esc(clip(t, 80).replace(/[\s.!?:;,…]+$/, ''))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : `<p class="faint" style="font-size:13px">Nothing waiting. Ideas you write up land here.</p>`}</div>
   <div class="card q-times"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Your posting times</span><button class="btn ghost sm" data-qact="times" aria-haspopup="dialog" aria-label="Edit your posting times">Edit</button></div>
-    <ul class="qtm-list">${SLOTS.map(t => `<li><b class="mono">${fmtTime(t)}</b><span>${esc(daysLabel(S.slots ? S.slots[t] : null))}</span></li>`).join('')}</ul>
+    <ul class="qtm-list">${(() => { const g = new Map(); SLOTS.forEach(t => { const l = daysLabel(S.slots ? S.slots[t] : null); g.set(l, [...(g.get(l) || []), fmtTime(t)]); }); return [...g].map(([l, ts]) => `<li><b class="mono">${ts.join(' · ')}</b><span>${esc(l)}</span></li>`).join(''); })()}</ul>
     <p class="faint" style="font-size:12px">${S.slots ? 'Your times. New posts are suggested here first.' : 'Suggested times. Change them to match your day.'}</p></div>`;
 }
 /* "Every day", "Weekdays", "Mon, Wed, Fri" */
@@ -14259,7 +14275,7 @@ function series(days) {
   const r = rng(days * 7 + 3); const today = new Date();
   return Array.from({ length: days }, (_, i) => {
     const dt = new Date(today.getTime() - (days - 1 - i) * DAY); const dow = dt.getDay();
-    const trend = 9000 + (i / days) * 4200; const spike = dow === 2 ? 1.42 : dow === 4 ? 1.18 : dow === 0 || dow === 6 ? .8 : 1;
+    const trend = 4200 + (i / days) * 1900; const spike = dow === 2 ? 1.42 : dow === 4 ? 1.18 : dow === 0 || dow === 6 ? .8 : 1;
     return Math.round(trend * spike * (.9 + r() * .2));
   });
 }
@@ -14301,12 +14317,13 @@ function drawInsights() {
   drawPosts(); if (HIST().length >= 8 && ANALYSIS().measured >= 8) return drawInsightsReal();
   const d = series(RANGE); const total = d.reduce((a, b) => a + b, 0); const f = RANGE / 30;
   const fewNums = HIST().length >= 8; /* posts came in, but fewer than 8 with numbers */
-  const kpis = [['Impressions', fmtN(total), '+18%', 1], ['Engagement', (3.1 + (RANGE === 7 ? .4 : 0)).toFixed(1) + '%', '+0.6 pts', 1], ['New followers', fmtN(Math.round(412 * f)), '+9%', 1], ['Replies', fmtN(Math.round(1284 * f)), '−4%', 0]];
-  const types = [['Contrarian', 3.2], ['Story', 2.1], ['Listicle', 1.6], ['How-to', 1.4], ['Question', 1.1], ['Announcement', .7]];
-  $('#ins').innerHTML = `<div class="ins-demo"><span>${ic('chart', 'sm')} ${fewNums ? (ANALYSIS().measured ? `Only ${ANALYSIS().measured} of your ${fmtN(HIST().length)} posts came with likes or reposts, and Results needs 8, so these are sample numbers. Your X archive has the real ones.` : `Your ${fmtN(HIST().length)} posts came without likes or reposts, so these are sample numbers. Your X archive has the real ones.`) : 'Sample numbers. Bring your posts and every line here becomes yours.'}</span><button class="btn sm" data-act="import">${ic('upload', 'sm')} ${fewNums ? 'Bring your X archive' : 'Bring your posts'}</button></div><div class="insight-hero">${ihVs(KIND_L('Contrarian'), 3.2, 'replies')}<span class="pill ex-chip">Sample account</span><h2 class="display">Hot takes get <em>3.2× the replies.</em></h2><p>In this sample account, posts that push back on common advice pulled 3.2× the replies of everything else. Bring your posts to see which kind works for you.</p><div class="acts"><button class="btn${$('#ins-ex') ? '' : ' primary'}" data-nact="contra">${ic('swap', 'sm')} Write a hot take</button><button class="btn" data-nact="posts">See the posts</button></div></div>
+  const kpis = [['Impressions', fmtN(total), '+12%', 1], ['Engagement', (2.3 + (RANGE === 7 ? .2 : 0)).toFixed(1) + '%', '+0.3 pts', 1], ['New followers', fmtN(Math.round(186 * f)), '+9%', 1], ['Replies', fmtN(Math.round(341 * f)), '+21%', 1]];
+  /* average replies per post, by kind: hot takes 26 against 11 for everything else, which is the hero's 2.4× */
+  const types = [['Contrarian', 26], ['Question', 17], ['Story', 14], ['Listicle', 10], ['How-to', 9], ['Announcement', 5]];
+  $('#ins').innerHTML = `<div class="ins-demo"><span>${ic('chart', 'sm')} ${fewNums ? (ANALYSIS().measured ? `Only ${ANALYSIS().measured} of your ${fmtN(HIST().length)} posts came with likes or reposts, and Results needs 8, so these are sample numbers. Your X archive has the real ones.` : `Your ${fmtN(HIST().length)} posts came without likes or reposts, so these are sample numbers. Your X archive has the real ones.`) : 'Sample numbers. Bring your posts and every line here becomes yours.'}</span><button class="btn sm" data-act="import">${ic('upload', 'sm')} ${fewNums ? 'Bring your X archive' : 'Bring your posts'}</button></div><div class="insight-hero">${ihVs(KIND_L('Contrarian'), 2.4, 'replies')}<span class="pill ex-chip">Sample account</span><h2 class="display">Hot takes get <em>2.4× the replies.</em></h2><p>In this sample account, posts that push back on common advice pulled 2.4× the replies of everything else. Bring your posts to see which kind works for you.</p><div class="acts"><button class="btn${$('#ins-ex') ? '' : ' primary'}" data-nact="contra">${ic('swap', 'sm')} Write a hot take</button><button class="btn" data-nact="posts">See the posts</button></div></div>
   <div class="kpi-chips" aria-label="Sample account, last ${RANGE} days"><span class="kc-l">Sample account · last ${RANGE} days</span>${kpis.map(([k, v, dl, up]) => `<span class="kc"><span class="kc-k">${k}</span><b>${v}</b><span class="delta ${up ? 'up' : 'down'}">${dl}</span></span>`).join('')}</div>
   <div class="card chart-card sec" style="margin-top:16px"><div class="chart-h"><div><h3 class="h3">Impressions</h3><p class="faint" style="font-size:13px;margin-top:2px">Sample account: Tuesday spikes are 8:40 AM posts landing.</p></div><button class="btn ghost sm" data-nact="table">View as table</button></div><div class="chart" id="line"></div><div class="tbl-wrap" id="chart-table" hidden><table class="data"><thead><tr><th>Day</th><th class="n">Impressions</th></tr></thead><tbody>${d.map((v, i) => { const dt = new Date(Date.now() - (d.length - 1 - i) * DAY); return `<tr><td>${DOW[dt.getDay()]} ${MON[dt.getMonth()]} ${dt.getDate()}</td><td class="n">${v.toLocaleString()}</td></tr>`; }).join('')}</tbody></table></div></div>
-  <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">Replies by kind of post</h3><p class="faint" style="font-size:13px;margin-top:2px">Compared with the sample account’s average post</p></div></div><div class="hbars">${types.map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${esc(KIND_L(k))}: ${v}× the average replies"><span>${esc(KIND_L(k))}</span><div class="track"><div class="fillb" style="width:${v / 3.2 * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${v}×</span></div>`).join('')}</div></div>
+  <div class="grid-2 sec" style="margin-top:16px"><div class="card chart-card"><div class="chart-h"><div><h3 class="h3">Replies by kind of post</h3><p class="faint" style="font-size:13px;margin-top:2px">Average replies per post, sample account</p></div></div><div class="hbars">${types.map(([k, v], i) => `<div class="hbar ${i === 0 ? 'top' : ''}" data-tip="${esc(KIND_L(k))}: ${v} replies per post on average"><span>${esc(KIND_L(k))}</span><div class="track"><div class="fillb" style="width:${v / 26 * 100}%;animation-delay:${i * 60}ms"></div></div><span class="num">${v}</span></div>`).join('')}</div></div>
   <div class="card chart-card"><div class="chart-h"><div><h3 class="h3">When replies come in</h3><p class="faint" style="font-size:13px;margin-top:2px">First-hour replies. Stronger colour, more replies</p></div></div>${heatmap()}</div></div>
   <div class="grid-3 sec" style="margin-top:16px">
     <div class="card ins-card"><span class="pill ex-chip">Sample</span><p class="big">4–6 posts beat longer threads by <em>41%</em>.</p><p>Past six, readers drop off fast.</p><button class="btn sm" data-nact="thread" style="justify-self:start">Draft a 5-post thread</button></div>
@@ -14391,7 +14408,7 @@ function ptData() {
   let rows = h.map(p => ptRow(p)), sample = false;
   pub.forEach(({ q, m }) => { if (seen.has(q.text.trim()) || (q.xIds && ids.has('x-' + q.xIds[0]))) return; rows.push(ptRow({ id: q.id, text: q.text, thread: q.tweets.slice(1), at: slotDate(q.day, q.time).getTime(), likes: m.likes, replies: m.replies, reposts: m.reposts, views: m.views })); });
   /* the showcase has no posts of its own: the sample account's top posts stand in, labelled Sample */
-  if (!rows.length && SHOWCASE()) { sample = true; rows = TOP_POSTS.map(p => ptRow({ ...p, at: Date.now() - p.days * DAY, reposts: Math.round(p.likes * .17) })); }
+  if (!rows.length && SHOWCASE()) { sample = true; rows = TOP_POSTS.map(p => ptRow({ ...p, at: Date.now() - p.days * DAY, reposts: Math.round(p.likes * .09) })); }
   _pt = { key, v: { rows, sample, views: rows.some(r => r.views > 0) } }; return _pt.v;
 }
 const ptHook = r => r.hook == null ? (r.hook = hookScore(r.text).score) : r.hook;
@@ -14463,7 +14480,7 @@ function ptMenu(anchor, id) {
 function heatmap() {
   const r = rng(RANGE); const cols = ['6a', '9a', '12p', '3p', '6p', '9p']; const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const val = (di, ci) => clamp((ci === 1 ? .7 : ci === 2 ? .55 : ci === 4 ? .5 : .22) + (di === 1 && ci === 1 ? .3 : 0) + (di >= 5 ? -.15 : 0) + (di === 3 && ci === 2 ? .25 : 0) + (r() - .5) * .2, .06, 1);
-  return `<div class="heat" role="img" aria-label="Sample heatmap of first-hour replies by day and time. Peak is Tuesday 9am."><span></span>${cols.map(c => `<span class="cl">${c}</span>`).join('')}${days.map((d, di) => `<span class="rl">${d}</span>${cols.map((c, ci) => { const v = val(di, ci); return `<span class="c" style="opacity:${(.12 + v * .88).toFixed(2)}" data-tip="${d} ${c}: ${Math.round(v * 48)} replies/hr avg"></span>`; }).join('')}`).join('')}</div>`;
+  return `<div class="heat" role="img" aria-label="Sample heatmap of first-hour replies by day and time. Peak is Tuesday 9am."><span></span>${cols.map(c => `<span class="cl">${c}</span>`).join('')}${days.map((d, di) => `<span class="rl">${d}</span>${cols.map((c, ci) => { const v = val(di, ci); return `<span class="c" style="opacity:${(.12 + v * .88).toFixed(2)}" data-tip="${d} ${c}: ${Math.round(v * 6)} first-hour replies, avg"></span>`; }).join('')}`).join('')}</div>`;
 }
 function lineChart(host, data, end = Date.now()) {
   const W = Math.max(300, Math.min(900, Math.round(host.clientWidth || 720))), H = W < 480 ? 200 : 220, pl = 40, pr = 12, pt = 12, pb = 26; const ticks = niceTicks(Math.max(...data)); const nice = ticks[ticks.length - 1]; const n = data.length;
@@ -14513,7 +14530,7 @@ ROUTES.voice = () => {
   const lean = real ? an.lean.slice(0, 8).map(x => [x.w, x.n]) : [['size', 48], ['journal', 64], ['honestly', 31], ['boring', 22], ['stop loss', 29], ['the rule', 17], ['patience', 26], ['exit', 19]];
   const works = pr && pr.works && pr.works.length ? pr.works : real ? an.kindStats.filter(k => k.n >= 3).slice(0, 4).map(k => `${k.k} posts: ${k.x}× your median (${k.n} posts)`) : null;
   const status = pr ? `Learned ${agoLabel(pr.at)} from ${pr.n} of your posts, by ${pr.by || 'Claude'}.` : real ? `${an.n} posts brought in. Choose “Learn my voice” and this page becomes yours.` : 'Your starting voice, set by the tone sliders.';
-  const have = HIST().length, need = 8;
+  const have = HIST().length || (SHOWCASE() ? myQ().filter(q => q.status === 'published').length : 0), need = 8;
   mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Your words in, your voice out. Tune it here and every rewrite follows.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${real ? 'primary' : ''}" id="learn" ${real ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${real ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Bring at least 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}${real && aiOn() ? crTag('voice') : ''}</button></div></div>
   <p class="v-status"><span class="ai-badge" data-mode="${LLM.mode}">${aiBadgeInner()}</span><span>${esc(status)}</span>${real ? '' : `<span class="${start ? 'sr' : 'faint'}" id="learn-why">Bring 8 posts and “Learn my voice” turns on.</span>`}</p>
   <div class="voice-hero">

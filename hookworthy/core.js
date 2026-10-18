@@ -1548,7 +1548,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const HK_SUBJ = s => /^we$/i.test(s) ? 'We' : 'I';
   /* bait and announcements a hook never needs */
   const HK_BAIT = /\s*(?:[,.!]?\s*(?:like|rt|retweet|repost|follow|bookmark)(?:\s*(?:\+|&|and|\/)\s*(?:rt|retweet|repost|follow|bookmark|like))*\s+(?:if|for)\b[^.!?]*|[,.!]?\s*comment\s+["“']?\w+["”']?\s+(?:for|and i['’]ll|to get)\b[^.!?]*|[,.!]?\s*(?:agree|thoughts|am i wrong|change my mind)\s*\?|[,.!]?\s*\(?a thread\)?|[,.!]?\s*🧵(?:👇)?|\s*👇+)\s*$/i;
-  const HK_OPEN = /^(?:(?:hey|hi|hello|yo|gm)(?: (?:guys|everyone|all|fam|frens|friends|team|y['’]?all))?|(?:ok(?:ay)?,?\s+)?so|well|look|anyway|alright|guys|quick (?:thought|one|reminder|take)|(?:just )?a (?:quick )?(?:reminder|heads[- ]up|thought)(?: that)?|unpopular opinion|hot take|real talk|psa)\b[,.:!—-]*\s+(?=\S)/i;
+  const HK_OPEN = /^(?:(?:hey|hi|hello|yo|gm)(?: (?:guys|everyone|all|fam|frens|friends|team|y['’]?all))?|(?:ok(?:ay)?,?\s+)?so|well|look|anyway|alright|guys|quick (?:thought|one|reminder|take)|(?:just )?a (?:quick )?(?:reminder|heads[- ]up|thought)(?: that)?|unpopular opinion|hot take|real talk|psa|(?:this is )?not financial advice,?(?: but)?|nfa,?(?: but)?)\b[,.:!—-]*\s+(?=\S)/i;
   const HM = {
     /* "I spent $1,200 on courses and the best lesson was free: write every day" → "$1,200 on courses. The best lesson was free: write every day." */
     money(x) {
@@ -1660,6 +1660,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* 1. clean: warm-ups, hedges and bait out, the end finished */
     let x = L;
     for (let i = 0; i < 3; i++) { const y = x.replace(HK_OPEN, ''); if (y === x) break; x = y; said.add('warm'); }
+    const kept = x; /* what's left once the warm-up is gone: the words a version has to keep */
     const xb = x.replace(HK_BAIT, ''); if (xb !== x && xb.trim().length > 8) { x = xb; said.add('bait'); }
     const h0 = hedgeN(x); x = cutHedges(x, { start: true, end: true }); soft = Math.max(0, h0 - hedgeN(x));
     x = sub(x, WORDY); x = /\b(edge|key|answer|trick|secret|move|problem|fix|lesson|goal|rule|play|mistake|point|thing|cure|solution|habit|tell)\s+(?:is|was|are)\s+not\b/i.test(x) ? sub(x, CONTRACT_W.slice(1)) : sub(x, CONTRACT_W);
@@ -1678,13 +1679,13 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* 3. a reason to read on, only when there is more to read and the line makes a claim or starts a story */
     const restOpens = /^\s*(?:here['’]s|here is|why|because|the reason|that['’]s why)\b/i.test(rest);
     if (more && !restOpens) cands.slice().forEach(c => { if (c.loop || /[:?…]$/.test(c.t) || /\bhere['’]s (why|how|what)\b/i.test(c.t) || c.t.length > 110) return; const story = HK_STORY.test(c.t), claim = HK_CLAIM.test(c.t); if (!story && !claim) return;
-      cands.push({ t: c.t.replace(/[.!]$/, '') + (story && !claim ? '. Here’s what happened:' : '. Here’s why:'), mv: [...c.mv, 'loop'], loop: true, gen: true }); });
+      cands.push({ t: c.t.replace(/[.!]$/, '') + (story && !claim && !/\b(stopped|quit|started|switched|left|sold|dropped)\b/i.test(c.t) ? '. Here’s what happened:' : '. Here’s why:'), mv: [...c.mv, 'loop'], loop: true, gen: true }); });
     /* 4. finish each one in the writer's style, then keep only the ones that keep their facts */
-    const n0 = numsOf(L).sort().join('|'), k0 = ticksOf(L).sort().join('|'), neg0 = negsOf(L), e0 = cnt(L, /\p{Extended_Pictographic}/gu), hy0 = cnt(L, HYPE_RX);
+    const n0 = numsOf(L).sort().join('|'), k0 = ticksOf(L).sort().join('|'), neg0 = negsOf(L.replace(/\bnot financial advice\b/gi, '')), e0 = cnt(L, /\p{Extended_Pictographic}/gu), hy0 = cnt(L, HYPE_RX);
     const names0 = (L.match(/(?<=[\p{L}\p{N},%)]\s)[A-Z][a-z]+(?:[A-Z][a-z]+)?\b/gu) || []).filter(w => !/^(I|The|A|An|It|My|We|Our|But|And|So|Here|This|That|Then|Just|Most|Your|You|Stop|Do|Hey|Guys)$/.test(w));
     const FILL = /^(actually|basically|literally|honestly|imo|tbh|ngl|kinda|sorta|probably|maybe|perhaps|really|very|just|think|feel|guess|quite|pretty|hey|guys|wanted|share|thoughts|thread|here|thing|reminder|quick|okay|important|essential|crucial|should|need|learned|realized)$/;
     const cw = z => [...new Set((lcw(z).match(/[a-z0-9$%]{3,}/g) || []).filter(w => !STOP.has(w) && !FILL.test(w)).map(w => w.slice(0, 4)))];
-    const c0 = cw(L);
+    const c0 = cw(kept);
     const seen = new Set(), out = [];
     for (const c of cands) {
       let y = tidyT(c.t).replace(/\s+([.!?:])/g, '$1').trim(); if (!y) continue;
