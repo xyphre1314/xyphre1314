@@ -4935,7 +4935,9 @@ button.hx-gb, button.hx-wb, button.hx-sharpb{ cursor:pointer; } button.hx-gb:hov
 @media (max-width:760px){
   .hx-sc-write.pvshow .hx-ed{ display:none; } .hx-sc-write.pvshow .hx-pv{ display:block !important; overflow-y:auto; } .pvshow .hx-pvback{ display:inline-flex; }
   .st-stage{ aspect-ratio:auto !important; min-height:440px; } .st-sc.on{ position:relative; min-height:440px; }
-  .hz-tabs button{ height:34px; padding:0 11px; font-size:14px; } .hz-tabs{ gap:0; }
+  #hz-who-tabs button{ height:34px; padding:0 11px; font-size:14px; } #hz-who-tabs{ gap:0; }
+  .st-days{ grid-template-columns:repeat(7,minmax(0,1fr)) !important; } .st-day{ min-width:0; justify-items:center; text-align:center; overflow:hidden; }
+  .st-pc{ width:100%; font-size:0 !important; padding:4px 2px !important; text-align:center; } .st-pc i{ font-size:9.5px; line-height:1.2; white-space:normal; }
 }
 /* week screen */
 .hx-wk{ display:grid; grid-template-columns:minmax(0,1fr) 224px; flex:1; min-height:0; }
@@ -12471,7 +12473,7 @@ function hxBentoHTML() {
   const ideas = [['mic', 'Sizing down after a loss', 'Drafted'], ['link', 'Funding flipped negative', 'Saved'], ['shot', 'My $4,000 week in March', 'Drafted'], ['write', 'Indicators, ranked', 'Saved']];
   return `<div class="hx-bento">
     ${card('hx-b-sharp', '<b>Sharpen any line.</b> Pick a few words and flip through three better versions. Keep the one that sounds like you; your facts stay put.',
-      `<div class="hx-ui hx-ui-pad hx-shw" id="hx-shw"><p class="hx-pw hx-shw-who">${hxAv('me')}<b>heycape</b> <span>@heycape_</span></p><p class="hx-shl0">${esc(HX_SHARP)}</p><p class="hx-shl">I lost $4,000 in March <span class="hx-sel"><span class="hx-swap">${['because I kept doubling my size', 'doubling my size to win it back', 'trying to win it all back by Friday'].map((t, i) => `<span class="hx-alt${i === 0 ? ' on' : ''}">${t}</span>`).join('')}</span></span>&#8288;.</p><div class="hx-shbar"><span class="hx-gb">${ic('left', 'xs')}</span><span class="hx-shn" id="hx-shn">1 of 3</span><span class="hx-gb">${ic('right', 'xs')}</span><span class="hx-wb">Use this</span><span class="hx-gb">${ic('reply', 'xs')} Comment</span></div><p class="hx-shl2">Now I cut size in half after any red day. Boring. My account is still here.</p></div>`)}
+      `<div class="hx-ui hx-ui-pad hx-shw" id="hx-shw"><p class="hx-pw hx-shw-who">${hxAv('me')}<b>heycape</b> <span>@heycape_</span></p><p class="hx-shl0">${esc(HX_SHARP)}</p><p class="hx-shl">I lost $4,000 in March <span class="hx-sel"><span class="hx-swap">${['because I kept doubling my size', 'doubling my size to win it back', 'trying to win it all back by Friday'].map((t, i) => `<span class="hx-alt${i === 0 ? ' on' : ''}">${t}.</span>`).join('')}</span></span></p><div class="hx-shbar"><span class="hx-gb">${ic('left', 'xs')}</span><span class="hx-shn" id="hx-shn">1 of 3</span><span class="hx-gb">${ic('right', 'xs')}</span><span class="hx-wb">Use this</span><span class="hx-gb">${ic('reply', 'xs')} Comment</span></div><p class="hx-shl2">Now I cut size in half after any red day. Boring. My account is still here.</p></div>`)}
     ${card('hx-b-nets', '<b>Peek at every feed before they read.</b> X, Threads, LinkedIn and Bluesky each get a version that fits, and long posts on free X become a thread by themselves.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-nets">${nets.map(([k, n, lim, f]) => `<div class="hx-li">${hxTile(k, 'sm')}<span><b>${n}</b><small>${lim}</small></span><span class="hx-bar"><i style="--f:${f}"></i></span><span class="hx-ck">${ic('check', 'xs')}</span></div>`).join('')}</div></div>`)}
     ${card('hx-b-review', '<b>Notes on the exact words.</b> Send one review link. People sign in with X or Google and comment right beside your draft.',

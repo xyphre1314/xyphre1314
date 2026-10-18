@@ -797,3 +797,14 @@ The owner asked for stronger words that rhyme only where it lands, a consistent 
 The sidebar gained a Drafts list, and screens out of view are `inert`.
 
 **The story is walkable.** Every scene has a next button (Draft it in my voice → Sharpen the first line → Line it up → See how it landed → Start again / Start free). Catch rows can be picked, Sharpen waits for your tap once you've taken over, and tapping a day moves the post with a note on your best hour. Clicking anything holds the chapter on your step.
+
+**Finish review (same round):** a fresh reviewer scored the round "fix" with eight items, then "ship" after three passes. What it changed:
+- Your turn survives scrolling away and back.
+- The preview shows the whole thread: joined on X and Threads, stacked on Bluesky, one post on LinkedIn.
+- On phones the network buttons open the preview in place of the draft, with a Draft button back.
+- The story stage grows with its scene on phones, and the 7-day scene shows times only.
+- The hero sub breaks after "The writer in your corner."
+- Trust reads "Your ideas come in." and "Every post stays where you put it".
+- The features lede is "Every tool here serves one line: the one that stops the scroll."
+- The audience tabs fit at 390px, and the Sharpen slice keeps its full stop with its words.
+
