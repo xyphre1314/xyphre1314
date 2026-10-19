@@ -1264,3 +1264,49 @@ Where they overlapped, the overlap decided the order. The fixes below run from h
 - **Free's 15 posts.** The creator critic argued the limit should count only posts Hookworthy sends through X's paid API, since a post you copy and send yourself costs nothing.
 - **A self-reported Premium switch for long posts.** It was removed in round 53 in favour of verifying through the connection.
 - **Per-client never-say lists, time zones and idea lists.**
+
+## Round 70: Free counts auto-posts, and each client gets its own clock, words and ideas
+
+The owner settled two of round 69's open decisions: Free's limit counts only what the app posts for you, and client voices get their own settings.
+
+### Free: 15 auto-posts a month
+- **What counts:** only posts Hookworthy sends for you through X's paid API. Scheduling is unlimited. A post you send yourself (Open in X, copy, mark posted) never counts.
+- **Each post records it:** `q.auto` when the app will send it; `q.hand` when Free's 15 were already used. A post scheduled before anything was connected is counted when it is handed to the server.
+- **Past 15, nothing is blocked:**
+  - The post schedules as usual and waits on Week for your tap.
+  - The schedule sheet says "Yours to post. Free's 15 auto-posts are used till Nov 1…" with a Go Pro button.
+  - The send toast says the same, with "See plans".
+  - Post now opens the post-it-yourself sheet: "Posting it yourself never counts."
+- **Under the cap**, the sheet counts down: "9 of 15 auto-posts left this month."
+- **Copy everywhere** says "auto-posts": "Schedule freely, 15 auto-posts a month" (Free), "Up to 500 auto-posts a month" (Pro), the compare table, the FAQs and the trial-ended toast.
+
+### Each client keeps its own clock
+- **The setting:** "Their time zone" on Add/Edit client, default "Same as yours".
+- **How times read:**
+  - A client's `q.day`/`q.time` are their wall time, so 8:40 AM means 8:40 AM where their audience is.
+  - `slotDate(day, time, voice)` turns that into the real moment, DST included; `qAt(q)` does it for a post.
+  - `vNow()` is the voice's own "now", used for today, the week's columns and the 1 AM guard.
+- **What you see:**
+  - Week shows a "London · 9:55 AM" chip by the dates. Its tip reads "8:40 AM there is 7:40 AM for you".
+  - The schedule sheet says "times in London (GMT+1)" and adds "· 7:40 AM for you" under each time.
+  - "All voices" tags another clock's cards with the city.
+  - Move-to-a-time uses the post's own clock.
+- **Changing a client's zone moves nothing:** each scheduled post keeps its real moment, re-read on the new clock.
+- **Your own voice** always runs on this device's clock.
+
+### Each client keeps its own words and tone
+- **Never-say:** `NEVER()` gives each voice its own list. A new client starts with the usual AI tells; you keep yours. Prompts, voice match, the pre-post check and "Swap it out" all use the voice you're writing as.
+- **Tone:** `TONE()` gives each client its own Calm/Spicy, Casual/Polished and Short/Rich dials, and prompts now send tone for clients too.
+- **The client's Voice page is theirs:**
+  - Their one-line note, traits from their tone, and facts: topic, networks, clock, approval.
+  - Their tone dials and their never-say list.
+  - "Edit Ledgerly" opens the client form.
+  - Your stats, imports and "most you" post no longer show there.
+- **Demo seeds:** Ledgerly (London, warm and plain) and Northwind (confident and precise) each have their own note, tone and list.
+
+### Each client keeps its own ideas
+- **Saved ideas carry the voice** they were parked under (`ws`).
+- **Scoped to the voice you're writing as:** the Ideas page ("Ideas for Ledgerly"), Saved counts, the search palette, Claude's idea prompts, Plan my week and Today's nudges. Seed ideas for Ledgerly and Northwind.
+
+### Fixed in passing
+- **Client topic on edit:** editing a client whose topic wasn't in the topic list silently switched it to "Crypto & trading". The current topic now stays as an option.

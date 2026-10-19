@@ -5893,6 +5893,20 @@ a.link, .link{ color:var(--accent-text); }
 @media (max-width:760px){ .cal-h [data-qact="today"], .q-why{ display:none; } .wk-next{ flex-wrap:wrap; } .wk-next .wk-fill{ margin-left:0; } }
 .pay > .btn{ justify-self:start; }
 @media (min-width:641px){ .onb-top{ position:relative; } .onb-prog{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); } }
+/* ==========================================================================
+   ROUND 70: per-client clocks, voices and ideas; Free counts auto-posts
+   ========================================================================== */
+.cal-h .range{ display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.q-tz{ display:inline-flex; align-items:center; gap:5px; padding:3px 9px 3px 7px; border-radius:999px; font:500 var(--t-12)/1.2 var(--font-ui); color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,transparent); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.q-tz:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.cv-note{ margin:0; padding:2px 0 2px 14px; border-left:2px solid var(--accent); font:400 var(--t-20)/1.4 var(--font-display); color:var(--text-1); text-wrap:pretty; }
+.cv-facts{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 18px; margin:4px 0 0; }
+.cv-facts div{ display:grid; gap:3px; min-width:0; }
+.cv-facts dt{ font-size:var(--t-12); color:var(--text-3); }
+.cv-facts dd{ margin:0; font-size:var(--t-14); color:var(--text-1); overflow-wrap:anywhere; }
+#cl-tz-h{ font-size:var(--t-12); }
+@media (max-width:760px){ .cal-h .range{ gap:6px; } .q-tz{ padding:2px 8px 2px 6px; } }
+
 </style>
 </head>
 <body>
@@ -6194,8 +6208,8 @@ const DEFAULT_STATE = {
   ws: 'me',
   workspaces: [
     { id: 'me', name: 'heycape', handle: 'heycape_', kind: 'Personal', hue: 28, pic: ME_PIC },
-    { id: 'ledgerly', name: 'Ledgerly', handle: 'ledgerlyhq', kind: 'Client · Tobi’s voice', hue: 190, approvals: true, niche: 'Startups & founders', platforms: { x: true, threads: false, linkedin: true, bsky: false } },
-    { id: 'northwind', name: 'Northwind', handle: 'northwindco', kind: 'Client · company voice', hue: 150, approvals: true, niche: 'Marketing', platforms: { x: false, threads: false, linkedin: true, bsky: false } }
+    { id: 'ledgerly', name: 'Ledgerly', handle: 'ledgerlyhq', kind: 'Client · Tobi’s voice', hue: 190, approvals: true, niche: 'Startups & founders', tz: 'Europe/London', note: 'Warm and plain. Numbers over adjectives, no jargon.', tone: { spice: 30, polish: 62, length: 45 }, never: ['delve', 'synergy', 'disrupt', 'best-in-class', 'fintech revolution'], platforms: { x: true, threads: false, linkedin: true, bsky: false } },
+    { id: 'northwind', name: 'Northwind', handle: 'northwindco', kind: 'Client · company voice', hue: 150, approvals: true, niche: 'Marketing', note: 'Confident and precise. Short claims, one proof each.', tone: { spice: 55, polish: 78, length: 30 }, never: ['delve', 'game-changer', 'hacks', 'crushing it', 'growth hacking'], platforms: { x: false, threads: false, linkedin: true, bsky: false } }
   ],
   plan: 'free',
   cr: null, /* Pitches: the ledger (core.js CREDITS) */
@@ -6209,7 +6223,11 @@ const DEFAULT_STATE = {
     { id: uid(), src: 'link', text: 'Most traders don’t lose on bad setups. They lose on good setups with the wrong size.', url: 'https://x.com/lenavogt/status/2111656684814340417', meta: { platform: 'x', kind: 'post', handle: 'lenavogt', author: 'Lena Vogt', text: 'Most traders don’t lose on bad setups. They lose on good setups with the wrong size.' }, tags: ['sizing'], at: now0 - 5 * 3600e3 },
     { id: uid(), src: 'voice', text: 'Voice memo · 0:14 · Sizing down after a loss. Half size until a green day.', at: now0 - 26 * 3600e3 },
     { id: uid(), src: 'shot', text: 'Screenshot · March P&L, down $4,000. The week I doubled size to win it back.', at: now0 - 50 * 3600e3 },
-    { id: uid(), src: 'note', text: 'Every indicator I’ve used, ranked by how much I’d actually miss it.', at: now0 - 80 * 3600e3 }
+    { id: uid(), src: 'note', text: 'Every indicator I’ve used, ranked by how much I’d actually miss it.', at: now0 - 80 * 3600e3 },
+    /* r70: a client's ideas live with the client */
+    { id: uid(), ws: 'ledgerly', src: 'note', text: 'Tobi: the invoice that nearly sank us in month three, and the rule it gave us', at: now0 - 5 * 3600e3 },
+    { id: uid(), ws: 'ledgerly', src: 'voice', text: 'Voice memo · 0:22 · Why we said no to our biggest prospect in year one', at: now0 - 30 * 3600e3 },
+    { id: uid(), ws: 'northwind', src: 'note', text: 'Three campaigns we killed in week one, and what the numbers said', at: now0 - 9 * 3600e3 }
   ],
   queue: seedQueue(),
   voice: { spice: 58, polish: 38, length: 35, never: ['delve', 'game-changer', 'unlock', 'synergy', 'in today’s fast-paced world'] },
@@ -6289,6 +6307,12 @@ addEventListener('pagehide', saveNow); document.addEventListener('visibilitychan
 const newTweet = (text = '') => ({ id: uid(), text, media: [], poll: null });
 /* workspaces: your own voice plus client voices (ghostwriters, teams) */
 const WS = () => S.workspaces.find(w => w.id === S.ws) || S.workspaces[0];
+/* r70: every voice keeps its own never-say list and tone. A new client starts with the words nobody wants (the AI tells) and a middle tone */
+/* r70: saved ideas belong to the voice you parked them as */
+const myIdeas = () => S.ideas.filter(i => (i.ws || 'me') === S.ws);
+const NEVER_BASE = ['delve', 'game-changer', 'unlock', 'synergy', 'in today’s fast-paced world'];
+const NEVER = (id = S.ws) => { const w = id !== 'me' && S.workspaces.find(x => x.id === id); return w ? (w.never || (w.never = NEVER_BASE.slice())) : S.voice.never; };
+const TONE = (id = S.ws) => { const w = id !== 'me' && S.workspaces.find(x => x.id === id); return w ? (w.tone || (w.tone = { spice: 45, polish: 55, length: 40 })) : S.voice; };
 /* writing as a client voice with approvals on: the post waits for their yes */
 const needsApproval = () => !!WS().approvals;
 /* what belongs to the voice you're writing as: its posts and its drafts. Only the queue's "All voices" view mixes them */
@@ -6322,7 +6346,8 @@ function openClient(w) {
   <form class="modal-b" id="cl-f" novalidate style="display:grid;gap:14px">
     <label class="field"><span class="label">Client name</span><input class="input" id="cl-n" maxlength="40" autocomplete="off" placeholder="Acme Capital" value="${edit ? esc(w.name) : ''}" aria-describedby="cl-err"></label>
     <label class="field"><span class="label">Handle, if they have one</span><input class="input" id="cl-h" maxlength="31" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="@theirhandle" value="${edit && w.handle ? '@' + esc(w.handle) : ''}"></label>
-    <label class="field"><span class="label">What they write about</span><select class="input" id="cl-ni">${Object.keys(NICHES).map(n => `<option ${n === nn ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></label>
+    <label class="field"><span class="label">What they write about</span><select class="input" id="cl-ni">${[...new Set([nn, ...Object.keys(NICHES)])].map(n => `<option ${n === nn ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></label>
+    <label class="field"><span class="label">Their time zone</span><select class="input" id="cl-tz" aria-describedby="cl-tz-h"><option value="">Same as yours, ${esc(tzName())}</option>${[...new Set([...(w && w.tz ? [w.tz] : []), ...TZ_LIST])].map(z => `<option value="${esc(z)}" ${w && w.tz === z ? 'selected' : ''}>${esc(tzLabel(z))}</option>`).join('')}</select><small class="faint" id="cl-tz-h">Their week and best times run on this clock.</small></label>
     <label class="field"><span class="label">How they sound, in one line</span><input class="input" id="cl-v" maxlength="120" autocomplete="off" placeholder="Plain and dry. Numbers first, no hype." value="${edit && w.note ? esc(w.note) : ''}"></label>
     <div class="field"><span class="label" id="cl-pl">Where they post</span><div class="plats" role="group" aria-labelledby="cl-pl" style="justify-self:start">${Object.entries(PLAT).map(([k, p]) => `<button type="button" class="plat" data-clp="${k}" aria-pressed="${!!pl[k]}" aria-label="${p.name}" data-tip="${p.name}">${pic(p.icon)}</button>`).join('')}</div></div>
     <span class="field-err" id="cl-err" role="alert"></span>
@@ -6338,9 +6363,9 @@ function openClient(w) {
     if (S.workspaces.some(x => x !== w && x.name.toLowerCase() === name.toLowerCase())) return bad('#cl-n', `You already write as ${name}. Pick another name.`);
     if (handle && !/^[A-Za-z0-9_.]{1,30}$/.test(handle)) return bad('#cl-h', 'Handles can only have letters, numbers, dots and underscores.');
     if (!Object.values(plats).some(Boolean)) return bad(null, 'Pick at least one place they post.');
-    const data = { name, handle: handle || name.toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 15) || 'client', niche: $('#cl-ni', el).value, note: $('#cl-v', el).value.trim(), platforms: plats };
+    const data = { name, handle: handle || name.toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 15) || 'client', niche: $('#cl-ni', el).value, note: $('#cl-v', el).value.trim(), platforms: plats, tz: $('#cl-tz', el).value };
     m.close();
-    if (edit) { Object.assign(w, data); if (w.id === S.ws) { S.user = { ...S.user, name: w.name, handle: w.handle, niche: w.niche }; S.platforms = { ...plats }; } save(); route(); toast(`Saved ${esc(name)}.`, { icon: 'check' }); return; }
+    if (edit) { /* a new clock moves no post: each scheduled one keeps its real moment, read on the new clock */ const keep = (w.tz || '') !== data.tz ? S.queue.filter(q => q.ws === w.id && q.status === 'scheduled').map(q => [q, qAt(q).getTime()]) : []; Object.assign(w, data); keep.forEach(([q, at]) => { const v = new Date(at + wallOff(data.tz, at)); q.day = dayKey(v); q.time = hhmm(v); }); if (w.id === S.ws) { S.user = { ...S.user, name: w.name, handle: w.handle, niche: w.niche }; S.platforms = { ...plats }; } save(); route(); toast(`Saved ${esc(name)}.`, { icon: 'check' }); return; }
     const nw = { id: 'c' + uid(), ...data, kind: 'Client', hue: hash(name) % 360, approvals: true }; S.workspaces.push(nw);
     /* r65: on Studio each client voice brings its own 500 a month into the shared allowance */
     if (planNow() === 'studio' && S.cr && clientVoices() > (S.cr.voices || 1)) S.cr = { ...S.cr, bal: S.cr.bal + CR.PLANS.studio.amount * (clientVoices() - (S.cr.voices || 1)), voices: clientVoices() };
@@ -6483,7 +6508,7 @@ function voiceSpec() {
   const own = memFor().posts.map(p => p.t), top = me && HIST().length ? ANALYSIS().top.map(p => p.text) : [];
   let ex = [...top.slice(0, 3), ...own].filter((t, i, a) => a.findIndex(x => x.trim().toLowerCase() === t.trim().toLowerCase()) === i).slice(0, 5);
   if (!ex.length && me && !S.seedCleared) ex = TOP_POSTS.slice(0, 5).map(p => p.text);
-  return { summary: pr.summary || (!me && w.note ? `${w.name}. ${w.note}` : undefined), rules: pr.rules, never: S.voice.never, ...(me ? { tone: { spice: S.voice.spice, polish: S.voice.polish, length: S.voice.length } } : {}), examples: ex, learned: L.n || L.posts ? L : null };
+  return { summary: pr.summary || (!me && w.note ? `${w.name}. ${w.note}` : undefined), rules: pr.rules, never: NEVER(), tone: { spice: TONE().spice, polish: TONE().polish, length: TONE().length }, examples: ex, learned: L.n || L.posts ? L : null };
 }
 /* what got shipped teaches the voice it was written as: the post itself, and any suggestion changed on the way out */
 function learnShip(d, ws = S.ws) {
@@ -6858,7 +6883,7 @@ function hookPool(t) {
   if (more && !looped && bare.length < 120) out.push(`${bare}. Here’s why:`);
   if (more && /\?$/.test(p)) out.push(`${p} My answer:`);
   if (more && !looped && bare.length < 110 && /\b(i|we|my|our)\b/i.test(bare)) out.push(`${bare}. Here’s what happened:`);
-  if (S.voice.spice > 60 && !looped && bare.length < 100) out.push(`I’ll say it plainly: ${lcFirst(bare)}.`);
+  if (TONE().spice > 60 && !looped && bare.length < 100) out.push(`I’ll say it plainly: ${lcFirst(bare)}.`);
   if (p !== first) out.push(p);
   return [...new Set([...eng, ...out])];
 }
@@ -7299,7 +7324,7 @@ function crStartTrial() {
 function crTrialCheck() {
   if (!S.trial || S.trial.told || S.trial.until > Date.now() || S.plan !== 'free') return;
   S.trial.told = true; S.cr = CR.fresh('free'); save(); crPaint();
-  if (PRICED()) toast('Your Pro trial ended. You’re on Free again, with 20 Claude rewrites and 15 posts a month, and everything you wrote stays.', { icon: 'gift', tone: 'accent', action: 'See plans', onAction: () => go('upgrade') });
+  if (PRICED()) toast('Your Pro trial ended. You’re on Free again, with 20 Claude rewrites and 15 auto-posts a month, and everything you wrote stays.', { icon: 'gift', tone: 'accent', action: 'See plans', onAction: () => go('upgrade') });
 }
 /* out of credits, mid-flow: what Quick mode can do right now beside what Claude would do, and a one-click way to finish
    it with Claude. Shown once per action each session; after that, Basic runs quietly with a short note */
@@ -7567,7 +7592,7 @@ function paletteCommands() {
   const voices = [...S.workspaces.map((w, i) => ({ g: 'Write as', label: w.id === 'me' ? `Write as yourself${w.name ? ` (${w.name})` : ''}` : `Write as ${w.name}`, icon: w.id === S.ws ? 'check' : w.id === 'me' ? 'write' : 'voice', kbd: i < 9 ? [MOD, String(i + 1)] : null, run: () => switchWs(w.id) })),
     { g: 'Write as', label: 'Add a client', icon: 'plus', run: () => openClient() }, ...S.workspaces.slice(1).map(w => ({ g: 'Write as', label: `Edit ${w.name}`, icon: 'sliders', run: () => openClient(w) }))];
   const riffs = RIFFS.map(r => ({ g: 'Rewrite your draft', label: r.label, icon: r.icon, kbd: [ALT, r.key], run: () => { goThen('write', () => runRiff(0, r.k)); } }));
-  const ideas = S.ideas.map(i => ({ g: 'Saved ideas', label: i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), icon: { link: 'link', note: 'ideas', voice: 'mic', shot: 'shot' }[i.src] || 'ideas', run: () => writeFrom(expandIdea(i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), 'How-to')) }));
+  const ideas = myIdeas().map(i => ({ g: 'Saved ideas', label: i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), icon: { link: 'link', note: 'ideas', voice: 'mic', shot: 'shot' }[i.src] || 'ideas', run: () => writeFrom(expandIdea(i.text.replace(/^(Voice memo|Screenshot) · (0:\d\d · )?/, ''), 'How-to')) }));
   const hooks = HOOKS.slice(0, 40).map(h => ({ g: 'Formulas', label: fillText(h.t), icon: 'hook', run: () => useHook(h.t) }));
   const drafts = draftsByRecent().slice(0, 30).map(d => ({ g: 'Drafts', label: draftLine(d), icon: 'drafts', run: () => openDraft(S.drafts.indexOf(d)) }));
   return [...acts, ...nav, ...voices, ...riffs, ...drafts, ...ideas, ...hooks];
@@ -7635,8 +7660,8 @@ function openShortcuts() {
 
 /* ---------- quick capture ---------- */
 function addIdea(idea, quiet) {
-  const it = { id: uid(), at: Date.now(), ...idea }; S.ideas.unshift(it); save();
-  $$('.nav a[href="#ideas"] .count').forEach(c => c.textContent = S.ideas.length);
+  const it = { id: uid(), at: Date.now(), ws: S.ws, ...idea }; S.ideas.unshift(it); save();
+  $$('.nav a[href="#ideas"] .count').forEach(c => c.textContent = myIdeas().length);
   if (!quiet) toast('Saved to Ideas.', { icon: 'inbox', action: 'Open', onAction: () => go('ideas') });
   return it;
 }
@@ -7715,7 +7740,7 @@ S.drafts = S.drafts || [];
 const SRVQ = { ready: false, known: false, at: 0, map: {}, busy: false };
 function settleQueue() {
   if (!SRVQ.ready) return 0; const now = Date.now(); let n = 0, stale = false;
-  S.queue.forEach(q => { if (q.status !== 'scheduled' || q.approval === 'needs') return; const at = slotDate(q.day, q.time).getTime(); if (at >= now - 60e3) return;
+  S.queue.forEach(q => { if (q.status !== 'scheduled' || q.approval === 'needs') return; const at = qAt(q).getTime(); if (at >= now - 60e3) return;
     if (q.serverId || SYNCING.has(q.id)) { const it = q.serverId && SRVQ.known && SRVQ.map[q.serverId];
       if (!SRVQ.known || SYNCING.has(q.id) || (!it && SRVQ.at < at + 60e3) || (it && (it.status === 'scheduled' || it.status === 'posting'))) { stale = stale || SRVQ.known; return; }
       if (it && it.status === 'failed') { q.status = 'failed'; q.error = Object.entries(it.results || {}).map(([k, r]) => `${k === 'x' ? 'X' : 'LinkedIn'}: ${r.error}`).join(' ').slice(0, 200) || 'The server couldn’t post it'; n++; return; }
@@ -7738,6 +7763,14 @@ const isEmptyDraft = () => S.draft.tweets.every(t => !t.text.trim() && !t.media.
 /* length the way the strictest selected platform counts it: X's weighted count when X is on */
 const tlen = t => S.platforms.x ? HWCore.xLength(t) : [...String(t || '')].length;
 const tzName = () => { try { const z = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; const short = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' }).formatToParts(new Date()).find(x => x.type === 'timeZoneName'); const city = (z.split('/').pop() || '').replace(/_/g, ' '); return city && short && short.value !== city ? `${city} (${short.value})` : city || (short && short.value) || 'your time'; } catch (e) { return 'your time'; } };
+/* r70: a client's own zone, named by its city: "London (BST)". Same as yours when they have none */
+const tzCity = tz => String(tz || '').split('/').pop().replace(/_/g, ' ');
+const tzLabel = tz => { try { const short = new Intl.DateTimeFormat(undefined, { timeZone: tz, timeZoneName: 'short' }).formatToParts(new Date()).find(x => x.type === 'timeZoneName'); return short && short.value !== tzCity(tz) ? `${tzCity(tz)} (${short.value})` : tzCity(tz); } catch (e) { return tzCity(tz); } };
+const vtzName = (id = S.ws) => { const tz = VTZ(id); return tz ? tzLabel(tz) : tzName(); };
+/* the zones a client can pick: where most English-speaking audiences scroll */
+const TZ_LIST = ['America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'America/Sao_Paulo', 'Europe/London', 'Europe/Berlin', 'Africa/Lagos', 'Africa/Johannesburg', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Singapore', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland'];
+/* the same moment on your own clock, for a client in another zone: "3:40 AM for you" (with the day when it differs) */
+const yoursAt = (day, time, id = S.ws) => { if (!VTZ(id) || !wallOff(VTZ(id))) return ''; const d = slotDate(day, time, id), k = dayKey(d); return `${fmtTime(hhmm(d))}${k !== day ? ` ${DOW[d.getDay()]}` : ''} for you`; };
 const threadable = () => Object.keys(PLAT).some(k => S.platforms[k] && k !== 'linkedin');
 function effLimit() { const on = Object.keys(PLAT).filter(k => S.platforms[k] && k !== 'linkedin'); return on.length ? Math.min(...on.map(k => PLAT[k].limit)) : PLAT.linkedin.limit; }
 function splitText(text, limit) {
@@ -7763,7 +7796,21 @@ const slotOn = (d, t, slots = S.slots) => !slots || !!(slots[t] || []).includes(
 applySlots();
 const FULL_MSG = 'The next three weeks are full. Pick a time further out.';
 const dowIdx = d => (d.getDay() + 6) % 7;
-const slotDate = (day, time) => { const d = fromKey(day); const [h, m] = time.split(':').map(Number); d.setHours(h, m, 0, 0); return d; };
+/* r70: a client can live in another time zone. Their week runs on their clock: q.day and q.time read as their wall time,
+   so 8:40 AM means 8:40 AM where their audience is. Your own voice always runs on this device's clock */
+const VTZ = (id = S.ws) => { if (!id || id === 'me') return ''; const w = S.workspaces.find(x => x.id === id); return (w && w.tz) || ''; };
+/* how far a zone's wall clock runs ahead of this device's at a moment, in ms */
+const TZF = {};
+function wallOff(tz, t = Date.now()) {
+  if (!tz) return 0;
+  try { const f = TZF[tz] || (TZF[tz] = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' })), p = f.formatToParts(new Date(t)), g = k => +p.find(z => z.type === k).value, d = new Date(t);
+    return Date.UTC(g('year'), g('month') - 1, g('day'), g('hour') % 24, g('minute')) - Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()); } catch (e) { return 0; }
+}
+/* the voice's "now", as a Date whose fields read their wall clock */
+const vNow = (id = S.ws) => new Date(Date.now() + wallOff(VTZ(id)));
+/* the real moment a slot happens: wall time in the voice's zone */
+const slotDate = (day, time, id = S.ws) => { const d = fromKey(day); const [h, m] = time.split(':').map(Number); d.setHours(h, m, 0, 0); const tz = VTZ(id); if (!tz) return d; const t = d.getTime(); return new Date(t - wallOff(tz, t - wallOff(tz, t))); };
+const qAt = q => slotDate(q.day, q.time, q.ws || 'me');
 /* best times: from your own posts once there are 20 with dates and numbers; until then, honest general defaults */
 const GENERAL_BEST = { 0: { '08:40': 'Monday morning catch-up' }, 1: { '08:40': 'Morning, when replies tend to peak' }, 2: { '17:30': 'The commute scroll' }, 3: { '12:15': 'The lunch-break scroll' }, 4: { '08:40': 'Friday skim: keep it short' }, 5: { '12:15': 'Weekend readers have more time' } };
 let BEST = GENERAL_BEST, SLOTX = {}, TIMES = { src: 'general', n: 0, top: null };
@@ -7799,7 +7846,7 @@ LLM.ready.then(settleFromServer).catch(() => {}); /* the boot-time settle waits 
 /* a slot is taken only by the voice you're writing as: a client's post never blocks your own times */
 const taken = (day, time) => S.queue.some(q => q.day === day && q.time === time && q.status === 'scheduled' && (q.ws || 'me') === S.ws);
 function nextSlots(n, bestOnly = true) {
-  const out = []; const now = Date.now(), d0 = noonToday();
+  const out = []; const now = Date.now(), d0 = vNow(); d0.setHours(12, 0, 0, 0);
   for (let i = 0; i < 21 && out.length < n; i++) {
     const d = addDays(d0, i); const day = dayKey(d); const bi = BEST[dowIdx(d)] || {};
     for (const t of SLOTS) { if (!slotOn(dowIdx(d), t) || (bestOnly && !bi[t])) continue; if (slotDate(day, t).getTime() <= now + 10 * 60e3 || taken(day, t)) continue; out.push({ day, time: t, reason: bi[t] || (S.slots ? 'One of your posting times' : 'Open slot') }); if (out.length >= n) break; }
@@ -7808,8 +7855,8 @@ function nextSlots(n, bestOnly = true) {
   if (bestOnly && S.slots && out.length < n) { nextSlots(n, false).forEach(x => { if (out.length < n && !out.some(o => o.day === x.day && o.time === x.time)) out.push(x); }); out.sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)); }
   return out;
 }
-const slotWhen = (day, time) => { const d = fromKey(day); const diff = Math.round((d - fromKey(dayKey(Date.now()))) / DAY); return `${diff === 0 ? 'today' : diff === 1 ? 'tomorrow' : diff > 1 && diff < 7 ? DOW_PL[d.getDay()].replace(/s$/, '') : `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`} at ${fmtTime(time)}`; };
-const slotLabel = (day, time) => { const d = fromKey(day); const diff = Math.round((d - fromKey(dayKey(Date.now()))) / DAY); return `${diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`} · ${fmtTime(time)}`; };
+const slotWhen = (day, time) => { const d = fromKey(day); const diff = Math.round((d - fromKey(dayKey(vNow()))) / DAY); return `${diff === 0 ? 'today' : diff === 1 ? 'tomorrow' : diff > 1 && diff < 7 ? DOW_PL[d.getDay()].replace(/s$/, '') : `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`} at ${fmtTime(time)}`; };
+const slotLabel = (day, time) => { const d = fromKey(day); const diff = Math.round((d - fromKey(dayKey(vNow()))) / DAY); return `${diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`} · ${fmtTime(time)}`; };
 
 /* the two ways out of a draft: Post now is the main button, Schedule sits beside it. A client with approvals gets one button that sends it to them */
 function postBtnsHTML() {
@@ -7977,7 +8024,7 @@ const DEMO_STATS = { wps: 10, emojiPer: 0, tagsPer: 0, oneSentOpen: 82, lower: 5
 const paintVoiceSoon = (() => { let t = 0; return () => { clearTimeout(t); t = setTimeout(() => (window.requestIdleCallback || setTimeout)(() => paintVoice()), 220); }; })();
 function paintVoice() {
   const txt = S.draft.tweets.map(t => t.text).join('\n'); const an = ANALYSIS(); const b = $('.vm-line');
-  const r = HWCore.voiceMatch(txt, an ? an.stats : DEMO_STATS, { never: S.voice.never, lean: an ? an.lean : [] }); UI.vm = r;
+  const r = HWCore.voiceMatch(txt, an ? an.stats : DEMO_STATS, { never: NEVER(), lean: an ? an.lean : [] }); UI.vm = r;
   /* only a voice that is yours: a percentage against a sample voice says nothing useful */
   UI.vmShow = !(!r || txt.trim().length < 16 || /\[[^\]]+\]/.test(txt) || (!an && !S.profile));
   if (b) b.outerHTML = vmLineHTML();
@@ -8204,7 +8251,7 @@ function useFormula(t0) {
 const RIFF_MAIN = ['punchier', 'shorter', 'hook'];
 function riffbarHTML(id) {
   return `<div class="riffbar" role="toolbar" aria-label="Rewrite options">${RIFFS.filter(r => RIFF_MAIN.includes(r.k)).map(r => `<button class="chip" data-cact="dorriff" data-k="${r.k}" data-tip="${r.k === 'translate' ? 'Keeps your tone and slang' : r.label}" data-kbd="${ALT} ${r.key}">${ic(r.icon)}${r.label}${r.k === 'translate' ? ic('down', 'xs') : ''}</button>`).join('')}
-  <button class="chip" data-cact="moreriffs" aria-haspopup="menu">${ic('more')}More rewrites</button><a class="chip" href="#voice" data-tip="Rewrites follow these settings">${ic('sliders')}Your voice · ${S.voice.spice > 60 ? 'spicy' : S.voice.spice < 35 ? 'calm' : 'balanced'}</a></div>`;
+  <button class="chip" data-cact="moreriffs" aria-haspopup="menu">${ic('more')}More rewrites</button><a class="chip" href="#voice" data-tip="Rewrites follow these settings">${ic('sliders')}${S.ws === 'me' ? 'Your voice' : `${esc(WS().name)}’s voice`} · ${TONE().spice > 60 ? 'spicy' : TONE().spice < 35 ? 'calm' : 'balanced'}</a></div>`;
 }
 /* while Claude writes: three short lines take turns saying what's happening, and your own words wait in the card with a light passing through them */
 const genSayHTML = lines => `<span class="gen-say" aria-hidden="true">${lines.map(l => `<span>${esc(l)}</span>`).join('')}</span>`;
@@ -9859,8 +9906,8 @@ function preflight() {
   if (k0.length > 16) { const self = editTarget(), dup = S.queue.find(q => q !== self && key((q.text || '').split('\n')[0]) === k0); if (dup) out.push({ k: 'dup', msg: 'This opens like a post already in your queue.', why: `Same first line as the post going out ${slotWhen(dup.day, dup.time)}. On purpose?` }); }
   const all = tws.map(t => t.text).join('\n');
   /* words you banned on Your voice */
-  const banned = S.voice.never.filter(w => new RegExp(`(^|[^\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(all));
-  if (banned.length) out.push({ k: 'never', msg: `You said “${banned[0]}”${banned.length > 1 ? ` and ${banned.length - 1} more` : ''}.`, why: 'It’s on your never-say list. If you meant it, remove it in Your voice.', fix: 'never', fixL: 'Swap it out' });
+  const banned = NEVER().filter(w => new RegExp(`(^|[^\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(all));
+  if (banned.length) out.push({ k: 'never', msg: `You said “${banned[0]}”${banned.length > 1 ? ` and ${banned.length - 1} more` : ''}.`, why: S.ws === 'me' ? 'It’s on your never-say list. If you meant it, remove it in Your voice.' : `It’s on ${WS().name}’s never-say list. If they’d say it, remove it in ${WS().name}’s voice.`, fix: 'never', fixL: 'Swap it out' });
   /* cringe check: lines that read like bait or a press release on every platform */
   CRINGE.forEach((c, i) => { const m = all.match(c.re); if (m) out.push({ k: 'cr' + i, msg: c.msg.replace('$0', m[0].trim()), why: c.why, ...(c.cut ? { fix: 'cr' + i, fixL: 'Cut it' } : {}) }); });
   /* promise check, for money posts: a promised return, "NFA" doing the work a plan should, a paid link with no label */
@@ -9876,7 +9923,7 @@ function preflight() {
 function runFix(k) {
   const tws = S.draft.tweets;
   if (k.startsWith('cr')) { const c = CRINGE[+k.slice(2)]; tws.forEach(t => { t.text = t.text.replace(c.re, '').replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim(); }); }
-  if (k === 'never') S.voice.never.forEach(w => { const re = new RegExp(`\\s*\\b${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi'); const sw = NEVER_SWAP[w.toLowerCase()]; tws.forEach(t => { t.text = t.text.replace(re, m => sw === undefined ? '' : (/^\s/.test(m) && sw ? ' ' : '') + sw).replace(/[ \t]{2,}/g, ' ').replace(/^[,\s]+/, '').trim(); }); });
+  if (k === 'never') NEVER().forEach(w => { const re = new RegExp(`\\s*\\b${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi'); const sw = NEVER_SWAP[w.toLowerCase()]; tws.forEach(t => { t.text = t.text.replace(re, m => sw === undefined ? '' : (/^\s/.test(m) && sw ? ' ' : '') + sw).replace(/[ \t]{2,}/g, ' ').replace(/^[,\s]+/, '').trim(); }); });
   if (k === 'link') { const t = tws[0]; const m = t.text.match(URL_RE); if (!m) return; t.text = t.text.replace(m[0], '').replace(/[ \t]+\n/g, '\n').replace(/\s+$/, '') + ' (link below)'; tws.push(newTweet(m[0])); }
   if (k === 'num') {
     /* keep the writer's style: an unnumbered hook stays unnumbered, "2/" stays "2/" (no total unless they used one) */
@@ -9947,14 +9994,14 @@ function callIn(text) {
 }
 function trackCall(q) {
   if (!S.calls) S.calls = []; const c = callIn((q.tweets || [q.text]).join('\n')); if (!c || S.calls.some(x => x.qid === q.id)) return;
-  S.calls.push({ id: uid(), qid: q.id, ...c, status: 'open', at: slotDate(q.day, q.time).getTime() });
+  S.calls.push({ id: uid(), qid: q.id, ...c, status: 'open', at: qAt(q).getTime() });
 }
 function commitDraft({ day, time, status = 'scheduled' }) {
   const old = editTarget(); if (old) { S.queue = S.queue.filter(x => x !== old); serverDrop(old); }
   const tws = S.draft.tweets.filter(t => t.text.trim() || t.media.length);
   const media = tws.map(t => t.media.slice());
   const quoted = pricesIn(tws.map(t => t.text).join('\n'));
-  S.queue.push({ id: uid(), made: Date.now(), day, time, ...(quoted.length ? { prices: quoted } : {}), text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), ...(media.some(x => x.length) ? { media } : {}), platforms: { ...S.platforms }, status, ...xoFor(S.draft, S.platforms), autoRepost: S.settings.autoRepost, ws: S.ws, ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
+  S.queue.push({ id: uid(), made: Date.now(), day, time, ...(quoted.length ? { prices: quoted } : {}), text: tws[0].text, tweets: tws.map(t => t.text), mcount: media.map(x => x.length), ...(media.some(x => x.length) ? { media } : {}), platforms: { ...S.platforms }, status, ...xoFor(S.draft, S.platforms), autoRepost: S.settings.autoRepost, ws: S.ws, ...(autoFor() ? (autoCapped() ? { hand: true } : { auto: true }) : {}), ...(WS().approvals && status === 'scheduled' ? { approval: 'needs' } : {}) });
   /* scheduling isn't posting: only something that went out (or was marked posted) counts toward the week */
   if (status === 'published') S.streak[dayKey(Date.now())] = 1; if (UI.quietDone) UI.quietDone = false; else SFX.play('done');
   trackCall(S.queue[S.queue.length - 1]); syncToServer(S.queue[S.queue.length - 1], media);
@@ -10021,16 +10068,17 @@ function xoBlocked(root, st) { if (!st.plug || !st.plug.on) return false; const 
 function deliveryHTML() {
   const w = WS(), hand = w.id !== 'me' && !autoFor(w), srv = LLM.server || {};
   const from = hand && w.handle ? ` from @${esc(w.handle)}` : '', conn = hand && (srv.xUser || srv.liUser) ? ` Hookworthy is connected as @${esc(srv.xUser || srv.liUser)}, so ${esc(w.name)}’s posts never go out through it.` : '';
-  if (needsApproval()) return `<div class="sh-deliv">${ic('send', 'sm')}<span><b>Needs ${esc(w.name)}’s yes.</b> ${autoFor(w) ? 'Once they nod, it goes out at the time you pick.' : `Once they nod, it waits on Week at that time for you to post${from}.`}${conn}</span></div>`;
+  if (needsApproval()) return `<div class="sh-deliv">${ic('send', 'sm')}<span><b>Needs ${esc(w.name)}’s yes.</b> ${autoFor(w) && !autoCapped() ? 'Once they nod, it goes out at the time you pick.' : `Once they nod, it waits on Week at that time for you to post${from}.${autoFor(w) ? ` Free’s ${FREE_POSTS} auto-posts are used till ${nextMonth1()}.` : ''}`}${conn}</span></div>`;
   const pl = esc(platList());
   if (hand) return `<div class="sh-deliv">${ic('bell', 'sm')}<span><b>Yours to post${from}.</b> At that time it waits on Week.${conn}</span></div>`;
-  if (wiredNow()) return `<div class="sh-deliv ok">${ic('check', 'sm')}<span><b>Posts by itself.</b> It goes out to ${pl} at the time you pick.</span></div>`;
+  if (wiredNow() && autoCapped()) return `<div class="sh-deliv">${ic('bell', 'sm')}<span><b>Yours to post.</b> Free’s ${FREE_POSTS} auto-posts are used till ${nextMonth1()}, so at that time it waits on Week for your tap.</span><a class="btn sm" href="#upgrade">Go Pro</a></div>`;
+  if (wiredNow()) return `<div class="sh-deliv ok">${ic('check', 'sm')}<span><b>Posts by itself.</b> It goes out to ${pl} at the time you pick.${PRICED() && planNow() === 'free' ? ` ${FREE_POSTS - autoThisMonth()} of ${FREE_POSTS} auto-posts left this month.` : ''}</span></div>`;
   return `<div class="sh-deliv">${ic('bell', 'sm')}<span><b>Ready when you are.</b> At that time it waits on Week for ${pl}. One tap and it’s out.</span>${(LLM.server || {}).x ? '<button type="button" class="btn sm" data-sh-conn>Connect</button>' : ''}</div>`;
 }
 /* round 55: one keystroke out. ⌘↵ schedules the draft for the next good open time (or the time you were writing for),
    with Undo in the toast. The Schedule button still opens the picker, and ⇧⌘↵ is still Post now */
 function quickSchedule() {
-  if (CURRENT !== 'write') return; if (editTarget()) { openSchedule(); return; } if (freeCapHit()) return; refreshBest();
+  if (CURRENT !== 'write') return; if (editTarget()) { openSchedule(); return; } refreshBest();
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   if (fillAsk(() => quickSchedule())) return;
   if (S.platforms.x && S.draft.plug && S.draft.plug.on && plugBad(S.draft.plug.text)) { openSchedule(); return; }
@@ -10040,12 +10088,12 @@ function quickSchedule() {
   UI.quietDone = true; commitDraft({ day: slot.day, time: slot.time }); const q = S.queue[S.queue.length - 1];
   route(); sendOff(so, { count, plats }); SFX.play('done');
   const undo = () => { S.queue = S.queue.filter(x => x !== q); serverDrop(q); S.draft = keep; save(); if (CURRENT === 'write') route(); toast('Back in your draft. Nothing is scheduled.', { icon: 'undo', ms: 2200 }); };
-  const auto = autoFor();
+  const auto = !!q.auto, capT = q.hand ? ` Free’s ${FREE_POSTS} auto-posts are used till ${nextMonth1()}, so at that time it waits on Week for your tap.` : '';
   if (cw) { toast(`Sent to ${esc(cw.name)} for ${slotWhen(slot.day, slot.time)}. ${auto ? 'It goes out once they approve.' : 'Once they approve, it waits on Week for you to post.'}`, { icon: 'clock', tone: 'accent', action: `Copy for ${cw.name}`, onAction: () => copyAsk(q), action2: 'Undo', onAction2: undo, ms: 9000 }); return; }
-  toast(cw ? '' : `Scheduled for ${slotWhen(slot.day, slot.time)}.${auto ? '' : ' At that time it waits on Week for your tap.'}`, { icon: 'clock', tone: 'accent', action: 'Undo', onAction: undo, ms: 6500 });
+  toast(`Scheduled for ${slotWhen(slot.day, slot.time)}.${capT || (auto ? '' : ' At that time it waits on Week for your tap.')}`, { icon: 'clock', tone: 'accent', action: 'Undo', onAction: undo, ...(q.hand ? { action2: 'See plans', onAction2: () => go('upgrade'), ms: 9000 } : { ms: 6500 }) });
 }
 function openSchedule() {
-  if (CURRENT !== 'write' || freeCapHit()) return; refreshBest();
+  if (CURRENT !== 'write') return; refreshBest();
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   if (fillAsk(() => openSchedule())) return;
   const best = nextSlots(3); let pickI = 0;
@@ -10060,12 +10108,12 @@ function openSchedule() {
   /* the sheet's tip names a time only if it's one of the times offered right here */
   { const t = best.find(b => b.top), x = t && slotInfo(t.day, t.time).x; UI.schedTip = TIMES.src === 'you' && x ? { ...t, x } : null; }
   const goL = s => s.now ? 'Post now' : `Schedule for ${slotWhen(s.day, s.time)}`, pd = pickDefault(); const n = S.draft.tweets.filter(t => t.text.trim()).length;
-  const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times in ${esc(tzName())}`)}
+  const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times in ${esc(vtzName())}`)}
   <div class="modal-b" style="display:grid;gap:18px">
     <div style="display:grid;gap:8px"><span class="label">${mk.length ? `${mkShort(mk[0].ev)} today, then ${TIMES.src === 'you' ? 'your best times' : 'good times in general'}` : TIMES.src === 'you' ? 'Best times for you' : 'Good times to post, in general'}</span>
-      <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" tabindex="${i === pickI ? 0 : -1}" ${i === pickI ? 'autofocus' : ''} data-si="${i}"><span class="radio"></span><span><b>${esc(s.label || slotLabel(s.day, s.time))}</b><small>${esc(s.reason)}</small></span>${s.ev ? `<span class="pill accent">${esc(s.ev.name.replace(' decision', ''))}${s.ev.est ? ' est.' : ''}</span>` : s.top ? (TIMES.src === 'you' ? '<span class="pill accent">Best for you</span>' : '<span class="pill">Suggested</span>') : s.next ? '<span class="pill">Next open</span>' : ''}</button>`).join('')}
+      <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" tabindex="${i === pickI ? 0 : -1}" ${i === pickI ? 'autofocus' : ''} data-si="${i}"><span class="radio"></span><span><b>${esc(s.label || slotLabel(s.day, s.time))}</b><small>${esc(s.reason)}${s.now || !yoursAt(s.day, s.time) ? '' : ` · ${esc(yoursAt(s.day, s.time))}`}</small></span>${s.ev ? `<span class="pill accent">${esc(s.ev.name.replace(' decision', ''))}${s.ev.est ? ' est.' : ''}</span>` : s.top ? (TIMES.src === 'you' ? '<span class="pill accent">Best for you</span>' : '<span class="pill">Suggested</span>') : s.next ? '<span class="pill">Next open</span>' : ''}</button>`).join('')}
       <button class="stime" role="radio" aria-checked="false" tabindex="-1" data-si="custom"><span class="radio"></span><span><b>Another time</b><small>Pick any date and time</small></span></button></div>
-      <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${pd.day}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="${pd.time}" aria-label="Time"></div>
+      <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${pd.day}" min="${dayKey(vNow())}" aria-label="Date"><input type="time" class="input" id="st" value="${pd.time}" aria-label="Time"></div>
     </div>
     <div id="sh-hook">${schedHookHTML()}</div>${(() => { const ps = pricesIn(S.draft.tweets.map(t => t.text).join('\n')); return ps.length ? `<div class="sh-price">${ic('clock', 'sm')}<span>This post quotes ${ps.map(p => `<b>${p.sym} ${esc(p.raw)}</b>`).join(', ')}. Prices move. Your queue shows the price then and now, with one tap to update.</span></div>` : ''; })()}
     ${(() => { const pf = preflight(), t0 = S.draft.tweets[0].text; return !pf.length && t0.trim() && hookFor(t0).score < 60 ? '' : checksHTML(pf); })()}
@@ -10091,7 +10139,7 @@ function openSchedule() {
   const finish = (slot, btn) => {
     btn.classList.add('is-loading');
     const so = composerSnap(), count = S.draft.tweets.filter(t => t.text.trim() || t.media.length).length, plats = { ...S.platforms }, cw = WS().approvals ? WS() : null;
-    setTimeout(() => { UI.quietDone = true; commitDraft(slot); m.close(); route(); sendOff(so, { count, plats }); const si = slotInfo(slot.day, slot.time); if (cw) { const q = S.queue[S.queue.length - 1]; toast(`Waiting on ${esc(cw.name)}. ${autoFor(cw) ? 'It goes out once they approve.' : 'Once they approve, it waits on Week for you to post.'}`, { icon: 'clock', tone: 'accent', action: `Copy for ${cw.name}`, onAction: () => copyAsk(q), action2: 'View week', onAction2: () => go('week') }); return; } toast(`Scheduled for ${slotWhen(slot.day, slot.time)}.${si.best && !si.general ? ` One of your best times: ${si.x}× your usual so far.` : si.best ? ' A good time to post.' : ''}${autoFor() ? '' : ' It waits on Week for your tap.'}`, { icon: 'clock', tone: 'accent', action: 'View week', onAction: () => go('week') }); }, 420);
+    setTimeout(() => { UI.quietDone = true; commitDraft(slot); m.close(); route(); sendOff(so, { count, plats }); const si = slotInfo(slot.day, slot.time); if (cw) { const q = S.queue[S.queue.length - 1]; toast(`Waiting on ${esc(cw.name)}${VTZ(cw.id) ? ` for ${slotWhen(slot.day, slot.time)} ${esc(tzCity(VTZ(cw.id)))} time` : ''}. ${qAuto(q) ? 'It goes out once they approve.' : 'Once they approve, it waits on Week for you to post.'}`, { icon: 'clock', tone: 'accent', action: `Copy for ${cw.name}`, onAction: () => copyAsk(q), action2: 'View week', onAction2: () => go('week') }); return; } toast(`Scheduled for ${slotWhen(slot.day, slot.time)}.${(() => { const nq = S.queue[S.queue.length - 1]; return nq.hand ? ` Free’s ${FREE_POSTS} auto-posts are used till ${nextMonth1()}, so it waits on Week for your tap.` : `${si.best && !si.general ? ` One of your best times: ${si.x}× your usual so far.` : si.best ? ' A good time to post.' : ''}${nq.auto ? '' : ' It waits on Week for your tap.'}`; })()}`, { icon: 'clock', tone: 'accent', action: 'View week', onAction: () => go('week'), ...(S.queue[S.queue.length - 1].hand ? { action2: 'See plans', onAction2: () => go('upgrade'), ms: 9000 } : {}) }); }, 420);
   };
   $('#s-go', el).onclick = e => {
     let slot = best[pickI]; if (e.currentTarget.classList.contains('is-loading')) return;
@@ -10143,7 +10191,7 @@ function markFailed(q, why) {
   toast(`It didn’t go out. ${esc(q.error)}`, { icon: 'zapoff', tone: 'err', ms: 9000, action: 'Try again', onAction: () => { q.status = 'published'; delete q.error; save(); syncToServer(q, q.mediaIds ? null : q.media); if (CURRENT === 'week') { drawCal(); drawQSide(); } } });
 }
 async function syncToServer(q, media) {
-  const srv = LLM.server; if (!srv || !(srv.xUser || srv.liUser) || !q) return;
+  const srv = LLM.server; if (!srv || !(srv.xUser || srv.liUser) || !q || q.hand) return;
   const tok = { dropped: false }; if (q.status !== 'published') { const was = SYNCING.get(q.id); if (was) was.dropped = true; SYNCING.set(q.id, tok); }
   const gone = () => tok.dropped || !S.queue.some(x => x.id === q.id), done = () => { if (SYNCING.get(q.id) === tok) SYNCING.delete(q.id); };
   /* pictures and GIFs go up first; if one can't, nothing is posted half-finished */
@@ -10155,10 +10203,12 @@ async function syncToServer(q, media) {
   /* r69: a client's post never goes out through your own account: X only when the connected account is theirs, LinkedIn never */
   const cw = q.ws && q.ws !== 'me' ? S.workspaces.find(w => w.id === q.ws) : null;
   const platforms = { x: !!(q.platforms.x && srv.xUser && (!cw || sameHandle(srv.xUser, cw.handle))), linkedin: !!(q.platforms.linkedin && srv.liUser && !cw) }; if (!platforms.x && !platforms.linkedin) { done(); return; }
+  /* a post scheduled before anything was connected counts once it's handed to the server; past Free's cap it stays yours */
+  if (q.auto == null && q.status !== 'published') { if (autoCapped()) { q.hand = true; save(); done(); return; } q.auto = true; save(); }
   const skipped = ['threads', 'bsky'].filter(k => q.platforms[k]).map(k => PLAT[k].name);
   const body = { posts: ids ? q.tweets.map((text, i) => ({ text, media: ids[i] || [] })) : q.tweets, platforms, ...(platforms.x ? xoFor(q, q.platforms) : {}) }; const pub = q.status === 'published';
   if (!pub && (q.approval === 'needs' || gone())) { done(); return; } /* not until it's approved, and not once it's gone */
-  if (!pub) body.at = slotDate(q.day, q.time).toISOString(); else { q.sending = true; if (CURRENT === 'week') { drawCal(); drawQSide(); } }
+  if (!pub) body.at = qAt(q).toISOString(); else { q.sending = true; if (CURRENT === 'week') { drawCal(); drawQSide(); } }
   const settled = () => { delete q.sending; save(); if (CURRENT === 'week') { drawCal(); drawQSide(); } };
   fetch(pub ? 'api/publish' : 'api/schedule', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json().then(j => ({ ok: r.ok, j }))).then(({ ok, j }) => {
     if (!pub) { done(); if (gone()) { if (ok && j.id) fetch(`api/queue/${encodeURIComponent(j.id)}`, { method: 'DELETE' }).catch(() => {}); return; } }
@@ -10176,7 +10226,7 @@ function publishNow(btn, { anyway = false } = {}) {
   if (needsApproval()) { toast(`Writing as ${esc(WS().name)}: posts wait for their approval. Schedule it and it goes to them first.`, { icon: 'send', tone: 'err', action: 'Schedule', onAction: () => openSchedule(), ms: 8000 }); return; }
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   /* 1 AM guard: most of your people are asleep; offer the next best time instead */
-  const h = new Date().getHours();
+  const h = vNow().getHours();
   if (!anyway && (h >= 23 || h < 6)) { let nx = nextSlots(1)[0]; if (!nx || slotDate(nx.day, nx.time) - Date.now() > 30 * 3600e3) nx = nextSlots(1, false)[0]; lateNight(nx, btn); return; }
   startSend(btn);
 }
@@ -10198,6 +10248,8 @@ const wiredNow = () => { const s = LLM.server || {}; return !!((S.platforms.x &&
    account when that account is the client's own; anything else waits for you to post it from theirs */
 const sameHandle = (a, b) => !!(a && b && String(a).replace(/^@/, '').toLowerCase() === String(b).replace(/^@/, '').toLowerCase());
 const autoFor = (w = WS()) => { const s = LLM.server || {}; if (!w || w.id === 'me') return wiredNow(); return !!(S.platforms.x && sameHandle(s.xUser, w.handle)); };
+/* r70: whether this post goes out by itself: what was decided when it was scheduled (past Free's cap it's yours), else today's wiring */
+const qAuto = q => q.hand ? false : q.auto != null ? !!q.auto : autoFor(S.workspaces.find(w => w.id === (q.ws || 'me')));
 function intentFor() {
   const tws = S.draft.tweets.map(t => t.text.trim()).filter(Boolean);
   if (S.platforms.x) return { key: 'x', name: 'X', url: `https://x.com/intent/post?text=${encodeURIComponent(tws[0] || '')}`, rest: tws.slice(1) };
@@ -10205,12 +10257,12 @@ function intentFor() {
   return null;
 }
 function postNow(btn, { anyway = false } = {}) {
-  if (CURRENT !== 'write' || SEND.t || freeCapHit()) return;
+  if (CURRENT !== 'write' || SEND.t) return;
   /* a client voice with approvals never posts straight away: it goes to them first */
   if (needsApproval()) { openSchedule(); return; }
   const prob = draftProblems(); if (prob) { toast(esc(prob), { icon: 'zapoff', tone: 'err', action: /over\./.test(prob) ? 'Split it' : undefined, onAction: splitOverflow }); return; }
   if (fillAsk(() => postNow(btn, { anyway }))) return;
-  if (wiredNow()) { publishNow(btn, { anyway }); return; }
+  if (wiredNow() && !autoCapped()) { publishNow(btn, { anyway }); return; }
   const via = S.settings.postVia;
   if (via === 'open' && intentFor()) { postVia('open', btn, true); return; }
   if (via === 'mark') { postVia('mark', btn, true); return; }
@@ -10236,7 +10288,7 @@ function openPostSheet(btn) {
   const it = intentFor(), n = S.draft.tweets.filter(t => t.text.trim()).length, who = it ? it.name : 'X';
   const also = it ? alsoIntents(it) : [];
   const openSub = !it ? '' : it.rest.length ? `${it.name} opens with post 1 filled in. Post it, then reply to it with ${n === 2 ? 'post 2. Copy the rest puts it' : `the other ${n - 1}. Copy the rest puts them`} on your clipboard.` : `${it.name} opens with your post filled in. Press Post there.`;
-  const m = modal(`${modalHead(it ? `Post it on ${it.name}` : 'Post it', `Pick how it goes out. Post now remembers it next time.`)}
+  const m = modal(`${modalHead(it ? `Post it on ${it.name}` : 'Post it', wiredNow() && autoCapped() ? `Free’s ${FREE_POSTS} auto-posts are used till ${nextMonth1()}. Posting it yourself never counts.` : `Pick how it goes out. Post now remembers it next time.`)}
     <div class="modal-b pn">
       ${it ? `<div class="pn-opt pn-main"><span class="pn-i">${pic(PLAT[it.key].icon)}</span><div class="pn-t"><b>Open in ${it.name}</b><small>${openSub} It’s filed here as posted.</small>${it.rest.length ? `<button type="button" class="btn sm ghost pn-rest" data-pn="rest">${ic('copy', 'sm')} <span>Copy the rest</span></button>` : ''}</div><button type="button" class="btn primary" data-pn="open" autofocus>Open in ${it.name}</button></div>` : ''}
       ${also.length ? `<p class="pn-also">${ic('layers', 'sm')}<span>Also going to ${esc(also.map(a => a.name).join(' and '))}${n > 1 ? ' (post 1 goes in; add the rest as replies)' : ''}: ${also.map(a => `<a class="lnk-u" href="${esc(a.url)}" target="_blank" rel="noopener">Open ${a.name}</a>`).join(' · ')}</span></p>` : ''}
@@ -11209,7 +11261,7 @@ async function openPlan() {
   const m = modal(`<div class="tidy plan"><div class="tidy-h"><span class="label" id="pl-n">Planning your week</span><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div><div id="pl-card"><div class="td-card"><p class="faint">${aiOn() ? `${esc(cap(AI_NAME()))} is drafting ${slots.length} posts from your ideas and best posts…` : 'Drafting from your ideas…'}</p><span class="skel"></span><span class="skel" style="width:70%"></span></div></div>
     <div class="tidy-f"><button class="btn" data-pl="skip">Skip<kbd>K</kbd></button><button class="btn" data-pl="edit">${ic('write', 'sm')} Edit in Write<kbd>E</kbd></button><span class="grow"></span><button class="btn primary" data-pl="ok">${ic('clock', 'sm')} Schedule<kbd>↵</kbd></button></div></div>`, { autofocus: false, label: 'Plan my week', box: 'modal tidy-box', onClose: () => { document.removeEventListener('keydown', key, true); done(); } });
   let items = [], i = 0; const planned = [];
-  const inbox = S.ideas.map(x => cleanIdea(x.text));
+  const inbox = myIdeas().map(x => cleanIdea(x.text));
   try {
     if (!aiOn()) throw { code: 'offline' };
     const res = await ask(HWCore.prompts.weekPlan({ niche: S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox, slots, limit: effLimit() }), { fresh: true, act: 'week', basic: true });
@@ -11564,7 +11616,7 @@ function liveTick() {
 /* ---- personal bests: once per post, only when it truly beats what came before ---- */
 function checkBest(q, eng) {
   S.pbShown = S.pbShown || {}; if (S.pbShown[q.id] || eng < 10) return;
-  const past = [...HIST().map(p => ({ e: HWCore.eng(p), at: p.at })), ...S.queue.filter(x => x.id !== q.id && x.peak).map(x => ({ e: x.peak, at: slotDate(x.day, x.time).getTime() }))];
+  const past = [...HIST().map(p => ({ e: HWCore.eng(p), at: p.at })), ...S.queue.filter(x => x.id !== q.id && x.peak).map(x => ({ e: x.peak, at: qAt(x).getTime() }))];
   if (!past.length) return; const top = Math.max(...past.map(p => p.e)); const since = past.filter(p => p.e >= eng && p.at).sort((a, b) => b.at - a.at)[0];
   const recent = past.filter(p => p.at && Date.now() - p.at < 60 * DAY); if (recent.length && eng <= Math.max(...recent.map(p => p.e))) return;
   S.pbShown[q.id] = 1; save();
@@ -12414,21 +12466,18 @@ const ghostFeedHTML = () => { const all = [...VOID_POSTS, ...HOOK_POSTS.map(q =>
 const PRICES = { pro: [12, 16], studio: [18, 24] };
 const SAVE = k => (PRICES[k][1] - PRICES[k][0]) * 12; /* dollars a year saved by paying yearly (per client voice on Studio) */
 const PER = k => k === 'studio' ? ' per client voice' : '';
-/* Free publishes up to 15 posts a month: posting goes through X's paid API. Editing a post that's already queued never counts */
+/* r70: Free covers 15 auto-posts a month: the posts Hookworthy sends for you through X's paid API. Scheduling is unlimited,
+   and a post you send yourself (Open in X, copy, mark posted) never counts. Past 15, a scheduled post waits on Week for your tap */
 const FREE_POSTS = 15;
-function postsThisMonth() { const d = new Date(), m0 = new Date(d.getFullYear(), d.getMonth(), 1).getTime(); return S.queue.filter(q => (q.made || 0) >= m0).length; }
-function freeCapHit() {
-  if (!PRICED() || planNow() !== 'free' || editTarget() || postsThisMonth() < FREE_POSTS) return false;
-  const d = new Date(), next = new Date(d.getFullYear(), d.getMonth() + 1, 1);
-  toast(`That’s your ${FREE_POSTS} posts for this month on Free. More on ${MON[next.getMonth()]} 1, or go Pro for up to 500 a month.`, { icon: 'clock', tone: 'accent', action: 'See plans', onAction: () => go('upgrade'), ms: 7000 });
-  return true;
-}
+function autoThisMonth() { const d = new Date(), m0 = new Date(d.getFullYear(), d.getMonth(), 1).getTime(); return S.queue.filter(q => q.auto && (q.made || 0) >= m0).length; }
+const autoCapped = () => PRICED() && planNow() === 'free' && autoThisMonth() >= FREE_POSTS;
+const nextMonth1 = () => { const d = new Date(); return `${MON[(d.getMonth() + 1) % 12]} 1`; };
 /* round 55: plain limits, in rewrites, instead of usage tiers */
 const PLAN_CR = { free: ['20', 'Claude rewrites a month', '50 Claude touch-ups a day, and Sharpen on your device is unlimited'], pro: ['250', 'Claude rewrites a month', 'Need more? Add up to 1,750 a month'], studio: ['500', 'Claude rewrites a month per client voice', 'Shared across all your clients'] };
 function plansHTML(yearly) {
   const P = [
-    { k: 'free', name: 'Free', price: 0, blurb: 'Everything for your next great post.', cta: 'Start free', feats: ['Instant checks on every draft', 'Sharpen any line, unlimited', 'Quick rewrites on your device, unlimited', 'Learns your voice as you write', `${FREE_POSTS} posts a month`] },
-    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For creators who want their posts to pay.', cta: 'Start with Pro', hero: true, feats: ['Claude rewrites in your voice', 'Results: what works for your audience', 'A ping when a post takes off (with X connected)', 'Replies drafted for you, ready to send', 'What’s working in your niche, and why', 'Up to 500 posts a month'] },
+    { k: 'free', name: 'Free', price: 0, blurb: 'Everything for your next great post.', cta: 'Start free', feats: ['Instant checks on every draft', 'Sharpen any line, unlimited', 'Quick rewrites on your device, unlimited', 'Learns your voice as you write', `Schedule freely, ${FREE_POSTS} auto-posts a month`] },
+    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For creators who want their posts to pay.', cta: 'Start with Pro', hero: true, feats: ['Claude rewrites in your voice', 'Results: what works for your audience', 'A ping when a post takes off (with X connected)', 'Replies drafted for you, ready to send', 'What’s working in your niche, and why', 'Up to 500 auto-posts a month'] },
     { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For ghostwriters and agencies.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Each client in their own voice, learning on its own', 'Clients approve before anything posts', 'Review links per client'] }
   ];
   const app = !LIGHT.has(CURRENT), mine = app && PRICED() ? planNow() : null, trial = PRICED() && !S.trial && S.plan === 'free';
@@ -12485,7 +12534,7 @@ function creditsExplainHTML() {
   const rows = [
     ['Claude rewrites', '20 a month', '250 a month', '500 a month per client voice, shared'],
     ['Need more?', '', `Add ${CR.BOOSTS.map(b => `${fmtN(b.add)} for $${b.price}`).join(', ')} a month`, 'The same add-ons, shared by every voice'],
-    ['Posts', `${FREE_POSTS} a month`, 'Up to 500 a month', 'Up to 500 a month per client voice'],
+    ['Auto-posts (posting yourself is unlimited)', `${FREE_POSTS} a month`, 'Up to 500 a month', 'Up to 500 a month per client voice'],
     ['When they refill', 'Monthly, on the day you joined', 'Monthly, on the day you joined', 'Monthly, on the day you joined'],
     ['Leftovers', 'Start fresh each month', 'First month rolls over', 'First month rolls over'],
     ['Voices', 'You', 'You', 'You and each client you add'],
@@ -12685,7 +12734,6 @@ function nextGoodSlot() {
     for (const t of ts) { const [h, m] = t.split(':').map(Number); const at = new Date(d); at.setHours(h, m, 0, 0); if (at.getTime() > now + 10 * 60e3) return { at, why: BEST[dowIdx(d)][t], today: i === 0, tomorrow: i === 1 }; } }
   return null;
 }
-const tzCity = () => { try { const z = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; return z.includes('/') ? z.split('/').pop().replace(/_/g, ' ') : z; } catch (e) { return ''; } };
 
 /* ----- who it's for: first lines and hook scores, never likes or views ----- */
 const WHO = [
@@ -12707,7 +12755,7 @@ const FAQ = [
   ['Will it make things up?', 'No. Rewrites keep your claim and show every changed word for you to keep or undo. If a line needs a number you didn’t give, it writes [your number] and waits for yours.'],
   ['Is it for my niche?', 'Yes. Creators, founders, ghostwriters and market writers all get the same tools, and What’s working reads the accounts you pick, in your niche.'],
   ['Can I bring my old posts?', 'Yes. Drop in your X archive, a Typefully or CSV export, or paste posts in. They’re read in your browser, and they teach Hookworthy how you open and when your people reply.'],
-  ['What happens when I hit my free usage?', 'Nothing breaks. The checks, Sharpen and Quick mode keep working, and your 20 Claude rewrites and 15 posts come back each month. Pro gives you 250 Claude rewrites and 500 posts a month, more rewrites whenever you add them, and your first month’s leftovers roll over.']
+  ['What happens when I hit my free usage?', 'Nothing breaks. The checks, Sharpen and Quick mode keep working, and your 20 Claude rewrites and 15 auto-posts come back each month. Past 15, scheduled posts wait on Week for your tap. Pro gives you 250 Claude rewrites and 500 auto-posts a month, more rewrites whenever you add them, and your first month’s leftovers roll over.']
 ];
 
 /* ---------- round 29: one nav and one footer for the light-world pages (#home, #tools, #teams, #developers) ---------- */
@@ -13431,8 +13479,8 @@ function hzWhoHTML() {
 
 /* ---------- pricing: three cards, Pro on the other theme ---------- */
 const HX_PLANS = [
-  { k: 'free', name: 'Free', blurb: 'Everything for your next great post.', inc: ['Sharpen any line, unlimited', 'Claude rewrites, 20 a month', 'Learns your voice as you write', 'Live previews for every network', `${FREE_POSTS} posts a month`] },
-  { k: 'pro', name: 'Pro', blurb: 'For creators who want their posts to pay.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice, 250 a month', 'Need more? Add up to 1,750 a month', 'Results: what works for your audience', 'A ping when a post takes off (with X connected)', 'Your week, drafted from your ideas', 'Up to 500 posts a month'] },
+  { k: 'free', name: 'Free', blurb: 'Everything for your next great post.', inc: ['Sharpen any line, unlimited', 'Claude rewrites, 20 a month', 'Learns your voice as you write', 'Live previews for every network', `Schedule freely, ${FREE_POSTS} auto-posts a month`] },
+  { k: 'pro', name: 'Pro', blurb: 'For creators who want their posts to pay.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice, 250 a month', 'Need more? Add up to 1,750 a month', 'Results: what works for your audience', 'A ping when a post takes off (with X connected)', 'Your week, drafted from your ideas', 'Up to 500 auto-posts a month'] },
   { k: 'studio', name: 'Studio', blurb: 'For ghostwriters and agencies.', inc: ['Everything in Pro, and:', 'Priced per client voice', 'Each client learns their own voice', 'Clients approve before anything posts', 'Review links per client'] }
 ];
 const hzBillNote = (k, y) => k === 'free' ? 'No card, ever' : y ? `Billed yearly, $${PRICES[k][0] * 12} a year${PER(k)}` : `Billed monthly, or $${PRICES[k][0]} a month yearly`;
@@ -13454,7 +13502,7 @@ const HX_FAQ = [
   ['What about long posts on free X?', 'Over 280 characters, a post becomes a thread by itself, split where it reads best. With X Premium it stays one long post.'],
   ['Can I write for clients?', 'Yes, on Studio. Each client gets their own voice, and you send them a review link to comment on the exact words before anything posts.'],
   ['Can I bring my old posts?', 'Please do. Import your X archive or a Typefully export, and your best posts teach it how you write.'],
-  ['Is there a free plan?', 'Yes, no card: 20 Claude rewrites and 15 posts a month. Sharpen, previews and review links stay free.'],
+  ['Is there a free plan?', 'Yes, no card: 20 Claude rewrites and 15 auto-posts a month. Posting it yourself is unlimited. Sharpen, previews and review links stay free.'],
   ['Can I cancel anytime?', 'Yes, in two clicks. Your drafts and ideas stay with you on Free.']
 ];
 const HZ_SAMPLES = ['so i think posting every day is kind of the whole game', 'just wanted to share some thoughts on what i learned this year', 'honestly the best trade i made this month was the one i skipped'];
@@ -14300,7 +14348,7 @@ function vtWire() {
 }
 /* a starting voice from the tone sliders: says what it is, never claims to have read you */
 function sliderTraits() {
-  const v = S.voice;
+  const v = TONE();
   return [v.spice > 60 ? ['Spicy', 'Takes a side and says it plainly'] : v.spice < 35 ? ['Calm', 'Explains more than it argues'] : ['Direct', 'Some edge, no shouting'],
     v.polish > 60 ? ['Polished', 'Full sentences, careful punctuation'] : ['Casual', 'Reads like a person, not a press release'],
     v.length > 55 ? ['Thorough', 'Gives the reasoning, not just the point'] : ['Brief', 'Gets to the point in a line or two']];
@@ -14362,7 +14410,7 @@ const TODAY = { k: 0 };
 const mineQ = q => (q.ws || 'me') === S.ws;
 function todayIdea() {
   /* your own notes only: a saved link or post is someone else's words */
-  const saved = S.ideas.filter(i => i.src !== 'link' && !/^Formula: /.test(i.text)).map(i => ({ text: cleanIdea(i.text), kind: 'How-to', saved: true })).filter(x => x.text.length > 12);
+  const saved = myIdeas().filter(i => i.src !== 'link' && !/^Formula: /.test(i.text)).map(i => ({ text: cleanIdea(i.text), kind: 'How-to', saved: true })).filter(x => x.text.length > 12);
   const gen0 = genIdeas(16, hash(dayKey(Date.now())) % 997), gen1 = gen0.filter(x => !/:\s*$/.test(x.text)), gen = gen1.length ? gen1 : gen0; /* a one-line idea never ends on a dangling colon */
   const pool = [...saved, ...gen].map(x => ({ ...x, s: hookScore(x.text).score })).sort((a, b) => (b.s >= 70) - (a.s >= 70) || (b.saved || 0) - (a.saved || 0) || b.s - a.s);
   return pool[TODAY.k % pool.length];
@@ -14422,7 +14470,7 @@ function todaySmart() {
   if (an && an.bestKind) return { i: 'trend', t: `Your ${esc(KIND_PLS(an.bestKind.k))} earn ${an.bestKind.x}× your usual. Today’s a good day for one.`, b: `Write ${kindA(an.bestKind.k)}`, a: 'kind', k: an.bestKind.k };
   const left = r.goal - r.n, daysLeft = 7 - ((new Date().getDay() + 6) % 7) - 1;
   if (left > 0 && daysLeft >= 0 && left <= daysLeft + 1) return { i: 'cal', t: `${r.n ? `${r.n} day${r.n === 1 ? '' : 's'} planned or posted this week.` : 'Nothing planned this week yet.'} ${left} more meets your goal of ${r.goal}.`, b: 'Plan my week', a: 'plan' };
-  if (S.ideas.length) { const o = [...S.ideas].sort((a, b) => a.at - b.at)[0]; return { i: 'inbox', t: `You have ${S.ideas.length} saved idea${S.ideas.length === 1 ? '' : 's'}. The oldest: “${esc(clip(cleanIdea(o.text), 60))}”`, b: 'Open Saved', a: 'saved' }; }
+  if (myIdeas().length) { const mi = myIdeas(), o = [...mi].sort((a, b) => a.at - b.at)[0]; return { i: 'inbox', t: `You have ${mi.length} saved idea${mi.length === 1 ? '' : 's'}. The oldest: “${esc(clip(cleanIdea(o.text), 60))}”`, b: 'Open Saved', a: 'saved' }; }
   return { i: 'hook', t: esc(GEN_TIPS.write[hash(dayKey(Date.now())) % GEN_TIPS.write.length]), b: 'Open Formulas', a: 'hooks' };
 }
 function todayHTML() {
@@ -14430,7 +14478,7 @@ function todayHTML() {
   const rr = (RRADAR.posts.length ? RRADAR.posts : RADAR_SAMPLE()).filter(p => !(S.radar && ((S.radar.skip || {})[p.id] || (S.radar.done || {})[p.id]))).slice(0, 2);
   const rrPic = p => Number.isInteger(p.img) ? pfAv({ n: p.name, img: p.img }, 'rr-av') : `<span class="avatar" style="--h:${hash(p.handle || 'x') % 360}">${esc((p.name || p.handle || '?').slice(0, 1).toUpperCase())}</span>`;
   const mine = myQ().filter(q => q.status === 'published' && !q.marked).slice(-4), waiting = mine.reduce((a, q) => a + (Array.isArray(q.replies) ? q.replies.length : SHOWCASE() ? SAMPLE_REPLIES.length : 0), 0);
-  const day = n => dayKey(addDays(noonToday(), n)), list = n => S.queue.filter(q => q.day === day(n) && mineQ(q) && (q.status === 'scheduled' || (n === 0 && q.status === 'published'))).sort((a, b) => a.time.localeCompare(b.time));
+  const day = n => { const v = vNow(); v.setHours(12, 0, 0, 0); return dayKey(addDays(v, n)); }, list = n => S.queue.filter(q => q.day === day(n) && mineQ(q) && (q.status === 'scheduled' || (n === 0 && q.status === 'published'))).sort((a, b) => a.time.localeCompare(b.time));
   const open = n => Object.keys(BEST[dowIdx(fromKey(day(n)))] || {}).filter(t => slotDate(day(n), t).getTime() > now && !taken(day(n), t));
   const qRow = q => `<a class="ts-i" href="#week"><span class="ts-t">${fmtTime(q.time)}</span><span class="ts-x">${firstLineHTML(clip(q.text, 70))}</span>${q.status === 'published' ? `<span class="ts-s">${q.marked ? 'Marked' : 'Sent'}</span>` : ''}</a>`;
   const oRow = (n, t) => `<button class="ts-open" data-tact="slot" data-day="${day(n)}" data-time="${t}"><span class="ts-t">${fmtTime(t)}</span><span class="ts-x">A good time, still free. Write for it</span></button>`;
@@ -14512,7 +14560,7 @@ function todayRetired() {
 ROUTES.ideas = () => {
   if (!['you', 'radar', 'inbox', 'formulas'].includes(UI.ideaTab)) UI.ideaTab = 'you';
   mount('ideas', `<div class="page">
-    <div class="page-h"><div><h1 class="display">Ideas</h1><p>Catch it now, write it later. A link, a post, a half-thought: it all lands here.</p></div></div>
+    <div class="page-h"><div><h1 class="display">${S.ws === 'me' ? 'Ideas' : `Ideas for ${esc(WS().name)}`}</h1><p>${S.ws === 'me' ? 'Catch it now, write it later. A link, a post, a half-thought: it all lands here.' : `Catch it now, write it later. What you save here stays with ${esc(WS().name)}.`}</p></div></div>
     <div class="capture" id="cap">
       <textarea id="cap-in" rows="2" placeholder="Paste a link or an X post, or jot down a thought. Add #tags to sort it." aria-label="Save an idea" aria-describedby="cap-hint"></textarea>
       <div id="cap-pv" aria-live="polite"></div>
@@ -14524,7 +14572,7 @@ ROUTES.ideas = () => {
       </div>
     </div>
     <div id="angles"></div>
-    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'For you', 'For you'], ['radar', 'What’s working', 'Working'], ['inbox', S.ideas.length ? `Saved · ${S.ideas.length}` : 'Saved', S.ideas.length ? `Saved ${S.ideas.length}` : 'Saved'], ['formulas', 'Formulas', 'Formulas']].map(([k, l, sl]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}" aria-label="${esc(l)}"><span class="ll">${l}</span><span class="sl">${sl}</span></button>`).join('')}</div></div>
+    <div class="idea-tabs"><div class="seg" id="idea-seg" role="tablist" aria-label="Ideas">${[['you', 'For you', 'For you'], ['radar', 'What’s working', 'Working'], ['inbox', myIdeas().length ? `Saved · ${myIdeas().length}` : 'Saved', myIdeas().length ? `Saved ${myIdeas().length}` : 'Saved'], ['formulas', 'Formulas', 'Formulas']].map(([k, l, sl]) => `<button role="tab" data-it="${k}" aria-selected="${(UI.ideaTab || 'you') === k}" aria-label="${esc(l)}"><span class="ll">${l}</span><span class="sl">${sl}</span></button>`).join('')}</div></div>
     <div id="tab-you" ${(UI.ideaTab || 'you') === 'you' ? '' : 'hidden'}>
     <section class="sec"><div class="sec-h"><div style="display:grid;gap:4px"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><h2 class="h2">Post ideas for you</h2><span class="pill">${esc(S.user.niche)}</span><button class="btn sm icon-only" data-iact="shuffle" data-tip="New batch" data-kbd="R" aria-label="New batch of post ideas">${ic('shuffle', 'sm')}</button></div><p class="fill-key">The <mark class="fill">marked words</mark> are examples. Swap in your own when you write it.</p></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="seg" id="eng-seg" role="tablist" aria-label="Filter ideas">${['All', ...new Set((UI.aiIdeas || genIdeas(24, ENGINE.seed)).map(x => x.kind).filter(Boolean))].slice(0, 7).map(k => `<button role="tab" data-ek="${k}" aria-selected="${ENGINE.kind === k}">${esc(k === 'All' ? 'All' : KIND_L(k))}</button>`).join('')}</div><button class="btn sm needs-ai" data-iact="claude" data-tip="Fresh ideas from your notes and best posts">${ic('spark', 'sm')} Ask Claude${crTag('ideas')}</button></div></div>
@@ -14532,7 +14580,7 @@ ROUTES.ideas = () => {
     </div>
     <div id="tab-radar" ${UI.ideaTab === 'radar' ? '' : 'hidden'}>${UI.ideaTab === 'radar' ? radarHTML() : ''}</div>
     <div id="tab-formulas" ${UI.ideaTab === 'formulas' ? '' : 'hidden'}><section class="sec" style="margin-top:20px"><div class="sec-h" style="margin-bottom:12px"><div><h2 class="h2">Formulas</h2><p class="muted" style="margin-top:4px">First lines that work, shown with an example. The <mark class="fill">marked words</mark> are yours to swap.</p></div></div><div class="sec-h"><div class="seg" id="hk-seg" role="tablist" aria-label="Kinds of first line">${['All', 'Contrarian', 'Story', 'Listicle', 'Curiosity', 'Proof', 'Question'].map(k => `<button role="tab" data-hk="${k}" aria-selected="${HOOKF.k === k}">${KIND_L(k)}</button>`).join('')}</div><input class="input" id="hk-q" placeholder="Search formulas" aria-label="Search formulas" style="width:220px" value="${esc(HOOKF.q)}"></div><div class="hooklib" id="hooklib"></div></section></div>
-    <div id="tab-inbox" ${UI.ideaTab === 'inbox' ? '' : 'hidden'}><section class="sec" style="margin-top:20px"><div class="sec-h"><div><h2 class="h2">Saved <span class="faint mono" style="font-size:14px" id="inbox-n">${S.ideas.length}</span></h2><p class="muted" style="margin-top:4px">Links, posts, notes, screenshots and voice memos you parked. Write from any of them when you’re ready.</p></div></div><div id="inbox-tools"></div><div class="inbox" id="inbox"></div></section></div>
+    <div id="tab-inbox" ${UI.ideaTab === 'inbox' ? '' : 'hidden'}><section class="sec" style="margin-top:20px"><div class="sec-h"><div><h2 class="h2">Saved <span class="faint mono" style="font-size:14px" id="inbox-n">${myIdeas().length}</span></h2><p class="muted" style="margin-top:4px">Links, posts, notes, screenshots and voice memos you parked. Write from any of them when you’re ready.</p></div></div><div id="inbox-tools"></div><div class="inbox" id="inbox"></div></section></div>
   </div>`);
   drawEngine(); drawInbox(); syncSeg($('#eng-seg')); syncSeg($('#idea-seg')); if (UI.ideaTab === 'formulas') { drawHooks(); syncSeg($('#hk-seg')); }
   const view = $('#view'), inp = $('#cap-in');
@@ -14588,7 +14636,7 @@ function ideaTab(k) {
 function shuffleEngine() { UI.aiIdeas = null; ENGINE.seed++; drawEngine(); }
 async function claudeIdeas(btn) {
   btn.classList.add('is-loading');
-  try { const res = await ask(HWCore.prompts.ideas({ niche: S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox: S.ideas.map(i => cleanIdea(i.text)) }), { fresh: true, act: 'ideas', resume: () => claudeIdeas(btn) }); const list = (Array.isArray(res) ? res : []).map(x => ({ text: String(x.text || '').trim(), kind: ['Contrarian', 'Story', 'Listicle', 'How-to', 'Curiosity', 'Question'].includes(x.kind) ? x.kind : 'Curiosity', why: x.why })).filter(x => x.text); if (!list.length) throw { code: 'invalid_json' }; UI.aiIdeas = list; ENGINE.kind = 'All'; $$('[data-ek]').forEach(b => b.setAttribute('aria-selected', b.dataset.ek === 'All')); syncSeg($('#eng-seg')); drawEngine(); toast(`${list.length} ideas from ${AI_NAME()}, built on your notes and best posts.`, { icon: 'spark', tone: 'accent' }); }
+  try { const res = await ask(HWCore.prompts.ideas({ niche: S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox: myIdeas().map(i => cleanIdea(i.text)) }), { fresh: true, act: 'ideas', resume: () => claudeIdeas(btn) }); const list = (Array.isArray(res) ? res : []).map(x => ({ text: String(x.text || '').trim(), kind: ['Contrarian', 'Story', 'Listicle', 'How-to', 'Curiosity', 'Question'].includes(x.kind) ? x.kind : 'Curiosity', why: x.why })).filter(x => x.text); if (!list.length) throw { code: 'invalid_json' }; UI.aiIdeas = list; ENGINE.kind = 'All'; $$('[data-ek]').forEach(b => b.setAttribute('aria-selected', b.dataset.ek === 'All')); syncSeg($('#eng-seg')); drawEngine(); toast(`${list.length} ideas from ${AI_NAME()}, built on your notes and best posts.`, { icon: 'spark', tone: 'accent' }); }
   catch (e) { aiError(e); } finally { btn.classList.remove('is-loading'); }
 }
 /* ---------- Niche radar: what popped in your niche this week, and why ----------
@@ -14759,20 +14807,20 @@ function openLinkReply(L) {
 const tagsOf = t => [...new Set((String(t || '').match(/(^|\s)#([a-z][\w-]{1,24})/gi) || []).map(x => x.trim().slice(1).toLowerCase()))];
 const IDF = { src: 'all', tag: '', sort: 'new', q: '' };
 function drawInbox({ flash, keepTools } = {}) {
-  const el = $('#inbox'); if (!el) return; const n = $('#inbox-n'); if (n) n.textContent = S.ideas.length;
+  const el = $('#inbox'); if (!el) return; const n = $('#inbox-n'); if (n) n.textContent = myIdeas().length;
   /* the Saved tab and the nav badge follow the list (the badge appears the first time something is saved) */
-  const st = $('#idea-seg [data-it="inbox"]'); if (st) { const n = S.ideas.length; $('.ll', st).textContent = n ? `Saved · ${n}` : 'Saved'; $('.sl', st).textContent = n ? `Saved ${n}` : 'Saved'; st.setAttribute('aria-label', n ? `Saved · ${n}` : 'Saved'); }
-  if (!$('.nav a[href="#ideas"] .count') && S.ideas.length) refreshSide(); else $$('.nav a[href="#ideas"] .count').forEach(c => c.textContent = S.ideas.length || '');
+  const st = $('#idea-seg [data-it="inbox"]'); if (st) { const n = myIdeas().length; $('.ll', st).textContent = n ? `Saved · ${n}` : 'Saved'; $('.sl', st).textContent = n ? `Saved ${n}` : 'Saved'; st.setAttribute('aria-label', n ? `Saved · ${n}` : 'Saved'); }
+  if (!$('.nav a[href="#ideas"] .count') && myIdeas().length) refreshSide(); else $$('.nav a[href="#ideas"] .count').forEach(c => c.textContent = myIdeas().length || '');
   const tools = $('#inbox-tools');
-  if (!S.ideas.length) { if (tools) tools.innerHTML = ''; el.innerHTML = `<div class="empty idea-empty"><div class="art-halo ie-art">${art('ideas')}</div><h2 class="es-t">Nothing saved yet.</h2><span>Next time you think “I should post about that”, park it here. It waits until you’re ready.</span>
+  if (!myIdeas().length) { if (tools) tools.innerHTML = ''; el.innerHTML = `<div class="empty idea-empty"><div class="art-halo ie-art">${art('ideas')}</div><h2 class="es-t">Nothing saved yet.</h2><span>Next time you think “I should post about that”, park it here. It waits until you’re ready.</span>
     <ul class="ie-list"><li>${ic('link', 'sm')}<span><b>A link or an X post</b> becomes a preview card you can write about, quote or reply to.</span></li><li>${ic('ideas', 'sm')}<span><b>A half-thought</b>, with a #tag if you like, so you can find it later.</span></li><li>${ic('mic', 'sm')}<span><b>Say it</b> on a walk, or drop a screenshot of something that caught your eye.</span></li></ul>
     <span class="faint">Press ${kbd('I')} anywhere to save an idea.</span></div>`; return; }
-  const srcs = [...new Set(S.ideas.map(i => i.src))], tags = [...new Set(S.ideas.flatMap(i => i.tags || tagsOf(i.text)))].slice(0, 12);
+  const srcs = [...new Set(myIdeas().map(i => i.src))], tags = [...new Set(myIdeas().flatMap(i => i.tags || tagsOf(i.text)))].slice(0, 12);
   const SRC_PL = { link: 'Links', note: 'Notes', shot: 'Screenshots', voice: 'Voice memos' };
   if (IDF.src !== 'all' && !srcs.includes(IDF.src)) IDF.src = 'all'; if (IDF.tag && !tags.includes(IDF.tag)) IDF.tag = '';
-  if (tools && !keepTools) tools.innerHTML = `<div class="ib-tools">${srcs.length > 1 ? `<div class="ib-f" role="group" aria-label="Show">${[['all', 'All'], ...srcs.map(s => [s, SRC_PL[s] || s])].map(([k, l]) => `<button class="chip" data-idf="src:${k}" aria-pressed="${IDF.src === k}">${esc(l)} <span class="faint">${k === 'all' ? S.ideas.length : S.ideas.filter(i => i.src === k).length}</span></button>`).join('')}</div>` : ''}${tags.length ? `<div class="ib-f" role="group" aria-label="Tags">${tags.map(t => `<button class="chip ib-tag" data-idf="tag:${esc(t)}" aria-pressed="${IDF.tag === t}">#${esc(t)}</button>`).join('')}</div>` : ''}<span class="grow"></span><input class="input sm" id="inbox-q" type="search" placeholder="Search saved" aria-label="Search saved ideas" value="${esc(IDF.q)}"><button class="btn sm ghost" data-idf="sort:x" data-tip="Change the order">${ic('lr', 'sm')} ${IDF.sort === 'new' ? 'Newest first' : 'Oldest first'}</button></div>`;
+  if (tools && !keepTools) tools.innerHTML = `<div class="ib-tools">${srcs.length > 1 ? `<div class="ib-f" role="group" aria-label="Show">${[['all', 'All'], ...srcs.map(s => [s, SRC_PL[s] || s])].map(([k, l]) => `<button class="chip" data-idf="src:${k}" aria-pressed="${IDF.src === k}">${esc(l)} <span class="faint">${k === 'all' ? myIdeas().length : myIdeas().filter(i => i.src === k).length}</span></button>`).join('')}</div>` : ''}${tags.length ? `<div class="ib-f" role="group" aria-label="Tags">${tags.map(t => `<button class="chip ib-tag" data-idf="tag:${esc(t)}" aria-pressed="${IDF.tag === t}">#${esc(t)}</button>`).join('')}</div>` : ''}<span class="grow"></span><input class="input sm" id="inbox-q" type="search" placeholder="Search saved" aria-label="Search saved ideas" value="${esc(IDF.q)}"><button class="btn sm ghost" data-idf="sort:x" data-tip="Change the order">${ic('lr', 'sm')} ${IDF.sort === 'new' ? 'Newest first' : 'Oldest first'}</button></div>`;
   const q = IDF.q.trim().toLowerCase();
-  let list = S.ideas.filter(i => (IDF.src === 'all' || i.src === IDF.src) && (!IDF.tag || (i.tags || tagsOf(i.text)).includes(IDF.tag)) && (!q || `${i.text} ${i.note || ''} ${i.url || ''} ${JSON.stringify(i.meta || {})}`.toLowerCase().includes(q)));
+  let list = myIdeas().filter(i => (IDF.src === 'all' || i.src === IDF.src) && (!IDF.tag || (i.tags || tagsOf(i.text)).includes(IDF.tag)) && (!q || `${i.text} ${i.note || ''} ${i.url || ''} ${JSON.stringify(i.meta || {})}`.toLowerCase().includes(q)));
   list = list.slice().sort((a, b) => IDF.sort === 'new' ? (b.at || 0) - (a.at || 0) : (a.at || 0) - (b.at || 0));
   if (!list.length) { el.innerHTML = `<p class="faint ib-none">Nothing saved matches that. <button class="btn sm ghost" data-idf="src:all">Show everything</button></p>`; return; }
   el.innerHTML = list.map(it => { const L = linkOfIdea(it), tg = it.tags || tagsOf(it.text), txt = it.text.replace(/^(Voice memo|Screenshot|Link|Note) · (\d+:\d\d · )?/, '');
@@ -14892,7 +14940,7 @@ ROUTES.week = () => {
   /* the queue opens on this week, unless this week is over (late Sunday, no open times, nothing still to go out): then next week */
   /* open on this week only while it has something left in it; on a Sunday night the next week is the one you're planning */
   const wkEnd = addDays(startOfWeek(new Date()), 7).getTime();
-  WEEK = gapSlots().length || qList().some(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now() && slotDate(q.day, q.time) < wkEnd) ? 0 : 1; if (S.settings.evergreen) ensureEvergreen();
+  WEEK = gapSlots().length || qList().some(q => q.status === 'scheduled' && qAt(q) > Date.now() && qAt(q) < wkEnd) ? 0 : 1; if (S.settings.evergreen) ensureEvergreen();
   const nm = greetName();
   const cl = S.ws !== 'me' ? WS() : null; /* writing as a client: the greeting says whose week this is */
   mount('week', `<div class="page wk-page" style="max-width:1280px"><div class="page-h wk-head"><div><h1 class="display t-greet">${greetWord()}${cl ? `. Writing as ${esc(cl.name)}` : nm ? `, <span class="t-name" id="t-name" tabindex="0" role="button" aria-label="${esc(`Your name here: ${nm}. Press Enter to change it`)}" data-tip="Double-click to change">${esc(nm)}</span>` : ''}.</h1><p class="wk-next" id="wk-next"></p></div></div>
@@ -14961,7 +15009,7 @@ function qTags(q) {
   /* the voice tag only marks someone else's post: writing as Ledgerly, Ledgerly's cards don't need to say so */
   const w = q.ws && q.ws !== 'me' && q.ws !== S.ws ? S.workspaces.find(x => x.id === q.ws) : null, drift = q.status === 'scheduled' ? priceDrift(q) : null, xo = xoTags(q); if (!w && !q.approval && !q.rerun && !drift && !xo) return '';
   if (drift && !w && !q.approval && !q.rerun) return `<span class="qtags"><span class="qt price" title="${esc(drift.map(p => `${p.sym} was ${fmtUSD(p.quoted)}, now ${fmtUSD(p.now)}`).join('; '))}"><i></i><span>${drift[0].sym} price moved</span></span>${xo}</span>`;
-  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now() ? `<span class="qt missed" title="Its time passed before it was approved. Move it to a new time."><i></i><span>Missed</span></span>` : `<span class="qt ${q.approval}" title="${q.approval === 'needs' ? 'To approve' : 'Approved'}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>`) : ''}${xo}</span>`;
+  return `<span class="qtags">${q.rerun ? '<span class="qt"><span>Rerun</span></span>' : ''}${w ? `<span class="qt"><span>${esc(w.name)}</span></span>` : ''}${q.approval ? (q.approval === 'needs' && q.status === 'scheduled' && qAt(q) < Date.now() ? `<span class="qt missed" title="Its time passed before it was approved. Move it to a new time."><i></i><span>Missed</span></span>` : `<span class="qt ${q.approval}" title="${q.approval === 'needs' ? 'To approve' : 'Approved'}"><i></i><span>${q.approval === 'needs' ? 'To approve' : 'Approved'}</span></span>`) : ''}${xo}</span>`;
 }
 /* the card menu's X options: who can reply and the auto-plug, while the post is still waiting */
 function xoItems(q, c) {
@@ -14991,10 +15039,10 @@ function editPlug(q) {
 }
 function moveQ(id, day, time) {
   const q = S.queue.find(x => x.id === id); if (!q) return;
-  if (slotDate(day, time).getTime() < Date.now()) { toast('That time has passed. Pick a later one.', { tone: 'err', icon: 'clock' }); return; }
+  if (slotDate(day, time, q.ws || 'me').getTime() < Date.now()) { toast('That time has passed. Pick a later one.', { tone: 'err', icon: 'clock' }); return; }
   const other = S.queue.find(x => x.day === day && x.time === time && x.status === 'scheduled' && x.id !== id);
   /* a swap only trades future times: a missed post's old slot is in the past, so the other post goes to the next open time instead */
-  const was = { day: q.day, time: q.time, status: q.status }, owas = other && { day: other.day, time: other.time }, oldLive = slotDate(q.day, q.time).getTime() > Date.now() + 10 * 60e3;
+  const was = { day: q.day, time: q.time, status: q.status }, owas = other && { day: other.day, time: other.time }, oldLive = qAt(q).getTime() > Date.now() + 10 * 60e3;
   const oto = other && (oldLive ? was : nextSlots(1, false)[0]); if (other && !oto) { toast(`There’s already a post at that time, and ${FULL_MSG.charAt(0).toLowerCase() + FULL_MSG.slice(1)}`, { icon: 'cal', tone: 'err' }); return; }
   if (other) { other.day = oto.day; other.time = oto.time; serverResync(other); }
   q.day = day; q.time = time; if (q.status === 'due') q.status = 'scheduled'; save(); serverResync(q); drawCal(); drawQSide();
@@ -15007,14 +15055,14 @@ function moveQ(id, day, time) {
 }
 /* "Pick a time": the first sensible time, never 9 AM tomorrow when this afternoon is still open */
 function pickDefault() {
-  const now = Date.now(), today = dayKey(now), t = SLOTS.find(x => slotOn(dowIdx(fromKey(today)), x) && slotDate(today, x) - now >= 30 * 60e3 && !taken(today, x)); if (t) return { day: today, time: t };
-  const tm = dayKey(addDays(noonToday(), 1)), bi = BEST[dowIdx(fromKey(tm))] || {}, on = x => slotOn(dowIdx(fromKey(tm)), x);
+  const now = Date.now(), today = dayKey(vNow()), t = SLOTS.find(x => slotOn(dowIdx(fromKey(today)), x) && slotDate(today, x) - now >= 30 * 60e3 && !taken(today, x)); if (t) return { day: today, time: t };
+  const tm = dayKey(addDays(fromKey(today), 1)), bi = BEST[dowIdx(fromKey(tm))] || {}, on = x => slotOn(dowIdx(fromKey(tm)), x);
   return { day: tm, time: SLOTS.find(x => bi[x] && on(x) && !taken(tm, x)) || SLOTS.find(x => on(x) && !taken(tm, x)) || SLOTS[0] };
 }
 function moveToTime(q) {
-  const d0 = slotDate(q.day, q.time) > Date.now() ? { day: q.day, time: q.time } : pickDefault(), m = modal(`${modalHead('Move to a time', `Times are in ${esc(tzName())}`)}<div class="modal-b"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="mv-d" value="${d0.day}" min="${dayKey(Date.now())}" aria-label="Date" autofocus><input type="time" class="input" id="mv-t" value="${d0.time}" aria-label="Time"></div></div>
+  const d0 = qAt(q) > Date.now() ? { day: q.day, time: q.time } : pickDefault(), m = modal(`${modalHead('Move to a time', `Times are in ${esc(vtzName(q.ws || 'me'))}`)}<div class="modal-b"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="mv-d" value="${d0.day}" min="${dayKey(vNow(q.ws || 'me'))}" aria-label="Date" autofocus><input type="time" class="input" id="mv-t" value="${d0.time}" aria-label="Time"></div></div>
   <div class="modal-f"><button class="btn" data-close>Cancel</button><button class="btn primary" id="mv-go">${ic('clock', 'sm')} <span id="mv-l">Move to ${slotWhen(d0.day, d0.time)}</span></button></div>`, { label: 'Move to a time' });
-  const d = $('#mv-d', m.el), t = $('#mv-t', m.el), go = () => { if (!d.value || !t.value) { toast('Pick a day and a time.', { tone: 'err', icon: 'clock' }); return; } if (slotDate(d.value, t.value) < Date.now()) { fieldErr(d, 'That time has passed. Pick a later one.'); return; } m.close(); moveQ(q.id, d.value, t.value); requestAnimationFrame(() => { const nc = $(`.qcard[data-id="${q.id}"]`); nc && nc.focus(); }); };
+  const d = $('#mv-d', m.el), t = $('#mv-t', m.el), go = () => { if (!d.value || !t.value) { toast('Pick a day and a time.', { tone: 'err', icon: 'clock' }); return; } if (slotDate(d.value, t.value, q.ws || 'me') < Date.now()) { fieldErr(d, 'That time has passed. Pick a later one.'); return; } m.close(); moveQ(q.id, d.value, t.value); requestAnimationFrame(() => { const nc = $(`.qcard[data-id="${q.id}"]`); nc && nc.focus(); }); };
   d.oninput = t.oninput = () => { d.removeAttribute('aria-invalid'); $('#mv-l', m.el).textContent = d.value && t.value ? `Move to ${slotWhen(d.value, t.value)}` : 'Move'; };
   $('#mv-go', m.el).onclick = go; m.el.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); go(); } });
 }
@@ -15046,9 +15094,9 @@ function qMenu(c) {
   if (q.status === 'published') { fetchPlugs(); openMenu(c, [{ header: q.marked ? `Marked as posted ${slotWhen(q.day, q.time)}. Nothing was sent` : `Went out ${slotWhen(q.day, q.time)}` }, ...plugPubItems(q), ...(q.marked ? [{ label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Move back to drafts', icon: 'undo', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); const d = { ...freshDraft(q.tweets), ws: q.ws || 'me' }; (q.media || []).forEach((m, i) => { if (d.tweets[i] && Array.isArray(m)) d.tweets[i].media = m.slice(); }); d.platforms = { ...q.platforms }; S.drafts.unshift(d); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Back in your drafts.', { icon: 'undo', action: 'Undo', onAction: () => { S.drafts = S.drafts.filter(x => x !== d); S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Deleted.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, '-'] : [{ label: 'Replies to this post', icon: 'reply', run: () => openReplyDesk(q) }]), ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
   const next = nextSlots(1)[0];
   const qcw = S.workspaces.find(w => w.id === q.ws);
-  const apv = q.approval === 'needs' ? [{ label: 'Mark approved…', icon: 'check', run: () => { if (slotDate(q.day, q.time) < Date.now()) { const nx = nextSlots(1)[0] || nextSlots(1, false)[0]; toast('Its time already passed.', { icon: 'clock', tone: 'err', ...(nx ? { action: `Approve for ${slotWhen(nx.day, nx.time)}`, onAction: () => { moveQ(q.id, nx.day, nx.time); approveAsk(q); } } : {}) }); return; } approveAsk(q); } },
+  const apv = q.approval === 'needs' ? [{ label: 'Mark approved…', icon: 'check', run: () => { if (qAt(q) < Date.now()) { const nx = nextSlots(1)[0] || nextSlots(1, false)[0]; toast('Its time already passed.', { icon: 'clock', tone: 'err', ...(nx ? { action: `Approve for ${slotWhen(nx.day, nx.time)}`, onAction: () => { moveQ(q.id, nx.day, nx.time); approveAsk(q); } } : {}) }); return; } approveAsk(q); } },
       ...(qcw ? [{ label: `Copy the ask for ${qcw.name}`, icon: 'copy', run: () => copyAsk(q) }] : [])] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; serverDrop(q); save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
-  const late = slotDate(q.day, q.time) < Date.now(), drift = priceDrift(q);
+  const late = qAt(q) < Date.now(), drift = priceDrift(q);
   openMenu(c, [{ header: late ? `Missed: ${slotLabel(q.day, q.time)}` : slotLabel(q.day, q.time) }, ...(q.approvedBy && q.approval === 'ok' ? [{ header: `Approved by ${q.approvedBy.by}${q.approvedBy.via ? ` · ${q.approvedBy.via}` : ''} · ${slotWhen(dayKey(q.approvedBy.at), new Date(q.approvedBy.at).toTimeString().slice(0, 5))}` }] : []), ...(drift ? [{ label: `Update the price: ${drift.map(p => `${p.sym} ${fmtUSD(p.quoted)} → ${fmtUSD(p.now)}`).join(', ')}`, icon: 'swap', hint: PRICE.live ? '' : 'sample', run: () => updatePrices(q) }] : []), ...(late ? [] : apv),
     ...(late ? [] : [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }]),
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => { moveQ(q.id, next.day, next.time); keepFocus(`.qcard[data-id="${q.id}"]`); } } : { label: 'No best times left', icon: 'target', disabled: true },
@@ -15072,18 +15120,18 @@ const mnote = t => `<span class="mnote">${esc(t)}<svg viewBox="0 0 34 22" aria-h
 function unmarkDay(day) { if (!S.queue.some(x => x.day === day && x.status === 'published')) delete S.streak[day]; }
 function qAria(q) {
   const w = q.ws && q.ws !== 'me' ? (S.workspaces.find(x => x.id === q.ws) || {}).name : '', plats = Object.keys(PLAT).filter(k => q.platforms && q.platforms[k]).map(k => PLAT[k].name);
-  const missed = q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < Date.now();
+  const missed = q.approval === 'needs' && q.status === 'scheduled' && qAt(q) < Date.now();
   const st = q.status === 'published' ? (q.marked ? `Marked as posted ${slotWhen(q.day, q.time)}, nothing was sent` : q.sending ? 'Sending' : `Sent ${slotWhen(q.day, q.time)}`) : q.status === 'due' ? `Post by hand. Its time was ${slotWhen(q.day, q.time)}` : q.status === 'failed' ? 'Didn’t go out' : missed ? 'Missed: its time passed before it was approved' : `Scheduled for ${slotWhen(q.day, q.time)}${q.approval === 'needs' ? ', waiting for approval' : q.approval === 'ok' ? ', approved' : ''}`;
   const xo = `${q.replySettings && q.status === 'scheduled' && RS_TAG[q.replySettings] ? ` On X, only ${q.replySettings === 'following' ? 'people you follow' : 'people you mention'} can reply.` : ''}${q.plug && q.plug.on && !q.marked ? (pw => pw && pw.status === 'sent' ? ' Auto-plug sent.' : pw && pw.error ? ` Auto-plug: ${pw.error}` : ` Auto-plug ${plugAtS(q.plug.at)}${xWired() ? '' : ', once you connect X'}.`)(plugSrv(q)) : ''}`;
   return `${q.text.replace(/[.!?…]+$/, '')}. ${st}.${xo}${w ? ` ${w}.` : ''}${q.tweets.length > 1 ? ` ${q.tweets.length} posts.` : ''}${plats.length ? ` To ${plats.join(', ')}.` : ''}`;
 }
 function qcardHTML(q, interactive = true) {
   const tag = interactive ? 'button' : 'div';
-  return `<${tag} class="qcard ${q.status}${q.sending ? ' sending' : ''}${q.marked ? ' marked' : ''}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
+  return `<${tag} class="qcard ${q.status}${q.sending ? ' sending' : ''}${q.marked ? ' marked' : ''}" ${interactive ? `data-id="${q.id}" draggable="${q.status === 'scheduled'}"` : ''} aria-label="${esc(qAria(q))}"><p>${firstLineHTML(q.text)}</p>${interactive ? qTags(q) : ''}<span class="qm"><span>${fmtTime(q.time)}${VTZ(q.ws || 'me') !== VTZ() ? ` ${esc(tzCity(VTZ(q.ws || 'me')) || 'your time')}` : ''}${q.tweets.length > 1 ? ` · ${q.tweets.length} posts` : ''}${mediaCount(q) ? ` · <span class="qmed">${ic('image')}${mediaCount(q)}</span>` : ''}</span><span class="qp">${Object.keys(PLAT).filter(k => q.platforms[k]).map(k => pic(PLAT[k].icon)).join('')}</span></span></${tag}>`;
 }
 function calGridHTML(days, list, { now = Date.now(), interactive = true, drafts = [] } = {}) {
   refreshBest();
-  const today = dayKey(Date.now()); const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
+  const today = dayKey(vNow()); const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
   /* r67: the next time today that hasn't passed gets a thin blue "now" line; days you posted join into one streak capsule */
   const nxt = interactive ? SLOTS.find(t => slotDate(today, t).getTime() > now) : null;
   const sk = d => !!(interactive && S.streak && S.streak[dayKey(d)]);
@@ -15106,9 +15154,9 @@ function calGridHTML(days, list, { now = Date.now(), interactive = true, drafts 
 }
 /* illustrative week for the homepage: fictional posts, this week's real dates */
 function drawCal() {
-  const cal = $('#cal'); if (!cal) return; const w0 = addDays(startOfWeek(new Date()), WEEK * 7); const today = dayKey(Date.now()); const now = Date.now();
+  const cal = $('#cal'); if (!cal) return; const w0 = addDays(startOfWeek(vNow()), WEEK * 7); const today = dayKey(vNow()); const now = Date.now();
   const days = Array.from({ length: 7 }, (_, i) => addDays(w0, i));
-  const end = days[6]; $('#q-range').textContent = `${MON[w0.getMonth()]} ${w0.getDate()} – ${w0.getMonth() !== end.getMonth() ? MON[end.getMonth()] + ' ' : ''}${end.getDate()}`;
+  const end = days[6], tz = VTZ(); $('#q-range').innerHTML = `${MON[w0.getMonth()]} ${w0.getDate()} – ${w0.getMonth() !== end.getMonth() ? MON[end.getMonth()] + ' ' : ''}${end.getDate()}${tz ? `<span class="q-tz" tabindex="0" data-tip="${esc(`${WS().name}’s week runs on their clock: ${vtzName()}.${yoursAt(dayKey(vNow()), SLOTS[0]) ? ` ${fmtTime(SLOTS[0])} there is ${yoursAt(dayKey(vNow()), SLOTS[0])}.` : ''}`)}">${ic('clock', 'xs')}${esc(tzCity(tz))} · ${fmtTime(hhmm(vNow()))}</span>` : ''}`;
   const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
   const drafts = myDrafts().filter(d => d.slot && slotDate(d.slot.day, d.slot.time) > now), html = calGridHTML(days, qList(), { now, drafts });
   cal.innerHTML = html;
@@ -15129,23 +15177,23 @@ function drawCal() {
   /* what's next, in one line: the next post that goes out, or what to do when nothing will */
   /* a post waiting on a client's yes isn't "next out": it says what it's waiting on instead */
   const wn = $('#wk-next'); if (wn) { const up = myQ().filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now).sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)), nx = up.find(q => q.approval !== 'needs'), wait = up.filter(q => q.approval === 'needs').length;
-    const auto = autoFor(), td = dayKey(now), todayOut = myQ().some(q => q.day === td && q.status !== 'failed'), openT = !QF.mine || S.ws === 'me' ? Object.keys(BEST[dowIdx(new Date())] || {}).filter(t => slotDate(td, t).getTime() > now && !taken(td, t)).sort()[0] : null;
+    const auto = nx ? qAuto(nx) : autoFor(), td = dayKey(vNow()), todayOut = myQ().some(q => q.day === td && q.status !== 'failed'), openT = !QF.mine || S.ws === 'me' ? Object.keys(BEST[dowIdx(vNow())] || {}).filter(t => slotDate(td, t).getTime() > now && !taken(td, t)).sort()[0] : null;
     if (!todayOut && openT && !wait) { wn.innerHTML = `<span class="wk-dot off"></span><span>Nothing out today yet. <b>${esc(fmtTime(openT))}</b> is open.</span> <button type="button" class="btn sm wk-fill" data-qact="slot" data-day="${td}" data-time="${openT}">${ic('write', 'sm')} Write for ${esc(fmtTime(openT))}</button>`; }
     else wn.innerHTML = !nx && wait ? `<span class="wk-dot off"></span><span>${wait} waiting on ${esc(WS().name)}’s yes. ${auto ? 'Once they nod, it goes out on time.' : 'Once they nod, it waits here for you to post.'}</span>` : nx ? `<span class="wk-dot${auto ? '' : ' hand'}"></span>${auto ? 'Next out' : 'Next up'} <b>${esc(slotWhen(nx.day, nx.time))}</b>${auto ? '' : '<span class="wk-hand"> · you post it</span>'} <button type="button" class="wk-np" data-up-id="${esc(nx.id)}">“${esc(clip(nx.text, 64))}”</button>` : drafts.length ? `<span class="wk-dot off"></span>${drafts.length} draft${drafts.length > 1 ? 's' : ''} planned, yours to finish. Tap a dashed card to fill it in.` : `<span class="wk-dot off"></span>A clear week ahead. Plan it once, post all week.`; }
   /* the nudge counts what the calendar shows (this voice, or every voice), so it never contradicts the line above it */
   /* r63: the sub line under the heading already counts what's lined up; a second banner saying it again was noise */
-  const miss = qList().filter(q => q.status === 'due' || (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < now)).length;
+  const miss = qList().filter(q => q.status === 'due' || (q.approval === 'needs' && q.status === 'scheduled' && qAt(q) < now)).length;
   const did = [wk ? `${wk} scheduled` : '', sent ? `${sent} posted` : ''].filter(Boolean).join(', ');
   $('#q-sub').textContent = `${wname}: ${w1 <= now ? `${sent} posted.` : `${did ? did + '. ' : ''}${open ? `${open} good time${open === 1 ? '' : 's'} still open.` : `Every good time is taken ${WEEK === 0 ? 'this week' : WEEK === 1 ? 'next week' : 'that week'}.`}`}${miss ? ` ${miss} missed ${miss > 1 ? 'their' : 'its'} time and need${miss > 1 ? '' : 's'} a new one.` : ''}`; syncSeg($('#q-ws'));
   refreshSide(); /* every queue change lands here: keep the sidebar's drafts and Queue count true */
 }
 /* a draft saved for a time (Draft my week): dashed, so it reads as yours to finish, not as going out */
 function draftCardHTML(d) { const di = S.drafts.indexOf(d), tx = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft'; return `<button class="qcard draftc" data-di="${di}" aria-label="${esc(`Draft for ${slotWhen(d.slot.day, d.slot.time)}: ${clip(tx, 80)}. Press Enter to finish it`)}"><p>${firstLineHTML(clip(tx, 90))}</p><span class="qm"><span>${fmtTime(d.slot.time)} · draft</span></span></button>`; }
-function gapSlots(w0 = startOfWeek(new Date())) { const out = []; for (let i = 0; i < 7; i++) { const d = addDays(w0, i); const day = dayKey(d); for (const t of Object.keys(BEST[dowIdx(d)] || {})) if (slotDate(day, t).getTime() > Date.now() && !taken(day, t)) out.push({ day, time: t }); } return out; }
+function gapSlots(w0 = startOfWeek(vNow())) { const out = []; for (let i = 0; i < 7; i++) { const d = addDays(w0, i); const day = dayKey(d); for (const t of Object.keys(BEST[dowIdx(d)] || {})) if (slotDate(day, t).getTime() > Date.now() && !taken(day, t)) out.push({ day, time: t }); } return out; }
 /* Reruns: most of your followers never saw your best post. Bring it back with a new first line. */
 /* evergreen: keep one rerun in the coming week, in an open slot that isn't one of your best (those are for new posts) */
 function ensureEvergreen() {
-  const now = Date.now(); if (S.queue.some(q => q.rerun && q.status === 'scheduled' && slotDate(q.day, q.time) - now < 8 * DAY)) return null;
+  const now = Date.now(); if (S.queue.some(q => q.rerun && q.status === 'scheduled' && qAt(q) - now < 8 * DAY)) return null;
   const p = rerunPick(); if (!p) return null;
   const slot = nextSlots(14, false).find(x => !(BEST[dowIdx(fromKey(x.day))] || {})[x.time] && slotDate(x.day, x.time) - now < 8 * DAY) || nextSlots(1, false)[0]; if (!slot) return null;
   const mo = Math.max(2, Math.round(p.days / 30)); const lead = [`${cap(numWord(mo))} months ago I posted this. Still the best thing I know:`, `I said this ${mo} months ago. Still true:`, `Posting this again because it still holds:`][hash(p.id) % 3];
@@ -15167,7 +15215,7 @@ const ZP_DAYS = 30;
 function zpState() { if (!S.zero || typeof S.zero !== 'object' || !S.zero.start) S.zero = { start: dayKey(Date.now()), days: {} }; return S.zero; }
 const zpDayN = () => Math.floor((fromKey(dayKey(Date.now())) - fromKey(zpState().start)) / DAY) + 1;
 const zpOn = () => S.ws === 'me' && !!S.seedCleared && !S.zeroOff && HIST().length < 30 && zpDayN() <= ZP_DAYS && !(S.user.followers >= 500) && !(S.payout && S.payout.vf >= 500); /* r69: past 500 followers, the payout path matters more than the first 100 */
-function zpOf(k) { const d = (S.zero && S.zero.days && S.zero.days[k]) || {}; return { posted: S.queue.some(q => q.made && dayKey(q.made) === k && (q.ws || 'me') === 'me'), replies: d.replies || 0, idea: S.ideas.some(i => i.at && dayKey(i.at) === k) }; }
+function zpOf(k) { const d = (S.zero && S.zero.days && S.zero.days[k]) || {}; return { posted: S.queue.some(q => q.made && dayKey(q.made) === k && (q.ws || 'me') === 'me'), replies: d.replies || 0, idea: S.ideas.some(i => (i.ws || 'me') === 'me' && i.at && dayKey(i.at) === k) }; }
 const zpFull = o => o.posted && o.replies >= 3 && o.idea;
 function zpMark(kind) { if (!zpOn()) return; const k = dayKey(Date.now()), z = zpState(), d = z.days[k] = z.days[k] || {}; if (kind === 'reply') { d.replies = (d.replies || 0) + 1; if (d.replies === 3) setTimeout(() => toast('Three replies today. That’s the part that grows a small account.', { icon: 'reply', tone: 'accent' }), 900); } }
 const zpIdea = () => genIdeas(1, hash(dayKey(Date.now()) + (S.user.niche || '')) % 9999)[0];
@@ -15204,7 +15252,7 @@ function drawZP() {
 function drawQSide() {
   const el = $('#q-side'); if (!el) return;
   const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled' && (!QF.mine || q.ws === S.ws)), MD = myDrafts(); fetchPlugs();
-  el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}" data-tip="Approve it, or send it back"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')} · ${esc(slotWhen(q.day, q.time))}${(() => { const left = slotDate(q.day, q.time) - Date.now(); if (left <= 0) return ''; const h = left / 36e5; return ` <span class="due-in${h < 3 ? ' now' : h < 24 ? ' soon' : ''}">${h < 1 ? `needs a yes in ${Math.max(1, Math.round(left / 6e4))} min` : h < 24 ? `needs a yes in ${Math.round(h)} h` : `in ${Math.round(h / 24)} day${Math.round(h / 24) === 1 ? '' : 's'}`}</span>`; })()}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
+  el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}" data-tip="Approve it, or send it back"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')} · ${esc(slotWhen(q.day, q.time))}${(() => { const left = qAt(q) - Date.now(); if (left <= 0) return ''; const h = left / 36e5; return ` <span class="due-in${h < 3 ? ' now' : h < 24 ? ' soon' : ''}">${h < 1 ? `needs a yes in ${Math.max(1, Math.round(left / 6e4))} min` : h < 24 ? `needs a yes in ${Math.round(h)} h` : `in ${Math.round(h / 24)} day${Math.round(h / 24) === 1 ? '' : 's'}`}</span>`; })()}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
   ${MD.length ? `<div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span>${MD.length ? `<span class="faint" style="font-size:12px">${MD.length}</span>` : ''}</div>
     ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd${blank ? ' qd-blank' : ''}" draggable="${!blank}" data-di="${i}"${blank ? ' data-tip="Fill the [blanks] first, then drag it onto a time"' : ''} tabindex="0" role="button" aria-label="${esc(clip(t, 80).replace(/[\s.!?:;,…]+$/, ''))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : ''}</div>` : ''}
   <div class="card q-times"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Your posting times</span><button class="btn ghost sm" data-qact="times" aria-haspopup="dialog" aria-label="Edit your posting times">Edit</button></div>
@@ -15224,7 +15272,7 @@ function approveAsk(q) {
   const el = m.el; el.addEventListener('click', e => { const c = e.target.closest('[data-via]'); if (c) $$('[data-via]', el).forEach(x => x.setAttribute('aria-checked', x === c)); });
   $('#ap-go', el).onclick = () => { const by = $('#ap-by', el).value.trim() || w.name || 'Client', via = ($('[data-via][aria-checked="true"]', el) || {}).dataset?.via || '';
     if (w.id && !w.contact && by !== w.name) w.contact = by; q.approval = 'ok'; q.approvedBy = { by, via, at: Date.now() }; save(); syncToServer(q, q.mediaIds ? null : q.media); m.close(); drawCal(); drawQSide(); refreshSide();
-    toast(`Approved by ${esc(by)}${via ? ` via ${esc(via)}` : ''}. ${autoFor(w) ? `It goes out ${slotWhen(q.day, q.time)}.` : `${slotWhen(q.day, q.time)} it waits on Week for you to post.`}`, { icon: 'check' }); };
+    toast(`Approved by ${esc(by)}${via ? ` via ${esc(via)}` : ''}. ${qAuto(q) ? `It goes out ${slotWhen(q.day, q.time)}.` : `${slotWhen(q.day, q.time)} it waits on Week for you to post.`}`, { icon: 'check' }); };
 }
 /* "Every day", "Weekdays", "Mon, Wed, Fri" */
 function daysLabel(ds) { const d = ds ? [...ds].sort() : [0, 1, 2, 3, 4, 5, 6], k = d.join(''); return k === '0123456' ? 'Every day' : k === '01234' ? 'Weekdays' : k === '56' ? 'Weekends' : d.length >= 3 && d[d.length - 1] - d[0] === d.length - 1 ? `${WKD[d[0]].slice(0, 3)}–${WKD[d[d.length - 1]].slice(0, 3)}` : d.map(i => WKD[i].slice(0, 3)).join(', '); }
@@ -15252,7 +15300,7 @@ function openTimes() {
     $('#tm-body', m.el).innerHTML = ts.map(t => `<tr><th scope="row" class="mono">${fmtTime(t)}</th>${WKD.map((d, i) => `<td class="${(best[i] || {})[t] ? 'best' : ''}"><label class="tm-c"><input type="checkbox" data-tt="${t}" data-td="${i}" aria-label="${d} ${fmtTime(t)}${(best[i] || {})[t] ? '. A good time to post' : ''}" ${(W[t] || []).includes(i) ? 'checked' : ''}></label></td>`).join('')}<td><button type="button" class="btn ghost icon-only sm" data-trm="${t}" aria-label="Remove ${fmtTime(t)}" data-tip="Remove">${ic('x', 'sm')}</button></td></tr>`).join('') || `<tr><td colspan="9" class="faint" style="padding:14px 4px">No times yet. Add one below.</td></tr>`;
     $('#tm-chart', m.el).innerHTML = timesChartHTML(ts);
   };
-  const m = modal(`${modalHead('Your posting times', `The schedule sheet suggests these first. Times are in ${esc(tzName())}.`)}
+  const m = modal(`${modalHead('Your posting times', `The schedule sheet suggests these first. Times are in ${esc(vtzName())}${S.ws !== 'me' && VTZ() ? `, ${esc(WS().name)}’s clock` : ''}.`)}
   <div class="modal-b tm-b"><div class="tm-grid"><div class="tm-scroll"><table class="tm-t"><caption class="sr">Your posting times. Check the days each time is on.</caption><thead><tr><th scope="col"><span class="sr">Time</span></th>${WKD.map(d => `<th scope="col"><abbr title="${d}">${d.slice(0, 3)}</abbr></th>`).join('')}<th scope="col"><span class="sr">Remove</span></th></tr></thead><tbody id="tm-body"></tbody></table></div>
     <div class="tm-add"><input type="time" class="input" id="tm-new" aria-label="A new time"><button type="button" class="btn sm" id="tm-addb">${ic('plus', 'sm')} Add time</button></div>
     <p class="faint tm-legend"><i></i> Good times to post${TIMES.src === 'you' ? ', from your posts' : ', in general'}</p></div>
@@ -15426,7 +15474,7 @@ function ptData() {
   if (_pt.key === key) return _pt.v;
   const h = HIST(), seen = new Set(h.map(p => p.text.trim())), ids = new Set(h.map(p => p.id));
   let rows = h.map(p => ptRow(p)), sample = false;
-  pub.forEach(({ q, m }) => { if (seen.has(q.text.trim()) || (q.xIds && ids.has('x-' + q.xIds[0]))) return; rows.push(ptRow({ id: q.id, text: q.text, thread: q.tweets.slice(1), at: slotDate(q.day, q.time).getTime(), likes: m.likes, replies: m.replies, reposts: m.reposts, views: m.views })); });
+  pub.forEach(({ q, m }) => { if (seen.has(q.text.trim()) || (q.xIds && ids.has('x-' + q.xIds[0]))) return; rows.push(ptRow({ id: q.id, text: q.text, thread: q.tweets.slice(1), at: qAt(q).getTime(), likes: m.likes, replies: m.replies, reposts: m.reposts, views: m.views })); });
   /* the showcase has no posts of its own: the sample account's top posts stand in, labelled Sample */
   /* the showcase: its sent week (sample numbers) and the sample account's all-time best, labelled Sample, so the 30-day tiles cover the last 30 days */
   if (!h.length && SHOWCASE()) { sample = true; rows = [...rows, ...TOP_POSTS.map(p => ptRow({ ...p, at: Date.now() - p.days * DAY, reposts: Math.round(p.likes * .09) }))]; }
@@ -15567,6 +15615,22 @@ function wireLearnCard(root) {
     const c = $('.lf'); if (c) c.outerHTML = learnCardHTML(); toast(`Forgot “${esc(w)}”.`, { icon: 'check', ms: 1800 });
   });
 }
+/* the three tone dials, for whichever voice you're writing as */
+const toneSlidersHTML = () => { const t = TONE(); return [['spice', 'Calm', 'Spicy'], ['polish', 'Casual', 'Polished'], ['length', 'Short', 'Rich']].map(([k, a, b]) => `<div class="slider-row"><div class="ends"><span>${a}</span><span>${b}</span></div><input type="range" class="range" min="0" max="100" value="${t[k]}" data-v="${k}" aria-label="${a} to ${b}" style="--p:${t[k]}%"></div>`).join(''); };
+/* r70: a client's voice page is theirs: how they sound, their tone, their never-say list and their clock. None of your stats */
+function voiceClientHTML() {
+  const w = WS(), pl = Object.keys(PLAT).filter(k => (w.platforms || S.platforms)[k]).map(k => PLAT[k].name);
+  return `<div class="page"><div class="page-h"><div><h1 class="display">${esc(w.name)}’s voice</h1><p>How Hookworthy writes as ${esc(w.name)}. Your own voice and lists stay separate.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="v-edit">${ic('sliders', 'sm')} Edit ${esc(w.name)}</button></div></div>
+  ${learnCardHTML()}
+  <div class="voice-hero">
+    <div class="card pad" style="display:grid;gap:14px;align-content:start"><span class="label">They sound</span>${w.note ? `<blockquote class="cv-note">${esc(w.note)}</blockquote>` : `<p class="faint" style="font-size:14px">No line on how they sound yet. Add one in Edit ${esc(w.name)}, and every rewrite reads it.</p>`}<div id="v-traits">${sliderTraits().map(([a, b]) => `<div class="trait"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</div>
+      <dl class="cv-facts"><div><dt>Writes about</dt><dd>${esc(w.niche || 'Not set')}</dd></div><div><dt>Posts to</dt><dd>${esc(pl.join(', ') || 'Nowhere yet')}</dd></div><div><dt>Their clock</dt><dd>${esc(vtzName())}</dd></div><div><dt>Before it posts</dt><dd>${w.approvals ? 'Waits for their yes' : 'No approval step'}</dd></div></dl></div>
+    <div class="card pad" style="display:grid;gap:18px;align-content:start"><span class="label">Tone</span>
+      ${toneSlidersHTML()}
+      <div class="sample" id="v-sample" aria-live="polite"></div><span class="faint" style="font-size:12px">Same idea, their settings. Rewrites as ${esc(w.name)} use these.</span></div>
+  </div>
+  <div class="sec"><div class="card pad" style="display:grid;gap:12px;align-content:start"><span class="label">${esc(w.name)}’s never-say list</span><div class="words" id="never"></div><form id="never-f" style="display:flex;gap:8px"><input class="input" id="never-in" placeholder="A word ${esc(w.name)} would never use" aria-label="Add to ${esc(w.name)}’s never-say list" maxlength="40"><button class="btn" type="submit">Add</button></form></div></div></div>`;
+}
 ROUTES.voice = () => {
   const an = ANALYSIS(), pr = S.profile, real = !!an;
   /* before your posts are in, the card is your starting voice from the sliders below, never a stranger's */
@@ -15578,7 +15642,7 @@ ROUTES.voice = () => {
   const sent = memFor('me').posts.length;
   const status = pr ? `Learned ${agoLabel(pr.at)} from ${pr.n} of your posts, by ${pr.by || 'Claude'}.` : real ? `${an.n} posts brought in. Choose “Learn my voice” and this page becomes yours.` : sent ? `Learning from ${sent} post${sent === 1 ? '' : 's'} you wrote here.${sent >= 8 ? ' “Learn my voice” is on.' : ''}` : 'Your starting voice, set by the tone sliders. It learns from every post you write.';
   const have = Math.max(HIST().length + memFor('me').posts.length, SHOWCASE() ? myQ().filter(q => q.status === 'published').length : 0), need = 8, canLearn = real || have >= need;
-  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">${S.ws !== 'me' ? `${esc(WS().name)}’s voice` : 'Your voice'}</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Your words in, your voice out. Tune it here and every rewrite follows.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${canLearn ? 'primary' : ''}" id="learn" ${canLearn ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${canLearn ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Write or bring 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}${real && aiOn() ? crTag('voice') : ''}</button></div></div>
+  if (S.ws !== 'me') mount('voice', voiceClientHTML()); else mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Your words in, your voice out. Tune it here and every rewrite follows.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${canLearn ? 'primary' : ''}" id="learn" ${canLearn ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${canLearn ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Write or bring 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}${real && aiOn() ? crTag('voice') : ''}</button></div></div>
   <p class="v-status"><span class="ai-badge" data-mode="${LLM.mode}">${aiBadgeInner()}</span><span>${esc(status)}</span>${canLearn ? '' : `<span class="${start ? 'sr' : 'faint'}" id="learn-why">Write or bring 8 posts and “Learn my voice” turns on.</span>`}</p>
   ${learnCardHTML()}
   <div class="voice-hero">
@@ -15586,7 +15650,7 @@ ROUTES.voice = () => {
       ${start ? `<div class="v-prog"><div class="v-prog-h"><b>Write or bring ${need} posts</b><span class="faint">${have} so far</span></div><div class="v-bar" role="progressbar" aria-label="Posts brought in" aria-valuemin="0" aria-valuemax="${need}" aria-valuenow="${Math.min(have, need)}"><i style="width:${Math.min(100, have / need * 100)}%"></i></div><p class="faint">Then it reads how you open, what you lean on and what your people reward.</p></div>` : `<div class="v-stats">${st.map(([v, l]) => `<div><b class="mono" style="font-size:20px">${v}</b><div class="faint" style="font-size:12px;line-height:1.3;margin-top:4px">${l}</div></div>`).join('')}</div>
       <figure class="most-you"><span class="label">${real || pr ? 'Your most “you” post' : 'The sample account’s most typical post'}</span><blockquote>${esc(clip(most.text, 280))}</blockquote><figcaption>${most.p ? `<b class="mono">${fmtN(most.p.views || most.p.likes)}</b> ${most.p.views ? 'views' : 'likes'} · ` : ''}${real || pr ? 'the post that sounds most like you' : 'a sample, until you bring your posts'}</figcaption></figure>`}</div>
     <div class="card pad" style="display:grid;gap:18px;align-content:start"><span class="label">Tone</span>
-      ${[['spice', 'Calm', 'Spicy'], ['polish', 'Casual', 'Polished'], ['length', 'Short', 'Rich']].map(([k, a, b]) => `<div class="slider-row"><div class="ends"><span>${a}</span><span>${b}</span></div><input type="range" class="range" min="0" max="100" value="${S.voice[k]}" data-v="${k}" aria-label="${a} to ${b}" style="--p:${S.voice[k]}%"></div>`).join('')}
+      ${toneSlidersHTML()}
       <div class="sample" id="v-sample" aria-live="polite"></div><span class="faint" style="font-size:12px">Same idea, your settings. Rewrites use these too.</span></div>
   </div>
   ${pr && pr.rules && pr.rules.length ? `<div class="grid-2 sec"><div class="card pad" style="display:grid;gap:10px;align-content:start"><span class="label">Habits Claude keeps</span><ul class="v-list">${pr.rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div><div class="card pad" style="display:grid;gap:10px;align-content:start"><span class="label">What wouldn’t sound like you</span><ul class="v-list no">${(pr.avoid || []).map(r => `<li>${esc(r)}</li>`).join('')}</ul></div></div>` : ''}
@@ -15594,15 +15658,16 @@ ROUTES.voice = () => {
     <div class="card pad" style="display:grid;gap:12px;align-content:start"${start ? ' hidden' : ''}><span class="label">Words you lean on</span><div class="words">${start ? '<span class="faint" style="font-size:13px">Your favourite words show up here once your posts are in.</span>' : lean.length ? lean.map(([w, n]) => `<span class="w">${esc(w)}<small>${n}</small></span>`).join('') : '<span class="faint" style="font-size:13px">Not enough posts yet to tell. A few dozen more and your words show up here.</span>'}</div>${start ? '' : '<p class="faint" style="font-size:13px">Write’s “Sounds like you” check looks for these.</p>'}${works ? `<span class="label" style="margin-top:8px">What works for you</span><ul class="v-list">${works.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}</div>
     <div class="card pad" style="display:grid;gap:12px;align-content:start${start ? ';grid-column:1/-1' : ''}"><span class="label">Never-say list</span><div class="words" id="never"></div><form id="never-f" style="display:flex;gap:8px"><input class="input" id="never-in" placeholder="Add a word or phrase" aria-label="Add to your never-say list" maxlength="40"><button class="btn" type="submit">Add</button></form></div>
   </div></div>`);
-  const drawNever = () => { $('#never').innerHTML = S.voice.never.map((w, i) => `<span class="w no">${esc(w)}<button data-nv="${i}" aria-label="Allow ${esc(w)}" data-tip="Allow again">${ic('x', 'xs')}</button></span>`).join('') || '<span class="faint" style="font-size:13px">Nothing on your never-say list yet.</span>'; };
-  const sample = () => { const s = $('#v-sample'); s.style.opacity = .3; setTimeout(() => { s.textContent = voiceSampleFor(S.voice.spice, S.voice.polish, S.voice.length); s.style.opacity = 1; }, 120); };
-  drawNever(); $('#v-sample').textContent = voiceSampleFor(S.voice.spice, S.voice.polish, S.voice.length); wireLearnCard($('#view'));
+  const who = S.ws === 'me' ? 'your' : `${WS().name}’s`;
+  const drawNever = () => { $('#never').innerHTML = NEVER().map((w, i) => `<span class="w no">${esc(w)}<button data-nv="${i}" aria-label="Allow ${esc(w)}" data-tip="Allow again">${ic('x', 'xs')}</button></span>`).join('') || `<span class="faint" style="font-size:13px">Nothing on ${esc(who)} never-say list yet.</span>`; };
+  const sample = () => { const s = $('#v-sample'); s.style.opacity = .3; setTimeout(() => { s.textContent = voiceSampleFor(TONE().spice, TONE().polish, TONE().length); s.style.opacity = 1; }, 120); };
+  drawNever(); $('#v-sample').textContent = voiceSampleFor(TONE().spice, TONE().polish, TONE().length); wireLearnCard($('#view')); const ve = $('#v-edit'); if (ve) ve.onclick = () => openClient(WS());
   const v = $('#view'); const deb = debounce(sample, 60);
-  v.addEventListener('input', e => { const k = e.target.dataset.v; if (!k) return; S.voice[k] = +e.target.value; e.target.style.setProperty('--p', e.target.value + '%'); save(); deb();
-    if (start) $('#v-traits').innerHTML = sliderTraits().map(([t, s]) => `<div class="trait"><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join(''); });
-  v.addEventListener('click', e => { const b = e.target.closest('[data-nv]'); if (b) { const [w] = S.voice.never.splice(+b.dataset.nv, 1); save(); drawNever(); toast(`“${esc(w)}” is allowed again.`, { icon: 'check' }); } });
-  $('#never-f').onsubmit = e => { e.preventDefault(); const i = $('#never-in'); const w = i.value.trim(); if (!w) { fieldErr(i, 'Type a word or phrase to add.'); return; } i.removeAttribute('aria-invalid'); if (S.voice.never.includes(w.toLowerCase())) { toast('Already on your never-say list.', { icon: 'check' }); return; } S.voice.never.push(w.toLowerCase()); save(); i.value = ''; drawNever(); toast(`Hookworthy will never say “${esc(w)}”.`, { icon: 'zapoff', tone: 'accent' }); };
-  $('#learn').onclick = e => learnVoice(e.currentTarget);
+  v.addEventListener('input', e => { const k = e.target.dataset.v; if (!k) return; TONE()[k] = +e.target.value; e.target.style.setProperty('--p', e.target.value + '%'); save(); deb();
+    if (start || S.ws !== 'me') $('#v-traits').innerHTML = sliderTraits().map(([t, s]) => `<div class="trait"><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join(''); });
+  v.addEventListener('click', e => { const b = e.target.closest('[data-nv]'); if (b) { const [w] = NEVER().splice(+b.dataset.nv, 1); save(); drawNever(); toast(`“${esc(w)}” is allowed again.`, { icon: 'check' }); } });
+  $('#never-f').onsubmit = e => { e.preventDefault(); const i = $('#never-in'); const w = i.value.trim(); if (!w) { fieldErr(i, 'Type a word or phrase to add.'); return; } i.removeAttribute('aria-invalid'); if (NEVER().includes(w.toLowerCase())) { toast(`Already on ${esc(who)} never-say list.`, { icon: 'check' }); return; } NEVER().push(w.toLowerCase()); save(); i.value = ''; drawNever(); toast(S.ws === 'me' ? `Hookworthy will never say “${esc(w)}”.` : `Hookworthy will never say “${esc(w)}” as ${esc(WS().name)}.`, { icon: 'zapoff', tone: 'accent' }); };
+  const lb = $('#learn'); if (lb) lb.onclick = e => learnVoice(e.currentTarget);
 };
 const agoLabel = t => { if (!t) return ''; const d = Math.round((Date.now() - t) / DAY); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : agoDays(d); };
 function heuristicTraits(an) {
@@ -15636,11 +15701,11 @@ async function learnVoice(btn) {
 ROUTES.upgrade = () => {
   const st = crState(), plan = planNow();
   const tLeft = S.trial && S.trial.until ? Math.max(1, Math.ceil((S.trial.until - Date.now()) / DAY)) : 7;
-  const lede = plan === 'free' ? 'Free gives you 20 Claude rewrites and 15 posts a month, and Sharpen as much as you like. Pro is for creators who want their posts to pay.'
+  const lede = plan === 'free' ? 'Free gives you 20 Claude rewrites and 15 auto-posts a month, and Sharpen as much as you like. Pro is for creators who want their posts to pay.'
     : plan === 'trial' ? `Every Pro feature, on the house. When the week’s up you’re back on Free, with everything you wrote.`
     : 'Your plan, your usage, and what’s a bigger job.';
   const faq = [
-    ['Is the free plan actually free?', 'Yes. 20 Claude rewrites and 15 posts a month, 50 Claude touch-ups a day, Sharpen and quick rewrites on your device as much as you like, and unlimited drafts and ideas. No card.'],
+    ['Is the free plan actually free?', 'Yes. 20 Claude rewrites and 15 auto-posts a month, 50 Claude touch-ups a day, Sharpen and quick rewrites on your device as much as you like, and unlimited drafts and ideas. No card.'],
     ['What counts as a rewrite?', 'One Claude rewrite of a post, with three versions to pick from. Bigger jobs, like Plan my week or Learn my voice, count as a few and say so on the button. Sharpen doesn’t count: it’s free with Claude for 50 a day, and unlimited on your device.'],
     ['What happens when I run out?', 'Nothing breaks. You get the quick version on the spot, free, and Free refills each month. On Pro, your first month’s leftovers roll over into the second.'],
     ['Can I get more than 250 rewrites?', `Yes. Add ${CR.BOOSTS.map(b => `${fmtN(b.add)} for $${b.price}`).join(', ')} a month on top of Pro or Studio. Change or drop it any month, and it refills with your plan.`],
