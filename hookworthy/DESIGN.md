@@ -1184,3 +1184,83 @@ The owner checked the preview on a phone and raised three problems: odd spacing,
   - The FAQ answers that ran long are halved.
   - The footer's duplicate tagline is gone.
   - On a phone the homepage went from 14,649px to about 13,000px.
+
+## Round 69: four critics, one pass
+
+Four critics reviewed the same 31 screenshots and the code:
+- a solo creator chasing X payouts;
+- a ghostwriter with six clients;
+- a senior UX designer;
+- a visual panel channelling Apple, Airbnb, Linear, Arc and Wispr Flow.
+
+Where they overlapped, the overlap decided the order. The fixes below run from harm to polish.
+
+### Trust (things that were wrong, not just rough)
+- **A client's post could go out from your own account.**
+  - `syncToServer` sends to X only when the connected X account *is* the client's, and never sends a client's post to LinkedIn.
+  - Otherwise the post waits on Week for you to post it from the client's account.
+  - The Schedule sheet says so: "Yours to post from @ledgerlyhq… Hookworthy is connected as @heycape_, so Ledgerly's posts never go out through it."
+- **"Scheduled" promised posting that doesn't happen when nothing is connected.** `autoFor()` decides the words:
+  - "Next up … · you post it";
+  - "At that time it waits on Week for your tap";
+  - "Once they nod, it waits here for you to post".
+  - When connected, the old words stay.
+  - A post that's due gets "Open in X to post": X's own composer with the first post filled in and the rest of the thread on the clipboard. You still press Post.
+- **"Best" sat on generic times.** It reads "Suggested" unless the times come from your own posts, in which case it reads "Best for you".
+- **Practice replies to sample posts counted toward the daily plan.** They don't anymore.
+- **Pro's "a ping when a post takes off" didn't say it needs X connected.** It says so now.
+
+### Flow
+- **Schedule:**
+  - The time choices lead.
+  - The one-tweak rewrite and the "posted something close" check follow.
+  - The delivery note sits as a caption by the button.
+  - The selected time is a calm 1px accent with a tint; the focus ring shows only for the keyboard.
+- **One coach:**
+  - The chip never says a bare "Sharpen" on an opener that's already strong.
+  - The chip and the "to check" pill are neutral. Colour stays on the soft words themselves.
+- **Fewer duplicates:**
+  - Week no longer lists drafts twice; the sidebar list hides there, because Week's rail has them.
+  - Nav badges are to-dos, not totals: Week counts posts due for your tap or waiting on a client. Ideas has no badge.
+- **Phone:** the middle tab is **Write**. It brings back the draft you were on, or starts one.
+- **Week:**
+  - One status line.
+  - "Nothing out today yet. 5:30 PM is open." comes with "Write for 5:30 PM".
+  - The count and Plan my week moved into the calendar toolbar.
+  - Open good times are a 5% tint, not hatching (hatching reads as blocked).
+  - The time gutter is mono and 76px wide, and posting times are chips.
+- **First run:**
+  - "Go to my week" replaces the ghost "Skip for now".
+  - The archive option admits X takes a day: "No archive yet? Request it. X emails it within a day."
+
+### Agency
+- **Approvals are records:**
+  - "Mark approved…" asks who said yes and how (Review link, Slack, Email, DM, Call).
+  - It keeps `{by, via, at}`, and the post's menu shows "Approved by Tobi · Email · …".
+  - A late yes gets "Approve for <next good time>" in one tap.
+- **The ask is ready to paste:**
+  - "Copy for Ledgerly" sits on the send toast and in the post's menu.
+  - It copies: "Hi Tobi, here's the next post for Wed 12:15 PM on X and LinkedIn: … Reply YES to approve, or tell me what to change."
+- **The approval rail says how long is left:** "needs a yes in 3 h", in amber under a day and red under three hours.
+- **Adding a client shows the cost:** "On Studio this adds $18/mo. With this one, 3 client voices: $54/mo, billed yearly."
+- **The Voice page says whose voice it is:** "Ledgerly's voice".
+
+### Creator
+- **Payout path on Results:**
+  - Premium, verified followers out of 500, and verified impressions in 90 days out of 500K, as bars with what's left.
+  - You copy the numbers from Creator Studio, and it says "You told us on Oct 19". We never guess them.
+- **The first-100-followers plan steps aside** once X or you report 500 followers.
+
+### Visual
+- **Shapes:** small buttons are pills too; an older 8px rule had won.
+- **Page anchoring:** every page starts at Week's left edge, so the title doesn't jump between places. Plans stays centred.
+- **Surfaces:** menus, modals and the palette share the cool surface family.
+- **The Sharpen bar** is dark glass with a short rise, instead of a white slab in dark mode. Custom uses the icon set instead of a pencil glyph.
+- **Plans prices** are big and light (Inter 300), not monospaced.
+- **Tab bar:** labels sit on one baseline.
+- **Empty-draft art** is quieter next to the cursor.
+
+### Left as decisions for the owner
+- **Free's 15 posts.** The creator critic argued the limit should count only posts Hookworthy sends through X's paid API, since a post you copy and send yourself costs nothing.
+- **A self-reported Premium switch for long posts.** It was removed in round 53 in favour of verifying through the connection.
+- **Per-client never-say lists, time zones and idea lists.**

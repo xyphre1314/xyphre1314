@@ -5590,7 +5590,7 @@ button.st-day{ font:inherit; cursor:pointer; transition:background .2s,box-shado
   --art-a:#7AA2FF; --art-b:#1F4FE0; --art-glow:.28; --halo:rgba(31,91,255,.10); --mk-band:rgba(31,91,255,.18);
   --r-ctl:999px; --r-card:14px; --r-pop:12px; --r-sheet:22px;
   /* the toast is dark glass in both themes, so its colours are fixed */
-  --toast-ring:rgba(200,215,255,.1); --toast-glow:rgba(31,91,255,.35); --toast-ic:#8FB6FF; --toast-ic-bg:rgba(77,141,255,.16); --toast-ok:#6EE7A0; --toast-err:#FF9A9A; --violet:#8A5CFF; --flame:#FF7A45;
+  --toast-ring:rgba(200,215,255,.1); --toast-glow:rgba(31,91,255,.35); --toast-ic:#8FB6FF; --toast-ic-bg:rgba(77,141,255,.16); --toast-ok:#6EE7A0; --toast-err:#FF9A9A; --violet:#8A5CFF; --flame:#FF7A45; --pop-hl:rgba(200,215,255,.06);
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -5802,6 +5802,97 @@ a.link, .link{ color:var(--accent-text); }
 }
 /* if no portrait sheet loads, the tile in the "For anyone" head steps out instead of sitting there empty */
 .no-spr .hz-tw{ display:none; }
+/* ==========================================================================
+   ROUND 69: four critiques (a creator, an agency, senior UX, a visual panel), one pass
+   ========================================================================== */
+/* one shape language: small buttons are pills too (an older rule kept them 8px) */
+.btn.sm, .btn.sm.icon-only, .btn.xs{ border-radius:999px; }
+/* every page starts at the same left edge as Week, so the title never jumps between places */
+.page, .set-page{ margin-left:0; margin-right:auto; }
+.set-page{ max-width:1080px; } .set-page .set-b{ max-width:760px; }
+/* popovers, menus and the palette share the cool surface family */
+.menu, .cmdk, .modal{ background:var(--surface); box-shadow:0 0 0 1px var(--border-strong),0 24px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 var(--pop-hl); }
+:root[data-theme="dark"] .menu, :root[data-theme="dark"] .modal, :root[data-theme="dark"] .cmdk, :root[data-theme="dark"] .modal-f{ background:var(--surface); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .menu, :root:not([data-theme="light"]) .modal, :root:not([data-theme="light"]) .cmdk, :root:not([data-theme="light"]) .modal-f{ background:var(--surface); } }
+#tip{ background:var(--surface-3); color:var(--text-1); box-shadow:0 0 0 1px var(--border-strong),0 12px 30px -12px rgba(0,0,0,.6); }
+.modal-f{ background:var(--surface); }
+
+/* Week: open good times are a quiet tint (hatching reads as "blocked"); the hatch stays for rest days */
+.cal .slot.best:not(.past):not(:has(.qcard)){ background-image:none; background-color:color-mix(in srgb,var(--accent) 5%,transparent); }
+.cal{ grid-template-columns:76px repeat(7,minmax(0,1fr)); }
+.cal .tl{ font:500 11px/1.2 var(--font-mono); letter-spacing:-.02em; color:var(--text-3); padding-right:8px; }
+.wk-next{ display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 8px; }
+.wk-next .wk-hand{ color:var(--text-3); }
+.wk-dot.hand{ background:var(--warn); }
+.wk-next .wk-fill{ margin-left:4px; }
+.cal-h .q-sub{ font-size:13px; margin-right:6px; white-space:nowrap; }
+.q-why{ display:inline-flex; margin:-6px 0 10px; font-size:12.5px; }
+.qtm-g{ display:grid; gap:8px; }
+.qtm-ts{ display:flex; flex-wrap:wrap; gap:6px; }
+.qtm-ts i{ font:500 12.5px/1 var(--font-mono); font-style:normal; letter-spacing:-.02em; padding:6px 10px; border-radius:999px; background:var(--surface-2); color:var(--text-1); }
+.due-in{ font-size:11.5px; color:var(--text-3); } .due-in.soon{ color:var(--warn); } .due-in.now{ color:var(--error); font-weight:600; }
+@media (max-width:760px){ .cal-h .q-sub{ display:none; } .cal-h .q-plan{ margin-left:auto; } .cal-h .q-times-b span, .cal-h .q-times-b{ display:none; } }
+
+/* Schedule: the times lead, the coaching follows, the delivery note sits by the button */
+.sched-times .stime[aria-checked="true"]{ box-shadow:0 0 0 1px var(--accent); background:color-mix(in srgb,var(--accent) 8%,var(--surface)); }
+.sched-times .stime:focus{ outline:none; } .sched-times .stime:focus-visible{ box-shadow:0 0 0 1px var(--accent),0 0 0 4px var(--accent-soft); }
+.sh-cap .sh-deliv{ padding:10px 12px; font-size:13px; }
+
+/* one coach, one quiet colour: the chip is neutral with an amber dot; colour stays on the soft words themselves */
+.tw .hk-coach.soft{ color:var(--text-1); background:var(--surface-2); box-shadow:0 0 0 1px var(--border-strong); }
+.tw .hk-coach.soft:hover{ background:var(--surface-3); }
+.checks-pill{ background:var(--surface-2) !important; color:var(--text-2) !important; box-shadow:0 0 0 1px var(--border) !important; }
+
+/* Sharpen's bar follows the theme as dark glass, like the toasts, instead of a white slab in dark mode */
+.sharpen{ background:rgba(22,24,30,.94); color:#EDEEF2; -webkit-backdrop-filter:blur(14px) saturate(1.4); backdrop-filter:blur(14px) saturate(1.4); box-shadow:0 0 0 1px var(--toast-ring),0 16px 40px -14px rgba(0,0,0,.6); animation:sh-in .16s cubic-bezier(.16,1,.3,1) both; }
+.sharpen button:hover, .sharpen button:focus-visible{ background:rgba(255,255,255,.09); }
+.sharpen .sh-t .icon{ color:var(--toast-ic); }
+.sharpen .sh-up{ color:var(--toast-ic); }
+@keyframes sh-in{ from{ opacity:0; transform:translateY(4px) scale(.98); } }
+@media (prefers-reduced-motion:reduce){ .sharpen{ animation:none; } }
+
+/* Plans: prices in the big, light figure style, not a terminal */
+.pl .pr b{ font:300 56px/.95 var(--font-ui); letter-spacing:-.045em; }
+
+/* phone tab bar: every label on one baseline; the middle tab is Write */
+.tabbar a, .tabbar button{ grid-template-rows:30px auto; align-items:center; }
+.tab-new[aria-current="page"]{ color:var(--text-1); }
+
+/* the empty-draft art stays quiet next to the cursor */
+.write-art{ --art-glow:.35; opacity:.82; } .write-art .art-halo{ width:132px; }
+
+/* first run */
+.onb-alt{ display:grid; justify-items:center; gap:6px; }
+.onb-req{ font-size:12.5px; text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--border-strong); }
+
+/* agency: approvals with names, and what a client voice costs */
+.ap-via{ display:flex; flex-wrap:wrap; gap:6px; }
+.cl-cost{ font-size:12.5px; max-width:36ch; line-height:1.4; }
+
+/* the payout path */
+.pay{ display:grid; gap:14px; padding:20px 22px; margin-bottom:16px; }
+.pay-h{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.pay-h .h2{ margin:4px 0 4px; font:400 26px/1.15 var(--font-serif); letter-spacing:-.02em; }
+.pay-h p{ margin:0; max-width:60ch; font-size:14px; line-height:1.5; }
+.pay-l{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.pay-l li{ display:grid; grid-template-columns:minmax(150px,220px) minmax(0,1fr) auto auto; align-items:center; gap:12px; font-size:14px; color:var(--text-2); }
+.pay-l li:first-child{ grid-template-columns:minmax(150px,220px) auto; }
+.pay-l b{ color:var(--text-1); font-weight:500; } .pay-l b.ok{ color:var(--success); display:inline-flex; align-items:center; gap:4px; }
+.pay-l small{ font-size:12.5px; color:var(--text-3); min-width:64px; text-align:right; }
+.pay-bar{ height:6px; border-radius:99px; background:var(--surface-3); overflow:hidden; }
+.pay-bar i{ display:block; height:100%; width:calc(var(--v) * 1%); border-radius:inherit; background:linear-gradient(90deg,var(--art-a),var(--cta)); }
+.pay-n{ margin:0; font-size:12.5px; }
+.pay-f{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; align-items:end; }
+.pay-f label{ display:grid; gap:6px; }
+.pay-f .pay-ck{ grid-column:1 / -1; display:flex; align-items:center; gap:8px; font-size:14px; color:var(--text-1); }
+.pay-a{ grid-column:1 / -1; display:flex; gap:8px; }
+@media (max-width:640px){ .pay-l li{ grid-template-columns:minmax(0,1fr) auto; } .pay-l li .pay-bar{ grid-column:1 / -1; grid-row:2; } .pay-l small{ display:none; } .pay-f{ grid-template-columns:minmax(0,1fr); } }
+.wk-next{ flex-wrap:nowrap; } .wk-next > span:not(.wk-dot){ min-width:0; } .wk-next .wk-fill{ flex:none; }
+.upnext .when{ white-space:normal; overflow:visible; text-overflow:clip; }
+.sharpen button{ padding:0 9px; }
+@media (max-width:760px){ .cal-h [data-qact="today"], .q-why{ display:none; } .wk-next{ flex-wrap:wrap; } .wk-next .wk-fill{ margin-left:0; } }
+.pay > .btn{ justify-self:start; }
+@media (min-width:641px){ .onb-top{ position:relative; } .onb-prog{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); } }
 </style>
 </head>
 <body>
@@ -6236,7 +6327,7 @@ function openClient(w) {
     <div class="field"><span class="label" id="cl-pl">Where they post</span><div class="plats" role="group" aria-labelledby="cl-pl" style="justify-self:start">${Object.entries(PLAT).map(([k, p]) => `<button type="button" class="plat" data-clp="${k}" aria-pressed="${!!pl[k]}" aria-label="${p.name}" data-tip="${p.name}">${pic(p.icon)}</button>`).join('')}</div></div>
     <span class="field-err" id="cl-err" role="alert"></span>
   </form>
-  <div class="modal-f">${edit ? `<button class="btn ghost" type="button" data-clrm>${ic('trash', 'sm')} Remove client</button>` : ''}<span class="grow"></span><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit" form="cl-f">${edit ? 'Save' : 'Add client'}</button></div>`, { label: edit ? `Edit ${w.name}` : 'Add a client' });
+  <div class="modal-f">${edit ? `<button class="btn ghost" type="button" data-clrm>${ic('trash', 'sm')} Remove client</button>` : PRICED() ? `<span class="faint cl-cost">On Studio this adds $${PRICES.studio[0]}/mo. With this one, ${S.workspaces.length} client voice${S.workspaces.length === 1 ? '' : 's'}: $${PRICES.studio[0] * S.workspaces.length}/mo, billed yearly.</span>` : ''}<span class="grow"></span><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit" form="cl-f">${edit ? 'Save' : 'Add client'}</button></div>`, { label: edit ? `Edit ${w.name}` : 'Add a client' });
   const el = m.el, err = $('#cl-err', el), bad = (sel, msg) => { const f = sel && $(sel, el); if (f) { f.setAttribute('aria-invalid', 'true'); f.focus(); } err.textContent = msg; };
   el.addEventListener('click', e => { const b = e.target.closest('[data-clp]'); if (b) { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'); err.textContent = ''; } if (e.target.closest('[data-clrm]')) { m.close(); removeClient(w.id); } });
   el.addEventListener('input', e => { e.target.removeAttribute('aria-invalid'); err.textContent = ''; });
@@ -7318,7 +7409,8 @@ const TOOLS = [
 function goFormulas() { UI.ideaTab = 'formulas'; if (CURRENT === 'ideas') ideaTab('formulas'); else go('ideas'); }
 const isRest = t => (S.settings.rest || []).includes(new Date(t).getDay());
 function shell(active, inner) {
-  const counts = { ideas: S.ideas.length, week: myQ().filter(q => q.status === 'scheduled').length }, MD = myDrafts(), me = S.ws === 'me' ? S.user : S.workspaces.find(x => x.id === S.ws) || S.user;
+  /* r69: a badge is a to-do, not a total: posts that need your tap or a client's yes */
+  const counts = { week: myQ().filter(q => q.status === 'due' || (q.approval === 'needs' && q.status === 'scheduled')).length }, MD = myDrafts(), me = S.ws === 'me' ? S.user : S.workspaces.find(x => x.id === S.ws) || S.user;
   const w = WS();
   return `<div class="shell"><a class="skip" href="#main" onclick="event.preventDefault();const m=document.getElementById('main');m.tabIndex=-1;m.focus()">Skip to content</a>
   <aside class="side" aria-label="Sidebar">
@@ -7329,13 +7421,13 @@ function shell(active, inner) {
     <nav class="nav" aria-label="Main">
       ${NAV.map(it => `<a href="#${it.k}" ${active === it.k ? 'aria-current="page"' : ''} data-tip="${it.label}" data-kbd="G ${it.key}">${ic(it.icon)}<span>${it.label}</span>${counts[it.k] ? `<span class="count">${counts[it.k]}</span>` : ''}</a>`).join('')}
     </nav>
-    ${sideDraftsHTML(MD)}
+    ${active === 'week' ? '' : sideDraftsHTML(MD)}
     <div class="spacer"></div>
     <button class="me" data-act="account" aria-haspopup="menu">${avatar(S.ws === 'me' ? S.user : S.workspaces[0])}<span style="min-width:0;flex:1"><b style="display:block;font-size:13px;font-weight:600">${esc((S.ws === 'me' ? S.user.name : S.workspaces[0].name) || 'You')}</b>${(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle) ? `<span class="faint" style="font-size:12px">@${esc(S.ws === 'me' ? S.user.handle : S.workspaces[0].handle)}</span>` : '<span class="faint" style="font-size:12px">Add your @handle</span>'}</span>${ic('more', 'sm')}</button>
   </aside>
   <main class="main" id="main">${active === 'write' ? '' : `<div class="mbar"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO_MARK}</a><span class="grow"></span><button class="btn ghost icon-only" data-act="palette" aria-label="Search">${ic('search')}</button><button class="mbar-me" data-act="account" aria-haspopup="menu" aria-label="Account and settings">${avatar(me)}</button></div>`}<div class="view" id="view">${inner}</div></main>
   <nav class="tabbar" aria-label="Main">
-    ${[['week', 'cal', 'Week'], ['ideas', 'ideas', 'Ideas']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}<button class="tab-new" data-act="tabnew" aria-label="New post. Hold to save an idea">${ic('plus')}<span>New</span></button>${[['inbox', 'inbox', 'Inbox'], ['results', 'chart', 'Results']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}
+    ${[['week', 'cal', 'Week'], ['ideas', 'ideas', 'Ideas']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}<button class="tab-new" data-act="tabnew" ${active === 'write' ? 'aria-current="page"' : ''} aria-label="Write. Hold to save an idea">${ic(isEmptyDraft() ? 'plus' : 'write')}<span>Write</span></button>${[['inbox', 'inbox', 'Inbox'], ['results', 'chart', 'Results']].map(([k, i, l]) => `<a href="#${k}" ${active === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></a>`).join('')}
   </nav>
 </div>`;
 }
@@ -7383,7 +7475,7 @@ const ACT = {
     { label: 'Homepage', icon: 'arrow', run: () => go('home') },
     { label: 'Sign out', icon: 'undo', run: () => signOut() }
   ], { width: 240 }),
-  tabnew: () => { if (Date.now() - (UI.tabHold || 0) < 700) return; if (CURRENT === 'write') { const ta = $('.tw-input'); ta && ta.focus(); } else newPost(); },
+  tabnew: () => { if (Date.now() - (UI.tabHold || 0) < 700) return; if (CURRENT === 'write') { const ta = $('.tw-input'); ta && ta.focus(); } else if (!isEmptyDraft()) go('write'); else newPost(); },
   mobilemore: el => openMenu(el, [
     { label: 'Write', icon: 'write', run: () => go('write') },
     { label: 'Ideas', icon: 'ideas', run: () => go('ideas') },
@@ -8041,7 +8133,7 @@ function paintHook() {
   /* the ring fills with the score in the aurora's colours; the word under it names the state (the number sits inside only with Show scores as numbers) */
   const T = TIER(h.score), g = $('.hk-g', sc), w = $('.hk-w', b), gk = hookNums() ? 'n' + h.score : '';
   /* soft words in the opener: the coach turns into the one-tap fix, the same Sharpen as the homepage */
-  const swN = softN(), hk = t0.text.trim() && !fillRanges(t0).length ? hookUpFor(t0.text) : null; b.classList.toggle('soft', !!hk); const CW = k => hk ? (swN ? `Sharpen: ${swN} soft word${swN === 1 ? '' : 's'}` : 'Sharpen') : COACH[k];
+  const swN = softN(), hk0 = t0.text.trim() && !fillRanges(t0).length ? hookUpFor(t0.text) : null, hk = hk0 && (swN || TIER(h.score).rank < 2) ? hk0 : null; /* r69: a strong opener with no soft words says so, never a bare "Sharpen" */ b.classList.toggle('soft', !!hk); const CW = k => hk ? (swN ? `Sharpen: ${swN} soft word${swN === 1 ? '' : 's'}` : 'Sharpen') : COACH[k];
   b.dataset.tip = hk ? `One tap: ${moveWord(hk.from, hk.to).replace(/^N/, 'n')}. ${hk.say}` : 'Tips, rewrites and formulas for your first line';
   if (g.dataset.k !== gk) { g.dataset.k = gk; g.innerHTML = hookNums() ? `<span class="hk-n">${h.score}</span>` : ''; }
   ['flat', 'warming', 'sharp', 'honed'].forEach(k => b.classList.toggle('t-' + k, k === T.key)); b.dataset.tier = T.key;
@@ -9045,7 +9137,7 @@ async function radarAction(e) {
     }
     /* a sample post has no real tweet to answer: copy only, never open a stand-alone public post */
     copyText(text); if (!p.sample) window.open(`https://x.com/intent/post?in_reply_to=${encodeURIComponent(p.id)}&text=${encodeURIComponent(text)}`, '_blank', 'noopener');
-    S.radar.done[p.id] = text; zpMark('reply'); save(); rrNext(); toast(p.sample ? 'Copied your reply. This was a sample post, so nothing went to X.' : 'Opened X with your reply. It’s on your clipboard too.', { icon: p.sample ? 'copy' : 'reply' });
+    S.radar.done[p.id] = text; if (!p.sample) zpMark('reply'); /* r69: a practice reply is practice, not progress */ save(); rrNext(); toast(p.sample ? 'Copied your reply. This was a sample post, so nothing went to X.' : 'Opened X with your reply. It’s on your clipboard too.', { icon: p.sample ? 'copy' : 'reply' });
     return true;
   }
   return true;
@@ -9209,7 +9301,7 @@ function sharpenCheck(ta, now = false) {
   clearTimeout(SH.waitT); SH.wait = null;
   if (!SH.el || SH.el.parentElement !== ta.parentElement) { if (SH.el) SH.el.remove(); SH.el = document.createElement('div'); SH.el.className = 'sharpen'; SH.el.setAttribute('role', 'toolbar'); SH.el.setAttribute('aria-label', 'Sharpen the selected words'); ta.parentElement.append(SH.el); }
   SH.ta = ta;
-  SH.el.innerHTML = `<button data-shcm class="sh-cm" data-tip="Comment on these words" data-kbd="${MOD} ${ALT} M">${ic('reply', 'sm')}Comment</button><span class="sh-sep" aria-hidden="true"></span><span class="sh-t">${ic('riff', 'sm')}Sharpen</span>${SHARP.map((m, i) => { const why = aiOn() ? '' : sharpenWhyNot(m.k, ta.value, s, e); return `<button data-sh="${m.k}"${why ? ` class="sh-dim" data-tip="${esc(why)}"` : ` data-tip="${m.label}"`} data-kbd="${ALT} ${i + 1}">${m.label}</button>`; }).join('')}<button data-shc data-tip="Say what to change" aria-label="Custom: say what to change">✎ Custom…</button>${aiOn() && METERED() && hlpOut() && !SRV_CR() ? `<span class="sh-sep" aria-hidden="true"></span><button data-shup class="sh-up" data-tip="On your device until midnight">${ic('spark', 'sm')}More touch-ups</button>` : ''}`;
+  SH.el.innerHTML = `<button data-shcm class="sh-cm" data-tip="Comment on these words" data-kbd="${MOD} ${ALT} M">${ic('reply', 'sm')}Comment</button><span class="sh-sep" aria-hidden="true"></span><span class="sh-t">${ic('riff', 'sm')}Sharpen</span>${SHARP.map((m, i) => { const why = aiOn() ? '' : sharpenWhyNot(m.k, ta.value, s, e); return `<button data-sh="${m.k}"${why ? ` class="sh-dim" data-tip="${esc(why)}"` : ` data-tip="${m.label}"`} data-kbd="${ALT} ${i + 1}">${m.label}</button>`; }).join('')}<button data-shc data-tip="Say what to change" aria-label="Custom: say what to change">${ic('write', 'sm')} Custom…</button>${aiOn() && METERED() && hlpOut() && !SRV_CR() ? `<span class="sh-sep" aria-hidden="true"></span><button data-shup class="sh-up" data-tip="On your device until midnight">${ic('spark', 'sm')}More touch-ups</button>` : ''}`;
   requestAnimationFrame(() => { sharpenPlace(); SH.el && SH.el.classList.add('on'); });
 }
 /* the hook score a version would give, when it touches the first line of the first post */
@@ -9927,8 +10019,11 @@ function xoWire(root, st, first = '') {
 function xoBlocked(root, st) { if (!st.plug || !st.plug.on) return false; const b = plugBad(st.plug.text); if (!b) return false; const el = $('#plug-t', root); if (el) { const er = $('#plug-t-err', root); fieldErr(el, b); er && (er.textContent = b); } return true; }
 /* round 52: say up front what happens at the time you pick. Connected: it posts itself. Not connected: it waits on Today for one tap */
 function deliveryHTML() {
-  if (needsApproval()) return `<div class="sh-deliv">${ic('send', 'sm')}<span><b>Needs ${esc(WS().name)}’s yes.</b> Share the review link; once they nod, it goes out at the time you pick.</span></div>`;
+  const w = WS(), hand = w.id !== 'me' && !autoFor(w), srv = LLM.server || {};
+  const from = hand && w.handle ? ` from @${esc(w.handle)}` : '', conn = hand && (srv.xUser || srv.liUser) ? ` Hookworthy is connected as @${esc(srv.xUser || srv.liUser)}, so ${esc(w.name)}’s posts never go out through it.` : '';
+  if (needsApproval()) return `<div class="sh-deliv">${ic('send', 'sm')}<span><b>Needs ${esc(w.name)}’s yes.</b> ${autoFor(w) ? 'Once they nod, it goes out at the time you pick.' : `Once they nod, it waits on Week at that time for you to post${from}.`}${conn}</span></div>`;
   const pl = esc(platList());
+  if (hand) return `<div class="sh-deliv">${ic('bell', 'sm')}<span><b>Yours to post${from}.</b> At that time it waits on Week.${conn}</span></div>`;
   if (wiredNow()) return `<div class="sh-deliv ok">${ic('check', 'sm')}<span><b>Posts by itself.</b> It goes out to ${pl} at the time you pick.</span></div>`;
   return `<div class="sh-deliv">${ic('bell', 'sm')}<span><b>Ready when you are.</b> At that time it waits on Week for ${pl}. One tap and it’s out.</span>${(LLM.server || {}).x ? '<button type="button" class="btn sm" data-sh-conn>Connect</button>' : ''}</div>`;
 }
@@ -9945,7 +10040,9 @@ function quickSchedule() {
   UI.quietDone = true; commitDraft({ day: slot.day, time: slot.time }); const q = S.queue[S.queue.length - 1];
   route(); sendOff(so, { count, plats }); SFX.play('done');
   const undo = () => { S.queue = S.queue.filter(x => x !== q); serverDrop(q); S.draft = keep; save(); if (CURRENT === 'write') route(); toast('Back in your draft. Nothing is scheduled.', { icon: 'undo', ms: 2200 }); };
-  toast(cw ? `Sent to ${esc(cw.name)} for ${slotWhen(slot.day, slot.time)}. It goes out once they approve.` : `Scheduled for ${slotWhen(slot.day, slot.time)}.`, { icon: 'clock', tone: 'accent', action: 'Undo', onAction: undo, ms: 6500 });
+  const auto = autoFor();
+  if (cw) { toast(`Sent to ${esc(cw.name)} for ${slotWhen(slot.day, slot.time)}. ${auto ? 'It goes out once they approve.' : 'Once they approve, it waits on Week for you to post.'}`, { icon: 'clock', tone: 'accent', action: `Copy for ${cw.name}`, onAction: () => copyAsk(q), action2: 'Undo', onAction2: undo, ms: 9000 }); return; }
+  toast(cw ? '' : `Scheduled for ${slotWhen(slot.day, slot.time)}.${auto ? '' : ' At that time it waits on Week for your tap.'}`, { icon: 'clock', tone: 'accent', action: 'Undo', onAction: undo, ms: 6500 });
 }
 function openSchedule() {
   if (CURRENT !== 'write' || freeCapHit()) return; refreshBest();
@@ -9965,15 +10062,15 @@ function openSchedule() {
   const goL = s => s.now ? 'Post now' : `Schedule for ${slotWhen(s.day, s.time)}`, pd = pickDefault(); const n = S.draft.tweets.filter(t => t.text.trim()).length;
   const m = modal(`${modalHead('Schedule', `${n} post${n > 1 ? 's' : ''} to ${esc(platList())} · times in ${esc(tzName())}`)}
   <div class="modal-b" style="display:grid;gap:18px">
-    ${deliveryHTML()}
-    <div id="sh-hook">${schedHookHTML()}</div>${(() => { const ps = pricesIn(S.draft.tweets.map(t => t.text).join('\n')); return ps.length ? `<div class="sh-price">${ic('clock', 'sm')}<span>This post quotes ${ps.map(p => `<b>${p.sym} ${esc(p.raw)}</b>`).join(', ')}. Prices move. Your queue shows the price then and now, with one tap to update.</span></div>` : ''; })()}
-    ${(() => { const pf = preflight(), t0 = S.draft.tweets[0].text; return !pf.length && t0.trim() && hookFor(t0).score < 60 ? '' : checksHTML(pf); })()}
     <div style="display:grid;gap:8px"><span class="label">${mk.length ? `${mkShort(mk[0].ev)} today, then ${TIMES.src === 'you' ? 'your best times' : 'good times in general'}` : TIMES.src === 'you' ? 'Best times for you' : 'Good times to post, in general'}</span>
-      <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" tabindex="${i === pickI ? 0 : -1}" ${i === pickI ? 'autofocus' : ''} data-si="${i}"><span class="radio"></span><span><b>${esc(s.label || slotLabel(s.day, s.time))}</b><small>${esc(s.reason)}</small></span>${s.ev ? `<span class="pill accent">${esc(s.ev.name.replace(' decision', ''))}${s.ev.est ? ' est.' : ''}</span>` : s.top ? '<span class="pill accent">Best</span>' : s.next ? '<span class="pill">Next open</span>' : ''}</button>`).join('')}
+      <div class="sched-times" role="radiogroup" aria-label="Pick a time">${best.map((s, i) => `<button class="stime" role="radio" aria-checked="${i === pickI}" tabindex="${i === pickI ? 0 : -1}" ${i === pickI ? 'autofocus' : ''} data-si="${i}"><span class="radio"></span><span><b>${esc(s.label || slotLabel(s.day, s.time))}</b><small>${esc(s.reason)}</small></span>${s.ev ? `<span class="pill accent">${esc(s.ev.name.replace(' decision', ''))}${s.ev.est ? ' est.' : ''}</span>` : s.top ? (TIMES.src === 'you' ? '<span class="pill accent">Best for you</span>' : '<span class="pill">Suggested</span>') : s.next ? '<span class="pill">Next open</span>' : ''}</button>`).join('')}
       <button class="stime" role="radio" aria-checked="false" tabindex="-1" data-si="custom"><span class="radio"></span><span><b>Another time</b><small>Pick any date and time</small></span></button></div>
       <div id="custom-t" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="date" class="input" id="sd" value="${pd.day}" min="${dayKey(Date.now())}" aria-label="Date"><input type="time" class="input" id="st" value="${pd.time}" aria-label="Time"></div>
     </div>
+    <div id="sh-hook">${schedHookHTML()}</div>${(() => { const ps = pricesIn(S.draft.tweets.map(t => t.text).join('\n')); return ps.length ? `<div class="sh-price">${ic('clock', 'sm')}<span>This post quotes ${ps.map(p => `<b>${p.sym} ${esc(p.raw)}</b>`).join(', ')}. Prices move. Your queue shows the price then and now, with one tap to update.</span></div>` : ''; })()}
+    ${(() => { const pf = preflight(), t0 = S.draft.tweets[0].text; return !pf.length && t0.trim() && hookFor(t0).score < 60 ? '' : checksHTML(pf); })()}
     ${/* r63: reply settings and auto-plug are power moves: one closed row until you want them */ S.platforms.x ? `<details class="sh-more" ${(S.draft.replySettings && S.draft.replySettings !== 'everyone') || (S.draft.plug && S.draft.plug.on) ? 'open' : ''}><summary>${ic('sliders', 'sm')} More options<small>Who can reply, auto-plug</small></summary>${xoHTML(S.draft, { first: S.draft.tweets[0].text })}</details>` : ''}
+    <div class="sh-cap">${deliveryHTML()}</div>
   </div>
   <div class="modal-f"><button class="btn primary" id="s-go" data-kbd="${MOD} ↵">${ic('clock', 'sm')} <span id="s-go-l" ${needsApproval() ? 'hidden' : ''}>${best[pickI] ? goL(best[pickI]) : 'Schedule for later'}</span>${needsApproval() ? `<span>Send${WS().approvals ? ` to ${esc(WS().name)}` : ''} for approval</span>` : ''}</button></div>`, { label: 'Schedule' });
   const el = m.el; if (S.platforms.x) xoWire($('.xo', el), S.draft, S.draft.tweets[0].text);
@@ -9994,7 +10091,7 @@ function openSchedule() {
   const finish = (slot, btn) => {
     btn.classList.add('is-loading');
     const so = composerSnap(), count = S.draft.tweets.filter(t => t.text.trim() || t.media.length).length, plats = { ...S.platforms }, cw = WS().approvals ? WS() : null;
-    setTimeout(() => { UI.quietDone = true; commitDraft(slot); m.close(); route(); sendOff(so, { count, plats }); const si = slotInfo(slot.day, slot.time); if (cw) { toast(`Waiting on ${esc(cw.name)}. It goes out once they approve.`, { icon: 'clock', tone: 'accent', action: 'View week', onAction: () => go('week') }); return; } toast(`Scheduled for ${slotWhen(slot.day, slot.time)}.${si.best && !si.general ? ` One of your best times: ${si.x}× your usual so far.` : si.best ? ' A good time to post.' : ''}`, { icon: 'clock', tone: 'accent', action: 'View week', onAction: () => go('week') }); }, 420);
+    setTimeout(() => { UI.quietDone = true; commitDraft(slot); m.close(); route(); sendOff(so, { count, plats }); const si = slotInfo(slot.day, slot.time); if (cw) { const q = S.queue[S.queue.length - 1]; toast(`Waiting on ${esc(cw.name)}. ${autoFor(cw) ? 'It goes out once they approve.' : 'Once they approve, it waits on Week for you to post.'}`, { icon: 'clock', tone: 'accent', action: `Copy for ${cw.name}`, onAction: () => copyAsk(q), action2: 'View week', onAction2: () => go('week') }); return; } toast(`Scheduled for ${slotWhen(slot.day, slot.time)}.${si.best && !si.general ? ` One of your best times: ${si.x}× your usual so far.` : si.best ? ' A good time to post.' : ''}${autoFor() ? '' : ' It waits on Week for your tap.'}`, { icon: 'clock', tone: 'accent', action: 'View week', onAction: () => go('week') }); }, 420);
   };
   $('#s-go', el).onclick = e => {
     let slot = best[pickI]; if (e.currentTarget.classList.contains('is-loading')) return;
@@ -10055,7 +10152,9 @@ async function syncToServer(q, media) {
     try { ids = []; for (const list of media) { const one = []; for (const m of list.slice(0, 4)) { if (gone()) { done(); return; } one.push(await uploadMedia(m)); } ids.push(one); } if (gone()) { done(); return; } q.mediaIds = ids; save(); }
     catch (e) { done(); if (gone()) return; toast(`Couldn’t upload a picture, so nothing was ${q.status === 'published' ? 'posted' : 'scheduled'}: ${esc(e.message)}. Try again, or remove the picture.`, { icon: 'zapoff', tone: 'err', ms: 7000 }); return; }
   } else if (q.mediaIds) ids = q.mediaIds;
-  const platforms = { x: !!(q.platforms.x && srv.xUser), linkedin: !!(q.platforms.linkedin && srv.liUser) }; if (!platforms.x && !platforms.linkedin) { done(); return; }
+  /* r69: a client's post never goes out through your own account: X only when the connected account is theirs, LinkedIn never */
+  const cw = q.ws && q.ws !== 'me' ? S.workspaces.find(w => w.id === q.ws) : null;
+  const platforms = { x: !!(q.platforms.x && srv.xUser && (!cw || sameHandle(srv.xUser, cw.handle))), linkedin: !!(q.platforms.linkedin && srv.liUser && !cw) }; if (!platforms.x && !platforms.linkedin) { done(); return; }
   const skipped = ['threads', 'bsky'].filter(k => q.platforms[k]).map(k => PLAT[k].name);
   const body = { posts: ids ? q.tweets.map((text, i) => ({ text, media: ids[i] || [] })) : q.tweets, platforms, ...(platforms.x ? xoFor(q, q.platforms) : {}) }; const pub = q.status === 'published';
   if (!pub && (q.approval === 'needs' || gone())) { done(); return; } /* not until it's approved, and not once it's gone */
@@ -10095,6 +10194,10 @@ function lateNight(nx, btn) {
    X's own compose box opens with your post filled in (LinkedIn's share box for LinkedIn-only drafts),
    or it's marked as posted. The first time, a small sheet asks which; after that Post now remembers. */
 const wiredNow = () => { const s = LLM.server || {}; return !!((S.platforms.x && s.xUser) || (S.platforms.linkedin && s.liUser)); };
+/* r69: does a post go out by itself, or wait on Week for your tap? A client's post only goes through the connected X
+   account when that account is the client's own; anything else waits for you to post it from theirs */
+const sameHandle = (a, b) => !!(a && b && String(a).replace(/^@/, '').toLowerCase() === String(b).replace(/^@/, '').toLowerCase());
+const autoFor = (w = WS()) => { const s = LLM.server || {}; if (!w || w.id === 'me') return wiredNow(); return !!(S.platforms.x && sameHandle(s.xUser, w.handle)); };
 function intentFor() {
   const tws = S.draft.tweets.map(t => t.text.trim()).filter(Boolean);
   if (S.platforms.x) return { key: 'x', name: 'X', url: `https://x.com/intent/post?text=${encodeURIComponent(tws[0] || '')}`, rest: tws.slice(1) };
@@ -12325,7 +12428,7 @@ const PLAN_CR = { free: ['20', 'Claude rewrites a month', '50 Claude touch-ups a
 function plansHTML(yearly) {
   const P = [
     { k: 'free', name: 'Free', price: 0, blurb: 'Everything for your next great post.', cta: 'Start free', feats: ['Instant checks on every draft', 'Sharpen any line, unlimited', 'Quick rewrites on your device, unlimited', 'Learns your voice as you write', `${FREE_POSTS} posts a month`] },
-    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For creators who want their posts to pay.', cta: 'Start with Pro', hero: true, feats: ['Claude rewrites in your voice', 'Results: what works for your audience', 'A ping when a post starts taking off', 'Replies drafted for you, ready to send', 'What’s working in your niche, and why', 'Up to 500 posts a month'] },
+    { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For creators who want their posts to pay.', cta: 'Start with Pro', hero: true, feats: ['Claude rewrites in your voice', 'Results: what works for your audience', 'A ping when a post takes off (with X connected)', 'Replies drafted for you, ready to send', 'What’s working in your niche, and why', 'Up to 500 posts a month'] },
     { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For ghostwriters and agencies.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Each client in their own voice, learning on its own', 'Clients approve before anything posts', 'Review links per client'] }
   ];
   const app = !LIGHT.has(CURRENT), mine = app && PRICED() ? planNow() : null, trial = PRICED() && !S.trial && S.plan === 'free';
@@ -12714,7 +12817,7 @@ const SW_FROM = [
   { k: 'typefully', name: 'Typefully', status: 'Still running, and good at calm writing and scheduling.', keep: [['Your published posts', 'From a Typefully export or your X archive'], ['Your drafts', 'Paste them into Ideas'], ['Your schedule', 'Pick your times once on Week']],
     gain: ['Sharpen and the scroll test on every first line', 'A voice that learns from every post you send', 'Results against your own usual, not a forecast'], note: 'Only need scheduling? Typefully’s Creator plan is cheaper. Switch if you want the first line to do more.' },
   { k: 'hypefury', name: 'Hypefury', status: 'No longer supports X.', keep: [['Your X history and numbers', 'From your X archive'], ['Auto-plug', 'One reply under a post once it takes off'], ['Evergreen posts', 'Reshare your best posts on Pro']],
-    gain: ['Best times read from your own posts', 'A ping when a post starts taking off', 'Client voices with approvals on Studio'], note: 'No auto-retweets or auto-DMs here, on purpose: X’s payouts need an account in good standing.' },
+    gain: ['Best times read from your own posts', 'A ping when a post takes off (with X connected)', 'Client voices with approvals on Studio'], note: 'No auto-retweets or auto-DMs here, on purpose: X’s payouts need an account in good standing.' },
   { k: 'blackmagic', name: 'Black Magic', status: 'Closed on July 1, 2026.', keep: [['Your X history and numbers', 'X keeps them in your archive'], ['Breakout alerts', 'A ping when a post outpaces your usual'], ['Your best times', 'Read from your own posts']],
     gain: ['Results that explain why a post popped or flopped', 'A voice that learns from every post you send', 'Sharpen on every first line'], note: 'Black Magic’s own data went with it. Your X archive has every post and its numbers.' }
 ];
@@ -13329,7 +13432,7 @@ function hzWhoHTML() {
 /* ---------- pricing: three cards, Pro on the other theme ---------- */
 const HX_PLANS = [
   { k: 'free', name: 'Free', blurb: 'Everything for your next great post.', inc: ['Sharpen any line, unlimited', 'Claude rewrites, 20 a month', 'Learns your voice as you write', 'Live previews for every network', `${FREE_POSTS} posts a month`] },
-  { k: 'pro', name: 'Pro', blurb: 'For creators who want their posts to pay.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice, 250 a month', 'Need more? Add up to 1,750 a month', 'Results: what works for your audience', 'A ping when a post takes off', 'Your week, drafted from your ideas', 'Up to 500 posts a month'] },
+  { k: 'pro', name: 'Pro', blurb: 'For creators who want their posts to pay.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice, 250 a month', 'Need more? Add up to 1,750 a month', 'Results: what works for your audience', 'A ping when a post takes off (with X connected)', 'Your week, drafted from your ideas', 'Up to 500 posts a month'] },
   { k: 'studio', name: 'Studio', blurb: 'For ghostwriters and agencies.', inc: ['Everything in Pro, and:', 'Priced per client voice', 'Each client learns their own voice', 'Clients approve before anything posts', 'Review links per client'] }
 ];
 const hzBillNote = (k, y) => k === 'free' ? 'No card, ever' : y ? `Billed yearly, $${PRICES[k][0] * 12} a year${PER(k)}` : `Billed monthly, or $${PRICES[k][0]} a month yearly`;
@@ -14085,7 +14188,7 @@ function onbStep1() {
     <div style="display:grid;gap:10px;justify-items:center"><span class="label">What do you write about?</span><div class="niches nc-grid">${niches.map(n => `<button type="button" class="nc" aria-pressed="${n === cur}" data-n="${esc(n)}"><span class="nc-art">${art(NICHE_ART[n] || 'n_ai')}</span><span class="nc-l">${esc(n)}</span><span class="nc-ck" aria-hidden="true">${ic('check', 'sm')}</span></button>`).join('')}</div></div>
     <form class="handle-in" id="onb-f" novalidate><span class="at">@</span><input id="onb-h" autofocus placeholder="yourhandle" value="${esc(ONB.handle)}" aria-label="Your handle" aria-describedby="onb-err" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">${LLM.server && LLM.server.x ? 'Read my posts' : 'Continue'}${ic('arrow', 'sm')}</button></form>
     <span id="onb-err" class="field-err" role="alert" style="min-height:16px;margin-top:-14px"></span>
-    <div class="onb-alt"><button class="btn ghost sm" id="onb-arch">${ic('upload', 'sm')} Use your X archive instead</button></div>
+    <div class="onb-alt"><button class="btn ghost sm" id="onb-arch">${ic('upload', 'sm')} Have your X archive? Use it instead</button><a class="faint onb-req" href="https://x.com/settings/download_your_data" target="_blank" rel="noopener">No archive yet? Request it. X emails it within a day.</a></div>
   </div>`;
   ONB.niche = cur; syncSeg($('#onb-plat'));
   /* LinkedIn has names, not @handles: the field follows the platform */
@@ -14162,7 +14265,7 @@ function onbStep3() {
       <div class="ot-out" id="ot-out" aria-live="polite"></div></div>
     <div class="onb-ideas-w"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">No post in mind? Start from one of these</span><button class="btn ghost sm" id="onb-more">${ic('shuffle', 'sm')} Three more</button></div>
       <div class="post-ideas" id="onb-ideas">${onbIdeas(ideas.slice(0, 3))}</div></div>
-    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">${S.pendingLine ? `<button class="btn primary lg" id="onb-line">${ic('write', 'sm')} Open your line in Write</button>` : ''}<a class="btn ghost" href="#week">Skip for now</a></div>
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">${S.pendingLine ? `<button class="btn primary lg" id="onb-line">${ic('write', 'sm')} Open your line in Write</button>` : ''}<a class="btn" href="#week">Go to my week ${ic('arrow', 'sm')}</a></div>
   </div>`;
   onbFocusHead();
   let seed = hash(handle) % 9999; onbTry(); if (tune) vtWire();
@@ -14792,9 +14895,10 @@ ROUTES.week = () => {
   WEEK = gapSlots().length || qList().some(q => q.status === 'scheduled' && slotDate(q.day, q.time) > Date.now() && slotDate(q.day, q.time) < wkEnd) ? 0 : 1; if (S.settings.evergreen) ensureEvergreen();
   const nm = greetName();
   const cl = S.ws !== 'me' ? WS() : null; /* writing as a client: the greeting says whose week this is */
-  mount('week', `<div class="page wk-page" style="max-width:1280px"><div class="page-h wk-head"><div><h1 class="display t-greet">${greetWord()}${cl ? `. Writing as ${esc(cl.name)}` : nm ? `, <span class="t-name" id="t-name" tabindex="0" role="button" aria-label="${esc(`Your name here: ${nm}. Press Enter to change it`)}" data-tip="Double-click to change">${esc(nm)}</span>` : ''}.</h1><p class="wk-next" id="wk-next"></p><p id="q-sub"></p></div><div class="wk-acts"><button class="btn primary" data-qact="plan" data-tip="Five minutes in, five posts out">${ic('spark', 'sm')} Plan my week${crTag('week')}</button></div></div>
+  mount('week', `<div class="page wk-page" style="max-width:1280px"><div class="page-h wk-head"><div><h1 class="display t-greet">${greetWord()}${cl ? `. Writing as ${esc(cl.name)}` : nm ? `, <span class="t-name" id="t-name" tabindex="0" role="button" aria-label="${esc(`Your name here: ${nm}. Press Enter to change it`)}" data-tip="Double-click to change">${esc(nm)}</span>` : ''}.</h1><p class="wk-next" id="wk-next"></p></div></div>
   <div id="win"></div><div id="zp"></div>
-  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">This week</button><span class="range" id="q-range"></span><button class="btn sm q-times-b" data-qact="times" aria-haspopup="dialog">${ic('clock', 'sm')} Times</button>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#results"></a></div>
+  <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">This week</button><span class="range" id="q-range"></span><button class="btn sm q-times-b" data-qact="times" aria-haspopup="dialog">${ic('clock', 'sm')} Times</button>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><span class="q-sub faint" id="q-sub"></span><button class="btn sm${zpOn() ? '' : ' primary'} q-plan" data-qact="plan" data-tip="Five minutes in, five posts out">${ic('spark', 'sm')} Plan my week${crTag('week')}</button></div>
+  <a class="faint q-why" id="q-why" href="#results"></a>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="Week calendar. Each card is a post. Press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
   drawCal(); drawQSide(); drawWin(); drawZP(); checkQueuePrices();
   const v = $('#view');
@@ -14935,12 +15039,17 @@ function saveQueued() {
 function qMenu(c) {
   const q = S.queue.find(x => x.id === c.dataset.id); if (!q) return;
   if (q.status === 'failed') { openMenu(c, [{ header: 'Didn’t go out' }, ...(q.error ? [{ label: clip(q.error, 60), icon: 'zapoff', disabled: true }] : []), { label: 'Try again', icon: 'send', run: () => { q.status = 'published'; delete q.error; save(); drawCal(); drawQSide(); syncToServer(q, q.mediaIds ? null : q.media); } }, { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }, '-', { label: 'Delete', icon: 'trash', run: () => { S.queue = S.queue.filter(x => x !== q); serverDrop(q); save(); drawCal(); drawQSide(); } }]); return; }
-  if (q.status === 'due') { openMenu(c, [{ header: 'Post by hand. Nothing sent it' }, { label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Mark as posted', icon: 'check', run: () => { q.status = 'published'; S.streak[dayKey(Date.now())] = 1; save(); drawCal(); drawQSide(); toast('Marked as posted. It counts toward your week.', { icon: 'check' }); } }, { label: 'Move to next best time', icon: 'clock', run: () => { const s = nextSlots(1)[0] || nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } moveQ(q.id, s.day, s.time); } }, { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }, '-', { label: 'Delete', icon: 'trash', run: () => { S.queue = S.queue.filter(x => x !== q); serverDrop(q); save(); drawCal(); drawQSide(); } }], { width: 250 }); return; }
+  if (q.status === 'due') { const cw = q.ws && q.ws !== 'me' ? S.workspaces.find(w => w.id === q.ws) : null; openMenu(c, [{ header: cw && cw.handle ? `Post it from @${cw.handle}. Nothing sent it` : 'Post by hand. Nothing sent it' },
+    /* r69: one tap to X's own composer with the first post filled in; the rest of a thread is on the clipboard. You still press Post */
+    ...(q.platforms && q.platforms.x ? [{ label: 'Open in X to post', icon: 'send', run: () => { copyText(q.tweets.slice(1).join('\n\n') || q.tweets[0]); let w = null; try { w = window.open(`https://x.com/intent/post?text=${encodeURIComponent(q.tweets[0] || '')}`, '_blank'); if (w) w.opener = null; } catch (e) { w = null; } toast(w ? (q.tweets.length > 1 ? 'X is open with your first post. The rest of the thread is on your clipboard. Mark it as posted once it’s up.' : 'X is open with your post. Mark it as posted once it’s up.') : 'Copied. Open X, paste and post, then mark it as posted.', { icon: 'send', action: 'Mark as posted', onAction: () => { q.status = 'published'; q.marked = true; S.streak[dayKey(Date.now())] = 1; save(); drawCal(); drawQSide(); }, ms: 9000 }); } }] : []),
+    { label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Mark as posted', icon: 'check', run: () => { q.status = 'published'; S.streak[dayKey(Date.now())] = 1; save(); drawCal(); drawQSide(); toast('Marked as posted. It counts toward your week.', { icon: 'check' }); } }, { label: 'Move to next best time', icon: 'clock', run: () => { const s = nextSlots(1)[0] || nextSlots(1, false)[0]; if (!s) { toast(FULL_MSG, { icon: 'cal', tone: 'err' }); return; } moveQ(q.id, s.day, s.time); } }, { label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }, '-', { label: 'Delete', icon: 'trash', run: () => { S.queue = S.queue.filter(x => x !== q); serverDrop(q); save(); drawCal(); drawQSide(); } }], { width: 250 }); return; }
   if (q.status === 'published') { fetchPlugs(); openMenu(c, [{ header: q.marked ? `Marked as posted ${slotWhen(q.day, q.time)}. Nothing was sent` : `Went out ${slotWhen(q.day, q.time)}` }, ...plugPubItems(q), ...(q.marked ? [{ label: 'Copy text', icon: 'copy', run: () => copyText(q.tweets.join('\n\n')) }, { label: 'Move back to drafts', icon: 'undo', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); const d = { ...freshDraft(q.tweets), ws: q.ws || 'me' }; (q.media || []).forEach((m, i) => { if (d.tweets[i] && Array.isArray(m)) d.tweets[i].media = m.slice(); }); d.platforms = { ...q.platforms }; S.drafts.unshift(d); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Back in your drafts.', { icon: 'undo', action: 'Undo', onAction: () => { S.drafts = S.drafts.filter(x => x !== d); S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, { label: 'Delete', icon: 'trash', run: () => { const k = S.queue.indexOf(q); S.queue.splice(k, 1); unmarkDay(q.day); save(); drawCal(); drawQSide(); refreshSide(); toast('Deleted.', { icon: 'trash', action: 'Undo', onAction: () => { S.queue.splice(k, 0, q); S.streak[q.day] = 1; save(); drawCal(); drawQSide(); refreshSide(); } }); } }, '-'] : [{ label: 'Replies to this post', icon: 'reply', run: () => openReplyDesk(q) }]), ...(q.urls && Object.values(q.urls).some(Boolean) ? [{ label: 'Open on X', icon: 'arrow', run: () => window.open(q.urls.x || q.urls.linkedin, '_blank', 'noopener') }] : []), { label: 'Remix this post', icon: 'layers', run: () => writeFrom(remix({ text: q.text, kind: 'Story' }, 'thread')) }, { label: 'Duplicate as draft', icon: 'copy', run: () => writeFrom(q.tweets) }]); return; }
   const next = nextSlots(1)[0];
-  const apv = q.approval === 'needs' ? [{ label: 'Mark approved', icon: 'check', run: () => { if (slotDate(q.day, q.time) < Date.now()) { toast('Its time already passed. Move it to a new time, then approve it.', { icon: 'clock', tone: 'err' }); return; } q.approval = 'ok'; save(); syncToServer(q, q.mediaIds ? null : q.media); drawCal(); drawQSide(); toast(`Approved. It goes out ${slotWhen(q.day, q.time)}.`, { icon: 'check' }); } }] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; serverDrop(q); save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
+  const qcw = S.workspaces.find(w => w.id === q.ws);
+  const apv = q.approval === 'needs' ? [{ label: 'Mark approved…', icon: 'check', run: () => { if (slotDate(q.day, q.time) < Date.now()) { const nx = nextSlots(1)[0] || nextSlots(1, false)[0]; toast('Its time already passed.', { icon: 'clock', tone: 'err', ...(nx ? { action: `Approve for ${slotWhen(nx.day, nx.time)}`, onAction: () => { moveQ(q.id, nx.day, nx.time); approveAsk(q); } } : {}) }); return; } approveAsk(q); } },
+      ...(qcw ? [{ label: `Copy the ask for ${qcw.name}`, icon: 'copy', run: () => copyAsk(q) }] : [])] : q.approval === 'ok' ? [{ label: 'Send back for changes', icon: 'undo', run: () => { q.approval = 'needs'; serverDrop(q); save(); drawCal(); drawQSide(); toast('Sent back. It won’t go out until it’s approved.', { icon: 'undo' }); } }] : [];
   const late = slotDate(q.day, q.time) < Date.now(), drift = priceDrift(q);
-  openMenu(c, [{ header: late ? `Missed: ${slotLabel(q.day, q.time)}` : slotLabel(q.day, q.time) }, ...(drift ? [{ label: `Update the price: ${drift.map(p => `${p.sym} ${fmtUSD(p.quoted)} → ${fmtUSD(p.now)}`).join(', ')}`, icon: 'swap', hint: PRICE.live ? '' : 'sample', run: () => updatePrices(q) }] : []), ...(late ? [] : apv),
+  openMenu(c, [{ header: late ? `Missed: ${slotLabel(q.day, q.time)}` : slotLabel(q.day, q.time) }, ...(q.approvedBy && q.approval === 'ok' ? [{ header: `Approved by ${q.approvedBy.by}${q.approvedBy.via ? ` · ${q.approvedBy.via}` : ''} · ${slotWhen(dayKey(q.approvedBy.at), new Date(q.approvedBy.at).toTimeString().slice(0, 5))}` }] : []), ...(drift ? [{ label: `Update the price: ${drift.map(p => `${p.sym} ${fmtUSD(p.quoted)} → ${fmtUSD(p.now)}`).join(', ')}`, icon: 'swap', hint: PRICE.live ? '' : 'sample', run: () => updatePrices(q) }] : []), ...(late ? [] : apv),
     ...(late ? [] : [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }]),
     next ? { label: 'Move to next best time', icon: 'target', hint: slotLabel(next.day, next.time), run: () => { moveQ(q.id, next.day, next.time); keepFocus(`.qcard[data-id="${q.id}"]`); } } : { label: 'No best times left', icon: 'target', disabled: true },
     ...(late ? [{ label: 'Edit in Write', icon: 'write', run: () => editQueued(q) }] : []),
@@ -15020,7 +15129,9 @@ function drawCal() {
   /* what's next, in one line: the next post that goes out, or what to do when nothing will */
   /* a post waiting on a client's yes isn't "next out": it says what it's waiting on instead */
   const wn = $('#wk-next'); if (wn) { const up = myQ().filter(q => q.status === 'scheduled' && slotDate(q.day, q.time) > now).sort((a, b) => slotDate(a.day, a.time) - slotDate(b.day, b.time)), nx = up.find(q => q.approval !== 'needs'), wait = up.filter(q => q.approval === 'needs').length;
-    wn.innerHTML = !nx && wait ? `<span class="wk-dot off"></span>${wait} waiting on ${esc(WS().name)}’s yes. Once they nod, it goes out on time.` : nx ? `<span class="wk-dot"></span>Next out <b>${esc(slotWhen(nx.day, nx.time))}</b> <button type="button" class="wk-np" data-up-id="${esc(nx.id)}">“${esc(clip(nx.text, 64))}”</button>` : drafts.length ? `<span class="wk-dot off"></span>${drafts.length} draft${drafts.length > 1 ? 's' : ''} planned, yours to finish. Tap a dashed card to fill it in.` : `<span class="wk-dot off"></span>A clear week ahead. Plan it once, post all week.`; }
+    const auto = autoFor(), td = dayKey(now), todayOut = myQ().some(q => q.day === td && q.status !== 'failed'), openT = !QF.mine || S.ws === 'me' ? Object.keys(BEST[dowIdx(new Date())] || {}).filter(t => slotDate(td, t).getTime() > now && !taken(td, t)).sort()[0] : null;
+    if (!todayOut && openT && !wait) { wn.innerHTML = `<span class="wk-dot off"></span><span>Nothing out today yet. <b>${esc(fmtTime(openT))}</b> is open.</span> <button type="button" class="btn sm wk-fill" data-qact="slot" data-day="${td}" data-time="${openT}">${ic('write', 'sm')} Write for ${esc(fmtTime(openT))}</button>`; }
+    else wn.innerHTML = !nx && wait ? `<span class="wk-dot off"></span><span>${wait} waiting on ${esc(WS().name)}’s yes. ${auto ? 'Once they nod, it goes out on time.' : 'Once they nod, it waits here for you to post.'}</span>` : nx ? `<span class="wk-dot${auto ? '' : ' hand'}"></span>${auto ? 'Next out' : 'Next up'} <b>${esc(slotWhen(nx.day, nx.time))}</b>${auto ? '' : '<span class="wk-hand"> · you post it</span>'} <button type="button" class="wk-np" data-up-id="${esc(nx.id)}">“${esc(clip(nx.text, 64))}”</button>` : drafts.length ? `<span class="wk-dot off"></span>${drafts.length} draft${drafts.length > 1 ? 's' : ''} planned, yours to finish. Tap a dashed card to fill it in.` : `<span class="wk-dot off"></span>A clear week ahead. Plan it once, post all week.`; }
   /* the nudge counts what the calendar shows (this voice, or every voice), so it never contradicts the line above it */
   /* r63: the sub line under the heading already counts what's lined up; a second banner saying it again was noise */
   const miss = qList().filter(q => q.status === 'due' || (q.approval === 'needs' && q.status === 'scheduled' && slotDate(q.day, q.time) < now)).length;
@@ -15055,7 +15166,7 @@ const numWord = n => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'sev
 const ZP_DAYS = 30;
 function zpState() { if (!S.zero || typeof S.zero !== 'object' || !S.zero.start) S.zero = { start: dayKey(Date.now()), days: {} }; return S.zero; }
 const zpDayN = () => Math.floor((fromKey(dayKey(Date.now())) - fromKey(zpState().start)) / DAY) + 1;
-const zpOn = () => S.ws === 'me' && !!S.seedCleared && !S.zeroOff && HIST().length < 30 && zpDayN() <= ZP_DAYS;
+const zpOn = () => S.ws === 'me' && !!S.seedCleared && !S.zeroOff && HIST().length < 30 && zpDayN() <= ZP_DAYS && !(S.user.followers >= 500) && !(S.payout && S.payout.vf >= 500); /* r69: past 500 followers, the payout path matters more than the first 100 */
 function zpOf(k) { const d = (S.zero && S.zero.days && S.zero.days[k]) || {}; return { posted: S.queue.some(q => q.made && dayKey(q.made) === k && (q.ws || 'me') === 'me'), replies: d.replies || 0, idea: S.ideas.some(i => i.at && dayKey(i.at) === k) }; }
 const zpFull = o => o.posted && o.replies >= 3 && o.idea;
 function zpMark(kind) { if (!zpOn()) return; const k = dayKey(Date.now()), z = zpState(), d = z.days[k] = z.days[k] || {}; if (kind === 'reply') { d.replies = (d.replies || 0) + 1; if (d.replies === 3) setTimeout(() => toast('Three replies today. That’s the part that grows a small account.', { icon: 'reply', tone: 'accent' }), 900); } }
@@ -15093,12 +15204,27 @@ function drawZP() {
 function drawQSide() {
   const el = $('#q-side'); if (!el) return;
   const need = S.queue.filter(q => q.approval === 'needs' && q.status === 'scheduled' && (!QF.mine || q.ws === S.ws)), MD = myDrafts(); fetchPlugs();
-  el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}" data-tip="Approve it, or send it back"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')} · ${esc(slotWhen(q.day, q.time))}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
+  el.innerHTML = `${need.length ? `<div class="card"><span class="label">Waiting for approval</span><div class="upnext">${need.map(q => `<button data-up-id="${q.id}" data-tip="Approve it, or send it back"><span class="when">${esc((S.workspaces.find(w => w.id === q.ws) || {}).name || 'Client')} · ${esc(slotWhen(q.day, q.time))}${(() => { const left = slotDate(q.day, q.time) - Date.now(); if (left <= 0) return ''; const h = left / 36e5; return ` <span class="due-in${h < 3 ? ' now' : h < 24 ? ' soon' : ''}">${h < 1 ? `needs a yes in ${Math.max(1, Math.round(left / 6e4))} min` : h < 24 ? `needs a yes in ${Math.round(h)} h` : `in ${Math.round(h / 24)} day${Math.round(h / 24) === 1 ? '' : 's'}`}</span>`; })()}</span><p>${esc(q.text)}</p></button>`).join('')}</div></div>` : ''}
   ${MD.length ? `<div class="card q-drafts"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Drafts</span>${MD.length ? `<span class="faint" style="font-size:12px">${MD.length}</span>` : ''}</div>
     ${MD.length ? `<p class="faint" style="font-size:12px"><span class="desk-only">Drag one onto a time to schedule it, or click to open it.</span><span class="touch-only">Tap a draft to open it.</span></p><div class="qd-list">${MD.slice(0, 6).map(d => { const i = S.drafts.indexOf(d); const t = (d.tweets[0] && d.tweets[0].text.trim()) || 'Untitled draft', blank = /\[[^\]]+\]/.test(d.tweets.map(x => x.text).join(' ')); return `<div class="qd${blank ? ' qd-blank' : ''}" draggable="${!blank}" data-di="${i}"${blank ? ' data-tip="Fill the [blanks] first, then drag it onto a time"' : ''} tabindex="0" role="button" aria-label="${esc(clip(t, 80).replace(/[\s.!?:;,…]+$/, ''))}. ${blank ? 'Has blanks to fill first' : 'Drag onto a time, or press Enter to open'}">${firstLineHTML(clip(t, 90))}${blank ? '<small>Has blanks</small>' : ''}</div>`; }).join('')}</div>` : ''}</div>` : ''}
   <div class="card q-times"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Your posting times</span><button class="btn ghost sm" data-qact="times" aria-haspopup="dialog" aria-label="Edit your posting times">Edit</button></div>
-    <ul class="qtm-list">${(() => { const g = new Map(); SLOTS.forEach(t => { const l = daysLabel(S.slots ? S.slots[t] : null); g.set(l, [...(g.get(l) || []), fmtTime(t)]); }); return [...g].map(([l, ts]) => `<li class="qtm-g"><span>${esc(l)}</span><b class="mono">${ts.join(' · ')}</b></li>`).join(''); })()}</ul>
+    <ul class="qtm-list">${(() => { const g = new Map(); SLOTS.forEach(t => { const l = daysLabel(S.slots ? S.slots[t] : null); g.set(l, [...(g.get(l) || []), fmtTime(t)]); }); return [...g].map(([l, ts]) => `<li class="qtm-g"><span>${esc(l)}</span><span class="qtm-ts">${ts.map(t => `<i>${esc(t)}</i>`).join('')}</span></li>`).join(''); })()}</ul>
     <p class="faint" style="font-size:12px">${S.slots ? 'Your times. New posts are suggested here first.' : 'Suggested times. Change them to match your day.'}</p></div>`;
+}
+/* r69: the message a client gets, ready to paste into Slack, email or a DM */
+function askText(q) { const w = S.workspaces.find(x => x.id === q.ws) || WS(), first = (w.contact || w.name || '').split(' ')[0]; const pl = Object.keys(PLAT).filter(k => q.platforms && q.platforms[k]).map(k => PLAT[k].name).join(' and ') || 'X';
+  return `Hi ${first}, here’s the next post for ${slotWhen(q.day, q.time)} on ${pl}:\n\n${q.tweets.join('\n\n')}\n\nReply YES to approve, or tell me what to change.`; }
+function copyAsk(q) { copyText(askText(q)); toast(`Copied. Paste it to ${esc((S.workspaces.find(x => x.id === q.ws) || {}).name || 'your client')}.`, { icon: 'copy', ms: 2400 }); }
+/* r69: an approval is a record: who said yes, how and when, so "I never approved that" has an answer */
+function approveAsk(q) {
+  const w = S.workspaces.find(x => x.id === q.ws) || {}; const VIA = ['Review link', 'Slack', 'Email', 'DM', 'Call'];
+  const m = modal(`${modalHead('Who said yes?', esc(clip(q.text, 80)))}<div class="modal-b" style="display:grid;gap:14px"><label class="fld"><span class="label">Name</span><input class="input" id="ap-by" value="${esc(w.contact || w.name || '')}" maxlength="60" autocomplete="off"></label>
+    <div style="display:grid;gap:8px"><span class="label">How</span><div class="ap-via" role="radiogroup" aria-label="How they said yes">${VIA.map((v, i) => `<button type="button" class="chip" role="radio" aria-checked="${i === 1}" data-via="${v}">${v}</button>`).join('')}</div></div></div>
+    <div class="modal-f"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="ap-go">${ic('check', 'sm')} Approve</button></div>`, { label: 'Who said yes?', center: true });
+  const el = m.el; el.addEventListener('click', e => { const c = e.target.closest('[data-via]'); if (c) $$('[data-via]', el).forEach(x => x.setAttribute('aria-checked', x === c)); });
+  $('#ap-go', el).onclick = () => { const by = $('#ap-by', el).value.trim() || w.name || 'Client', via = ($('[data-via][aria-checked="true"]', el) || {}).dataset?.via || '';
+    if (w.id && !w.contact && by !== w.name) w.contact = by; q.approval = 'ok'; q.approvedBy = { by, via, at: Date.now() }; save(); syncToServer(q, q.mediaIds ? null : q.media); m.close(); drawCal(); drawQSide(); refreshSide();
+    toast(`Approved by ${esc(by)}${via ? ` via ${esc(via)}` : ''}. ${autoFor(w) ? `It goes out ${slotWhen(q.day, q.time)}.` : `${slotWhen(q.day, q.time)} it waits on Week for you to post.`}`, { icon: 'check' }); };
 }
 /* "Every day", "Weekdays", "Mon, Wed, Fri" */
 function daysLabel(ds) { const d = ds ? [...ds].sort() : [0, 1, 2, 3, 4, 5, 6], k = d.join(''); return k === '0123456' ? 'Every day' : k === '01234' ? 'Weekdays' : k === '56' ? 'Weekends' : d.length >= 3 && d[d.length - 1] - d[0] === d.length - 1 ? `${WKD[d[0]].slice(0, 3)}–${WKD[d[d.length - 1]].slice(0, 3)}` : d.map(i => WKD[i].slice(0, 3)).join(', '); }
@@ -15159,8 +15285,8 @@ function niceTicks(max, n = 4) { if (!(max > 0)) return [0, 1]; const raw = max 
 ROUTES.results = () => {
   /* before your own posts are in, your week leads and the sample account waits behind one tap, so a stranger's numbers never read as yours */
   const ex = HIST().length < 8;
-  mount('results', `<div class="page ins-page"><div class="page-h"><div><h1 class="display">Results</h1><p>What landed, and what to write next. Plain words first, numbers on tap.</p></div>${ex ? '' : `<div class="seg" id="rng" role="tablist" aria-label="Range">${[7, 30, 90].map(d => `<button role="tab" data-r="${d}" aria-selected="${RANGE === d}">${d} days</button>`).join('')}</div>`}</div><div id="digest"></div><div id="calls"></div>${ex ? `<details class="ins-ex" id="ins-ex"><summary>${ic('chart', 'sm')}<span><b>See an example account</b><small>What this page shows once your posts are in</small></span>${ic('down', 'sm')}</summary><div id="ins"></div><div id="ins-posts"></div></details>` : '<div id="ins"></div><div id="ins-posts"></div>'}</div>`);
-  $('#rng') && syncSeg($('#rng')); drawInsights(); drawDigest(); drawCalls();
+  mount('results', `<div class="page ins-page"><div class="page-h"><div><h1 class="display">Results</h1><p>What landed, and what to write next. Plain words first, numbers on tap.</p></div>${ex ? '' : `<div class="seg" id="rng" role="tablist" aria-label="Range">${[7, 30, 90].map(d => `<button role="tab" data-r="${d}" aria-selected="${RANGE === d}">${d} days</button>`).join('')}</div>`}</div><div id="payout"></div><div id="digest"></div><div id="calls"></div>${ex ? `<details class="ins-ex" id="ins-ex"><summary>${ic('chart', 'sm')}<span><b>See an example account</b><small>What this page shows once your posts are in</small></span>${ic('down', 'sm')}</summary><div id="ins"></div><div id="ins-posts"></div></details>` : '<div id="ins"></div><div id="ins-posts"></div>'}</div>`);
+  $('#rng') && syncSeg($('#rng')); drawPayout(); drawInsights(); drawDigest(); drawCalls();
   const exd = $('#ins-ex'); exd && exd.addEventListener('toggle', () => { if (exd.open) drawInsights(); });
   $('#view').addEventListener('click', e => {
     const r = e.target.closest('[data-r]'); if (r) { RANGE = +r.dataset.r; $$('[data-r]').forEach(b => b.setAttribute('aria-selected', b === r)); syncSeg($('#rng')); drawInsights(); return; }
@@ -15183,6 +15309,24 @@ ROUTES.results = () => {
     if (a === 'dnext') weekNext(b);
   });
 };
+/* r69: the payout path. X pays for original posts once you have Premium, 500 verified followers and 500K verified
+   Home-timeline impressions in 90 days. Only X knows those numbers, so you tell us (from Creator Studio); we never guess */
+const PAY_BAR = { vf: 500, imp: 500000 };
+function drawPayout() {
+  const el = $('#payout'); if (!el) return; if (S.ws !== 'me') { el.innerHTML = ''; return; }
+  const P = S.payout, fmt = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(n);
+  if (!P || UI.payEdit) {
+    el.innerHTML = `<section class="card pay" aria-labelledby="pay-h"><div class="pay-h"><div><span class="label">Payout path</span><h2 class="h2" id="pay-h">How close are you to X payouts?</h2><p class="faint">Premium, 500 verified followers and 500K verified impressions in 90 days. Copy your numbers from X’s Creator Studio and we’ll track the gap.</p></div></div>
+      ${UI.payEdit ? `<form class="pay-f" id="pay-f"><label class="pay-ck"><input type="checkbox" id="pay-pr" ${P && P.premium ? 'checked' : ''}> I have X Premium</label><label><span class="label">Verified followers</span><input class="input" id="pay-vf" type="number" min="0" inputmode="numeric" value="${P ? P.vf : ''}" placeholder="e.g. 312"></label><label><span class="label">Verified impressions, last 90 days</span><input class="input" id="pay-imp" type="number" min="0" inputmode="numeric" value="${P ? P.imp : ''}" placeholder="e.g. 210000"></label><div class="pay-a"><button class="btn primary sm" type="submit">Save</button><button class="btn ghost sm" type="button" data-pay="cancel">Cancel</button></div></form>` : `<button class="btn sm" data-pay="edit">${ic('target', 'sm')} Add my numbers</button>`}</section>`;
+  } else {
+    const rows = [['Verified followers', P.vf, PAY_BAR.vf], ['Verified impressions, 90 days', P.imp, PAY_BAR.imp]], met = P.premium && rows.every(([, v, b]) => v >= b);
+    el.innerHTML = `<section class="card pay" aria-labelledby="pay-h"><div class="pay-h"><div><span class="label">Payout path</span><h2 class="h2" id="pay-h">${met ? 'You meet X’s bar.' : `${rows.filter(([, v, b]) => v < b).length + (P.premium ? 0 : 1)} step${rows.filter(([, v, b]) => v < b).length + (P.premium ? 0 : 1) === 1 ? '' : 's'} to go.`}</h2></div><button class="btn ghost sm" data-pay="edit">Update</button></div>
+      <ul class="pay-l"><li><span>X Premium</span><b class="${P.premium ? 'ok' : ''}">${P.premium ? `${ic('check', 'xs')} Yes` : 'Not yet'}</b></li>${rows.map(([l, v, b]) => `<li><span>${l}</span><span class="pay-bar" role="img" aria-label="${l}: ${fmt(v)} of ${fmt(b)}"><i style="--v:${Math.min(100, v / b * 100).toFixed(1)}"></i></span><b class="mono">${fmt(v)} / ${fmt(b)}</b><small>${v >= b ? 'Done' : `${fmt(b - v)} to go`}</small></li>`).join('')}</ul>
+      <p class="faint pay-n">You told us on ${crDate(P.at)}. ${met ? 'X decides payouts in Creator Studio.' : 'Original posts are what count; replies don’t.'}</p></section>`;
+  }
+  el.onclick = e => { const b = e.target.closest('[data-pay]'); if (!b) return; UI.payEdit = b.dataset.pay === 'edit'; drawPayout(); if (UI.payEdit) { const i = $('#pay-vf'); i && i.focus(); } };
+  const f = $('#pay-f'); if (f) f.onsubmit = e => { e.preventDefault(); const n = id => Math.max(0, Math.round(+$(id).value || 0)); S.payout = { premium: $('#pay-pr').checked, vf: n('#pay-vf'), imp: n('#pay-imp'), at: Date.now() }; UI.payEdit = false; save(); drawPayout(); SFX.play('done'); };
+}
 /* didn't land: same idea, a new first line. The rest of the post stays as you wrote it */
 function tryAgain(p) {
   const lines = String(p.text).split('\n'), first = lines[0], rest = lines.slice(1).join('\n');
@@ -15434,7 +15578,7 @@ ROUTES.voice = () => {
   const sent = memFor('me').posts.length;
   const status = pr ? `Learned ${agoLabel(pr.at)} from ${pr.n} of your posts, by ${pr.by || 'Claude'}.` : real ? `${an.n} posts brought in. Choose “Learn my voice” and this page becomes yours.` : sent ? `Learning from ${sent} post${sent === 1 ? '' : 's'} you wrote here.${sent >= 8 ? ' “Learn my voice” is on.' : ''}` : 'Your starting voice, set by the tone sliders. It learns from every post you write.';
   const have = Math.max(HIST().length + memFor('me').posts.length, SHOWCASE() ? myQ().filter(q => q.status === 'published').length : 0), need = 8, canLearn = real || have >= need;
-  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Your words in, your voice out. Tune it here and every rewrite follows.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${canLearn ? 'primary' : ''}" id="learn" ${canLearn ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${canLearn ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Write or bring 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}${real && aiOn() ? crTag('voice') : ''}</button></div></div>
+  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">${S.ws !== 'me' ? `${esc(WS().name)}’s voice` : 'Your voice'}</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Your words in, your voice out. Tune it here and every rewrite follows.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${canLearn ? 'primary' : ''}" id="learn" ${canLearn ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${canLearn ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Write or bring 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}${real && aiOn() ? crTag('voice') : ''}</button></div></div>
   <p class="v-status"><span class="ai-badge" data-mode="${LLM.mode}">${aiBadgeInner()}</span><span>${esc(status)}</span>${canLearn ? '' : `<span class="${start ? 'sr' : 'faint'}" id="learn-why">Write or bring 8 posts and “Learn my voice” turns on.</span>`}</p>
   ${learnCardHTML()}
   <div class="voice-hero">
