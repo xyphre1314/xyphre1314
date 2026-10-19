@@ -5589,6 +5589,8 @@ button.st-day{ font:inherit; cursor:pointer; transition:background .2s,box-shado
   --marker:rgba(30,86,240,.16); --marker-soft:rgba(30,86,240,.08); --marker-ink:#0B1020;
   --art-a:#7AA2FF; --art-b:#1F4FE0; --art-glow:.28; --halo:rgba(31,91,255,.10); --mk-band:rgba(31,91,255,.18);
   --r-ctl:999px; --r-card:14px; --r-pop:12px; --r-sheet:22px;
+  /* the toast is dark glass in both themes, so its colours are fixed */
+  --toast-ring:rgba(200,215,255,.1); --toast-glow:rgba(31,91,255,.35); --toast-ic:#8FB6FF; --toast-ic-bg:rgba(77,141,255,.16); --toast-ok:#6EE7A0; --toast-err:#FF9A9A; --violet:#8A5CFF;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -5645,9 +5647,9 @@ a.link, .link{ color:var(--accent-text); }
 .nav .hover-pill{ border-radius:999px; }
 
 /* toasts: a dark glass card, the icon in a blue disc, a spring up from below */
-.toast{ border-radius:16px; padding:7px 7px 7px 8px; gap:10px; background:rgba(22,24,30,.92); -webkit-backdrop-filter:blur(14px) saturate(1.4); backdrop-filter:blur(14px) saturate(1.4); box-shadow:0 0 0 1px rgba(200,215,255,.1),0 18px 44px -14px rgba(0,0,0,.6),0 6px 22px -12px rgba(31,91,255,.35); }
-.toast > .icon{ flex:none; width:26px; height:26px; padding:5px; border-radius:50%; background:rgba(77,141,255,.16); color:#8FB6FF; }
-.toast > .icon.t-ok{ background:rgba(74,222,128,.14); color:#6EE7A0; } .toast > .icon.t-err{ background:rgba(255,122,122,.14); color:#FF9A9A; }
+.toast{ border-radius:16px; padding:7px 7px 7px 8px; gap:10px; background:rgba(22,24,30,.92); -webkit-backdrop-filter:blur(14px) saturate(1.4); backdrop-filter:blur(14px) saturate(1.4); box-shadow:0 0 0 1px var(--toast-ring),0 18px 44px -14px rgba(0,0,0,.6),0 6px 22px -12px var(--toast-glow); }
+.toast > .icon{ flex:none; width:26px; height:26px; padding:5px; border-radius:50%; background:var(--toast-ic-bg); color:var(--toast-ic); }
+.toast > .icon.t-ok{ background:rgba(74,222,128,.14); color:var(--toast-ok); } .toast > .icon.t-err{ background:rgba(255,122,122,.14); color:var(--toast-err); }
 .toast button{ border-radius:999px; }
 .toast button.t1{ background:var(--cta); color:#FFFFFF; }
 .toast button.t1:hover{ background:var(--cta-hover); }
@@ -5700,6 +5702,51 @@ a.link, .link{ color:var(--accent-text); }
 /* the homepage's highlighter on "first line" is the brand blue now */
 .hz-mk, :root[data-theme="light"] .hz-mk, .force-light .hz-mk{ background-image:linear-gradient(transparent 58%, var(--mk-band) 58%, var(--mk-band) 92%, transparent 92%); }
 @media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .hz-mk{ background-image:linear-gradient(transparent 58%, var(--mk-band) 58%, var(--mk-band) 92%, transparent 92%); } }
+/* ---------- r67 phase B: onboarding as a story, the first line broken down, Sharpen's way to more ---------- */
+.onb-prog{ display:flex; gap:6px; width:min(240px,34vw); }
+.onb-prog i{ flex:1; height:4px; border-radius:99px; background:var(--surface-3); overflow:hidden; position:relative; }
+.onb-prog i::after{ content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(90deg,var(--art-a),var(--cta)); transform:scaleX(0); transform-origin:left; transition:transform .7s var(--ease-out); }
+.onb-prog i.done::after{ transform:none; } .onb-prog i.on::after{ transform:scaleX(.5); box-shadow:0 0 12px var(--accent-glow); }
+.niches.nc-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; width:min(580px,100%); max-width:none; }
+.nc{ position:relative; display:flex; align-items:center; gap:10px; min-height:56px; padding:10px 12px; border-radius:14px; text-align:left; background:var(--surface); box-shadow:0 0 0 1px var(--border); color:var(--text-1); font:500 14px/1.25 var(--font-ui); transition:box-shadow var(--d-fast), background var(--d-fast), transform var(--d-micro); }
+.nc:hover{ box-shadow:0 0 0 1px var(--border-strong); background:var(--surface-2); }
+.nc:active{ transform:scale(.98); }
+.nc:focus-visible{ box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--accent); outline:none; }
+.nc[aria-pressed="true"]{ background:var(--accent-soft); box-shadow:0 0 0 1.5px var(--accent),0 8px 24px -14px var(--accent-glow); }
+.nc-art{ flex:none; width:32px; height:32px; display:grid; place-items:center; }
+.nc-art .art{ width:32px; height:32px; }
+.nc-l{ min-width:0; flex:1; }
+.nc-ck{ position:absolute; top:6px; right:6px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; background:var(--cta); color:#FFFFFF; transform:scale(0); transition:transform var(--d-spring) var(--spring); }
+.nc-ck .icon{ width:11px; height:11px; } .nc[aria-pressed="true"] .nc-ck{ transform:scale(1); }
+@media (max-width:560px){ .niches.nc-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } .nc{ min-height:52px; font-size:13.5px; } }
+.onb-read-art{ width:min(220px,60vw); margin-bottom:-6px; }
+.onb-bar{ width:min(320px,80%); height:4px; border-radius:99px; background:var(--surface-3); overflow:hidden; }
+.onb-bar i{ display:block; height:100%; width:0; border-radius:inherit; background:linear-gradient(90deg,var(--violet),var(--art-a),var(--cta)); box-shadow:0 0 14px var(--accent-glow); transition:width .6s var(--ease-out); }
+/* three taps to a voice */
+.vt{ width:100%; display:grid; gap:12px; padding:16px 18px; border-radius:16px; text-align:left; }
+.vt-h{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.vt-dots{ display:flex; gap:5px; } .vt-dots i{ width:18px; height:4px; border-radius:99px; background:var(--surface-3); transition:background var(--d-fast); } .vt-dots i.on{ background:var(--text-3); } .vt-dots i.done{ background:var(--cta); }
+.vt-q{ margin:0; font:400 20px/1.2 var(--font-serif); letter-spacing:-.01em; color:var(--text-1); }
+.vt-opts{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.vt-o{ text-align:left; padding:14px 16px; border-radius:14px; background:var(--surface-2); box-shadow:0 0 0 1px var(--border); color:var(--text-1); font:400 15px/1.45 var(--font-ui); transition:box-shadow var(--d-fast), background var(--d-fast), transform var(--d-micro); animation:rise .5s var(--ease-out) both; }
+.vt-o + .vt-o{ animation-delay:70ms; }
+.vt-o:hover{ background:var(--surface-3); box-shadow:0 0 0 1px var(--accent); }
+.vt-o:active{ transform:scale(.98); }
+.vt-done{ display:grid; grid-template-columns:120px minmax(0,1fr); gap:14px; align-items:center; animation:rise .5s var(--ease-out) both; }
+.vt-done b{ display:block; font:400 24px/1.15 var(--font-serif); letter-spacing:-.015em; color:var(--text-1); }
+.vt-done span{ font-size:14px; line-height:1.5; color:var(--text-2); }
+@media (max-width:560px){ .vt-opts{ grid-template-columns:minmax(0,1fr); } .vt-done{ grid-template-columns:90px minmax(0,1fr); } }
+/* the first line, broken down, under the preview */
+.hkp{ margin:12px 0 0; padding:14px 16px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); display:grid; gap:10px; }
+.hkp-h{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.hkp ul{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.hkp li{ display:grid; grid-template-columns:76px minmax(0,1fr); align-items:center; gap:10px; font-size:12.5px; color:var(--text-2); }
+.hkp-bar{ height:6px; border-radius:99px; background:var(--surface-3); overflow:hidden; }
+.hkp-bar i{ display:block; height:100%; width:calc(var(--v) * 1%); border-radius:inherit; background:linear-gradient(90deg,var(--art-a),var(--cta)); transition:width .5s var(--ease-out); }
+.hkp-n{ margin:0; font-size:12.5px; line-height:1.45; color:var(--text-3); }
+.sharpen .sh-up{ color:var(--accent-text); }
+.reading .st.on > span:last-child{ background:linear-gradient(100deg, var(--text-3) 30%, var(--text-1) 50%, var(--text-3) 70%) 0 0 / 250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shim 1.6s linear infinite; }
+@media (prefers-reduced-motion:reduce){ .reading .st.on > span:last-child{ animation:none; color:var(--text-1); background:none; } }
 </style>
 </head>
 <body>
@@ -5865,11 +5912,12 @@ const ART = {
 const ART_SEEN = new Set(); let artN = 0;
 function art(name, { cls = '', label = '' } = {}) {
   const a = ART[name]; if (!a) return '';
+  /* the gradient runs in user space: a perfectly straight stroke has no box to stretch a bounding-box gradient over */
   const id = 'art' + (++artN), vb = a.vb ? `0 0 ${a.vb} ${a.vb}` : '0 0 160 120';
   const draw = !ART_SEEN.has(name) && !REDUCED; ART_SEEN.add(name);
   const paths = a.d.map((d, i) => `<path d="${d}" pathLength="1" style="--i:${i}"/>`).join('');
   const dots = (a.dots || []).map(([x, y, r], i) => `<circle class="art-dot" cx="${x}" cy="${y}" r="${r}" style="--i:${i}"/>`).join('');
-  return `<svg class="art${draw ? ' draw' : ''}${cls ? ' ' + cls : ''}" viewBox="${vb}" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true"'} focusable="false"><defs><linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--art-a)"/><stop offset="1" style="stop-color:var(--art-b)"/></linearGradient><filter id="${id}f" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${a.vb ? 1.2 : 2.6}"/></filter></defs><g class="art-glow" stroke="url(#${id}g)" filter="url(#${id}f)">${paths}</g><g class="art-line" stroke="url(#${id}g)">${paths}</g>${a.scan ? `<path class="art-scan" d="${a.scan}" stroke="url(#${id}g)" stroke-width="2"/>` : ''}${dots}</svg>`;
+  return `<svg class="art${draw ? ' draw' : ''}${cls ? ' ' + cls : ''}" viewBox="${vb}" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true"'} focusable="false"><defs><linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${a.vb || 160}" y2="${a.vb || 120}"><stop offset="0" style="stop-color:var(--art-a)"/><stop offset="1" style="stop-color:var(--art-b)"/></linearGradient><filter id="${id}f" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${a.vb ? 1.2 : 2.6}"/></filter></defs><g class="art-glow" stroke="url(#${id}g)" filter="url(#${id}f)">${paths}</g><g class="art-line" stroke="url(#${id}g)">${paths}</g>${a.scan ? `<path class="art-scan" d="${a.scan}" stroke="url(#${id}g)" stroke-width="2"/>` : ''}${dots}</svg>`;
 }
 /* an empty page: the art, a line, a sentence and its buttons */
 const emptyHTML = ({ art: a, title, text = '', actions = '', cls = '', tag = 'h2' }) => `<div class="es ${cls}"><div class="art-halo">${art(a)}</div><${tag} class="es-t">${title}</${tag}>${text ? `<p>${text}</p>` : ''}${actions ? `<div class="es-a">${actions}</div>` : ''}</div>`;
@@ -9106,7 +9154,7 @@ function sharpenCheck(ta, now = false) {
   clearTimeout(SH.waitT); SH.wait = null;
   if (!SH.el || SH.el.parentElement !== ta.parentElement) { if (SH.el) SH.el.remove(); SH.el = document.createElement('div'); SH.el.className = 'sharpen'; SH.el.setAttribute('role', 'toolbar'); SH.el.setAttribute('aria-label', 'Sharpen the selected words'); ta.parentElement.append(SH.el); }
   SH.ta = ta;
-  SH.el.innerHTML = `<button data-shcm class="sh-cm" data-tip="Comment on these words" data-kbd="${MOD} ${ALT} M">${ic('reply', 'sm')}Comment</button><span class="sh-sep" aria-hidden="true"></span><span class="sh-t">${ic('riff', 'sm')}Sharpen</span>${SHARP.map((m, i) => { const why = aiOn() ? '' : sharpenWhyNot(m.k, ta.value, s, e); return `<button data-sh="${m.k}"${why ? ` class="sh-dim" data-tip="${esc(why)}"` : ` data-tip="${m.label}"`} data-kbd="${ALT} ${i + 1}">${m.label}</button>`; }).join('')}<button data-shc data-tip="Say what to change" aria-label="Custom: say what to change">✎ Custom…</button>`;
+  SH.el.innerHTML = `<button data-shcm class="sh-cm" data-tip="Comment on these words" data-kbd="${MOD} ${ALT} M">${ic('reply', 'sm')}Comment</button><span class="sh-sep" aria-hidden="true"></span><span class="sh-t">${ic('riff', 'sm')}Sharpen</span>${SHARP.map((m, i) => { const why = aiOn() ? '' : sharpenWhyNot(m.k, ta.value, s, e); return `<button data-sh="${m.k}"${why ? ` class="sh-dim" data-tip="${esc(why)}"` : ` data-tip="${m.label}"`} data-kbd="${ALT} ${i + 1}">${m.label}</button>`; }).join('')}<button data-shc data-tip="Say what to change" aria-label="Custom: say what to change">✎ Custom…</button>${aiOn() && METERED() && hlpOut() && !SRV_CR() ? `<span class="sh-sep" aria-hidden="true"></span><button data-shup class="sh-up" data-tip="On your device until midnight">${ic('spark', 'sm')}More touch-ups</button>` : ''}`;
   requestAnimationFrame(() => { sharpenPlace(); SH.el && SH.el.classList.add('on'); });
 }
 /* the hook score a version would give, when it touches the first line of the first post */
@@ -9544,6 +9592,14 @@ function renderPreviewBody() {
   const key = tab + ':' + on.join(','), enter = UI.pvKey !== key; UI.pvKey = key;
   b.className = 'preview-b' + (tab === 'all' ? ' all' : '') + (enter ? ' enter' : '');
   b.innerHTML = tab === 'all' ? on.map(k => pvCard(k, true)).join('') : pvCard(tab, false);
+  const t0 = (S.draft.tweets[0] && S.draft.tweets[0].text || '').trim(); if (t0) b.insertAdjacentHTML('beforeend', hookPartsHTML(t0));
+}
+/* r67: why the first line scores what it does, in three bars (like a writing coach's breakdown) */
+function hookPartsHTML(text) {
+  const h = hookScore(text), P = h.parts || {};
+  const rows = [['Curiosity', P.curiosity], ['Specific', P.specificity], ['Short', P.brevity]].map(([l, v]) => [l, clamp(Math.round(+v || 0), 0, 100)]);
+  return `<section class="hkp" aria-label="Your first line, broken down"><div class="hkp-h"><span class="label">Your first line</span>${tierChip(h.score)}</div>
+    <ul>${rows.map(([l, v]) => `<li><span>${l}</span><span class="hkp-bar" role="img" aria-label="${l}: ${v} of 100"><i style="--v:${v}"></i></span></li>`).join('')}</ul>${h.step ? `<p class="hkp-n">${esc(h.step)}</p>` : ''}</section>`;
 }
 const pvYou = () => { const u = S.user; return { n: u.name || 'You', h: u.handle || 'you', v: 0, bio: `${u.niche} · writing on Hookworthy`, hue: u.hue, pic: u.pic }; };
 function overText(t, lim) { const a = [...t]; if (a.length <= lim) return pfText(t); return pfText(a.slice(0, lim).join('')) + `<span class="over">${esc(a.slice(lim).join(''))}</span>`; }
@@ -11967,7 +12023,7 @@ ROUTES.write = () => {
     if (e.type === 'keyup' && (e.key.length === 1 || /^(Backspace|Delete|Enter|Shift|Meta|Control|Alt|CapsLock)$/.test(e.key))) { requestAnimationFrame(() => t.isConnected && typewriter()); return; }
     requestAnimationFrame(() => t.isConnected && placeCaretOrPaint(t)); };
   const placeCaretOrPaint = ta => { if (UI.ghost && ta.selectionEnd !== ta.value.length) { UI.ghost = null; } if (!SH.st) paintField(ta); sharpenCheck(ta); typewriter(); };
-  const shClick = e => { const b = e.target.closest('.sharpen button'); if (!b) return; e.preventDefault(); if (b.dataset.sh) sharpenRun(b.dataset.sh); else if (b.dataset.shn) { sharpenShow(SH.st.i + +b.dataset.shn); SFX.play('tick'); } else if ('shk' in b.dataset) sharpenKeep(); else if ('shx' in b.dataset) { if (SH.ask) sharpenAskCancel(); else { sharpenCancel(); sharpenHide(); } } else if ('shc' in b.dataset) sharpenAskOpen(); else if ('shcm' in b.dataset) startCmFromSel(SH.ta); else if ('shgo' in b.dataset) sharpenAskRun(); };
+  const shClick = e => { const b = e.target.closest('.sharpen button'); if (!b) return; e.preventDefault(); if (b.dataset.sh) sharpenRun(b.dataset.sh); else if (b.dataset.shn) { sharpenShow(SH.st.i + +b.dataset.shn); SFX.play('tick'); } else if ('shk' in b.dataset) sharpenKeep(); else if ('shx' in b.dataset) { if (SH.ask) sharpenAskCancel(); else { sharpenCancel(); sharpenHide(); } } else if ('shc' in b.dataset) sharpenAskOpen(); else if ('shcm' in b.dataset) startCmFromSel(SH.ta); else if ('shgo' in b.dataset) sharpenAskRun(); else if ('shup' in b.dataset) { sharpenHide(); go('upgrade'); } };
   th.addEventListener('mousedown', e => { if (e.target.closest('.sharpen') && !e.target.matches('input')) e.preventDefault(); });
   th.addEventListener('click', shClick);
   th.addEventListener('click', e => { if (e.target.classList.contains('tw-input')) requestAnimationFrame(() => rvClickInEditor(e.target)); });
@@ -13948,18 +14004,22 @@ ROUTES.developers = () => {
 const ONB = { handle: '', plat: 'x', niche: null, t0: 0 };
 ROUTES.start = () => {
   ONB.t0 = 0;
-  $('#root').innerHTML = `<main class="onb"><div class="onb-top"><a class="logo" href="#home">${LOGO}</a><a class="btn ghost sm" href="#write">See an example first${ic('arrow', 'sm')}</a></div><div class="onb-stage" id="onb" style="position:relative"></div></main>`;
+  $('#root').innerHTML = `<main class="onb"><div class="onb-top"><a class="logo" href="#home">${LOGO}</a><div class="onb-prog" id="onb-prog" aria-hidden="true"><i></i><i></i><i></i></div><a class="btn ghost sm" href="#write">See an example first${ic('arrow', 'sm')}</a></div><div class="onb-stage" id="onb" style="position:relative"></div></main>`;
   /* skipping lands in the example account: say so, so heycape's week never reads as yours */
   const sk = $('.onb-top a[href="#write"]'); if (sk && SHOWCASE()) sk.addEventListener('click', () => setTimeout(() => toast('You’re in heycape’s example account. Make it yours any time: Settings, then Your account.', { icon: 'user', ms: 7000 }), 300));
   if (ONB.auto) { ONB.auto = false; ONB.niche = ONB.niche || S.user.niche; ONB.t0 = Date.now(); onbStep2(); } else onbStep1();
 };
+/* r67: three steps, shown as a story bar up top: about you, reading, your first post */
+function onbProg(n) { $$('#onb-prog i').forEach((x, i) => { x.className = i < n - 1 ? 'done' : i === n - 1 ? 'on' : ''; }); }
+const NICHE_ART = { 'Crypto & trading': 'n_crypto', 'Building in public': 'n_build', Design: 'n_design', Engineering: 'n_eng', Marketing: 'n_mkt', 'Creator economy': 'n_creator', 'Personal finance': 'n_finance', Fitness: 'n_fit', 'AI & tools': 'n_ai' };
 function onbStep1() {
+  onbProg(1);
   const niches = Object.keys(NICHES); const cur = ONB.niche || (S.onboarded ? S.user.niche : ''); /* r63: nothing preselected, so nobody gets crypto ideas by not tapping */
   $('#onb').innerHTML = `<div class="onb-card">
     <h1 class="display">Let’s find your <em>voice.</em></h1>
     <p class="muted" style="font-size:17px;max-width:46ch">${LLM.server && LLM.server.x ? 'Pick what you write about and type your handle. We’ll read your recent posts, then sharpen your first one with you.' : 'Pick what you write about and where. Then we’ll sharpen your first post together.'}</p>
     <div class="seg" id="onb-plat" role="tablist" aria-label="Where you post">${['x', 'threads', 'li', 'bsky'].map(k => `<button role="tab" data-p="${k}" aria-selected="${ONB.plat === k}" aria-label="${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}">${pic(k, 'icon sm')}${`<span>${{ x: 'X', threads: 'Threads', li: 'LinkedIn', bsky: 'Bluesky' }[k]}</span>`}</button>`).join('')}</div>
-    <div style="display:grid;gap:10px;justify-items:center"><span class="label">What do you write about?</span><div class="niches">${niches.map(n => `<button class="chip" aria-pressed="${n === cur}" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>
+    <div style="display:grid;gap:10px;justify-items:center"><span class="label">What do you write about?</span><div class="niches nc-grid">${niches.map(n => `<button type="button" class="nc" aria-pressed="${n === cur}" data-n="${esc(n)}"><span class="nc-art">${art(NICHE_ART[n] || 'n_ai')}</span><span class="nc-l">${esc(n)}</span><span class="nc-ck" aria-hidden="true">${ic('check', 'sm')}</span></button>`).join('')}</div></div>
     <form class="handle-in" id="onb-f" novalidate><span class="at">@</span><input id="onb-h" autofocus placeholder="yourhandle" value="${esc(ONB.handle)}" aria-label="Your handle" aria-describedby="onb-err" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"><button class="btn primary lg" type="submit">${LLM.server && LLM.server.x ? 'Read my posts' : 'Continue'}${ic('arrow', 'sm')}</button></form>
     <span id="onb-err" class="field-err" role="alert" style="min-height:16px;margin-top:-14px"></span>
     <div class="onb-alt"><button class="btn ghost sm" id="onb-arch">${ic('upload', 'sm')} Use your X archive instead</button></div>
@@ -13970,12 +14030,12 @@ function onbStep1() {
   platField();
   if (FINE) requestAnimationFrame(() => { const h = $('#onb-h'); h && h.focus({ preventScroll: true }); });
   $('#onb-plat').onclick = e => { const b = e.target.closest('[data-p]'); if (!b) return; ONB.plat = b.dataset.p; $$('#onb-plat [data-p]').forEach(x => x.setAttribute('aria-selected', x === b)); syncSeg($('#onb-plat')); platField(); $('#onb-err').textContent = ''; if (e.detail) $('#onb-h').focus(); };
-  $('.niches').onclick = e => { const b = e.target.closest('[data-n]'); if (!b) return; ONB.niche = b.dataset.n; $$('.niches .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#onb-err').textContent = ''; };
+  $('.niches').onclick = e => { const b = e.target.closest('[data-n]'); if (!b) return; ONB.niche = b.dataset.n; $$('.niches [data-n]').forEach(x => x.setAttribute('aria-pressed', x === b)); SFX.play('tick'); $('#onb-err').textContent = ''; };
   const inp = $('#onb-h'); inp.oninput = () => { inp.removeAttribute('aria-invalid'); $('#onb-err').textContent = ''; ONB.t0 = ONB.t0 || Date.now(); };
   $('#onb-f').onsubmit = e => {
     e.preventDefault(); const v = inp.value.trim().replace(/^@/, '');
     /* r63: the niche shapes every idea you get next, so it's the one thing we ask for */
-    if (!ONB.niche) { $('#onb-err').textContent = 'Pick what you write about first. Your ideas come from it.'; const c = $('.niches .chip'); c && c.focus(); return; }
+    if (!ONB.niche) { $('#onb-err').textContent = 'Pick what you write about first. Your ideas come from it.'; const c = $('.niches [data-n]'); c && c.focus(); return; }
     /* round 46: no handle is fine, never an error */
     if (!v) { ONB.handle = ''; onbStep2(); return; }
     if (ONB.plat === 'li') { if (v.length < 2) { inp.setAttribute('aria-invalid', 'true'); $('#onb-err').textContent = 'A name needs at least two letters.'; inp.focus(); return; } ONB.name = v.replace(/\s+/g, ' '); ONB.handle = v.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '').slice(0, 30) || 'you'; onbStep2(); return; }
@@ -13990,6 +14050,7 @@ function carryLine(t) { if (S.onboarded) { writeFrom([t]); return; } S.pendingLi
 /* each onboarding step puts focus on its heading, so screen readers hear the new step */
 function onbFocusHead() { requestAnimationFrame(() => { const h = $('#onb h1, #onb h2'); if (h && !(document.activeElement && $('#onb').contains(document.activeElement) && document.activeElement.matches('input,textarea'))) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }); }
 function onbStep2() {
+  onbProg(2);
   ONB.t0 = ONB.t0 || Date.now();
   const live = ONB.handle && LLM.server && LLM.server.x && !HIST().length, have = HIST().length >= 8;
   const steps = have ? [`Reading your ${fmtN(HIST().length)} posts`, 'Learning how you open', 'Finding what your people reward', 'Writing your first five'] : live ? [`Reading @${ONB.handle}’s recent posts`, 'Learning how you open', 'Finding what your people reward', 'Writing your first five'] : ONB.handle ? [`Setting up ${ONB.name ? esc(ONB.name) : '@' + ONB.handle}`, `Reading up on ${ONB.niche.toLowerCase()}`, 'Picking hooks that work there', 'Writing your first five'] : [`Reading up on ${ONB.niche.toLowerCase()}`, 'Picking hooks that work there', 'Setting a starting voice', 'Writing your first five'];
@@ -13998,13 +14059,14 @@ function onbStep2() {
     if (live) { try { const r = await fetch(`api/x/posts?handle=${encodeURIComponent(ONB.handle)}&max=400`); const j = await r.json(); if (r.ok) absorb(j.posts.map(HWCore.normPost).filter(Boolean), { account: j.account }); } catch (e) { /* fall back to niche */ } }
     if (aiOn()) { try { const res = await ask(HWCore.prompts.ideas({ niche: ONB.niche || S.user.niche, voice: voiceSpec(), top: MYTOP(), inbox: S.ideas.map(i => cleanIdea(i.text)), count: 5 }), { act: 'setup' }); if (Array.isArray(res) && res.length) ONB.ideas = res.slice(0, 5).map(x => ({ text: String(x.text), kind: x.kind || 'Curiosity', topic: topicOf(String(x.text)) })); } catch (e) { /* offline ideas it is */ } }
   })();
-  $('#onb').innerHTML = `${ghostFeedHTML()}<div class="onb-card" style="position:relative"><h2 class="display" style="font-size:clamp(34px,5vw,48px)">Reading the room…</h2><div class="reading" role="status" aria-live="polite">${steps.map((s, i) => `<div class="st" data-i="${i}"><span class="ck">${ic('check')}</span><span>${esc(s)}</span></div>`).join('')}</div><button class="btn ghost sm" id="onb-skip">Skip the suspense</button></div>`;
+  $('#onb').innerHTML = `${ghostFeedHTML()}<div class="onb-card" style="position:relative"><div class="art-halo onb-read-art">${art('reading')}</div><h2 class="display" style="font-size:clamp(34px,5vw,48px)">Reading the room…</h2><div class="onb-bar" aria-hidden="true"><i id="onb-bar"></i></div><div class="reading" role="status" aria-live="polite">${steps.map((s, i) => `<div class="st" data-i="${i}"><span class="ck">${ic('check')}</span><span>${esc(s)}</span></div>`).join('')}</div><button class="btn ghost sm" id="onb-skip">Skip the suspense</button></div>`;
   onbFocusHead();
   const fl = { stop() {} };
   /* nothing to read and no Claude: no loading theatre, straight to the result */
   const quick = !aiOn() && !live && !have;
   let i = 0; const els = $$('.reading .st'); let t;
   const next = () => {
+    const bar = $('#onb-bar'); if (bar) bar.style.width = `${Math.round(100 * (i + 1) / (els.length + 1))}%`;
     if (i > 0) { els[i - 1].classList.remove('on'); els[i - 1].classList.add('done'); }
     if (i < els.length - 1) { els[i].classList.add('on'); i++; t = setTimeout(next, quick ? 0 : REDUCED ? 150 : 640); return; }
     if (i === els.length - 1) { const last = els[i]; last.classList.add('on'); i++; Promise.race([ONB.job, new Promise(r => setTimeout(r, 45000))]).then(() => new Promise(r => setTimeout(r, REDUCED || quick ? 0 : 500))).then(() => { if (!last.isConnected) return; last.classList.remove('on'); last.classList.add('done'); t = setTimeout(() => { fl.stop(); onbStep3(); }, 380); }); }
@@ -14013,6 +14075,7 @@ function onbStep2() {
   $('#onb-skip').onclick = () => { clearTimeout(t); fl.stop(); onbStep3(); };
 }
 function onbStep3() {
+  onbProg(3);
   /* no handle and no archive: you're not the demo's Sam. No name, a placeholder handle */
   const fromArchive = HIST().length && (!ONB.handle || S.user.handle === ONB.handle); const handle = ONB.handle || (fromArchive ? S.user.handle : ''); /* round 48: no handle typed means none shown, never the demo's */
   const nameGuessed = !fromArchive && !ONB.name && !!ONB.handle;
@@ -14024,11 +14087,12 @@ function onbStep3() {
   PH_IDEAS = genIdeas(6, hash(handle) % 1000);
   const ideas = ONB.ideas || genIdeas(5, hash(handle + ONB.niche) % 9999); const an = ANALYSIS();
   const traits = S.profile && S.profile.traits ? S.profile.traits.map(t => [t.name, t.evidence]) : an ? heuristicTraits(an) : sliderTraits();
-  const secs = Math.max(4, Math.round((Date.now() - (ONB.t0 || Date.now())) / 1000)), read = !!an;
+  const secs = Math.max(4, Math.round((Date.now() - (ONB.t0 || Date.now())) / 1000)), read = !!an, tune = !an && !(S.profile && S.profile.traits);
   const skip = $('.onb-top a[href="#write"]'); if (skip) skip.hidden = true; /* setup is done: nothing left to skip */
   $('#onb').innerHTML = `<div class="onb-result">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><h1 class="display" style="font-size:clamp(36px,5vw,56px)">${an || (S.profile && S.profile.traits) ? (name && !S.user.nameGuessed ? `Here’s how you sound, <em>${esc(name.split(' ')[0])}.</em>` : 'Here’s how <em>you sound.</em>') : (name && !S.user.nameGuessed ? `Your first post, <em>${esc(name.split(' ')[0])}.</em>` : 'Your first <em>post.</em>')}</h1></div>${read ? `<span class="timer" data-tip="How long the read took">${ic('clock', 'xs')} ${secs < 60 ? `${secs} seconds` : `${Math.round(secs / 60)} min`} to read ${fmtN(an.n)} posts</span>` : ''}</div>
-    <div class="onb-me">${avatar(S.user, 'lg')}<div class="om-who"><b>${esc(name || 'You')}</b><span class="faint">${handle ? `@${esc(handle)} · ` : ''}${esc(ONB.niche)}</span></div><div class="om-v"><span class="label">${an ? 'You sound' : 'Starting voice · learns as you write'}</span><span class="om-t">${traits.map(([t, ev]) => `<b data-tip="${esc(ev)}" tabindex="0">${esc(t)}</b>`).join('<i aria-hidden="true">·</i>')}</span></div><a class="btn ghost sm" href="#voice">${ic('sliders', 'sm')} Tune</a></div>
+    <div class="onb-me">${avatar(S.user, 'lg')}<div class="om-who"><b>${esc(name || 'You')}</b><span class="faint">${handle ? `@${esc(handle)} · ` : ''}${esc(ONB.niche)}</span></div><div class="om-v"><span class="label">${an ? 'You sound' : 'Starting voice · learns as you write'}</span><span class="om-t">${traitsHTML(traits)}</span></div><a class="btn ghost sm" href="#voice">${ic('sliders', 'sm')} Tune</a></div>
+    ${tune ? vtHTML() : ''}
     <div class="card onb-try" id="onb-try"><div class="ot-h"><span class="label">The post you almost sent</span><span class="faint">Rough is fine. We’ll sharpen the first line.</span></div>
       <textarea class="input" id="ot-in" rows="2" maxlength="600" placeholder="${/crypto|trad/i.test(S.user.niche || '') ? 'i think btc is probably going to break 100k soon tbh' : 'so i think pricing is really important for early startups'}" aria-label="A post you almost wrote">${esc(S.pendingLine || '')}</textarea>
       <div class="ot-a"><button class="btn primary" id="ot-go">${ic('bolt', 'sm')} Sharpen it</button><span class="faint ot-note" id="ot-note"></span></div>
@@ -14038,13 +14102,35 @@ function onbStep3() {
     <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">${S.pendingLine ? `<button class="btn primary lg" id="onb-line">${ic('write', 'sm')} Open your line in Write</button>` : ''}<a class="btn ghost" href="#week">Skip for now</a></div>
   </div>`;
   onbFocusHead();
-  let seed = hash(handle) % 9999; onbTry();
+  let seed = hash(handle) % 9999; onbTry(); if (tune) vtWire();
   $('#onb-more').onclick = () => { $('#onb-ideas').innerHTML = onbIdeas(genIdeas(3, ++seed)); };
   $('#onb-ideas').onclick = e => {
     const b = e.target.closest('[data-oi]'); if (!b) return; const card = b.closest('.pidea');
     if (b.dataset.oi === 'open') writeIdea(card.dataset.t, card.dataset.k, card.dataset.topic);
     else { addIdea({ src: 'note', text: card.dataset.t }); b.disabled = true; b.innerHTML = `${ic('check', 'sm')} Saved`; }
   };
+}
+const traitsHTML = traits => traits.map(([t, ev]) => `<b data-tip="${esc(ev)}" tabindex="0">${esc(t)}</b>`).join('<i aria-hidden="true">·</i>');
+/* r67: three taps to a starting voice. Each pair is the same thought two ways; the one you'd post sets a tone slider */
+const VT = [
+  { k: 'spice', q: 'Which would you post?', a: ['Hot take: most growth advice is wrong.', 80], b: ['A few things I’ve learned about growth.', 28] },
+  { k: 'polish', q: 'And this one?', a: ['shipped it. finally. feels good.', 22], b: ['We shipped the update today, and I’m proud of it.', 78] },
+  { k: 'length', q: 'Last one.', a: ['One line. That’s the post.', 22], b: ['Here’s the full story, the numbers, and what I’d change next time:', 75] }
+];
+const vtStepHTML = i => { const v = VT[i]; return `<p class="vt-q">${v.q}</p><div class="vt-opts">${[v.a, v.b].map(([t, n]) => `<button type="button" class="vt-o" data-vt="${n}">${esc(t)}</button>`).join('')}</div>`; };
+const vtHTML = () => `<div class="card vt" id="vt" aria-live="polite"><div class="vt-h"><span class="label">Tune your voice · three taps</span><span class="vt-dots" aria-hidden="true">${VT.map((_, i) => `<i${i ? '' : ' class="on"'}></i>`).join('')}</span></div><div class="vt-b" id="vt-b">${vtStepHTML(0)}</div></div>`;
+function vtWire() {
+  const el = $('#vt'); if (!el) return; let i = 0;
+  el.addEventListener('click', e => {
+    const b = e.target.closest('[data-vt]'); if (!b || i >= VT.length) return;
+    S.voice[VT[i].k] = +b.dataset.vt; save(); SFX.play('tick'); i++;
+    const t = $('.om-t'); if (t) t.innerHTML = traitsHTML(sliderTraits());
+    $$('.vt-dots i', el).forEach((d, j) => { d.className = j < i ? 'done' : j === i ? 'on' : ''; });
+    const body = $('#vt-b', el);
+    if (i < VT.length) { body.innerHTML = vtStepHTML(i); const f = $('.vt-o', body); f && f.focus({ preventScroll: true }); return; }
+    body.innerHTML = `<div class="vt-done"><div class="art-halo">${art('voice')}</div><div><b>Voice matched.</b><span>Every rewrite starts from this, and it keeps learning as you write.</span></div></div>`;
+    SFX.play('done');
+  });
 }
 /* a starting voice from the tone sliders: says what it is, never claims to have read you */
 function sliderTraits() {
