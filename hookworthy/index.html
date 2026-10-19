@@ -5869,29 +5869,10 @@ a.link, .link{ color:var(--accent-text); }
 .ap-via{ display:flex; flex-wrap:wrap; gap:6px; }
 .cl-cost{ font-size:12.5px; max-width:36ch; line-height:1.4; }
 
-/* the payout path */
-.pay{ display:grid; gap:14px; padding:20px 22px; margin-bottom:16px; }
-.pay-h{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
-.pay-h .h2{ margin:4px 0 4px; font:400 26px/1.15 var(--font-serif); letter-spacing:-.02em; }
-.pay-h p{ margin:0; max-width:60ch; font-size:14px; line-height:1.5; }
-.pay-l{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
-.pay-l li{ display:grid; grid-template-columns:minmax(150px,220px) minmax(0,1fr) auto auto; align-items:center; gap:12px; font-size:14px; color:var(--text-2); }
-.pay-l li:first-child{ grid-template-columns:minmax(150px,220px) auto; }
-.pay-l b{ color:var(--text-1); font-weight:500; } .pay-l b.ok{ color:var(--success); display:inline-flex; align-items:center; gap:4px; }
-.pay-l small{ font-size:12.5px; color:var(--text-3); min-width:64px; text-align:right; }
-.pay-bar{ height:6px; border-radius:99px; background:var(--surface-3); overflow:hidden; }
-.pay-bar i{ display:block; height:100%; width:calc(var(--v) * 1%); border-radius:inherit; background:linear-gradient(90deg,var(--art-a),var(--cta)); }
-.pay-n{ margin:0; font-size:12.5px; }
-.pay-f{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; align-items:end; }
-.pay-f label{ display:grid; gap:6px; }
-.pay-f .pay-ck{ grid-column:1 / -1; display:flex; align-items:center; gap:8px; font-size:14px; color:var(--text-1); }
-.pay-a{ grid-column:1 / -1; display:flex; gap:8px; }
-@media (max-width:640px){ .pay-l li{ grid-template-columns:minmax(0,1fr) auto; } .pay-l li .pay-bar{ grid-column:1 / -1; grid-row:2; } .pay-l small{ display:none; } .pay-f{ grid-template-columns:minmax(0,1fr); } }
 .wk-next{ flex-wrap:nowrap; } .wk-next > span:not(.wk-dot){ min-width:0; } .wk-next .wk-fill{ flex:none; }
 .upnext .when{ white-space:normal; overflow:visible; text-overflow:clip; }
 .sharpen button{ padding:0 9px; }
 @media (max-width:760px){ .cal-h [data-qact="today"], .q-why{ display:none; } .wk-next{ flex-wrap:wrap; } .wk-next .wk-fill{ margin-left:0; } }
-.pay > .btn{ justify-self:start; }
 @media (min-width:641px){ .onb-top{ position:relative; } .onb-prog{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); } }
 /* ==========================================================================
    ROUND 70: per-client clocks, voices and ideas; Free counts auto-posts
@@ -15214,7 +15195,7 @@ const numWord = n => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'sev
 const ZP_DAYS = 30;
 function zpState() { if (!S.zero || typeof S.zero !== 'object' || !S.zero.start) S.zero = { start: dayKey(Date.now()), days: {} }; return S.zero; }
 const zpDayN = () => Math.floor((fromKey(dayKey(Date.now())) - fromKey(zpState().start)) / DAY) + 1;
-const zpOn = () => S.ws === 'me' && !!S.seedCleared && !S.zeroOff && HIST().length < 30 && zpDayN() <= ZP_DAYS && !(S.user.followers >= 500) && !(S.payout && S.payout.vf >= 500); /* r69: past 500 followers, the payout path matters more than the first 100 */
+const zpOn = () => S.ws === 'me' && !!S.seedCleared && !S.zeroOff && HIST().length < 30 && zpDayN() <= ZP_DAYS && !(S.user.followers >= 500); /* r69: past 500 followers, the first-100 plan steps aside */
 function zpOf(k) { const d = (S.zero && S.zero.days && S.zero.days[k]) || {}; return { posted: S.queue.some(q => q.made && dayKey(q.made) === k && (q.ws || 'me') === 'me'), replies: d.replies || 0, idea: S.ideas.some(i => (i.ws || 'me') === 'me' && i.at && dayKey(i.at) === k) }; }
 const zpFull = o => o.posted && o.replies >= 3 && o.idea;
 function zpMark(kind) { if (!zpOn()) return; const k = dayKey(Date.now()), z = zpState(), d = z.days[k] = z.days[k] || {}; if (kind === 'reply') { d.replies = (d.replies || 0) + 1; if (d.replies === 3) setTimeout(() => toast('Three replies today. That’s the part that grows a small account.', { icon: 'reply', tone: 'accent' }), 900); } }
@@ -15333,8 +15314,8 @@ function niceTicks(max, n = 4) { if (!(max > 0)) return [0, 1]; const raw = max 
 ROUTES.results = () => {
   /* before your own posts are in, your week leads and the sample account waits behind one tap, so a stranger's numbers never read as yours */
   const ex = HIST().length < 8;
-  mount('results', `<div class="page ins-page"><div class="page-h"><div><h1 class="display">Results</h1><p>What landed, and what to write next. Plain words first, numbers on tap.</p></div>${ex ? '' : `<div class="seg" id="rng" role="tablist" aria-label="Range">${[7, 30, 90].map(d => `<button role="tab" data-r="${d}" aria-selected="${RANGE === d}">${d} days</button>`).join('')}</div>`}</div><div id="payout"></div><div id="digest"></div><div id="calls"></div>${ex ? `<details class="ins-ex" id="ins-ex"><summary>${ic('chart', 'sm')}<span><b>See an example account</b><small>What this page shows once your posts are in</small></span>${ic('down', 'sm')}</summary><div id="ins"></div><div id="ins-posts"></div></details>` : '<div id="ins"></div><div id="ins-posts"></div>'}</div>`);
-  $('#rng') && syncSeg($('#rng')); drawPayout(); drawInsights(); drawDigest(); drawCalls();
+  mount('results', `<div class="page ins-page"><div class="page-h"><div><h1 class="display">Results</h1><p>What landed, and what to write next. Plain words first, numbers on tap.</p></div>${ex ? '' : `<div class="seg" id="rng" role="tablist" aria-label="Range">${[7, 30, 90].map(d => `<button role="tab" data-r="${d}" aria-selected="${RANGE === d}">${d} days</button>`).join('')}</div>`}</div><div id="digest"></div><div id="calls"></div>${ex ? `<details class="ins-ex" id="ins-ex"><summary>${ic('chart', 'sm')}<span><b>See an example account</b><small>What this page shows once your posts are in</small></span>${ic('down', 'sm')}</summary><div id="ins"></div><div id="ins-posts"></div></details>` : '<div id="ins"></div><div id="ins-posts"></div>'}</div>`);
+  $('#rng') && syncSeg($('#rng')); drawInsights(); drawDigest(); drawCalls();
   const exd = $('#ins-ex'); exd && exd.addEventListener('toggle', () => { if (exd.open) drawInsights(); });
   $('#view').addEventListener('click', e => {
     const r = e.target.closest('[data-r]'); if (r) { RANGE = +r.dataset.r; $$('[data-r]').forEach(b => b.setAttribute('aria-selected', b === r)); syncSeg($('#rng')); drawInsights(); return; }
@@ -15357,24 +15338,6 @@ ROUTES.results = () => {
     if (a === 'dnext') weekNext(b);
   });
 };
-/* r69: the payout path. X pays for original posts once you have Premium, 500 verified followers and 500K verified
-   Home-timeline impressions in 90 days. Only X knows those numbers, so you tell us (from Creator Studio); we never guess */
-const PAY_BAR = { vf: 500, imp: 500000 };
-function drawPayout() {
-  const el = $('#payout'); if (!el) return; if (S.ws !== 'me') { el.innerHTML = ''; return; }
-  const P = S.payout, fmt = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(n);
-  if (!P || UI.payEdit) {
-    el.innerHTML = `<section class="card pay" aria-labelledby="pay-h"><div class="pay-h"><div><span class="label">Payout path</span><h2 class="h2" id="pay-h">How close are you to X payouts?</h2><p class="faint">Premium, 500 verified followers and 500K verified impressions in 90 days. Copy your numbers from X’s Creator Studio and we’ll track the gap.</p></div></div>
-      ${UI.payEdit ? `<form class="pay-f" id="pay-f"><label class="pay-ck"><input type="checkbox" id="pay-pr" ${P && P.premium ? 'checked' : ''}> I have X Premium</label><label><span class="label">Verified followers</span><input class="input" id="pay-vf" type="number" min="0" inputmode="numeric" value="${P ? P.vf : ''}" placeholder="e.g. 312"></label><label><span class="label">Verified impressions, last 90 days</span><input class="input" id="pay-imp" type="number" min="0" inputmode="numeric" value="${P ? P.imp : ''}" placeholder="e.g. 210000"></label><div class="pay-a"><button class="btn primary sm" type="submit">Save</button><button class="btn ghost sm" type="button" data-pay="cancel">Cancel</button></div></form>` : `<button class="btn sm" data-pay="edit">${ic('target', 'sm')} Add my numbers</button>`}</section>`;
-  } else {
-    const rows = [['Verified followers', P.vf, PAY_BAR.vf], ['Verified impressions, 90 days', P.imp, PAY_BAR.imp]], met = P.premium && rows.every(([, v, b]) => v >= b);
-    el.innerHTML = `<section class="card pay" aria-labelledby="pay-h"><div class="pay-h"><div><span class="label">Payout path</span><h2 class="h2" id="pay-h">${met ? 'You meet X’s bar.' : `${rows.filter(([, v, b]) => v < b).length + (P.premium ? 0 : 1)} step${rows.filter(([, v, b]) => v < b).length + (P.premium ? 0 : 1) === 1 ? '' : 's'} to go.`}</h2></div><button class="btn ghost sm" data-pay="edit">Update</button></div>
-      <ul class="pay-l"><li><span>X Premium</span><b class="${P.premium ? 'ok' : ''}">${P.premium ? `${ic('check', 'xs')} Yes` : 'Not yet'}</b></li>${rows.map(([l, v, b]) => `<li><span>${l}</span><span class="pay-bar" role="img" aria-label="${l}: ${fmt(v)} of ${fmt(b)}"><i style="--v:${Math.min(100, v / b * 100).toFixed(1)}"></i></span><b class="mono">${fmt(v)} / ${fmt(b)}</b><small>${v >= b ? 'Done' : `${fmt(b - v)} to go`}</small></li>`).join('')}</ul>
-      <p class="faint pay-n">You told us on ${crDate(P.at)}. ${met ? 'X decides payouts in Creator Studio.' : 'Original posts are what count; replies don’t.'}</p></section>`;
-  }
-  el.onclick = e => { const b = e.target.closest('[data-pay]'); if (!b) return; UI.payEdit = b.dataset.pay === 'edit'; drawPayout(); if (UI.payEdit) { const i = $('#pay-vf'); i && i.focus(); } };
-  const f = $('#pay-f'); if (f) f.onsubmit = e => { e.preventDefault(); const n = id => Math.max(0, Math.round(+$(id).value || 0)); S.payout = { premium: $('#pay-pr').checked, vf: n('#pay-vf'), imp: n('#pay-imp'), at: Date.now() }; UI.payEdit = false; save(); drawPayout(); SFX.play('done'); };
-}
 /* didn't land: same idea, a new first line. The rest of the post stays as you wrote it */
 function tryAgain(p) {
   const lines = String(p.text).split('\n'), first = lines[0], rest = lines.slice(1).join('\n');

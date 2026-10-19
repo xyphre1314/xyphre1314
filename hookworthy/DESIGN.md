@@ -1308,5 +1308,13 @@ The owner settled two of round 69's open decisions: Free's limit counts only wha
 - **Saved ideas carry the voice** they were parked under (`ws`).
 - **Scoped to the voice you're writing as:** the Ideas page ("Ideas for Ledgerly"), Saved counts, the search palette, Claude's idea prompts, Plan my week and Today's nudges. Seed ideas for Ledgerly and Northwind.
 
+### Removed: the payout path
+- **Why:** the owner's rule is that if it can't track itself, it doesn't ship.
+- **What X's API can and can't give:**
+  - Premium is readable.
+  - Total followers are readable. Verified followers need a paged, paid read of the whole follower list.
+  - Impressions from verified accounts over 90 days aren't exposed at all, only in X's Creator Studio.
+- **So the card is gone:** the Results card, its saved numbers and styles, and the hook into the first-100 plan. The first-100 plan still steps aside at 500 followers.
+
 ### Fixed in passing
 - **Client topic on edit:** editing a client whose topic wasn't in the topic list silently switched it to "Crypto & trading". The current topic now stays as an option.
