@@ -1085,3 +1085,75 @@ The owner chose two models. Haiku is out.
   - Plans now says "50 Claude touch-ups a day, and Sharpen on your device is unlimited".
   - The FAQ and the usage meter say the same.
 - **Fixed in passing:** a refunded credit was capped at the bare plan amount. It now counts client voices and add-ons.
+
+## Round 67: electric blue
+
+The owner looked at a Mobbin study and chose three things:
+- **Accent:** electric blue.
+- **Artwork:** glowing line art.
+- **Scope:** all three phases.
+
+The world stays near-black, with a soft white light theme. It now has one colour of its own, art of its own, and motion that draws things in.
+
+### Phase A: the system
+- **Tokens:**
+  - Cool neutrals. Dark: `#08090B` desk, `#0C0D10` page, `#15161A` cards. Light: `#EEF0F4` desk, `#FBFBFD` page, white cards.
+  - Electric blue `#1F5BFF` for the primary button, with white ink at 5.25:1.
+  - Accent text `#5B9BFF` on dark (7:1) and `#1E56F0` on light (5.8:1).
+  - Blue also marks focus, the current place in the sidebar, and selection.
+  - Colour for meaning is unchanged: green good, amber wait, red wrong.
+- **Shape:**
+  - Controls are pills, like X itself.
+  - Cards 14px, popovers 12px, modals 20px. Phone sheets keep their 22px top.
+- **Light:**
+  - A faint blue glow lights the page from above.
+  - The primary button carries a soft blue glow under it.
+- **Type:**
+  - Newsreader for the one big line and Inter for the rest, as before.
+  - Prices and times are in Geist Mono. Big numbers are Inter Light.
+- **Line art** (`art()`):
+  - One blue gradient drawn twice: a blurred glow behind, a crisp 1.6px line on top, with a few twinkling dots.
+  - Pieces: pen, week, ideas, inbox, chart, reading, voice, streak, peak and moon, plus nine niche marks.
+  - Each piece draws itself in the first time it shows in a session, and is still for anyone who prefers less motion.
+  - The gradient runs in user space, so perfectly straight strokes render.
+- **Empty pages:**
+  - Write's empty draft gets the pen: "One line at a time. The first one decides who stops."
+  - Results' clean slate gets the chart. Ideas with nothing saved gets the bulb. A quiet reply radar gets the speech bubbles.
+- **Toasts:** dark glass, the icon in a tinted disc, the action as a blue pill.
+- **Homepage:** the highlighter on "first line" is blue.
+
+### Phase B: first run and the editor
+- **Onboarding:**
+  - A three-segment story bar: about you, reading, your first post.
+  - Niches are cards, each with its own line-art mark and a blue tick.
+  - "Reading the room" gets the reading art, a violet-to-blue bar that fills as each step lands, and a shimmer on the active step.
+- **Tune your voice, three taps:**
+  - Shown only when there's nothing of yours to read yet.
+  - Each pair is one thought written two ways. The one you'd post sets a tone slider (spice, polish, length), and the traits update as you tap.
+  - It ends on "Voice matched." with the waveform art.
+  - It never blocks the first post.
+- **Write:**
+  - Under the preview, the first line is broken down into three bars (Curiosity, Specific, Short) plus its one next step.
+  - The existing over-limit tint and split ring already cover overflow.
+- **Sharpen:** once Free's 50 touch-ups for the day are used, the toolbar offers "More touch-ups".
+
+### Phase C: Week, Results, Plans, wins
+- **Week:**
+  - Posts are tinted blocks by state: blue lined up, green out, amber yours to post, red didn't go. A left-edge stripe was tried and dropped as a cliché.
+  - Open good times get soft stripes.
+  - The next time today that hasn't passed gets a thin blue "now" line.
+  - Days you posted join into one amber streak capsule under the date.
+- **First 100 followers:** the plan's heading is "Day 1 of 30" in the display face.
+- **Wins, only when they're real:**
+  - Your first post out, with the peak art and a burst.
+  - 10, 50 or 100 followers, while the first-100 plan runs and only when X reported the number.
+  - Each offers "Write about it", which opens a draft in Write and never posts by itself, or "Thanks".
+- **Results:**
+  - The sentence that matters has its key words in blue with a faint glow.
+  - Numbers in the stat tiles are big and light.
+- **Plans:**
+  - "What uses rewrites?" is one accordion under the meter.
+  - Yearly billing shows a "−25%" pill.
+  - When you're out, the sheet carries art: the moon when you're out, the chart when a job is too big for what's left.
+  - The words are true for a monthly allowance now: "You wrote a lot this month. Your post isn't stuck."
+- **Phones:** scheduling was already a bottom sheet, so it stays.

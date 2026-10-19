@@ -5590,7 +5590,7 @@ button.st-day{ font:inherit; cursor:pointer; transition:background .2s,box-shado
   --art-a:#7AA2FF; --art-b:#1F4FE0; --art-glow:.28; --halo:rgba(31,91,255,.10); --mk-band:rgba(31,91,255,.18);
   --r-ctl:999px; --r-card:14px; --r-pop:12px; --r-sheet:22px;
   /* the toast is dark glass in both themes, so its colours are fixed */
-  --toast-ring:rgba(200,215,255,.1); --toast-glow:rgba(31,91,255,.35); --toast-ic:#8FB6FF; --toast-ic-bg:rgba(77,141,255,.16); --toast-ok:#6EE7A0; --toast-err:#FF9A9A; --violet:#8A5CFF;
+  --toast-ring:rgba(200,215,255,.1); --toast-glow:rgba(31,91,255,.35); --toast-ic:#8FB6FF; --toast-ic-bg:rgba(77,141,255,.16); --toast-ok:#6EE7A0; --toast-err:#FF9A9A; --violet:#8A5CFF; --flame:#FF7A45;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -5747,6 +5747,44 @@ a.link, .link{ color:var(--accent-text); }
 .sharpen .sh-up{ color:var(--accent-text); }
 .reading .st.on > span:last-child{ background:linear-gradient(100deg, var(--text-3) 30%, var(--text-1) 50%, var(--text-3) 70%) 0 0 / 250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shim 1.6s linear infinite; }
 @media (prefers-reduced-motion:reduce){ .reading .st.on > span:last-child{ animation:none; color:var(--text-1); background:none; } }
+/* ---------- r67 phase C: Week, Results, Plans, wins ---------- */
+/* a post on the calendar wears its state: blue lined up, green out, amber yours to post, red didn't go */
+.qcard.scheduled, .qcard.published, .qcard.due, .qcard.failed{ background:linear-gradient(180deg, color-mix(in srgb,var(--qe) 11%,var(--surface)), var(--surface) 80%); box-shadow:0 0 0 1px color-mix(in srgb,var(--qe) 42%,transparent); }
+.qcard.scheduled{ --qe:var(--cta); } .qcard.published{ --qe:var(--success); } .qcard.due{ --qe:var(--warn); } .qcard.failed{ --qe:var(--error); }
+/* a good time still open: soft stripes, so it reads as room for a post */
+.cal .slot.best:not(.past):not(:has(.qcard)){ background-image:repeating-linear-gradient(135deg, color-mix(in srgb,var(--accent) 8%,transparent) 0 5px, transparent 5px 11px); }
+.slot .nx-line{ position:absolute; left:-1px; right:-1px; top:0; height:2px; background:var(--cta); box-shadow:0 0 10px var(--accent-glow); pointer-events:none; z-index:2; }
+.slot .nx-line::before{ content:""; position:absolute; left:-3px; top:-3px; width:8px; height:8px; border-radius:50%; background:var(--cta); }
+/* days you posted join into one capsule under the date */
+.cal .dh.stk{ position:relative; }
+.cal .dh.stk::after{ content:""; position:absolute; left:0; right:0; bottom:5px; height:4px; background:linear-gradient(90deg,var(--warn),var(--flame)); opacity:.9; }
+.cal .dh.stk.stk-s::after{ left:10px; border-top-left-radius:99px; border-bottom-left-radius:99px; } .cal .dh.stk.stk-e::after{ right:10px; border-top-right-radius:99px; border-bottom-right-radius:99px; }
+.zp-day{ margin:0; font:400 30px/1.05 var(--font-serif); letter-spacing:-.02em; color:var(--text-1); } .zp-day span{ color:var(--text-3); }
+/* a win */
+.win{ display:grid; grid-template-columns:minmax(120px,180px) minmax(0,1fr); gap:20px; align-items:center; padding:20px 24px; margin-bottom:16px; border-radius:18px; background:radial-gradient(500px 200px at 0% 50%, var(--halo), transparent 70%), var(--surface); }
+.win h2{ margin:4px 0 6px; font:400 32px/1.08 var(--font-serif); letter-spacing:-.02em; color:var(--text-1); }
+.win p{ margin:0; font-size:15px; line-height:1.5; color:var(--text-2); max-width:52ch; }
+.win-a{ display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+@media (max-width:640px){ .win{ grid-template-columns:minmax(0,1fr); text-align:center; justify-items:center; } .win .art-halo{ width:160px; } .win-a{ justify-content:center; } }
+/* Results: the sentence that matters glows a little */
+.insight-hero{ background:radial-gradient(640px 240px at 88% -20%, var(--halo), transparent 70%), var(--surface); }
+.insight-hero .display em{ font-style:normal; color:var(--accent-text); text-shadow:0 0 30px var(--accent-glow); }
+.kpi b{ font:300 44px/1 var(--font-ui); letter-spacing:-.045em; }
+/* Plans */
+.save-pill{ display:inline-flex; align-items:center; height:18px; padding:0 6px; margin-left:4px; border-radius:99px; background:var(--cta); color:var(--cta-ink); font:600 11px/1 var(--font-mono); letter-spacing:-.02em; }
+.cr-what{ width:100%; max-width:640px; border-radius:14px; background:var(--surface); box-shadow:0 0 0 1px var(--border); }
+.cr-what summary{ display:flex; align-items:center; gap:8px; padding:12px 16px; cursor:pointer; list-style:none; font:500 14px/1.2 var(--font-ui); color:var(--text-1); }
+.cr-what summary::-webkit-details-marker{ display:none; }
+.cr-what summary .icon:last-child{ margin-left:auto; color:var(--text-3); transition:transform var(--d-fast) var(--ease-out); } .cr-what[open] summary .icon:last-child{ transform:rotate(180deg); }
+.cr-what summary .icon:first-child{ color:var(--accent-text); }
+.cr-what ul{ list-style:none; margin:0; padding:0 16px 10px; display:grid; }
+.cr-what li{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:9px 0; border-top:1px solid var(--border); font-size:14px; color:var(--text-1); }
+.cr-what li small{ display:block; font-size:12.5px; color:var(--text-3); }
+.cr-what li b{ flex:none; min-width:26px; text-align:center; padding:3px 8px; border-radius:99px; font:600 12px/1 var(--font-mono); background:var(--surface-2); }
+.cr-what li.free b{ font-family:var(--font-ui); color:var(--success); background:color-mix(in srgb,var(--success) 12%,transparent); }
+.cr-top{ display:grid; grid-template-columns:minmax(0,1fr) 120px; gap:16px; align-items:center; }
+.cr-art{ width:120px; }
+@media (max-width:560px){ .cr-top{ grid-template-columns:minmax(0,1fr) 84px; } .cr-art{ width:84px; } }
 </style>
 </head>
 <body>
@@ -7164,7 +7202,7 @@ function crSheet({ act, cost = 1, basicHTML, onBasic, basicDone, resume } = {}) 
   if (UI.crSeen[act]) { if (onBasic) onBasic(); toast(`${st.left ? `${esc(A.label)} needs more usage than you have left` : 'You’ve hit your AI usage'}${st.per === 'day' ? ' until midnight' : ''}, so ${onBasic || basicDone ? 'this one is from Quick mode' : 'this one needs to wait'}.`, { icon: 'zapoff', ...(st.server ? {} : { action: 'See plans', onAction: () => go('upgrade') }) }); return; }
   UI.crSeen[act] = 1; $$('#toasts .toast').forEach(t => t.remove()); /* a stale "2 left" never sits under the sheet */
   const srv = !!st.server, plan = st.plan, canTrial = !srv && PRICED() && !S.trial && plan === 'free', canPro = !srv && PRICED() && (plan === 'free' || plan === 'trial');
-  const head = st.left > 0 ? `${esc(A.label)} is a bigger job. <em>You’re almost out.</em>` : plan === 'free' ? 'That’s today’s AI usage. <em>Your post isn’t stuck.</em>' : plan === 'trial' ? 'That’s your trial’s AI usage. <em>Nothing is lost.</em>' : 'That’s this month’s AI usage. <em>Nothing is lost.</em>';
+  const head = st.left > 0 ? `${esc(A.label)} is a bigger job. <em>You’re almost out.</em>` : plan === 'free' ? `You wrote a lot ${st.per === 'day' ? 'today' : 'this month'}. <em>Your post isn’t stuck.</em>` : plan === 'trial' ? 'You put the trial to work. <em>Nothing is lost.</em>' : 'That’s this month’s AI usage. <em>Nothing is lost.</em>';
   const left = basicHTML ? `<div class="cr-pane cr-basic"><span class="label">Basic version · ready now · free</span><div class="cr-prev">${basicHTML}</div><button class="btn" data-crs="basic">${ic('check', 'sm')} Use the Basic version</button></div>`
     : `<div class="cr-pane cr-basic"><span class="label">${basicDone ? 'Done in Quick mode · free' : 'Still free, still yours'}</span><p>${basicDone ? 'We did this one on your device, so you can keep going. It’s in place now.' : 'This one needs Claude. Hook scores, the checks, Sharpen and Quick mode keep working, as much as you like.'}</p></div>`;
   const right = `<div class="cr-pane cr-claude"><span class="label">Claude, in your voice <span class="cr-cost">${cost > 1 ? 'Bigger job' : 'Everyday job'}</span></span><div class="cr-blur" aria-hidden="true"><i></i><i></i><i></i></div><p>${esc(A.does || '')}.</p></div>`;
@@ -7174,7 +7212,7 @@ function crSheet({ act, cost = 1, basicHTML, onBasic, basicDone, resume } = {}) 
     : `<button class="btn primary" data-crs="boost">${ic('spark', 'sm')} Add ${fmtN(boostUp().add)} a month · $${boostUp().price}/mo</button><a class="btn" href="#upgrade" data-crs="plans">See add-ons</a>`;
   const fine = canTrial ? `No card. The trial ends on its own after 7 days and you’re back on Free with everything you wrote.${resume ? ' Either button finishes this one with Claude right away.' : ''}` : canPro ? `250 Claude rewrites a month, and more whenever you need them. Your first month’s leftovers roll over.${resume ? ' We’ll finish this one with Claude right away.' : ''}` : srv ? 'Your plan is set on your Hookworthy server. Ask whoever runs it for more.' : '';
   const m = modal(`<div class="cr-sheet"><div class="cr-sh"><span class="label">AI usage</span><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div>
-    <h2 class="cr-h">${head}</h2><p class="muted cr-when">${esc(crWhen(st, true))}</p>
+    <div class="cr-top"><div><h2 class="cr-h">${head}</h2><p class="muted cr-when">${esc(crWhen(st, true))}</p></div><div class="art-halo cr-art">${art(st.left > 0 ? 'chart' : 'moon')}</div></div>
     <div class="cr-panes">${left}${right}</div>
     <div class="cr-acts">${acts}<button class="btn ghost" data-close>Not now</button></div>${fine ? `<p class="faint cr-fine">${esc(fine)}</p>` : ''}</div>`, { label: 'Out of AI usage', box: 'modal cr-box' });
   m.el.addEventListener('click', e => {
@@ -11191,6 +11229,7 @@ function absorb(posts, { account, src } = {}) {
   const before = HIST().length;
   S.history = HWCore.mergeHistory(S.history, posts).slice(0, 3000); refreshBest();
   if (account && account.handle && (['samwrites', 'samtrades', 'heycape_', 'yourhandle'].includes(S.user.handle) || !S.user.handle)) { S.user.handle = account.handle; if (account.name) S.user.name = account.name; const me = S.workspaces.find(w => w.id === 'me'); if (me) Object.assign(me, { handle: account.handle, name: S.user.name }); }
+  if (account && typeof account.followers === 'number' && (!S.user.handle || account.handle === S.user.handle)) S.user.followers = account.followers;
   S.importedAt = Date.now(); save();
   return HIST().length - before;
 }
@@ -12314,6 +12353,13 @@ document.addEventListener('keydown', e => {
   const b = e.target.closest && e.target.closest('.ub-o'); if (!b || !/^Arrow(Left|Right|Up|Down)$/.test(e.key)) return;
   const all = $$('#up-boost .ub-o'), i = all.indexOf(b), n = all[(i + (/Right|Down/.test(e.key) ? 1 : all.length - 1)) % all.length]; e.preventDefault(); n.focus(); n.click();
 });
+/* r67: what uses rewrites, as one quiet accordion under the meter on Plans */
+function crWhatHTML() {
+  const A = CR.ACTS, row = (k, extra = '') => `<li><span>${esc(A[k].label)}${extra ? `<small>${extra}</small>` : ''}</span><b>${A[k].c}</b></li>`;
+  return `<details class="cr-what"><summary>${ic('spark', 'sm')} What uses rewrites?${ic('down', 'sm')}</summary><ul>
+    ${row('rewrite', '2 for a post over 1,000 characters')}${row('hooks')}${row('replies', 'Up to ten at a time')}${row('week')}${row('voice', 'Reads up to 120 posts once')}
+    <li class="free"><span>Sharpen, tidying what you said, picking a visual<small>Free for ${CR.HELPERS} a day with Claude, unlimited on your device</small></span><b>Free</b></li></ul></details>`;
+}
 /* how credits work: the allowance per plan side by side, and what each thing costs (Plans page) */
 function creditsExplainHTML() {
   const rows = [
@@ -14730,10 +14776,10 @@ ROUTES.week = () => {
   const nm = greetName();
   const cl = S.ws !== 'me' ? WS() : null; /* writing as a client: the greeting says whose week this is */
   mount('week', `<div class="page wk-page" style="max-width:1280px"><div class="page-h wk-head"><div><h1 class="display t-greet">${greetWord()}${cl ? `. Writing as ${esc(cl.name)}` : nm ? `, <span class="t-name" id="t-name" tabindex="0" role="button" aria-label="${esc(`Your name here: ${nm}. Press Enter to change it`)}" data-tip="Double-click to change">${esc(nm)}</span>` : ''}.</h1><p class="wk-next" id="wk-next"></p><p id="q-sub"></p></div><div class="wk-acts"><button class="btn primary" data-qact="plan" data-tip="Five minutes in, five posts out">${ic('spark', 'sm')} Plan my week${crTag('week')}</button></div></div>
-  <div id="zp"></div>
+  <div id="win"></div><div id="zp"></div>
   <div class="cal-h"><button class="btn sm icon-only" data-qact="prev" aria-label="Previous week" data-tip="Previous week">${ic('left', 'sm')}</button><button class="btn sm icon-only" data-qact="next" aria-label="Next week" data-tip="Next week">${ic('right', 'sm')}</button><button class="btn sm" data-qact="today">This week</button><span class="range" id="q-range"></span><button class="btn sm q-times-b" data-qact="times" aria-haspopup="dialog">${ic('clock', 'sm')} Times</button>${S.workspaces.length > 1 ? `<div class="seg" id="q-ws" role="tablist" aria-label="Which voices"><button role="tab" data-qws="mine" aria-selected="${QF.mine}">${esc(WS().name.split(' ')[0])}</button><button role="tab" data-qws="all" aria-selected="${!QF.mine}">All voices</button></div>` : ''}<span class="grow" style="flex:1"></span><a class="faint q-why" id="q-why" href="#results"></a></div>
   <div class="cal-wrap"><div><div class="cal-scroll"><div class="cal" id="cal" role="region" aria-label="Week calendar. Each card is a post. Press Enter on one for options."></div></div><div class="agenda" id="agenda"></div></div><div class="side-panel" id="q-side"></div></div></div>`);
-  drawCal(); drawQSide(); drawZP(); checkQueuePrices();
+  drawCal(); drawQSide(); drawWin(); drawZP(); checkQueuePrices();
   const v = $('#view');
   v.addEventListener('keydown', e => { if (e.target.id === 't-name' && !e.target.isContentEditable && (e.key === 'Enter' || e.key === 'F2' || e.key === ' ')) { e.preventDefault(); editGreetName(e.target); } });
   v.addEventListener('dblclick', e => { const n = e.target.closest('#t-name'); if (n) { e.preventDefault(); editGreetName(n); } });
@@ -14912,7 +14958,11 @@ function qcardHTML(q, interactive = true) {
 function calGridHTML(days, list, { now = Date.now(), interactive = true, drafts = [] } = {}) {
   refreshBest();
   const today = dayKey(Date.now()); const rowOf = t => { let r = 0; SLOTS.forEach((s, i) => { if (t >= s) r = i; }); return r; };
-  let html = `<div class="dh" style="border-left:0"></div>` + days.map(d => { const ev = interactive ? marketEventsOn(dayKey(d)) : []; return `<div class="dh ${dayKey(d) === today ? 'today' : dayKey(d) < today ? 'past' : ''}"><span class="dn">${DOW[d.getDay()]}</span><span class="dd">${d.getDate()}</span>${ev.length ? `<button class="mk-ev" data-mkday="${dayKey(d)}" aria-label="${esc(ev.map(e => e.name).join(', '))} on this day. Write your take" data-tip="${esc(ev.map(e => `${e.name}${e.est ? ' (est.)' : ''}`).join(' · '))}">${esc(ev.map(e => e.name.replace(' decision', '')).join(' · '))}</button>` : ''}</div>`; }).join('');
+  /* r67: the next time today that hasn't passed gets a thin blue "now" line; days you posted join into one streak capsule */
+  const nxt = interactive ? SLOTS.find(t => slotDate(today, t).getTime() > now) : null;
+  const sk = d => !!(interactive && S.streak && S.streak[dayKey(d)]);
+  const stk = (d, i) => !sk(d) ? '' : ` stk${i > 0 && sk(days[i - 1]) ? '' : ' stk-s'}${i < days.length - 1 && sk(days[i + 1]) ? '' : ' stk-e'}`;
+  let html = `<div class="dh" style="border-left:0"></div>` + days.map((d, di) => { const ev = interactive ? marketEventsOn(dayKey(d)) : []; return `<div class="dh ${dayKey(d) === today ? 'today' : dayKey(d) < today ? 'past' : ''}${stk(d, di)}">${sk(d) ? '<span class="sr">Posted. </span>' : ''}<span class="dn">${DOW[d.getDay()]}</span><span class="dd">${d.getDate()}</span>${ev.length ? `<button class="mk-ev" data-mkday="${dayKey(d)}" aria-label="${esc(ev.map(e => e.name).join(', '))} on this day. Write your take" data-tip="${esc(ev.map(e => `${e.name}${e.est ? ' (est.)' : ''}`).join(' · '))}">${esc(ev.map(e => e.name.replace(' decision', '')).join(' · '))}</button>` : ''}</div>`; }).join('');
   SLOTS.forEach((t, r) => {
     html += `<div class="tl">${fmtTime(t)}</div>`;
     days.forEach(d => {
@@ -14923,7 +14973,7 @@ function calGridHTML(days, list, { now = Date.now(), interactive = true, drafts 
       const sx = interactive && !past ? (SLOTX[dowIdx(d)] || {})[t] : null, xl = sx && sx.x != null ? `${sx.x}×` : '';
       /* a best time that has already gone by isn't a best time any more: no dot, no tip (the homepage passes now: 0, so nothing there is past) */
       const bestOn = best && !past;
-      html += `<div class="slot ${past ? 'past' : ''} ${bestOn ? 'best' : ''} ${off ? 'off' : ''}" data-day="${day}" data-time="${t}" ${bestOn ? `data-tip="${esc(best)}"` : ''}>${interactive && !past && !off ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${dfH}${interactive && !items.length && !dfs.length && !past && !off ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
+      html += `<div class="slot ${past ? 'past' : ''} ${bestOn ? 'best' : ''} ${off ? 'off' : ''}${day === today && t === nxt ? ' nxt' : ''}" data-day="${day}" data-time="${t}" ${bestOn ? `data-tip="${esc(best)}"` : ''}>${day === today && t === nxt ? '<i class="nx-line" aria-hidden="true"></i>' : ''}${interactive && !past && !off ? `<span class="sx" aria-hidden="true">${xl ? `<b>${xl}</b><span>${sx.general ? ' typical' : ' your usual'}</span>` : '<span>no posts here yet</span>'}</span>` : ''}${items.map(q => qcardHTML(q, interactive)).join('')}${dfH}${interactive && !items.length && !dfs.length && !past && !off ? `<button class="add" data-qact="slot" data-day="${day}" data-time="${t}" aria-label="Write for ${slotLabel(day, t)}">${ic('plus', 'sm')}</button>` : ''}</div>`;
     });
   });
   return html;
@@ -14993,13 +15043,28 @@ function zpOf(k) { const d = (S.zero && S.zero.days && S.zero.days[k]) || {}; re
 const zpFull = o => o.posted && o.replies >= 3 && o.idea;
 function zpMark(kind) { if (!zpOn()) return; const k = dayKey(Date.now()), z = zpState(), d = z.days[k] = z.days[k] || {}; if (kind === 'reply') { d.replies = (d.replies || 0) + 1; if (d.replies === 3) setTimeout(() => toast('Three replies today. That’s the part that grows a small account.', { icon: 'reply', tone: 'accent' }), 900); } }
 const zpIdea = () => genIdeas(1, hash(dayKey(Date.now()) + (S.user.niche || '')) % 9999)[0];
+/* r67: a win worth a moment, only when it's real: your first post out, and follower marks X has told us about */
+function winNow() {
+  if (!S.seedCleared || S.ws !== 'me') return null; const W = S.wins || {};
+  if (!W.first && S.queue.some(q => (q.ws || 'me') === 'me' && q.status === 'published' && !q.marked)) return { k: 'first', art: 'peak', l: 'A first', h: 'Your first post is out.', p: 'The hardest one is behind you. Tomorrow’s comes easier.', t: 'Posted my first one today. Day one of showing up.' };
+  const f = S.user.followers; if (typeof f !== 'number' || !zpOn()) return null;
+  const n = [100, 50, 10].find(m => f >= m && !W['f' + m]); if (!n) return null;
+  return { k: 'f' + n, art: 'streak', l: 'A milestone', h: `${n} followers.`, p: `${fmtN(f)} people chose to see what you post next. Keep the daily plan going.`, t: `${n} followers. Thank you for reading. Here’s what I’ve learned so far:`, below: [10, 50, 100].filter(m => m < n) };
+}
+function drawWin() {
+  const el = $('#win'); if (!el) return; const w = winNow(); if (!w) { el.innerHTML = ''; return; }
+  el.innerHTML = `<section class="card win" aria-labelledby="win-h"><div class="art-halo">${art(w.art)}</div><div class="win-b"><span class="label">${w.l}</span><h2 id="win-h">${w.h}</h2><p>${w.p}</p><div class="win-a"><button class="btn primary sm" data-win="write">${ic('write', 'sm')} Write about it</button><button class="btn ghost sm" data-win="ok">Thanks</button></div></div></section>`;
+  const done = () => { S.wins = { ...(S.wins || {}), [w.k]: Date.now(), ...Object.fromEntries((w.below || []).map(m => ['f' + m, Date.now()])) }; save(); };
+  el.onclick = e => { const b = e.target.closest('[data-win]'); if (!b) return; done(); if (b.dataset.win === 'write') writeFrom([w.t]); else drawWin(); };
+  if (!REDUCED && !UI.winBurst) { UI.winBurst = w.k; requestAnimationFrame(() => { const a = $('.win .art-halo'); a && burstFrom(a); }); }
+}
 function drawZP() {
   const el = $('#zp'); if (!el) return; if (!zpOn()) { el.innerHTML = ''; return; }
   const n = zpDayN(), t = zpOf(dayKey(Date.now())), idea = zpIdea(), z = zpState();
   const days = Array.from({ length: ZP_DAYS }, (_, i) => { const k = dayKey(fromKey(z.start).getTime() + i * DAY); return i + 1 < n ? (zpFull(zpOf(k)) ? 'full' : 'miss') : i + 1 === n ? (zpFull(t) ? 'full today' : 'today') : ''; });
   const done = days.filter(d => d.startsWith('full')).length;
   const step = (ok, num, h, sub, act, btn) => `<li class="${ok ? 'done' : ''}"><span class="zp-ck" aria-hidden="true">${ok ? ic('check', 'xs') : num}</span><div><b>${h}</b><small>${sub}</small></div>${ok ? `<span class="sr">Done</span>` : `<button class="btn sm" data-zp="${act}">${btn}</button>`}</li>`;
-  el.innerHTML = `<section class="card zp" aria-labelledby="zp-h"><div class="zp-h"><div><span class="label" id="zp-h">Your first 100 followers · Day ${n} of ${ZP_DAYS}</span><p class="zp-sub">Small accounts grow mostly from replies. The plan: one post, three replies and one idea, every day.</p></div><button class="btn ghost sm" data-zp="hide">Hide plan</button></div>
+  el.innerHTML = `<section class="card zp" aria-labelledby="zp-h"><div class="zp-h"><div><span class="label">Your first 100 followers</span><h2 class="zp-day" id="zp-h">Day ${n} <span>of ${ZP_DAYS}</span></h2><p class="zp-sub">Small accounts grow mostly from replies. The plan: one post, three replies and one idea, every day.</p></div><button class="btn ghost sm" data-zp="hide">Hide plan</button></div>
     <ol class="zp-l">${step(t.posted, 1, 'Post one thing', t.posted ? 'Done. Something of yours is out or lined up today.' : `Today’s idea: ${esc(fillText(idea.text, { topic: idea.topic }))}`, 'post', 'Write it')}${step(t.replies >= 3, 2, 'Reply to three people in your niche', t.replies >= 3 ? 'Done. Early and useful beats loud.' : `${t.replies} of 3 today. Add something the post doesn’t have.`, 'reply', 'Find posts')}${step(t.idea, 3, 'Save one idea for tomorrow', t.idea ? 'Done. Tomorrow starts with something.' : 'A question you got, a number you saw, something you changed your mind on.', 'idea', 'Add an idea')}</ol>
     <div class="zp-days" role="img" aria-label="${done} of ${n} days with all three done">${days.map(d => `<i class="${d}"></i>`).join('')}<span>${done} full day${done === 1 ? '' : 's'}</span></div></section>`;
   el.onclick = e => { const b = e.target.closest('[data-zp]'); if (!b) return; const a = b.dataset.zp;
@@ -15427,7 +15492,8 @@ ROUTES.upgrade = () => {
   mount('', `<div class="up-wrap"><div class="up-hero"><h1 class="display">${plan === 'free' ? 'Sound like you. <em>Show up every day.</em>' : plan === 'trial' ? `Pro is yours <em>for ${tLeft} more day${tLeft === 1 ? '' : 's'}.</em>` : `Your plan: <em>${esc(st ? st.name : cap(S.plan))}.</em>`}</h1><p class="muted" style="font-size:18px;max-width:54ch">${lede}</p>
     ${!PRICED() && !st ? '<p class="pill accent" style="height:auto;padding:6px 12px;white-space:normal">Every feature is on for this account.</p>' : ''}
     ${crMeterHTML('page')}
-    <div class="seg" id="up-bill" role="tablist" aria-label="Billing period"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
+    ${crWhatHTML()}
+    <div class="seg" id="up-bill" role="tablist" aria-label="Billing period"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly <span class="save-pill">−25%</span></button></div></div>
     <div class="pl-grid" id="up-plans" style="margin-top:32px">${plansHTML(true)}</div>
     ${boostHTML()}
     <div class="faq up-faq"><span class="label">Questions</span><h2 id="up-faq-h">Fair questions. <em>Straight answers.</em></h2>${faq.map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
