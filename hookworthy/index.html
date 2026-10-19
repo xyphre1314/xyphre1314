@@ -5894,77 +5894,6 @@ a.link, .link{ color:var(--accent-text); }
    ROUND 71: a homepage that grabs in the first second. Top: the feed that stops on your post.
    Bottom: one electric-blue finale where you sharpen your own line, then a lit wordmark
    ========================================================================== */
-.hz-stop{ padding-top:clamp(24px,4vh,56px); overflow-x:clip; }
-.hz-stop::before{ background:radial-gradient(48% 52% at 74% 40%,color-mix(in srgb,var(--text-1) 5%,transparent),transparent 72%),radial-gradient(40% 40% at 20% 10%,color-mix(in srgb,var(--text-1) 4%,transparent),transparent 70%); height:1000px; }
-.hz-stop .hz-top{ display:grid; grid-template-columns:minmax(0,1.04fr) minmax(0,1fr); align-items:center; gap:clamp(24px,4vw,72px); min-height:min(calc(100svh - 110px),780px); text-align:left; }
-.hz-copy{ position:relative; z-index:2; min-width:0; padding-block:24px; }
-.hz-stop .hz-news{ margin:0 0 30px; }
-.hz-stop .hz-h1{ margin:0; font-size:clamp(46px,5.5vw,88px); line-height:.98; }
-.hz-stop .hz-sub{ margin:28px 0 0; max-width:31rem; text-wrap:pretty; }
-.hz-stop .hz-cta, .hz-stop .hz-note{ justify-content:flex-start; }
-.hz-stop .hz-cta{ margin-top:36px; }
-.hz-stop .hz-cta .hx-btn:first-child{ box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 14px 34px -12px var(--accent-glow),0 0 0 6px color-mix(in srgb,var(--cta) 14%,transparent); }
-
-/* the stage: a feed with no frame, fading into the page */
-.hzs-wrap{ position:relative; height:clamp(540px,72svh,700px); min-width:0; }
-.hzs{ position:absolute; inset:0 calc(-1 * clamp(16px,6vw,140px)) 0 -24px; overflow:hidden; -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%); -webkit-mask-composite:source-in; mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%); mask-composite:intersect; }
-.hzs-defs{ position:absolute; width:0; height:0; }
-.hzs .xp{ --x-bg:var(--surface); --x-tx:var(--text-1); --x-2:var(--text-3); --x-line:transparent; --x-media:var(--surface-3); border-radius:18px; box-shadow:0 0 0 1px var(--border); padding:14px 16px 6px; }
-.hzs-feed{ position:absolute; inset:0; display:grid; grid-template-columns:repeat(2,minmax(0,300px)); justify-content:center; gap:16px; opacity:.34; filter:blur(1.4px); transition:opacity .7s var(--hx-e); }
-.hzs-col{ display:grid; gap:14px; align-content:start; will-change:transform; }
-.hzs[data-spd="fast"] .hzs-feed{ filter:url(#hzs-blur); opacity:.36; }
-.hzs[data-spd="slow"] .hzs-feed{ filter:blur(.7px); opacity:.44; }
-.hzs-pin{ position:absolute; left:50%; top:46%; z-index:2; width:min(440px,calc(100% - 24px)); transform:translate(-50%,-50%) scale(.95); opacity:0; transition:opacity .5s var(--hx-e),transform .8s var(--hx-e); }
-.hzs.in .hzs-pin{ opacity:1; transform:translate(-50%,-50%) scale(1); }
-.hzs.out .hzs-pin{ opacity:0; transform:translate(-50%,-58%) scale(.98); transition-duration:.45s; }
-.hzs .hzs-card{ padding:18px 20px 10px; border-radius:22px; font-size:17px; line-height:24px; box-shadow:0 0 0 1px var(--border-strong),0 40px 90px -30px var(--fin-shadow); transition:box-shadow .8s var(--hx-e); }
-.hzs.sharp .hzs-card{ box-shadow:0 0 0 1.5px var(--cta),0 0 0 7px color-mix(in srgb,var(--cta) 16%,transparent),0 40px 100px -24px color-mix(in srgb,var(--cta) 55%,transparent); }
-.hzs-l{ display:grid; }
-.hzs-l > span{ grid-area:1/1; transition:opacity .5s var(--hx-e),filter .5s var(--hx-e),transform .6s var(--hx-e); }
-.hzs-soft{ color:var(--text-2); }
-.hzs-soft s{ text-decoration:underline wavy transparent; text-decoration-thickness:1.5px; text-underline-offset:5px; text-decoration-skip-ink:none; transition:text-decoration-color .4s, opacity .35s, color .35s; }
-.hzs.marked .hzs-soft s{ text-decoration-color:var(--soft); color:var(--text-1); }
-.hzs.cut .hzs-soft s{ text-decoration-line:line-through; text-decoration-style:solid; text-decoration-color:var(--soft); opacity:.35; }
-.hzs-sharp{ opacity:0; filter:blur(8px); transform:translateY(6px); color:var(--text-1); font-weight:600; letter-spacing:-.01em; }
-.hzs.sharp .hzs-soft{ opacity:0; filter:blur(8px); transform:translateY(-6px); }
-.hzs.sharp .hzs-sharp{ opacity:1; filter:none; transform:none; }
-.hzs.done .hzs-soft{ display:none; }
-.hzs-body{ display:block; margin-top:12px; color:var(--text-3); }
-.hzs-cap{ position:absolute; left:50%; bottom:19%; z-index:3; transform:translateX(-50%); min-height:34px; white-space:nowrap; }
-.hzs-chip{ display:inline-flex; align-items:center; gap:7px; height:34px; padding:0 14px; border-radius:999px; font:500 13.5px/1 var(--font-ui); color:var(--text-1); background:var(--surface-3); box-shadow:0 0 0 1px var(--border-strong),0 12px 30px -14px var(--fin-shadow); animation:hzsChip .45s var(--hx-e) both; }
-.hzs-chip i{ width:7px; height:7px; border-radius:50%; background:var(--soft); }
-.hzs-chip.go{ color:var(--cta-ink); background:var(--cta); box-shadow:0 12px 30px -10px var(--accent-glow); }
-.hzs-chip.go.press{ animation:hzsChip .45s var(--hx-e) both, hzsPress .5s .3s var(--hx-e); }
-.hzs-chip.ok .icon{ color:var(--success); }
-.hzs-chip .icon{ width:14px; height:14px; }
-@keyframes hzsChip{ from{ opacity:0; transform:translateY(8px) scale(.96); } to{ opacity:1; transform:none; } }
-@keyframes hzsPress{ 40%{ transform:scale(.92); } 100%{ transform:none; } }
-.hzs-pause{ position:absolute; right:0; bottom:6px; z-index:4; display:grid; place-items:center; width:32px; height:32px; border-radius:50%; color:var(--text-2); background:color-mix(in srgb,var(--text-1) 7%,transparent); transition:background .2s,color .2s; }
-.hzs-pause:hover{ color:var(--text-1); background:color-mix(in srgb,var(--text-1) 12%,transparent); }
-.hzs-who{ position:absolute; left:0; bottom:12px; margin:0; font-size:12px; color:var(--text-3); }
-@media (max-width:980px){
-  .hz-stop .hz-top{ grid-template-columns:minmax(0,1fr); min-height:0; gap:8px; text-align:center; }
-  .hz-copy{ padding-block:8px 0; }
-  .hz-stop .hz-sub{ margin-inline:auto; }
-  .hz-stop .hz-cta, .hz-stop .hz-note{ justify-content:center; }
-  .hz-stop .hz-h1 .ln{ white-space:normal; }
-  .hzs-wrap{ height:clamp(400px,58svh,520px); }
-  .hzs{ inset:0 -16px; }
-  .hzs-feed{ grid-template-columns:repeat(2,minmax(0,260px)); gap:12px; }
-}
-@media (max-width:560px){
-  .hz-stop .hz-h1{ font-size:clamp(40px,11.4vw,54px); }
-  .hz-stop .hz-sub{ font-size:16.5px; margin-top:20px; }
-  .hz-stop .hz-cta{ margin-top:26px; }
-  .hz-stop .hz-cta .hx-btn{ width:100%; }
-  .hzs .hzs-card{ font-size:15.5px; line-height:21px; padding:14px 16px 8px; }
-  .hzs-feed{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .hzs-cap{ bottom:17%; } .hzs-chip{ font-size:12.5px; height:30px; padding:0 12px; }
-  .hz-stop .hz-news{ margin-bottom:22px; padding:5px 10px 5px 5px; gap:8px; font-size:12.5px; white-space:nowrap; max-width:100%; } .hz-stop .hz-news span{ overflow:hidden; text-overflow:ellipsis; }
-  .hz-stop .hz-cta .hx-btn.ghost{ display:none; }
-  .hz-stop .hz-note{ font-size:12.5px; gap:8px; }
-}
-
 /* the finale: one electric-blue stage, your line inside it */
 .hz-fin{ position:relative; isolation:isolate; overflow:hidden; margin:clamp(40px,6vw,96px) clamp(8px,1.4vw,20px) 0; padding-block:clamp(88px,13vh,150px) clamp(72px,10vh,110px); border-radius:clamp(28px,3vw,44px); color:var(--fin-ink); text-align:center;
   background:linear-gradient(180deg,var(--fin-a) 0%,var(--fin-b) 58%,color-mix(in srgb,var(--fin-c) 88%,var(--fin-b)) 100%);
@@ -5977,7 +5906,6 @@ a.link, .link{ color:var(--accent-text); }
 @media (prefers-reduced-motion:no-preference){ .hzf-col{ animation:hzfDrift 26s linear infinite alternate; } .hzf-col.r{ animation-duration:32s; animation-direction:alternate-reverse; } }
 @keyframes hzfDrift{ to{ translate:0 -160px; } }
 .hz-fin .hx-w{ position:relative; max-width:1000px; }
-.hzf-k{ display:inline-flex; margin:0 0 18px; padding:5px 12px; border-radius:999px; font:600 12px/1.2 var(--font-ui); letter-spacing:.08em; text-transform:uppercase; color:var(--fin-hi); background:var(--fin-glass); box-shadow:inset 0 0 0 1px var(--fin-line); }
 .hz-fin h2{ margin:0; font:400 clamp(42px,6vw,88px)/.98 var(--font-serif); letter-spacing:-.04em; color:var(--fin-ink); text-wrap:balance; }
 .hz-fin h2 .mute{ color:var(--fin-hi); }
 .hzf-sub{ max-width:36rem; margin:24px auto 0; font-size:clamp(16.5px,1.3vw,19px); line-height:1.55; color:var(--fin-2); text-wrap:balance; }
@@ -5998,8 +5926,84 @@ a.link, .link{ color:var(--accent-text); }
 @media (max-width:760px){ .hzf-col{ display:none; } .hz-fin{ margin-inline:8px; } .hz-fin .hz-cta .hx-btn{ width:100%; } }
 
 /* the footer's wordmark lights up, like the last frame of the feed */
-.hx-giant{ background:linear-gradient(180deg,color-mix(in srgb,var(--cta) 62%,var(--text-1)) 0%,color-mix(in srgb,var(--cta) 34%,transparent) 46%,transparent 90%); -webkit-background-clip:text; background-clip:text; color:transparent; position:relative; }
+.hx-giant{ color:color-mix(in srgb,var(--cta) 72%,var(--bg)); }
 .hx-foot{ border-top:0; }
+
+/* ==========================================================================
+   ROUND 72: The Line. One real soft first line fills the first screen; scrolling edits it into the sharp one
+   while the feed behind slows from a blur to a stop
+   ========================================================================== */
+.hz-line{ position:relative; height:240svh; padding:0; text-align:left; isolation:isolate; margin-top:var(--hzl-pull,-68px); }
+.hz-line::before{ display:none; }
+.hzl-stick{ position:sticky; top:0; height:100svh; overflow:hidden; }
+.hzl-defs{ position:absolute; width:0; height:0; }
+.hzl-feed{ position:absolute; inset:0 -40px; display:grid; grid-template-columns:repeat(4,minmax(0,300px)); justify-content:center; gap:20px; opacity:.2; pointer-events:none; transition:opacity 1.2s var(--hx-e);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 24%,#000 76%,transparent 100%); mask-image:linear-gradient(180deg,transparent 0,#000 24%,#000 76%,transparent 100%); }
+.hzl-col{ display:grid; gap:16px; align-content:start; will-change:transform; }
+.hzl-col .xp{ --x-bg:var(--surface); --x-tx:var(--text-1); --x-2:var(--text-3); --x-line:transparent; --x-media:var(--surface-3); border-radius:18px; box-shadow:0 0 0 1px var(--border); }
+.hz-line[data-spd="fast"] .hzl-feed{ filter:url(#hzl-blur); }
+.hz-line[data-spd="slow"] .hzl-feed{ filter:blur(1px); }
+.hz-line.done .hzl-feed{ opacity:.075; filter:blur(2px); }
+.hzl-in::before{ content:""; position:absolute; inset:0 -10vw; z-index:-1; pointer-events:none; background:radial-gradient(56% 50% at 50% 44%,color-mix(in srgb,var(--bg) 88%,transparent),transparent 82%); }
+.hzl-in{ position:relative; z-index:1; height:100%; display:grid; grid-template-rows:minmax(0,1fr) auto; padding-block:clamp(88px,12svh,120px) clamp(22px,4svh,40px); }
+.hzl-h1{ align-self:center; justify-self:center; text-align:center; margin:0; font-size:clamp(44px,min(8.4vw,11.4svh),150px); line-height:.94; letter-spacing:-.04em; color:var(--text-1); }
+.hzl-row{ display:block; white-space:nowrap; transition:color .9s var(--hx-e); }
+/* the soft rows: struck, then folded away */
+.hzl-row.soft{ position:relative; height:calc(.94em * (1 - var(--c,0))); opacity:calc(1 - var(--c,0) * 2.6); }
+.hzl-row.soft[data-r="1"]{ --k:var(--k1,0); --c:var(--c1,0); }
+.hzl-row.soft[data-r="2"]{ --k:var(--k2,0); --c:var(--c2,0); }
+.hzl-t{ position:relative; display:inline-block; }
+.hzl-t::before{ content:attr(data-t); text-decoration:underline wavy transparent; text-decoration-thickness:.042em; text-underline-offset:.16em; text-decoration-skip-ink:none; animation:hzlMark .9s .55s var(--hx-e) forwards; }
+@keyframes hzlMark{ to{ text-decoration-color:var(--soft); } }
+.hzl-t::after{ content:""; position:absolute; left:-.03em; right:-.03em; top:54%; height:.06em; border-radius:.03em; background:var(--soft); transform:scaleX(var(--k,0)); transform-origin:left center; }
+.hzl-row.soft .hzl-t{ opacity:calc(1 - var(--k,0) * .72); transform:translateY(calc(var(--c,0) * -.22em)) scaleY(calc(1 - var(--c,0) * .7)); transform-origin:50% 40%; }
+.hzl-why{ position:absolute; left:calc(100% + 18px); top:50%; display:inline-flex; align-items:center; gap:8px; font:500 clamp(12px,.95vw,14px)/1 var(--font-ui); letter-spacing:0; color:var(--soft); white-space:nowrap; opacity:0; transform:translateY(-50%); animation:hzlWhy .6s 1.2s var(--hx-e) forwards; }
+.hzl-why::before{ content:""; width:18px; height:1px; background:currentColor; opacity:.6; }
+.hzl-why::after{ content:attr(data-w); }
+@keyframes hzlWhy{ to{ opacity:calc(1 - var(--k,0)); } }
+.hz-line.moved .hzl-why{ animation:none; opacity:calc(1 - var(--k,0) * 1.6); }
+/* "most" takes its capital */
+.hzl-cap{ position:relative; display:inline-block; }
+.hzl-cap .lo{ position:absolute; right:0; top:0; opacity:calc(1 - var(--cap,0)); filter:blur(calc(var(--cap,0) * 8px)); }
+.hzl-cap .lo::before{ content:attr(data-t); }
+.hzl-cap .up{ display:inline-block; opacity:var(--cap,0); filter:blur(calc((1 - var(--cap,0)) * 8px)); }
+/* the full stop lands, the mark fills, "Yours won't." arrives */
+.hzl-dot{ display:inline-block; opacity:var(--dot,0); transform:translateY(calc((1 - var(--dot,0)) * -.55em)); }
+.hz-line .hz-mk{ animation:none; background-size:calc(var(--mkp,0) * 100%) 100%; }
+.hzl-row.yw{ height:calc(.94em * var(--yw,0)); opacity:var(--yw,0); transform:translateY(calc((1 - var(--yw,0)) * .35em)); }
+.hz-line.done .hzl-row:not(.yw):not(.soft){ color:var(--text-2); }
+.hz-line.done .hz-mk{ color:var(--text-1); }
+/* under the line: what it does, and the way in */
+.hzl-foot{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px 40px; flex-wrap:wrap; padding-top:clamp(18px,3svh,32px); border-top:1px solid var(--border); }
+.hz-line .hz-sub{ margin:0; text-align:left; max-width:24ch; font-size:clamp(17px,1.4vw,21px); line-height:1.4; color:var(--text-2); text-wrap:balance; animation:none; }
+.hzl-go{ display:grid; justify-items:end; gap:12px; }
+.hz-line .hz-cta, .hz-line .hz-note{ margin:0; animation:none; }
+.hz-line .hz-cta{ justify-content:flex-end; }
+.hz-line .hz-note{ justify-content:flex-end; }
+.hzl-hint{ position:absolute; left:50%; bottom:clamp(22px,4svh,40px); margin:0; display:flex; flex-direction:column; align-items:center; gap:10px; font-size:12.5px; color:var(--text-3); transform:translateX(-50%); transition:opacity .4s; pointer-events:none; }
+.hzl-hint i{ width:1px; height:34px; background:linear-gradient(var(--text-3),transparent); transform-origin:top; animation:hzlHint 1.8s var(--hx-e) infinite; }
+@keyframes hzlHint{ 0%{ transform:scaleY(0); } 60%{ transform:scaleY(1); opacity:1; } 100%{ transform:scaleY(1); opacity:0; } }
+.hz-line.moved .hzl-hint{ opacity:0; }
+/* reduced motion: no pin, the sharp line at rest */
+.hz-line.rest{ height:auto; }
+.hz-line.rest .hzl-stick{ position:relative; height:auto; min-height:100svh; }
+.hz-line.rest .hzl-t::before, .hz-line.rest .hzl-why{ animation:none; }
+.hz-app{ padding-block:clamp(56px,8vh,96px) 0; }
+@media (max-width:980px){
+  .hzl-feed{ grid-template-columns:repeat(2,minmax(0,280px)); }
+  .hzl-col:nth-child(n+3){ display:none; }
+  .hzl-hint{ display:none; }
+}
+@media (max-width:640px){
+  .hz-line{ height:210svh; }
+  .hzl-h1{ font-size:clamp(40px,13.6vw,74px); }
+  .hz-line .hz-sub{ text-align:center; margin-inline:auto; }
+  .hzl-why{ display:none; }
+  .hzl-foot{ flex-direction:column; align-items:stretch; gap:16px; }
+  .hzl-go{ justify-items:stretch; }
+  .hz-line .hz-cta .hx-btn{ width:100%; } .hz-line .hz-cta .hx-btn.ghost{ display:none; }
+  .hz-line .hz-note{ justify-content:center; font-size:12.5px; }
+}
 
 </style>
 </head>
@@ -13599,23 +13603,32 @@ const HX_FAQ = [
   ['Is there a free plan?', 'Yes, no card: 20 Claude rewrites and 15 auto-posts a month. Posting it yourself is unlimited. Sharpen, previews and review links stay free.'],
   ['Can I cancel anytime?', 'Yes, in two clicks. Your drafts and ideas stay with you on Free.']
 ];
-/* r71: the hero's feed. It streams past fast; one post's soft first line gets marked, sharpened, and the feed
-   stops on it. Example accounts, no numbers: the feed is the picture, not a promise */
-const HZ_STOPS = () => [
-  { who: HG_YOU, soft: 'so i think the most underrated thing in trading is honestly just sizing down after a loss.', sharp: 'Most underrated thing in trading? Sizing down after a loss.', body: 'I lost $4,000 in March doubling my size to win it back. Now I cut size in half after any red day.', ago: '8:40 AM' },
-  { who: PEOPLE[4], soft: 'honestly i think writing every day for a year kind of changed how i think', sharp: 'Writing every day for a year changed how I think.', body: 'Not the writing. The noticing. You start collecting things worth saying.', ago: '7:15 AM' },
-  { who: PEOPLE[0], soft: 'just wanted to share that we basically doubled our price and signups actually went up', sharp: 'We doubled our price. Signups went up.', body: 'Here’s the email we sent customers, word for word:', ago: '12:15 PM' }
-];
-const hzSoftHTML = t => { const ms = hgMarks(t); let o = '', k = 0; ms.forEach(([a, b]) => { o += esc(t.slice(k, a)) + `<s>${esc(t.slice(a, b))}</s>`; k = b; }); return { html: o + esc(t.slice(k)), n: ms.length }; };
-const hzStopCard = e => xPost({ p: 0, ago: e.ago, html: `<span class="hzs-l"><span class="hzs-soft">${hzSoftHTML(e.soft).html}</span><span class="hzs-sharp">${esc(e.sharp)}</span></span><span class="hzs-body">${esc(e.body)}</span>` }, { counts: false, you: e.who, cls: 'hzs-card' });
-function hzStageHTML() {
+/* r72: The Line. The first screen is one real soft first line, set huge, and your scroll edits it: the warm-up and
+   the hedge get struck and fold away, "most" takes its capital, the full stop lands, "Yours won't." arrives, and the
+   feed behind slows from a blur to a stop. The soft words live in attributes, so the heading reads (and is read)
+   as the sharp line */
+function hzLineHTML() {
   const all = [...VOID_POSTS, ...HOOK_POSTS.map(q => ({ ...q, m: null }))];
-  const col = c => { const items = all.filter((_, i) => i % 2 === c); return `<div class="hzs-col">${[...items, ...items].map(q => xPost(q, { counts: false })).join('')}</div>`; };
-  return `<div class="hzs-wrap"><div class="hzs" id="hzs" data-spd="still" aria-hidden="true">
-    <svg class="hzs-defs" width="0" height="0" focusable="false"><filter id="hzs-blur" x="0" y="-10%" width="100%" height="120%"><feGaussianBlur stdDeviation="0 6"/></filter></svg>
-    <div class="hzs-feed">${col(0)}${col(1)}</div>
-    <div class="hzs-pin" id="hzs-pin">${hzStopCard(HZ_STOPS()[0])}</div><div class="hzs-cap" id="hzs-cap"></div>
-  </div><button type="button" class="hzs-pause" id="hzs-pause" aria-label="Pause the moving feed" aria-pressed="false">${ic('pause', 'xs')}</button><p class="hzs-who">Example accounts</p></div>`;
+  const col = c => { const items = all.filter((_, i) => i % 4 === c); return `<div class="hzl-col">${[...items, ...items].map(q => xPost(q, { counts: false })).join('')}</div>`; };
+  const soft = (t, why, n) => `<span class="hzl-row soft" data-r="${n}" aria-hidden="true"><span class="hzl-t" data-t="${t}"><span class="hzl-why" data-w="${why}"></span></span></span>`;
+  return `<section class="hz-hero hz-line" id="hz-line" aria-labelledby="hz-h1"><div class="hzl-stick">
+    <svg class="hzl-defs" width="0" height="0" aria-hidden="true" focusable="false"><filter id="hzl-blur" x="0" y="-10%" width="100%" height="120%"><feGaussianBlur stdDeviation="0 7"/></filter></svg>
+    <div class="hzl-feed" aria-hidden="true">${[0, 1, 2, 3].map(col).join('')}</div>
+    <div class="hx-w hzl-in">
+      <h1 class="hz-h1 hzl-h1" id="hz-h1">${soft('so i think', 'warm-up', 1)}
+        <span class="hzl-row"><span class="hzl-cap"><span class="lo" data-t="m" aria-hidden="true"></span><span class="up">M</span></span>ost posts</span>
+        ${soft('honestly kind of', 'hedges', 2)}
+        <span class="hzl-row">die in</span>
+        <span class="hzl-row">the <span class="hz-mk">first line</span><span class="hzl-dot">.</span></span>
+        <span class="hzl-row yw">Yours won’t.</span></h1>
+      <div class="hzl-foot">
+        <p class="hz-sub">Sharpen your first line in one tap. It still sounds like&nbsp;you.</p>
+        <div class="hzl-go"><div class="hz-cta"><a class="hx-btn lg" href="#start">Sharpen my first post ${ic('arrow', 'sm')}</a><a class="hx-btn lg ghost" ${hwHref('home', 'how')}>Watch it work</a></div>
+          <p class="hz-note">Free plan <i></i> No card <i></i> Nothing posts without you</p></div>
+      </div>
+      <p class="hzl-hint" aria-hidden="true"><i></i><span>Scroll to edit the line</span></p>
+    </div>
+  </div></section>`;
 }
 const HZ_SAMPLES = ['so i think posting every day is kind of the whole game', 'just wanted to share some thoughts on what i learned this year', 'honestly the best trade i made this month was the one i skipped'];
 
@@ -13624,16 +13637,8 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   const face = (i, n) => `<span class="hz-f${n ? '' : ' on'}">${av(i)}</span>`;
   const PLC = { x: 'var(--tile-ink)', threads: 'var(--tile-ink)', li: '#0A66C2', bsky: '#1185FE' };
   $('#root').innerHTML = hxPage('home', `
-  <section class="hz-hero hz-stop" aria-labelledby="hz-h1"><div class="hx-w hz-top">
-    <div class="hz-copy">
-      <a class="hz-news" ${hwHref('home', 'pays')}><b>New on X</b><span>Original posts earn now. Replies don’t.</span>${ic('arrow', 'xs')}</a>
-      <h1 class="hz-h1" id="hz-h1"><span class="ln">Most posts die in</span> <span class="ln">the <span class="hz-mk">first line</span>.</span> <span class="ln mute">Yours won’t.</span></h1>
-      <p class="hz-sub">The feed moves fast. Hookworthy sharpens your first line in one tap, in your own voice, so the scroll stops on&nbsp;you.</p>
-      <div class="hz-cta"><a class="hx-btn lg" href="#start">Sharpen my first post ${ic('arrow', 'sm')}</a><a class="hx-btn lg ghost" ${hwHref('home', 'how')}>Watch it work</a></div>
-      <p class="hz-note hz-note-top">Free plan <i></i> No card <i></i> Nothing posts without you</p>
-    </div>
-    ${hzStageHTML()}
-  </div><div class="hx-w">
+  ${hzLineHTML()}
+  <section class="hz-app" aria-label="The app"><div class="hx-w">
     ${hxDemoHTML()}
     <ul class="hz-facts hx-rv" role="list">${[['1 tap', 'soft line to sharp'], ['4 networks', 'from one draft'], ['0 posts', 'sent without you'], ['$0', 'to start, no card']].map(([n, t]) => `<li><b>${n}</b><span>${t}</span></li>`).join('')}</ul>
   </div></section>
@@ -13684,7 +13689,6 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   <section class="hz-end hz-fin" id="try" aria-labelledby="hz-end-h">
     <div class="hzf-bg" aria-hidden="true"><div class="hzf-col l">${HOOK_POSTS.slice(0, 4).map(q => xPost({ ...q, m: null }, { counts: false })).join('')}</div><div class="hzf-col r">${HOOK_POSTS.slice(4, 8).map(q => xPost({ ...q, m: null }, { counts: false })).join('')}</div></div>
     <div class="hx-w">
-      <p class="hzf-k hx-rv">Your turn</p>
       <h2 class="hx-rv" id="hz-end-h">Your next post could be the one.<br><span class="mute">Make it hookworthy.</span></h2>
       <p class="hzf-sub hx-rv">Paste a first line you almost didn’t send. Soft words light up, one tap sharpens it. Nothing leaves this&nbsp;page.</p>
       <div class="hzf-box force-light hx-rv">
@@ -13723,42 +13727,32 @@ function hxInitHome() {
     was.classList.remove('on'); was.classList.add('off'); wg.later(() => was.classList.remove('off'), 720); nx.classList.remove('off'); nx.classList.add('on'); if (wOn) wg.later(turnW, 2600); };
   if (!REDUCED && wtile) seen(wtile, () => { if (!wOn) { wOn = true; wg.later(turnW, 1400); } }, () => { wOn = false; wg.clear(); $$('.hz-f.off', wtile).forEach(f => f.classList.remove('off')); }, .5);
 
-  /* ---------- r71: the feed that stops. Posts stream past; one soft first line gets its wavy marks, Sharpen
-     presses, the line resets, and the feed slows to a stop on it. Three example accounts take turns. It only runs
-     while the hero is on screen, the button pauses it, and under reduced motion it rests on the sharp line ---------- */
-  const hzs = $('#hzs');
-  if (hzs) {
-    const cols = $$('.hzs-col', hzs), pin = $('#hzs-pin'), cap = $('#hzs-cap'), pb = $('#hzs-pause'), sg = group(), STOPS = HZ_STOPS();
-    const y = cols.map((_, i) => -i * 140), FAST = 560; let half = [], v = 0, vT = 0, last = 0, raf = 0, live = false, held = false, k = 0, spd = 'still';
-    const measure = () => { half = cols.map(c => c.scrollHeight / 2); };
-    const chip = (cls, html) => { cap.innerHTML = `<span class="hzs-chip ${cls}">${html}</span>`; };
-    const tick = now => { const dt = Math.min(.05, (now - (last || now)) / 1000); last = now; v += (vT - v) * Math.min(1, dt * (vT > v ? 2.4 : 1.9));
-      cols.forEach((c, i) => { y[i] -= v * dt * (i ? 1.08 : 1); if (half[i] && y[i] <= -half[i]) y[i] += half[i]; c.style.transform = `translate3d(0,${y[i].toFixed(1)}px,0)`; });
-      const s = v > 300 ? 'fast' : v > 30 ? 'slow' : 'still'; if (s !== spd) { spd = s; hzs.dataset.spd = s; }
-      raf = live && !held && (v > .5 || vT > 0) ? requestAnimationFrame(tick) : 0; if (!raf) last = 0; };
-    const run = () => { if (!raf && live && !held) raf = requestAnimationFrame(tick); };
-    const play = () => {
-      const e = STOPS[k % STOPS.length], n = hzSoftHTML(e.soft).n; k++;
-      hzs.classList.remove('in', 'marked', 'cut', 'sharp', 'done', 'out'); pin.innerHTML = hzStopCard(e); cap.innerHTML = ''; vT = FAST; run();
-      sg.later(() => hzs.classList.add('in'), 80);
-      sg.later(() => { hzs.classList.add('marked'); chip('soft', `<i></i>${n} soft word${n === 1 ? '' : 's'} in the first line`); }, 1000);
-      sg.later(() => { chip('go press', `${ic('bolt', 'xs')} Sharpen`); }, 2200);
-      sg.later(() => { hzs.classList.add('cut'); }, 2500);
-      sg.later(() => { hzs.classList.add('sharp'); vT = 0; run(); }, 2850);
-      sg.later(() => chip('ok', `${ic('check', 'xs')} Sharper. Same facts, same voice.`), 3100);
-      /* the sharp line is shorter: the card closes the gap the soft one left */
-      sg.later(() => { const c = pin.firstElementChild; if (!c) return; const h0 = c.offsetHeight; hzs.classList.add('done'); const h1 = c.offsetHeight; if (h0 !== h1 && c.animate) c.animate([{ height: h0 + 'px', overflow: 'hidden' }, { height: h1 + 'px', overflow: 'hidden' }], { duration: 380, easing: 'cubic-bezier(.2,.7,.2,1)' }); }, 3450);
-      sg.later(() => { hzs.classList.add('out'); cap.innerHTML = ''; }, 7000);
-      sg.later(play, 7500);
-    };
-    const rest = () => { hzs.classList.add('in', 'marked', 'sharp', 'done'); chip('ok', `${ic('check', 'xs')} Sharper. Same facts, same voice.`); };
-    if (REDUCED) { rest(); pb.hidden = true; }
+  /* ---------- r72: The Line. Scroll position edits the headline (pinned for 140% of a screen); the feed behind
+     streams fast until the edit, then slows with it and stops when the line is sharp. Reduced motion: no pin, the
+     sharp line at rest ---------- */
+  const hl = $('#hz-line');
+  if (hl) {
+    const cols = $$('.hzl-col', hl), rows = $$('.hzl-row.soft', hl), y = cols.map((_, i) => -i * 210), FAST = 460;
+    let half = [], v = FAST, last = 0, raf = 0, sraf = 0, live = false, p = 0, spd = '';
+    const measure = () => { half = cols.map(c => c.offsetParent ? c.scrollHeight / 2 : 0); };
+    const seg = (a, b) => Math.min(1, Math.max(0, (p - a) / (b - a))), io = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const paint = () => { sraf = 0; const r = hl.getBoundingClientRect(), span = r.height - innerHeight; p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 1;
+      const st = hl.style, set = (k, x) => st.setProperty(k, x.toFixed(3));
+      set('--k1', io(seg(.04, .16))); set('--c1', io(seg(.15, .3))); set('--cap', io(seg(.24, .34)));
+      set('--k2', io(seg(.32, .44))); set('--c2', io(seg(.43, .58))); set('--mkp', io(seg(.5, .64))); set('--dot', io(seg(.56, .66))); set('--yw', io(seg(.62, .8)));
+      hl.classList.toggle('moved', p > .015); hl.classList.toggle('done', p > .8); };
+    const onScroll = () => { if (!sraf) sraf = requestAnimationFrame(paint); };
+    const tick = now => { const dt = Math.min(.05, (now - (last || now)) / 1000); last = now; const vT = FAST * (1 - io(seg(.28, .82)));
+      v += (vT - v) * Math.min(1, dt * 3);
+      cols.forEach((c, i) => { if (!half[i]) return; y[i] -= v * dt * (1 + i * .07); if (y[i] <= -half[i]) y[i] += half[i]; c.style.transform = `translate3d(0,${y[i].toFixed(1)}px,0)`; });
+      const s2 = v > 260 ? 'fast' : v > 24 ? 'slow' : 'still'; if (s2 !== spd) { spd = s2; hl.dataset.spd = s2; }
+      raf = live ? requestAnimationFrame(tick) : 0; if (!raf) last = 0; };
+    if (REDUCED) { hl.classList.add('rest'); p = 1; ['--k1', '--c1', '--cap', '--k2', '--c2', '--mkp', '--dot', '--yw'].forEach(k => hl.style.setProperty(k, '1')); hl.classList.add('moved', 'done'); hl.dataset.spd = 'still'; }
     else {
-      measure(); document.fonts && document.fonts.ready.then(measure); addEventListener('resize', measure); onDispose(() => removeEventListener('resize', measure));
-      const start = () => { if (live) return; live = true; if (!held) play(); }, stop = () => { live = false; sg.clear(); vT = 0; v = 0; };
-      seen($('.hzs-wrap'), start, stop, .15);
-      pb.addEventListener('click', () => { held = !held; pb.setAttribute('aria-pressed', String(held)); pb.setAttribute('aria-label', held ? 'Play the moving feed' : 'Pause the moving feed'); pb.innerHTML = ic(held ? 'play' : 'pause', 'xs');
-        if (held) { sg.clear(); v = vT = 0; rest(); } else if (live) play(); });
+      measure(); document.fonts && document.fonts.ready.then(measure);
+      const onResize = () => { measure(); onScroll(); }; addEventListener('resize', onResize); addEventListener('scroll', onScroll, { passive: true });
+      onDispose(() => { removeEventListener('resize', onResize); removeEventListener('scroll', onScroll); if (sraf) cancelAnimationFrame(sraf); });
+      paint(); seen(hl, () => { if (!live) { live = true; raf = requestAnimationFrame(tick); } }, () => { live = false; }, 0);
     }
   }
 

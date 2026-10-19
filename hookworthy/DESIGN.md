@@ -84,6 +84,18 @@ typography:
     fontWeight: 400
     lineHeight: 1
     letterSpacing: "-0.038em"
+  display-line:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(44px, min(8.4vw, 11.4svh), 150px)"
+    fontWeight: 400
+    lineHeight: 0.94
+    letterSpacing: "-0.04em"
+  display-line-phone:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(40px, 13.6vw, 74px)"
+    fontWeight: 400
+    lineHeight: 0.94
+    letterSpacing: "-0.04em"
   headline-close:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(44px, 6.4vw, 92px)"
@@ -1353,3 +1365,35 @@ The owner said the top and bottom of the homepage felt plain and didn't capture 
 ### Kept
 - **All the try-it behaviour:** the IDs, live soft-word marks, Sharpen, "Open it in Hookworthy" carrying the line into sign-up, and Copy.
 - **The app demo window and the facts row** now sit right under the hero.
+
+## Round 72: The Line
+
+The owner asked for an Awwwards-level homepage and picked "The Line" from three directions (the others were a 3D post wall and a flickable feed). **The first screen is one real soft first line, set huge, and your scroll edits it.**
+
+### The sequence (pinned for 140% of a screen; 110% on phones)
+- **At rest**, it reads "so i think / most posts / honestly kind of / die in / the first line".
+  - The type is Newsreader at up to 150px (`display-line`), centred.
+  - The warm-up and the hedges draw their amber wavy marks a moment after load, with small margin notes: "— warm-up", "— hedges".
+  - Behind it, four columns of example posts stream upward with a vertical motion blur.
+  - A thin line under the fold says "Scroll to edit the line".
+- **As you scroll, the edit happens in order:**
+  1. "so i think" is struck through and folds away.
+  2. "most" takes its capital.
+  3. "honestly kind of" is struck and folds.
+  4. The blue band fills under "first line" and the full stop drops in.
+  5. "Yours won't." rises.
+  6. The settled words step back to the secondary grey, leaving "first line." and "Yours won't." bright.
+- **The feed behind slows with the edit** and stops when the line is sharp, then sits faint and soft-focused behind the type.
+- **The way in stays put** under a hairline the whole time: "Sharpen your first line in one tap. It still sounds like you.", Sharpen my first post, Watch it work, and Free plan / No card / Nothing posts without you.
+
+### How it's built
+- **The heading stays the sharp line.** The soft words, the lowercase "m" and the margin notes live in attributes drawn by pseudo-elements, so the h1's text and its accessible name are "Most posts die in the first line. Yours won't."
+- **Scroll drives it.** One passive scroll listener sets eight custom properties per frame (`--k1`, `--c1`, `--cap`, `--k2`, `--c2`, `--mkp`, `--dot`, `--yw`), eased in-out. CSS does the rest: strike bars scale, rows fold via height and a vertical squash, capitals cross-blur, the stop drops, the last row rises.
+- **The feed loop runs only while the hero is on screen.** Its speed follows the edit.
+- **Reduced motion:** no pin, the sharp line at rest, no stream.
+- **Fit:** the hero tucks under the floating nav, and the type scales by the smaller of width and height (`min(8.4vw, 11.4svh)`). The way in stays above the fold from 360×640 to 1440×900.
+
+### Also, from the craft floor
+- **No label over the finale heading:** "Your turn" is gone.
+- **The footer wordmark is solid deep blue,** not gradient text.
+- **The "New on X" pill left the hero.** The payouts section right below still makes that case.
