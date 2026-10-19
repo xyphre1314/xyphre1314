@@ -1318,3 +1318,38 @@ The owner settled two of round 69's open decisions: Free's limit counts only wha
 
 ### Fixed in passing
 - **Client topic on edit:** editing a client whose topic wasn't in the topic list silently switched it to "Crypto & trading". The current topic now stays as an option.
+
+## Round 71: a homepage that grabs in the first second
+
+The owner said the top and bottom of the homepage felt plain and didn't capture anyone. Both were rebuilt around one idea from the product itself: **the feed moves fast, and a sharp first line stops it.**
+
+### Top: the feed that stops
+- **Split hero.** The copy sits on the left: the same headline and highlighted "first line", left-aligned. The sub-line is new: "The feed moves fast. Hookworthy sharpens your first line in one tap, in your own voice, so the scroll stops on you."
+- **The stage.** On the right is a feed with no frame, fading into the page on all four edges.
+  - Two columns of example posts stream upward fast with a vertical motion blur (an SVG `feGaussianBlur` of `0 6`).
+  - One post sits pinned over them and plays the sequence below.
+- **Each loop (~7.5s):**
+  1. The soft first line shows: "so i think… honestly just…".
+  2. Its soft words get the wavy marks, with a chip: "4 soft words in the first line".
+  3. A Sharpen chip presses.
+  4. The soft words strike through, and the sharp line resolves out of a blur.
+  5. The card takes the blue ring, and the feed eases to a full stop: "Sharper. Same facts, same voice."
+  6. The card closes the gap the longer soft line left, and the next example follows: heycape, then Hannah, then Maya.
+- **Restraint:**
+  - It runs only while the hero is on screen, and a pause button sits under the stage.
+  - Under reduced motion it rests on the sharp line.
+  - The feed is marked "Example accounts", with no counts on any post.
+  - There is no colored glow behind it; the card's own ring does the focusing.
+- **Phone:** the copy stacks above the stage. The CTA goes full width, "Watch it work" drops (the page is right there), and the "New on X" pill stays on one line.
+
+### Bottom: one finale
+- **The paste-your-line box and the last call are one section:** an electric-blue stage inset from the page edges.
+  - Its contents: "Your turn", then "Your next post could be the one. / Make it hookworthy." in white and pale blue, then the composer.
+  - The composer is a white card (`force-light`) on the blue, with sample lines as glass pills and the white primary CTA.
+- **Example posts drift slowly** at both sides behind it; they hide on phones and under reduced motion.
+- **Same look in both themes.** The tokens (`--fin-*`) are fixed for the blue stage, because it's a brand moment, not a surface.
+- **The footer wordmark is lit:** a blue gradient fading out, instead of a grey slab.
+
+### Kept
+- **All the try-it behaviour:** the IDs, live soft-word marks, Sharpen, "Open it in Hookworthy" carrying the line into sign-up, and Copy.
+- **The app demo window and the facts row** now sit right under the hero.
