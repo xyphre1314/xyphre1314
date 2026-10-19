@@ -1157,3 +1157,30 @@ The world stays near-black, with a soft white light theme. It now has one colour
   - When you're out, the sheet carries art: the moon when you're out, the chart when a job is too big for what's left.
   - The words are true for a monthly allowance now: "You wrote a lot this month. Your post isn't stuck."
 - **Phones:** scheduling was already a bottom sheet, so it stays.
+
+## Round 68: phones, and fewer words
+
+The owner checked the preview on a phone and raised three problems: odd spacing, missing pictures, and copy that ran long without landing.
+
+- **Onboarding overflowed:**
+  - Round 67's progress bar made the top row wider than a phone. The whole page stretched and slid to the right.
+  - Fix: on phones the bar drops to its own full-width row under the logo, and `.onb` has a `minmax(0,1fr)` column so no child can widen it again.
+- **Missing pictures in the preview:**
+  - The hosted copy didn't ship `assets/people/*`, and the browser blocks the backup copy of those images, so portraits fell back to initials and the face tile in "For anyone…" sat empty.
+  - Fix: the images are now published alongside the page. If they still fail, the face tile steps out instead of showing an empty box.
+- **Odd spacing:**
+  - Each feature card's demo frame was open at the bottom and bled off the card. On a phone that read as stray vertical lines. Phones now get a closed, rounded frame with padding under it.
+  - Section gaps are tighter on phones.
+  - The footer wordmark fits the width.
+- **Copy, cut to what lands:**
+  - Hero: "Sharpen your first line in one tap. It still sounds like you."
+  - Demo caption: "Try it. Edit the line, tap Sharpen."
+  - The four facts are two to four words each.
+  - "Replies don't pay" leads with one line, and each of its points is one short sentence.
+  - The 11 PM story steps are one line each.
+  - Every feature card is a bold line plus about six words.
+  - Personas are one sentence each, and the trust lede is one sentence.
+  - The pricing note is short, and Yearly reads "−25%".
+  - The FAQ answers that ran long are halved.
+  - The footer's duplicate tagline is gone.
+  - On a phone the homepage went from 14,649px to about 13,000px.

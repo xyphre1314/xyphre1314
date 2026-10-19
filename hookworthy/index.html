@@ -5785,6 +5785,23 @@ a.link, .link{ color:var(--accent-text); }
 .cr-top{ display:grid; grid-template-columns:minmax(0,1fr) 120px; gap:16px; align-items:center; }
 .cr-art{ width:120px; }
 @media (max-width:560px){ .cr-top{ grid-template-columns:minmax(0,1fr) 84px; } .cr-art{ width:84px; } }
+/* ---------- r68: phones. Every row fits the screen, every frame closes, and nothing wider than the glass ---------- */
+.onb{ grid-template-columns:minmax(0,1fr); }
+@media (max-width:640px){
+  .onb-top{ flex-wrap:wrap; row-gap:14px; padding:14px 16px; }
+  .onb-prog{ order:3; width:100%; }
+  .onb-stage{ padding:12px 16px 48px; }
+  .onb-card{ gap:20px; }
+  .onb-card .display{ font-size:clamp(40px,11vw,56px); }
+  .hx-card{ padding:22px 18px 18px; border-radius:20px; }
+  .hx-ui{ margin-top:18px; border-radius:14px; }
+  .hx-card > p{ font-size:16px; }
+  .hx-giant{ font-size:14vw; }
+  .hz-sec{ padding-block:clamp(64px,16vw,96px) 0; } .hz-story{ margin-top:clamp(64px,16vw,96px); padding-block:clamp(56px,14vw,80px); }
+  .hz-head{ gap:12px; }
+}
+/* if no portrait sheet loads, the tile in the "For anyone" head steps out instead of sitting there empty */
+.no-spr .hz-tw{ display:none; }
 </style>
 </head>
 <body>
@@ -13082,7 +13099,7 @@ function hxFootHTML() {
   const col = (h, items) => `<div class="hx-fcol"><h2>${h}</h2><ul>${items.map(x => `<li>${x}</li>`).join('')}</ul></div>`;
   return `<footer class="hx-foot"><div class="hx-w">
     <div class="hx-ftop">
-      <div class="hx-fme"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a><p>Posts people stop for, on X, LinkedIn, Threads and Bluesky.</p><p class="hx-fsm">Most posts die in the first line. Yours won’t.</p></div>
+      <div class="hx-fme"><a class="logo" href="#home" aria-label="Hookworthy home">${LOGO}</a><p>Posts people stop for, on X, LinkedIn, Threads and Bluesky.</p></div>
       <nav class="hx-fcols" aria-label="Footer">
         ${col('Product', [`<a ${hwHref('home', 'how')}>How it works</a>`, `<a ${hwHref('home', 'features')}>Features</a>`, `<a ${hwHref('home', 'pricing')}>Pricing</a>`, `<a ${hwHref('home', 'faq')}>Questions</a>`, '<a href="#switch">Switching to Hookworthy</a>', '<a href="#tools">Free tools</a>', '<a href="#developers">Developers</a>'])}
         ${col('App', ['<a href="#week">Open the app</a>', '<a href="#signin">Sign in</a>', '<a href="#brand">Design system</a>', '<button type="button" data-act="shortcuts">Keyboard shortcuts</button>'])}
@@ -13213,17 +13230,17 @@ function hxDemoHTML() {
       <span class="hx-cur" id="hx-cur" aria-hidden="true">${CURSOR_SVG}</span>
       <p class="sr" id="hx-demo-sr" aria-live="polite">A draft by heycape, an example account. Four soft words in the first line get a wavy underline, Sharpen rewrites it to “${esc(HX_SHARP)}”, and the post is scheduled for Tuesday at 8:40 AM.</p>
     </div>
-    <p class="hz-cap"><b>It’s live.</b> Type over the first line, press Sharpen, switch networks. heycape is an example account.</p>
+    <p class="hz-cap"><b>Try it.</b> Edit the line, tap Sharpen. heycape is an example&nbsp;account.</p>
   </div>`;
 }
 
 /* ---------- the paper chapter: one post, from an 11 PM thought to Tuesday morning ---------- */
 const HZ_STEPS = [
-  ['catch', 'Catch it', 'Save the thought the second it lands: a voice note, a link, a screenshot of your P&L. It waits in Ideas, safe till morning.', PHOTO.desk, 'Mon 11:47 PM'],
-  ['draft', 'Draft it in your voice', 'It writes the way you do on a good day, because it learned from your posts, not from everyone else’s.', PHOTO.desk, 'Mon 11:52 PM'],
-  ['sharpen', 'Sharpen the first line', 'Soft words get a wavy line. One tap and the line says it straight. Your facts and numbers stay put.', PHOTO.desk, 'Mon 11:54 PM'],
-  ['time', 'Out when they’re scrolling', 'Write when you can, post when they’re up. It lands at your best hour, fitted to X, Threads, LinkedIn and Bluesky.', PHOTO.run, 'Tue 8:40 AM'],
-  ['learn', 'See what landed', 'An hour later, in plain words: how it did against your usual, and what to write next.', PHOTO.run, 'Tue 9:41 AM']
+  ['catch', 'Catch it', 'A voice note, a link, a screenshot. It waits in Ideas.', PHOTO.desk, 'Mon 11:47 PM'],
+  ['draft', 'Draft it in your voice', 'Learned from your posts, not everyone else’s.', PHOTO.desk, 'Mon 11:52 PM'],
+  ['sharpen', 'Sharpen the first line', 'Soft words get a wavy line. One tap fixes it. Facts stay.', PHOTO.desk, 'Mon 11:54 PM'],
+  ['time', 'Out when they’re scrolling', 'Posted at your best hour, on every network.', PHOTO.run, 'Tue 8:40 AM'],
+  ['learn', 'See what landed', 'An hour later: how it did, and what to write next.', PHOTO.run, 'Tue 9:41 AM']
 ];
 const HZ_TYPED = 'so i think the most underrated thing in trading is honestly just sizing down after a loss.\n\nI lost $4,000 in March doubling my size to win it back.';
 function hzSceneHTML(k) {
@@ -13268,18 +13285,18 @@ function hxBentoHTML() {
   const nets = [['x', 'X', '280&nbsp;characters', 1], ['threads', 'Threads', '500&nbsp;characters', .44], ['li', 'LinkedIn', '3,000&nbsp;characters', .07], ['bsky', 'Bluesky', '300&nbsp;characters', .7]];
   const ideas = [['mic', 'Sizing down after a loss', 'Drafted'], ['link', 'Funding flipped negative', 'Saved'], ['shot', 'March: down $4,000', 'Drafted'], ['write', 'Indicators, ranked', 'Saved']];
   return `<div class="hx-bento">
-    ${card('hx-b-sharp', '<b>One tap. A sharper first line.</b> Select any words and flip through three stronger versions. Keep the one that sounds like you. Your facts never change.',
+    ${card('hx-b-sharp', '<b>One tap. A sharper first line.</b> Three versions. Your facts kept.',
       `<div class="hx-ui hx-ui-pad hx-shw" id="hx-shw"><p class="hx-pw hx-shw-who">${hxAv('me')}<b>heycape</b> <span>@heycape_</span></p><p class="hx-shl0">${esc(HX_SHARP)}</p><p class="hx-shl">I lost $4,000 in March <span class="hx-sel"><span class="hx-swap">${['because I kept doubling my size', 'doubling my size to win it back', 'trying to win it all back by Friday'].map((t, i) => `<span class="hx-alt${i === 0 ? ' on' : ''}">${t}.</span>`).join('')}</span></span></p><div class="hx-shbar"><span class="hx-gb">${ic('left', 'xs')}</span><span class="hx-shn" id="hx-shn">1 of 3</span><span class="hx-gb">${ic('right', 'xs')}</span><span class="hx-wb">Use this</span><span class="hx-gb">${ic('reply', 'xs')} Comment</span></div><p class="hx-shl2">Now I cut size in half after any red day. Boring. My account is still here.</p></div>`)}
-    ${card('hx-b-nets', '<b>See it in their feed first.</b> Real previews for X, Threads, LinkedIn and Bluesky. Long posts on free X become a thread on their own.',
+    ${card('hx-b-nets', '<b>See it in their feed first.</b> Real previews for every network.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-nets">${nets.map(([k, n, lim, f]) => `<div class="hx-li">${hxTile(k, 'sm')}<span><b>${n}</b><small>${lim}</small></span><span class="hx-bar"><i style="--f:${f}"></i></span><span class="hx-ck">${ic('check', 'xs')}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-review', '<b>Feedback on the exact words.</b> Send one link. Your editor, cofounder or client signs in with X or Google and comments right on the line.',
+    ${card('hx-b-review', '<b>Feedback on the exact words.</b> One link. They comment on the line.',
       `<div class="hx-ui hx-ui-flow"><div class="hx-chips"><span>${pic('x')} Sign in with X</span><span>${G_LOGO} Sign in with Google</span></div><div class="hx-link"><span class="hx-mono">hookworthy.com/r/8f2c1a</span><span class="hx-wb">${ic('copy', 'xs')} Copy</span></div><span class="hx-wire" aria-hidden="true"></span><span class="hx-call"><b>Comment</b> on “$4,000 in March” <i>new</i></span><span class="hx-wire" aria-hidden="true"></span>
       <div class="hx-list">${[[19, 'Priya Nair', 'Lead with the number. It’s the hook.', 'Open'], [18, 'Theo Marchetti', 'Keep “Boring.” It’s the most you line.', 'Resolved']].map(([i, n, t, s]) => `<div class="hx-li">${hxAv(i)}<span><b>${n}</b>${esc(t)}</span><span class="hx-st${s === 'Open' ? ' open' : ''}">${s}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-voices', '<b>Every client, in their own voice.</b> Ghostwriting? Switch voices with one key, and nobody gets the wrong tone.',
+    ${card('hx-b-voices', '<b>Every client, their own voice.</b> Switch with one key.',
       `<div class="hx-ui hx-ui-pad"><span class="hx-lab">Writing as</span><div class="hx-radio">${voices.map(([i, n, k, t], j) => `<div class="hx-ro${j === 1 ? ' on' : ''}"><i class="hx-rd"></i>${hxAv(i)}<span class="hx-rt"><b>${n}</b><small>${t}</small></span><span class="hx-st${j === 1 ? '' : ' muted'}">${k}</span><kbd>${MOD}${IS_MAC ? '' : ' '}${j + 1}</kbd></div>`).join('')}</div></div>`)}
-    ${card('hx-b-ideas', '<b>Never start from a blank page.</b> Voice notes, links and screenshots become drafts in your voice. You always have something worth saying.',
+    ${card('hx-b-ideas', '<b>Never start blank.</b> Notes, links and screenshots become drafts.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-ideas">${ideas.map(([i, t, s]) => `<div class="hx-li"><span class="hx-ii">${ic(i, 'xs')}</span><span>${esc(t)}</span><span class="hx-st${s === 'Drafted' ? '' : ' open'}">${s}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-inbox', '<b>Answer while it’s hot.</b> Replies to your posts arrive with an answer already written in your voice. Edit it, send it, done.',
+    ${card('hx-b-inbox', '<b>Answer while it’s hot.</b> Replies come with a draft in your voice.',
       `<div class="hx-ui hx-ib"><div class="hx-ibl">${[[20, 'Jay Kim', 'Same. What size do you drop to?', 1], [21, 'Lena Vogt', 'Saving this for the next red week', 0], [23, 'Camila Reyes', 'boring is the strategy. sending this to my students.', 0]].map(([p, n, t, on]) => `<div class="hx-ibr${on ? ' on' : ''}">${hxAv(p)}<span><b>${n}</b><small>${esc(t)}</small></span>${on ? '<i></i>' : ''}</div>`).join('')}</div>
       <div class="hx-ibx"><div class="hx-q">${hxAv(20)}<div><p class="hx-pw"><b>Jay Kim</b> <span>@jaytradesdaily · 4m</span></p><p>Same. What size do you drop to?</p></div></div>
         <div class="hx-dra"><span class="hx-lab">${ic('voice', 'xs')} Drafted in your voice</span><p>Half, until I have a green day. Then back to normal. No exceptions, that’s the whole trick.</p><div class="hx-cmb"><span class="hx-wb">${ic('send', 'xs')} Send</span><span class="hx-gb">Edit</span><span class="hx-gb">Skip</span></div></div></div></div>`)}
@@ -13288,16 +13305,16 @@ function hxBentoHTML() {
 
 /* ---------- for anyone with a take ---------- */
 const HZ_WHO = [
-  { k: 'creators', bio: 'Writes a Sunday newsletter', tab: 'Creators', p: 4, ph: PHOTO.notes, h: 'Posting every day, reach stuck? Start with the first line.', d: 'Hannah posts the best part of her newsletter every day, and her reach had gone flat. Hookworthy showed her which openers her readers actually stop for, and sharpens every new one to match.',
+  { k: 'creators', bio: 'Writes a Sunday newsletter', tab: 'Creators', p: 4, ph: PHOTO.notes, h: 'Reach stuck? Start with the first line.', d: 'Hannah’s reach went flat. Now every opener matches what her readers stop for.',
     li: ['What your audience stops for, from your own posts', 'Soft words flagged as you type', 'Rewrites in your voice, word by word'],
     ba: [['new issue is out!! been doing this every sunday for 3 years <s>lol</s>', 'Three years of Sunday issues. Here’s this week’s:'], ['<s>honestly</s> <s>i think</s> writing every day for a year changed how i think', 'Writing every day for a year changed how I think.']] },
-  { k: 'founders', bio: 'Founder, Tally Notes', tab: 'Founders', p: 0, ph: PHOTO.whiteboard, h: 'Ship it in the morning. Post it by lunch.', d: 'Maya posts what she’s building. Ideas go in as voice notes on the walk to work; a week of posts comes out, timed for when her customers are online.',
+  { k: 'founders', bio: 'Founder, Tally Notes', tab: 'Founders', p: 0, ph: PHOTO.whiteboard, h: 'Ship it in the morning. Post it by lunch.', d: 'Voice notes on her walk become a week of posts, timed for her customers.',
     li: ['Voice notes become drafts', 'Your week, drafted from your ideas', 'A review link for your cofounder'],
     ba: [['<s>so</s> excited to announce we <s>just</s> shipped dark mode!!', 'We shipped dark mode. Here’s what we learned building it:'], ['<s>i think</s> hiring is <s>probably</s> the hardest part of building a startup', 'Hiring is the hardest part of building a startup.']] },
-  { k: 'ghost', bio: 'Ghostwriter for six founders', tab: 'Ghostwriters', p: 16, ph: PHOTO.team, h: 'Six clients. Six voices. Zero mix-ups.', d: 'Noah writes for six founders. Each one gets their own voice, and a review link to approve the exact words before anything posts.',
+  { k: 'ghost', bio: 'Ghostwriter for six founders', tab: 'Ghostwriters', p: 16, ph: PHOTO.team, h: 'Six clients. Six voices. Zero mix-ups.', d: 'Each client gets their own voice, and approves the words before anything posts.',
     li: ['Each client’s voice learns on its own', 'Clients comment on the exact words', 'Nothing posts until it’s approved'],
     ba: [['<s>i feel like</s> we should talk more about burnout in startups', 'We should talk more about burnout in startups.'], ['<s>honestly</s> the best hire we made was <s>basically</s> a former teacher', 'The best hire we made was a former teacher.']] },
-  { k: 'traders', bio: 'Swing trader, 7 years', tab: 'Traders', p: 18, ph: PHOTO.cafe, h: 'Your trade log, posted before the open.', d: 'Theo journals every trade. Hookworthy turns the lesson into a first line and lines it up before the bell.',
+  { k: 'traders', bio: 'Swing trader, 7 years', tab: 'Traders', p: 18, ph: PHOTO.cafe, h: 'Your trade log, posted before the open.', d: 'Each trade’s lesson becomes a first line, lined up before the bell.',
     li: ['Charts and P&L screenshots become drafts', 'Posts timed before the market opens', 'Receipts for every call, hits and misses'],
     ba: [['<s>honestly</s> the best trade i made this month was <s>probably</s> the one i skipped', hgSharpen('honestly the best trade i made this month was probably the one i skipped').first], ['<s>not financial advice but</s> i <s>basically</s> stopped trading the open', hgSharpen('not financial advice but i basically stopped trading the open', { more: true }).first]] }
 ];
@@ -13323,18 +13340,18 @@ function hzPricingHTML() {
       <button type="button" class="hx-btn full${p.k === 'pro' ? '' : ' line'}" data-plan="${p.k}">${p.k === 'free' ? 'Start free' : `Start with ${p.name}`}</button>
       <ul class="pz-inc">${p.inc.map((f, i) => i === 0 && /and:$/.test(f) ? `<li class="lead">${f}</li>` : `<li>${ic('check', 'sm')}${f}</li>`).join('')}</ul>
     </div>`).join('')}</div>
-    <p class="pz-f">Prices in US dollars. Cancel anytime; your drafts and ideas stay yours on every plan. Writing for more than 8 clients? <a href="mailto:hello@hookworthy.com">Talk to us</a>.</p>`;
+    <p class="pz-f">USD. Cancel anytime, your drafts stay yours. More than 8 clients? <a href="mailto:hello@hookworthy.com">Talk to us</a>.</p>`;
 }
 const HX_FAQ = [
-  ['Will it sound like me?', 'That’s the whole point. It reads your past posts first, follows your tone and skips every word on your never-say list. Anything off? Sharpen the line, or tell it what to change.'],
-  ['Does anything post without me?', 'Never. Only posts you schedule go out, at the time you picked, with a few seconds to take one back. You send every DM, pick every repost and keep every post.'],
-  ['Will this get me paid on X?', 'Nobody honest can promise that. Since September 8, 2026, X pays for original posts seen on the Home timeline, not for replies, once you have Premium, 500 verified followers and 500K Home-timeline impressions from verified accounts in 90 days. Hookworthy helps with the part you control: first lines people stop for, in your voice, out when your audience scrolls. X’s Creator Studio has the current rules.'],
+  ['Will it sound like me?', 'That’s the point. It learns from your posts, follows your tone and skips your never-say words.'],
+  ['Does anything post without me?', 'Never. Only what you schedule goes out, with a few seconds to take it back. You send every DM.'],
+  ['Will this get me paid on X?', 'Nobody honest can promise that. X pays for original posts once you have Premium, 500 verified followers and 500K verified impressions in 90 days. We help with the part you control: the first line. X’s Creator Studio has the current rules.'],
   ['Coming from Typefully, Hypefury or Black Magic?', 'Bring your X archive or a Typefully export and you’re set up in minutes. <a href="#switch">Here’s what carries over</a>.'],
   ['Which networks does it work with?', 'X, Threads, LinkedIn and Bluesky. Every draft gets a version that fits each one, with a live preview of how it will look in the feed.'],
   ['What about long posts on free X?', 'Over 280 characters, a post becomes a thread by itself, split where it reads best. With X Premium it stays one long post.'],
   ['Can I write for clients?', 'Yes, on Studio. Each client gets their own voice, and you send them a review link to comment on the exact words before anything posts.'],
   ['Can I bring my old posts?', 'Please do. Import your X archive or a Typefully export, and your best posts teach it how you write.'],
-  ['Is there a free plan?', 'Yes, and no card. Sharpen, quick rewrites, previews and review links stay free for good, with 15 posts and 20 Claude rewrites a month.'],
+  ['Is there a free plan?', 'Yes, no card: 20 Claude rewrites and 15 posts a month. Sharpen, previews and review links stay free.'],
   ['Can I cancel anytime?', 'Yes, in two clicks. Your drafts and ideas stay with you on Free.']
 ];
 const HZ_SAMPLES = ['so i think posting every day is kind of the whole game', 'just wanted to share some thoughts on what i learned this year', 'honestly the best trade i made this month was the one i skipped'];
@@ -13347,48 +13364,48 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   <section class="hz-hero" aria-labelledby="hz-h1"><div class="hx-w">
     <a class="hz-news" ${hwHref('home', 'pays')}><b>New on X</b><span>Original posts earn now. Replies don’t.</span>${ic('arrow', 'xs')}</a>
     <h1 class="hz-h1" id="hz-h1"><span class="ln">Most posts die in</span> <span class="ln">the <span class="hz-mk">first line</span>.</span> <span class="ln mute">Yours won’t.</span></h1>
-    <p class="hz-sub">Stuck at the same reach? Hookworthy sharpens your first line in one tap, learns how you write, and shows what your audience actually stops&nbsp;for.</p>
+    <p class="hz-sub">Sharpen your first line in one tap. It still sounds like&nbsp;you.</p>
     <div class="hz-cta"><a class="hx-btn lg" href="#start">Sharpen my first post ${ic('arrow', 'sm')}</a><a class="hx-btn lg ghost" ${hwHref('home', 'how')}>Watch it work</a></div>
     <p class="hz-note hz-note-top">Free plan <i></i> No card <i></i> Nothing posts without you</p>
     ${hxDemoHTML()}
-    <ul class="hz-facts hx-rv" role="list">${[['1 tap', 'from a soft first line to a sharp one'], ['4 networks', 'X, LinkedIn, Threads and Bluesky, from one draft'], ['0 posts', 'go out, reply or DM without you'], ['$0', 'to start. No card, no trial clock']].map(([n, t]) => `<li><b>${n}</b><span>${t}</span></li>`).join('')}</ul>
+    <ul class="hz-facts hx-rv" role="list">${[['1 tap', 'soft line to sharp'], ['4 networks', 'from one draft'], ['0 posts', 'sent without you'], ['$0', 'to start, no card']].map(([n, t]) => `<li><b>${n}</b><span>${t}</span></li>`).join('')}</ul>
   </div></section>
 
   <section class="hz-sec" id="pays" aria-labelledby="hz-pay-h"><div class="hx-w">
-    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-pay-h">Replies don’t pay anymore.<br><span class="mute">Your posts do.</span></h2><p class="hz-lede">Since September 8, X pays creators for original posts seen on the Home timeline, not for replies. The first line decides whether anyone stops long enough to see the rest.</p></div>
+    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-pay-h">Replies don’t pay anymore.<br><span class="mute">Your posts do.</span></h2><p class="hz-lede">Since Sept 8, X pays for original posts, not replies. Your first line decides who&nbsp;stops.</p></div>
     <div class="pays-g hx-rv">${[
-      ['The bar to qualify', 'X asks for Premium, 500 verified followers and 500K Home-timeline impressions from verified accounts in 90 days. Replies don’t count toward it.', 'Rules as of October 2026. X can change them; Creator Studio has the current ones.'],
-      ['Make the first line count', 'Sharpen cuts the warm-up and hedges in one tap. The scroll test shows how a fast thumb meets your line before you post.', 'It reads your line, not a forecast. Nobody can promise reach.'],
-      ['Find what works for you', 'Bring your posts and Results compares each one with your own usual: which openers, topics and times your audience rewards.', 'Your numbers, read in your browser.'],
-      ['Stay in good standing', 'Payouts need an account in good standing. Nothing here auto-DMs, auto-replies or buys reach. Every post is one you pressed send on.', 'No bots, no shortcuts.']
+      ['The bar to qualify', 'Premium, 500 verified followers and 500K verified impressions in 90 days.', 'As of Oct 2026. Creator Studio has the latest.'],
+      ['Make the first line count', 'One tap cuts the warm-up. The scroll test shows if a thumb stops.', 'Nobody can promise reach. We don’t.'],
+      ['Find what works for you', 'See which openers, topics and times your people reward.', 'Read in your browser, not ours.'],
+      ['Stay in good standing', 'No auto-DMs, no auto-replies, no bought reach. You press send.', 'No bots, no shortcuts.']
     ].map(([h, d, f], i) => `<div class="pay-c"><span class="pay-n mono">0${i + 1}</span><b>${h}</b><p>${d}</p><small>${f}</small></div>`).join('')}</div>
   </div></section>
 
   <section class="hz-story inv" id="how" aria-labelledby="hz-how-h"><div class="hx-w">
-    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-how-h">Write it at 11&nbsp;PM.<br><span class="mute">Land it at 8:40&nbsp;AM.</span></h2><p class="hz-lede">Catch the idea the second it hits. Hookworthy drafts it in your voice, fixes the first line, and posts it when your people are scrolling.</p></div>
+    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-how-h">Write it at 11&nbsp;PM.<br><span class="mute">Land it at 8:40&nbsp;AM.</span></h2><p class="hz-lede">Catch it late. It drafts, sharpens and posts when your people are&nbsp;up.</p></div>
     ${hzStoryHTML()}
   </div></section>
 
   <section class="hz-sec" id="features" aria-labelledby="hz-f-h"><div class="hx-w">
-    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-f-h">People decide in one second.<br><span class="mute">Make it count.</span></h2><p class="hz-lede">Every tool here works on the line that decides whether they read the rest.</p></div>
+    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-f-h">People decide in one second.<br><span class="mute">Make it count.</span></h2><p class="hz-lede">Every tool works on the line that decides if they read&nbsp;on.</p></div>
     ${hxBentoHTML()}
   </div></section>
 
   <section class="hz-sec" id="who" aria-labelledby="hz-w-h"><div class="hx-w">
-    <div class="hz-head wide hx-rv"><h2 class="hz-h2" id="hz-w-h">For anyone <span class="hz-t hz-tw" style="--r:5deg" aria-hidden="true">${[0, 16, 18, 4].map(face).join('')}</span> with something<br>to say.</h2><p class="hz-lede">Creators, founders, ghostwriters and traders. Different feeds, same problem, same fix: a first line people stop for, in a voice that’s still yours.</p></div>
+    <div class="hz-head wide hx-rv"><h2 class="hz-h2" id="hz-w-h">For anyone <span class="hz-t hz-tw" style="--r:5deg" aria-hidden="true">${[0, 16, 18, 4].map(face).join('')}</span> with something<br>to say.</h2><p class="hz-lede">Different feeds, same fix: a first line people stop for, in your&nbsp;voice.</p></div>
     ${hzWhoHTML()}
   </div></section>
 
   <section class="hz-sec" aria-labelledby="hz-t-h"><div class="hx-w"><div class="hz-trust hx-rv">
     <div><h2 class="hz-h2" id="hz-t-h">It does the work.<br><span class="mute">You press the button.</span></h2>
-      <p class="hz-lede">It drafts, sharpens and lines up your week. Nothing posts, replies or DMs without you. Results compare you with your own usual, never with a promise.</p>
+      <p class="hz-lede">It drafts, sharpens and plans your week. Nothing goes out until you press&nbsp;send.</p>
       <div class="hz-links"><a ${hwHref('home', 'faq')}>How posting works ${ic('arrow', 'xs')}</a><a href="#developers">Use it from Claude ${ic('arrow', 'xs')}</a><a ${hwHref('legal', 'privacy')}>Your data ${ic('arrow', 'xs')}</a></div></div>
     <ul class="nv" role="list">${[['You send every DM', 'Not one goes out on its own'], ['You pick every repost', 'Your feed stays yours'], ['Your posts stay put', 'Every post stays where you put it'], ['Reach you earned', 'None bought, none promised'], ['You see it first', 'Every post is one you scheduled']].map(([t, s]) => `<li><span>${ic('check', 'xs')}</span>${t}<small>${s}</small></li>`).join('')}</ul>
   </div></div></section>
 
   <section class="hz-sec" id="pricing" aria-labelledby="hz-p-h"><div class="hx-w">
     <div class="pz-top hx-rv"><h2 class="hz-h2" id="hz-p-h">Start free. <span class="mute">Upgrade when it’s working.</span></h2>
-      <div class="hx-bill" id="hz-bill" role="radiogroup" aria-label="Billing"><span class="hx-thumb" aria-hidden="true"></span><button type="button" role="radio" aria-checked="false" tabindex="-1" data-hxb="m">Monthly</button><button type="button" role="radio" aria-checked="true" data-hxb="y">Yearly <i>save 25%</i></button></div></div>
+      <div class="hx-bill" id="hz-bill" role="radiogroup" aria-label="Billing"><span class="hx-thumb" aria-hidden="true"></span><button type="button" role="radio" aria-checked="false" tabindex="-1" data-hxb="m">Monthly</button><button type="button" role="radio" aria-checked="true" data-hxb="y">Yearly <i>−25%</i></button></div></div>
     ${hzPricingHTML()}
   </div></section>
 
@@ -13399,7 +13416,7 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
 
   <section class="hz-sec" id="try" aria-labelledby="hz-try-h"><div class="hx-w"><div class="tz hx-rv">
     <h2 class="hz-h2" id="hz-try-h">Paste a post you almost didn’t send.</h2>
-    <p class="hz-lede">Watch its soft spots light up, then sharpen it in one tap. Your facts stay. Nothing leaves this page.</p>
+    <p class="hz-lede">Soft words light up. One tap sharpens it. Nothing leaves this&nbsp;page.</p>
     <div class="tz-try"><span>Try one:</span>${HZ_SAMPLES.map((s, i) => `<button type="button" data-tz="${i}">${esc(s)}</button>`).join('')}</div>
     <div class="tz-box"><div class="tz-ed"><div class="tz-mirror" id="tz-mirror" aria-hidden="true"></div><textarea class="tz-in" id="tz-in" rows="2" maxlength="400" spellcheck="false" aria-label="Your first line" aria-describedby="tz-cnt" placeholder="Paste a first line you’re not sure about…">${esc(HG_DEFAULT)}</textarea></div>
       <div class="tz-bar"><span class="tz-cnt" id="tz-cnt" aria-live="polite"><i></i><span></span></span><span class="grow"></span><button type="button" class="hx-btn" id="tz-go">${ic('bolt', 'sm')} Sharpen it</button></div></div>
