@@ -1060,3 +1060,13 @@ The owner set Pro at **250 Claude rewrites a month**. Anyone who needs more adds
   - A new FAQ: "Can I get more than 250 rewrites?"
   - The homepage Pro card, the trial-low toast and the plan-changed modal all say 250.
 - **Still demo:** nothing is billed. A real server would set the add-on on the saved ledger from its billing.
+
+### Models: Sonnet and Opus only
+The owner chose two models. Haiku is out.
+- **Sonnet 5.5** does everything except the voice study:
+  - **Small jobs at low effort:** grammar, sharpening a phrase, comparing two lines, tidying a dictation, picking a visual.
+  - **Writing at medium effort:** rewrites, first lines, replies, the week plan.
+- **Opus 5.5, high effort:** Learn my voice, once per user.
+- **Why:** small jobs now sound as much like the author as rewrites do, and every call gets the server-side refusal fallback.
+- **The cost:** a small job is now roughly 0.2–0.5¢ instead of about 0.02¢. The free daily helper allowance (300) is the ceiling to watch.
+- **Haiku still works if wanted:** `HW_MODEL_QUICK` can point the small jobs back at Haiku, and those calls skip the fallback, which Haiku doesn't offer.

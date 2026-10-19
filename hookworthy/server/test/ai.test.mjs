@@ -5,20 +5,26 @@ const AI = await import('../lib/ai.mjs');
 
 function fake(reply, extra = {}) { const calls = []; return { calls, beta: { messages: { create: async req => { calls.push(req); return { model: req.model, stop_reason: 'end_turn', content: [{ type: 'text', text: reply }], usage: {}, ...extra }; } } } }; }
 
-test('each tier gets the smallest model that does the job: Haiku for quick jobs, Sonnet for writing, Opus for voice study', async () => {
+test('two models: Sonnet for quick jobs and writing, Opus for voice study; effort is the dial', async () => {
   const f = fake('{"options":[{"text":"a","why":"b"}]}'); AI.setClient(f);
   await AI.complete({ prompt: 'x', tier: 'default', json: true });
   await AI.complete({ prompt: 'x', tier: 'complex', json: true });
   await AI.complete({ prompt: 'x', tier: 'quick' });
   assert.equal(f.calls[0].model, 'claude-sonnet-5-5'); assert.equal(f.calls[0].output_config.effort, 'medium');
   assert.equal(f.calls[1].model, 'claude-opus-5-5'); assert.equal(f.calls[1].output_config.effort, 'high');
-  assert.equal(f.calls[2].model, 'claude-haiku-5-5'); assert.equal(f.calls[2].output_config.effort, 'low');
+  assert.equal(f.calls[2].model, 'claude-sonnet-5-5'); assert.equal(f.calls[2].output_config.effort, 'low');
   assert.ok(f.calls.every(c => c.max_tokens >= 8000 && c.max_tokens <= 21333), 'room for thinking, under the non-streaming ceiling');
   assert.equal(f.calls[0].fallbacks, 'default'); assert.deepEqual(f.calls[0].betas, ['server-side-fallback-2026-07-01']);
   assert.equal(f.calls[1].fallbacks, 'default');
-  assert.equal(f.calls[2].fallbacks, undefined, 'Haiku has no server-side fallback'); assert.equal(f.calls[2].betas, undefined);
+  assert.equal(f.calls[2].fallbacks, 'default', 'quick jobs on Sonnet fall back too');
   assert.ok(f.calls.every(c => c.thinking === undefined), 'no thinking config: adaptive by default, never disabled');
   assert.ok(f.calls.every(c => c.temperature === undefined && c.top_p === undefined), 'no sampling params');
+});
+
+test('a tier pointed at Haiku goes without a fallback, which it does not offer', async () => {
+  process.env.HW_MODEL_QUICK = 'claude-haiku-5-5'; const H = await import('../lib/ai.mjs?haiku'); delete process.env.HW_MODEL_QUICK;
+  const f = fake('ok'); H.setClient(f); await H.complete({ prompt: 'x', tier: 'quick' });
+  assert.equal(f.calls[0].model, 'claude-haiku-5-5'); assert.equal(f.calls[0].fallbacks, undefined); assert.equal(f.calls[0].betas, undefined);
 });
 
 test('a schema becomes structured outputs; array schemas ride wrapped as {items} and come back unwrapped', async () => {

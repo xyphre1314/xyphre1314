@@ -405,7 +405,7 @@
 
   /* ---------------- prompts ----------------
      Every call carries the same editor brief plus the author's own evidence.
-     tier: quick | default | complex → server runs Opus 5.5 at low / medium / high effort.
+     tier: quick | default | complex → server runs Sonnet 5.5 at low and medium effort, and Opus 5.5 at high.
      Every structured call asks for one JSON value in the prompt (the claude.ai sample path reads that) and
      carries the same shape as a schema (the server turns it into structured outputs). */
   const BRIEF = `You are Hookworthy's editor: a sharp friend who edits social posts so they sound like the author on a good day.

@@ -1,22 +1,22 @@
 /* Claude for Hookworthy.
-   Each tier gets the smallest model that does the job well, and effort is the second dial:
-   - quick: Haiku 5.5, low effort. Mechanical jobs: grammar, sharpening a phrase, comparing two lines,
-     tidying a dictation, picking a visual. About a tenth of a cent a call.
+   Two models, Sonnet and Opus (the owner's call, round 66), and effort is the second dial:
+   - quick: Sonnet 5.5, low effort. Small jobs: grammar, sharpening a phrase, comparing two lines,
+     tidying a dictation, picking a visual. A fraction of a cent a call.
    - default: Sonnet 5.5, medium effort. Anything that writes in the author's voice: rewrites, first lines,
      the Room, replies, the week plan, posts from a brief or a picture.
    - complex: Opus 5.5, high effort. Voice study, the one deep read every later rewrite depends on.
    Each tier can be pointed at another model with HW_MODEL_QUICK / HW_MODEL_DEFAULT / HW_MODEL_COMPLEX.
-   Refusals fall back server-side ("default") where the model offers it; Haiku has no server-side
-   fallback, so its calls go without one. Calls that send a schema get structured outputs, so the reply is
+   Refusals fall back server-side ("default") where the model offers it. Haiku has none, so a tier
+   pointed at Haiku goes without one. Calls that send a schema get structured outputs, so the reply is
    valid JSON by construction. */
 import Anthropic from '@anthropic-ai/sdk';
 
 export const MODELS = {
-  quick: process.env.HW_MODEL_QUICK || 'claude-haiku-5-5',
+  quick: process.env.HW_MODEL_QUICK || 'claude-sonnet-5-5',
   default: process.env.HW_MODEL_DEFAULT || 'claude-sonnet-5-5',
   complex: process.env.HW_MODEL_COMPLEX || 'claude-opus-5-5'
 };
-/* Haiku declines without a server-side fallback: a fallbacks list would 400, and "default" changes nothing */
+/* Haiku (only if a tier is pointed at it) declines without a server-side fallback: a fallbacks list would 400 */
 const hasFallback = model => !/haiku/i.test(String(model));
 const EFFORT = { quick: 'low', default: 'medium', complex: 'high' };
 /* thinking counts toward max_tokens, so each cap leaves room for it; 20000 stays under the SDK's non-streaming ceiling */
