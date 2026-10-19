@@ -4156,6 +4156,25 @@ html[data-meter="count"] .cr-tag{ display:inline-flex; }
 .pl-trial{ font:600 13px/1.2 var(--font-ui); color:inherit; opacity:.86; text-decoration:underline; text-underline-offset:3px; text-decoration-color:color-mix(in srgb,currentColor 40%,transparent); padding:4px 6px; border-radius:6px; }
 .pl-trial:hover{ opacity:1; }
 .pl .btn[aria-current="true"]{ pointer-events:none; opacity:.72; }
+/* r66: add-ons under the plan cards */
+.up-boost{ margin-top:56px; display:grid; gap:20px; }
+.ub-head{ display:grid; gap:10px; max-width:62ch; }
+.ub-head h2{ margin:0; font:650 clamp(30px,3.6vw,42px)/1.06 var(--font-display); letter-spacing:-.014em; color:var(--text-1); text-wrap:balance; }
+.ub-head h2 em{ font-style:normal; color:color-mix(in srgb,currentColor 50%,transparent); }
+.ub-head p{ margin:0; font-size:15.5px; line-height:1.55; }
+.ub-opts{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.ub-o{ display:grid; gap:4px; align-content:start; text-align:left; padding:16px 18px; border-radius:16px; background:var(--surface); box-shadow:0 0 0 1px var(--border); color:var(--text-1); transition:box-shadow var(--d-fast), background var(--d-fast); }
+.ub-o:hover{ box-shadow:0 0 0 1px var(--border-strong); }
+.ub-o:focus-visible{ box-shadow:0 0 0 1px var(--border-strong), var(--focus); }
+.ub-o[aria-checked="true"]{ background:var(--accent-soft); box-shadow:0 0 0 2px var(--accent); }
+.ub-n{ font:650 28px/1 var(--font-display); letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
+.ub-t{ font-size:13.5px; color:var(--text-2); }
+.ub-p{ margin-top:10px; font:600 20px/1 var(--font-ui); font-variant-numeric:tabular-nums; }
+.ub-p small{ font-size:13px; font-weight:500; color:var(--text-3); }
+.ub-e{ font-size:12.5px; color:var(--text-3); }
+.ub-fine{ margin:0; font-size:13px; }
+@media (max-width:860px){ .ub-opts{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:380px){ .ub-opts{ grid-template-columns:minmax(0,1fr); } }
 .hw27 .pl7 .pl-save{ margin-top:-8px; }
 .hw27 .pl7-all{ display:flex; flex-wrap:wrap; gap:6px 10px; align-items:baseline; color:var(--c-2); }
 @media (prefers-reduced-motion:reduce){ .cr-bar > i, .cr-bar.seg > i{ transition:none; } }
@@ -6780,8 +6799,8 @@ const BILLING = false;
 const SHOWCASE = () => LLM.mode !== 'server' && !HIST().length;
 const PRICED = () => BILLING || SHOWCASE();
 /* ---------- Claude credits (the table and the refill rules live in core.js, shared with the server) ----------
-   r65: Free: 20 a month. Pro: 500 a month, unused ones roll over once (up to 500 more). Studio: 500 per client voice, shared
-   by every voice. A 7-day Pro trial (100, once, no card) ends on its own. Quick mode and Sharpen never use a credit. */
+   r66: Free: 20 a month. Pro: 250 a month, unused ones roll over once (up to 250 more), and more as a monthly add-on.
+   Studio: 500 per client voice, shared by every voice. A 7-day Pro trial (100, once, no card) ends on its own. Quick mode and Sharpen never use a credit. */
 const CR = HWCore.CREDITS;
 const SRV_CR = () => LLM.mode === 'server' && LLM.server && LLM.server.credits && LLM.server.credits.metered ? LLM.server.credits : null;
 const METERED = () => aiOn() && (!!SRV_CR() || PRICED());
@@ -6859,13 +6878,17 @@ function crAfter(before) {
   crPaint(); const st = crState(); if (!st || !st.low || st.empty) return;
   const key = `${st.plan}:${st.next}`; if (S.crWarned === key) return;
   S.crWarned = key; save(); if (before && before.low) return;
-  const msg = st.plan === 'free' ? `You’ve used most of this month’s Claude rewrites. They refill on ${crDate(st.next)}, and Quick mode and Sharpen stay unlimited.` : st.plan === 'trial' ? 'You’ve used most of your trial’s AI usage. Pro gives you 500 Claude rewrites a month.' : `You’ve used most of this month’s AI usage. It refills on ${crDate(st.next)}.`;
-  toast(msg, { icon: 'spark', tone: 'accent', ...(st.server ? {} : { action: st.plan === 'free' || st.plan === 'trial' ? 'See plans' : 'Your plan', onAction: () => go('upgrade') }) });
+  const msg = st.plan === 'free' ? `You’ve used most of this month’s Claude rewrites. They refill on ${crDate(st.next)}, and Quick mode and Sharpen stay unlimited.` : st.plan === 'trial' ? 'You’ve used most of your trial’s AI usage. Pro gives you 250 Claude rewrites a month, and you can add more.' : `You’ve used most of this month’s AI usage. It refills on ${crDate(st.next)}, or add more on Plans.`;
+  toast(msg, { icon: 'spark', tone: 'accent', ...(st.server ? {} : { action: st.plan === 'free' || st.plan === 'trial' ? 'See plans' : 'Add more', onAction: () => go('upgrade') }) });
 }
-/* plan changes: a new plan starts a fresh allowance (Free → Pro gets the full 1,000 today) */
+/* plan changes: a new plan starts a fresh allowance (Free → Pro gets the full 250 today, plus any add-on) */
 /* Studio's allowance is per client voice: 500 each, shared */
 const clientVoices = () => Math.max(1, S.workspaces.length - 1);
-function setPlan(k) { S.plan = k; S.cr = CR.fresh(planNow(), Date.now(), clientVoices()); save(); crPaint(); }
+function setPlan(k) { S.plan = k; S.cr = CR.fresh(planNow(), Date.now(), clientVoices(), S.cr && S.cr.boost); save(); crPaint(); }
+/* r66: more rewrites as a monthly add-on on Pro and Studio. The difference lands now; every refill after that includes it */
+const boostNow = () => (S.cr && CR.BOOSTS.find(b => b.k === S.cr.boost)) || null;
+const boostUp = () => { const b = boostNow(), i = b ? CR.BOOSTS.indexOf(b) + 1 : 0; return CR.BOOSTS[i] || null; };
+function setBoost(k) { S.cr = CR.setBoost(S.cr, planNow(), k || null); save(); crPaint(); }
 function crStartTrial() {
   if (S.trial || S.plan !== 'free') return false;
   const now = Date.now(); S.trial = { start: now, until: now + CR.PLANS.trial.days * DAY }; S.cr = CR.fresh('trial', now); save(); crPaint();
@@ -6892,8 +6915,9 @@ function crSheet({ act, cost = 1, basicHTML, onBasic, basicDone, resume } = {}) 
   const right = `<div class="cr-pane cr-claude"><span class="label">Claude, in your voice <span class="cr-cost">${cost > 1 ? 'Bigger job' : 'Everyday job'}</span></span><div class="cr-blur" aria-hidden="true"><i></i><i></i><i></i></div><p>${esc(A.does || '')}.</p></div>`;
   const acts = canTrial ? `<button class="btn primary" data-crs="trial">${ic('gift', 'sm')} Try Pro free for 7 days</button><button class="btn" data-crs="pro">Upgrade to Pro · $${PRICES.pro[0]}/mo</button>`
     : canPro ? `<button class="btn primary" data-crs="pro">${ic('spark', 'sm')} Upgrade to Pro · $${PRICES.pro[0]}/mo</button>`
-    : srv ? '' : `<a class="btn primary" href="#upgrade" data-crs="plans">${plan === 'pro' ? 'See Studio' : 'See plans'}</a>`;
-  const fine = canTrial ? `No card. The trial ends on its own after 7 days and you’re back on Free with everything you wrote.${resume ? ' Either button finishes this one with Claude right away.' : ''}` : canPro ? `500 Claude rewrites a month. Your first month’s leftovers roll over.${resume ? ' We’ll finish this one with Claude right away.' : ''}` : srv ? 'Your plan is set on your Hookworthy server. Ask whoever runs it for more.' : '';
+    : srv ? '' : !PRICED() || !boostUp() ? `<a class="btn primary" href="#upgrade" data-crs="plans">${plan === 'pro' ? 'See Studio' : 'See plans'}</a>`
+    : `<button class="btn primary" data-crs="boost">${ic('spark', 'sm')} Add ${fmtN(boostUp().add)} a month · $${boostUp().price}/mo</button><a class="btn" href="#upgrade" data-crs="plans">See add-ons</a>`;
+  const fine = canTrial ? `No card. The trial ends on its own after 7 days and you’re back on Free with everything you wrote.${resume ? ' Either button finishes this one with Claude right away.' : ''}` : canPro ? `250 Claude rewrites a month, and more whenever you need them. Your first month’s leftovers roll over.${resume ? ' We’ll finish this one with Claude right away.' : ''}` : srv ? 'Your plan is set on your Hookworthy server. Ask whoever runs it for more.' : '';
   const m = modal(`<div class="cr-sheet"><div class="cr-sh"><span class="label">AI usage</span><button class="btn ghost icon-only sm" data-close aria-label="Close">${ic('x', 'sm')}</button></div>
     <h2 class="cr-h">${head}</h2><p class="muted cr-when">${esc(crWhen(st, true))}</p>
     <div class="cr-panes">${left}${right}</div>
@@ -6902,8 +6926,9 @@ function crSheet({ act, cost = 1, basicHTML, onBasic, basicDone, resume } = {}) 
     const b = e.target.closest('[data-crs]'); if (!b) return; const k = b.dataset.crs;
     if (k === 'basic') { m.close(); onBasic && onBasic(); return; }
     if (k === 'plans') { m.close(); return; }
+    if (k === 'boost') { const up = boostUp(); setBoost(up.k); burstFrom(b); m.close(); SFX.play('done'); toast(`Added ${fmtN(up.add)} Claude rewrites a month.${resume ? ' Claude is on it.' : ''}`, { icon: 'spark', tone: 'accent' }); if (resume) setTimeout(resume, 260); return; }
     if (k === 'trial') { crStartTrial(); burstFrom(b); m.close(); SFX.play('done'); toast(resume ? 'Pro trial on for 7 days. Claude is on it.' : 'Pro trial on: every Pro feature for 7 days. Nothing to cancel.', { icon: 'gift', tone: 'accent' }); if (resume) setTimeout(resume, 260); return; }
-    if (k === 'pro') { b.classList.add('is-loading'); setTimeout(() => { b.classList.remove('is-loading'); setPlan('pro'); m.close(); SFX.play('done'); toast(resume ? 'You’re on Pro. Claude is on it.' : 'You’re on Pro: 500 Claude rewrites a month.', { icon: 'spark', tone: 'accent' }); if (resume) setTimeout(resume, 260); }, 700); }
+    if (k === 'pro') { b.classList.add('is-loading'); setTimeout(() => { b.classList.remove('is-loading'); setPlan('pro'); m.close(); SFX.play('done'); toast(resume ? 'You’re on Pro. Claude is on it.' : 'You’re on Pro: 250 Claude rewrites a month.', { icon: 'spark', tone: 'accent' }); if (resume) setTimeout(resume, 260); }, 700); }
   });
 }
 /* ask() threw out_of_credits where there's no richer sheet: the same sheet, told whether Basic already stepped in */
@@ -11976,7 +12001,7 @@ function freeCapHit() {
   return true;
 }
 /* round 55: plain limits, in rewrites, instead of usage tiers */
-const PLAN_CR = { free: ['20', 'Claude rewrites a month', 'Sharpen and quick rewrites are unlimited'], pro: ['500', 'Claude rewrites a month', 'Leftovers from your first month roll over'], studio: ['500', 'Claude rewrites a month per client voice', 'Shared across all your clients'] };
+const PLAN_CR = { free: ['20', 'Claude rewrites a month', 'Sharpen and quick rewrites are unlimited'], pro: ['250', 'Claude rewrites a month', 'Need more? Add up to 1,750 a month'], studio: ['500', 'Claude rewrites a month per client voice', 'Shared across all your clients'] };
 function plansHTML(yearly) {
   const P = [
     { k: 'free', name: 'Free', price: 0, blurb: 'Everything for your next great post.', cta: 'Start free', feats: ['Instant checks on every draft', 'Sharpen any line, unlimited', 'Quick rewrites on your device, unlimited', 'Learns your voice as you write', `${FREE_POSTS} posts a month`] },
@@ -11998,10 +12023,38 @@ function plansHTML(yearly) {
       : `<button class="btn ${p.hero ? 'primary' : ''} lg" data-plan="${p.k}" ${cur ? 'aria-current="true" disabled' : ''}>${cur ? (mine === 'trial' ? 'On your trial' : 'Your plan') : p.cta}</button>${p.k === 'pro' && trial ? '<button class="pl-trial" data-plan="trial">or try it free for 7 days</button>' : ''}`}</div></div>`;
   }).join('');
 }
+/* r66: add-ons, by the month, on top of Pro or Studio. Each option says its total and what one rewrite works out to */
+function boostHTML() {
+  const plan = planNow(), on = PRICED() && (plan === 'pro' || plan === 'studio'), cur = on ? boostNow() : null;
+  const base = plan === 'studio' ? CR.PLANS.studio.amount * clientVoices() : CR.PLANS.pro.amount;
+  const opt = (b, i) => `<button type="button" role="radio" class="ub-o" data-boost="${b ? b.k : ''}" aria-checked="${on && (b ? cur === b : !cur)}" tabindex="${(on ? (b ? cur === b : !cur) : !b) ? 0 : -1}">
+      <span class="ub-n">${b ? `+${fmtN(b.add)}` : 'None'}</span><span class="ub-t">${fmtN(base + (b ? b.add : 0))} a month in all</span>
+      <b class="ub-p">${b ? `$${b.price}<small>/mo</small>` : '$0'}</b><small class="ub-e">${b ? `About ${(b.price / b.add * 100).toFixed(1)}¢ a rewrite` : `Included with ${plan === 'studio' ? 'Studio' : 'Pro'}`}</small></button>`;
+  return `<section class="up-boost" id="up-boost" aria-labelledby="up-boost-h">
+    <div class="ub-head"><span class="label">Add-ons</span><h2 id="up-boost-h">Need more rewrites? <em>Add them by the month.</em></h2>
+      <p class="muted">Pro comes with 250 Claude rewrites a month. Add more on top, and change or drop it any month. Add-ons refill with your plan.</p></div>
+    <div class="ub-opts" role="radiogroup" aria-labelledby="up-boost-h">${[null, ...CR.BOOSTS].map(opt).join('')}</div>
+    <p class="faint ub-fine">${on ? 'Billed monthly on top of your plan. Turning one off takes it out of this month’s balance.' : 'Add-ons go on top of Pro or Studio.'}</p></section>`;
+}
+function pickBoost(k, btn) {
+  const plan = planNow(), b = CR.BOOSTS.find(x => x.k === k) || null;
+  if (!PRICED()) { toast('Every feature is already on for this account.', { icon: 'gift', tone: 'accent', ms: 4200 }); return; }
+  if (plan !== 'pro' && plan !== 'studio') { if (!b) return; toast(`Add-ons go on top of Pro. Pro plus ${fmtN(b.add)} is ${fmtN(CR.PLANS.pro.amount + b.add)} rewrites a month.`, { icon: 'spark', tone: 'accent', action: 'Start with Pro', onAction: () => { setPlan('pro'); setBoost(k); route(); toast(`You’re on Pro with ${fmtN(CR.PLANS.pro.amount + b.add)} Claude rewrites a month.`, { icon: 'spark', tone: 'accent' }); } }); return; }
+  if ((boostNow() || null) === b) return;
+  setBoost(k); const w = $('#up-boost'); if (w) { w.outerHTML = boostHTML(); const nb = $(`#up-boost [data-boost="${k || ''}"]`); nb && nb.focus(); }
+  if (b) { burstFrom(btn); SFX.play('done'); }
+  const amt = CR.status(S.cr, plan).amount; toast(b ? `Added ${fmtN(b.add)} rewrites a month: ${fmtN(amt)} in all, $${b.price} a month on top of your plan.` : `Add-on off. You’re back to ${fmtN(amt)} a month.`, { icon: b ? 'spark' : 'check', ...(b ? { tone: 'accent' } : {}) });
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-boost]'); if (b) pickBoost(b.dataset.boost, b); });
+document.addEventListener('keydown', e => {
+  const b = e.target.closest && e.target.closest('.ub-o'); if (!b || !/^Arrow(Left|Right|Up|Down)$/.test(e.key)) return;
+  const all = $$('#up-boost .ub-o'), i = all.indexOf(b), n = all[(i + (/Right|Down/.test(e.key) ? 1 : all.length - 1)) % all.length]; e.preventDefault(); n.focus(); n.click();
+});
 /* how credits work: the allowance per plan side by side, and what each thing costs (Plans page) */
 function creditsExplainHTML() {
   const rows = [
-    ['Claude rewrites', '20 a month', '500 a month', '500 a month per client voice, shared'],
+    ['Claude rewrites', '20 a month', '250 a month', '500 a month per client voice, shared'],
+    ['Need more?', '', `Add ${CR.BOOSTS.map(b => `${fmtN(b.add)} for $${b.price}`).join(', ')} a month`, 'The same add-ons, shared by every voice'],
     ['Posts', `${FREE_POSTS} a month`, 'Up to 500 a month', 'Up to 500 a month per client voice'],
     ['When they refill', 'Monthly, on the day you joined', 'Monthly, on the day you joined', 'Monthly, on the day you joined'],
     ['Leftovers', 'Start fresh each month', 'First month rolls over', 'First month rolls over'],
@@ -12039,7 +12092,7 @@ function choosePlan(k, btn) {
     btn.classList.remove('is-loading'); setPlan(k); burstFrom(btn);
     modal(`<div class="modal-b" style="text-align:center;display:grid;gap:14px;justify-items:center;padding:36px 28px">
       <div class="appicon" style="width:72px;height:72px;border-radius:18px">${LOGO_MARK.replace('class="mark"', 'class="mark" style="width:40px;height:40px"')}</div>
-      <h2 class="display" style="font-size:40px">You’re on ${cap(k)}.</h2><p class="muted" style="max-width:36ch">${k === 'studio' ? 'Client voices and approvals are on, with 500 Claude rewrites a month for each client voice, shared.' : '500 Claude rewrites a month, in your voice.'}</p>
+      <h2 class="display" style="font-size:40px">You’re on ${cap(k)}.</h2><p class="muted" style="max-width:36ch">${k === 'studio' ? 'Client voices and approvals are on, with 500 Claude rewrites a month for each client voice, shared.' : '250 Claude rewrites a month, in your voice. Need more? Add them on Plans, any month.'}</p>
       <button class="btn primary lg" data-close style="margin-top:6px">${S.onboarded ? 'Back to writing' : 'Set up your account'}</button></div>`, { center: true, label: 'Plan changed', onClose: () => go(S.onboarded ? 'write' : 'start') });
   }, 800);
 }
@@ -12224,7 +12277,7 @@ const FAQ = [
   ['Will it make things up?', 'No. Rewrites keep your claim and show every changed word for you to keep or undo. If a line needs a number you didn’t give, it writes [your number] and waits for yours.'],
   ['Is it for my niche?', 'Yes. Creators, founders, ghostwriters and market writers all get the same tools, and What’s working reads the accounts you pick, in your niche.'],
   ['Can I bring my old posts?', 'Yes. Drop in your X archive, a Typefully or CSV export, or paste posts in. They’re read in your browser, and they teach Hookworthy how you open and when your people reply.'],
-  ['What happens when I hit my free usage?', 'Nothing breaks. The checks, Sharpen and Quick mode keep working, and your 20 Claude rewrites and 15 posts come back each month. Pro gives you 500 of each, and your first month’s leftovers roll over.']
+  ['What happens when I hit my free usage?', 'Nothing breaks. The checks, Sharpen and Quick mode keep working, and your 20 Claude rewrites and 15 posts come back each month. Pro gives you 250 Claude rewrites and 500 posts a month, more rewrites whenever you add them, and your first month’s leftovers roll over.']
 ];
 
 /* ---------- round 29: one nav and one footer for the light-world pages (#home, #tools, #teams, #developers) ---------- */
@@ -12949,7 +13002,7 @@ function hzWhoHTML() {
 /* ---------- pricing: three cards, Pro on the other theme ---------- */
 const HX_PLANS = [
   { k: 'free', name: 'Free', blurb: 'Everything for your next great post.', inc: ['Sharpen any line, unlimited', 'Claude rewrites, 20 a month', 'Learns your voice as you write', 'Live previews for every network', `${FREE_POSTS} posts a month`] },
-  { k: 'pro', name: 'Pro', blurb: 'For creators who want their posts to pay.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice, 500 a month', 'Results: what works for your audience', 'A ping when a post takes off', 'Your week, drafted from your ideas', 'Up to 500 posts a month'] },
+  { k: 'pro', name: 'Pro', blurb: 'For creators who want their posts to pay.', inc: ['Everything in Free, and:', 'Claude rewrites in your voice, 250 a month', 'Need more? Add up to 1,750 a month', 'Results: what works for your audience', 'A ping when a post takes off', 'Your week, drafted from your ideas', 'Up to 500 posts a month'] },
   { k: 'studio', name: 'Studio', blurb: 'For ghostwriters and agencies.', inc: ['Everything in Pro, and:', 'Priced per client voice', 'Each client learns their own voice', 'Clients approve before anything posts', 'Review links per client'] }
 ];
 const hzBillNote = (k, y) => k === 'free' ? 'No card, ever' : y ? `Billed yearly, $${PRICES[k][0] * 12} a year${PER(k)}` : `Billed monthly, or $${PRICES[k][0]} a month yearly`;
@@ -15070,6 +15123,7 @@ ROUTES.upgrade = () => {
     ['Is the free plan actually free?', 'Yes. 20 Claude rewrites and 15 posts a month, Sharpen and quick rewrites as much as you like, and unlimited drafts and ideas. No card.'],
     ['What counts as a rewrite?', 'One Claude rewrite of a post, with three versions to pick from. Bigger jobs, like Plan my week or Learn my voice, count as a few and say so on the button. Sharpen never counts.'],
     ['What happens when I run out?', 'Nothing breaks. You get the quick version on the spot, free, and Free refills each month. On Pro, your first month’s leftovers roll over into the second.'],
+    ['Can I get more than 250 rewrites?', `Yes. Add ${CR.BOOSTS.map(b => `${fmtN(b.add)} for $${b.price}`).join(', ')} a month on top of Pro or Studio. Change or drop it any month, and it refills with your plan.`],
     ['Is the trial really free?', 'Yes. Seven days of Pro, no card. It ends on its own and you’re back on Free with everything you wrote. One trial per account.'],
     ['Will it sound like ChatGPT?', 'It shouldn’t. It learns from your posts, follows your tone sliders and never uses anything on your never-say list. If a word isn’t you, add it to that list.'],
     ...(BILLING ? [['Can I cancel anytime?', 'Yes, from Your plan in the account menu. Your drafts and ideas stay with you on Free.']] : []),
@@ -15081,6 +15135,7 @@ ROUTES.upgrade = () => {
     ${crMeterHTML('page')}
     <div class="seg" id="up-bill" role="tablist" aria-label="Billing period"><button role="tab" aria-selected="false" data-bill="m">Monthly</button><button role="tab" aria-selected="true" data-bill="y">Yearly · save 25%</button></div></div>
     <div class="pl-grid" id="up-plans" style="margin-top:32px">${plansHTML(true)}</div>
+    ${boostHTML()}
     <div class="faq up-faq"><span class="label">Questions</span><h2 id="up-faq-h">Fair questions. <em>Straight answers.</em></h2>${faq.map(([q, a]) => `<details><summary>${q}${ic('plus')}</summary><p>${a}</p></details>`).join('')}</div>
     </div>`);
   syncSeg($('#up-bill'));

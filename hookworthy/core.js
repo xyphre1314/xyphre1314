@@ -1841,12 +1841,20 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
      Unused paid usage from the first month rolls over once, up to one extra month's worth. */
   const CR_DAY = 864e5;
   const CR_PLANS = {
-    /* r65: Free gets a monthly taste of Claude (Sharpen stays free and unlimited); Pro 500 a month; Studio 500 per client voice, shared */
+    /* r65: Free gets a monthly taste of Claude (Sharpen stays free and unlimited); Pro 250 a month, more as a monthly add-on;
+       Studio 500 per client voice, shared */
     free: { name: 'Free', amount: 20, per: 'month', roll: 0 },
     trial: { name: 'Pro trial', amount: 100, per: 'trial', roll: 0, days: 7 },
-    pro: { name: 'Pro', amount: 500, per: 'month', roll: 500 },
+    pro: { name: 'Pro', amount: 250, per: 'month', roll: 250 },
     studio: { name: 'Studio', amount: 500, per: 'month', roll: 500, pooled: true, perVoice: true }
   };
+  /* r66: monthly add-ons on a paid plan: more Claude rewrites every month, on top of what the plan includes */
+  const CR_BOOSTS = [
+    { k: 'b250', add: 250, price: 8 },
+    { k: 'b750', add: 750, price: 22 },
+    { k: 'b1750', add: 1750, price: 45 }
+  ];
+  const crBoost = k => CR_BOOSTS.find(b => b.k === k) || null;
   const CR_ACTS = {
     rewrite: { c: 1, label: 'Rewrite', does: 'Three versions in your voice that keep every number and name', long: true },
     instruct: { c: 1, label: 'Rewrite with a note', does: 'Your note, done in your voice, with every fact kept', long: true },
@@ -1888,14 +1896,16 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   }
   /* Studio's allowance is per client voice; every other plan has one amount */
   const crVoices = v => Math.max(1, Math.floor(+v || 1));
-  const crAmt = (P, v) => P.amount * (P.perVoice ? crVoices(v) : 1);
-  function crFresh(plan, now = Date.now(), voices = 1) { const P = CR_PLANS[plan] || CR_PLANS.free; return { plan: CR_PLANS[plan] ? plan : 'free', bal: crAmt(P, voices), anchor: now, next: crNext(plan, now, now), warned: 0, ...(P.perVoice ? { voices: crVoices(voices) } : {}) }; }
+  /* a paid plan's month: what it includes (per client voice on Studio) plus any add-on */
+  const crPaid = P => P.per === 'month' && P.roll > 0;
+  const crAmt = (P, v, boost) => P.amount * (P.perVoice ? crVoices(v) : 1) + (crPaid(P) && crBoost(boost) ? crBoost(boost).add : 0);
+  function crFresh(plan, now = Date.now(), voices = 1, boost = null) { const P = CR_PLANS[plan] || CR_PLANS.free, b = crPaid(P) && crBoost(boost) ? boost : null; return { plan: CR_PLANS[plan] ? plan : 'free', bal: crAmt(P, voices, b), anchor: now, next: crNext(plan, now, now), warned: 0, ...(P.perVoice ? { voices: crVoices(voices) } : {}), ...(b ? { boost: b } : {}) }; }
   /* bring a saved ledger up to now: a new plan starts fresh, a passed refill tops it up */
   function crSettle(st, plan, now = Date.now()) {
     const P = CR_PLANS[plan] || CR_PLANS.free;
-    if (!st || typeof st !== 'object' || st.plan !== plan || !(st.next > 0) || typeof st.bal !== 'number' || !isFinite(st.bal)) return crFresh(plan, now, st && st.voices);
+    if (!st || typeof st !== 'object' || st.plan !== plan || !(st.next > 0) || typeof st.bal !== 'number' || !isFinite(st.bal)) return crFresh(plan, now, st && st.voices, st && st.boost);
     if (now < st.next || P.per === 'trial') return st;
-    const A = crAmt(P, st.voices), R = P.roll * (P.perVoice ? crVoices(st.voices) : 1);
+    const A = crAmt(P, st.voices, st.boost), R = P.roll ? A : 0; /* the first month's leftovers roll over, up to one month's worth */
     if (P.per === 'day') return { ...st, bal: A, next: crNext(plan, now), warned: 0 };
     let bal = Math.max(0, st.bal), next = st.next, n = 0;
     /* round 46: only the first month's leftovers carry over; from the second refill on, each month starts at the plan's amount */
@@ -1905,12 +1915,14 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* what the meter shows. low = about 80% used (the gentle heads-up), plenty = paid and at least a quarter left (no count) */
   function crStatus(st, plan, now = Date.now()) {
     const P = CR_PLANS[plan] || CR_PLANS.free; const s = crSettle(st, plan, now);
-    const left = Math.max(0, Math.floor(s.bal)), amount = crAmt(P, s.voices);
+    const left = Math.max(0, Math.floor(s.bal)), amount = crAmt(P, s.voices, s.boost);
     return { plan, name: P.name, per: P.per, left, amount, next: s.next, rolled: Math.max(0, left - amount), frac: clamp(left / amount, 0, 1), empty: left <= 0, low: left <= Math.ceil(amount * .2), plenty: plan !== 'free' && left >= amount * .25, ended: P.per === 'trial' && now >= s.next, st: s };
   }
   /* take c credits, or null when there aren't enough (nothing is taken) */
   function crSpend(st, c) { if (!(c > 0)) return st; if (!st || st.bal < c) return null; return { ...st, bal: st.bal - c }; }
-  const CREDITS = { PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
+  /* switch add-ons mid-month: the difference lands now, and every later month refills at the new amount */
+  function crSetBoost(st, plan, boost, now = Date.now()) { const P = CR_PLANS[plan]; if (!P || !crPaid(P)) return st; const s = crSettle(st, plan, now), b = crBoost(boost) ? boost : null, before = crAmt(P, s.voices, s.boost), after = crAmt(P, s.voices, b); const out = { ...s, bal: Math.max(0, s.bal + (after - before)) }; if (b) out.boost = b; else delete out.boost; return out; }
+  const CREDITS = { BOOSTS: CR_BOOSTS, setBoost: crSetBoost, PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
 
   return { ROOM, CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN, hookUp, memory: { memNew, memPost, memEdit, memChoice, memKeep, memDigest, memPref, memKeepList, MOVE_NAMES } };
 });

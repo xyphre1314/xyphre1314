@@ -1018,7 +1018,7 @@ The owner chose the lead audience: **stuck creators and monetisers**. These are 
 | Plan | Price | Claude rewrites | Posts |
 |---|---|---|---|
 | **Free** | $0 | 20 a month | 15 a month |
-| **Pro** | $12/mo billed yearly, $16 monthly | 500 a month (first month rolls over once) | up to 500 a month |
+| **Pro** | $12/mo billed yearly, $16 monthly | 500 a month (first month rolls over once); 250 from round 66 | up to 500 a month |
 | **Studio** | $18 per client voice/mo billed yearly, $24 monthly | 500 per client voice, shared | up to 500 per client voice |
 
 - **Free:** Sharpen, quick rewrites and voice learning are unlimited. The 7-day Pro trial now comes with 100 rewrites.
@@ -1034,3 +1034,29 @@ The owner chose the lead audience: **stuck creators and monetisers**. These are 
 - **Sonnet 5.5 (writing):** everything that writes in the author's voice. Three stronger first lines moved up to this tier, because they're the product's core.
 - **Opus 5.5 (voice study):** the one deep read every later rewrite depends on. Roughly 13¢, once per user.
 - **What a user costs us (estimate):** a maxed-out Pro user about $7–9 a month against $12–16; a typical one $2–4; a free user under $0.50.
+
+## Round 66: Pro at 250 rewrites, more as an add-on
+
+The owner set Pro at **250 Claude rewrites a month**. Anyone who needs more adds them by the month, up to 2,000 in all.
+
+| Add-on | Price a month | Pro total | Works out to |
+|---|---|---|---|
+| None | $0 | 250 | included |
+| +250 | $8 | 500 | about 3.2¢ a rewrite |
+| +750 | $22 | 1,000 | about 2.9¢ a rewrite |
+| +1,750 | $45 | 2,000 | about 2.6¢ a rewrite |
+
+- **Why these prices:** a Sonnet rewrite costs us roughly 1.5–2.5¢, so every add-on stays above cost even when it's fully used. The biggest one is the cheapest per rewrite, so heavy users have a reason to commit.
+- **Studio** stays at 500 per client voice. The same add-ons go on top, shared by every voice.
+- **Free and the trial** never take add-ons. Picking one there explains that add-ons go on top of Pro, and offers to start Pro with that add-on in one step.
+- **How it behaves (core.js `CREDITS.BOOSTS`, `setBoost`):**
+  - Adding one mid-month lands the difference now. Dropping one takes it back out, never below zero.
+  - Every later refill includes the add-on, and the first month's rollover cap grows with it.
+  - Switching between Pro and Studio keeps it.
+- **Where it shows:**
+  - The Pro card: "250 Claude rewrites a month. Need more? Add up to 1,750 a month."
+  - An add-on picker on Plans, under the cards. It's a radio group of four, works with the arrow keys, and shows the total and the per-rewrite price on each option.
+  - When a paid plan runs out, the sheet offers the next add-on in one click ("Add 250 a month · $8/mo") and finishes the job that was waiting.
+  - A new FAQ: "Can I get more than 250 rewrites?"
+  - The homepage Pro card, the trial-low toast and the plan-changed modal all say 250.
+- **Still demo:** nothing is billed. A real server would set the add-on on the saved ledger from its billing.
