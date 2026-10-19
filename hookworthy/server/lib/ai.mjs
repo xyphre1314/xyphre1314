@@ -1,16 +1,23 @@
 /* Claude for Hookworthy.
-   Every tier runs on Opus 5.5; effort is the dial. Thinking is always on there, so effort decides how much
-   it thinks: low for quick edits (grammar, sharpen, hook critiques), medium for everyday writing, high for
-   voice study, the one deep read every later rewrite depends on. Each tier can be pointed at another model
-   with HW_MODEL_QUICK / HW_MODEL_DEFAULT / HW_MODEL_COMPLEX. Refusals fall back server-side ("default").
-   Calls that send a schema get structured outputs, so the reply is valid JSON by construction. */
+   Each tier gets the smallest model that does the job well, and effort is the second dial:
+   - quick: Haiku 5.5, low effort. Mechanical jobs: grammar, sharpening a phrase, comparing two lines,
+     tidying a dictation, picking a visual. About a tenth of a cent a call.
+   - default: Sonnet 5.5, medium effort. Anything that writes in the author's voice: rewrites, first lines,
+     the Room, replies, the week plan, posts from a brief or a picture.
+   - complex: Opus 5.5, high effort. Voice study, the one deep read every later rewrite depends on.
+   Each tier can be pointed at another model with HW_MODEL_QUICK / HW_MODEL_DEFAULT / HW_MODEL_COMPLEX.
+   Refusals fall back server-side ("default") where the model offers it; Haiku has no server-side
+   fallback, so its calls go without one. Calls that send a schema get structured outputs, so the reply is
+   valid JSON by construction. */
 import Anthropic from '@anthropic-ai/sdk';
 
 export const MODELS = {
-  quick: process.env.HW_MODEL_QUICK || 'claude-opus-5-5',
-  default: process.env.HW_MODEL_DEFAULT || 'claude-opus-5-5',
+  quick: process.env.HW_MODEL_QUICK || 'claude-haiku-5-5',
+  default: process.env.HW_MODEL_DEFAULT || 'claude-sonnet-5-5',
   complex: process.env.HW_MODEL_COMPLEX || 'claude-opus-5-5'
 };
+/* Haiku declines without a server-side fallback: a fallbacks list would 400, and "default" changes nothing */
+const hasFallback = model => !/haiku/i.test(String(model));
 const EFFORT = { quick: 'low', default: 'medium', complex: 'high' };
 /* thinking counts toward max_tokens, so each cap leaves room for it; 20000 stays under the SDK's non-streaming ceiling */
 const MAX_TOKENS = { quick: 8000, default: 16000, complex: 20000 };
@@ -73,8 +80,7 @@ export async function complete({ prompt, tier = 'default', json = false, docs = 
       system: json && !out ? SYSTEM + JSON_ONLY : SYSTEM,
       output_config: { effort: EFFORT[t], ...(out ? { format: out.format } : {}) },
       messages: [{ role: 'user', content: blocks.length ? [...blocks, { type: 'text', text: prompt }] : prompt }],
-      betas: ['server-side-fallback-2026-07-01'],
-      fallbacks: 'default'
+      ...(hasFallback(MODELS[t]) ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' } : {})
     });
   } catch (e) {
     if (e instanceof Anthropic.RateLimitError) throw new AIError('rate_limited', 'Claude is rate limited; try again shortly', 429);

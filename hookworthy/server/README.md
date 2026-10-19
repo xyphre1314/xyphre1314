@@ -12,15 +12,15 @@ npm test                # 28 tests, no keys or network needed
 
 ## Which Claude does what
 
-Every tier runs on `claude-opus-5-5`; effort decides how much it thinks (thinking is always on).
+Each tier gets the smallest model that does the job well; effort is the second dial (thinking is adaptive on all three).
 
-| Work | Tier | Effort | Why |
-|---|---|---|---|
-| Grammar, Sharpen, hook critiques, A/B lines, visuals | `quick` | `low` | Small, fast edits |
-| Rewrites, ideas, post-mortems, people patterns, briefs, replies | `default` | `medium` | Everyday writing |
-| Learn my voice (reads up to 120 posts once) | `complex` | `high` | One deep read that every later rewrite depends on |
+| Work | Tier | Model | Effort | Why |
+|---|---|---|---|---|
+| Grammar, sharpening a phrase, A/B lines, tidying a dictation, visuals | `quick` | `claude-haiku-5-5` | `low` | Small mechanical edits, about a tenth of a cent each |
+| Rewrites, three stronger first lines, the Room, ideas, post-mortems, people patterns, briefs, replies, the week plan | `default` | `claude-sonnet-5-5` | `medium` | Writing in the author's voice |
+| Learn my voice (reads up to 120 posts once) | `complex` | `claude-opus-5-5` | `high` | One deep read that every later rewrite depends on |
 
-Point a tier at another model with `HW_MODEL_QUICK`, `HW_MODEL_DEFAULT` or `HW_MODEL_COMPLEX`. Every request opts into server-side refusal fallbacks (`fallbacks: "default"`). Prompts live in `../core.js`, shared with the browser and the MCP server, so every path asks the same way. Each prompt also carries a JSON Schema, which the server sends as structured outputs (`output_config.format`), so replies parse every time.
+Point a tier at another model with `HW_MODEL_QUICK`, `HW_MODEL_DEFAULT` or `HW_MODEL_COMPLEX`. Sonnet and Opus requests opt into server-side refusal fallbacks (`fallbacks: "default"`); Haiku has none, so its requests go without. Prompts live in `../core.js`, shared with the browser and the MCP server, so every path asks the same way. Each prompt also carries a JSON Schema, which the server sends as structured outputs (`output_config.format`), so replies parse every time.
 
 Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (the `sample` capability: `default` tier for writing, `complex` for voice study). No server or key needed.
 

@@ -836,8 +836,9 @@ ${text}
 
 Reply with only JSON: {"lines":[{"agent":"mo","line":"..."}]} with one line for each of the six agents.` };
     },
+    /* three stronger first lines are the product's core, so they get the writing model, not the quick one */
     critique({ text, voice }) {
-      return { tier: 'quick', json: true, schema: SCHEMA.critique, prompt: `${BRIEF}
+      return { tier: 'default', json: true, schema: SCHEMA.critique, prompt: `${BRIEF}
 
 ${voiceBlock(voice)}
 
@@ -1836,14 +1837,15 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* ---------------- Claude credits ----------------
      One table for the app, the server and the tests. A credit is one everyday piece of Claude writing (a post rewrite).
      Bigger jobs cost more, and the button says how much before you click. Basic mode runs on your device and never uses
-     a credit, and neither do Sharpen and the small automatic helpers. Free refills every day at midnight. Paid plans
-     refill monthly on the day you joined. Unused usage from the first month rolls over once, up to one extra month's worth. */
+     a credit, and neither do Sharpen and the small automatic helpers. Every plan refills monthly, on the day you joined.
+     Unused paid usage from the first month rolls over once, up to one extra month's worth. */
   const CR_DAY = 864e5;
   const CR_PLANS = {
-    free: { name: 'Free', amount: 10, per: 'day', roll: 0 },
-    trial: { name: 'Pro trial', amount: 250, per: 'trial', roll: 0, days: 7 },
-    pro: { name: 'Pro', amount: 1000, per: 'month', roll: 1000 },
-    studio: { name: 'Studio', amount: 4000, per: 'month', roll: 4000, pooled: true }
+    /* r65: Free gets a monthly taste of Claude (Sharpen stays free and unlimited); Pro 500 a month; Studio 500 per client voice, shared */
+    free: { name: 'Free', amount: 20, per: 'month', roll: 0 },
+    trial: { name: 'Pro trial', amount: 100, per: 'trial', roll: 0, days: 7 },
+    pro: { name: 'Pro', amount: 500, per: 'month', roll: 500 },
+    studio: { name: 'Studio', amount: 500, per: 'month', roll: 500, pooled: true, perVoice: true }
   };
   const CR_ACTS = {
     rewrite: { c: 1, label: 'Rewrite', does: 'Three versions in your voice that keep every number and name', long: true },
@@ -1877,29 +1879,33 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return c;
   }
   function crAddMonths(t, k) { const a = new Date(t), d = a.getDate(); const x = new Date(a.getFullYear(), a.getMonth() + k, 1, a.getHours(), a.getMinutes(), a.getSeconds(), a.getMilliseconds()); x.setDate(Math.min(d, new Date(x.getFullYear(), x.getMonth() + 1, 0).getDate())); return x.getTime(); }
-  /* when the next refill lands: local midnight (Free), the end of the trial, or the next monthly anniversary of joining */
+  /* when the next refill lands: the end of the trial, or the next monthly anniversary of joining (every plan, Free included) */
   function crNext(plan, now, anchor = now) {
     const P = CR_PLANS[plan] || CR_PLANS.free;
     if (P.per === 'day') { const d = new Date(now); d.setHours(24, 0, 0, 0); return d.getTime(); }
     if (P.per === 'trial') return anchor + P.days * CR_DAY;
     let k = 1; while (crAddMonths(anchor, k) <= now && k < 2400) k++; return crAddMonths(anchor, k);
   }
-  function crFresh(plan, now = Date.now()) { const P = CR_PLANS[plan] || CR_PLANS.free; return { plan: CR_PLANS[plan] ? plan : 'free', bal: P.amount, anchor: now, next: crNext(plan, now, now), warned: 0 }; }
+  /* Studio's allowance is per client voice; every other plan has one amount */
+  const crVoices = v => Math.max(1, Math.floor(+v || 1));
+  const crAmt = (P, v) => P.amount * (P.perVoice ? crVoices(v) : 1);
+  function crFresh(plan, now = Date.now(), voices = 1) { const P = CR_PLANS[plan] || CR_PLANS.free; return { plan: CR_PLANS[plan] ? plan : 'free', bal: crAmt(P, voices), anchor: now, next: crNext(plan, now, now), warned: 0, ...(P.perVoice ? { voices: crVoices(voices) } : {}) }; }
   /* bring a saved ledger up to now: a new plan starts fresh, a passed refill tops it up */
   function crSettle(st, plan, now = Date.now()) {
     const P = CR_PLANS[plan] || CR_PLANS.free;
-    if (!st || typeof st !== 'object' || st.plan !== plan || !(st.next > 0) || typeof st.bal !== 'number' || !isFinite(st.bal)) return crFresh(plan, now);
+    if (!st || typeof st !== 'object' || st.plan !== plan || !(st.next > 0) || typeof st.bal !== 'number' || !isFinite(st.bal)) return crFresh(plan, now, st && st.voices);
     if (now < st.next || P.per === 'trial') return st;
-    if (P.per === 'day') return { ...st, bal: P.amount, next: crNext(plan, now), warned: 0 };
+    const A = crAmt(P, st.voices), R = P.roll * (P.perVoice ? crVoices(st.voices) : 1);
+    if (P.per === 'day') return { ...st, bal: A, next: crNext(plan, now), warned: 0 };
     let bal = Math.max(0, st.bal), next = st.next, n = 0;
     /* round 46: only the first month's leftovers carry over; from the second refill on, each month starts at the plan's amount */
-    while (now >= next && n++ < 2400) { const first = next <= crAddMonths(st.anchor, 1); bal = first ? Math.min(P.amount + P.roll, bal + P.amount) : P.amount; next = crNext(plan, next, st.anchor); }
+    while (now >= next && n++ < 2400) { const first = next <= crAddMonths(st.anchor, 1); bal = first ? Math.min(A + R, bal + A) : A; next = crNext(plan, next, st.anchor); }
     return { ...st, bal, next, warned: 0 };
   }
   /* what the meter shows. low = about 80% used (the gentle heads-up), plenty = paid and at least a quarter left (no count) */
   function crStatus(st, plan, now = Date.now()) {
     const P = CR_PLANS[plan] || CR_PLANS.free; const s = crSettle(st, plan, now);
-    const left = Math.max(0, Math.floor(s.bal)), amount = P.amount;
+    const left = Math.max(0, Math.floor(s.bal)), amount = crAmt(P, s.voices);
     return { plan, name: P.name, per: P.per, left, amount, next: s.next, rolled: Math.max(0, left - amount), frac: clamp(left / amount, 0, 1), empty: left <= 0, low: left <= Math.ceil(amount * .2), plenty: plan !== 'free' && left >= amount * .25, ended: P.per === 'trial' && now >= s.next, st: s };
   }
   /* take c credits, or null when there aren't enough (nothing is taken) */

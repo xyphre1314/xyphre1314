@@ -982,3 +982,55 @@ The more someone uses Hookworthy, the more it writes like them. Each voice keeps
   - **Milestones:** at 3, 10, 25 and 50 posts a toast says "Learned from N of your posts" with "See what it learned". It appears after the Scheduled confirmation has had its moment.
   - **Onboarding:** the voice line reads "Starting voice · learns as you write".
 - **Privacy:** the memory lives with the rest of your data on the device. It reaches Claude only as part of a prompt you trigger.
+
+## Round 65: who we're for, pricing that pays for itself
+
+### Who it speaks to
+The owner chose the lead audience: **stuck creators and monetisers**. These are people with some audience whose reach has flattened and who want their posts to pay. The timing is X's change of 8 September 2026: "Original Content Rewards" pays for original posts seen on the Home timeline, and replies no longer count. The qualifying bar is X Premium, 500 verified followers, and 500K verified Home-timeline impressions in 90 days. The first line is now literally where the money is.
+
+- **Homepage:**
+  - A "New on X: Original posts earn now. Replies don't." pill over the hero.
+  - The sub now speaks to the plateau: "Stuck at the same reach?…"
+  - **New section, "Replies don't pay anymore. Your posts do.":**
+    - the bar to qualify, with a dated fine print that points to Creator Studio;
+    - make the first line count;
+    - find what works for you;
+    - stay in good standing (no auto-DMs or replies, no bought reach).
+  - Nothing promises reach or payouts.
+- **The Creators tab:** now "Posting every day, reach stuck? Start with the first line."
+- **FAQ:**
+  - "Will this get me paid on X?" gets an honest answer.
+  - "Coming from Typefully, Hypefury or Black Magic?" links to the switching page.
+- **Switching page (#switch, linked from the footer):**
+  - Black Magic closed on 1 July 2026, and Hypefury no longer supports X.
+  - One card per tool: what comes with you, what you get here, and one honest line. For Typefully that line is "Only need scheduling? Typefully's Creator plan is cheaper."
+  - Four steps built around the X archive.
+- **First 100 followers plan (Week, new accounts, first 30 days):**
+  - Every day: one post, three replies, one idea. Replies sit in the middle, because small accounts grow mostly from replies.
+  - "Write it" opens today's idea; "Find posts" goes to the reply radar; "Add an idea" goes to Ideas.
+  - A 30-square strip marks the days where all three were done.
+  - It never shows a follower number it can't see. It can be hidden, and it's in Settings.
+
+### Pricing, after Typefully and SuperX
+- **What we took from Typefully:** free covers the habit and paid covers what costs money; per-account pricing for agencies; plan names that say who each plan is for.
+- **What we took from SuperX:** mostly a counter-position. They sell auto-DMs and lead agents; we sell good standing.
+
+| Plan | Price | Claude rewrites | Posts |
+|---|---|---|---|
+| **Free** | $0 | 20 a month | 15 a month |
+| **Pro** | $12/mo billed yearly, $16 monthly | 500 a month (first month rolls over once) | up to 500 a month |
+| **Studio** | $18 per client voice/mo billed yearly, $24 monthly | 500 per client voice, shared | up to 500 per client voice |
+
+- **Free:** Sharpen, quick rewrites and voice learning are unlimited. The 7-day Pro trial now comes with 100 rewrites.
+- **Pro:** "For creators who want their posts to pay."
+- **Studio:** "For ghostwriters and agencies". Adding a client tops up the shared allowance.
+- **How it's enforced:**
+  - Every plan now refills monthly.
+  - The 16th post of the month on Free is stopped with a plain message saying when the allowance comes back.
+  - Editing an already-queued post never counts against the limit.
+
+### Models: the smallest that does the job
+- **Haiku 5.5 (quick):** grammar, sharpening a phrase, comparing two lines, tidying a dictation, picking a visual. About 0.1¢ a call. It has no server-side refusal fallback, so those calls go without one.
+- **Sonnet 5.5 (writing):** everything that writes in the author's voice. Three stronger first lines moved up to this tier, because they're the product's core.
+- **Opus 5.5 (voice study):** the one deep read every later rewrite depends on. Roughly 13¢, once per user.
+- **What a user costs us (estimate):** a maxed-out Pro user about $7–9 a month against $12–16; a typical one $2–4; a free user under $0.50.
