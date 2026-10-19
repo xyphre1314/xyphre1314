@@ -58,6 +58,8 @@ export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => 
 /* every Claude call someone makes goes through their credits (when this server meters them): priced from the action, the
    files and the tier with the same table as the app, taken before the call, given back if the call fails */
 const outOfCredits = (res, q) => send(res, 402, { error: `That needs ${q.cost} credit${q.cost === 1 ? '' : 's'} and ${q.credits.left} ${q.credits.left === 1 ? 'is' : 'are'} left`, code: 'out_of_credits', cost: q.cost, credits: q.credits });
+/* Free's helpers for today are used: say so, say when they're back, and say what Pro does. Nothing was taken */
+const helpersOut = (res, q) => send(res, 402, { error: `That’s today’s ${CR.FAIR_ASSISTS} free Claude touch-ups. They’re back at midnight, or go Pro for more.`, code: 'helpers_out', cost: 0, credits: q.credits });
 async function withCredits(req, info, run) { const q = CR.reserve(tokenOf(req), info); if (!q.ok) return { q }; try { return { q, r: await run() }; } catch (e) { q.refund(); throw e; } }
 const spent = q => q.metered ? { cost: q.cost, credits: q.credits } : {};
 
@@ -77,7 +79,7 @@ export async function handle(req, res) {
       if (!allow(ip, (b.tier === 'complex' ? 5 : 1) + docs.length * 2)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' });
       if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' });
       const { q, r } = await withCredits(req, { act: typeof b.act === 'string' ? b.act : '', docs: docs.length, chars: +b.chars || 0, tier: b.tier, bytes: Buffer.byteLength(String(b.prompt || '')) }, () => AI.complete({ prompt: b.prompt, tier: b.tier, json: !!b.json, schema: b.schema, docs }));
-      if (!r) return outOfCredits(res, q);
+      if (!r) return q.code === 'helpers_out' ? helpersOut(res, q) : outOfCredits(res, q);
       return send(res, 200, { text: r.text, data: r.data, model: r.model, truncated: r.truncated, ...spent(q) });
     }
 

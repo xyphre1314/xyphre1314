@@ -1877,6 +1877,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     setup: { c: 0, label: 'Setting up', assist: true }
   };
   const CR_LONG = 1000;
+  /* r66: the small Claude helps (Sharpen, tidying, picking a visual) are free up to this many a day. After that Free waits
+     for midnight (on-device Sharpen keeps working), and paid plans pay 1 each from their allowance */
+  const CR_HELPERS = 50;
   /* what one call costs: the action's price, +1 for a post over 1,000 characters, +1 per PDF or picture Claude reads.
      The bigger model's tier never costs less than voice study, whatever the caller calls it */
   function crCost(act, { docs = 0, chars = 0, tier } = {}) {
@@ -1922,7 +1925,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function crSpend(st, c) { if (!(c > 0)) return st; if (!st || st.bal < c) return null; return { ...st, bal: st.bal - c }; }
   /* switch add-ons mid-month: the difference lands now, and every later month refills at the new amount */
   function crSetBoost(st, plan, boost, now = Date.now()) { const P = CR_PLANS[plan]; if (!P || !crPaid(P)) return st; const s = crSettle(st, plan, now), b = crBoost(boost) ? boost : null, before = crAmt(P, s.voices, s.boost), after = crAmt(P, s.voices, b); const out = { ...s, bal: Math.max(0, s.bal + (after - before)) }; if (b) out.boost = b; else delete out.boost; return out; }
-  const CREDITS = { BOOSTS: CR_BOOSTS, setBoost: crSetBoost, PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
+  const CREDITS = { HELPERS: CR_HELPERS, BOOSTS: CR_BOOSTS, setBoost: crSetBoost, PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
 
   return { ROOM, CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN, hookUp, memory: { memNew, memPost, memEdit, memChoice, memKeep, memDigest, memPref, memKeepList, MOVE_NAMES } };
 });

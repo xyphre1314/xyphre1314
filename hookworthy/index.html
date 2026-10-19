@@ -6058,19 +6058,25 @@ async function ask(spec, { signal, onText, fresh, act, chars = 0, basic = false,
   await LLM.ready;
   /* Pitches: priced before the call (the button already said so), refused before anything is sent when there aren't
      enough, and used only when Claude answers. Quick mode never comes through here */
-  const docs = spec.docs ? spec.docs.length : 0, cost = aiOn() ? crCost(act, { docs, chars, tier: spec.tier }) : 0;
+  const docs = spec.docs ? spec.docs.length : 0; let cost = aiOn() ? crCost(act, { docs, chars, tier: spec.tier }) : 0;
+  /* r66: the small helps are free for 50 a day. Past that, Free waits for midnight and paid plans pay 1 each */
+  const helper = !!(CR.ACTS[act] && CR.ACTS[act].assist) && cost === 0 && aiOn() && METERED();
+  if (helper && hlpOut()) throw { code: 'helpers_out', act, message: 'Today’s free Claude touch-ups are used' };
+  if (helper && !SRV_CR() && hlpToday().n >= CR.HELPERS) cost = 1;
   if (aiOn() && METERED() && cost > crLeft()) throw { code: 'out_of_credits', act, cost, basic, resume, message: 'Not enough AI usage' };
   if (LLM.mode === 'server') {
     const r = await fetch('api/ai', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt: spec.prompt, tier: spec.tier, json: !!spec.json, ...(spec.json && spec.schema ? { schema: spec.schema } : {}), act: act || '', chars, ...(spec.docs && spec.docs.length ? { docs: spec.docs } : {}) }), signal });
     const j = await r.json().catch(() => ({}));
     if (j && j.credits && LLM.server) { const before = crState(); LLM.server.credits = j.credits; crAfter(before); }
     if (j.code === 'out_of_credits' && !j.credits && LLM.server && LLM.server.credits) LLM.server.credits = { ...LLM.server.credits, left: 0 };
-    if (!r.ok) throw { code: j.code || 'upstream_error', message: j.error || r.statusText, ...(j.code === 'out_of_credits' ? { act, cost: j.cost || cost, basic, resume } : {}) };
+    if (j.code === 'helpers_out') { S.hlp = { day: hlpDay(), n: CR.HELPERS }; save(); }
+    if (!r.ok) throw { code: j.code || 'upstream_error', message: j.error || r.statusText, ...(j.code === 'out_of_credits' ? { act, cost: j.cost || cost, basic, resume } : j.code === 'helpers_out' ? { act } : {}) };
+    if (helper) { const hh = j.credits && j.credits.helpers; hlpUsed(j.cost || 0, hh ? hh.max - hh.left : null); }
     return spec.json ? j.data : j.text;
   }
   if (LLM.mode === 'claude') {
     const o = { modelTier: spec.tier || 'default', signal, cache: fresh ? false : true }; if (onText) o.onText = onText;
-    try { const out = spec.json ? await LLM.sample.json(spec.prompt, o) : (await LLM.sample(spec.prompt, o)).text; crCharge(cost); return out; }
+    try { const out = spec.json ? await LLM.sample.json(spec.prompt, o) : (await LLM.sample(spec.prompt, o)).text; crCharge(cost); if (helper) hlpUsed(cost); return out; }
     catch (e) { if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(e && e.code)) { LLM.mode = 'offline'; LLM.why = e.code; document.documentElement.dataset.ai = 'offline'; refreshAIBadge(); } throw e; }
   }
   throw { code: 'offline', message: 'No Claude connection' };
@@ -6081,6 +6087,7 @@ function aiError(e) {
   const c = e && e.code;
   if (c === 'cancelled') return;
   if (c === 'out_of_credits') { crOut(e); return; }
+  if (c === 'helpers_out') { hlpTell(); return; }
   const m = { not_granted: 'Claude is off for this page. Using quick mode.', sampling_disabled: 'Claude isn’t available on this account. Using quick mode.', rate_limited: 'Claude is busy. Try again in a minute.', refused: 'Claude passed on that one. Try different wording.', invalid_json: 'Claude’s answer came back garbled. Try again.', prompt_too_large: 'That’s too much to send at once. Try fewer posts.', session_expired: 'Your Claude sign-in expired. Sign in again, then retry.', offline: 'No Claude connection. Using quick mode.' }[c] || 'Claude didn’t answer. Try again.';
   toast(m, { icon: 'zapoff', tone: c === 'rate_limited' ? 'accent' : 'err' });
 }
@@ -6800,7 +6807,8 @@ const SHOWCASE = () => LLM.mode !== 'server' && !HIST().length;
 const PRICED = () => BILLING || SHOWCASE();
 /* ---------- Claude credits (the table and the refill rules live in core.js, shared with the server) ----------
    r66: Free: 20 a month. Pro: 250 a month, unused ones roll over once (up to 250 more), and more as a monthly add-on.
-   Studio: 500 per client voice, shared by every voice. A 7-day Pro trial (100, once, no card) ends on its own. Quick mode and Sharpen never use a credit. */
+   Studio: 500 per client voice, shared by every voice. A 7-day Pro trial (100, once, no card) ends on its own. Quick mode never uses a credit, and Claude touch-ups
+   (Sharpen, tidying, visuals) are free for 50 a day. */
 const CR = HWCore.CREDITS;
 const SRV_CR = () => LLM.mode === 'server' && LLM.server && LLM.server.credits && LLM.server.credits.metered ? LLM.server.credits : null;
 const METERED = () => aiOn() && (!!SRV_CR() || PRICED());
@@ -6847,11 +6855,34 @@ function crMeterHTML(where = 'side') {
   if (where === 'page') {
     return `<section class="cr-meter cr-page" data-where="page" data-s="${s}" aria-label="Your AI usage">
       <div class="cr-ph"><span class="label">${st.plan === 'free' ? 'Your AI usage today' : `Your AI usage · ${esc(st.name)}`}</span><span class="cr-big">${st.plenty ? 'Plenty left' : crPct(st)}${st.rolled ? ' <small>with last month’s leftovers</small>' : ''}</span></div>
-      ${bar}<p class="cr-sub">${esc(crWhen(st, true))} ${st.plan === 'free' ? 'Quick mode and Sharpen stay free and unlimited.' : 'Quick mode and Sharpen never count.'}</p></section>`;
+      ${bar}<p class="cr-sub">${esc(crWhen(st, true))} ${st.plan === 'free' ? `Quick mode and Sharpen on your device stay unlimited, with ${CR.HELPERS} Claude touch-ups a day.` : `Quick mode never counts, and Sharpen is free for ${CR.HELPERS} a day.`}</p></section>`;
   }
   const sub = crWhen(st);
   return `<a class="cr-meter" data-where="side" data-s="${s}" href="#upgrade" aria-label="${esc(crSay(st))} Open Plans." data-tip="${esc(st.plenty ? `Plenty left · ${crWhen(st)}` : 'Rewrites use a little · Sharpen is free')}">
     <span class="cr-row"><span class="cr-k">${esc(st.plan === 'free' ? 'AI usage' : st.name)}</span><b class="cr-n">${st.plenty ? 'Plenty left' : crPct(st)}</b><b class="cr-nn" aria-hidden="true">${st.plenty ? '' : Math.round(st.frac * 100) + '%'}</b></span>${bar}<span class="cr-sub"><span>${esc(sub)}</span>${st.plan === 'free' && !st.server ? '<u>Get more</u>' : ''}</span></a>`;
+}
+/* r66: today's free Claude touch-ups (Sharpen, tidying, picking a visual): 50 a day on every plan. A metering server keeps
+   its own count and sends it back; otherwise it's counted here. Free waits for midnight; paid plans pay 1 each after 50 */
+const hlpDay = (t = Date.now()) => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+const hlpNext = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1).getTime(); };
+function hlpToday() { if (!S.hlp || S.hlp.day !== hlpDay()) S.hlp = { day: hlpDay(), n: 0 }; return S.hlp; }
+const hlpOut = () => planNow() === 'free' && hlpToday().n >= CR.HELPERS;
+/* one more used: counted when it was free; the first paid one of the day says so, once */
+function hlpUsed(cost, n = null) {
+  const h = hlpToday();
+  if (!cost) { h.n = n != null ? n : h.n + 1; save(); if (h.n === CR.HELPERS && planNow() === 'free') hlpTell(); return; }
+  if (h.paidTold) return; h.n = Math.max(h.n, CR.HELPERS); h.paidTold = 1; save();
+  toast(`You’ve used today’s ${CR.HELPERS} free Claude touch-ups. More today use 1 rewrite each, and they’re free again at midnight.`, { icon: 'clock', ms: 6500 });
+}
+/* Free is out for today: said in full once a day, then a short note now and then, never a wall */
+function hlpTell() {
+  const h = hlpToday(), now = Date.now(), srv = !!SRV_CR();
+  if (h.told && now - (h.toldAt || 0) < 10 * 60e3) return;
+  const first = !h.told; h.told = 1; h.toldAt = now; save();
+  if (!first) { toast(`Sharpen is on your device until midnight, ${crRel(hlpNext())}.`, { icon: 'clock', ms: 3200 }); return; }
+  const canTrial = !srv && PRICED() && !S.trial && S.plan === 'free';
+  toast(`That’s today’s ${CR.HELPERS} free Claude touch-ups. They’re back at midnight, ${crRel(hlpNext())}. Until then Sharpen runs on your device${srv ? '.' : ', or go Pro for more.'}`,
+    { icon: 'clock', tone: 'accent', ms: 9000, ...(srv ? {} : canTrial ? { action: 'Try Pro free', onAction: () => { if (crStartTrial()) { hlpToday().paidTold = 1; save(); SFX.play('done'); toast('Pro trial on for 7 days. More touch-ups today use 1 rewrite each.', { icon: 'gift', tone: 'accent' }); } } } : { action: 'See plans', onAction: () => go('upgrade') }) });
 }
 /* the price of an action, on its button (hidden on paid plans with plenty left, and whenever nothing is metered) */
 const crTag = (act, o) => { const c = crCost(act, o); return c > 1 ? `<span class="cr-tag" data-tip="A bigger job: uses more of your AI usage than a rewrite"><span class="sr"> (</span>Bigger job<span class="sr">)</span></span>` : ''; };
@@ -6878,7 +6909,7 @@ function crAfter(before) {
   crPaint(); const st = crState(); if (!st || !st.low || st.empty) return;
   const key = `${st.plan}:${st.next}`; if (S.crWarned === key) return;
   S.crWarned = key; save(); if (before && before.low) return;
-  const msg = st.plan === 'free' ? `You’ve used most of this month’s Claude rewrites. They refill on ${crDate(st.next)}, and Quick mode and Sharpen stay unlimited.` : st.plan === 'trial' ? 'You’ve used most of your trial’s AI usage. Pro gives you 250 Claude rewrites a month, and you can add more.' : `You’ve used most of this month’s AI usage. It refills on ${crDate(st.next)}, or add more on Plans.`;
+  const msg = st.plan === 'free' ? `You’ve used most of this month’s Claude rewrites. They refill on ${crDate(st.next)}, and Quick mode and Sharpen on your device stay unlimited.` : st.plan === 'trial' ? 'You’ve used most of your trial’s AI usage. Pro gives you 250 Claude rewrites a month, and you can add more.' : `You’ve used most of this month’s AI usage. It refills on ${crDate(st.next)}, or add more on Plans.`;
   toast(msg, { icon: 'spark', tone: 'accent', ...(st.server ? {} : { action: st.plan === 'free' || st.plan === 'trial' ? 'See plans' : 'Add more', onAction: () => go('upgrade') }) });
 }
 /* plan changes: a new plan starts a fresh allowance (Free → Pro gets the full 250 today, plus any add-on) */
@@ -12001,7 +12032,7 @@ function freeCapHit() {
   return true;
 }
 /* round 55: plain limits, in rewrites, instead of usage tiers */
-const PLAN_CR = { free: ['20', 'Claude rewrites a month', 'Sharpen and quick rewrites are unlimited'], pro: ['250', 'Claude rewrites a month', 'Need more? Add up to 1,750 a month'], studio: ['500', 'Claude rewrites a month per client voice', 'Shared across all your clients'] };
+const PLAN_CR = { free: ['20', 'Claude rewrites a month', '50 Claude touch-ups a day, and Sharpen on your device is unlimited'], pro: ['250', 'Claude rewrites a month', 'Need more? Add up to 1,750 a month'], studio: ['500', 'Claude rewrites a month per client voice', 'Shared across all your clients'] };
 function plansHTML(yearly) {
   const P = [
     { k: 'free', name: 'Free', price: 0, blurb: 'Everything for your next great post.', cta: 'Start free', feats: ['Instant checks on every draft', 'Sharpen any line, unlimited', 'Quick rewrites on your device, unlimited', 'Learns your voice as you write', `${FREE_POSTS} posts a month`] },
@@ -15120,8 +15151,8 @@ ROUTES.upgrade = () => {
     : plan === 'trial' ? `Every Pro feature, on the house. When the week’s up you’re back on Free, with everything you wrote.`
     : 'Your plan, your usage, and what’s a bigger job.';
   const faq = [
-    ['Is the free plan actually free?', 'Yes. 20 Claude rewrites and 15 posts a month, Sharpen and quick rewrites as much as you like, and unlimited drafts and ideas. No card.'],
-    ['What counts as a rewrite?', 'One Claude rewrite of a post, with three versions to pick from. Bigger jobs, like Plan my week or Learn my voice, count as a few and say so on the button. Sharpen never counts.'],
+    ['Is the free plan actually free?', 'Yes. 20 Claude rewrites and 15 posts a month, 50 Claude touch-ups a day, Sharpen and quick rewrites on your device as much as you like, and unlimited drafts and ideas. No card.'],
+    ['What counts as a rewrite?', 'One Claude rewrite of a post, with three versions to pick from. Bigger jobs, like Plan my week or Learn my voice, count as a few and say so on the button. Sharpen doesn’t count: it’s free with Claude for 50 a day, and unlimited on your device.'],
     ['What happens when I run out?', 'Nothing breaks. You get the quick version on the spot, free, and Free refills each month. On Pro, your first month’s leftovers roll over into the second.'],
     ['Can I get more than 250 rewrites?', `Yes. Add ${CR.BOOSTS.map(b => `${fmtN(b.add)} for $${b.price}`).join(', ')} a month on top of Pro or Studio. Change or drop it any month, and it refills with your plan.`],
     ['Is the trial really free?', 'Yes. Seven days of Pro, no card. It ends on its own and you’re back on Free with everything you wrote. One trial per account.'],

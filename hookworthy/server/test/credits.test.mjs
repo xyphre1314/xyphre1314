@@ -9,7 +9,7 @@ import { createRequire } from 'node:module';
 process.env.HW_DATA_DIR = mkdtempSync(join(tmpdir(), 'hw-cr-'));
 process.env.ANTHROPIC_API_KEY = 'test-key';
 process.env.HOOKWORTHY_TOKEN = 'owner-token';
-process.env.HOOKWORTHY_TOKENS = 'free-token:free,pro-token:pro,odd-token:gold,api-token:free';
+process.env.HOOKWORTHY_TOKENS = 'free-token:free,pro-token:pro,odd-token:gold,api-token:free,help-token:free';
 delete process.env.HW_PLAN;
 const C = createRequire(import.meta.url)('../../core.js').CREDITS;
 const AI = await import('../lib/ai.mjs');
@@ -119,14 +119,26 @@ test('credits: each hosted token has its own balance and plan; unknown plans and
   assert.equal((await call('/login?token=nope')).status, 401);
   const locked = await call('/api/health'); assert.equal(locked.json.locked, true); assert.equal(locked.json.credits, undefined);
 });
+test('credits: past 50 helpers on Free, the app gets a plain 402 that says when they come back', async () => {
+  for (let i = 0; i < 50; i++) assert.equal((await ai('help-token', { act: 'sharpen' })).status, 200);
+  const r = await ai('help-token', { act: 'sharpen' }); assert.equal(r.status, 402); assert.equal(r.json.code, 'helpers_out');
+  assert.match(r.json.error, /50 free Claude touch-ups.*midnight.*Pro/); assert.equal(r.json.credits.left, 20); assert.equal(r.json.credits.helpers.left, 0);
+  assert.equal((await ai('help-token', { act: 'rewrite' })).status, 200, 'rewrites still go through');
+});
 test('credits: a free helper dressed up as a big job pays like one', async () => {
   const r = await ai('pro-token', { act: 'sharpen', tier: 'complex' }); assert.equal(r.json.cost, 5);
   const big = await ai('pro-token', { act: 'sharpen', prompt: 'x'.repeat(30 * 1024) }); assert.equal(big.json.cost, 1, 'a helper with a huge prompt is charged');
 });
-test('credits: helpers stay free up to the fair-use line, then cost 1; refills come back on time', () => {
-  const env = { HOOKWORTHY_TOKENS: 'fair-token:free' }; const now = new Date(2026, 9, 4, 12).getTime();
+test('credits: 50 free helpers a day; then Free waits for midnight and paid plans pay 1; refills come back on time', () => {
+  const env = { HOOKWORTHY_TOKENS: 'fair-token:free,fair-pro:pro' }; const now = new Date(2026, 9, 4, 12).getTime();
+  assert.equal(CR.FAIR_ASSISTS, 50);
   for (let i = 0; i < CR.FAIR_ASSISTS; i++) assert.equal(CR.reserve('fair-token', { act: 'visual' }, { env, now }).cost, 0);
-  const over = CR.reserve('fair-token', { act: 'visual' }, { env, now }); assert.equal(over.cost, 1); assert.equal(over.credits.left, 19);
+  assert.equal(CR.status('fair-token', { env, now }).helpers.left, 0);
+  const out = CR.reserve('fair-token', { act: 'visual' }, { env, now }); assert.equal(out.ok, false); assert.equal(out.code, 'helpers_out');
+  assert.equal(out.credits.left, 20, 'Free never pays for a helper with its rewrites'); assert.equal(out.credits.helpers.next, new Date(2026, 9, 5).getTime(), 'back at midnight');
+  assert.equal(CR.reserve('fair-token', { act: 'rewrite' }, { env, now }).cost, 1, 'rewrites still work');
+  for (let i = 0; i < CR.FAIR_ASSISTS; i++) CR.reserve('fair-pro', { act: 'sharpen' }, { env, now });
+  const paid = CR.reserve('fair-pro', { act: 'sharpen' }, { env, now }); assert.equal(paid.ok, true); assert.equal(paid.cost, 1); assert.equal(paid.credits.left, 249);
   const next = CR.reserve('fair-token', { act: 'visual' }, { env, now: now + 864e5 }); assert.equal(next.cost, 0, 'the fair-use count resets each day');
   assert.equal(CR.status('fair-token', { env, now: now + 864e5 }).left, 19, 'the monthly allowance doesn\'t reset with it');
   const ok = CR.reserve('fair-token', { act: 'rewrite' }, { env, now: now + 864e5 }); assert.equal(ok.credits.left, 18); ok.refund(); ok.refund();

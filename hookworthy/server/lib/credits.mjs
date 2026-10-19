@@ -10,9 +10,10 @@ import { read, write } from './store.mjs';
 
 const C = createRequire(import.meta.url)('../../core.js').CREDITS;
 const KEY = 'credits';
-/* the free helpers (Sharpen, visual pick, tidying a dictation) stay free up to this many a day per person, then cost 1.
-   A helper call with a big prompt, a picture or the bigger model is charged like any other call */
-export const FAIR_ASSISTS = 300;
+/* the free helpers (Sharpen, visual pick, tidying a dictation) stay free up to this many a day per person (core.js
+   CREDITS.HELPERS). Then Free waits for midnight and paid plans pay 1 each. A helper call with a big prompt, a picture
+   or the bigger model is charged like any other call */
+export const FAIR_ASSISTS = C.HELPERS;
 const ASSIST_MAX_BYTES = 24 * 1024;
 
 const isPlan = p => !!C.PLANS[p] && p !== 'trial';
@@ -37,6 +38,7 @@ export function planFor(token, env = process.env) {
 }
 const userKey = token => 'u_' + createHash('sha256').update(String(token || 'local')).digest('hex').slice(0, 20);
 const dayOf = t => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+const midnight = t => { const d = new Date(t); return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1).getTime(); };
 
 function load(token, plan, now) {
   const all = read(KEY, {}) || {}; const k = userKey(token);
@@ -45,11 +47,14 @@ function load(token, plan, now) {
 }
 function save(all, k, rec) { write(KEY, { ...all, [k]: rec }); }
 /* what the app's meter needs (never the token, never anyone else's numbers) */
-function view(st, plan, now) { const s = C.status(st, plan, now); return { metered: true, plan, name: s.name, per: s.per, left: s.left, amount: s.amount, next: s.next, rolled: s.rolled }; }
+function view(st, plan, now, rec) {
+  const s = C.status(st, plan, now), used = rec && rec.day === dayOf(now) ? rec.assists || 0 : 0;
+  return { metered: true, plan, name: s.name, per: s.per, left: s.left, amount: s.amount, next: s.next, rolled: s.rolled, helpers: { left: Math.max(0, FAIR_ASSISTS - used), max: FAIR_ASSISTS, next: midnight(now) } };
+}
 
 export function status(token, { env = process.env, now = Date.now() } = {}) {
   const plan = planFor(token, env); if (!plan) return { metered: false };
-  return view(load(token, plan, now).rec.st, plan, now);
+  const { rec } = load(token, plan, now); return view(rec.st, plan, now, rec);
 }
 
 /* before a Claude call: price it, check it, take it. Returns { ok, cost, credits } and, when ok, a refund() for a call that fails */
@@ -59,18 +64,24 @@ export function reserve(token, { act, docs = 0, chars = 0, tier, bytes = 0 } = {
   const a = C.ACTS[act]; let cost = C.cost(act, { docs, chars, tier });
   const day = dayOf(now); if (rec.day !== day) { rec.day = day; rec.assists = 0; }
   const assist = a && a.assist && cost === 0;
-  if (assist && (bytes > ASSIST_MAX_BYTES || (rec.assists || 0) >= FAIR_ASSISTS)) cost = 1;
-  if (cost > rec.st.bal) { save(all, k, rec); return { ok: false, cost, metered: true, credits: view(rec.st, plan, now), refund() {} }; }
+  if (assist && bytes > ASSIST_MAX_BYTES) cost = 1;
+  else if (assist && (rec.assists || 0) >= FAIR_ASSISTS) {
+    /* today's free helps are used: Free waits for midnight (nothing is taken), paid plans pay 1 */
+    if (plan === 'free') { save(all, k, rec); return { ok: false, code: 'helpers_out', cost: 0, metered: true, credits: view(rec.st, plan, now, rec), refund() {} }; }
+    cost = 1;
+  }
+  if (cost > rec.st.bal) { save(all, k, rec); return { ok: false, cost, metered: true, credits: view(rec.st, plan, now, rec), refund() {} }; }
   if (cost > 0) rec.st = C.spend(rec.st, cost); else rec.assists = (rec.assists || 0) + 1;
   save(all, k, rec);
   let done = false;
   return {
-    ok: true, cost, metered: true, credits: view(rec.st, plan, now),
+    ok: true, cost, metered: true, credits: view(rec.st, plan, now, rec),
     /* the call failed (no answer, an error, a refusal): nothing was written, so nothing is owed */
     refund() {
       if (done) return; done = true;
       const cur = load(token, plan, Date.now());
-      if (cost > 0) { const P = C.PLANS[plan]; cur.rec.st = { ...cur.rec.st, bal: Math.min(P.amount + P.roll, cur.rec.st.bal + cost) }; }
+      /* capped at a full month plus rollover, counting client voices and any add-on */
+      if (cost > 0) { const A = C.status(cur.rec.st, plan).amount, cap = A * (C.PLANS[plan].roll ? 2 : 1); cur.rec.st = { ...cur.rec.st, bal: Math.min(cap, cur.rec.st.bal + cost) }; }
       else cur.rec.assists = Math.max(0, (cur.rec.assists || 0) - 1);
       save(cur.all, cur.k, cur.rec);
     }

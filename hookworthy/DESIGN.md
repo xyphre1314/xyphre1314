@@ -1068,5 +1068,20 @@ The owner chose two models. Haiku is out.
   - **Writing at medium effort:** rewrites, first lines, replies, the week plan.
 - **Opus 5.5, high effort:** Learn my voice, once per user.
 - **Why:** small jobs now sound as much like the author as rewrites do, and every call gets the server-side refusal fallback.
-- **The cost:** a small job is now roughly 0.2–0.5¢ instead of about 0.02¢. The free daily helper allowance (300) is the ceiling to watch.
+- **The cost:** a small job is now roughly 0.2–0.5¢ instead of about 0.02¢. So the free daily helper allowance dropped from 300 to 50 (below).
 - **Haiku still works if wanted:** `HW_MODEL_QUICK` can point the small jobs back at Haiku, and those calls skip the fallback, which Haiku doesn't offer.
+
+### Claude touch-ups: 50 a day
+"Touch-ups" is the user-facing name for the small Claude jobs: Sharpen, tidying what you said, and picking a visual.
+- **Every plan:** 50 free a day, back at local midnight. The limit lives in core.js (`CREDITS.HELPERS`), so the server and the app share it.
+- **Free, at 50:** Claude stops for the day and nothing is taken from the 20 rewrites.
+  - One toast says it straight: "That's today's 50 free Claude touch-ups. They're back at midnight, in 5 h. Until then Sharpen runs on your device, or go Pro for more."
+  - The toast has "Try Pro free" (or "See plans" once the trial is used).
+  - After that, at most a short note every ten minutes: "Sharpen is on your device until midnight."
+  - On-device Sharpen keeps working the whole time, and the 51st call is refused before anything is sent.
+- **Paid plans, past 50:** each touch-up uses 1 rewrite. A single toast says so the first time each day.
+- **Server:** a `402` with `code: "helpers_out"` and the time they're back. `credits.helpers` reports `{left, max, next}` for the app.
+- **Copy:**
+  - Plans now says "50 Claude touch-ups a day, and Sharpen on your device is unlimited".
+  - The FAQ and the usage meter say the same.
+- **Fixed in passing:** a refunded credit was capped at the bare plan amount. It now counts client voices and add-ons.
