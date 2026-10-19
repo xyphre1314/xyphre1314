@@ -422,9 +422,80 @@ Their readers know AI-sounding posts on sight and scroll past, and the app flags
     if (v.rules && v.rules.length) bits.push(`Their habits:\n- ${v.rules.slice(0, 8).join('\n- ')}`);
     if (v.never && v.never.length) bits.push(`Words they never use: ${v.never.join(', ')}`);
     if (v.tone) bits.push(`Tone dials (0-100): calm→spicy ${v.tone.spice}, casual→polished ${v.tone.polish}, short→rich ${v.tone.length}`);
-    if (v.examples && v.examples.length) bits.push(`Their best posts, for voice only (don't reuse the content):\n${v.examples.slice(0, 5).map((e, i) => `<post ${i + 1}>\n${e}\n</post ${i + 1}>`).join('\n')}`);
+    if (v.examples && v.examples.length) bits.push(`Their own posts, for voice only (don't reuse the content):\n${v.examples.slice(0, 5).map((e, i) => `<post ${i + 1}>\n${e}\n</post ${i + 1}>`).join('\n')}`);
+    const L = v.learned;
+    if (L) {
+      if (L.habits && L.habits.length) bits.push(`What their own posts show (${L.posts} post${L.posts === 1 ? '' : 's'}):\n- ${L.habits.join('\n- ')}`);
+      if (L.avoid && L.avoid.length) bits.push(`Words they keep deleting from suggestions, so leave them out: ${L.avoid.join(', ')}`);
+      if (L.keep && L.keep.length) bits.push(`Words they put back after an edit took them out, so keep them: ${L.keep.join(', ')}`);
+      if (L.prefer && L.prefer.length) bits.push(`First-line moves they keep: ${L.prefer.join(', ')}`);
+      if (L.dislike && L.dislike.length) bits.push(`First-line moves they undo: ${L.dislike.join(', ')}`);
+      if (L.pairs && L.pairs.length) bits.push(`How they edit suggestions before posting (learn the direction, not the content):\n${L.pairs.map((x, i) => `<suggested ${i + 1}>\n${x.from}\n</suggested ${i + 1}>\n<they posted ${i + 1}>\n${x.to}\n</they posted ${i + 1}>`).join('\n')}`);
+    }
     return bits.join('\n\n');
   }
+  /* ---------- voice memory: what Hookworthy learns from one voice's own use ----------
+     Every voice (you, and each client you write for) keeps its own. It grows from what they do, never from guesses:
+     the posts they schedule or send, the words they delete from a suggestion before posting, the words they put back
+     after Sharpen cut them, and which first-line moves they keep or undo. memDigest turns it into the habits, words and
+     moves every prompt and the local Sharpen use. Nothing here leaves the device unless a prompt does. */
+  const MEM_POSTS = 60, MEM_EDITS = 30;
+  const memNew = () => ({ posts: [], edits: [], moves: {}, keep: {}, drop: {}, n: 0 });
+  const memNorm = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const memWords = t => (String(t || '').toLowerCase().match(/[\p{L}][\p{L}\p{N}’'-]*/gu) || []).map(w => w.replace(/[’']s$/, '')).filter(w => w.length > 2 && !STOP.has(w));
+  function memPost(mem, text, { at = Date.now(), src = 'sent' } = {}) {
+    const t = String(text || '').trim(); if (!mem || words(t).length < 3) return mem;
+    const k = memNorm(t), had = mem.posts.some(p => memNorm(p.t) === k);
+    mem.posts = [{ t, at, src }, ...mem.posts.filter(p => memNorm(p.t) !== k)].slice(0, MEM_POSTS); if (!had) mem.n++; return mem;
+  }
+  /* a suggestion they changed before posting: which words they took out, which they put in. A full rewrite isn't an edit of it */
+  function memEdit(mem, from, to, { kind = '', at = Date.now() } = {}) {
+    const a = String(from || '').trim(), b = String(to || '').trim(); if (!mem || !a || !b || memNorm(a) === memNorm(b)) return mem;
+    const A = new Set(memWords(a)), B = new Set(memWords(b)), shared = [...A].filter(w => B.has(w)).length;
+    if (!A.size || (shared < 2 && shared / A.size < .4)) return mem;
+    [...A].filter(w => !B.has(w)).forEach(w => { mem.drop[w] = (mem.drop[w] || 0) + 1; });
+    [...B].filter(w => !A.has(w)).forEach(w => { if (mem.drop[w]) mem.drop[w] = Math.max(0, mem.drop[w] - 1); });
+    mem.edits = [{ from: a, to: b, kind, at }, ...mem.edits.filter(e => memNorm(e.to) !== memNorm(b))].slice(0, MEM_EDITS); mem.n++; return mem;
+  }
+  /* a first-line move kept or undone (Sharpen's moves, a rewrite's kind) */
+  function memChoice(mem, key, kept) { if (!mem || !key) return mem; const m = mem.moves[key] || (mem.moves[key] = { k: 0, u: 0 }); if (kept) m.k++; else m.u++; mem.n++; return mem; }
+  /* words Sharpen cut that they put straight back: theirs to keep */
+  function memKeep(mem, list) { if (!mem) return mem; (list || []).map(w => String(w).toLowerCase().trim()).filter(w => w && w.length > 1).forEach(w => { mem.keep[w] = (mem.keep[w] || 0) + 1; if (mem.drop[w]) mem.drop[w] = 0; }); mem.n++; return mem; }
+  const MOVE_NAMES = { ask: 'ask, then answer', number: 'lead with the number', result: 'result first', contrast: 'a two-beat contrast', loop: 'an open loop', straight: 'say it straight', story: 'a moment in time', confess: 'an honest confession', punchier: 'punchier', shorter: 'shorter', hook: 'a stronger first line', contrarian: 'a contrarian take', curiosity: 'a curiosity gap' };
+  function memDigest(mem, more = []) {
+    const own = mem ? mem.posts.map(p => ({ text: p.t, at: p.at })) : [], seen = new Set(own.map(p => memNorm(p.text)));
+    const P = [...own, ...(more || []).filter(p => p && p.text && !seen.has(memNorm(p.text)))];
+    const out = { n: mem ? mem.n : 0, posts: P.length, sent: own.length, edits: mem ? mem.edits.length : 0, habits: [], avoid: [], keep: [], prefer: [], dislike: [], pairs: [], lean: [], stats: null };
+    if (P.length >= 3) {
+      const an = analyze(P), st = an.stats, share = f => P.filter(p => f(p.text)).length / P.length; out.stats = st; out.lean = an.lean;
+      if (st.lower >= 60) out.habits.push('Writes in lowercase, first word included.'); else if (st.lower <= 10) out.habits.push('Starts every post with a capital.');
+      if (st.wps && st.wps <= 11) out.habits.push(`Short sentences, about ${Math.round(st.wps)} words each.`); else if (st.wps >= 20) out.habits.push(`Long, full sentences, about ${Math.round(st.wps)} words each.`);
+      if (st.emojiPer < .15) out.habits.push('Almost never uses emoji.'); else if (st.emojiPer >= 1) out.habits.push('Uses emoji in most posts.');
+      if (st.tagsPer < .05) out.habits.push('No hashtags.');
+      if (share(t => /\n/.test(t.trim())) >= .5) out.habits.push('Breaks posts into short lines.');
+      if (share(t => /\?\s*$/.test(t.split('\n')[0].trim())) >= .3) out.habits.push('Often opens with a question.');
+      if (share(t => /\d/.test(t.split('\n')[0])) >= .4) out.habits.push('Often leads with a number.');
+      const ex = share(t => /!/.test(t)); if (ex >= .4) out.habits.push('Uses exclamation marks.'); else if (ex <= .05 && P.length >= 5) out.habits.push('Rarely uses exclamation marks.');
+      if (share(t => /—/.test(t)) <= .05 && P.length >= 5) out.habits.push('Never uses em dashes.');
+      if (an.lean.length) out.habits.push(`Words they reach for: ${an.lean.slice(0, 5).map(l => l.w).join(', ')}.`);
+      /* phrases of two or three words that recur across posts: the signature bits */
+      const ph = {}; P.forEach(p => { const w = (p.text.toLowerCase().match(/[\p{L}\p{N}’']+/gu) || []); const set = new Set(); for (let n = 2; n <= 3; n++) for (let i = 0; i + n <= w.length; i++) { const g = w.slice(i, i + n); if (g.every(x => STOP.has(x))) continue; set.add(g.join(' ')); } set.forEach(g => { ph[g] = (ph[g] || 0) + 1; }); });
+      const sig = Object.entries(ph).filter(([, c]) => c >= Math.max(3, P.length * .15)).sort((a, b) => b[1] - a[1] || b[0].length - a[0].length).map(([g]) => g).filter((g, i, a) => !a.slice(0, i).some(h => h.includes(g))).slice(0, 3);
+      if (sig.length) out.habits.push(`Phrases they repeat: ${sig.map(g => `“${g}”`).join(', ')}.`);
+    }
+    if (mem) {
+      out.keep = Object.entries(mem.keep).filter(([, c]) => c >= 2).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([w]) => w);
+      out.avoid = Object.entries(mem.drop).filter(([w, c]) => c >= 2 && !mem.keep[w]).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([w]) => w);
+      const mv = Object.entries(mem.moves);
+      out.prefer = mv.filter(([, m]) => m.k - m.u >= 2).sort((a, b) => (b[1].k - b[1].u) - (a[1].k - a[1].u)).map(([k]) => MOVE_NAMES[k] || k).slice(0, 4);
+      out.dislike = mv.filter(([, m]) => m.u - m.k >= 2).map(([k]) => MOVE_NAMES[k] || k).slice(0, 4);
+      out.pairs = mem.edits.slice(0, 3).map(e => ({ from: e.from, to: e.to }));
+    }
+    return out;
+  }
+  /* how much each Sharpen move is worth to this voice: kept minus undone, small and bounded so it nudges, never overrules */
+  function memPref(mem) { const o = {}; if (!mem) return o; Object.entries(mem.moves).forEach(([k, m]) => { const d = m.k - m.u; if (Math.abs(d) >= 2) o[k] = clamp(d, -3, 3); }); return o; }
+  const memKeepList = mem => mem ? Object.entries(mem.keep).filter(([, c]) => c >= 2).map(([w]) => w) : [];
   /* how a first line earns the stop, said once and shared by every prompt that writes one */
   const HOOK_CRAFT = 'Use the one proven move that fits the line: cut the warm-up and the hedges; ask, then answer ("Best trade I made this month? The one I skipped."); lead with the number or the result ("400 signups in 24 hours. Here’s what we changed:"); say the contrast in two beats ("You don’t need a bigger account. You need a better first line."); a moment in time ("2021: I blew up my first account."); or an honest confession in plain words. It should sound like a person talking to a friend, in the author’s voice and casing, never like a marketer. Keep every fact, number and name; add none. No bait ("you won’t believe", "nobody is talking about", "read till the end"), no hype words, no emoji the author didn’t use.';
   const RIFF_ASK = {
@@ -1676,7 +1747,18 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const HK_SAY = { warm: 'cut the warm-up', soft: n => `cut ${n} soft word${n === 1 ? '' : 's'}`, bait: 'dropped the bait', ask: 'asked, then answered', number: 'led with the number', result: 'led with the result', contrast: 'said the contrast', straight: 'said it straight', loop: 'left a reason to read on', order: 'put the payoff last', tight: 'tightened it', end: 'gave it an end' };
   const HK_CLAIM = /\b(is|are|was|isn['’]t|aren['’]t|should|shouldn['’]t|must|matters?|beats?|wins?|never|always|most|best|worst|only|don['’]t|stop|nobody|everyone|overrated|underrated|wrong|mistake|edge|secret|rule|key)\b|^(take|sell|buy|size|cut|journal|reply|wait|protect|skip|trust|scale|keep|ship|write|post|stop|start|quit|raise|charge)\b/i;
   const HK_STORY = /\b(i|we|my|our)\b.*\b(\w+ed|lost|made|spent|took|quit|sold|bought|went|got|ran|built|wrote|hit|cut|left|found|did|began|became|grew|fell)\b/i;
+  /* words this voice put back after a cut are masked first, so no clean step or move can take them out again */
   function hookUp(post, opts = {}) {
+    const keep = (opts.keep || []).filter(w => w && w.length > 1); if (!keep.length) return hookUp0(post, opts);
+    const KM = [], re = new RegExp(`(?<![\\p{L}\\p{N}])(${keep.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\p{L}\\p{N}])`, 'giu');
+    const masked = String(post || '').replace(re, m => { KM.push(m); return `Qk${KM.length - 1}q`; }); if (!KM.length) return hookUp0(post, opts);
+    const un = s => typeof s === 'string' ? s.replace(/Qk(\d+)q/g, (m, i) => KM[+i]) : s, unO = o => { if (!o) return o; const x = { ...o, line: un(o.line) }; if ('text' in o) { x.text = un(o.text); x.score = hookScore(x.text).score; } else x.score = hookScore(x.line).score; return x; };
+    const r = hookUp0(masked, { ...opts, keep: null }); if (!r) return r;
+    /* scores come from the real words, not the mask */
+    const from = hookScore(String(post || '')).score, best = unO(r.best);
+    return { ...r, from, base: unO(r.base), best: best && best.score > from ? best : null, alts: (r.alts || []).map(unO).filter(a => a.score > from), kept: KM.length };
+  }
+  function hookUp0(post, opts = {}) {
     const t = String(post || ''), nl = t.indexOf('\n'), line0 = nl < 0 ? t : t.slice(0, nl), rest = nl < 0 ? '' : t.slice(nl);
     const L = line0.trim(); if (!L) return null;
     const more = opts.more != null ? !!opts.more : !!rest.trim();
@@ -1737,7 +1819,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* 5. the best one: highest score; a close call goes to the smaller edit, so it still sounds like them */
     /* a full stop alone isn't a sharpen: a version that only adds one ranks a little lower than a real move */
     /* a version that still opens on an announcement ("I wanted to talk about…", "some thoughts on…") hasn't cut its warm-up */
-    const rank = o => o.score - (o.moves.every(k => k === 'end') ? 3 : 0) - (/^(?:(?:i|we) )?(?:wanted|want|would like|['’]d like|am going|['’]m going) to (?:talk|share|write|post)|^(?:some|a few) thoughts on/i.test(o.text) ? 4 : 0) + (o.moves.some(k => ['ask', 'number', 'result', 'contrast', 'loop', 'straight'].includes(k)) ? 2 : 0);
+    const rank = o => o.score - (o.moves.every(k => k === 'end') ? 3 : 0) - (/^(?:(?:i|we) )?(?:wanted|want|would like|['’]d like|am going|['’]m going) to (?:talk|share|write|post)|^(?:some|a few) thoughts on/i.test(o.text) ? 4 : 0) + (o.moves.some(k => ['ask', 'number', 'result', 'contrast', 'loop', 'straight'].includes(k)) ? 2 : 0) + (opts.pref ? o.moves.reduce((a, k) => a + (opts.pref[k] || 0), 0) : 0); /* the moves this voice keeps, a nudge */
     out.sort((a, b) => (rank(b) - rank(a)) || (a.edits - b.edits));
     /* the line itself first; a reason to read on is the finishing touch, added only to a line that still needs a push */
     const own = out.filter(o => !o.gen), top0 = own.filter(o => rank(o) >= rank(own[0]) - 1).sort((a, b) => a.edits - b.edits)[0] || null;
@@ -1824,5 +1906,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function crSpend(st, c) { if (!(c > 0)) return st; if (!st || st.bal < c) return null; return { ...st, bal: st.bal - c }; }
   const CREDITS = { PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
 
-  return { ROOM, CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN, hookUp };
+  return { ROOM, CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN, hookUp, memory: { memNew, memPost, memEdit, memChoice, memKeep, memDigest, memPref, memKeepList, MOVE_NAMES } };
 });

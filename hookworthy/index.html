@@ -3300,6 +3300,12 @@ html:not([data-ai="server"]):not([data-ai="claude"]) .needs-ai{ display:none !im
 .rd-me{ display:flex; gap:10px; align-items:flex-start; } .rd-me textarea{ flex:1; min-height:44px; resize:vertical; font-size:var(--t-14); }
 .rd-a{ display:flex; gap:8px; align-items:center; font-size:12px; } .rd-a .grow{ flex:1; }
 .side-one{ display:inline-flex; align-items:center; gap:6px; font-size:var(--t-13); font-weight:500; color:var(--text-1); padding:0 4px; }
+.lf{ display:grid; gap:16px; margin-bottom:16px; } .lf-h{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; } .lf-h > div{ display:grid; gap:6px; min-width:0; flex:1 1 320px; }
+.lf-sub{ font-size:var(--t-14); color:var(--text-2); max-width:62ch; text-wrap:pretty; }
+.lf-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; } .lf-side{ display:grid; gap:16px; align-content:start; } .lf-grid > div > div, .lf-grid > div:first-child{ display:grid; gap:8px; align-content:start; }
+.lf-k{ font:600 11px/1.2 var(--font-ui); letter-spacing:.08em; text-transform:uppercase; color:var(--text-3); }
+.lf-mv{ font-size:var(--t-14); color:var(--text-2); } .lf-pair{ display:grid; gap:4px; font-size:var(--t-14); line-height:1.45; } .lf-pair del{ color:var(--text-3); text-decoration:line-through; text-decoration-color:var(--ink-cut, var(--accent)); } .lf-pair ins{ text-decoration:none; color:var(--text-1); }
+@media (max-width:760px){ .lf-grid{ grid-template-columns:1fr; } }
 .sh-more > summary{ cursor:pointer; list-style:none; display:flex; align-items:baseline; gap:8px; font-size:var(--t-13); color:var(--text-2); padding:4px 0; } .sh-more > summary::-webkit-details-marker{ display:none; } .sh-more > summary small{ color:var(--text-3); font-size:12px; } .sh-more > summary .icon{ align-self:center; } .sh-more[open] > summary{ margin-bottom:12px; color:var(--text-1); }
 .rd-paste summary, .dev-note summary{ cursor:pointer; font-size:var(--t-13); color:var(--text-2); list-style:none; display:inline-flex; align-items:center; gap:6px; } .rd-paste summary::-webkit-details-marker, .dev-note summary::-webkit-details-marker{ display:none; } .rd-paste summary::before, .dev-note summary::before{ content:'+'; display:grid; place-items:center; width:18px; height:18px; border-radius:6px; background:var(--surface-2); font-weight:600; } .rd-paste[open] summary::before, .dev-note[open] summary::before{ content:'−'; } .dev-note{ margin-top:4px; } .rd-paste[open]{ display:grid; gap:8px; } .rd-paste button{ justify-self:start; }
 .rd-count{ font-size:var(--t-13); }
@@ -6025,9 +6031,35 @@ const aiBadgeTip = () => LLM.mode === 'server' ? 'Claude, on your Hookworthy ser
 function refreshAIBadge() { crPaint(); $$('.ai-badge').forEach(b => { b.dataset.mode = LLM.mode; b.innerHTML = aiBadgeInner(); if (b.classList.contains('side-ai')) b.dataset.tip = aiBadgeTip(); }); }
 function aiBadgeInner() { return `<i></i><span>${LLM.mode === 'server' || LLM.mode === 'claude' ? 'Claude is on' : 'Quick mode · on your device'}</span>`; }
 /* what Claude gets to know about your voice: dials, habits it learned, never-say words, your best posts */
+/* ---------- r64: voice memory. Every voice (you, and each client) learns from its own use: the posts it ships, the words
+   deleted from a suggestion before posting, the words put back after Sharpen cut them, the moves kept or undone.
+   It feeds every prompt (voiceSpec) and the local Sharpen (hookUpFor), so the more you use it the more it writes like you */
+const MEM = HWCore.memory;
+function memFor(id = S.ws) { if (!S.learn || typeof S.learn !== 'object') S.learn = {}; return S.learn[id] || (S.learn[id] = MEM.memNew()); }
+let _dg = { key: '', v: null };
+function learned(id = S.ws) {
+  const m = memFor(id), k = `${id}:${m.n}:${m.v || 0}:${id === 'me' ? histKey() : ''}`;
+  if (_dg.key !== k) _dg = { key: k, v: MEM.memDigest(m, id === 'me' ? HIST().slice(0, 200).map(p => ({ text: p.text, at: p.at })) : []) };
+  return _dg.v;
+}
 function voiceSpec() {
-  const pr = S.profile || {}; const top = (HIST().length ? ANALYSIS().top : TOP_POSTS).slice(0, 5).map(p => p.text);
-  return { summary: pr.summary, rules: pr.rules, never: S.voice.never, tone: { spice: S.voice.spice, polish: S.voice.polish, length: S.voice.length }, examples: top };
+  const me = S.ws === 'me', w = WS(), pr = me ? (S.profile || {}) : {}, L = learned();
+  /* their own words as examples: imported best posts first, then what they've shipped here. The example account's
+     sample posts are only ever the example account's; a real person never gets someone else's posts as "theirs" */
+  const own = memFor().posts.map(p => p.t), top = me && HIST().length ? ANALYSIS().top.map(p => p.text) : [];
+  let ex = [...top.slice(0, 3), ...own].filter((t, i, a) => a.findIndex(x => x.trim().toLowerCase() === t.trim().toLowerCase()) === i).slice(0, 5);
+  if (!ex.length && me && !S.seedCleared) ex = TOP_POSTS.slice(0, 5).map(p => p.text);
+  return { summary: pr.summary || (!me && w.note ? `${w.name}. ${w.note}` : undefined), rules: pr.rules, never: S.voice.never, ...(me ? { tone: { spice: S.voice.spice, polish: S.voice.polish, length: S.voice.length } } : {}), examples: ex, learned: L.n || L.posts ? L : null };
+}
+/* what got shipped teaches the voice it was written as: the post itself, and any suggestion changed on the way out */
+function learnShip(d, ws = S.ws) {
+  const m = memFor(ws), tws = (d.tweets || []).filter(t => t.text && t.text.trim()), before = learned(ws).sent; if (!tws.length) return;
+  MEM.memPost(m, tws.map(t => t.text.trim()).join('\n\n'), { src: 'shipped' });
+  const ai = d.ai || {}; tws.forEach(t => { const a = ai[t.id]; if (!a) return; const fin = a.line ? firstLine(t.text) : t.text;
+    if (a.move) MEM.memChoice(m, a.move, true);
+    if (fin.trim() !== a.text.trim()) MEM.memEdit(m, a.text, fin, { kind: a.kind || '' }); });
+  const after = learned(ws).sent, mark = [3, 10, 25, 50].find(n => before < n && after >= n);
+  if (mark) setTimeout(() => toast(`Learned from ${mark} of your posts. Suggestions now lean on how you write.`, { icon: 'voice', tone: 'accent', ms: 6000, action: 'See what it learned', onAction: () => go('voice') }), 6500); /* after the Scheduled confirmation has had its moment */
 }
 /* your imported history and its analysis (cached until the history changes) */
 const HIST = () => S.history || [];
@@ -7430,7 +7462,7 @@ function paintField(ta) {
     /* examples that came with a formula stay marked until you type over them */
     const FR = fillRanges(S.draft.tweets[i]).map(([a, b]) => [a, b, 'fillv']);
     /* soft words in the opener get the homepage's wavy line; the coach button cuts them in one tap */
-    const SW = i === 0 && !(UI.sharp && UI.sharp.id === id) ? hgMarks(v.slice(0, fe)).filter(([a, b]) => !FR.some(([x, y]) => a < y && b > x)).map(([a, b, why]) => [a, b, 'sw', why]) : [];
+    const SW = i === 0 && !(UI.sharp && UI.sharp.id === id) ? hgMarks(v.slice(0, fe), MEM.memKeepList(memFor())).filter(([a, b]) => !FR.some(([x, y]) => a < y && b > x)).map(([a, b, why]) => [a, b, 'sw', why]) : [];
     const RG = [...FR, ...SW].sort((x, y) => x[0] - y[0]);
     const raw = !RG.length ? (a, b) => esc(v.slice(a, b)) : (a, b) => { let o = '', at = a; for (const [rs, re, c] of RG) { if (re <= at || rs >= b) continue; const s0 = Math.max(rs, at), e0 = Math.min(re, b); o += esc(v.slice(at, s0)) + `<span class="${c}">${esc(v.slice(s0, e0))}</span>`; at = e0; } return o + esc(v.slice(at, b)); };
     const CM = '<span class="cm"></span>', seg = cut < 0 ? raw : (a, b = v.length) => b <= cut ? raw(a, b) : a >= cut ? (a === cut ? MARK() : '') + `<span class="xover">${raw(a, b)}</span>` : raw(a, cut) + MARK() + `<span class="xover">${raw(cut, b)}</span>`;
@@ -7497,7 +7529,7 @@ function selectFrag(frag) {
   const at = ta.value.indexOf(frag); ta.focus(); ta.setSelectionRange(at, at + frag.length); requestAnimationFrame(() => { paintField(ta); sharpenCheck(ta, true); });
 }
 const firstLine = t => { const v = String(t || ''), n = v.indexOf('\n'); return n < 0 ? v : v.slice(0, n); };
-const softN = () => { const t0 = S.draft.tweets[0]; return t0 ? hgMarks(firstLine(t0.text)).length : 0; };
+const softN = () => { const t0 = S.draft.tweets[0]; return t0 ? hgMarks(firstLine(t0.text), MEM.memKeepList(memFor())).length : 0; };
 /* ---------- round 61: Scroll test ----------
    A fast thumb runs through a feed with your post in it. A line that would hold someone brakes the feed and stops
    on your post; an Almost slows it, then lets go; a line with nothing to catch on gets flicked past. It's read from
@@ -7588,11 +7620,13 @@ function watchEdit(ta, before, after, { label = '', done } = {}) {
 /* the composer's Sharpen: the soft words out first (the count on the button), then the editor's moves on what's left.
    Their casing and their facts stay; a reason to read on only when more of the post follows. Cached per text */
 function hookUpFor(text) {
-  const t = String(text || ''); if (UI.hkC && UI.hkC.t === t) return UI.hkC.r;
-  const line = firstLine(t), rest = t.slice(line.length), cut = hgMarks(line).length;
+  const t = String(text || ''), mn = `${S.ws}:${memFor().n}:${memFor().v || 0}`; if (UI.hkC && UI.hkC.t === t && UI.hkC.mn === mn) return UI.hkC.r;
+  const keep = MEM.memKeepList(memFor()), line = firstLine(t), rest = t.slice(line.length), cut = hgMarks(line, keep).length;
   const more = !!rest.trim() || S.draft.tweets.filter(x => x.text.trim()).length > 1;
-  const H = HWCore.hookUp((cut ? hgClean(line).s : line) + rest, { more }), r = H && hookUpPack(H, cut, rest, t => hookFor(t).score, hookFor(t).score);
-  UI.hkC = { t, r: r && r.to > r.from ? r : null }; return UI.hkC.r;
+  /* this voice's memory: the words it keeps and the moves it likes nudge what Sharpen offers */
+  const H = HWCore.hookUp((cut ? hgClean(line, keep).s : line) + rest, { more, keep, pref: MEM.memPref(memFor()) }), r = H && hookUpPack(H, cut, rest, t => hookFor(t).score, hookFor(t).score);
+  if (r) r.kept = keep.filter(w => new RegExp(`(?<![\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(line));
+  UI.hkC = { t, mn, r: r && r.to > r.from ? r : null }; return UI.hkC.r;
 }
 /* what Sharpen says it did, in the moves' own words; a full stop alone is never a sharpen */
 function hookUpPack(H, cut, rest, sc, from) {
@@ -7600,18 +7634,23 @@ function hookUpPack(H, cut, rest, sc, from) {
   const sayOf = o => [sayCut, ...String(o.say || '').split(' · ').filter(w => w && w !== 'Gave it an end')].filter(Boolean).slice(0, 3).join(' · ');
   const real = o => o && (o.moves.some(k => k !== 'end') || cut);
   const b = real(H.best) ? H.best : cut ? { line: H.base.line, moves: ['end'], say: '' } : null; if (!b) return null;
-  const r = { text: b.line + rest, line: b.line, say: sayOf(b) || 'Tightened it', cut, from, alts: (H.alts || []).filter(real).map(a => ({ text: a.line + rest, line: a.line, say: sayOf(a) || 'Tightened it' })) };
+  const r = { text: b.line + rest, line: b.line, say: sayOf(b) || 'Tightened it', moves: b.moves, cut, from, alts: (H.alts || []).filter(real).map(a => ({ text: a.line + rest, line: a.line, say: sayOf(a) || 'Tightened it', moves: a.moves })) };
   r.to = sc(r.text); return r;
 }
 /* one tap: a sharper first line, everything else stays yours. Another cycles the other strong versions; Undo puts yours back */
 function sharpenFirst() {
   const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text, r = hookUpFor(before);
   if (!r) { setImprove(tw.id, 'score'); return; }
-  const list = [{ text: r.text, say: r.say }, ...r.alts]; let i = 0;
+  const list = [{ text: r.text, say: r.say, moves: r.moves }, ...r.alts]; let i = 0;
+  /* what it learns: the move kept (counted when the post ships), or undone; a pure cut that's undone means those words are theirs */
+  const moveOf = v => (v.moves || []).find(k => k !== 'end' && k !== 'soft') || '', keptNote = r.kept && r.kept.length ? ` Kept “${esc(r.kept[0])}”: you put it back before.` : '';
   /* the caret goes back to the end of the first line, so the next keystroke lands in the post, not on the page */
   const show = () => { const v = list[i], was = tw.text, ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(was).score; tw.text = v.text; save(); if (ta) ta.value = v.text; /* typing during the replay lands in the new text */
     watchEdit(ta, was, v.text, { label: v.say.split(' · ').slice(-1)[0], done: () => renderThread({ focusId: tw.id, pos: firstLine(v.text).length }) }); const a1 = hookFor(tw.text).score; SFX.play(a1 >= 70 ? 'hook' : 'swap');
-    toast(`<b>${esc(moveWord(r.from, a1))}.</b> ${esc(v.say)}.`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); },
+    S.draft.ai = { ...(S.draft.ai || {}), [tw.id]: { text: firstLine(v.text), line: true, kind: 'sharpen', move: moveOf(v) } };
+    toast(`<b>${esc(moveWord(r.from, a1))}.</b> ${esc(v.say)}.${keptNote}`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; const mv = moveOf(v), m = memFor();
+        if (mv) MEM.memChoice(m, mv, false); else { const gone = HWCore.words(firstLine(before)).filter(w => !HWCore.words(firstLine(v.text)).includes(w)); if (gone.length && gone.length <= 3) MEM.memKeep(m, gone); }
+        if (S.draft.ai) delete S.draft.ai[tw.id]; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); },
       ...(list.length > 1 ? { action2: 'Another', onAction2: () => { i = (i + 1) % list.length; show(); } } : {}) }); };
   show();
 }
@@ -9191,9 +9230,10 @@ async function runRiffAI(i, kind, lang, { fresh } = {}) {
 function setAlt(d, k) { const prevAfter = d.after; const o = d.alts[k]; const cyc = k !== d.alt && d.chunks && d.chunks.length > 1; d.alt = k; d.after = o.text; d.why = o.why; d.chunks = diffWords(d.before, o.text); d.shown = null; if (cyc) { d.reveal = Date.now(); d.fromScore = tIndex(d.id) === 0 ? hookScore(prevAfter).score : null; } renderExtras(d.id); const y = $('#diff-yes'); y && y.focus({ preventScroll: true }); if (cyc) srSay(`Version ${k + 1} of ${d.alts.length}.`); }
 function closeDiff(accept) {
   const d = UI.diff; if (!d) return; UI.diff = null; if (d.pending) { d.ctl && d.ctl.abort(); accept = false; } const i = tIndex(d.id); const tw = S.draft.tweets[i];
+  if (d.kind && !d.pending) MEM.memChoice(memFor(), d.kind, !!(accept && tw)); /* r64: which rewrites this voice keeps */
   if (!accept || !tw) { renderExtras(d.id); focusTweet(i, 'end'); return; }
   /* snapshot the whole thread: a rewrite that runs long splits into new posts, and Undo has to take those back too */
-  const snap = S.draft.tweets.map(t => ({ ...t })), before = d.before, after = composeDiff(d.chunks); tw.text = after; ehWatch(false); SFX.play('swap'); if (i === 0) UI.hookFrom = UI.lastHook;
+  const snap = S.draft.tweets.map(t => ({ ...t })), before = d.before, after = composeDiff(d.chunks); tw.text = after; S.draft.ai = { ...(S.draft.ai || {}), [tw.id]: { text: after, kind: d.kind || 'rewrite' } }; ehWatch(false); SFX.play('swap'); if (i === 0) UI.hookFrom = UI.lastHook;
   const lim = effLimit();
   if (tlen(after) > lim && S.settings.split) { const parts = splitText(after, lim); tw.text = parts[0]; insertAfter(i, parts.slice(1), { focusId: tw.id, pos: 'end' }); }
   else renderThread({ focusId: tw.id, pos: 'end' });
@@ -9443,6 +9483,7 @@ function commitDraft({ day, time, status = 'scheduled' }) {
   /* scheduling isn't posting: only something that went out (or was marked posted) counts toward the week */
   if (status === 'published') S.streak[dayKey(Date.now())] = 1; if (UI.quietDone) UI.quietDone = false; else SFX.play('done');
   trackCall(S.queue[S.queue.length - 1]); syncToServer(S.queue[S.queue.length - 1], media);
+  try { learnShip(S.draft); } catch (e) { /* learning never blocks a post */ }
   S.draft = freshDraft(); S.starterSeed++; UI.diff = null; UI.imp = null; save();
 }
 /* ---------- per post, X only: who can reply, and the auto-plug (one reply under your post when it takes off) ---------- */
@@ -9845,8 +9886,11 @@ async function openTournament() {
   log.textContent = '';
   const win = $('.rm-win', el); $('[data-use]', win).focus({ preventScroll: true });
   $('[data-keep]', win).onclick = () => m.close();
-  $('[data-use]', win).onclick = () => { const tw = S.draft.tweets[0], before = tw.text;
-    tw.text = tw.text.replace(first, w.l); save(); renderThread(); m.close(); toast(`Swapped in ${w.a.n}’s line.`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { tw.text = before; save(); renderThread(); } }); };
+  /* r64: the Room's pick teaches the voice which way in it likes; the move counts as kept once the post ships */
+  const ROOM_MOVE = { mo: 'straight', rex: 'contrarian', juno: 'story', ace: 'number', kit: 'loop', sol: 'shorter' };
+  $('[data-use]', win).onclick = () => { const tw = S.draft.tweets[0], before = tw.text, mv = ROOM_MOVE[w.a.k] || '';
+    tw.text = tw.text.replace(first, w.l); S.draft.ai = { ...(S.draft.ai || {}), [tw.id]: { text: w.l, line: true, kind: 'room', move: mv } }; save(); renderThread(); m.close();
+    toast(`Swapped in ${w.a.n}’s line.`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { if (mv) MEM.memChoice(memFor(), mv, false); if (S.draft.ai) delete S.draft.ai[tw.id]; tw.text = before; save(); renderThread(); } }); };
 }
 
 /* ---------- hook of the week: your best first line as a card worth sharing ---------- */
@@ -11990,16 +12034,17 @@ const HG_HEDGES = [
 const HG_OPENER = /^\s*((?:ok(?:ay)?\s+)?so|well|hey|hi|guys|look|anyway|ok(?:ay)?)\b[,.!]?\s+/i;
 const HG_OPENER_WHY = 'Warm-up. Your first words are the best real estate you have.';
 /* where the soft words are: [start, end, reason], no overlaps */
-function hgMarks(text) {
+const hgKept = (frag, keep) => !!keep && keep.length > 0 && keep.includes(String(frag).toLowerCase().replace(/[,\s]+$/, '').trim());
+function hgMarks(text, keep) {
   const out = []; const m = text.match(HG_OPENER); if (m) { const s = m[0].search(/\S/); out.push([s, s + m[1].length, HG_OPENER_WHY]); }
   HG_HEDGES.forEach(([re, why]) => { re.lastIndex = 0; let x; while ((x = re.exec(text))) out.push([x.index, x.index + x[0].length, why]); });
-  out.sort((a, b) => a[0] - b[0]); return out.filter((r, i, a) => !i || r[0] >= a[i - 1][1]);
+  out.sort((a, b) => a[0] - b[0]); return out.filter((r, i, a) => !i || r[0] >= a[i - 1][1]).filter(([a, b]) => !hgKept(text.slice(a, b), keep)); /* r64: words this voice keeps aren't soft */
 }
 /* the soft words out, nothing else changed: the composer's one-tap Sharpen and the first step of the homepage's */
-function hgClean(line) {
+function hgClean(line, keep) {
   let s = String(line || ''), cut = 0;
-  for (let k = 0; k < 3 && HG_OPENER.test(s); k++) { s = s.replace(HG_OPENER, ''); cut++; }
-  for (let pass = 0; pass < 2; pass++) HG_HEDGES.forEach(([re]) => { s = s.replace(new RegExp(re.source + ',?\\s*', 'gi'), () => { cut++; return ''; }); });
+  for (let k = 0; k < 3 && HG_OPENER.test(s); k++) { const m = s.match(HG_OPENER); if (m && hgKept(m[1], keep)) break; s = s.replace(HG_OPENER, ''); cut++; }
+  for (let pass = 0; pass < 2; pass++) HG_HEDGES.forEach(([re]) => { s = s.replace(new RegExp(re.source + ',?\\s*', 'gi'), m => { if (hgKept(m, keep)) return m; cut++; return ''; }); });
   s = s.replace(/\s{2,}/g, ' ').replace(/\s+([,.!?;:])/g, '$1').replace(/^[,;:\s]+/, '').trim();
   /* keep their case: a line that started lowercase on purpose stays lowercase */
   const up = /^\P{L}*\p{Lu}/u.test(String(line || '')); return { s: cut && up ? cap(s) : s, cut };
@@ -13624,7 +13669,7 @@ function onbStep3() {
   const skip = $('.onb-top a[href="#write"]'); if (skip) skip.hidden = true; /* setup is done: nothing left to skip */
   $('#onb').innerHTML = `<div class="onb-result">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div style="display:grid;gap:10px"><h1 class="display" style="font-size:clamp(36px,5vw,56px)">${an || (S.profile && S.profile.traits) ? (name && !S.user.nameGuessed ? `Here’s how you sound, <em>${esc(name.split(' ')[0])}.</em>` : 'Here’s how <em>you sound.</em>') : (name && !S.user.nameGuessed ? `Your first post, <em>${esc(name.split(' ')[0])}.</em>` : 'Your first <em>post.</em>')}</h1></div>${read ? `<span class="timer" data-tip="How long the read took">${ic('clock', 'xs')} ${secs < 60 ? `${secs} seconds` : `${Math.round(secs / 60)} min`} to read ${fmtN(an.n)} posts</span>` : ''}</div>
-    <div class="onb-me">${avatar(S.user, 'lg')}<div class="om-who"><b>${esc(name || 'You')}</b><span class="faint">${handle ? `@${esc(handle)} · ` : ''}${esc(ONB.niche)}</span></div><div class="om-v"><span class="label">${an ? 'You sound' : 'Starting voice'}</span><span class="om-t">${traits.map(([t, ev]) => `<b data-tip="${esc(ev)}" tabindex="0">${esc(t)}</b>`).join('<i aria-hidden="true">·</i>')}</span></div><a class="btn ghost sm" href="#voice">${ic('sliders', 'sm')} Tune</a></div>
+    <div class="onb-me">${avatar(S.user, 'lg')}<div class="om-who"><b>${esc(name || 'You')}</b><span class="faint">${handle ? `@${esc(handle)} · ` : ''}${esc(ONB.niche)}</span></div><div class="om-v"><span class="label">${an ? 'You sound' : 'Starting voice · learns as you write'}</span><span class="om-t">${traits.map(([t, ev]) => `<b data-tip="${esc(ev)}" tabindex="0">${esc(t)}</b>`).join('<i aria-hidden="true">·</i>')}</span></div><a class="btn ghost sm" href="#voice">${ic('sliders', 'sm')} Tune</a></div>
     <div class="card onb-try" id="onb-try"><div class="ot-h"><span class="label">The post you almost sent</span><span class="faint">Rough is fine. We’ll sharpen the first line.</span></div>
       <textarea class="input" id="ot-in" rows="2" maxlength="600" placeholder="${/crypto|trad/i.test(S.user.niche || '') ? 'i think btc is probably going to break 100k soon tbh' : 'so i think pricing is really important for early startups'}" aria-label="A post you almost wrote">${esc(S.pendingLine || '')}</textarea>
       <div class="ot-a"><button class="btn primary" id="ot-go">${ic('bolt', 'sm')} Sharpen it</button><span class="faint ot-note" id="ot-note"></span></div>
@@ -14799,6 +14844,31 @@ function voiceSampleFor(spice, polish, length = 0) {
   if (length > 55) s += polish < 50 ? '\n\nthe lesson: every rule you skip is a trade your mood takes for you.' : '\n\nThe lesson: every rule you skip is a trade you let your mood take for you.';
   return s;
 }
+/* r64: what this voice has learned from use, in plain words, every item removable */
+function learnCardHTML() {
+  const L = learned(), m = memFor(), me = S.ws === 'me', who = me ? 'you' : WS().name, choices = Object.values(m.moves).reduce((a, x) => a + x.k + x.u, 0);
+  const counts = [[L.sent, 'post', 'sent or scheduled'], [L.edits, 'edit', 'to suggestions'], [choices, 'choice', 'kept or undone']].filter(([n]) => n).map(([n, w, t]) => `${n} ${w}${n === 1 ? '' : 's'} ${t}`);
+  const imported = me && HIST().length ? ` Plus ${fmtN(HIST().length)} imported post${HIST().length === 1 ? '' : 's'}.` : '';
+  const chips = (list, kind) => list.map(w => `<span class="w${kind === 'avoid' ? ' no' : ''}">${esc(w)}<button data-lf="${kind}" data-w="${esc(w)}" aria-label="Forget ${esc(w)}" data-tip="Forget this">${ic('x', 'xs')}</button></span>`).join('');
+  const empty = !L.n && !L.posts;
+  return `<section class="card pad lf" aria-labelledby="lf-h"><div class="lf-h"><div><span class="label" id="lf-h">Learning from ${esc(who)}</span><p class="lf-sub">${empty ? `It learns as ${me ? 'you write' : 'you write for them'}: every post ${me ? 'you send' : 'sent'}, every word cut from a suggestion, every Sharpen kept or undone. Nothing yet.` : `From ${counts.join(', ') || 'what you’ve written'}.${imported} Every rewrite and Sharpen uses it.`}</p></div>${empty ? '' : `<button class="btn ghost sm" data-lf="all">${ic('undo', 'sm')} Forget all</button>`}</div>
+    ${empty ? '' : `<div class="lf-grid">
+      ${L.habits.length ? `<div><span class="lf-k">How ${me ? 'you write' : 'they write'}</span><ul class="v-list">${L.habits.map(h => `<li>${esc(h)}</li>`).join('')}</ul></div>` : `<div><span class="lf-k">How ${me ? 'you write' : 'they write'}</span><p class="faint">Three posts in and the habits show up here.</p></div>`}
+      <div class="lf-side">
+        ${L.avoid.length ? `<div><span class="lf-k">Words ${me ? 'you cut' : 'cut'} from suggestions</span><div class="words">${chips(L.avoid, 'avoid')}</div></div>` : ''}
+        ${L.keep.length ? `<div><span class="lf-k">Words ${me ? 'you keep' : 'they keep'}</span><div class="words">${chips(L.keep, 'keep')}</div></div>` : ''}
+        ${L.prefer.length || L.dislike.length ? `<div><span class="lf-k">First lines</span><p class="lf-mv">${L.prefer.length ? `Keeps: ${esc(L.prefer.join(', '))}.` : ''} ${L.dislike.length ? `Undoes: ${esc(L.dislike.join(', '))}.` : ''}</p></div>` : ''}
+        ${L.pairs.length ? `<div><span class="lf-k">Latest edit to a suggestion</span><p class="lf-pair"><del>${esc(clip(L.pairs[0].from, 140))}</del><ins>${esc(clip(L.pairs[0].to, 140))}</ins></p></div>` : ''}
+      </div></div>`}</section>`;
+}
+function wireLearnCard(root) {
+  root.addEventListener('click', e => {
+    const b = e.target.closest('[data-lf]'); if (!b) return; const m = memFor(), k = b.dataset.lf, w = b.dataset.w;
+    if (k === 'all') { const was = JSON.parse(JSON.stringify(m)); S.learn[S.ws] = { ...MEM.memNew(), v: (m.v || 0) + 1 }; save(); route(); toast('Forgot what it learned here. It starts again from your next post.', { icon: 'undo', action: 'Undo', onAction: () => { S.learn[S.ws] = { ...was, v: (was.v || 0) + 2 }; save(); route(); } }); return; }
+    if (k === 'avoid') m.drop[w] = 0; if (k === 'keep') delete m.keep[w]; m.v = (m.v || 0) + 1; save();
+    const c = $('.lf'); if (c) c.outerHTML = learnCardHTML(); toast(`Forgot “${esc(w)}”.`, { icon: 'check', ms: 1800 });
+  });
+}
 ROUTES.voice = () => {
   const an = ANALYSIS(), pr = S.profile, real = !!an;
   /* before your posts are in, the card is your starting voice from the sliders below, never a stranger's */
@@ -14807,13 +14877,15 @@ ROUTES.voice = () => {
   const most = pr && pr.most_you ? { text: pr.most_you, p: HIST().find(p => p.text === pr.most_you) } : real ? { text: an.top[0].text, p: an.top[0] } : { text: TOP_POSTS[2].text, p: TOP_POSTS[2] };
   const lean = real ? an.lean.slice(0, 8).map(x => [x.w, x.n]) : [['size', 48], ['journal', 64], ['honestly', 31], ['boring', 22], ['stop loss', 29], ['the rule', 17], ['patience', 26], ['exit', 19]];
   const works = pr && pr.works && pr.works.length ? pr.works : real ? an.kindStats.filter(k => k.n >= 3).slice(0, 4).map(k => `${k.k} posts: ${k.x}× your median (${k.n} posts)`) : null;
-  const status = pr ? `Learned ${agoLabel(pr.at)} from ${pr.n} of your posts, by ${pr.by || 'Claude'}.` : real ? `${an.n} posts brought in. Choose “Learn my voice” and this page becomes yours.` : 'Your starting voice, set by the tone sliders.';
-  const have = HIST().length || (SHOWCASE() ? myQ().filter(q => q.status === 'published').length : 0), need = 8;
-  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Your words in, your voice out. Tune it here and every rewrite follows.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${real ? 'primary' : ''}" id="learn" ${real ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${real ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Bring at least 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}${real && aiOn() ? crTag('voice') : ''}</button></div></div>
-  <p class="v-status"><span class="ai-badge" data-mode="${LLM.mode}">${aiBadgeInner()}</span><span>${esc(status)}</span>${real ? '' : `<span class="${start ? 'sr' : 'faint'}" id="learn-why">Bring 8 posts and “Learn my voice” turns on.</span>`}</p>
+  const sent = memFor('me').posts.length;
+  const status = pr ? `Learned ${agoLabel(pr.at)} from ${pr.n} of your posts, by ${pr.by || 'Claude'}.` : real ? `${an.n} posts brought in. Choose “Learn my voice” and this page becomes yours.` : sent ? `Learning from ${sent} post${sent === 1 ? '' : 's'} you wrote here.${sent >= 8 ? ' “Learn my voice” is on.' : ''}` : 'Your starting voice, set by the tone sliders. It learns from every post you write.';
+  const have = Math.max(HIST().length + memFor('me').posts.length, SHOWCASE() ? myQ().filter(q => q.status === 'published').length : 0), need = 8, canLearn = real || have >= need;
+  mount('voice', `<div class="page"><div class="page-h"><div><h1 class="display">Your voice</h1><p>${real || pr ? 'Hookworthy writes like you because it read you. Tune it here and every rewrite follows.' : 'Your words in, your voice out. Tune it here and every rewrite follows.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="import">${ic('upload', 'sm')} ${real ? 'Bring more posts' : 'Bring your posts'}</button><button class="btn ${canLearn ? 'primary' : ''}" id="learn" ${canLearn ? '' : 'disabled aria-describedby="learn-why"'} data-tip="${canLearn ? 'Claude reads your posts and learns the voice every rewrite uses' : 'Write or bring 8 posts first, so there’s a voice to learn'}">${ic('voice', 'sm')} ${pr ? 'Learn again' : 'Learn my voice'}${real && aiOn() ? crTag('voice') : ''}</button></div></div>
+  <p class="v-status"><span class="ai-badge" data-mode="${LLM.mode}">${aiBadgeInner()}</span><span>${esc(status)}</span>${canLearn ? '' : `<span class="${start ? 'sr' : 'faint'}" id="learn-why">Write or bring 8 posts and “Learn my voice” turns on.</span>`}</p>
+  ${learnCardHTML()}
   <div class="voice-hero">
     <div class="card pad" style="display:grid;gap:14px;grid-template-rows:auto auto auto 1fr"><span class="label">${real || pr ? 'You sound' : 'Your starting voice'}</span><div id="v-traits">${traits.map(([t, s]) => `<div class="trait"><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join('')}</div>
-      ${start ? `<div class="v-prog"><div class="v-prog-h"><b>Bring ${need} posts</b><span class="faint">${have} so far</span></div><div class="v-bar" role="progressbar" aria-label="Posts brought in" aria-valuemin="0" aria-valuemax="${need}" aria-valuenow="${Math.min(have, need)}"><i style="width:${Math.min(100, have / need * 100)}%"></i></div><p class="faint">Then it reads how you open, what you lean on and what your people reward.</p></div>` : `<div class="v-stats">${st.map(([v, l]) => `<div><b class="mono" style="font-size:20px">${v}</b><div class="faint" style="font-size:12px;line-height:1.3;margin-top:4px">${l}</div></div>`).join('')}</div>
+      ${start ? `<div class="v-prog"><div class="v-prog-h"><b>Write or bring ${need} posts</b><span class="faint">${have} so far</span></div><div class="v-bar" role="progressbar" aria-label="Posts brought in" aria-valuemin="0" aria-valuemax="${need}" aria-valuenow="${Math.min(have, need)}"><i style="width:${Math.min(100, have / need * 100)}%"></i></div><p class="faint">Then it reads how you open, what you lean on and what your people reward.</p></div>` : `<div class="v-stats">${st.map(([v, l]) => `<div><b class="mono" style="font-size:20px">${v}</b><div class="faint" style="font-size:12px;line-height:1.3;margin-top:4px">${l}</div></div>`).join('')}</div>
       <figure class="most-you"><span class="label">${real || pr ? 'Your most “you” post' : 'The sample account’s most typical post'}</span><blockquote>${esc(clip(most.text, 280))}</blockquote><figcaption>${most.p ? `<b class="mono">${fmtN(most.p.views || most.p.likes)}</b> ${most.p.views ? 'views' : 'likes'} · ` : ''}${real || pr ? 'the post that sounds most like you' : 'a sample, until you bring your posts'}</figcaption></figure>`}</div>
     <div class="card pad" style="display:grid;gap:18px;align-content:start"><span class="label">Tone</span>
       ${[['spice', 'Calm', 'Spicy'], ['polish', 'Casual', 'Polished'], ['length', 'Short', 'Rich']].map(([k, a, b]) => `<div class="slider-row"><div class="ends"><span>${a}</span><span>${b}</span></div><input type="range" class="range" min="0" max="100" value="${S.voice[k]}" data-v="${k}" aria-label="${a} to ${b}" style="--p:${S.voice[k]}%"></div>`).join('')}
@@ -14826,7 +14898,7 @@ ROUTES.voice = () => {
   </div></div>`);
   const drawNever = () => { $('#never').innerHTML = S.voice.never.map((w, i) => `<span class="w no">${esc(w)}<button data-nv="${i}" aria-label="Allow ${esc(w)}" data-tip="Allow again">${ic('x', 'xs')}</button></span>`).join('') || '<span class="faint" style="font-size:13px">Nothing on your never-say list yet.</span>'; };
   const sample = () => { const s = $('#v-sample'); s.style.opacity = .3; setTimeout(() => { s.textContent = voiceSampleFor(S.voice.spice, S.voice.polish, S.voice.length); s.style.opacity = 1; }, 120); };
-  drawNever(); $('#v-sample').textContent = voiceSampleFor(S.voice.spice, S.voice.polish, S.voice.length);
+  drawNever(); $('#v-sample').textContent = voiceSampleFor(S.voice.spice, S.voice.polish, S.voice.length); wireLearnCard($('#view'));
   const v = $('#view'); const deb = debounce(sample, 60);
   v.addEventListener('input', e => { const k = e.target.dataset.v; if (!k) return; S.voice[k] = +e.target.value; e.target.style.setProperty('--p', e.target.value + '%'); save(); deb();
     if (start) $('#v-traits').innerHTML = sliderTraits().map(([t, s]) => `<div class="trait"><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join(''); });
@@ -14844,8 +14916,10 @@ function heuristicTraits(an) {
 }
 /* Learn my voice: Claude (Opus on the server, "complex" on your account) reads your posts and writes the profile every rewrite uses */
 async function learnVoice(btn) {
-  const an = ANALYSIS(); if (!an || an.n < 8) { toast('Bring at least 8 posts first so there’s a voice to learn.', { icon: 'voice' }); openImport(); return; }
-  const pool = [...an.top, ...HIST().filter(p => !an.top.includes(p))].slice(0, 120);
+  /* r64: what you've written here counts too, not only what you imported */
+  const hk = new Set(HIST().map(p => p.text.trim().toLowerCase())), all = [...HIST(), ...memFor('me').posts.filter(p => !hk.has(p.t.trim().toLowerCase())).map(p => ({ text: p.t, at: p.at }))];
+  const an = HWCore.analyze(all); if (!an || an.n < 8) { toast('Write or bring at least 8 posts first so there’s a voice to learn.', { icon: 'voice' }); openImport(); return; }
+  const pool = [...an.top, ...all.filter(p => !an.top.includes(p))].slice(0, 120); if (!an.top.length) an.top = all.slice(0, 1);
   if (!aiOn()) { S.profile = { summary: `Short sentences (${an.stats.wps} words), ${an.stats.oneSentOpen}% one-sentence openers, ${an.stats.emojiPer} emoji and ${an.stats.tagsPer} hashtags per post.`, traits: heuristicTraits(an).map(([name, evidence]) => ({ name, evidence })), rules: [], avoid: [], works: [], most_you: an.top[0].text, n: an.n, at: Date.now(), by: 'quick mode' }; save(); route(); toast('Learned the basics. Turn on Claude so it learns the rest.', { icon: 'voice', tone: 'accent' }); return; }
   btn && btn.classList.add('is-loading');
   const t = toast(`Claude is reading ${pool.length} posts. This takes about a minute.`, { icon: 'voice', tone: 'accent', ms: 90000 });

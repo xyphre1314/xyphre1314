@@ -957,3 +957,28 @@ These come from a first-session audit: four walks from the homepage to a schedul
   - "Write my note" and copy wait until a post has gone out.
 - **One name for the planner:** "Plan my week" everywhere.
 - **One score vocabulary:** toasts say "Now strong" or "Stronger", the same words as the chips, not "Almost → Ready".
+
+## Round 64: it learns from each person, per voice
+
+The more someone uses Hookworthy, the more it writes like them. Each voice keeps its own memory: you, and each client you write for. A client's habits never leak into yours.
+
+- **What it learns from:**
+  - **Posts you schedule or send.** These are the strongest signal.
+  - **Suggestions you change before posting.** If you edit a Sharpen or rewrite before it ships, it records which words you took out and put in. A word cut from suggestions twice goes on that voice's avoid list. A full rewrite is not counted as an edit.
+  - **Cuts you undo.** If Sharpen cuts a word like "honestly" and you put it back twice, it becomes yours to keep. Sharpen stops cutting it and stops flagging it.
+  - **Moves you keep or undo.** First-line moves (ask then answer, number first, contrast…) and rewrite kinds are counted kept or undone.
+- **Where it's used:**
+  - **Every AI prompt.** The voice block now carries:
+    - the habits seen in your own posts (lowercase, sentence length, emoji, hashtags, line breaks, questions, numbers first, exclamation marks, em dashes, words and phrases you repeat);
+    - words to avoid and words to keep;
+    - moves you keep and moves you undo;
+    - your three latest "suggested → you posted" edits, so Claude learns the direction of your changes, not their content.
+  - **Example posts are always your own.** That means your imported best posts plus what you've written here. A real person never gets the demo account's posts as "theirs"; that fallback existed before and is gone.
+  - **The local Sharpen.** Moves you keep get a small ranking nudge (bounded at ±3), and kept words are protected from every cut. When that happens, the toast says so: "Kept 'honestly': you put it back before."
+  - **Client voices.** Each client uses its own memory plus the "how they sound" note from the client form, which wasn't reaching prompts before.
+  - **Learn my voice.** It now also counts posts written in the app, not only imports. "Write or bring 8 posts" turns it on.
+- **What you see:**
+  - **Voice page:** a new "Learning from you" card (or "Learning from Acme" for a client). It shows the counts, the habits, words cut, words kept, and the latest edit. Every item can be forgotten, and "Forget all" can be undone.
+  - **Milestones:** at 3, 10, 25 and 50 posts a toast says "Learned from N of your posts" with "See what it learned". It appears after the Scheduled confirmation has had its moment.
+  - **Onboarding:** the voice line reads "Starting voice · learns as you write".
+- **Privacy:** the memory lives with the rest of your data on the device. It reaches Claude only as part of a prompt you trigger.
