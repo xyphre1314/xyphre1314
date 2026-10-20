@@ -1442,3 +1442,74 @@ The owner said the page still felt off: too many three-line headings, too wordy,
   - "Nothing goes out until you do."
   - "Paste a line you almost didn't send. Nothing leaves this page."
 - **Payout cards:** they lose their 01–04 numbers (not a sequence) and two of their side notes.
+
+## Round 74 (app)
+
+A hard pass over every app surface, held to the bar of Airbnb, Apple, Linear, Arc, Notion and Wispr Flow. The app was already strong (8.5). What kept it from 10 was seams, places where one step of the loop (capture, write, sharpen, preview, schedule, see results) didn't hand off to the next, plus two layout bugs.
+
+### Scores, before and after
+| Surface | Before | After | What moved it |
+|---|---|---|---|
+| Shell and sidebar | 8.5 | 9 | On phones, Post now is a true circle and Save is never pushed off-screen. The save dot waits for a word. |
+| Write | 8.5 | 9.5 | Saved ideas wait on the empty draft. The time a draft is for stays in sight. |
+| Week | 8 | 9.5 | The status line no longer breaks into columns. "View week" lands on the card you placed. The phone toolbar is two even rows. |
+| Ideas | 8 | 9 | Drafted ideas are marked and leave Write's list. Saved posts show the author's portrait. |
+| Inbox | 8.5 | 9 | A one-line lede. |
+| Results | 8.5 | 9 | The best post is measured against your own week. |
+| Voice | 7.5 | 9 | No empty "Nothing yet" card next to "6 so far". Traits stack cleanly on phones. |
+| Settings | 8 | 8.5 | The lede says what the page is for, not a list of its sections. |
+| Plans | 8.5 | 8.5 | Untouched (pricing is fixed). |
+
+### Bugs fixed
+- **Week's status line broke into a four-column grid** on desktop once anything was "Next up" ("Next / up · today at / 8:40 AM · you / post it").
+  - Each branch is now one dot plus one sentence span.
+  - The when stays whole and the quote ellipsizes.
+- **On a phone, editing a queued post hid Save changes** past the right edge (the bar was 439px wide at 360).
+  - The chip above the draft already changes the time, so on phones Change time steps out.
+  - Post now is the send circle, and Save keeps its word.
+- **The phone's Post now was a 34×44 oval**, not a circle.
+  - It's 44×44 now.
+  - At 400px and under, Schedule keeps its word and drops the clock, so nothing runs past the edge.
+- **The save dot kept "New draft"** after a draft loaded from an idea, a template or Week. It now syncs on every render.
+
+### Capture → write: your ideas on the empty draft
+- **Where:** under "Need a start?". It shows the three newest saved ideas for the voice you're writing as, each one tap from a draft.
+- **What a tap does:** a note starts from your own words. A link starts the "write about it" post, with the link in a reply.
+- **The pen art** steps aside when there's something of yours to start from. It stays for a clean slate.
+- **Drafted ideas:** an idea you've drafted is marked (`it.used`) and drops out of this list. On Saved it reads "drafted". It's never deleted.
+- **"All N"** opens Saved.
+
+### Write → schedule: the time stays in sight
+- **One chip above the draft** for "Write for 8:40 AM" on Week, a planned draft, or a queued post you opened to edit:
+  - "For today at 8:40 AM ×"
+  - "Goes out tomorrow at 8:40 AM · Change"
+- **What it does:** the chip opens Schedule. × lets go of a planned time, with Undo.
+- **No more "Writing for…" toast.** The chip says it and stays. Screen readers still hear it once.
+
+### Schedule → Week: land on the card
+- **"View week"** on the schedule toast (and on the client-approval toast):
+  - turns the calendar to the post's week;
+  - brings the card into view and focuses it;
+  - gives it a short accent ring. The ring is a class, not an animation, so reduced motion still shows it.
+- **Empty days on a phone:** a future day with nothing on it says "Nothing planned yet." instead of a bare heading.
+- **Phone toolbar:** dates on the first row; whose week and Plan my week share the second.
+
+### Results: against your own usual
+- Before there's a history, the best post is compared with this week's middle post. The best is left out, and it needs four or more posts with numbers.
+- It reads: "4.2× your typical post this week. Same week, same people: the post made the difference."
+- Sample numbers stay labelled Sample.
+
+### Voice
+- **Nothing learned yet:**
+  - for clients and imported posts, it's one quiet line;
+  - for your starting voice, it's nothing at all, because the status line already says it learns as you write.
+- **Traits on phones:** each word sits over its description, left-aligned, instead of a staggered right column.
+
+### Copy
+- Settings: "How it posts, how it looks, and what it keeps."
+- Inbox: "Answer yours first. Then be early where your people read."
+
+### Rules kept
+- **One CSS block** (`ROUND 74 APP`), tokens only: no new colours, sizes or radii. Lint stays at 117.
+- **Every new control** is a real button with a visible focus ring and an accessible name, and works from the keyboard.
+- **Not touched:** the Sharpen engine and bar, the landing page, theme tokens, pricing.
