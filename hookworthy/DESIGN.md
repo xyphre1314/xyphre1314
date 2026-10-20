@@ -120,6 +120,12 @@ typography:
     fontWeight: 400
     lineHeight: 1.08
     letterSpacing: "-0.025em"
+  headline-card:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(30px, 2.4vw, 34px)"
+    fontWeight: 400
+    lineHeight: 1.06
+    letterSpacing: "-0.028em"
   page-title:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(30px, 3.2vw, 40px)"
@@ -1513,3 +1519,43 @@ A hard pass over every app surface, held to the bar of Airbnb, Apple, Linear, Ar
 - **One CSS block** (`ROUND 74 APP`), tokens only: no new colours, sizes or radii. Lint stays at 117.
 - **Every new control** is a real button with a visible focus ring and an accessible name, and works from the keyboard.
 - **Not touched:** the Sharpen engine and bar, the landing page, theme tokens, pricing.
+## Round 74 (landing)
+
+A design review scored the homepage section by section (hero 8, app 8.5, payouts 6, story 8.5, features 6.5, audience 8, trust 7, pricing 8, questions 8, finale 8.5, footer 7.5). The fixes went to the lowest scores and to the hero's first second.
+
+### The hero moves before you do
+- **The first second is authored.** The four rows rise into place from a blur (70ms apart), the feed fades up under them, and then the pen draws a wavy amber mark left to right under "so i think" and "just saying" (`.hzl-wv`, a masked stroke, so it draws instead of fading in). The margin notes follow, then the score.
+- **The score** (`#hzl-score`) sits under the line, frosted over the feed. It says "2 soft words · Scroll to sharpen", counts to "1 soft word left" as the first row is struck, and turns green with a check at "Sharper. Same idea, 5 words lighter." once both are gone. Amber means soft and green means better, exactly as in the app. It eases to the width of each message. It is decorative (`aria-hidden`); the h1 still reads as the sharp line.
+- **The hint is gone.** "Scroll to edit the line" was a grey whisper in the middle of the foot row; the score says it where you're already looking.
+- **Reduced motion** keeps the same composition: the sharp line centred on the first screen, no score. The resting hero used to collapse to the top of the screen.
+
+### Payouts: one sentence, not four cards
+- The four text cards (with Newsreader at 24px, under the 30px rule) repeated the hero, Results and trust.
+- Now X's bar is one `headline-sm` sentence in grey with its three thresholds in ink: "The bar to qualify: **Premium**, **500 verified followers** and **500K verified impressions** in 90 days."
+- On reveal, the three thresholds get the same blue band as "first lines" in the hero, one after another.
+- Two footnotes: "As of Oct 2026. X's Creator Studio has the latest." and "We work on the part you control: the post itself. Nobody can promise reach. We don't."
+
+### Features: real titles
+- **Head:** "Fewer tabs. / More posts." with the lede "From the idea to the reply, in one place." The old lede, "Every tool here works on the first line", wasn't true of client voices, ideas, previews or the inbox.
+- **Every card** has a two-line title in Newsreader (`headline-card`, 30–34px, an `h3`), then one line of Inter saying how it works:
+
+| Card | Title | How |
+|---|---|---|
+| Sharpen | One tap. / A sharper first line. | Three versions to pick from. Your facts stay put. |
+| Previews | See it in / their feed first. | Each network gets its own fit and a live preview. |
+| Review | Feedback on / the exact words. | One link. They comment on the line, not the vibe. |
+| Voices | Every client, / their own voice. | Each voice learns on its own. Switch with one key. |
+| Ideas | Never start / from blank. | Voice notes, links and screenshots become drafts. |
+| Inbox | Answer replies / while they're hot. | Each reply arrives with a draft in your voice. You press send. |
+
+- The review card no longer opens on "Sign in with X / Google" chips. It starts with the link.
+
+### Trust, rhythm, wordmark
+- **Each note now adds something:**
+  - "None go out on their own"
+  - "No bots in your replies"
+  - "We never edit or delete one"
+  - "None bought, none promised"
+  - "Esc takes any send back"
+- **Trust loses its top rule and padding,** so every section opens on the same rhythm.
+- **The footer wordmark** gets a 1px horizontal text-shadow in its own colour. That closes the anti-aliased seam where "r" touches "t" at −0.04em.
