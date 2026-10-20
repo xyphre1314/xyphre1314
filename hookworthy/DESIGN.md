@@ -2,50 +2,103 @@
 name: Hookworthy
 description: Sound like you. Show up every day.
 colors:
-  desk: "#0A0A0A"
-  desk-raised: "#101010"
-  page: "#0D0D0D"
-  card: "#171717"
-  card-2: "#1C1C1C"
-  card-3: "#262626"
-  menu: "#141414"
-  hairline: "rgba(255,255,255,.07)"
-  hairline-strong: "rgba(255,255,255,.12)"
-  ink: "#EDEDED"
-  ink-2: "#A3A3A3"
-  ink-3: "#8C8C8C"
-  pill: "#E5E5E5"
-  pill-hover: "#FFFFFF"
-  pill-ink: "#0D0D0D"
+  desk: "#08090B"
+  desk-raised: "#0E0F12"
+  page: "#0C0D10"
+  card: "#15161A"
+  card-2: "#1A1C21"
+  card-3: "#24262D"
+  menu: "#15161A"
+  hairline: "rgba(200,215,255,.075)"
+  hairline-strong: "rgba(200,215,255,.13)"
+  ink: "#EDEEF2"
+  ink-2: "#B5B9C2"
+  ink-3: "#8F939D"
+  blue: "#2B52FF"
+  blue-hover: "#3965FF"
+  blue-hover-light: "#2242F4"
+  blue-press: "#1E3BE3"
+  blue-ink: "#FFFFFF"
+  accent: "#6293FF"
+  accent-hover: "#7FA9FF"
+  accent-text: "#75A2FF"
+  accent-light: "#2445F5"
+  accent-hover-light: "#1C37DB"
+  selection: "rgba(43,82,255,.42)"
+  selection-light: "rgba(43,82,255,.18)"
+  highlighter: "rgba(43,82,255,.55)"
+  highlighter-light: "rgba(43,82,255,.24)"
+  soft-band: "rgba(245,180,76,.2)"
+  soft-band-light: "rgba(245,180,76,.34)"
   soft-word: "#F5B44C"
-  better: "#4ADE80"
-  wrong: "#FF7A7A"
-  desk-light: "#F2F2F1"
-  desk-raised-light: "#F7F7F6"
-  page-light: "#FAFAFA"
+  better: "#55DB95"
+  wrong: "#FB7570"
+  desk-light: "#EEF0F4"
+  desk-raised-light: "#F5F6F9"
+  page-light: "#FBFBFD"
   card-light: "#FFFFFF"
-  card-2-light: "#F3F3F2"
-  card-3-light: "#E9E9E7"
-  hairline-light: "rgba(10,10,10,.08)"
-  hairline-strong-light: "rgba(10,10,10,.14)"
-  ink-light: "#111111"
-  ink-2-light: "#545454"
-  ink-3-light: "#6B6B6B"
-  pill-light: "#111111"
-  pill-hover-light: "#000000"
-  pill-ink-light: "#FFFFFF"
-  soft-word-light: "#A35A00"
-  better-light: "#15803D"
-  wrong-light: "#C0262D"
-  paper: "#EFEFED"
-  paper-ink-2: "#4F4F4F"
-  paper-ink-3: "#666666"
-  night: "#111111"
-  night-card: "#1A1A1A"
-  night-ink-2: "#A8A8A8"
-  night-ink-3: "#8F8F8F"
+  card-2-light: "#F2F4F8"
+  card-3-light: "#E6E9F0"
+  hairline-light: "rgba(14,24,56,.08)"
+  hairline-strong-light: "rgba(14,24,56,.14)"
+  ink-light: "#0F131F"
+  ink-2-light: "#434956"
+  ink-3-light: "#5D6474"
+  soft-word-light: "#9B570E"
+  better-light: "#0B773F"
+  wrong-light: "#C12629"
+  paper: "#F2F4F8"
+  paper-ink-2: "#434956"
+  paper-ink-3: "#5D6474"
+  night: "#101215"
+  night-card: "#18191E"
+  night-ink-2: "#B5B9C2"
+  night-ink-3: "#8F939D"
+  finale-top: "#03082B"
+  finale-mid: "#0D1A7E"
+  finale-end: "#1E3BE3"
+  finale-hi: "#B4CAFD"
+  glass-ink-2: "#B5B9C2"
+  glass-ink-3: "#9A9EA8"
   tile-ink: "#1E1E1E"
   tile-ink-light: "#0A0A0A"
+  # legacy values: still hard-coded by Round 55-era components; the tokens above supersede them in new work
+  legacy-desk: "#0A0A0A"
+  legacy-desk-raised: "#101010"
+  legacy-page: "#0D0D0D"
+  legacy-card: "#171717"
+  legacy-card-2: "#1C1C1C"
+  legacy-card-3: "#262626"
+  legacy-menu: "#141414"
+  legacy-hairline: "rgba(255,255,255,.07)"
+  legacy-hairline-strong: "rgba(255,255,255,.12)"
+  legacy-ink: "#EDEDED"
+  legacy-ink-2: "#A3A3A3"
+  legacy-ink-3: "#8C8C8C"
+  legacy-pill: "#E5E5E5"
+  legacy-pill-ink: "#0D0D0D"
+  legacy-better: "#4ADE80"
+  legacy-wrong: "#FF7A7A"
+  legacy-desk-light: "#F2F2F1"
+  legacy-desk-raised-light: "#F7F7F6"
+  legacy-page-light: "#FAFAFA"
+  legacy-card-2-light: "#F3F3F2"
+  legacy-card-3-light: "#E9E9E7"
+  legacy-hairline-light: "rgba(10,10,10,.08)"
+  legacy-hairline-strong-light: "rgba(10,10,10,.14)"
+  legacy-ink-light: "#111111"
+  legacy-ink-2-light: "#545454"
+  legacy-ink-3-light: "#6B6B6B"
+  legacy-pill-hover-light: "#000000"
+  legacy-soft-word-light: "#A35A00"
+  legacy-better-light: "#15803D"
+  legacy-wrong-light: "#C0262D"
+  legacy-paper: "#EFEFED"
+  legacy-paper-ink-2: "#4F4F4F"
+  legacy-paper-ink-3: "#666666"
+  legacy-night-card: "#1A1A1A"
+  legacy-night-ink-2: "#A8A8A8"
+  legacy-night-ink-3: "#8F8F8F"
   comment-0: "#F59E5B"
   comment-1: "#2EC4B0"
   comment-2: "#F27AAE"
@@ -78,12 +131,6 @@ colors:
   bluesky-blue: "#1185FE"
   bluesky-secondary: "#405168"
 typography:
-  display:
-    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
-    fontSize: "clamp(44px, 6.9vw, 96px)"
-    fontWeight: 400
-    lineHeight: 1
-    letterSpacing: "-0.038em"
   display-line:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(44px, min(9.4vw, 13.4svh), 156px)"
@@ -95,31 +142,37 @@ typography:
     fontSize: "clamp(36px, 13.4vw, 64px)"
     fontWeight: 400
     lineHeight: 0.94
-    letterSpacing: "-0.04em"
+    letterSpacing: "-0.032em"
+  display:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(44px, 6.9vw, 96px)"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "-0.039em"
   headline-close:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(44px, 6.4vw, 92px)"
     fontWeight: 400
     lineHeight: 1
-    letterSpacing: "-0.04em"
+    letterSpacing: "-0.038em"
   headline:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(42px, 5.8vw, 86px)"
     fontWeight: 400
     lineHeight: 1
-    letterSpacing: "-0.035em"
+    letterSpacing: "-0.037em"
   headline-quiet:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(40px, 4.8vw, 72px)"
     fontWeight: 400
     lineHeight: 1
-    letterSpacing: "-0.035em"
+    letterSpacing: "-0.036em"
   headline-sm:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(30px, 3vw, 42px)"
     fontWeight: 400
     lineHeight: 1.08
-    letterSpacing: "-0.025em"
+    letterSpacing: "-0.028em"
   headline-card:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(30px, 2.4vw, 34px)"
@@ -131,7 +184,13 @@ typography:
     fontSize: "clamp(30px, 3.2vw, 40px)"
     fontWeight: 400
     lineHeight: 1.06
-    letterSpacing: "-0.022em"
+    letterSpacing: "-0.027em"
+  write:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "20px"
+    fontWeight: 400
+    lineHeight: 1.55
+    letterSpacing: "0.002em"
   title:
     fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
     fontSize: "19px"
@@ -159,9 +218,24 @@ typography:
     fontSize: "14px"
     fontWeight: 500
     lineHeight: 1.35
+  ui-sm:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.45
   label:
     fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
     fontSize: "12.5px"
+    fontWeight: 500
+    lineHeight: 1.2
+  caption:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "12px"
+    fontWeight: 500
+    lineHeight: 1.3
+  micro:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "11px"
     fontWeight: 500
     lineHeight: 1.2
   mono:
@@ -170,12 +244,31 @@ typography:
     fontWeight: 500
     lineHeight: 1
     fontFeature: "tnum"
+  number:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "24px"
+    fontWeight: 600
+    lineHeight: 1
+    fontFeature: "tnum"
+  stat:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "32px"
+    fontWeight: 300
+    lineHeight: 1
+    letterSpacing: "-0.024em"
+    fontFeature: "tnum"
+  plan-name:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "32px"
+    fontWeight: 600
+    lineHeight: 1.05
+    letterSpacing: "-0.024em"
   price:
     fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
     fontSize: "54px"
-    fontWeight: 600
+    fontWeight: 300
     lineHeight: 1
-    letterSpacing: "-0.045em"
+    letterSpacing: "-0.031em"
     fontFeature: "tnum"
   wordmark:
     fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
@@ -221,17 +314,17 @@ spacing:
   section: "clamp(104px, 15vh, 168px)"
 components:
   button-primary:
-    backgroundColor: "{colors.pill}"
-    textColor: "{colors.pill-ink}"
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.blue-ink}"
     typography: "{typography.button}"
     rounded: "{rounded.pill}"
     padding: "0 18px"
     height: "40px"
   button-primary-hover:
-    backgroundColor: "{colors.pill-hover}"
+    backgroundColor: "{colors.blue-hover}"
   button-primary-lg:
-    backgroundColor: "{colors.pill}"
-    textColor: "{colors.pill-ink}"
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.blue-ink}"
     rounded: "{rounded.pill}"
     padding: "0 24px"
     height: "50px"
@@ -259,8 +352,8 @@ components:
   app-button-hover:
     backgroundColor: "{colors.card-2}"
   app-button-primary:
-    backgroundColor: "{colors.pill}"
-    textColor: "{colors.pill-ink}"
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.blue-ink}"
     typography: "{typography.ui}"
     rounded: "{rounded.control}"
     padding: "0 14px"
@@ -1559,3 +1652,87 @@ A design review scored the homepage section by section (hero 8, app 8.5, payouts
   - "Esc takes any send back"
 - **Trust loses its top rule and padding,** so every section opens on the same rhythm.
 - **The footer wordmark** gets a 1px horizontal text-shadow in its own colour. That closes the anti-aliased seam where "r" touches "t" at −0.04em.
+## Round 74 (brand)
+
+The owner asked for brand designers who specialise in colour and type pairing: everything consistent, and a site that stuns. This round audited colour and type across the homepage and the app, then tuned the system rather than replacing it. The electric blue, the line art, Newsreader + Inter and the dark-first world all stay. Where this section and the older Colors / Typography prose above disagree, this section and the frontmatter win.
+
+### What the audit found
+- **Five colour layers, two worlds.** Tokens were redefined in rounds 34, 55, 61, 67 and 71. The app had moved to round 67's cool neutrals, but the inverted sheet (the 11 PM chapter, the Pro card) still used round 55's warm greys (`#EFEFED`, `#111111`, `#4F4F4F`), and so did the legacy palette names (`--pa`, `--pl`, `--lilac`, `--plum-900`, `--ppro`) that some components still read. The app's Pro plan card was a warm `#191918`.
+- **Two ambers, two reds, a yellow.** The homepage's soft-word line and the editor's highlighter used `#FACC15`, a yellow (the owner turned yellow down in rounds 7–9), while the app's Wait states used amber `#F5B44C`. Cut marks were `#FF6B5E`, errors `#FF7A7A`.
+- **The Pro card asked in black and white.** Inside the inverted sheet the primary button fell back to round 55's grey / black pill, so the one plan the page recommends was the only CTA that wasn't blue.
+- **Coloured glow.** The primary button, the "now" line on Week, onboarding bars, niche cards, Results' key words (a blue `text-shadow`) and the app panel's top light all glowed blue.
+- **Gradient text.** The "thinking" shimmer swept a gradient through the letters.
+- **A flat grey hierarchy.** Secondary and tertiary text were only 0.06–0.07 apart in OKLCH lightness in both themes (`#A4A7B0` vs `#8F939D` on dark), so ledes and captions read as one grey.
+- **Contrast.** Two real misses that axe can't see, because they sit on a gradient or a photo: the note under the blue finale ("Free plan · No card…", 2.6:1) and the times on the 11 PM photo cards (`#8C8C8C` on dark glass, as low as 4.2:1 over the photo).
+- **Type.** 128 distinct font sizes in the CSS (most of them half-pixel component sizes); weights 650 and 700 left over from the Figtree years; serif tracking anywhere from −0.02em to −0.04em with no relation to size (page titles −0.022em at 44px, plan prices −0.045em); prices in Geist Mono on the homepage but Inter Light in Plans; Upgrade's add-on head in bold Inter at 42px; digits that tick or sit in columns without tabular figures.
+
+### The palette
+All values are OKLCH-derived and checked for WCAG 2.2 AA in both themes. One source of truth: the Round 67 token block in `index.html` (its header now says so).
+
+**Hookworthy blue** sits at hue 266 in OKLCH, the neutrals' own hue, so the blue and the greys read as one family. It leans ultramarine, away from the cyan-leaning SaaS blues, and it is a step deeper than round 67's `#1F5BFF`.
+
+| Role | Dark | Light | Check |
+|---|---|---|---|
+| Fill (`--cta`) | `#2B52FF` | `#2B52FF` | white 5.6:1 |
+| Hover (`--cta-hover`) | `#3965FF` (lifts) | `#2242F4` (deepens) | white 4.7 / 6.7:1 |
+| Pressed (`--cta-press`) | `#1E3BE3` | `#1E3BE3` | white 7.5:1 |
+| UI accent, focus ring (`--accent`, `--ring`) | `#6293FF` | `#2445F5` | 6.6 / 6.3:1 on the page |
+| Text and links (`--accent-text`) | `#75A2FF` | `#2445F5` | 6.0:1 on dark card-3, 5.3:1 on light card-3 |
+| Soft tint (`--accent-soft`) | blue 14% | blue 9% | |
+| Selection (`--marker`) | blue 42%, white ink | blue 18%, ink | 12.9 / 14.2:1 |
+| Highlighter band (`--mk-band`) | blue 55% | blue 24% | ink 9.3 / 13:1 on it |
+
+**Neutrals** (cool, chroma under 0.03):
+- Dark: desk `#08090B`, page `#0C0D10`, cards `#15161A`, `#1A1C21`, `#24262D`; ink `#EDEEF2`, ink-2 `#B5B9C2` (was `#A4A7B0`), ink-3 `#8F939D`. Three clear steps (OKLCH lightness 0.95 / 0.79 / 0.66); ink-3 still passes 4.9:1 on the lightest card.
+- Light: desk `#EEF0F4`, page `#FBFBFD`, cards white, `#F2F4F8`, `#E6E9F0`; ink `#0F131F`, ink-2 `#434956` (was `#4D5363`), ink-3 `#5D6474`.
+- The inverted sheet uses the same ramps: paper `#F2F4F8` on a dark page, night `#101215` on a light one, each with the full token set of its theme (accent, ring, selection, amber, green, red), so anything placed inside it is right by default. The Pro card's button is the blue.
+- The older palette names (`--pa`, `--pl`, `--lilac`, `--plum-*`, `--apricot`, `--pb2`, `--ppro`) map onto these cool values.
+
+**Meaning** (one value per theme, text-safe on every surface of that theme):
+
+| Meaning | Dark | Light |
+|---|---|---|
+| Soft, look again (amber) | `#F5B44C` | `#9B570E` |
+| Better (green, a touch cooler so it sits with the blue) | `#55DB95` | `#0B773F` |
+| Wrong (red) | `#FB7570` | `#C12629` |
+
+The editor's inks (`--ink-soft`, `--ink-cut`, `--ink-ready`) are aliases of these three. The soft-word highlighter is amber at 20% (dark) / 34% (light), never yellow.
+
+**The finale** keeps its blue stage, now ultramarine end to end: `#03082B` → `#0D1A7E` → `#1E3BE3`. The bottom is a step deeper so its small print (80% white) passes AA at about 5:1.
+
+**No coloured glow.** `--accent-glow`, `--toast-glow` and `--halo` are neutral (a plain shadow, a faint ink lift). Buttons keep their inner top highlight and a soft drop shadow; nothing blooms blue. The line art keeps its own stroke glow (the owner's pick in round 67), a little softer on dark (`--art-glow` .5).
+
+### Type
+**The pairing stays: Newsreader + Inter + Geist Mono.** A study set the hero line in Instrument Serif, Fraunces, Source Serif 4 Display, and Newsreader with Geist and with Hanken Grotesk:
+- **Newsreader** was drawn for headlines on screens, with an optical-size axis (6–72). The product is about first lines, and first lines are headlines. It is calm and journalistic, and it holds 150px without turning into a fashion masthead.
+- **Instrument Serif** is the 2024 startup default: condensed, one weight, no optical sizes. Trendy noise.
+- **Fraunces** reads warm and bookish even with Soft and Wonk at 0; the wrong voice for a sharp editor.
+- **Source Serif 4 Display** is fine, and anonymous next to Newsreader.
+- **Inter** (v4, self-hosted, with its optical-size axis) switches to its Display cut on its own at large sizes, the Linear-style refinement. Geist reads more developer tool, Hanken Grotesk softer, and neither beats Inter at 13px in the app.
+- **Geist Mono** stays for times, counts, keys, step numbers and URLs only.
+
+**Rules shipped:**
+- **One tracking curve for every serif size:** `--track-serif: max(-.04em, calc(.8px - .047em))`. About −0.01em at 20px, −0.03em at 44px, −0.037em at 86px, −0.04em from 120px up, never tighter. Inter's big figures use `--track-sans-xl: max(-.04em, calc(.5px - .04em))`.
+- **Newsreader is a touch lighter on dark** (`--serif-wght`: 380 on dark, 400 on light). White type on near-black blooms, so this keeps the same line the same weight in both themes.
+- **Display steps are tokens:** `--t-d1` the Line (44–156px), `--t-d2` headline (42–86px, now the finale too), `--t-d3` quiet headline (40–72px), `--t-d4` small headline (30–42px), `--t-d5` page title (30–40px). UI steps stay `--t-11` to `--t-24`, with `--t-16` added.
+- **Weights:** Newsreader 400 (380 on dark). Inter 400 / 500 / 600, and 300 for big figures. The leftover 650s on Upgrade (plan names, credit counts, add-on sizes) are 600. Stat tiles are Inter Light, as round 67 intended (an old `!important` had kept them bold).
+- **Prices are Inter, not mono:** Light 300 with tabular figures on the homepage, the same as Plans in the app; add-on prices too.
+- **Tabular figures** on week dates, prices, plan counts, stat tiles, deltas, the time gutter, posting-time chips and counts.
+- **Upgrade's add-on head** ("Need more rewrites? / Add them by the month.") is Newsreader, like the questions under it, with the second line in ink-3.
+
+### The browser's own chrome
+- **Selection:** the blue tint everywhere (site, app, inverted sheet, forced themes); white on the blue finale.
+- **Focus:** one 2px ring in `--ring` with a 2px gap, on the site and in the app (the site's ring used to be white / ink). White on the blue finale, blue again inside its white composer.
+- **Caret** is the blue; **checkboxes, radios and sliders** take it through `accent-color`.
+- **Scrollbars** are themed through `scrollbar-color` (a cool 18–22% thumb on a clear track). Scrollers that hide their bars keep `scrollbar-width: none`.
+- **Pressed:** primaries go to `--cta-press` under the finger, on top of the existing scale.
+
+### Where it lives
+- Tokens: the Round 67 block (the one source of truth), the Round 61 ink aliases and the `.hx .inv` sheet.
+- Everything else is one block at the end of the stylesheet, `/* ROUND 74 BRAND */`: chrome theming, the serif selectors that take the tracking curve and weight, prices and tabular figures, the pressed state, the glow removals, the "thinking" pulse (it fades instead of sweeping a gradient through the letters) and the photo-card greys.
+- The frontmatter lists the shipped palette first. The old greys stay as `legacy-*` because older components still hard-code them; new work uses the tokens.
+
+### Left for later
+- 128 font sizes in component CSS (12.5px, 13.5px, 14.5px and friends). They should collapse onto the ramp, section by section, by whoever owns each section.
+- The canvas images (hook cards, LinkedIn carousels) still draw in Figtree and old hex colours; they should move to Newsreader + Inter and these tokens.
+- The Upgrade page's Pro card stays dark in both themes (a cool `#1E2026` on dark now), while the homepage's Pro card inverts. One of them should change so the One Sheet Rule holds everywhere.
