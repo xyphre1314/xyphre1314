@@ -86,13 +86,13 @@ typography:
     letterSpacing: "-0.038em"
   display-line:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
-    fontSize: "clamp(44px, min(8.4vw, 11.4svh), 150px)"
+    fontSize: "clamp(44px, min(9.4vw, 13.4svh), 156px)"
     fontWeight: 400
     lineHeight: 0.94
     letterSpacing: "-0.04em"
   display-line-phone:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
-    fontSize: "clamp(40px, 13.6vw, 74px)"
+    fontSize: "clamp(36px, 13.4vw, 64px)"
     fontWeight: 400
     lineHeight: 0.94
     letterSpacing: "-0.04em"
@@ -104,10 +104,16 @@ typography:
     letterSpacing: "-0.04em"
   headline:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
-    fontSize: "clamp(38px, 4.6vw, 64px)"
+    fontSize: "clamp(42px, 5.8vw, 86px)"
     fontWeight: 400
-    lineHeight: 1.03
-    letterSpacing: "-0.032em"
+    lineHeight: 1
+    letterSpacing: "-0.035em"
+  headline-quiet:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(40px, 4.8vw, 72px)"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "-0.035em"
   headline-sm:
     fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
     fontSize: "clamp(30px, 3vw, 42px)"
@@ -1397,3 +1403,42 @@ The owner asked for an Awwwards-level homepage and picked "The Line" from three 
 - **No label over the finale heading:** "Your turn" is gone.
 - **The footer wordmark is solid deep blue,** not gradient text.
 - **The "New on X" pill left the hero.** The payouts section right below still makes that case.
+
+## Round 73: two lines, fewer words, a sharper punchline
+
+The owner said the page still felt off: too many three-line headings, too wordy, and a weak punchline. Mobbin references set the bar:
+- **Resend:** "Email reimagined. / Available today."
+- **The Leap:** "Dream big. / Start small."
+- **Grok:** two lines and a lot of air.
+- **Frontify:** a big serif two-liner, small text off to the side.
+- **Descript:** strikes filler words on screen.
+
+### The rule now
+- **Every heading is two short lines,** the second dimmed, at 42–86px (`headline`, was 38–64px). The heading column is wider (1.6fr) so no line wraps.
+- **Every lede is one short sentence.**
+
+### The punchline
+- **The hero lands on "Good ideas die / in bad first lines."**, the brand promise from PRODUCT.md.
+- **The scroll still edits it:** "so i think" (warm-up) and the trailing "just saying" (filler) are struck and fold away, "g" takes its capital, the full stop drops, and the band fills under "first lines".
+- **The line under it:** "Hookworthy sharpens yours in one tap. It still sounds like you."
+
+### Headings
+| Section | Was | Now |
+|---|---|---|
+| Payouts | Replies don't pay anymore. / Your posts do. | Replies don't pay. / Posts do. |
+| Story | Write it at 11 PM. / Land it at 8:40 AM. | Write at 11 PM. / Post at 8:40 AM. |
+| Features | People decide in one second. / Make it count. | One second. / Make it count. |
+| Audience | For anyone with something / to say. | For anyone (face) / with a take. |
+| Trust | It does the work. / You press the button. | It does the work. / You press send. |
+| Pricing | Start free. Upgrade when it's working. | Start free. / Pay when it works. |
+| Finale | Your next post could be the one. / Make it hookworthy. | Your turn. / Make it hookworthy. |
+
+### Ledes and cards
+- **Ledes:**
+  - "Since Sept 8, X pays for original posts, not replies."
+  - "Catch it late. It lands when your people are up."
+  - "Every tool here works on the first line."
+  - "Different feeds. Same fix."
+  - "Nothing goes out until you do."
+  - "Paste a line you almost didn't send. Nothing leaves this page."
+- **Payout cards:** they lose their 01–04 numbers (not a sequence) and two of their side notes.
