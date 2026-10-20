@@ -5554,13 +5554,6 @@ button.st-day{ font:inherit; cursor:pointer; transition:background .2s,box-shado
 .zp-days{ display:flex; flex-wrap:wrap; gap:4px; align-items:center; } .zp-days i{ width:12px; height:12px; border-radius:3px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border); } .zp-days i.full{ background:var(--accent); box-shadow:none; } .zp-days i.miss{ background:var(--surface-2); opacity:.6; } .zp-days i.today{ box-shadow:inset 0 0 0 1.5px var(--accent); }
 .zp-days span{ margin-left:8px; font-size:12.5px; color:var(--text-3); }
 @media (max-width:860px){ .zp-l{ grid-template-columns:1fr; } }
-.pays-g{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; margin-top:48px; border-top:1px solid var(--border); }
-.pay-c{ display:grid; gap:10px; align-content:start; padding:24px 22px 4px; min-width:0; } .pay-c + .pay-c{ border-left:1px solid var(--border); }
-.pay-c b{ font:400 24px/1.15 var(--font-serif); letter-spacing:-.015em; color:var(--text-1); text-wrap:balance; }
-.pay-c p{ margin:0; font-size:15px; line-height:1.55; color:var(--text-2); text-wrap:pretty; } .pay-c small{ font-size:12.5px; line-height:1.45; color:var(--text-3); }
-.pay-n{ font-size:12px; color:var(--text-3); letter-spacing:.04em; }
-@media (max-width:980px){ .pays-g{ grid-template-columns:repeat(2,minmax(0,1fr)); } .pay-c:nth-child(3){ border-left:0; } .pay-c:nth-child(n+3){ border-top:1px solid var(--border); } }
-@media (max-width:560px){ .pays-g{ grid-template-columns:1fr; } .pay-c + .pay-c{ border-left:0; border-top:1px solid var(--border); } }
 .hz-facts{ list-style:none; margin:56px auto 0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; max-width:1120px; border-top:1px solid var(--border); }
 .hz-facts li{ display:grid; gap:6px; padding:22px 20px 0; text-align:left; } .hz-facts li + li{ border-left:1px solid var(--border); }
 .hz-facts b{ font:400 34px/1 var(--font-serif); letter-spacing:-.02em; color:var(--text-1); } .hz-facts span{ font-size:14px; line-height:1.45; color:var(--text-3); max-width:24ch; }
@@ -5977,10 +5970,6 @@ a.link, .link{ color:var(--accent-text); }
 .hz-line .hz-cta, .hz-line .hz-note{ margin:0; animation:none; }
 .hz-line .hz-cta{ justify-content:flex-end; }
 .hz-line .hz-note{ justify-content:flex-end; }
-.hzl-hint{ position:absolute; left:50%; bottom:clamp(22px,4svh,40px); margin:0; display:flex; flex-direction:column; align-items:center; gap:10px; font-size:12.5px; color:var(--text-3); transform:translateX(-50%); transition:opacity .4s; pointer-events:none; }
-.hzl-hint i{ width:1px; height:34px; background:linear-gradient(var(--text-3),transparent); transform-origin:top; animation:hzlHint 1.8s var(--hx-e) infinite; }
-@keyframes hzlHint{ 0%{ transform:scaleY(0); } 60%{ transform:scaleY(1); opacity:1; } 100%{ transform:scaleY(1); opacity:0; } }
-.hz-line.moved .hzl-hint{ opacity:0; }
 /* reduced motion: no pin, the sharp line at rest */
 .hz-line.rest{ height:auto; }
 .hz-line.rest .hzl-stick{ position:relative; height:auto; min-height:100svh; }
@@ -5989,7 +5978,6 @@ a.link, .link{ color:var(--accent-text); }
 @media (max-width:980px){
   .hzl-feed{ grid-template-columns:repeat(2,minmax(0,280px)); }
   .hzl-col:nth-child(n+3){ display:none; }
-  .hzl-hint{ display:none; }
 }
 @media (max-width:640px){
   .hz-line{ height:210svh; }
@@ -6001,6 +5989,75 @@ a.link, .link{ color:var(--accent-text); }
   .hz-line .hz-cta .hx-btn{ width:100%; } .hz-line .hz-cta .hx-btn.ghost{ display:none; }
   .hz-line .hz-note{ justify-content:center; font-size:12.5px; }
 }
+
+/* ==========================================================================
+   ROUND 74 LANDING: the line lands and gets marked in the first second, a score counts the soft words down and
+   turns green when the line is sharp; X's bar as one sentence; feature cards with real titles; a trust list that
+   adds instead of repeating; one rhythm for every section; a seamless wordmark
+   ========================================================================== */
+/* the hero's middle: the line, then its score */
+.hzl-mid{ align-self:center; justify-self:center; display:grid; justify-items:center; gap:clamp(20px,3.6svh,36px); min-width:0; }
+.hzl-mid .hzl-h1{ align-self:auto; justify-self:auto; }
+/* the pen mark: a wavy stroke drawn left to right under each soft row, in the soft-word amber */
+.hz-line .hzl-t::before{ animation:none; text-decoration-color:transparent; }
+.hzl-wv{ position:absolute; left:-.02em; right:-.02em; top:.9em; height:.1em; background:var(--soft); pointer-events:none; clip-path:inset(0 100% 0 0);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 10'%3E%3Cpath d='M-10 5Q-5 10 0 5T10 5T20 5T30 5' fill='none' stroke='%23000' stroke-width='3.4'/%3E%3C/svg%3E") 0 0 / .2em 100% repeat-x;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 10'%3E%3Cpath d='M-10 5Q-5 10 0 5T10 5T20 5T30 5' fill='none' stroke='%23000' stroke-width='3.4'/%3E%3C/svg%3E") 0 0 / .2em 100% repeat-x;
+  animation:hzlDraw .8s .55s var(--hx-io) forwards; }
+.hzl-row.soft[data-r="2"] .hzl-wv{ animation-delay:.8s; }
+@keyframes hzlDraw{ to{ clip-path:inset(0 -2% 0 0); } }
+/* the score: amber while soft words are left, green with a check once the line is sharp */
+.hzl-score{ display:inline-flex; align-items:center; gap:10px; height:38px; margin:0; padding:0 16px 0 10px; border-radius:999px; font:500 14px/1 var(--font-ui); color:var(--text-2); white-space:nowrap;
+  background-color:color-mix(in srgb,var(--surface) 74%,transparent); box-shadow:inset 0 0 0 1px var(--border-strong); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  transition:color .5s var(--hx-e),box-shadow .5s var(--hx-e),background-color .5s var(--hx-e); }
+.hzl-sd{ position:relative; display:grid; place-items:center; width:20px; height:20px; flex:none; }
+.hzl-sd::before{ content:""; position:absolute; inset:0; border-radius:50%; background:var(--soft); transform:scale(.4); transition:transform .5s var(--hx-spring),background-color .4s; }
+.hzl-sd .icon{ position:relative; width:12px; height:12px; stroke-width:2.6; color:var(--panel); opacity:0; transform:scale(.4); transition:opacity .3s,transform .5s var(--hx-spring); }
+.hzl-sw{ display:inline-grid; justify-items:start; overflow:hidden; line-height:1.5; transition:width .5s var(--hx-e); }
+.hzl-sw > span{ grid-area:1/1; transition:opacity .35s,transform .5s var(--hx-e),filter .35s; }
+.hzl-sw em{ margin-left:8px; padding-left:10px; font-style:normal; color:var(--text-3); box-shadow:inset 1px 0 0 var(--border-strong); }
+.hzl-score[data-n="2"] .hzl-sw > span:not([data-n="2"]), .hzl-score[data-n="1"] .hzl-sw > span:not([data-n="1"]), .hzl-score[data-n="0"] .hzl-sw > span:not([data-n="0"]){ opacity:0; transform:translateY(7px); filter:blur(3px); }
+.hzl-score[data-n="0"]{ color:var(--text-1); background-color:color-mix(in srgb,var(--success) 9%,color-mix(in srgb,var(--surface) 74%,transparent)); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--success) 42%,transparent); }
+.hzl-score[data-n="0"] .hzl-sd::before{ transform:scale(1); background-color:var(--success); }
+.hzl-score[data-n="0"] .hzl-sd .icon{ opacity:1; transform:none; }
+.hz-line.rest .hzl-score{ display:none; }
+/* reduced motion keeps the same composition: the line centred on the first screen, the way in under it */
+.hz-line.rest .hzl-in{ height:auto; min-height:100svh; }
+/* the first second: the rows rise into place, the feed fades up under them, then the way in */
+@media (prefers-reduced-motion:no-preference){
+  .hz-line:not(.rest) .hzl-row{ animation:hzlRise 1s var(--hx-e) backwards; }
+  .hz-line:not(.rest) .hzl-row:nth-child(2){ animation-delay:.07s; }
+  .hz-line:not(.rest) .hzl-row:nth-child(3){ animation-delay:.14s; }
+  .hz-line:not(.rest) .hzl-row:nth-child(4){ animation-delay:.21s; }
+  .hz-line:not(.rest) .hzl-feed{ animation:hzlFade 1.6s ease-out backwards; }
+  .hz-line:not(.rest) .hzl-foot{ animation:hzlUp .9s .32s var(--hx-e) backwards; }
+  .hz-line:not(.rest) .hzl-score{ animation:hzlUp .8s 1.25s var(--hx-e) backwards; }
+}
+@keyframes hzlRise{ from{ opacity:0; translate:0 .3em; filter:blur(10px); } }
+@keyframes hzlUp{ from{ opacity:0; translate:0 14px; } }
+@keyframes hzlFade{ from{ opacity:0; } }
+@media (max-width:640px){ .hzl-score{ height:36px; font-size:13.5px; } .hzl-sw em{ margin-left:6px; padding-left:8px; } }
+
+/* payouts: X's bar is one sentence, its three numbers marked the way the hero marks "first lines" */
+.pays-bar{ margin-top:clamp(40px,6vh,64px); padding-top:clamp(28px,4vh,40px); border-top:1px solid var(--border); }
+.pays-st{ margin:0; max-width:25em; font:400 clamp(30px,3vw,42px)/1.18 var(--font-serif); letter-spacing:-.025em; color:var(--text-3); text-wrap:balance; }
+.pays-k{ color:var(--text-1); background:linear-gradient(transparent 64%,var(--mk-band) 64%,var(--mk-band) 92%,transparent 92%) no-repeat 0 0 / 0% 100%; -webkit-box-decoration-break:clone; box-decoration-break:clone; transition:background-size 1.1s .35s var(--hx-e); }
+.pays-k + .pays-k{ transition-delay:.6s; } .pays-k + .pays-k + .pays-k{ transition-delay:.85s; }
+.hx-rv.in .pays-k{ background-size:100% 100%; }
+.pays-ft{ display:flex; justify-content:space-between; gap:10px 40px; flex-wrap:wrap; margin-top:clamp(22px,3vh,32px); }
+.pays-ft p{ margin:0; max-width:32rem; font-size:14px; line-height:1.5; color:var(--text-3); text-wrap:pretty; }
+@media (prefers-reduced-motion:reduce){ .pays-k{ transition:none; background-size:100% 100%; } }
+
+/* features: a real title (an outcome) over one line (how), the same on every card */
+.hx-ct{ margin:0; font:400 clamp(30px,2.4vw,34px)/1.06 var(--font-serif); letter-spacing:-.028em; color:var(--text-1); text-wrap:balance; font-optical-sizing:auto; }
+.hx-card > p{ margin:12px 0 0; max-width:40ch; font-size:16px; line-height:1.5; color:var(--text-2); }
+.hx-b-review .hx-link{ margin-top:0; }
+
+/* trust: one rhythm with every other section, no rule over it */
+.hz-trust{ padding-top:0; border-top:0; }
+
+/* the footer wordmark: glyphs that touch no longer leave a hairline seam between them */
+.hx-giant{ text-shadow:1px 0 0 currentColor,-1px 0 0 currentColor; }
 
 </style>
 </head>
@@ -13526,23 +13583,24 @@ function hzStoryHTML() {
 
 /* ---------- slices of the product ---------- */
 function hxBentoHTML() {
-  const card = (cls, p, ui) => `<article class="hx-card ${cls} hx-rv"><p>${p}</p>${ui}</article>`;
+  /* r74: every card is an outcome you'd say out loud (the title) and how it happens (one short line) */
+  const card = (cls, p, ui) => { const [t, s] = p.split('|'); return `<article class="hx-card ${cls} hx-rv"><h3 class="hx-ct">${t}</h3><p>${s}</p>${ui}</article>`; };
   const voices = [['me', 'heycape', 'Personal', 'Direct · dry · short'], [17, 'Ledgerly', 'Client', 'Warm · plain · no jargon'], [11, 'Northwind', 'Client', 'Confident · precise']];
   const nets = [['x', 'X', '280&nbsp;characters', 1], ['threads', 'Threads', '500&nbsp;characters', .44], ['li', 'LinkedIn', '3,000&nbsp;characters', .07], ['bsky', 'Bluesky', '300&nbsp;characters', .7]];
   const ideas = [['mic', 'Sizing down after a loss', 'Drafted'], ['link', 'Funding flipped negative', 'Saved'], ['shot', 'March: down $4,000', 'Drafted'], ['write', 'Indicators, ranked', 'Saved']];
   return `<div class="hx-bento">
-    ${card('hx-b-sharp', '<b>One tap. A sharper first line.</b> Three versions. Your facts kept.',
+    ${card('hx-b-sharp', 'One tap.<br>A sharper first&nbsp;line.|Three versions to pick from. Your facts stay put.',
       `<div class="hx-ui hx-ui-pad hx-shw" id="hx-shw"><p class="hx-pw hx-shw-who">${hxAv('me')}<b>heycape</b> <span>@heycape_</span></p><p class="hx-shl0">${esc(HX_SHARP)}</p><p class="hx-shl">I lost $4,000 in March <span class="hx-sel"><span class="hx-swap">${['because I kept doubling my size', 'doubling my size to win it back', 'trying to win it all back by Friday'].map((t, i) => `<span class="hx-alt${i === 0 ? ' on' : ''}">${t}.</span>`).join('')}</span></span></p><div class="hx-shbar"><span class="hx-gb">${ic('left', 'xs')}</span><span class="hx-shn" id="hx-shn">1 of 3</span><span class="hx-gb">${ic('right', 'xs')}</span><span class="hx-wb">Use this</span><span class="hx-gb">${ic('reply', 'xs')} Comment</span></div><p class="hx-shl2">Now I cut size in half after any red day. Boring. My account is still here.</p></div>`)}
-    ${card('hx-b-nets', '<b>See it in their feed first.</b> Real previews for every network.',
+    ${card('hx-b-nets', 'See it in<br>their feed&nbsp;first.|Each network gets its own fit and a live&nbsp;preview.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-nets">${nets.map(([k, n, lim, f]) => `<div class="hx-li">${hxTile(k, 'sm')}<span><b>${n}</b><small>${lim}</small></span><span class="hx-bar"><i style="--f:${f}"></i></span><span class="hx-ck">${ic('check', 'xs')}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-review', '<b>Feedback on the exact words.</b> One link. They comment on the line.',
-      `<div class="hx-ui hx-ui-flow"><div class="hx-chips"><span>${pic('x')} Sign in with X</span><span>${G_LOGO} Sign in with Google</span></div><div class="hx-link"><span class="hx-mono">hookworthy.com/r/8f2c1a</span><span class="hx-wb">${ic('copy', 'xs')} Copy</span></div><span class="hx-wire" aria-hidden="true"></span><span class="hx-call"><b>Comment</b> on “$4,000 in March” <i>new</i></span><span class="hx-wire" aria-hidden="true"></span>
+    ${card('hx-b-review', 'Feedback on<br>the exact&nbsp;words.|One link. They comment on the line, not the&nbsp;vibe.',
+      `<div class="hx-ui hx-ui-flow"><div class="hx-link"><span class="hx-mono">hookworthy.com/r/8f2c1a</span><span class="hx-wb">${ic('copy', 'xs')} Copy</span></div><span class="hx-wire" aria-hidden="true"></span><span class="hx-call"><b>Comment</b> on “$4,000 in March” <i>new</i></span><span class="hx-wire" aria-hidden="true"></span>
       <div class="hx-list">${[[19, 'Priya Nair', 'Lead with the number. It’s the hook.', 'Open'], [18, 'Theo Marchetti', 'Keep “Boring.” It’s the most you line.', 'Resolved']].map(([i, n, t, s]) => `<div class="hx-li">${hxAv(i)}<span><b>${n}</b>${esc(t)}</span><span class="hx-st${s === 'Open' ? ' open' : ''}">${s}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-voices', '<b>Every client, their own voice.</b> Switch with one key.',
+    ${card('hx-b-voices', 'Every client,<br>their own&nbsp;voice.|Each voice learns on its own. Switch with one&nbsp;key.',
       `<div class="hx-ui hx-ui-pad"><span class="hx-lab">Writing as</span><div class="hx-radio">${voices.map(([i, n, k, t], j) => `<div class="hx-ro${j === 1 ? ' on' : ''}"><i class="hx-rd"></i>${hxAv(i)}<span class="hx-rt"><b>${n}</b><small>${t}</small></span><span class="hx-st${j === 1 ? '' : ' muted'}">${k}</span><kbd>${MOD}${IS_MAC ? '' : ' '}${j + 1}</kbd></div>`).join('')}</div></div>`)}
-    ${card('hx-b-ideas', '<b>Never start blank.</b> Notes, links and screenshots become drafts.',
+    ${card('hx-b-ideas', 'Never start<br>from&nbsp;blank.|Voice notes, links and screenshots become&nbsp;drafts.',
       `<div class="hx-ui hx-ui-pad"><div class="hx-list hx-ideas">${ideas.map(([i, t, s]) => `<div class="hx-li"><span class="hx-ii">${ic(i, 'xs')}</span><span>${esc(t)}</span><span class="hx-st${s === 'Drafted' ? '' : ' open'}">${s}</span></div>`).join('')}</div></div>`)}
-    ${card('hx-b-inbox', '<b>Answer while it’s hot.</b> Replies come with a draft in your voice.',
+    ${card('hx-b-inbox', 'Answer replies<br>while they’re&nbsp;hot.|Each reply arrives with a draft in your voice. You press&nbsp;send.',
       `<div class="hx-ui hx-ib"><div class="hx-ibl">${[[20, 'Jay Kim', 'Same. What size do you drop to?', 1], [21, 'Lena Vogt', 'Saving this for the next red week', 0], [23, 'Camila Reyes', 'boring is the strategy. sending this to my students.', 0]].map(([p, n, t, on]) => `<div class="hx-ibr${on ? ' on' : ''}">${hxAv(p)}<span><b>${n}</b><small>${esc(t)}</small></span>${on ? '<i></i>' : ''}</div>`).join('')}</div>
       <div class="hx-ibx"><div class="hx-q">${hxAv(20)}<div><p class="hx-pw"><b>Jay Kim</b> <span>@jaytradesdaily · 4m</span></p><p>Same. What size do you drop to?</p></div></div>
         <div class="hx-dra"><span class="hx-lab">${ic('voice', 'xs')} Drafted in your voice</span><p>Half, until I have a green day. Then back to normal. No exceptions, that’s the whole trick.</p><div class="hx-cmb"><span class="hx-wb">${ic('send', 'xs')} Send</span><span class="hx-gb">Edit</span><span class="hx-gb">Skip</span></div></div></div></div>`)}
@@ -13607,21 +13665,22 @@ const HX_FAQ = [
 function hzLineHTML() {
   const all = [...VOID_POSTS, ...HOOK_POSTS.map(q => ({ ...q, m: null }))];
   const col = c => { const items = all.filter((_, i) => i % 4 === c); return `<div class="hzl-col">${[...items, ...items].map(q => xPost(q, { counts: false })).join('')}</div>`; };
-  const soft = (t, why, n) => `<span class="hzl-row soft" data-r="${n}" aria-hidden="true"><span class="hzl-t" data-t="${t}"><span class="hzl-why" data-w="${why}"></span></span></span>`;
+  /* r74: each soft row carries its own pen mark (.hzl-wv), drawn left to right a beat after the line lands */
+  const soft = (t, why, n) => `<span class="hzl-row soft" data-r="${n}" aria-hidden="true"><span class="hzl-t" data-t="${t}"><span class="hzl-wv"></span><span class="hzl-why" data-w="${why}"></span></span></span>`;
   return `<section class="hz-hero hz-line" id="hz-line" aria-labelledby="hz-h1"><div class="hzl-stick">
     <svg class="hzl-defs" width="0" height="0" aria-hidden="true" focusable="false"><filter id="hzl-blur" x="0" y="-10%" width="100%" height="120%"><feGaussianBlur stdDeviation="0 7"/></filter></svg>
     <div class="hzl-feed" aria-hidden="true">${[0, 1, 2, 3].map(col).join('')}</div>
     <div class="hx-w hzl-in">
-      <h1 class="hz-h1 hzl-h1" id="hz-h1">${soft('so i think', 'warm-up', 1)}
+      <div class="hzl-mid"><h1 class="hz-h1 hzl-h1" id="hz-h1">${soft('so i think', 'warm-up', 1)}
         <span class="hzl-row"><span class="hzl-cap"><span class="lo" data-t="g" aria-hidden="true"></span><span class="up">G</span></span>ood ideas die</span>
         <span class="hzl-row">in bad <span class="hz-mk">first lines</span><span class="hzl-dot">.</span></span>
         ${soft('just saying', 'filler', 2)}</h1>
+        <p class="hzl-score" id="hzl-score" data-n="2" aria-hidden="true"><i class="hzl-sd">${ic('check', 'xs')}</i><span class="hzl-sw"><span data-n="2">2 soft words <em>Scroll to sharpen</em></span><span data-n="1">1 soft word left</span><span data-n="0">Sharper. Same idea, 5&nbsp;words lighter.</span></span></p></div>
       <div class="hzl-foot">
         <p class="hz-sub">Hookworthy sharpens yours in one tap. It still sounds like&nbsp;you.</p>
         <div class="hzl-go"><div class="hz-cta"><a class="hx-btn lg" href="#start">Sharpen my first post ${ic('arrow', 'sm')}</a><a class="hx-btn lg ghost" ${hwHref('home', 'how')}>Watch it work</a></div>
           <p class="hz-note">Free plan <i></i> No card <i></i> Nothing posts without you</p></div>
       </div>
-      <p class="hzl-hint" aria-hidden="true"><i></i><span>Scroll to edit the line</span></p>
     </div>
   </div></section>`;
 }
@@ -13640,12 +13699,10 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
 
   <section class="hz-sec" id="pays" aria-labelledby="hz-pay-h"><div class="hx-w">
     <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-pay-h">Replies don’t pay.<br><span class="mute">Posts do.</span></h2><p class="hz-lede">Since Sept 8, X pays for original posts, not&nbsp;replies.</p></div>
-    <div class="pays-g hx-rv">${[
-      ['The bar to qualify', 'Premium, 500 verified followers and 500K verified impressions in 90 days.', 'As of Oct 2026. Creator Studio has the latest.'],
-      ['Make the first line count', 'One tap cuts the warm-up. Your facts stay.', 'Nobody can promise reach. We don’t.'],
-      ['Find what works for you', 'See which openers, topics and times your people reward.', ''],
-      ['Stay in good standing', 'No auto-DMs, no bought reach. You press send.', '']
-    ].map(([h, d, f]) => `<div class="pay-c"><b>${h}</b><p>${d}</p>${f ? `<small>${f}</small>` : ''}</div>`).join('')}</div>
+    <div class="pays-bar hx-rv">
+      <p class="pays-st">The bar to qualify: <span class="pays-k">Premium</span>, <span class="pays-k">500 verified followers</span> and <span class="pays-k">500K verified impressions</span> in 90&nbsp;days.</p>
+      <div class="pays-ft"><p>As of Oct 2026. X’s Creator Studio has the&nbsp;latest.</p><p>We work on the part you control: the post itself. Nobody can promise reach. We&nbsp;don’t.</p></div>
+    </div>
   </div></section>
 
   <section class="hz-story inv" id="how" aria-labelledby="hz-how-h"><div class="hx-w">
@@ -13654,7 +13711,7 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
   </div></section>
 
   <section class="hz-sec" id="features" aria-labelledby="hz-f-h"><div class="hx-w">
-    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-f-h">One second.<br><span class="mute">Make it count.</span></h2><p class="hz-lede">Every tool here works on the first&nbsp;line.</p></div>
+    <div class="hz-head hx-rv"><h2 class="hz-h2" id="hz-f-h">Fewer tabs.<br><span class="mute">More posts.</span></h2><p class="hz-lede">From the idea to the reply, in one&nbsp;place.</p></div>
     ${hxBentoHTML()}
   </div></section>
 
@@ -13667,7 +13724,7 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
     <div><h2 class="hz-h2" id="hz-t-h">It does the work.<br><span class="mute">You press send.</span></h2>
       <p class="hz-lede">Nothing goes out until you&nbsp;do.</p>
       <div class="hz-links"><a ${hwHref('home', 'faq')}>How posting works ${ic('arrow', 'xs')}</a><a href="#developers">Use it from Claude ${ic('arrow', 'xs')}</a><a ${hwHref('legal', 'privacy')}>Your data ${ic('arrow', 'xs')}</a></div></div>
-    <ul class="nv" role="list">${[['You send every DM', 'Not one goes out on its own'], ['You pick every repost', 'Your feed stays yours'], ['Your posts stay put', 'Every post stays where you put it'], ['Reach you earned', 'None bought, none promised'], ['You see it first', 'Every post is one you scheduled']].map(([t, s]) => `<li><span>${ic('check', 'xs')}</span>${t}<small>${s}</small></li>`).join('')}</ul>
+    <ul class="nv" role="list">${[['You send every DM', 'None go out on their own'], ['You pick every repost', 'No bots in your replies'], ['Your posts stay put', 'We never edit or delete one'], ['Reach you earned', 'None bought, none promised'], ['You see it first', 'Esc takes any send back']].map(([t, s]) => `<li><span>${ic('check', 'xs')}</span>${t}<small>${s}</small></li>`).join('')}</ul>
   </div></div></section>
 
   <section class="hz-sec" id="pricing" aria-labelledby="hz-p-h"><div class="hx-w">
@@ -13727,25 +13784,29 @@ function hxInitHome() {
      sharp line at rest ---------- */
   const hl = $('#hz-line');
   if (hl) {
-    const cols = $$('.hzl-col', hl), rows = $$('.hzl-row.soft', hl), y = cols.map((_, i) => -i * 210), FAST = 460;
-    let half = [], v = FAST, last = 0, raf = 0, sraf = 0, live = false, p = 0, spd = '';
+    const cols = $$('.hzl-col', hl), rows = $$('.hzl-row.soft', hl), y = cols.map((_, i) => -i * 210), FAST = 460, score = $('#hzl-score');
+    let half = [], v = FAST, last = 0, raf = 0, sraf = 0, live = false, p = 0, spd = '', left = '2';
     const measure = () => { half = cols.map(c => c.offsetParent ? c.scrollHeight / 2 : 0); };
     const seg = (a, b) => Math.min(1, Math.max(0, (p - a) / (b - a))), io = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const paint = () => { sraf = 0; const r = hl.getBoundingClientRect(), span = r.height - innerHeight; p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 1;
       const st = hl.style, set = (k, x) => st.setProperty(k, x.toFixed(3));
       set('--k1', io(seg(.04, .18))); set('--c1', io(seg(.16, .32))); set('--cap', io(seg(.26, .38)));
       set('--k2', io(seg(.36, .5))); set('--c2', io(seg(.46, .62))); set('--mkp', io(seg(.56, .74))); set('--dot', io(seg(.62, .72)));
-      hl.classList.toggle('moved', p > .015); hl.classList.toggle('done', p > .76); };
+      hl.classList.toggle('moved', p > .015); hl.classList.toggle('done', p > .76);
+      /* r74: the score under the line counts the soft words down as each one is struck, then turns green */
+      const n = seg(.36, .5) > .6 ? '0' : seg(.04, .18) > .6 ? '1' : '2'; if (score && n !== left) { left = n; score.dataset.n = n; fitScore(); } };
+    /* the score is as wide as what it says right now, and eases to the next message's width */
+    const fitScore = () => { const sw = score && $('.hzl-sw', score), a = sw && $(`[data-n="${score.dataset.n}"]`, sw); if (a) sw.style.width = a.offsetWidth + 'px'; };
     const onScroll = () => { if (!sraf) sraf = requestAnimationFrame(paint); };
     const tick = now => { const dt = Math.min(.05, (now - (last || now)) / 1000); last = now; const vT = FAST * (1 - io(seg(.28, .82)));
       v += (vT - v) * Math.min(1, dt * 3);
       cols.forEach((c, i) => { if (!half[i]) return; y[i] -= v * dt * (1 + i * .07); if (y[i] <= -half[i]) y[i] += half[i]; c.style.transform = `translate3d(0,${y[i].toFixed(1)}px,0)`; });
       const s2 = v > 260 ? 'fast' : v > 24 ? 'slow' : 'still'; if (s2 !== spd) { spd = s2; hl.dataset.spd = s2; }
       raf = live ? requestAnimationFrame(tick) : 0; if (!raf) last = 0; };
-    if (REDUCED) { hl.classList.add('rest'); p = 1; ['--k1', '--c1', '--cap', '--k2', '--c2', '--mkp', '--dot'].forEach(k => hl.style.setProperty(k, '1')); hl.classList.add('moved', 'done'); hl.dataset.spd = 'still'; }
+    if (REDUCED) { hl.classList.add('rest'); p = 1; ['--k1', '--c1', '--cap', '--k2', '--c2', '--mkp', '--dot'].forEach(k => hl.style.setProperty(k, '1')); hl.classList.add('moved', 'done'); hl.dataset.spd = 'still'; if (score) score.dataset.n = '0'; }
     else {
-      measure(); document.fonts && document.fonts.ready.then(measure);
-      const onResize = () => { measure(); onScroll(); }; addEventListener('resize', onResize); addEventListener('scroll', onScroll, { passive: true });
+      measure(); fitScore(); document.fonts && document.fonts.ready.then(() => { measure(); fitScore(); });
+      const onResize = () => { measure(); fitScore(); onScroll(); }; addEventListener('resize', onResize); addEventListener('scroll', onScroll, { passive: true });
       onDispose(() => { removeEventListener('resize', onResize); removeEventListener('scroll', onScroll); if (sraf) cancelAnimationFrame(sraf); });
       paint(); seen(hl, () => { if (!live) { live = true; raf = requestAnimationFrame(tick); } }, () => { live = false; }, 0);
     }
