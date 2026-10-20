@@ -1736,3 +1736,87 @@ The editor's inks (`--ink-soft`, `--ink-cut`, `--ink-ready`) are aliases of thes
 - 128 font sizes in component CSS (12.5px, 13.5px, 14.5px and friends). They should collapse onto the ramp, section by section, by whoever owns each section.
 - The canvas images (hook cards, LinkedIn carousels) still draw in Figtree and old hex colours; they should move to Newsreader + Inter and these tokens.
 - The Upgrade page's Pro card stays dark in both themes (a cool `#1E2026` on dark now), while the homepage's Pro card inverts. One of them should change so the One Sheet Rule holds everywhere.
+## Round 74 (sharpen)
+
+The owner's brief: one tap should give a really good first line without a second tap, the reasons it shows should be things a creator would screenshot, and it should not feel like a Typefully clone.
+
+### What was wrong
+- **The cut ran before the moves and broke the start of the line.** "just wanted to share that i finally hit…" became "that i finally hit…"; "Hey everyone! Quick reminder…" became "Everyone! Quick reminder…"; "I believe that the most important…" became "That the most important…".
+- **One meaning flip.** "the biggest mistake was not taking profits" was contracted to "wasn't taking profits", which says the opposite.
+- **Buried numbers stayed buried.** Win rate, activation, latency, MRR and reader counts all sat at the end of the line.
+- **Corporate drafts got nothing.** "I am thrilled to share…", "In today's competitive landscape…", passive voice and "we are going to be hosting" came back unchanged, so the button did nothing.
+- **Awkward winners.** "because nobody owns them, most design systems fail." and "Best interview question? Four words after hiring over 300 people." won on score.
+- **A banned phrase survived.** "game changer" made it through.
+- **The reasons were generic.** Five stock lines covered every soft word. The move labels named mechanics ("Said the contrast", "Put the payoff last"), not why the move works. The composer never showed a word's reason.
+- **A mirror bug.** With soft words marked and the caret mid-line, the composer painted the post twice under the field, so the wavy lines drifted.
+
+### The engine (core.js, shared by the homepage, the composer and the Stronger hook rewrite)
+- **One soft-word table, `HWCore.SOFT`.** It marks, cuts and explains every soft word, longest phrase first, so a whole warm-up goes as one piece:
+  - announcements, labels and disclaimers
+  - stock phrases and backstory
+  - warm-up words and opinion hedges
+  - "honestly", intensifiers, talking filler and hedges
+  - "like" before a number, nervous laughs, "pretty happy with it"
+- **Idioms stay.** "look at this chart", "so what?", "so far", "well done", "what kind of" and "just 3 people" are not soft.
+- **Moves top posts make, added to `hookUp`:**
+  - result first, with "What changed:"
+  - passive made active
+  - "After hiring 300 people" → "I've hired 300 people."
+  - "for a year … and noticed" → "A year of …"
+  - "took me 3 years"
+  - "one year since"
+  - "decided to" → "We're removing"
+  - "if you want to" → "Want to …? …"
+  - "because" → "Why do …? …"
+  - "it is essential for X to" → "X: …"
+  - "named one of the top 50" → "Top 50 … Our team made the list."
+  - the webinar payoff first
+  - "figured out why … for 5 years" → "5 years of not …"
+  - "What 10 years of … taught me:"
+  - "thinking a lot about pricing" → "Pricing:"
+  - comma splices split into two beats
+  - "Why X" holds the reason for the next line
+- **Never-say words are said plainly.** "a game changer for my energy" → "changed my energy".
+- **A "not" before an -ing word is never contracted.**
+- **Ranking:**
+  - A number that moved from deep in the line to its first few words wins a close call.
+  - A stray "that", a vocative or a "Because…" start loses.
+  - "Put the payoff last" left the first-line moves.
+- **Open loops only when the post goes on.** A colon too: "four words:" only when the next line answers it. A lone "Why X." is scored as a promise with no payoff.
+
+### The reasons
+- **Every soft word has its own reason,** and the score's reason quotes the exact words: "“tbh” hints the rest might not be honest. Cut it and the claim stands on its own."
+- **New score reasons:**
+  - a buried number: "Your sharpest detail, “9%”, shows up 16 words in. Lead with it: people stop for a result, not for the setup."
+  - passive voice: "“…was redesigned by…” hides who did it. Put the doer first: “we redesigned…”."
+  - a vague quantity: "“a lot of” is a number you haven’t said yet."
+  - an announcement, label or disclaimer up front counts as a warm-up
+- **Every move teaches in one sentence (`MOVE_WHY`).** Ask then answer: "A question opens a gap and your answer closes it in the same line, so the payoff lands before the thumb moves." No invented numbers, and nothing about reach.
+- **When Sharpen can't do better, it says what would.** Example: "Cut the soft words and “our series A” is what’s left: too thin to stop anyone yet. Add what only you know." It no longer says "Nothing soft to cut" while soft words are marked.
+
+### The feel (composer)
+- **The edit is a pen.** Cut words strike left to right, 45ms apart, before the line moves. With two "i"s or two "the"s, the right one is struck: kept words pair up in order first, and only moved words travel.
+- **A number that moved to the front lights for a beat** as it lands.
+- **The receipt arrives as the line settles.** It names the move, gives the one-sentence why, shows the cut words struck, and offers Another and Undo. On a phone the struck words drop to make room.
+- **Soft words explain themselves.** Hover one, or put the caret in one with the arrows or a click, and a tooltip says why. The field is `aria-describedby` it while it shows, and arrowing into one reads the reason aloud. A keystroke, Esc or leaving the field puts it away.
+- **Reduced motion:** no replay. The receipt and the tooltips stay.
+
+### Elsewhere
+- **The homepage paste box and the grader** show the move and its why under a sharper line.
+- **Onboarding's first-run line** shows the same.
+
+### Claude
+- **One playbook (`HOOK_CRAFT`)** of eight moves with worked examples. The Stronger hook rewrite asks for a different move per option and names it in "why".
+- **Selection Sharpen on the opener** gets the hook moves inside the selected words.
+- **The critique** asks for three different moves, strongest first, and at least two that need no blank.
+- **Unchanged:** the JSON shapes and schemas.
+
+### Eval
+`server/test/sharpen-eval.mjs` holds 48 real-style drafts across crypto, founders, creators, ghostwritten B2B, fitness and design/eng, with round 73's output and round 74's, each hand-graded. `sharpen.test.mjs` holds it to a floor on every `npm test`.
+
+| | Hit | OK | Miss | Ready after one tap |
+|---|---|---|---|---|
+| Round 73 | 14 (29%) | 14 | 20 | 31/48 |
+| Round 74 | 43 (90%) | 5 | 0 | 42/48 |
+
+Round 74 has no number lost or added and no banned word, hedge or empty loop left.
