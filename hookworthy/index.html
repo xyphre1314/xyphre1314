@@ -6002,6 +6002,28 @@ a.link, .link{ color:var(--accent-text); }
   .hz-line .hz-note{ justify-content:center; font-size:12.5px; }
 }
 
+/* ROUND 74 SHARPEN: the edit you can watch (cuts struck left to right like a pen, the number lighting as it moves to the
+   front), the reason behind every soft word in the composer, and a receipt that names the move and says why it works */
+.wt-ov.strike .wt-w.cut, .wt-ov.strike .wt-w.cut::after{ transition-delay:calc(var(--k,0) * 45ms); }
+.wt-ov.play .wt-w.kept.lead{ border-radius:3px; animation:shlead .5s .3s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes shlead{ 0%{ background:transparent; box-shadow:none; } 40%{ background:var(--ink-ready-band); box-shadow:0 0 0 2px var(--ink-ready-band); } 100%{ background:transparent; box-shadow:none; } }
+.sw-tip{ position:absolute; z-index:6; width:max-content; max-width:min(300px,calc(100vw - 48px)); padding:8px 11px; border-radius:var(--r-pop,10px); background:var(--surface-3); color:var(--text-1); box-shadow:0 0 0 1px var(--border-strong),0 12px 30px -12px rgba(0,0,0,.55); font:400 12.5px/1.45 var(--font-ui); text-align:left; pointer-events:none; transform:translate(-50%,calc(-100% - 8px)); animation:shtip .14s var(--ease-out) both; }
+.sw-tip b{ font-weight:650; margin-right:2px; }
+@keyframes shtip{ from{ opacity:0; transform:translate(-50%,calc(-100% - 4px)); } to{ opacity:1; transform:translate(-50%,calc(-100% - 8px)); } }
+.toast .shr{ display:grid; gap:4px; min-width:0; max-width:min(48ch,calc(100vw - 200px)); padding-block:2px; line-height:1.35; }
+.toast .shr-h b{ font-weight:650; }
+.toast .shr-why{ font-size:12px; line-height:1.45; color:rgba(255,255,255,.74); }
+.toast .shr-cut{ display:flex; flex-wrap:wrap; gap:4px; }
+.toast .shr-cut s, .toast .shr-cut i{ padding:1px 6px; border-radius:6px; background:rgba(255,255,255,.08); color:rgba(255,255,255,.78); font:500 11.5px/1.5 var(--font-ui); font-style:normal; text-decoration:line-through; text-decoration-color:var(--ink-cut); text-decoration-thickness:1.5px; }
+.toast .shr-cut i{ text-decoration:none; }
+/* the paste box's card is light inside a section that sets white text: the sharpened line inherited white on near-white (round 73 too) */
+.tz-res{ color:var(--text-1); }
+.tz-res p.tz-why{ margin:8px 0 0; font:400 14.5px/1.55 var(--font-ui); color:var(--text-2); }
+.tz-res p.tz-why:empty{ display:none; }
+.tz-res p.tz-why b{ color:var(--text-1); font-weight:600; }
+@media (max-width:640px){ .toast .shr{ max-width:calc(100vw - 150px); } .toast .shr-cut{ display:none; } }
+@media (prefers-reduced-motion:reduce){ .sw-tip, .wt-ov.play .wt-w.kept.lead{ animation:none; } }
+
 </style>
 </head>
 <body>
@@ -8073,7 +8095,8 @@ function paintField(ta) {
     /* soft words in the opener get the homepage's wavy line; the coach button cuts them in one tap */
     const SW = i === 0 && !(UI.sharp && UI.sharp.id === id) ? hgMarks(v.slice(0, fe), MEM.memKeepList(memFor())).filter(([a, b]) => !FR.some(([x, y]) => a < y && b > x)).map(([a, b, why]) => [a, b, 'sw', why]) : [];
     const RG = [...FR, ...SW].sort((x, y) => x[0] - y[0]);
-    const raw = !RG.length ? (a, b) => esc(v.slice(a, b)) : (a, b) => { let o = '', at = a; for (const [rs, re, c] of RG) { if (re <= at || rs >= b) continue; const s0 = Math.max(rs, at), e0 = Math.min(re, b); o += esc(v.slice(at, s0)) + `<span class="${c}">${esc(v.slice(s0, e0))}</span>`; at = e0; } return o + esc(v.slice(at, b)); };
+    /* r74: b defaults to the end, so seg(p) after the caret never runs off into NaN and paints the whole post a second time */
+    const raw = !RG.length ? (a, b) => esc(v.slice(a, b)) : (a, b = v.length) => { let o = '', at = a; for (const [rs, re, c, why] of RG) { if (re <= at || rs >= b) continue; const s0 = Math.max(rs, at), e0 = Math.min(re, b); o += esc(v.slice(at, s0)) + `<span class="${c}"${why ? ` data-why="${esc(why)}" data-at="${rs}" data-to="${re}"` : ''}>${esc(v.slice(s0, e0))}</span>`; at = e0; } return o + esc(v.slice(at, b)); };
     const CM = '<span class="cm"></span>', seg = cut < 0 ? raw : (a, b = v.length) => b <= cut ? raw(a, b) : a >= cut ? (a === cut ? MARK() : '') + `<span class="xover">${raw(a, b)}</span>` : raw(a, cut) + MARK() + `<span class="xover">${raw(cut, b)}</span>`;
     const sh = UI.sharp && UI.sharp.id === id ? UI.sharp : null;
     const body = sh ? sharpMirror(sh, v, seg, CM) : !good ? seg(0, p) + CM + seg(p) : p <= fe ? `${hl}${seg(0, p)}${CM}${seg(p, fe)}</span>${seg(fe)}` : `${hl}${seg(0, fe)}</span>${seg(fe, p)}${CM}${seg(p)}`;
@@ -8139,6 +8162,36 @@ function selectFrag(frag) {
 }
 const firstLine = t => { const v = String(t || ''), n = v.indexOf('\n'); return n < 0 ? v : v.slice(0, n); };
 const softN = () => { const t0 = S.draft.tweets[0]; return t0 ? hgMarks(firstLine(t0.text), MEM.memKeepList(memFor())).length : 0; };
+/* ---------- round 74: the reason behind every soft word, in the composer too ----------
+   Hover a marked word, or put the caret in one with the arrows or a click, and it says why it's soft, the way one
+   writer would tell another. Never while you type: a keystroke, Esc or leaving the field puts it away */
+const SWT = { el: null, key: '', ta: null };
+function swTipHide() { if (!SWT.el) return; SWT.el.remove(); if (SWT.ta) SWT.ta.removeAttribute('aria-describedby'); SWT.el = null; SWT.key = ''; SWT.ta = null; }
+function swTipAt(ta, sp, say) {
+  const wrap = ta.parentElement, why = sp && sp.dataset.why, r = sp && sp.getClientRects()[0]; if (!why || !r) { swTipHide(); return; }
+  const key = sp.dataset.at + ':' + sp.dataset.to; if (SWT.key === key && SWT.el && SWT.el.isConnected) return;
+  swTipHide(); const el = document.createElement('div'); el.className = 'sw-tip'; el.id = 'sw-tip'; el.setAttribute('role', 'tooltip');
+  const word = ta.value.slice(+sp.dataset.at, +sp.dataset.to).trim() || sp.textContent.trim();
+  el.innerHTML = `<b>“${esc(word)}”</b> ${esc(why)}`; wrap.append(el);
+  const wr = wrap.getBoundingClientRect(), w = el.offsetWidth, W = wrap.offsetWidth;
+  el.style.left = clamp(r.left - wr.left + r.width / 2, w / 2, Math.max(w / 2, W - w / 2)) + 'px'; el.style.top = (r.top - wr.top) + 'px';
+  ta.setAttribute('aria-describedby', 'sw-tip'); SWT.el = el; SWT.key = key; SWT.ta = ta;
+  if (say) srSay(`“${word}”: ${why}`);
+}
+const swSpans = ta => $$('.tw-mirror .sw[data-why]', ta.parentElement);
+const swAtCaret = ta => { const c = ta.selectionStart; if (c !== ta.selectionEnd) return null; return swSpans(ta).find(s => c > +s.dataset.at && c <= +s.dataset.to) || null; };
+let swRaf = 0;
+document.addEventListener('pointermove', e => {
+  const ta = e.target.closest && e.target.closest('.tw-input'); if (!ta || e.pointerType === 'touch') { if (SWT.el && !(SWT.ta && document.activeElement === SWT.ta && swAtCaret(SWT.ta))) swTipHide(); return; }
+  if (swRaf) return; const x = e.clientX, y = e.clientY;
+  swRaf = requestAnimationFrame(() => { swRaf = 0; if (document.body.classList.contains('typing')) return;
+    const hit = swSpans(ta).find(s => [...s.getClientRects()].some(r => x >= r.left - 2 && x <= r.right + 2 && y >= r.top - 2 && y <= r.bottom + 4));
+    if (hit) swTipAt(ta, hit); else if (!(document.activeElement === ta && swAtCaret(ta))) swTipHide(); });
+});
+document.addEventListener('keyup', e => { const ta = e.target.closest && e.target.closest('.tw-input'); if (!ta) return; if (/^(Arrow|Home|End)/.test(e.key)) { const sp = swAtCaret(ta); if (sp) swTipAt(ta, sp, true); else swTipHide(); } });
+document.addEventListener('click', e => { const ta = e.target.closest && e.target.closest('.tw-input'); if (!ta) { if (SWT.el) swTipHide(); return; } const sp = swAtCaret(ta); if (sp) swTipAt(ta, sp); else swTipHide(); });
+document.addEventListener('keydown', e => { if (SWT.el && !/^(Arrow|Home|End|Shift|Alt|Control|Meta)/.test(e.key)) swTipHide(); }, true);
+document.addEventListener('focusout', e => { if (SWT.ta && e.target === SWT.ta) swTipHide(); });
 /* ---------- round 61: Scroll test ----------
    A fast thumb runs through a feed with your post in it. A line that would hold someone brakes the feed and stops
    on your post; an Almost slows it, then lets go; a line with nothing to catch on gets flicked past. It's read from
@@ -8186,7 +8239,7 @@ function scrollTest() {
    glide to their new places (even across the line, so "Risk management is the most important thing" visibly turns
    into "Most important thing? Risk management."), and the new words arrive with a green swipe. Under a second, then
    the real text takes over. Reduced motion skips straight to the result. Works on any textarea in a positioned box */
-function watchEdit(ta, before, after, { label = '', done } = {}) {
+function watchEdit(ta, before, after, { label = '', lead = false, done } = {}) {
   const fin = () => { done && done(); };
   if (REDUCED || !ta || !ta.isConnected || !ta.parentElement) { fin(); return; }
   const box = ta.parentElement, cs = getComputedStyle(ta);
@@ -8194,23 +8247,30 @@ function watchEdit(ta, before, after, { label = '', done } = {}) {
   const key = w => w.toLowerCase().replace(/[^\p{L}\p{N}$%]/gu, '');
   const toks = t => t.split(/(\s+)/).filter(x => x !== '');
   const A = toks(l0), B = toks(l1), used = new Set();
-  /* each word that survives finds its old self, wherever it was: order doesn't matter, so moved words travel */
-  const match = B.map(w => { if (/^\s+$/.test(w) || !key(w)) return -1; const k = key(w); const j = A.findIndex((x, i) => !used.has(i) && key(x) === k); if (j >= 0) used.add(j); return j; });
+  /* each word that survives finds its old self. r74: words that kept their order pair up first (a longest common run), so
+     with two "i"s or two "the"s the right one is struck; only then do moved words find their nearest old self and travel */
+  const ka = A.map(w => /^\s+$/.test(w) ? '' : key(w)), kb = B.map(w => /^\s+$/.test(w) ? '' : key(w)), n = A.length, m = B.length;
+  const Lc = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) Lc[i][j] = ka[i] && ka[i] === kb[j] ? Lc[i + 1][j + 1] + 1 : Math.max(Lc[i + 1][j], Lc[i][j + 1]);
+  const match = B.map(() => -1);
+  for (let i = 0, j = 0; i < n && j < m;) { if (ka[i] && ka[i] === kb[j]) { match[j] = i; used.add(i); i++; j++; } else if (Lc[i + 1][j] >= Lc[i][j + 1]) i++; else j++; }
+  B.forEach((w, j) => { if (match[j] >= 0 || !kb[j]) return; let best = -1; A.forEach((x, i) => { if (!used.has(i) && ka[i] === kb[j] && (best < 0 || Math.abs(i / n - j / m) < Math.abs(best / n - j / m))) best = i; }); if (best >= 0) { used.add(best); match[j] = best; } });
   const span = (w, i, cls) => /^\s+$/.test(w) ? esc(w) : `<span class="wt-w${cls ? ' ' + cls : ''}" data-i="${i}">${esc(w)}</span>`;
   const ov = document.createElement('div'); ov.className = 'wt-ov'; ov.setAttribute('aria-hidden', 'true');
   for (const k of ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'lineHeight', 'letterSpacing', 'wordSpacing', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'boxSizing', 'textAlign', 'fontVariantLigatures', 'fontKerning']) ov.style[k] = cs[k];
   ov.style.left = ta.offsetLeft + 'px'; ov.style.top = ta.offsetTop + 'px'; ov.style.width = ta.offsetWidth + 'px';
   const restHTML = rest ? `<span class="wt-rest">${esc(rest.replace(/^\n/, ''))}</span>` : '';
-  /* 1. the old line, with the cuts struck in red ink */
-  ov.innerHTML = A.map((w, i) => span(w, i, used.has(i) ? '' : 'cut')).join('') + restHTML;
+  /* 1. the old line, with the cuts struck in red ink, left to right like a pen (r74: one after another, 45ms apart) */
+  let nc = 0; ov.innerHTML = A.map((w, i) => used.has(i) || /^\s+$/.test(w) ? span(w, i, '') : span(w, i, 'cut').replace('class="wt-w cut"', `class="wt-w cut" style="--k:${nc++}"`)).join('') + restHTML;
   box.append(ov); box.classList.add('wt-on');
   const o0 = ov.getBoundingClientRect(), at = el => { const r = el.getBoundingClientRect(); return { x: r.left - o0.left, y: r.top - o0.top, w: r.width, h: r.height }; };
   const posA = {}; $$('.wt-w', ov).forEach(el => { posA[el.dataset.i] = at(el); }); const restA = $('.wt-rest', ov) ? at($('.wt-rest', ov)) : null;
   requestAnimationFrame(() => ov.classList.add('strike'));
+  const pen = Math.min(3, Math.max(0, nc - 1)) * 45; /* the last stroke finishes before the line moves */
   setTimeout(() => {
     if (!ov.isConnected) return;
-    /* 2. the new line: survivors glide from where they were, new words arrive */
-    ov.innerHTML = B.map((w, i) => /^\s+$/.test(w) ? esc(w) : span(w, match[i], match[i] < 0 ? 'new' : 'kept')).join('') + restHTML;
+    /* 2. the new line: survivors glide from where they were, new words arrive; a number that moved to the front lights as it lands */
+    ov.innerHTML = B.map((w, i) => /^\s+$/.test(w) ? esc(w) : span(w, match[i], match[i] < 0 ? 'new' : lead && /\d/.test(w) && match[i] / A.length - i / B.length > .25 ? 'kept lead' : 'kept')).join('') + restHTML;
     /* FLIP: measure every new place first, then pin each survivor back where it was with transitions off, then let go */
     ov.classList.add('nofx'); const o1 = ov.getBoundingClientRect(), at1 = el => { const r = el.getBoundingClientRect(); return { x: r.left - o1.left, y: r.top - o1.top }; };
     const kept = $$('.wt-w.kept', ov).map(el => [el, posA[el.dataset.i], at1(el)]), rs = $('.wt-rest', ov), rb = rs && restA ? at1(rs) : null;
@@ -8220,11 +8280,11 @@ function watchEdit(ta, before, after, { label = '', done } = {}) {
     A.forEach((w, i) => { if (used.has(i) || /^\s+$/.test(w) || !posA[i]) return; const g = document.createElement('span'); g.className = 'wt-w gone'; g.textContent = w; const a = posA[i]; g.style.left = a.x + 'px'; g.style.top = a.y + 'px'; ov.append(g); });
     let n = 0; $$('.wt-w.new', ov).forEach(el => { el.style.animationDelay = `${180 + 40 * n++}ms`; });
     ov.classList.add('play'); requestAnimationFrame(() => { kept.forEach(([el]) => { el.style.transform = ''; }); if (rs) rs.style.transform = ''; });
-  }, 300);
+  }, 300 + pen);
   setTimeout(() => {
     box.classList.remove('wt-on'); ov.remove(); fin();
     if (label && box.isConnected) { const c = document.createElement('span'); c.className = 'wt-chip'; c.textContent = label; box.append(c); setTimeout(() => c.remove(), 2200); }
-  }, 1150);
+  }, 1150 + pen);
 }
 /* the composer's Sharpen: the soft words out first (the count on the button), then the editor's moves on what's left.
    Their casing and their facts stay; a reason to read on only when more of the post follows. Cached per text */
@@ -8233,34 +8293,50 @@ function hookUpFor(text) {
   const keep = MEM.memKeepList(memFor()), line = firstLine(t), rest = t.slice(line.length), cut = hgMarks(line, keep).length;
   const more = !!rest.trim() || S.draft.tweets.filter(x => x.text.trim()).length > 1;
   /* this voice's memory: the words it keeps and the moves it likes nudge what Sharpen offers */
-  const H = HWCore.hookUp((cut ? hgClean(line, keep).s : line) + rest, { more, keep, pref: MEM.memPref(memFor()) }), r = H && hookUpPack(H, cut, rest, t => hookFor(t).score, hookFor(t).score);
+  const C = cut ? hgClean(line, keep) : { s: line, words: [], kinds: [] }, H = HWCore.hookUp(C.s + rest, { more, keep, pref: MEM.memPref(memFor()) }), r = H && hookUpPack(H, cut, rest, t => hookFor(t).score, hookFor(t).score, C.words, C.kinds);
   if (r) r.kept = keep.filter(w => new RegExp(`(?<![\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(line));
   UI.hkC = { t, mn, r: r && r.to > r.from ? r : null }; return UI.hkC.r;
 }
 /* what Sharpen says it did, in the moves' own words; a full stop alone is never a sharpen */
-function hookUpPack(H, cut, rest, sc, from) {
-  const sayCut = cut ? `Cut ${cut} soft word${cut === 1 ? '' : 's'}` : '';
-  const sayOf = o => [sayCut, ...String(o.say || '').split(' · ').filter(w => w && w !== 'Gave it an end')].filter(Boolean).slice(0, 3).join(' · ');
+function hookUpPack(H, cut, rest, sc, from, words = [], kinds = []) {
+  /* r74: the soft words cut here and inside the engine are one count, said once ("Cut 3 soft words", never "Cut 1 · Cut 1") */
+  const cuts = [...words, ...(H.cut || [])].filter((w, i, a) => w && a.findIndex(x => x.toLowerCase() === w.toLowerCase()) === i), n = cuts.length || cut;
+  const sayCut = n ? `Cut ${n} soft word${n === 1 ? '' : 's'}` : '';
+  const sayOf = o => [sayCut, ...String(o.say || '').split(' · ').filter(w => w && w !== 'Gave it an end' && !/^Cut \d+ soft words?$/.test(w))].filter(Boolean).filter((w, i, a) => a.indexOf(w) === i).slice(0, 3).join(' · ');
   const real = o => o && (o.moves.some(k => k !== 'end') || cut);
-  const b = real(H.best) ? H.best : cut ? { line: H.base.line, moves: ['end'], say: '' } : null; if (!b) return null;
-  const r = { text: b.line + rest, line: b.line, say: sayOf(b) || 'Tightened it', moves: b.moves, cut, from, alts: (H.alts || []).filter(real).map(a => ({ text: a.line + rest, line: a.line, say: sayOf(a) || 'Tightened it', moves: a.moves })) };
+  /* why the main move works, the line the app teaches with. A pure cut teaches why hedges go, or, when it took a warm-up
+     (an announcement, a label, a disclaimer), why the warm-up went */
+  const cutK = kinds.some(k => /^(announce|label|disclaim|stock|throat|open|feel)$/.test(k)) ? 'warm' : 'soft', MW = HWCore.SHARPEN.MOVE_WHY;
+  const whyOf = o => o.why || (n ? MW[cutK] : '');
+  const b = real(H.best) ? H.best : cut ? { line: H.base.line, moves: ['end'], say: '', main: cutK } : null; if (!b) return null;
+  const r = { text: b.line + rest, line: b.line, say: sayOf(b) || 'Tightened it', why: whyOf(b), main: b.main || cutK, moves: b.moves, cut, cuts, from, alts: (H.alts || []).filter(real).map(a => ({ text: a.line + rest, line: a.line, say: sayOf(a) || 'Tightened it', why: whyOf(a), main: a.main || cutK, moves: a.moves })) };
   r.to = sc(r.text); return r;
 }
 /* one tap: a sharper first line, everything else stays yours. Another cycles the other strong versions; Undo puts yours back */
+/* r74: the receipt. What moved, why that move works (one sentence a creator could screenshot), and the soft words that went,
+   struck. The label is the move's own name; a pure cut says how many words went */
+const shMoveLabel = (v, n) => { const k = v.main || 'soft', S2 = HWCore.SHARPEN.MOVE_SAY; return k === 'soft' ? (n ? `Cut ${n} soft word${n === 1 ? '' : 's'}` : 'Tightened it') : cap(typeof S2[k] === 'function' ? S2[k](n) : S2[k] || 'Tightened it'); };
+function shReceipt(v, head, cuts = [], note = '') {
+  const c = cuts.slice(0, 4);
+  return `<span class="shr"><span class="shr-h"><b>${esc(head)}.</b> ${esc(shMoveLabel(v, cuts.length))}.</span>${v.why ? `<span class="shr-why">${esc(v.why)}</span>` : ''}${c.length ? `<span class="shr-cut"><span class="sr">Cut:</span>${c.map(w => `<s>${esc(w)}</s>`).join('')}${cuts.length > c.length ? `<i>+${cuts.length - c.length}</i>` : ''}</span>` : ''}${note ? `<span class="shr-why">${note}</span>` : ''}</span>`;
+}
 function sharpenFirst() {
   const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text, r = hookUpFor(before);
   if (!r) { setImprove(tw.id, 'score'); return; }
-  const list = [{ text: r.text, say: r.say, moves: r.moves }, ...r.alts]; let i = 0;
+  const list = [{ text: r.text, say: r.say, why: r.why, main: r.main, moves: r.moves }, ...r.alts]; let i = 0;
   /* what it learns: the move kept (counted when the post ships), or undone; a pure cut that's undone means those words are theirs */
-  const moveOf = v => (v.moves || []).find(k => k !== 'end' && k !== 'soft') || '', keptNote = r.kept && r.kept.length ? ` Kept “${esc(r.kept[0])}”: you put it back before.` : '';
+  const moveOf = v => (v.moves || []).find(k => k !== 'end' && k !== 'soft') || '', keptNote = r.kept && r.kept.length ? `Kept “${esc(r.kept[0])}”: you put it back before.` : '';
   /* the caret goes back to the end of the first line, so the next keystroke lands in the post, not on the page */
   const show = () => { const v = list[i], was = tw.text, ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(was).score; tw.text = v.text; save(); if (ta) ta.value = v.text; /* typing during the replay lands in the new text */
-    watchEdit(ta, was, v.text, { label: v.say.split(' · ').slice(-1)[0], done: () => renderThread({ focusId: tw.id, pos: firstLine(v.text).length }) }); const a1 = hookFor(tw.text).score; SFX.play(a1 >= 70 ? 'hook' : 'swap');
+    const a1 = hookFor(tw.text).score;
     S.draft.ai = { ...(S.draft.ai || {}), [tw.id]: { text: firstLine(v.text), line: true, kind: 'sharpen', move: moveOf(v) } };
-    toast(`<b>${esc(moveWord(r.from, a1))}.</b> ${esc(v.say)}.${keptNote}`, { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; const mv = moveOf(v), m = memFor();
+    /* r74: the receipt arrives as the new line settles, so the eye goes line first, reason second */
+    const receipt = () => toast(shReceipt(v, moveWord(r.from, a1), r.cuts || [], keptNote), { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; const mv = moveOf(v), m = memFor();
         if (mv) MEM.memChoice(m, mv, false); else { const gone = HWCore.words(firstLine(before)).filter(w => !HWCore.words(firstLine(v.text)).includes(w)); if (gone.length && gone.length <= 3) MEM.memKeep(m, gone); }
         if (S.draft.ai) delete S.draft.ai[tw.id]; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); },
-      ...(list.length > 1 ? { action2: 'Another', onAction2: () => { i = (i + 1) % list.length; show(); } } : {}) }); };
+      ...(list.length > 1 ? { action2: 'Another', onAction2: () => { i = (i + 1) % list.length; show(); } } : {}) });
+    /* a number or a result that moved to the front gets a beat of highlight as it lands: you see the move, not just the result */
+    watchEdit(ta, was, v.text, { label: shMoveLabel(v, (r.cuts || []).length), lead: /^(number|result|active|payoff)$/.test(v.main || ''), done: () => { renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); receipt(); } }); SFX.play(a1 >= 70 ? 'hook' : 'swap'); };
   show();
 }
 function paintHook() {
@@ -8312,7 +8388,11 @@ const CHK_FIX = { clarity: 'Say it plainly, no warm-up', curiosity: 'Give them a
 const CHK_RIFF = { clarity: 'punchier', curiosity: 'hook', specificity: 'hook', tension: 'hook', brevity: 'shorter' };
 const CHK_HEAD = { flat: 'One move makes it land', warming: 'One move makes it land', sharp: 'Strong opener. Good to go', honed: 'This one stands out' };
 /* round 50: the composer never grades. It stays quiet, offers one tweak when there is one, and says so when the opener is strong */
-const coachLead = (T, h) => T.rank >= 3 ? '' : T.rank === 2 ? 'Want more? Any open box below adds a little.' : h && h.step ? `Try this: ${h.step.charAt(0).toLowerCase() + h.step.slice(1)}.` : 'Any open box below makes it stronger.';
+/* r74: the tip names the move and says why in the same breath ("Try this: lead with “9%”. It shows up 16 words in."); outside the
+   composer there are no boxes to point at, so a Ready line gets its next move instead */
+const coachLead = (T, h, { boxes = true } = {}) => { const st = h && h.step ? h.step.charAt(0).toLowerCase() + h.step.slice(1) : '', why = h && h.why && !/^Nothing wrong/.test(h.why) ? ` ${h.why}` : '';
+  if (T.rank >= 3) return boxes ? '' : h ? h.reason : ''; if (T.rank === 2) return boxes ? 'Want more? Any open box below adds a little.' : st ? `Ready. One more move: ${st}.` : 'Ready to post.';
+  return st ? `Try this: ${st}.${why}` : boxes ? 'Any open box below makes it stronger.' : 'Add the number, the name, or what changed.'; };
 const COACH = { flat: 'One tweak to try', warming: 'One tweak to try', sharp: 'Strong opener', honed: 'Outstanding opener' };
 function checklistHTML(h, has, nx, me) {
   const T = TIER(has ? h.score : 0), st = PART_ORDER.map(([k, l]) => ({ k, l, p: HWCore.partState(has ? h.parts[k] || 0 : 0) }));
@@ -12705,38 +12785,22 @@ function armReveals(root) {
 
 /* ----- honest local rewrite: keep the claim, cut the soft words, never invent a fact ----- */
 const HG_DEFAULT = 'so i think consistency is honestly the most underrated way to grow on X';
-const HG_HEDGES = [
-  [/\b(i think|i feel like|i believe|i guess|in my opinion|imo)\b/gi, 'Hedge. It’s your post, so it’s already what you think.'],
-  [/\b(honestly|to be honest|tbh|ngl)\b/gi, 'Implies the rest wasn’t honest. Cut it.'],
-  [/\b(really|very|quite|somewhat|pretty much)\b/gi, 'Props up the word next to it, and weakens it.'],
-  [/\b(just|basically|actually|literally|simply)\b/gi, 'Filler. The line stands up straighter without it.'],
-  [/\b(maybe|perhaps|probably|kind of|sort of|might be)\b/gi, 'Hedge. Commit to the claim, or cut it.']
-];
-const HG_OPENER = /^\s*((?:ok(?:ay)?\s+)?so|well|hey|hi|guys|look|anyway|ok(?:ay)?)\b[,.!]?\s+/i;
-const HG_OPENER_WHY = 'Warm-up. Your first words are the best real estate you have.';
-/* where the soft words are: [start, end, reason], no overlaps */
-const hgKept = (frag, keep) => !!keep && keep.length > 0 && keep.includes(String(frag).toLowerCase().replace(/[,\s]+$/, '').trim());
-function hgMarks(text, keep) {
-  const out = []; const m = text.match(HG_OPENER); if (m) { const s = m[0].search(/\S/); out.push([s, s + m[1].length, HG_OPENER_WHY]); }
-  HG_HEDGES.forEach(([re, why]) => { re.lastIndex = 0; let x; while ((x = re.exec(text))) out.push([x.index, x.index + x[0].length, why]); });
-  out.sort((a, b) => a[0] - b[0]); return out.filter((r, i, a) => !i || r[0] >= a[i - 1][1]).filter(([a, b]) => !hgKept(text.slice(a, b), keep)); /* r64: words this voice keeps aren't soft */
-}
-/* the soft words out, nothing else changed: the composer's one-tap Sharpen and the first step of the homepage's */
-function hgClean(line, keep) {
-  let s = String(line || ''), cut = 0;
-  for (let k = 0; k < 3 && HG_OPENER.test(s); k++) { const m = s.match(HG_OPENER); if (m && hgKept(m[1], keep)) break; s = s.replace(HG_OPENER, ''); cut++; }
-  for (let pass = 0; pass < 2; pass++) HG_HEDGES.forEach(([re]) => { s = s.replace(new RegExp(re.source + ',?\\s*', 'gi'), m => { if (hgKept(m, keep)) return m; cut++; return ''; }); });
-  s = s.replace(/\s{2,}/g, ' ').replace(/\s+([,.!?;:])/g, '$1').replace(/^[,;:\s]+/, '').trim();
-  /* keep their case: a line that started lowercase on purpose stays lowercase */
-  const up = /^\P{L}*\p{Lu}/u.test(String(line || '')); return { s: cut && up ? cap(s) : s, cut };
-}
-/* the homepage's Sharpen: the same engine as the composer, so what the site shows is what the app does */
+/* r74: one table in core.js (HWCore.SOFT) marks the soft words, cuts them and says why, for the site and the app alike.
+   Whole warm-ups go as one piece ("just wanted to share that"), so a cut never leaves a stray "that" at the front */
+const HG_HEDGES = HWCore.SOFT.map(s => [s.re, s.why, s.k]);
+/* where the soft words are: [start, end, why, kind], no overlaps; words this voice put back (r64) aren't soft */
+function hgMarks(text, keep) { return HWCore.softMarks(String(text || ''), keep); }
+/* the soft words out, nothing else changed: the composer's one-tap Sharpen and the first step of the homepage's.
+   words: what was cut, as written, for the receipt. A line that started lowercase on purpose stays lowercase */
+function hgClean(line, keep) { const r = HWCore.softCut(line, keep); return { s: r.s, cut: r.cut.length, words: r.cut, kinds: r.kinds }; }
+/* the homepage's Sharpen: the same engine as the composer, so what the site shows is what the app does.
+   why: the one sentence on why the main move works; cuts: the soft words that went, as written */
 function hgSharpen(raw, { more } = {}) {
   const text = String(raw || '').trim(); if (!text) return null;
-  const lines = text.split('\n'), orig = lines[0].trim(), rest = lines.slice(1).join('\n').trim(), tail = rest ? '\n' + rest : '', cut = hgMarks(orig).length;
-  const H = HWCore.hookUp((cut ? hgClean(orig).s : orig) + tail, { more: more != null ? more : !!rest });
-  const P = H && hookUpPack(H, cut, '', x => hookScore(x + tail).score, hookScore(text).score), ok = !!P && P.to > P.from, first = ok ? P.line : orig;
-  return { text: [first, rest].filter(Boolean).join('\n\n'), orig, first, rest, add: '', cut, loop: ok && /\bhere[’']s (why|how|what)\b/i.test(first) && !/\bhere[’']s\b/i.test(orig), same: !ok, say: ok ? P.say : '', alts: ok ? P.alts.map(a => a.line) : [] };
+  const lines = text.split('\n'), orig = lines[0].trim(), rest = lines.slice(1).join('\n').trim(), tail = rest ? '\n' + rest : '', cut = hgMarks(orig).length, C = cut ? hgClean(orig) : { s: orig, words: [], kinds: [] };
+  const H = HWCore.hookUp(C.s + tail, { more: more != null ? more : !!rest });
+  const P = H && hookUpPack(H, cut, '', x => hookScore(x + tail).score, hookScore(text).score, C.words, C.kinds), ok = !!P && P.to > P.from, first = ok ? P.line : orig;
+  return { text: [first, rest].filter(Boolean).join('\n\n'), orig, first, rest, add: '', cut, loop: ok && /\bhere[’']s (why|how|what)\b/i.test(first) && !/\bhere[’']s\b/i.test(orig), same: !ok, say: ok ? P.say : '', why: ok ? P.why : '', main: ok ? P.main : '', cuts: ok ? P.cuts : [], alts: ok ? P.alts.map(a => a.line) : [], altP: ok ? P.alts : [] };
 }
 /* word diff that ignores case when lining words up, so "risk" → "Risk" reads as kept, not cut and re-added */
 function hgDiff(a, b) {
@@ -12757,7 +12821,15 @@ const hgDiffHTML = r => {
   const head = hgDiff(r.orig, r.first);
   return head + (r.rest ? '\n\n' + esc(r.rest) : '') + (r.add ? `\n\n<ins>${blank(esc(r.add))}</ins>` : '');
 };
-const hgNote = r => r.say ? `${esc(r.say)}. Same facts, your words.` : '';
+/* r74: the note under a sharper version names the move and says why it works, then the promise: same facts, your words */
+const hgNote = r => r.say ? `<b>${esc(shMoveLabel(r, (r.cuts || []).length))}.</b> ${esc(r.why || 'Same claim, said straight.')} Same facts, your words.` : '';
+/* when Sharpen can't do better, say exactly why, and what would: the score's own reason names the next move */
+function hgSameNote(t) {
+  const line = String(t || '').split('\n')[0].trim(), h = hookScore(t), ms = hgMarks(line);
+  if (h.score >= 70) return `${goodWord(h.score)} opener: ${h.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase()}. Nothing soft to cut, so the line stays yours.`;
+  if (ms.length) { const c = hgClean(line).s.replace(/[.!]+$/, ''); return c.length > 3 ? `Cut the soft words and “${clip(c, 60)}” is what’s left: too thin to stop anyone yet. Add what only you know: the number, the name, or what changed.` : 'It’s all warm-up so far. Say the thing itself: the number, the name, or what changed.'; }
+  return `Nothing soft to cut. ${h.reason}`;
+}
 /* spring: score numbers and rings settle like something physical, with one small overshoot */
 function hwSpring(set, { k = 170, c = 20 } = {}) {
   let x = null, v = 0, to = 0, raf = 0, last = 0;
@@ -13080,7 +13152,7 @@ function initGrader(P, { onChange = () => {} } = {}) {
     const t = ta.value, h = hookScore(t); G.cur = h; fit();
     marks = paintMirror(t, h.score >= 70);
     if (G.keptFrom != null) { dialMove(dial, G.keptFrom, h.score); G.keptFrom = null; } else dialTier(dial, h.score, !t.trim()); dialSpring.to(t.trim() ? h.score : 0);
-    setWhy(t.trim() ? coachLead(TIER(h.score), h) : 'Type a first line. Anything you’d actually post.');
+    setWhy(t.trim() ? coachLead(TIER(h.score), h, { boxes: false }) : 'Type a first line. Anything you’d actually post.');
     nEl.textContent = `${HWCore.xLength(t)}/280`; nEl.classList.toggle('over', HWCore.xLength(t) > 280);
     clearTimeout(liveT); liveT = setTimeout(() => { live.textContent = t.trim() ? `${tierText(h.score)}. ${h.reason}${marks.length ? ` ${marks.length} soft word${marks.length === 1 ? '' : 's'} marked.` : ''}` : ''; }, 700);
     if (G.typed) onChange(G);
@@ -13103,7 +13175,7 @@ function initGrader(P, { onChange = () => {} } = {}) {
     const t = ta.value.trim(); if (!t) { ta.focus(); setWhy('Type a first line, then Sharpen. One rough sentence is plenty.'); return; }
     const r = hgSharpen(t), a = hookScore(t).score, b = hookScore(r.text).score;
     delete ver.dataset.keep;
-    if (r.same || b < a) { ver.innerHTML = `<p class="hg-same">${a >= 70 ? `${goodWord(a)} opener: ${esc(hookScore(t).reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so the line stays yours.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`; ver.hidden = false; return; }
+    if (r.same || b < a) { ver.innerHTML = `<p class="hg-same">${esc(hgSameNote(t))}</p>`; ver.hidden = false; return; }
     ver.innerHTML = `<div class="hg-vh"><span class="lbl">Sharper version</span><span class="hg-move" role="img" aria-label="${tierSay(a, b)}">${tierMoveHTML(a, b, { anim: true })}</span></div><p class="hg-diffx">${hgDiffHTML(r)}</p><p class="hg-vnote">${hgNote(r)}</p><div class="hg-va"><button type="button" class="hbtn sm" id="${P}-keep">${ic('check', 'sm')} Keep it</button><button type="button" class="lnk7" id="${P}-mine">Keep mine</button></div>`;
     ver.hidden = false; ver.dataset.keep = '';
     el('keep').onclick = () => { ta.value = r.text; G.typed = true; ver.hidden = true; G.keptFrom = a; update(); ta.focus(); const k = ta.value.indexOf('[your number]'); if (k >= 0) ta.setSelectionRange(k, k + 13); else ta.setSelectionRange(ta.value.length, ta.value.length); ed.classList.remove('flash'); void ed.offsetWidth; ed.classList.add('flash'); };
@@ -13689,7 +13761,7 @@ ROUTES.home = () => { loadSprite('av'); loadSprite('av2'); loadSprite('ph');
       <div class="hzf-box force-light hx-rv">
         <div class="tz-box"><div class="tz-ed"><div class="tz-mirror" id="tz-mirror" aria-hidden="true"></div><textarea class="tz-in" id="tz-in" rows="2" maxlength="400" spellcheck="false" aria-label="Your first line" aria-describedby="tz-cnt" placeholder="Paste a first line you’re not sure about…">${esc(HG_DEFAULT)}</textarea></div>
           <div class="tz-bar"><span class="tz-cnt" id="tz-cnt" aria-live="polite"><i></i><span></span></span><span class="grow"></span><button type="button" class="hx-btn" id="tz-go">${ic('bolt', 'sm')} Sharpen it</button></div></div>
-        <div class="tz-out" id="tz-out"><div><div class="tz-res" aria-live="polite"><span class="st-ok" id="tz-ok">${ic('check', 'xs')} Sharper</span><p id="tz-res"></p><div class="tz-acts"><button type="button" class="hx-btn" id="tz-carry">Open it in Hookworthy ${ic('arrow', 'sm')}</button><button type="button" class="hx-btn line" id="tz-copy">${ic('copy', 'sm')} Copy</button></div></div></div></div>
+        <div class="tz-out" id="tz-out"><div><div class="tz-res" aria-live="polite"><span class="st-ok" id="tz-ok">${ic('check', 'xs')} Sharper</span><p id="tz-res"></p><p class="tz-why" id="tz-why"></p><div class="tz-acts"><button type="button" class="hx-btn" id="tz-carry">Open it in Hookworthy ${ic('arrow', 'sm')}</button><button type="button" class="hx-btn line" id="tz-copy">${ic('copy', 'sm')} Copy</button></div></div></div></div>
       </div>
       <div class="tz-try hx-rv"><span>Or try one:</span>${HZ_SAMPLES.map((s, i) => `<button type="button" data-tz="${i}">${esc(s)}</button>`).join('')}</div>
       <div class="hz-cta hx-rv"><a class="hx-btn lg" href="#start">Sharpen my first post ${ic('arrow', 'sm')}</a><a class="hx-btn lg ghost" href="#signin">Sign in</a></div>
@@ -13939,7 +14011,9 @@ function hxInitHome() {
   tin.addEventListener('input', () => { mark(); out.classList.remove('on'); });
   $('.tz-try').addEventListener('click', e => { const b = e.target.closest('[data-tz]'); if (!b) return; tin.value = HZ_SAMPLES[+b.dataset.tz]; mark(); out.classList.remove('on'); tin.focus(); tin.setSelectionRange(tin.value.length, tin.value.length); });
   $('#tz-go').addEventListener('click', () => { const r = hgSharpen(tin.value); if (!r) { tin.focus(); return; }
-    res.textContent = r.first; $('#tz-ok').lastChild.textContent = r.same ? ' Already sharp' : ' Sharper'; out.classList.add('on'); SFX.play && SFX.play('tick'); });
+    res.textContent = r.first; $('#tz-ok').lastChild.textContent = r.same ? (hookScore(tin.value).score >= 70 ? ' Already sharp' : ' Add your detail') : ' Sharper'; out.classList.add('on'); SFX.play && SFX.play('tick');
+    /* r74: what moved and why it works, or, when nothing can, what would */
+    const w = $('#tz-why'); if (w) w.innerHTML = r.same ? esc(hgSameNote(tin.value)) : hgNote(r); });
   $('#tz-carry').addEventListener('click', () => carryLine(res.textContent));
   $('#tz-copy').addEventListener('click', () => { const t = res.textContent; const done = () => toast('Copied'); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(done, () => { const r = document.createRange(); r.selectNodeContents(res); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }); });
   mark();
@@ -14507,7 +14581,7 @@ function onbTry() {
   /* a better line that only cuts words shows the cut words struck through, so a pure trim never reads as "nothing changed" */
   const show = (line, better, why) => { const a = hookScore(line), b = hookScore(better), d = { changed: better.trim() !== line.trim(), html: hgDiff(line, better).replace(/<del>/g, '<del class="vw">') }; /* every cut word struck through, every new one marked */
     out.innerHTML = `<div class="ot-row"><span class="ot-k"><span class="ot-l">Yours</span>${tierChip(a.score)}</span><p>${esc(a.reason)}</p></div>
-      ${d.changed ? `<div class="ot-row better"><span class="ot-k"><span class="ot-l">Sharper</span>${tierChip(b.score)}</span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : `<p class="faint">${a.score >= 70 ? `${goodWord(a.score)} opener: ${esc(a.reason.replace(/\s*A strong first line\.$/, '').replace(/\.$/, '').toLowerCase())}. Nothing soft to cut, so it stays as you wrote it.` : 'Nothing soft to cut. What’s the number, or the surprise, behind it? Add that.'}</p>`}
+      ${d.changed ? `<div class="ot-row better"><span class="ot-k"><span class="ot-l">Sharper</span>${tierChip(b.score)}</span><p class="ot-diff">${d.html}</p></div>${why ? `<p class="faint ot-why">${esc(why)}</p>` : ''}` : `<p class="faint">${esc(hgSameNote(line))}</p>`}
       <div class="ot-a"><button class="btn ${d.changed ? 'primary' : ''}" id="ot-use">${ic('write', 'sm')} ${d.changed ? 'Start with this line' : 'Write it'}</button>${d.changed ? '<button class="btn ghost" id="ot-mine">Keep my line</button>' : ''}</div>`;
     SFX.play(b.score >= 70 ? 'hook' : 'tick');
     go.classList.remove('primary'); /* one primary per view: once there's a result, writing it is the next step */
@@ -14517,7 +14591,7 @@ function onbTry() {
     let line = inp.value.trim(), ex = false; if (!line) { line = inp.placeholder; inp.value = line; ex = true; }
     inp.removeAttribute('aria-invalid'); note.textContent = ex ? 'That’s the example. Swap in your own line any time.' : '';
     if (aiOn()) { go.classList.add('is-loading'); try { const r = await ask(HWCore.prompts.critique({ text: line, voice: voiceSpec() }), { fresh: true, act: 'setup' }); const best = (r && r.better || []).map(String).filter(x => x && !/\[[^\]]+\]/.test(x)).sort((x, y) => hookScore(y).score - hookScore(x).score)[0]; if (best) { show(line, best, r.reason || ''); return; } } catch (e) { /* fall back to the offline rewrite */ } finally { go.classList.remove('is-loading'); } }
-    riffNonce++; const r = hgSharpen(line); show(line, r && !r.same ? r.first : line, r && !r.same ? `${r.say}. Same facts, your words.` : '');
+    riffNonce++; const r = hgSharpen(line); show(line, r && !r.same ? r.first : line, r && !r.same ? `${shMoveLabel(r, (r.cuts || []).length)}. ${r.why || ''} Same facts, your words.`.replace(/\s{2,}/g, ' ') : '');
   };
   inp.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); go.click(); } });
 }
