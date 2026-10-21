@@ -1,0 +1,77 @@
+{
+ "key": "a11y",
+ "expert": "Accessibility specialist (IAAP WAS), WCAG 2.2 AA auditor for SaaS marketing sites",
+ "field": "Digital accessibility",
+ "criteria": ["perceivable", "operable", "understandable/semantics", "motion safety"],
+ "scores": {
+  "arc-a": {
+   "criteria": {"perceivable": 6, "operable": 4, "understandable/semantics": 4, "motion safety": 7},
+   "overall": 5.0,
+   "verdict": "Best-looking toy on the list, but keyboard and screen-reader users get a hero they can't follow: the focus ring vanishes on the blue and the demo reads out as garbled text.",
+   "loved": "Of the three current-brand demos, it's the only one that plays once and stops. The peel runs for about 5 s on load with no infinite animations, so it passes 2.2.2, and with reduced motion on it sits still in its final state.",
+   "problems": [
+    "SC 1.4.11 / 2.4.7: the #75A2FF focus ring on the #2B52FF stage measures 2.0–2.1:1 on 'Sharpen my first post', 'See real rewrites' and 'Stick them back on'. Keyboard users lose their place on the most important CTAs.",
+    "SC 1.3.1 / 4.1.2: a screen reader hears the hero proof as 'most underrated thing in trading sizing down after a loss.', then 'Peeled off so i think the is honestly just 59/280'. The capital and the '?' are visual only, and the intended aria-label on <p class=cline> is a prohibited attribute, so readers ignore it.",
+    "SC 4.1.3 noise: on page load the aria-live=polite line announces the half-mutated text 'so i think the mMost underrated thing… honestly just? sSizing down…', then announces it again.",
+    "Four <li class=row tabindex=0> rows with no role or action are dead tab stops. After autoplay, the Sharpen button reads 'Sharpened' and does nothing on Enter. Hero micro-copy #E6EBFF on the blue samples at 4.4–4.7:1 at 14px, which is borderline for 1.4.3."
+   ],
+   "fix": "Use a white (or #0B0C10 + white double) focus ring inside .stage. Then replace the live-mutated line with one polite announcement of the final 'Most underrated thing in trading? Sizing down after a loss.' plus 'Removed: so i think, honestly just', and keep the animated spans aria-hidden."
+  },
+  "arc-b": {
+   "criteria": {"perceivable": 8, "operable": 9, "understandable/semantics": 8, "motion safety": 9},
+   "overall": 8.6,
+   "verdict": "The only finalist I'd sign off near-AA today: ink on paper, a demo the user drives, and a receipt a screen reader can actually read.",
+   "loved": "The hero is user-driven with zero autoplay. It has a 'Mode' group and real-rewrite chips with aria-pressed, and keyboard focus stays on the control after Enter. The receipt is a real <dl> (MOVE / WHY / CUT / KEPT), and the after line is a <mark>. The ink ring is about 16:1 on paper, and axe reports 0 violations at 1440 and 390.",
+   "problems": [
+    "SC 1.3.1: the struck 'before' line is a plain <p> with a prohibited aria-label='Before: …', so a screen reader reads the soft line and the sharp line with no before/after cue. Use <del>/<ins> or visible-to-AT 'Before:'/'After:' text.",
+    "The #rcpt aria-live region re-announces the whole receipt (header, terms, word and char counts) on every chip press. That's verbose; announce just 'Made it a question. 17 → 10 words.'",
+    "The polaroid 'EXAMPLE' label (11.5px) over photos samples down to about 1.9:1 at its worst pixels (1.4.3 risk). The 11.5px mono receipt text is legible but tiny on a 390 phone.",
+    "No skip link (landmarks technically cover 2.4.1). Footer headings jump from H2 to H4."
+   ],
+   "fix": "Mark the before/after properly (<del>so i think</del> … <ins>…</ins>, or sr-only 'Before:'/'After:' prefixes) and shrink the live announcement to the move plus the word count."
+  },
+  "awwwards-b": {
+   "criteria": {"perceivable": 8, "operable": 7, "understandable/semantics": 6, "motion safety": 3},
+   "overall": 6.0,
+   "verdict": "Clean contrast and the only skip link in the set, undone by a galley proof that rotates forever and talks over the user every 7 seconds.",
+   "loved": "It's the only finalist with a working 'Skip to content' link. The proof is a labelled <article> ('Live example: an editor marking up a draft first line'), the proofreader's SVG marks and hand notes are hidden from AT, and axe finds 0 violations at both widths.",
+   "problems": [
+    "SC 2.2.2 fail: the hero auto-advances every 7 s indefinitely with no pause or stop. Picking an example or 'Next proof' only holds it for 10 s, then rotation resumes.",
+    "SC 4.1.3 misuse: .rnote is aria-live=polite, so every auto-rotation announces 'Led with the number. 34% is the news…' wherever the screen-reader user is on the page.",
+    "SC 1.3.1: twelve prohibited aria-labels on <p class=draft>/<p class=set> ('Draft: …'/'Sharpened: …') and on div.obj figures are ignored, so the before and after are read as two near-identical sentences. The dots are named 'Example 1–4' (weak under 2.4.6).",
+    "The Yearly/Monthly focus ring measures about 2.5:1 (1.4.11). The final 'We'll sharpen it.' is clipped at 320px (1.4.10). The 11.5–12.5px letter-spaced mono caps in nav and notes are hard to read for low-vision users even though they pass the ratio."
+   ],
+   "fix": "Add a visible Pause/Play toggle to the proof (aria-pressed), stop rotation permanently once the user picks an example, and set aria-live='off' while it auto-rotates (polite only after a user action)."
+  },
+  "apple-b": {
+   "criteria": {"perceivable": 4, "operable": 7, "understandable/semantics": 7, "motion safety": 4},
+   "overall": 5.4,
+   "verdict": "The hero text and white focus rings on the blue are solid, but the drifting feed is an endless motion loop with no pause and trips over 100 automated contrast failures.",
+   "loved": "The blue was deepened so white text and the white focus ring hold about 6:1. The hero post is a labelled <article> with an AT-visible 'Was:' prefix, the decorative feed is aria-hidden, and the try-a-line demo works by keyboard with focus retained.",
+   "problems": [
+    "SC 2.2.2 fail: 8 feed columns run infinite CSS drift beside the H1 with no pause control. Reduced-motion users are spared; everyone else with vestibular or attention issues is not.",
+    "SC 1.4.3: axe reports 107 serious contrast violations at 1440 and 117 at 390. All are aria-hidden feed posts (white at 50–70% alpha on blue, 2.5–3.9:1). They are real readable sentences, not 'pure decoration', so every procurement scan will flag the page.",
+    "SC 1.3.1 landmarks: <header> and the main <nav> sit inside <main> (inside the hero region), so there's no banner landmark and 'main' starts with site navigation.",
+    "SC 2.4.3: the Sharpen button comes after the four example picks in tab order although it sits visually between them. The hero card truncates the 'Was:' line with an ellipsis, so sighted and zoom users never see the full before."
+   ],
+   "fix": "Freeze the feed by default or add a Pause control, and turn the decoy posts into abstract bars or blurred shapes (no legible words), which removes both the 2.2.2 and the 1.4.3 findings in one change."
+  },
+  "typefully-a": {
+   "criteria": {"perceivable": 6, "operable": 6, "understandable/semantics": 7, "motion safety": 6},
+   "overall": 6.3,
+   "verdict": "Thoughtful engineering on motion and good receipt semantics, let down by a phone picker with no names and white clock numerals on a sunrise photo.",
+   "loved": "The motion is handled with care: the 6.5 s cycle pauses on hover and on focusin, stops when off-screen, and is disabled under reduced motion. The hero has no live region, so it never spams screen readers. The sharpened post is a labelled <article> and the receipt is a Kept/Cut <dl>.",
+   "problems": [
+    "SC 4.1.2 (axe critical): at 390 the four #pick buttons in the hero are avatar-only with no accessible name. A screen reader hears 'button, button, button, button'.",
+    "SC 1.4.3: '8:40 AM' in white over the sunrise photo samples at 2.4:1 (large text needs 3:1), and the 'AM'/'PM' suffix in #D5D8DF is 1.6:1.",
+    "SC 2.2.2: there's no visible pause, and the pause on hover/focus doesn't help screen-reader browse mode (no focus event), so the hero swaps content under the virtual cursor every 6.5 s. Clicking a chip restarts the timer instead of stopping it.",
+    "The playground textarea relies on an inset rgba(117,162,255,.55) glow at about 3:1 (marginal under 1.4.11). Div aria-labels on .stage, .nets, .wk and .locks are ignored. The Studio client list clips at 320px."
+   ],
+   "fix": "Give the phone chips aria-labels ('$10k month', 'Sizing down', …) and stop the rotation for good once the user picks a chip or presses Sharpen, plus a small visible Pause button."
+  }
+ },
+ "ranking": ["arc-b", "typefully-a", "awwwards-b", "apple-b", "arc-a"],
+ "pick": "arc-b",
+ "pickWhy": "It is the only finalist that passes 2.2.2 by design: nothing moves until the user asks, and every control has a pressed state, a strong ring and a stable focus. Its receipt is the best-structured content for screen readers in the set, and it needs about an hour of fixes (before/after markup, a shorter live message), not a redesign.",
+ "combo": "Keep arc-b's user-driven demo, aria-pressed chips and <dl> receipt. Add awwwards-b's skip link and typefully-a's off-screen and reduced-motion handling for any motion, and if the brand stays ultramarine, use apple-b's white focus ring on blue rather than arc-a's 2:1 #75A2FF."
+}
