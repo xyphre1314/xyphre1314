@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hookworthy: good ideas die in bad first lines</title>
+<meta name="description" content="Hookworthy sharpens your first line in one tap. It still sounds like you.">
+<style>
+@font-face{font-family:"Newsreader";src:url(../../fonts/Newsreader-Variable.woff2) format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
+@font-face{font-family:"Newsreader";src:url(../../fonts/Newsreader-Italic-Variable.woff2) format("woff2");font-weight:200 800;font-style:italic;font-display:swap}
+@font-face{font-family:"Inter";src:url(../../fonts/Inter-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(../../fonts/GeistMono-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+
+:root{
+  --page:#0B0C10;--s1:#14161B;--s2:#1B1E24;--s3:#24262D;
+  --hair:rgba(200,215,255,.075);--hair2:rgba(200,215,255,.14);
+  --ink:#EDEEF2;--ink2:#B5B9C2;--ink3:#8B909B;
+  --blue:#2B52FF;--blueH:#3965FF;--blueP:#1E3BE3;--acc:#75A2FF;
+  --amber:#F5B44C;--green:#55DB95;--red:#FB7570;
+  --paper:#F4F5F8;--pink:#0F131F;--pink2:#434956;
+  --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --gut:48px;--max:1344px;--floorH:236px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+::selection{background:rgba(43,82,255,.42)}
+.wrap{width:100%;max-width:calc(var(--max) + 2*var(--gut));margin:0 auto;padding:0 var(--gut)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--ink);color:var(--page);padding:10px 16px;border-radius:999px;text-decoration:none;font-weight:600}
+.skip:focus{top:12px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;height:52px;padding:0 24px;border-radius:999px;border:0;background:var(--blue);color:#fff;font:500 16px/1 var(--sans);letter-spacing:-.01em;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color .18s ease,transform .18s ease,box-shadow .18s ease}
+.btn:hover{background:var(--blueH)}
+.btn:active{background:var(--blueP);transform:scale(.98)}
+.btn svg{width:16px;height:16px;flex:none;transition:transform .2s ease}
+.btn:hover svg.arr{transform:translateX(3px)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hair2)}
+.btn.ghost:hover{background:var(--s2);box-shadow:inset 0 0 0 1px rgba(200,215,255,.22)}
+.btn.sm{height:38px;padding:0 16px;font-size:14px}
+.btn.light{background:var(--ink);color:var(--page)}
+.btn.light:hover{background:#fff}
+.btn.light:active{background:#D9DBE1}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:40;transition:background-color .3s ease,box-shadow .3s ease}
+.nav.on{background:rgba(11,12,16,.8);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);box-shadow:0 1px 0 var(--hair)}
+.nav-in{display:flex;align-items:center;height:72px;gap:32px}
+.mark{font:500 25px/1 var(--serif);letter-spacing:-.03em;text-decoration:none;display:inline-flex;align-items:baseline}
+.mark i{font-style:italic;font-weight:400}
+.mark b{color:var(--blue);font-weight:500}
+.links{display:flex;gap:4px;margin-right:auto}
+.links a,.txt{font:500 14.5px/1 var(--sans);color:var(--ink2);text-decoration:none;padding:10px 12px;border-radius:999px;transition:color .15s,background-color .15s}
+.links a:hover,.txt:hover{color:var(--ink);background:var(--s1)}
+.nav-r{display:flex;align-items:center;gap:8px}
+
+/* hero */
+.hero{position:relative;overflow:clip;padding:28px 0 calc(var(--floorH) + 8px);min-height:calc(100svh - 72px)}
+.hero-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;row-gap:40px;align-items:end}
+.h1{grid-column:1/-1;margin:0;font:380 clamp(44px,8.9vw,132px)/.92 var(--serif);letter-spacing:-.042em;font-variation-settings:"opsz" 72}
+.h1 .l{display:block;white-space:nowrap}
+.h1 .l2{padding-left:1.04em}
+.h1 .dot{color:var(--blue);font-weight:inherit}
+.hero-copy{grid-column:1/span 5;padding-bottom:6px}
+.lede{font-size:clamp(16.5px,1.3vw,19px);line-height:1.5;color:var(--ink2);margin:0;max-width:30ch}
+.hero .lede{color:var(--ink);font-size:clamp(18px,1.45vw,21px);max-width:24ch;letter-spacing:-.01em}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.note{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:16px 0 0;font:500 13px/1.4 var(--sans);color:var(--ink3)}
+.note i{width:3px;height:3px;border-radius:50%;background:var(--ink3);display:inline-block}
+
+.live{grid-column:7/-1;position:relative;background:var(--s1);border-radius:22px;box-shadow:inset 0 0 0 1px var(--hair2),0 30px 60px -30px rgba(0,0,0,.6);padding:18px 22px 18px;z-index:2}
+.live-top{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink3)}
+.av{width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none;background:var(--s3)}
+.who{display:flex;flex-wrap:wrap;gap:0 6px;align-items:baseline;min-width:0}
+.who b{color:var(--ink);font-weight:600}
+.tag{font:500 11px/1 var(--sans);letter-spacing:.02em;color:var(--ink3);padding:4px 7px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--hair2);white-space:nowrap}
+.netc{margin-left:auto;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.netc svg{width:13px;height:13px;color:var(--ink)}
+.netc .mono{font-size:12.5px;color:var(--ink2)}
+.line{margin:14px 0 0;font:400 clamp(22px,2.35vw,34px)/1.3 var(--serif);letter-spacing:-.012em;color:var(--ink);position:relative}
+.tk{display:inline-block;margin-right:.25em;white-space:pre;position:relative}
+.tk.soft{text-decoration:underline wavy var(--amber);text-decoration-thickness:1.6px;text-underline-offset:.22em;text-decoration-skip-ink:none}
+.tk.soft.hid{text-decoration-color:transparent}
+.tk.soft{transition:text-decoration-color .35s ease}
+.tk.add{border-radius:5px;box-shadow:inset 0 -.11em 0 var(--blue)}
+.caret{display:inline-block;width:2px;height:.95em;background:var(--blue);vertical-align:-.12em;margin-left:-.12em;animation:blink 1.05s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+.live-foot{display:flex;align-items:center;gap:14px;margin-top:16px;min-height:44px}
+.go{height:44px;padding:0 18px 0 14px;font-size:15px}
+.go svg{width:17px;height:17px}
+.go.press{transform:scale(.94)}
+.rcpt{margin:0;font-size:14px;line-height:1.4;color:var(--ink2);display:flex;gap:10px;align-items:flex-start;opacity:0;transform:translateY(6px);transition:opacity .35s ease,transform .35s ease;min-width:0}
+.rcpt.on{opacity:1;transform:none}
+.rcpt .ok{flex:none;width:20px;height:20px;border-radius:50%;background:rgba(85,219,149,.14);color:var(--green);display:grid;place-items:center;margin-top:1px}
+.rcpt .ok svg{width:12px;height:12px}
+.rcpt b{color:var(--ink);font-weight:600}
+
+/* the cutting floor */
+.floor{position:absolute;left:0;right:0;bottom:0;height:var(--floorH);pointer-events:none;z-index:1}
+.floor::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--hair2)}
+.floor-cap{position:absolute;left:var(--gut);bottom:12px;font:500 12px/1 var(--sans);color:var(--ink3);letter-spacing:.01em;z-index:3}
+.pw{position:absolute;left:0;top:0;font:400 clamp(22px,2.35vw,34px)/1.3 var(--serif);letter-spacing:-.012em;color:var(--ink3);white-space:pre;transform-origin:50% 60%;pointer-events:auto;cursor:default;transition:translate .45s cubic-bezier(.2,.8,.3,1.25),color 1.6s ease;will-change:transform}
+.pw.soft{text-decoration:underline wavy rgba(245,180,76,.75);text-decoration-thickness:1.6px;text-underline-offset:.22em;text-decoration-skip-ink:none}
+.pw.fresh{color:var(--ink)}
+.pw.settle{transition:transform .8s cubic-bezier(.3,.7,.2,1),translate .45s cubic-bezier(.2,.8,.3,1.25),color 1.6s ease,opacity .5s ease}
+.pw.gone{opacity:0}
+.pw[data-tag]:hover::after{content:attr(data-tag);position:absolute;left:50%;bottom:100%;transform:translate(-50%,-4px);font:600 11px/1 var(--sans);letter-spacing:.02em;color:#1a1206;background:var(--amber);padding:5px 8px;border-radius:999px;white-space:nowrap}
+.pw:hover{color:var(--ink)}
+
+/* sections */
+.sec{position:relative;padding:clamp(100px,11vw,168px) 0}
+.sec + .sec{border-top:1px solid var(--hair)}
+.head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:end;margin-bottom:clamp(44px,5.4vw,80px)}
+.head h2{grid-column:1/span 8;margin:0}
+.head .lede{grid-column:9/-1;margin:0 0 .45em}
+h2{font:400 clamp(40px,5.6vw,82px)/.98 var(--serif);letter-spacing:-.036em;font-variation-settings:"opsz" 72}
+h2 .a,h2 .b{display:block}
+h2 .b{font-style:italic;color:var(--ink2);letter-spacing:-.03em}
+h3{margin:0;font:400 clamp(26px,2.2vw,32px)/1.08 var(--serif);letter-spacing:-.024em}
+
+/* sharpen bench */
+.bench{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;row-gap:32px;align-items:start}
+.bench-main{grid-column:1/span 8;min-width:0}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(28px,3vw,44px)}
+.tab{height:38px;padding:0 16px;border-radius:999px;border:0;background:transparent;color:var(--ink2);box-shadow:inset 0 0 0 1px var(--hair2);font:500 14px/1 var(--sans);cursor:pointer;transition:background-color .15s,color .15s}
+.tab:hover{color:var(--ink);background:var(--s1)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--page);box-shadow:none}
+.before{margin:0;font:400 clamp(20px,2vw,28px)/1.45 var(--serif);color:var(--ink2);letter-spacing:-.008em;max-width:34ch}
+.before .x{color:var(--ink3);text-decoration:line-through;text-decoration-color:var(--amber);text-decoration-thickness:2px}
+.blade{display:flex;align-items:center;gap:14px;margin:clamp(22px,2.4vw,34px) 0}
+.blade::before{content:"";height:1px;flex:0 0 40px;background:var(--hair2)}
+.blade::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--hair2),transparent)}
+.blade .btn{height:40px;font-size:14px;padding:0 16px 0 12px}
+.blade .btn svg{width:16px;height:16px}
+.after{margin:0;font:400 clamp(32px,4.3vw,62px)/1.04 var(--serif);letter-spacing:-.03em;min-height:2.1em}
+.after span{display:inline-block;margin-right:.24em}
+.after .new{box-shadow:inset 0 -.08em 0 var(--blue)}
+.after.run span{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards}
+@keyframes rise{from{opacity:0;transform:translateY(.35em)}}
+
+/* receipt (paper) */
+.rc{grid-column:9/-1;position:relative;background:var(--paper);color:var(--pink);padding:30px 26px 32px;font-size:14.5px;line-height:1.5;-webkit-mask:radial-gradient(circle at 9px 0,transparent 6px,#000 6.5px) 0 0/18px 51% repeat-x,radial-gradient(circle at 9px 100%,transparent 6px,#000 6.5px) 0 100%/18px 51% repeat-x;mask:radial-gradient(circle at 9px 0,transparent 6px,#000 6.5px) 0 0/18px 51% repeat-x,radial-gradient(circle at 9px 100%,transparent 6px,#000 6.5px) 0 100%/18px 51% repeat-x;transform:rotate(1.2deg);transform-origin:50% 0;margin-top:8px}
+.rc-top{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:14px;border-bottom:1px dashed rgba(15,19,31,.28);font:600 13px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.rc-top .mono{font-weight:500;letter-spacing:0;text-transform:none;color:var(--pink2)}
+.rc dl{margin:0}
+.rc dt{font:600 12px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--pink2);margin-top:18px}
+.rc dd{margin:7px 0 0}
+.rc .move{font:400 27px/1.1 var(--serif);letter-spacing:-.02em;color:var(--pink)}
+.rc .why{color:var(--pink2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 13px/1 var(--sans);padding:6px 9px;border-radius:999px;white-space:nowrap}
+.chip.cut{color:#8A4B06;background:rgba(245,180,76,.24);text-decoration:line-through;text-decoration-thickness:1.5px}
+.chip.kept{color:#0B6B38;background:rgba(85,219,149,.22)}
+.rc-foot{margin-top:20px;padding-top:14px;border-top:1px dashed rgba(15,19,31,.28);font:500 13.5px/1.4 var(--sans);color:var(--pink)}
+
+/* night to morning */
+.panes{display:grid;grid-template-columns:1fr 1fr;gap:24px;position:relative}
+.pane{position:relative;border-radius:28px;overflow:hidden;min-height:640px;background:var(--s1);isolation:isolate;box-shadow:inset 0 0 0 1px var(--hair)}
+.pane-bg{position:absolute;inset:0;z-index:-1;background-image:url(../../assets/people/photos.jpg);background-size:auto 600%;background-repeat:no-repeat}
+.pane-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,12,16,.58) 0%,rgba(11,12,16,.8) 42%,rgba(11,12,16,.95) 100%)}
+.night .pane-bg{background-position:42% 0%}
+.morning .pane-bg{background-position:60% 40%}
+.pane-in{padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;height:100%;gap:18px}
+.clock{margin:0;font:300 clamp(56px,7vw,104px)/.9 var(--mono);letter-spacing:-.06em;color:var(--ink)}
+.clock small{font-size:.32em;letter-spacing:0;margin-left:.3em;color:var(--ink2);font-weight:500;vertical-align:.15em}
+.pane h3{margin-top:4px}
+.pane p.pl{margin:0;color:var(--ink2);max-width:34ch}
+.cap{position:absolute;right:16px;top:16px;font:500 11px/1 var(--sans);color:var(--ink2);background:rgba(11,12,16,.6);padding:6px 9px;border-radius:999px}
+.ui{background:rgba(20,22,27,.92);border-radius:18px;box-shadow:inset 0 0 0 1px var(--hair2);padding:16px 18px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ui-h{display:flex;align-items:center;gap:8px;font:500 13px/1.2 var(--sans);color:var(--ink2)}
+.ui-h svg{width:15px;height:15px;color:var(--ink)}
+.ui-h .mono{margin-left:auto;font-size:12.5px;color:var(--ink3)}
+.wave{display:flex;align-items:center;gap:3px;height:38px;margin:12px 0 10px}
+.wave i{flex:1;background:var(--ink2);border-radius:2px;min-height:3px;opacity:.85}
+.wave i.p{background:var(--acc);opacity:1}
+.quote{margin:0;font:italic 400 17px/1.4 var(--serif);color:var(--ink)}
+.mini-line{margin:10px 0 0;font:400 19px/1.4 var(--serif);color:var(--ink)}
+.mini-line .s{text-decoration:underline wavy var(--amber);text-decoration-thickness:1.4px;text-underline-offset:.22em;text-decoration-skip-ink:none}
+.voice{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.vchip{font:500 12px/1 var(--sans);color:var(--ink2);padding:6px 9px;border-radius:999px;background:var(--s3)}
+.pane-stack{display:flex;flex-direction:column;gap:12px;margin-top:auto}
+.bridge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--page);border-radius:999px;padding:10px 16px 10px 10px;font:600 14px/1 var(--sans);box-shadow:0 18px 40px -12px rgba(0,0,0,.7);white-space:nowrap}
+.bridge .ok{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center}
+.bridge .ok svg{width:14px;height:14px}
+.xpost{display:flex;gap:10px}
+.xpost .av{width:36px;height:36px}
+.xpost .nm{font:600 14px/1.3 var(--sans);color:var(--ink)}
+.xpost .nm span{font-weight:400;color:var(--ink3)}
+.xpost p{margin:4px 0 0;font:400 15.5px/1.45 var(--sans);color:var(--ink)}
+.slots{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px}
+.slot{height:34px;border-radius:8px;background:var(--s2);display:grid;place-items:center;font:500 10.5px/1 var(--mono);color:var(--ink3)}
+.slot.best{box-shadow:inset 0 0 0 1px rgba(117,162,255,.55);color:var(--acc);background:rgba(43,82,255,.08)}
+.slot.pick{background:var(--blue);color:#fff;box-shadow:none}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px;font:500 11px/1 var(--sans);color:var(--ink3);text-align:center}
+.sched{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;flex-wrap:wrap}
+.sched small{font-size:12.5px;color:var(--ink3)}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.ft{background:var(--s1);border-radius:26px;box-shadow:inset 0 0 0 1px var(--hair);padding:clamp(22px,2.4vw,34px);display:flex;flex-direction:column;gap:12px;min-width:0;transition:box-shadow .25s ease,transform .25s ease}
+.ft:hover{box-shadow:inset 0 0 0 1px var(--hair2);transform:translateY(-2px)}
+.ft .was{margin:0;font:400 13.5px/1.4 var(--sans);color:var(--ink3);text-decoration:line-through;text-decoration-color:rgba(245,180,76,.8);text-decoration-thickness:1.5px}
+.ft .fp{margin:0;color:var(--ink2);font-size:15.5px;max-width:42ch}
+.ft .demo{margin-top:auto;padding-top:14px}
+.f-prev{grid-column:span 7}.f-week{grid-column:span 5}
+.f-inbox,.f-res,.f-rev{grid-column:span 4}
+.f-studio{grid-column:1/-1}
+.pv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pc{border-radius:14px;padding:12px;min-height:168px;display:flex;flex-direction:column;gap:8px;font-family:var(--sans)}
+.pc .ph{display:flex;align-items:center;gap:7px;font:600 12px/1.2 var(--sans)}
+.pc .ph .av{width:22px;height:22px}
+.pc .ph span{font-weight:400;opacity:.8}
+.pc p{margin:0;font-size:13px;line-height:1.42}
+.pc .pf{margin-top:auto;display:flex;justify-content:space-between;align-items:center;font:500 11px/1 var(--mono)}
+.pc-x{background:#000;color:#E7E9EA;box-shadow:inset 0 0 0 1px #2F3336}
+.pc-x .pf{color:#8B9095}
+.pc-th{background:#101010;color:#F3F5F7;box-shadow:inset 0 0 0 1px #2A2A2A}
+.pc-th .pf{color:#999}
+.pc-li{background:#fff;color:#191919}
+.pc-li .pf{color:#56687A}
+.pc-bs{background:#161E27;color:#F1F3F5;box-shadow:inset 0 0 0 1px #2E3A4A}
+.pc-bs .pf{color:#9FB0C4}
+.netname{display:flex;align-items:center;gap:6px;font:600 11.5px/1 var(--sans);margin-bottom:8px;color:var(--ink2)}
+.netname i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.thread-note{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13.5px;color:var(--ink2)}
+.thread-note .mono{font-size:12px;color:var(--ink);background:var(--s3);padding:5px 8px;border-radius:999px}
+.wk{display:grid;grid-template-columns:56px repeat(7,1fr);gap:5px;align-items:center}
+.wk .d{font:500 11px/1 var(--sans);color:var(--ink3);text-align:center;padding-bottom:4px}
+.wk .t{font:500 11px/1 var(--mono);color:var(--ink3)}
+.wk .c{height:40px;border-radius:9px;background:var(--s2)}
+.wk .c.best{background:repeating-linear-gradient(135deg,rgba(117,162,255,.12) 0 6px,transparent 6px 12px);box-shadow:inset 0 0 0 1px rgba(117,162,255,.35)}
+.wk .c.post{background:var(--blue);display:grid;place-items:center;font:500 11px/1 var(--mono);color:#fff}
+.wk .c.wait{box-shadow:inset 0 0 0 1px rgba(245,180,76,.7);display:grid;place-items:center;font:500 11px/1 var(--mono);color:var(--amber);background:rgba(245,180,76,.06)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:12.5px;color:var(--ink3)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+.msg{display:flex;gap:10px;align-items:flex-start}
+.msg .av{width:30px;height:30px}
+.bub{background:var(--s2);border-radius:4px 14px 14px 14px;padding:9px 12px;font-size:14px;line-height:1.45;color:var(--ink)}
+.bub small{display:block;font-size:12px;color:var(--ink3);margin-bottom:3px}
+.drafted{margin:12px 0 0 40px;border-radius:14px;padding:11px 13px;box-shadow:inset 0 0 0 1px rgba(117,162,255,.45);background:rgba(43,82,255,.07)}
+.drafted small{display:block;font:500 11.5px/1 var(--sans);color:var(--acc);margin-bottom:6px}
+.drafted p{margin:0;font-size:14px;line-height:1.45}
+.row-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.row-btns .btn{height:32px;padding:0 13px;font-size:13px}
+.bars{display:grid;gap:10px;margin-top:4px}
+.bar{display:grid;grid-template-columns:76px 1fr;align-items:center;gap:10px;font-size:12.5px;color:var(--ink3)}
+.bar b{height:12px;border-radius:999px;background:var(--s3);display:block}
+.bar.hi b{background:var(--blue)}
+.plain{margin:14px 0 0;font:400 19px/1.35 var(--serif);color:var(--ink)}
+.next{margin:10px 0 0;font-size:13.5px;color:var(--ink2)}
+.next b{color:var(--ink);font-weight:600}
+.ping{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--ink3)}
+.ping svg{width:14px;height:14px;color:var(--amber)}
+.url{display:flex;align-items:center;gap:8px;font:500 12px/1 var(--sans);color:var(--ink2);background:var(--s2);border-radius:999px;padding:8px 12px;width:max-content;max-width:100%}
+.url svg{width:13px;height:13px;flex:none}
+.doc{margin:12px 0 0;font:400 19px/1.45 var(--serif)}
+.doc mark{background:rgba(245,180,76,.22);color:var(--ink);border-radius:3px;box-shadow:0 2px 0 var(--amber)}
+.cmt{margin-top:12px;display:flex;gap:9px;align-items:flex-start}
+.cmt .av{width:26px;height:26px}
+.cmt .bub{border-radius:14px 14px 14px 4px}
+.studio{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:24px;align-items:start}
+.clients{display:flex;flex-direction:column;gap:6px}
+.cl{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-size:14px;color:var(--ink2)}
+.cl .avs{width:34px;height:34px}
+.cl b{display:block;color:var(--ink);font-weight:600}
+.cl small{font-size:12px;color:var(--ink3)}
+.cl.on{background:var(--s2);box-shadow:inset 0 0 0 1px var(--hair2)}
+.vp{background:var(--s2);border-radius:18px;padding:18px 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.vp dt{font:600 11.5px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.vp dd{margin:0;font-size:14px;color:var(--ink)}
+.vp .never{display:flex;flex-wrap:wrap;gap:6px}
+.vp .never span{font:500 12.5px/1 var(--sans);padding:6px 9px;border-radius:999px;background:rgba(251,117,112,.1);color:#FFA29E;text-decoration:line-through}
+.appr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--hair2);padding-top:14px}
+.appr p{margin:0;font-size:14px;color:var(--ink2);display:flex;align-items:center;gap:8px}
+.appr p i{width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block}
+.avs{display:block;border-radius:50%;background-image:url(../../assets/people/avatars.jpg);background-size:100% auto;background-position:0 calc(var(--i) * 100% / 17);flex:none;background-color:var(--s3)}
+
+/* x pays */
+.xp{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:end}
+.xp h2{grid-column:1/span 6;margin:0}
+.xp-r{grid-column:8/-1}
+.req{list-style:none;margin:22px 0 0;padding:0;border-top:1px solid var(--hair2)}
+.req li{display:flex;align-items:baseline;gap:18px;padding:16px 0;border-bottom:1px solid var(--hair2);color:var(--ink2);font-size:15px}
+.req .mono{font-size:clamp(28px,2.6vw,38px);color:var(--ink);font-weight:400;letter-spacing:-.04em;min-width:4.2ch}
+.req .pr{font:400 clamp(28px,2.6vw,38px)/1 var(--serif);color:var(--ink);letter-spacing:-.02em;min-width:4.2ch}
+.fine{margin:14px 0 0;font-size:13px;color:var(--ink3)}
+.promise{margin:26px 0 0;font:italic 400 clamp(22px,2vw,28px)/1.3 var(--serif);color:var(--ink)}
+
+/* who */
+.whos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.wcard{border-top:1px solid var(--hair2);padding-top:22px;display:flex;flex-direction:column;gap:12px}
+.wcard .face{display:flex;align-items:center;gap:12px}
+.wcard .face .avs,.wcard .face img{width:56px;height:56px;border-radius:50%;object-fit:cover}
+.wcard .face b{display:block;font-weight:600;font-size:15px}
+.wcard .face small{font-size:12.5px;color:var(--ink3)}
+.wcard h3{font-size:clamp(24px,2vw,30px)}
+.wcard .hook{margin:0;font:italic 400 18px/1.4 var(--serif);color:var(--ink);padding-left:14px;box-shadow:inset 2px 0 0 var(--green)}
+.wcard .pain{margin:0;font-size:14.5px;color:var(--ink2)}
+
+/* trust */
+.trust{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start}
+.trust .tl{grid-column:1/span 5}
+.trust .tl .lede{margin-top:24px}
+.nevers{grid-column:7/-1;list-style:none;margin:0;padding:0}
+.nevers li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid var(--hair2)}
+.nevers li:first-child{border-top:1px solid var(--hair2)}
+.nevers s{font:400 clamp(30px,3.4vw,50px)/1 var(--serif);letter-spacing:-.03em;color:var(--ink2);text-decoration-color:var(--red);text-decoration-thickness:2px}
+.nevers span{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--red)}
+.youpress{display:flex;align-items:center;gap:16px;margin-top:28px;flex-wrap:wrap}
+.key{display:inline-flex;align-items:center;gap:10px;height:64px;padding:0 30px;border-radius:999px;background:var(--blue);color:#fff;font:600 19px/1 var(--sans);border:0;box-shadow:0 6px 0 var(--blueP);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,background-color .15s}
+.key:hover{background:var(--blueH)}
+.key:active,.key.sent{transform:translateY(5px);box-shadow:0 1px 0 var(--blueP)}
+.key svg{width:20px;height:20px}
+.youpress p{margin:0;color:var(--ink2);font-size:15px;max-width:30ch}
+
+/* pricing */
+.ptop{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(36px,4vw,56px)}
+.ptop h2{margin:0}
+.bill{display:inline-flex;padding:4px;border-radius:999px;background:var(--s1);box-shadow:inset 0 0 0 1px var(--hair2)}
+.bill button{height:38px;padding:0 16px;border-radius:999px;border:0;background:transparent;color:var(--ink2);font:500 14px/1 var(--sans);cursor:pointer}
+.bill button:hover{color:var(--ink)}
+.bill button[aria-pressed="true"]{background:var(--ink);color:var(--page)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.plan{background:var(--s1);border-radius:26px;padding:30px;box-shadow:inset 0 0 0 1px var(--hair);display:flex;flex-direction:column}
+.plan.pro{box-shadow:inset 0 0 0 1.5px var(--blue)}
+.plan h3{font-size:30px}
+.plan .for{margin:6px 0 0;color:var(--ink3);font-size:14.5px}
+.price{display:flex;align-items:baseline;gap:8px;margin:26px 0 4px}
+.price b{font:400 68px/1 var(--serif);letter-spacing:-.04em}
+.price span{color:var(--ink2);font-size:14.5px}
+.billnote{margin:0;font-size:13px;color:var(--ink3);min-height:1.5em}
+.plan ul{list-style:none;margin:24px 0 28px;padding:0;display:grid;gap:11px;font-size:14.5px;color:var(--ink2)}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li svg{width:16px;height:16px;flex:none;margin-top:3px;color:var(--green)}
+.plan li b{color:var(--ink);font-weight:600}
+.plan .btn{margin-top:auto;width:100%}
+
+/* end */
+.end{position:relative;overflow:clip;padding:clamp(110px,12vw,180px) 0 calc(var(--floorH) + 40px);border-top:1px solid var(--hair)}
+.end h2{font-size:clamp(48px,8vw,124px);line-height:.94;margin:0}
+.end-row{display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap;margin-top:36px}
+.end-row .lede{max-width:28ch;color:var(--ink);font-size:clamp(18px,1.45vw,21px)}
+.end .ctas{margin-top:0}
+footer{border-top:1px solid var(--hair2);padding:40px 0 56px;font-size:14px;color:var(--ink3)}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.foot nav{display:flex;flex-wrap:wrap;gap:4px 18px}
+.foot a{text-decoration:none;color:var(--ink2)}
+.foot a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.foot p{margin:10px 0 0;max-width:46ch}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:1100px){
+  .live{grid-column:6/-1}
+  .hero-copy{grid-column:1/span 5}
+  .f-prev,.f-week{grid-column:1/-1}
+  .f-inbox,.f-res,.f-rev{grid-column:span 6}
+  .f-rev{grid-column:1/-1}
+  .whos{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:40px}
+}
+@media (max-width:860px){
+  :root{--gut:20px;--floorH:168px}
+  .links,.txt{display:none}
+  .nav-in{height:60px;gap:12px}
+  .nav-r{margin-left:auto}
+  .mark{font-size:22px}
+  .hero{padding-top:18px;min-height:0}
+  .hero-grid{row-gap:26px}
+  .h1{font-size:clamp(40px,12.4vw,80px)}
+  .h1 .l2{padding-left:0}
+  .hero-copy,.live{grid-column:1/-1}
+  .head,.xp,.trust{display:block}
+  .head .lede{margin-top:20px}
+  .bench{display:block}
+  .rc{margin-top:36px;transform:rotate(.8deg)}
+  .panes{grid-template-columns:1fr;gap:16px}
+  .pane{min-height:0}
+  .bridge{position:relative;left:auto;top:auto;transform:none;justify-self:center;margin:-2px auto}
+  .pv{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .f-inbox,.f-res,.f-rev{grid-column:1/-1}
+  .studio{grid-template-columns:1fr}
+  .clients{flex-direction:row;overflow-x:auto;scrollbar-width:none}
+  .cl{flex:none}
+  .vp{grid-template-columns:1fr}
+  .xp-r{margin-top:28px}
+  .whos{grid-template-columns:1fr}
+  .nevers{margin-top:32px}
+  .plans{grid-template-columns:1fr}
+  .floor-cap{left:var(--gut)}
+}
+@media (max-width:420px){
+  .ctas .btn{flex:1 1 auto}
+  .live{padding:16px 16px 16px;border-radius:20px}
+  .live-top .tag{display:none}
+  .wk{grid-template-columns:40px repeat(7,1fr);gap:4px}
+  .wk .c{height:34px}
+  .pc{min-height:150px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+  .caret{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-arr" viewBox="0 0 16 16"><path d="M3 8h9.5M8.6 3.6 13 8l-4.4 4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-ok" viewBox="0 0 16 16"><path d="M3.4 8.6l3 3 6.2-7.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sharp" viewBox="0 0 20 20"><path d="M10 1.8c.5 4 1.9 5.9 6.2 6.6v.2c-4.3.7-5.7 2.6-6.2 6.6h-.2c-.5-4-1.9-5.9-6.2-6.6v-.2c4.3-.7 5.7-2.6 6.2-6.6z" fill="currentColor"/><path d="M15.6 13.2c.2 1.6.8 2.3 2.4 2.6v.1c-1.6.3-2.2 1-2.4 2.6h-.1c-.2-1.6-.8-2.3-2.4-2.6v-.1c1.6-.3 2.2-1 2.4-2.6z" fill="currentColor"/></symbol>
+  <symbol id="i-next" viewBox="0 0 20 20"><path d="M4 10a6 6 0 0 1 10.4-4.1M16 10a6 6 0 0 1-10.4 4.1M14.6 2.6v3.5h-3.5M5.4 17.4v-3.5h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 16 16"><rect x="5.5" y="1.5" width="5" height="8.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5v2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 16 16"><path d="M6.8 9.2a2.8 2.8 0 0 0 4 0l2.2-2.2a2.8 2.8 0 0 0-4-4l-.9.9M9.2 6.8a2.8 2.8 0 0 0-4 0L3 9a2.8 2.8 0 0 0 4 4l.9-.9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 16 16"><path d="M4 11.5V7a4 4 0 1 1 8 0v4.5l1.2 1.2H2.8zM6.5 14.2a1.6 1.6 0 0 0 3 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  <symbol id="i-send" viewBox="0 0 20 20"><path d="M3 10.2 17 3.5l-4.3 13.3-3-5.4zM9.7 11.4 17 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+  <symbol id="i-rep" viewBox="0 0 16 16"><path d="M2.5 7.5a5 5 0 0 1 5-5h1a5 5 0 0 1 0 10H7l-3 2v-3a5 5 0 0 1-1.5-4z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></symbol>
+  <symbol id="i-rt" viewBox="0 0 16 16"><path d="M4 3v8h7M2 5l2-2 2 2M12 13V5H5m9 6-2 2-2-2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 16 16"><path d="M8 13.5S2 10 2 6a3 3 0 0 1 6-1 3 3 0 0 1 6 1c0 4-6 7.5-6 7.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="#top" aria-label="Hookworthy, home">Hook<i>worthy</i><b aria-hidden="true">.</b></a>
+    <nav class="links" aria-label="Main">
+      <a href="#sharpen">Sharpen</a><a href="#how">How it works</a><a href="#features">Features</a><a href="#pricing">Pricing</a>
+    </nav>
+    <div class="nav-r"><a class="txt" href="#signin">Sign in</a><a class="btn sm" href="#start">Start free</a></div>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" id="top" aria-labelledby="h1">
+  <div class="wrap hero-grid">
+    <h1 class="h1" id="h1"><span class="l">Good ideas die</span> <span class="l l2">in bad first lines<span class="dot">.</span></span></h1>
+    <div class="hero-copy">
+      <p class="lede">Hookworthy sharpens yours in one tap. It still sounds like&nbsp;you.</p>
+      <div class="ctas">
+        <a class="btn" href="#start">Sharpen my first post <svg class="arr"><use href="#i-arr"/></svg></a>
+        <a class="btn ghost" href="#sharpen">See it work</a>
+      </div>
+      <p class="note">Free plan <i></i> No card <i></i> Nothing posts without you</p>
+    </div>
+    <div class="live" id="live" aria-label="Live example: a draft first line being sharpened">
+      <div class="live-top">
+        <img class="av" src="../../assets/people/you.jpg" alt="" width="30" height="30">
+        <span class="who"><b>heycape</b><span>@heycape_</span></span>
+        <span class="tag">Example</span>
+        <span class="netc"><svg aria-hidden="true"><use href="#i-x"/></svg><span class="mono"><span id="cnt">90</span>/280</span></span>
+      </div>
+      <p class="line" id="line"></p>
+      <div class="live-foot">
+        <button class="btn light go" id="go" type="button"><svg aria-hidden="true"><use href="#i-sharp"/></svg><span>Sharpen</span></button>
+        <p class="rcpt" id="rcpt" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+  <div class="floor" id="floor" aria-hidden="true"><span class="floor-cap">The cutting floor. Poke it.</span></div>
+</section>
+
+<section class="sec" id="sharpen" aria-labelledby="sh-h">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 id="sh-h"><span class="a">Same facts.</span><span class="b">Sharper first line.</span></h2>
+      <p class="lede">Soft words get a wavy line while you type. One tap rewrites the opener in your voice, with a receipt.</p>
+    </div>
+    <div class="bench">
+      <div class="bench-main">
+        <div class="tabs" role="tablist" aria-label="Real examples"></div>
+        <div id="bench-panel" role="tabpanel" tabindex="0">
+          <p class="before" id="b-before"></p>
+          <div class="blade"><button class="btn light" id="b-go" type="button"><svg aria-hidden="true"><use href="#i-sharp"/></svg>Sharpen</button></div>
+          <p class="after" id="b-after"></p>
+        </div>
+      </div>
+      <aside class="rc" aria-label="Sharpen receipt">
+        <div class="rc-top"><span>Receipt</span><span class="mono" id="r-count"></span></div>
+        <dl>
+          <dt>The move</dt><dd class="move" id="r-move"></dd>
+          <dt>Why</dt><dd class="why" id="r-why"></dd>
+          <dt>Cut</dt><dd><div class="chips" id="r-cut"></div></dd>
+          <dt>Kept</dt><dd><div class="chips" id="r-kept"></div></dd>
+        </dl>
+        <p class="rc-foot">Your facts stay. Your voice stays.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 id="how-h"><span class="a">Catch it at 11 PM.</span><span class="b">Post it at 8:40 AM.</span></h2>
+      <p class="lede">The idea shows up late. Your people show up early. Hookworthy covers the gap.</p>
+    </div>
+    <div class="panes">
+      <article class="pane night rv">
+        <div class="pane-bg" role="img" aria-label="Example scene: a desk lamp and laptop late at night"></div>
+        <span class="cap">Example scene</span>
+        <div class="pane-in">
+          <p class="clock"><span>11:02</span><small>PM</small></p>
+          <h3>Say it half-asleep.</h3>
+          <p class="pl">Voice note, link or screenshot. It drafts in your voice.</p>
+          <div class="pane-stack">
+            <div class="ui">
+              <div class="ui-h"><svg aria-hidden="true"><use href="#i-mic"/></svg>Voice note<span class="mono">0:14</span></div>
+              <div class="wave" id="wave" aria-hidden="true"></div>
+              <p class="quote">“the sizing thing. after a loss you size down. that’s the post.”</p>
+            </div>
+            <div class="ui">
+              <div class="ui-h">Drafted in your voice<span class="mono">11:03 PM</span></div>
+              <p class="mini-line"><span class="s">so i think</span> the most underrated thing in trading is <span class="s">honestly</span> <span class="s">just</span> sizing down after a loss.</p>
+              <div class="voice"><span class="vchip">lowercase</span><span class="vchip">short</span><span class="vchip">no hashtags</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <div class="bridge" aria-hidden="true"><span class="ok"><svg><use href="#i-ok"/></svg></span>Sharpened: led with the question</div>
+      <article class="pane morning rv">
+        <div class="pane-bg" role="img" aria-label="Example scene: a runner at sunrise by a river"></div>
+        <span class="cap">Example scene</span>
+        <div class="pane-in">
+          <p class="clock"><span>8:40</span><small>AM</small></p>
+          <h3>Land it when they scroll.</h3>
+          <p class="pl">Your best times are marked. You press schedule.</p>
+          <div class="pane-stack">
+            <div class="ui">
+              <div class="xpost">
+                <img class="av" src="../../assets/people/you.jpg" alt="" width="36" height="36">
+                <div><div class="nm">heycape <span>@heycape_ · example</span></div>
+                <p>Most underrated thing in trading? Sizing down after a loss.</p></div>
+              </div>
+            </div>
+            <div class="ui">
+              <div class="ui-h">Tuesday<span class="mono">your best times</span></div>
+              <div class="days" aria-hidden="true"><span>7</span><span>8</span><span>9</span><span>12</span><span>1</span><span>6</span><span>9</span></div>
+              <div class="slots" aria-hidden="true"><span class="slot">7:15</span><span class="slot pick">8:40</span><span class="slot best">9:05</span><span class="slot">12:10</span><span class="slot best">1:30</span><span class="slot">6:20</span><span class="slot">9:45</span></div>
+              <div class="sched"><small>Nothing posts without you.</small><button class="btn sm" type="button" id="sched">Schedule 8:40 AM</button></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="features" aria-labelledby="ft-h">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 id="ft-h"><span class="a">Everything after</span><span class="b">the first line.</span></h2>
+      <p class="lede">Every feature below, sharpened too. The struck line is how most tools would say it.</p>
+    </div>
+    <div class="feats">
+      <article class="ft f-prev rv">
+        <h3>Four feeds. One draft.</h3>
+        <p class="was">we show you previews for every platform</p>
+        <p class="fp">X, Threads, LinkedIn and Bluesky, live as you type, with each limit counted.</p>
+        <div class="demo">
+          <div class="pv">
+            <div><div class="netname"><i style="background:#E7E9EA"></i>X</div>
+              <div class="pc pc-x"><div class="ph"><img class="av" src="../../assets/people/you.jpg" alt="" width="22" height="22">heycape <span>@heycape_</span></div><p>Most underrated thing in trading? Sizing down after a loss.</p><div class="pf"><span>59/280</span><span>now</span></div></div></div>
+            <div><div class="netname"><i style="background:#F3F5F7"></i>Threads</div>
+              <div class="pc pc-th"><div class="ph"><img class="av" src="../../assets/people/you.jpg" alt="" width="22" height="22">heycape</div><p>Most underrated thing in trading? Sizing down after a loss.</p><div class="pf"><span>59/500</span><span>now</span></div></div></div>
+            <div><div class="netname"><i style="background:#0A66C2"></i>LinkedIn</div>
+              <div class="pc pc-li"><div class="ph"><img class="av" src="../../assets/people/you.jpg" alt="" width="22" height="22">heycape <span>· trader</span></div><p>Most underrated thing in trading? Sizing down after a loss.</p><div class="pf"><span>59/3,000</span><span>now</span></div></div></div>
+            <div><div class="netname"><i style="background:#1185FE"></i>Bluesky</div>
+              <div class="pc pc-bs"><div class="ph"><img class="av" src="../../assets/people/you.jpg" alt="" width="22" height="22">heycape <span>@heycape</span></div><p>Most underrated thing in trading? Sizing down after a loss.</p><div class="pf"><span>59/300</span><span>now</span></div></div></div>
+          </div>
+          <p class="thread-note"><span class="mono">1/3</span>Long post, free X account: it becomes a thread on its own.</p>
+        </div>
+      </article>
+
+      <article class="ft f-week rv">
+        <h3>Your best times, already marked.</h3>
+        <p class="was">we suggest optimal posting times based on analytics</p>
+        <p class="fp">A calendar that knows when your people scroll. Nothing goes out until you say so.</p>
+        <div class="demo">
+          <div class="wk" aria-hidden="true">
+            <span></span><span class="d">Mon</span><span class="d">Tue</span><span class="d">Wed</span><span class="d">Thu</span><span class="d">Fri</span><span class="d">Sat</span><span class="d">Sun</span>
+            <span class="t">AM</span><span class="c best"></span><span class="c post">8:40</span><span class="c best"></span><span class="c"></span><span class="c best"></span><span class="c"></span><span class="c"></span>
+            <span class="t">Noon</span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c wait">12:15</span><span class="c"></span><span class="c best"></span><span class="c"></span>
+            <span class="t">PM</span><span class="c best"></span><span class="c"></span><span class="c"></span><span class="c best"></span><span class="c"></span><span class="c"></span><span class="c best"></span>
+          </div>
+          <div class="legend"><span><i style="background:var(--blue)"></i>Scheduled by you</span><span><i style="box-shadow:inset 0 0 0 1px var(--amber)"></i>Waiting for you</span><span><i style="box-shadow:inset 0 0 0 1px rgba(117,162,255,.6)"></i>Your best times</span></div>
+        </div>
+      </article>
+
+      <article class="ft f-inbox rv">
+        <h3>Replies, answered in your voice.</h3>
+        <p class="was">respond to comments faster with suggested replies</p>
+        <p class="fp">The answer is drafted. You read it, you send it.</p>
+        <div class="demo">
+          <div class="msg"><span class="avs" style="--i:6;width:30px;height:30px"></span><div class="bub"><small>Rae · example</small>ok but how much do you size down? half?</div></div>
+          <div class="drafted"><small>Drafted in your voice</small><p>half. until i’ve had two green days in a row.</p></div>
+          <div class="row-btns"><button class="btn ghost" type="button">Edit</button><button class="btn" type="button">Send</button></div>
+        </div>
+      </article>
+
+      <article class="ft f-res rv">
+        <h3>Did it land? Plain words.</h3>
+        <p class="was">advanced analytics dashboard with engagement metrics</p>
+        <p class="fp">Measured against your own usual, then what to write next.</p>
+        <div class="demo">
+          <div class="bars" aria-hidden="true"><div class="bar"><span>Your usual</span><b style="width:46%"></b></div><div class="bar hi"><span>This post</span><b style="width:82%"></b></div></div>
+          <p class="plain">Better than your usual. Questions up top keep working for you.</p>
+          <p class="next"><b>Write next:</b> how you size back up.</p>
+          <p class="ping"><svg aria-hidden="true"><use href="#i-bell"/></svg>Pro pings you when a post takes off.</p>
+        </div>
+      </article>
+
+      <article class="ft f-rev rv">
+        <h3>One link. Notes on the exact words.</h3>
+        <p class="was">share drafts with collaborators for feedback</p>
+        <p class="fp">Send a review link. Your editor or client comments right on the line.</p>
+        <div class="demo">
+          <span class="url"><svg aria-hidden="true"><use href="#i-link"/></svg>hookworthy.com/r/heycape-tue</span>
+          <p class="doc">Most underrated thing in trading? <mark>Sizing down</mark> after a loss.</p>
+          <div class="cmt"><span class="avs" style="--i:10;width:26px;height:26px"></span><div class="bub"><small>Ana, editor · example</small>Say how much in the reply, not here.</div></div>
+        </div>
+      </article>
+
+      <article class="ft f-studio rv">
+        <div class="studio">
+          <div>
+            <h3>Every client sounds like themselves.</h3>
+            <p class="was">manage multiple client accounts in one workspace</p>
+            <p class="fp" style="margin-top:12px">Studio, for ghostwriters and agencies: one voice per client, their never-say list, their time zone, and an approval before anything posts.</p>
+            <div class="clients" style="margin-top:20px">
+              <div class="cl on"><span class="avs" style="--i:0"></span><div><b>Priya</b><small>Founder · example</small></div></div>
+              <div class="cl"><span class="avs" style="--i:11"></span><div><b>Marcus</b><small>Investor · example</small></div></div>
+              <div class="cl"><span class="avs" style="--i:4"></span><div><b>Lena</b><small>Newsletter · example</small></div></div>
+            </div>
+          </div>
+          <dl class="vp">
+            <div><dt>Voice</dt><dd>Warm, plain, first person. Short paragraphs. Ends on a question.</dd></div>
+            <div><dt>Never say</dt><dd class="never"><span>excited to announce</span><span>synergy</span><span>humbled</span></dd></div>
+            <div><dt>Time zone</dt><dd><span class="mono">Asia/Kolkata · 9:10 AM</span></dd></div>
+            <div class="appr"><p><i></i>Waiting for Priya’s approval</p><button class="btn sm ghost" type="button">Send for approval</button></div>
+          </dl>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="x" aria-labelledby="x-h">
+  <div class="wrap xp">
+    <h2 id="x-h" class="rv"><span class="a">Replies don’t pay.</span><span class="b">Posts do.</span></h2>
+    <div class="xp-r rv">
+      <p class="lede">Since Sept 8, X pays creators for original posts, not replies. The bar to get paid:</p>
+      <ul class="req">
+        <li><span class="pr">Premium</span>on your account</li>
+        <li><span class="mono">500</span>verified followers</li>
+        <li><span class="mono">500K</span>verified impressions in 90 days</li>
+      </ul>
+      <p class="fine">As of Oct 2026. X can change it.</p>
+      <p class="promise">Nobody can promise reach. We don’t. We make the first line worth the stop.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="who" aria-labelledby="who-h">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 id="who-h"><span class="a">Traders first.</span><span class="b">Anyone with a take.</span></h2>
+      <p class="lede">Different feeds, same problem: the good part shows up in line two.</p>
+    </div>
+    <div class="whos">
+      <article class="wcard rv">
+        <div class="face"><img src="../../assets/people/you.jpg" alt="" width="56" height="56"><div><b>heycape</b><small>Trader · example</small></div></div>
+        <h3>Crypto and trading writers</h3>
+        <p class="hook">my first $10k month trading took me 3 years.</p>
+        <p class="pain">Charts and P&amp;L into posts, without sounding like a shill.</p>
+      </article>
+      <article class="wcard rv">
+        <div class="face"><span class="avs" style="--i:8"></span><div><b>Noor</b><small>Newsletter · example</small></div></div>
+        <h3>Newsletter writers and creators</h3>
+        <p class="hook">why do most design systems fail? nobody owns them.</p>
+        <p class="pain">Turn this week’s issue into a post people actually open.</p>
+      </article>
+      <article class="wcard rv">
+        <div class="face"><span class="avs" style="--i:1"></span><div><b>Dev</b><small>Founder · example</small></div></div>
+        <h3>Founders building in public</h3>
+        <p class="hook">Customer churn: down 34%. What changed: our team redesigned the onboarding flow.</p>
+        <p class="pain">Lead with the number. Name who did the work.</p>
+      </article>
+      <article class="wcard rv">
+        <div class="face"><span class="avs" style="--i:12"></span><div><b>Ines</b><small>Ghostwriter · example</small></div></div>
+        <h3>Ghostwriters and agencies</h3>
+        <p class="hook">Six clients. Six voices. One approval before each post.</p>
+        <p class="pain">Studio keeps every voice, never-say list and time zone apart.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="trust" aria-labelledby="tr-h">
+  <div class="wrap trust">
+    <div class="tl rv">
+      <h2 id="tr-h"><span class="a">It drafts.</span><span class="b">You press send.</span></h2>
+      <p class="lede">Every post that goes out is one you pressed send on. That’s the whole policy.</p>
+      <div class="youpress">
+        <button class="key" type="button" id="key"><svg aria-hidden="true"><use href="#i-send"/></svg><span>Send</span></button>
+        <p>The only send button is yours.</p>
+      </div>
+    </div>
+    <ul class="nevers rv" aria-label="Things Hookworthy never does">
+      <li><s>Auto-DMs</s><span>Never</span></li>
+      <li><s>Auto-replies</s><span>Never</span></li>
+      <li><s>Auto-deletes</s><span>Never</span></li>
+      <li><s>Auto-reposts</s><span>Never</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec" id="pricing" aria-labelledby="pr-h">
+  <div class="wrap">
+    <div class="ptop rv">
+      <h2 id="pr-h"><span class="a">Start at $0.</span><span class="b">Stay for $12.</span></h2>
+      <div class="bill" role="group" aria-label="Billing period">
+        <button type="button" aria-pressed="true" data-bill="y">Yearly</button><button type="button" aria-pressed="false" data-bill="m">Monthly</button>
+      </div>
+    </div>
+    <div class="plans">
+      <article class="plan rv">
+        <h3>Free</h3>
+        <p class="for">Forever. No card.</p>
+        <div class="price"><b>$0</b><span>/month</span></div>
+        <p class="billnote">Free forever</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span><b>Sharpen any line,</b> unlimited</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Claude rewrites: 20 a month, plus 50 touch-ups a day</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Learns your voice</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Live previews</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Schedule freely, 15 auto-posts a month</span></li>
+        </ul>
+        <a class="btn ghost" href="#start">Start free</a>
+      </article>
+      <article class="plan pro rv">
+        <h3>Pro</h3>
+        <p class="for">For people who post most days.</p>
+        <div class="price"><b data-y="$12" data-m="$16">$12</b><span>/month</span></div>
+        <p class="billnote" data-y="$144 billed yearly, or $16 monthly" data-m="Billed monthly, or $12 a month yearly">$144 billed yearly, or $16 monthly</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span><b>Claude rewrites: 250 a month,</b> add up to 1,750 more</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Results, in plain words</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>A ping when a post takes off</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Your week drafted from your ideas</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Up to 500 auto-posts a month</span></li>
+        </ul>
+        <a class="btn" href="#start">Go Pro</a>
+      </article>
+      <article class="plan rv">
+        <h3>Studio</h3>
+        <p class="for">For ghostwriters and agencies.</p>
+        <div class="price"><b data-y="$18" data-m="$24">$18</b><span>/client voice/month</span></div>
+        <p class="billnote" data-y="Billed yearly, or $24 monthly" data-m="Billed monthly, or $18 a month yearly">Billed yearly, or $24 monthly</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span><b>Everything in Pro</b></span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Each client gets its own voice</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Approvals before anything posts</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>Review links per client</span></li>
+          <li><svg aria-hidden="true"><use href="#i-ok"/></svg><span>500 rewrites a month per client voice</span></li>
+        </ul>
+        <a class="btn ghost" href="#start">Start Studio</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="end" id="start" aria-labelledby="end-h">
+  <div class="wrap">
+    <h2 id="end-h" class="rv"><span class="a">Say it first.</span><span class="b">Say it like you.</span></h2>
+    <div class="end-row rv">
+      <p class="lede">Good ideas die in bad first lines. Yours don’t have&nbsp;to.</p>
+      <div>
+        <div class="ctas"><a class="btn" href="#start">Sharpen my first post <svg class="arr"><use href="#i-arr"/></svg></a><a class="btn ghost" href="#signin" id="signin">Sign in</a></div>
+        <p class="note">Free plan <i></i> No card <i></i> Nothing posts without you</p>
+      </div>
+    </div>
+  </div>
+  <div class="floor" id="floor2" aria-hidden="true"><span class="floor-cap">Everything cut on this page.</span></div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="mark" href="#top" aria-label="Hookworthy, back to top">Hook<i>worthy</i><b aria-hidden="true">.</b></a>
+      <p>heycape and every person shown here are examples. Prices in USD.</p>
+    </div>
+    <nav aria-label="Footer">
+      <a href="#sharpen">Sharpen</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="mailto:hello@hookworthy.com">hello@hookworthy.com</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a>
+    </nav>
+    <p class="mono" style="margin:0">© 2026 Hookworthy</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+'use strict';
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+
+/* The four real examples. d = draft tokens [text, soft-word tag]; f = final order:
+   number = keep that draft token, [n, text] = keep it with new text, string = added words */
+const EX = [
+  { tab: 'Trading',
+    d: [['so', 'warm-up'], ['i think', 'hedge'], ['the'], ['most'], ['underrated'], ['thing'], ['in'], ['trading'], ['is'], ['honestly', 'hedge'], ['just', 'filler'], ['sizing'], ['down'], ['after'], ['a'], ['loss.']],
+    f: [[3, 'Most'], 4, 5, 6, [7, 'trading?'], [11, 'Sizing'], 12, 13, 14, 15],
+    move: 'Led with the question.', why: 'Your claim became a question, and the same line answers it.', kept: ['trading', 'sizing down', 'after a loss'] },
+  { tab: 'First $10k',
+    d: [['just', 'filler'], ['wanted to share that', 'warm-up'], ['i finally hit'], ['my'], ['first'], ['$10k'], ['month'], ['trading,'], ['took'], ['me'], ['3'], ['years'], ['lol', 'filler']],
+    f: [3, 4, 5, 6, [7, 'trading'], 8, 9, 10, [11, 'years.']],
+    move: 'Cut the warm-up.', why: '“Just wanted to share” was standing in front of $10k. Your lowercase stays.', kept: ['first $10k month', '3 years', 'lowercase'] },
+  { tab: 'Churn',
+    d: [['Customer'], ['churn'], ['was reduced by', 'passive'], ['34%'], ['after the'], ['onboarding'], ['flow'], ['was redesigned by', 'passive'], ['our'], ['team.']],
+    f: [0, [1, 'churn:'], 'down', [3, '34%.'], 'What changed:', 8, [9, 'team'], 'redesigned', 'the', 5, [6, 'flow.']],
+    move: 'Led with the number.', why: '34% is the news. Then who did it, in active voice.', kept: ['34%', 'onboarding flow', 'our team'] },
+  { tab: 'Design systems',
+    d: [['honestly', 'hedge'], ['most'], ['design'], ['systems'], ['fail'], ['because'], ['nobody'], ['really', 'filler'], ['owns'], ['them']],
+    f: ['why do', 1, 2, 3, [4, 'fail?'], 6, 8, [9, 'them.']],
+    move: 'Asked, then answered.', why: 'The question opens the loop. Three words close it. Still lowercase, still you.', kept: ['most design systems fail', 'nobody owns them'] }
+];
+const tokOf = (ex, x) => typeof x === 'string' ? x : Array.isArray(x) ? x[1] : ex.d[x][0];
+const idxOf = x => Array.isArray(x) ? x[0] : x;
+const draftStr = ex => ex.d.map(t => t[0]).join(' ');
+const finalStr = ex => ex.f.map(x => tokOf(ex, x)).join(' ');
+const kept = ex => new Set(ex.f.filter(x => typeof x !== 'string').map(idxOf));
+const cutsOf = ex => { const k = kept(ex); return ex.d.map((t, i) => ({ t: t[0], tag: t[1] || '', i })).filter(o => !k.has(o.i)); };
+
+/* ---------- the cutting floor: words fall, stack on a heightmap, and can be poked ---------- */
+class Pile {
+  constructor(floor, seed) { this.floor = floor; this.words = []; this.r = rng(seed); this.measure(); }
+  measure() { const b = this.floor.getBoundingClientRect(); this.W = b.width; this.H = b.height; this.bin = 4; this.n = Math.ceil(this.W / this.bin) + 2; this.h = new Float32Array(this.n); }
+  max(x0, x1) { let m = 0; const a = Math.max(0, Math.floor(x0 / this.bin)), b = Math.min(this.n - 1, Math.ceil(x1 / this.bin)); for (let i = a; i <= b; i++) if (this.h[i] > m) m = this.h[i]; return m; }
+  fit(w, h, cx, jit) {
+    const lim = this.W - w; let x = Math.max(0, Math.min(lim, cx - w / 2));
+    for (let k = 0; k < 10; k++) { // roll off steep slopes
+      const L = this.max(x, x + w * .4), R = this.max(x + w * .6, x + w), d = L - R;
+      if (Math.abs(d) < h * .6) break;
+      const nx = Math.max(0, Math.min(lim, x + (d > 0 ? 1 : -1) * Math.max(10, w * .2)));
+      if (nx === x) break; x = nx;
+    }
+    const base = this.max(x + 3, x + w - 3), L = this.max(x, x + w * .3), R = this.max(x + w * .7, x + w);
+    let ang = -Math.atan2(R - L, w) * 57.3 * .55 + jit; ang = Math.max(-15, Math.min(15, ang));
+    const a = Math.floor(x / this.bin), b = Math.ceil((x + w) / this.bin);
+    for (let i = a; i <= b && i < this.n; i++) this.h[i] = Math.max(this.h[i], base + h * .74);
+    return { x, y: this.H - base - h - 1, r: ang, top: base + h };
+  }
+  word(text, tag) { const el = mk('span', 'pw' + (tag ? ' soft' : ''), text); if (tag) el.dataset.tag = tag; this.floor.append(el); return el; }
+  pos(rec) { rec.el.style.transform = `translate(${rec.p.x.toFixed(1)}px,${rec.p.y.toFixed(1)}px) rotate(${rec.p.r.toFixed(1)}deg)`; }
+  add(text, tag, cx, from, delay = 0) {
+    const el = this.word(text, tag), w = el.offsetWidth, h = el.offsetHeight, jit = (this.r() - .5) * 9;
+    let p = this.fit(w, h, cx, jit);
+    if (p.top > this.H * .97) { this.sweep(); p = this.fit(w, h, cx, jit); }
+    const rec = { el, text, tag, cxf: cx / this.W, jit, w, h, p }; this.words.push(rec); this.pos(rec);
+    if (from && !RM) {
+      const sx = from.left, sy = from.top, peak = sy - 16 - this.r() * 18, b = Math.min(16, 6 + this.H * .04);
+      el.classList.add('fresh');
+      el.animate([
+        { transform: `translate(${sx}px,${sy}px) rotate(0deg)`, easing: 'cubic-bezier(.25,.6,.4,1)' },
+        { transform: `translate(${sx + (p.x - sx) * .1}px,${peak}px) rotate(${p.r * .2}deg)`, offset: .17, easing: 'cubic-bezier(.55,0,.95,.6)' },
+        { transform: `translate(${p.x}px,${p.y}px) rotate(${p.r}deg)`, offset: .72, easing: 'cubic-bezier(.2,.7,.4,1)' },
+        { transform: `translate(${p.x}px,${p.y - b}px) rotate(${p.r * .6}deg)`, offset: .85, easing: 'cubic-bezier(.55,0,.9,.55)' },
+        { transform: `translate(${p.x}px,${p.y}px) rotate(${p.r}deg)` }
+      ], { duration: 900, delay, fill: 'backwards' }).finished.then(() => setTimeout(() => el.classList.remove('fresh'), 900)).catch(() => {});
+    }
+    return rec;
+  }
+  relayout(anim) {
+    this.h.fill(0);
+    for (const rec of this.words) {
+      rec.w = rec.el.offsetWidth; rec.h = rec.el.offsetHeight;
+      rec.p = this.fit(rec.w, rec.h, rec.cxf * this.W, rec.jit);
+      if (anim && !RM) rec.el.classList.add('settle');
+      this.pos(rec);
+    }
+    if (anim && !RM) setTimeout(() => this.words.forEach(r => r.el.classList.remove('settle')), 900);
+  }
+  sweep() {
+    const out = this.words.splice(0, Math.ceil(this.words.length * .45));
+    out.forEach(r => { if (RM) r.el.remove(); else { r.el.classList.add('settle', 'gone'); setTimeout(() => r.el.remove(), 520); } });
+    this.relayout(true);
+  }
+  resize() { this.measure(); this.relayout(false); }
+  poke(cx, cy) {
+    for (const r of this.words) {
+      const dx = r.p.x + r.w / 2 - cx, dy = r.p.y + r.h / 2 - cy, d = Math.hypot(dx, dy) || 1;
+      if (d < 120) { const f = (1 - d / 120) * 22; r.el.style.translate = `${(dx / d * f).toFixed(1)}px ${(dy / d * f - f * .5).toFixed(1)}px`; r.pk = 1; }
+      else if (r.pk) { r.el.style.translate = ''; r.pk = 0; }
+    }
+  }
+  calm() { for (const r of this.words) if (r.pk) { r.el.style.translate = ''; r.pk = 0; } }
+}
+function gauss(r) { return (r() + r() + r()) / 3; }
+function pokeable(area, pile) {
+  if (RM) return;
+  let raf = 0, ev = null;
+  area.addEventListener('pointermove', e => { ev = e; if (!raf) raf = requestAnimationFrame(() => { raf = 0; const b = pile.floor.getBoundingClientRect(); const y = ev.clientY - b.top; if (y < -80) pile.calm(); else pile.poke(ev.clientX - b.left, y); }); });
+  area.addEventListener('pointerleave', () => pile.calm());
+}
+
+/* ---------- hero: the line sharpens, cut words drop to the floor ---------- */
+const line = $('#line'), go = $('#go'), rc = $('#rcpt'), cnt = $('#cnt'), floor = $('#floor'), hero = $('.hero');
+let pile, cur = 0, state = 'draft', timer = 0, busy = false, userHold = 0;
+
+function setDraft(i, typed) {
+  cur = i; state = 'draft'; const ex = EX[i];
+  line.style.minHeight = '';
+  const toks = ex.d.map((t, k) => { const s = mk('span', 'tk' + (t[1] ? ' soft' : ''), t[0]); s.dataset.i = k; if (t[1]) s.dataset.tag = t[1]; return s; });
+  line.replaceChildren(...toks, mk('span', 'caret'));
+  line.setAttribute('aria-label', 'Draft: ' + draftStr(ex));
+  cnt.textContent = draftStr(ex).length;
+  rc.classList.remove('on');
+  go.querySelector('span').textContent = 'Sharpen';
+  go.querySelector('use').setAttribute('href', '#i-sharp');
+  if (typed && !RM) {
+    const soft = toks.filter(t => t.classList.contains('soft'));
+    soft.forEach(t => t.classList.add('hid'));
+    toks.forEach((t, k) => t.animate([{ opacity: 0, transform: 'translateY(.18em)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: k * 42, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }));
+    setTimeout(() => soft.forEach(t => t.classList.remove('hid')), toks.length * 42 + 320);
+  }
+  requestAnimationFrame(() => { line.style.minHeight = line.offsetHeight + 'px'; });
+}
+
+function countTo(from, to) {
+  if (RM) { cnt.textContent = to; return; }
+  const t0 = performance.now(), D = 700;
+  const step = t => { const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3); cnt.textContent = Math.round(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+
+function sharpen(animate = !RM) {
+  if (state !== 'draft' || busy) return;
+  busy = true; const ex = EX[cur];
+  const toks = $$('.tk', line), first = new Map(toks.map(el => [el, el.getBoundingClientRect()]));
+  const fb = floor.getBoundingClientRect();
+  const keep = kept(ex), cuts = toks.filter(el => !keep.has(+el.dataset.i));
+  const out = ex.f.map(x => {
+    if (typeof x === 'string') return mk('span', 'tk add', x);
+    const el = toks[idxOf(x)]; if (Array.isArray(x)) el.textContent = x[1]; el.classList.remove('soft'); return el;
+  });
+  line.replaceChildren(...out);
+  line.setAttribute('aria-label', 'Sharpened: ' + finalStr(ex));
+  if (animate) {
+    go.classList.add('press'); setTimeout(() => go.classList.remove('press'), 160);
+    out.forEach((el, k) => {
+      const a = first.get(el);
+      if (!a) { el.animate([{ opacity: 0, transform: 'translateY(.45em) scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 480, delay: 420 + k * 18, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }); return; }
+      const b = el.getBoundingClientRect();
+      el.animate([{ transform: `translate(${a.left - b.left}px,${a.top - b.top}px)` }, { transform: 'none' }], { duration: 640, delay: 140 + k * 14, easing: 'cubic-bezier(.75,0,.2,1)', fill: 'backwards' });
+    });
+  }
+  cuts.forEach((el, k) => {
+    const a = first.get(el), from = { left: a.left - fb.left, top: a.top - fb.top };
+    const cx = a.left - fb.left + a.width / 2 + (pile.r() - .5) * 120;
+    pile.add(el.textContent, el.dataset.tag || '', cx, animate ? from : null, k * 55);
+  });
+  countTo(draftStr(ex).length, finalStr(ex).length);
+  const show = () => {
+    rc.innerHTML = '<span class="ok"><svg aria-hidden="true"><use href="#i-ok"/></svg></span><span><b></b> <span class="w"></span></span>';
+    rc.querySelector('b').textContent = ex.move; rc.querySelector('.w').textContent = 'Your facts stayed.';
+    rc.classList.add('on'); state = 'sharp'; busy = false;
+    go.querySelector('span').textContent = 'Next line'; go.querySelector('use').setAttribute('href', '#i-next');
+  };
+  animate ? setTimeout(show, 760) : show();
+}
+
+let heroVisible = true;
+function loop(delay) {
+  clearTimeout(timer); if (RM) return;
+  timer = setTimeout(() => {
+    if (!heroVisible || document.hidden || Date.now() < userHold) return loop(1500);
+    if (state === 'sharp') { setDraft((cur + 1) % EX.length, true); loop(2300); }
+    else { sharpen(); loop(5600); }
+  }, delay);
+}
+go.addEventListener('click', () => {
+  userHold = Date.now() + 9000;
+  if (state === 'draft') sharpen(); else setDraft((cur + 1) % EX.length, true);
+  loop(9000);
+});
+
+function seedPile(p, list, centre, spread) {
+  list.forEach(([t, tag]) => { const c = Math.max(.04, Math.min(.96, centre + (gauss(p.r) - .5) * spread)); p.add(t, tag, c * p.W, null); });
+}
+
+/* ---------- bench ---------- */
+const tabsEl = $('.tabs'), bBefore = $('#b-before'), bAfter = $('#b-after');
+let bi = 0;
+function renderBench(i, run) {
+  bi = i; const ex = EX[i], keep = kept(ex);
+  bBefore.innerHTML = ''; bAfter.innerHTML = '';
+  ex.d.forEach((t, k) => { const s = mk('span', keep.has(k) ? '' : 'x', t[0]); bBefore.append(s, ' '); });
+  bBefore.setAttribute('aria-label', 'Draft: ' + draftStr(ex));
+  ex.f.forEach((x, k) => { const s = mk('span', typeof x === 'string' ? 'new' : '', tokOf(ex, x)); s.style.animationDelay = (k * 45) + 'ms'; bAfter.append(s); });
+  bAfter.setAttribute('aria-label', 'Sharpened: ' + finalStr(ex));
+  if (run && !RM) { bAfter.classList.remove('run'); void bAfter.offsetWidth; bAfter.classList.add('run'); }
+  $('#r-move').textContent = ex.move; $('#r-why').textContent = ex.why;
+  $('#r-count').textContent = `${draftStr(ex).length} → ${finalStr(ex).length} chars`;
+  $('#r-cut').replaceChildren(...cutsOf(ex).map(c => mk('span', 'chip cut', c.t)));
+  $('#r-kept').replaceChildren(...ex.kept.map(c => mk('span', 'chip kept', c)));
+  $$('.tab', tabsEl).forEach((b, k) => { b.setAttribute('aria-selected', k === i); b.tabIndex = k === i ? 0 : -1; });
+}
+EX.forEach((ex, i) => { const b = mk('button', 'tab', ex.tab); b.type = 'button'; b.setAttribute('role', 'tab'); b.id = 'tab-' + i; b.setAttribute('aria-controls', 'bench-panel'); b.addEventListener('click', () => renderBench(i, true)); tabsEl.append(b); });
+tabsEl.addEventListener('keydown', e => {
+  const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!k) return;
+  e.preventDefault(); const n = (bi + k + EX.length) % EX.length; renderBench(n, true); $('#tab-' + n).focus();
+});
+$('#b-go').addEventListener('click', () => renderBench(bi, true));
+renderBench(0, false);
+$('#bench-panel').setAttribute('aria-labelledby', 'tab-0');
+
+/* ---------- small things ---------- */
+const wave = $('#wave'), wr = rng(7);
+for (let k = 0; k < 46; k++) { const i = mk('i', k < 19 ? 'p' : ''); const v = .18 + Math.abs(Math.sin(k * .55)) * .55 + wr() * .3; i.style.height = Math.min(100, v * 100) + '%'; wave.append(i); }
+
+$$('.bill button').forEach(b => b.addEventListener('click', () => {
+  const m = b.dataset.bill; $$('.bill button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $$('[data-y]').forEach(el => { el.textContent = el.dataset[m]; });
+}));
+const key = $('#key');
+key.addEventListener('click', () => { key.classList.add('sent'); key.querySelector('span').textContent = 'Sent by you'; setTimeout(() => { key.classList.remove('sent'); key.querySelector('span').textContent = 'Send'; }, 1600); });
+const sched = $('#sched');
+sched.addEventListener('click', () => { sched.textContent = 'Scheduled by you'; setTimeout(() => { sched.textContent = 'Schedule 8:40 AM'; }, 1800); });
+
+const nav = $('#nav');
+const navIO = new IntersectionObserver(([e]) => nav.classList.toggle('on', !e.isIntersecting), { rootMargin: '-80px 0px 0px 0px' });
+navIO.observe($('#h1'));
+
+if (!RM && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  $$('.rv').forEach(el => { const r = el.getBoundingClientRect(); if (r.top < innerHeight) el.classList.add('in'); else io.observe(el); });
+} else $$('.rv').forEach(el => el.classList.add('in'));
+
+/* ---------- boot once fonts are ready (word widths depend on them) ---------- */
+const boot = () => {
+  setDraft(0, false);
+  pile = new Pile(floor, 11);
+  seedPile(pile, [['honestly', 'hedge'], ['just', 'filler'], ['wanted to share that', 'warm-up'], ['really', 'filler'], ['lol', 'filler'], ['was reduced by', 'passive'], ['i finally hit'], ['after the'], ['because'], ['just', 'filler'], ['was redesigned by', 'passive'], ['so', 'warm-up'], ['honestly', 'hedge']], .62, .9);
+  pokeable(hero, pile);
+  const p2 = new Pile($('#floor2'), 23), all = [];
+  EX.forEach(ex => cutsOf(ex).forEach(c => all.push([c.t, c.tag])));
+  seedPile(p2, all.concat([['honestly', 'hedge'], ['just', 'filler'], ['i think', 'hedge'], ['really', 'filler']]), .5, 1.6);
+  pokeable($('.end'), p2);
+  if (RM) sharpen(false); else setTimeout(() => sharpen(true), 260);
+  loop(5800);
+  new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }).observe(hero);
+  let rt = 0; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { pile.resize(); p2.resize(); }, 120); });
+};
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(boot);
+})();
+</script>
+</body>
+</html>

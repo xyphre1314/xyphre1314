@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hookworthy · Same idea. Sharper line.</title>
+<meta name="description" content="Hookworthy sharpens your first line in one tap. It still sounds like you.">
+<meta name="color-scheme" content="dark">
+<link rel="preload" href="../../fonts/Newsreader-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Newsreader";src:url(../../fonts/Newsreader-Variable.woff2) format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
+@font-face{font-family:"Newsreader";src:url(../../fonts/Newsreader-Italic-Variable.woff2) format("woff2");font-weight:200 800;font-style:italic;font-display:swap}
+@font-face{font-family:"Inter";src:url(../../fonts/Inter-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(../../fonts/GeistMono-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+
+:root{
+  --page:#0B0C10; --s1:#121419; --s2:#181B21; --s3:#22252D;
+  --hair:rgba(200,215,255,.08); --hair2:rgba(200,215,255,.15);
+  --ink:#EDEEF2; --ink2:#B5B9C2; --ink3:#8B909B;
+  --blue:#2B52FF; --blue-h:#3965FF; --blue-p:#1E3BE3; --link:#75A2FF;
+  --amber:#F5B44C; --green:#55DB95; --red:#FB7570;
+  --serif:"Newsreader","Iowan Old Style",Georgia,serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --w:1180px; --gut:24px;
+  --av:url(../../assets/people/avatars.jpg);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:64px}
+body{background:var(--page);color:var(--ink);font:400 17px/1.5 var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-feature-settings:"cv11","ss01"}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:8px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.w{width:min(var(--w),100% - var(--gut)*2);margin-inline:auto}
+.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+/* type */
+h1,h2,.h2{font-family:var(--serif);font-weight:400;letter-spacing:-.035em;line-height:.98;font-optical-sizing:auto}
+h1{font-size:clamp(52px,6.9vw,100px);letter-spacing:-.04em}
+h2,.h2{font-size:clamp(40px,5.6vw,84px)}
+.dim{color:var(--ink3)}
+.lede{font-size:clamp(18px,1.55vw,22px);line-height:1.45;color:var(--ink2);max-width:34em;letter-spacing:-.006em}
+.head{text-align:center;display:grid;justify-items:center;gap:22px;margin-bottom:clamp(48px,6vw,80px)}
+.sec{padding-block:clamp(104px,13vw,184px)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 24px;border-radius:999px;background:var(--blue);color:#fff;font:600 16px/1 var(--sans);letter-spacing:-.01em;text-decoration:none;transition:background-color .2s,transform .2s var(--ease),box-shadow .2s}
+.btn:hover{background:var(--blue-h)}
+.btn:active{background:var(--blue-p);transform:scale(.97)}
+.btn.lg{height:54px;padding:0 30px;font-size:17px}
+.btn.sm{height:34px;padding:0 16px;font-size:14px}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hair2)}
+.btn.ghost:hover{background:rgba(237,238,242,.07);box-shadow:inset 0 0 0 1px rgba(200,215,255,.28)}
+.more{display:inline-flex;align-items:center;gap:4px;color:var(--link);font-weight:500;font-size:17px;text-decoration:none}
+.more .i{width:16px;height:16px;transition:transform .2s var(--ease)}
+.more:hover{text-decoration:underline;text-underline-offset:4px}
+.more:hover .i{transform:translateX(3px)}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(11,12,16,.72);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--hair)}
+.nav-in{height:56px;display:flex;align-items:center;gap:32px}
+.wm{font-family:var(--serif);font-size:23px;font-weight:450;letter-spacing:-.03em;text-decoration:none;color:var(--ink);line-height:1}
+.wm i{font-style:italic;font-weight:400}
+.nav nav{display:flex;gap:26px;margin-inline:auto}
+.nav nav a,.nav-r a.tx{font-size:14px;color:var(--ink2);text-decoration:none;transition:color .15s}
+.nav nav a:hover,.nav-r a.tx:hover{color:var(--ink)}
+.nav-r{display:flex;align-items:center;gap:18px;margin-left:auto}
+.nav nav+.nav-r{margin-left:0}
+@media (max-width:1080px){.nav nav+.nav-r{margin-left:auto}}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow-x:clip;padding-top:clamp(40px,4.8vw,70px)}
+.hero::before{content:"";position:absolute;inset:-10% 0 auto;height:110%;background:radial-gradient(60% 55% at 50% 58%,rgba(237,238,242,.055),transparent 70%);pointer-events:none}
+.hero-top{position:relative;text-align:center;display:grid;justify-items:center}
+.hero-top .lede{margin-top:20px;font-size:clamp(18px,1.6vw,23px)}
+.cta{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.stage-wrap{position:relative;width:min(1240px,100% - var(--gut)*2);margin:clamp(36px,3.4vw,50px) auto 0;padding-bottom:clamp(72px,9vw,120px)}
+.stage{position:relative;border-radius:30px;background:linear-gradient(180deg,#16181E,#111318 62%);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px var(--hair),0 50px 120px -30px rgba(0,0,0,.85);padding:clamp(18px,2.4vw,30px) clamp(18px,4.2vw,60px) clamp(22px,3vw,40px)}
+.st-bar{display:flex;align-items:center;gap:12px;padding-bottom:clamp(16px,2vw,24px);border-bottom:1px solid var(--hair)}
+.pfp{width:40px;height:40px;border-radius:50%;flex:none;background:#2a2d35 var(--av) 0 var(--y,0%)/100% auto no-repeat;overflow:hidden}
+.pfp.me{background:#e9e4dc url(../../assets/people/you.jpg) center/cover}
+.st-who{display:grid;line-height:1.25;min-width:0}
+.st-who b{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.st-who span{font-size:13.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-r{margin-left:auto;display:flex;align-items:center;gap:16px}
+.cnt{font-size:13.5px;color:var(--ink3)}
+.cnt b{font-weight:500;color:var(--ink2);transition:color .4s}
+.stage.done .cnt b{color:var(--green)}
+.sharp{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 20px 0 16px;border-radius:999px;background:var(--blue);color:#fff;font-weight:600;font-size:15.5px;letter-spacing:-.01em;transition:background-color .2s,transform .25s var(--ease)}
+.sharp .i{width:17px;height:17px}
+.sharp:hover{background:var(--blue-h)}
+.sharp.press,.sharp:active{transform:scale(.92);background:var(--blue-p)}
+.st-line{--big:clamp(25px,3.7vw,56px);--small:clamp(14px,1.2vw,17.5px);display:flex;flex-direction:column;margin-top:clamp(18px,2.4vw,32px);min-height:calc(3 * 1.16 * var(--big))}
+.st-line>p{transition:font-size .7s var(--ease),line-height .7s var(--ease),letter-spacing .7s var(--ease),font-weight .7s var(--ease),color .45s,opacity .55s var(--ease),filter .55s var(--ease),max-height .7s var(--ease),margin .7s var(--ease)}
+.st-before{font:500 var(--big)/1.16 var(--sans);letter-spacing:-.028em;color:var(--ink);text-wrap:pretty}
+.st-after{font:550 var(--big)/1.1 var(--sans);letter-spacing:-.032em;max-height:0;opacity:0;filter:blur(8px);overflow:hidden;text-wrap:balance;padding-bottom:.06em}
+.stage.done .st-before{font-size:var(--small);line-height:1.5;letter-spacing:-.004em;font-weight:400;color:var(--ink3)}
+.stage.done .st-after{max-height:calc(3.4 * 1.1 * var(--big));opacity:1;filter:none;margin-top:clamp(8px,1vw,14px)}
+.sw,.dl{transition:color .35s,opacity .35s,text-decoration-color .45s}
+.sw{text-decoration:underline wavy transparent;text-decoration-thickness:max(1.5px,.06em);text-underline-offset:.2em;text-decoration-skip-ink:none}
+.stage.marked .sw,.card .sw{text-decoration-color:var(--amber)}
+.sw>span,.dl{text-decoration:line-through transparent;text-decoration-thickness:max(1.5px,.05em);transition:text-decoration-color .35s}
+.stage.cut .sw>span,.stage.cut .dl{text-decoration-color:currentColor}
+.stage.cut .sw,.stage.cut .dl{color:var(--ink3)}
+.in{transition:color 1.2s .5s}
+.stage.done .in{color:var(--green)}
+.stage.rest .in{color:inherit}
+.stage.leaving .st-line,.stage.leaving .rc{opacity:0;transition:opacity .3s}
+.rc{display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:4px 16px;margin-top:clamp(22px,2.8vw,36px);padding-top:clamp(18px,2vw,24px);border-top:1px solid var(--hair);opacity:0;transform:translateY(8px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.stage.rcpt .rc{opacity:1;transform:none}
+.ok{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(85,219,149,.14);color:var(--green);margin-top:-2px}
+.ok .i{width:16px;height:16px;stroke-width:2.4}
+.rc-t{font-size:clamp(15px,1.25vw,17px);color:var(--ink2);line-height:1.45}
+.rc-t b{color:var(--ink);font-weight:600;margin-right:6px}
+.kept{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;grid-column:3}
+.kept>span:first-child{font-size:13px;color:var(--ink3);margin-right:2px}
+.chip{display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:999px;background:var(--s3);color:var(--ink2);font-size:13px;white-space:nowrap}
+.st-ctl{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:22px;flex-wrap:wrap}
+.tab{height:34px;padding:0 15px;border-radius:999px;font-size:14px;color:var(--ink3);box-shadow:inset 0 0 0 1px var(--hair);transition:color .2s,background-color .2s,box-shadow .2s}
+.tab:hover{color:var(--ink);box-shadow:inset 0 0 0 1px var(--hair2)}
+.tab[aria-pressed="true"]{color:var(--ink);background:var(--s3);box-shadow:none}
+.pp{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--s2);color:var(--ink2);margin-left:6px}
+.pp:hover{background:var(--s3);color:var(--ink)}
+.pp .i{width:14px;height:14px}
+.pp .pl{display:none}.pp[aria-pressed="true"] .pl{display:block}.pp[aria-pressed="true"] .pa{display:none}
+.st-note{text-align:center;color:var(--ink3);font-size:13.5px;margin-top:14px}
+
+/* ---------- RECEIPTS GALLERY ---------- */
+.gal{position:relative;display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-inline:max(var(--gut),(100% - var(--w))/2);scroll-padding-inline:max(var(--gut),(100% - var(--w))/2);padding-bottom:8px}
+.gal::-webkit-scrollbar{display:none}
+.card{position:relative;flex:0 0 min(780px,86vw);scroll-snap-align:start;border-radius:28px;background:var(--s1);box-shadow:inset 0 0 0 1px var(--hair);padding:clamp(22px,3vw,40px);display:flex;flex-direction:column;gap:22px}
+.card-top{display:flex;align-items:center;gap:12px}
+.card-top .pfp{width:36px;height:36px}
+.card-top .st-who b{font-size:14.5px}
+.card-top .cnt{margin-left:auto;white-space:nowrap}
+.b4{font-size:clamp(16px,1.35vw,19px);line-height:1.5;color:var(--ink3)}
+.tap{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;height:30px;padding:0 13px 0 10px;border-radius:999px;background:rgba(43,82,255,.16);color:#A9C1FF;font-size:13.5px;font-weight:600}
+.tap .i{width:14px;height:14px}
+.af{font:560 clamp(24px,2.6vw,36px)/1.18 var(--sans);letter-spacing:-.025em;color:var(--ink);text-wrap:balance}
+.af .in{color:var(--green)}
+.card .rc{opacity:1;transform:none;margin-top:auto;grid-template-columns:auto 1fr}
+.card .kept{grid-row:auto;grid-column:2;justify-content:flex-start;margin-top:10px}
+.gal-ctl{display:flex;justify-content:flex-end;gap:12px;margin-top:28px}
+.pad{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--s2);color:var(--ink);transition:background-color .2s,opacity .2s}
+.pad:hover{background:var(--s3)}
+.pad:disabled{opacity:.35;cursor:default}
+.pad .i{width:20px;height:20px}
+
+/* ---------- FEEDS ---------- */
+.phones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(14px,1.8vw,24px);align-items:start}
+.ph-wrap{display:grid;gap:18px}
+.ph{border-radius:34px;padding:8px;background:#1d2026;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 30px 60px -30px rgba(0,0,0,.9)}
+.scr{border-radius:27px;overflow:hidden;height:520px;font-size:13.5px;line-height:1.38;position:relative}
+.scr-h{height:46px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:-.01em;border-bottom:1px solid}
+.post{display:grid;grid-template-columns:34px 1fr;gap:0 10px;padding:12px 14px 10px}
+.post .pfp{width:34px;height:34px}
+.post .tl{grid-column:1;justify-self:center;width:2px;margin-top:4px;border-radius:2px}
+.post .pb{grid-column:2;grid-row:1/3;min-width:0}
+.pn{display:flex;gap:5px;align-items:baseline;white-space:nowrap;overflow:hidden;font-size:13px}
+.pn b{font-weight:700}
+.pt{margin-top:3px;white-space:pre-line}
+.pt .hk{font-weight:600}
+.acts{display:flex;justify-content:space-between;margin-top:10px;max-width:200px}
+.acts .i{width:15px;height:15px;stroke-width:1.7}
+.n-x{background:#000;color:#E7E9EA}.n-x .scr-h{border-color:#2F3336}.n-x .pn span,.n-x .acts{color:#71767B}.n-x .tl{background:#333639}
+.n-th{background:#101010;color:#F3F5F7}.n-th .scr-h{border-color:#262626}.n-th .pn span,.n-th .acts{color:#8A8A8A}.n-th .tl{background:#333}
+.n-li{background:#F4F2EE;color:#191919}.n-li .scr-h{background:#fff;border-color:#E0DFDC;color:#0A66C2}
+.n-li .lic{background:#fff;margin:10px 8px;border-radius:10px;padding:12px 12px 10px;box-shadow:0 0 0 1px #E0DFDC}
+.n-li .lih{display:flex;gap:9px;align-items:center}
+.n-li .lih .pfp{width:40px;height:40px}
+.n-li .lih div{display:grid;line-height:1.25;font-size:12.5px}
+.n-li .lih span{color:#5E5E5E;font-size:12px}
+.n-li .pt{margin-top:10px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}
+.n-li .sm{color:#5E5E5E;font-weight:600;text-align:right;margin-top:-1px}
+.n-li .lia{display:flex;justify-content:space-between;border-top:1px solid #E0DFDC;margin-top:10px;padding-top:9px;color:#5E5E5E;font-size:12px;font-weight:600}
+.n-bs{background:#fff;color:#0B0F14}.n-bs .scr-h{border-color:#E4E8ED;color:#1185FE}.n-bs .pn span,.n-bs .acts{color:#5A6A7E}.n-bs .tl{background:#D4DBE2}
+.ph-cap{text-align:center;display:grid;gap:2px}
+.ph-cap b{font-weight:600;font-size:16px}
+.ph-cap span{font-size:14px;color:var(--ink3)}
+.ph-cap .mono{color:var(--ink2);font-size:13.5px}
+.ph-cap .over{color:var(--amber)}
+.fade{position:absolute;inset:auto 0 0;height:70px;pointer-events:none}
+.n-x .fade{background:linear-gradient(transparent,#000)}.n-th .fade{background:linear-gradient(transparent,#101010)}.n-li .fade{background:linear-gradient(rgba(244,242,238,0),#F4F2EE)}.n-bs .fade{background:linear-gradient(rgba(255,255,255,0),#fff)}
+
+/* ---------- DAY ---------- */
+.day{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,28px)}
+.dp{position:relative;border-radius:30px;background:var(--s1);box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden;display:flex;flex-direction:column}
+.photo{aspect-ratio:800/474;background:url(../../assets/people/photos.jpg) 0 var(--py)/100% 600% no-repeat;position:relative}
+.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,12,.62) 0%,rgba(8,9,12,0) 38%,rgba(8,9,12,0) 60%,var(--s1) 100%)}
+.time{position:absolute;z-index:1;left:clamp(20px,2.6vw,36px);top:clamp(18px,2.2vw,30px);font:500 clamp(34px,4.4vw,64px)/1 var(--mono);letter-spacing:-.05em;color:#fff}
+.time small{font-size:.42em;letter-spacing:0;margin-left:.15em;color:rgba(255,255,255,.88)}
+.ui{position:relative;margin:-64px clamp(14px,2.2vw,32px) 0;border-radius:20px;background:#1A1D23;box-shadow:inset 0 0 0 1px var(--hair2),0 24px 50px -20px rgba(0,0,0,.8);padding:18px 20px}
+.dp-t{padding:clamp(22px,2.6vw,34px) clamp(20px,2.8vw,40px) clamp(26px,3vw,40px);display:grid;gap:6px}
+.dp-t h3{font:600 clamp(20px,1.7vw,24px)/1.2 var(--sans);letter-spacing:-.02em}
+.dp-t p{color:var(--ink2);font-size:16px}
+.ui-h{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink3);margin-bottom:12px}
+.ui-h b{color:var(--ink);font-weight:600;font-size:14px}
+.ui-h .mono{margin-left:auto}
+.wave{display:flex;align-items:center;gap:3px;height:34px;margin:2px 0 12px}
+.wave i{width:3px;border-radius:2px;background:var(--link);opacity:.9}
+.tr{font-size:14.5px;color:var(--ink2);line-height:1.45}
+.draft{margin-top:12px;padding-top:12px;border-top:1px solid var(--hair);font-size:15.5px;font-weight:550;color:var(--ink);display:grid;gap:4px}
+.draft span{font-size:12.5px;color:var(--green);font-weight:500;display:flex;gap:6px;align-items:center}
+.draft span .i{width:14px;height:14px;stroke-width:2.4}
+.wk{display:grid;grid-template-columns:44px repeat(5,1fr);gap:5px;font-size:11.5px}
+.wk .dh{color:var(--ink3);text-align:center;padding-bottom:2px}
+.wk .dh.on{color:var(--ink);font-weight:600}
+.wk .tm{color:var(--ink3);font-family:var(--mono);font-size:10.5px;display:flex;align-items:center}
+.wk .c{height:30px;border-radius:7px;background:rgba(255,255,255,.035)}
+.wk .c.best{background:transparent;box-shadow:inset 0 0 0 1px rgba(117,162,255,.45)}
+.wk .c.p{background:rgba(237,238,242,.1)}
+.wk .c.go{background:var(--blue);color:#fff;font-size:10.5px;font-weight:600;display:flex;align-items:center;padding:0 6px;white-space:nowrap;overflow:hidden}
+.wk-f{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--hair);font-size:13px;color:var(--ink2)}
+.wk-f .lg{display:inline-flex;align-items:center;gap:6px;color:var(--ink3);margin-left:auto}
+.wk-f .lg i{width:12px;height:12px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(117,162,255,.6)}
+
+/* ---------- BENTO ---------- */
+.bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(14px,1.6vw,22px)}
+.tile{border-radius:30px;background:var(--s1);box-shadow:inset 0 0 0 1px var(--hair);padding:clamp(24px,3vw,42px);display:flex;flex-direction:column;gap:26px;overflow:hidden;min-width:0}
+.t7{grid-column:span 7}.t5{grid-column:span 5}
+.tile h3{font:400 clamp(30px,2.7vw,40px)/1.04 var(--serif);letter-spacing:-.03em}
+.tile p.d{color:var(--ink2);font-size:16.5px;margin-top:10px;max-width:30em}
+.mock{border-radius:18px;background:var(--s2);box-shadow:inset 0 0 0 1px var(--hair);padding:18px;font-size:14.5px;margin-top:auto}
+.msg{display:grid;grid-template-columns:32px 1fr;gap:4px 10px}
+.msg .pfp{width:32px;height:32px}
+.msg .mh{font-size:13px;color:var(--ink3)}
+.msg .mh b{color:var(--ink);font-weight:600}
+.msg p{grid-column:2;color:var(--ink)}
+.rep{margin:14px 0 0 42px;border-radius:14px;background:rgba(43,82,255,.12);box-shadow:inset 0 0 0 1px rgba(117,162,255,.25);padding:12px 14px}
+.rep .rh{font-size:12.5px;color:#A9C1FF;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.rep .rh .i{width:14px;height:14px}
+.rep-a{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.mini{height:32px;padding:0 14px;border-radius:999px;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.mini.b{background:var(--blue);color:#fff}.mini.b:hover{background:var(--blue-h)}
+.mini.g{box-shadow:inset 0 0 0 1px var(--hair2);color:var(--ink)}.mini.g:hover{background:rgba(255,255,255,.06)}
+.mini .i{width:14px;height:14px}
+.ping{display:flex;align-items:center;gap:12px;border-radius:16px;background:var(--s3);padding:12px 14px;margin-bottom:12px}
+.ping .dot{width:30px;height:30px;border-radius:9px;background:var(--blue);display:grid;place-items:center;color:#fff;flex:none}
+.ping .dot .i{width:16px;height:16px}
+.ping div{display:grid;line-height:1.3}
+.ping b{font-size:13.5px;font-weight:600}.ping span{font-size:13px;color:var(--ink2)}
+.ping .mono{margin-left:auto;font-size:12px;color:var(--ink3);align-self:flex-start}
+.bars{display:grid;gap:10px;margin:6px 0 14px}
+.bar{display:grid;grid-template-columns:86px 1fr;align-items:center;gap:10px;font-size:13px;color:var(--ink3)}
+.bar i{display:block;height:10px;border-radius:6px;background:var(--s3)}
+.bar.me i{background:var(--green)}
+.bar.me span{color:var(--ink)}
+.verdict{font-size:15px;color:var(--ink)}
+.verdict b{font-weight:600}
+.nxt{margin-top:10px;font-size:13.5px;color:var(--ink2)}
+.nxt b{color:var(--link);font-weight:600}
+.rv-line{font-size:17px;line-height:1.55;color:var(--ink)}
+.hl{background:rgba(245,180,76,.2);box-shadow:0 2px 0 var(--amber);border-radius:2px;padding:0 1px}
+.cm{margin-top:14px;display:grid;grid-template-columns:28px 1fr;gap:3px 10px;border-radius:14px;background:var(--s3);padding:12px}
+.cm .pfp{width:28px;height:28px}
+.cm .mh{font-size:12.5px;color:var(--ink3)}.cm .mh b{color:var(--ink);font-weight:600}
+.cm p{grid-column:2;font-size:14px}
+.cm.me{margin-left:30px;background:transparent;box-shadow:inset 0 0 0 1px var(--hair2)}
+.cl{display:grid;grid-template-columns:200px 1fr;gap:14px}
+.cl ul{list-style:none;display:grid;gap:6px;align-content:start}
+.cl li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:13.5px}
+.cl li .pfp{width:28px;height:28px}
+.cl li div{display:grid;line-height:1.25;min-width:0}
+.cl li span{color:var(--ink3);font-size:12px}
+.cl li.on{background:var(--s3)}
+.cv{border-radius:14px;box-shadow:inset 0 0 0 1px var(--hair2);padding:14px;display:grid;gap:12px;font-size:13.5px;align-content:start}
+.cv .k{color:var(--ink3);font-size:12.5px;margin-bottom:4px}
+.cv .chips{display:flex;flex-wrap:wrap;gap:6px}
+.cv .chip.no{background:rgba(251,117,112,.12);color:#FFB3AF}
+.cv .ap{display:flex;align-items:center;gap:8px;justify-content:space-between;border-top:1px solid var(--hair);padding-top:12px}
+.cv .ap span{color:var(--amber);font-size:13px}
+
+/* ---------- PAYS ---------- */
+.figs{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--hair2)}
+.fig{padding:clamp(28px,3vw,44px) clamp(8px,2vw,28px) 0;display:grid;gap:10px;align-content:start}
+.fig+.fig{border-left:1px solid var(--hair2)}
+.fig b{font:300 clamp(56px,7.4vw,112px)/.9 var(--serif);letter-spacing:-.05em}
+.fig span{color:var(--ink2);font-size:17px}
+.fine{margin-top:clamp(40px,5vw,64px);color:var(--ink3);font-size:15px;text-align:center}
+.fine strong{color:var(--ink);font-weight:600}
+
+/* ---------- WHO ---------- */
+.who{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(14px,1.6vw,22px)}
+.pc{border-radius:28px;background:var(--s1);box-shadow:inset 0 0 0 1px var(--hair);padding:28px 24px;display:flex;flex-direction:column;gap:18px}
+.pc .face{width:84px;height:84px;border-radius:50%}
+.pc h3{font:600 19px/1.2 var(--sans);letter-spacing:-.02em}
+.pc .rl{color:var(--ink3);font-size:14px;margin-top:2px}
+.pc .bb{font-size:14.5px;color:var(--ink3);line-height:1.45}
+.pc .bb s{text-decoration-color:rgba(139,144,155,.6)}
+.pc .aa{font:500 19px/1.3 var(--sans);letter-spacing:-.018em;margin-top:auto;padding-top:16px;border-top:1px solid var(--hair)}
+.ex{display:inline-block;font-size:11.5px;font-weight:600;color:var(--ink3);box-shadow:inset 0 0 0 1px var(--hair2);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+
+/* ---------- TRUST ---------- */
+.never{list-style:none;display:grid;justify-items:center;gap:clamp(2px,.6vw,8px);margin:clamp(8px,2vw,24px) 0 clamp(36px,4vw,56px)}
+.never li{position:relative;font:300 clamp(46px,7.2vw,108px)/1.06 var(--serif);letter-spacing:-.045em;color:var(--ink3)}
+.never li::after{content:"";position:absolute;left:-2%;right:-2%;top:54%;height:clamp(3px,.35vw,5px);border-radius:3px;background:var(--red);transform-origin:left center;transition:transform .7s var(--ease)}
+.js.motion .never:not(.in) li::after{transform:scaleX(0)}
+.never li:nth-child(2)::after{transition-delay:.12s}.never li:nth-child(3)::after{transition-delay:.24s}.never li:nth-child(4)::after{transition-delay:.36s}
+.trust-p{text-align:center;font-size:clamp(19px,1.7vw,24px);color:var(--ink2);max-width:28em;margin-inline:auto}
+.trust-p b{color:var(--ink);font-weight:600}
+
+/* ---------- PRICING ---------- */
+.seg{display:inline-flex;padding:4px;border-radius:999px;background:var(--s2);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{height:38px;padding:0 18px;border-radius:999px;font-size:14.5px;font-weight:500;color:var(--ink2);transition:background-color .2s,color .2s}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#0B0C10}
+.seg button:not([aria-pressed="true"]):hover{color:var(--ink)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,1.6vw,22px);margin-top:44px}
+.plan{border-radius:30px;background:var(--s1);box-shadow:inset 0 0 0 1px var(--hair);padding:clamp(26px,2.8vw,40px);display:flex;flex-direction:column;gap:22px}
+.plan.pro{background:linear-gradient(180deg,#181B22,#14161B);box-shadow:inset 0 0 0 1px rgba(117,162,255,.35)}
+.plan h3{font:400 34px/1 var(--serif);letter-spacing:-.03em}
+.pr{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pr b{font:300 clamp(56px,5.2vw,76px)/.9 var(--serif);letter-spacing:-.05em}
+.pr span{color:var(--ink2);font-size:15px}
+.bill{font-size:14px;color:var(--ink3);min-height:21px;margin-top:-8px}
+.plan ul{list-style:none;display:grid;gap:12px;font-size:15.5px;color:var(--ink2)}
+.plan li{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start}
+.plan li .i{width:16px;height:16px;color:var(--green);stroke-width:2.3;margin-top:3px}
+.plan li b{color:var(--ink);font-weight:600}
+.plan .btn{margin-top:auto;width:100%}
+.p-note{text-align:center;margin-top:28px;font-size:14.5px;color:var(--ink3)}
+
+/* ---------- FINAL ---------- */
+.fin{text-align:center;padding-block:clamp(120px,15vw,220px) clamp(100px,12vw,180px);position:relative;overflow-x:clip}
+.fin h2{font-size:clamp(46px,7.8vw,124px);letter-spacing:-.045em}
+.fin .wv{text-decoration:underline wavy var(--amber);text-decoration-thickness:.045em;text-underline-offset:.16em;text-decoration-skip-ink:none}
+.fin .lede{margin:28px auto 0}
+.fin .cta{margin-top:40px}
+.fin .note{margin-top:18px;font-size:14px;color:var(--ink3)}
+
+footer{border-top:1px solid var(--hair);padding:48px 0 56px;font-size:14px;color:var(--ink3)}
+.ft{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:32px}
+.ft h4{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:12px}
+.ft ul{list-style:none;display:grid;gap:9px}
+.ft a{text-decoration:none;color:var(--ink3)}
+.ft a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.ft p{max-width:26em;margin-top:12px;line-height:1.55}
+.fb{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--hair);margin-top:40px;padding-top:22px;font-size:13px}
+
+/* reveal */
+.js.motion .rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.js.motion .rv.in{opacity:1;transform:none}
+
+/* ---------- responsive ---------- */
+@media (max-width:1080px){
+  .phones{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .who{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .t7,.t5{grid-column:span 12}
+  .nav nav{display:none}
+}
+@media (max-width:820px){
+  .day{grid-template-columns:1fr}
+  .plans{grid-template-columns:1fr;max-width:520px;margin-inline:auto}
+  .figs{grid-template-columns:1fr}
+  .fig+.fig{border-left:0;border-top:1px solid var(--hair2)}
+  .fig{padding:28px 0;grid-template-columns:auto 1fr;align-items:baseline;gap:18px}
+  .ft{grid-template-columns:1fr 1fr}
+  .rc{grid-template-columns:auto 1fr}
+  .rc .kept{grid-row:auto;grid-column:2;justify-content:flex-start;margin-top:8px}
+  .cl{grid-template-columns:1fr}
+  .cl ul{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cl li{flex-direction:column;text-align:center;gap:4px;padding:8px 4px}
+}
+@media (max-width:600px){
+  :root{--gut:16px}
+  body{font-size:16px}
+  .nav-in{gap:12px;height:52px}
+  .nav-r a.tx{display:none}
+  .wm{font-size:21px}
+  .hero{padding-top:40px}
+  .cta{gap:18px;margin-top:26px}
+  .stage{border-radius:22px}
+  .st-who span{display:none}
+  .pfp{width:34px;height:34px}
+  .cnt{display:none}
+  .sharp{height:38px;font-size:14.5px;padding:0 16px 0 13px}
+  .st-line{min-height:calc(4 * 1.16 * var(--big))}
+  .tab{height:32px;padding:0 12px;font-size:13px}
+  .phones{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:76%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-inline:calc(var(--gut) * -1);padding-inline:var(--gut);scroll-padding-inline:var(--gut)}
+  .phones::-webkit-scrollbar{display:none}
+  .ph-wrap{scroll-snap-align:start}
+  .who{grid-template-columns:1fr}
+  .ft{grid-template-columns:1fr 1fr}
+  .ft>div:first-child{grid-column:1/-1}
+  .ui{margin-top:-40px}
+  .wk{grid-template-columns:38px repeat(5,1fr)}
+  .cl ul{grid-template-columns:1fr}
+  .cl li{flex-direction:row;text-align:left;padding:8px 10px}
+  .cl li:not(.on){display:none}
+  .gal-ctl{justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.2 2.5 4.8 13.4h6.4l-1 8.1 8.4-10.9h-6.4z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19.5 7"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+  <symbol id="i-chevl" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><path d="M4.5 5.5h15v10.5H10l-5.5 4z"/></symbol>
+  <symbol id="i-repost" viewBox="0 0 24 24"><path d="M5 10V8a2 2 0 0 1 2-2h11l-3-3M19 14v2a2 2 0 0 1-2 2H6l3 3"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.3a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol>
+  <symbol id="i-views" viewBox="0 0 24 24"><path d="M5 20v-7M10 20V5M15 20v-10M20 20v-4"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3.5M7.5 8 12 3.5 16.5 8M5 13v6.5h14V13"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 11.5 20 4l-7.5 16-2.3-6.2z"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M4 17 10 11l4 4 6-7M15 8h5v5"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="w nav-in">
+    <a class="wm" href="#top" aria-label="Hookworthy, home">Hook<i>worthy</i></a>
+    <nav aria-label="Main"><a href="#sharpen">Sharpen</a><a href="#feeds">Previews</a><a href="#day">Ideas</a><a href="#more">Inbox &amp; Results</a><a href="#pricing">Pricing</a></nav>
+    <div class="nav-r"><a class="tx" href="#signin">Sign in</a><a class="btn sm" href="#start">Start free</a></div>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero" aria-labelledby="h1">
+  <div class="w hero-top">
+    <h1 id="h1"><span class="dim">Same idea.</span><br>Sharper line.</h1>
+    <p class="lede">Hookworthy sharpens your first line in one tap. It still sounds like&nbsp;you.</p>
+    <div class="cta"><a class="btn lg" href="#start">Start free</a><a class="more" href="#sharpen">See every move <svg class="i"><use href="#i-chev"/></svg></a></div>
+  </div>
+  <div class="stage-wrap">
+    <div class="stage" id="stage" role="group" aria-label="Sharpen, shown on an example draft">
+      <div class="st-bar">
+        <span class="pfp me" id="stPfp" aria-hidden="true"></span>
+        <div class="st-who"><b id="stName">heycape</b><span id="stHandle">@heycape_ · Example account · Draft</span></div>
+        <div class="st-r"><span class="cnt mono"><b id="stCnt">90</b>/280</span>
+          <button class="sharp" id="stBtn" type="button"><svg class="i"><use href="#i-bolt"/></svg>Sharpen</button></div>
+      </div>
+      <div class="st-line"><p class="st-before" id="stBefore"></p><p class="st-after" id="stAfter"></p></div>
+      <div class="rc" id="stRc">
+        <span class="ok" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
+        <p class="rc-t"><b id="rcMove"></b><span id="rcWhy"></span></p>
+        <div class="kept"><span>Kept</span><span id="rcKept" style="display:contents"></span></div>
+      </div>
+    </div>
+    <div class="st-ctl" role="group" aria-label="Examples">
+      <span id="stTabs" style="display:contents"></span>
+      <button class="pp" id="stPP" type="button" aria-pressed="false" aria-label="Pause the demo"><svg class="i pa"><use href="#i-pause"/></svg><svg class="i pl"><use href="#i-play"/></svg></button>
+    </div>
+    <p class="st-note">Real lines, real rewrites. The people are examples.</p>
+  </div>
+</section>
+
+<!-- RECEIPTS -->
+<section class="sec" id="sharpen" aria-labelledby="h-sharpen" style="padding-top:clamp(40px,6vw,80px)">
+  <div class="w head rv">
+    <h2 id="h-sharpen"><span class="dim">Every rewrite</span><br>shows its work.</h2>
+    <p class="lede">Soft words get an amber underline as you type; one tap fixes the line and names the&nbsp;move.</p>
+  </div>
+  <div class="gal rv" id="gal" tabindex="0" aria-label="Before and after examples"></div>
+  <div class="w gal-ctl"><button class="pad" id="galPrev" type="button" aria-label="Previous example"><svg class="i"><use href="#i-chevl"/></svg></button><button class="pad" id="galNext" type="button" aria-label="Next example"><svg class="i"><use href="#i-chev"/></svg></button></div>
+</section>
+
+<!-- FEEDS -->
+<section class="sec" id="feeds" aria-labelledby="h-feeds" style="background:#08090C">
+  <div class="w">
+    <div class="head rv">
+      <h2 id="h-feeds"><span class="dim">One draft.</span><br>Every feed.</h2>
+      <p class="lede">Live previews for X, Threads, LinkedIn and Bluesky, each at its real&nbsp;length.</p>
+    </div>
+    <div class="phones rv" id="phones"></div>
+  </div>
+</section>
+
+<!-- DAY -->
+<section class="sec" id="day" aria-labelledby="h-day">
+  <div class="w">
+    <div class="head rv">
+      <h2 id="h-day"><span class="dim">Write at 11&nbsp;PM.</span><br>Post at 8:40&nbsp;AM.</h2>
+      <p class="lede">Catch it as a voice note, link or screenshot; it drafts in your voice and waits for your best&nbsp;time.</p>
+    </div>
+    <div class="day">
+      <article class="dp rv">
+        <div class="photo" style="--py:0%"><span class="time" aria-hidden="true">11:04<small>PM</small></span></div>
+        <div class="ui">
+          <div class="ui-h"><b>Ideas</b> Voice note <span class="mono">0:42</span></div>
+          <div class="wave" aria-hidden="true" id="wave"></div>
+          <p class="tr">“sizing down after a loss is the thing nobody talks about. i cut size in half after any red day now…”</p>
+          <p class="draft"><span><svg class="i"><use href="#i-check"/></svg>Drafted in your voice</span>Most underrated thing in trading? Sizing down after a loss.</p>
+        </div>
+        <div class="dp-t"><h3>Catch it at 11&nbsp;PM.</h3><p>Talk, paste a link or drop a screenshot. It drafts; you&nbsp;decide.</p></div>
+      </article>
+      <article class="dp rv">
+        <div class="photo" style="--py:40%"><span class="time" aria-hidden="true">8:40<small>AM</small></span></div>
+        <div class="ui">
+          <div class="ui-h"><b>Week</b> Oct 19 to 23 <span class="mono">heycape</span></div>
+          <div class="wk" aria-label="Week calendar, example">
+            <span></span><span class="dh">Mon</span><span class="dh on">Tue</span><span class="dh">Wed</span><span class="dh">Thu</span><span class="dh">Fri</span>
+            <span class="tm">7:15</span><span class="c p"></span><span class="c"></span><span class="c best"></span><span class="c"></span><span class="c p"></span>
+            <span class="tm">8:40</span><span class="c best"></span><span class="c go">Sizing down</span><span class="c"></span><span class="c best"></span><span class="c"></span>
+            <span class="tm">12:30</span><span class="c"></span><span class="c best"></span><span class="c p"></span><span class="c"></span><span class="c best"></span>
+          </div>
+          <div class="wk-f">Tue 8:40 AM · scheduled by you <span class="lg"><i></i>your best times</span></div>
+        </div>
+        <div class="dp-t"><h3>Post when your people&nbsp;scroll.</h3><p>Your best times, already marked. Nothing posts without&nbsp;you.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- BENTO -->
+<section class="sec" id="more" aria-labelledby="h-more" style="padding-top:0">
+  <div class="w">
+    <div class="head rv">
+      <h2 id="h-more"><span class="dim">Everything after</span><br>the first line.</h2>
+      <p class="lede">Replies, results and reviews, in the same place you&nbsp;wrote.</p>
+    </div>
+    <div class="bento">
+      <article class="tile t7 rv">
+        <div><h3>Replies, already drafted.</h3><p class="d">Each reply arrives with an answer in your voice. You read it, you send&nbsp;it.</p></div>
+        <div class="mock">
+          <div class="msg"><span class="pfp" style="--y:17.6471%" aria-hidden="true"></span><p class="mh"><b>Theo Park</b> replied · 9:12 AM <span class="ex">Example</span></p><p>how do you decide when you’re back to full size?</p></div>
+          <div class="rep"><p class="rh"><svg class="i"><use href="#i-bolt"/></svg>Drafted in your voice</p><p>First green day, not first green trade. Then full size, same rules.</p></div>
+          <div class="rep-a"><button class="mini g" type="button">Edit</button><button class="mini b" type="button"><svg class="i"><use href="#i-send"/></svg>Send</button></div>
+        </div>
+      </article>
+      <article class="tile t5 rv">
+        <div><h3>Did it beat your usual?</h3><p class="d">Plain words, then what to write&nbsp;next.</p></div>
+        <div class="mock">
+          <div class="ping"><span class="dot"><svg class="i"><use href="#i-up"/></svg></span><div><b>Taking off</b><span>Replies are coming in faster than usual.</span></div><span class="mono">9:31</span></div>
+          <p class="verdict"><b>Sizing down</b> beat your usual.</p>
+          <div class="bars" aria-hidden="true"><div class="bar me"><span>This post</span><i style="width:88%"></i></div><div class="bar"><span>Your usual</span><i style="width:41%"></i></div></div>
+          <p class="nxt">Write next: <b>how you pick the half</b></p>
+        </div>
+      </article>
+      <article class="tile t5 rv">
+        <div><h3>One link. Notes on the words.</h3><p class="d">Your editor or client comments on the exact line, no account&nbsp;needed.</p></div>
+        <div class="mock">
+          <p class="rv-line">Most underrated thing in trading? <span class="hl">Sizing down</span> after a loss.</p>
+          <div class="cm"><span class="pfp" style="--y:58.8235%" aria-hidden="true"></span><p class="mh"><b>Samira</b> · editor <span class="ex">Example</span></p><p>“Sizing down” is the whole post. Keep it exactly like this.</p></div>
+          <div class="cm me"><span class="pfp me" aria-hidden="true"></span><p class="mh"><b>heycape</b></p><p>Keeping it.</p></div>
+        </div>
+      </article>
+      <article class="tile t7 rv">
+        <div><h3>Every client sounds like themselves.</h3><p class="d">For ghostwriters: each client gets a voice, a never-say list, a time zone and approvals before anything&nbsp;posts.</p></div>
+        <div class="mock cl">
+          <ul aria-label="Client voices, examples">
+            <li class="on"><span class="pfp" style="--y:5.8824%"></span><div><b>Dev Raman</b><span class="mono">PST</span></div></li>
+            <li><span class="pfp" style="--y:0%"></span><div><b>Ana Mori</b><span class="mono">GMT+1</span></div></li>
+            <li><span class="pfp me"></span><div><b>heycape</b><span class="mono">SGT</span></div></li>
+          </ul>
+          <div class="cv">
+            <div><p class="k">Voice</p><p>Short. Numbers first. Founder, not marketer.</p></div>
+            <div><p class="k">Never say</p><div class="chips"><span class="chip no">synergy</span><span class="chip no">thrilled to announce</span><span class="chip no">disrupt</span></div></div>
+            <div class="ap"><span>Waiting on Dev’s approval</span><button class="mini g" type="button"><svg class="i"><use href="#i-check"/></svg>Approve</button></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- PAYS -->
+<section class="sec" id="pays" aria-labelledby="h-pays" style="background:#08090C">
+  <div class="w">
+    <div class="head rv">
+      <h2 id="h-pays"><span class="dim">Replies don’t pay.</span><br>Posts do.</h2>
+      <p class="lede">Since Sept 8, X pays creators for original posts, not&nbsp;replies.</p>
+    </div>
+    <div class="figs rv" aria-label="X’s bar for creator pay">
+      <div class="fig"><b>Premium</b><span>an X Premium subscription</span></div>
+      <div class="fig"><b>500</b><span>verified followers</span></div>
+      <div class="fig"><b>500K</b><span>verified impressions in 90 days</span></div>
+    </div>
+    <p class="fine rv">X’s bar as of Oct 2026, and X can change it. <strong>Nobody can promise reach. We don’t.</strong></p>
+  </div>
+</section>
+
+<!-- WHO -->
+<section class="sec" id="who" aria-labelledby="h-who">
+  <div class="w">
+    <div class="head rv">
+      <h2 id="h-who"><span class="dim">Different niches.</span><br>Same fix.</h2>
+      <p class="lede">Traders first, then everyone who writes in&nbsp;public.</p>
+    </div>
+    <div class="who" id="whoGrid"></div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="sec" id="trust" aria-labelledby="h-trust" style="background:#08090C">
+  <div class="w">
+    <div class="head rv" style="margin-bottom:clamp(24px,3vw,40px)">
+      <h2 id="h-trust"><span class="dim">It drafts.</span><br>You send.</h2>
+    </div>
+    <ul class="never rv" aria-label="Things Hookworthy never does">
+      <li><span class="sr">Never </span>Auto-DMs</li><li><span class="sr">Never </span>Auto-replies</li><li><span class="sr">Never </span>Auto-deletes</li><li><span class="sr">Never </span>Auto-reposts</li>
+    </ul>
+    <p class="trust-p rv">Hookworthy does none of these. <b>Every post is one you pressed send&nbsp;on.</b></p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" id="pricing" aria-labelledby="h-price">
+  <div class="w">
+    <div class="head rv" style="margin-bottom:0">
+      <h2 id="h-price"><span class="dim">Start free.</span><br>Stay sharp.</h2>
+      <div class="seg" role="group" aria-label="Billing"><button type="button" aria-pressed="true" data-bill="y">Yearly</button><button type="button" aria-pressed="false" data-bill="m">Monthly</button></div>
+    </div>
+    <div class="plans">
+      <article class="plan rv">
+        <h3>Free</h3>
+        <div><p class="pr"><b>$0</b><span>forever</span></p></div>
+        <p class="bill">No card.</p>
+        <ul>
+          <li><svg class="i"><use href="#i-check"/></svg><span><b>Sharpen any line,</b> unlimited</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>20 Claude rewrites a month, plus 50 touch-ups a day</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Learns your voice</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Live previews</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Schedule freely, 15 auto-posts a month</span></li>
+        </ul>
+        <a class="btn" href="#start">Start free</a>
+      </article>
+      <article class="plan pro rv">
+        <h3>Pro</h3>
+        <div><p class="pr"><b data-y="$12" data-m="$16">$12</b><span>a month</span></p></div>
+        <p class="bill" data-y="Billed yearly, $144 a year." data-m="Billed monthly.">Billed yearly, $144 a year.</p>
+        <ul>
+          <li><svg class="i"><use href="#i-check"/></svg><span><b>250 Claude rewrites a month,</b> add up to 1,750 more</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Results</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>A ping when a post takes off</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Your week drafted from your ideas</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Up to 500 auto-posts a month</span></li>
+        </ul>
+        <a class="btn ghost" href="#start-pro">Choose Pro</a>
+      </article>
+      <article class="plan rv">
+        <h3>Studio</h3>
+        <div><p class="pr"><b data-y="$18" data-m="$24">$18</b><span>per client voice, a month</span></p></div>
+        <p class="bill" data-y="Billed yearly." data-m="Billed monthly.">Billed yearly.</p>
+        <ul>
+          <li><svg class="i"><use href="#i-check"/></svg><span><b>Everything in Pro</b></span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Each client its own voice</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Approvals before anything posts</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>Review links per client</span></li>
+          <li><svg class="i"><use href="#i-check"/></svg><span>500 rewrites a month per client voice</span></li>
+        </ul>
+        <a class="btn ghost" href="#start-studio">Choose Studio</a>
+      </article>
+    </div>
+    <p class="p-note">Prices in USD. Cancel anytime; your drafts and ideas stay with you on&nbsp;Free.</p>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="fin" id="start" aria-labelledby="h-fin">
+  <div class="w">
+    <h2 id="h-fin" class="rv"><span class="dim">Good ideas die</span><br>in <span class="wv">bad first lines</span>.</h2>
+    <p class="lede rv">Sharpen yours free. It still sounds like&nbsp;you.</p>
+    <div class="cta rv"><a class="btn lg" href="#signup">Start free</a><a class="btn lg ghost" href="#signin">Sign in</a></div>
+    <p class="note rv">Free plan · No card · Nothing posts without you</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="w">
+    <div class="ft">
+      <div><a class="wm" href="#top">Hook<i>worthy</i></a><p>Writing and scheduling for people who post on X, Threads, LinkedIn and Bluesky. heycape and everyone else shown are example&nbsp;accounts.</p></div>
+      <div><h4>Product</h4><ul><li><a href="#sharpen">Sharpen</a></li><li><a href="#feeds">Previews</a></li><li><a href="#day">Ideas &amp; Week</a></li><li><a href="#more">Inbox &amp; Results</a></li></ul></div>
+      <div><h4>Plans</h4><ul><li><a href="#pricing">Free</a></li><li><a href="#pricing">Pro</a></li><li><a href="#pricing">Studio</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="#privacy">Privacy</a></li><li><a href="#terms">Terms</a></li><li><a href="mailto:hello@hookworthy.com">hello@hookworthy.com</a></li></ul></div>
+    </div>
+    <div class="fb"><span>© 2026 Hookworthy</span><span>Nothing posts without you.</span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var root = document.documentElement;
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.classList.add('js'); if (!RM) root.classList.add('motion');
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var esc = function(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+  var avY = function(i){ return (i / 17 * 100).toFixed(4) + '%'; };
+  var ic = function(n){ return '<svg class="i" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; };
+
+  /* tokens: k keep · s soft (amber, cut) · d cut · i inserted · r replaced [from, to] */
+  var EX = [
+    { tab:'Sizing down', name:'heycape', handle:'@heycape_', me:true, role:'Trader',
+      t:[['s','so i think'],['d',' the '],['r','m','M'],['k','ost underrated thing in trading'],['s',' is honestly just'],['i','?'],['k',' '],['r','s','S'],['k','izing down after a loss.']],
+      move:'Cut the warm-up.', why:'“so i think” and “honestly just” stood in front of the point.', kept:['sizing down','after a loss'] },
+    { tab:'First $10k', name:'heycape', handle:'@heycape_', me:true, role:'Trader',
+      t:[['s','just wanted to share'],['d',' that i finally hit '],['k','my first $10k month trading'],['d',','],['k',' took me 3 years'],['s',' lol'],['i','.']],
+      move:'Led with the number.', why:'The $10k was hiding behind “just wanted to share”. Your lowercase stayed.', kept:['$10k','3 years'] },
+    { tab:'Churn', name:'Dev Raman', handle:'@devbuilds', av:1, role:'Founder',
+      t:[['k','Customer churn'],['s',' was reduced by'],['i',': down'],['k',' 34%'],['d',' after the onboarding flow'],['s',' was redesigned by'],['d',' our team'],['i','. What changed: our team redesigned the onboarding flow'],['k','.']],
+      move:'Result first.', why:'The 34% was buried in a passive sentence. Now it opens.', kept:['34%','onboarding flow','our team'] },
+    { tab:'Design systems', name:'Ana Mori', handle:'@anamori', av:0, role:'Newsletter writer',
+      t:[['s','honestly'],['d',' '],['i','why do '],['k','most design systems fail'],['d',' because'],['i','?'],['k',' nobody '],['s','really '],['k','owns them'],['i','.']],
+      move:'Asked, then answered.', why:'Opens on the question your reader already has, answers it in three words.', kept:['design systems','nobody owns them'] }
+  ];
+  EX.forEach(function(e){
+    var b = '', a = '', bt = '', at = '';
+    e.t.forEach(function(x){
+      var k = x[0], s = x[1];
+      if (k === 'k'){ b += esc(s); a += esc(s); bt += s; at += s; }
+      else if (k === 's'){ b += '<span class="sw"><span>' + esc(s) + '</span></span>'; bt += s; }
+      else if (k === 'd'){ b += '<span class="dl">' + esc(s) + '</span>'; bt += s; }
+      else if (k === 'i'){ a += '<span class="in">' + esc(s) + '</span>'; at += s; }
+      else if (k === 'r'){ b += esc(s); a += '<span class="in">' + esc(x[2]) + '</span>'; bt += s; at += x[2]; }
+    });
+    e.bh = b; e.ah = a; e.bt = bt; e.at = at;
+  });
+  var face = function(e){ return e.me ? 'pfp me' : 'pfp'; };
+  var faceStyle = function(e){ return e.me ? '' : ' style="--y:' + avY(e.av) + '"'; };
+
+  /* ---------- hero stage ---------- */
+  var stage = $('#stage'), bef = $('#stBefore'), aft = $('#stAfter'), btn = $('#stBtn'), cnt = $('#stCnt');
+  var tabs = $('#stTabs'), pp = $('#stPP');
+  tabs.innerHTML = EX.map(function(e, i){ return '<button class="tab" type="button" aria-pressed="' + (i ? 'false' : 'true') + '" data-i="' + i + '">' + esc(e.tab) + '</button>'; }).join('');
+  var cur = 0, timers = [], adv = null, paused = RM, visible = true;
+  function later(ms, fn){ timers.push(setTimeout(fn, ms)); }
+  function clearAll(){ timers.forEach(clearTimeout); timers = []; clearTimeout(adv); }
+  function fill(i){
+    var e = EX[i];
+    bef.innerHTML = e.bh; aft.innerHTML = e.ah;
+    $('#stPfp').className = face(e); $('#stPfp').style.cssText = e.me ? '' : '--y:' + avY(e.av);
+    $('#stName').textContent = e.name; $('#stHandle').textContent = e.handle + ' · Example account · Draft';
+    $('#rcMove').textContent = e.move; $('#rcWhy').textContent = e.why; 
+    $('#rcKept').innerHTML = e.kept.map(function(k){ return '<span class="chip">' + esc(k) + '</span>'; }).join('');
+    cnt.textContent = e.bt.length;
+    bef.setAttribute('aria-hidden', 'true'); aft.removeAttribute('aria-hidden');
+    [].forEach.call(tabs.children, function(b, j){ b.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+  }
+  function settle(){ stage.className = 'stage marked cut done rcpt rest'; cnt.textContent = EX[cur].at.length; }
+  function sharpen(){
+    btn.classList.add('press'); setTimeout(function(){ btn.classList.remove('press'); }, 220);
+    stage.classList.add('cut');
+    later(380, function(){ stage.classList.add('done'); cnt.textContent = EX[cur].at.length; });
+    later(720, function(){ stage.classList.add('rcpt'); });
+    later(2400, function(){ stage.classList.add('rest'); });
+  }
+  function play(i, delay){
+    clearAll(); cur = i; stage.className = 'stage'; fill(i);
+    if (RM){ settle(); return; }
+    later(80, function(){ stage.classList.add('marked'); });
+    later(delay, sharpen);
+    queue(delay + 6200);
+  }
+  function queue(ms){
+    clearTimeout(adv);
+    if (paused) return;
+    adv = setTimeout(function(){
+      if (paused) return;
+      if (!visible){ queue(1500); return; }
+      stage.classList.add('leaving');
+      later(340, function(){ play((cur + 1) % EX.length, 1500); });
+    }, ms);
+  }
+  tabs.addEventListener('click', function(ev){
+    var b = ev.target.closest('.tab'); if (!b) return;
+    play(+b.dataset.i, 900);
+  });
+  btn.addEventListener('click', function(){
+    if (stage.classList.contains('done')){ play(cur, 700); return; }
+    clearAll(); stage.classList.add('marked'); sharpen(); queue(6800);
+  });
+  pp.addEventListener('click', function(){
+    paused = !paused; pp.setAttribute('aria-pressed', paused ? 'true' : 'false');
+    pp.setAttribute('aria-label', paused ? 'Play the demo' : 'Pause the demo');
+    if (paused) clearTimeout(adv); else queue(1800);
+  });
+  if (RM){ pp.setAttribute('aria-pressed', 'true'); pp.setAttribute('aria-label', 'Play the demo'); }
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){ visible = es[0].isIntersecting; }, { threshold: .25 }).observe(stage);
+  }
+  fill(0);
+  if (RM) settle();
+  else (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function(){ play(0, 900); });
+
+  /* ---------- receipts gallery ---------- */
+  var gal = $('#gal');
+  gal.innerHTML = EX.map(function(e){
+    return '<article class="card"><div class="card-top"><span class="' + face(e) + '"' + faceStyle(e) + ' aria-hidden="true"></span><div class="st-who"><b>' + esc(e.name) + ' <span class="ex">Example</span></b><span>' + esc(e.role) + '</span></div><span class="cnt mono">' + e.bt.length + ' → <b style="color:var(--green)">' + e.at.length + '</b> chars</span></div>'
+      + '<p class="b4"><span class="sr">Before: </span>' + e.bh + '</p>'
+      + '<span class="tap">' + ic('bolt') + 'One tap</span>'
+      + '<p class="af"><span class="sr">After: </span>' + e.ah + '</p>'
+      + '<div class="rc"><span class="ok" aria-hidden="true">' + ic('check') + '</span><p class="rc-t"><b>' + esc(e.move) + '</b>' + esc(e.why) + '</p><div class="kept"><span>Kept</span>' + e.kept.map(function(k){ return '<span class="chip">' + esc(k) + '</span>'; }).join('') + '</div></div></article>';
+  }).join('');
+  var gp = $('#galPrev'), gn = $('#galNext');
+  function step(d){ var c = gal.querySelector('.card'); gal.scrollBy({ left: d * (c.offsetWidth + 20), behavior: RM ? 'auto' : 'smooth' }); }
+  function galState(){ gp.disabled = gal.scrollLeft < 8; gn.disabled = gal.scrollLeft > gal.scrollWidth - gal.clientWidth - 8; }
+  gp.addEventListener('click', function(){ step(-1); }); gn.addEventListener('click', function(){ step(1); });
+  gal.addEventListener('scroll', galState, { passive: true }); galState();
+  gal.addEventListener('keydown', function(ev){ if (ev.key === 'ArrowRight'){ step(1); ev.preventDefault(); } if (ev.key === 'ArrowLeft'){ step(-1); ev.preventDefault(); } });
+
+  /* ---------- previews ---------- */
+  var L1 = 'Most underrated thing in trading? Sizing down after a loss.';
+  var B1 = 'I lost $4,000 in March doubling my size to win it back. Now I cut size in half after any red day.';
+  var B2 = 'The rule is simple: half size until I have a green day. Then back to normal. Boring. My account is still here.\n\nIt’s not a strategy. It’s a seatbelt.';
+  var acts = '<div class="acts" aria-hidden="true">' + ic('reply') + ic('repost') + ic('heart') + ic('views') + ic('share') + '</div>';
+  function post(name, meta, body, thread){
+    return '<div class="post"><span class="pfp me" aria-hidden="true"></span>' + (thread ? '<span class="tl"></span>' : '') + '<div class="pb"><p class="pn"><b>' + name + '</b><span>' + meta + '</span></p><p class="pt">' + body + '</p>' + acts + '</div></div>';
+  }
+  var first = '<span class="hk">' + esc(L1) + '</span>\n\n';
+  var P = [
+    { n:'X', cls:'n-x', head:'<svg viewBox="0 0 24 24" width="18" height="18" aria-label="X"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.8 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg>',
+      body: post('heycape', '@heycape_ · 1m', first + esc(B1), true) + post('heycape', '@heycape_ · 1m', esc(B2)),
+      count:'309 / 280', note:'Free X: a thread of 2', over:true },
+    { n:'Threads', cls:'n-th', head:'Threads', body: post('heycape', '1m', first + esc(B1) + '\n\n' + esc(B2)), count:'309 / 500', note:'One post' },
+    { n:'LinkedIn', cls:'n-li', head:'LinkedIn',
+      body:'<div class="lic"><div class="lih"><span class="pfp me" aria-hidden="true"></span><div><b>heycape</b><span>Trader · Example account</span><span>1m</span></div></div><p class="pt">' + esc(L1) + ' ' + esc(B1) + ' ' + esc(B2) + '</p><p class="sm">…see more</p><div class="lia" aria-hidden="true"><span>Like</span><span>Comment</span><span>Repost</span><span>Send</span></div></div>',
+      count:'309 / 3,000', note:'The line before “see more”' },
+    { n:'Bluesky', cls:'n-bs', head:'Bluesky', body: post('heycape', '@heycape.bsky.social · 1m', first + esc(B1), true) + post('heycape', '@heycape.bsky.social · 1m', esc(B2)), count:'309 / 300', note:'A thread of 2', over:true }
+  ];
+  $('#phones').innerHTML = P.map(function(p){
+    return '<figure class="ph-wrap"><div class="ph"><div class="scr ' + p.cls + '"><div class="scr-h">' + p.head + '</div>' + p.body + '<span class="fade"></span></div></div><figcaption class="ph-cap"><b>' + p.n + '</b><span class="mono' + (p.over ? ' over' : '') + '">' + p.count + '</span><span>' + p.note + '</span></figcaption></figure>';
+  }).join('');
+
+  /* ---------- voice wave ---------- */
+  var wv = '', seed = 7;
+  for (var k = 0; k < 64; k++){ seed = (seed * 9301 + 49297) % 233280; var r = seed / 233280; var h = 6 + Math.round((Math.sin(k / 3.2) * .5 + .5) * 18 + r * 12); wv += '<i style="height:' + h + 'px;opacity:' + (k > 44 ? .35 : .9) + '"></i>'; }
+  $('#wave').innerHTML = wv;
+
+  /* ---------- who ---------- */
+  var WHO = [
+    { name:'heycape', me:true, role:'Trader', label:'Traders and crypto writers', e:1 },
+    { name:'Ana Mori', av:0, role:'Newsletter writer', label:'Newsletter writers', e:3 },
+    { name:'Dev Raman', av:1, role:'Founder, building in public', label:'Founders', e:2 },
+    { name:'Nora Quill', av:4, role:'Ghostwriter for 3 clients', label:'Ghostwriters', e:0 }
+  ];
+  $('#whoGrid').innerHTML = WHO.map(function(w){
+    var e = EX[w.e];
+    return '<article class="pc rv"><span class="face ' + (w.me ? 'pfp me' : 'pfp') + '"' + (w.me ? '' : ' style="--y:' + avY(w.av) + '"') + ' aria-hidden="true"></span><div><h3>' + w.label + '</h3><p class="rl">' + esc(w.name) + ', ' + esc(w.role.toLowerCase()) + ' <span class="ex">Example</span></p></div><p class="bb"><span class="sr">Before: </span><s>' + esc(e.bt) + '</s></p><p class="aa"><span class="sr">After: </span>' + esc(e.at) + '</p></article>';
+  }).join('');
+
+  /* ---------- pricing ---------- */
+  var seg = document.querySelector('.seg');
+  seg.addEventListener('click', function(ev){
+    var b = ev.target.closest('button'); if (!b) return;
+    var m = b.dataset.bill;
+    [].forEach.call(seg.children, function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    [].forEach.call(document.querySelectorAll('.plans [data-y]'), function(el){ el.textContent = el.dataset[m]; });
+  });
+
+  document.addEventListener('click', function(ev){
+    var a = ev.target.closest('a[href^="#"]'); if (!a) return;
+    var t = document.getElementById(a.getAttribute('href').slice(1)); if (!t) return;
+    ev.preventDefault(); t.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- reveal ---------- */
+  if (!RM && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+    [].forEach.call(document.querySelectorAll('.rv'), function(el){ io.observe(el); });
+  } else {
+    [].forEach.call(document.querySelectorAll('.rv'), function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>

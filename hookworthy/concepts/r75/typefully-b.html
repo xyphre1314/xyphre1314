@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hookworthy: Good ideas die in bad first lines</title>
+<meta name="description" content="Hookworthy sharpens your first line in one tap, still in your voice, and hands you the receipt.">
+<meta name="color-scheme" content="light">
+<style>
+@font-face{font-family:"EB Garamond";src:url(../../fonts/EBGaramond-Regular.woff2) format("woff2");font-weight:400 800;font-display:swap}
+@font-face{font-family:"EB Garamond";src:url(../../fonts/EBGaramond-Italic.woff2) format("woff2");font-weight:400 800;font-style:italic;font-display:swap}
+@font-face{font-family:"Inter";src:url(../../fonts/Inter-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(../../fonts/GeistMono-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Caveat";src:url(../../fonts/Caveat-500.woff2) format("woff2");font-weight:500;font-display:swap}
+
+:root{
+  --paper:#F3EEE4; --paper-2:#EAE3D5; --sheet:#FFFDF8; --sheet-2:#FBF7EE;
+  --ink:#16130F; --ink-2:#463F35; --ink-3:#635C50;
+  --rule:rgba(22,19,15,.13); --rule-2:rgba(22,19,15,.22); --rule-3:rgba(22,19,15,.4);
+  --blue:#2B52FF; --blue-h:#2242F4; --blue-p:#1E3BE3; --pencil:#2445F5;
+  --amber:#E39A2A; --amber-ink:#9B570E; --green-ink:#0B773F; --red-ink:#C12629;
+  --night:#16130F; --night-2:#211D17; --night-ink:#F3EEE4; --night-ink-2:#BDB4A5; --night-pencil:#93ABFF;
+  --serif:"EB Garamond",Garamond,"Iowan Old Style",Georgia,serif;
+  --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --hand:"Caveat","Bradley Hand",cursive;
+  --gut:clamp(16px,4vw,48px); --max:1296px; --e:cubic-bezier(.22,1,.36,1);
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .22 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper) var(--grain);color:var(--ink);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--pencil);outline-offset:3px;border-radius:6px}
+::selection{background:rgba(36,69,245,.2)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.h1,.h2{font-family:var(--serif);font-weight:440;margin:0;color:var(--ink)}
+.h1{font-size:clamp(40px,10.8vw,104px);line-height:.98;letter-spacing:-.025em}
+.h2{font-size:clamp(38px,10vw,84px);line-height:1;letter-spacing:-.022em}
+.h2 em,.h1 em{font-style:italic;font-weight:420}
+.lede{font-size:clamp(16.5px,1.3vw,19px);line-height:1.5;color:var(--ink-2);margin:0;max-width:30em}
+.mono{font-family:var(--mono);font-feature-settings:"tnum";letter-spacing:0}
+.hand{font-family:var(--hand);color:var(--pencil);font-weight:500}
+.ex{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:4px;font:500 10.5px/1 var(--sans);color:var(--ink-2);background:rgba(22,19,15,.07);letter-spacing:.01em;vertical-align:middle}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border-radius:999px;font:500 15px/1 var(--sans);letter-spacing:-.005em;white-space:nowrap;transition:background .18s,color .18s,box-shadow .18s,transform .18s var(--e)}
+.btn svg{width:16px;height:16px;transition:transform .2s var(--e)}
+.btn:hover svg{transform:translateX(2px)}
+.btn:active{transform:scale(.97)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--blue-h)}
+.btn-blue:active{background:var(--blue-p)}
+.btn-ink{color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn-ink:hover{background:var(--ink);color:var(--paper)}
+.btn-lg{height:54px;padding:0 28px;font-size:16px}
+
+/* nav */
+.nav{position:relative;z-index:20}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:76px}
+.mark{font:500 29px/1 var(--serif);letter-spacing:-.02em;color:var(--ink);display:inline-flex;align-items:baseline}
+.mark i{font-style:italic;font-weight:440}
+.nav-links{display:flex;gap:2px}
+.nav-links a{font:500 14.5px/1 var(--sans);color:var(--ink-2);padding:10px 12px;border-radius:999px;transition:background .15s,color .15s}
+.nav-links a:hover{color:var(--ink);background:rgba(22,19,15,.06)}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:6px}
+.nav-r .si{font:500 14.5px/1 var(--sans);color:var(--ink-2);padding:10px 12px;border-radius:999px}
+.nav-r .si:hover{color:var(--ink);background:rgba(22,19,15,.06)}
+.nav .btn{height:40px;padding:0 18px;font-size:14.5px}
+.nav-rule{height:0;border-top:1.5px solid var(--ink)}
+@media (max-width:960px){.nav-links{display:none}}
+@media (max-width:420px){.nav-r .si{display:none}.mark{font-size:26px}}
+
+/* ---------- HERO ---------- */
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:0 clamp(32px,4vw,72px);position:relative}
+.h-left{padding:clamp(48px,9vh,96px) 0 56px;display:flex;flex-direction:column;gap:26px;position:relative}
+.h1 .u{position:relative;white-space:nowrap}
+.h1 .u svg{position:absolute;left:-1%;width:102%;bottom:-.14em;height:.22em;overflow:visible}
+.h1 .u path{fill:none;stroke:var(--amber);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1200;stroke-dashoffset:0;animation:draw 1.1s .5s var(--e) both}
+@keyframes draw{from{stroke-dashoffset:1200}}
+.sub{font-size:clamp(17.5px,1.5vw,21px);line-height:1.45;color:var(--ink-2);margin:0;max-width:27em}
+.sub b{color:var(--ink);font-weight:550}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.note{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font:500 13.5px/1.2 var(--sans);color:var(--ink-3);margin:-8px 0 0}
+.note i{width:3px;height:3px;border-radius:50%;background:var(--ink-3)}
+.reprint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.reprint span{font:500 13.5px/1 var(--sans);color:var(--ink-3);margin-right:4px}
+.reprint button{height:34px;padding:0 13px;border-radius:7px;font:500 13.5px/1 var(--sans);color:var(--ink-2);background:var(--sheet);box-shadow:0 1px 0 rgba(22,19,15,.08),inset 0 0 0 1px var(--rule-2);transition:transform .15s var(--e),background .15s,color .15s}
+.reprint button:hover{color:var(--ink);transform:translateY(-1px)}
+.reprint button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:none}
+.margin-note{position:absolute;right:-8px;bottom:118px;font-size:27px;line-height:1;transform:rotate(-4deg);display:flex;align-items:center;gap:6px;pointer-events:none}
+.margin-note svg{width:64px;height:30px;overflow:visible}
+.margin-note path{fill:none;stroke:var(--pencil);stroke-width:2;stroke-linecap:round}
+
+.printer{position:relative;align-self:start}
+.slot{height:14px;margin:0 -14px;border-radius:0 0 10px 10px;background:linear-gradient(#2A251E,#3B342B);box-shadow:inset 0 -3px 0 rgba(0,0,0,.35)}
+.feed{overflow:hidden;margin-top:-4px;padding:0 10px 40px;filter:drop-shadow(0 18px 18px rgba(60,45,20,.16)) drop-shadow(0 2px 2px rgba(60,45,20,.12))}
+.rcpt{background:var(--sheet);padding:26px 26px 30px;font:400 13px/1.55 var(--mono);color:var(--ink);transform-origin:top center;
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 9px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 9px repeat-x;
+  mask:linear-gradient(#000 0 0) top/100% calc(100% - 9px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 9px repeat-x}
+.printing .rcpt{animation:print 1.05s steps(21,end) both}
+@keyframes print{from{transform:translateY(-100%)}}
+.rc-h{text-align:center;padding-bottom:12px}
+.rc-h b{display:block;font:500 22px/1 var(--serif);letter-spacing:-.01em}
+.rc-h b i{font-style:italic}
+.rc-h span{display:block;margin-top:8px;color:var(--ink-3);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.rc-meta{display:flex;justify-content:space-between;gap:10px;color:var(--ink-2);font-size:12.5px}
+.dash{border:0;border-top:1.5px dashed var(--rule-3);margin:12px 0}
+.rc-lab{display:block;color:var(--ink-3);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.rc-line{margin:0;color:var(--ink-2)}
+.rc-line .sw{color:var(--ink);text-decoration:underline wavy var(--amber);text-decoration-thickness:1.5px;text-underline-offset:4px;text-decoration-skip-ink:none}
+.rc-t{display:grid;grid-template-columns:62px 1fr;gap:3px 10px;margin:0}
+.rc-t dt{color:var(--ink-3);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding-top:1px}
+.rc-t dd{margin:0}
+.rc-t dd.cut{color:var(--amber-ink);text-decoration:line-through;text-decoration-color:rgba(155,87,14,.55)}
+.rc-t dd.kept{color:var(--green-ink)}
+.rc-t dd.mv{font-weight:600}
+.rc-sum{display:flex;justify-content:space-between;color:var(--ink-2)}
+.rc-new{font:400 25px/1.2 var(--serif);letter-spacing:-.01em;margin:4px 0 0;color:var(--ink)}
+.rc-foot{text-align:center;color:var(--ink-3);font-size:12px;margin-top:6px}
+.bars{display:flex;justify-content:center;align-items:stretch;gap:0;height:34px;margin:12px auto 0;width:78%}
+.bars i{background:var(--ink);display:block}
+
+/* ---------- PROOF SHEET ---------- */
+.sec{padding:clamp(100px,14vh,168px) 0 0;position:relative}
+.head{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:20px clamp(40px,6vw,96px);align-items:end;margin-bottom:clamp(36px,5vw,60px)}
+.head .lede{justify-self:end;max-width:24em;padding-bottom:8px}
+@media (max-width:1100px){.head{grid-template-columns:1fr}.head .lede{justify-self:start;padding:0}}
+
+.tabs{display:flex;gap:4px;padding-left:22px;position:relative;z-index:1;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px 0 8px;border-radius:12px 12px 0 0;background:var(--paper-2);color:var(--ink-2);font:500 14px/1 var(--sans);box-shadow:inset 0 0 0 1px var(--rule);transition:background .15s,color .15s;margin-bottom:-1px}
+.tabs button .av{width:26px;height:26px}
+.tabs button:hover{color:var(--ink);background:#E4DCCB}
+.tabs button[aria-selected="true"]{background:var(--sheet);color:var(--ink);box-shadow:inset 1px 1px 0 var(--rule),inset -1px 0 0 var(--rule)}
+.sheet{position:relative;background:var(--sheet);border:1px solid var(--rule);border-radius:4px 18px 18px 18px;box-shadow:0 30px 60px -40px rgba(60,45,20,.35);display:grid;grid-template-columns:minmax(0,1fr) 340px}
+.galley{padding:34px clamp(22px,4vw,56px) 40px;min-width:0}
+.g-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font:500 13.5px/1 var(--sans);color:var(--ink-3)}
+.g-meta b{color:var(--ink);font-weight:600}
+.proof{font:400 clamp(28px,3.1vw,44px)/1.85 var(--serif);letter-spacing:-.01em;color:var(--ink);margin:16px 0 26px}
+.proof .sw{text-decoration:underline wavy var(--amber);text-decoration-thickness:2px;text-underline-offset:.2em;text-decoration-skip-ink:none}
+.proof s{text-decoration:none;color:var(--ink-3);background:linear-gradient(var(--pencil),var(--pencil)) left 54%/100% 3px no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size .5s var(--e)}
+.proof ins{text-decoration:none;font:500 1.06em/1 var(--hand);color:var(--pencil);padding:0 .06em;white-space:normal}
+.proof ins::before{content:"‸";display:inline-block;font:400 .7em/1 var(--sans);vertical-align:-.55em;margin-right:.04em;color:var(--pencil)}
+.drawing .proof s{background-size:0 3px}
+.drawing .proof ins{opacity:0}
+.drawn .proof s{background-size:100% 3px}
+.drawn .proof ins{opacity:1;transition:opacity .4s .35s}
+.clean{border-top:1.5px solid var(--ink);padding-top:18px;display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:baseline}
+.clean .lab{font:500 13px/1 var(--sans);color:var(--ink-3)}
+.clean p{margin:0;font:400 clamp(26px,2.6vw,38px)/1.2 var(--serif);letter-spacing:-.015em}
+.marg{border-left:1px solid var(--rule-2);padding:34px 28px 32px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(90deg,rgba(22,19,15,.025),transparent 40%)}
+.mv{font-size:38px;line-height:1;margin:6px 0 0;transform:rotate(-2deg);transform-origin:left}
+.mv-why{margin:0;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.mt{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0;font:400 13px/1.45 var(--mono);padding-top:16px;border-top:1px dashed var(--rule-3)}
+.mt dt{color:var(--ink-3)}
+.mt dd{margin:0}
+.mt .k{color:var(--green-ink)}
+.mt .c{color:var(--amber-ink)}
+.mini-post{margin-top:auto;border-radius:14px;padding:12px 14px;background:#fff;border:1px solid #E1E8ED;font-size:14px;line-height:1.4;color:#0F1419}
+.mini-post header{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}
+.mini-post header .av{width:24px;height:24px}
+.mini-post header span{color:#536471}
+.mini-post header .net{margin-left:auto;font:600 11px/1 var(--sans);padding:4px 7px;border-radius:999px;background:#EFF3F4;color:#0F1419}
+.mini-post p{margin:0}
+.mini-post[data-net="li"] header .net{background:#0A66C2;color:#fff}
+.mini-post[data-net="bsky"] header .net{background:#E3EEFF;color:#0B4FA8}
+.mini-post[data-net="threads"] header .net{background:#101010;color:#fff}
+.under{display:flex;gap:10px 28px;flex-wrap:wrap;margin:22px 4px 0;font-size:15px;color:var(--ink-2)}
+.under span{display:inline-flex;align-items:center;gap:8px}
+.under svg{width:16px;height:16px;color:var(--green-ink)}
+@media (max-width:900px){.sheet{grid-template-columns:1fr}.marg{border-left:0;border-top:1px solid var(--rule-2)}.tabs{padding-left:0}.clean{grid-template-columns:1fr}}
+
+/* ---------- TIMETABLE ---------- */
+.tt{border-top:1.5px solid var(--ink)}
+.tr{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,440px);gap:16px 36px;padding:28px 0;border-bottom:1px solid var(--rule-2);align-items:start}
+.tr .t{font:500 15px/1.3 var(--mono);color:var(--ink);padding-top:6px}
+.tr .t small{display:block;font:500 12.5px/1.3 var(--sans);color:var(--ink-3);margin-top:4px}
+.tr h3{font:440 clamp(28px,2.6vw,36px)/1.08 var(--serif);letter-spacing:-.015em;margin:0}
+.tr h3 em{font-style:italic}
+.tr p{margin:8px 0 0;color:var(--ink-2);max-width:30em}
+.tv{min-width:0}
+.chipz{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cap{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 14px 0 6px;border-radius:999px;background:var(--sheet);border:1px solid var(--rule);font:500 13.5px/1 var(--sans);color:var(--ink-2)}
+.cap .ic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--paper)}
+.cap .ic svg{width:14px;height:14px}
+.cap .wv{display:flex;align-items:center;gap:2px;height:20px}
+.cap .wv i{width:2px;border-radius:2px;background:var(--ink-3)}
+.snap{width:120px;height:80px;border-radius:10px;overflow:hidden;position:relative;border:1px solid var(--rule);flex:none;background:#ddd}
+.ph{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);min-width:100%;min-height:100%;aspect-ratio:800/474;background:url(../../assets/people/photos.jpg) 0 0/100% 600% no-repeat}
+.ph.p0{background-position:0 0}.ph.p2{background-position:0 40%}.ph.p3{background-position:0 60%}.ph.p5{background-position:0 100%}
+.dr{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:14px 16px;font:400 20px/1.5 var(--serif)}
+.dr .sw{text-decoration:underline wavy var(--amber);text-decoration-thickness:1.6px;text-underline-offset:4px;text-decoration-skip-ink:none}
+.dr small{display:block;font:500 12.5px/1 var(--sans);color:var(--ink-3);margin-bottom:8px}
+.lim{display:grid;gap:8px}
+.lim div{display:grid;grid-template-columns:70px 1fr 74px;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.lim span.b{height:8px;border-radius:99px;background:rgba(22,19,15,.08);position:relative;overflow:hidden}
+.lim span.b i{position:absolute;inset:0 auto 0 0;background:var(--ink);border-radius:99px}
+.lim .mono{font-size:12px;text-align:right;color:var(--ink-3)}
+.lim-n{font-size:13.5px;color:var(--ink-2);margin-top:4px!important}
+.wkstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.wkstrip div{border-radius:8px;border:1px solid var(--rule);background:var(--sheet);padding:7px 6px 8px;font:500 11.5px/1.2 var(--sans);color:var(--ink-3);min-height:74px;display:flex;flex-direction:column;gap:5px}
+.wkstrip div b{font-weight:500}
+.wkstrip div i{display:block;height:7px;border-radius:3px;background:rgba(22,19,15,.08)}
+.wkstrip div i.best{background:rgba(43,82,255,.25)}
+.wkstrip div.on{border-color:var(--pencil);box-shadow:inset 0 0 0 1px var(--pencil)}
+.wkstrip div.on em{font-style:normal;font:600 11px/1.2 var(--mono);color:var(--pencil)}
+.xpost{background:#fff;border:1px solid #E1E8ED;border-radius:16px;padding:14px 16px;color:#0F1419;font-size:15px;line-height:1.4}
+.xpost header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.xpost header .av{width:36px;height:36px}
+.xpost header b{font-size:14.5px}
+.xpost header span{color:#536471;font-size:14px}
+.xpost p{margin:0}
+.xpost footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:#536471;font-size:12.5px}
+.ok{display:inline-flex;align-items:center;gap:6px;color:var(--green-ink);font:500 12.5px/1 var(--sans)}
+.ok svg{width:14px;height:14px}
+.reply{display:flex;flex-direction:column;gap:8px}
+.reply .in{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.4}
+.reply .in .av{width:30px;height:30px}
+.reply .in div{background:var(--sheet);border:1px solid var(--rule);border-radius:4px 14px 14px 14px;padding:9px 12px}
+.reply .in b{display:block;font-size:12px;color:var(--ink-3);font-weight:500}
+.reply .out{margin-left:40px;border:1.5px dashed rgba(36,69,245,.5);border-radius:14px 4px 14px 14px;padding:9px 12px;font-size:14.5px;line-height:1.45;background:rgba(36,69,245,.03)}
+.reply .out .hand{font-size:19px;display:block;line-height:1;margin-bottom:4px}
+.reply .out .row{display:flex;justify-content:flex-end;gap:6px;margin-top:8px}
+.mini{height:30px;padding:0 13px;border-radius:999px;font:500 13px/1 var(--sans)}
+.mini.blue{background:var(--blue);color:#fff}
+.mini.ink{box-shadow:inset 0 0 0 1px var(--rule-3);color:var(--ink-2)}
+.res{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:center}
+.res .ch{position:relative;height:74px;border-bottom:1px solid var(--rule-2)}
+.res .band{position:absolute;left:0;right:0;bottom:18%;height:30%;border-top:1px dashed var(--rule-3);border-bottom:1px dashed var(--rule-3);background:rgba(22,19,15,.04)}
+.res .ch i{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--ink-3);transform:translate(-50%,50%)}
+.res .ch i.hot{width:11px;height:11px;background:var(--green-ink)}
+.res p{margin:0;font:400 18px/1.35 var(--serif)}
+.res p small{display:block;font:400 13.5px/1.45 var(--sans);color:var(--ink-2);margin-top:6px}
+.res p small b{color:var(--ink);font-weight:600}
+@media (max-width:1000px){.tr{grid-template-columns:110px minmax(0,1fr)}.tv{grid-column:2}}
+@media (max-width:640px){.tr{grid-template-columns:1fr;gap:10px}.tv{grid-column:1}.tr .t{display:flex;gap:10px;align-items:baseline;padding:0}.tr .t small{margin:0}}
+
+/* X notice */
+.notice{border:1.5px solid var(--ink);border-radius:4px;padding:6px;background:var(--sheet)}
+.notice-in{border:1px solid var(--ink);padding:clamp(24px,4vw,48px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px clamp(32px,5vw,72px);align-items:end}
+.crit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1.5px solid var(--ink)}
+.crit div{padding:16px 16px 4px 0}
+.crit div+div{padding-left:16px;border-left:1px solid var(--rule-2)}
+.crit b{display:block;font:440 clamp(36px,4.2vw,60px)/1 var(--serif);letter-spacing:-.02em}
+.crit span{display:block;font-size:14px;color:var(--ink-2);margin-top:8px}
+.notice-f{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px 32px;flex-wrap:wrap;padding-top:18px;border-top:1px solid var(--rule-2);font-size:14.5px;color:var(--ink-3)}
+.notice-f b{color:var(--ink);font-weight:600}
+@media (max-width:900px){.notice-in{grid-template-columns:1fr}}
+@media (max-width:560px){.crit{grid-template-columns:1fr}.crit div,.crit div+div{padding:14px 0;border-left:0}.crit div+div{border-top:1px solid var(--rule-2)}}
+
+/* bylines */
+.bylines{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule-2)}
+.by{padding:26px 24px 30px;display:flex;flex-direction:column;gap:12px}
+.by+.by{border-left:1px solid var(--rule-2)}
+.by:first-child{padding-left:0}.by:last-child{padding-right:0}
+.by-r{display:flex;align-items:center;gap:12px}
+.by-r .av{width:52px;height:52px}
+.by-r b{display:block;font:600 15px/1.25 var(--sans)}
+.by-r span{font-size:13px;color:var(--ink-3)}
+.by h3{font:500 13px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:8px 0 0}
+.by blockquote{margin:0;font:italic 420 clamp(22px,1.9vw,27px)/1.22 var(--serif);letter-spacing:-.01em}
+.by p{margin:auto 0 0;font-size:14.5px;color:var(--ink-2);padding-top:10px}
+@media (max-width:1000px){.bylines{grid-template-columns:repeat(2,minmax(0,1fr))}.by:nth-child(3){border-left:0;padding-left:0}.by:nth-child(2){padding-right:0}.by:nth-child(n+3){border-top:1px solid var(--rule-2)}}
+@media (max-width:600px){.bylines{grid-template-columns:1fr}.by,.by+.by{border-left:0;padding:22px 0}.by+.by{border-top:1px solid var(--rule-2)}}
+
+/* studio: index cards */
+.studio{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,4vw,64px);align-items:start}
+.cl-list{display:flex;flex-direction:column;border-top:1.5px solid var(--ink)}
+.cl-list button{display:flex;align-items:center;gap:14px;padding:14px 4px;border-bottom:1px solid var(--rule-2);text-align:left;transition:background .15s}
+.cl-list button .av{width:40px;height:40px}
+.cl-list button b{display:block;font:440 24px/1.1 var(--serif)}
+.cl-list button span.r{font-size:13.5px;color:var(--ink-3)}
+.cl-list button .tz{margin-left:auto;font:500 12px/1 var(--mono);color:var(--ink-3)}
+.cl-list button:hover{background:rgba(22,19,15,.04)}
+.cl-list button[aria-pressed="true"] b{color:var(--pencil)}
+.cl-list button[aria-pressed="true"]{background:rgba(36,69,245,.05)}
+.cards{position:relative;padding:14px 18px 0 0}
+.icard{position:relative;background:var(--sheet);border-radius:6px;box-shadow:0 1px 0 rgba(22,19,15,.08),0 24px 40px -28px rgba(60,45,20,.4);padding:0 24px 22px;background-image:linear-gradient(var(--sheet),var(--sheet)),repeating-linear-gradient(transparent 0 31px,rgba(36,69,245,.13) 31px 32px);background-size:100% 58px,100% 100%;background-repeat:no-repeat,repeat;background-origin:border-box}
+.icard::before{content:"";position:absolute;left:0;right:0;top:57px;height:1.5px;background:rgba(193,38,41,.45)}
+.icard.back{position:absolute;inset:0 0 auto 26px;height:100%;transform:rotate(2.2deg);background:var(--sheet-2);box-shadow:0 1px 0 rgba(22,19,15,.08)}
+.icard.back::before{display:none}
+.ic-h{height:58px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ic-h b{font:500 26px/1 var(--serif)}
+.ic-row{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:6px 0 0;min-height:32px;line-height:26px;font-size:15px}
+.ic-row dt{font:500 12.5px/26px var(--sans);color:var(--ink-3)}
+.ic-row dd{margin:0;color:var(--ink)}
+.ic-row s{color:var(--ink-2);text-decoration:none;background:linear-gradient(var(--pencil),var(--pencil)) left 55%/100% 2px no-repeat;margin-right:10px;white-space:nowrap}
+.ic-row .hand{font-size:22px}
+.cmt{display:flex;gap:10px;align-items:flex-start;margin:18px 0 0;padding-top:14px;border-top:1px dashed var(--rule-3);font-size:14px;color:var(--ink-2)}
+.cmt .av{width:26px;height:26px}
+.cmt b{color:var(--ink);font-weight:600}
+.cmt mark{background:rgba(43,82,255,.12);color:var(--ink);border-bottom:2px solid var(--pencil)}
+@media (max-width:900px){.studio{grid-template-columns:1fr}}
+@media (max-width:480px){.cl-list button .tz{display:none}.ic-row{grid-template-columns:1fr;gap:0}.icard{padding:0 16px 18px}}
+
+/* night: trust */
+.night{background:var(--night);color:var(--night-ink);margin-top:clamp(100px,14vh,168px);padding:clamp(88px,13vh,150px) 0}
+.night .h2{color:var(--night-ink)}
+.night .lede{color:var(--night-ink-2)}
+.never{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,80px);align-items:center}
+.nv-list{list-style:none;margin:0;padding:0;border-top:1px solid rgba(243,238,228,.2)}
+.nv-list li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid rgba(243,238,228,.2)}
+.nv-list s{font:440 clamp(34px,4.4vw,60px)/1.05 var(--serif);letter-spacing:-.02em;color:var(--night-ink-2);text-decoration:none;background:linear-gradient(var(--night-pencil),var(--night-pencil)) left 56%/100% 3px no-repeat}
+.nv-list span{font:500 13.5px/1.3 var(--sans);color:var(--night-ink-2);text-align:right}
+.send-note{margin:26px 0 0;font-size:30px;line-height:1.1;color:var(--night-pencil);transform:rotate(-2deg);transform-origin:left}
+.night .links{display:flex;gap:22px;flex-wrap:wrap;margin-top:28px}
+.night .links a{color:var(--night-ink);font-weight:500;border-bottom:1px solid rgba(243,238,228,.4);padding-bottom:2px}
+.night .links a:hover{border-color:var(--night-ink)}
+.night :focus-visible{outline-color:var(--night-pencil)}
+@media (max-width:860px){.never{grid-template-columns:1fr}}
+
+/* pricing receipts */
+.bill{display:inline-flex;padding:4px;border-radius:999px;background:var(--sheet);box-shadow:inset 0 0 0 1px var(--rule-2);margin-bottom:34px}
+.bill button{height:36px;padding:0 16px;border-radius:999px;font:500 14px/1 var(--sans);color:var(--ink-2)}
+.bill button:hover{color:var(--ink)}
+.bill button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.slips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2vw,28px);align-items:start}
+.slip-w{display:flex;flex-direction:column;gap:18px}
+.slip{filter:drop-shadow(0 16px 16px rgba(60,45,20,.12)) drop-shadow(0 1px 1px rgba(60,45,20,.12))}
+.slip:nth-child(1){transform:rotate(-.6deg)}
+.slip-w:nth-child(2) .slip{transform:rotate(.5deg)}
+.slip-w:nth-child(3) .slip{transform:rotate(-.3deg)}
+.slip .rcpt{padding:24px 22px 30px}
+.slip h3{font:500 34px/1 var(--serif);margin:0;text-align:center}
+.slip .for{text-align:center;margin:8px 0 0;color:var(--ink-3);font:400 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.li{display:flex;align-items:baseline;gap:6px;font-size:13px;line-height:1.5;padding:3px 0}
+.li span:first-child{flex:none;max-width:70%}
+.li .dots{flex:1;border-bottom:1.5px dotted var(--rule-3);transform:translateY(-4px);min-width:12px}
+.li span:last-child{flex:none;text-align:right;max-width:55%}
+.li.sub span:first-child{padding-left:14px;color:var(--ink-2)}
+.li b{font-weight:600}
+.tot{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:4px}
+.tot span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.tot b{font:500 46px/1 var(--serif);letter-spacing:-.02em}
+.tot b small{font:400 15px/1 var(--mono);letter-spacing:0;color:var(--ink-2);margin-left:4px}
+.tot-n{margin:6px 0 0;text-align:right;color:var(--ink-2);font-size:12.5px;min-height:20px}
+.slip-w .btn{width:100%}
+.slip-w.pro .slip .rcpt{box-shadow:inset 0 4px 0 var(--blue)}
+@media (max-width:980px){.slips{grid-template-columns:1fr;max-width:480px}}
+
+/* final */
+.fin{padding:clamp(110px,15vh,180px) 0 clamp(80px,12vh,140px);text-align:center}
+.fin .h2{font-size:clamp(42px,11vw,120px);line-height:.98}
+.fin .lede{margin:22px auto 0;text-align:center}
+.line-in{max-width:880px;margin:40px auto 0;text-align:left}
+.li-box{position:relative;border-bottom:2px solid var(--ink);padding:6px 0 10px}
+.li-back,.li-in{font:400 clamp(24px,3vw,38px)/1.35 var(--serif);letter-spacing:-.01em;margin:0;padding:0;border:0;width:100%;white-space:pre-wrap;overflow-wrap:break-word}
+.li-back{position:absolute;inset:6px 0 10px;color:transparent;pointer-events:none}
+.li-back mark{background:none;color:transparent;text-decoration:underline wavy var(--amber);text-decoration-thickness:2px;text-underline-offset:.2em;text-decoration-skip-ink:none}
+.li-in{position:relative;display:block;background:transparent;color:var(--ink);resize:none;outline:0;overflow:hidden;caret-color:var(--pencil)}
+.li-in::placeholder{color:var(--ink-3)}
+.li-box:focus-within{border-bottom-color:var(--pencil)}
+.li-row{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;flex-wrap:wrap;margin-top:14px}
+.li-row p{margin:0;font-size:14.5px;color:var(--ink-3);min-height:22px}
+.li-row p b{color:var(--amber-ink);font-weight:600}
+.fin .note{justify-content:center;margin:20px 0 0}
+
+footer{border-top:1.5px solid var(--ink);padding:44px 0 36px;font-size:14px;color:var(--ink-2)}
+.ft{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:28px}
+.ft p{margin:12px 0 0;max-width:22em}
+.ft h4{font:500 12.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:6px 0 14px}
+.ft ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.ft a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.colo{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;margin-top:44px;padding-top:20px;border-top:1px solid var(--rule-2);font-size:13px;color:var(--ink-3)}
+@media (max-width:760px){.ft{grid-template-columns:1fr 1fr}.ft>div:first-child{grid-column:1/-1}}
+
+.av{border-radius:50%;background:#d8d0c2 url(../../assets/people/avatars.jpg) 0 0/100% auto no-repeat;display:inline-block;flex:none}
+.av.me{background-image:url(../../assets/people/you.jpg);background-size:cover;background-position:center}
+.av.v2{background-image:url(../../assets/people/avatars-2.jpg)}
+
+.rv-on .rise{opacity:0;transform:translateY(16px);transition:opacity .7s var(--e),transform .7s var(--e)}
+.rv-on .rise.in{opacity:1;transform:none}
+
+/* responsive hero */
+@media (max-width:1060px){
+  .hero .wrap{grid-template-columns:1fr}
+  .h-left{padding-bottom:28px}
+  .margin-note{display:none}
+  .printer{width:100%;max-width:420px;justify-self:center}
+}
+@media (max-width:520px){
+  .cta .btn{flex:1}
+  .rcpt{padding:22px 18px 26px;font-size:12.5px}
+  .rc-t{grid-template-columns:54px 1fr}
+  .reprint span{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv-on .rise{opacity:1;transform:none}
+  .drawing .proof s{background-size:100% 3px}.drawing .proof ins{opacity:1}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-tick" viewBox="0 0 16 16"><path d="M3.5 8.4l2.9 2.9 6.1-6.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 16 16"><rect x="5.5" y="1.5" width="5" height="8.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5V15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 16 16"><path d="M6.8 9.2a3 3 0 0 0 4.2 0l2.1-2.1a3 3 0 0 0-4.2-4.2l-.9.9M9.2 6.8a3 3 0 0 0-4.2 0L2.9 8.9a3 3 0 0 0 4.2 4.2l.9-.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="Hookworthy home">Hook<i>worthy</i></a>
+    <nav class="nav-links" aria-label="Main"><a href="#proof">Sharpen</a><a href="#day">How it works</a><a href="#studio">Ghostwriters</a><a href="#pricing">Pricing</a></nav>
+    <div class="nav-r"><a class="si" href="#signin">Sign in</a><a class="btn btn-blue" href="#start">Start free</a></div>
+  </div>
+  <div class="wrap"><div class="nav-rule"></div></div>
+</header>
+
+<main id="top">
+<section class="hero" aria-labelledby="h1">
+  <div class="wrap">
+    <div class="h-left">
+      <h1 class="h1" id="h1">Good ideas die<br>in <span class="u">bad first lines.<svg viewBox="0 0 400 24" preserveAspectRatio="none" aria-hidden="true"><path d="M2 12c10-9 20-9 30 0s20 9 30 0 20-9 30 0 20 9 30 0 20-9 30 0 20 9 30 0 20-9 30 0 20 9 30 0 20-9 30 0 20 9 30 0 20-9 30 0 20 9 30 0 20-9 30 0 12 7 16 4"/></svg></span></h1>
+      <p class="sub"><b>Hookworthy sharpens yours in one tap.</b> It still sounds like you, and every rewrite comes with a receipt.</p>
+      <div class="cta"><a class="btn btn-blue btn-lg" href="#start">Sharpen my first line <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn-ink btn-lg" href="#proof">See the edit</a></div>
+      <p class="note">Free forever <i></i> No card <i></i> Nothing posts without you</p>
+      <div class="reprint" role="group" aria-label="Print a receipt for a real rewrite"><span>Print another:</span>
+        <button type="button" data-i="0" aria-pressed="true">$10k month</button><button type="button" data-i="1" aria-pressed="false">Sizing down</button><button type="button" data-i="2" aria-pressed="false">Churn</button><button type="button" data-i="3" aria-pressed="false">Design systems</button>
+      </div>
+      <p class="margin-note hand" aria-hidden="true">what it cut, kept &amp; why<svg viewBox="0 0 64 30"><path d="M2 22c18 4 38 0 56-14M50 5l9 3-4 9"/></svg></p>
+    </div>
+    <div class="printer" aria-label="Sharpen receipt for a real rewrite" role="figure">
+      <div class="slot" aria-hidden="true"></div>
+      <div class="feed printing" id="feed"><div class="rcpt" id="rcpt"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section class="sec" id="proof" aria-labelledby="pf-h">
+  <div class="wrap">
+    <div class="head rise">
+      <h2 class="h2" id="pf-h">Every edit,<br><em>on the record.</em></h2>
+      <p class="lede">Amber marks the soft words, blue shows the rewrite, and the margin names the move.</p>
+    </div>
+    <div class="rise">
+      <div class="tabs" role="tablist" aria-label="Real rewrites">
+        <button role="tab" id="tb0" aria-controls="sheet" aria-selected="true" tabindex="0" data-i="0"><span class="av me"></span>$10k month</button>
+        <button role="tab" id="tb1" aria-controls="sheet" aria-selected="false" tabindex="-1" data-i="1"><span class="av me"></span>Sizing down</button>
+        <button role="tab" id="tb2" aria-controls="sheet" aria-selected="false" tabindex="-1" data-i="2"><span class="av v2" style="background-position:0 20%"></span>Churn</button>
+        <button role="tab" id="tb3" aria-controls="sheet" aria-selected="false" tabindex="-1" data-i="3"><span class="av" style="background-position:0 29.41%"></span>Design systems</button>
+      </div>
+      <div class="sheet drawn" id="sheet" role="tabpanel" aria-labelledby="tb0">
+        <div class="galley">
+          <p class="g-meta"><b id="g-who">heycape</b><span class="ex">Example</span><span id="g-net">Draft for X</span></p>
+          <p class="proof" id="g-proof"></p>
+          <div class="clean"><span class="lab">Clean copy</span><p id="g-clean"></p></div>
+        </div>
+        <aside class="marg" aria-label="Margin note">
+          <p class="mv hand" id="m-move"></p>
+          <p class="mv-why" id="m-why"></p>
+          <dl class="mt"><dt>Kept</dt><dd class="k" id="m-kept"></dd><dt>Cut</dt><dd class="c" id="m-cut"></dd><dt>Words</dt><dd id="m-words"></dd></dl>
+          <div class="mini-post" id="m-post" data-net="x"><header><span class="av me" id="mp-av"></span><b id="mp-name">heycape</b><span id="mp-h">@heycape_</span><span class="net" id="mp-net">X</span></header><p id="mp-t"></p></div>
+        </aside>
+      </div>
+      <div class="under"><span><svg aria-hidden="true"><use href="#i-tick"/></svg>Your facts stay</span><span><svg aria-hidden="true"><use href="#i-tick"/></svg>Your lowercase stays</span><span><svg aria-hidden="true"><use href="#i-tick"/></svg>Every move gets a name</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMETABLE -->
+<section class="sec" id="day" aria-labelledby="day-h">
+  <div class="wrap">
+    <div class="head rise">
+      <h2 class="h2" id="day-h">Ideas at 11 PM.<br><em>Posts at 8:40.</em></h2>
+      <p class="lede">Catch it late, and it goes out when your people scroll, because you scheduled it.</p>
+    </div>
+    <div class="tt">
+      <div class="tr rise"><div class="t">11:04 PM<small>Ideas</small></div><div><h3>Caught before it’s gone.</h3><p>A voice note, a link or a screenshot goes into Ideas from your phone.</p></div>
+        <div class="tv chipz"><span class="cap"><span class="ic"><svg aria-hidden="true"><use href="#i-mic"/></svg></span><span class="wv" aria-hidden="true" id="wv"></span><span class="mono">0:42</span></span><span class="cap"><span class="ic"><svg aria-hidden="true"><use href="#i-link"/></svg></span>Sunday’s issue</span><span class="snap"><span class="ph p0" role="img" aria-label="Screenshot: a desk at night"></span></span></div></div>
+      <div class="tr rise"><div class="t">11:06 PM<small>Drafts</small></div><div><h3>Drafted in <em>your</em> voice.</h3><p>It learns how you write, so the first draft already sounds like you.</p></div>
+        <div class="tv dr"><small>From your voice note</small>sizing down after a loss feels like losing twice. <span class="sw">honestly</span> it isn’t, it’s how you stay in the game.</div></div>
+      <div class="tr rise"><div class="t">11:09 PM<small>Previews</small></div><div><h3>Seen four ways.</h3><p>Live previews for each network, limits included; long posts on free X become a thread.</p></div>
+        <div class="tv lim" aria-label="Character limits for this post">
+          <div><span>X</span><span class="b"><i style="width:31%"></i></span><span class="mono">86/280</span></div>
+          <div><span>Threads</span><span class="b"><i style="width:17%"></i></span><span class="mono">86/500</span></div>
+          <div><span>LinkedIn</span><span class="b"><i style="width:3%"></i></span><span class="mono">86/3,000</span></div>
+          <div><span>Bluesky</span><span class="b"><i style="width:29%"></i></span><span class="mono">86/300</span></div>
+        </div></div>
+      <div class="tr rise"><div class="t">11:11 PM<small>Week</small></div><div><h3>Slotted by you.</h3><p>Your calendar marks your best times; you pick one, and it waits.</p></div>
+        <div class="tv wkstrip" aria-label="Example week">
+          <div><b>Mon</b><i></i><i></i></div><div class="on"><b>Tue</b><i class="best"></i><em>8:40 AM</em></div><div><b>Wed</b><i class="best"></i><i></i></div><div><b>Thu</b><i></i><i class="best"></i></div><div><b>Fri</b><i class="best"></i></div><div><b>Sat</b><i></i></div><div><b>Sun</b><i></i></div>
+        </div></div>
+      <div class="tr rise"><div class="t">8:40 AM<small>Posted</small></div><div><h3>Out while they scroll.</h3><p>Nothing posts without you; this one goes because you scheduled it.</p></div>
+        <div class="tv xpost"><header><span class="av me"></span><div><b>heycape</b> <span class="ex">Example</span><br><span>@heycape_ · 8:40 AM</span></div></header><p>Sizing down after a loss feels like losing twice. It isn’t. It’s how you stay in the game.</p><footer><span>X · Threads</span><span class="ok"><svg aria-hidden="true"><use href="#i-tick"/></svg>Scheduled by you</span></footer></div></div>
+      <div class="tr rise"><div class="t">9:02 AM<small>Inbox</small></div><div><h3>Replies, answered.</h3><p>Each reply arrives with an answer drafted in your voice; you send it, or don’t.</p></div>
+        <div class="tv reply"><div class="in"><span class="av" style="background-position:0 52.94%"></span><div><b>@ridgeline_dan · example</b>how much do you size down? half?</div></div><div class="out"><span class="hand">drafted for you</span>half, until i have two green days. then back to normal.<div class="row"><button class="mini ink" type="button">Edit</button><button class="mini blue" type="button">Send</button></div></div></div></div>
+      <div class="tr rise"><div class="t">Friday<small>Results</small></div><div><h3>Results, in plain words.</h3><p>How it did against your own usual, and what to write next.</p></div>
+        <div class="tv res"><div class="ch" aria-hidden="true" id="ch"><div class="band"></div></div><p>Above your usual. People asked how.<small><b>Write next:</b> how you size down, step by step.</small></p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- X NOTICE -->
+<section class="sec" id="pays" aria-labelledby="x-h">
+  <div class="wrap rise">
+    <div class="notice"><div class="notice-in">
+      <div><h2 class="h2" id="x-h">X pays for posts.<br><em>Not replies.</em></h2><p class="lede" style="margin-top:18px">Since Sept 8, X pays creators for original posts, and the first line is where a post wins or loses.</p></div>
+      <div class="crit" role="list" aria-label="X’s bar for creator pay">
+        <div role="listitem"><b>Premium</b><span>an X Premium subscription</span></div>
+        <div role="listitem"><b>500</b><span>verified followers</span></div>
+        <div role="listitem"><b>500K</b><span>verified impressions in 90 days</span></div>
+      </div>
+      <p class="notice-f"><span>X’s bar as of Oct 2026. X can change it.</span><span><b>Nobody can promise reach. We don’t.</b></span></p>
+    </div></div>
+  </div>
+</section>
+
+<!-- BYLINES -->
+<section class="sec" id="who" aria-labelledby="w-h">
+  <div class="wrap">
+    <div class="head rise">
+      <h2 class="h2" id="w-h">For people<br><em>with a take.</em></h2>
+      <p class="lede">Traders first, then anyone who writes in public. Same fix in every feed.</p>
+    </div>
+    <div class="bylines rise">
+      <article class="by"><div class="by-r"><span class="av me"></span><div><b>heycape</b><span>Example account</span></div></div><h3>Markets</h3><blockquote>my first $10k month trading took me 3 years.</blockquote><p>Trade journals and takes, sharpened before the open.</p></article>
+      <article class="by"><div class="by-r"><span class="av" style="background-position:0 23.53%"></span><div><b>Ana Brooks</b><span>Example</span></div></div><h3>Newsletters</h3><blockquote>One issue in. A week of posts out.</blockquote><p>Drop the link; Ideas drafts the posts in your voice.</p></article>
+      <article class="by"><div class="by-r"><span class="av v2" style="background-position:0 20%"></span><div><b>Priya Nair</b><span>Example</span></div></div><h3>Building in public</h3><blockquote>Customer churn: down 34%. What changed: our team redesigned the onboarding flow.</blockquote><p>Ship notes that read like news.</p></article>
+      <article class="by"><div class="by-r"><span class="av" style="background-position:0 17.65%"></span><div><b>Theo Mensah</b><span>Example</span></div></div><h3>Ghostwriting</h3><blockquote>Six clients. Six voices. One desk.</blockquote><p>Approvals before anything posts.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- STUDIO -->
+<section class="sec" id="studio" aria-labelledby="st-h">
+  <div class="wrap">
+    <div class="head rise">
+      <h2 class="h2" id="st-h">Every client<br><em>in their own voice.</em></h2>
+      <p class="lede">Studio keeps a voice, a never-say list, a time zone, ideas and approvals for each client.</p>
+    </div>
+    <div class="studio rise">
+      <div class="cl-list" role="group" aria-label="Client voices (examples)">
+        <button type="button" aria-pressed="true" data-c="0"><span class="av v2" style="background-position:0 20%"></span><span><b>Priya Nair</b><span class="r">Founder · example</span></span><span class="tz">London</span></button>
+        <button type="button" aria-pressed="false" data-c="1"><span class="av" style="background-position:0 64.71%"></span><span><b>Rafael Ortiz</b><span class="r">Investor · example</span></span><span class="tz">Mexico City</span></button>
+        <button type="button" aria-pressed="false" data-c="2"><span class="av" style="background-position:0 47.06%"></span><span><b>Lena Fischer</b><span class="r">Coach · example</span></span><span class="tz">Berlin</span></button>
+        <button type="button" aria-pressed="false" data-c="3"><span class="av v2" style="background-position:0 0"></span><span><b>Marco Vitale</b><span class="r">Trader · example</span></span><span class="tz">Rome</span></button>
+      </div>
+      <div class="cards">
+        <div class="icard back" aria-hidden="true"></div>
+        <div class="icard" id="icard">
+          <div class="ic-h"><b id="ic-n">Priya Nair</b><span class="ex">Example client</span></div>
+          <dl style="margin:0">
+            <div class="ic-row"><dt>Sounds like</dt><dd id="ic-v">Plain, numbers first, a little dry.</dd></div>
+            <div class="ic-row"><dt>Never says</dt><dd id="ic-nv"><s>synergy</s> <s>excited to announce</s> <s>humbled</s></dd></div>
+            <div class="ic-row"><dt>Time zone</dt><dd id="ic-tz"><span class="mono" style="font-size:13.5px">Europe/London</span> · best Tue 8:15 AM</dd></div>
+            <div class="ic-row"><dt>Approvals</dt><dd id="ic-ap"><span class="hand">2 waiting on Priya</span></dd></div>
+          </dl>
+          <p class="cmt"><span class="av v2" style="background-position:0 20%" id="ic-av"></span><span><b id="ic-cn">Priya</b> on <mark>“down 34%”</mark>: say it was Q3. Review link, no account needed.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NIGHT / TRUST -->
+<section class="night" id="trust" aria-labelledby="t-h">
+  <div class="wrap never">
+    <div class="rise">
+      <h2 class="h2" id="t-h">Nothing posts<br><em>until you do.</em></h2>
+      <p class="lede" style="margin-top:20px">Every post that goes out is one you pressed send on, or scheduled yourself.</p>
+      <p class="send-note hand" aria-hidden="true">cut for good, not a setting</p>
+      <div class="links"><a href="#faq">How posting works</a><a href="#privacy">Your data</a></div>
+    </div>
+    <ul class="nv-list rise" aria-label="Things Hookworthy never does">
+      <li><s>auto-DMs</s><span>never</span></li>
+      <li><s>auto-replies</s><span>drafted, you send</span></li>
+      <li><s>auto-deletes</s><span>never</span></li>
+      <li><s>auto-reposts</s><span>never</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" id="pricing" aria-labelledby="p-h">
+  <div class="wrap">
+    <div class="head rise">
+      <h2 class="h2" id="p-h">Sharpen free.<br><em>Pay to post more.</em></h2>
+      <p class="lede">Sharpening any line is unlimited on every plan, including the free one.</p>
+    </div>
+    <div class="bill" role="group" aria-label="Billing period"><button type="button" aria-pressed="true" data-b="y">Yearly</button><button type="button" aria-pressed="false" data-b="m">Monthly</button></div>
+    <div class="slips">
+      <div class="slip-w rise">
+        <div class="slip"><div class="rcpt">
+          <h3>Free</h3><p class="for">for anyone with a draft</p><hr class="dash">
+          <div class="li"><span><b>Sharpen any line</b></span><span class="dots"></span><span><b>unlimited</b></span></div>
+          <div class="li"><span>Claude rewrites</span><span class="dots"></span><span>20/month</span></div>
+          <div class="li sub"><span>+ touch-ups</span><span class="dots"></span><span>50 a day</span></div>
+          <div class="li"><span>Learns your voice</span><span class="dots"></span><span>yes</span></div>
+          <div class="li"><span>Live previews</span><span class="dots"></span><span>yes</span></div>
+          <div class="li"><span>Schedule</span><span class="dots"></span><span>freely</span></div>
+          <div class="li"><span>Auto-posts</span><span class="dots"></span><span>15 a month</span></div>
+          <hr class="dash">
+          <div class="tot"><span>Total</span><b>$0<small>forever</small></b></div><p class="tot-n">No card.</p>
+        </div></div>
+        <a class="btn btn-ink" href="#start">Start free</a>
+      </div>
+      <div class="slip-w pro rise">
+        <div class="slip"><div class="rcpt">
+          <h3>Pro</h3><p class="for">for posting every day</p><hr class="dash">
+          <div class="li"><span><b>Claude rewrites</b></span><span class="dots"></span><span><b>250/month</b></span></div>
+          <div class="li sub"><span>add up to</span><span class="dots"></span><span>1,750 more</span></div>
+          <div class="li"><span>Results</span><span class="dots"></span><span>yes</span></div>
+          <div class="li"><span>Ping when a post takes off</span><span class="dots"></span><span>yes</span></div>
+          <div class="li"><span>Week drafted from your ideas</span><span class="dots"></span><span>yes</span></div>
+          <div class="li"><span>Auto-posts</span><span class="dots"></span><span>up to 500/mo</span></div>
+          <hr class="dash">
+          <div class="tot"><span>Total</span><b data-y="$12" data-m="$16">$12</b></div><p class="tot-n" data-y="a month, billed yearly ($144/yr), or $16 monthly" data-m="a month, billed monthly, or $12/month yearly">a month, billed yearly ($144/yr), or $16 monthly</p>
+        </div></div>
+        <a class="btn btn-blue" href="#start-pro">Go Pro</a>
+      </div>
+      <div class="slip-w rise">
+        <div class="slip"><div class="rcpt">
+          <h3>Studio</h3><p class="for">for ghostwriters &amp; agencies</p><hr class="dash">
+          <div class="li"><span><b>Everything in Pro</b></span><span class="dots"></span><span><b>yes</b></span></div>
+          <div class="li"><span>Each client its own voice</span><span class="dots"></span><span>yes</span></div>
+          <div class="li"><span>Approvals before posting</span><span class="dots"></span><span>yes</span></div>
+          <div class="li"><span>Review links per client</span><span class="dots"></span><span>yes</span></div>
+          <div class="li"><span>Rewrites per client voice</span><span class="dots"></span><span>500/month</span></div>
+          <hr class="dash">
+          <div class="tot"><span>Total</span><b data-y="$18" data-m="$24">$18</b></div><p class="tot-n" data-y="per client voice a month, billed yearly, or $24 monthly" data-m="per client voice a month, billed monthly, or $18 yearly">per client voice a month, billed yearly, or $24 monthly</p>
+        </div></div>
+        <a class="btn btn-ink" href="#start-studio">Start Studio</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="fin" id="start" aria-labelledby="fin-h">
+  <div class="wrap">
+    <h2 class="h2 rise" id="fin-h">Your next post<br><em>starts here.</em></h2>
+    <p class="lede rise">Type its first line. The amber shows up as you go.</p>
+    <div class="line-in rise">
+      <div class="li-box"><div class="li-back" id="li-back" aria-hidden="true"></div><label class="sr" for="li-in">Your next first line</label><textarea class="li-in" id="li-in" rows="1" spellcheck="false" placeholder="so i think…"></textarea></div>
+      <div class="li-row"><p id="li-msg" aria-live="polite">Try one with “honestly” or “just” in it.</p><a class="btn btn-blue btn-lg" href="#signup">Sharpen it free <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+    </div>
+    <p class="note rise">Free forever <i></i> No card <i></i> Nothing posts without you</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <div><a class="mark" href="#top" aria-label="Hookworthy home">Hook<i>worthy</i></a><p>Writing and scheduling for people who post on X, Threads, LinkedIn and Bluesky.</p></div>
+      <div><h4>Product</h4><ul><li><a href="#proof">Sharpen</a></li><li><a href="#day">Ideas</a></li><li><a href="#day">Week</a></li><li><a href="#day">Inbox</a></li><li><a href="#day">Results</a></li></ul></div>
+      <div><h4>For</h4><ul><li><a href="#who">Traders</a></li><li><a href="#who">Newsletter writers</a></li><li><a href="#who">Founders</a></li><li><a href="#studio">Ghostwriters</a></li></ul></div>
+      <div><h4>Hookworthy</h4><ul><li><a href="#pricing">Pricing</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#terms">Terms</a></li><li><a href="mailto:hello@hookworthy.com">hello@hookworthy.com</a></li></ul></div>
+    </div>
+    <div class="colo"><span>© 2026 Hookworthy. heycape and everyone shown are example accounts.</span><span>Set in EB Garamond, Inter and Geist Mono.</span></div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const EX = [
+    { who:'@heycape_', name:'heycape', av:'av me', pos:'', net:'X', nk:'x', when:'Tue · 11:12 PM',
+      draft:'just wanted to share that i finally hit my first $10k month trading, took me 3 years lol', soft:['just wanted to share','finally','lol'],
+      cut:['just wanted to share','finally','lol'], kept:['$10k month','3 years','your lowercase'], move:'Led with the number', words:'18 → 9',
+      after:'my first $10k month trading took me 3 years.', why:'$10k stops the thumb. 3 years makes it believable.',
+      proof:'<s><span class="sw">just wanted to share</span> that i <span class="sw">finally</span> hit</s> my first $10k month trading<s>,</s> took me 3 years <s><span class="sw">lol</span></s><ins>.</ins>' },
+    { who:'@heycape_', name:'heycape', av:'av me', pos:'', net:'Threads', nk:'threads', when:'Mon · 10:48 PM',
+      draft:'so i think the most underrated thing in trading is honestly just sizing down after a loss.', soft:['so i think','honestly just'],
+      cut:['so i think','the','is honestly just'], kept:['most underrated','sizing down after a loss'], move:'Asked, then answered', words:'17 → 10',
+      after:'Most underrated thing in trading? Sizing down after a loss.', why:'A question opens a loop. The answer closes it before they scroll.',
+      proof:'<s><span class="sw">so i think</span> the most</s> <ins>Most</ins> underrated thing in trading<ins>?</ins> <s>is <span class="sw">honestly just</span> sizing</s> <ins>Sizing</ins> down after a loss.' },
+    { who:'Priya Nair', name:'Priya Nair', av:'av v2', pos:'0 20%', net:'LinkedIn', nk:'li', when:'Wed · 7:30 AM',
+      draft:'Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.', soft:['was reduced by','was redesigned by'],
+      cut:['was reduced by','after','was redesigned by'], kept:['34%','onboarding flow','our team'], move:'Put the result first', words:'15 → 12',
+      after:'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', why:'The passive voice buried 34%. Now it’s the fourth word.',
+      proof:'Customer churn<ins>:</ins> <s><span class="sw">was reduced by</span></s> <ins>down</ins> 34%<ins>.</ins> <ins>What changed: our team redesigned</ins> <s>after</s> the onboarding flow <s><span class="sw">was redesigned by</span> our team</s>.' },
+    { who:'Jun Park', name:'Jun Park', av:'av', pos:'0 29.41%', net:'Bluesky', nk:'bsky', when:'Thu · 4:15 PM',
+      draft:'honestly most design systems fail because nobody really owns them', soft:['honestly','really'],
+      cut:['honestly','because','really'], kept:['your lowercase','the claim'], move:'Made it a question', words:'10 → 9',
+      after:'why do most design systems fail? nobody owns them.', why:'Readers answer it in their head, then read on to check.',
+      proof:'<s><span class="sw">honestly</span></s> <ins>why do</ins> most design systems fail<ins>?</ins> <s>because</s> nobody <s><span class="sw">really</span></s> owns them<ins>.</ins>' }
+  ];
+  const markSoft = (t, soft) => { let h = esc(t); soft.forEach(s => h = h.replace(esc(s), `<span class="sw">${esc(s)}</span>`)); return h; };
+  const bars = (() => { let s = 7, h = ''; for (let i = 0; i < 46; i++) { s = (s * 9301 + 49297) % 233280; const w = 1 + (s % 4); const g = 1 + ((s >> 3) % 3); h += `<i style="width:${w}px;margin-right:${g}px"></i>`; } return h; })();
+
+  /* hero receipt */
+  const feed = $('#feed'), rc = $('#rcpt');
+  function receipt(i, animate) {
+    const e = EX[i];
+    rc.innerHTML = `<div class="rc-h"><b>Hook<i>worthy</i></b><span>Sharpen receipt</span></div>
+      <div class="rc-meta"><span>${esc(e.who)}${e.who.startsWith('@') ? '' : ''} · ${e.net}</span><span>${e.when}</span></div>
+      <hr class="dash"><span class="rc-lab">Your line</span><p class="rc-line">${markSoft(e.draft, e.soft)}</p>
+      <hr class="dash"><dl class="rc-t"><dt>Cut</dt>${e.cut.map((c, k) => `<dd class="cut"${k ? ' style="grid-column:2"' : ''}>${esc(c)}</dd>`).join('')}
+      <dt style="margin-top:6px">Kept</dt>${e.kept.map((c, k) => `<dd class="kept" style="${k ? 'grid-column:2' : 'margin-top:6px'}">${esc(c)}</dd>`).join('')}
+      <dt style="margin-top:6px">Move</dt><dd class="mv" style="margin-top:6px">${esc(e.move)}</dd></dl>
+      <hr class="dash"><div class="rc-sum"><span>Words</span><span>${e.words}</span></div><div class="rc-sum"><span>Voice</span><span>still yours</span></div>
+      <hr class="dash"><span class="rc-lab">New first line</span><p class="rc-new">${esc(e.after)}</p>
+      <hr class="dash"><p class="rc-foot">Nothing posted. You press send.</p><div class="bars" aria-hidden="true">${bars}</div>
+      <p class="rc-foot" style="margin-top:6px">${e.who.startsWith('@') ? 'heycape is an example account' : esc(e.name) + ' is an example'}</p>`;
+    $$('.reprint button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.i === i)));
+    if (animate && !RM) { feed.classList.remove('printing'); void feed.offsetWidth; feed.classList.add('printing'); }
+  }
+  if (RM) feed.classList.remove('printing');
+  receipt(0, false);
+  $$('.reprint button').forEach(b => b.addEventListener('click', () => receipt(+b.dataset.i, true)));
+
+  /* proof sheet */
+  const sheet = $('#sheet'); let cur = 0;
+  function proof(i, animate) {
+    const e = EX[i]; cur = i;
+    $('#g-who').textContent = e.name; $('#g-net').textContent = 'Draft for ' + e.net;
+    $('#g-proof').innerHTML = e.proof; $('#g-clean').textContent = e.after;
+    $('#m-move').textContent = e.move + '.'; $('#m-why').textContent = e.why;
+    $('#m-kept').textContent = e.kept.join(' · '); $('#m-cut').textContent = e.cut.join(' · '); $('#m-words').textContent = e.words;
+    const mp = $('#m-post'); mp.dataset.net = e.nk; $('#mp-net').textContent = e.net;
+    const a = $('#mp-av'); a.className = e.av; a.style.backgroundPosition = e.pos;
+    $('#mp-name').textContent = e.name; $('#mp-h').textContent = e.who.startsWith('@') ? e.who : 'Example'; $('#mp-t').textContent = e.after;
+    $$('.tabs button').forEach(b => { const on = +b.dataset.i === i; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+    sheet.setAttribute('aria-labelledby', 'tb' + i);
+    if (animate && !RM) { sheet.classList.remove('drawn'); sheet.classList.add('drawing'); void sheet.offsetWidth; requestAnimationFrame(() => { sheet.classList.remove('drawing'); sheet.classList.add('drawn'); }); }
+  }
+  proof(0, false);
+  const tabs = $$('.tabs button');
+  tabs.forEach((b, k) => {
+    b.addEventListener('click', () => proof(k, true));
+    b.addEventListener('keydown', ev => { const d = ev.key === 'ArrowRight' ? 1 : ev.key === 'ArrowLeft' ? -1 : 0; if (!d) return; ev.preventDefault(); const n = (k + d + tabs.length) % tabs.length; tabs[n].focus(); proof(n, true); });
+  });
+
+  /* small mockups */
+  $('#wv').innerHTML = [6,10,16,9,18,14,8,16,20,12,7,14,18,10,6,12,16,9].map(h => `<i style="height:${h}px"></i>`).join('');
+  $('#ch').insertAdjacentHTML('beforeend', [[8,30],[20,40],[32,34],[44,44],[56,38],[68,32],[90,86]].map(([x, y], k, a) => `<i class="${k === a.length - 1 ? 'hot' : ''}" style="left:${x}%;bottom:${y}%"></i>`).join(''));
+
+  /* studio */
+  const CL = [
+    { n:'Priya Nair', f:'Priya', v:'Plain, numbers first, a little dry.', nv:['synergy','excited to announce','humbled'], tz:'Europe/London', s:'best Tue 8:15 AM', ap:'2 waiting on Priya', av:['av v2','0 20%'], c:'“down 34%”', cm:'say it was Q3.' },
+    { n:'Rafael Ortiz', f:'Rafael', v:'Contrarian and warm. Ends on a question.', nv:['disrupt','to the moon','crushing it'], tz:'America/Mexico_City', s:'best Wed 7:40 AM', ap:'1 waiting on Rafael', av:['av','0 64.71%'], c:'“the boring deal”', cm:'name the fund, it’s public.' },
+    { n:'Lena Fischer', f:'Lena', v:'Gentle, direct, second person.', nv:['hustle','grindset','manifest'], tz:'Europe/Berlin', s:'best Mon 6:30 PM', ap:'all approved', av:['av','0 47.06%'], c:'“rest is work”', cm:'love this, keep it.' },
+    { n:'Marco Vitale', f:'Marco', v:'Lowercase, chart first, admits misses.', nv:['guaranteed','wagmi','moon soon'], tz:'Europe/Rome', s:'best Thu 8:05 AM', ap:'3 waiting on Marco', av:['av v2','0 0'], c:'“i was wrong on oil”', cm:'yes, say it plainly.' }
+  ];
+  $$('.cl-list button').forEach(b => b.addEventListener('click', () => {
+    const c = CL[+b.dataset.c]; $$('.cl-list button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $('#ic-n').textContent = c.n; $('#ic-v').textContent = c.v;
+    $('#ic-nv').innerHTML = c.nv.map(w => `<s>${esc(w)}</s>`).join(' ');
+    $('#ic-tz').innerHTML = `<span class="mono" style="font-size:13.5px">${c.tz}</span> · ${c.s}`;
+    $('#ic-ap').innerHTML = `<span class="hand">${esc(c.ap)}</span>`;
+    const a = $('#ic-av'); a.className = c.av[0]; a.style.backgroundPosition = c.av[1];
+    $('#ic-cn').textContent = c.f; $('#ic-cn').nextSibling.textContent = ' on ';
+    $('.cmt mark').textContent = c.c; $('.cmt mark').nextSibling.textContent = ': ' + c.cm + ' Review link, no account needed.';
+  }));
+
+  /* pricing */
+  $$('.bill button').forEach(b => b.addEventListener('click', () => {
+    const m = b.dataset.b; $$('.bill button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $$('[data-y]').forEach(el => el.textContent = el.dataset[m]);
+  }));
+
+  /* final line with live underline */
+  const SOFT = ['just wanted to share','wanted to share','so i think','i think','i feel like','to be honest','honestly','kind of','sort of','pretty much','basically','actually','literally','really','very','just','finally','lol','maybe','probably'];
+  const RX = new RegExp(`\\b(${SOFT.map(s => s.replace(/ /g, '\\s+')).join('|')})\\b`, 'gi');
+  const li = $('#li-in'), lb = $('#li-back'), msg = $('#li-msg');
+  function paint() {
+    const t = li.value; let h = '', last = 0, n = 0;
+    t.replace(RX, (m, a, off) => { h += esc(t.slice(last, off)) + `<mark>${esc(m)}</mark>`; last = off + m.length; n++; return m; });
+    lb.innerHTML = h + esc(t.slice(last)) + '​';
+    li.style.height = 'auto'; li.style.height = li.scrollHeight + 'px';
+    msg.innerHTML = !t.trim() ? 'Try one with “honestly” or “just” in it.' : n ? `<b>${n} soft ${n === 1 ? 'word' : 'words'}</b> underlined. Sharpen rewrites it in your voice.` : 'No soft words. Sharpen still checks the move.';
+  }
+  li.addEventListener('input', paint); li.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+  addEventListener('resize', paint); document.fonts && document.fonts.ready.then(paint); paint();
+
+  /* reveal */
+  if ('IntersectionObserver' in window && !RM) {
+    document.documentElement.classList.add('rv-on');
+    const vh = innerHeight;
+    $$('.rise').forEach(el => { if (el.getBoundingClientRect().top < vh) el.classList.add('in'); });
+    const ro = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); ro.unobserve(x.target); } }), { rootMargin: '0px 0px -6% 0px' });
+    $$('.rise:not(.in)').forEach(el => ro.observe(el));
+    const so = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { proof(cur, true); so.disconnect(); } }), { threshold: .45 });
+    so.observe(sheet);
+  }
+})();
+</script>
+</body>
+</html>
