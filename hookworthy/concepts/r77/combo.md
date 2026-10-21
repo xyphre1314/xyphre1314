@@ -1,9 +1,11 @@
 # Combo: Sharp on Top, merged
 
-**Hero:** "They read one line. / Make it *hookworthy*." beside one proof card. A Sharpen pill taps, blue pencil strikes the soft words in reading order, the sharp line focus-pulls in, and the receipt fills (Move, Kept, Cut, Why, 18 → 9 words) by about 2s. The HTML is the finished state; motion only replays it.
+**Hero:** "They read one line. / Make it *hookworthy*." beside one proof card. A Sharpen pill taps, blue pencil strikes the soft words in reading order, the sharp line lands, and the receipt fills by about 2s. The HTML is the finished state. The left column ends on a "Posts to" row (X, Threads, LinkedIn, Bluesky), level with the card.
 
-**Two marks everywhere:** amber squiggle = soft, blue rule = sharp. The page opens on the rule under *hookworthy* and closes on the squiggle under *bad first lines*.
+**Two marks:** amber squiggle = soft, blue rule = sharp. The page opens on the rule under *hookworthy* and closes on the squiggle under *bad first lines*.
 
-**Merged in:** Blue Pencil's strike order, Show the Receipt's `<dl>`, Blue Field's 309 / 280 panel and approve frame (the client's page is light), and a real Try box on `core.js`.
+**Close:** the final input drives a live card (real `core.js`, debounced) showing your line struck, sharpened, with its receipt.
 
-**Panel fixes:** H1 44 / H2 32 on phone, a phone sticky bar, a Studio count of 4, "Yours don't have to," and metric-matched fallback fonts (CLS ≈ 0).
+**Merged in:** Blue Pencil's strike order, Show the Receipt's `<dl>`, Blue Field's 309 / 280 and approve frame.
+
+**Phone:** H1 44 / H2 32, a sticky bar, a timeline for Your day, compact pricing, 10.9 screens.
