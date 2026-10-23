@@ -23,7 +23,7 @@
   --line-2:rgba(255,255,255,.11);
   --glow:255 170 128;     /* the one hue: afterglow ember, used only as light + the fluff mark */
   --hot:255 238 228;      /* the beam's white-hot core */
-  --hx:.985;               /* where the beam lands on the window, as a fraction of its width */
+  --hx:.955;               /* where the beam lands on the window, as a fraction of its width */
   --ember:#FFA47A;
   --ease:cubic-bezier(.16,1,.3,1);
   --ease-io:cubic-bezier(.65,0,.35,1);
@@ -90,18 +90,18 @@ h1 .l2{color:var(--ink-2)}
 
 /* ---------- stage: light + window ---------- */
 .stage{position:relative;margin-top:112px;z-index:2}
-.light{position:absolute;left:calc(var(--pad) + (100% - 2 * var(--pad)) * var(--hx));top:0;width:0;height:0;z-index:0;pointer-events:none;--a:31deg}
-.beam,.core{position:absolute;bottom:0;transform-origin:50% 100%;transform:rotate(var(--a))}
-.beam{left:-130px;width:260px;height:900px;mix-blend-mode:plus-lighter;
-  background:linear-gradient(to top,rgba(var(--glow)/.30) 0%,rgba(var(--glow)/.13) 30%,rgba(var(--glow)/.045) 62%,rgba(var(--glow)/0) 92%);
+.light{position:absolute;left:calc(var(--pad) + (100% - 2 * var(--pad)) * var(--hx));top:0;width:0;height:0;z-index:0;pointer-events:none;--a:36deg}
+.beam,.core{position:absolute;bottom:-220px;transform-origin:50% calc(100% - 220px);transform:rotate(var(--a))}
+.beam{left:-130px;width:260px;height:1120px;mix-blend-mode:plus-lighter;
+  background:linear-gradient(to top,rgba(var(--glow)/.30) 0%,rgba(var(--glow)/.30) 19.6%,rgba(var(--glow)/.13) 44%,rgba(var(--glow)/.045) 70%,rgba(var(--glow)/0) 94%);
   -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 38%,#000 62%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 38%,#000 62%,transparent 100%);
   filter:blur(26px)}
-.core{left:-26px;width:52px;height:760px;mix-blend-mode:plus-lighter;
-  background:linear-gradient(to top,rgba(var(--hot)/.30) 0%,rgba(var(--hot)/.12) 30%,rgba(var(--hot)/.03) 65%,rgba(var(--hot)/0) 90%);filter:blur(14px)}
-.bloom{position:absolute;left:-560px;top:-100px;width:1000px;height:200px;border-radius:50%;mix-blend-mode:plus-lighter;
+.core{left:-26px;width:52px;height:980px;mix-blend-mode:plus-lighter;
+  background:linear-gradient(to top,rgba(var(--hot)/.46) 0%,rgba(var(--hot)/.46) 22.4%,rgba(var(--hot)/.16) 42%,rgba(var(--hot)/.04) 69%,rgba(var(--hot)/0) 91%);filter:blur(12px)}
+.bloom{position:absolute;left:-720px;top:-96px;width:940px;height:192px;border-radius:50%;mix-blend-mode:plus-lighter;
   background:radial-gradient(closest-side,rgba(var(--glow)/.26) 0%,rgba(var(--glow)/.10) 45%,rgba(var(--glow)/0) 100%);filter:blur(16px)}
-.hot{position:absolute;left:-200px;top:-18px;width:340px;height:36px;border-radius:50%;mix-blend-mode:plus-lighter;
-  background:radial-gradient(closest-side,rgba(var(--hot)/.42),rgba(var(--hot)/0));filter:blur(8px)}
+.hot{position:absolute;left:-240px;top:-14px;width:276px;height:28px;border-radius:50%;mix-blend-mode:plus-lighter;
+  background:radial-gradient(closest-side,rgba(var(--hot)/.7),rgba(var(--hot)/0));filter:blur(7px)}
 
 .window{position:relative;z-index:2;border-radius:16px;isolation:isolate;
   transform:perspective(2400px) rotateX(9deg) rotateY(-5deg) rotateZ(.6deg);transform-origin:50% 0%;
@@ -123,6 +123,8 @@ h1 .l2{color:var(--ink-2)}
   background:radial-gradient(46% 70% at calc(var(--hx) * 100%) 0%,rgba(var(--glow)/.10),rgba(var(--glow)/0) 70%),
     linear-gradient(112deg,rgba(255,255,255,.028) 0%,rgba(255,255,255,0) 34%)}
 .window > *{position:relative;z-index:1}
+.window > .spec{position:absolute;z-index:4;top:0;height:1px;right:14px;width:340px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.95) 72%,rgba(var(--hot)/.2));box-shadow:0 0 10px 1px rgba(var(--glow)/.45)}
 
 .bar{height:46px;display:flex;align-items:center;gap:16px;padding:0 16px;border-bottom:1px solid var(--line)}
 .dots{display:flex;gap:7px;width:60px}
@@ -196,6 +198,7 @@ h1 .l2{color:var(--ink-2)}
   .head{grid-template-columns:1fr;row-gap:28px}
   .aside{padding-bottom:0}
   .links{display:none}
+  .stage{margin-top:80px}
 }
 @media (max-width:900px){
   .body{grid-template-columns:minmax(0,1fr)}
@@ -219,12 +222,14 @@ h1 .l2{color:var(--ink-2)}
   .stage{margin-top:46px}
   :root{--hx:.97}
   .light{--a:52deg}
-  .beam{width:150px;left:-75px;height:340px}
-  .core{width:40px;left:-20px;height:300px}
+  .beam,.core{bottom:-120px;transform-origin:50% calc(100% - 120px)}
+  .beam{width:150px;left:-75px;height:460px}
+  .core{width:40px;left:-20px;height:420px}
   .bloom{width:440px;left:-300px;height:96px;top:-48px}
   .hot{width:160px;left:-100px;height:30px;top:-15px}
   .window{border-radius:14px;transform:perspective(1400px) rotateX(7deg) rotateZ(.5deg)}
   .bar{height:38px;padding:0 12px}
+  .window > .spec{width:190px;right:12px}
   .dots{gap:6px;width:auto}.dots i{width:9px;height:9px}
   .title{font-size:12px;margin-right:33px}
   .pane{padding:16px 16px 18px}
@@ -319,6 +324,7 @@ h1 .l2{color:var(--ink-2)}
     <div class="light" aria-hidden="true"><div class="beam"></div><div class="core"></div><div class="bloom"></div><div class="hot"></div></div>
 
     <figure class="window" role="group" aria-label="Example: Hookworthy sharpening a draft first line" style="margin:0">
+      <span class="spec" aria-hidden="true"></span>
       <div class="bar" aria-hidden="true">
         <div class="dots"><i></i><i></i><i></i></div>
         <div class="title">New post</div>
