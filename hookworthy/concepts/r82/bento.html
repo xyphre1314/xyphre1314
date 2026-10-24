@@ -253,13 +253,13 @@ main{position:relative;overflow-x:clip}
     "try try try try try try try try pv  pv  pv  pv"
     "day day day day rep rep rep rep res res res res"
     "who who who who st  st  st  st  st  st  st  st"
-    "tru tru tru tru st  st  st  st  st  st  st  st"}
+    "tru tru tru tru tru tru tru tru tru tru tru tru"}
 .t-try{grid-area:try}.t-pv{grid-area:pv}.t-day{grid-area:day}.t-rep{grid-area:rep}.t-res{grid-area:res}.t-who{grid-area:who}.t-st{grid-area:st}.t-tru{grid-area:tru}
 .tile{border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:22px;min-width:0;overflow:hidden}
 .tile > *{position:relative;z-index:1}
 .cap{font-size:24px;line-height:1.16;letter-spacing:-.027em}
 .cap.big{font-size:40px;line-height:1.04;letter-spacing:-.036em}
-.demo{margin-top:auto;min-width:0}
+.tile .demo{margin-top:auto;min-width:0}
 .tfoot{font-size:13.5px;line-height:1.5;color:var(--ink-3);text-wrap:pretty}
 .tfoot b{color:var(--ink);font-weight:500}
 /* scroll reveal: transform + opacity only, so nothing shifts */
@@ -318,8 +318,7 @@ main{position:relative;overflow-x:clip}
 .pn b{font-weight:700}
 .pt{font-size:14.5px;line-height:1.42;white-space:pre-line;overflow-wrap:anywhere}
 .pt .hk{font-weight:600}
-.pa{display:flex;justify-content:space-between;max-width:250px;margin-top:9px}
-.pa .ico{width:15px;height:15px}
+.pa{display:none}
 .n-x{background:#000;color:#E7E9EA;box-shadow:inset 0 0 0 1px #2F3336,0 30px 60px -36px rgba(0,0,0,.95)}.n-x .pn span,.n-x .pa{color:#7D8288}.n-x .tl{background:#333639}
 .n-th{background:#101010;color:#F3F5F7;box-shadow:inset 0 0 0 1px #2A2A2A,0 30px 60px -36px rgba(0,0,0,.95)}.n-th .pn span,.n-th .pa{color:#9A9A9A}.n-th .tl{background:#333}
 .n-li{background:#1B1F23;color:rgba(255,255,255,.92);box-shadow:inset 0 0 0 1px #2E3439,0 30px 60px -36px rgba(0,0,0,.95)}
@@ -338,9 +337,9 @@ main{position:relative;overflow-x:clip}
 .t-day{padding:0;gap:0}
 .t-day > .bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:inherit;background:#15120E}
 .t-day > .bg img{position:absolute;top:0;left:50%;height:600%;width:auto;max-width:none;transform:translateX(-46%)}
-.t-day > .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,10,.84) 0%,rgba(8,9,10,.62) 26%,rgba(8,9,10,.22) 50%,rgba(8,9,10,.5) 70%,rgba(8,9,10,.9) 100%)}
+.t-day > .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,10,.88) 0%,rgba(8,9,10,.7) 24%,rgba(8,9,10,.24) 50%,rgba(8,9,10,.5) 70%,rgba(8,9,10,.9) 100%)}
 .dhead{padding:28px 28px 0}
-.dlab{margin-top:10px;font-size:13px;color:var(--ink-2)}
+.dlab{display:inline-flex;margin-top:12px;padding:6px 11px;border-radius:999px;font-size:12.5px;color:var(--ink-2);background:rgba(8,9,10,.8);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .feed{list-style:none;margin:auto 12px 12px;padding:0;overflow:hidden;border-radius:16px}
 .nt{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:12px;padding:13px 16px;color:var(--x-ink)}
 .nt + .nt{box-shadow:inset 0 1px 0 var(--x-line)}
@@ -389,8 +388,9 @@ main{position:relative;overflow-x:clip}
 .notes .quote{color:#B4B8BE}
 
 /* who */
+.whead .tfoot{margin-top:12px;max-width:24em}
 .ppl{list-style:none;margin:0;padding:0}
-.ppl li{display:grid;grid-template-columns:36px minmax(0,1fr);column-gap:14px;padding:13px 0;border-top:1px solid var(--line-2)}
+.ppl li{display:grid;grid-template-columns:36px minmax(0,1fr);column-gap:14px;padding:15px 0;border-top:1px solid var(--line-2)}
 .ppl li:last-child{padding-bottom:0}
 .ppl .av{width:36px;height:36px;grid-row:1/span 3;margin-top:1px}
 .ppl h3{margin:0;font-size:15.5px;line-height:1.3;font-weight:600;letter-spacing:-.012em;color:var(--ink)}
@@ -405,9 +405,20 @@ main{position:relative;overflow-x:clip}
 .nev li:nth-child(even){padding-left:16px}
 .nev s{display:block;font-size:21px;line-height:1.15;font-weight:560;letter-spacing:-.028em;color:var(--ink-2);text-decoration-color:rgba(247,248,248,.55);text-decoration-thickness:1.5px}
 .nev span{display:block;margin-top:5px;font-size:13px;line-height:1.4;color:var(--ink-3)}
+/* on wide screens the Never list closes the grid as one long strip */
+@media (min-width:1100px){
+  .t-tru{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.2fr);grid-template-rows:auto 1fr;gap:14px 48px;align-items:start}
+  .t-tru .cap{grid-column:1;grid-row:1}
+  .t-tru .tfoot{grid-column:1;grid-row:2;align-self:end;max-width:20em}
+  .t-tru .nev{grid-column:2;grid-row:1/span 2;align-self:center;margin:0;grid-template-columns:repeat(4,minmax(0,1fr));border-top:0}
+  .t-tru .nev li,.t-tru .nev li:nth-child(odd),.t-tru .nev li:nth-child(even){padding:6px 0 6px 22px;border-bottom:0;box-shadow:inset 1px 0 0 var(--line-2)}
+  .t-tru .nev s{font-size:26px}
+  .t-tru .nev span{margin-top:8px;font-size:13.5px}
+}
 
 /* studio */
-.t-st .thead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,19em);gap:12px 32px;align-items:end}
+.t-st .thead{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 36px;align-items:end}
+.t-st .cap.big{font-size:36px}
 .t-st .thead p{font-size:14.5px;line-height:1.55;color:var(--ink-3);padding-bottom:4px}
 .st-pick button{height:40px;padding:0 15px 0 5px;font-size:13.5px}
 .st-pick .av{width:30px;height:30px}
@@ -608,7 +619,8 @@ footer{padding:104px 0 40px;color:var(--ink-3);font-size:14px}
   .pv-note{font-size:13.5px;min-height:0}
 
   /* the two half tiles */
-  .t-day .dhead{padding:16px 14px 0}
+  .t-day{padding:0;gap:0}
+  .t-day .dhead{padding:16px 14px 12px}
   .t-day .cap,.t-res .cap{font-size:15px;line-height:1.22;letter-spacing:-.022em}
   .t-res{padding:16px 14px 14px;gap:12px}
   .dlab{display:none}
@@ -637,6 +649,7 @@ footer{padding:104px 0 40px;color:var(--ink-3);font-size:14px}
   .ppl p{font-size:13px;line-height:1.4}
   .ppl .wl{font-size:12px}
 
+  .t-st .cap.big{font-size:27px}
   .t-st .thead p{font-size:14px;padding:0}
   .st-pick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0;background:none;box-shadow:none}
   .st-pick button{height:40px;justify-content:flex-start;box-shadow:inset 0 0 0 1px var(--line-2)}
@@ -696,6 +709,7 @@ footer{padding:104px 0 40px;color:var(--ink-3);font-size:14px}
   .signin{display:none}
   .ctas .btn{flex-basis:100%}
   .t-day .cap,.t-res .cap{font-size:14px}
+  .t-st .cap.big{font-size:24px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -948,7 +962,10 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
 
     <!-- 6. Who it's for -->
     <article class="tile glass t-who rv" id="who" aria-labelledby="w-h">
-      <h2 class="cap" id="w-h">Whatever you post,<br><span class="d">the first line decides.</span></h2>
+      <div class="whead">
+        <h2 class="cap" id="w-h">Whatever you post,<br><span class="d">the first line decides.</span></h2>
+        <p class="tfoot">Made for people who write their own posts, and the ghostwriters who write them for others.</p>
+      </div>
       <ul class="ppl demo">
         <li><span class="av me" aria-hidden="true"></span><h3>You post every day.</h3><p>Trades, lessons, the one you got wrong. Your lowercase stays.</p><p class="wl">Like <b>heycape</b>, a trader (example)</p></li>
         <li><span class="av v2" style="--y:20%" aria-hidden="true"></span><h3>You build in public.</h3><p>Ship notes that read like news, not a changelog.</p><p class="wl">Like <b>Priya</b>, a founder (example)</p></li>

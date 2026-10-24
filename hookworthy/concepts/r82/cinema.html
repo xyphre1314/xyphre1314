@@ -72,7 +72,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .tc-in{container-type:inline-size;width:100%}
 .st{font-size:min(var(--cap),calc(100cqi / var(--em,10)));line-height:.98;letter-spacing:-.046em}
 .st .l{white-space:nowrap}
-.tc-sub{margin-top:30px;font-size:18px;line-height:1.55;letter-spacing:-.008em;color:var(--ink-2);max-width:32em;text-wrap:pretty}
+.tc-sub{margin-top:30px;font-size:18px;line-height:1.55;letter-spacing:-.008em;color:var(--ink-2);max-width:36em;text-wrap:balance}
 .tc-sub b{color:var(--ink);font-weight:500}
 
 /* the one product mark: an ember wavy underline under fluff */
@@ -330,7 +330,7 @@ main{position:relative;overflow-x:clip}
 .strip{--lead:max(var(--pad),calc((100vw - var(--max)) / 2 + var(--pad)));overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:var(--lead);overscroll-behavior-x:contain;scrollbar-width:none;outline-offset:-2px;border-radius:0}
 .strip::-webkit-scrollbar{display:none}
 .strip:focus-visible{outline:2px solid var(--ink);border-radius:20px}
-.reel{list-style:none;margin:0;padding:6px var(--lead) 70px;display:flex;gap:20px;width:max-content}
+.reel{list-style:none;margin:0;padding:6px var(--lead) 44px;display:flex;gap:20px;width:max-content}
 .frame{width:min(520px,82vw);flex:none;scroll-snap-align:start;display:flex;flex-direction:column}
 .frame .scr{flex:1}
 .cap{padding:22px 4px 0}
@@ -395,9 +395,10 @@ main{position:relative;overflow-x:clip}
 
 /* ---- after you post: replies + results, a two-shot ---- */
 .after{padding-top:152px}
-.ahead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,24em);gap:20px 56px;align-items:end;margin-bottom:48px}
-.ahead .lede{padding-bottom:6px}
-.duo{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:20px}
+.after-g{display:grid;grid-template-columns:minmax(476px,.82fr) minmax(0,1.18fr);gap:40px 64px;align-items:start}
+.ahead{position:sticky;top:132px;padding-top:24px}
+.ahead .lede{margin-top:20px}
+.duo{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
 .duo > .glass{padding:30px;display:flex;flex-direction:column;gap:22px}
 .duo .h3{max-width:19em}
 .thread{padding:18px 20px}
@@ -431,7 +432,6 @@ main{position:relative;overflow-x:clip}
 .roll .wl b{color:var(--ink-2);font-weight:500}
 
 /* ---- studio: one window, a tab per client ---- */
-.studio-s{padding-top:168px}
 .sw{display:grid;grid-template-areas:"bar" "body"}
 .sw .bar{grid-template-columns:72px minmax(0,1fr) 72px;height:58px}
 .tabs{display:flex;justify-content:center;gap:4px}
@@ -509,8 +509,9 @@ main{position:relative;overflow-x:clip}
 .fin-n{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:12.5px;font-weight:500;color:var(--ink-3);pointer-events:none}
 .fin-form .btn{height:56px;padding:0 24px;font-size:15.5px}
 .fin .micro{margin-top:14px}
-.fpay{position:relative;display:flex;flex-direction:column;gap:12px;max-width:620px;margin:64px auto 0;text-align:left}
-.fpay .light{--lx:90%;--ly:0px;--a:30deg;--bl:640px;--bw:240px}
+.fpay{position:relative;display:flex;flex-direction:column;gap:12px;max-width:620px;margin:84px auto 0;text-align:left}
+.fpay .light{--lx:92%;--ly:0px;--a:64deg;--bl:720px;--bw:220px}
+.fin-form,.fin .micro{position:relative;z-index:2}
 .fpay .light .bloom{left:-400px;width:560px;top:-70px;height:140px}
 .fpay .light .hot{left:-200px;width:240px}
 .fpay > :not(.light){position:relative;z-index:1}
@@ -539,12 +540,10 @@ footer{padding:150px 0 40px;color:var(--ink-3);font-size:14px}
 /* ---------- responsive ---------- */
 @media (max-width:1199px){
   .links{display:none}
-  .ahead{grid-template-columns:1fr;gap:16px}
-  .ahead .lede{padding-bottom:0}
   .ex-l{display:none}
 }
 @media (max-width:1000px){
-  .duo{grid-template-columns:1fr}
+  .after-g{grid-template-columns:1fr}.ahead{position:static;padding-top:0}
   .sw-body{grid-template-columns:1fr}.st-post{border-right:0;border-bottom:1px solid var(--line)}
   .plans{grid-template-columns:1fr}.plan + .plan{box-shadow:inset 0 1px 0 var(--line)}
   .roll li{grid-template-columns:44px minmax(0,1fr);row-gap:6px}.roll li > div{grid-column:2}
@@ -575,8 +574,9 @@ footer{padding:150px 0 40px;color:var(--ink-3);font-size:14px}
   /* title cards: left-aligned, fit to the width of the phone, not 100vh */
   .tc{min-height:0;align-items:flex-start;text-align:left;padding-block:76px 22px}
   .st{line-height:1;letter-spacing:-.045em}
-  .tc-sub{margin-top:12px;font-size:15.5px;max-width:none}
-  .motion .tc.rv .tc-in,.motion .rv .rvi{transform:translateX(-14px)}
+  .tc-sub{margin-top:12px;font-size:15.5px;max-width:none;text-wrap:pretty}
+  .motion .tc.rv:not(.in) .tc-in,.motion .rv:not(.in) .rvi{transform:translateX(-14px)}
+  .tc-sub br{display:none}
   .hero .tc{padding-block:26px 0}
   .hero .tc-sub{margin-top:14px;font-size:16px}
   .ctas{justify-content:flex-start;margin-top:20px;gap:8px;width:100%}
@@ -662,8 +662,9 @@ footer{padding:150px 0 40px;color:var(--ink-3);font-size:14px}
   .done-post{display:none}
 
   .after{padding-top:76px}
-  .ahead{margin-bottom:20px;gap:10px}
-  .duo{gap:0}
+  .after-g{gap:20px}
+  .ahead .lede{margin-top:10px}
+  .duo{gap:0;margin-inline:calc(var(--pad) * -1)}
   .duo > .glass{padding:20px 16px;gap:14px;border-radius:0;background:none;box-shadow:none}
   .duo > .glass::before{display:none}
   .duo > .glass + .glass{box-shadow:inset 0 1px 0 var(--line)}
@@ -682,7 +683,6 @@ footer{padding:150px 0 40px;color:var(--ink-3);font-size:14px}
   .roll p{font-size:14.5px}
   .roll .wl{margin-top:2px;font-size:12.5px}
 
-  .studio-s{padding-top:76px}
   .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:12px 16px;background:none;box-shadow:none}
   .tabs button{height:40px;font-size:13.5px;box-shadow:inset 0 0 0 1px var(--line-2)}
   .sw{grid-template-areas:"bar" "body";grid-template-rows:auto auto}
@@ -1011,13 +1011,11 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
 
 <!-- SCENE 5 · the morning after: replies + results, a two-shot -->
 <section class="scene after" id="after" aria-labelledby="af-h">
-  <div class="wrap">
+  <div class="wrap after-g">
     <div class="ahead">
       <h2 class="h2" id="af-h">Answer every reply.<br><span class="d">Know what landed.</span></h2>
       <p class="lede">Replies and results show up next to your drafts, in plain words.</p>
     </div>
-  </div>
-  <div class="wrap bleed">
     <div class="duo">
       <article class="glass">
         <h3 class="h3">Replies come in with your answer drafted. You send it.</h3>
@@ -1058,12 +1056,10 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
 </section>
 
 <!-- SCENE 7 · studio: one window, a tab per client -->
-<section class="scene studio-s" id="studio" aria-labelledby="st-h">
-  <div class="wrap">
-    <div class="ahead">
-      <h2 class="h2" id="st-h">Every client, their voice.<br><span class="d">Nothing ships without a yes.</span></h2>
-      <p class="lede">For ghostwriters and agencies. Each client gets their own voice, words they never use, a time zone and a yes before anything posts.</p>
-    </div>
+<section class="scene" id="studio" aria-labelledby="st-h">
+  <div class="wrap tc rv">
+    <div class="tc-in"><h2 class="st" id="st-h" style="--em:12.3"><span class="l">Every client, their voice.</span><br><span class="l d">Nothing ships without a yes.</span></h2></div>
+    <p class="tc-sub rvi">For ghostwriters and agencies. Each client gets their own voice, words they never use, a time zone and a yes before anything posts.</p>
   </div>
   <div class="wrap bleed">
     <div class="window sw">

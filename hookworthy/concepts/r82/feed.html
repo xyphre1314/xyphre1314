@@ -74,7 +74,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 
 /* the one product mark: an ember wavy underline under fluff */
 .fl{text-decoration-line:underline;text-decoration-style:wavy;text-decoration-color:var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.3em;text-decoration-skip-ink:none}
-.cut{color:var(--x-mute);background:linear-gradient(rgba(247,248,248,.6),rgba(247,248,248,.6)) 0 58%/100% 1.5px no-repeat;-webkit-box-decoration-break:slice;box-decoration-break:slice}
+.cut{color:#868B91;background:linear-gradient(rgba(247,248,248,.6),rgba(247,248,248,.6)) 0 58%/100% 1.5px no-repeat;-webkit-box-decoration-break:slice;box-decoration-break:slice}
 
 /* ---------- surfaces ---------- */
 .glass{position:relative;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.042),rgba(255,255,255,.016) 60%,rgba(255,255,255,.012));
@@ -172,7 +172,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 /* a post: avatar gutter + body, like the feed */
 .p{display:grid;grid-template-columns:var(--av) minmax(0,1fr);column-gap:var(--gap)}
 .p > *{grid-column:2;min-width:0}
-.p > .av{grid-column:1;grid-row:1 / span 2;width:var(--av);height:var(--av)}
+.p > .av,.p > .ni{grid-column:1;grid-row:1 / span 2;width:var(--av);height:var(--av)}
 .p > .xname{min-height:20px}
 .p > .h1,.p > .h2{margin-top:10px}
 .p > .lede{margin-top:14px}
@@ -185,14 +185,14 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 
 /* right rail: the CTA, the examples, where it posts */
 .rrail{min-width:0;align-self:stretch;padding:0 0 24px 32px}
-.rr{position:sticky;top:0;display:flex;flex-direction:column;gap:16px;padding-top:12px}
+.rr{position:sticky;top:0;display:flex;flex-direction:column;gap:14px;padding-top:12px}
 .rcard{border-radius:18px;overflow:hidden}
 .rcard > h2{padding:14px 18px 6px;font-size:19px;line-height:1.3;font-weight:650;letter-spacing:-.016em;color:var(--ink)}
-.rcta{padding:18px}
+.rcta{padding:16px 18px}
 .rcta p{font-size:15px;line-height:1.45;color:var(--ink-2);letter-spacing:-.006em}
 .rcta p b{color:var(--ink);font-weight:560}
-.rcta .btn{width:100%;margin:14px 0 12px}
-.trend{display:grid;gap:1px;width:100%;text-align:left;padding:10px 18px;transition:background-color .2s}
+.rcta .btn{width:100%;margin:12px 0 10px}
+.trend{display:grid;gap:0;width:100%;text-align:left;padding:8px 18px;transition:background-color .2s}
 .trend:hover{background:rgba(255,255,255,.035)}
 .trend:focus-visible{outline-offset:-3px;border-radius:12px}
 .trend .tm{font-size:13px;color:var(--ink-3)}
@@ -201,7 +201,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .trend[aria-pressed="true"]{background:rgba(255,255,255,.05)}
 .trend[aria-pressed="true"] .tt::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px rgba(255,255,255,.1)}
 .rcard .more{display:block;padding:8px 18px 14px;font-size:13px;color:var(--ink-3)}
-.net{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:12px;padding:9px 18px}
+.net{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:12px;padding:7px 18px}
 .net .nic{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#141518;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
 .net .nic svg{width:15px;height:15px;fill:currentColor}
 .net p{display:flex;flex-direction:column;font-size:13px;line-height:1.35;color:var(--ink-3);min-width:0}
@@ -219,7 +219,8 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 
 /* hero: the pinned post where the sharpen happens */
 .hero{overflow:clip}
-.sub{margin-top:16px;font-size:17px;line-height:1.5;letter-spacing:-.008em;color:var(--ink-2);max-width:34em}
+.hero .p > :not(.stage),.hero .ctx{position:relative;z-index:2}
+.sub{margin-top:16px;font-size:17px;line-height:1.5;letter-spacing:-.008em;color:var(--ink-2);max-width:27em}
 .ctas{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin-top:18px}
 .ctas .btn{height:40px;padding:0 18px;font-size:14.5px}
 .stage{position:relative;margin-top:20px;--hx:.9}
@@ -263,6 +264,8 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .post .xacts{margin-top:10px;max-width:92%;color:#71767E}
 .post .xacts .ico{width:16px;height:16px}
 .window .hits{margin-top:12px;min-height:1.5em}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;height:52px;margin:0 18px;box-shadow:inset 0 1px 0 var(--line);font-size:13px;color:var(--ink-3)}
+.pill{display:inline-flex;align-items:center;height:30px;padding:0 15px;border-radius:999px;font-size:13px;font-weight:600;color:#08090A;background:linear-gradient(180deg,#fff,#E9EAEC);box-shadow:inset 0 -1px 0 rgba(0,0,0,.12),0 4px 12px -4px rgba(0,0,0,.7)}
 .ex-ph,.hmeta{display:none}
 .posts{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px}
 .posts span{display:inline-flex;align-items:center;gap:7px;color:var(--ink-2)}
@@ -272,8 +275,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .since b{color:var(--ink-2);font-weight:500}
 
 /* hero motion: one orchestrated moment; replays only when someone picks an example */
-.motion .hero .h1 .l{display:inline-block;animation:rise 1s var(--ease) both}
-.motion .hero .h1 .l2{animation-delay:.08s}
+.motion .hero .h1{animation:rise 1s var(--ease) both}
 .motion .hero .sub{animation:rise-sm .9s var(--ease) .24s both}
 .motion .hero .ctas{animation:rise-sm .9s var(--ease) .3s both}
 .motion .window{animation:settle 1.1s var(--ease) .2s both}
@@ -483,6 +485,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 
 /* final: a reply to us that sharpens live */
 .fin{overflow:clip}
+.fin .p > :not(.fpay){position:relative;z-index:2}
 .fin-sub{margin-top:16px;font-size:17px;line-height:1.5;color:var(--ink-2)}
 .sq{text-decoration:underline wavy var(--ember);text-decoration-thickness:max(2px,.034em);text-underline-offset:.2em;text-decoration-skip-ink:none}
 .reply{margin-top:18px;padding-top:16px;box-shadow:inset 0 1px 0 var(--x-line)}
@@ -501,7 +504,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .fin-form .btn{height:52px;padding:0 22px;font-size:15px}
 .reply .micro{margin-top:12px}
 .fpay{position:relative;display:flex;flex-direction:column;gap:12px;margin-top:20px}
-.fpay .light{--lx:86%;--ly:0px;--a:30deg;--bl:560px;--bw:220px}
+.fpay .light{--lx:86%;--ly:0px;--a:30deg;--bl:560px;--bw:220px;--sink:70px}
 .fpay .light .bloom{left:-380px;width:520px;top:-64px;height:128px}
 .fpay .light .hot{left:-190px;width:230px}
 .fpay > :not(.light){position:relative;z-index:1}
@@ -563,14 +566,15 @@ footer p{margin-top:8px}
   .ctx{font-size:12.5px;margin-bottom:2px}
   .xname{font-size:14.5px}
   .tl::before{top:calc(var(--av) + 4px)}
+  .p.tl:has(> .wide)::before{display:none}
 
   /* hero */
   .sub{font-size:16px;margin-top:12px}
-  .ctas{margin-top:14px;gap:8px 12px}
+  .ctas{margin-top:14px;flex-direction:column;align-items:flex-start;gap:8px}
   .ctas .btn{height:38px;padding:0 16px;font-size:14px}
   .ctas .micro{font-size:12.5px}
   .stage{margin-top:16px;--hx:.88}
-  .stage .light{--a:30deg;--bw:200px;--bl:460px;--sink:110px;--k:1.4}
+  .stage .light{--a:22deg;--bw:200px;--bl:300px;--sink:110px;--k:1.3}
   .stage .light .bloom{left:-300px;width:380px;height:100px;top:-50px}
   .stage .light .hot{left:-140px;width:180px;height:24px;top:-12px}
   .spec{width:200px;right:12px}
@@ -581,7 +585,10 @@ footer p{margin-top:8px}
   .compose{margin-top:8px;gap:10px}
   .compose .av,.who .av{width:30px;height:30px}
   .dtext{font-size:15.5px;line-height:1.55}
+  .dtext .cut{color:#93989E}
   .note{display:none}
+  .foot{height:46px;margin:0 14px;font-size:12.5px}
+  .pill{height:28px;padding:0 13px;font-size:12.5px}
   .wmid{padding:10px 14px 0}
   .post{margin-top:10px;padding:12px 13px 11px;border-radius:13px}
   .who .nm{font-size:13.5px}
@@ -726,7 +733,6 @@ footer p{margin-top:8px}
   :root{--cp:14px}
   .tabbar > a:not(.btn){width:40px}
   .tabbar .btn{padding:0 14px;font-size:14.5px}
-  .ctas .micro .m2{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -810,7 +816,7 @@ footer p{margin-top:8px}
       <p class="sub wide">Hookworthy sharpens your first line in one tap. It still sounds like you.</p>
       <div class="ctas wide">
         <a class="btn btn-glass" href="#sharpen">Try it on your line<svg class="ico go" aria-hidden="true"><use href="#i-down"/></svg></a>
-        <p class="micro">Free forever<i aria-hidden="true">·</i>No card<i class="m2" aria-hidden="true">·</i><span class="m2">Nothing posts without you</span></p>
+        <p class="micro">Free forever<i aria-hidden="true">·</i>No card</p>
       </div>
       <div class="stage wide">
         <div class="light" aria-hidden="true"><i class="beam"></i><i class="core"></i><i class="bloom"></i><i class="hot"></i></div>
@@ -840,6 +846,7 @@ footer p{margin-top:8px}
             </article>
             <div class="hits"><span class="k">Why it hits</span><p id="pf-why">$10k stops the scroll. 3 years makes it believable.</p></div>
           </div>
+          <div class="foot"><span>Nothing posts without you.</span><span class="pill" aria-hidden="true">Schedule</span></div>
         </figure>
       </div>
       <div class="ex-ph wide" role="group" aria-labelledby="exp-l">
@@ -1148,9 +1155,9 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
 <aside class="rrail" aria-label="Start here">
   <div class="rr" id="rr">
     <div class="rcard glass rcta">
-      <p><b>Free forever.</b> No card. Paste a line, see it sharpen.</p>
+      <p><b>Free forever.</b> Your line, sharpened.</p>
       <a class="btn btn-white" href="#start">Sharpen my first line</a>
-      <p class="micro">Nothing posts without you.</p>
+      <p class="micro">No card<i aria-hidden="true">·</i>Nothing posts without you</p>
     </div>
     <section class="rcard glass" aria-labelledby="rx-h">
       <h2 id="rx-h">Watch another real one</h2>
@@ -1164,10 +1171,10 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
     </section>
     <section class="rcard glass" aria-labelledby="rp-h">
       <h2 id="rp-h">Posts to</h2>
-      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-x"/></svg></span><p><b>X</b>Long ones become a thread</p><button class="btn btn-glass" type="button" data-n="0">Preview<span class="sr"> on X</span></button></div>
+      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-x"/></svg></span><p><b>X</b>Splits into a thread</p><button class="btn btn-glass" type="button" data-n="0">Preview<span class="sr"> on X</span></button></div>
       <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-threads"/></svg></span><p><b>Threads</b>Fits in one post</p><button class="btn btn-glass" type="button" data-n="1">Preview<span class="sr"> on Threads</span></button></div>
-      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-li"/></svg></span><p><b>LinkedIn</b>Your line, above “see more”</p><button class="btn btn-glass" type="button" data-n="2">Preview<span class="sr"> on LinkedIn</span></button></div>
-      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-bsky"/></svg></span><p><b>Bluesky</b>Split at a full stop</p><button class="btn btn-glass" type="button" data-n="3">Preview<span class="sr"> on Bluesky</span></button></div>
+      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-li"/></svg></span><p><b>LinkedIn</b>Above “see more”</p><button class="btn btn-glass" type="button" data-n="2">Preview<span class="sr"> on LinkedIn</span></button></div>
+      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-bsky"/></svg></span><p><b>Bluesky</b>Splits at a full stop</p><button class="btn btn-glass" type="button" data-n="3">Preview<span class="sr"> on Bluesky</span></button></div>
       <span class="pad" aria-hidden="true"></span>
     </section>
     <p class="rnews"><i aria-hidden="true"></i><span><b>Since Sept 8,</b> X pays for original posts, not replies.</span></p>
