@@ -1,0 +1,1443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hookworthy: They read one line</title>
+<meta name="description" content="Hookworthy sharpens your first line in one tap. It still sounds like you.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#08090A">
+<link rel="preload" href="../../fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion')</script>
+<style>
+/* Feed. The homepage is a timeline: a slim left rail, one feed column, a right rail that stays.
+   Afterglow brand, unchanged: Inter only (Display for headings, Text for UI), soft white on #08090A,
+   the feed itself is X-dark #000, glass + gradient hairlines, ember #FFAA80 only as light and the fluff underline. */
+@font-face{font-family:"Inter V";src:url("../../fonts/Inter-Variable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+:root{
+  --bg:#08090A;
+  --ink:#F7F8F8;   /* headings line 1, UI */
+  --ink-2:#A4A8AF; /* heading line 2, sub */
+  --ink-3:#8D929A; /* lede, meta */
+  --line:rgba(255,255,255,.07);
+  --line-2:rgba(255,255,255,.11);
+  --x:#000; --x-line:#2F3336; --x-ink:#E7E9EA; --x-mute:#7D8288;
+  --glow:255 170 128; --hot:255 238 228; --ember:#FFAA80;
+  --ease:cubic-bezier(.16,1,.3,1); --ease-io:cubic-bezier(.65,0,.35,1);
+  --lw:264px; --cw:680px; --rw:352px;   /* left rail, feed, right rail */
+  --cp:24px;                              /* cell padding */
+  --av:40px; --gap:12px;                  /* avatar gutter */
+  --hd:53px;                              /* feed header */
+  --mbar:0px;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:calc(var(--hd) + 8px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Inter V",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:clip;padding-bottom:var(--mbar)}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+svg{display:block;flex:none}
+button,input,textarea{font:inherit;color:inherit}
+button{background:none;border:0;padding:0;margin:0;cursor:pointer}
+p,h1,h2,h3,ul,ol,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+::selection{background:rgba(255,255,255,.22);color:#fff}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-weight:560;font-size:14px}
+.skip:focus{top:12px}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* film grain */
+body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 -.25'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+/* avatars: example people from the sprite sheets, plus our own mark */
+.av{display:inline-block;flex:none;border-radius:50%;background:#1A1B1E url(../../assets/people/avatars.jpg) 0 var(--y,0%)/100% auto no-repeat;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.av.v2{background-image:url(../../assets/people/avatars-2.jpg)}
+.av.me{background-image:url(../../assets/people/you.jpg);background-size:cover;background-position:center}
+.av.you{background:radial-gradient(circle at 50% 38%,#3A3D43 0 22%,transparent 23%),radial-gradient(ellipse 60% 44% at 50% 100%,#3A3D43 0 70%,transparent 71%),#1A1B1E}
+.av.hw{display:grid;place-items:center;background:linear-gradient(180deg,#FFFFFF,#E6E7EA);color:#08090A;font:650 21px/1 "Inter V",system-ui,sans-serif;letter-spacing:-.05em;box-shadow:inset 0 -1px 0 rgba(0,0,0,.16),0 0 0 1px rgba(255,255,255,.1)}
+.av.hw::before{content:"h";margin-top:-2px}
+
+/* ---------- type ---------- */
+.h1,.h2{font-weight:600;color:var(--ink);font-feature-settings:"calt","kern"}
+.h1{font-size:min(66px,calc((100cqi - 2 * var(--cp) - var(--av) - var(--gap)) / 8.7));line-height:1;letter-spacing:-.042em}
+.h2{font-size:min(46px,calc((100cqi - 2 * var(--cp) - var(--av) - var(--gap)) / 12.2));line-height:1.05;letter-spacing:-.038em}
+.h2.xl{font-size:min(64px,calc((100cqi - 2 * var(--cp) - var(--av) - var(--gap)) / 7.2));line-height:1;letter-spacing:-.042em}
+.h1 .d,.h2 .d{color:var(--ink-2)}
+.h3{font-size:19px;line-height:1.3;font-weight:600;letter-spacing:-.016em;color:var(--ink)}
+.lede{font-size:16.5px;line-height:1.55;letter-spacing:-.006em;color:var(--ink-3);max-width:34em;text-wrap:pretty}
+.lede b{color:var(--ink);font-weight:500}
+
+/* the one product mark: an ember wavy underline under fluff */
+.fl{text-decoration-line:underline;text-decoration-style:wavy;text-decoration-color:var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.3em;text-decoration-skip-ink:none}
+.cut{color:var(--x-mute);background:linear-gradient(rgba(247,248,248,.6),rgba(247,248,248,.6)) 0 58%/100% 1.5px no-repeat;-webkit-box-decoration-break:slice;box-decoration-break:slice}
+
+/* ---------- surfaces ---------- */
+.glass{position:relative;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.042),rgba(255,255,255,.016) 60%,rgba(255,255,255,.012));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 1px 2px rgba(0,0,0,.45),0 18px 36px -18px rgba(0,0,0,.7),0 50px 100px -40px rgba(0,0,0,.8)}
+.glass::before,.window::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
+  background:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(255,255,255,.065) 28%,rgba(255,255,255,.04) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.xcard{position:relative;background:var(--x);color:var(--x-ink);border-radius:16px;box-shadow:inset 0 0 0 1px var(--x-line),inset 0 1px 0 rgba(255,255,255,.07),0 1px 2px rgba(0,0,0,.5),0 28px 56px -30px rgba(0,0,0,.95)}
+.xrow{display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:12px}
+.xav{width:40px;height:40px}
+.xname{display:flex;align-items:center;flex-wrap:wrap;gap:0 5px;font-size:15px;line-height:1.35;color:var(--x-mute);min-width:0}
+.xname b{color:var(--x-ink);font-weight:650;letter-spacing:-.008em}
+.tag{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:999px;font-size:11px;font-weight:540;letter-spacing:.01em;color:#B4B8BE;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.xtext{margin:3px 0 0;font-size:15px;line-height:1.45;color:var(--x-ink);white-space:pre-line;overflow-wrap:anywhere}
+.xacts{display:flex;justify-content:space-between;max-width:400px;margin-top:12px;color:var(--x-mute)}
+.xacts .ico{width:18px;height:18px}
+.hits{display:flex;gap:12px;align-items:baseline}
+.hits .k{flex:none;font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.hits p{font-size:15px;line-height:1.5;color:var(--ink-2);letter-spacing:-.006em}
+.hits p b{color:var(--ink);font-weight:560}
+.hits .n2{margin-top:4px;font-size:13.5px;color:var(--ink-3)}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:560 15px/1 "Inter V",system-ui,sans-serif;letter-spacing:-.012em;white-space:nowrap;cursor:pointer;
+  transition:transform .35s var(--ease),background-color .25s var(--ease),box-shadow .35s var(--ease),color .2s}
+.btn:focus-visible{border-radius:999px}
+.btn:active{transform:scale(.975)}
+.btn-white{color:#08090A;background:linear-gradient(180deg,#FFFFFF 0%,#ECEDEF 100%);box-shadow:inset 0 -1px 0 rgba(0,0,0,.14),inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,.5),0 10px 24px -10px rgba(0,0,0,.9)}
+.btn-white:hover{transform:translateY(-1px);box-shadow:inset 0 -1px 0 rgba(0,0,0,.14),inset 0 1px 0 #fff,0 2px 4px rgba(0,0,0,.5),0 16px 32px -12px rgba(0,0,0,.95),0 0 0 4px rgba(255,255,255,.06)}
+.btn-white:active{transform:scale(.975)}
+.btn-glass{color:var(--ink);background:rgba(255,255,255,.055);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.09),0 10px 24px -12px rgba(0,0,0,.9);-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%)}
+.btn-glass:hover{background:rgba(255,255,255,.085);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.1),0 10px 24px -12px rgba(0,0,0,.9)}
+.btn-sm{height:34px;padding:0 15px;font-size:13.5px}
+.btn-xs{height:32px;padding:0 14px;font-size:13px}
+.btn .go{width:14px;height:14px;transition:transform .35s var(--ease)}
+.btn:hover .go{transform:translateY(2px)}
+.pills{display:flex;flex-wrap:wrap;gap:4px}
+.pills button{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 13px;border-radius:999px;font-size:13px;font-weight:500;letter-spacing:-.006em;color:var(--ink-3);transition:color .2s,background-color .2s,box-shadow .2s}
+.pills button:hover{color:var(--ink)}
+.pills button[aria-pressed="true"]{color:var(--ink);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.08),0 1px 2px rgba(0,0,0,.4)}
+.pills button:focus-visible{border-radius:999px}
+.track{display:inline-flex;gap:2px;padding:4px;border-radius:999px;background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px var(--line)}
+.micro{font-size:13px;line-height:1.4;color:var(--ink-3);letter-spacing:-.003em}
+.micro i{font-style:normal;padding:0 7px;color:#5C6068}
+
+/* ---------- light: one beam, used only as light ---------- */
+.light{position:absolute;left:var(--lx);top:var(--ly,0);width:0;height:0;z-index:0;pointer-events:none;--a:36deg;--bw:240px;--bl:760px;--sink:200px;--k:1}
+.light i{position:absolute;display:block}
+.light .beam,.light .core{bottom:calc(var(--sink) * -1);transform-origin:50% calc(100% - var(--sink));transform:rotate(var(--a));mix-blend-mode:plus-lighter}
+.light .beam{left:calc(var(--bw) / -2);width:var(--bw);height:calc(var(--bl) + var(--sink));filter:blur(26px);
+  background:linear-gradient(to top,rgba(var(--glow)/calc(.3 * var(--k))) 0,rgba(var(--glow)/calc(.3 * var(--k))) var(--sink),rgba(var(--glow)/calc(.13 * var(--k))) calc(var(--sink) + 24%),rgba(var(--glow)/calc(.045 * var(--k))) calc(var(--sink) + 50%),rgba(var(--glow)/0) calc(var(--sink) + 76%));
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 38%,#000 62%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 38%,#000 62%,transparent 100%)}
+.light .core{left:calc(var(--bw) / -10);width:calc(var(--bw) / 5);height:calc(var(--bl) * .85 + var(--sink));filter:blur(12px);
+  background:linear-gradient(to top,rgba(var(--hot)/calc(.46 * var(--k))) 0,rgba(var(--hot)/calc(.46 * var(--k))) var(--sink),rgba(var(--hot)/calc(.16 * var(--k))) calc(var(--sink) + 22%),rgba(var(--hot)/.04) calc(var(--sink) + 48%),rgba(var(--hot)/0) calc(var(--sink) + 72%))}
+.light .bloom{left:-560px;top:-80px;width:720px;height:160px;border-radius:50%;mix-blend-mode:plus-lighter;filter:blur(16px);
+  background:radial-gradient(closest-side,rgba(var(--glow)/.24),rgba(var(--glow)/.09) 45%,rgba(var(--glow)/0))}
+.light .hot{left:-220px;top:-14px;width:250px;height:28px;border-radius:50%;mix-blend-mode:plus-lighter;filter:blur(7px);
+  background:radial-gradient(closest-side,rgba(var(--hot)/.7),rgba(var(--hot)/0))}
+.spec{position:absolute;z-index:4;top:0;right:14px;width:260px;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.95) 72%,rgba(var(--hot)/.2));box-shadow:0 0 10px 1px rgba(var(--glow)/.45)}
+
+/* ================= the shell: left rail, feed, right rail ================= */
+.shell{display:grid;grid-template-columns:var(--lw) minmax(0,var(--cw)) var(--rw);justify-content:center;align-items:start}
+
+/* left rail, like a sidebar: wordmark + sections */
+.lrail{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;align-items:flex-start;padding:6px 20px 18px 4px}
+.mark{display:inline-block;font-size:22px;font-weight:640;letter-spacing:-.035em;color:var(--ink);line-height:1;padding:16px 14px 20px;border-radius:999px}
+.mark:focus-visible{border-radius:999px}
+.lnav{display:flex;flex-direction:column;gap:2px;width:100%}
+.lnav a{display:inline-flex;align-items:center;gap:18px;width:max-content;max-width:100%;height:50px;padding:0 22px 0 13px;border-radius:999px;font-size:18px;font-weight:450;letter-spacing:-.012em;color:var(--ink-2);transition:background-color .2s,color .2s}
+.lnav a:hover{background:rgba(255,255,255,.06);color:var(--ink)}
+.lnav a:focus-visible{border-radius:999px}
+.lnav a[aria-current]{color:var(--ink);font-weight:650}
+.lnav .ico{width:24px;height:24px;stroke-width:1.6}
+.lnav a[aria-current] .ico{stroke-width:2.2}
+.acct{margin-top:auto;display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px 10px 10px;border-radius:999px;transition:background-color .2s}
+.acct:hover{background:rgba(255,255,255,.06)}
+.acct:focus-visible{border-radius:999px}
+.acct .av{width:40px;height:40px}
+.acct span{display:flex;flex-direction:column;font-size:14px;line-height:1.3;color:var(--ink-3)}
+.acct b{font-size:15px;font-weight:620;color:var(--ink)}
+
+/* the feed column: X-dark, hairline cells */
+.col{position:relative;min-width:0;background:var(--x);box-shadow:-1px 0 0 var(--x-line),1px 0 0 var(--x-line);container:col / inline-size;min-height:100vh}
+.ptop{display:none}
+.chead{position:sticky;top:0;z-index:40;display:grid;grid-template-columns:1fr 1fr;height:var(--hd);background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);box-shadow:0 1px 0 var(--x-line)}
+.chead a{position:relative;display:grid;place-items:center;font-size:15px;font-weight:500;color:var(--x-mute);transition:background-color .2s,color .2s}
+.chead a:hover{background:rgba(255,255,255,.04);color:var(--x-ink)}
+.chead a:focus-visible{outline-offset:-4px;border-radius:10px}
+.chead a[aria-current]{color:var(--x-ink);font-weight:650}
+.chead a[aria-current]::after{content:"";position:absolute;bottom:0;left:50%;width:58px;height:4px;margin-left:-29px;border-radius:4px;background:var(--ink)}
+
+.cell{position:relative;padding:14px var(--cp) 20px;box-shadow:inset 0 -1px 0 var(--x-line)}
+.cell.tight{padding-bottom:14px}
+/* a post: avatar gutter + body, like the feed */
+.p{display:grid;grid-template-columns:var(--av) minmax(0,1fr);column-gap:var(--gap)}
+.p > *{grid-column:2;min-width:0}
+.p > .av{grid-column:1;grid-row:1 / span 2;width:var(--av);height:var(--av)}
+.p > .xname{min-height:20px}
+.p > .h1,.p > .h2{margin-top:10px}
+.p > .lede{margin-top:14px}
+.ctx{display:grid;grid-template-columns:var(--av) minmax(0,1fr);column-gap:var(--gap);align-items:center;margin:0 0 4px;font-size:13px;font-weight:600;color:var(--x-mute)}
+.ctx .ico{justify-self:end;width:14px;height:14px;stroke-width:1.9}
+.hand{color:var(--x-mute)}
+/* thread connector */
+.tl{position:relative}
+.tl::before{content:"";position:absolute;left:calc(var(--av) / 2 - 1px);top:calc(var(--av) + 6px);bottom:-10px;width:2px;border-radius:2px;background:#333639}
+
+/* right rail: the CTA, the examples, where it posts */
+.rrail{min-width:0;align-self:stretch;padding:0 0 24px 32px}
+.rr{position:sticky;top:0;display:flex;flex-direction:column;gap:16px;padding-top:12px}
+.rcard{border-radius:18px;overflow:hidden}
+.rcard > h2{padding:14px 18px 6px;font-size:19px;line-height:1.3;font-weight:650;letter-spacing:-.016em;color:var(--ink)}
+.rcta{padding:18px}
+.rcta p{font-size:15px;line-height:1.45;color:var(--ink-2);letter-spacing:-.006em}
+.rcta p b{color:var(--ink);font-weight:560}
+.rcta .btn{width:100%;margin:14px 0 12px}
+.trend{display:grid;gap:1px;width:100%;text-align:left;padding:10px 18px;transition:background-color .2s}
+.trend:hover{background:rgba(255,255,255,.035)}
+.trend:focus-visible{outline-offset:-3px;border-radius:12px}
+.trend .tm{font-size:13px;color:var(--ink-3)}
+.trend .tt{display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:620;letter-spacing:-.01em;color:var(--ink)}
+.trend .ts{font-size:13.5px;color:var(--ink-3)}
+.trend[aria-pressed="true"]{background:rgba(255,255,255,.05)}
+.trend[aria-pressed="true"] .tt::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px rgba(255,255,255,.1)}
+.rcard .more{display:block;padding:8px 18px 14px;font-size:13px;color:var(--ink-3)}
+.net{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:12px;padding:9px 18px}
+.net .nic{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#141518;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+.net .nic svg{width:15px;height:15px;fill:currentColor}
+.net p{display:flex;flex-direction:column;font-size:13px;line-height:1.35;color:var(--ink-3);min-width:0}
+.net p b{font-size:15px;font-weight:620;color:var(--ink)}
+.net .btn{height:30px;padding:0 13px;font-size:13px}
+.rcard .pad{height:8px}
+.rnews{display:flex;gap:10px;align-items:baseline;padding:0 6px;font-size:13.5px;line-height:1.45;color:var(--ink-3)}
+.rnews i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px rgba(255,255,255,.08);transform:translateY(-1px)}
+.rnews b{color:var(--ink-2);font-weight:500}
+
+/* phone tab bar */
+.tabbar{display:none}
+
+/* ================= feed items ================= */
+
+/* hero: the pinned post where the sharpen happens */
+.hero{overflow:clip}
+.sub{margin-top:16px;font-size:17px;line-height:1.5;letter-spacing:-.008em;color:var(--ink-2);max-width:34em}
+.ctas{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin-top:18px}
+.ctas .btn{height:40px;padding:0 18px;font-size:14.5px}
+.stage{position:relative;margin-top:20px;--hx:.9}
+.stage .light{--lx:calc(100% * var(--hx));--a:34deg}
+.window{position:relative;z-index:2;border-radius:16px;isolation:isolate;
+  background:linear-gradient(180deg,rgba(22,23,26,.9) 0%,rgba(14,15,17,.93) 46%,rgba(11,12,14,.95) 100%);
+  -webkit-backdrop-filter:blur(30px) saturate(150%);backdrop-filter:blur(30px) saturate(150%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px rgba(0,0,0,.55),0 2px 3px rgba(0,0,0,.45),0 14px 28px -8px rgba(0,0,0,.55),0 44px 90px -24px rgba(0,0,0,.75)}
+.window::before{background:radial-gradient(260px 110px at calc(var(--hx) * 100%) 0%,rgba(var(--hot)/1) 0%,rgba(var(--glow)/.55) 32%,rgba(var(--glow)/0) 72%),linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.06) 30%,rgba(255,255,255,.035) 100%)}
+.window::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  background:radial-gradient(46% 60% at calc(var(--hx) * 100%) 0%,rgba(var(--glow)/.07),rgba(var(--glow)/0) 70%),linear-gradient(112deg,rgba(255,255,255,.028) 0%,rgba(255,255,255,0) 34%)}
+.window > :not(.spec){position:relative;z-index:1}
+.pane{padding:16px 18px 0}
+.pane.sharp{padding-bottom:16px}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--ink-2);letter-spacing:-.003em}
+.ph b{font-weight:560}
+.ph .move{display:inline-flex;align-items:center;gap:6px}
+.ph .move .ico{width:13px;height:13px}
+.compose{display:flex;gap:12px;margin-top:12px}
+.compose .av{width:36px;height:36px}
+.dtext{font-size:17px;line-height:1.55;letter-spacing:-.012em;color:#E3E5E8;font-weight:420}
+.dtext .fl{text-underline-offset:5px}
+.note{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:13px;line-height:1.45;color:var(--ink-3)}
+.note .ico{width:14px;height:14px;margin-top:2px;stroke:var(--ink);stroke-width:2}
+.wmid{display:flex;align-items:center;gap:12px;padding:14px 18px 0}
+.wmid::before,.wmid::after{content:"";flex:1;height:1px;background:var(--line-2)}
+.sharpen{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 15px;border-radius:999px;font-size:13.5px;font-weight:560;color:var(--ink);letter-spacing:-.01em;
+  background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 1px 0 rgba(255,255,255,.1),0 4px 12px -4px rgba(0,0,0,.6);transition:background-color .2s}
+.sharpen .ico{width:13px;height:13px}
+.sharpen:hover{background:rgba(255,255,255,.11)}
+.sharpen:focus-visible{border-radius:999px}
+.post{margin-top:12px;border-radius:14px;padding:14px 16px 12px;position:relative;
+  background:radial-gradient(120% 90% at 78% -10%,rgba(var(--glow)/.06),rgba(var(--glow)/0) 60%),rgba(255,255,255,.028);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.085),inset 0 1px 0 rgba(255,236,224,.16),0 1px 2px rgba(0,0,0,.4),0 18px 40px -18px rgba(0,0,0,.85)}
+.who{display:flex;align-items:center;gap:10px}
+.who .av{width:36px;height:36px}
+.who .nm{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;font-size:14.5px;line-height:1.25;color:#A4A8AF}
+.who .nm b{font-weight:650;color:var(--ink);letter-spacing:-.01em}
+.ptext{margin-top:10px;font-size:21px;line-height:1.38;letter-spacing:-.02em;color:var(--ink);font-weight:480;min-height:2.76em}
+.ptext.long{font-size:18px;line-height:1.45;min-height:2.9em}
+.post .xacts{margin-top:10px;max-width:92%;color:#71767E}
+.post .xacts .ico{width:16px;height:16px}
+.window .hits{margin-top:12px;min-height:1.5em}
+.ex-ph,.hmeta{display:none}
+.posts{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px}
+.posts span{display:inline-flex;align-items:center;gap:7px;color:var(--ink-2)}
+.posts svg{width:14px;height:14px;fill:currentColor}
+.since{display:flex;align-items:baseline;gap:10px}
+.since i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px rgba(255,255,255,.08);transform:translateY(-1px)}
+.since b{color:var(--ink-2);font-weight:500}
+
+/* hero motion: one orchestrated moment; replays only when someone picks an example */
+.motion .hero .h1 .l{display:inline-block;animation:rise 1s var(--ease) both}
+.motion .hero .h1 .l2{animation-delay:.08s}
+.motion .hero .sub{animation:rise-sm .9s var(--ease) .24s both}
+.motion .hero .ctas{animation:rise-sm .9s var(--ease) .3s both}
+.motion .window{animation:settle 1.1s var(--ease) .2s both}
+.motion .stage > .light{animation:glow 1.85s linear both}
+.window{--l:.65s}
+.motion .window.play .fl{animation:mark .3s var(--ease) var(--l) both}
+.motion .window.play .cut{animation:strike var(--t,.3s) var(--ease-io) calc(var(--l) + .37s + var(--d,0s)) both}
+.motion .window.play .sharpen{animation:press .28s var(--ease-io) calc(var(--l) + .29s) both}
+.motion .window.play .post{animation:land .65s var(--ease) calc(var(--l) + .5s) both}
+.motion .window.play .ptext{animation:focus .7s var(--ease) calc(var(--l) + .5s) both}
+.motion .window.play .note,.motion .window.play .hits,.motion .window.play .move{animation:fade .5s var(--ease) calc(var(--l) + .65s) both}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(12px)}}
+@keyframes rise-sm{from{opacity:0;transform:translateY(10px)}}
+@keyframes settle{from{opacity:0;transform:translateY(36px)}}
+@keyframes glow{0%{opacity:0}40%{opacity:.5}62%{opacity:.5}100%{opacity:1}}
+@keyframes mark{from{text-decoration-color:rgba(var(--glow)/0)}}
+@keyframes strike{from{background-size:0% 1.5px;color:#D9DCE0}}
+@keyframes press{50%{transform:scale(.94);background-color:rgba(255,255,255,.18)}}
+@keyframes land{from{opacity:0;transform:translateY(14px) scale(.985);filter:blur(8px)}}
+@keyframes focus{from{filter:blur(5px)}}
+@keyframes up{from{opacity:0;transform:translateY(8px);filter:blur(4px)}}
+
+/* the compose box at the top of the feed: the real engine */
+.cmp .p{row-gap:0}
+.cmp .p > .h2{grid-row:1;margin-top:4px}
+.cmp .p > .lede{grid-row:2}
+.cmp .p > .av{grid-row:3;margin-top:22px;width:var(--av);height:var(--av)}
+.cmp .p > .ed{grid-row:3;margin-top:20px}
+.cmp:has(.ed-ta:focus-visible){box-shadow:inset 0 -1px 0 var(--x-line),inset 3px 0 0 var(--ink)}
+.ed{position:relative}
+.ed-mirror,.ed-ta{font:400 21px/1.45 "Inter V",system-ui,sans-serif;letter-spacing:-.012em;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;tab-size:4;padding:6px 0;margin:0;border:0;width:100%;font-kerning:normal;font-optical-sizing:auto}
+.ed-mirror{position:absolute;inset:0;color:transparent;overflow:hidden;pointer-events:none}
+.ed-mirror mark{background:transparent;color:transparent;text-decoration:underline wavy var(--ember);text-decoration-thickness:1.6px;text-underline-offset:.26em;text-decoration-skip-ink:none}
+.ed-ta{position:relative;display:block;background:transparent;color:var(--x-ink);resize:none;outline:0;overflow:hidden;min-height:2.9em;caret-color:var(--ink);border-radius:0}
+.ed-ta::placeholder{color:var(--x-mute)}
+.flags{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:12px;min-height:30px;font-size:13.5px;color:var(--x-mute)}
+.flags .k{margin-right:4px}
+.flags button{height:30px;padding:0 11px;border-radius:999px;font-size:13.5px;font-weight:500;color:var(--x-ink);box-shadow:inset 0 0 0 1px var(--x-line);text-decoration:underline wavy var(--ember);text-decoration-thickness:1.3px;text-underline-offset:5px;text-decoration-skip-ink:none;transition:background-color .15s}
+.flags button:hover,.flags button[aria-current="true"]{background:#16181C}
+.flags button:focus-visible{border-radius:999px}
+.flags .ok{display:inline-flex;align-items:center;gap:6px;color:var(--x-ink)}
+.why{margin-top:10px;font-size:14.5px;line-height:1.5;color:#B4B8BE;min-height:3em}
+.why b{color:var(--x-ink);font-weight:600}
+.cbar{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;box-shadow:inset 0 1px 0 var(--x-line)}
+.ctools{display:flex;gap:14px;color:var(--x-mute);margin-right:auto}
+.ctools .ico{width:18px;height:18px}
+.count{font-size:12.5px;color:var(--x-mute);margin-right:6px}
+.btn-x{height:36px;padding:0 16px;font-size:14px}
+/* your post, as it would land in the feed */
+.out .xtext{font-size:21px;line-height:1.4;font-weight:480;letter-spacing:-.016em;margin-top:4px}
+.out .xtext.same{font-weight:400;color:#B4B8BE}
+.out .xacts{max-width:440px}
+.out .hits{margin-top:14px}
+.out .tnote{margin-top:14px;font-size:14.5px;line-height:1.5;color:var(--ink-3)}
+.out .tnote b{color:var(--ink);font-weight:500}
+.out .p{transition:opacity .25s}
+.out.stale .p{opacity:.5}
+.motion .out.fresh .xtext{animation:land .5s var(--ease) both}
+.motion .out.fresh .hits{animation:up .4s var(--ease) .2s both}
+
+/* previews */
+.seg-wrap{margin-top:18px}
+.seg button svg{width:13px;height:13px;fill:currentColor}
+.pv-big{margin-top:18px;font-size:21px;line-height:1.25;letter-spacing:-.02em;font-weight:580;color:var(--ink);min-height:2.5em}
+.pv-big .d{color:var(--ink-2)}
+.pv-note{margin-top:6px;font-size:14.5px;line-height:1.5;color:var(--ink-3)}
+.scr{margin-top:16px;border-radius:18px;padding:16px 16px 4px;box-shadow:0 1px 2px rgba(0,0,0,.5),0 40px 80px -40px rgba(0,0,0,.95)}
+.scr-h{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-size:14px;font-weight:650}
+.scr-h svg{width:15px;height:15px;fill:currentColor}
+.ppost{display:grid;grid-template-columns:40px minmax(0,1fr);gap:0 12px;position:relative;padding-bottom:14px}
+.ppost .av{width:40px;height:40px}
+.ppost .tl2{position:absolute;left:19px;top:46px;bottom:2px;width:2px;border-radius:2px}
+.pn{margin:0 0 3px;font-size:15px;line-height:1.3;display:flex;flex-wrap:wrap;gap:0 5px}
+.pn b{font-weight:700}
+.pt{font-size:15px;line-height:1.45;white-space:pre-line;overflow-wrap:anywhere}
+.pt .hk{font-weight:600}
+.pa{display:flex;justify-content:space-between;max-width:320px;margin-top:10px}
+.pa .ico{width:17px;height:17px}
+.n-x{background:#000;color:#E7E9EA;box-shadow:inset 0 0 0 1px #2F3336,0 40px 80px -40px rgba(0,0,0,.95)}.n-x .pn span,.n-x .pa{color:#7D8288}.n-x .tl2{background:#333639}
+.n-th{background:#101010;color:#F3F5F7;box-shadow:inset 0 0 0 1px #2A2A2A,0 40px 80px -40px rgba(0,0,0,.95)}.n-th .pn span,.n-th .pa{color:#9A9A9A}.n-th .tl2{background:#333}
+.n-li{background:#1B1F23;color:rgba(255,255,255,.92);box-shadow:inset 0 0 0 1px #2E3439,0 40px 80px -40px rgba(0,0,0,.95)}
+.n-bs{background:#161E27;color:#F1F3F5;box-shadow:inset 0 0 0 1px #29343F,0 40px 80px -40px rgba(0,0,0,.95)}.n-bs .pn span,.n-bs .pa{color:#97A6B6}.n-bs .tl2{background:#2E3B49}
+.n-li .more{color:#C0C4C8;font-weight:600}
+.li{padding:2px 2px 14px}
+.li-h{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.li-h .av{width:44px;height:44px}
+.li-h p{display:flex;flex-direction:column;font-size:13px;line-height:1.35;color:#A9ADB1}
+.li-h b{font-size:14.5px;color:rgba(255,255,255,.92)}
+.li-a{display:flex;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1px solid #33383E;font-size:13.5px;font-weight:600;color:#A9ADB1}
+
+/* your day: a thread of notifications, night to morning */
+.photo{position:relative;margin-top:16px;aspect-ratio:800/430;border-radius:16px;overflow:hidden;background:#15120E;box-shadow:inset 0 0 0 1px var(--x-line)}
+.photo img{position:absolute;left:0;top:0;width:100%;height:auto}
+.photo::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(8,9,10,0) 60%,rgba(8,9,10,.5));pointer-events:none}
+.photo figcaption{position:absolute;z-index:1;left:12px;bottom:12px;padding:6px 11px;border-radius:999px;background:rgba(8,9,10,.8);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:12.5px;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.ntl > li{padding-bottom:18px}
+.ntl > li:last-child{padding-bottom:0}
+.ni{display:grid;place-items:center;width:var(--av);height:var(--av);border-radius:50%;background:#141518;color:var(--x-ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+.ni .ico{width:17px;height:17px}
+.done .ni{background:linear-gradient(180deg,#fff,#E9EAEC);color:#08090A;box-shadow:none}
+.nt-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:15px;line-height:1.35;color:var(--x-ink);padding-top:2px}
+.nt-h b{font-weight:650}
+.nt-h time{font-size:13px;color:var(--x-mute);white-space:nowrap}
+.nt-t{margin-top:3px;font-size:14.5px;line-height:1.45;color:#B4B8BE}
+.vn{display:flex;align-items:center;gap:10px;margin-top:10px;max-width:340px;padding:6px 12px 6px 6px;border-radius:999px;background:#141518;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.vn .pb{width:28px;height:28px;border-radius:50%;background:var(--x-ink);color:#000;display:grid;place-items:center;flex:none}
+.vn .pb svg{width:10px;height:10px;fill:currentColor}
+.wave{flex:1;height:20px;display:flex;align-items:center;gap:2px;min-width:0}
+.wave i{flex:1;min-width:2px;border-radius:2px;background:#4A4E55}
+.wave i.p{background:var(--x-ink)}
+.vn .tnum{font-size:12.5px;color:#B4B8BE}
+.quote{margin-top:10px;padding:12px 14px;border-radius:14px;font-size:15px;line-height:1.45;color:var(--x-ink);box-shadow:inset 0 0 0 1px var(--x-line)}
+.quote .qn{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:13.5px;color:var(--x-mute)}
+.quote .qn .av{width:20px;height:20px}
+.quote .qn b{color:var(--x-ink);font-weight:650}
+.quote .xacts{max-width:320px;margin-top:10px}
+.slots{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.slots span{padding:7px 12px;border-radius:999px;font-size:13px;font-weight:500;line-height:1;color:#B4B8BE;background:#141518;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.slots .pick{color:#08090A;background:linear-gradient(180deg,#fff,#E9EAEC);box-shadow:0 0 0 3px rgba(255,255,255,.1)}
+
+/* replies: a reply chain, then results as notifications */
+.chain > .p{padding-bottom:16px}
+.chain > .p:last-of-type{padding-bottom:0}
+.mine{border-radius:14px;padding:12px 14px;margin-top:6px;background:#0E0F11;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 1px 0 rgba(255,255,255,.06)}
+.mine .lab{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.mine .lab .ico{width:13px;height:13px}
+.mine .xtext{margin:0}
+.mine .act{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.fake{display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;color:#08090A;background:linear-gradient(180deg,#fff,#E9EAEC)}
+.fake.ghost{background:none;color:var(--x-ink);box-shadow:inset 0 0 0 1px var(--x-line);font-weight:500}
+.cfoot{margin-top:12px;font-size:14px;line-height:1.5;color:var(--ink-3)}
+.lab-h{font-size:13.5px;font-weight:600;color:var(--x-mute);margin:0 0 10px}
+.notes{margin-top:2px}
+.notes > li{display:grid;grid-template-columns:var(--av) minmax(0,1fr);column-gap:var(--gap);padding:12px 0;box-shadow:inset 0 1px 0 var(--x-line)}
+.notes > li:first-child{box-shadow:none;padding-top:4px}
+.notes .nt-h{display:block}
+.notes .quote{color:#B4B8BE}
+
+/* who it's for: a "people like you" module */
+.wtf{margin-top:16px}
+.wtf > li{display:grid;grid-template-columns:var(--av) minmax(0,1fr) auto;column-gap:var(--gap);align-items:start;padding:14px 0;box-shadow:inset 0 1px 0 var(--x-line)}
+.wtf .av{width:var(--av);height:var(--av)}
+.wtf .h3{font-size:16px;line-height:1.35;font-weight:650;color:var(--x-ink);letter-spacing:-.01em}
+.wtf .wl{font-size:14px;color:var(--x-mute)}
+.wtf .wl b{color:var(--ink-2);font-weight:500}
+.wtf .wb{margin-top:4px;font-size:15px;line-height:1.45;color:#C4C7CB}
+.wtf .btn{align-self:center;height:32px;padding:0 14px;font-size:13.5px}
+
+/* studio: a quoted client post, the client's reply, and Approve */
+.st-pick{margin-top:18px}
+.st-pick button{height:40px;padding:0 15px 0 5px;font-size:14px}
+.st-pick .av{width:30px;height:30px}
+.review{margin-top:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.st-lab{display:flex;align-items:center;gap:8px;font-size:13.5px;line-height:1.3;color:var(--ink-3)}
+.st-lab .ico{width:14px;height:14px;color:var(--ink-2)}
+.review .xcard{padding:14px 16px}
+.review .xcard .xtext{font-size:17px;line-height:1.45}
+.review mark{background:rgba(255,255,255,.1);color:inherit;box-shadow:inset 0 -1.5px 0 rgba(247,248,248,.7);padding:0 2px;border-radius:3px}
+.review .q1{padding-bottom:14px}
+.rp .xtext{font-size:15px}
+.rp .on{font-size:13px;color:var(--x-mute)}
+.rv-act{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;min-height:40px}
+.rv-act > span{font-size:14px;color:var(--ink-3)}
+.rv-act .btn{height:38px;padding:0 18px;font-size:14px}
+.rv-act .btn .ico{width:14px;height:14px;stroke-width:2}
+.rv-act .done{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;font-weight:600;color:var(--ink)}
+.rv-act .done .ico{stroke-width:2}
+.voice{margin-top:4px;display:grid;gap:8px}
+.voice .h3{font-size:16px;font-weight:650;color:var(--x-ink)}
+.voice p{font-size:15px;line-height:1.5;color:#B4B8BE}
+.voice p b{color:var(--x-ink);font-weight:560}
+.nevers s{display:inline-block;margin:2px 4px 2px 0;font-size:13.5px;color:var(--ink-2);text-decoration-color:rgba(247,248,248,.6);text-decoration-thickness:1.5px;padding:2px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.st-foot{margin-top:14px;display:grid;gap:8px}
+.st-foot p{display:flex;gap:10px;align-items:baseline;font-size:15px;line-height:1.5;color:#B4B8BE}
+.st-foot p .ico{flex:none;transform:translateY(3px);color:var(--ink-2);stroke-width:2}
+.st-foot b{color:var(--x-ink);font-weight:560}
+
+/* trust */
+.cuts{margin-top:16px}
+.cuts li{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 18px;padding:13px 0;box-shadow:inset 0 -1px 0 var(--x-line)}
+.cuts li:first-child{box-shadow:inset 0 1px 0 var(--x-line),inset 0 -1px 0 var(--x-line)}
+.cuts s{font-size:26px;line-height:1.15;font-weight:560;letter-spacing:-.03em;color:var(--ink-2);text-decoration-color:rgba(247,248,248,.55);text-decoration-thickness:2px;min-width:7em}
+.cuts span{font-size:15px;color:var(--ink-3)}
+
+/* pricing: the pinned card */
+.bill{margin-top:18px}
+.bill button{height:34px;padding:0 16px;font-size:13.5px}
+.plans{margin-top:14px;overflow:hidden}
+.plan{position:relative;display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:4px 28px;padding:22px 22px 22px}
+.plan + .plan{box-shadow:inset 0 1px 0 var(--line-2)}
+.plan.feat{background:radial-gradient(70% 90% at 92% 0%,rgba(var(--glow)/.075),rgba(var(--glow)/0) 70%),rgba(255,255,255,.02)}
+.plan.feat .spec{right:18px;width:200px}
+.plan .pl{display:flex;flex-direction:column;align-items:flex-start}
+.plan .h3{font-size:20px}
+.for{color:var(--ink-3);font-size:14px;margin-top:2px}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:14px}
+.price b{font-size:44px;line-height:1;font-weight:540;letter-spacing:-.045em}
+.price span{color:var(--ink-3);font-size:14px}
+.price-n{min-height:40px;font-size:13px;line-height:1.5;color:var(--ink-3);margin:8px 0 14px}
+.plan .btn{height:40px;padding:0 18px;font-size:14px}
+.plan ul{display:flex;flex-direction:column;gap:9px;font-size:14.5px;line-height:1.45;color:var(--ink-3);padding-top:4px}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li .ico{margin-top:3px;color:var(--ink-2);stroke-width:1.9}
+.plan li b{color:var(--ink);font-weight:500}
+.incl{display:none}
+
+/* final: a reply to us that sharpens live */
+.fin{overflow:clip}
+.fin-sub{margin-top:16px;font-size:17px;line-height:1.5;color:var(--ink-2)}
+.sq{text-decoration:underline wavy var(--ember);text-decoration-thickness:max(2px,.034em);text-underline-offset:.2em;text-decoration-skip-ink:none}
+.reply{margin-top:18px;padding-top:16px;box-shadow:inset 0 1px 0 var(--x-line)}
+.reply .rto{font-size:14px;color:var(--x-mute);padding-top:2px}
+.reply .rto b{color:var(--ink-2);font-weight:500}
+.fin-form{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.fin-field{position:relative;flex:1 1 300px;min-width:0;height:52px;border-radius:999px;background:#0B0C0E;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.08)}
+.fin-field:focus-within{box-shadow:inset 0 0 0 2px var(--ink)}
+.fin-mirror,.fin-in{position:absolute;inset:0;padding:0 118px 0 20px;font:400 16.5px/52px "Inter V",system-ui,sans-serif;letter-spacing:-.008em;white-space:pre;border:0;margin:0;width:100%}
+.fin-mirror{color:transparent;overflow:hidden;pointer-events:none;left:20px;right:118px;width:auto;padding:0}
+.fin-mirror span{display:inline-block;white-space:pre}
+.fin-mirror mark{background:transparent;color:transparent;text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:6px;text-decoration-skip-ink:none}
+.fin-in{background:transparent;color:var(--x-ink);outline:0;caret-color:var(--ink);border-radius:999px}
+.fin-in::placeholder{color:#8B9097}
+.fin-n{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:12.5px;font-weight:500;color:var(--ink-3);pointer-events:none}
+.fin-form .btn{height:52px;padding:0 22px;font-size:15px}
+.reply .micro{margin-top:12px}
+.fpay{position:relative;display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.fpay .light{--lx:86%;--ly:0px;--a:30deg;--bl:560px;--bw:220px}
+.fpay .light .bloom{left:-380px;width:520px;top:-64px;height:128px}
+.fpay .light .hot{left:-190px;width:230px}
+.fpay > :not(.light){position:relative;z-index:1}
+.fpay .draft{position:relative;padding:11px 15px;border-radius:14px;background:#0B0C0E;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-size:15px;line-height:1.5;color:#B4B8BE;overflow-wrap:anywhere}
+.fpay .draft .spec{right:12px;width:200px}
+.fpay .xcard{padding:14px 16px 12px}
+.fpay .xtext{font-size:18px;line-height:1.42;font-weight:480;letter-spacing:-.014em}
+.fpay .xtext.same{font-weight:400;color:#B4B8BE}
+.fpay .hits{flex-direction:column;gap:4px;padding:2px 4px 0}
+.fpay .hits a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.4)}
+.motion .fpay.fresh .xcard{animation:land .45s var(--ease) both}
+.motion .fpay.fresh .hits{animation:up .35s var(--ease) .18s both}
+
+/* end of the feed + footer */
+.end{padding:28px var(--cp) 26px;text-align:center;box-shadow:inset 0 -1px 0 var(--x-line)}
+.end b{display:block;font-size:17px;font-weight:650;color:var(--x-ink);letter-spacing:-.01em}
+.end span{font-size:14px;color:var(--x-mute)}
+footer{padding:20px var(--cp) 36px;font-size:13px;line-height:1.5;color:var(--ink-3)}
+footer ul{display:flex;flex-wrap:wrap;gap:2px 14px}
+footer a{display:inline-block;padding:4px 0;transition:color .2s}
+footer a:hover{color:var(--ink)}
+footer p{margin-top:8px}
+
+/* ================= medium: icon-only left rail ================= */
+@media (max-width:1279px){
+  :root{--lw:84px;--cw:620px;--rw:320px}
+  .lrail{align-items:center;padding:6px 8px 18px}
+  .lrail .mark{width:52px;height:52px;padding:0;display:grid;place-items:center;font-size:0;margin:6px 0 10px}
+  .lrail .mark::before{content:"h";font-size:26px;font-weight:650;letter-spacing:-.05em}
+  .lnav{align-items:center}
+  .lnav a{padding:0 13px;gap:0}
+  .lnav a .lb{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .acct{width:auto;padding:6px}
+  .acct span{display:none}
+  .rrail{padding-left:24px}
+}
+
+/* ================= phone + tablet: the feed alone, with a tab bar ================= */
+@media (max-width:999px){
+  :root{--cp:16px;--av:36px;--gap:10px;--hd:46px;--mbar:calc(64px + env(safe-area-inset-bottom))}
+  .shell{display:block}
+  .lrail,.rrail{display:none}
+  .col{max-width:640px;margin:0 auto;min-height:0}
+  /* headings span the full width on phones */
+  .h1{font-size:min(60px,calc((100cqi - 2 * var(--cp)) / 8.7));line-height:1.02;letter-spacing:-.045em}
+  .h2{font-size:min(44px,calc((100cqi - 2 * var(--cp)) / 12.2))}
+  .h2.xl{font-size:min(56px,calc((100cqi - 2 * var(--cp)) / 7.2))}
+  .p > .wide{grid-column:1 / -1}
+  .p > .h1,.p > .h2{margin-top:12px}
+  .cmp .p > .h2{margin-top:2px}
+  .p > .lede{margin-top:10px}
+  .lede{font-size:15.5px}
+  .ptop{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 6px 0 2px}
+  .ptop .mark{font-size:20px;padding:12px 14px}
+  .signin{font-size:14px;font-weight:500;color:var(--ink-2);padding:10px 12px;border-radius:999px}
+  .signin:focus-visible{border-radius:999px}
+  .chead a{font-size:14.5px}
+  .cell{padding:12px var(--cp) 16px}
+  .ctx{font-size:12.5px;margin-bottom:2px}
+  .xname{font-size:14.5px}
+  .tl::before{top:calc(var(--av) + 4px)}
+
+  /* hero */
+  .sub{font-size:16px;margin-top:12px}
+  .ctas{margin-top:14px;gap:8px 12px}
+  .ctas .btn{height:38px;padding:0 16px;font-size:14px}
+  .ctas .micro{font-size:12.5px}
+  .stage{margin-top:16px;--hx:.88}
+  .stage .light{--a:30deg;--bw:200px;--bl:460px;--sink:110px;--k:1.4}
+  .stage .light .bloom{left:-300px;width:380px;height:100px;top:-50px}
+  .stage .light .hot{left:-140px;width:180px;height:24px;top:-12px}
+  .spec{width:200px;right:12px}
+  .window{border-radius:14px}
+  .pane{padding:12px 14px 0}
+  .pane.sharp{padding-bottom:14px}
+  .ph{font-size:12px}
+  .compose{margin-top:8px;gap:10px}
+  .compose .av,.who .av{width:30px;height:30px}
+  .dtext{font-size:15.5px;line-height:1.55}
+  .note{display:none}
+  .wmid{padding:10px 14px 0}
+  .post{margin-top:10px;padding:12px 13px 11px;border-radius:13px}
+  .who .nm{font-size:13.5px}
+  .ptext,.ptext.long{font-size:17.5px;line-height:1.4;margin-top:8px;min-height:2.8em}
+  .post .xacts{display:none}
+  .window .hits{margin-top:10px;flex-direction:column;gap:1px;min-height:0}
+  .window .hits p{font-size:14px;min-height:3em}
+  .ex-ph{display:block;margin-top:12px}
+  .ex-ph .lab{display:block;font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+  .ex-ph .pills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(var(--cp) * -1);padding:2px var(--cp);gap:6px;scroll-padding:0 var(--cp)}
+  .ex-ph .pills::-webkit-scrollbar{display:none}
+  .ex-ph .pills button{flex:none;height:32px;padding:0 13px;font-size:13px;color:var(--ink-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .ex-ph .pills button[aria-pressed="true"]{color:var(--ink)}
+  .hmeta{display:flex;flex-direction:column;gap:8px;margin-top:16px;padding-top:14px;box-shadow:inset 0 1px 0 var(--x-line);font-size:13px;color:var(--ink-3)}
+  .posts{gap:6px 12px}
+
+  /* compose */
+  .cmp .p > .av{margin-top:16px}
+  .cmp .p > .ed{margin-top:14px}
+  .ed-mirror,.ed-ta{font-size:18px}
+  .flags{margin-top:8px}
+  .why{min-height:0;font-size:14px}
+  .ctools{display:none}
+  .cbar{margin-top:10px;padding-top:10px;justify-content:flex-end}
+  .count{margin-right:auto}
+  .out .xtext{font-size:18px}
+  .out .xacts{display:none}
+  .out .hits{flex-direction:column;gap:2px;margin-top:10px}
+  .out .hits p{font-size:14px}
+  .out .tnote{font-size:13.5px;margin-top:10px}
+
+  /* previews */
+  .seg-wrap{margin-top:14px}
+  .seg{flex-wrap:nowrap}
+  .seg button{padding:0 11px;font-size:13px;gap:6px}
+  .seg button svg{display:none}
+  .pv-big{margin-top:14px;font-size:18px;min-height:0}
+  .pv-note{font-size:13.5px}
+  .scr{margin-top:12px;padding:13px 13px 2px;border-radius:15px}
+  .ppost{grid-template-columns:32px minmax(0,1fr);gap:0 10px;padding-bottom:10px}
+  .ppost .av{width:32px;height:32px}.ppost .tl2{left:15px;top:38px}
+  .pa{display:none}
+  .pt{font-size:14.5px}
+
+  /* day */
+  .photo{display:none}
+  .ntl > li{padding-bottom:14px}
+  .nt-h{font-size:14.5px}
+  .nt-t{font-size:14px}
+  .ni .ico{width:16px;height:16px}
+  .quote{padding:10px 12px;font-size:14.5px}
+  .done-post{display:none}
+
+  /* replies */
+  .chain > .p{padding-bottom:12px}
+  .chain .xname > .hide-ph{display:none}
+  .mine{padding:10px 12px}
+  .notes .quote,.notes > li.ping{display:none}
+  .notes > li{padding:10px 0}
+  .lab-h{margin-bottom:6px}
+
+  /* who */
+  .wtf{margin-top:10px}
+  .wtf > li{padding:11px 0;grid-template-columns:var(--av) minmax(0,1fr)}
+  .wtf .h3{font-size:15px}
+  .wtf .wl{font-size:13px}
+  .wtf .wb{font-size:14px;margin-top:2px}
+  .wtf .btn{grid-column:2;justify-self:start;margin-top:8px;height:30px;font-size:13px}
+
+  /* studio */
+  .st-pick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0;background:none;box-shadow:none;margin-top:14px}
+  .st-pick button{height:40px;font-size:13.5px;box-shadow:inset 0 0 0 1px var(--line-2)}
+  .review{padding:12px;gap:10px;margin-top:12px;border-radius:16px}
+  .review .xcard{padding:12px 13px}
+  .review .xcard .xtext{font-size:15.5px}
+  .review .xname > .hide-ph{display:none}
+  .review .q1{padding-bottom:10px}
+  .rp .xtext{font-size:14px}
+  .voice{gap:5px}
+  .voice .h3{font-size:15px}
+  .voice p{font-size:14px}
+  .nevers s{padding:0;margin:0 10px 0 0;box-shadow:none;font-size:14px}
+  .st-foot{gap:6px;margin-top:10px}
+  .st-foot p{font-size:13.5px}
+
+  /* trust */
+  .cuts{margin-top:12px}
+  .cuts li{padding:10px 0;gap:0 12px}
+  .cuts s{font-size:21px;min-width:0}
+  .cuts span{font-size:13.5px}
+
+  /* pricing */
+  .bill{margin-top:14px}
+  .plans{margin-top:12px;border-radius:18px}
+  .plan{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name price" "for price" "note note" "list list" "incl incl" "cta cta";column-gap:12px;row-gap:0;padding:16px}
+  .plan .pl{display:contents}
+  .plan .h3{grid-area:name;font-size:19px}
+  .plan .for{grid-area:for;margin:2px 0 0;font-size:13px}
+  .plan .price{grid-area:price;flex-direction:column;align-items:flex-end;gap:2px;text-align:right;margin:0}
+  .price b{font-size:32px}
+  .price span{font-size:12px;max-width:9em}
+  .price-n{grid-area:note;margin:8px 0 8px;min-height:0;font-size:12.5px}
+  .plan ul{grid-area:list;gap:5px;margin:0;padding-top:8px;font-size:13.5px;box-shadow:inset 0 1px 0 var(--line)}
+  .js .plan:not(.open) li.x{display:none}
+  .js .incl{grid-area:incl;display:inline-flex;align-items:center;justify-self:start;height:32px;margin-top:2px;font-size:13px;font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.35)}
+  .plan .btn{grid-area:cta;margin-top:8px;height:42px;width:100%}
+
+  /* final */
+  .fin-sub{font-size:15.5px;margin-top:10px}
+  .reply{margin-top:14px;padding-top:12px}
+  .fin-form .btn{width:100%;height:50px}
+  .fin-field{flex-basis:100%;height:52px}
+  .fin-mirror,.fin-in{font-size:16px}
+  .fin-in{padding:0 108px 0 18px}
+  .fin-mirror{left:18px;right:108px}
+  .fin-n{right:16px;font-size:12px}
+  .fpay{margin-top:14px;gap:10px}
+  .fpay .light .beam,.fpay .light .core{display:none}
+  .fpay .light .bloom{left:-220px;width:280px;top:-24px;height:48px}
+  .fpay .light .hot{left:-120px;width:160px;height:22px;top:-11px}
+  .fpay .xtext{font-size:16.5px}
+  .fpay .xacts{display:none}
+  .fpay .draft{font-size:14px;padding:10px 12px}
+  .end{padding:22px var(--cp)}
+  footer{padding:16px var(--cp) 24px}
+
+  /* tab bar, like the app: three tabs and the CTA */
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;gap:2px;padding:8px max(12px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));
+    background:rgba(0,0,0,.8);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);box-shadow:0 -1px 0 var(--x-line)}
+  .tabbar > a:not(.btn){display:grid;place-items:center;width:44px;height:44px;border-radius:999px;color:var(--x-mute);transition:color .2s}
+  .tabbar > a:not(.btn) .ico{width:24px;height:24px;stroke-width:1.6}
+  .tabbar > a[aria-current]{color:var(--ink)}
+  .tabbar > a[aria-current] .ico{stroke-width:2.2}
+  .tabbar > a:focus-visible{border-radius:999px}
+  .tabbar .btn{margin-left:auto;height:44px;padding:0 18px;font-size:15px;transition:opacity .3s,visibility 0s}
+  .tabbar.fin-on .btn{opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+}
+@media (min-width:640px) and (max-width:999px){
+  .col{box-shadow:-1px 0 0 var(--x-line),1px 0 0 var(--x-line)}
+}
+@media (max-width:374px){
+  :root{--cp:14px}
+  .tabbar > a:not(.btn){width:40px}
+  .tabbar .btn{padding:0 14px;font-size:14.5px}
+  .ctas .micro .m2{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the feed</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></symbol>
+  <symbol id="i-down" viewBox="0 0 16 16"><path d="M8 2.5v10M4 9l4 4 4-4"/></symbol>
+  <symbol id="i-tick" viewBox="0 0 16 16"><path d="M3.5 8.4l2.9 2.9 6.1-6.6"/></symbol>
+  <symbol id="i-link" viewBox="0 0 16 16"><path d="M6.8 9.2a3 3 0 0 0 4.2 0l2.1-2.1a3 3 0 0 0-4.2-4.2l-.9.9M9.2 6.8a3 3 0 0 0-4.2 0L2.9 8.9a3 3 0 0 0 4.2 4.2l.9-.9"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 16 16"><path d="M9.6 2.2l4.2 4.2-1.9.7-2.3 2.3-.3 2.9-5.4-5.4 2.9-.3 2.3-2.3zM6.1 9.9 2.4 13.6"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 16 16"><rect x="5.5" y="1.5" width="5" height="8.5" rx="2.5"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5V15"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.4 1.6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 16 16"><path d="M2.5 11.5 6.5 7.5l2.5 2.5 4.5-5M9.5 5h4v4"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 16 16"><path d="M10.5 2.8l2.7 2.7-7.4 7.4-3.3.6.6-3.3z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 16 16"><path d="M8.8 1.8 3.6 9h4l-.6 5.2L12.4 7h-4z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 16 16"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M3.8 3.8l2 2M10.2 10.2l2 2M12.2 3.8l-2 2M5.8 10.2l-2 2"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3 3-2.5L20 17"/></symbol>
+  <symbol id="i-gif" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M10 10.2a2 2 0 0 0-1.6-.7c-1.3 0-2 1-2 2.5s.7 2.5 2 2.5c.9 0 1.6-.5 1.6-1.6v-.6H8.6M12.6 9.6v4.8M15.2 14.4V9.6H18M15.2 12H17.4"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11M4.8 7h.01M4.8 12h.01M4.8 17h.01"/></symbol>
+  <symbol id="i-sched" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+  <symbol id="i-write" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.7L16.2 5a2.1 2.1 0 0 1 3 3L8.3 18.6l-3.8.9z"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><path d="M12 4.5c4.4 0 8 2.8 8 6.4s-3.6 6.4-8 6.4c-1 0-2-.1-2.9-.4L5 19.5l1.1-3.4C4.8 14.9 4 13 4 10.9c0-3.6 3.6-6.4 8-6.4z"/></symbol>
+  <symbol id="i-repost" viewBox="0 0 24 24"><path d="M4.5 8.5l3-3 3 3M7.5 5.5v9a2.5 2.5 0 0 0 2.5 2.5h3M19.5 15.5l-3 3-3-3M16.5 18.5v-9A2.5 2.5 0 0 0 14 7h-3"/></symbol>
+  <symbol id="i-like" viewBox="0 0 24 24"><path d="M12 19.5s-7.5-4.4-7.5-9.7A4.1 4.1 0 0 1 12 7.4a4.1 4.1 0 0 1 7.5 2.4c0 5.3-7.5 9.7-7.5 9.7z"/></symbol>
+  <symbol id="i-views" viewBox="0 0 24 24"><path d="M5 19.5v-7M10 19.5v-14M15 19.5v-9M20 19.5v-5"/></symbol>
+  <symbol id="i-mark" viewBox="0 0 24 24"><path d="M7 4.5h10v15l-5-3.6-5 3.6z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.4 12 4l8 6.4V19a1 1 0 0 1-1 1h-4.5v-5.6h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.6A8 8 0 0 1 9.4 4.5a8 8 0 1 0 10.1 10.1z"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="16.8" cy="9.2" r="2.6"/><path d="M15.6 14.1c2.4.2 4.2 1.8 4.9 4.6"/></symbol>
+  <symbol id="i-case" viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5M3.5 12.5h17"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.5c0 4.3-2.9 7.6-7 9-4.1-1.4-7-4.7-7-9V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.8 12.6V4.8a1 1 0 0 1 1-1h7.8l7.6 7.6a1.4 1.4 0 0 1 0 2l-6.8 6.8a1.4 1.4 0 0 1-2 0z"/><circle cx="8.3" cy="8.3" r="1.4"/></symbol>
+  <symbol id="n-x" viewBox="0 0 24 24"><path d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.8 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></symbol>
+  <symbol id="n-threads" viewBox="0 0 24 24"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></symbol>
+  <symbol id="n-li" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
+  <symbol id="n-bsky" viewBox="0 0 24 24"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c1.7 1.8 2.5 3.8 2.5 6.2S9.7 12.4 8 14.2C6.3 12.4 5.5 10.4 5.5 8S6.3 3.6 8 1.8z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 16 16"><path d="M5 2.8v10.4L13 8z"/></symbol>
+</svg>
+
+<div class="shell">
+
+<!-- LEFT RAIL: the wordmark and the sections, like a sidebar -->
+<header class="lrail">
+  <a class="mark" href="#top" aria-label="hookworthy home">hookworthy</a>
+  <nav class="lnav" aria-label="Sections">
+    <a href="#top" data-spy="top" aria-current="location"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span class="lb">Home</span></a>
+    <a href="#sharpen" data-spy="sharpen"><svg class="ico" aria-hidden="true"><use href="#i-write"/></svg><span class="lb">Try it</span></a>
+    <a href="#previews" data-spy="previews"><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg><span class="lb">Previews</span></a>
+    <a href="#day" data-spy="day"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg><span class="lb">Your day</span></a>
+    <a href="#after" data-spy="after"><svg class="ico" aria-hidden="true"><use href="#i-reply"/></svg><span class="lb">Replies</span></a>
+    <a href="#who" data-spy="who"><svg class="ico" aria-hidden="true"><use href="#i-people"/></svg><span class="lb">Who it’s for</span></a>
+    <a href="#studio" data-spy="studio"><svg class="ico" aria-hidden="true"><use href="#i-case"/></svg><span class="lb">Studio</span></a>
+    <a href="#trust" data-spy="trust"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg><span class="lb">How posting works</span></a>
+    <a href="#pricing" data-spy="pricing"><svg class="ico" aria-hidden="true"><use href="#i-tag"/></svg><span class="lb">Pricing</span></a>
+  </nav>
+  <a class="acct" href="#signin"><span class="av you" aria-hidden="true"></span><span><b>Sign in</b>Back to your drafts</span></a>
+</header>
+
+<!-- THE FEED -->
+<main class="col" id="main">
+  <div class="ptop"><a class="mark" href="#top" aria-label="hookworthy home">hookworthy</a><a class="signin" href="#signin">Sign in</a></div>
+  <nav class="chead" aria-label="Who it’s for">
+    <a href="#top" id="tab-c" aria-current="page">Creators</a>
+    <a href="#studio" id="tab-g">Ghostwriters</a>
+  </nav>
+
+  <!-- 1. PINNED: the hero, where the sharpen happens -->
+  <section class="cell hero" id="top" aria-labelledby="h1">
+    <p class="ctx"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg><span>Pinned</span></p>
+    <div class="p">
+      <span class="av hw" aria-hidden="true"></span>
+      <p class="xname"><b>Hookworthy</b><span>@hookworthy</span></p>
+      <h1 class="h1 wide" id="h1"><span class="l l1">They read one line.</span><br><span class="l l2 d">Make it hookworthy.</span></h1>
+      <p class="sub wide">Hookworthy sharpens your first line in one tap. It still sounds like you.</p>
+      <div class="ctas wide">
+        <a class="btn btn-glass" href="#sharpen">Try it on your line<svg class="ico go" aria-hidden="true"><use href="#i-down"/></svg></a>
+        <p class="micro">Free forever<i aria-hidden="true">·</i>No card<i class="m2" aria-hidden="true">·</i><span class="m2">Nothing posts without you</span></p>
+      </div>
+      <div class="stage wide">
+        <div class="light" aria-hidden="true"><i class="beam"></i><i class="core"></i><i class="bloom"></i><i class="hot"></i></div>
+        <figure class="window play" id="proof" aria-labelledby="pf-cap">
+          <figcaption class="sr" id="pf-cap">An example draft, sharpened in one tap, and the post it became</figcaption>
+          <span class="spec" aria-hidden="true"></span>
+          <div class="pane draft">
+            <div class="ph"><b>Draft</b><span>Fluff marked</span></div>
+            <div class="compose">
+              <span class="av me" id="pf-av" aria-hidden="true"></span>
+              <div>
+                <p class="dtext" id="pf-draft"><span class="sr">Draft: </span><span class="fl"><span class="cut" style="--d:0s;--t:.27s">just wanted to share that</span></span> i <span class="fl"><span class="cut" style="--d:.3s;--t:.1s">finally</span></span> hit my first $10k month trading, took me 3 years <span class="fl"><span class="cut" style="--d:.43s;--t:.08s">lol</span></span></p>
+                <p class="note"><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span id="pf-note">Kept your $10k, your 3 years and your lowercase. Cut the throat-clearing.</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="wmid"><button class="sharpen" id="pf-go" type="button" aria-label="Sharpen this draft again"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg>Sharpen</button></div>
+          <div class="pane sharp">
+            <div class="ph"><b>Sharpened</b><span class="move"><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span id="pf-move">Led with the number</span></span></div>
+            <article class="post" aria-labelledby="pf-name">
+              <div class="who">
+                <span class="av me" id="pf-av2" aria-hidden="true"></span>
+                <p class="nm"><b id="pf-name">heycape</b><span class="tag">Example</span><span id="pf-handle">@heycape_</span><span aria-hidden="true">·</span><span>2m</span></p>
+              </div>
+              <p class="ptext" id="pf-sharp"><span class="sr">Sharpened: </span>my first $10k month trading took me 3 years.</p>
+              <div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div>
+            </article>
+            <div class="hits"><span class="k">Why it hits</span><p id="pf-why">$10k stops the scroll. 3 years makes it believable.</p></div>
+          </div>
+        </figure>
+      </div>
+      <div class="ex-ph wide" role="group" aria-labelledby="exp-l">
+        <span class="lab" id="exp-l">Watch another real one</span>
+        <span class="pills">
+          <button type="button" data-ex="0" aria-pressed="true">$10k month</button>
+          <button type="button" data-ex="1" aria-pressed="false">Sizing down</button>
+          <button type="button" data-ex="2" aria-pressed="false">Churn</button>
+          <button type="button" data-ex="3" aria-pressed="false">Design systems</button>
+        </span>
+      </div>
+      <div class="hmeta wide">
+        <p class="posts">Posts to <span><svg aria-hidden="true"><use href="#n-x"/></svg>X</span><span><svg aria-hidden="true"><use href="#n-threads"/></svg>Threads</span><span><svg aria-hidden="true"><use href="#n-li"/></svg>LinkedIn</span><span><svg aria-hidden="true"><use href="#n-bsky"/></svg>Bluesky</span></p>
+        <p class="since"><i aria-hidden="true"></i><span><b>Since Sept 8,</b> X pays for original posts, not replies.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. COMPOSE: the try box at the top of the feed (the real engine) -->
+  <section class="cell cmp" id="sharpen" aria-labelledby="sh-h">
+    <div class="p">
+      <h2 class="h2 wide" id="sh-h">Your facts stay.<br><span class="d">The fluff goes.</span></h2>
+      <p class="lede wide">Paste a first line. The fluff gets a squiggle as you type. Tap Sharpen it to see how it would post.</p>
+      <span class="av you" aria-hidden="true"></span>
+      <div class="ed">
+        <label class="sr" for="try-ta">Your first line</label>
+        <div class="ed-mirror" id="try-mirror" aria-hidden="true"><mark>basically</mark> i stopped trading the open and <mark>honestly</mark> my pnl got way better&#8203;</div>
+        <textarea class="ed-ta" id="try-ta" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="try-why">basically i stopped trading the open and honestly my pnl got way better</textarea>
+        <p class="flags" id="try-flags"><span class="k">Fluff:</span><button type="button" data-k="0" aria-current="true" title="Talking filler. Out loud it buys you a second; in the feed it costs you one.">basically</button><button type="button" data-k="1" title="It hints the rest might not be honest. Lines that land never announce their honesty.">honestly</button></p>
+        <p class="why" id="try-why"><b>“basically”</b> Talking filler. Out loud it buys you a second; in the feed it costs you one.</p>
+        <div class="cbar">
+          <span class="ctools" aria-hidden="true"><svg class="ico"><use href="#i-img"/></svg><svg class="ico"><use href="#i-gif"/></svg><svg class="ico"><use href="#i-list"/></svg><svg class="ico"><use href="#i-sched"/></svg></span>
+          <span class="count tnum" id="try-count" aria-hidden="true">72 / 280</span>
+          <button class="btn btn-glass btn-x" type="button" id="try-clear">Clear</button>
+          <button class="btn btn-white btn-x" type="button" id="try-go">Sharpen it</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <article class="cell out" id="try-out" aria-live="polite" aria-labelledby="out-st">
+    <p class="ctx"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="out-st">How it would post</span></p>
+    <div class="p">
+      <span class="av you" aria-hidden="true"></span>
+      <p class="xname"><b>You</b><span>@you</span><span aria-hidden="true">·</span><span>now</span></p>
+      <p class="xtext" id="out-line">i stopped trading the open. my pnl got better.</p>
+      <div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div>
+      <div class="hits" id="out-hits"><span class="k">Why it hits</span><div><p id="out-why">Two short beats with a full stop between them. The pause makes the second one land.</p><p class="n2" id="out-note">Split it into two beats. Cut “basically” and “honestly”.</p></div></div>
+      <p class="tnote"><b>Sharpen is free, forever.</b> In the app, Claude can also rewrite the whole post in your voice (20 a month free).</p>
+    </div>
+  </article>
+
+  <!-- 3. PREVIEWS: one draft, four feeds -->
+  <section class="cell" id="previews" aria-labelledby="pv-h">
+    <div class="p">
+      <span class="av hw" aria-hidden="true"></span>
+      <p class="xname"><b>Hookworthy</b><span>@hookworthy</span></p>
+      <h2 class="h2 wide" id="pv-h">One draft.<br><span class="d">Four feeds.</span></h2>
+      <p class="lede wide">See it the way each app will show it, before you post.</p>
+      <div class="seg-wrap wide"><div class="pills track seg" role="group" aria-label="Preview app">
+        <button type="button" data-n="0" aria-pressed="true"><svg aria-hidden="true"><use href="#n-x"/></svg>X</button>
+        <button type="button" data-n="1" aria-pressed="false"><svg aria-hidden="true"><use href="#n-threads"/></svg>Threads</button>
+        <button type="button" data-n="2" aria-pressed="false"><svg aria-hidden="true"><use href="#n-li"/></svg>LinkedIn</button>
+        <button type="button" data-n="3" aria-pressed="false"><svg aria-hidden="true"><use href="#n-bsky"/></svg>Bluesky</button>
+      </div></div>
+      <p class="pv-big wide" id="pv-big">Too long for one post?<br><span class="d">It becomes a 2-post thread.</span></p>
+      <p class="pv-note wide" id="pv-note">On free X it splits where your sentence ends, never mid-word.</p>
+      <div class="scr n-x wide" id="pv-scr" role="group" aria-labelledby="pv-net">
+        <p class="scr-h"><svg aria-hidden="true" id="pv-ic"><use href="#n-x"/></svg><span id="pv-net">X</span>&nbsp;preview</p>
+        <div id="pv-body"><div class="ppost"><span class="av me" aria-hidden="true"></span><span class="tl2" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>@heycape_ · 1m</span></p><p class="pt"><span class="hk">most underrated thing in trading? sizing down after a loss.</span>
+
+i lost $4,000 in march doubling my size to win it back. now i cut size in half after any red day.</p><div class="pa" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div></div></div><div class="ppost"><span class="av me" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>@heycape_ · 1m</span></p><p class="pt">the rule is boring: half size until i get a green day, then back to normal size. i used to hate it. now it’s the only reason my account’s still here.</p><div class="pa" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. YOUR DAY: a thread, night to morning -->
+  <section id="day" aria-labelledby="day-h">
+    <div class="cell">
+      <div class="p tl">
+        <span class="av hw" aria-hidden="true"></span>
+        <p class="xname"><b>Hookworthy</b><span>@hookworthy</span></p>
+        <h2 class="h2 wide" id="day-h">Jot it at 11 PM.<br><span class="d">Post it at 8:40 AM.</span></h2>
+        <p class="lede wide">Catch the idea at night, wake up to a draft in your voice, and post it when your people scroll.</p>
+        <figure class="photo"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"><figcaption>heycape’s desk, 11:04 PM <span class="sr">(example)</span></figcaption></figure>
+      </div>
+      <ol class="ntl" aria-label="One idea, from night to morning (example)">
+        <li class="p tl"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-mic"/></svg></span><div><p class="nt-h"><b>You saved a voice note</b><time class="tnum">11:04 PM</time></p>
+          <div class="vn" aria-hidden="true"><span class="pb"><svg><use href="#i-play"/></svg></span><span class="wave"><i class="p" style="height:5px"></i><i class="p" style="height:9px"></i><i class="p" style="height:14px"></i><i class="p" style="height:8px"></i><i class="p" style="height:18px"></i><i class="p" style="height:20px"></i><i class="p" style="height:12px"></i><i class="p" style="height:19px"></i><i class="p" style="height:20px"></i><i class="p" style="height:15px"></i><i style="height:10px"></i><i style="height:17px"></i><i style="height:20px"></i><i style="height:13px"></i><i style="height:8px"></i><i style="height:15px"></i><i style="height:19px"></i><i style="height:11px"></i><i style="height:7px"></i><i style="height:16px"></i><i style="height:20px"></i><i style="height:17px"></i><i style="height:10px"></i><i style="height:14px"></i><i style="height:18px"></i><i style="height:9px"></i><i style="height:6px"></i><i style="height:12px"></i><i style="height:16px"></i><i style="height:10px"></i></span><span class="tnum">0:42</span></div></div></li>
+        <li class="p tl"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-pen"/></svg></span><div><p class="nt-h"><b>Drafted in your voice</b><time class="tnum">11:05 PM</time></p>
+          <p class="quote">most underrated thing in trading? sizing down after a loss.</p></div></li>
+        <li class="p tl"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-clock"/></svg></span><div><p class="nt-h"><b>Your best time: 8:40 AM</b><time class="tnum">11:06 PM</time></p>
+          <p class="nt-t">Already circled on your week. You pick it; it waits.</p>
+          <p class="slots" aria-hidden="true"><span>7:15 AM</span><span class="pick">8:40 AM</span><span>12:30 PM</span></p></div></li>
+        <li class="p done"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-tick"/></svg></span><div><p class="nt-h"><b>You hit post</b><time class="tnum">8:40 AM</time></p>
+          <div class="quote done-post"><p class="qn"><span class="av me" aria-hidden="true"></span><b>heycape</b> @heycape_ · now</p>most underrated thing in trading? sizing down after a loss.<div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div></div></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5. REPLIES + RESULTS: a reply chain, then notifications -->
+  <section id="after" aria-labelledby="af-h">
+    <div class="cell">
+      <div class="p">
+        <span class="av hw" aria-hidden="true"></span>
+        <p class="xname"><b>Hookworthy</b><span>@hookworthy</span></p>
+        <h2 class="h2 wide" id="af-h">Answer every reply.<br><span class="d">Know what landed.</span></h2>
+        <p class="lede wide">Replies and results show up next to your drafts, in plain words.</p>
+      </div>
+    </div>
+    <div class="cell chain" aria-label="A reply, with your answer drafted (example)">
+      <h3 class="lab-h">Replies come in with your answer drafted. You send it.</h3>
+      <div class="p tl"><span class="av me" aria-hidden="true"></span><p class="xname"><b>heycape</b><span class="tag">Example</span><span>@heycape_ · 1h</span></p><p class="xtext">most underrated thing in trading? sizing down after a loss.</p></div>
+      <div class="p tl"><span class="av" style="--y:52.94%" aria-hidden="true"></span><p class="xname"><b>Dan Ridge</b><span class="tag">Example</span><span class="hide-ph">@ridgeline_dan · 3m</span></p><p class="xtext">how do you decide how much to size down? half? a quarter?</p></div>
+      <div class="p"><span class="av me" aria-hidden="true"></span><div class="mine"><p class="lab"><svg class="ico" aria-hidden="true"><use href="#i-pen"/></svg>Drafted in your voice</p><p class="xtext">half, until i have two green days. then back to normal. no hero trades in between.</p><div class="act" aria-hidden="true"><span class="fake ghost">Edit</span><span class="fake">Reply</span></div></div></div>
+      <p class="cfoot">Nothing replies on its own. Read it, tweak it if you like, and send it.</p>
+    </div>
+    <div class="cell">
+      <h3 class="lab-h">How it did next to your usual, in plain words.</h3>
+      <ul class="notes">
+        <li><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-up"/></svg></span><div><p class="nt-h">Your 8:40 post got more replies than your usual.</p><p class="quote">most underrated thing in trading? sizing down after a loss.</p></div></li>
+        <li><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-pen"/></svg></span><div><p class="nt-h">Write next: how you size down, step by step. That’s what they asked.</p></div></li>
+        <li class="ping"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-bolt"/></svg></span><div><p class="nt-h">Your 8:40 post is taking off. Good moment to answer replies.</p></div></li>
+      </ul>
+      <p class="cfoot">Compared with you, not with someone with ten times the followers.</p>
+    </div>
+  </section>
+
+  <!-- 6. WHO IT'S FOR: people like you -->
+  <section class="cell" id="who" aria-labelledby="w-h">
+    <div class="p">
+      <span class="av hw" aria-hidden="true"></span>
+      <p class="xname"><b>Hookworthy</b><span>@hookworthy</span></p>
+      <h2 class="h2 wide" id="w-h">Whatever you post,<br><span class="d">the first line decides.</span></h2>
+      <p class="lede wide">Made for people who write their own posts, and the ghostwriters who write them for others.</p>
+    </div>
+    <ul class="wtf">
+      <li><span class="av me" aria-hidden="true"></span><div><h3 class="h3">You post every day.</h3><p class="wl">Like <b>heycape</b>, a trader (example)</p><p class="wb">Trades, lessons, the one you got wrong. Your lowercase stays.</p></div></li>
+      <li><span class="av v2" style="--y:20%" aria-hidden="true"></span><div><h3 class="h3">You build in public.</h3><p class="wl">Like <b>Priya</b>, a founder (example)</p><p class="wb">Ship notes that read like news, not a changelog.</p></div></li>
+      <li><span class="av" style="--y:23.53%" aria-hidden="true"></span><div><h3 class="h3">You write a newsletter.</h3><p class="wl">Like <b>Ana</b>, a newsletter writer (example)</p><p class="wb">One Sunday issue in, a week of first lines out.</p></div></li>
+      <li><span class="av" style="--y:17.65%" aria-hidden="true"></span><div><h3 class="h3">You ghostwrite for founders.</h3><p class="wl">Like <b>Theo</b>, a ghostwriter (example)</p><p class="wb">Every client sounds like themselves, with their yes first.</p></div><a class="btn btn-glass" href="#studio">See Studio</a></li>
+    </ul>
+  </section>
+
+  <!-- 7. STUDIO: a quoted client post, the client's reply, Approve -->
+  <section id="studio" aria-labelledby="st-h">
+    <div class="cell">
+      <div class="p tl">
+        <span class="av hw" aria-hidden="true"></span>
+        <p class="xname"><b>Hookworthy</b><span>@hookworthy</span><span aria-hidden="true">·</span><span>Studio</span></p>
+        <h2 class="h2 wide" id="st-h">Every client, their voice.<br><span class="d">Nothing ships without a yes.</span></h2>
+        <p class="lede wide">For ghostwriters and agencies. Each client gets their own voice, words they never use, a time zone and a yes before anything posts.</p>
+        <div class="pills track st-pick wide" role="group" aria-label="Your clients (examples)">
+          <button type="button" data-c="0" aria-pressed="true"><span class="av v2" style="--y:20%" aria-hidden="true"></span>Priya Nair</button>
+          <button type="button" data-c="1" aria-pressed="false"><span class="av" style="--y:64.71%" aria-hidden="true"></span>Rafael Ortiz</button>
+          <button type="button" data-c="2" aria-pressed="false"><span class="av" style="--y:47.06%" aria-hidden="true"></span>Lena Fischer</button>
+          <button type="button" data-c="3" aria-pressed="false"><span class="av v2" style="--y:0%" aria-hidden="true"></span>Marco Vitale</button>
+        </div>
+        <div class="review glass wide">
+          <p class="st-lab" id="rv-cap"><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg><span><span id="rv-n">Priya</span>, the client, is approving</span></p>
+          <article class="xcard" aria-labelledby="rv-cap">
+            <div class="xrow tl q1"><span class="av v2 xav" style="--y:20%" id="rv-av" aria-hidden="true"></span><div>
+              <p class="xname"><b id="rv-name">Priya Nair</b><span class="tag">Example client</span><span class="hide-ph" id="rv-handle">@priyanair</span><span class="hide-ph" aria-hidden="true">·</span><span class="hide-ph">draft</span></p>
+              <p class="xtext" id="rv-doc">Customer churn: <mark>down 34%</mark>. What changed: our team redesigned the onboarding flow.</p>
+            </div></div>
+            <div class="xrow rp"><span class="av v2 xav" style="--y:20%" id="cm-av" aria-hidden="true"></span><div>
+              <p class="xname"><b id="cm-n">Priya</b><span class="on">on “<span id="cm-on">down 34%</span>”</span></p>
+              <p class="xtext" id="cm-t">Add “since June”. Then it’s good to go.</p>
+            </div></div>
+          </article>
+          <div class="rv-act"><span id="rv-st">Waiting on Priya</span><button class="btn btn-white" type="button" id="rv-ok"><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg>Approve</button></div>
+        </div>
+      </div>
+      <div class="p" style="margin-top:14px">
+        <span class="av hw" aria-hidden="true"></span>
+        <div class="voice">
+          <h3 class="h3"><span id="st-name">Priya</span> in her own voice</h3>
+          <p id="st-voice"><b>Sounds like:</b> plain, numbers first, a little dry. Short sentences. No exclamation marks.</p>
+          <p><b>Never says:</b> <span class="nevers" id="st-never"><s>synergy</s><s>excited to announce</s><s>thought leader</s><s>humbled</s></span></p>
+          <p id="st-tz"><b>Goes out:</b> Tuesdays at <span class="tnum">8:15 AM</span>, London time.</p>
+          <p id="st-q">2 posts are waiting on her yes. 3 are approved and scheduled by you.</p>
+        </div>
+        <div class="st-foot">
+          <p><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg><span><b>Anyone with the link can comment. Only you can post.</b></span></p>
+          <p><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>A client’s post goes out only from their own connected X account, never yours. Clients review by signing in with X or Google.</span></p>
+          <p><svg class="ico" aria-hidden="true"><use href="#i-tag"/></svg><span><b>8 client voices: $144 a month</b> billed yearly ($192 monthly).</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. TRUST -->
+  <section class="cell" id="trust" aria-labelledby="t-h">
+    <div class="p">
+      <span class="av hw" aria-hidden="true"></span>
+      <p class="xname"><b>Hookworthy</b><span>@hookworthy</span></p>
+      <h2 class="h2 wide" id="t-h">We never post for you.<br><span class="d">You hit post.</span></h2>
+      <p class="lede wide"><b>Every post is one you pressed send on,</b> or scheduled yourself. Some things we just don’t do.</p>
+      <ul class="cuts wide" aria-label="Things Hookworthy never does">
+        <li><s><span class="sr">No </span>Auto-DMs</s><span>Not a setting. Not ever.</span></li>
+        <li><s><span class="sr">No </span>Auto-replies</s><span>Answers are drafted. You send them.</span></li>
+        <li><s><span class="sr">No </span>Auto-deletes</s><span>Your posts stay yours.</span></li>
+        <li><s><span class="sr">No </span>Auto-reposts</s><span>No surprise reruns.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9. PRICING: the pinned card -->
+  <section class="cell" id="pricing" aria-labelledby="p-h">
+    <p class="ctx"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg><span>Pinned prices</span></p>
+    <div class="p">
+      <span class="av hw" aria-hidden="true"></span>
+      <p class="xname"><b>Hookworthy</b><span>@hookworthy</span></p>
+      <h2 class="h2 wide" id="p-h">Sharpening is free.<br><span class="d">Forever.</span></h2>
+      <p class="lede wide">Free Sharpen marks and fixes any line, unlimited. Claude rewrites in your voice: 20 a month free.</p>
+      <div class="pills track bill wide" role="group" aria-label="Billing period"><button type="button" aria-pressed="true" data-b="y">Yearly</button><button type="button" aria-pressed="false" data-b="m">Monthly</button></div>
+      <div class="plans glass wide">
+        <article class="plan">
+          <div class="pl"><h3 class="h3">Free</h3><p class="for">For anyone with a draft.</p>
+          <div class="price"><b>$0</b><span>forever</span></div><p class="price-n">No card needed.</p>
+          <a class="btn btn-glass" href="#start">Start free</a></div>
+          <ul id="pl-free">
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span><b>Sharpen any line, as often as you like</b></span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>20 Claude rewrites a month, plus 50 touch-ups a day</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>Learns your voice</span></li>
+            <li class="x"><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>Live previews for every app</span></li>
+            <li class="x"><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>Schedule freely. 15 posts a month go out on their own, at times you pick.</span></li>
+          </ul>
+          <button class="incl" type="button" aria-expanded="false" aria-controls="pl-free">See everything included</button>
+        </article>
+        <article class="plan">
+          <div class="pl"><h3 class="h3">Pro</h3><p class="for">For posting every day.</p>
+          <div class="price"><b class="tnum" data-y="$12" data-m="$16">$12</b><span>a month</span></div><p class="price-n" data-y="Billed yearly at $144. Or $16 month to month." data-m="Month to month. $12 a month if you pay yearly.">Billed yearly at $144. Or $16 month to month.</p>
+          <a class="btn btn-glass" href="#start">Go Pro</a></div>
+          <ul id="pl-pro">
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span><b>250 Claude rewrites a month</b>, add up to 1,750 more</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>Results, in plain words</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>A ping when a post takes off</span></li>
+            <li class="x"><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>Your week drafted from your ideas</span></li>
+            <li class="x"><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>Up to 500 posts a month go out on their own</span></li>
+          </ul>
+          <button class="incl" type="button" aria-expanded="false" aria-controls="pl-pro">See everything included</button>
+        </article>
+        <article class="plan feat">
+          <span class="spec" aria-hidden="true"></span>
+          <div class="pl"><h3 class="h3">Studio</h3><p class="for">For ghostwriters and agencies.</p>
+          <div class="price"><b class="tnum" data-y="$18" data-m="$24">$18</b><span>per client voice, a month</span></div><p class="price-n" data-y="Billed yearly. Or $24 month to month." data-m="Month to month. $18 if you pay yearly.">Billed yearly. Or $24 month to month.</p>
+          <a class="btn btn-white" href="#start">Start Studio</a></div>
+          <ul>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span><b>Everything in Pro</b></span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>Each client gets their own voice</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>Their yes before anything posts</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>A review link for each client</span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-tick"/></svg><span>500 rewrites a month per client voice</span></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FINAL: reply to us; your line sharpens as you type -->
+  <section class="cell fin" id="start" aria-labelledby="fin-h">
+    <div class="p">
+      <span class="av hw" aria-hidden="true"></span>
+      <p class="xname"><b>Hookworthy</b><span>@hookworthy</span></p>
+      <h2 class="h2 xl wide" id="fin-h">Good ideas die<br><span class="d">in <span class="sq">bad first lines</span>.</span></h2>
+      <p class="fin-sub wide">Yours don’t have to. Paste one in and watch it sharpen.</p>
+    </div>
+    <div class="p reply">
+      <span class="av you" aria-hidden="true"></span>
+      <p class="rto">Replying to <b>@hookworthy</b></p>
+      <form class="fin-form wide" id="fin-form" action="#start" novalidate>
+        <div class="fin-field">
+          <div class="fin-mirror" id="fin-mirror" aria-hidden="true"><span id="fin-mtext"></span></div>
+          <label class="sr" for="fin-in">Your first line</label>
+          <input class="fin-in" id="fin-in" type="text" placeholder="Paste a first line…" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <span class="fin-n" id="fin-n" aria-hidden="true"></span>
+        </div>
+        <button class="btn btn-white" type="submit">Sharpen my first line</button>
+      </form>
+      <p class="micro wide">Free forever<i aria-hidden="true">·</i>No card<i aria-hidden="true">·</i>Nothing posts without you</p>
+      <div class="fpay wide" id="fpay" role="group" aria-labelledby="fp-name">
+        <div class="light" aria-hidden="true"><i class="beam"></i><i class="core"></i><i class="bloom"></i><i class="hot"></i></div>
+        <p class="draft" id="fp-draft"><span class="spec" aria-hidden="true"></span><span class="sr">Draft: </span><span class="fl"><span class="cut">honestly</span></span> most design systems fail because nobody <span class="fl"><span class="cut">really</span></span> owns them</p>
+        <article class="xcard">
+          <div class="xrow"><span class="av xav" style="--y:29.41%" id="fp-av" aria-hidden="true"></span><div>
+            <p class="xname" id="fp-head"><b id="fp-name">Jun Park</b><span class="tag">Example</span><span>@junpark · 1m</span></p>
+            <div id="fp-live" aria-live="polite"><p class="xtext" id="fp-sharp"><span class="sr">Sharpened: </span>why do most design systems fail? nobody owns them.</p></div>
+            <div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div>
+          </div></div>
+        </article>
+        <div class="hits" id="fp-hits"><p><b>Why it hits:</b> <span id="fp-why">The question opens a gap. “nobody owns them” closes it before the thumb moves.</span></p><p class="n2" id="fp-note">An example. Paste your own line and this turns into yours as you type.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="end"><b>You’re all caught up.</b><span>The next first line is yours.</span></div>
+  <footer>
+    <nav aria-label="Footer"><ul>
+      <li><a href="#sharpen">Sharpen</a></li><li><a href="#previews">Previews</a></li><li><a href="#day">Your day</a></li><li><a href="#after">Replies</a></li><li><a href="#who">Who it’s for</a></li><li><a href="#studio">Ghostwriters</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#trust">How posting works</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#terms">Terms</a></li>
+    </ul></nav>
+    <p>© 2026 Hookworthy. Writing and scheduling for people who post on X, Threads, LinkedIn and Bluesky. heycape and everyone shown are example accounts.</p>
+  </footer>
+</main>
+
+<!-- RIGHT RAIL: the CTA, the four examples, where it posts -->
+<aside class="rrail" aria-label="Start here">
+  <div class="rr" id="rr">
+    <div class="rcard glass rcta">
+      <p><b>Free forever.</b> No card. Paste a line, see it sharpen.</p>
+      <a class="btn btn-white" href="#start">Sharpen my first line</a>
+      <p class="micro">Nothing posts without you.</p>
+    </div>
+    <section class="rcard glass" aria-labelledby="rx-h">
+      <h2 id="rx-h">Watch another real one</h2>
+      <div role="group" aria-labelledby="rx-h">
+        <button class="trend" type="button" data-ex="0" aria-pressed="true"><span class="tm">Example · heycape</span><span class="tt">$10k month</span><span class="ts">Led with the number</span></button>
+        <button class="trend" type="button" data-ex="1" aria-pressed="false"><span class="tm">Example · heycape</span><span class="tt">Sizing down</span><span class="ts">Turned it into a question</span></button>
+        <button class="trend" type="button" data-ex="2" aria-pressed="false"><span class="tm">Example · Priya Nair</span><span class="tt">Churn</span><span class="ts">Led with the result</span></button>
+        <button class="trend" type="button" data-ex="3" aria-pressed="false"><span class="tm">Example · Jun Park</span><span class="tt">Design systems</span><span class="ts">Turned it into a question</span></button>
+      </div>
+      <span class="pad" aria-hidden="true"></span>
+    </section>
+    <section class="rcard glass" aria-labelledby="rp-h">
+      <h2 id="rp-h">Posts to</h2>
+      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-x"/></svg></span><p><b>X</b>Long ones become a thread</p><button class="btn btn-glass" type="button" data-n="0">Preview<span class="sr"> on X</span></button></div>
+      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-threads"/></svg></span><p><b>Threads</b>Fits in one post</p><button class="btn btn-glass" type="button" data-n="1">Preview<span class="sr"> on Threads</span></button></div>
+      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-li"/></svg></span><p><b>LinkedIn</b>Your line, above “see more”</p><button class="btn btn-glass" type="button" data-n="2">Preview<span class="sr"> on LinkedIn</span></button></div>
+      <div class="net"><span class="nic" aria-hidden="true"><svg><use href="#n-bsky"/></svg></span><p><b>Bluesky</b>Split at a full stop</p><button class="btn btn-glass" type="button" data-n="3">Preview<span class="sr"> on Bluesky</span></button></div>
+      <span class="pad" aria-hidden="true"></span>
+    </section>
+    <p class="rnews"><i aria-hidden="true"></i><span><b>Since Sept 8,</b> X pays for original posts, not replies.</span></p>
+  </div>
+</aside>
+
+</div>
+
+<!-- PHONE: tab bar with the CTA, like the app -->
+<nav class="tabbar" id="tabbar" aria-label="Quick links">
+  <a href="#top" data-spy="top" aria-label="Home" aria-current="location"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg></a>
+  <a href="#sharpen" data-spy="sharpen" aria-label="Try it"><svg class="ico" aria-hidden="true"><use href="#i-write"/></svg></a>
+  <a href="#pricing" data-spy="pricing" aria-label="Pricing"><svg class="ico" aria-hidden="true"><use href="#i-tag"/></svg></a>
+  <a class="btn btn-white" href="#start">Sharpen my first line</a>
+</nav>
+
+<script src="../../core.js" defer></script>
+<script>
+(() => {
+  const RM = !document.documentElement.classList.contains('motion');
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const icn = n => `<svg class="ico" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+  const wide = () => matchMedia('(min-width:1000px)').matches;
+  const into = (el, block = 'start') => el.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block });
+  /* engine move ids, said the way a creator would say them */
+  const MOVE = { warm: 'Got straight to it', ask: 'Turned it into a question', number: 'Led with the number', result: 'Led with the result', contrast: 'Split it into two beats', straight: 'Said it straight', tight: 'Tightened it', end: 'Gave it an ending', payoff: 'Put the payoff first', moment: 'Opened on the moment', active: 'Said who did it', loop: 'Left them wanting the rest', order: 'Saved the punchline for last', bait: 'Dropped the bait', soft: 'Cut the fluff' };
+  const quoted = arr => { const q = arr.slice(0, arr.length > 5 ? 4 : 5).map(c => `“${c}”`), more = arr.length - q.length;
+    if (more > 0) return q.join(', ') + ` and ${more} more`; return q.length < 2 ? q.join('') : q.slice(0, -1).join(', ') + ' and ' + q[q.length - 1]; };
+
+  /* ---------- pinned post: four real rewrites, picked by you, one play each ---------- */
+  const EX = [
+    { who: 'heycape', handle: '@heycape_', av: 'me', draft: 'just wanted to share that i finally hit my first $10k month trading, took me 3 years lol',
+      soft: ['just wanted to share that', 'finally', 'lol'], after: 'my first $10k month trading took me 3 years.', move: 'Led with the number',
+      why: '$10k stops the scroll. 3 years makes it believable.', note: 'Kept your $10k, your 3 years and your lowercase. Cut the throat-clearing.' },
+    { who: 'heycape', handle: '@heycape_', av: 'me', draft: 'so i think the most underrated thing in trading is honestly just sizing down after a loss.',
+      soft: ['so', 'i think', 'honestly', 'just'], after: 'most underrated thing in trading? sizing down after a loss.', move: 'Turned it into a question',
+      why: 'A question opens a gap, and your answer closes it in the same line.', note: 'Kept your point and your lowercase. Cut the hedging.' },
+    { who: 'Priya Nair', handle: '@priyanair', av: 'v2|20%', draft: 'Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.',
+      soft: ['was reduced by', 'was redesigned by'], after: 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', move: 'Led with the result',
+      why: '34% is the news, so it goes first. Saying who did it sounds like you were in the room.', note: 'Kept your 34% and your team. Cut the press-release voice.' },
+    { who: 'Jun Park', handle: '@junpark', av: '|29.41%', draft: 'honestly most design systems fail because nobody really owns them',
+      soft: ['honestly', 'really'], after: 'why do most design systems fail? nobody owns them.', move: 'Turned it into a question',
+      why: 'The question opens a gap. “nobody owns them” closes it before the thumb moves.', note: 'Kept your claim and your lowercase. Cut “honestly” and “really”.' }
+  ];
+  const proof = $('#proof');
+  let curEx = 0;
+  const setAv = (el, key) => { const keep = el.classList.contains('xav') ? ' xav' : '';
+    if (key === 'me') { el.className = 'av me' + keep; el.style.removeProperty('--y'); return; }
+    const [c, y] = key.split('|'); el.className = 'av' + (c ? ' ' + c : '') + keep; el.style.setProperty('--y', y); };
+  function draftHTML(e) {
+    /* fluff struck in reading order inside one ~0.46s window, so the post lands on time */
+    const W = .46, gap = .03, n = e.soft.length, tot = e.soft.reduce((a, s) => a + s.length, 0);
+    const avail = W - gap * (n - 1), base = .07; let t = 0, h = '', last = 0;
+    e.soft.forEach(s => {
+      const re = new RegExp('(^|[^a-z])' + s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![a-z])', 'ig');
+      re.lastIndex = last; const m = re.exec(e.draft); if (!m) return;
+      const i = m.index + m[1].length;
+      const dur = base + (avail - base * n) * s.length / tot;
+      h += esc(e.draft.slice(last, i)) + `<span class="fl"><span class="cut" style="--d:${t.toFixed(3)}s;--t:${dur.toFixed(3)}s">${esc(e.draft.slice(i, i + s.length))}</span></span>`;
+      t += dur + gap; last = i + s.length;
+    });
+    return '<span class="sr">Draft: </span>' + h + esc(e.draft.slice(last));
+  }
+  function replay() { if (RM) return; proof.style.setProperty('--l', '.12s'); proof.classList.remove('play'); void proof.offsetWidth; proof.classList.add('play'); }
+  function showEx(i) {
+    const e = EX[i]; curEx = i;
+    setAv($('#pf-av'), e.av); setAv($('#pf-av2'), e.av);
+    $('#pf-draft').innerHTML = draftHTML(e);
+    $('#pf-name').textContent = e.who; $('#pf-handle').textContent = e.handle; $('#pf-move').textContent = e.move;
+    $('#pf-sharp').innerHTML = '<span class="sr">Sharpened: </span>' + esc(e.after); $('#pf-sharp').classList.toggle('long', e.after.length > 62);
+    $('#pf-why').textContent = e.why; $('#pf-note').textContent = e.note;
+    $$('[data-ex]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.ex === i)));
+    replay();
+  }
+  $$('.ex-ph [data-ex]').forEach(b => b.addEventListener('click', () => showEx(+b.dataset.ex)));
+  /* the right rail's trends replay in the pinned post, and bring it into view */
+  $$('.trend').forEach(b => b.addEventListener('click', () => {
+    const r = proof.getBoundingClientRect();
+    if (r.top < 60 || r.bottom > innerHeight) into(proof, 'center');
+    showEx(+b.dataset.ex);
+  }));
+  $('#pf-go').addEventListener('click', () => showEx(curEx));
+
+  /* ---------- previews ---------- */
+  const L1 = 'most underrated thing in trading? sizing down after a loss.';
+  const B1 = 'i lost $4,000 in march doubling my size to win it back. now i cut size in half after any red day.';
+  const B2 = 'the rule is boring: half size until i get a green day, then back to normal size. i used to hate it. now it’s the only reason my account’s still here.';
+  const pacts = `<div class="pa" aria-hidden="true">${icn('reply')}${icn('repost')}${icn('like')}${icn('views')}${icn('mark')}</div>`;
+  const post = (meta, body, thread) => `<div class="ppost"><span class="av me" aria-hidden="true"></span>${thread ? '<span class="tl2" aria-hidden="true"></span>' : ''}<div><p class="pn"><b>heycape</b><span>${meta}</span></p><p class="pt">${body}</p>${pacts}</div></div>`;
+  const hk = `<span class="hk">${esc(L1)}</span>\n\n`;
+  const NET = [
+    { cls: 'n-x', name: 'X', ic: 'n-x', body: () => post('@heycape_ · 1m', hk + esc(B1), true) + post('@heycape_ · 1m', esc(B2)),
+      big: 'Too long for one post?<br><span class="d">It becomes a 2-post thread.</span>', note: 'On free X it splits where your sentence ends, never mid-word.' },
+    { cls: 'n-th', name: 'Threads', ic: 'n-threads', body: () => post('1m', hk + esc(B1) + '\n\n' + esc(B2)),
+      big: 'Fits in one post.<br><span class="d">Threads gives you room.</span>', note: 'Same words, in Threads’ own layout.' },
+    { cls: 'n-li', name: 'LinkedIn', ic: 'n-li', body: () => `<div class="li"><div class="li-h"><span class="av me" aria-hidden="true"></span><p><b>heycape</b><span>Trader · Example account</span><span>1m</span></p></div><p class="pt">${esc(L1)}\n\n${esc(B1.slice(0, 96))}<span class="more">…see more</span></p><div class="li-a" aria-hidden="true"><span>Like</span><span>Comment</span><span>Repost</span><span>Send</span></div></div>`,
+      big: 'Plenty of room.<br><span class="d">Your first line still does the work.</span>', note: 'It’s the only line people see above “see more”.' },
+    { cls: 'n-bs', name: 'Bluesky', ic: 'n-bsky', body: () => post('@heycape.bsky.social · 1m', hk + esc(B1), true) + post('@heycape.bsky.social · 1m', esc(B2)),
+      big: 'A little long for Bluesky?<br><span class="d">It becomes a 2-post thread.</span>', note: 'Split at a full stop, same as on X.' }
+  ];
+  function net(i) {
+    const p = NET[i], scr = $('#pv-scr');
+    scr.className = 'scr wide ' + p.cls; $('#pv-net').textContent = p.name; $('#pv-ic').innerHTML = `<use href="#${p.ic}"/>`;
+    $('#pv-body').innerHTML = p.body(); $('#pv-big').innerHTML = p.big; $('#pv-note').textContent = p.note;
+    $$('.seg button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.n === i)));
+  }
+  $$('.seg button').forEach(b => b.addEventListener('click', () => net(+b.dataset.n)));
+  $$('.net button').forEach(b => b.addEventListener('click', () => { net(+b.dataset.n); into($('#previews')); }));
+
+  /* ---------- studio ---------- */
+  const CL = [
+    { n: 'Priya Nair', f: 'Priya', pr: 'her', h: '@priyanair', av: 'v2|20%', v: 'plain, numbers first, a little dry. Short sentences. No exclamation marks.', nv: ['synergy','excited to announce','thought leader','humbled'], tz: ['Tuesdays', '8:15 AM', 'London'], q: '2 posts are waiting on her yes. 3 are approved and scheduled by you.',
+      doc: ['Customer churn: ', 'down 34%', '. What changed: our team redesigned the onboarding flow.'], cm: 'Add “since June”. Then it’s good to go.' },
+    { n: 'Rafael Ortiz', f: 'Rafael', pr: 'his', h: '@rafaelortiz', av: '|64.71%', v: 'contrarian, warm, cites the deal. Ends on a question.', nv: ['disrupt','to the moon','crushing it'], tz: ['Wednesdays', '7:40 AM', 'Mexico City'], q: '1 post is waiting on his yes. 4 are approved and scheduled by you.',
+      doc: ['The deal I passed on this year taught me more than ', 'the five I closed', '. What did yours teach you?'], cm: 'Make it four. One hasn’t closed yet.' },
+    { n: 'Lena Fischer', f: 'Lena', pr: 'her', h: '@lenafischer', av: '|47.06%', v: 'gentle and direct. Second person. One idea per post.', nv: ['hustle','grindset','manifest'], tz: ['Mondays', '6:30 PM', 'Berlin'], q: '1 post is waiting on her yes. 5 are approved and scheduled by you.',
+      doc: ['You don’t need a morning routine. You need one thing you do ', 'before your phone', '.'], cm: 'Yes. This is exactly how I say it.' },
+    { n: 'Marco Vitale', f: 'Marco', pr: 'his', h: '@marcovitale', av: 'v2|0%', v: 'lowercase, chart first, says when he was wrong.', nv: ['guaranteed','not financial advice lol','wagmi'], tz: ['Thursdays', '8:05 AM', 'Rome'], q: '3 posts are waiting on his yes. 2 are approved and scheduled by you.',
+      doc: ['i was wrong on btc at 58k. here’s the chart that told me, and ', 'i ignored it', '.'], cm: 'keep this. it’s the whole post.' }
+  ];
+  let cur = 0;
+  function client(i) {
+    const c = CL[i]; cur = i;
+    $$('.st-pick button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.c === i)));
+    $('#rv-name').textContent = c.n; $('#rv-handle').textContent = c.h; $('#cm-n').textContent = c.f;
+    $('#rv-cap').lastElementChild.innerHTML = `<span id="rv-n">${esc(c.f)}</span>, the client, is approving`;
+    setAv($('#rv-av'), c.av); setAv($('#cm-av'), c.av);
+    $('#rv-doc').innerHTML = esc(c.doc[0]) + `<mark>${esc(c.doc[1])}</mark>` + esc(c.doc[2]);
+    $('#cm-on').textContent = c.doc[1]; $('#cm-t').textContent = c.cm;
+    $('#st-name').textContent = c.f; $('#st-name').parentNode.lastChild.textContent = ` in ${c.pr} own voice`;
+    $('#st-voice').innerHTML = `<b>Sounds like:</b> ${esc(c.v)}`;
+    $('#st-never').innerHTML = c.nv.map(w => `<s>${esc(w)}</s>`).join('');
+    $('#st-tz').innerHTML = `<b>Goes out:</b> ${c.tz[0]} at <span class="tnum">${c.tz[1]}</span>, ${c.tz[2]} time.`;
+    $('#st-q').textContent = c.q;
+    resetApprove();
+  }
+  function resetApprove() {
+    const act = $('.rv-act'); act.innerHTML = `<span id="rv-st">Waiting on ${esc(CL[cur].f)}</span><button class="btn btn-white" type="button" id="rv-ok">${icn('tick')}Approve</button>`;
+    $('#rv-ok').addEventListener('click', approve);
+  }
+  function approve() {
+    const c = CL[cur], act = $('.rv-act');
+    act.innerHTML = `<span>${esc(c.f)} said yes. You schedule it.</span><span class="done" tabindex="-1" id="rv-done">${icn('tick')}Approved</span>`;
+    $('#rv-done').focus();
+  }
+  $$('.st-pick button').forEach(b => b.addEventListener('click', () => client(+b.dataset.c)));
+  $('#rv-ok').addEventListener('click', approve);
+
+  /* ---------- pricing ---------- */
+  $$('.bill button').forEach(b => b.addEventListener('click', () => {
+    const m = b.dataset.b; $$('.bill button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $$('[data-y]').forEach(el => el.textContent = el.dataset[m]);
+  }));
+  $$('.incl').forEach(b => b.addEventListener('click', () => {
+    const open = b.closest('.plan').classList.toggle('open'); b.setAttribute('aria-expanded', String(open));
+    b.textContent = open ? 'Show less' : 'See everything included';
+  }));
+
+  /* ---------- the chrome: which section you're in (scroll-driven, no timers) ---------- */
+  const SECS = ['top', 'sharpen', 'previews', 'day', 'after', 'who', 'studio', 'trust', 'pricing', 'start'].map(id => document.getElementById(id));
+  const tabC = $('#tab-c'), tabG = $('#tab-g'), bar = $('#tabbar');
+  let curSec = '', ticking = false;
+  const mark = (el, on, v) => on ? el.setAttribute('aria-current', v) : el.removeAttribute('aria-current');
+  function spy() {
+    ticking = false;
+    const y = innerHeight * .33; let id = 'top';
+    for (const s of SECS) if (s.getBoundingClientRect().top <= y) id = s.id;
+    const finOn = $('#start').getBoundingClientRect().top < innerHeight * .7;
+    bar.classList.toggle('fin-on', finOn);
+    if (id === curSec) return; curSec = id;
+    $$('[data-spy]').forEach(a => mark(a, a.dataset.spy === id, 'location'));
+    mark(tabG, id === 'studio', 'page'); mark(tabC, id !== 'studio', 'page');
+  }
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+  addEventListener('resize', spy); spy();
+  /* right rail: sticks at the top, or scrolls with the page until its end meets the viewport (like the app) */
+  const rr = $('#rr');
+  const fitRail = () => { rr.style.top = Math.min(0, innerHeight - rr.offsetHeight - 24) + 'px'; };
+  addEventListener('resize', fitRail); fitRail();
+
+  /* ---------- the real engine: Try it + the final line ---------- */
+  const nrm = s => s.toLowerCase().replace(/[^a-z0-9$%]+/g, ' ').trim();
+  function marked(text, marks) { let h = '', last = 0; marks.forEach(([a, b]) => { h += esc(text.slice(last, a)) + `<mark>${esc(text.slice(a, b))}</mark>`; last = b; }); return h + esc(text.slice(last)); }
+  function struck(text, marks) { let h = '', last = 0; marks.forEach(([a, b]) => { h += esc(text.slice(last, a)) + `<span class="fl"><span class="cut">${esc(text.slice(a, b))}</span></span>`; last = b; }); return h + esc(text.slice(last)); }
+  function sharpen(H, t) {
+    let r = null; try { r = H.hookUp(t, {}); } catch (err) { r = null; }
+    const b = r && r.best;
+    if (!b || !b.text || nrm(b.text) === nrm(t)) return null;
+    const low = t.toLowerCase(), cut = (b.cut || []).slice().sort((x, y) => low.indexOf(x.toLowerCase()) - low.indexOf(y.toLowerCase()));
+    const move = b.main === 'soft' ? '' : (MOVE[b.main] || 'Sharpened it') + '. ';
+    return { text: b.text, why: b.why || 'It gets to the point before the thumb moves.', note: move + (cut.length ? `Cut ${quoted(cut)}.` : 'Every word you wrote is still there.') };
+  }
+  function initEngine() {
+    const H = window.HWCore; if (!H) return;
+    const ta = $('#try-ta'), mir = $('#try-mirror'), flags = $('#try-flags'), why = $('#try-why'), out = $('#try-out'), cnt = $('#try-count');
+    let marks = [], sharpenedFor = ta.value;
+    const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+    const showWhy = k => { const m = marks[k]; if (!m) return;
+      why.innerHTML = `<b>“${esc(ta.value.slice(m[0], m[1]))}”</b> ${esc(m[2])}`;
+      $$('#try-flags button').forEach(b => b.setAttribute('aria-current', String(+b.dataset.k === k))); };
+    function paint() {
+      const t = ta.value; marks = H.softMarks(t);
+      mir.innerHTML = marked(t, marks) + '&#8203;'; cnt.textContent = `${t.length} / 280`;
+      const n = marks.length;
+      flags.innerHTML = n ? '<span class="k">Fluff:</span>' + marks.map((m, k) => `<button type="button" data-k="${k}" title="${esc(m[2])}">${esc(t.slice(m[0], m[1]))}</button>`).join('')
+        : (t.trim() ? `<span class="ok">${icn('tick')}No fluff. Sharpen still checks how it opens.</span>` : '');
+      if (n) showWhy(0); else why.textContent = t.trim() ? '' : 'Type or paste the first line of a post.';
+      fit();
+      out.classList.toggle('stale', t !== sharpenedFor);
+      const st = t !== sharpenedFor ? 'Edited. Tap Sharpen it again.' : 'How it would post', stEl = $('#out-st'); if (stEl.textContent !== st) stEl.textContent = st;
+    }
+    flags.addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) showWhy(+b.dataset.k); });
+    flags.addEventListener('mouseover', e => { const b = e.target.closest('button[data-k]'); if (b) showWhy(+b.dataset.k); });
+    flags.addEventListener('focusin', e => { const b = e.target.closest('button[data-k]'); if (b) showWhy(+b.dataset.k); });
+    ta.addEventListener('mousemove', e => { const el = document.elementsFromPoint(e.clientX, e.clientY).find(x => x.tagName === 'MARK' && mir.contains(x));
+      if (el) { const k = [...mir.querySelectorAll('mark')].indexOf(el); showWhy(k); ta.title = marks[k] ? marks[k][2] : ''; } else ta.title = ''; });
+    ta.addEventListener('input', paint);
+    $('#try-clear').addEventListener('click', () => { ta.value = ''; paint(); ta.focus(); });
+    $('#try-go').addEventListener('click', () => {
+      const t = ta.value.trim(); sharpenedFor = ta.value;
+      out.classList.remove('stale', 'fresh'); $('#out-st').textContent = 'How it would post';
+      const line = $('#out-line'), hits = $('#out-hits');
+      if (!t) { line.className = 'xtext same'; line.textContent = 'Type a first line, then tap Sharpen it.'; hits.hidden = true; return; }
+      const r = sharpen(H, t);
+      if (!r) { line.className = 'xtext same'; line.textContent = t; hits.hidden = false; $('#out-why').textContent = 'Already sharp. Nothing to cut.'; $('#out-note').textContent = 'Post it as it is.'; }
+      else { line.className = 'xtext'; line.textContent = r.text; hits.hidden = false; $('#out-why').textContent = r.why; $('#out-note').textContent = r.note; }
+      if (!RM) { void out.offsetWidth; out.classList.add('fresh'); }
+      const rb = out.getBoundingClientRect(); if (rb.bottom > innerHeight - (wide() ? 0 : 72)) into(out, 'nearest');
+    });
+    addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
+    paint();
+
+    /* final reply: squiggles as you type; the post below sharpens the line live (debounced) */
+    const fi = $('#fin-in'), fm = $('#fin-mtext'), fmir = $('#fin-mirror'), fn = $('#fin-n'), pay = $('#fpay');
+    const fpDraft = $('#fp-draft'), fpHead = $('#fp-head'), fpSharp = $('#fp-sharp'), fpWhy = $('#fp-why'), fpNote = $('#fp-note'), fpAv = $('#fp-av');
+    const EX0 = { draft: fpDraft.innerHTML, head: fpHead.innerHTML, sharp: fpSharp.innerHTML, why: fpWhy.textContent, note: fpNote.innerHTML, av: fpAv.className, y: fpAv.style.getPropertyValue('--y') };
+    let live = false, lastKey = '', timer = 0;
+    const flash = () => { if (!RM) { pay.classList.remove('fresh'); void pay.offsetWidth; pay.classList.add('fresh'); } };
+    function payUpdate() {
+      const t = fi.value.trim();
+      if (!t) {
+        if (!live) return; live = false; lastKey = '';
+        fpDraft.innerHTML = EX0.draft; fpHead.innerHTML = EX0.head; fpSharp.className = 'xtext'; fpSharp.innerHTML = EX0.sharp;
+        fpWhy.textContent = EX0.why; fpNote.innerHTML = EX0.note; fpAv.className = EX0.av; fpAv.style.setProperty('--y', EX0.y); flash(); return;
+      }
+      const m = H.softMarks(t), r = sharpen(H, t);
+      fpDraft.innerHTML = '<span class="spec" aria-hidden="true"></span><span class="sr">Draft: </span>' + struck(t, m);
+      if (!live) { fpHead.innerHTML = '<b id="fp-name">You</b><span>@you · now</span>'; fpAv.className = 'av you xav'; }
+      live = true;
+      const key = r ? r.text + '|' + r.note : '=' + t;
+      if (key === lastKey) return;
+      lastKey = key;
+      if (!r) { fpSharp.className = 'xtext same'; fpSharp.innerHTML = '<span class="sr">Sharpened: </span>' + esc(t); fpWhy.textContent = 'Already sharp. Nothing to cut.'; fpNote.innerHTML = '<a href="#signup" id="fp-go">Start free</a> and post it as it is.'; }
+      else { fpSharp.className = 'xtext'; fpSharp.innerHTML = '<span class="sr">Sharpened: </span>' + esc(r.text); fpWhy.textContent = r.why; fpNote.innerHTML = esc(r.note) + ' <a href="#signup" id="fp-go">Start free to keep it</a>.'; }
+      flash();
+    }
+    const fpaint = () => { const t = fi.value, m = H.softMarks(t); fm.innerHTML = marked(t, m); fmir.scrollLeft = fi.scrollLeft;
+      fn.textContent = t.trim() ? (m.length ? `${m.length} bit${m.length === 1 ? '' : 's'} of fluff` : 'No fluff') : ''; };
+    fi.addEventListener('input', () => { fpaint(); clearTimeout(timer); timer = setTimeout(payUpdate, 350); });
+    fi.addEventListener('scroll', () => { fmir.scrollLeft = fi.scrollLeft; });
+    ['keyup', 'click', 'select'].forEach(ev => fi.addEventListener(ev, () => { fmir.scrollLeft = fi.scrollLeft; }));
+    $('#fin-form').addEventListener('submit', e => {
+      e.preventDefault(); clearTimeout(timer);
+      if (!fi.value.trim()) { fi.focus(); return; }
+      payUpdate(); const go = $('#fp-go'); if (go) go.focus();
+    });
+  }
+  if (window.HWCore) initEngine(); else addEventListener('DOMContentLoaded', initEngine);
+})();
+</script>
+</body>
+</html>
