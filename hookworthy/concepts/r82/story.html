@@ -132,7 +132,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 
 /* ---------- nav ---------- */
 .nav{position:sticky;top:0;z-index:50;transition:background-color .3s,box-shadow .3s}
-.nav.scrolled{background:rgba(8,9,10,.72);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);box-shadow:0 1px 0 var(--line)}
+html:not(.js) .nav,.nav.scrolled{background:rgba(8,9,10,.72);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);box-shadow:0 1px 0 var(--line)}
 .nav .wrap{position:relative;height:64px;display:flex;align-items:center;gap:24px}
 .mark{font-size:18px;font-weight:620;letter-spacing:-.03em;color:var(--ink);line-height:1;padding:6px 0;border-radius:6px}
 .links{display:flex;gap:2px;position:absolute;left:50%;transform:translateX(-50%)}
@@ -174,12 +174,12 @@ main{position:relative;overflow-x:clip}
 
 /* ---------- the window: frame (pinned chrome) + screens (one per state) ---------- */
 .frame,html:not(.pin) .scr{border-radius:16px;isolation:isolate;
-  background:linear-gradient(180deg,rgba(22,23,26,.9) 0%,rgba(14,15,17,.94) 46%,rgba(11,12,14,.96) 100%);
+  background:linear-gradient(180deg,rgba(19,20,23,.97) 0%,rgba(14,15,17,.975) 46%,rgba(11,12,14,.98) 100%);
   -webkit-backdrop-filter:blur(36px) saturate(150%);backdrop-filter:blur(36px) saturate(150%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px rgba(0,0,0,.55),0 2px 3px rgba(0,0,0,.45),0 14px 28px -8px rgba(0,0,0,.55),0 44px 90px -24px rgba(0,0,0,.75),0 110px 200px -50px rgba(0,0,0,.9)}
 .frame::before{background:radial-gradient(300px 120px at calc(var(--hx) * 100%) 0%,rgba(var(--hot)/1) 0%,rgba(var(--glow)/.55) 32%,rgba(var(--glow)/0) 72%),linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.06) 30%,rgba(255,255,255,.035) 100%)}
 .frame::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
-  background:radial-gradient(46% 70% at calc(var(--hx) * 100%) 0%,rgba(var(--glow)/.07),rgba(var(--glow)/0) 70%),linear-gradient(112deg,rgba(255,255,255,.028) 0%,rgba(255,255,255,0) 34%)}
+  background:radial-gradient(40% 26% at calc(var(--hx) * 100%) 0%,rgba(var(--glow)/.05),rgba(var(--glow)/0) 70%),linear-gradient(112deg,rgba(255,255,255,.028) 0%,rgba(255,255,255,0) 34%)}
 .dots{display:flex;gap:7px}
 .dots i{width:11px;height:11px;border-radius:50%;background:#26282C;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
 .frame > .dots{position:absolute;left:16px;top:calc(var(--bar) / 2 - 5.5px);z-index:1}
@@ -289,7 +289,7 @@ main{position:relative;overflow-x:clip}
 .wh{display:flex;align-items:baseline;gap:8px;padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink-3)}
 .wh b{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
 .wcol .gap{flex:1;min-height:8px}
-.hr{display:flex;align-items:center;gap:10px;height:30px;font-size:12px;color:#7C8189}
+.hr{display:flex;align-items:center;gap:10px;height:30px;font-size:12px;color:var(--ink-3)}
 .hr::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.05)}
 .ev{border-radius:14px;padding:12px 14px;background:#000;box-shadow:inset 0 0 0 1px var(--x-line),0 14px 30px -18px rgba(0,0,0,.9);color:var(--x-ink)}
 .ev + .ev{margin-top:10px}
@@ -372,8 +372,9 @@ main{position:relative;overflow-x:clip}
 .nevers s{display:inline-block;margin:2px 4px 2px 0;font-size:13px;color:var(--ink-2);text-decoration-color:rgba(247,248,248,.6);text-decoration-thickness:1.5px;padding:2px 9px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 
 /* ---------- STATIC (reduced motion / no JS): a clean stack of chapter screenshots ---------- */
-html:not(.pin) .ch{grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:center;padding-top:120px}
-html:not(.pin) .c0{padding-top:0}
+html:not(.pin) .ch{grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:center;padding-top:112px}
+html:not(.pin) .c0-w{padding-top:0}
+html:not(.pin) #sharpen{padding-top:64px}
 html:not(.pin) .copy{grid-column:1}
 html:not(.pin) .scr,html:not(.pin) .sw{grid-column:2}
 html:not(.pin) .sw{position:relative}
@@ -575,6 +576,8 @@ footer{padding:120px 0 40px;color:var(--ink-3);font-size:14px}
 /* ---------- responsive ---------- */
 @media (max-width:1199px){
   .links{display:none}
+  .ex-l,.cl .ln{display:none}
+  .ex .pills,.cl{flex-wrap:nowrap}
   .sgrid,.yours{grid-template-columns:minmax(0,400px) minmax(0,1fr);column-gap:48px}
   .pv{grid-template-columns:minmax(0,1fr);gap:16px}
   .pv-big{font-size:18px}
@@ -597,10 +600,13 @@ footer{padding:120px 0 40px;color:var(--ink-3);font-size:14px}
 @media (max-width:900px){
   .story{--wh:clamp(380px,54vh,470px);--bar:34px;--top:64px}
   .sgrid{grid-template-columns:minmax(0,1fr);margin-top:20px}
-  html:not(.pin) .ch{grid-template-columns:minmax(0,1fr);row-gap:22px;padding-top:64px}
-  html:not(.pin) .c0{padding-top:0}
+  html:not(.pin) .ch{grid-template-columns:minmax(0,1fr);row-gap:20px;padding-top:56px}
+  html:not(.pin) .c0-w{padding-top:0}
+  html:not(.pin) #sharpen{padding-top:36px}
   html:not(.pin) .scr,html:not(.pin) .sw{grid-column:1}
-  .pin .frame,.pin .lightbox,.pin .scr{grid-column:1;grid-row:2/-1}
+  .pin .sgrid{grid-template-rows:repeat(8,auto)}
+  /* sticky items are bounded by the whole grid: the window's margin makes it let go one caption early, so it leaves with the last caption */
+  .pin .frame,.pin .lightbox,.pin .scr{grid-column:1;grid-row:2/8;margin-bottom:calc(var(--c6h,320px) + 16px)}
   .pin .c0{grid-row:1;min-height:0;padding:0 0 22px}
   .pin .copy:not(.c0){position:sticky;top:calc(var(--top) + var(--wh) + 16px);align-self:start;min-height:0;justify-content:flex-start;padding:0;z-index:0;opacity:0;transition:opacity .3s var(--ease)}
   .pin .copy.act{opacity:1;transition:opacity .5s var(--ease) .05s}
@@ -608,7 +614,9 @@ footer{padding:120px 0 40px;color:var(--ink-3);font-size:14px}
   .pin .ch:not(.c0-w)::before{content:"";grid-column:1;height:40vh;pointer-events:none}
   .pin #sharpen::before{grid-row:2;height:calc(var(--wh) + 16px + 40vh)}
   .pin #previews::before{grid-row:3}.pin #day::before{grid-row:4}.pin #after::before{grid-row:5}.pin #results::before{grid-row:6}
-  .pin #studio::before{grid-row:7;height:50vh}
+  .pin #studio::before{grid-row:7;height:44vh}
+  .pin #studio::after{content:"";grid-column:1;grid-row:8;height:calc(var(--c6h,320px) + 16px)}
+  .pin .c6{grid-row:7/9}
   /* a backdrop behind the pinned window so captions slide out of sight under it */
   .pin .lightbox::before{content:"";position:absolute;left:-24px;right:-24px;top:-12px;bottom:-26px;background:linear-gradient(180deg,var(--bg) 0,var(--bg) calc(100% - 26px),rgba(8,9,10,0))}
   .rail{top:auto;bottom:0;right:0;width:auto;height:44px;flex-direction:row;justify-content:space-around;padding:0 6px;border-right:0;border-top:1px solid var(--line)}
@@ -736,7 +744,12 @@ footer{padding:120px 0 40px;color:var(--ink-3);font-size:14px}
   .ctas .btn{flex:1 1 auto;height:48px;padding:0 16px}
   .micro{margin-top:12px;font-size:12.5px}
   .micro i{padding:0 5px}
-  .since{margin-top:14px;padding-top:0;border-top:0;font-size:12.5px;gap:8px}
+  .since{margin-top:12px;padding-top:0;border-top:0;font-size:12.5px;gap:8px;max-width:232px}
+  .since .gl{display:none}
+  .c0 .micro{max-width:260px}
+  .micro .m2{display:block;margin-top:2px}.micro .s2{display:none}
+  .nav.scrolled{background:rgba(8,9,10,.9)}
+  html:not(.pin) .sw .light .beam,html:not(.pin) .sw .light .core{display:none}
   .since i{margin-top:5px}
   .story .light{--a:30deg;--bw:200px;--bl:460px;--sink:110px;--k:1.35}
   .story .light .bloom{left:-260px;width:340px;height:96px;top:-48px}
@@ -888,8 +901,8 @@ footer{padding:120px 0 40px;color:var(--ink-3);font-size:14px}
             <a class="btn btn-white" href="#start">Sharpen my first line</a>
             <a class="btn btn-glass" href="#try">Try it on your line</a>
           </div>
-          <p class="micro">Free forever<i aria-hidden="true">·</i>No card<i aria-hidden="true">·</i>Nothing posts without you</p>
-          <p class="since"><i aria-hidden="true"></i><span><b>Since Sept 8,</b> X pays for original posts, not replies. The first line is what gets them read.</span></p>
+          <p class="micro">Free forever<i aria-hidden="true">·</i>No card<i class="s2" aria-hidden="true">·</i><span class="m2">Nothing posts without you</span></p>
+          <p class="since"><i aria-hidden="true"></i><span><b>Since Sept 8,</b> X pays for original posts, not replies.<span class="gl"> The first line is what gets them read.</span></span></p>
         </div>
       </div>
 
@@ -1445,7 +1458,7 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
   const story = $('#story'), frame = $('.frame');
   const caps = $$('.copy'), heads = caps.map(c => c.querySelector('.h2c') || c);
   const scrs = $$('.scr'), rail = $$('.rail button');
-  const BEAM = ['#pf-go', '#pf-sharp', '#pv-scr', '#k-pick', '#rp-mine', '#rs-first', '#rv-ok'];
+  const BEAM = ['#pf-go', '#pf-move', '#pv-scr', '#k-pick', '#rp-mine', '#rs-first', '#rv-ok'];
   const phone = () => matchMedia('(max-width:900px)').matches;
   let state = -1;
   function aim() {
@@ -1453,7 +1466,7 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
     const f = frame.getBoundingClientRect(), el = $(state === 0 && W.classList.contains('sharp') ? BEAM[1] : BEAM[state]);
     if (!el || !f.width) return;
     const r = el.getBoundingClientRect();
-    const hx = Math.max(phone() ? .42 : .36, Math.min(.9, (r.left + r.width / 2 - f.left) / f.width));
+    const hx = Math.max(phone() ? .42 : .36, Math.min(phone() ? .95 : .9, (r.left + r.width / 2 - f.left) / f.width));
     story.style.setProperty('--hx', hx.toFixed(3));
   }
   function setState(n) {
@@ -1496,6 +1509,8 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
     rail.forEach(b => b.addEventListener('click', () => goTo(+b.dataset.go, true)));
     /* keyboard: tabbing into a screen that isn't showing brings its chapter in */
     story.addEventListener('focusin', e => { const s = e.target.closest('.scr'); if (!s || s.classList.contains('on')) return; goTo(Math.max(1, +s.dataset.from), false); });
+    const c6h = () => story.style.setProperty('--c6h', caps[6].offsetHeight + 'px');
+    c6h(); addEventListener('resize', c6h); if (document.fonts) document.fonts.ready.then(c6h);
     measure(); if (state < 0) setState(0);
     W.classList.toggle('sharp', state >= 1);
     setTimeout(() => { root.classList.remove('intro'); aim(); }, 1700);
@@ -1514,13 +1529,15 @@ i lost $4,000 in march doubling my size to win it back. now i cut size in half a
 
   /* ---------- nav + phone bar ---------- */
   const nav = $('#nav'), bar = $('#mbar'), heroCta = $('#hero-cta'), fin = $('#start');
-  let heroOut = false, finIn = false;
+  let heroOut = false, finIn = false, inStory = false;
+  /* while the window is pinned, the nav's Start free is enough; the bar comes back on release */
+  const storyCheck = () => { const v = PIN && $('#sgrid').getBoundingClientRect().bottom > innerHeight * .75; if (v !== inStory) { inStory = v; syncBar(); } };
   function syncBar() {
-    const on = heroOut && !finIn;
+    const on = heroOut && !finIn && !inStory;
     bar.classList.toggle('on', on);
     if (on) { bar.removeAttribute('inert'); bar.removeAttribute('aria-hidden'); } else { bar.setAttribute('inert', ''); bar.setAttribute('aria-hidden', 'true'); }
   }
-  const onScroll = () => nav.classList.toggle('scrolled', scrollY > 8);
+  const onScroll = () => { nav.classList.toggle('scrolled', scrollY > 8); storyCheck(); };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(es => es.forEach(x => { heroOut = !x.isIntersecting && x.boundingClientRect.top < 0; syncBar(); })).observe(heroCta);
