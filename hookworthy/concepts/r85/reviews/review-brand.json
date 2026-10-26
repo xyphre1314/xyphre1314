@@ -1,0 +1,197 @@
+{
+ "key": "brand",
+ "role": "Senior brand designer (identity systems for software companies)",
+ "score": 7,
+ "verdict": "The direction is right and mostly well kept: X black, Inter only, ember used purely as light and as the fluff mark, a confident two-beat voice, and an unforgettable opening shot. But there is no logo, no favicon and no link card, and the light and squiggle disappear for the middle and the end, so the brand peaks in the first screen and fades into a well-made generic bento.",
+ "top3": [
+  "Give it a logo and a face on X: the hook-h as the wordmark's own h (snippet ready), plus a favicon and an Afterglow OG/Twitter card. The current og.png is the rejected serif brand.",
+  "Bring the light back at the end and make ember mean one thing: a beam or rim on the final's sharpened card, and the warm rim only on lines Hookworthy sharpened or drafted.",
+  "Carry the squiggle and grade through the middle: fluff marks on Studio's never-say words and the Day draft, the sticky-note photo swapped for a warm lock screen, and one squiggle/strike spec."
+ ],
+ "issues": [
+  {
+   "id": "brand-1",
+   "severity": "P0",
+   "area": "brand",
+   "where": "<head> (no icon, no Open Graph or Twitter card tags)",
+   "problem": "The browser tab shows the default globe, and a link to the page shared on X unfurls as a bare URL. This product lives on X, so the link card is the brand surface people will see most. The only OG asset in the repo (assets/og.png) is from the rejected serif brand: Newsreader, 'A week of posts for X'. It can't be linked as it is.",
+   "fix": "Add to <head>: <link rel=\"icon\" href=\"../../assets/icon.svg\" type=\"image/svg+xml\"> <link rel=\"apple-touch-icon\" href=\"../../assets/app-icon.png\"> <meta property=\"og:title\" content=\"They read one line. Make it hookworthy.\"> <meta property=\"og:description\" content=\"Hookworthy sharpens your first line in one tap. It still sounds like you.\"> <meta property=\"og:image\" content=\"…/assets/og-afterglow.png\"> <meta name=\"twitter:card\" content=\"summary_large_image\">. Make og-afterglow.png at 1200×630 on #08090A with grain at .05. Left side, at x72 y150: 'They read one line.' in #F7F8F8 over 'Make it hookworthy.' in #A4A8AF, Inter 600, 84px, −0.045em. Right side: one X-dark post card 520px wide with the draft above it ('just wanted to share that i finally hit my first $10k month trading, took me 3 years lol', ember squiggles and strikes on the fluff) and the post 'my first $10k month trading took me 3 years.' Bring the hero beam in from the top-right (the 36deg recipe) so it lands on the card's top edge. Put the new wordmark (brand-2) at 28px, bottom-left. Don't ship the old og.png."
+  },
+  {
+   "id": "brand-2",
+   "severity": "P1",
+   "area": "brand",
+   "where": "header .mark and footer .ft .mark (live text 'hookworthy', Inter 620 18px)",
+   "problem": "There is no logo, only the name typed in the body font, so nothing about the brand is ownable. The brand already owns a mark: the hook-h, where the h's right leg curls into a hook (assets/icon.svg, and documented as the logo since round 55). The page even shows it as the app icon in three notifications (#day .notif, #results .nc ×2), but never introduces it as Hookworthy's, so visitors see an unexplained 'h' tile. The founder asked for 'a simple, refined wordmark, no monogram'. Making the hook-h the wordmark's own h meets that: it stays one word in one colour, with no badge or box.",
+   "fix": "Swap the wordmark's first 'h' for the hook-h. Draw the stem with flat ends to match Inter's, and let only the right leg curl into a round-ended hook. The snippet, ready to paste, is in work-brand/wordmark-snippet.html. Add a symbol to the sprite: <symbol id=\"hk-h\" viewBox=\"8 4.5 19.8 23\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"4\" stroke-linejoin=\"round\"><path d=\"M10 4.5V27.5\" stroke-linecap=\"butt\"/><path d=\"M10 17.9a4.9 4.9 0 0 1 9.8 0V22.4a3.1 3.1 0 0 0 6.2 0V19.2\" stroke-linecap=\"round\"/></g></symbol>. Markup: <a class=\"mark\" href=\"#top\" aria-label=\"Hookworthy home\"><svg class=\"mk-h\" aria-hidden=\"true\"><use href=\"#hk-h\"/></svg><span aria-hidden=\"true\">ookworthy</span></a>. CSS: .mark{display:inline-flex;align-items:baseline;font-size:20px;font-weight:620;letter-spacing:-.03em;font-variation-settings:\"opsz\" 28} .mark .mk-h{width:.626em;height:.7275em;margin-right:.03em;overflow:visible}, and 19px under 760px. The .7275em height is Inter's ascender, and 4 units equals Inter's 620 stem (.128em), so the h sits in the word. Prototype screens: work-brand/p-nav-d.png, p-nav-m.png, wordmark-variants.png. Use it in the nav and the footer. Don't use it inside the H1: tested at 120px, the drawn h reads as a different font."
+  },
+  {
+   "id": "brand-3",
+   "severity": "P1",
+   "area": "brand",
+   "where": "aria-label=\"hookworthy home\" (×2), notification sender names (.notif .nh b, .nc .nh b ×2), body copy and ©",
+   "problem": "The name's casing drifts. The logo, both aria-labels and the iOS-style notification sender all say 'hookworthy', while the sub, the footer column head and © say 'Hookworthy'. An OS notification shows the app's display name, which is never lowercase. Without a rule, the casing looks accidental.",
+   "fix": "One rule, written into the CSS header comment: the drawn logo is lowercase, and every typed mention is 'Hookworthy'. Change both aria-labels to 'Hookworthy home' and the three notification sender names to 'Hookworthy'. 'Make it hookworthy.' in the H1 stays lowercase, because there it's the adjective."
+  },
+  {
+   "id": "brand-4",
+   "severity": "P1",
+   "area": "colour",
+   "where": ".fin-panel (final section); CSS header comment 'One beam, on the hero window only'",
+   "problem": "The light, the brand's best asset, shows up once and never comes back. The brand doc (r81/afterglow.md) gives the hero and the final one beam each. In this build the final panel, where people convert, is flat grey glass. The page opens warm and ends cold, so it doesn't feel like one brand from top to bottom, and the bookend people would remember is missing.",
+   "fix": "Light the final panel so the light lands on the sharpened card (prototype: work-brand/p2-final.png). (1) .fin-panel{isolation:isolate} plus a ::before gradient hairline, using the .glass::before recipe with this ember point added in front: radial-gradient(260px 110px at 82% 0%, rgba(var(--hot)/.9) 0%, rgba(var(--glow)/.45) 34%, rgba(var(--glow)/0) 72%). (2) A first child <i class=\"fglow\" aria-hidden=\"true\"> styled position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none;background:radial-gradient(42% 60% at 82% 0%,rgba(var(--glow)/.10),rgba(var(--glow)/0) 70%). (3) A 1px spec line on the sharpened card: .fpay .xcard::before{content:\"\";position:absolute;top:0;right:24px;width:220px;height:1px;background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.9) 70%,rgba(var(--hot)/.15));box-shadow:0 0 10px 1px rgba(var(--glow)/.4)}. On phones, move the point to 70% 0. Update the CSS header to: 'Two lights: the hero window and the final card.' Re-measure .fin-sub and .micro for AA (the light sits behind the right column, so it should pass)."
+  },
+  {
+   "id": "brand-5",
+   "severity": "P1",
+   "area": "brand",
+   "where": "#proof .post, #try-out .xcard (both have the warm rim); .fpay .xcard, #day .fp.yp, #rp-box (none have it)",
+   "problem": "A warm top rim, inset 0 1px 0 rgba(255,236,224,.14–.16), with a faint ember wash marks 'this is the line Hookworthy sharpened' in the hero and the Try result. That could be a precise, meaningful brand rule, but the final's sharpened post, the heycape post in the phone feed and the drafted reply all fall back to a plain white rim. So the warm rim reads as chance rather than meaning.",
+   "fix": "Make one class: .lit-card{box-shadow:inset 0 0 0 1px var(--x-line),inset 0 1px 0 rgba(255,236,224,.16),0 1px 2px rgba(0,0,0,.5),0 28px 56px -30px rgba(0,0,0,.95)}. Apply it to #proof .post, #try-out .xcard, .fpay .xcard, #day .fp.yp, and #rp-box while it's in the draft state (remove it in .mine.sent). Nothing else gets it. Add this rule to the CSS header: 'Ember touches only what Hookworthy sharpened or drafted: the light, the warm rim, the fluff squiggle.'"
+  },
+  {
+   "id": "brand-6",
+   "severity": "P1",
+   "area": "brand",
+   "where": "Bento from #previews to #trust (6 tiles: about 45% of the desktop scroll and 4 phone screens)",
+   "problem": "The ember squiggle is the most ownable asset on the page, and it appears only in the hero, Try and the final. Through the whole middle of the page there is no ember at all, and the tiles read as a well-made but generic dark bento any dev tool could ship. The brand needs a beat in the middle, placed where it is true.",
+   "fix": "(a) Studio, #st-never: the client's never-say words ('synergy', 'excited to announce'…) are exactly the fluff Sharpen cuts, so give them the product mark instead of a grey strike: wrap each as <span class=\"fl\"><span class=\"cut\">synergy</span></span> (and the same in the client() JS for c.nv), keeping the 22px/17px sizes. (b) Day tile, step 2 ('Drafted in your voice'): show what the voice note lost. Make the quote <p class=\"quote\"><span class=\"fl\"><span class=\"cut\">so i think the</span></span> most underrated thing in trading? sizing down after a loss.</p>. Voice notes are full of fluff, so this is honest, and the mark then appears in the middle of the page."
+  },
+  {
+   "id": "brand-7",
+   "severity": "P1",
+   "area": "brand",
+   "where": "#results .well > .ph (photo sprite --i:5, the sticky-note wall)",
+   "problem": "This is the only photo that is cold, pastel and bright: cyan, yellow and pink notes on a white wall under a thin .25–.55 overlay. It breaks the warm, dark grade of every other image (night desk, sunrise, coffee, team) and reads as a stock 'brainstorm' photo next to a results message it has nothing to do with.",
+   "fix": "Make the well a lock screen in the morning story: style=\"--i:2;--fx:-20%\" (the sunrise), with .well > .ph img{filter:blur(16px) brightness(.72) saturate(1.1);transform:translate(calc(-50% + var(--fx,0%)),calc(var(--i,0) * -100% / 6)) scale(1.1)} and .well > .ph::after{background:linear-gradient(180deg,rgba(8,9,10,.15),rgba(8,9,10,.5))}. The 9:30 AM notifications now arrive on the wallpaper of the 8:40 AM morning, warm and on-grade. Prototype: work-brand/p2-results.png. Never use sprite --i:1 anywhere: it's a whiteboard showing other prices ($9/$29/$79)."
+  },
+  {
+   "id": "brand-8",
+   "severity": "P2",
+   "area": "brand",
+   "where": "All .ph img and .av (photo and avatar sprites)",
+   "problem": "The pictures come from different shoots, and nothing pulls them into one grade. Several avatars (Ana, Dan, Rafael) sit on bright daylight backgrounds while Priya, Theo and Marco are low-key. Media corner radii are a mix of 14px, 12px and 8px.",
+   "fix": "Grade everything once: .ph img,.av{filter:saturate(.88) contrast(1.04)}, plus brightness(.9) on the bright avatar rows (--y:23.53%, 52.94%, 64.71%). Media radius: 16px for media inside X cards (X's own), 12px inside the phone, 8px for the .qpost thumbnail only."
+  },
+  {
+   "id": "brand-9",
+   "severity": "P2",
+   "area": "brand",
+   "where": "#who .faces .av (about 150px rounded squares at 1440; 48px squircles on phones)",
+   "problem": "These are the only non-circular avatars on the page; X's language, used everywhere else here, is circles. They are also upscaled from 144px sprites, so they look soft on 2× screens. And heycape's cartoon PFP has a flat beige background, which makes it the brightest, flattest block in the bento.",
+   "fix": "Make them circles: .faces .av{width:88px;height:88px;border-radius:50%;aspect-ratio:auto;margin-bottom:12px}, and 56px on phones. Keep the PFP, since it's authentic crypto X, but re-export assets/people/you.jpg with the beige background flood-filled to #1C1D20 (from the corners, tolerance about 12) so it sits in the dark grade at every size."
+  },
+  {
+   "id": "brand-10",
+   "severity": "P1",
+   "area": "type",
+   "where": "#studio h2#st-h ('Every client, their voice. / Nothing ships without a yes.')",
+   "problem": "It sits at 34px, a size off the ramp that exists only to fit a narrow column. Even so, it breaks the two-line rule between 920 and 1100px wide (measured: 3 lines at 1000–1100, 4 at 920). 'Ships' is also developer talk: the brand's verb is 'post'.",
+   "fix": "Move h2#st-h out of .st-l so it's the first child of article.t-st, and add .t-st > .cap{grid-column:1/-1}. At ≥761px it takes the lead-tile size, 40px (delete .t-st .cap.big{font-size:34px}); phones keep 26px, and 24px at ≤374. New line 2: 'Nothing posts without a yes.' Verified at 2 lines at 1440, 1100, 920, 760, 390 and 360 with no overflow. The mobile order:1 still applies, because the h2 is a direct child."
+  },
+  {
+   "id": "brand-11",
+   "severity": "P1",
+   "area": "type",
+   "where": "Display sizes: .st 120, .h2.xl 76, #p-h .h2 56, .cap.big 40, studio 34, .nev s 27, .cap 26",
+   "problem": "There are seven display steps, and the only two full-width section heads disagree: pricing is 56px, the final is 76px. Pricing reads as a lesser section, and the ramp feels improvised instead of designed.",
+   "fix": "Use four steps. D1 120: the hero. D2 72: pricing and final, with #p-h,.h2.xl{font-size:clamp(34px,10.4vw,72px);line-height:1;letter-spacing:-.042em} (measured at 2 lines from 1440 to 360). D3 40: the lead tiles (Try, Day, Studio). D4 26: the small tiles and .nev s (27→26). Leave .h2's old clamp unused, or delete it."
+  },
+  {
+   "id": "brand-12",
+   "severity": "P2",
+   "area": "type",
+   "where": "Weights across the page: 400, 420, 450, 480, 500, 520, 540, 560, 580, 600, 620, 650, 700",
+   "problem": "Thirteen weights is a sign of a type system that grew piece by piece. Weights 520–580 are too close to tell apart, so they add noise rather than hierarchy.",
+   "fix": "Brand UI uses 400, 500 and 600 only. 650 is reserved for display names inside X-style cards (.xname b, .pn b, .fp .fn b, .who .nm b, .nh b), echoing X's bold. Map: 420 (.dtext) and 450 (.links a, .signin) → 400. 480 (sharpened post text: .ptext, .try-out .xtext, .fpay .xtext) → 500. 520 (.nevers s) and 540, 560 (buttons, .sharpen, .hits b, .nev s, .ft h2) → 500. 580 (.plan .h3) → 600, and price b 540 → 600, so prices match the headings. 620 (.mark, now drawn) → 600. 700 (.pn b) → 650."
+  },
+  {
+   "id": "brand-13",
+   "severity": "P2",
+   "area": "type",
+   "where": "UI text sizes (54 size/weight combinations; half-pixel sizes 12.5, 13.5, 14.5, 15.5)",
+   "problem": "Half-pixel steps 0.5px apart don't make hierarchy. They make captions and labels look slightly mismatched from tile to tile.",
+   "fix": "UI ramp: 12, 13, 14, 15, 17, 18 (subs), 21 (post text). Map 12.5→13, 13.5→14, 14.5→15, 15.5→15. Text inside X-style cards keeps X's 15px."
+  },
+  {
+   "id": "brand-14",
+   "severity": "P2",
+   "area": "type",
+   "where": ".lede (pricing) and .tfoot (trust) use --ink-3; .tc-sub and .fin-sub use --ink-2",
+   "problem": "The sub under a heading is sometimes ink-2 and sometimes ink-3, so the second voice in the type system has two colours.",
+   "fix": "Every sub or lede directly under a heading is var(--ink-2). Keep var(--ink-3) for meta only (≤14px: times, tags, captions, counts)."
+  },
+  {
+   "id": "brand-15",
+   "severity": "P2",
+   "area": "brand",
+   "where": "Squiggle: .fl, .ed-mirror mark, .flags button, .fin-mirror mark, .sq. Strike: .cut, .ed-mirror.struck mark, .fallen, .nevers s, .nev s i",
+   "problem": "The product mark is drawn five ways: 1.3, 1.5, 1.7 and about 2.6px thick, with offsets of 5px, 6px, .2em, .26em and .3em. The strike is also drawn five ways: a gradient bar at 58%, line-through, and a 2px bar at 56%, at alphas of .6, .62 and .7. A signature mark has to be one mark.",
+   "fix": "Tokens. Text squiggle (≤26px): text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.28em;text-decoration-skip-ink:none, applied to .fl, .ed-mirror mark, .flags button and .fin-mirror mark (drop the 1.3/1.7px and 5px/6px overrides). Display squiggle (.sq only): 2.5px thick, offset .18em. Strike: background:linear-gradient(rgba(247,248,248,.62),rgba(247,248,248,.62)) 0 56%/100% max(1.5px,.07em) no-repeat, used for .cut, .ed-mirror.struck mark and .nevers s. .nev s i becomes height:max(1.5px,.07em);top:56%, and .fallen uses the same .62 alpha."
+  },
+  {
+   "id": "brand-16",
+   "severity": "P2",
+   "area": "brand",
+   "where": "Icon sprite (#i-*) and every .ico override",
+   "problem": "Icons on the 16-unit and 24-unit grids share stroke-width 1.6, and the components override it (2, 1.9, 2.2). So on screen the lines run from about 0.9px (phone feed actions) to 1.9px (plan ticks). Same set, visibly different weights.",
+   "fix": "Add vector-effect=\"non-scaling-stroke\" to every path, rect and circle inside the #i-* symbols. Set .ico{stroke-width:1.5} and .ico.b{stroke-width:1.75}; use .b on ticks in buttons, .postpill, plan lists and .note. Delete the overrides: .note .ico 2, .mini .ico 2, .plan li .ico 1.9, .postpill .ico 2.2, .rv-act .btn .ico 2, .rv-act .done .ico 2. Every icon line is then 1.5px at any size, close to Inter 400's stem at 15px."
+  },
+  {
+   "id": "brand-17",
+   "severity": "P1",
+   "area": "copy",
+   "where": "The control promise, repeated: hero .micro, hero window .foot, trust tile (4 lines), reply 'Sent. By you, as always.', Studio queue 'approved and scheduled by you', final .micro, and others (about 12 times)",
+   "problem": "'Nothing posts without you' is a brand pillar, but saying it about 12 times makes the brand sound anxious and weakens the Trust tile, which should own the idea.",
+   "fix": "Keep it in four places: hero micro, the Trust tile (heading plus 'Posted. By you.'), the Studio facts and the final micro. Change the rest. Hero window .foot left span: 'Nothing posts without you.' → 'Your best time: 8:40 AM' (sets up the Day tile). Reply sent state: 'Sent. By you, as always.' → 'Sent.' Studio queue: '3 approved and scheduled by you' → '3 approved and scheduled' (and the same in the client() JS)."
+  },
+  {
+   "id": "brand-18",
+   "severity": "P2",
+   "area": "trust",
+   "where": "#ex-l 'Watch another real one'; tags 'Example client'; LinkedIn 'Trader · Example account'",
+   "problem": "'Real' sits next to cards tagged 'Example', which invites 'so which is it?'. The page also labels examples five different ways.",
+   "fix": "#ex-l → 'Try another draft'. Labels: 'Example' on every X-style card, so Studio's 'Example client' → 'Example'. Put '(example)' only in captions and plabs. LinkedIn sub → 'Trader · Example'."
+  },
+  {
+   "id": "brand-19",
+   "severity": "P2",
+   "area": "copy",
+   "where": "#who h2#w-h ('Whatever you post, / the first line decides.')",
+   "problem": "This is the only tile heading that splits one sentence mid-clause with a lowercase second line. Every other heading is two full beats ('Your facts stay. / The fluff goes.'), and that two-beat rhythm is part of the voice.",
+   "fix": "'Trader, founder, writer.<br><span class=\"d\">The first line decides.</span>' Verified at 2 lines from 1440 to 360."
+  },
+  {
+   "id": "brand-20",
+   "severity": "P1",
+   "area": "interaction",
+   "where": "Hero opening shot (#proof.play) and the Try tile's dropFluff()",
+   "problem": "The most memorable, ownable motion on the page is the struck fluff peeling off the line and falling away. It only happens in the Try tile, after a press. The hero's one orchestrated moment strikes the fluff and leaves it in place, so the signature isn't in the first 2 seconds, which are the ones people remember.",
+   "fix": "Reuse dropFluff in the hero. When .window.play runs, at var(--l) + .37s + each word's --d, clone each #pf-draft .cut into a .fallen layer positioned over the draft pane and play the same fall keyframe (.95s, --dx ±18–26px, --rot ±7–9deg, 90ms stagger). The original words stay struck underneath. It runs once on load and once per example pick; under reduced motion nothing falls and the struck draft is the finished state."
+  },
+  {
+   "id": "brand-21",
+   "severity": "P2",
+   "area": "colour",
+   "where": ".tile::after (the pointer spotlight on hover)",
+   "problem": "The light that follows your pointer is neutral white while the brand's light is ember. With a simple rule (light sources are ember, surface edges are white) the hover would feel like Afterglow instead of the generic Linear spotlight.",
+   "fix": ".tile::after{background:radial-gradient(460px circle at var(--mx,50%) var(--my,0%),rgba(var(--glow)/.06),rgba(var(--glow)/0) 62%)}. Glass hairlines and inner highlights stay white."
+  },
+  {
+   "id": "brand-22",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "#pricing .plan.feat and the only btn-white in the plans (Studio)",
+   "problem": "On this page the white pill is X's 'Post' button: the one action to press. In pricing it sits on Studio, the agency plan, while the lead audience (traders, daily posters) is Pro's. The brand's emphasis points at the wrong plan.",
+   "fix": "Move .feat and the btn-white to the Pro card ('Go Pro'). Studio gets btn-glass 'Start Studio'. Don't change any numbers."
+  },
+  {
+   "id": "brand-23",
+   "severity": "P2",
+   "area": "brand",
+   "where": "footer (ends on a generic four-column grid and an 18px logo)",
+   "problem": "The page has no closing brand moment. The last thing on screen is © and links, so nothing sends the mark home a day later.",
+   "fix": "After .ft-b, add a decorative <div class=\"giant\" aria-hidden=\"true\"> holding the new wordmark (hook-h plus 'ookworthy') at font-size:clamp(64px,17.4vw,250px);font-weight:620;letter-spacing:-.045em;color:rgba(247,248,248,.06);line-height:.8;margin:56px 0 -.2em, cut off by the bottom edge (footer{overflow:hidden}). No ember here: the final panel holds the light."
+  }
+ ]
+}

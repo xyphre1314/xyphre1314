@@ -1,0 +1,245 @@
+{
+  "key": "uiux",
+  "role": "Senior UI/UX designer (product design, Linear / Superhuman level): product UI believability, interaction design, motion, in-tile hierarchy",
+  "score": 6.5,
+  "verdict": "The mock product UI is believable and well made at its rendered size: the X cards, the phone and the night-to-morning tile come close to best-in-class. The interaction layer works against them. Replays take over live controls. The page approves and posts by itself in the very tiles that promise it never will. The engine contradicts itself on long lines, and the final CTA leads nowhere.",
+  "top3": [
+    "Remove the hover, focus and background-click replays. They take over live demos: Studio resets to 'Waiting' and re-approves under your cursor, and the Reply row goes to opacity 0 with a 6px blur when you click or Tab to Edit.",
+    "Stop the page doing the visitor's actions. Studio auto-approves, Trust auto-presses Post and Previews auto-tours four tabs at about 950ms each. Pulse the control once and let the visitor tap Approve, Post or a tab.",
+    "Make the engine honest and the payoff lead somewhere. Never show 'Already sharp. Nothing to cut.' while 7 words are flagged, and handle empty and over-280 input properly. Turn the final submit into a real 'Start free to keep it' step instead of focusing a 13.5px inline link to a #signup target that doesn't exist."
+  ],
+  "issues": [
+    {
+      "id": "uiux-1",
+      "severity": "P0",
+      "area": "interaction",
+      "where": "Script 'tile moments': the tiles.forEach listeners for pointerenter, focusin (soft replay) and click on .tile[data-m]; affects #replies, #studio, #previews, #sharpen, #trust",
+      "problem": "Each time the pointer enters a tile (throttle 2.8s), or keyboard focus enters it, the tile re-arms and replays its moment while the user is using its controls. Measured: (a) Studio already showed 'Approved'. Moving the mouse toward Approve reset it to 'Waiting on Priya / Approve', and 1.75s later it approved itself, so the click is taken from the user. (b) Clicking Edit from outside the Replies tile, or tabbing to it, replays the m-pop. The row holding the focused Edit button goes to opacity 0 with blur(6px) for about a second (screenshot d-rep-kbd-focus). That breaks WCAG 2.4.7: focus can't be seen. (c) Hovering Replies wipes the reply text and retypes it while you read. (d) Hovering Try re-runs the press and the fluff fall as you reach for the textarea. Linear-grade pages play a moment once and never move content under the cursor.",
+      "fix": "In the tiles.forEach loop, delete the 'pointerenter', 'focusin' and 'click' listeners. Delete the t._t 2.8s throttle in play(). Keep only the IntersectionObserver arrival play (once, threshold .3) and the pointermove --mx/--my spotlight. Each tile's own controls are its replay: example pills, Sharpen it, preview tabs, client pills. Update the CSS comment to: 'Each tile plays its moment once as it arrives. Nothing replays on its own.'"
+    },
+    {
+      "id": "uiux-2",
+      "severity": "P0",
+      "area": "interaction",
+      "where": "MOMENT.st (Studio auto-approve at 1.75s), .postpill in #trust (auto-pressed 'Post' to 'Posted. By you.'), MOMENT.pv",
+      "problem": "In the tile headed 'Nothing ships without a yes', the page gives the client's yes itself. In the tile headed 'We never post for you. You hit post.', the Post button presses itself on scroll. Both moments show the opposite of the promise. The visitor watches the page act for them, then sees a finished state with nothing left to do. The best interaction on the page is the visitor being the one who taps.",
+      "fix": "Studio: MOMENT.st only adds the ring once: later(() => $('#rv-ok').classList.add('tap'), 1100). Never call approve() from code. Trust: make .postpill a real control: <button type=\"button\" class=\"postpill\" id=\"tr-post\"><span class=\"pp-a\">Post</span><span class=\"pp-b\" hidden>…Posted. By you.</span></button>. Initial state is 'Post'. On click, run the existing out/pop swap (add class .done; move the .arm.go animation rules to .postpill.done) and put a live region next to it that says 'Posted. By you.'. On arrival, ring-pulse it once at 1.1s using the same ::after ring as .rv-act .btn.tap. With reduced motion the button simply swaps label on click. Set cursor:pointer and the .btn-white hover on both."
+    },
+    {
+      "id": "uiux-3",
+      "severity": "P0",
+      "area": "trust",
+      "where": "Try tile go() / sharpen(), and the final payUpdate()",
+      "problem": "I pasted a 353-character line. The chips flagged 7 fluff words (so, basically ×4, honestly, lol), and the output said 'Already sharp. Nothing to cut. Post it as it is.' with the whole line unchanged inside the X card. The product contradicts itself in its own demo. That's the fastest way to lose a skeptical trader's trust.",
+      "fix": "In go() and payUpdate(), when sharpen() returns null but H.softMarks(t).length > 0, build a local fallback. Remove the marked ranges, collapse double spaces, strip a leading comma or 'and', then end with '.'. Show that as the sharpened line, with why 'Same point, minus the filler.' and note `Cut ${quoted(cutWords)}.`. Use 'Already sharp. Nothing to cut.' only when softMarks is empty. When t.length > 280, sharpen only the first sentence (split on /[.!?](\\s|$)/, or the first 280 characters) and set the note to 'Sharpen works on your first line, so we used your first sentence.'"
+    },
+    {
+      "id": "uiux-4",
+      "severity": "P1",
+      "area": "interaction",
+      "where": "Try tile: #try-go when the textarea is empty, #try-count, #out-hits, .ed-ta height",
+      "problem": "(a) Clicking 'Sharpen it' on an empty box puts the instruction 'Type a first line, then tap Sharpen it.' inside the X post card at 23px, as if it were the post. (b) The previous line's 'Why it hits' stays visible next to it. hits.hidden = true does nothing because .try-out .hits{display:flex} overrides the UA [hidden] rule. (c) At 353/280 the count stays grey (#7D8288), so there's no over-limit cue. (d) The textarea grows without limit. The tile grew to 1,093px and dragged the Previews tile in the same grid row with it.",
+      "fix": "Add [hidden]{display:none!important} to the base CSS. In paint(), set $('#try-go').disabled = !t.trim(). Add .btn-white:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}. Delete the empty-text branch of go(). Count: when length > 280, show `${280 - len}` (for example −73) in var(--ink) weight 600, and set the why line to 'Over 280. Sharpen works on your first line.' Cap the input with .ed-ta,.ed-mirror{max-height:calc(1.42em * 5 + 12px)} .ed-ta{overflow-y:auto}, and sync mir.scrollTop = ta.scrollTop on scroll."
+    },
+    {
+      "id": "uiux-5",
+      "severity": "P1",
+      "area": "conversion",
+      "where": "Hero CTAs (#hero-cta), #mbar link, #try-ta first focus",
+      "problem": "The textarea is prefilled with the example. Clicking it leaves the caret at the end (selection 71–71), so pasting appends to the example, and you have to find Clear first. 'Try it on your line' scrolls to #sharpen but leaves focus on <body>. The primary 'Sharpen my first line' and the phone bar both jump about 7 screens down to #start, past an identical working input right under the hero. Two CTAs with nearly the same promise go to two different boxes.",
+      "fix": "On the textarea's first focus while !touched, call ta.select() so a paste replaces the example. Primary hero CTA and #mbar a: set href=\"#sharpen\". On click, preventDefault, call scrollIntoView({block:'start', behavior: RM ? 'auto' : 'smooth'}), then after 350ms call ta.focus({preventScroll:true}) and ta.select(). The secondary hero CTA then duplicates the primary: change it to 'See pricing' → #pricing. Nav 'Start free' should go to the real signup route, not #start."
+    },
+    {
+      "id": "uiux-6",
+      "severity": "P0",
+      "area": "conversion",
+      "where": "Final section #fin-form submit, #fp-note 'Start free to keep it' link (#fp-go → #signup)",
+      "problem": "The payoff card already updates live after a 350ms debounce, so pressing 'Sharpen my first line' changes nothing visible. It only moves focus to an inline 13.5px grey link, and that link points at #signup, which doesn't exist (verified). The highest-intent moment on the page has no working next step. On phone the result renders below the input and sits under the open keyboard.",
+      "fix": "Keep the live squiggles, the 'n bits of fluff' counter and the live payoff. Once the payoff shows the visitor's own line (live === true), swap the submit button: label 'Start free to keep it', and the click goes to the signup route. Revert to 'Sharpen my first line' when the input is emptied. Remove the inline link from #fp-note; the note keeps only the 'Cut …' sentence. Add a real id=\"signup\" target or route, and point every 'Start free' at it. On phone: on Enter, or on blur with live content, call fi.blur() then $('#fpay').scrollIntoView({block:'center'})."
+    },
+    {
+      "id": "uiux-7",
+      "severity": "P1",
+      "area": "interaction",
+      "where": "Hero window #proof: #pf-go position, fold at 1440×900, opening timing (.window{--l:.75s})",
+      "problem": "On desktop, the button that triggers the rewrite (#pf-go) sits at y=1071, below the 900px fold. On phone it's hidden (.tools display:none). So on load you see words struck and a post appear with no visible cause. The sharpened line itself is cut by the fold (#pf-sharp top 876, bottom 943). The press also fires at about 1.04s while the stage is still fading in (its lift ends at 1.52s), so even the parts that are on screen play half-transparent.",
+      "fix": "Change .hero .tc{padding-block:64px 0} (was 104px) and .stage{margin-top:48px} (was 96px). That lifts the window about 88px, so the full sharpened line clears the fold at 1440×900. Move #pf-go into the Draft pane header: replace <span>Fluff marked</span> in .pane.draft .ph-h with the button, styled as .mini (white, 28px tall, 'Sharpen'). Show it at all widths, and keep .tools icons on desktop only. Start the first play after the stage settles: .window{--l:1.35s}. Example replays keep --l:.12s."
+    },
+    {
+      "id": "uiux-8",
+      "severity": "P1",
+      "area": "interaction",
+      "where": "Hero .foot .pill 'Schedule'; Try card .ctools (image/GIF/list icons); Day tile .vn .pb play button",
+      "problem": "Dead controls are drawn in the strongest affordance on the page. 'Schedule' is a white primary pill, more prominent than the real 'Sharpen' ghost button beside it. The Try composer is live, but its image/GIF/list icons do nothing. The voice note's white play circle is the most clickable-looking thing in the Day tile, and it's inert. Visitors can't tell live controls from decoration, so they stop trying the live ones.",
+      "fix": "Pick one rule: only live controls get white fills or hover states. Change .foot .pill to background:none;color:var(--ink-3);box-shadow:inset 0 0 0 1px var(--line-2);cursor:default. Remove .ctools from the Try card at all widths (delete the span). Change .vn .pb to background:#2A2C30;color:#B4B8BE. Give every live control (example pills, chips, tabs, Edit, Reply, client pills, Approve, Post, billing) a visible :hover background (rgba(255,255,255,.06)) so liveness can be discovered."
+    },
+    {
+      "id": "uiux-9",
+      "severity": "P1",
+      "area": "interaction",
+      "where": "Previews tile #previews: MOMENT.pv tour, .motion .pvw.on.flip",
+      "problem": "On arrival the tile auto-tours X → Threads → LinkedIn → Bluesky → X (measured about 950ms per tab). That is auto-cycling, which the hard rules forbid. Under a second is also too short to read a 60-word preview. Each switch is a rotateY(-70deg) 3D flip, which leaves the text unreadable for 500ms and looks like a template effect.",
+      "fix": "Delete the [1,2,3,0].forEach(later…) tour. Instead, on arrival animate the reason the tile exists, in the X preview only: the dashed .split line draws (scaleX 0→1, .4s var(--ease-io), 300ms delay), then the second .ppost fades up (opacity 0→1, translateY 8px→0, .3s var(--ease), 650ms delay). For tab changes, replace flip with @keyframes swap{from{opacity:0;transform:translateY(6px)}} at .22s var(--ease)."
+    },
+    {
+      "id": "uiux-10",
+      "severity": "P1",
+      "area": "layout",
+      "where": "Studio client switch (.st-pick buttons → client()), #rv-media",
+      "problem": "Switching clients changes the tile height: 550 / 509 / 520 / 542px for Priya / Rafael / Lena / Marco. Rafael and Marco have no media. Everything below the tile (pricing, final) jumps by up to 41px with each tap. The content also swaps with no transition, so the change is jarring rather than legible.",
+      "fix": "Give every client an image from the six-photo sprite: Rafael img: 1 (whiteboard) and Marco img: 0 (desk). Then #rv-media is never hidden and the heights match. As a safety net, add .st-post{min-height:<Priya height>}. Add a swap transition: in client(), toggle .studio.swap, with .motion .studio.swap .st-post > *,.motion .studio.swap .st-voice > *{animation:fade .18s var(--ease) both}."
+    },
+    {
+      "id": "uiux-11",
+      "severity": "P1",
+      "area": "interaction",
+      "where": "Studio review mock: #rv-cap, #cm-t comment, #rv-ok, approve()",
+      "problem": "The story doesn't add up. Priya comments 'Add “since June”. Then it’s good to go.', then approves a post that still says 'down 34%'. Rafael asks for 'four' and approves 'five'. The label still reads 'Priya, the client, is approving' after the approval, and the roles are muddy: the tile speaks to the ghostwriter, but the button is the client's.",
+      "fix": "Add a fix field to CL: Priya 'down 34% since June', Rafael 'the four I closed'; Lena and Marco have none. On Approve click: (1) if c.fix exists, replace the <mark> text with c.fix and flash it (mark background .22 → .1 over .4s), with the status 'You made Priya’s edit.' (2) 450ms later, show the status 'Priya approved. Scheduled for Tue 8:15 AM.' plus '✓ Approved'. Make #rv-cap static: 'Priya’s review link'. Button label: 'Approve as Priya'. Before the click, the status reads 'Waiting on Priya’s yes'."
+    },
+    {
+      "id": "uiux-12",
+      "severity": "P1",
+      "area": "layout",
+      "where": "Try tile type sizes: .ed-ta/.ed-mirror 26px vs .try-out .xtext 23px (phone 18.5px vs 18px)",
+      "problem": "The hierarchy is upside down: your messy input is set larger than the sharpened result, which is the payoff. The hero gets this right (draft 21px, sharpened 25px). The Try tile should read the same way.",
+      "fix": "Desktop: .ed-mirror,.ed-ta,.fallen{font-size:22px}; .try-out .xtext{font-size:26px;line-height:1.32}. Phone (≤760px): .ed-mirror,.ed-ta{font-size:17px} (still ≥16px, so no iOS zoom); .try-out .xtext{font-size:19.5px}."
+    },
+    {
+      "id": "uiux-13",
+      "severity": "P1",
+      "area": "interaction",
+      "where": "The 'cut' motion: hero .cut strike; Try dropFluff() (.drops/.fallen); final #fp-draft (static strike)",
+      "problem": "The page's one product action is shown three ways. The hero draws a strike line. Try spawns struck copies that fall 78px and rotate, but the originals stay in the textarea, offset by 6px, so frames at 150–400ms look like a rendering glitch with doubled words (shot d-try-falling). The final section uses a static strike. Inconsistent metaphors weaken the brand mark, which is the squiggle-then-cut.",
+      "fix": "Use the hero's strike everywhere. In Try, delete dropFluff(), #drops and .fallen. On Sharpen it, add .struck to #try-mirror and animate each mark with the existing strike keyframe (.3s var(--ease-io), staggered 90ms). The output card lands 120ms after the last strike starts; keep the total at or under 900ms. In the final section, when the payoff updates, re-run the same strike on #fp-draft .cut (add class .play to .fpay with the same rule as .window.play .cut)."
+    },
+    {
+      "id": "uiux-14",
+      "severity": "P1",
+      "area": "interaction",
+      "where": "Day tile #day: .fp.yp (--md:1.3s), .slots .pick (--md:1.95s), .notif (--md:2.5s); phone crop at ≤760px",
+      "problem": "Causality runs backwards: your post appears in the morning feed at 1.3s, before the 8:40 slot is picked at 1.95s. On phone the .morn crop (380px) cuts the phone at heycape's name row, so your post's text and image (the payoff) are hidden. The notification half-covers Priya's clipped fragment 'What changed: our team', which looks broken.",
+      "fix": "Retime: .fp.yp{--md:2.25s} (after the pick), .notif{--md:2.9s}, .phone{--md:.2s} unchanged. At ≤760px: .fp.top{display:none} and .morn{height:440px}. The notification then sits over heycape's post header, and the post text and photo show inside the crop."
+    },
+    {
+      "id": "uiux-15",
+      "severity": "P1",
+      "area": "interaction",
+      "where": "@keyframes pop + .m-pop (about 20 elements: day steps, phone post, reply rows, results notes, Who faces, Studio comment)",
+      "problem": "Everything enters with the same spring overshoot (cubic-bezier(.34,1.4,.5,1)) plus scale(.94) plus blur(6px). The page reads as template motion, not Linear-grade. In Who and Results the motion explains nothing. Blur on text also costs paint on large photo tiles.",
+      "fix": "Redefine as @keyframes pop{from{opacity:0;transform:translateY(8px)}} with .m-pop at .4s var(--ease) (no blur, scale or spring); keep each stagger at 80ms or less. Remove .m-pop from .faces li entirely. Keep var(--spring) only for each tile's single 'done' beat: '✓ Approved', 'Posted. By you.', 'Sent'."
+    },
+    {
+      "id": "uiux-16",
+      "severity": "P2",
+      "area": "interaction",
+      "where": ".motion .tile:hover (translateY(-3px) plus a heavier shadow)",
+      "problem": "Very large tiles (Day 1152×600, Studio 1152×550) lift on hover. That signals the whole tile is a link or card, which isn't true. Large surfaces moving under the cursor also makes the inner live controls feel unstable.",
+      "fix": "Delete the .motion .tile:hover transform and shadow rule, and the .tile transition. Keep the pointer spotlight, but soften it to rgba(255,255,255,.045)."
+    },
+    {
+      "id": "uiux-17",
+      "severity": "P2",
+      "area": "perf",
+      "where": "@supports (animation-timeline:view()) .motion .window.tilt",
+      "problem": "At 1440×900 the hero window first renders mid-tilt (computed matrix3d ≈ rotateX 7.8°, scale .978) and only flattens as you scroll. The first view of the product shows it skewed, with resampled, slightly soft text, and the full dramatic start state is never seen at common viewports anyway.",
+      "fix": "Delete the .window.tilt scroll-driven block, plus the 'tilt' class on #proof. The lift-in on load (stage 'lift') already provides the entrance."
+    },
+    {
+      "id": "uiux-18",
+      "severity": "P2",
+      "area": "layout",
+      "where": "Hero example switch: .ptext vs .ptext.long",
+      "problem": "Switching examples changes the window height (425.6 / 427.8 / 432.1 / 432.2px) and moves the page 7px. .ptext.long (21px, min-height 2.92em = 61px) is shorter than the default (25px, 2.72em = 68px).",
+      "fix": ".ptext.long{min-height:3.24em} (68px at 21px). On phone, set both to the same fixed min-height: .ptext,.ptext.long{min-height:2.72em}."
+    },
+    {
+      "id": "uiux-19",
+      "severity": "P2",
+      "area": "interaction",
+      "where": "Previews segmented control .seg buttons (desktop)",
+      "problem": "The X tab renders the X glyph and the letter X, so it reads 'X X'. The tabs also have unequal widths, which makes the pill track look uneven.",
+      "fix": "Remove the <svg> from all four .seg buttons (the .scr-h header already shows each app's logo), and set .t-pv .track button{flex:1 1 0;padding:0 6px}."
+    },
+    {
+      "id": "uiux-20",
+      "severity": "P2",
+      "area": "brand",
+      "where": ".xname / .pn in mock posts (for example the Replies tile 'Dan Ridge [Example] @ridgeline_dan · 3m')",
+      "problem": "In the 4-column Replies tile, the name row wraps and the handle and time drop to a second line. Real X never wraps the name row; it truncates the handle with an ellipsis. Wrapped rows make the mock read as a mock.",
+      "fix": ".xname,.pn{flex-wrap:nowrap;white-space:nowrap;min-width:0;overflow:hidden} .xname > span:not(.tag),.pn > span{min-width:0;overflow:hidden;text-overflow:ellipsis}. The tag and name keep flex:none."
+    },
+    {
+      "id": "uiux-21",
+      "severity": "P2",
+      "area": "layout",
+      "where": "'Why it hits' in three places: .window .hits (inline label left), #out-hits (stacked side column), #fp-hits ('<b>Why it hits:</b>' prefix)",
+      "problem": "The same component is drawn three different ways, so the product's explanation layer doesn't read as one system.",
+      "fix": "Use one pattern everywhere. A label line 'Why it hits' (12.5px, var(--ink-3), weight 500, margin-bottom 4px), then the reason (15px/1.5, var(--ink-2)), then an optional note (13.5px, var(--ink-3)). Replace the <b>Why it hits:</b> prefix in #fp-hits with that label line, and stack the hero .hits vertically too."
+    },
+    {
+      "id": "uiux-22",
+      "severity": "P2",
+      "area": "brand",
+      "where": "Hero sharpened post .post (translucent rgba(255,255,255,.028)) vs every other post (.xcard, #000 with #2F3336 hairline)",
+      "problem": "The most important post on the page, the hero 'after', is the only X post that isn't X-black. It reads as a generic card while every later post reads as X.",
+      "fix": ".post{background:#000;box-shadow:inset 0 0 0 1px var(--x-line),inset 0 1px 0 rgba(255,236,224,.16),0 1px 2px rgba(0,0,0,.4),0 18px 40px -18px rgba(0,0,0,.85)}. Keep the ember top-edge highlight as the light, and drop the radial glow fill."
+    },
+    {
+      "id": "uiux-23",
+      "severity": "P2",
+      "area": "brand",
+      "where": "Studio .queue .qs skeleton bars",
+      "problem": "The grey bars with dots look like loading placeholders, so the tile seems unfinished. They're also unreadable at any size.",
+      "fix": "Replace them with real one-line rows, 13px, ellipsis, hollow dot for waiting and filled dot for approved. For Priya: waiting 'Nov 4 · Hiring our first PM took five months…' and 'Nov 11 · We killed the free trial. Here’s why…'; approved 'Oct 28 · Customer churn: down 34% since June…'. Generate rows per client in client() from a c.rows array. Show 2 + 3 rows at most."
+    },
+    {
+      "id": "uiux-24",
+      "severity": "P2",
+      "area": "mobile",
+      "where": "Phone (390px) touch targets",
+      "problem": "Measured heights: Edit/Reply 28px, example pills 30px, fluff chips 30px, preview tabs 32px, Clear/Sharpen it 34px, nav Start free 34px, footer links 26px. They pass AA (≥24px), but they're well below the 44px that best-in-class touch UI uses. Edit and Reply are the core actions of their tile.",
+      "fix": "At ≤760px: .mini{height:36px;padding:0 16px} with .mini::after{content:'';position:absolute;inset:-4px} (44px hit area); .ex .pills button,.flags button{height:36px}; .t-pv .track button{height:40px}; .btn-x{height:40px}; .btn-sm{height:38px}; .ft ul a{padding:9px 0}."
+    },
+    {
+      "id": "uiux-25",
+      "severity": "P2",
+      "area": "interaction",
+      "where": "Replies edit/send: #rp-text contenteditable, #rp-act sent state",
+      "problem": "Enter inserts a <div>. On send, textContent flattens it ('(not advice)x'). Esc does nothing, and there's no keyboard send. In the sent state, 'Sent. By you, as always.' and 'Back to the draft' each wrap to two lines in the 4-column tile.",
+      "fix": "Use contenteditable=\"plaintext-only\" and .mine .xtext{white-space:pre-wrap}. Keys: Enter = Done; Esc = restore the text from before editing and exit; ⌘/Ctrl+Enter = Reply. Sent-state copy: '✓ Sent by you' plus a ghost button 'Undo' (it resets the demo)."
+    },
+    {
+      "id": "uiux-26",
+      "severity": "P2",
+      "area": "a11y",
+      "where": "Try fluff chips (#try-flags button) and textarea hover tooltips",
+      "problem": "The selected chip uses aria-current instead of aria-pressed. Each chip also has a native title tooltip, and ta.title is set on mousemove. The result is an OS tooltip repeating the line that #try-why already shows, flickering over the text you're editing.",
+      "fix": "Use aria-pressed=\"true|false\" on the chips, styled with [aria-pressed=true] in place of [aria-current]. Delete the title attribute on the chips and the ta.title assignment. Put aria-live=\"polite\" on #try-why."
+    },
+    {
+      "id": "uiux-27",
+      "severity": "P2",
+      "area": "interaction",
+      "where": "Try textarea keyboard; Sharpen it button",
+      "problem": "⌘/Ctrl+Enter does nothing (tested). Superhuman-grade inputs teach their shortcut right on the button.",
+      "fix": "In a textarea keydown handler: if ((e.metaKey||e.ctrlKey) && e.key==='Enter') { e.preventDefault(); go(true); }. On pointer:fine devices, add <kbd>⌘↵</kbd> (Ctrl↵ on non-Mac) inside #try-go after the label: 12px, opacity .55, margin-left 6px."
+    },
+    {
+      "id": "uiux-28",
+      "severity": "P2",
+      "area": "conversion",
+      "where": "Pricing billing toggle .bill and .price b swap",
+      "problem": "Toggling swaps $12↔$16 and $18↔$24 instantly, with no motion to draw the eye to the change. The toggle also gives no reason to choose Yearly.",
+      "fix": "Change the button labels to 'Yearly · save 25%' and 'Monthly' (25% is the $12 vs $16 arithmetic). On toggle, add class .tick to each .price b and .price-n with @keyframes num{from{opacity:0;transform:translateY(4px)}} at .22s var(--ease); no motion under reduced motion."
+    },
+    {
+      "id": "uiux-29",
+      "severity": "P2",
+      "area": "interaction",
+      "where": "Final form empty submit",
+      "problem": "Submitting an empty field only refocuses the input, with no message, so it feels like the button is broken.",
+      "fix": "On an empty submit, set #fin-n to 'Paste a line first' for 2.5s (color var(--ink)), and make #fin-n aria-live=\"polite\" without aria-hidden."
+    }
+  ]
+}
