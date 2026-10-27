@@ -1220,7 +1220,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return { low, loI, noApos, apos };
   }
   const isStop = pre => !pre.trim() || /(?:[.!?…]["”’)]*|\n)\s*$/.test(pre);
-  const capFirst = s => s.replace(/^(\s*["“(]?)([a-z])/, (m, a, c) => a + c.toUpperCase());
+  /* r86: a word with a digit or an inner capital ("p95", "iPhone", "v2") or a lowercase ticker ("eth") is written as is, never capitalised */
+  const capKeep = w => /[\p{N}]|^\p{Ll}+\p{Lu}/u.test(w) || /^(?:btc|eth|sol|xrp|bnb|doge|avax|pepe|shib|wif|arb|sui|tia|ltc|spx|qqq|nvda|tsla|aapl|usdc|usdt|iphone|ipad|ebay|x)$/i.test(w);
+  const capFirst = s => s.replace(/^(\s*["“(]?)([a-z])([\p{L}\p{N}’'$-]*)/u, (m, a, c, r) => capKeep(c + r) ? m : a + c.toUpperCase() + r);
   const lowFirst = s => s.replace(/^(\s*["“(]?)([A-Z])(?![A-Z’'])/, (m, a, c) => a + c.toLowerCase()).replace(/^(\s*)I(?=\s|['’])/, '$1I');
   /* phrase lists: [regex, replacement]. Hedges and warm-ups go; the claim stays */
   const HEDGE_RX = [
@@ -1304,7 +1306,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   }
   /* casing: sentence starts follow the author (capital, or lowercase in CT style); "i" stays theirs */
   function caseFix(s, st, start) {
-    let x = s.replace(/(^|[.!?]["”’)]*\s+|\n\s*)([a-z])/g, (m, a, c, off) => (off === 0 && !start) ? m : a + (st.low ? c : c.toUpperCase()));
+    let x = s.replace(/(^|[.!?]["”’)]*\s+|\n\s*)([a-z])([\p{L}\p{N}’'$-]*)/gu, (m, a, c, r, off) => (off === 0 && !start) || capKeep(c + r) ? m : a + (st.low ? c : c.toUpperCase()) + r);
     if (st.low) x = x.replace(/(^|[.!?]\s+|\n\s*)([A-Z])(?=[a-z])/g, (m, a, c, off) => (off === 0 && !start) ? m : a + c.toLowerCase());
     if (st.loI) x = x.replace(/\bI(?=\s|['’](?:m|ve|ll|d)\b)/g, 'i'); else x = x.replace(/\bi(?=\s|['’](?:m|ve|ll|d)\b)/g, 'I');
     return x;
