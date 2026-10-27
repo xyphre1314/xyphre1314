@@ -1,0 +1,235 @@
+{
+ "key": "uiux",
+ "role": "Senior UI/UX designer (Linear/Superhuman level)",
+ "score": 7.8,
+ "verdict": "The product moments are now believable and calm. Nothing acts on its own, the sheet traps focus and returns it, every state has an honest message, axe is clean in the dynamic states and reduced motion is a finished page. What still holds it back sits in the core interaction: the Try box and final mark moved facts as cut and show broken engine rewrites with confident reasons, the fall motion garbles the hero draft, and the signup sheet's done state and the phone Keep path aren't finished.",
+ "to_95": [
+  "Make the cut marks true: a count-aware diff so moved or kept words are never struck or listed as cut, plus a de-duplicated cut list (uiux-1, tested in work-uiux/cut-fix.js).",
+  "Gate broken rewrites on the page and only show a 'why' that's true of the line (uiux-2, work-uiux/sane-gate.js), alongside the engine fixes.",
+  "Let the cut fluff dissolve inside the line gap instead of tumbling over line 2 (uiux-3, tested CSS).",
+  "Stop showing the example as 'Your line' in the sheet, and on phones bring the result and its Keep button into view after Sharpen (uiux-4, uiux-5).",
+  "Pin the final's input so it never moves while typing (uiux-6, tested: 95px → 0).",
+  "Finish the sheet: clean done state (no live pickers, right copy for each case including Sign in, Open demo / Back), top-anchored panel, an exit animation, and Sign in reachable at 360 (uiux-7, 10, 11).",
+  "Fix the visible first-glance gaps: the preview feed fill, the reply Replay on one line, a stable hero window on example switch (uiux-8, 12, 9).",
+  "Tighten Try's state logic: Sharpen steps down after a result, chips match the strikes, the result lands after the cut, a shorter note (uiux-13–16).",
+  "Quiet the live regions, never focus invisible controls, and add bottom scroll padding plus 40px targets on phones (uiux-21, 22, 24)."
+ ],
+ "issues": [
+  {
+   "id": "uiux-1",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Try tile + final: analyze() → removed() / spans() / quoted(); the struck mirror (#try-mirror, #fp-draft) and the 'Cut …' note (#out-note, #fp-note)",
+   "problem": "The page tells people their facts were cut when they weren't. The word diff is order-based (LCS), so a fact the engine moved to the front is struck and listed as cut. A flagged word the engine kept is struck anyway. Measured: 'we basically rebuilt our onboarding in 2 weeks and churn dropped 18%' → 'churn down 18%. what changed: …', with 'and churn dropped 18%' struck and the note 'Cut “basically” and “and churn dropped 18%”'. 'what is the best way to grow on x in 2026?' → '2026: what’s …' says 'Cut “in 2026”'. 'We are super excited … that we have …' lists 'we' as cut while 'We' opens the output. 'so basically ×3 …' → 'so the thing …' strikes every 'so' and lists 'Cut “so”, “basically”, “so”, “basically” and 3 more'. All of this sits directly under the heading 'Your facts stay.', in the one interactive moment the page is built around.",
+   "fix": "Replace removed() with the count-aware cutSpans(inp, outp, off, marks) in r86/work-uiux/cut-fix.js. Output words are matched as a multiset; unflagged input words claim them first, then flagged ones; anything unmatched was cut. Replace spans() with spans2(t, marks, cutR): a fully cut mark stays one span; a flagged word the engine kept keeps its squiggle without a strike (mirrorHTML emits <mark class=\"k\">; CSS .ed-mirror.struck mark.k{background:none}; struckHTML wraps in .cut only when r.cut). The note lists only cut spans. Use the de-duplicating quoted(), which gives “basically” ×3 and “so” ×2. Tested on 32 lines (node cut-test.js): 'Cut “basically”, “and” and “dropped”', 'Cut “in”', 'Cut “We are super excited to announce that” and “basically”'."
+  },
+  {
+   "id": "uiux-2",
+   "severity": "P1",
+   "area": "engine",
+   "where": "analyze() accept test (the `if (text && !badQ && …)` branch) and the shown why (#out-why/#fp-why)",
+   "problem": "Broken rewrites reach the visitor with a confident explanation, and it happens on the first audience's own lines. 'i think btc will hit 150k this year' → 'i think btc will: 150k this year.' with 'Why it hits: A real number up front reads as proof…', though the number isn't up front. 'so i think btc is going to 100k before the halving' → 'i think btc will 100k before the halving.' (the verb is gone). '…https://example.com/p @someone' gets a period glued to the handle. A single soft cut of 'just' gets the generic 'Hedges ask the reader to doubt you…', though 'just closed my biggest trade' has no hedge. The engine juror owns the cure; the page needs its own guard either way.",
+   "fix": "Add the page-side gate in r86/work-uiux/sane-gate.js (9/9 on the observed cases): `broken(out, inp)` rejects an added function-word colon or question mark ('will:'), a modal followed by a number ('will 100k'), and punctuation glued to a link or @handle. Accept only `!broken(text, body)`; otherwise the existing softCut fallback runs, and 'Already sharp' shows if nothing is flagged. Show b.why only if whyHolds(b.main, text), where 'number' requires the line to open on a number; otherwise use 'It gets to the point before the thumb moves.' For a single flagged-word cut, use that mark's own reason (marks[0][2]) as the why instead of the generic hedge sentence."
+  },
+  {
+   "id": "uiux-3",
+   "severity": "P1",
+   "area": "interaction",
+   "where": "Hero #pf-drops and Try #drops: .fallen / @keyframes fall (0.95s, 78px drop, ±9° rotation)",
+   "problem": "In the first five seconds of the hero, the falling copies tumble across line 2 of the draft. At about 2.2s, 'finally' lands on top of 'years' and 'just wanted to share that' runs over 'month trading, took me 3 years', so the draft can't be read for about 0.9s. The originals stay struck in place, which makes the falling copy a duplicate rather than a word leaving, and the overlap reads as a rendering glitch. The Try tile does the same, and on long lines the copies cross the counter row.",
+   "fix": "Keep the moment and shorten the path so it dissolves inside the line gap (tested, r86/work-uiux/fixes.css block uiux-3, frames in work-uiux/s/fall-cmp2.png): `.fallen{animation:fall .7s cubic-bezier(.3,0,.7,.4) var(--gd,0s) both;color:#A4A8AF}` `@keyframes fall{0%{opacity:.95;transform:none}70%{opacity:0}100%{opacity:0;transform:translate(calc(var(--dx,0px)*.35),22px) rotate(calc(var(--rot,8deg)*.4))}}`. Update the cleanup timeout in dropWords() to 800ms + k*stagger."
+  },
+  {
+   "id": "uiux-4",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Try tile #try-keep on the pre-rendered example → openSheet({line: tryLine})",
+   "problem": "Before the visitor types anything, 'Keep it. Start free' sits under the example result. Clicking it opens the sheet with 'Your line: i stopped trading the open. my pnl got better.', a line the visitor never wrote (verified). It's a small untruth at the most important step, on the page's most prominent in-tile button.",
+   "fix": "While !touched, label the button 'Start free' and open the sheet without a line: keepLabel() and the click handler in r86/work-uiux/fixes.js (uiux-4). Once the visitor has sharpened their own line, render() switches it to 'Keep it. Start free' and passes tryLine."
+  },
+  {
+   "id": "uiux-5",
+   "severity": "P1",
+   "area": "mobile",
+   "where": "Phone (390): Try tile after Sharpen; #out-keep; #mbar is hidden over #sharpen",
+   "problem": "At peak intent there is no CTA in view. After tapping Sharpen on a 390×844 phone, the result card shows (558–689px) but 'Keep it. Start free' sits at 844–884px, below the fold, and the sticky Start free bar is deliberately hidden over the Try tile. The final input already scrolls its result into view; Try doesn't.",
+   "fix": "At the end of render() for 'ok'/'same' on narrow screens, once the result has landed, scroll #out-keep into view if it's off-screen: snippet uiux-5 in r86/work-uiux/fixes.js (`outKeep.scrollIntoView({block:'end',behavior:RM?'auto':'smooth'})` after min(d,500)+380ms). Add `#out-keep{scroll-margin-bottom:20px}`. Do the same for #fin-keep in the final's submit handler (it currently stops at 844.4px, 0.4px under the fold)."
+  },
+  {
+   "id": "uiux-6",
+   "severity": "P1",
+   "area": "interaction",
+   "where": "Final .fin-panel (grid, align-items:center) at ≥901px",
+   "problem": "The input moves while you type in it. The panel centres its two columns, so as the live result on the right grows (350ms debounce), the heading, input and Sharpen button on the left slide down: measured 95px at 1440 and 108px at 1024 for a two-sentence line. CLS doesn't count it because it follows input, but the caret jumps mid-sentence. That's the opposite of Superhuman-grade input stability.",
+   "fix": "Pin the left column (tested, input movement 95px → 0, CLS 0; r86/work-uiux/fixes.css block uiux-6): `@media (min-width:901px){.fin-panel{align-items:start}.fin-l{padding-top:clamp(0px,4vw,48px)}}`. The example card on the right is about the same height as the left column, so the resting composition doesn't change."
+  },
+  {
+   "id": "uiux-7",
+   "severity": "P1",
+   "area": "flow",
+   "where": "Signup sheet #sheet: sheetDone(), #sh-plan, #sh-t, #sh-done, .sheet[open]{place-items:center}",
+   "problem": "The end of the funnel isn't finished. After a choice: (a) the Free/Pro/Studio and Yearly/Monthly pickers stay live above a message saying nothing was created; (b) the title still says 'Start Studio'; (c) the message says 'keeps your line' even when no line was shown, and in Sign in mode it says 'doesn't create accounts' to someone signing in; (d) focus lands on the message box, so a keyboard user sees a large white ring around a paragraph that looks like an input; (e) the panel is vertically centred, so it jumps up or down every time the error line or done state changes its height (top 155 → 210px); (f) there is no way back except the ×.",
+   "fix": "Replace sheetDone() with the version in r86/work-uiux/fixes.js (uiux-7). It hides #sh-plan and #sh-sub, sets the title to 'This is a preview' and focuses it (tabindex -1, `.sh-t:focus{outline:none}`). Copy by case: Start with a line: 'This preview doesn’t create accounts yet. The live site signs you in here and keeps your line.' Start without a line: the same, ending '…signs you in here.' Sign in: 'This preview can’t sign you in yet. On the live site, this is where your drafts and queue come back.' Below it, two buttons: white 'Open the demo app ↗' and glass 'Back to the page' (closes). Anchor the panel to the top on desktop so state changes grow downward: `@media (min-width:761px){.sheet[open]{place-items:start center;padding-top:clamp(24px,13vh,132px)}}` (fixes.css)."
+  },
+  {
+   "id": "uiux-8",
+   "severity": "P2",
+   "area": "layout",
+   "where": "Previews tile .t-pv .pvw (stretches to the Try tile's height)",
+   "problem": "At 1440 the X preview card has 141px of empty black below the thread on first view, and up to about 250px when the Try result is long, because the tile stretches to match Try (644–880px). It reads as an unfinished feed in the first second of the bento.",
+   "fix": "Make the spare height read as feed (tested, r86/work-uiux/s/fx-pv2.png). Append one dimmed example post after the thread in the X, Threads and Bluesky panes: `<div class=\"ppost next\" aria-hidden=\"true\">` with Jun Park and 'why do most design systems fail? nobody owns them. the fix isn’t a bigger team, it’s one name next to every component.' Add `.t-pv .pvw{overflow:hidden;mask-image:linear-gradient(#000 calc(100% - 56px),transparent)}` and `.ppost.next{opacity:.55;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}`. The phone already clips .pvw at 330px, so the screen budget doesn't change (9.56 measured)."
+  },
+  {
+   "id": "uiux-9",
+   "severity": "P2",
+   "area": "interaction",
+   "where": "Hero example pills (.ex button) → showEx() → replay(); #pf-why",
+   "problem": "Each example pick blanks the whole Sharpened pane for about 0.6s while the post re-lands. Trader → Founder also changes the window height by 22.5px (424 → 446.5), because 'Why it hits' wraps to two lines, so the page below jumps with every pick. Last round this was 7px; it is now worse.",
+   "fix": "Reserve two lines: `.window .hits p:first-of-type{min-height:3em}` (15px × 1.5 × 2). On a pick (not the first load), crossfade instead of a re-land: add `.window.swap .post,.window.swap .hits{animation:fade .2s var(--ease) both}`, set `--l:.05s`, and keep the strike sequence. The empty pane should only ever be seen on first load."
+  },
+  {
+   "id": "uiux-10",
+   "severity": "P2",
+   "area": "flow",
+   "where": "Nav .signin (display:none ≤374px); sheet",
+   "problem": "At 360px there is no way to sign in anywhere on the page: the nav hides Sign in and the sheet only offers 'Start'.",
+   "fix": "Add a line under .sh-fine in the sheet: 'Have an account? [Sign in]', a text button that switches sheet.dataset.mode to 'signin', repaints and hides the plan pickers. Hide it in Sign in mode. Snippet uiux-10 in r86/work-uiux/fixes.js."
+  },
+  {
+   "id": "uiux-11",
+   "severity": "P2",
+   "area": "interaction",
+   "where": "Sheet close (closeSheet, Esc, backdrop, ×)",
+   "problem": "The sheet opens with a 350ms rise (a slide-up on phones) but vanishes instantly on close. That asymmetry is the most noticeable motion gap left, and it shows on every dismissal.",
+   "fix": "Add a 160ms exit: the closeSheet() and cancel handler in r86/work-uiux/fixes.js (uiux-11). Use `.sheet.closing .sh-p{animation:sheet-out .16s var(--ease-io) both}`, `@keyframes sheet-out{to{opacity:0;transform:translateY(8px) scale(.985)}}`, a backdrop fade, and on phones `translateY(100%)`. Close immediately under reduced motion."
+  },
+  {
+   "id": "uiux-12",
+   "severity": "P2",
+   "area": "layout",
+   "where": "Replies tile .mine .lab (#rp-lab + #rp-replay) in the 4-column tile at 1100–1440px",
+   "problem": "'Replay' wraps onto its own line under 'Drafted in your voice', so the card header is two rows and the button floats alone. Verified at 1440.",
+   "fix": "Tested (r86/work-uiux/s/fx-rep.png): `.mine .lab{flex-wrap:nowrap}` and `#rp-lab{min-width:0;overflow:hidden;text-overflow:ellipsis}`. Wrap the word 'Replay' in <span class=\"rt\"> and visually hide it at ≥1100px and 761–1439px. The button becomes a 28px icon with aria-label 'Replay the drafted reply' (CSS in fixes.css block uiux-12)."
+  },
+  {
+   "id": "uiux-13",
+   "severity": "P2",
+   "area": "interaction",
+   "where": "Try tile #try-go vs #try-keep",
+   "problem": "After a result shows, the tile has two white primaries ('Sharpen' and 'Keep it. Start free'), so the next step is ambiguous. The final already solves this by dropping Sharpen to glass once a result is up; Try doesn't.",
+   "fix": "Use the same rule as the final: tryPrimary(resultFresh) in r86/work-uiux/fixes.js. Sharpen goes .btn-glass while a fresh result for the current text is showing, and back to .btn-white as soon as the text is edited (stale)."
+  },
+  {
+   "id": "uiux-14",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Try #try-flags / #out-st states",
+   "problem": "The chip row and the mirror disagree. After 'gm. so i think eth…' the chips say 'Fluff: honestly' while 'so' is squiggled and struck. 'Ghostwriting tip: … matters more than …' strikes a phrase while the row says 'No fluff. Sharpen still checks how it opens.' For 'asdf' that same 'No fluff' line sits above 'Give it a real line'. Before the first tap, typing shows 'Edited. Tap Sharpen again.' to someone who never tapped.",
+   "fix": "After a Sharpen, rebuild #try-flags from the cut spans with the label 'Cut:' so chips match strikes, each chip's reason taken from its mark or 'Not needed for the point.' For thin input, clear the row. Stale label: 'Tap Sharpen to see yours.' until the visitor has sharpened once, then 'Edited. Tap Sharpen again.' Snippet uiux-14 in r86/work-uiux/fixes.js."
+  },
+  {
+   "id": "uiux-15",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Try side column #out-why + #out-note; final #fp-note",
+   "problem": "The side column repeats itself and runs to 6–8 grey lines in a 15em column. For example: 'Two short beats with a full stop between them…' followed by 'Split it into two beats. Cut “so”, “basically”, “and” and “honestly”. Kept your gm. Kept your “i think”: on a call, it’s your stance, not filler.' The move is said twice, and the founder asked for less text.",
+   "fix": "The note carries only what changed. Line 1: 'Cut “so”, “basically” and “honestly”.' Line 2, only if anything was kept: 'Kept: gm, “i think”.' Drop the move name from the note when the label is 'Why it hits', because the why already explains the move. Keep the long hedge sentence only in the chip tooltip text (#try-why) when the visitor taps 'i think'."
+  },
+  {
+   "id": "uiux-16",
+   "severity": "P2",
+   "area": "interaction",
+   "where": "Try render(): out.classList.add('stale') during strikeAndDrop()",
+   "problem": "The new sharpened line appears at 50% opacity before the fluff is struck, then 'lands' 0.5s later. The answer shows up before the cut, which spoils the cause-and-effect the animation exists to show (frame t-3-go250).",
+   "fix": "During the strike, hold the result invisible rather than dimmed: `.try-out.hold{opacity:0;transition:none}`. Add .hold instead of .stale in render(), remove it in the same later() that calls fresh()."
+  },
+  {
+   "id": "uiux-17",
+   "severity": "P2",
+   "area": "conversion",
+   "where": "Try/final 'same' state note: 'Want a stronger opener? Rewrites in your voice: 20 free a month.'",
+   "problem": "The 'Already sharp' state points at a capability ('rewrites in your voice') and gives no way to act on it. It's a dead end at a moment of interest.",
+   "fix": "Make the second sentence a text button: 'Already sharp. Nothing to cut.' / note: 'Want a stronger opener? ' + <button class=\"inl\">Get a rewrite in your voice, free</button>. It calls openSheet({plan:'free', line: a.text}). Style .inl as underlined ink text, 40px hit area on phones."
+  },
+  {
+   "id": "uiux-18",
+   "severity": "P2",
+   "area": "interaction",
+   "where": "Studio approve()/client()/resetApprove()",
+   "problem": "Approving Priya, switching to Rafael and back resets Priya to 'Waiting on Priya' and un-applies her edit, so the product appears to forget a client's yes. 'Approve as Priya' also silently applies her requested edit ('Edit made: …'), which isn't what the label says. The done state says it twice: 'Priya approved. Scheduled for Tue 8:15 AM.' plus '✓ Approved'.",
+   "fix": "Keep CL[i].done. client(i) renders the approved state (edit applied, queue moved) for done clients. Label: c.fix ? 'Approve with Priya’s edit' : 'Approve as Priya'. Done row: one line, '✓ Approved · Tue 8:15 AM'. Snippet uiux-18 in r86/work-uiux/fixes.js."
+  },
+  {
+   "id": "uiux-19",
+   "severity": "P2",
+   "area": "mobile",
+   "where": "Phone nav: body.bar-on .nav-r .btn-sm{visibility:hidden}",
+   "problem": "While the bottom bar is up, the nav's Start free is hidden but keeps its space, so 'Sign in' floats about 100px from the right edge over a hole on every screen of the bento (m-02…m-06).",
+   "fix": "Slide Sign in into the corner with a transform, so there's no layout shift (tested: right edge 374 at 390, CLS 0): `@media (max-width:760px){.nav-r .signin{transition:transform .35s var(--ease)}body.bar-on .nav-r .signin{transform:translateX(96px)}}`. 96 = the 90px button plus the 6px gap."
+  },
+  {
+   "id": "uiux-20",
+   "severity": "P2",
+   "area": "layout",
+   "where": "Studio tile .st-l (gap between .nv-box and .facts) and .st-voice (gap between #st-tz and #st-queue) at ≥901px",
+   "problem": "Two dead bands sit inside the most product-dense tile: 120px of nothing between 'Priya never says' and the facts, and 80px between 'Goes out' and the queue. The tile looks under-filled next to the full review card.",
+   "fix": "Top-align the facts (`.facts{margin-top:28px}` instead of auto) and add `.st-voice .queue{margin-top:20px}`. The slack collects at the bottom of each column, where it reads as the end of the column. Optionally give the never-says words their real size: `.nevers .nvw{font-size:26px}` at ≥1100px."
+  },
+  {
+   "id": "uiux-21",
+   "severity": "P2",
+   "area": "a11y",
+   "where": "aria-live on #try-out, #try-why, #fp-live, #fin-n",
+   "problem": "Screen readers get read the same thing over and over. showWhy() rewrites the polite #try-why on every keystroke. #fin-n ('2 bits of fluff') and the whole #fp-live card are re-announced at every 350ms typing pause. #try-out announces the entire result region, including buttons and the footer micro-line.",
+   "fix": "Remove aria-live from those four. Add one sr-only role=status line per box (#try-status, #fin-status), written only after an explicit Sharpen: 'Sharpened: {line}' / 'Already sharp. Nothing to cut.' / 'Give it a real line.' In showWhy(), skip the write when the content is unchanged. Snippet uiux-21 in r86/work-uiux/fixes.js."
+  },
+  {
+   "id": "uiux-22",
+   "severity": "P2",
+   "area": "a11y",
+   "where": "Armed tiles (.arm): #try-out (opacity 0 until the moment), Replies .m-pop row",
+   "problem": "Keyboard focus can land on invisible controls: 'Replay' and 'Keep it. Start free' in Try, and 'Replay', 'Edit' and 'Reply' in Replies, while their tile's arrival moment hasn't played (measured opacity 0 at focus).",
+   "fix": "On focusin inside an armed tile that hasn't played, drop .arm, so the tile shows its finished state at once. This finishes an un-played moment and never replays one, so it respects decision C. Snippet uiux-22 in r86/work-uiux/fixes.js."
+  },
+  {
+   "id": "uiux-23",
+   "severity": "P2",
+   "area": "trust",
+   "where": "Footer: 'Privacy' (#privacy), 'Terms' (#terms)",
+   "problem": "Both links point at anchors that don't exist, so clicking does nothing. A dead legal link reads as fake on a page that otherwise works hard to be honest.",
+   "fix": "Remove Privacy and Terms from the footer list until real pages exist. Keep 'How posting works', which goes to #trust. Don't link to placeholders."
+  },
+  {
+   "id": "uiux-24",
+   "severity": "P2",
+   "area": "a11y",
+   "where": "Phone: #mbar (fixed bottom, 62px); .replay (28–32px), .incl (32px)",
+   "problem": "When tabbing or using switch access on a phone, the sticky bar can cover the focused control (WCAG 2.2 2.4.11): html has scroll-padding-top but no bottom padding. The quiet buttons are 28–32px tall, below the 40px used everywhere else on phones.",
+   "fix": "Tested in fixes.css block uiux-24 (screens 9.56 at 390): `html{scroll-padding-bottom:calc(var(--mbar) + 12px)}`, `.replay{min-height:40px}`, `.mine .lab .replay{height:40px}`, `.js .incl{height:40px}` inside @media (max-width:760px)."
+  },
+  {
+   "id": "uiux-25",
+   "severity": "P2",
+   "area": "interaction",
+   "where": "Day tile .vn .pb (voice-note play button)",
+   "problem": "The play button is drawn as a round control, the classic tap target, but it does nothing. This is the last dead affordance on the page; last round's Schedule pill and composer icons are gone.",
+   "fix": "Drop the button shape: `.vn .pb{background:none;box-shadow:none;width:14px;color:#6C7179}` and swap the triangle for the i-mic glyph. The waveform fill (.m-fill) already shows the note playing."
+  },
+  {
+   "id": "uiux-26",
+   "severity": "P2",
+   "area": "interaction",
+   "where": "Voice tile #voice, 'Keeps' row",
+   "problem": "The full-width tile right after Try promises 'You choose every change' and then proves it with static chips. It's the one product claim on the page you can't try, and the founder keeps asking for more interaction.",
+   "fix": "Turn the Keeps row into the proof. Show 'ngl eth looks strong here.' with 'ngl' squiggled and struck, plus a ghost .mini button 'Put it back' (aria-pressed=false). On tap, the strike retracts (strike keyframe reversed, .25s), the button reads 'Cut it' (aria-pressed=true), and the line under it changes to 'Sharpen keeps “ngl” from now on.' Tap again to toggle back. It only reacts to the visitor, never plays itself; reduced motion swaps without animation. The height stays the same at 390."
+  },
+  {
+   "id": "uiux-27",
+   "severity": "P2",
+   "area": "mobile",
+   "where": "Try .btn kbd at 360–420px; final .fin .micro at 360px",
+   "problem": "At 360 with a fine pointer, 'Sharpen Ctrl ↵' overflows the composer card by 15px (button right edge 343, card 328). The final's 'Free forever · No card · Nothing posts without you' is clipped to '…without yo' (scrollWidth 318 vs 292).",
+   "fix": "`@media (max-width:420px){.btn kbd{display:none}}` and `.fin .micro{display:flex;flex-wrap:wrap;row-gap:2px}` (fixes.css block uiux-27)."
+  }
+ ]
+}

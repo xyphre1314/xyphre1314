@@ -1,0 +1,241 @@
+{
+ "key": "hook",
+ "role": "Sharpen engine juror: senior X ghostwriter and copy chief who writes hooks for top creators, and reads JS",
+ "score": 6.0,
+ "verdict": "On 132 fresh first lines, Sharpen gives a line a pro would post 66% of the time on the homepage and 67% in the app (90% on its own 48). On lines it changes it lands only 56–58%. It still flips meaning (\"Maybe I’m wrong\" → \"I’m wrong\", \"not just about\" → \"not about\"), strips the stance from price calls, ships broken English under \"Why it hits\" (\"Why do Most B2B content fails?\", \"ETH will: 5k\", \"eth will 5k\"), and gives different answers on the site and in the app. Those are P0s under the promise \"Your facts stay\". Most fixes are small regex and ranking changes: a tested 36-patch prototype in work-hook lifts the held-out set to about 83–86% with no change to the 48, and the page wrapper fixes and truthful explanations close the rest.",
+ "to_95": [
+  "Make every cut meaning-safe: guard maybe/perhaps/probably before a clause, \"not/only just\", \"just can’t\", \"is it just me\", \"kind of a big deal\", contrast \"actually\" and doubled intensifiers (F4–F6). Move the price-call stance guard into core (stanceKeep, F3) so the site and app both keep \"i think\"/\"imo\" on a call.",
+  "Stop every broken template: \"going to 5k\" ≠ \"will 5k\" (F1), statColon subjects that are clauses or end on a modal (F2/F2b), whyBecause verb agreement and casing (F11), isQ on clause subjects and ≤5-word aphorisms (F12), the opinion rule with real adverbs (F7), and no \"most overrated thing\" escalation (F13). Add gram() checks for these shapes.",
+  "One engine for the site and the app: move gm/voice, one-word-question and stance guards into core.js. Fix the page wrapper: word diff as a multiset, a fallback gated on score and 4+ words, thin() that knows tickers, more:true with b.line, and \"Already sharp\" only at 70+ with nothing marked.",
+  "Catch the warm-ups the second audience writes: \"New post:\", \"This week’s issue is about\", \"In this week’s edition:\", \"Our new case study is live:\", \"I’d like to take a moment to thank\", \"Thrilled to be speaking at\", \"officially\", \"been thinking about this a lot lately and\", \"here’s my honest take on\". Add the thankYou, issueAbout, madeFor and labelSentence moves.",
+  "Fix the plumbing that throws away good versions: the colon in body() for list headers plus the \"Here are N\" score (F8/F8b), gram()’s preposition rule (F9), the rank bonus on a version’s own moves (F10), a score that reads the SOFT table and charges never-say words (F16/F21), the 150-character cap (F18), and end marks for questions and links (F15).",
+  "Make every explanation true: the why comes from the kinds actually cut (hedge / filler / question), the receipt says \"Cut the warm-up\" vs \"Cut N soft words\" by kind, and \"Led with the number\" appears only when the number is up front.",
+  "Hold it with a held-out test over both paths (heldout.json): ≥90% h, zero meaning changes, site == app, no banned word left, no broken-template regexes. Refresh it from new lines whenever the engine is tuned."
+ ],
+ "issues": [
+  {
+   "id": "hook-1",
+   "severity": "P0",
+   "area": "engine",
+   "where": "core.js SOFT \"hedge\" rule (line 125), SOFT \"filler\" rule (line 123), HEDGE_RX maybe/just (lines 1220–1221)",
+   "problem": "Cutting a \"soft\" word flips the meaning. Held-out: \"Maybe I’m wrong, but I think it’s still early for ETH.\" → \"I’m wrong, but it’s still early for ETH.\" (#22, both paths). \"It's not just about the money.\" → \"It's not about the money.\" (#93, both paths). On the site only: \"I just can't.\" → \"I can't.\" (#88). The Try tile sits under \"Your facts stay\", so a flipped claim is a credibility failure, not polish.",
+   "fix": "Guard the words that carry meaning, in both tables (SOFT and HEDGE_RX). maybe/perhaps/probably never go in front of a clause: SOFT hedge → (?:(?:maybe|perhaps|probably)(?! (?:i|i['’]m|i am|we|we['’]re|you|you['’]re|it|it['’]s|not|that|this|they|he|she)\\b)|…; HEDGE_RX → /\\b(?:probably|perhaps|maybe)\\b(?! (?:i|i['’]m|…|she)\\b),?\\s*/gi. \"just\" never goes after not/only/\"is it\"/\"it's\", or before me/can't/cannot/couldn't/won't/don't/didn't: SOFT filler → (?<!\\b(?:not|only|is it|it['’]s|it is) )just(?! (?:…existing list…|me\\b|can['’]?t\\b|cannot\\b|couldn['’]?t\\b|won['’]?t\\b|don['’]?t\\b|didn['’]?t\\b)), with the same guards on the HEDGE_RX just rule. Verbatim: patches F4 and F5 in /tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/make-fix.py. Tested: #22, #88, #93 and #94 stay as written; the in-sample 48 doesn't move."
+  },
+  {
+   "id": "hook-2",
+   "severity": "P0",
+   "area": "engine",
+   "where": "core.js softMarks / softCut / hookUp (lines 134–150, 2014); concepts/r85/home.html keepFor (lines 1895–1899)",
+   "problem": "A price call loses its stance hedge, so an opinion is posted as a certainty. Only the homepage guards this, and only for a short verb list, so the two paths disagree. App: \"eth will 5k by summer imo\" → \"eth will 5k by summer.\" (#18). App: \"i think btc will 150k this cycle\" → \"btc will 150k this cycle.\" (#19). Both paths: \"i think $SOL goes to 300 this cycle tbh\" → \"$SOL goes to 300 this cycle.\" (\"goes to\" is missing from FORECAST, #2). Both paths: \"I'm not sure, but I think rates get cut in September.\" → \"I'm not sure. But rates get cut in September.\" (#23). Also #117, #129 and #130 in the app. The founder flagged this as a P0 in r85 (founder-6); it was only patched on the page.",
+   "fix": "Move the guard into core so the site and app agree. Add stanceKeep(t), which returns the stance phrases present (i really think, i think, i believe, i feel like, imo, imho, in my opinion; NOT nfa, which is a disclaimer, see hook-23) when ST_FORE and ST_ASSET both match. ST_FORE = /\\b(?:will|won['’]t|going to|gonna|go(?:es)? to|to \\$?\\d|rips?|pumps?|dumps?|moons?|sends?|breaks? (?:out|down)|bottom(?:ed|s)?|top(?:ped|s)?|target|hits?|flip(?:s|ping)?|sees?|reclaims?|eoy|eow|undervalued|overvalued|higher|lower|(?:get|gets|be) cut|rate cuts?|still early)\\b/i. ST_ASSET = /\\$[a-z]{2,10}\\b|\\b(?:btc|eth|sol|bitcoin|ethereum|solana|xrp|doge|spx|spy|qqq|nvda|tsla|gold|oil|rates|the fed|alts?|altcoins?|stocks?)\\b|\\b\\d+(?:\\.\\d+)?k\\b/i. Merge it into keep at the top of softMarks, softCut and hookUp (patch F3 in make-fix.py). Then the page's keepFor can go, or stay as a second guard. Target outputs: \"i think $SOL goes to 300 this cycle.\" (only \"tbh\" cut). \"eth will 5k by summer imo\" stays as written. The page's note \"Kept your “imo”: on a call, it’s your stance, not filler.\" then becomes true on both paths."
+  },
+  {
+   "id": "hook-3",
+   "severity": "P0",
+   "area": "engine",
+   "where": "core.js HM.whyBecause (line 1919), MOVES.statColon (1357), MOVES.isQ (1365), SOFT \"opinion\" (117)",
+   "problem": "Moves ship broken English, labelled \"Why it hits\" and scored high. \"Most B2B content fails because…\" → \"Why do Most B2B content fails? It’s written for…\" (#50, scored 90: the scorer prefers it to the correct version). \"So I think ETH will hit 5k before BTC hits 150k\" → \"ETH will: 5k before BTC hits 150k.\" (#130). \"nfa but i genuinely believe $HYPE is the most undervalued L1\" → \"i genuinely believe $HYPE? it’s the most undervalued L1 right now.\" (#24). The first draft of the warm-up fix exposed a fourth: statColon on \"Speaking at SaaStr next month on how we grew from $1M…\" → \"…on how we: $1M to $10M ARR…\". gram() checks none of these.",
+   "fix": "whyBecause: lowercase the clause unless properish, and find the verb from a small list: V = /^(fail|flop|die|stall|quit|lose|miss|break|churn|struggle|stop|underperform|suck|get|make|look|feel|sound|read|sell|work|end|go|never|ignore|skip|chase|hate|need|want|burn|plateau|post|write|hire|ship)(s|es)?$/i. If the verb is third-person -s, write \"Why does {subject} {base verb} {rest}?\". If no verb is found, return null (patch F11 → \"Why does most B2B content fail? It’s written for the company, not the customer.\"). statColon: return null when the text before the verb holds how/why/what/when/where/which/who/that/if. On the third pattern, the subject also can't end in will/would/should/could/might/can/may/to/gonna/did/does/do/didn't/won't/just/finally/i/we/you/they (patches F2 and F2b). isQ: return null when wordsN(x) <= 5, or when the subject starts with i/we/you/they or holds believe/think/feel/know/guess/say/said/bet/hope/swear/reckon (F12). SOFT opinion: add the adverbs genuinely|truly|firmly|strongly|still|do|kind of|kinda|sort of, so \"i genuinely believe\" is cut as one piece (F7) → \"Most undervalued L1 right now? $HYPE.\" Add a gram() check that fails on /\\bWhy do(?:es)? [A-Z][a-z]/ and on /\\b(?:will|would|should|to|we|i|you|how|why):\\s/i."
+  },
+  {
+   "id": "hook-4",
+   "severity": "P0",
+   "area": "engine",
+   "where": "core.js WORDY \"going to\" rules (lines 1231–1232)",
+   "problem": "This is the \"eth will 5k\" complaint, reproduced. WORDY reads \"going to\" as the future tense even when it means moving to a price. \"i think eth is going to 5k by march\" → site \"i think eth will 5k by march.\", app \"eth will 5k by march.\" (#129, both m). Probes: \"btc is basically going to 100k\" → \"btc will 100k.\"; \"imo $SOL is going to flip eth\" → \"$SOL will flip eth.\" (stance also lost). For the lead audience, this is the line they write most.",
+   "fix": "Add a number to the negative lookahead on both rules: (?!\\s+(?:\\$?\\d|(?:the|a|an|my|your|our|their|bed|work|school|church|zero|new)\\b)) (patch F1/F1b). Keep the digit branch outside the \\b group: \"5k\" has no word boundary between 5 and k. Tested: #129 is left as written."
+  },
+  {
+   "id": "hook-5",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js HK_OPEN (line 1713), hookUp (2014); index.html hookUpPack; home.html VOICE / badQ / keepFor",
+   "problem": "The site and the app give different answers for one line, because the guards live in the page and not in core. \"gm. took a small loss on $ARB…\": the site keeps gm, the app cuts it and says \"Cut 1 soft word · Cut the warm-up\" (#12). \"Hiring is the job.\": the site leaves it, the app makes it \"Hiring? That’s the job.\" (#34). imo and i think are kept on the site and cut in the app (#18, #19). The page calls itself \"the same engine as the composer\", and it isn't.",
+   "fix": "Put every guard in core.js, and keep the page as a renderer. (1) Take gm out of HK_OPEN. Add HK_VOICE = /^(gm|gn|gmi|wagmi|ngmi|lfg)\\b[.!,]*[ \\t]+(?=\\S)/i: hookUp sharpens what follows it and puts the token back in front (patches F14/F14b). (2) Move the one-word-question guard into hookUp0's filter loop: skip y when /^[^\\s?]+\\?/.test(y) && !/^(why|how|what|who|when|where|really|seriously|wild)\\?/i.test(y). (3) stanceKeep (hook-2). Add a parity check to the held-out test (hook-28): the page analyze() and hgSharpen must give the same first line for every row."
+  },
+  {
+   "id": "hook-6",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js SOFT announce/label/throat (lines 101–112); HM (no move)",
+   "problem": "Common warm-ups for newsletters, B2B and launches are missed, and the site calls those lines \"Already sharp. Nothing to cut.\" Missed: \"This week's issue is about…\" (#37), \"New post:\" (#40), \"In this week's edition:\" (#45), \"I'd like to take a moment to thank…\" (#55), \"Thrilled to be speaking at…\" (#56), \"Our new case study is live:\" (#113), \"We have officially launched…\" (#127), \"So I have been thinking about this a lot lately and…\" (#116) and \"ok so here's my honest take on the current market.\" (#117). \"Super pumped to finally share what we’ve been building for the last 8 months 👀\" (#35) is cut down to a verbless fragment. Newsletter writers are the second audience, and r85's marketing-4 named several of these.",
+   "fix": "Label additions (in front of a colon only, so \"new issue is out!!\" stays the news): new (?:post|issue|episode|video|essay|article|blog post)(?=:\\s*\\S) | (?:in )?this week['’]s (?:issue|edition|newsletter|episode)(?=:) | our new (?:case study|post|guide|report|article|video|episode) is (?:live|out|up)(?=[:!—-]). Throat additions: (start or after an opener) (?:i|we)(?:['’]ve| have) been thinking (?:about (?:this|it) )?(?:a lot |so much )?(?:about (?:this|it) )?(?:lately |recently )?(?:and )?(?=(?:the|i|we|most|my|our)\\b) | ^(?:so |super |really )?(?:excited|thrilled|honou?red|proud|pumped|stoked|humbled) to be (?=\\w+ing\\b) | \\b(?:have |has )?officially (?=(?:launched|shipped|released|opened|joined|started|hit|crossed|signed)\\b). Verbatim: F17/F17b. New HM moves: thankYou (F19): \"I'd like to take a moment to thank my amazing team for an incredible quarter.\" → \"To my amazing team: thank you for an incredible quarter.\" issueAbout: /^this week['’]s (issue|edition|newsletter|episode|video) (?:is about|covers) (why|how) (i|we) (.{4,}?)(?:,? (?:link (?:below|in (?:bio|replies))|👇).*)?$/i → \"I stopped writing listicles. This week’s issue is why 👇\". madeFor: /^what (?:i|we)['’]ve been (\\w+ing) for (?:the (?:last|past) )?(DUR)(.*)$/i after the announce cut → \"8 months in the making 👀\". labelSentence: when the first sentence is only /^(?:here['’]s )?my (?:honest |hot |quick )?(?:take|thoughts?|two cents) on [^.!?:]{3,40}[.:]$/i and more sentences follow, drop that sentence and sharpen the next one."
+  },
+  {
+   "id": "hook-7",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js hookScore fillers (line 160) vs the SOFT table; hookUp0 best gate (2108); HK_SWAP (1717); index.html hgSharpen ok = P.to > P.from",
+   "problem": "The score and the SOFT table are still two lists, so a cut or swap that SOFT makes is thrown away when the score doesn't rise. \"Leverage your existing customer base to unlock new revenue streams.\" keeps two banned words, and the site calls it \"Already sharp. Nothing to cut.\" (#57). The \"unlock\" swap ties at 63 and is dropped, and \"Leverage\" at the start of a line never matches. Once \"officially\" is added to SOFT, the app still rejects the cut, because the score ignores it (#127).",
+   "fix": "(a) Make the score count what SOFT marks: clarity -= Math.max(fillers.length, softMarks(first).filter(r => r[0] > 1 || !warmKinds.includes(r[3])).length) * 14 (F21). (b) Charge for never-say words: clarity -= min(2, count of /\\b(?:unlock\\w*|leverag\\w*|supercharg\\w*|elevat(?:e|es|ed|ing)|seamless\\w*|game[- ]?changer|delv\\w*)\\b/) * 12 (F16b). (c) Add a start-of-line rule to HK_SWAP: [/^leverage (?=(?:our|your|their|the|this|that|these|those|ai|data|it|them|my)\\b)/i, 'Use '] (F16). (d) A swap counts as a move: { const w1 = x; x = sub(x, HK_SWAP); if (x !== w1) said.add('tight'); } (F16c). Tested: #57 → \"Use your existing customer base to open up new revenue streams.\" on both paths; #127 → \"We launched our new feature today.\""
+  },
+  {
+   "id": "hook-8",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js HM.hereAre (line 1827), body() (1319), hookScore warm0 (163)",
+   "problem": "List headers never sharpen. Drafts end \"Here are 7 tools I use…:\", and hereAre appends its own colon to a body() that still has one (\"founder::\"), so gram() drops it. Even fixed, \"Here are 7 X:\" and \"7 X:\" both score 77, so the tie keeps the draft. Rows #110 and #131 are lists, the most common X format.",
+   "fix": "hereAre: body(x).replace(/:$/, '') (F8). Apply the same colon strip in learnedAfter, afterN, thoughts, share and thread. In hookScore, read a \"Here are/Here is/Here’s + number\" opener as a warm-up: warm0 = …|^here (?:are|is|['’]s) (?=\\d|three |four |five |six |seven |eight |nine |ten ) (F8b). Tested: app #110 → \"7 tools I use every single day as a solo founder:\" and #131 → \"5 mistakes i made in my first year of trading:\". Also apply SHORT_W's \"every single\" → \"every\" inside hookUp, not only in the recipes."
+  },
+  {
+   "id": "hook-9",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js gram() index 4 (line 1534)",
+   "problem": "gram() treats any sentence that ends on to/of/with/for as a dangling word, so good splits are rejected. \"So I asked 400 readers what they want more of and the answer surprised me\" keeps its run-on (#44), because \"…more of. The answer surprised me.\" fails the check. English ends sentences on prepositions all the time: \"worth paying for\", \"who it’s for\".",
+   "fix": "Count only articles and conjunctions: cnt(s, /\\b(and|but|or|because|the|a|an)\\s*[.!?:](?=\\s|$)/gi) (F9). Tested: #44 → \"I asked 400 readers what they want more of. The answer surprised me.\" The in-sample 48 doesn't move."
+  },
+  {
+   "id": "hook-10",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js hookUp0 rank() (line 2102), top0 (2105)",
+   "problem": "The +2 \"real move\" bonus reads o.moves, and every version inherits baseSaid there. After a warm-up cut, a plain cut gets the same bonus as a split or a reorder, ties it, and wins on smaller edit size. This is also why the site (raw line) and the app (pre-cut line) disagree. Site: \"so basically i've been dca'ing into btc every friday since 2021 and i'm up 140%\" → still one run-on (#7). App: \"…since 2021. i'm up 140%.\" The same happens on #61.",
+   "fix": "Store each version's own moves (own: c.mv) in out.push, and give the bonus on o.own: ((o.own || []).some(k => ['ask','number','result','active','payoff','moment','contrast','loop','straight','warm'].includes(k)) ? 2 : 0) (F10). Tested: both paths now give the split on #7 and #61, and the in-sample 48 doesn't move."
+  },
+  {
+   "id": "hook-11",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js HM.rated (lines 1805–1809)",
+   "problem": "Variant 2 inflates the claim. \"honestly i think creatine is kind of overrated for most beginners\" → \"most overrated thing for most beginners? creatine.\" (#58). \"kind of overrated\" became \"the MOST overrated thing\", and \"most… most\" repeats. It is a new claim the writer never made, and it ranks first because it is a question.",
+   "fix": "Drop variant 2 (\"Most X thing…?\"). The rated regex already requires \"is overrated\", so the source never says \"most\" (F13). Keep variant 1: \"overrated for most beginners: creatine.\" Tested."
+  },
+  {
+   "id": "hook-12",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js SOFT hedge/filler/intens (lines 121–126), HEDGE_RX",
+   "problem": "Idioms and words that carry meaning are cut as fluff. \"This is kind of a big deal for us.\" → \"This is a big deal for us.\" (#90, the founder's own example; same in #78). \"Is it just me or…\" → \"Is it me or…\" (#87). \"what actually matters\" in a grief post (#80) and \"I actually liked the old UI better\" (#97) both lose their contrast word. The sarcasm in \"you're actually a genius\" goes flat (#101). \"I really, really needed this win.\" → \"I needed this win.\" (#96).",
+   "fix": "\"kind of a\" before big deal|thing|mess|legend|genius|joke|vibe is an idiom: add (?! a (?:big deal|thing|mess|legend|genius|joke|vibe)\\b) to the SOFT hedge and the HEDGE_RX kind-of rule (F6). \"is it just me\" is covered by hook-1's just guard. Keep a contrast \"actually\": (?<!\\b(?:what|who|which|that) )actually(?! (?:liked|like|love|loved|prefer(?:red)?|matters?|works?|worked|happened|need(?:ed)?|want(?:ed)?|read|use[ds]?)\\b). A doubled intensifier keeps one: in softCut, run /\\b(really|very|so),? \\1\\b/gi → '$1' before SOFT, so the output is \"I really needed this win.\" Tested for F6 and the just guard: #78, #87 and #90 stay as written."
+  },
+  {
+   "id": "hook-13",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js hookUp0 end punctuation (line 2051) and finishing (2083); home.html analyze() fallback `s += '.'`",
+   "problem": "The end marks are wrong. A question without a \"?\" gets a full stop: \"anyone else feel like this market is pure chop rn.\" (#17). A full stop is glued to a link (\"…github.com/devname/tool.\" #70) and, through the page fallback, to a hashtag (\"…#SaaS #B2B.\"). In X culture a full stop after a link looks broken.",
+   "fix": "Questions: the \"?\" test also matches ^(?:anyone|anybody|who else|am i the only|is it just me|wdyt|thoughts)\\b (F15). Nothing is appended when the line ends on a URL, @handle, #tag or emoji: /(?:https?:\\/\\/\\S+|\\b[\\w-]+\\.(?:com|io|xyz|co|ai|app|dev|so|gg|me|org|net|ly|to)(?:\\/\\S*)?|[@#]\\w+)$/i (F15). The finishing step strips one that a move added: y.replace(/(https?:\\/\\/\\S+?|…|[@#]\\w+|\\p{Extended_Pictographic})\\.$/u, '$1') (F15b). Use the same test before the page's fallback adds its full stop."
+  },
+  {
+   "id": "hook-14",
+   "severity": "P1",
+   "area": "copy",
+   "where": "core.js HK_WHY.soft (line 2006) and mainOf (2112); index.html hookUpPack cutK (≈8557)",
+   "problem": "The why shown for a soft-word cut is always \"Hedges ask the reader to doubt you. Without them the claim stands on its own.\" It is untrue whenever the cut was filler, an intensifier or a laugh, or the line is a question or sarcasm. Rows: #17, #38, #70, #84, #87, #92, #93, #94, #96, #97, #98, #101, #114 and #126. \"just\" isn't a hedge, and \"What's the one book that…?\" has no claim. On changed lines, only 54% (app) and 67% (site) of explanations are fully true.",
+   "fix": "Track the SOFT kinds cut in hookUp0 (sc0.kinds, plus 'hedge' for anything cutHedges removes later), and pick the why from them. If L ends with \"?\", use HK_WHY.q = 'Same question in fewer words, so it reads in one glance.'. If every kind is in {filler, intens, likeNum, tail}, use HK_WHY.filler = 'Filler from talking out loud. In the feed it costs a second and adds nothing.'. Otherwise use HK_WHY.soft. mainOf falls back to that key, and hookUpPack's cutK uses the same mapping (export a helper, e.g. HWCore.SHARPEN.whyKey(kinds, line)). Two rules for all moves: main = 'number' only when figAt(new) <= 2 < figAt(old) (on #119 the number is at the end); and HK_CORE moves on sentence i > 0 push mv 'tight', not 'number'."
+  },
+  {
+   "id": "hook-15",
+   "severity": "P1",
+   "area": "copy",
+   "where": "index.html hookUpPack sayCut (lines 8553–8554); core.js say() (2110)",
+   "problem": "The receipt counts are wrong. \"Cut 1 soft word\" is shown for a six-word announcement (\"I'm really excited to share that\", #27), for \"Quick reminder that\" (#41), for \"PSA\" and for \"Unpopular opinion\" (#69, #71). \"gm\" gets \"Cut 1 soft word · Cut the warm-up\", two labels for one word (#12). \"really, really\" gets \"Cut 1 soft word\".",
+   "fix": "Count cuts by kind. Warm kinds (announce, label, disclaim, stock, throat, open, feel) → \"Cut the warm-up\", with no count. Soft kinds → \"Cut N soft word(s)\", counting instances, not distinct words. Never show both for the same cut. Pass the kinds through hookUp's return (cutKinds, parallel to cut) so the app and the site build the same receipt."
+  },
+  {
+   "id": "hook-16",
+   "severity": "P1",
+   "area": "trust",
+   "where": "concepts/r85/home.html removed() (line 1915) → the note and the struck mirror",
+   "problem": "The page's word diff is a positional LCS, so moved words are reported as cut and struck through. Note: \"Cut “so”, “basically” and “and conversions went up 31%”.\" (#26). Others: \"Cut … “creatine is”\" (#58) and \"Cut “i've been”, “for 8 months and” and “just”\" (#128). Under \"Your facts stay\", the visitor watches their number get crossed out.",
+   "fix": "Use a multiset difference: a word counts as cut only if it is gone from the output. Tested in /tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/page-fix.mjs: function removed(inp, outp, off) { const A = tokens(inp, off), left = new Map(); tokens(outp, 0).forEach(x => left.set(x.w, (left.get(x.w) || 0) + 1)); const by = new Map(); A.forEach(t => { const v = by.get(t.a) || { a: t.a, b: t.b, k: false }; const n = left.get(t.w) || 0; if (n) { left.set(t.w, n - 1); v.k = true; } by.set(t.a, v); }); return [...by.values()].filter(v => !v.k).map(v => [v.a, v.b]); }. #26 then reads \"Cut “so”, “basically”, “and” and “went”.\""
+  },
+  {
+   "id": "hook-17",
+   "severity": "P1",
+   "area": "trust",
+   "where": "concepts/r85/home.html analyze() fallback `else if (marks.length)` (line 1955)",
+   "problem": "When hookUp declines, the site still shows a plain soft-word cut, even when that cut changes the meaning or scores lower. \"I just can't.\" → \"I can't.\" (#88). \"honestly? i don't know.\" → \"i don't know.\" (#91, 73→50). \"That's pretty much it.\" → \"That's it.\" (#95). \"Just ship it.\" → \"Ship it.\" (#99). The announcement case leaves a fragment: \"What we’ve been building for the last 8 months 👀\" (#35, 68→62). The app shows none of these, so the homepage is worse than the product.",
+   "fix": "Show the fallback only when s has 4+ words and H.hookScore(s).score > H.hookScore(body).score (tested in page-fix.mjs). When it is gated out and marks exist, never say \"Already sharp\". Show the line as written: label \"What changed\", why \"Kept as written: cutting “{first mark}” here would change how it lands.\", plus the existing note."
+  },
+  {
+   "id": "hook-18",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "concepts/r85/home.html realWord / thin (lines 1901–1903)",
+   "problem": "thin() needs a vowel in every word, so \"$BTC 100k eoy?\", the most CT line there is, gets \"Give it a real line, a few words…\" (#16). Meanwhile \"test test 123\" passes and is called \"Already sharp. Nothing to cut.\" (#107).",
+   "fix": "realWord accepts $TICKER, ALL-CAPS 2–6 letters and CT shorthand (btc|eth|sol|eoy|eow|ath|atl|gm|gn|nfa|dca|pnl|mrr|arr|ui|ux|ceo|vc). thin counts distinct real words, and treats a line starting with test/testing as thin. Verbatim and tested in page-fix.mjs."
+  },
+  {
+   "id": "hook-19",
+   "severity": "P1",
+   "area": "engine",
+   "where": "concepts/r85/home.html analyze(): H.hookUp(body, …) (≈line 1948)",
+   "problem": "The site sends only the first line, with no `more`, so hookUp assumes nothing follows. A list header loses its colon (\"5 mistakes i made in my first year of trading.\" with the list right below, #131 once hereAre is fixed; #110 the same), and no \"Here’s why:\" loop is ever offered when the visitor pasted a body.",
+   "fix": "Call H.hookUp(body, { ...(kp ? { keep } : {}), more: seg.length < s0.length }) and render b.line, not b.text (tested in page-fix.mjs)."
+  },
+  {
+   "id": "hook-20",
+   "severity": "P1",
+   "area": "copy",
+   "where": "concepts/r85/home.html analyze() \"same\" branch",
+   "problem": "\"Already sharp. Nothing to cut.\" shows for every unchanged line, weak ones included. It praised \"I'd like to take a moment to thank my amazing team…\" (63), \"Leverage your existing customer base to unlock…\" (63) and \"If you only read one thing this week…\" (58). Overclaiming in front of the target audience is the credibility problem r85 marketing-4 named.",
+   "fix": "Say \"Already sharp. Nothing to cut.\" only when hookScore(seg) >= 70 and softMarks is empty. Otherwise the why is \"No fluff to cut.\" and the note stays \"Want a stronger opener? Rewrites in your voice: 20 free a month.\""
+  },
+  {
+   "id": "hook-21",
+   "severity": "P1",
+   "area": "engine",
+   "where": "core.js hookUp0 length guard (line 2091)",
+   "problem": "Every version over 150 characters is thrown away, so long drafts only lose soft words and keep their warm-up opening. \"So I have been thinking about this a lot lately and I honestly believe that the biggest mistake…\" (340+ chars) → \"I have been thinking about this a lot lately and the biggest mistake…\" (#116, both paths). The first impression for a long paste is \"it barely did anything\".",
+   "fix": "Let a version be as long as the draft: y.length > Math.max(150, L.length) (F18), together with hook-6's \"been thinking about this lately and\" warm-up. For a line over 280 characters, run the moves on the first sentence or the first clause (split at \", which is why\", \" and I \", \"; \") and keep the rest as line two. Prototype result for #116: \"The biggest mistake most early stage founders make is that they spend too much time building features nobody asked for…\"."
+  },
+  {
+   "id": "hook-22",
+   "severity": "P2",
+   "area": "engine",
+   "where": "core.js SOFT filler \"just\"; HM.milestone (1848)",
+   "problem": "\"just\" that means \"recently\" is cut and called a hedge: \"btc just reclaimed 68k\" (#3), \"Just pushed v1.4\" (#70), \"$PEPE just flipped $SHIB\" (#114), \"just hit 2,500 subscribers\" (#38). The last one leaves a flat \"hit 2,500 subscribers on my newsletter.\", because milestone needs an \"i\".",
+   "fix": "Keep \"just\" before a past-tense verb ((?:\\w+ed|hit|got|made|won|lost|sold|bought|ran|broke|began|put|cut|set|quit|flipped|crossed|launched|shipped|pushed|dropped)\\b) unless a move restructures the line. milestone/numFirst/tookMe already accept \"just\". Let milestone run without a subject: /^(?:(?:i|we) )?(?:finally |just |officially )?(?:hit|crossed|reached|passed|got to) (\\$?\\d…)/ → \"2,500 subscribers on my newsletter. never thought i’d get here.\" Re-run the 48 after this one."
+  },
+  {
+   "id": "hook-23",
+   "severity": "P2",
+   "area": "engine",
+   "where": "core.js SOFT \"disclaim\" + hookUp0",
+   "problem": "Disclaimers are deleted, although the disclaim why says \"If it has to be said, say it at the end.\" For traders, \"nfa\" is often a habit or a compliance reflex. \"nfa but … $HYPE …\" loses it entirely (#24).",
+   "fix": "When the cut disclaimer is nfa or not financial advice and the line names a ticker or a price, append it to the end of the best line in the writer's own spelling: \"Most undervalued L1 right now? $HYPE. nfa\". Then the explanation is true."
+  },
+  {
+   "id": "hook-24",
+   "severity": "P2",
+   "area": "engine",
+   "where": "core.js MOVES.isQ; new HM.tickerFirst",
+   "problem": "Template tics on clean stat lines. \"eth/btc at 0.035 is the lowest since 2021\" → \"eth/btc at 0.035? it’s the lowest since 2021.\" (#9): the \"?\" doubts the writer's own fact. \"probably the best risk/reward setup i've seen on $LINK all year\" → \"the best risk/reward setup i've seen on $LINK all year.\" (#11), a fragment that buries the ticker.",
+   "fix": "isQ: return null when the subject holds a number or ticker, and prefer \"eth/btc at 0.035. lowest since 2021.\" (statColon style). Add tickerFirst: /^(?:the )?((?:best|worst|cleanest|ugliest|strongest|weakest) .{6,50}?) (?:i['’]ve seen |i see )?on (\\$[A-Za-z]{2,10})(.*)$/i → \"$LINK: best risk/reward setup i’ve seen all year.\""
+  },
+  {
+   "id": "hook-25",
+   "severity": "P2",
+   "area": "engine",
+   "where": "core.js HM.result2 (1887), MOVES.condQ (1325), HM.numFirst",
+   "problem": "Result-first is missed on common shapes: no subject (\"Redesigned our onboarding flow and drop-off fell from 64% to 29% 🙌\", #75), a \"got\" verb (\"…and reads got 9x faster\", #67), and a conditional with no comma (\"if you can't explain why you're in a trade you're gambling\", #14). All are postable as they are, but these are the openers a pro would flip.",
+   "fix": "result2: make the subject optional ((?:(i|we|our team|…) )?) and add got|is|are to the verbs. Target: \"Drop-off: 64% → 29%. What changed: we redesigned our onboarding flow 🙌\" (write \"we\" only when \"our\" is in the line). condQ: accept no comma when the second clause starts with you['’]re|you|it['’]s|that['’]s, giving \"Can't explain why you're in a trade? You're gambling.\""
+  },
+  {
+   "id": "hook-26",
+   "severity": "P2",
+   "area": "copy",
+   "where": "core.js HK_BAIT (1712)",
+   "problem": "The app says \"Dropped the bait\" and removes 🧵 from \"📈 Up 18% this month on my swing portfolio. Full breakdown in the thread 🧵\" (#115). The emoji is the thread marker, not bait.",
+   "fix": "Keep 🧵 when the line already says \"thread\". Strip only a standalone tease: \"(a thread)\", \"🧵👇\", or a trailing 🧵 after a claim with no \"thread\" in it."
+  },
+  {
+   "id": "hook-27",
+   "severity": "P1",
+   "area": "engine",
+   "where": "server/test/sharpen-eval.mjs (48 in-sample lines); new server/test/sharpen-heldout.mjs",
+   "problem": "The engine scores 90% on its own 48 lines and 66–67% on 132 fresh lines. The in-sample eval was tuned to, so it can't catch any of the classes above, and nothing checks that the site and app agree.",
+   "fix": "Add sharpen-heldout.mjs over /tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/heldout.json and graded.json. Run both paths (lift the page's analyze() like /tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/run.mjs). Hard checks: (1) meaning rows #22, #88, #90 and #93 never change; (2) no output matches /\\bwill \\$?\\d/, /\\b(?:will|would|to|we|i|you|how|why):\\s/i, /Why do(?:es)? [A-Z][a-z]/, or a bare one-word question on a line of 5 words or fewer; (3) the site and app first lines are equal; (4) no banned word is left in an output; (5) \"Already sharp\" never shows over a SOFT mark; (6) the why key matches the cut kinds. Wire it into npm test with a floor of 90% h. When grades change, refresh the set from a new held-out batch, so it stays held out."
+  }
+ ],
+ "evidence": {
+  "heldout": "/tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/heldout.json",
+  "graded": "/tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/graded.json",
+  "runner": "/tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/run.mjs (both paths, outputs in out.json/run.txt)",
+  "prototype": "/tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/make-fix.py → core-fix.js, checked by run-fix.mjs (run-fix.txt): held-out ≈82.6% h site / 85.6% app, m 29→7 / 29→5, in-sample 48: 0 moved, 0 hard failures",
+  "pageFixes": "/tmp/claude-0/-home-user-xyphre1314/b20c0c96-97f0-50b2-9a76-290620a49db9/scratchpad/r86/work-hook/page-fix.mjs (removed() multiset, thin(), fallback gate, more:true)",
+  "numbers": "site h 87 / o 16 / m 29 (65.9%), app h 89 / o 14 / m 29 (67.4%); meaning/stance m: site 10, app 11; broken grammar m: site 5, app 6; explanations fully true on changed lines: site 66.7%, app 53.9%"
+ }
+}
