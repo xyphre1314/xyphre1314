@@ -129,10 +129,20 @@
     { k: 'tail', re: /[ \t]?\b(?:lol|lmao|lmfao|haha+|hehe|smh)\b[.!]*(?=[ \t]*(?:\n|$))/gi,
       why: 'A nervous laugh at the end takes the weight off the line. Let it land.', short: 'takes the weight off the line' }
   ];
+  /* r86: a price call's hedge is the writer's stance, not filler. "i think eth goes to 5k" without "i think" is a
+     certainty they never posted, so on a call the opinion words and hedges stay, for the site and the app alike */
+  const ST_FORE = /\b(?:will|won['’]t|going to|gonna|go(?:es)? to|to \$?\d|rips?|pumps?|dumps?|moons?|sends?|breaks? (?:out|down)|bottom(?:ed|s)?|top(?:ped|s)?|targets?|hits?|flip(?:s|ping|ped)?|sees?|reclaims?|retests?|eoy|eow|undervalued|overvalued|higher|lower|(?:get|gets|be) cut|rate cuts?|still early|by (?:eoy|summer|march|june|december|q\d|the halving))\b/i;
+  const ST_ASSET = /\$[a-z]{2,10}\b|\b(?:btc|eth|sol|bitcoin|ethereum|solana|xrp|doge|bnb|avax|link|spx|spy|qqq|nvda|tsla|gold|silver|oil|rates|the fed|alts?|altcoins?|memecoins?|stocks?|the market|crypto|nasdaq|s&p)\b|\b\d+(?:\.\d+)?k\b/i;
+  const isCall = t => ST_FORE.test(t) && ST_ASSET.test(t);
+  function stanceKeep(text) {
+    const t = String(text || ''); if (!isCall(t)) return [];
+    const out = []; SOFT.filter(s => s.k === 'opinion' || s.k === 'hedge').forEach(s => { for (const m of t.matchAll(new RegExp(s.re.source, s.re.flags))) { const w = m[0].replace(/[,\s]+$/, ''); if (w && !out.includes(w)) out.push(w); } });
+    return out;
+  }
   /* where the soft words are: [start, end, why, kind], first match wins, no overlaps; keep: words this voice puts back */
-  const softKept = (frag, keep) => !!keep && keep.length > 0 && keep.includes(String(frag).toLowerCase().replace(/[,:.!\s]+$/, '').trim());
+  const softKept = (frag, keep) => !!keep && keep.length > 0 && keep.map(k => String(k).toLowerCase()).includes(String(frag).toLowerCase().replace(/[,:.!\s]+$/, '').trim());
   function softMarks(text, keep) {
-    const t = String(text || ''), out = [];
+    const t = String(text || ''), out = []; keep = [...(keep || []), ...stanceKeep(t)];
     SOFT.forEach(s => { const re = new RegExp(s.re.source, s.re.flags.includes('g') ? s.re.flags : s.re.flags + 'g'); let x; while ((x = re.exec(t))) { if (!x[0].trim()) { re.lastIndex++; continue; } const lead = x[0].search(/[^\s,:;.—-]/); if (lead < 0) continue; const a = x.index + lead, b = x.index + x[0].replace(/[\s,:;.!—-]+$/, '').length; if (b > a) out.push([a, b, s.why, s.k]); } });
     /* earliest first, and of two that start together the longer one, so a whole warm-up wins over a word inside it */
     out.sort((a, b) => a[0] - b[0] || (b[1] - b[0]) - (a[1] - a[0]));
@@ -141,7 +151,7 @@
   }
   /* the soft words out, nothing else changed. Returns { s, cut: [the words cut, as written] } */
   function softCut(line, keep) {
-    let s = String(line || ''); const cut = [], kinds = [];
+    let s = String(line || ''); const cut = [], kinds = []; keep = [...(keep || []), ...stanceKeep(s)];
     for (let pass = 0; pass < 2; pass++) SOFT.forEach(({ re, k }) => { s = s.replace(new RegExp(re.source + '[,:?]?[ \\t]*', re.flags.includes('g') ? re.flags : re.flags + 'g'), m => { if (softKept(m, keep) || !m.trim()) return m; cut.push(m.replace(/^[\s,]+|[\s,:.!—-]+$/g, '')); kinds.push(k); return ''; }); });
     s = s.replace(/^(\s*)that\s+(?=(?:i|we|my|our|the|this|it|you|your|a|an|they|he|she)\b)/i, '$1');
     s = s.replace(/[ \t]{2,}/g, ' ').replace(/[ \t]+([,.!?;:])/g, '$1').replace(/^[,;:.!?\s]+/, '').replace(/([.!?])[,;:]+/g, '$1').trim();
@@ -1710,7 +1720,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const HK_SUBJ = s => /^we$/i.test(s) ? 'We' : 'I';
   /* bait and announcements a hook never needs */
   const HK_BAIT = /\s*(?:[,.!]?\s*(?:like|rt|retweet|repost|follow|bookmark)(?:\s*(?:\+|&|and|\/)\s*(?:rt|retweet|repost|follow|bookmark|like))*\s+(?:if|for)\b[^.!?]*|[,.!]?\s*comment\s+["“']?\w+["”']?\s+(?:for|and i['’]ll|to get)\b[^.!?]*|[,.!]?\s*(?:agree|thoughts|am i wrong|change my mind)\s*\?|[,.!]?\s*\(?a thread\)?|[,.!]?\s*🧵(?:👇)?|\s*👇+)\s*$/i;
-  const HK_OPEN = /^(?:(?:hey|hi|hello|yo|gm)(?: (?:guys|everyone|all|fam|frens|friends|team|y['’]?all))?|(?:ok(?:ay)?,?\s+)?so(?! (?:what|far|much|many|long|good|bad|true|close|yeah|cool)\b)|well(?! (?:done|said|known|made|paid|played|over|worth|before|after)\b)|(?:look|listen)(?=[,.!:—]| (?:i|we|you|guys|people|man|y['’]all)\b)|anyway|alright|guys|quick (?:thought|one|reminder|take|question)|(?:just )?a (?:quick )?(?:reminder|heads[- ]up|thought)(?: that)?|unpopular opinion,?(?: but)?|hot take,?(?: but)?|real talk|psa|(?:this is )?not financial advice,?(?: but)?|nfa,?(?: but)?|(?:so |really |super )?(?:excited|thrilled|happy|proud|humbled) to (?:announce|share)(?: that)?|(?:idk|i don['’]t know) who needs to hear this,?(?: but)?|i['’]?m (?:not an|no) expert,?(?: but)?|this (?:might|may|could) be (?:controversial|unpopular),?(?: but)?|not sure if (?:this makes sense|anyone cares),?(?: but)?)\b[,.:!—-]*\s+(?=\S)/i;
+  const HK_OPEN = /^(?:(?:hey|hi|hello|yo)(?: (?:guys|everyone|all|fam|frens|friends|team|y['’]?all))?|(?:ok(?:ay)?,?\s+)?so(?! (?:what|far|much|many|long|good|bad|true|close|yeah|cool)\b)|well(?! (?:done|said|known|made|paid|played|over|worth|before|after)\b)|(?:look|listen)(?=[,.!:—]| (?:i|we|you|guys|people|man|y['’]all)\b)|anyway|alright|guys|quick (?:thought|one|reminder|take|question)|(?:just )?a (?:quick )?(?:reminder|heads[- ]up|thought)(?: that)?|unpopular opinion,?(?: but)?|hot take,?(?: but)?|real talk|psa|(?:this is )?not financial advice,?(?: but)?|nfa,?(?: but)?|(?:so |really |super )?(?:excited|thrilled|happy|proud|humbled) to (?:announce|share)(?: that)?|(?:idk|i don['’]t know) who needs to hear this,?(?: but)?|i['’]?m (?:not an|no) expert,?(?: but)?|this (?:might|may|could) be (?:controversial|unpopular),?(?: but)?|not sure if (?:this makes sense|anyone cares),?(?: but)?)\b[,.:!—-]*\s+(?=\S)/i;
   /* r74: soft-word kinds that are a warm-up (said as "cut the warm-up"), not a hedge */
   const HK_WARMK = /^(announce|label|disclaim|stock|throat|open|feel)$/;
   /* words the app never writes (the never-say list every rewrite is checked against), said plainly instead */
@@ -2011,14 +2021,24 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const HK_CLAIM = /\b(is|are|was|isn['’]t|aren['’]t|should|shouldn['’]t|must|matters?|beats?|wins?|never|always|most|best|worst|only|don['’]t|stop|nobody|everyone|overrated|underrated|wrong|mistake|edge|secret|rule|key)\b|^(take|sell|buy|size|cut|journal|reply|wait|protect|skip|trust|scale|keep|ship|write|post|stop|start|quit|raise|charge)\b/i;
   const HK_STORY = /\b(i|we|my|our)\b.*\b(\w+ed|lost|made|spent|took|quit|sold|bought|went|got|ran|built|wrote|hit|cut|left|found|did|began|became|grew|fell)\b/i;
   /* words this voice put back after a cut are masked first, so no clean step or move can take them out again */
+  /* r86: "gm" / "gn" / "wagmi" up front is the writer's voice, not a warm-up: Sharpen works on what follows and puts it back */
+  const HK_VOICE = /^(?:gm|gn|gmi|wagmi|ngmi|lfg)\b[.!,]*[ \t]+(?=\S)/i;
   function hookUp(post, opts = {}) {
-    const keep = (opts.keep || []).filter(w => w && w.length > 1); if (!keep.length) return hookUp0(post, opts);
+    const p0 = String(post || ''), vm = opts.noVoice ? null : p0.match(HK_VOICE);
+    if (vm) {
+      const pre = vm[0], r = hookUp(p0.slice(pre.length), { ...opts, noVoice: true }); if (!r) return r;
+      const from = hookScore(p0).score, fix = o => { if (!o) return o; const line = pre + o.line, text = pre + (o.text != null ? o.text : o.line); return { ...o, line, text, score: hookScore(text).score }; };
+      const best = fix(r.best);
+      return { ...r, from, base: { line: pre + r.base.line, score: hookScore(pre + r.base.line).score }, best: best && best.score > from ? best : null, alts: (r.alts || []).map(fix).filter(a => a.score > from), voice: pre.trim() };
+    }
+    /* the words this voice keeps, and on a price call the writer's stance ("i think", "imo", "probably") */
+    const keep = [...new Set([...(opts.keep || []), ...stanceKeep(p0.split('\n')[0])])].filter(w => w && w.length > 1); if (!keep.length) return hookUp0(post, opts);
     const KM = [], re = new RegExp(`(?<![\\p{L}\\p{N}])(${keep.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\p{L}\\p{N}])`, 'giu');
-    const masked = String(post || '').replace(re, m => { KM.push(m); return `Qk${KM.length - 1}q`; }); if (!KM.length) return hookUp0(post, opts);
-    const un = s => typeof s === 'string' ? s.replace(/Qk(\d+)q/g, (m, i) => KM[+i]) : s, unO = o => { if (!o) return o; const x = { ...o, line: un(o.line) }; if ('text' in o) { x.text = un(o.text); x.score = hookScore(x.text).score; } else x.score = hookScore(x.line).score; return x; };
+    const masked = p0.replace(re, m => { KM.push(m); return `Qk${KM.length - 1}q`; }); if (!KM.length) return hookUp0(post, opts);
+    const un = s => typeof s === 'string' ? s.replace(/Qk(\d+)q/gi, (m, i) => KM[+i]) : s, unO = o => { if (!o) return o; const x = { ...o, line: un(o.line) }; if ('text' in o) { x.text = un(o.text); x.score = hookScore(x.text).score; } else x.score = hookScore(x.line).score; return x; };
     const r = hookUp0(masked, { ...opts, keep: null }); if (!r) return r;
     /* scores come from the real words, not the mask */
-    const from = hookScore(String(post || '')).score, best = unO(r.best);
+    const from = hookScore(p0).score, best = unO(r.best);
     return { ...r, from, base: unO(r.base), best: best && best.score > from ? best : null, alts: (r.alts || []).map(unO).filter(a => a.score > from), kept: KM.length };
   }
   function hookUp0(post, opts = {}) {
@@ -2113,7 +2133,184 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const pack = o => o && { text: o.text + rest, line: o.text, score: o.score, moves: o.moves, say: say(o), main: mainOf(o), why: HK_WHY[mainOf(o)] || '', cut: cutW.slice() };
     return { from: s0, base: { line: base, score: scoreOf(base) }, soft, cut: cutW, best: pack(best), alts: alts.map(pack), all: out.length };
   }
-  const SHARPEN = { OPTS: SH_OPTS, LABEL: SH_LABEL, sharpen, fromModel, frame, fit, judge, styleOf, versionsFor, pickVersions, modelTexts, stripModel, deEcho, checkPost: checkPost2, whyNot, nearSame, tidy: tidyT, cutHedges, MOVES, sub, WORDY, CONTRACT_W, PLAIN_W, JARGON_W, SHORTHAND, IDIOM, numsOf, ticksOf, hookUp, SOFT, softMarks, softCut, MOVE_WHY: HK_WHY, MOVE_SAY: HK_SAY };
+  /* ---------------- sharpenLine (r86): the one call the site and the app both make ----------------
+     The first line in; the sharpened first line out, with what a UI needs to show it honestly: the words that are really
+     gone (never a moved word, never a fact) with their kind and reason, the facts carried over, and a receipt and a reason
+     that are both true for this edit. Offline and deterministic.
+     state: empty · thin (gibberish, or under 3 real words; tickers, numbers, $ and % are words) · sharp (line ≠ draft) ·
+     clean (nothing flagged, no safe move helps) · unsure (soft words flagged, but cutting them would change the meaning or
+     not help: the line stays, the flags are suggestions) */
+  const SL_ROWS = /qwer|wert|erty|rtyu|tyui|yuio|uiop|asdf|sdfg|dfgh|fghj|ghjk|hjkl|zxcv|xcvb|cvbn|vbnm/;
+  const SL_CT = /^(?:btc|eth|sol|eoy|eow|eod|ath|atl|gm|gn|nfa|dca|pnl|mrr|arr|cpi|fomc|etf|tvl|ui|ux|ceo|cto|vc|ai|seo|b2b|saas|nfts?|l1|l2|rn|irl|dms?|pfp|ama|rsi|ema|sma|tl;?dr)$/;
+  /* one word reads as a word: a number, a $ticker, an acronym, CT shorthand, or letters with a vowel that aren't a keyboard row */
+  const slReal = w => {
+    if (/[^\x00-\x7F]/.test(w) && /\p{L}/u.test(w) && !/^[\x00-\x7F]*$/.test(w.replace(/[^\p{L}]/gu, ''))) return true;
+    const raw = String(w).replace(/[^A-Za-z0-9$%]/g, ''), x = raw.toLowerCase(); if (!x) return false;
+    if (/\d/.test(x) || /^\$[a-z][a-z0-9]{1,9}$/.test(x) || (/^[A-Z]{2,6}$/.test(raw) && !SL_ROWS.test(x)) || SL_CT.test(x)) return true;
+    return /[aeiouy]/.test(x) && !/[bcdfghjklmnpqrstvwxz]{5,}/.test(x) && !/(.)\1\1/.test(x) && !SL_ROWS.test(x);
+  };
+  function slThin(t) {
+    const s = String(t || '').replace(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]{2}/gu, m => ` ${m} `);
+    const ws = s.match(/[\p{L}\p{N}$%][\p{L}\p{N}$%'’.-]*/gu) || [], rw = ws.filter(slReal);
+    return new Set(rw.map(w => w.toLowerCase().replace(/[.’'-]+$/, ''))).size < 3 || rw.length < ws.length * .5;
+  }
+  /* the facts in a line, as written: @handles, #tags, $tickers, anything with a digit, CT tickers, acronyms and names.
+     Words inside a soft-word mark ("PSA", "NFA") are the fluff, not a fact */
+  const SL_TICKW = /^(?:btc|eth|sol|xrp|bnb|doge|avax|matic|pepe|shib|wif|arb|sui|tia|ltc|spx|qqq|nvda|tsla|aapl|usdc|usdt)$/i;
+  const SL_NOTNAME = /^(?:I|The|A|An|It|My|We|Our|But|And|So|Here|This|That|Then|Just|Most|Your|You|Stop|Do|Hey|Guys|Why|How|What|When|If|In|On|At|For|To|Of|Or|No|Not|Yes|OK|Ok|Also|Even|Every|All|Some|One|Two|Three|Day|Today|Now|New|Next|Last|Same|Thanks?|Thank|Huge|Big|Love|Still|Only|Is|Are|Was|Were|Be|Will|Can|Don['’]t|I['’]m|I['’]ve|I['’]d|I['’]ll|Up|Down|Please|Never|Always|More|Less|Let|Let['’]s)$/;
+  function slFacts(t, marks) {
+    const s = String(t || ''), out = [], inMark = (a, b) => (marks || []).some(m => a >= m[0] && b <= m[1]);
+    const add = (v, a) => { v = v.replace(/[.,:;/!?'’-]+$/, ''); if (v && !inMark(a, a + v.length) && !out.some(o => o.v === v)) out.push({ v, a }); };
+    for (const m of s.matchAll(/(?<![\p{L}\p{N}_])[@#][\p{L}\p{N}_]+/gu)) add(m[0], m.index);
+    for (const m of s.matchAll(/(?<![\p{L}\p{N}_$])\$[A-Za-z][A-Za-z0-9]{0,9}\b/g)) add(m[0], m.index);
+    for (const m of s.matchAll(/(?<![\p{L}\p{N}_$€£@#.,])[\p{L}$€£]*\d[\p{L}\p{N}$€£%,.:/+×x-]*/gu)) add(m[0], m.index);
+    for (const m of s.matchAll(/(?<![\p{L}\p{N}_$@#'’])[\p{L}][\p{L}\p{N}'’&-]*/gu)) {
+      const w = m[0].replace(/['’]s$/, ''), mid = /[\p{L}\p{N},%)'’]\s$/u.test(s.slice(Math.max(0, m.index - 2), m.index));
+      if (SL_TICKW.test(w) || (/^[A-Z][A-Z0-9&]{1,5}$/.test(w) && !/^(?:I|OK|LOL|LMAO|PSA|TIL|NFA|IMO|IMHO|TBH|NGL|GM|GN|LFG|FYI|BTW)$/.test(w)) || /^\p{Ll}*\p{Lu}\p{Ll}+\p{Lu}/u.test(w) || /^\p{Ll}+\p{Lu}/u.test(w) || (mid && (/^\p{Lu}\p{Ll}+$/u.test(w) && !SL_NOTNAME.test(w) || w === 'X'))) add(w, m.index);
+    }
+    return out.sort((a, b) => a.a - b.a);
+  }
+  const slHas = (line, v) => new RegExp(`(?<![\\p{L}\\p{N}_])${v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}_])`, 'u').test(line);
+  /* what a cut may never take: the words that carry the meaning. In the draft → still in the line */
+  const SL_MEAN = [/\bnot just\b/i, /\bonly just\b/i, /\bjust (?:can['’]?t|cannot|won['’]?t|don['’]?t|didn['’]?t|couldn['’]?t)\b/i, /\bis it just me\b/i, /\b(?:maybe|perhaps|probably) (?:i|i['’]m|i am|we|we['’]re|you|you['’]re|it|it['’]s|not|they|he|she)\b/i,
+    /\b(?:kind|sort) of a (?:big deal|thing|mess|legend|genius|joke|vibe)\b/i, /\b(really|very|so),? \1\b/i, /\b(?:what|who|which|that) actually\b/i, /\bactually (?:liked?|loved?|prefer(?:red)?|matters?|works?|worked|happened)\b/i, /\byou(?:['’]re| are) actually\b/i, /\bpretty much it\b/i, /^just \w+ it\b/i];
+  const slMeanOK = (line, draft) => SL_MEAN.every(re => !re.test(draft) || re.test(line)) && negsOf(line) >= negsOf(draft.replace(/\bnot financial advice\b/gi, ''));
+  /* a template that came out broken: counted in the line against the draft, so the writer's own style never trips it */
+  const SL_BROKEN = [/([,;:!?])\1|(?<!\.)\.\.(?!\.)|[,;:][.!?]|[.!?][,;:]/g, /::/g, /\bwhy do (?:\S+ ){1,4}(?:fails|works|sells|gets|makes|goes|does|needs|wants|breaks|dies|loses|misses|stalls|churns|struggles|stops|sucks|looks|feels|sounds|reads|ends|burns|posts|writes|hires|ships|is|has|was)\b/gi,
+    /\b(?:will|would|should|could|can|to|we|i|you|how|why|what|did|does|do|gonna)\s*:\s/gi, /\bwill\s+\$?\d/gi, /\b(?:and|but|or|because|the|a|an|my|our|your|their)\s*[.!?:](?=\s|$)/gi, /\?\s*\?/g];
+  const slCapsNew = (line, draft) => (line.match(/(?<=[\p{L}\p{N},;%)'’]\s)\p{Lu}[\p{Ll}’']+/gu) || []).filter(w => !/^I(?:['’]\w+)?$/.test(w) && !new RegExp(`(?<![\\p{L}])${w}(?![\\p{L}])`, 'u').test(draft)).length;
+  const slBroken = (line, draft) => SL_BROKEN.some(re => cnt(line, re) > cnt(draft, re)) || slCapsNew(line, draft) > 0;
+  /* the whole check a sharpened line passes: every fact verbatim, the meaning words kept, no broken template */
+  const slOK = (line, draft, facts) => facts.every(f => slHas(line, f.v)) && slMeanOK(line, draft) && !slBroken(line, draft);
+  /* words, for the diff: contractions opened ("can't" = "can not") so a contraction is never a cut */
+  const SL_EXP = [[/\bcan['’]t\b|\bcannot\b/gi, 'can not'], [/\bwon['’]t\b/gi, 'will not'], [/\b(\w+)n['’]t\b/gi, '$1 not'], [/\bi['’]m\b/gi, 'i am'], [/\b(\w+)['’]re\b/gi, '$1 are'], [/\b(\w+)['’]ve\b/gi, '$1 have'], [/\b(\w+)['’]ll\b/gi, '$1 will'], [/\b(i|you|we|they|he|she)['’]d\b/gi, '$1 would'], [/\blet['’]s\b/gi, 'let us'], [/\b(it|that|here|there|what|who|he|she|this|where|how|everyone|nobody|everything|nothing)['’]s\b/gi, '$1 is'], [/\bim\b/g, 'i am']];
+  function slToks(s) {
+    const out = [];
+    for (const m of String(s).matchAll(/\S+/g)) {
+      const w0 = m[0].replace(/^[^\p{L}\p{N}$%@#]+|[^\p{L}\p{N}%]+$/gu, ''); if (!w0) continue; const a = m.index + m[0].indexOf(w0);
+      SL_EXP.reduce((x, [re, r]) => x.replace(re, r), lcw(w0)).split(/\s+/).filter(Boolean).forEach(w => out.push({ w: w.replace(/,(?=\d)/g, ''), a, b: a + w0.length }));
+    }
+    return out;
+  }
+  /* the soft words the visible marks don't cover but the engine still cuts (a "yo" opener, "fairly", a bait tail), as marks */
+  function slExtra(t) {
+    const s = String(t), out = [], add = (a, b, k) => { while (b > a && /[\s,.:;!?—-]/.test(s[b - 1])) b--; while (a < b && /[\s,.:;—-]/.test(s[a])) a++; if (b > a) out.push([a, b, '', k]); };
+    const o = s.match(HK_OPEN); if (o) add(0, o[0].length, (softWhy(o[0].replace(/[\s,.:!—-]+$/, '')) || { k: 'open' }).k);
+    HEDGE_RX.forEach(re => { for (const m of s.matchAll(new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g'))) if (m[0].trim()) { const p = m[0].trim().replace(/[,\s]+$/, ''), w = softWhy(p); add(m.index, m.index + m[0].length, w ? w.k : /^(?:really|very|quite|somewhat|fairly|truly|pretty)/i.test(p) ? 'intens' : /^i\b/i.test(p) ? 'opinion' : /honest|lie/i.test(p) ? 'honest' : 'hedge'); } });
+    const tl = s.match(TAIL_RX); if (tl) add(tl.index, tl.index + tl[0].length, /lol|lmao/i.test(tl[0]) ? 'tail' : /imo|imho/i.test(tl[0]) ? 'opinion' : /tbh|ngl/i.test(tl[0]) ? 'honest' : 'filler');
+    const bt = s.match(HK_BAIT); if (bt && bt[0].trim()) add(bt.index, bt.index + bt[0].length, 'bait');
+    return out;
+  }
+  /* the never-say and wordy phrases swapped for plain ones, with what each became */
+  function slSwaps(t) {
+    const s = String(t), out = [];
+    [...HK_SWAP, ...WORDY].forEach(([re, w]) => { for (const m of s.matchAll(new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g'))) { const to = m[0].replace(new RegExp(re.source, re.flags.replace('g', '')), w).trim(); out.push([m.index, m.index + m[0].length, to, 'swap']); } });
+    return out;
+  }
+  const SL_KWHY = { announce: 'Announces the news instead of saying it.', label: 'A label, not the point.', disclaim: 'Tells people to trust what follows less.', stock: 'A stock phrase readers skip.', throat: 'Backstory before the point.', open: 'A warm-up word.', feel: 'Tells them how to feel about it.',
+    opinion: 'Hedges a claim that’s already yours.', honest: 'Hints the rest might not be honest.', intens: 'Props up the word next to it.', filler: 'Filler from talking out loud.', hedge: 'Hedges the claim.', likeNum: 'Blurs your own number.', tail: 'Takes the weight off the line.', bait: 'Bait readers have learned to scroll past.', move: 'Not needed once the line was reordered.', tight: 'Not needed for the point.' };
+  const SL_WARM = /^(?:announce|label|disclaim|stock|throat|open|feel)$/, SL_HEDGE = /^(?:opinion|hedge)$/, SL_FILL = /^(?:filler|intens|honest|tail|likeNum)$/;
+  const SL_STRUCT = ['result', 'active', 'payoff', 'ask', 'number', 'moment', 'contrast', 'straight', 'loop', 'order'];
+  /* the words really gone from the draft, in draft order, grouped and named by kind */
+  function slCut(draft, line, marks, structural) {
+    const D = slToks(draft), bag = new Map(); slToks(line).forEach(x => bag.set(x.w, (bag.get(x.w) || 0) + 1));
+    const extra = slExtra(draft), swaps = slSwaps(draft), within = (x, R) => R.find(r => x.a >= r[0] && x.b <= r[1] + 0) || null;
+    D.forEach(x => { x.m = within(x, marks); });
+    const gone = D.map(() => true), claim = (x, i) => { const n = bag.get(x.w) || 0; if (n) { bag.set(x.w, n - 1); gone[i] = false; } };
+    D.forEach((x, i) => { if (!x.m) claim(x, i); }); D.forEach((x, i) => { if (x.m) claim(x, i); });
+    const out = [];
+    D.forEach((x, i) => {
+      if (!gone[i]) return;
+      const m = x.m || within(x, extra), sw = !m && within(x, swaps), kind = m ? m[3] : sw ? 'swap' : structural ? 'move' : 'tight', id = m || sw || null;
+      const q = out[out.length - 1];
+      if (q && q.kind === kind && q.id === id && q.last === i - 1 && (id || /^[\s,;:—-]*$/.test(draft.slice(q.b, x.a)))) { q.b = x.b; q.last = i; return; }
+      out.push({ a: x.a, b: x.b, kind, id, last: i, to: sw ? sw[2] : '' });
+    });
+    return out.map(c => ({ text: draft.slice(c.a, c.b), kind: c.kind, why: c.kind === 'swap' ? `Said as “${c.to}”.` : SL_KWHY[c.kind] || SL_KWHY.tight, at: [c.a, c.b] }));
+  }
+  const HK_WHY_SL = {
+    q: 'Same question in fewer words, so it reads in one glance.',
+    filler: 'Filler from talking out loud. In the feed it costs a second and adds nothing.',
+    swap: 'Same claim in plainer words, so nothing snags the reader.',
+    sharp: 'Already sharp. Nothing soft to cut.',
+    clean: 'Nothing soft to cut, and no safe move makes it stronger.'
+  };
+  const slFig = z => { const m = String(z).match(/(?<![\w.,])[$€£]?\d/); return m ? (z.slice(0, m.index).match(/\S+/g) || []).length : -1; };
+  const slBeats = z => (String(z).match(/[^.!?]+(?:[.!?]+|$)/g) || []).filter(x => /[\p{L}\p{N}]/u.test(x)).length;
+  /* the move a version is about, checked against what it really did: "led with the number" only when the number leads */
+  function slMove(draft, line, moves, cut) {
+    const warm = cut.some(c => SL_WARM.test(c.kind)) || (moves || []).includes('warm') && wordsN(line) < wordsN(draft);
+    for (const k of HK_PRI) {
+      if (!(moves || []).includes(k) || !SL_STRUCT.includes(k)) continue;
+      if (k === 'number' && !(slFig(line) >= 0 && slFig(line) <= 2 && (slFig(draft) < 0 || slFig(line) < slFig(draft)))) continue;
+      if (k === 'contrast' && !(slBeats(line) > slBeats(draft))) continue;
+      if (k === 'ask' && !(/\?\s+\S/.test(line) && !/\?\s+\S/.test(draft))) continue;
+      if (k === 'loop' && !/(?::|\bhere[’']s (?:why|how|what)[^.!?]*[:.]?)$/i.test(line)) continue;
+      return k;
+    }
+    if (warm) return 'warm';
+    if ((moves || []).includes('tight') && wordsN(line) < wordsN(draft) && !cut.some(c => SL_HEDGE.test(c.kind) || SL_FILL.test(c.kind))) return 'tight';
+    return '';
+  }
+  function slExplain(draft, line, moves, marks) {
+    const cut0 = slCut(draft, line, marks, (moves || []).some(k => SL_STRUCT.includes(k)));
+    const move = slMove(draft, line, moves, cut0);
+    const cut = cut0.filter(c => c.kind !== 'move' || move);
+    const nW = cut.filter(c => SL_WARM.test(c.kind)).length, nH = cut.filter(c => SL_HEDGE.test(c.kind)).length, nF = cut.filter(c => SL_FILL.test(c.kind)).length, nB = cut.filter(c => c.kind === 'bait').length, nS = cut.filter(c => c.kind === 'swap').length;
+    const say = [];
+    if (nW) say.push('Cut the warm-up');
+    if (nH && nF) say.push(`Cut ${nH + nF} soft words`); else if (nH) say.push(`Cut ${nH} hedge${nH === 1 ? '' : 's'}`); else if (nF) say.push(`Cut ${nF} filler word${nF === 1 ? '' : 's'}`);
+    if (nB) say.push('Dropped the bait');
+    if (move && move !== 'warm') say.push(cap(HK_SAY[move]));
+    if (!say.length) say.push(nS ? 'Said it plainer' : 'Tightened it');
+    let why;
+    if (move && move !== 'warm' && move !== 'tight') why = HK_WHY[move];
+    else if (nW) why = HK_WHY.warm;
+    else if (/\?\s*$/.test(line)) why = HK_WHY_SL.q;
+    else if (nH) why = HK_WHY.soft;
+    else if (nF) why = HK_WHY_SL.filler;
+    else if (nB) why = HK_WHY.bait;
+    else if (nS) why = HK_WHY_SL.swap;
+    else why = HK_WHY.tight;
+    return { cut, move, say: [...new Set(say)].slice(0, 3).join(' · '), why };
+  }
+  const SL_LONG = 'Over 280 for one X post. Hookworthy can split it into a thread.';
+  function sharpenLine(text, opts = {}) {
+    const keep = (opts.keep || []).filter(w => typeof w === 'string' && w.trim());
+    const src = String(text == null ? '' : text).replace(/^\s+/, ''), nl = src.indexOf('\n');
+    const draft = (nl < 0 ? src : src.slice(0, nl)).replace(/\s+$/, ''), rest = nl < 0 ? '' : src.slice(nl + 1);
+    const more = opts.more != null ? !!opts.more : !!rest.trim();
+    const R = { state: 'empty', draft, line: draft, rest, cut: [], marks: [], move: '', say: '', why: '', kept: [], alts: [], long: false, note: '' };
+    const longOf = l => xLength(rest.trim() ? `${l}\n${rest}` : l) > 280;
+    if (!draft) return R;
+    R.long = longOf(draft); R.note = R.long ? SL_LONG : '';
+    const vm = draft.match(HK_VOICE), body = vm ? draft.slice(vm[0].length) : draft;
+    if (!body.trim() || slThin(body)) return { ...R, state: 'thin' };
+    const marks = softMarks(draft, keep), facts = slFacts(draft, marks);
+    R.marks = marks; R.kept = facts.map(f => f.v);
+    const st = stanceKeep(body).filter(w => !keep.some(k => k.toLowerCase() === w.toLowerCase()));
+    const stNote = st.length ? `Kept your “${st[0]}”: on a call, it’s your stance, not filler.` : '';
+    let H = null; try { H = hookUp(rest ? `${draft}\n${rest}` : draft, { keep, more, pref: opts.pref }); } catch (e) { H = null; }
+    const list = H && H.best ? [H.best, ...(H.alts || [])] : [];
+    /* a full stop or a capital alone isn't a sharpen */
+    const same = (a, b) => { const n = z => lcw(z).replace(/[.!?…]+$/, '').replace(/\s+/g, ' ').trim(); return n(a) === n(b); };
+    const okL = o => o && o.line && !same(o.line, draft) && slOK(o.line, draft, facts);
+    const best = list.find(okL) || null;
+    const noteOf = l => [stNote, longOf(l) ? SL_LONG : ''].filter(Boolean).join(' ');
+    if (!best) {
+      const why = marks.length ? `Kept as written: cutting “${draft.slice(marks[0][0], marks[0][1])}” here would change how it lands or not help.` : hookScore(rest ? `${draft}\n${rest}` : draft).score >= 70 ? HK_WHY_SL.sharp : HK_WHY_SL.clean;
+      return { ...R, state: marks.length ? 'unsure' : 'clean', say: marks.length ? 'Kept as written' : 'Nothing to cut', why: why.length > 140 ? `Kept as written: cutting it here would change how it lands or not help.` : why, note: noteOf(draft) };
+    }
+    const E = slExplain(draft, best.line, best.moves, marks);
+    const alts = [], used = new Set([E.move || 'soft']);
+    for (const o of list) {
+      if (alts.length >= 2) break; if (o === best || !okL(o) || nearSame(o.line, best.line)) continue;
+      const e = slExplain(draft, o.line, o.moves, marks), k = e.move || 'soft'; if (used.has(k)) continue; used.add(k);
+      alts.push({ line: o.line, say: e.say, why: e.why, move: e.move, moves: o.moves, cut: e.cut });
+    }
+    return { ...R, state: 'sharp', line: best.line, cut: E.cut, move: E.move, say: E.say, why: E.why, alts, long: longOf(best.line), note: noteOf(best.line), moves: best.moves, score: { from: H.from, to: best.score } };
+  }
+  const SHARPEN = { OPTS: SH_OPTS, LABEL: SH_LABEL, sharpen, fromModel, frame, fit, judge, styleOf, versionsFor, pickVersions, modelTexts, stripModel, deEcho, checkPost: checkPost2, whyNot, nearSame, tidy: tidyT, cutHedges, MOVES, sub, WORDY, CONTRACT_W, PLAIN_W, JARGON_W, SHORTHAND, IDIOM, numsOf, ticksOf, hookUp, SOFT, softMarks, softCut, MOVE_WHY: HK_WHY, MOVE_SAY: HK_SAY, sharpenLine, stanceKeep, factsOf: s => slFacts(s, softMarks(s)).map(f => f.v) };
 
   /* ---------------- Claude credits ----------------
      One table for the app, the server and the tests. A credit is one everyday piece of Claude writing (a post rewrite).
@@ -2208,5 +2405,5 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function crSetBoost(st, plan, boost, now = Date.now()) { const P = CR_PLANS[plan]; if (!P || !crPaid(P)) return st; const s = crSettle(st, plan, now), b = crBoost(boost) ? boost : null, before = crAmt(P, s.voices, s.boost), after = crAmt(P, s.voices, b); const out = { ...s, bal: Math.max(0, s.bal + (after - before)) }; if (b) out.boost = b; else delete out.boost; return out; }
   const CREDITS = { HELPERS: CR_HELPERS, BOOSTS: CR_BOOSTS, setBoost: crSetBoost, PLANS: CR_PLANS, ACTS: CR_ACTS, LONG: CR_LONG, cost: crCost, next: crNext, fresh: crFresh, settle: crSettle, status: crStatus, spend: crSpend };
 
-  return { ROOM, CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN, hookUp, SOFT, softMarks, softCut, memory: { memNew, memPost, memEdit, memChoice, memKeep, memDigest, memPref, memKeepList, MOVE_NAMES } };
+  return { ROOM, CREDITS, HOOK_TIERS, hookTier, hookMove, hookNext, partState, learnHooks, personalScore, traitsOf, spearman, factCheck, tidySpoken, briefRead, briefDraft, visualPlan, voiceMatch, predictFromHistory, xLength, LINKS, clamp, cap, STOP, words, median, hashStr, hookScore, kindOf, KIND_NAMES, kindName, kindPlural, measured, parseCSV, parseCSVRows, parseXArchive, parseTypefully, parsePasted, normPost, mergeHistory, analyze, eng, BRIEF, voiceBlock, prompts: P, CRINGE, checkPost, SHARPEN, hookUp, sharpenLine, SOFT, softMarks, softCut, memory: { memNew, memPost, memEdit, memChoice, memKeep, memDigest, memPref, memKeepList, MOVE_NAMES } };
 });

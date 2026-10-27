@@ -8535,30 +8535,27 @@ function watchEdit(ta, before, after, { label = '', lead = false, done } = {}) {
     if (label && box.isConnected) { const c = document.createElement('span'); c.className = 'wt-chip'; c.textContent = label; box.append(c); setTimeout(() => c.remove(), 2200); }
   }, 1150 + pen);
 }
-/* the composer's Sharpen: the soft words out first (the count on the button), then the editor's moves on what's left.
-   Their casing and their facts stay; a reason to read on only when more of the post follows. Cached per text */
+/* the composer's Sharpen: one call to the engine (HWCore.sharpenLine), the same one the site makes, so the composer and the
+   homepage give the same first line for the same draft: same guards, same cuts, same reasons. Their casing and their facts
+   stay; a reason to read on only when more of the post follows. Cached per text */
 function hookUpFor(text) {
   const t = String(text || ''), mn = `${S.ws}:${memFor().n}:${memFor().v || 0}`; if (UI.hkC && UI.hkC.t === t && UI.hkC.mn === mn) return UI.hkC.r;
-  const keep = MEM.memKeepList(memFor()), line = firstLine(t), rest = t.slice(line.length), cut = hgMarks(line, keep).length;
+  const keep = MEM.memKeepList(memFor()), line = firstLine(t), rest = t.slice(line.length);
   const more = !!rest.trim() || S.draft.tweets.filter(x => x.text.trim()).length > 1;
   /* this voice's memory: the words it keeps and the moves it likes nudge what Sharpen offers */
-  const C = cut ? hgClean(line, keep) : { s: line, words: [], kinds: [] }, H = HWCore.hookUp(C.s + rest, { more, keep, pref: MEM.memPref(memFor()) }), r = H && hookUpPack(H, cut, rest, t => hookFor(t).score, hookFor(t).score, C.words, C.kinds);
+  const R = HWCore.sharpenLine(t, { keep, more, pref: MEM.memPref(memFor()) }), r = hookUpPack(R, rest, x => hookFor(x).score, hookFor(t).score);
   if (r) r.kept = keep.filter(w => new RegExp(`(?<![\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(line));
-  UI.hkC = { t, mn, r: r && r.to > r.from ? r : null }; return UI.hkC.r;
+  UI.hkC = { t, mn, r }; return UI.hkC.r;
 }
-/* what Sharpen says it did, in the moves' own words; a full stop alone is never a sharpen */
-function hookUpPack(H, cut, rest, sc, from, words = [], kinds = []) {
-  /* r74: the soft words cut here and inside the engine are one count, said once ("Cut 3 soft words", never "Cut 1 · Cut 1") */
-  const cuts = [...words, ...(H.cut || [])].filter((w, i, a) => w && a.findIndex(x => x.toLowerCase() === w.toLowerCase()) === i), n = cuts.length || cut;
-  const sayCut = n ? `Cut ${n} soft word${n === 1 ? '' : 's'}` : '';
-  const sayOf = o => [sayCut, ...String(o.say || '').split(' · ').filter(w => w && w !== 'Gave it an end' && !/^Cut \d+ soft words?$/.test(w))].filter(Boolean).filter((w, i, a) => a.indexOf(w) === i).slice(0, 3).join(' · ');
-  const real = o => o && (o.moves.some(k => k !== 'end') || cut);
-  /* why the main move works, the line the app teaches with. A pure cut teaches why hedges go, or, when it took a warm-up
-     (an announcement, a label, a disclaimer), why the warm-up went */
-  const cutK = kinds.some(k => /^(announce|label|disclaim|stock|throat|open|feel)$/.test(k)) ? 'warm' : 'soft', MW = HWCore.SHARPEN.MOVE_WHY;
-  const whyOf = o => o.why || (n ? MW[cutK] : '');
-  const b = real(H.best) ? H.best : cut ? { line: H.base.line, moves: ['end'], say: '', main: cutK } : null; if (!b) return null;
-  const r = { text: b.line + rest, line: b.line, say: sayOf(b) || 'Tightened it', why: whyOf(b), main: b.main || cutK, moves: b.moves, cut, cuts, from, alts: (H.alts || []).filter(real).map(a => ({ text: a.line + rest, line: a.line, say: sayOf(a) || 'Tightened it', why: whyOf(a), main: a.main || cutK, moves: a.moves })) };
+/* the engine's answer, in the shape the receipt reads: what moved, why that move works, and the soft words that went.
+   Only a sharp line is a sharpen; the engine already said whether a version is better, so nothing is re-judged here */
+function hookUpPack(R, rest, sc, from) {
+  if (!R || R.state !== 'sharp') return null;
+  /* the receipt strikes the soft words that went; small words a reorder dropped and plain-word swaps aren't "cuts" */
+  const soft = c => c.kind !== 'move' && c.kind !== 'swap' && c.kind !== 'tight', main = o => o.move || (o.cut.some(c => /^(announce|label|disclaim|stock|throat|open|feel)$/.test(c.kind)) ? 'warm' : 'soft');
+  const cuts = R.cut.filter(soft).map(c => c.text);
+  const r = { text: R.line + rest, line: R.line, say: R.say, why: R.why, main: main(R), moves: R.moves || [], cut: cuts.length, cuts, from, state: R.state, facts: R.kept,
+    alts: (R.alts || []).map(a => ({ text: a.line + rest, line: a.line, say: a.say, why: a.why, main: main(a), moves: a.moves || [] })) };
   r.to = sc(r.text); return r;
 }
 /* one tap: a sharper first line, everything else stays yours. Another cycles the other strong versions; Undo puts yours back */
@@ -13054,10 +13051,9 @@ function hgClean(line, keep) { const r = HWCore.softCut(line, keep); return { s:
    why: the one sentence on why the main move works; cuts: the soft words that went, as written */
 function hgSharpen(raw, { more } = {}) {
   const text = String(raw || '').trim(); if (!text) return null;
-  const lines = text.split('\n'), orig = lines[0].trim(), rest = lines.slice(1).join('\n').trim(), tail = rest ? '\n' + rest : '', cut = hgMarks(orig).length, C = cut ? hgClean(orig) : { s: orig, words: [], kinds: [] };
-  const H = HWCore.hookUp(C.s + tail, { more: more != null ? more : !!rest });
-  const P = H && hookUpPack(H, cut, '', x => hookScore(x + tail).score, hookScore(text).score, C.words, C.kinds), ok = !!P && P.to > P.from, first = ok ? P.line : orig;
-  return { text: [first, rest].filter(Boolean).join('\n\n'), orig, first, rest, add: '', cut, loop: ok && /\bhere[’']s (why|how|what)\b/i.test(first) && !/\bhere[’']s\b/i.test(orig), same: !ok, say: ok ? P.say : '', why: ok ? P.why : '', main: ok ? P.main : '', cuts: ok ? P.cuts : [], alts: ok ? P.alts.map(a => a.line) : [], altP: ok ? P.alts : [] };
+  const lines = text.split('\n'), orig = lines[0].trim(), rest = lines.slice(1).join('\n').trim(), tail = rest ? '\n' + rest : '';
+  const R = HWCore.sharpenLine(text, more != null ? { more } : {}), P = hookUpPack(R, '', x => hookScore(x + tail).score, hookScore(text).score), ok = !!P, first = ok ? P.line : orig;
+  return { text: [first, rest].filter(Boolean).join('\n\n'), orig, first, rest, add: '', cut: R.marks.length, loop: ok && /\bhere[’']s (why|how|what)\b/i.test(first) && !/\bhere[’']s\b/i.test(orig), same: !ok, say: ok ? P.say : '', why: ok ? P.why : '', main: ok ? P.main : '', cuts: ok ? P.cuts : [], alts: ok ? P.alts.map(a => a.line) : [], altP: ok ? P.alts : [], state: R.state };
 }
 /* word diff that ignores case when lining words up, so "risk" → "Risk" reads as kept, not cut and re-added */
 function hgDiff(a, b) {
