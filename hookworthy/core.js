@@ -102,31 +102,33 @@
   /* r86: "just" before a past-tense verb means "recently" ("btc just reclaimed 68k", "just shipped v2"): news, not filler */
   const JUST_PAST = String.raw`(?:(?!(?:n|f|sp|s|bl|proc|succ|exc|br|h|w)eed\b|red\b|bed\b|shed\b)[a-z]{2,}ed\b|(?:hit|got|made|won|lost|sold|bought|ran|broke|began|put|cut|set|quit|left|found|wrote|built|sent|paid|spent|took|came|went|saw|told|said|heard|did|had|became|fell|grew|rose|drew|shut|led|met|threw|woke|stole|sank|swam|beat|forgot|flew|gave|wore|won|ate|drank|bit|hung|slept|kept|felt|meant|shot|struck|swore|tore|spoke)\b)`;
   const SOFT = [
-    { k: 'announce', re: new RegExp(`${S0}(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:so |super |really |very |beyond )?(?:excited|thrilled|happy|proud|pleased|humbled|delighted|stoked|pumped) to (?:finally )?(?:announce|share|say|tell you|let you know|introduce)(?: that)?`, 'gi'),
+    { k: 'announce', re: new RegExp(`${S0}(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:so |super |really |very |beyond )?(?:excited|thrilled|happy|proud|pleased|humbled|delighted|stoked|pumped) to (?:finally )?(?:announce|share|say|tell you|let you know|introduce)(?: that)?|${S0}(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:so |super |really |very )?(?:excited|thrilled|happy|proud|pleased|delighted|stoked) to (?=welcome (?:@\\w|our\\b|my\\b|a\\b|an\\b|the\\b|two\\b|three\\b))`, 'gi'),
       why: 'Announcing the announcement. Lead with the news itself: what you did shows the excitement better than saying it.', short: 'announces the news instead of saying it' },
-    { k: 'announce', re: new RegExp(`${S0}(?:(?:in )?(?:today['’]s|this week['’]s|this) (?:issue|newsletter|edition|post|thread|episode|video)[,:]?\\s+|(?:today|this week|real quick),? )?(?:(?:i|we) )?(?:just )?(?:wanted|want|would like|['’]d like|thought i['’]?d|am going|['’]m going) to (?:quickly )?(?:share|say|announce|let (?:you|everyone|y['’]all|you all) know|talk about|write about|post about|give (?:a quick |an |a )update on)(?: (?:that|some (?:quick )?thoughts on|a few thoughts on|my thoughts on|some thoughts about))?\\b`, 'gi'),
+    { k: 'announce', re: new RegExp(`${S0}(?:(?:in )?(?:today['’]s|this week['’]s|this) (?:issue|newsletter|edition|post|thread|episode|video)[,:]?\\s+|(?:today|this week|real quick),? )?(?:(?:i|we) )?(?:just )?(?:wanted|want|would like|['’]d like|thought i['’]?d|am going|['’]m going) to (?:quickly )?(?:(?:share|give|post) (?:you )?(?:a |an )?(?:quick |short |small |little )?update(?: on)?|share|say|announce|let (?:you|everyone|y['’]all|you all) know|talk about|write about|post about|give (?:a quick |an |a )update on)(?: (?:that|some (?:quick )?thoughts on|a few thoughts on|my thoughts on|some thoughts about))?\\b`, 'gi'),
       why: 'Announcing the announcement. Lead with the news itself: what you did shows the excitement better than saying it.', short: 'announces the post instead of starting it' },
-    { k: 'label', re: new RegExp(`${S0}(?:quick (?:thought|reminder|update|psa|take|question|one|tip|note)(?: that)?|(?:friendly )?reminder that|psa|til(?: that)?|fun fact|real talk|food for thought|hot take|unpopular opinion|pro tip|life hack|heads up|(?:some|a few|quick|random) (?:thoughts|notes) on(?= \\S)|(?:here(?: is|['’]s) )?a (?:quick |short |mini |little )?thread (?:on|about)(?= \\S)|new (?:post|issue|episode|video|essay|article|blog post|thread|drop|podcast(?: episode)?)(?=:\\s*\\S)|(?:in )?(?:this week['’]s|today['’]s|this|the latest|our latest|my latest) (?:issue|edition|newsletter|episode)(?=:)|our new (?:case study|post|guide|report|article|video|episode|podcast|course) is (?:live|out|up|here)(?=[:!—-])|(?:(?:ok(?:ay)?,? )?so )?(?:here['’]s|here is) my (?:honest |hot |quick |unpopular |real )?(?:take|thoughts?|two cents|read) on [^.!?:\\n]{2,40}[a-z0-9](?=[.:]\\s+\\S))\\b[:,.!—-]*`, 'gi'),
+    { k: 'label', re: new RegExp(`${S0}(?:(?:just )?(?:a )?quick (?:thought|reminder|update|psa|take|question|one|tip|note)(?: that)?|(?:just )?(?:a )?(?:friendly )?reminder that|psa|til(?: that)?|fun fact|real talk|food for thought|hot take|unpopular opinion|pro tip|life hack|(?:just )?(?:a )?(?:quick )?heads[- ]up(?: that)?|(?:some|a few|quick|random) (?:thoughts|notes) on(?= (?:why|how|what|when|whether)\\b)|(?:here(?: is|['’]s) )?a (?:quick |short |mini |little )?thread (?:on|about)(?= \\S)|new (?:post|issue|episode|video|essay|article|blog post|thread|drop|podcast(?: episode)?)(?=:\\s*\\S)|(?:in )?(?:this week['’]s|today['’]s|this|the latest|our latest|my latest) (?:issue|edition|newsletter|episode)(?=:)|our new (?:case study|post|guide|report|article|video|episode|podcast|course) is (?:live|out|up|here)(?=[:!—-])|(?:(?:ok(?:ay)?,? )?so )?(?:here['’]s|here is) my (?:honest |hot |quick |unpopular |real )?(?:take|thoughts?|two cents|read) on [^.!?:\\n]{2,40}[a-z0-9](?=[.:]\\s+\\S))\\b[:,.!—-]*`, 'gi'),
       why: 'A label, not a line. Delete it and the post starts where your point does.', short: 'is a label, not the point' },
     { k: 'disclaim', re: new RegExp(`${S0}(?:(?:this is )?not financial advice|nfa|(?:i['’]m|i am) (?:not an|no) expert|this (?:might|may|could|will) be (?:controversial|unpopular|a hot take)|(?:idk|i don['’]t know) who needs to hear this|not sure if (?:this makes sense|anyone cares|this is useful))\\b,?(?: but\\b)?[:,.!—-]*`, 'gi'),
       why: 'A disclaimer up front tells people to trust the next words less. If it has to be said, say it at the end.', short: 'tells people to trust what follows less' },
-    { k: 'stock', re: /\bin today['’]s (?:fast[- ]paced|competitive|digital|ever[- ]changing|modern|busy|crowded|noisy|always[- ]on) (?:world|landscape|market|economy|environment|climate|age|era)\b,?|\bat the end of the day\b,?|\bit goes without saying(?: that)?\b,?|\bneedless to say\b,?|\bwithout further ado\b,?/gi,
+    { k: 'stock', re: /\bin today['’]s (?:fast[- ]paced|competitive|digital|ever[- ]changing|modern|busy|crowded|noisy|always[- ]on) (?:world|landscape|market|economy|environment|climate|age|era)\b,?|\bat the end of the day\b,?|\bit goes without saying(?: that)?\b,?|\bneedless to say\b,?|\bwithout further ado\b,?|\bit(?:['’]s| is) (?:important|worth|crucial|essential|good) to (?:remember|note|keep in mind|understand|realize|realise|mention)(?: that)?\b,?/gi,
       why: 'A stock phrase. Readers have seen it so often their eyes skip it, and the line along with it.', short: 'is a phrase readers skip on sight' },
-    { k: 'throat', re: /\bafter (?:a lot of|lots of|much|weeks of|months of) (?:back and forth|deliberation|thought|thinking|consideration|discussion)\b,?|(?:^|(?<=^(?:(?:ok(?:ay)?,?\s+)?so|well|ok(?:ay)?)[,.!]?\s+))(?:i|we)(?:['’]ve| have) been thinking (?:about (?:this|it) )?(?:a lot |so much )?(?:about (?:this|it) )?(?:lately |recently )?(?:and )?(?=(?:the|i|we|most|my|our)\b)|^(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:so |super |really )?(?:excited|thrilled|honou?red|proud|pumped|stoked|humbled|happy) to be (?=\w+ing\b)/gi,
+    { k: 'wordy', re: /\bin order(?= to\b)/gi,
+      why: 'Wordy. “In order to” says what “to” already does, one word later.', short: 'says what “to” already does' },
+    { k: 'throat', re: /\bafter (?:a lot of|lots of|much|weeks of|months of) (?:back and forth|deliberation|thought|thinking|consideration|discussion)\b,?|(?:^|(?<=^(?:(?:ok(?:ay)?,?\s+)?so|well|ok(?:ay)?)[,.!]?\s+))(?:i|we)(?:['’]ve| have) been thinking (?:about (?:this|it) )?(?:a lot |so much )?(?:about (?:this|it) )?(?:lately |recently )?(?:and )?(?=(?:the|i|we|most|my|our)\b)|^(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:so |super |really )?(?:excited|thrilled|honou?red|proud|pumped|stoked|humbled|happy) to be (?=\w+ing\b)|\b(?=(?:i can|let me) )(?<!\b(?:as an?|after|since|having|while|when|before|from|with|despite) [^.!?]{2,120})(?:i can (?:confidently |honestly |safely )?(?:tell|promise|assure) you|let me tell you|i can (?:confidently |honestly |safely )?say)(?: that)?\b,?/gi,
       why: 'Backstory before the point. Say the decision first; how you got there can be the second line.', short: 'is backstory before the point' },
     { k: 'open', re: /^\s*(?:(?:ok(?:ay)?,?\s+)?so(?! (?:what|far|much|many|long|good|bad|true|close|yeah|cool)\b)|well(?! (?:done|said|known|made|paid|played|over|worth|before|after)\b)|hey(?: (?:everyone|guys|all|y['’]all|friends|fam|folks|team))?|hi(?: (?:everyone|all|friends|folks))?|hello(?: (?:everyone|all))?|guys|(?:look|listen)(?=[,.!:—]| (?:i|we|you|guys|people|man|y['’]all)\b)|anyway|ok(?:ay)?|alright)\b[,.!:]*(?=\s)/gi,
       why: 'A warm-up word. Readers decide in the first few words, so don’t spend one clearing your throat.', short: 'spends your first word on a warm-up' },
     { k: 'feel', re: /,?[ \t]?(?:(?:pretty|really|so|super|very) )?(?:happy|stoked|pumped|excited|proud|thrilled) (?:with|about) (?:it|this|that|this one|how it turned out)\b[.!]*(?=[ \t]*(?:\n|$))|,?[ \t]?wish me luck\b[.!]*(?=[ \t]*(?:\n|$))/gi,
       why: 'Telling them how to feel about it. The result already says that, so end on the result.', short: 'tells them how to feel instead of showing it' },
-    { k: 'opinion', re: /(?<!\bas an? [^,.!?]{2,40},\s?)\b(?:i (?:really |personally |honestly |just |actually |genuinely |truly |firmly |strongly |do |kind of |kinda |sort of )?(?:think|feel like|believe|guess|reckon|feel that)(?: that)?(?! (?:about|of|through|back|so|twice|again|too|in)\b)|in my (?:humble )?opinion|imo|imho)\b,?/gi,
+    { k: 'opinion', re: /\b(?:(?=i )(?<!\b(?:as an?|after|since|having|while|when|before|from|with|despite|unlike|like) [^,.!?]{2,120},?\s)i (?:really |personally |honestly |just |actually |genuinely |truly |firmly |strongly |do |kind of |kinda |sort of )?(?:think|feel like|believe|guess|reckon|feel that)(?: that)?(?! (?:about|of|through|back|so|twice|again|too|in)\b)|in my (?:humble )?opinion|imo|imho)\b,?/gi,
       why: 'Your name is on the post, so it’s already your opinion. Saying so just hands readers a reason to doubt it.', short: 'hedges a claim that’s already yours' },
-    { k: 'honest', re: /\b(?:honestly|to be honest|tbh|ngl|not gonna lie|if i['’]m (?:being )?honest|truthfully|frankly)\b,?/gi,
+    { k: 'honest', re: /\b(?:honestly|to be honest|tbh|ngl|not gonna lie|if i['’]m (?:being )?honest|truthfully|frankly|personally(?=,? i\b))\b(?!\?),?/gi,
       why: 'It hints the rest might not be honest. Lines that land never announce their honesty.', short: 'hints the rest might not be honest' },
     { k: 'intens', re: /(?<!\b(?:really|very|so|super),?\s)\b(?:really|very|quite|somewhat|pretty much|extremely|incredibly|totally)\b(?!,?\s(?:really|very|so|super)\b)/gi,
       why: 'An intensifier propping up a weaker word. Cut it, or trade the pair for one sharp word: “very tired” → “exhausted”.', short: 'props up the word next to it' },
-    { k: 'filler', re: new RegExp(String.raw`\b(?:(?<!\b(?:not|only|is it|it['’]s|it is|that['’]s|that is|i['’]m|you['’]re) )just(?! (?:\$?\d|one\b|two\b|a few\b|now\b|in case\b|as\b|like\b|because\b|enough\b|in time\b|me\b|(?:can['’]?t|cannot|couldn['’]?t|won['’]?t|don['’]?t|didn['’]?t)\b|${JUST_PAST}))|(?<!\b(?:what|who|which|that|you['’]re|you are) )actually(?! (?:liked?|loved?|prefer(?:red|s)?|matters?|works?|worked|happened|need(?:ed|s)?|want(?:ed|s)?|read|use[ds]?|cares?|cared)\b)|basically|literally|simply|essentially|officially(?= (?:launched|shipped|released|opened|joined|started|hit|crossed|signed|live|out)\b))\b`, 'gi'),
+    { k: 'filler', re: new RegExp(String.raw`\b(?:(?<!\b(?:not|only|is it|it['’]s|it is|that['’]s|that is|i['’]m|you['’]re) )(?:(?<!(?:^|[.!?]\s{1,3}))just|(?<=(?:^|[.!?]\s{1,3}))just(?! (?:a|an|the|my|our|your|their|one|two|me|you|us|some|plain|pure)\b))(?! (?:by\b|\$?\d|one\b|two\b|a few\b|now\b|in case\b|as\b|like\b|because\b|enough\b|in time\b|me\b|(?:can['’]?t|cannot|couldn['’]?t|won['’]?t|don['’]?t|didn['’]?t)\b|[a-z]+ing\b|${JUST_PAST}))|(?<!\b(?:what|who|which|that|you['’]re|you are) )actually(?![^.!?\n]*\?)(?! (?:liked?|loved?|prefer(?:red|s)?|matters?|works?|worked|happened|need(?:ed|s)?|want(?:ed|s)?|read|use[ds]?|cares?|cared)\b)|basically|literally|simply|essentially|officially(?= (?:launched|shipped|released|opened|joined|started|hit|crossed|signed|live|out)\b))\b`, 'gi'),
       why: 'Talking filler. Out loud it buys you a second; in the feed it costs you one.', short: 'is filler from talking out loud' },
-    { k: 'hedge', re: /\b(?:(?:maybe|perhaps|probably)(?! (?:i|i['’]m|i am|i['’]ll|we|we['’]re|you|you['’]re|it|it['’]s|not|they|he|she|this|that|the real)\b)|(?<!\b(?:what|which|this|that|the|a|any|some|every|one|same|different|other|right|wrong) )(?:kind|sort) of(?! a (?:big deal|thing|mess|legend|genius|joke|vibe)\b)|kinda|sorta)\b/gi,
+    { k: 'hedge', re: /\b(?:(?:maybe|perhaps|probably)(?! (?:i|i['’]m|i am|i['’]ll|we|we['’]re|you|you['’]re|it|it['’]s|not|nothing|none|nobody|no one|never|they|he|she|this|that|the real)\b)|(?<!\b(?:what|which|this|that|the|a|any|some|every|one|same|different|other|right|wrong) )(?:kind|sort) of(?! a (?:big deal|thing|mess|legend|genius|joke|vibe)\b)|kinda|sorta)\b/gi,
       why: 'A hedge. If you’d post it, you mean it. Commit here, and defend it in the replies.', short: 'hedges the claim' },
     { k: 'likeNum', re: /(?<=\b(?:for|in|took|took me|after|lost|made|spent|ran|did|got|hit|of|at|around|with|was|is|are|were|had|have|about|over|only) )like(?= (?:\$?\d|a (?:year|month|week|day|hundred|thousand|million)\b|one |two |three |four |five |six |seven |eight |nine |ten |twenty |fifty |a hundred ))/gi,
       why: '“Like” blurs your own number. If it was 5 years, say 5 years: exact reads as true.', short: 'blurs your own number' },
@@ -135,12 +137,14 @@
   ];
   /* r86: a price call's hedge is the writer's stance, not filler. "i think eth goes to 5k" without "i think" is a
      certainty they never posted, so on a call the opinion words and hedges stay, for the site and the app alike */
-  const ST_FORE = /\b(?:will|won['’]t|going to|gonna|go(?:es)? to|to \$?\d[\d,.]*k?|pulls? back|dips?|rips?|pumps?|dumps?|moons?|sends?|breaks? (?:out|down)|bottom(?:ed|s)?|top(?:ped|s)?|targets?|hits?|flip(?:s|ping|ped)?|sees?|reclaims?|retests?|eoy|eow|undervalued|overvalued|higher|lower|(?:get|gets|be) cut|rate cuts?|still early|breakout|reset|consolidat\w*|accumulat\w*|bull(?:ish)?|bear(?:ish)?|rally|crash|correction|squeeze|the (?:top|bottom) is in|by (?:eoy|summer|march|june|december|q\d|the halving))\b/i;
-  const ST_ASSET = /\$[a-z]{2,10}\b|\b(?:btc|eth|sol|bitcoin|ethereum|solana|xrp|doge|bnb|avax|link|spx|spy|qqq|nvda|tsla|gold|silver|oil|rates|the fed|alts?|altcoins?|memecoins?|stocks?|the market|crypto|nasdaq|s&p)\b|\b\d+(?:\.\d+)?k\b/i;
-  const isCall = t => ST_FORE.test(t) && ST_ASSET.test(t);
+  const ST_FORE = /\b(?:will|won['’]t|going to(?! lie\b)|gonna(?! lie\b| be honest\b)|breaks? \$?\d|(?:out|under)perform\w*|beats?|leads?|lags?|go(?:es)? to|to \$?\d[\d,.]*k?|pulls? back|dips?|rips?|pumps?|dumps?|moons?|sends?|breaks? (?:out|down)|bottom(?:ed|s)?|top(?:ped|s)?|targets?|hits?|flip(?:s|ping|ped)?|sees?|reclaims?|retests?|eoy|eow|undervalued|overvalued|higher|lower|(?:get|gets|be) cut|rate cuts?|still early|breakout|reset|consolidat\w*|accumulat\w*|bull(?:ish)?|bear(?:ish)?|rally|crash|correction|squeeze|the (?:top|bottom) is in|by (?:eoy|summer|march|june|december|q\d|the halving))\b/i;
+  const ST_ASSET = /\$[a-z]{2,10}\b|\b(?:[a-z]{3}(?:usd|jpy|eur|gbp|chf|cad|aud)|dxy|the dollar|the yen|the euro|this token|the token|tokens?|this coin|coins?|airdrops?|btc|eth|sol|bitcoin|ethereum|solana|xrp|doge|bnb|avax|link|spx|spy|qqq|nvda|tsla|gold|silver|oil|rates|the fed|alts?|altcoins?|memecoins?|stocks?|the market|crypto|nasdaq|s&p)\b|(?<=\b(?:to|at|hits?|hit|reclaim(?:s|ed)?|above|below|under|over|will|breaks?|retests?|toward|towards|sees?|tags?|back|from|btc|eth|sol)\s)\$?\d+(?:\.\d+)?k\b(?!\s+(?:followers?|subs|subscribers|users|views|likes|impressions|members|downloads|stars|readers|customers|signups|steps|words|people|students|listeners|fans|visitors|mrr|arr|in (?:revenue|sales|mrr|arr)|revenue|sales|a month|\/mo|per month|lines))/i;
+  /* calls that name no asset: "the bottom is probably in", "alt season starts next month" */
+  const ST_SELF = /\bthe (?:bottom|top) (?:is|was|might be|could be) (?:\w+ )*?in\b|\balt ?season (?:is|starts|will|comes|coming)\b/i;
+  const isCall = t => (ST_FORE.test(t) && ST_ASSET.test(t)) || ST_SELF.test(t);
   function stanceKeep(text) {
     const t = String(text || ''); if (!isCall(t)) return [];
-    const out = []; SOFT.filter(s => s.k === 'opinion' || s.k === 'hedge').forEach(s => { for (const m of t.matchAll(rx(s.re.source, gFlags(s.re.flags)))) { const w = m[0].replace(/[,\s]+$/, ''); if (w && !out.includes(w)) out.push(w); } });
+    const out = []; SOFT.filter(s => s.k === 'opinion' || s.k === 'hedge').forEach(s => { for (const m of t.matchAll(rx(s.re.source, gFlags(s.re.flags)))) { const w = m[0].replace(/[,\s]+$/, '').replace(/^(?:personally|honestly|frankly),?\s+/i, ''); if (w && !out.includes(w)) out.push(w); } });
     return out;
   }
   /* where the soft words are: [start, end, why, kind], first match wins, no overlaps; keep: words this voice puts back */
@@ -171,12 +175,13 @@
     const lc = first.toLowerCase(); const len = first.length;
     let clarity = 72, curiosity = 30, spec = 25, tension = 30, brevity;
     brevity = len < 22 ? 80 : len <= 100 ? 96 - Math.max(0, len - 70) * .35 : Math.max(12, 86 - (len - 100) * .55);
-    const fillers = lc.match(/\b(really|very|just|basically|actually|literally|kind of|sort of|kinda|sorta|i think|maybe|perhaps|somewhat|quite|honestly|tbh|ngl|i['’]m not an expert|i['’]m no expert|who needs to hear this|this might be controversial)\b/g) || [];
+    const fillers = lc.match(/\b(really|very|just|basically|actually|literally|kind of|sort of|kinda|sorta|i think|i don['’]t think|maybe|perhaps|somewhat|quite|honestly|tbh|ngl|i['’]m not an expert|i['’]m no expert|who needs to hear this|this might be controversial)\b/g) || [];
     const lcT = lc.replace(/\b(i['’]m not an expert|i['’]m no expert|not financial advice|(?:idk|i don['’]t know) who needs to hear this)\b/g, ' ');
-    clarity -= Math.max(fillers.length, softMarks(first).filter(r => r[0] > 1 || !['announce', 'label', 'disclaim', 'stock', 'throat', 'open'].includes(r[3])).length) * 14 + Math.min(2, (lc.match(/\b(?:unlock\w*|leverag\w*|supercharg\w*|elevat(?:e|es|ed|ing)|seamless\w*|game[- ]?changer|delv(?:e|es|ed|ing))\b/g) || []).length) * 12;
+    const smAll = softMarks(first), sm0 = smAll.filter(r => r[0] > 1 || !['announce', 'label', 'disclaim', 'stock', 'throat', 'open'].includes(r[3])), fOut = [...lc.matchAll(/\b(?:really|very|just|basically|actually|literally|kind of|sort of|kinda|sorta|i think|i don['’]t think|maybe|perhaps|somewhat|quite|honestly|tbh|ngl)\b/g)].filter(f => !smAll.some(r => f.index >= r[0] && f.index < r[1])).length;
+    clarity -= Math.max(fillers.length, sm0.length + fOut) * 14 + Math.min(2, (lc.match(/\b(?:unlock\w*|leverag\w*|supercharg\w*|elevat(?:e|es|ed|ing)|seamless\w*|game[- ]?changer|delv(?:e|es|ed|ing))\b/g) || []).length) * 12;
     const warm0 = lc.match(/^(so|hey|hi|hello|ok|okay|well|guys)\b|^here (?:are|is|['’]s) (?=\d|three |four |five |six |seven |eight |nine |ten |a (?:quick |short )?thread\b)/);
     /* r74: an announcement, a label or a disclaimer up front is a warm-up too ("Excited to announce that…", "Quick thought:") */
-    const lead0 = softMarks(first).find(r => r[0] <= 1 && ['announce', 'label', 'disclaim', 'stock', 'throat'].includes(r[3]));
+    const lead0 = smAll.find(r => r[0] <= 1 && ['announce', 'label', 'disclaim', 'stock', 'throat'].includes(r[3]));
     const warm = warm0 || (lead0 ? [first.slice(lead0[0], lead0[1])] : null), warmS = lead0 ? SOFT.find(s => s.k === lead0[3]) : null;
     if (warm) clarity -= 18;
     if (/^(i think|in my opinion|i feel like)/.test(lc)) clarity -= 10;
@@ -1227,21 +1232,21 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* phrase lists: [regex, replacement]. Hedges and warm-ups go; the claim stays */
   const HEDGE_RX = [
     /\b(?:i['’]?m not gonna lie|not gonna lie|gonna be honest|to be honest|if i['’]?m (?:being )?honest|in my (?:humble )?opinion|for what it['’]?s worth),?\s*/gi,
-    /(?<!\bas an? [^,.!?]{2,40},\s?)\bi (?:really |just |honestly |personally |actually |genuinely |truly |firmly |strongly |do |kind of |kinda |sort of )?(?:think|believe|feel like|feel that|reckon|guess)(?: that)?(?! about| of\b| through| back| so\b| twice| again| too| in\b)(?:,\s*|\s+|(?=[.!?]|$))/gi,
-    /(?:^|(?<=[\s(]))(?:honestly|tbh|ngl|imo|imho|basically|literally|kinda|sorta)\b,?\s*/gi,
-    /(?:^|(?<=[\s(]))(?<!\b(?:what|who|which|that|you['’]re|you are) )actually\b(?! (?:liked?|loved?|prefer(?:red|s)?|matters?|works?|worked|happened|need(?:ed|s)?|want(?:ed|s)?|read|use[ds]?|cares?|cared)\b),?\s*/gi,
+    /\b(?=i )(?<!\b(?:as an?|after|since|having|while|when|before|from|with|despite|unlike|like) [^,.!?]{2,120},?\s)i (?:really |just |honestly |personally |actually |genuinely |truly |firmly |strongly |do |kind of |kinda |sort of )?(?:think|believe|feel like|feel that|reckon|guess)(?: that)?(?! about| of\b| through| back| so\b| twice| again| too| in\b)(?:,\s*|\s+|(?=[.!?]|$))/gi,
+    /(?:^|(?<=[\s(]))(?:honestly|tbh|ngl|imo|imho|basically|literally|kinda|sorta|personally(?=,? i\b))\b(?!\?),?\s*/gi,
+    new RegExp(String.raw`(?:^|(?<=[\s(]))(?<!\b(?:what|who|which|that|you['’]re|you are) )actually\b(?![^.!?\n]*\?)(?! (?:liked?|loved?|prefer(?:red|s)?|matters?|works?|worked|happened|need(?:ed|s)?|want(?:ed|s)?|read|use[ds]?|cares?|cared)\b),?\s*`, 'gi'),
     /\b(?:kind|sort) of\s+(?=[a-z])(?!a (?:big deal|thing|mess|legend|genius|joke|vibe)\b)/gi,
     /(?<!\b(?:really|very|so|super),?\s)\b(?:really|very|quite|somewhat|fairly|truly)\s+(?=[a-z$])(?!(?:really|very|so|super)\b)/gi,
     /\bpretty (?:much )?(?=(?:good|bad|big|sure|hard|easy|clear|wild|crazy|simple|obvious|quiet|weak|strong|boring)\b)/gi,
     /\bpretty much\s+/gi,
-    /\b(?:probably|perhaps|maybe)\b(?! (?:i|i['’]m|i am|i['’]ll|we|we['’]re|you|you['’]re|it|it['’]s|not|they|he|she|this|that|the real)\b),?\s*/gi,
-    new RegExp(String.raw`(?<!,\s?)(?<!\b(?:not|only|is it|it['’]s|it is|that['’]s|that is|i['’]m|you['’]re) )\bjust\s+(?!(?:a|an|the|one|two|three|four|five|six|\d|now|as|like|because|in case|about|enough|people|for|to|in|starting|getting|me|can['’]?t|cannot|couldn['’]?t|won['’]?t|don['’]?t|didn['’]?t)\b|${JUST_PAST})`, 'gi')
+    /\b(?:probably|perhaps|maybe)\b(?! (?:i|i['’]m|i am|i['’]ll|we|we['’]re|you|you['’]re|it|it['’]s|not|nothing|none|nobody|no one|never|they|he|she|this|that|the real)\b),?\s*/gi,
+    new RegExp(String.raw`(?<!,\s?)(?<!\b(?:not|only|is it|it['’]s|it is|that['’]s|that is|i['’]m|you['’]re) )(?<!(?:^|[.!?]\s{1,3}))\bjust\s+(?!(?:by|a|an|the|one|two|three|four|five|six|\d|now|as|like|because|in case|about|enough|people|for|to|in|starting|getting|me|can['’]?t|cannot|couldn['’]?t|won['’]?t|don['’]?t|didn['’]?t|[a-z]+ing)\b|${JUST_PAST})`, 'gi')
   ];
   const OPENER_RX = /^(?:ok(?:ay)?,?\s+so|so|well|look|anyway|okay|ok|alright)\b,?\s+(?=[a-z$])/i;
   const TAIL_RX = /(?:,?\s+|^)(?:tbh|imo|imho|ngl|lol|lmao|i guess|idk|fr|for real)\s*(?=[.!?]*\s*$)/i;
   const WORDY = [
     [/\bin order to\b/gi, 'to'], [/\bdue to the fact that\b/gi, 'because'], [/\b(?:the|a) majority of\b/gi, 'most'], [/\bat this point in time\b/gi, 'now'],
-    [/\b(is|are) able to\b/gi, 'can'], [/\bhas the ability to\b/gi, 'can'], [/\ba number of\b/gi, 'some'], [/\bon a daily basis\b/gi, 'daily'], [/\beach and every\b/gi, 'every'], [/\bevery single\b/gi, 'every'],
+    [/\b(is|are) able to\b/gi, 'can'], [/\bhas the ability to\b/gi, 'can'], [/\ba number of\b/gi, 'some'], [/\bon a daily basis\b/gi, 'daily'], [/\beach and every\b/gi, 'every'], [/\bevery single\b(?! one\b)/gi, 'every'],
     [/\bfirst and foremost\b/gi, 'first'], [/\b(people|someone|anyone|those|ones|folks|founders|teams?|leaders|engineers|designers|writers|traders|creators) who (?:are|is) (\w+er|more \w+|less \w+) than\b/gi, '$1 $2 than'], [/\bin the event that\b/gi, 'if'], [/\bfor the purpose of\b/gi, 'for'], [/\bmake a decision\b/gi, 'decide'],
 [/(?<!\bno )\bway (?=(?:too|more|less|longer|shorter|better|worse|bigger|harder|faster|slower|earlier|later|over)\b)/gi, ''],
     [/\b(am|is|are|['’]re|['’]m) going to be (\w+ing)\b/gi, (m, v, g) => `${v === "'re" || v === '’re' ? v : v === "'m" || v === '’m' ? v : v} ${g}`],
@@ -1268,7 +1273,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     [/\bbp\b/, ' basis points'], [/\bstopped out\b/i, 'hit my stop'], [/\bCT\b/, 'crypto Twitter'], [/\bFOMC\b/, 'the Fed meeting (FOMC)'], [/\bv1\b/, 'first version']];
   const CONTRACT_W = [
     [/\b(do|does|did|is|are|was|were|have|has|had|would|should|could|must) not\b/gi, (m, v) => v + 'n’t'], [/\bwill not\b/gi, 'won’t'], [/\bcan ?not\b/gi, 'can’t'],
-    [/\bI am\b/gi, 'I’m'], [/\b(it|that|there|here|what|who) is\b(?=\s+[\p{L}\p{N}$])/giu, '$1’s'], [/(?<=^|[.!?,;:—]\s*|\b(?:and|but|so|because|if|when|that|unless|since|while|think|guess|bet|know|hope|feel like)\s)(you|we|they) are\b(?=\s+[\p{L}\p{N}$])/giu, '$1’re'],
+    [/\bI am\b/gi, 'I’m'], [/(?<!\b(?:on|in|from|over|around|out|up|down|of|to|at|near|through|back|right|from)\s)\b(it|that|there|here|what|who) is\b(?=\s+[\p{L}\p{N}$])/giu, '$1’s'], [/(?<=^|[.!?,;:—]\s*|\b(?:and|but|so|because|if|when|that|unless|since|while|think|guess|bet|know|hope|feel like)\s)(you|we|they) are\b(?=\s+[\p{L}\p{N}$])/giu, '$1’re'],
     [/\b(I|we|you|they) have (?=(?:been|had|seen|done|made|learned|lost|tried|never|always|ever|got|spent|written|built|shipped|just)\b)/gi, '$1’ve '],
     [/\b(I|we|you|they) will\b(?=\s+[a-z])/gi, '$1’ll'], [/\b(I|we|you|they) would\b(?=\s+(?:love|like|rather|be|have)\b)/gi, '$1’d'], [/\blet us\b/gi, 'let’s']
   ];
@@ -1307,13 +1312,13 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* casing: sentence starts follow the author (capital, or lowercase in CT style); "i" stays theirs */
   function caseFix(s, st, start) {
     let x = s.replace(/(^|[.!?]["”’)]*\s+|\n\s*)([a-z])([\p{L}\p{N}’'$-]*)/gu, (m, a, c, r, off) => (off === 0 && !start) || capKeep(c + r) ? m : a + (st.low ? c : c.toUpperCase()) + r);
-    if (st.low) x = x.replace(/(^|[.!?]\s+|\n\s*)([A-Z])(?=[a-z])/g, (m, a, c, off) => (off === 0 && !start) ? m : a + c.toLowerCase());
+    if (st.low) x = x.replace(/(^|[.!?]\s+|\n\s*)([A-Z])(?=[a-z]|(?<=A)\s)/g, (m, a, c, off) => (off === 0 && !start) ? m : a + c.toLowerCase());
     if (st.loI) x = x.replace(/\bI(?=\s|['’](?:m|ve|ll|d)\b)/g, 'i'); else x = x.replace(/\bi(?=\s|['’](?:m|ve|ll|d)\b)/g, 'I');
     return x;
   }
   const aposFix = (s, st) => st.noApos ? s.replace(/\b(\w+)’(t|s|m|re|ve|ll|d)\b/g, (m, w, c) => (/^(i|it|that|what|here|there|who|he|she|let)$/i.test(w) && c === 's' ? w + c : w + c)) : st.apos === "'" ? s.replace(/(\w)’(?=\w)/g, "$1'") : s;
   function fixArticles(s) {
-    return s.replace(/\b(a|an|A|An)\s+([\p{L}\p{N}$][\p{L}\p{N}’'-]*)/gu, (m, art, w) => {
+    return s.replace(/(?<![\p{L}\p{N}&'’.-])\b(a|an|A|An)\s+([\p{L}\p{N}$][\p{L}\p{N}’'-]*)/gu, (m, art, w) => {
       let v; if (/^[A-Z]{2,}$/.test(w)) v = /^[AEFHILMNORSX]/.test(w); else if (/^\d/.test(w)) v = /^(8|11|18|80)/.test(w); else if (/^\$/.test(w)) v = false;
       else { const l = w.toLowerCase(); v = (/^[aeiou]/.test(l) && !/^(u[nst]i|use|usu|uti|eu|one|once|ur[aei])/.test(l)) || /^(hour|honest|heir)/.test(l); }
       const want = v ? 'an' : 'a'; if (art.toLowerCase() === want) return m; return (art[0] === 'A' ? want[0].toUpperCase() + want.slice(1) : want) + ' ' + w;
@@ -1354,7 +1359,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* "The best trade I made this year was the one I didn't take" → "Best trade I made this year? The one I didn't take." */
     revealQ(x) {
       const m = body(x).match(new RegExp(`^(?:(the) |(my|our|your) )?((?:single )?(?:(?:best|worst|hardest|biggest|easiest|smartest|dumbest|only|real|first|last|one|most \\w+) [^,:]{2,60}?|${PRED_NOUN}(?: [^,:]{2,40}?)?)) (is|was|are|were) (?:that )?([^:]{3,})$`, 'i')); if (!m) return null;
-      if ((!m[1] && !m[2] && /^(only|first|last|real|one)\b/i.test(m[3])) || /\bqk[a-z]q\b/i.test(m[3] + ' ' + m[5]) || /^(actually|really|just|basically|literally|any)\b/i.test(m[5]) || /\b(i|we|you|they|he|she|it|that)$/i.test(m[3]) || /,| and | but /.test(m[5]) || m[5].split(' ').length > 12 || /^(?:not )?(?:a|an)\s+\w+$/i.test(m[5]) || /^(simple|easy|hard|wrong|right|good|bad|huge|big|small)$/i.test(m[5])) return null;
+      if ((!m[1] && !m[2] && /^(only|first|last|real|one)\b/i.test(m[3])) || /\bqk[a-z]q\b/i.test(m[3] + ' ' + m[5]) || /^(actually|really|just|basically|literally|any)\b/i.test(m[5]) || /\b(i|we|you|they|he|she|it|that)$/i.test(m[3]) || /,| and | but /.test(m[5]) || m[5].split(' ').length > 12 || wordsN(m[5]) < 2 || /^(?:not )?(?:a|an)\s+\w+$/i.test(m[5]) || /^(simple|easy|hard|wrong|right|good|bad|huge|big|small)$/i.test(m[5])) return null;
       if (/^\w+ing\b/i.test(m[5]) && !/^(?:not|being)\b/i.test(m[5]) && /^(?:first|last|one|only|real)\b/i.test(m[3])) return null;
       const subj = (m[2] ? m[2] + ' ' : '') + m[3];
       return `${capFirst(subj)}? ${capFirst(m[5].replace(/^(?:there is|there['’]s)\b/i, 'There’s'))}${endP(x) || '.'}`;
@@ -1372,7 +1377,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       let m = x.match(/^(.{12,}?)(?:,\s*|\s+)(but|and then|then)\s+(.{8,})$/i);
       if (!m || /^and then$/i.test(m[2]) === false && /^then$/i.test(m[2]) && !/,\s*then/i.test(x)) m = x.match(/^(.{12,}?)(?:,\s*|\s+)(but|and then|so|and)\s+((?:i|we|you|they|it|price|most|the|my|our|nobody|that|this|people|everyone|he|she|here(?:['’]s| is| are))\b.{8,})$/i);
       if (!m) return null;
-      const a = m[1].replace(/[,;]$/, ''), b = m[3]; if (wordsN(a) < 3 || wordsN(b) < 3 || /^(?:maybe i['’]m wrong|i (?:could|might) be wrong|i['’]m not (?:sure|saying)|not sure|idk|i don['’]t know|call me crazy|hear me out|i get it|i know)$/i.test(a.trim())) return null;
+      const a = m[1].replace(/[,;]$/, ''), b = m[3]; if ((/^and$/i.test(m[2]) && /,\s/.test(a) && !/^\s*,/.test(x.slice(m[1].length))) || !/\b(?:is|are|was|were|be|been|am|has|have|had|do|does|did|can|will|would|should|could|might|must|\w{2,}(?:ed|es|s)|\w+n['’]t|\w+['’](?:s|re|ve|ll|m|d)|got|went|made|took|felt|left|lost|won|said|told|knew|grew|ran|came|saw|kept|built|sold|bought|paid|hit|need|want|know|think|feel|get|make|take|go|see|say|love|hate)\b/i.test(b.replace(/^(?:the|my|our|your|a|an)\s+\w+s\b/i, '')) || wordsN(a) < 3 || wordsN(b) < 3 || /^(?:maybe i['’]m wrong|i (?:could|might) be wrong|i['’]m not (?:sure|saying)|not sure|idk|i don['’]t know|call me crazy|hear me out|i get it|i know)$/i.test(a.trim())) return null;
       return /^and$/i.test(m[2]) && !keepAnd ? `${a}. ${capFirst(b)}` : `${a}. ${capFirst(/then$/i.test(m[2]) ? 'then' : m[2])} ${b}`;
     },
     splitAnd(x) { return MOVES.split(x, true); },
@@ -1410,10 +1415,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     imperative(x) {
       const b = body(x), p = endP(x) || '.';
       let m = b.match(/^(?:you|we)(?: all)? (?:should|need to|have to|must|gotta|ought to) (?!not\b|be\b)(.{4,})$/i); if (m) return `${capFirst(m[1])}${p}`;
-      m = b.match(/^(?:you|we)(?: all)? (?:should(?: not|n['’]t)|shouldn['’]t) (.{4,})$/i); if (m) return `Don’t ${m[1]}${p}`;
+      m = b.match(/^(?:you|we)(?: all)? (?:should(?: not|n['’]t)|shouldn['’]t) (.{4,})$/i); if (m) return `Don’t ${m[1].replace(/^be (\w+ing)\b/i, (z, g) => baseOf(g))}${p}`;
       m = b.match(/^it(?:['’]s| is) (?:very |really |so )?(?:important|essential|crucial|key) to (.{4,})$/i); if (m) return `${capFirst(m[1])}${p}`;
       m = b.match(/^it(?:['’]s| is)(?: not|n['’]t) a good idea to (.{4,})$/i); if (m) return `Don’t ${m[1]}${p}`;
-      m = b.match(/^(?:i|we) (?:would |['’]d )?(?:recommend|suggest)(?: that)?(?: you)? (.{4,})$/i); if (m) return `${capFirst(m[1])}${p}`;
+      m = b.match(/^(?:i|we) (?:would |['’]d )?(?:recommend|suggest)(?: that)?(?: you)? (.{4,})$/i); if (m && VERB0.test(m[1]) && !/^(?:every|each|all|most|any|the|your|our|their|my)\b/i.test(m[1])) return `${capFirst(m[1])}${p}`;
       m = b.match(/^(?:i|we)(?: am|['’]m| are|['’]re) not ([a-z]+)ing (.{3,})$/i); if (m && m[1].length > 2) { const v = { trad: 'trade', chas: 'chase', sell: 'sell', buy: 'buy', touch: 'touch', post: 'post', shar: 'share', hold: 'hold', check: 'check', shill: 'shill' }[m[1].toLowerCase()]; if (v) return `${/^we/i.test(b) ? 'We' : 'I'} don’t ${v} ${m[2]}${p}`; }
       return null;
     },
@@ -1447,7 +1452,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     [/\bthe tell\b/i, 'the signal'], [/\bretrace\b/i, 'pullback'], [/\bretest\b/i, 'come back to'], [/\bbreaks out\b/i, 'breaks higher'], [/\bpaper hands\b/i, 'selling too early'], [/\balpha\b/i, 'an edge'],
     [/\bsize up\b/i, 'trade bigger'], [/\bmarket sold\b/i, 'sold at market price'], [/\bthe open\b/i, 'the market open'], [/\bthe daily\b(?! chart)/i, 'the daily chart'], [/\bsent it\b/i, 'went all in'],
     [/\bthe range high\b/i, 'the top of its range'], [/\bin one candle\b/i, 'in one price move'], [/\bpumping\b/i, 'rising fast'], [/\bdumping\b/i, 'falling fast'], [/\b(?:a )?proper\b/i, m => /^a /i.test(m) ? 'a real' : 'real']];
-  const SHORT_W = [[/\bevery single\b/gi, 'every'], [/\bright (?=before|after)/gi, ''], [/\band then\b/gi, 'then'], [/\b(a|an|the) (\w+) (\w+), not (a|an|the) (\w+) \3\b/gi, '$1 $2 $3, not $4 $5 one'], [/^(?:we|i) (?:have|had|['’]ve got) no (\w)/i, (m, c) => 'No ' + c], [/\bthan (\w+) thought it would(?: be)?\b/gi, 'than $1 thought'], [/\ba lot of\b/gi, 'lots of'], [/\bat the end of the day,?\s*/gi, ''], [/\bevery one\b(?! of)/gi, 'each'], [/\bin one candle\b/gi, 'in a candle']];
+  const SHORT_W = [[/\bevery single\b(?! one\b)/gi, 'every'], [/\bright (?=before|after)/gi, ''], [/\band then\b/gi, 'then'], [/\b(a|an|the) (\w+) (\w+), not (a|an|the) (\w+) \3\b/gi, '$1 $2 $3, not $4 $5 one'], [/^(?:we|i) (?:have|had|['’]ve got) no (\w)/i, (m, c) => 'No ' + c], [/\bthan (\w+) thought it would(?: be)?\b/gi, 'than $1 thought'], [/\ba lot of\b/gi, 'lots of'], [/\bat the end of the day,?\s*/gi, ''], [/\bevery one\b(?! of)/gi, 'each'], [/\bin one candle\b/gi, 'in a candle']];
   const ANNOUNCE = PLAIN_W.slice(-2);
   /* More human keeps one hedge (people do hedge) but not a stack of them: "so i think … honestly" keeps "i think" */
   const oneHedge = (x, P) => { let n = 0; const y = P.start ? x.replace(OPENER_RX, '') : x; return tidyT(y.replace(/\b(?:honestly|tbh|ngl|imo|basically|literally|actually|kinda|sorta|really|probably)\b,?\s*|\bi (?:really |just )?(?:think|feel like|believe)(?: that)?(?! about| of\b)\s+/gi, m => (n++ ? '' : m))); };
@@ -1737,8 +1742,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const HK_NUMW = '(?:\\d[\\d,.]*|one|two|three|four|five|six|seven|eight|nine|ten|twelve)';
   const HK_SUBJ = s => /^we$/i.test(s) ? 'We' : 'I';
   /* bait and announcements a hook never needs */
-  const HK_BAIT = /\s*(?:[,.!]?\s*(?:like|rt|retweet|repost|follow|bookmark)(?:\s*(?:\+|&|and|\/)\s*(?:rt|retweet|repost|follow|bookmark|like))*\s+(?:if|for)\b[^.!?]*|[,.!]?\s*comment\s+["“']?\w+["”']?\s+(?:for|and i['’]ll|to get)\b[^.!?]*|[,.!]?\s*(?:agree|thoughts|am i wrong|change my mind)\s*\?|[,.!]?\s*\((?:a )?thread\)(?=(?:\s*(?:🧵|👇))*\s*$)(?:\s*(?:🧵|👇))*)\s*$/i;
-  const HK_OPEN = /^(?:(?:hey|hi|hello|yo)(?: (?:guys|everyone|all|fam|frens|friends|team|y['’]?all))?|(?:ok(?:ay)?,?\s+)?so(?! (?:what|far|much|many|long|good|bad|true|close|yeah|cool)\b)|well(?! (?:done|said|known|made|paid|played|over|worth|before|after)\b)|(?:look|listen)(?=[,.!:—]| (?:i|we|you|guys|people|man|y['’]all)\b)|anyway|alright|guys|quick (?:thought|one|reminder|take|question)|(?:just )?a (?:quick )?(?:reminder|heads[- ]up|thought)(?: that)?|unpopular opinion,?(?: but)?|hot take,?(?: but)?|real talk|psa|(?:this is )?not financial advice,?(?: but)?|nfa,?(?: but)?|(?:so |really |super )?(?:excited|thrilled|happy|proud|humbled) to (?:announce|share)(?: that)?|(?:idk|i don['’]t know) who needs to hear this,?(?: but)?|i['’]?m (?:not an|no) expert,?(?: but)?|this (?:might|may|could) be (?:controversial|unpopular),?(?: but)?|not sure if (?:this makes sense|anyone cares),?(?: but)?)\b[,.:!—-]*\s+(?=\S)/i;
+  const HK_BAIT = /\s*(?:[,.!]?\s*\b(?:like|rt|retweet|repost|follow|bookmark)(?:\s*(?:\+|&|and|\/)\s*(?:rt|retweet|repost|follow|bookmark|like))*\s+(?:if|for)\b[^.!?]*|[,.!]?\s*\bcomment\s+["“']?\w+["”']?\s+(?:for|and i['’]ll|to get)\b[^.!?]*|[,.!]?\s*\b(?:agree|thoughts|am i wrong|change my mind)\s*\?|[,.!]?\s*\((?:a )?thread\)(?=(?:\s*(?:🧵|👇))*\s*$)(?:\s*(?:🧵|👇))*)\s*$/i;
+  const HK_OPEN = /^(?:(?:hey|hi|hello|yo)(?: (?:guys|everyone|all|fam|frens|friends|team|y['’]?all))?|(?:ok(?:ay)?,?\s+)?so(?! (?:what|far|much|many|long|good|bad|true|close|yeah|cool)\b)|well(?! (?:done|said|known|made|paid|played|over|worth|before|after)\b)|(?:look|listen)(?=[,.!:—]| (?:i|we|you|guys|people|man|y['’]all)\b)|anyway|alright|guys|quick (?:thought|one|reminder|take|question|tip|note)(?: that)?|(?:just )?a (?:quick )?(?:reminder|heads[- ]up|thought)(?: that)?|unpopular opinion,?(?: but)?|hot take,?(?: but)?|real talk|psa|(?:this is )?not financial advice,?(?: but)?|nfa,?(?: but)?|(?:so |really |super )?(?:excited|thrilled|happy|proud|humbled) to (?:announce|share)(?: that)?|(?:idk|i don['’]t know) who needs to hear this,?(?: but)?|i['’]?m (?:not an|no) expert,?(?: but)?|this (?:might|may|could) be (?:controversial|unpopular),?(?: but)?|not sure if (?:this makes sense|anyone cares),?(?: but)?)\b[,.:!—-]*\s+(?=\S)/i;
   /* r74: soft-word kinds that are a warm-up (said as "cut the warm-up"), not a hedge */
   const HK_WARMK = /^(announce|label|disclaim|stock|throat|open|feel)$/;
   /* words the app never writes (the never-say list every rewrite is checked against), said plainly instead */
@@ -1746,8 +1751,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     [/\b(?:has|have) been (?:kind of |sort of |a bit of |such |an absolute |a total |a real )?(?:a |an )?(?:game[- ]?changer|life[- ]?changer) (?:for|to) (my|our|the|your|their)\b/gi, 'changed $1'],
     [/\b(?:is|are|was) (?:kind of |sort of |such |an absolute |a total |a real )?(?:a |an )?(?:game[- ]?changer|life[- ]?changer) (?:for|to) (my|our|the|your|their)\b/gi, 'changes $1'],
     [/\b(?:a |an |such a |a real |a total |an absolute )?game[- ]?changer\b/gi, 'a big deal'],
-    [/^leverage (?=(?:our|your|their|the|this|that|these|those|ai|data|it|them|my)\b)/i, 'Use '], [/\b(to|can|will|we|you|i|they|should|must) leverage (?=(?:our|your|their|the|this|that|these|those|ai|data|it|them|my)\b)/gi, '$1 use '], [/\bleveraging (?=(?:our|your|their|the|this|that|ai|data|it|my)\b)/gi, 'using '],
-    [/\bunlock(?:s|ed|ing)?\b/gi, m => ({ unlock: 'open up', unlocks: 'opens up', unlocked: 'opened up', unlocking: 'opening up' })[m.toLowerCase()]],
+    [/^leverage (?=(?:our|your|their|the|this|that|these|those|ai|data|it|them|my)\b)/i, 'Use '], [/\b(to|can|will|we|you|i|they|should|must|that|who|which|and|teams|companies|brands|founders|people|businesses|leaders) leverage (?=(?:our|your|their|the|this|that|these|those|ai|data|it|them|my)\b)/gi, '$1 use '], [/\bleveraging (?=(?:our|your|their|the|this|that|ai|data|it|my)\b)/gi, 'using '],
+    [/\bAI[- ]powered\b/g, 'AI'], [/\bai[- ]powered\b/g, 'AI'], [/(?<=\b(?:that|who|which|it|this|he|she|team|company)\s)leverages (?=(?:our|your|their|the|this|that|its|his|her|data|ai|it)\b)/gi, 'uses '],
+    [/(?<!\b(?:the|an|a|token|this|that|next|big|cliff|its|their|our|my)\s)\bunlock(?:s|ed|ing)?\b(?!\s+(?:schedule|event|date|day|cliff))/gi, m => ({ unlock: 'open up', unlocks: 'opens up', unlocked: 'opened up', unlocking: 'opening up' })[m.toLowerCase()]],
     [/\bsupercharg(?:e|es|ed|ing)\b/gi, m => ({ supercharge: 'speed up', supercharges: 'speeds up', supercharged: 'sped up', supercharging: 'speeding up' })[m.toLowerCase()]],
     [/\belevat(?:e|es|ed|ing)\b/gi, m => ({ elevate: 'improve', elevates: 'improves', elevated: 'improved', elevating: 'improving' })[m.toLowerCase()]],
     [/\bseamless(ly)?\b/gi, (m, l) => l ? 'smoothly' : 'smooth'], [/\bdelv(?:e|es|ed|ing) (?:into|in)\b/gi, m => m.toLowerCase().replace(/^delv(e|es|ed|ing)/, (z, e) => ({ e: 'dig', es: 'digs', ed: 'dug', ing: 'digging' })[e])]
@@ -1847,7 +1853,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     },
     /* "Posting every day is overrated if nobody reads past your first line" → "Nobody reads past your first line? Then posting every day is overrated." */
     ifQ(x) {
-      const m = body(x).match(/^([^,]{8,60}?) if ((?:nobody|no one|most people|people|your\b|you (?:can['’]t|don['’]t|aren['’]t|won['’]t|never|only)\b)[^,]{4,60})$/i); if (!m || /^(i|we)\b/i.test(m[1])) return null;
+      const m = body(x).match(/^([^,]{8,60}?) if ((?:nobody|no one|most people|people|your\b|you (?:can['’]t|don['’]t|aren['’]t|won['’]t|never|only)\b)[^,]{4,60})$/i); if (!m || /^(i|we)\b/i.test(m[1]) || /\b(?:it|them|they|this|that|these|those)\b/i.test(m[2])) return null;
       const w0 = m[1].split(' ')[0]; return { t: `${capFirst(m[2])}? Then ${properish(w0, x.slice(1)) ? m[1] : lowFirst(m[1])}${endP(x) || '.'}`, mv: 'ask' };
     },
     /* "Here are 5 tips for writing better tweets" → "5 tips for writing better tweets:" */
@@ -1860,9 +1866,12 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* "I used to spend 2 hours on every thread" → "… Not anymore." (what "used to" already says) */
     usedToDo(x) { const m = body(x).match(/^(i|we) used to (?!think|believe)(.{6,})$/i); return m && !/\b(but|now|until)\b/i.test(m[2]) ? { t: `${body(x)}. Not anymore.`, mv: 'contrast' } : null; },
     /* a moment in time: "I blew up my first account in 2021 by using 50x leverage" → "2021: I blew up my first account by using 50x leverage." */
-    year(x) { const b = body(x), m = b.match(/^(.{6,}?)\s+in ((?:19|20)\d\d)\b(.*)$/); if (!m || /^(in|since|by)\b/i.test(m[1]) || /\b(?:that|which|who|whom|whose|when|where|because|if|since|while|i bought|we bought|i sold|we sold)\b/i.test(m[1]) || !/^(?:i|we|my|our|the|this|a|an|[A-Z$])\b/i.test(m[1])) return null; return { t: `${m[2]}: ${capFirst(m[1])}${m[3]}${endP(x) || '.'}`, mv: 'number' }; },
+    year(x) { const b = body(x), m = b.match(/^(.{6,}?)\s+in ((?:19|20)\d\d)\b(.*)$/); if (!m || /^(in|since|by)\b/i.test(m[1]) || /\b(?:that|which|who|whom|whose|when|where|because|if|since|while|i bought|we bought|i sold|we sold)\b/i.test(m[1]) || !/^(?:i|we|my|our|the|this|a|an|[A-Z$])\b/i.test(m[1]) || !/\b(?:\w+ed|lost|made|sold|bought|quit|left|got|took|went|ran|built|wrote|began|became|broke|blew|fell|grew|won|hit|spent|paid|did|had|was|were)\b/i.test(m[1]) || /\b(?:don['’]t|doesn['’]t|still|am|is|are|will|can)\b/i.test(m[1])) return null; return { t: `${m[2]}: ${capFirst(m[1])}${m[3]}${endP(x) || '.'}`, mv: 'number' }; },
     /* "I don't think hustle culture is that bad" → "Hustle culture isn't that bad." */
-    notThink(x) { const m = body(x).match(/^i (?:don['’]t|do not) (?:think|believe) (.{3,40}?) (is|are|was|were) (.{3,})$/i); if (!m) return null; const v = m[2].toLowerCase(); return { t: `${capFirst(m[1])} ${v}n’t ${m[3]}${endP(x) || '.'}`, mv: 'straight' }; },
+    notThink(x) {
+      const n = body(x).match(/^i (?:don['’]t|do not) (?:think|believe) (you|we|they|people|founders|most people|beginners|creators|traders|teams|parents|developers|devs) (need|have to|should|must|can|want)\b (.{3,})$/i);
+      if (n) { const neg = { need: 'don’t need', 'have to': 'don’t have to', should: 'shouldn’t', must: 'don’t have to', can: 'can’t', want: 'don’t want' }[n[2].toLowerCase()]; return { t: `${capFirst(n[1])} ${neg} ${n[3]}${endP(x) || '.'}`, mv: 'straight' }; }
+      const m = body(x).match(/^i (?:don['’]t|do not) (?:think|believe) (.{3,40}?) (is|are|was|were) (.{3,})$/i); if (!m) return null; const v = m[2].toLowerCase(); return { t: `${capFirst(m[1])} ${v}n’t ${m[3]}${endP(x) || '.'}`, mv: 'straight' }; },
     /* "Our biggest customer churned last week and it taught me a lot" → "… Here's what it taught me:" (only with more to read) */
     taught(x) { const m = body(x).match(/^(.{8,}?)(?:,| and)\s+it taught me (?:a lot|so much|everything|more than [^.]+)$/i); return m ? { t: `${m[1]}. Here’s what it taught me:`, mv: 'loop', loop: true, needMore: true } : null; },
     /* "I journaled every trade for a year and found one pattern that changed everything" → "… for a year. One pattern changed everything." */
@@ -1870,15 +1879,22 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* "We launched our product today and got 400 signups in the first 24 hours" → "400 signups in the first 24 hours. We launched our product today." */
     gotN(x) { const m = body(x).match(/^(i|we) (launched|shipped|posted|published|sent|released|opened|started) (.{3,40}?) and (?:got|had|hit|made) (\$?\d[\d,.]*k?\s?[a-z]+(?: [^,]{0,30})?)$/i); return m ? { t: `${capFirst(m[4])}. ${HK_SUBJ(m[1])} ${m[2]} ${m[3]}.`, mv: 'result' } : null; },
     /* "some thoughts on why most threads flop" → "Why most threads flop:" */
-    thoughts(x) { const m = body(x).replace(/:$/, '').match(/^(?:some|a few|my|quick)? ?thoughts on (.{4,})$/i); return m ? { t: `${capFirst(m[1])}:`, mv: 'warm' } : null; },
+    thoughts(x) { const m = body(x).replace(/:$/, '').match(/^(?:some|a few|my|quick)? ?thoughts on ((?:why|how|what|when|whether)\b.{4,})$/i); return m ? { t: `${capFirst(m[1])}:`, mv: 'warm' } : null; },
     /* milestones lead with the number: "i finally hit 10k followers after 2 years of posting" → "10k followers after 2 years of posting." / "2 years of posting. 10k followers." */
-    milestone(x) { const m = body(x).match(/^(?:(?:i|we|my \w+|our \w+) )?(?:finally |just |officially )?(?:hit|crossed|reached|passed|got to) (\$?\d[\d,.]*k?\+? [a-z]+)(.*)$/i); if (!m) return null;
+    milestone(x) { const m = body(x).match(/^(?:(?:i|we|my \w+|our \w+) )?(?:finally |just |officially )?(?:hit|crossed|reached|passed|got to) (\$?\d[\d,.]*k?\+? [a-z]+)(.*)$/i); if (!m || /^,? (?:and|but|so) (?:i|we|my|our|it)\b/i.test(m[2])) return null;
       const out = [{ t: `${m[1]}${m[2]}.`, mv: 'number' }]; const a = m[2].match(/^ (?:after|in) (\d[\d,.]*|one|two|three|four|five|six) (days?|weeks?|months?|years?)(?: of (.{3,30}))?$/i);
       if (a) out.push({ t: `${a[1]} ${a[2]}${a[3] ? ' of ' + a[3] : ''}. ${m[1]}.`, mv: 'number' }); return out; },
     /* r86 "The biggest mistake founders make is that they build too much" → "The biggest mistake founders make: they build too much." */
     isThat(x) { const m = body(x).match(/^((?:the|my|our|your) (?:single )?(?:biggest|most common|#1|number one|real|worst|hardest|only|first) (?:mistake|problem|lesson|issue|reason|thing|truth|secret|difference)[^,:]{0,60}?) (?:is|was) that (.{12,})$/i); return m ? { t: `${m[1]}: ${m[2]}${endP(x) || '.'}`, mv: 'straight' } : null; },
     /* r86 "I'd like to take a moment to thank my team for an incredible quarter." → "To my team: thank you for an incredible quarter." */
     thankYou(x) { const m = body(x).match(/^(?:i['’]?d|i would|we['’]?d|we would|i (?:just )?want(?:ed)?|we (?:just )?want(?:ed)?) (?:like )?to (?:take a (?:moment|second|minute) to )?(?:say (?:a (?:big |huge )?)?)?thank(?: you)?(?: to)? ((?:my|our|the|every|all)\b.{2,40}?) for (.{3,70})$/i); return m ? { t: `To ${m[1]}: thank you for ${m[2]}${endP(x) || '.'}`, mv: 'warm' } : null; },
+    /* r86 what an announcement leaves when it named a thing, not news: "the launch of our new dashboard" → "Our new dashboard is live" */
+    launchOf(x) {
+      const b = body(x).trim();
+      let m = b.match(/^(?:the )?(?:official )?(?:launch|release|arrival|debut|availability) of (our|my|the) (.{3,60})$/i); if (m) return { t: `${capFirst(m[1])} ${m[2]} is live${endP(x) === '!' ? '!' : '.'}`, mv: 'warm' };
+      m = b.match(/^our (?:new )?(?:partnership|collaboration) with (\S+)(.{0,80})$/i); if (m) return { t: `We’re partnering with ${m[1]}${m[2]}${endP(x) || '.'}`, mv: 'warm' };
+      return null;
+    },
     /* r86 "This week's issue is about why I stopped writing listicles, link below 👇" → "I stopped writing listicles. This week's issue is why. Link below 👇" */
     issueAbout(x) {
       const m = x.trim().match(/^((?:this week['’]s|today['’]s|this|the latest|our latest|my latest|new) (?:issue|edition|newsletter|episode|video|essay|post|podcast)) (?:is (?:all )?about|covers|is on|breaks down|dives into) (why|how) (i|we) ([^,👇]{4,}?)(?:[,.]?\s*((?:link (?:below|in (?:bio|(?:the )?replies))|read it (?:here|below))[^\p{L}]*?))?\s*((?:\p{Extended_Pictographic}️?\s*)*)[.!]?$/iu);
@@ -1915,7 +1931,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* ---- round 74: the moves top posts make that drafts bury ---- */
     /* "after hiring over 300 people, the best interview question is four words" → "I've hired over 300 people. The best interview question is four words:" */
     afterIng(x) {
-      const m = body(x).match(/^after (\w+ing)\b((?: (?:to|with|for|on|through|across))?) ((?:over |more than |almost |nearly |about |around )?(?:\$?\d[\d,.]*\+?k?|hundreds of|thousands of|dozens of) [^,]{2,40}?),?\s+(?:(?:i|we)(?:['’]ve| have)? (?:learned|found|realized|realised|noticed|seen)(?: that)? )?((?:here|the|my|our|most|every|i|we|you|it|this|one|nobody|no one|what)\b.{4,})$/i);
+      const re0 = c => new RegExp(String.raw`^after (\w+ing)\b((?: (?:to|with|for|on|through|across))?) ((?:over |more than |almost |nearly |about |around )?(?:\$?\d[\d,.]*\+?k?|hundreds of|thousands of|dozens of) [^,]{2,40}${c ? '' : '?'})${c ? ',' : ',?'}\s+(?:(?:i|we)(?:['’]ve| have)? (?:learned|found|realized|realised|noticed|seen)(?: that)? |i (?:really |honestly |genuinely )?(?:think|believe)(?: that)? |i can (?:confidently |honestly |safely )?(?:tell you|say)(?: that)? )?((?:here|the|my|our|most|every|i|we|you|it|this|one|nobody|no one|what)\b.{4,})$`, 'i');
+      const m = body(x).match(re0(true)) || (!/,/.test(body(x)) ? body(x).match(re0(false)) : null);
       if (!m) return null; const pp = HK_PP[m[1].toLowerCase()]; if (!pp) return null;
       const rest = m[4].replace(/^here is\b/i, 'here’s'), S = /\b(?:we|our|us)\b/i.test(rest) && !/\b(?:i|my|me)\b/i.test(rest) ? 'We’ve' : 'I’ve';
       return { t: `${S} ${pp}${m[2]} ${m[3]}. ${capFirst(rest)}${teases(rest) ? ':' : endP(x) || '.'}`, mv: 'number', loop: teases(rest) };
@@ -1954,10 +1971,17 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     },
     /* "Churn was reduced by 34% after the onboarding was redesigned by our team" → "Churn: down 34%. What changed: our team redesigned the onboarding." */
     passive(x) {
-      const m = body(x).match(/^((?:our |my |the )?[a-z][\w -]{2,30}?) (?:was|were|has been|have been|got) (reduced|cut|lowered|decreased|dropped|increased|raised|improved|boosted|grown|doubled|halved|tripled) (?:by )?(\$?\d[\d,.]*\s?(?:%|x|k|ms|points?|pts)?)\s*(?:after|when|once) ((?:our |my |the |a )?[\w -]{2,40}?) (?:was|were|got) (\w+ed|built|rebuilt|rewritten|made|shipped|redone) by (our team|the team|us|me|our engineers|our designers|our product team)$/i);
+      const m = body(x).match(/^((?:our |my |the )?[a-z][\w -]{2,30}?) (?:was|were|has been|have been|got) (reduced|cut|lowered|decreased|dropped|increased|raised|improved|boosted|grown|doubled|halved|tripled) (?:by )?(\$?\d[\d,.]*\s?(?:%|x|k|ms|points?|pts)?|from \$?\d[\d,.]*\s?%? to \$?\d[\d,.]*\s?%?)\s*(?:after|when|once) ((?:our |my |the |a )?[\w -]{2,40}?) (?:was|were|got) (\w+ed|built|rebuilt|rewritten|made|shipped|redone) by ((?:our|the|my) (?:[a-z]+ )?(?:team|engineers|designers|developers|devs|staff|squad|folks)|(?:our|my|the) (?:new )?(?:COO|CEO|CTO|CMO|VP of \w+|head of \w+|founder|cofounder|co-founder|manager|lead|designer|engineer|agency)|us|me)$/i);
       if (!m) return null;
-      const up = /increased|raised|improved|boosted|grown|doubled|tripled/i.test(m[2]), who = /^us$/i.test(m[6]) ? 'we' : /^me$/i.test(m[6]) ? 'I' : m[6].toLowerCase();
-      return [{ t: `${capFirst(m[1])}: ${up ? 'up' : 'down'} ${m[3]}. What changed: ${who} ${m[5]} ${m[4]}${endP(x) || '.'}`, mv: 'active' }, { t: `${capFirst(m[1])} ${up ? 'rose' : 'fell'} ${m[3]} after ${who} ${m[5]} ${m[4]}${endP(x) || '.'}`, mv: 'active' }];
+      const up = /increased|raised|improved|boosted|grown|doubled|tripled/i.test(m[2]), who = /^us$/i.test(m[6]) ? 'we' : /^me$/i.test(m[6]) ? 'I' : m[6].replace(/^(Our|My|The)\b/, w => w.toLowerCase()).replace(/\b(?!COO|CEO|CTO|CMO|VP)([A-Z][a-z]+)\b/g, w => w.toLowerCase());
+      const fr = /^from /i.test(m[3]), amt = fr ? m[3].replace(/^from /i, '') : m[3];
+      return [{ t: `${capFirst(m[1])}: ${fr ? amt : (up ? 'up ' : 'down ') + amt}. What changed: ${who} ${m[5]} ${m[4]}${endP(x) || '.'}`, mv: 'active' }, { t: `${capFirst(m[1])} ${up ? 'rose' : 'fell'} ${m[3]} after ${who} ${m[5]} ${m[4]}${endP(x) || '.'}`, mv: 'active' }];
+    },
+    /* r86 "The onboarding process was completely redesigned by our product team last quarter." → "Our product team completely redesigned the onboarding process last quarter." */
+    active(x) {
+      const m = body(x).match(/^((?:the|our|my|this|that|a|an) [\w -]{2,40}?) (?:was|were|has been|have been|got) ((?:completely |fully |totally |quietly |finally |carefully )?(?:\w+ed|built|rebuilt|rewritten|written|made|done|run|shipped|grown|cut|led|taught|drawn|chosen)) by ((?:our|my|the|a|an) [\w -]{2,30}?|us|me|@\w+)( (?:over|in|during|last|this|after|before|for)\b.{2,50})?$/i);
+      if (!m || /\d/.test(m[1])) return null; const who = /^us$/i.test(m[3]) ? 'we' : /^me$/i.test(m[3]) ? 'I' : m[3];
+      return { t: `${capFirst(who)} ${m[2]} ${lowFirst(m[1])}${m[4] || ''}${endP(x) || '.'}`, mv: 'active' };
     },
     /* "Today marks one year since I quit my job, and we're at $4.2k MRR" → "One year since I quit my job. We're at $4.2k MRR." */
     since(x) {
@@ -1979,7 +2003,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     },
     /* "most design systems fail because nobody owns them" → "Why do most design systems fail? Nobody owns them." */
     whyBecause(x) {
-      const m = body(x).match(/^((?:most|many|so many|a lot of|lots of) [a-z][^,]{4,50}?) because (.{4,70})$/i); if (!m) return null;
+      const m = body(x).match(/^((?:most|many|so many|a lot of|lots of) [a-z][^,]{4,50}?) because (.{4,70})$/i); if (!m || /\bbecause\b/i.test(m[2])) return null;
       const c = m[1]; if (/\b(?:is|was|has|had|does|did|can|will|would|should|could|might|must|seem|seems|\w+ed)\b/i.test(c)) return null;
       const are = c.match(/^(.+?) (are|were) (.+)$/i);
       const lc0 = properish(c.split(' ')[0], x.slice(1)) ? c : lowFirst(c), w = lc0.split(' ');
@@ -2003,7 +2027,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     },
     /* "we're hosting a webinar next Tuesday on how to cut churn by 20%" → "How to cut churn by 20%. We're hosting a webinar on it next Tuesday." */
     event(x) {
-      const m = body(x).match(/^(we|i)(?:['’]re| are|['’]m| am|['’]ll be| will be) (hosting|running|doing|teaching|giving) (an? (?:free |live |short |quick )?(?:webinar|workshop|live session|live stream|livestream|stream|class|masterclass|talk|ama|q&a|session|meetup|office hours)) ((?:next|this) \w+|tomorrow|today|tonight|on \w+day)((?: at [\w:]+(?: ?[ap]m)?)?) on ((?:how|why|what) .{6,70})$/i); if (!m) return null;
+      const m = body(x).match(/^(we|i)(?:['’]re| are|['’]m| am|['’]ll be| will be) (hosting|running|doing|teaching|giving) (an? (?:free |live |short |quick )?(?:webinar|workshop|live session|live stream|livestream|stream|class|masterclass|talk|ama|q&a|session|meetup|office hours)) ((?:next|this) \w+|tomorrow|today|tonight|on \w+day)((?: at [\w:]+(?: ?[ap]m)?(?: (?:ET|PT|CT|MT|EST|PST|CST|EDT|PDT|UTC|GMT|CET|BST))?)?) on ((?:how|why|what) .{6,70})$/i); if (!m) return null;
       return { t: `${capFirst(m[6])}. ${HK_SUBJ(m[1]) === 'We' ? 'We’re' : 'I’m'} ${m[2]} ${m[3]} on it ${m[4]}${m[5]}${endP(x) || '.'}`, mv: 'payoff' };
     },
     /* "i finally figured out why i couldn't lose weight for 5 years" → "5 years of not losing weight. i finally figured out why." */
@@ -2025,8 +2049,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* a comma splice made two beats: "Stop using story points, they don't mean anything" → "Stop using story points. They don't mean anything." */
     splice(x) {
       const m = body(x).match(/^(.{10,}?), (they|it|that|this|we|i|you|he|she|nobody|everyone|none) ((?:don['’]t|doesn['’]t|didn['’]t|aren['’]t|isn['’]t|wasn['’]t|won['’]t|can['’]t|never|always|are|is|was|were|have|has|had|can|will|still|all|only|\w+ed)\b.{3,})$/i) || body(x).match(/^(.{10,}?), (they['’]re|it['’]s|that['’]s|we['’]re|i['’]m|you['’]re|he['’]s|she['’]s|they['’]ve|we['’]ve|i['’]ve) (.{3,})$/i); if (!m) return null;
-      if (/^(?:if|when|because|since|after|before|while|once|until|as|although|though|unless|whether)\b/i.test(m[1]) || wordsN(m[1]) < 3) return null;
-      if (/^(?:\w+['’]\w+|\w+) (?:you|me|them|him|her|us)\b/i.test(m[2] + ' ' + m[3]) && false) return null;
+      if (/^(?:if|when|because|since|after|before|while|once|until|as|although|though|unless|whether|to|in order to|for|by|with|without|from|during|despite|instead of)\b/i.test(m[1]) || wordsN(m[1]) < 3 || /^(?:need|feed|speed|seed|bleed|proceed|succeed|exceed)\b/i.test(m[3])) return null;
       return { t: `${m[1]}. ${capFirst(m[2])} ${m[3]}${endP(x) || '.'}`, mv: 'contrast' };
     },
     /* "I lost 40% of my account in 2022 because I didn't use stop losses" → "I lost 40% of my account in 2022. I didn't use stop losses." */
@@ -2038,7 +2061,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     whyClause(x) {
       const m = body(x).replace(/:$/, '').match(/^(why|how) ((?:i|we|my|our|the|most|many|this|these|people|everyone|nobody|[A-Z$][\w$]*)\b.{6,90})$/i); if (!m || /^(?:do|does|did|is|are|can|should|would|will|to)\b/i.test(m[2])) return null;
       const said = capFirst(m[2].replace(/^i\b/, 'I'));
-      return [{ t: `${said}. Here’s ${m[1].toLowerCase()}:`, mv: 'loop', loop: true, needMore: true }, { t: `${said}${endP(x) || '.'}`, mv: 'straight' }];
+      /* "why your threads flop" said flat ("Your threads flop.") points at the reader: only the loop form, with a body to pay it */
+      return [{ t: `${said}. Here’s ${m[1].toLowerCase()}:`, mv: 'loop', loop: true, needMore: true }, ...(/^(?:you|your)\b/i.test(m[2]) ? [] : [{ t: `${said}${endP(x) || '.'}`, mv: 'straight' }])];
     }
   };
   const HM_FIRST = [HM.isThat, HM.milestone, HM.tookMe, HM.gotN, HM.result, HM.result2, HM.thankYou, HM.madeFor, HM.concede, HM.tickerFirst, HM.fromTo, HM.passive, HM.money];
@@ -2107,7 +2131,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const t = String(post || ''), nl = t.indexOf('\n'), line0 = nl < 0 ? t : t.slice(0, nl), rest = nl < 0 ? '' : t.slice(nl);
     const L = line0.trim(); if (!L) return null;
     const more = opts.more != null ? !!opts.more : !!rest.trim();
-    const st = styleOf(t), lowStart = /^\P{L}*\p{Ll}/u.test(L) && !/^\P{L}*(?:i\b|iPhone|eBay|x\b)/.test(L);
+    const Lr = opts.unmask ? opts.unmask(L) : L, st = styleOf(opts.unmask ? opts.unmask(t) : t), lowStart = /^\P{L}*\p{Ll}/u.test(Lr) && !/^\P{L}*(?:i\b|iPhone|eBay|x\b)/.test(Lr);
     /* their casing stays theirs: a line that starts lowercase stays lowercase, a lowercase "i" stays lowercase */
     /* with a body, the body says how they write (a lowercase slip on line one isn't a style); a lone line keeps its own */
     const sty = { low: rest.trim() ? st.low : lowStart, loI: st.loI, noApos: st.noApos, apos: st.apos };
@@ -2133,7 +2157,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* "the mistake was not taking profits" must never become "wasn't taking profits": a "not" before an -ing word stays apart */
     const CW = CONTRACT_W.map(([re, w]) => [rx(re.source.replace(/ not\\b$/, ' not\\b(?!\\s+\\w+ing\\b)'), re.flags), w]);
     x = /\b(edge|key|answer|trick|secret|move|problem|fix|lesson|goal|rule|play|mistake|point|thing|cure|solution|habit|tell)\s+(?:is|was|are)\s+not\b/i.test(x) ? sub(x, CW.slice(1)) : sub(x, CW);
-    x = x.replace(/!{2,}(?=\s)/g, '.').replace(/!+(?=\s*$)/, '.').replace(/\bhere is\b/gi, m => m[0] === 'H' ? 'Here’s' : 'here’s').replace(/\bim\b/g, st.noApos ? 'im' : 'I’m');
+    x = x.replace(/!{2,}(?=\s)/g, '.').replace(/!+(?=\s*$)/, '.').replace(/(^|[.!?:,]\s+|\band\s+|\bso\s+)(here) is\b/gi, (m, a, h) => a + (h[0] === 'H' ? 'Here’s' : 'here’s')).replace(/\bim\b/g, st.noApos ? 'im' : 'I’m');
     x = tidyT(x).trim();
     let tailE = ''; { const te = x.match(/\s*((?:\p{Extended_Pictographic}️?|\p{Regional_Indicator}{2})(?:\s*(?:\p{Extended_Pictographic}️?|\p{Regional_Indicator}{2}))*)\s*$/u); if (te && wordsN(x.slice(0, te.index)) >= 3) { tailE = te[1]; x = x.slice(0, te.index).trimEnd(); } }
     const tailP = !!tailE && /[.!?…:]$/.test(x);
@@ -2142,17 +2166,20 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* 2. moves, then a second move on what the first one made */
     const cands = [{ t: base, mv: [] }];
     const push = (r, from) => { (Array.isArray(r) ? r : [r]).forEach(o => { if (o && o.t && !(o.needMore && !more)) cands.push({ t: o.t, mv: [...from.mv, o.mv], loop: o.loop || from.loop, stop: o.stop || from.stop }); }); };
+    /* a crisp draft: nothing soft, no warm-up, and the writer's own full stop */
+    const crisp = !softMarks(L).length && !said.size && /[.!]["”’)]*$/.test(L) && wordsN(L) <= 16;
     const step = from => {
       /* sentences, without splitting "$4.2k" or "v2.1" at the point */
       const ss = (from.t.match(/(?:[^.!?]|[.!?](?=[^\s.!?"”’)]))+(?:[.!?]+["”’)]*)?/g) || [from.t]).map(z => z.trim()).filter(Boolean), one = ss.length === 1;
       Object.values(HM).forEach(f => {
+        if (crisp && f === HM.rated) return;
         if (one) { try { push(f(from.t), from); } catch (e) { /* a move that doesn't fit this line */ } return; }
         /* r86: on a line of several sentences, a move may reshape the first one; the rest follows as written */
         if (!HM_FIRST.includes(f)) return;
         try { const r = f(ss[0]); (Array.isArray(r) ? r : [r]).forEach(o => { if (o && o.t && !o.loop && !o.needMore && !/:$/.test(o.t)) push({ ...o, t: [o.t, ...ss.slice(1)].join(' ') }, from); }); } catch (e) { /* a move that doesn't fit */ }
       });
       Object.values(HM2).forEach(f => { try { push(f(from.t), from); } catch (e) { /* a move that doesn't fit this line */ } });
-      HK_CORE.forEach(([k, mv]) => { if (!one && !['split', 'statColon', 'thereIs', 'imperative', 'whichWhy'].includes(k)) return; ss.forEach((s, i) => { if ((k === 'swap' || k === 'front') && /\b(and|but)\b/i.test(s)) return; if (k === 'front' && !/^(i|we|my|our|the|a|an|this|that|most|people|\$|[A-Z0-9])/.test(s.trim())) return; if (k === 'statColon' && /^(i|we|my|our|you|your)\b/i.test(s.trim())) return; let y = null; try { y = MOVES[k](s.trim()); } catch (e) { y = null; } if (y && y !== s.trim()) push({ t: ss.map((z, j) => j === i ? y : z.trim()).join(' '), mv }, from); }); });
+      HK_CORE.forEach(([k, mv]) => { if (!one && !['split', 'statColon', 'thereIs', 'imperative', 'whichWhy'].includes(k)) return; if (crisp && ['revealQ', 'invertQ', 'isQ', 'invert'].includes(k)) return; ss.forEach((s, i) => { if ((k === 'swap' || k === 'front') && /\b(and|but)\b/i.test(s)) return; if (k === 'front' && !/^(i|we|my|our|the|a|an|this|that|most|people|\$|[A-Z0-9])/.test(s.trim())) return; if (k === 'statColon' && /^(i|we|my|our|you|your)\b/i.test(s.trim())) return; let y = null; try { y = MOVES[k](s.trim()); } catch (e) { y = null; } if (y && y !== s.trim()) push({ t: ss.map((z, j) => j === i ? y : z.trim()).join(' '), mv }, from); }); });
     };
     step(cands[0]); cands.slice(1).forEach(c => step(c));
     /* 3. a reason to read on, only when there is more to read and the line makes a claim or starts a story */
@@ -2174,7 +2201,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       if (tailE) y = (tailP || /[?:]$/.test(y) ? y : y.replace(/\.$/, '')) + ' ' + tailE;
       if (nfa && !/:$/.test(y)) y = `${y}${/[.!?…]$|\p{Extended_Pictographic}️?$/u.test(y) ? '' : '.'} ${nfa}`;
       /* an answer starts on its verb: "Most important thing a CEO can do? To hire…" → "…? Hire…" */
-      y = y.replace(/(\?\s+)to (?=[a-z]+\b)/i, '$1').replace(/(\?\s+)([a-z])/, (m, a, c) => a + c.toUpperCase());
+      y = y.replace(/(\?\s+)to (?=[a-z]+\b(?![^.!?]*\b(?:i|my|me|i['’]\w+)\b))/i, '$1').replace(/(\?\s+)([a-z])/, (m, a, c) => a + c.toUpperCase());
       if (!more && /:$/.test(y)) y = y.replace(/:$/, '.');
       y = caseFix(y, sty, true); if (sty.low) y = y.replace(/^(\P{L}*)(\p{Lu})(?=\p{Ll})/u, (m, a, b) => /^(I|I['’]\w+)$/.test((y.match(/^\P{L}*([\p{L}’']+)/u) || [])[1] || '') || names0.some(n => y.slice(a.length).startsWith(n)) || /^(X|BTC|ETH|SOL)\b/.test(y.slice(a.length)) ? m : a + b.toLowerCase());
       y = y.replace(/(:\s+)([A-Z])([a-z]+)\b(?! [A-Z][a-z])/g, (m, a, b, r) => properish(b + r, L.replace(/^\S+\s*/, '')) ? m : a + b.toLowerCase() + r);
@@ -2189,11 +2216,12 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       if (y.length > L.length * 1.5 + 26 || y.length > Math.max(150, L.length)) { T(y, 'length'); continue; }
       const g0 = gram(L), g1 = gram(y); if (g1.some((v, i) => v > g0[i] && i !== 1)) { T(y, 'gram' + g1.findIndex((v, i) => v > g0[i] && i !== 1)); continue; }
       if (!slOK(y, L, facts0)) { T(y, 'guard'); continue; }
+      if (said.has('warm') && /^(?:the |our |my )?(?:official )?(?:launch|release|arrival|debut|availability|partnership|collaboration|introduction) (?:of|with)\b/i.test(y)) { T(y, 'fragment'); continue; }
       if ((said.has('warm') || c.mv.includes('warm')) && wordsN(y) <= 4 && !/\d|\$[a-z]/i.test(y) && !/\b(?:is|are|was|were|be|been|am|has|have|had|do|does|did|can|will|would|should|could|might|must|\w{2,}(?:ed|ing|es|s)|\w+n['’]t|\w+['’](?:s|re|ve|ll|m|d))\b/i.test(y.replace(/\b(?:today|tonight|tomorrow|thing|nothing|something|morning|evening)\b/gi, ''))) { T(y, 'fragment'); continue; }
       /* a one-word question made from a fragment ("Hiring? That's the job.") isn't a sharper line */
       if (!oneQ && /^[^\s?]+\?/.test(y) && !/^(?:why|how|what|who|when|where|really|seriously|wild)\?/i.test(y)) { T(y, 'oneQ'); continue; }
       const moves = [...new Set([...(c.mv.length || y !== base ? baseSaid : baseSaid), ...c.mv])];
-      out.push({ text: y, score: scoreOf(y), moves, own: c.mv, edits: editW(L, y), gen: !!c.gen });
+      out.push({ text: y, score: scoreOf(y), moves, own: c.mv, edits: editW(L, y), gen: !!c.gen }); T(y, `ok ${out[out.length - 1].score}`);
     }
     /* 5. the best one: highest score; a close call goes to the smaller edit, so it still sounds like them */
     /* a full stop alone isn't a sharpen: a version that only adds one ranks a little lower than a real move */
@@ -2255,7 +2283,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const slHas = (line, v) => new RegExp(`(?<![\\p{L}\\p{N}_])${v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}_])`, 'u').test(line);
   /* what a cut may never take: the words that carry the meaning. In the draft → still in the line */
   const SL_MEAN = [/\bnot just\b/i, /\bonly just\b/i, /\bjust (?:can['’]?t|cannot|won['’]?t|don['’]?t|didn['’]?t|couldn['’]?t)\b/i, /\bis it just me\b/i, /\b(?:maybe|perhaps|probably) (?:i|i['’]m|i am|we|we['’]re|you|you['’]re|it|it['’]s|not|they|he|she)\b/i,
-    /\b(?:kind|sort) of a (?:big deal|thing|mess|legend|genius|joke|vibe)\b/i, /\b(really|very|so),? \1\b/i, /\b(?:what|who|which|that) actually\b/i, /\bactually (?:liked?|loved?|prefer(?:red)?|matters?|works?|worked|happened)\b/i, /\byou(?:['’]re| are) actually\b/i, /\bpretty much it\b/i, /^just \w+ it\b/i];
+    /\b(?:kind|sort) of a (?:big deal|thing|mess|legend|genius|joke|vibe)\b/i, /\b(really|very|so),? \1\b/i, /\b(?:what|who|which|that) actually\b/i, /\bactually (?:liked?|loved?|prefer(?:red)?|matters?|works?|worked|happened)\b/i, /\byou(?:['’]re| are) actually\b/i, /\bpretty much it\b/i, /^just \w+ it\b/i, /\bi (?:don['’]t|do not) think\b.*\bi think\b/i];
   const slNegs = t => { const s = String(t), m = softMarks(s); let o = '', at = 0; m.forEach(r => { o += s.slice(at, r[0]) + ' '; at = r[1]; }); return negsOf(o + s.slice(at)); };
   const slMeanOK = (line, draft) => SL_MEAN.every(re => !re.test(draft) || re.test(line)) && negsOf(line) >= slNegs(draft);
   /* a template that came out broken: counted in the line against the draft, so the writer's own style never trips it */
@@ -2286,7 +2314,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
   const SL_WARMX = [[/^(?:i['’]?d|i would|we['’]?d|we would|i (?:just )?want(?:ed)?|we (?:just )?want(?:ed)?) (?:like )?to (?:take a (?:moment|second|minute) to )?(?:say (?:a (?:big |huge )?)?)?/i, 'throat'], [/^(?:a lot of|so many|lots of) (?:you|people|folks)(?: have been| keep| have)? ask(?:ing|ed)?(?: me)? (?:about|for)\b/i, 'throat'], [/,? so here (?:it is|you go|it goes)(?=[.!]?$)/i, 'throat'],
-    [/^(?:this week['’]s|today['’]s|this|the latest|our latest|my latest|new) (?:issue|edition|newsletter|episode|video|essay|post|podcast) (?:is (?:all )?about|covers|is on|breaks down|dives into)\b/i, 'label'], [/^(?:here(?: is|['’]s) )?a (?:quick |short |mini )?thread (?:on|about)\b/i, 'label']];
+    [/^(?:this week['’]s|today['’]s|this|the latest|our latest|my latest|new) (?:issue|edition|newsletter|episode|video|essay|post|podcast) (?:is (?:all )?about|covers|is on|breaks down|dives into)\b/i, 'label'], [/^(?:here(?: is|['’]s) )?a (?:quick |short |mini )?thread (?:on|about)\b/i, 'label'], [/^i (?:don['’]t|do not) (?:think|believe)\b/i, 'opinion'], [/\bi (?:really |honestly |genuinely )?(?:think|believe)(?: that)?\b/i, 'opinion']];
   /* the never-say and wordy phrases swapped for plain ones, with what each became */
   function slSwaps(t) {
     const s = String(t), out = [];
@@ -2295,7 +2323,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return out;
   }
   const SL_KWHY = { announce: 'Announces the news instead of saying it.', label: 'A label, not the point.', disclaim: 'Tells people to trust what follows less.', stock: 'A stock phrase readers skip.', throat: 'Backstory before the point.', open: 'A warm-up word.', feel: 'Tells them how to feel about it.',
-    opinion: 'Hedges a claim that’s already yours.', honest: 'Hints the rest might not be honest.', intens: 'Props up the word next to it.', filler: 'Filler from talking out loud.', hedge: 'Hedges the claim.', likeNum: 'Blurs your own number.', tail: 'Takes the weight off the line.', bait: 'Bait readers have learned to scroll past.', move: 'Not needed once the line was reordered.', tight: 'Not needed for the point.' };
+    opinion: 'Hedges a claim that’s already yours.', wordy: 'Says what “to” already does.', honest: 'Hints the rest might not be honest.', intens: 'Props up the word next to it.', filler: 'Filler from talking out loud.', hedge: 'Hedges the claim.', likeNum: 'Blurs your own number.', tail: 'Takes the weight off the line.', bait: 'Bait readers have learned to scroll past.', move: 'Not needed once the line was reordered.', tight: 'Not needed for the point.' };
   const SL_WARM = /^(?:announce|label|disclaim|stock|throat|open|feel)$/, SL_HEDGE = /^(?:opinion|hedge)$/, SL_FILL = /^(?:filler|intens|honest|tail|likeNum)$/;
   const SL_STRUCT = ['result', 'active', 'payoff', 'ask', 'number', 'ticker', 'lead', 'moment', 'contrast', 'straight', 'loop', 'order'];
   /* the words really gone from the draft, in draft order, grouped and named by kind.
@@ -2308,7 +2336,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const bag = new Map(); O.forEach(x => bag.set(x.w, (bag.get(x.w) || 0) + 1));
     /* 1. a never-say or wordy phrase that became its plain word is one swap; one that only lost words cuts those words */
     slSwaps(draft).forEach(sw => {
-      const idx = D.map((x, i) => i).filter(i => !done[i] && D[i].a >= sw[0] && D[i].b <= sw[1]); if (!idx.length) return;
+      const idx = D.map((x, i) => i).filter(i => !done[i] && D[i].a >= sw[0] && D[i].b <= sw[1]); if (!idx.length || marks.some(mk => mk[0] < sw[1] && mk[1] > sw[0])) return;
       const srcW = idx.map(i => D[i].w), src = srcW.join(' '), to = slToks(sw[2]).map(x => x.w);
       if (ow.includes(src) || (to.length && !ow.includes(to.join(' ')))) return;
       let k0 = 0; const sub0 = to.every(w => { const k = srcW.indexOf(w, k0); if (k < 0) return false; k0 = k + 1; return true; });
@@ -2349,7 +2377,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     q: 'Same question in fewer words, so it reads in one glance.',
     filler: 'Filler from talking out loud. In the feed it costs a second and adds nothing.',
     swap: 'Same claim in plainer words, so nothing snags the reader.',
-    sharp: 'Already sharp. Nothing soft to cut.',
+    sharp: 'Nothing soft to cut. It reads clean as it is.',
     clean: 'Nothing soft to cut, and no safe move makes it stronger.'
   };
   const slFig = z => { const m = String(z).match(/(?<![\w.,])[$€£]?\d|\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|fifty|hundred|a (?:year|month|week|day|decade))\b/i); return m ? (z.slice(0, m.index).match(/\S+/g) || []).length : -1; };
@@ -2430,7 +2458,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     }
     return { ...R, state: 'sharp', line: best.line, cut: E.cut, move: E.move, say: E.say, why: E.why, alts, long: longOf(best.line), note: noteOf(best.line), moves: best.moves, score: { from: H.from, to: best.score } };
   }
-  const SHARPEN = { OPTS: SH_OPTS, LABEL: SH_LABEL, sharpen, fromModel, frame, fit, judge, styleOf, versionsFor, pickVersions, modelTexts, stripModel, deEcho, checkPost: checkPost2, whyNot, nearSame, tidy: tidyT, cutHedges, MOVES, sub, WORDY, CONTRACT_W, PLAIN_W, JARGON_W, SHORTHAND, IDIOM, numsOf, ticksOf, hookUp, SOFT, softMarks, softCut, MOVE_WHY: HK_WHY, MOVE_SAY: HK_SAY, sharpenLine, stanceKeep, factsOf: s => slFacts(s, softMarks(s)).map(f => f.v) };
+  const SHARPEN = { OPTS: SH_OPTS, LABEL: SH_LABEL, sharpen, fromModel, frame, fit, judge, styleOf, versionsFor, pickVersions, modelTexts, stripModel, deEcho, checkPost: checkPost2, whyNot, nearSame, tidy: tidyT, cutHedges, MOVES, sub, WORDY, CONTRACT_W, PLAIN_W, JARGON_W, SHORTHAND, IDIOM, numsOf, ticksOf, hookUp, SOFT, softMarks, softCut, MOVE_WHY: HK_WHY, MOVE_SAY: HK_SAY, sharpenLine, stanceKeep, factsOf: s => slFacts(s, softMarks(s)).map(f => f.v),
+    /* the first call compiles the engine's regexes (~150 ms); call this once when the page is idle so the first tap is fast */
+    warm: () => { sharpenLine('so i think this is honestly kind of a good line, just warming up the engine'); sharpenLine('We are excited to announce that our team just shipped v2 and signups went up 31%'); return true; } };
 
   /* ---------------- Claude credits ----------------
      One table for the app, the server and the tests. A credit is one everyday piece of Claude writing (a post rewrite).

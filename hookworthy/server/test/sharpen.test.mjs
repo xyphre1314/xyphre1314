@@ -12,7 +12,9 @@ test('soft words: a whole warm-up is one mark and one cut; idioms and real words
   assert.equal(core.softCut(t).s, 'i finally hit my first $10k month trading');
   for (const keep of ['look at this chart: funding flipped', 'so what? nobody reads threads', 'well done beats well said', 'what kind of trader are you?', 'just 3 people came', 'so far so good'])
     assert.equal(core.softMarks(keep).length, 0, keep);
-  assert.equal(core.softCut('honestly? most threads are too long').s, 'most threads are too long');
+  /* r86: "honestly?" on its own is a beat, not filler (the held-out jury graded cutting it a miss); "honestly," is still cut */
+  assert.equal(core.softCut('honestly? most threads are too long').s, 'honestly? most threads are too long');
+  assert.equal(core.softCut('honestly, most threads are too long').s, 'most threads are too long');
   assert.equal(core.softCut('Hey everyone! Quick reminder that my course launches tomorrow, really excited about this one').s, 'My course launches tomorrow');
   /* words this voice put back stay */
   assert.equal(core.softMarks('honestly i think pricing is wrong', ['honestly']).length, 1);
