@@ -2446,6 +2446,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const best = list.find(okL) || null;
     const noteOf = l => [stNote(l), longOf(l) ? SL_LONG : ''].filter(Boolean).join(' ');
     if (!best) {
+      /* every soft word was put back by the writer: say so, rather than claim the line had none */
+      const back = keep.filter(k => lcw(draft).includes(lcw(k)));
+      if (!marks.length && back.length) { const w = `You put back “${back.join('”, “')}”. Nothing else to cut.`; return { ...R, state: 'clean', say: 'Kept as you chose', why: w.length > 140 ? 'You put those words back. Nothing else to cut.' : w, note: noteOf(draft) }; }
       const why = marks.length ? `Kept as written: cutting “${draft.slice(marks[0][0], marks[0][1])}” here would change how it lands or not help.` : hookScore(rest ? `${draft}\n${rest}` : draft).score >= 70 ? HK_WHY_SL.sharp : HK_WHY_SL.clean;
       return { ...R, state: marks.length ? 'unsure' : 'clean', say: marks.length ? 'Kept as written' : 'Nothing to cut', why: why.length > 140 ? `Kept as written: cutting it here would change how it lands or not help.` : why, note: noteOf(draft) };
     }
