@@ -1,0 +1,120 @@
+{
+ "key": "web",
+ "role": "Awwwards-level web designer and front-end craftsperson: layout and composition at every width, rhythm, motion timing, performance, polish",
+ "score": 8.8,
+ "verdict": "This is a highly crafted page. The cinema hero shows a real product moment in the first screen at every width, the four hero examples, Studio clients, Reply states and pricing toggles all hold their exact heights, CLS is about 0.0001, there is no horizontal scroll from 360 to 1480, the motion is short and orchestrated (the hero settles in about 1.65s on an expo-out curve) and reduced motion gives a clean finished layout. It is held below 9.5 by three P1 composition and contrast breaks at real widths (768 iPad portrait, the 901–975 band that includes 960px half-screen windows, and the first phone screen) plus a set of small visible P2s: a dead void in the phone feed, a chunky waveform and height jumps when tabs or starters change.",
+ "to_95": [
+  "At 761–780 (768 iPad portrait), stop the 'lowercase stays lowercase' chip from wrapping out of its 28px pill. Add .chip{white-space:nowrap}, and let the chips wrap as whole units in the Habits column.",
+  "At 901–975, keep the final heading and the FAQ heading to two lines and the final input on one row with its button. Below 1000px, size .h2.xl and #faq .h2 from their own column (for example font-size:min(60px, 11cqi) inside a container), or drop .fin-panel to one column below 1000px.",
+  "On phones, take the hero beam off the micro line. 'Nothing posts without you' measures 1.7:1 at 360 and 1.8:1 at 390 where the bloom sits behind 'without you'. At ≤760, shorten the beam (--bl about 300px) and weaken the bloom (.stage .light .bloom{opacity:.45}) so it fades out above the micro row, then confirm ≥4.5:1.",
+  "Remove the black void under the last post in the Day tile's phone (about 95px at 1440 and 1024, more at 768). Add a third dimmed feed post, or shorten the screen to end at the Jun Park post.",
+  "Lock the heights that still move. On phones, give the Previews tile a fixed height (.t-pv .screens{height:330px} and .pv-note{min-height:2.9em}); it currently goes 547→526px between tabs. At ≥1100, give .try-out a min-height so the five starters (607–698px) and a long line (879px) stop resizing the Try/Previews bento row and pushing the page below.",
+  "Polish the small visible details: draw the waveform as fixed 3px bars with 2px gaps instead of flex:1 blocks; use a non-breaking space in every '8:40 AM' (it splits at 360); fix the 901–1199 .hmeta wrap where 'Posts to…' is left alone on its own row."
+ ],
+ "issues": [
+  {
+   "id": "web-1",
+   "severity": "P1",
+   "area": "Responsive layout / components",
+   "where": "Voice tile, Habits column, 761–780px (768 iPad portrait); see work-web/inter/768-voice.png",
+   "problem": "In the three-column .vlist, the 'lowercase stays lowercase' chip wraps to two lines inside its fixed 28px pill. The text runs over the pill's top and bottom edge (the text box measures 110×37 inside a 198–204×28 pill). It is a visibly broken component in the first seconds of the section on a primary tablet width.",
+   "fix": "Add white-space:nowrap to .chip so each chip wraps as one unit inside .vrow dd. Or, at 761–820, put .vlist in two columns (Habits+Keeps, Never says below) or one column. Re-check at 761, 768 and 780."
+  },
+  {
+   "id": "web-2",
+   "severity": "P1",
+   "area": "Responsive layout / type",
+   "where": "Final CTA panel and FAQ head, 901–975px (includes 960px half-screen windows on 1920 displays); see work-web/inter/920-start.png and 920-faq.png",
+   "problem": ".h2.xl stays at 72px while .fin-panel switches to two columns (1fr + 340px). 'Good ideas die / in bad first lines.' breaks into 4 lines with 'die' alone on a line. The Sharpen button drops under the input, and 'Fair questions. Straight answers.' becomes 3 lines. Across the rest of the page the composition holds; this band does not.",
+   "fix": "In @media (min-width:901px) and (max-width:1099px), set .h2.xl{font-size:56px} and #faq .h2{font-size:52px}, or size both from their column with container units. Keep .fin-form on one row (.fin-field flex-basis:0; min-width:200px). Alternatively, use the single-column .fin-panel up to 1000px."
+  },
+  {
+   "id": "web-3",
+   "severity": "P1",
+   "area": "Contrast / hero light",
+   "where": "Hero micro line 'Free forever · No card · Nothing posts without you' at 360 and 390 (first screen)",
+   "problem": "On phones the beam's bloom and hot spot sit right behind the end of the micro line. The worst-case contrast of 'without you' (#8D929A) against the glow measures 1.68:1 at 360 and 1.82:1 at 390, against 5.6:1 at 1440. That fails WCAG AA on the trust promise, in the first screen, on the main mobile width.",
+   "fix": "At ≤760, reduce the beam above the window: --bl:300px; --k:1.1; .stage .light .bloom{opacity:.45;top:-20px}, so the glow ends below the micro row. Or move the hot spot to --hx:.96 so it lands right of the text. Re-measure and confirm ≥4.5:1 on every glyph."
+  },
+  {
+   "id": "web-4",
+   "severity": "P2",
+   "area": "Composition",
+   "where": "Day tile, the morning phone at 1440, 1280, 1024 and 768",
+   "problem": "The X feed in the phone ends after the Jun Park post and leaves a 90–140px band of pure black before the tile edge crops the phone. It reads as an empty app rather than a feed.",
+   "fix": "Add a third dimmed .fp post (another example account, aria-hidden), or stop the screen at the Jun Park divider by lowering the phone's height or raising its negative bottom margin."
+  },
+  {
+   "id": "web-5",
+   "severity": "P2",
+   "area": "Detail / illustration",
+   "where": "Day tile, the 'You saved a voice note' waveform at ≥761px",
+   "problem": ".wave i{flex:1} stretches 24 bars to about 10–11px wide each, so the waveform reads as a row of chunky rounded blocks (an equalizer) rather than the fine voice-note waveform the rest of the page's precision suggests.",
+   "fix": "Use .wave i{flex:none;width:3px;border-radius:2px} with gap:2px, and add bars (about 40) or center the strip. Keep the m-fill stagger."
+  },
+  {
+   "id": "web-6",
+   "severity": "P2",
+   "area": "Layout stability",
+   "where": "Previews tile on phones (390 and 360)",
+   "problem": "The tile is 547px on X and Bluesky but 526px on Threads and LinkedIn, because .pv-note runs to 1 or 2 lines and min-height is reset to 0 at ≤760. Every tab tap moves the whole page below the tile by 21px.",
+   "fix": "At ≤760, set .pv-note{min-height:2.9em} and give .t-pv .screens a fixed height (330px), so all four tabs measure the same."
+  },
+  {
+   "id": "web-7",
+   "severity": "P2",
+   "area": "Layout stability",
+   "where": "Try tile at ≥1100 (shares a bento row with Previews), starters and long lines",
+   "problem": "The Try tile resizes with every result: 698 → 687 → 694 → 607 (Clean line) → 879px (a long line). Because the Previews tile takes the row height, the whole bento below jumps by up to 90px on a starter tap.",
+   "fix": "Give .try-out a min-height equal to the tallest one-line result (about 300px at ≥1100), and let only lines over 140 characters grow the tile."
+  },
+  {
+   "id": "web-8",
+   "severity": "P2",
+   "area": "Composition",
+   "where": "Hero window, Draft pane, ≥901px",
+   "problem": "Between the 'Cut …' note and 'Everyone can reply' there are 110–130px of empty pane in all four examples. The left half of the main product shot looks under-filled next to the dense Sharpened pane.",
+   "fix": "Lower .window .body min-height at ≥1200 (397 → about 360px) and tighten the Sharpened pane to match. Or use the space: move the 'Cut …' receipt into a small struck-word chip row there."
+  },
+  {
+   "id": "web-9",
+   "severity": "P2",
+   "area": "Responsive layout",
+   "where": ".hmeta under the hero window, 901–1199px (seen at 1024)",
+   "problem": "The flex-wrap row breaks so that 'Posts to X LinkedIn · Ready for Threads Bluesky' falls onto its own left-aligned row under the 'since' sentence. It reads as an accident, not a layout.",
+   "fix": "At 901–1199, set .hmeta to flex-direction:column; align-items:flex-start; gap:8px deliberately (as on phones), or hide the 'Ready for' half below 1200."
+  },
+  {
+   "id": "web-10",
+   "severity": "P2",
+   "area": "Typography",
+   "where": "Day tile step 'Your best time: 8:40 AM' at 360",
+   "problem": "The time breaks as '8:40' / 'AM' across two lines.",
+   "fix": "Use 8:40&nbsp;AM in every time string (steps, slots, .foot, notifications), or wrap times in <span class=\"tnum\" style=\"white-space:nowrap\">."
+  },
+  {
+   "id": "web-11",
+   "severity": "P2",
+   "area": "Touch targets",
+   "where": "Try box struck words (.tog marks) at 390 and 360",
+   "problem": "The headline interaction 'Tap a struck word to put it back' uses 20px-tall targets: 'basically' 66×20, 'and' 28×20. Inline text is exempt under 2.5.8, but this is the core interaction and it is hard to hit with a thumb.",
+   "fix": "At ≤760, give .ed-mirror .tog an invisible hit area: position:relative, plus a ::after with inset:-10px -4px. Keep the mirror's line-height unchanged."
+  },
+  {
+   "id": "web-12",
+   "severity": "P2",
+   "area": "Detail",
+   "where": "Pricing billing toggle 'Yearly · save 25%' at all widths",
+   "problem": "The 8px flex gap and the span's own spacing make the gap before the dot visibly wider than the gap after it ('Yearly  · save 25%'). The sheet's toggle spaces the same text evenly.",
+   "fix": "Set .bill .sv{margin-left:-4px}, or put 'Yearly · save 25%' in one text run with the muted part in an inline span and no flex gap."
+  },
+  {
+   "id": "web-13",
+   "severity": "P2",
+   "area": "Composition",
+   "where": "Trust tile, 761–1099px",
+   "problem": "With the tile in one column, the three 'Auto-… / Never.' rows run the full 920px of the tile, so 'Never.' sits a long eye-jump from its item. The heading row's right half stays empty.",
+   "fix": "In this band, cap .nev at max-width:560px, or keep the two-column layout from 901px (heading left, list right) as at ≥1100."
+  }
+ ]
+}
