@@ -261,7 +261,7 @@ main{position:relative;overflow-x:clip}
 .ph-h .mini{height:28px;padding:0 13px}
 .compose{display:flex;gap:14px;margin-top:16px}
 .compose .av{width:40px;height:40px}
-.dtext{margin-top:6px;font-size:21px;line-height:1.58;letter-spacing:-.014em;color:var(--x-ink);font-weight:400;min-height:3.2em}
+.dtext{margin-top:6px;font-size:21px;line-height:1.58;letter-spacing:-.014em;color:var(--x-ink);font-weight:400;min-height:3.2em;text-wrap:pretty}
 .note{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px;font-size:13px;line-height:1.45;color:var(--ink-3);max-width:34em}
 .note .ck{margin-right:2px}
 .note s{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;text-decoration:none;color:var(--x-mute);box-shadow:inset 0 0 0 1px var(--line-2);background:linear-gradient(rgba(247,248,248,.5),rgba(247,248,248,.5)) 10px 56%/calc(100% - 20px) 1px no-repeat}
@@ -284,6 +284,7 @@ main{position:relative;overflow-x:clip}
 /* one window height for all four examples at every width, so a pick never moves the page (measured: r86/fix/heroh.js) */
 @media (min-width:1200px){.window .body{min-height:385px}}
 @media (min-width:901px) and (max-width:1199px){.window .body{min-height:441px}}
+@media (min-width:901px) and (max-width:1099px){.window .body{min-height:453px}}
 @media (min-width:761px) and (max-width:900px){.window .body{min-height:499px}}
 .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;height:56px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
 .pill{display:inline-flex;align-items:center;height:32px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2);transition:color .2s,background-color .2s,box-shadow .2s}
@@ -527,6 +528,9 @@ html:not(.motion) #pf-go{display:none}
   .t-pv .ppost .tl{left:19px;top:46px}
   .t-pv .split{margin:0 0 16px 52px}
 }
+/* the Try/Previews row holds its height through every starter and result: only a long line grows it */
+@media (min-width:1200px){.t-try{min-height:698px}}
+@media (min-width:1100px) and (max-width:1199px){.t-try{min-height:732px}}
 
 /* ---- sounds like you: the voice it learned ---- */
 /* a full-width band: the heading and its line share the top row, the learned voice reads across in three columns */
@@ -573,6 +577,8 @@ html:not(.motion) #pf-go{display:none}
 .morn > .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,10,.25) 0%,rgba(8,9,10,.05) 40%,rgba(8,9,10,.55) 100%),linear-gradient(90deg,rgba(8,9,10,.55) 0%,rgba(8,9,10,0) 30%)}
 .night > *,.morn > *{position:relative;z-index:1}
 .night > .ph,.morn > .ph{position:absolute}
+/* the morning is the skyline over the water, cropped in: the runner on the path is Lena's photo in Studio */
+.morn > .ph img{height:840%}
 .plab{position:absolute!important;top:20px;z-index:2;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;font-size:13px;color:var(--ink-2);background:rgba(8,9,10,.84);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .morn .plab{left:20px}
 .morn .replay.plab{left:auto;right:20px;margin:0;color:var(--ink-2)}
@@ -848,7 +854,7 @@ html:not(.motion) #pf-go{display:none}
 .fin-form .btn{height:56px;padding:0 26px;font-size:15px}
 .fin .micro{margin-top:14px;display:flex;flex-wrap:wrap;row-gap:2px}
 .fpay,#fp-live{display:flex;flex-direction:column;gap:12px}
-.fpay .draft{position:relative;margin-right:26%;padding:12px 16px 14px;border-radius:16px;background:var(--s1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-size:15px;line-height:1.75;color:var(--x-ink-2);overflow-wrap:anywhere}
+.fpay .draft{position:relative;margin-right:26%;padding:12px 16px 14px;border-radius:16px;background:var(--s1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-size:15px;line-height:1.75;color:var(--x-ink-2);overflow-wrap:anywhere;text-wrap:pretty}
 .fpay .xcard{padding:16px 18px 14px}
 .fpay .lit-card::before{content:"";position:absolute;top:0;left:calc(88% - 170px);width:200px;height:1px;background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.9) 70%,rgba(var(--hot)/.15));box-shadow:0 0 10px 1px rgba(var(--glow)/.4)}
 .fpay .xtext{font-size:18px;line-height:1.42;font-weight:500;letter-spacing:-.014em}
@@ -1054,7 +1060,7 @@ footer .wrap{container-type:inline-size}
   .ph-h .mini{height:32px}
   .compose{margin-top:8px;gap:10px}
   .compose .av,.who .av{width:32px;height:32px}
-  .dtext{font-size:16px;line-height:1.6;margin-top:4px}
+  .dtext{font-size:16px;line-height:1.6;margin-top:4px;text-wrap:balance}
   .post{margin-top:10px;padding:13px 14px 12px;border-radius:16px}
   .who{gap:10px}.who .nm{font-size:14px}
   .ptext,.ptext.long{font-size:19px;line-height:1.36;margin-top:8px;min-height:2.72em}
@@ -1096,7 +1102,7 @@ footer .wrap{container-type:inline-size}
   .starters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:0 16px;gap:6px;scroll-snap-type:x mandatory;scroll-padding-inline:16px;-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
   .starters button{scroll-snap-align:start}
   .starters::-webkit-scrollbar{display:none}
-  .starters span{flex:none;margin-right:2px}
+  .starters span{flex:none;margin-right:2px;scroll-snap-align:start}
   .starters button{flex:none;height:36px}
   .try-out{grid-template-columns:minmax(0,1fr);grid-template-areas:"h" "card" "hits" "keep";gap:10px}
   .try-out .xcard{padding:14px 14px 12px}
@@ -1539,7 +1545,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         </ol>
       </div>
       <div class="dn morn">
-        <div class="ph fh" style="--i:2;--fx:-4%" aria-hidden="true"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div>
+        <div class="ph fh" style="--i:2;--fx:-22%" aria-hidden="true"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div>
         <span class="plab">8:40&nbsp;AM</span>
         <button class="replay plab" type="button" data-replay="day"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg>Replay</button>
         <figure class="phone m-land" style="--md:.2s" aria-label="Posted at 8:40 AM, the time you picked: heycape’s post in a feed (example)">
@@ -1951,8 +1957,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       cut: [['just wanted to share that', 'announce']], after: 'i finally hit my first $10k month trading, took me 3 years.', say: 'Cut 1 bit of fluff',
       why: 'It now opens on “i finally hit”, your point, not the run-up to it.', kept: 'Your $10k, your 3 years and your lowercase.' },
     { who: 'Priya Nair', handle: '@priyanair', av: 'v2|20%', draft: 'Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.',
-      cut: [['was reduced by', 'move'], ['after', 'move'], ['was', 'move'], ['by', 'move']], after: 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', say: 'Made it active',
-      why: 'Same claim, 3 words lighter, so it reads in one glance.', kept: 'Your 34%.' },
+      cut: [['was reduced by', 'move'], ['after', 'move'], ['was', 'move'], ['by', 'move']], after: 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', say: 'Number first · Made it active',
+      why: '“34%” comes first, and “our team redesigned” sounds like you were there. “Was redesigned by” sounds like a press release.', kept: 'Your 34%.' },
     { who: 'Ana Ruiz', handle: '@anaruiz', av: 'lt|23.53%', draft: 'I just wanted to say thank you to everyone who subscribed, we just crossed 5,000 readers',
       cut: [['I just wanted to say', 'throat'], ['we just crossed', 'move']], after: '5,000 readers. Thank you to everyone who subscribed.', say: 'Cut 1 bit of fluff · Number first',
       why: '“5,000 readers” comes first, so it reads as proof before anyone decides whether to keep reading.', kept: 'Your 5,000 readers.' },

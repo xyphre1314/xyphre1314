@@ -148,3 +148,102 @@ Brief: `r86/FIX.md`. Decisions in FIX.md override the reviewers wherever they di
 - Every FIX.md test line passes in Try and the final: strikes = cut, the Kept row, put back and cut again (`r86/fix/engine2.js`).
 - `hero-sync.js` matches. The sheet opens from every CTA, traps focus and returns it.
 - No tile replays or acts on hover or focus.
+
+## Pass 2 (brief: `r86/FIX2.md`, re-rate reviews in `r86/rerate/`)
+FIX2's decisions win where reviewers disagree. All engine text (say, why, cuts, kept) is rendered verbatim from `HWCore.sharpenLine`. The page owns only the clean label and note ("Nothing to cut." / "Sharpen only cuts what's soft…"), the unsure label and why ("Your call." / "“{word}” is marked, but there's no clean cut here."), and display-only NBSPs in times.
+
+**Brand**
+- brand-1: chips are `nowrap`. At 761–900 the Voice columns are re-proportioned, so nothing overflows from 761 to 780.
+- brand-2: the hook margin is -.02em in the nav, the giant footer mark and the OG card (OG re-rendered with the current engine line).
+- brand-3 (decision 8): new `assets/brand/afterglow-wordmark.svg` (adaptive), `-light.svg` and `-dark.svg`, plus `afterglow-icon.svg` and a 180px PNG. They are outlined from Inter 600 / opsz 28 at the page's lockup. The favicon and apple-touch point at them. The app's own `wordmark.svg`, `icon.svg` and `app-icon.*` are untouched.
+- brand-4 / web-10: `&nbsp;` in every static time. `nb()` adds display-only NBSPs to engine text (numbers + units, times).
+- brand-5: Rafael and Marco are text-only. The run shot is Lena's only. The Day tile's morning is cropped in to the skyline over the water (`.morn > .ph img{height:840%}`, `--fx:-22%`), with no runner or path.
+- brand-6: handles are `@rortiz`, `@lenaf`, `@marcov`.
+- brand-7: small tiles set both heading lines in ink. The lead tiles keep the white + grey pair.
+
+**Founder**
+- founder-1 (decision 1):
+  - Hero sub: "Cut the fluff from your first line in one tap, then schedule it. It still sounds like you." Two lines or fewer at 1440, 1280 and 1024.
+  - Platform row "Posts to X · LinkedIn · A nudge for Threads · Bluesky", shown on phones too.
+  - #qa2 and the footer line follow FIX2.
+- founder-2 (decision 2): the hero why and say come from the engine. `hero-sync.js` checks line, why, cut, say and kept, plus the static frame, the Try default and the final default.
+- founder-3: "4 clients: $72 a month, billed yearly ($96 month to month)." The tile shows 4 clients.
+- founder-4: approve writes the edited text into the queue row as scheduled.
+- founder-6: the "What's free?" answer covers rewrites, including that learning your voice uses 5.
+- founder-7: `keptLine()` ignores tokens inside links and handles.
+- founder-8: the heycape thread leads with "i lost $4,000 in march doubling my size to win it back." across Previews, Day, Replies and Results. Jun Park is the one ask-then-answer.
+- founder-9: Pro bullet 1 is "Everything in Free, plus:". The Free bullet follows decision 4.
+- founder-12 (decision 6): the hero Schedule pill is a real button. It opens the sheet titled "Schedule it free" carrying the example line, under reduced motion too.
+- founder-14: the fine print reads "More than 8 clients? Talk to us: hello@hookworthy.com", as plain text.
+
+**UI/UX**
+- uiux-1: the engine now protects URLs, handles, tags and tickers. The page `guard()` stays as a backstop.
+- uiux-2: see brand-1.
+- uiux-3: kept words get a dotted underline.
+- uiux-4a: side effects of a put-back are named ("“honestly” is back, so “and” stays too.").
+- uiux-5: "Paste mine" while the example shows. Once edited it becomes "Clear", with a 5 s Undo.
+- uiux-6: struck words dissolve in place (blur + fade, at most 6px drift).
+- uiux-7: stable names with `aria-pressed`, inside a `role=group` mirror.
+- uiux-8: two email errors.
+- uiux-9 (decision 7): rewrite intent → "Get your rewrite" / "Three takes in your voice. Free, no card." Done title "Not live yet".
+- uiux-10: see founder-12.
+- uiux-12: one chip per word, "×n", at most 6 plus "+N". "Another cut · i/n".
+- uiux-13: the stale rewrite button is disabled.
+
+**Web**
+- web-1: see brand-1.
+- web-2: 901–1099 `.h2.xl` 56px and `#faq .h2` 52px. Every heading is 2 lines or fewer at 1440, 1280, 1024, 960, 901, 768, 390 and 360.
+- web-3: the phone beam is narrow (`--bw:130px`) and starts just past the right edge (`--lx:104%`). The hero micro row measures 4.80:1 at 360 and 6.0–6.2:1 at 375–430. Measured per pixel under the text boxes with the text hidden. The reviewer's `--bl/--k/bloom` values alone still measured 1.06:1.
+- web-4: a third, dimmed feed post (Sam Okafor) fills the morning phone.
+- web-5: the waveform uses fixed 3px bars.
+- web-6: phone Previews `.screens` is 330px and `.pv-note` has min-height 2.9em.
+- web-7: `.t-try` min-height is 698px at ≥1200 and 732px at 1100–1199. Every starter and result keeps the Try/Previews row still; only long lines grow it.
+- web-8: hero body locks are 385 (≥1200), 441 (1100–1199), 453 (901–1099), 499 (761–900) and 440 (phones). The spare space carries the "Cut" chip row under the draft.
+- web-9: the 901–1199 `.hmeta` is a column.
+- web-11: phone hit areas on the toggles.
+- web-12: `.bill .sv` margin is -6px.
+- web-13: `.nev` max-width is 560px at 761–1099.
+
+**Marketing**
+- marketing-1 / 2 (decisions 3 and 4): the Free bullets follow FIX2. The rewrite lede shows at every width.
+- marketing-3 / 4:
+  - "Approve as Priya, with her edit" / "Approve as Lena".
+  - Draft → scheduled with the edited text.
+  - One merged facts line.
+- marketing-5 / 8: from the engine ("Number first · Made it active", "Cut N bits of fluff").
+- marketing-6: "Trades, launches, issues. / Each one opens stronger."
+- marketing-7 / decision 10:
+  - The final default is "just wanted to say that i held $BTC through a 30% drawdown and it paid off" (engine: sharp).
+  - Hero, Try and final drafts all differ.
+  - New Voice body. `.who-n` dropped.
+- marketing-10: Previews notes follow the review.
+- marketing-11: the Voice before/after copy follows the review.
+- marketing-12: "Say it at 11 PM."
+- marketing-14 / 15: the FAQ follows decision 1 and the review.
+- marketing-16: Studio bullets per decision 4.
+- marketing-17: "Not live yet". `#sh-err` is hidden on a mode change.
+- marketing-18: caps units attach ("Your $10k MRR and your 14 months.").
+
+**Hook (page items)**
+- hook-8: the unsure copy follows decision 2.
+- hook-16: after a put-back the page shows the engine's "Kept as you chose" say and why, and keeps "Keep it. Start free" visible.
+- hook-17: the final counter counts the card's fluff strikes, in the engine's own umbrella ("N bits of fluff"). A structural cut such as the "and" in a split is struck without a squiggle and isn't counted, matching the engine's say.
+
+**Skipped / partial**
+- Skipped per FIX2: founder-10 (seventh FAQ; budget), founder-11 (no X payout claims), founder-13 (app copy).
+- uiux-11: starters and client pills got a mask and scroll-snap instead of wrapping (budget). The starters' label is a snap point, so the row opens at its start.
+- marketing-9: the starter is "A sharp one", not "Already sharp", because FIX.md bans that phrase.
+- founder-5 vs marketing-11: used marketing-11's copy.
+- uiux-4b: why selection is the engine's job.
+- uiux-4c: not done.
+- marketing-19: the engine's.
+- marketing-13: superseded by decision 1's platform row.
+- The hero's why is hidden on phones; say and Kept show. This keeps 360 within 10.5 screens.
+
+**Numbers (pass 2 build)**
+- `check.js home`: ok. axe 0 at 1440 and 390 and in 16 dynamic states.
+- CLS 0 at 1440, 1280, 1024, 960, 768, 390 and 360. No horizontal scroll anywhere; none at 761–780.
+- Screens: 8.01 at 1440, 8.98 at 1280, 10.63 at 1024, 10.30 at 960, 9.54 at 768, 9.63 at 390, 10.49 at 360.
+- Hero post bottom: 800 at 1440×900 and 768 at 1280×800 (above the fold). The window height is constant across the 4 examples at every width.
+- The FIX test lines pass in Try and the final at 1440 and 390 (`engine2.js`). `states2.js`, `sheet-test.js` and the intent tests pass.
+- `hero-sync.js` passes, run last against the current core.js.
