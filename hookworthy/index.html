@@ -8568,24 +8568,49 @@ function shReceipt(v, head, cuts = [], note = '') {
   const c = cuts.slice(0, 4);
   return `<span class="shr"><span class="shr-h"><b>${esc(head)}.</b> ${esc(shMoveLabel(v, cuts.length))}.</span>${v.why ? `<span class="shr-why">${esc(v.why)}</span>` : ''}${c.length ? `<span class="shr-cut"><span class="sr">Cut:</span>${c.map(w => `<s>${esc(w)}</s>`).join('')}${cuts.length > c.length ? `<i>+${cuts.length - c.length}</i>` : ''}</span>` : ''}${note ? `<span class="shr-why">${note}</span>` : ''}</span>`;
 }
+/* r86: in the app, Claude sharpens the line through your Hookworthy server (api/v1/sharpen), free like the engine. The
+   server holds Claude's line to the engine's own guards and sends it in the engine's shape, or says it used the engine.
+   Only a server with Claude on is asked; anything else (no server, demo, an error, a rules answer) is null, silently */
+async function sharpenByClaude(text) {
+  await LLM.ready;
+  if (LLM.mode !== 'server' || !LLM.server || !LLM.server.sharpen) return null;
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 9000);
+  try {
+    const r = await fetch('api/v1/sharpen', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, voice: voiceSpec(), never: NEVER(), keep: MEM.memKeepList(memFor()) }), signal: ctl.signal });
+    const j = r.ok ? await r.json().catch(() => null) : null;
+    return j && j.source === 'claude' && j.state === 'sharp' && typeof j.line === 'string' ? j : null;
+  } catch (e) { return null; } finally { clearTimeout(t); }
+}
 function sharpenFirst() {
   const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text, r = hookUpFor(before);
   if (!r) { setImprove(tw.id, 'score'); return; }
   const list = [{ text: r.text, say: r.say, why: r.why, main: r.main, moves: r.moves }, ...r.alts]; let i = 0;
   /* what it learns: the move kept (counted when the post ships), or undone; a pure cut that's undone means those words are theirs */
   const moveOf = v => (v.moves || []).find(k => k !== 'end' && k !== 'soft') || '', keptNote = r.kept && r.kept.length ? `Kept “${esc(r.kept[0])}”: you put it back before.` : '';
+  /* r74: the receipt arrives as the new line settles, so the eye goes line first, reason second. Claude's version names itself */
+  const receipt = (v, a1) => toast(shReceipt(v, moveWord(r.from, a1), v.cuts || r.cuts || [], [v.ai ? 'Sharpened with Claude.' : '', keptNote].filter(Boolean).join(' ')), { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; const mv = moveOf(v), m = memFor();
+      if (mv) MEM.memChoice(m, mv, false); else { const gone = HWCore.words(firstLine(before)).filter(w => !HWCore.words(firstLine(v.text)).includes(w)); if (gone.length && gone.length <= 3) MEM.memKeep(m, gone); }
+      if (S.draft.ai) delete S.draft.ai[tw.id]; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); },
+    ...(list.length > 1 ? { action2: 'Another', onAction2: () => { i = (i + 1) % list.length; show(); } } : {}) });
+  const mark = v => { S.draft.ai = { ...(S.draft.ai || {}), [tw.id]: { text: firstLine(v.text), line: true, kind: 'sharpen', move: moveOf(v), ...(v.ai ? { src: 'claude' } : {}) } }; };
+  /* r86: Claude's line, when it comes and the first line is still the one this tap put there, slips in without a replay and
+     goes first; the engine's stays one "Another" away. It waits for the engine's replay to finish, never cuts it short */
+  let settled = false, late = null;
+  const swapIn = c => {
+    if (i !== 0 || tw.text !== list[0].text || !S.draft.tweets.includes(tw) || String(c.draft || '').trim() !== firstLine(before).trim()) return;
+    const P = hookUpPack(c, before.slice(firstLine(before).length), x => hookFor(x).score, r.from); if (!P || P.line.trim() === firstLine(list[0].text).trim()) return;
+    const v = { text: P.text, say: P.say, why: P.why, main: P.main, moves: P.moves, cuts: P.cuts, ai: true };
+    for (let k = list.length - 1; k > 0; k--) if (firstLine(list[k].text).trim() === P.line.trim()) list.splice(k, 1); list.unshift(v);
+    const ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(tw.text).score; tw.text = v.text; save(); if (ta) ta.value = v.text; mark(v);
+    renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); receipt(v, hookFor(tw.text).score);
+  };
   /* the caret goes back to the end of the first line, so the next keystroke lands in the post, not on the page */
   const show = () => { const v = list[i], was = tw.text, ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(was).score; tw.text = v.text; save(); if (ta) ta.value = v.text; /* typing during the replay lands in the new text */
-    const a1 = hookFor(tw.text).score;
-    S.draft.ai = { ...(S.draft.ai || {}), [tw.id]: { text: firstLine(v.text), line: true, kind: 'sharpen', move: moveOf(v) } };
-    /* r74: the receipt arrives as the new line settles, so the eye goes line first, reason second */
-    const receipt = () => toast(shReceipt(v, moveWord(r.from, a1), r.cuts || [], keptNote), { icon: 'bolt', tone: 'accent', action: 'Undo', onAction: () => { UI.hookFrom = hookFor(tw.text).score; const mv = moveOf(v), m = memFor();
-        if (mv) MEM.memChoice(m, mv, false); else { const gone = HWCore.words(firstLine(before)).filter(w => !HWCore.words(firstLine(v.text)).includes(w)); if (gone.length && gone.length <= 3) MEM.memKeep(m, gone); }
-        if (S.draft.ai) delete S.draft.ai[tw.id]; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); },
-      ...(list.length > 1 ? { action2: 'Another', onAction2: () => { i = (i + 1) % list.length; show(); } } : {}) });
+    const a1 = hookFor(tw.text).score; mark(v);
     /* a number or a result that moved to the front gets a beat of highlight as it lands: you see the move, not just the result */
-    watchEdit(ta, was, v.text, { label: shMoveLabel(v, (r.cuts || []).length), lead: /^(number|result|active|payoff)$/.test(v.main || ''), done: () => { renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); receipt(); } }); SFX.play(a1 >= 70 ? 'hook' : 'swap'); };
+    watchEdit(ta, was, v.text, { label: shMoveLabel(v, (v.cuts || r.cuts || []).length), lead: /^(number|result|active|payoff)$/.test(v.main || ''), done: () => { renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); receipt(v, a1); if (!settled) { settled = true; if (late) swapIn(late); } } }); SFX.play(a1 >= 70 ? 'hook' : 'swap'); };
   show();
+  sharpenByClaude(before).then(c => { if (!c) return; if (settled) swapIn(c); else late = c; });
 }
 function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;

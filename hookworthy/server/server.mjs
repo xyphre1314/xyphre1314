@@ -50,7 +50,7 @@ async function body(req, limit = 5 * 1024 * 1024) { let n = 0; const chunks = []
 const tokenOf = req => { const ok = CR.tokens(); const b = /^Bearer (.+)$/.exec(req.headers.authorization || ''); if (b && ok.has(b[1])) return b[1]; for (const c of (req.headers.cookie || '').split(/;\s*/)) { if (!c.startsWith('hw=')) continue; let v = c.slice(3); try { v = decodeURIComponent(v); } catch { /* as sent */ } if (ok.has(v)) return v; } return null; };
 const authed = req => !TOKEN && !CR.tokens().size || !!tokenOf(req);
 
-export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), plug: true, unfurl: true, replySettings: true, vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
+export const health = () => ({ ok: true, review: true, sync: true, digest: true, email: !!process.env.RESEND_API_KEY, replies: X.xConfigured().read, ai: AI.hasKey(), models: AI.MODELS, x: X.xConfigured().read, xPost: X.xConfigured().post, xUser: X.connectedUser() || null, xTier: X.connectedTier(), gifs: G.gifsConfigured(), media: true, radar: X.xConfigured().read, breakout: BO.configured(), plug: true, unfurl: true, sharpen: true, replySettings: true, vote: true, linkedin: LI.liConfigured(), liUser: LI.connectedUser() || null, typefully: true, version: 1 });
 
 /* drafts for a breakout's first replies, in your voice (only when Claude is on) */
 export const breakoutDrafts = AI.hasKey() ? async ({ post, replies, voice }) => (await AI.complete({ ...core.prompts.replies({ post, replies, voice }), json: true })).data : null;
@@ -62,6 +62,32 @@ const outOfCredits = (res, q) => send(res, 402, { error: `That needs ${q.cost} c
 const helpersOut = (res, q) => send(res, 402, { error: `That’s today’s ${CR.FAIR_ASSISTS} free Claude touch-ups. They’re back at midnight, or go Pro for more.`, code: 'helpers_out', cost: 0, credits: q.credits });
 async function withCredits(req, info, run) { const q = CR.reserve(tokenOf(req), info); if (!q.ok) return { q }; try { return { q, r: await run() }; } catch (e) { q.refund(); throw e; } }
 const spent = q => q.metered ? { cost: q.cost, credits: q.credits } : {};
+
+/* r86: Sharpen through Claude. Free and unlimited like the on-device Sharpen: no credits, ever. Claude proposes the line
+   (Sonnet 5.5 at low effort, the quick tier), core.SHARPEN.fromClaude holds it to the engine's guards and builds the
+   receipt, and anything that goes wrong is the engine's own line instead. A fair-use cap per token per day
+   (HW_SHARPEN_DAILY, 300) and the per-IP rate limit only decide which of the two answers */
+export const SHARPEN_TIMEOUT_MS = 6000;
+const sharpenUse = new Map();
+export const resetSharpenCaps = () => sharpenUse.clear(); // tests
+const sharpenCap = () => { const v = String(process.env.HW_SHARPEN_DAILY ?? '').trim(); return v !== '' && Number.isFinite(+v) ? Math.max(0, Math.floor(+v)) : 300; };
+const sharpenKey = who => `${new Date().toISOString().slice(0, 10)}|${who}`;
+function sharpenTake(who) {
+  const k = sharpenKey(who), n = sharpenUse.get(k) || 0; if (n >= sharpenCap()) return false;
+  if (sharpenUse.size > 10000) for (const key of sharpenUse.keys()) if (!key.startsWith(k.slice(0, 11))) sharpenUse.delete(key);
+  sharpenUse.set(k, n + 1); return true;
+}
+const strList = (a, n) => (Array.isArray(a) ? a : []).filter(w => typeof w === 'string' && w.trim()).slice(0, n).map(w => w.slice(0, 80));
+/* the Claude path on its own (the endpoint and the owner's eval both run it): { result } when Claude's line passes,
+   else { reason }. usage is Claude's token count when a call was made */
+export async function sharpenClaude({ text, voice = null, never = [], keep = [] }) {
+  const nv = [...never, ...(voice && Array.isArray(voice.never) ? strList(voice.never, 60) : [])];
+  let r;
+  try { r = await AI.complete({ ...core.prompts.sharpen({ text, voice, never: nv, keep }), timeout: SHARPEN_TIMEOUT_MS }); }
+  catch (e) { const c = e && e.code; return { reason: c === 'no_key' || c === 'timeout' || c === 'refused' ? c : c === 'invalid_json' || c === 'empty_completion' ? 'invalid' : 'error', error: e }; }
+  const result = r.truncated ? null : core.SHARPEN.fromClaude(text, r.data, { keep, never: nv });
+  return result ? { result, usage: r.usage, model: r.model, data: r.data } : { reason: 'invalid', usage: r.usage, model: r.model, data: r.data };
+}
 
 export async function handle(req, res) {
   const url = new URL(req.url, 'http://x'); const p = url.pathname; const ip = req.socket.remoteAddress || 'local';
@@ -140,6 +166,19 @@ export async function handle(req, res) {
     /* the same checks and rewrites, for other apps and AI assistants */
     if (p === '/api/v1/check' && req.method === 'POST') { const b = await body(req); const text = String(b.text || ''); const hist = Array.isArray(b.history) ? b.history.slice(0, 3000).map(core.normPost).filter(Boolean) : null; const tuned = hist ? core.learnHooks(hist) : null; return send(res, 200, { hook: core.hookScore(text), ...(tuned ? { mine: tuned.ready ? { ...core.personalScore(text, tuned), tested: tuned.val } : { ready: false, n: tuned.n, need: tuned.need } } : {}), kind: core.kindOf(text), checks: core.checkPost(text, { never: b.never || [], limit: b.limit || 280, platform: b.platform || 'x' }) }); }
     if (p === '/api/v1/rewrite' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' }); const spec = core.prompts.rewrite({ text: b.text, kind: b.kind || 'punchier', lang: b.lang, voice: b.voice || null, platform: b.platform || 'X', limit: b.limit || 280 }); const { q, r } = await withCredits(req, { act: 'rewrite', chars: String(b.text || '').length }, () => AI.complete({ ...spec, json: true })); if (!r) return outOfCredits(res, q); return send(res, 200, r.data, q.metered ? { 'x-credits-left': String(q.credits.left) } : {}); }
+    /* POST /api/v1/sharpen { text, voice?, never?, keep? }: always 200 with sharpenLine's contract and source 'claude' |
+       'rules'; a rules answer says why (thin, no_key, cap, timeout, invalid, refused, error). Never spends credits */
+    if (p === '/api/v1/sharpen' && req.method === 'POST') {
+      const b = await body(req, 64 * 1024), text = typeof b.text === 'string' ? b.text : '', keep = strList(b.keep, 30), never = strList(b.never, 60);
+      const voice = b.voice && typeof b.voice === 'object' && !Array.isArray(b.voice) ? b.voice : null;
+      const rules = reason => send(res, 200, { ...core.sharpenLine(text, { keep }), source: 'rules', reason });
+      if (core.SHARPEN.tooThin(text)) return rules('thin');
+      if (!AI.hasKey()) return rules('no_key');
+      const who = tokenOf(req) || `ip:${ip}`;
+      if ((sharpenUse.get(sharpenKey(who)) || 0) >= sharpenCap() || !allow(ip) || !sharpenTake(who)) return rules('cap');
+      const r = await sharpenClaude({ text, voice, never, keep });
+      return r.result ? send(res, 200, { ...r.result, source: 'claude' }) : rules(r.reason);
+    }
     if (p === '/api/v1/ideas' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' }); const { q, r } = await withCredits(req, { act: 'ideas' }, () => AI.complete({ ...core.prompts.ideas({ niche: b.niche, voice: b.voice, top: b.top || [], inbox: b.notes || [], count: b.count || 6 }), json: true })); if (!r) return outOfCredits(res, q); return send(res, 200, { ideas: r.data, ...spent(q) }); }
 
     /* OAuth */

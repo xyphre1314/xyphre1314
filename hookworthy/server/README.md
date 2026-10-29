@@ -7,7 +7,7 @@ cd hookworthy/server
 cp .env.example .env    # add the keys you have
 npm install
 npm start               # http://localhost:8787
-npm test                # 28 tests, no keys or network needed
+npm test                # 150 tests, no keys or network needed
 ```
 
 ## Which Claude does what
@@ -16,7 +16,7 @@ Two models, Sonnet and Opus, with effort as the dial between small jobs and writ
 
 | Work | Tier | Model | Effort | Why |
 |---|---|---|---|---|
-| Grammar, sharpening a phrase, A/B lines, tidying a dictation, visuals | `quick` | `claude-sonnet-5-5` | `low` | Small edits at low effort, a fraction of a cent each |
+| One-tap Sharpen (`/api/v1/sharpen`), grammar, sharpening a phrase, A/B lines, tidying a dictation, visuals | `quick` | `claude-sonnet-5-5` | `low` | Small edits at low effort, a fraction of a cent each |
 | Rewrites, three stronger first lines, the Room, ideas, post-mortems, people patterns, briefs, replies, the week plan | `default` | `claude-sonnet-5-5` | `medium` | Writing in the author's voice |
 | Learn my voice (reads up to 120 posts once) | `complex` | `claude-opus-5-5` | `high` | One deep read that every later rewrite depends on |
 
@@ -47,6 +47,7 @@ Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (th
 | `GET /api/breakout/alerts?since=` | Alerts so far (the open app checks every minute) |
 | `GET /api/breakout/live?id=` | What the watcher has seen for one post so far (minute, likes, replies, engagement) and your usual pace curve. Feeds the app's live first-hour pill; makes no X calls of its own |
 | `POST /api/breakout/test` | Sends a test alert to your devices and email |
+| `POST /api/v1/sharpen` `{text, voice?, never?, keep?}` | One-tap Sharpen of the first line, through Claude with the on-device engine as the fallback. Always `200` with the engine's contract plus `source: "claude"` or `"rules"`; see [Sharpen with Claude](#sharpen-with-claude). Free: never uses credits |
 | `POST /api/v1/rewrite` `{text, kind, voice?}` | Three rewrites in a voice |
 | `POST /api/v1/ideas` `{niche, notes, top}` | First lines to write today |
 | `GET /api/x/replies?id=` | First-hour replies to a post, ranked (questions and reach first) |
@@ -56,6 +57,43 @@ Opened as a claude.ai artifact instead, the app uses the viewer's own Claude (th
 | `PUT/GET /api/sync/:id` | End-to-end encrypted sync: the browser encrypts with a key derived from your sync code; the server stores ciphertext only |
 | `/auth/x/start`, `/auth/linkedin/start` | Connect accounts for posting |
 | `/login?token=` | Signs a device in when `HOOKWORTHY_TOKEN` is set (the server prints the link) |
+
+## Sharpen with Claude
+
+In the app, Sharpen asks Claude for the first line through `POST /api/v1/sharpen`, and the on-device engine (`core.sharpenLine`) is both the instant result and the fallback. The app shows the engine's line the moment you tap; if the server answers with `source: "claude"` and the first line is still the one the tap left, Claude's line slides in quietly ("Sharpened with Claude"), with the engine's one "Another" away. The homepage demo runs only the on-device engine.
+
+```bash
+curl -s http://localhost:8787/api/v1/sharpen -H 'content-type: application/json' \
+  -d '{"text": "I just wanted to share that our team shipped v2 and signups went up 31% this week", "never": ["synergy"], "keep": []}'
+# → {"state":"sharp","line":"Our team shipped v2 and signups went up 31% this week.","cut":[{"text":"I just wanted to share that","kind":"announce",…}],
+#    "say":"Cut 1 bit of fluff","why":"…","kept":["v2","31%"],"source":"claude", …}
+```
+
+- **Request.** `text` is the post (only the first line is rewritten; the rest comes back as `rest`). `voice` is the app's voice memory (`summary`, `rules`, `tone`, `examples`, `learned`), `never` the never-say list, `keep` the words the writer put back after an earlier cut (they stay in every version).
+- **Response.** Always `200` with `sharpenLine`'s contract: `{state, draft, line, rest, cut, marks, move, say, why, kept, alts, long, note}` plus `source`. When the engine answered, `reason` says why: `thin` (empty or too short to cut, so Claude isn't asked), `no_key`, `cap` (the daily fair-use cap or the per-IP rate limit), `timeout` (6 s), `invalid` (Claude's line failed a check), `refused`, or `error`.
+- **What Claude decides, and what it doesn't.** Claude (the `quick` tier: `claude-sonnet-5-5` at low effort, with the server-side refusal fallback) proposes only `{line, why, unchanged}`. `core.SHARPEN.fromClaude` holds the line to every guard the engine's own versions pass (every number, $, %, ticker, @handle, #tag, link and name kept verbatim; no meaning word or "not" dropped; no broken template), plus the ones a model needs: nothing longer than the draft, no number, fact, name, emoji or `[blank]` the draft didn't have, no banned or never-say word, and a lowercase writer stays lowercase. The cut list, the receipt (`say`) and the facts come from the engine's own word diff, never the model. Claude's `why` is used only if it is at most 140 characters and quotes nothing that isn't in the draft or the line. `unchanged: true` comes back as `state: "clean"`.
+- **Free.** It never takes credits or free helpers. `HW_SHARPEN_DAILY` (default `300`) caps Claude per token per day (per IP when the server has no tokens); past it the engine answers, still free. `0` turns Claude off for Sharpen.
+- **Caching.** The instructions and ten juror-graded examples (about 1,400 tokens) are the same bytes for every author and every line, so they go first with `cache_control` and every tap within five minutes reads them from the prompt cache; the author's voice, lists and line follow. `complete({ cached, timeout })` in `lib/ai.mjs` does this for any caller: `cached` becomes the first user text block with a cache breakpoint, and `timeout` (ms) is passed as request options with retries off, so 6 s means 6 s.
+
+**What a tap costs** (Sonnet 5.5: $2/MTok in, $10/MTok out, $0.20/MTok cache reads, $2.50/MTok cache writes). A tap sends about 1,450 cached tokens (system prompt, instructions, examples), 100–600 fresh ones (the line, the never-say list and, with a full voice memory, a few of your posts) and gets back about 150 (the JSON, plus a little adaptive thinking at low effort):
+
+| | Cached prefix | Fresh input | Output | Per tap |
+|---|---|---|---|---|
+| Warm cache, full voice memory | 1,450 × $0.20/M = $0.0003 | 600 × $2/M = $0.0012 | 150 × $10/M = $0.0015 | **≈ $0.003** |
+| Warm cache, no voice memory | $0.0003 | 100 × $2/M = $0.0002 | $0.0015 | **≈ $0.002** |
+| First tap in 5 minutes (cache write) | 1,450 × $2.50/M = $0.0036 | $0.0012 | $0.0015 | ≈ $0.006 |
+
+So about a third of a cent a tap: 20 taps a day is about $1.50 a month per writer, and the 300-a-day cap bounds one token at roughly $0.90 a day. Those are estimates from the prompt's length; the eval below prints the real token counts and cache hits.
+
+**The eval.** `test/sharpen-ai-eval.mjs` feeds every juror line set (`concepts/r86/reviews/rerate*/hook/unseen.json`, about 300 lines) through the Claude path and the rules path and writes a side-by-side markdown table (draft | rules | claude | validator verdict, with an empty grade column) for hand grading. It calls the real API, so it only runs with a key in the environment, and it isn't part of `npm test`:
+
+```bash
+cd server
+ANTHROPIC_API_KEY=sk-ant-... node test/sharpen-ai-eval.mjs                 # all lines, 4 at a time → ./sharpen-ai-eval-YYYY-MM-DD.md
+ANTHROPIC_API_KEY=sk-ant-... node test/sharpen-ai-eval.mjs --limit 40 --out /tmp/sharpen.md
+```
+
+It prints the verdicts (passed, or which check rejected the line), the total tokens, how many calls read the cached prefix, and the estimated cost (about $1 for the full set).
 
 ## MCP (for Claude Desktop, Claude Code, any MCP client)
 
@@ -98,7 +136,7 @@ HOOKWORTHY_TOKENS=alice-token:pro,bob-token:free   # each signs in once at /logi
 HW_PLAN=pro                                        # optional: meter the main HOOKWORTHY_TOKEN too
 ```
 
-The prices and refill rules come from `core.js` (`CREDITS`), the same table the app shows on its buttons: Free is 20 a month; Pro is 250 a month and Studio 500 per client voice, all refilling on the day they joined, and on paid plans the first month's leftovers roll over, up to one extra month. Pro and Studio can carry a monthly add-on (`CREDITS.BOOSTS`: +250, +750 or +1,750), saved on the ledger as `boost`, and every refill includes it. A rewrite is 1 (2 for a post over 1,000 characters), each PDF or picture adds 1, the bigger-model tier is never under 5, and Sharpen and the small helpers are free up to 50 a day (`CREDITS.HELPERS`). Past that, Free gets a `402` with `code: "helpers_out"` and nothing is taken, until local midnight; paid plans pay 1 each. Every metered answer's `credits` carries `helpers: {left, max, next}`. `/api/ai`, `/api/v1/rewrite` and `/api/v1/ideas` take the credits before calling Claude and give them back if the call fails. Out of credits is a `402` with `code: "out_of_credits"`, the price and the balance. `/api/health` and every metered answer carry `credits: {plan, left, amount, per, next, rolled}`, which drives the app's meter. Balances live in `data/credits.json`, filed under a hash of each token.
+The prices and refill rules come from `core.js` (`CREDITS`), the same table the app shows on its buttons: Free is 20 a month; Pro is 250 a month and Studio 500 per client voice, all refilling on the day they joined, and on paid plans the first month's leftovers roll over, up to one extra month. Pro and Studio can carry a monthly add-on (`CREDITS.BOOSTS`: +250, +750 or +1,750), saved on the ledger as `boost`, and every refill includes it. A rewrite is 1 (2 for a post over 1,000 characters), each PDF or picture adds 1, the bigger-model tier is never under 5, and Sharpen and the small helpers are free up to 50 a day (`CREDITS.HELPERS`). Past that, Free gets a `402` with `code: "helpers_out"` and nothing is taken, until local midnight; paid plans pay 1 each. Every metered answer's `credits` carries `helpers: {left, max, next}`. `/api/ai`, `/api/v1/rewrite` and `/api/v1/ideas` take the credits before calling Claude and give them back if the call fails. The one-tap Sharpen (`/api/v1/sharpen`) never touches credits or helpers; only its fair-use cap (`HW_SHARPEN_DAILY`) applies. Out of credits is a `402` with `code: "out_of_credits"`, the price and the balance. `/api/health` and every metered answer carry `credits: {plan, left, amount, per, next, rolled}`, which drives the app's meter. Balances live in `data/credits.json`, filed under a hash of each token.
 
 ## Security notes
 

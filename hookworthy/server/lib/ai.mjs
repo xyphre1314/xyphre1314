@@ -67,22 +67,31 @@ function outputFormat(schema) {
   return { wrapped: false, format: { type: 'json_schema', schema } };
 }
 
-export async function complete({ prompt, tier = 'default', json = false, docs = [], schema = null }) {
+/* cached: an optional stable prefix (instructions, examples) sent as the first user text block with a cache breakpoint, so
+   repeated calls read it from the prompt cache; the variable prompt follows it. Below the model's minimum cacheable length
+   it simply isn't cached (no error). timeout: an optional per-request budget in ms. Retries are off for that request,
+   since each retry would get the full budget again and the caller has its own fallback */
+export async function complete({ prompt, tier = 'default', json = false, docs = [], schema = null, cached = null, timeout = null }) {
   if (!hasKey()) throw new AIError('no_key', 'Set ANTHROPIC_API_KEY in server/.env', 503);
   if (typeof prompt !== 'string' || !prompt.trim()) throw new AIError('invalid_request', 'prompt is required', 400);
-  if (Buffer.byteLength(prompt) > 256 * 1024) throw new AIError('prompt_too_large', 'Prompt over 256 KB', 413);
+  const stable = typeof cached === 'string' && cached.trim() ? cached : null;
+  if (Buffer.byteLength(prompt) + (stable ? Buffer.byteLength(stable) : 0) > 256 * 1024) throw new AIError('prompt_too_large', 'Prompt over 256 KB', 413);
   const t = MODELS[tier] ? tier : 'default'; const blocks = docBlocks(docs); const out = json ? outputFormat(schema) : null;
+  const content = stable ? [{ type: 'text', text: stable, cache_control: { type: 'ephemeral' } }, ...blocks, { type: 'text', text: prompt }] : blocks.length ? [...blocks, { type: 'text', text: prompt }] : prompt;
+  const opts = Number.isFinite(timeout) && timeout > 0 ? { timeout: Math.round(timeout), maxRetries: 0 } : null;
   let res;
   try {
-    res = await getClient().beta.messages.create({
+    const params = {
       model: MODELS[t],
       max_tokens: MAX_TOKENS[t],
       system: json && !out ? SYSTEM + JSON_ONLY : SYSTEM,
       output_config: { effort: EFFORT[t], ...(out ? { format: out.format } : {}) },
-      messages: [{ role: 'user', content: blocks.length ? [...blocks, { type: 'text', text: prompt }] : prompt }],
+      messages: [{ role: 'user', content }],
       ...(hasFallback(MODELS[t]) ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' } : {})
-    });
+    };
+    res = await (opts ? getClient().beta.messages.create(params, opts) : getClient().beta.messages.create(params));
   } catch (e) {
+    if (e instanceof Anthropic.APIConnectionTimeoutError) throw new AIError('timeout', 'Claude took too long to answer', 504);
     if (e instanceof Anthropic.RateLimitError) throw new AIError('rate_limited', 'Claude is rate limited; try again shortly', 429);
     if (e instanceof Anthropic.AuthenticationError) throw new AIError('auth', 'ANTHROPIC_API_KEY was rejected', 401);
     if (e instanceof Anthropic.BadRequestError) throw new AIError('invalid_request', e.message, 400);

@@ -804,8 +804,62 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
       visual: { anyOf: [O({ template: { type: 'string', const: 'data' }, metric: Str, before: Str, after: Str }), O({ template: { type: 'string', const: 'stat' }, value: Str, label: Str }), O({ template: { type: 'string', const: 'quote' } })] } }),
     visual: O({ template: E('data', 'stat', 'list', 'compare', 'quote'), headline: Str, metric: Str, before: Str, after: Str, value: Str, label: Str, items: A(Str), left: Str, right: Str, emphasis: Str, why: Str }),
     critique: O({ reason: Str, better: A(Str) }),
-    room: O({ lines: A(O({ agent: E(...ROOM.map(r => r.k)), line: Str })) })
+    room: O({ lines: A(O({ agent: E(...ROOM.map(r => r.k)), line: Str })) }),
+    sharpen: O({ line: Str, why: Str, unchanged: { type: 'boolean' } })
   };
+  /* r86: the one-tap Sharpen through Claude (the server's /api/v1/sharpen). This part never changes between taps, so the
+     server sends it first and caches it; the author's line and lists follow it. Claude only proposes the line and a why:
+     SHARPEN.fromClaude holds the line to the engine's own guards and builds the receipt from the engine's own diff.
+     The examples are lines the r86 jurors graded "a pro would post this" (the hook/graded.json of each re-rate in reviews) */
+  const SHARPEN_EX = [
+    ['I just wanted to share some thoughts on why I think $SOL is honestly going to outperform $ETH this cycle', 'I think $SOL will outperform $ETH this cycle.', 'The run-up is gone. “I think” stays: on a price call it’s your stance, not filler.'],
+    ['ok so i finally figured out why my posts weren\'t getting any reach and it\'s kind of embarrassing', 'i finally figured out why my posts weren\'t getting any reach and it\'s embarrassing.', '“ok so” and “kind of” were talk, not the point. Still lowercase, still you.'],
+    ['We just hit $10k MRR after 14 months of building in public. Here\'s everything that actually worked:', '$10k MRR after 14 months of building in public. Here\'s everything that actually worked:', '“$10k MRR” comes first, so it reads as proof before anyone decides whether to read on.'],
+    ['Walking 10k steps a day is honestly the most underrated thing you can do for your health.', 'Most underrated thing you can do for your health? Walking 10k steps a day.', 'The question opens a gap and “Walking 10k steps a day” closes it.'],
+    ['Unpopular opinion: you don\'t need a co-founder.', 'You don\'t need a co-founder.', '“Unpopular opinion:” is a label readers skip. The claim stands on its own.'],
+    ['📉 Down 62% from ATH and I\'m still honestly not selling a single $ETH', '📉 Down 62% from ATH. I\'m still not selling a single $ETH.', 'Two beats, and “honestly” went. “still” and “not” stay: they’re the point.'],
+    ['I really think that every developer should honestly learn SQL properly before touching any ORM', 'Every developer should learn SQL properly before touching any ORM.', 'Advice, not a call, so “I really think” went, with “honestly”. The claim stands on its own.'],
+    ['Let me tell you about the time I lost $180k in 11 minutes on a leveraged $ETH long during the FTX collapse', 'I lost $180k in 11 minutes on a leveraged $ETH long during the FTX collapse.', 'It opens on what happened, not on “Let me tell you about the time”.'],
+    ['Day 47 of building my SaaS in public. 3 paying customers. $87 MRR. Still going.', null, 'Already sharp: short beats, the numbers up front, nothing soft to cut.'],
+    ['I actually agree with Vitalik on this one.', null, '“actually” is the point: it says you didn’t expect to agree.']
+  ];
+  const SHARPEN_AI = `You are Sharpen, the one-tap editor inside Hookworthy. A creator taps it on the first line of a post, its hook, and posts what you return under their own name.
+
+Your job: rewrite only that first line so a fast scroller stops for it. Return one line: never the rest of the post, never options.
+
+How to sharpen:
+- Cut the fluff: warm-ups and run-up frames ("So", "ok so", "I just wanted to share", "Excited to announce that", "Let me tell you about", "Quick thought:", "Unpopular opinion:", "Here are"), hedges and filler ("honestly", "basically", "literally", "kind of", "pretty much", "really", and "just" when it only pads), and bait tails ("Thoughts?", "Agree?").
+- Lead with the point. When the line has a number or a result, it can come first. Ask, then answer, only when the line names a best, worst, biggest or one thing. A full stop can split one long line into two beats.
+- Shorter, never longer: what you return has no more characters than the line you got.
+
+Keep the writer:
+- Their voice. Lowercase stays lowercase, "i" included. Their slang, emoji and punctuation habits stay. On a price call or a prediction, "i think", "imo" and "nfa" are their stance: keep them. Anywhere else, "I think" in front of a claim is a hedge.
+- Every fact, character for character: every number, $, %, ticker, @handle, #tag, link and proper name.
+- Every negation and every word that carries the meaning: not, never, no, still, only, almost, every, and a "just" or "actually" that is the point ("you can just log off", "I actually agree").
+- Add nothing: no fact, number, name, claim, result, timeframe, emoji, hashtag or [blank] the line doesn't already have.
+- No hype, and none of the words readers clock as AI: unlock, supercharge, leverage (as a verb), elevate, seamless, game-changer, delve, "AI-powered". Never use the author's never-say words; if the line has one, say it plainly instead.
+- A line that is already sharp comes back exactly as it was, with "unchanged": true. Don't touch a line just to touch it.
+
+"why": one plain sentence of at most 140 characters, true for this edit: what went or what moved, and why it reads better. Quote only words that are in their line or in yours. When the line is unchanged, say why it already works.
+
+Reply with only JSON: {"line":"...","why":"...","unchanged":false}
+
+Examples, from lines editors graded (their line, then your reply):
+${SHARPEN_EX.map(([d, l, w]) => `<example>\n<line>${d}</line>\n${JSON.stringify({ line: l || d, why: w, unchanged: !l })}\n</example>`).join('\n')}`;
+  function sharpenAI({ text, voice, never, keep, more } = {}) {
+    const src = String(text == null ? '' : text).replace(/^\s+/, ''), nl = src.indexOf('\n');
+    const line = (nl < 0 ? src : src.slice(0, nl)).replace(/\s+$/, ''), goesOn = more != null ? !!more : nl >= 0 && !!src.slice(nl + 1).trim();
+    const list = (a, n) => [...new Set((Array.isArray(a) ? a : []).filter(w => typeof w === 'string' && w.trim()).map(w => w.trim().slice(0, 60)))].slice(0, n);
+    const v = voice && typeof voice === 'object' && !Array.isArray(voice) ? voice : null;
+    const nv = list([...(Array.isArray(never) ? never : []), ...(v && Array.isArray(v.never) ? v.never : [])], 40), kp = list(keep, 20), vb = v ? voiceBlock({ ...v, never: null }) : '';
+    return { tier: 'quick', json: true, schema: SCHEMA.sharpen, cached: SHARPEN_AI, prompt: [
+      vb ? `How this author writes (for their voice only; the line below is what you edit):\n${vb}` : '',
+      nv.length ? `Their never-say words: ${nv.join(', ')}` : '',
+      kp.length ? `Words they put back after an earlier edit cut them. Keep each one the line has: ${kp.join(', ')}` : '',
+      goesOn ? 'The post goes on after this line.' : 'This line is the whole post.',
+      `<line>\n${line}\n</line>`
+    ].filter(Boolean).join('\n\n') };
+  }
   const P = {
     rewrite({ text, kind, lang, voice, platform = 'X', limit = 280 }) {
       return { tier: kind === 'grammar' ? 'quick' : 'default', json: true, schema: SCHEMA.options, prompt: `${BRIEF}
@@ -843,8 +897,12 @@ ${part ? `\n<full_post>\n${context}\n</full_post>\n\n<selected>\n${text}\n</sele
 
 Reply with only JSON: {"options":[{"text":"...","why":"one short sentence on what changed"}]} with up to 3 genuinely different options. If the instruction can't be followed honestly (it asks you to invent facts), return {"options":[],"why":"one short sentence saying why"}.` };
     },
-    /* Sharpen: k versions of only the selected words, for one option. The client checks every version before showing it */
-    sharpen({ post, s, e, option = 'punchier', voice, count = 3 }) {
+    /* Sharpen, two shapes. { text, voice, never, keep }: the one-tap first-line Sharpen the server runs through Claude (r86,
+       sharpenAI above). { post, s, e, option }: k versions of only the selected words, for one option; the client checks
+       every version before showing it */
+    sharpen(o = {}) {
+      if (!o || o.post == null) return sharpenAI(o || {});
+      const { post, s, e, option = 'punchier', voice, count = 3 } = o;
       const t = String(post || ''), pre = t.slice(0, s), sel = t.slice(s, e), suf = t.slice(e);
       const ask = {
         punchier: 'Punchier: tighter and more direct. Cut filler and hedges, use stronger verbs, same length or shorter.',
@@ -3142,7 +3200,105 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     }
     return { ...R, state: 'sharp', line: best.line, cut: E.cut, move: E.move, say: E.say, why: E.why, alts, long: longOf(best.line), note: noteOf(best.line), moves: best.moves, score: { from: H ? H.from : score0, to: best.score != null ? best.score : hookScore(rest ? `${best.line}\n${rest}` : best.line).score } };
   }
-  const SHARPEN = { OPTS: SH_OPTS, LABEL: SH_LABEL, sharpen, fromModel, frame, fit, judge, styleOf, versionsFor, pickVersions, modelTexts, stripModel, deEcho, checkPost: checkPost2, whyNot, nearSame, tidy: tidyT, cutHedges, MOVES, sub, WORDY, CONTRACT_W, PLAIN_W, JARGON_W, SHORTHAND, IDIOM, numsOf, ticksOf, hookUp, SOFT, softMarks, softCut, MOVE_WHY: HK_WHY, MOVE_SAY: HK_SAY, sharpenLine, stanceKeep, factsOf: s => slFacts(s, softMarks(s)).filter(f => !f.link).map(f => f.v), guard: slGuard, fragN: slFragN, _dbg: { slCut, softWhy, slThin, slTiny, slOK: (l, d) => slOK(l, d, slFacts(d, softMarks(d))), slBroken, slMeanOK, slGuardOK, slFacts, slExtra, slClause, slFinite, parts: (l, d) => ({ re: SL_BROKEN.map((re, i) => cnt(l, re) > cnt(d, re) ? i : -1).filter(i => i >= 0), caps: slCapsNew(l, d), frag: [slFragN(l), slFragN(d)], verbless: [slVerblessN(l), slVerblessN(d)], notBut: [slNotBut(l), slNotBut(d)] }) },
+  /* ---------------- r86: Claude's Sharpen, held to sharpenLine's contract and guards ----------------
+     Claude proposes the line and a why (core.prompts.sharpen). Everything the UI shows is the engine's: the words cut and
+     their kinds come from its word diff, the receipt from its receipt rules, the facts and marks from its own reads. The line
+     passes every guard an engine version passes, plus the ones a model needs (nothing new, nothing longer, no AI words,
+     the writer's casing). Anything off returns null, and the caller shows the engine's own line (opts.trace, when given, gets
+     .reject: which check said no, for the owner's eval) */
+  /* the lines sharpenLine answers without trying a cut: empty, gibberish, under three real words, only a disclaimer */
+  function slSkip(text) {
+    const src = String(text == null ? '' : text).replace(/^\s+/, ''), nl = src.indexOf('\n'), draft = (nl < 0 ? src : src.slice(0, nl)).replace(/\s+$/, '');
+    if (!draft) return true;
+    const vm = draft.match(HK_VOICE), body = vm ? draft.slice(vm[0].length) : draft;
+    return !body.trim() || slThin(body) || slTiny(body) || slSents(body).every(x => SL_DISC1.test(x.replace(/[.!\s]+$/, '')));
+  }
+  const SL_AIW = /(?<![\p{L}\p{N}])(?:unlock(?:s|ed|ing)?|supercharg(?:e|es|ed|ing)|elevat(?:e|es|ed|ing)|seamless(?:ly)?|game[- ]?changers?|delv(?:e|es|ed|ing)|ai[- ]powered)(?![\p{L}\p{N}])/iu;
+  /* "leverage" the verb ("leverage your network", "we leveraged AI"), never the noun ("50x leverage") or a trader's "leveraged long" */
+  const SL_LEVV = /\b(?:to|can|will|we|you|i|they|should|must|could|would|let['’]s|and|or)\s+leverage\b|\bleverag(?:e|es|ed|ing)\s+(?:our|your|their|the|this|that|these|those|it|them|my|his|her|its|ai|data|every|existing)\b|\bleveraging\b/i;
+  const SL_NUMW2 = /\b(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|dozen)\b/gi;
+  const slTally = (z, re) => { const c = {}; (String(z).match(re) || []).forEach(w => { const k = w.toLowerCase(); c[k] = (c[k] || 0) + 1; }); return c; };
+  const slMore = (line, draft, re) => { const d = slTally(draft, re); return Object.entries(slTally(line, re)).some(([k, n]) => n > (d[k] || 0)); };
+  const slDigitRuns = z => (String(z).match(/\d[\d,.]*\d|\d/g) || []).map(x => x.replace(/,/g, ''));
+  const slEdge = x => x.replace(/^[^\p{L}\p{N}$@#]+|[^\p{L}\p{N}%]+$/gu, '');
+  /* a lowercase writer: a sentence that starts lowercase ("eth will 5k", "gm. so…"), and no capital outside links, handles,
+     tags, tickers and all-caps acronyms. A line that opens on "ETH/BTC" or "TIL" says nothing about their casing */
+  const slLower = z => slSents(z).some(x => /^[^\p{L}$@#]*\p{Ll}/u.test(x)) && !/\p{Lu}/u.test(String(z).replace(SL_URL, ' ').replace(/(?<![\p{L}\p{N}_])[@#$][\p{L}\p{N}_]+/gu, ' ').replace(/(?<![\p{L}\p{N}])[\p{Lu}\p{N}&]{2,}s?(?![\p{L}\p{N}])/gu, ' '));
+  /* words that kept their order line up; a shared word out of that order means the line was reshaped, not only cut */
+  function slReordered(draft, line) {
+    const D = slToks(draft).map(x => x.w), L = slToks(line).map(x => x.w), bag = new Map(); D.forEach(w => bag.set(w, (bag.get(w) || 0) + 1));
+    const shared = L.filter(w => { const k = bag.get(w) || 0; if (!k) return false; bag.set(w, k - 1); return true; }).length;
+    const n = D.length, m = L.length, dp = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = D[i] === L[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    return dp[0][0] < shared;
+  }
+  /* the moves Claude's line can be credited with, each still checked against the words by slMoves: a pure cut can only have
+     asked, split or opened a loop; a reshape can also have led with the news, the number, the ticker, the claim or the moment */
+  const SL_AI_MOVES = ['news', 'number', 'ticker', 'lead', 'active', 'moment', 'ask', 'contrast', 'straight', 'loop'], SL_AI_CUT = ['ask', 'contrast', 'loop'];
+  function fromClaude(text, data, opts = {}) {
+    try {
+      const no = k => { if (opts.trace && typeof opts.trace === 'object') opts.trace.reject = k; return null; };
+      if (!data || typeof data !== 'object' || typeof data.unchanged !== 'boolean') return no('shape');
+      const keep = (Array.isArray(opts.keep) ? opts.keep : []).filter(w => typeof w === 'string' && w.trim());
+      const never = (Array.isArray(opts.never) ? opts.never : []).filter(w => typeof w === 'string' && w.trim()).map(w => lcw(w.trim()));
+      const src = String(text == null ? '' : text).replace(/^\s+/, ''), nl = src.indexOf('\n');
+      const draft = (nl < 0 ? src : src.slice(0, nl)).replace(/\s+$/, ''), rest = nl < 0 ? '' : src.slice(nl + 1);
+      if (slSkip(draft)) return no('thin');
+      const vm = draft.match(HK_VOICE), body = vm ? draft.slice(vm[0].length) : draft;
+      const marks = softMarks(draft, keep), facts = slFacts(draft, marks), kept = facts.filter(f => !f.link && slKeepW(f.v)).map(f => f.v);
+      const longOf = l => xLength(rest.trim() ? `${l}\n${rest}` : l) > 280;
+      const st = stanceKeep(body).filter(w => !keep.some(k => k.toLowerCase() === w.toLowerCase()));
+      const stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${k}”: on a call, it’s your stance, not filler.` : ''; };
+      const noteOf = l => [stNote(l), longOf(l) ? SL_LONG : ''].filter(Boolean).join(' ');
+      const nvHit = z => { const s = lcw(z); return never.some(w => new RegExp(`(?<![\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'u').test(s)); };
+      const aiWord = z => SL_AIW.test(z) || SL_LEVV.test(z) || nvHit(z);
+      /* Claude's why, when it is short, plain and quotes only words that are really in the draft or the line */
+      const whyOf = (w, l) => {
+        const s = typeof w === 'string' ? w.replace(/\s+/g, ' ').trim() : '';
+        if (!s || [...s].length > 140 || aiWord(s.replace(/“[^”]*”|"[^"]*"|‘[^’]*’(?!\p{L})/gu, ' '))) return '';
+        const hay = [lcw(draft), lcw(l)], qs = [...s.matchAll(/“([^”]{1,140})”|"([^"]{1,140})"|‘([^’]{1,140})’(?!\p{L})/gu)].map(m => m[1] || m[2] || m[3]);
+        const ok = qs.every(q => q.split(/…|\.\.\./).map(x => lcw(x).replace(/^[\s,.;:!?—-]+|[\s,.;:!?—-]+$/g, '')).filter(Boolean).every(x => hay.some(h => h.includes(x))));
+        return ok ? s : '';
+      };
+      const R = { state: 'clean', draft, line: draft, rest, cut: [], marks: [], move: '', say: '', why: '', kept, alts: [], long: longOf(draft), note: noteOf(draft), source: 'claude' };
+      if (data.unchanged) return { ...R, say: 'Nothing to cut', why: whyOf(data.why, draft) || HK_WHY_SL.sharp };
+      if (typeof data.line !== 'string') return no('shape');
+      let line = data.line.trim();
+      if (/^["“'‘]/.test(line) && /["”'’]$/.test(line) && !/^["“'‘]/.test(draft)) line = line.slice(1, -1).trim();
+      if (!line || /[\r\n]/.test(line)) return no('empty');
+      /* the engine's own finish: a capital start stays a capital start, and a link at the end takes no full stop */
+      if (/^\P{L}*\p{Lu}/u.test(draft) && !/^\P{L}*I\b/.test(draft) && /^\P{L}*\p{Ll}/u.test(line)) line = capFirst(line);
+      line = line.replace(new RegExp(`(${SL_URL.source})\\.$`, 'iu'), '$1');
+      const toks = z => slToks(z).map(x => x.w).join(' ');
+      if (toks(line) === toks(draft)) return no('same');
+      if ([...line].length > [...draft].length) return no('longer');
+      /* every guard an engine version passes: facts verbatim, meaning words, no broken template, not thin, the opener's
+         @handle/#tag/$ticker still first, the words the writer put back still in */
+      if (!facts.every(f => slHas(line, f.v))) return no('fact lost');
+      if (!slMeanOK(line, draft) || !slGuardOK(line, draft)) return no('meaning');
+      if (slBroken(line, draft)) return no('broken');
+      if (slThin(line) || slTiny(line)) return no('thin');
+      const atom0 = (body.match(/^\s*([@#][\p{L}\p{N}_]+|\$[A-Za-z][A-Za-z0-9]{0,9}\b)/u) || [])[1] || '';
+      if (vm && !lcw(line).startsWith(lcw(vm[0].trim()))) return no('opener');
+      if (atom0 && !line.slice(vm ? vm[0].trim().length : 0).replace(/^\s+/, '').startsWith(atom0)) return no('opener');
+      if (!keep.every(k => !lcw(draft).includes(lcw(k)) || lcw(line).includes(lcw(k)))) return no('put-back');
+      /* nothing new: no fact, number, number word, emoji or [blank], and no "not" the draft didn't have */
+      const dl = lcw(draft), dd = new Set(slDigitRuns(draft));
+      if (slFacts(line, softMarks(line)).some(f => !slHas(draft, f.v) && !dl.includes(lcw(f.v)))) return no('fact added');
+      if (slDigitRuns(line).some(x => !dd.has(x)) || slMore(line, draft, SL_NUMW2)) return no('number added');
+      if (slMore(line, draft, /\p{Extended_Pictographic}/gu) || cnt(line, /\[[^\]\n]*\]/g) > cnt(draft, /\[[^\]\n]*\]/g)) return no('added');
+      if (negsOf(line) > negsOf(draft)) return no('meaning');
+      if (aiWord(line)) return no('banned word');
+      /* a lowercase writer stays lowercase: every capital in the line is one the draft already had, as written */
+      if (slLower(draft)) { const dt = new Set((draft.match(/\S+/g) || []).map(slEdge)); if ((line.match(/\S+/g) || []).map(slEdge).some(x => /\p{Lu}/u.test(x) && !dt.has(x))) return no('casing'); }
+      /* the receipt, from the engine's own diff and rules */
+      const cand = slReordered(draft, line) ? SL_AI_MOVES : SL_AI_CUT, e1 = slExplain(draft, line, cand, marks);
+      const mv = e1.moves.length ? e1.moves : ['tight'], E = slExplain(draft, line, mv, marks);
+      return { ...R, state: 'sharp', line, cut: E.cut, marks, move: E.move, say: E.say, why: whyOf(data.why, line) || E.why, long: longOf(line), note: noteOf(line), moves: E.moves.length ? E.moves : ['tight'],
+        score: { from: hookScore(rest ? `${draft}\n${rest}` : draft).score, to: hookScore(rest ? `${line}\n${rest}` : line).score } };
+    } catch (e) { return null; }
+  }
+  const SHARPEN = { OPTS: SH_OPTS, LABEL: SH_LABEL, sharpen, fromModel, frame, fit, judge, styleOf, versionsFor, pickVersions, modelTexts, stripModel, deEcho, checkPost: checkPost2, whyNot, nearSame, tidy: tidyT, cutHedges, MOVES, sub, WORDY, CONTRACT_W, PLAIN_W, JARGON_W, SHORTHAND, IDIOM, numsOf, ticksOf, hookUp, SOFT, softMarks, softCut, MOVE_WHY: HK_WHY, MOVE_SAY: HK_SAY, sharpenLine, fromClaude, tooThin: slSkip, stanceKeep, factsOf: s => slFacts(s, softMarks(s)).filter(f => !f.link).map(f => f.v), guard: slGuard, fragN: slFragN, _dbg: { slCut, softWhy, slThin, slTiny, slOK: (l, d) => slOK(l, d, slFacts(d, softMarks(d))), slBroken, slMeanOK, slGuardOK, slFacts, slExtra, slClause, slFinite, parts: (l, d) => ({ re: SL_BROKEN.map((re, i) => cnt(l, re) > cnt(d, re) ? i : -1).filter(i => i >= 0), caps: slCapsNew(l, d), frag: [slFragN(l), slFragN(d)], verbless: [slVerblessN(l), slVerblessN(d)], notBut: [slNotBut(l), slNotBut(d)] }) },
     /* the first call compiles the engine's regexes (~150 ms); call this once when the page is idle so the first tap is fast */
     /* r86 pass 4 (web-1): every path a first tap can take (soft words, a run-up, a put-back, a body, a call with its
        disclaimer, a question, a long line, the guards and the marks), run once so V8 has compiled every regex before the
