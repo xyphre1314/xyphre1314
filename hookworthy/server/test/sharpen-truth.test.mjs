@@ -22,13 +22,26 @@ const label = x => `${JSON.stringify(x.t.split('\n')[0])} → ${JSON.stringify(x
 const SMALL = /^(?:a|an|the|to|of|for|from|in|on|at|by|with|and|or|but|my|our|your|their|his|her|its|is|are|was|were|has|have|had|just|not|that|this|as)$/i;
 const quotes = w => [...String(w).matchAll(/“([^”]+)”/g)].map(m => m[1]);
 
-test('truth: the receipt counts exactly the struck spans, and nothing struck is a moved word', () => {
+test('truth: every removed word is struck, and the receipt counts exactly the struck fluff', () => {
+  /* r86 pass 4 (uiux-1, hook-6): a word in the draft that is not in the line is in `cut`; glue a reshape drops is kind 'reshape'.
+     Counted as a multiset (contractions opened, a word said in another form counts as kept), so how the words line up doesn't matter */
+  const EXP = z => String(z).toLowerCase().replace(/[’']/g, "'").replace(/\bcan't\b|\bcannot\b/g, 'can not').replace(/\bwon't\b/g, 'will not').replace(/\b(\w+)n't\b/g, '$1 not').replace(/\bi'm\b/g, 'i am')
+    .replace(/\b(you|we|they)'re\b/g, '$1 are').replace(/\b(i|you|we|they)'ve\b/g, '$1 have').replace(/\b(i|you|we|they|it|that|he|she)'ll\b/g, '$1 will').replace(/\b(i|you|we|they|he|she)'d\b/g, '$1 would')
+    .replace(/\b(it|that|there|here|what|who|he|she|this)'s\b/g, '$1 is');
+  const W = z => (EXP(z).match(/[\p{L}\p{N}$%#@][\p{L}\p{N}$%#@.,'’/+-]*/gu) || []).map(w => w.replace(/[.,'’]+$/, ''));
+  const bagOf = ws => ws.reduce((m, w) => m.set(w, (m.get(w) || 0) + 1), new Map());
   const bad = [];
   for (const x of runs.filter(r => r.R.state === 'sharp')) {
-    const R = x.R, n = +((R.say.match(/^Cut (\d+) bits? of fluff/) || [])[1] || 0);
-    if (n !== R.cut.length) bad.push(`${label(x)}: says ${n}, strikes ${R.cut.length}`);
-    if (R.cut.some(c => /^(?:move|tight|swap)$/.test(c.kind))) bad.push(`${label(x)}: a moved or swapped word is struck`);
-    if (/bit of fluff/.test(R.say) !== (R.cut.length === 1)) bad.push(`${label(x)}: singular/plural`);
+    const R = x.R, n = +((R.say.match(/^Cut (\d+) bits? of fluff/) || [])[1] || 0), fluff = R.cut.filter(c => !/^(?:reshape|move|tight|swap)$/.test(c.kind));
+    if (n !== fluff.length) bad.push(`${label(x)}: says ${n}, strikes ${fluff.length} bits of fluff`);
+    if (/bit of fluff/.test(R.say) !== (fluff.length === 1)) bad.push(`${label(x)}: singular/plural`);
+    if (R.cut.some(c => /^(?:move|tight|swap)$/.test(c.kind))) bad.push(`${label(x)}: an old kind`);
+    const d = bagOf(W(R.draft)), l = bagOf(W(R.line)), st = bagOf(R.cut.flatMap(c => W(c.text))), lw = [...l.keys()];
+    for (const [w, k] of d) {
+      const gone = k - (l.get(w) || 0); if (gone <= 0) continue;
+      if (w.length > 3 && lw.some(z => z !== w && z.length > 3 && z.slice(0, 4) === w.slice(0, 4))) continue;
+      if ((st.get(w) || 0) < gone) bad.push(`${label(x)}: "${w}" is gone ${gone}x but struck ${st.get(w) || 0}x`);
+    }
   }
   assert.deepEqual(bad, []);
 });
@@ -36,7 +49,7 @@ test('truth: the receipt counts exactly the struck spans, and nothing struck is 
 test('truth: a why that names cuts names every one of them, and quotes are phrases', () => {
   const bad = [];
   for (const x of runs.filter(r => r.R.state === 'sharp')) {
-    const R = x.R, cuts = R.cut.map(c => c.text.replace(/[,:;.!—-]+$/, '')), q = quotes(R.why);
+    const R = x.R, cuts = R.cut.filter(c => c.kind !== 'reshape').map(c => c.text.replace(/[,:;.!—-]+$/, '')), q = quotes(R.why);
     const named = q.filter(s => cuts.includes(s));
     if (named.length && named.length !== cuts.length) bad.push(`${label(x)}: why names ${named.length} of ${cuts.length} cuts`);
     if (q.some(s => cuts.some(c => c !== s && c.startsWith(s) && !s.includes(' '))) && !named.length) bad.push(`${label(x)}: a cut quoted cut short`);
@@ -120,7 +133,7 @@ test('truth: a put-back restores only that word, and every other cut stays cutta
   const t = 'So basically I just wanted to say that we finally launched our app';
   const R = core.sharpenLine(t, { keep: ['basically'] });
   assert.match(R.line, /^Basically we finally launched our app/);
-  assert.deepEqual(R.cut.map(c => c.text), ['So', 'I just wanted to say that']);
+  assert.deepEqual(R.cut.filter(c => c.kind !== 'reshape').map(c => c.text), ['So', 'I just wanted to say that']);
   assert.doesNotMatch(R.why, /\bhits?\b/); assert.match(R.why, /You kept “basically”/);
   assert.equal(core.sharpenLine(t, { keep: ['So'] }).line, 'So we finally launched our app.');
 });

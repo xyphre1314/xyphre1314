@@ -8554,7 +8554,7 @@ function hookUpFor(text) {
 function hookUpPack(R, rest, sc, from) {
   if (!R || R.state !== 'sharp') return null;
   /* the receipt strikes the soft words that went; small words a reorder dropped and plain-word swaps aren't "cuts" */
-  const soft = c => c.kind !== 'move' && c.kind !== 'swap' && c.kind !== 'tight', main = o => o.move || (o.cut.some(c => /^(announce|label|disclaim|stock|throat|open|feel)$/.test(c.kind)) ? 'warm' : 'soft');
+  const soft = c => c.kind !== 'move' && c.kind !== 'swap' && c.kind !== 'tight' && c.kind !== 'reshape', main = o => o.move || (o.cut.some(c => /^(announce|label|disclaim|stock|throat|open|feel)$/.test(c.kind)) ? 'warm' : 'soft');
   const cuts = R.cut.filter(soft).map(c => c.text);
   const r = { text: R.line + rest, line: R.line, say: R.say, why: R.why, main: main(R), moves: R.moves || [], cut: cuts.length, cuts, from, state: R.state, facts: R.kept,
     alts: (R.alts || []).map(a => ({ text: a.line + rest, line: a.line, say: a.say, why: a.why, main: main(a), moves: a.moves || [] })) };
