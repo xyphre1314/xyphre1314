@@ -7554,6 +7554,8 @@ const CR = HWCore.CREDITS;
 const SRV_CR = () => LLM.mode === 'server' && LLM.server && LLM.server.credits && LLM.server.credits.metered ? LLM.server.credits : null;
 const METERED = () => aiOn() && (!!SRV_CR() || PRICED());
 const TRIAL_ON = () => S.plan === 'free' && S.trial && S.trial.until > Date.now();
+/* r86: no Pro trial on offer (the founder's call), so the app's plans match the homepage: Free, Pro, Studio. The trial plumbing stays for anyone already on one */
+const TRIAL_OFFER = false;
 function planNow() { if (SRV_CR()) return SRV_CR().plan; if (TRIAL_ON()) return 'trial'; return CR.PLANS[S.plan] && S.plan !== 'trial' ? S.plan : 'free'; }
 /* where the meter stands now (null when nothing is metered: Quick mode, a real account before billing, an unmetered server) */
 function crState() {
@@ -7621,7 +7623,7 @@ function hlpTell() {
   if (h.told && now - (h.toldAt || 0) < 10 * 60e3) return;
   const first = !h.told; h.told = 1; h.toldAt = now; save();
   if (!first) { toast(`Sharpen is on your device until midnight, ${crRel(hlpNext())}.`, { icon: 'clock', ms: 3200 }); return; }
-  const canTrial = !srv && PRICED() && !S.trial && S.plan === 'free';
+  const canTrial = TRIAL_OFFER && !srv && PRICED() && !S.trial && S.plan === 'free';
   toast(`That’s today’s ${CR.HELPERS} free Claude touch-ups. They’re back at midnight, ${crRel(hlpNext())}. Until then Sharpen runs on your device${srv ? '.' : ', or go Pro for more.'}`,
     { icon: 'clock', tone: 'accent', ms: 9000, ...(srv ? {} : canTrial ? { action: 'Try Pro free', onAction: () => { if (crStartTrial()) { hlpToday().paidTold = 1; save(); SFX.play('done'); toast('Pro trial on for 7 days. More touch-ups today use 1 rewrite each.', { icon: 'gift', tone: 'accent' }); } } } : { action: 'See plans', onAction: () => go('upgrade') }) });
 }
@@ -7680,7 +7682,7 @@ function crSheet({ act, cost = 1, basicHTML, onBasic, basicDone, resume } = {}) 
   UI.crSeen = UI.crSeen || {};
   if (UI.crSeen[act]) { if (onBasic) onBasic(); toast(`${st.left ? `${esc(A.label)} needs more usage than you have left` : 'You’ve hit your AI usage'}${st.per === 'day' ? ' until midnight' : ''}, so ${onBasic || basicDone ? 'this one is from Quick mode' : 'this one needs to wait'}.`, { icon: 'zapoff', ...(st.server ? {} : { action: 'See plans', onAction: () => go('upgrade') }) }); return; }
   UI.crSeen[act] = 1; $$('#toasts .toast').forEach(t => t.remove()); /* a stale "2 left" never sits under the sheet */
-  const srv = !!st.server, plan = st.plan, canTrial = !srv && PRICED() && !S.trial && plan === 'free', canPro = !srv && PRICED() && (plan === 'free' || plan === 'trial');
+  const srv = !!st.server, plan = st.plan, canTrial = TRIAL_OFFER && !srv && PRICED() && !S.trial && plan === 'free', canPro = !srv && PRICED() && (plan === 'free' || plan === 'trial');
   const head = st.left > 0 ? `${esc(A.label)} is a bigger job. <em>You’re almost out.</em>` : plan === 'free' ? `You wrote a lot ${st.per === 'day' ? 'today' : 'this month'}. <em>Your post isn’t stuck.</em>` : plan === 'trial' ? 'You put the trial to work. <em>Nothing is lost.</em>' : 'That’s this month’s AI usage. <em>Nothing is lost.</em>';
   const left = basicHTML ? `<div class="cr-pane cr-basic"><span class="label">Basic version · ready now · free</span><div class="cr-prev">${basicHTML}</div><button class="btn" data-crs="basic">${ic('check', 'sm')} Use the Basic version</button></div>`
     : `<div class="cr-pane cr-basic"><span class="label">${basicDone ? 'Done in Quick mode · free' : 'Still free, still yours'}</span><p>${basicDone ? 'We did this one on your device, so you can keep going. It’s in place now.' : 'This one needs Claude. Hook scores, the checks, Sharpen and Quick mode keep working, as much as you like.'}</p></div>`;
@@ -12412,7 +12414,7 @@ function openEarn() {
     <h2 class="er-h">Bring people. <em>Get ${EARN.pct}% back.</em></h2>
     <p class="er-sub">Share your link. When someone joins and pays, you get ${EARN.pct}% of every payment for their first ${EARN.months} months.</p>
     <div class="er-link"><span class="er-l" id="er-l">${esc(link)}</span><button class="btn primary" id="er-copy">${ic('copy', 'sm')} Copy link</button></div>
-    <ol class="er-steps">${[['Share it', 'In your bio, a post, a reply, anywhere.'], ['They try Pro', '7 days free, no card.'], ['You get paid', `${EARN.pct}% of what they pay, monthly, once you pass $${EARN.min}.`]].map(([t, d], i) => `<li><span class="er-n">${i + 1}</span><b>${t}</b><span>${d}</span></li>`).join('')}</ol>
+    <ol class="er-steps">${[['Share it', 'In your bio, a post, a reply, anywhere.'], ['They pick a plan', 'Pro or Studio, monthly or yearly.'], ['You get paid', `${EARN.pct}% of what they pay, monthly, once you pass $${EARN.min}.`]].map(([t, d], i) => `<li><span class="er-n">${i + 1}</span><b>${t}</b><span>${d}</span></li>`).join('')}</ol>
     <div class="er-stats">${[['Clicks', fmtN(E.clicks)], ['Joined', fmtN(E.joins)], ['Earned', '$' + fmtN(E.paid)]].map(([l, v]) => `<div><span class="label">${l}</span><b>${v}</b></div>`).join('')}</div>
   </div>`, { label: 'Earn with Hookworthy', box: 'modal er-box' });
   $('#er-copy', m.el).addEventListener('click', e => { copyText('https://' + link); const b = e.currentTarget; b.innerHTML = `${ic('check', 'sm')} Copied`; SFX.play('tick'); setTimeout(() => { if (b.isConnected) b.innerHTML = `${ic('copy', 'sm')} Copy link`; }, 1600); });
@@ -12909,7 +12911,7 @@ function plansHTML(yearly) {
     { k: 'pro', name: 'Pro', price: PRICES.pro[yearly ? 0 : 1], blurb: 'For creators who want their posts to pay.', cta: 'Start with Pro', hero: true, feats: ['Claude rewrites in your voice', 'Results: what works for your audience', 'A ping when a post takes off (with X connected)', 'Replies drafted for you, ready to send', 'What’s working in your niche, and why', 'Up to 500 auto-posts a month'] },
     { k: 'studio', name: 'Studio', price: PRICES.studio[yearly ? 0 : 1], blurb: 'For ghostwriters and agencies.', cta: 'Start with Studio', feats: ['Everything in Pro', 'Each client in their own voice, learning on its own', 'Clients approve before anything posts', 'Review links per client'] }
   ];
-  const app = !LIGHT.has(CURRENT), mine = app && PRICED() ? planNow() : null, trial = PRICED() && !S.trial && S.plan === 'free';
+  const app = !LIGHT.has(CURRENT), mine = app && PRICED() ? planNow() : null, trial = TRIAL_OFFER && PRICED() && !S.trial && S.plan === 'free';
   return P.map(p => {
     const cur = mine && (mine === p.k || (mine === 'trial' && p.k === 'pro'));
     return `<div class="pl ${p.hero ? 'pro' : ''}">
@@ -12979,7 +12981,7 @@ function creditsExplainHTML() {
     <div class="cr-ex-grid">
       <div class="cr-cmp-w" tabindex="0" role="region" aria-label="Free, Pro and Studio side by side. Scroll sideways for more"><table class="cr-cmp"><caption class="sr">Free, Pro and Studio side by side</caption><thead><tr><th scope="col"><span class="sr">Plan</span></th><th scope="col">Free</th><th scope="col" class="pro">Pro</th><th scope="col">Studio</th></tr></thead>
         <tbody>${rows.map(r => `<tr><th scope="row">${r[0]}</th>${r.slice(1).map((c, i) => `<td${i === 1 ? ' class="pro"' : ''}>${c || '<span aria-label="Not applicable">–</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table>
-        <p class="faint cr-fine">New to Pro? Try it free for 7 days. No card, and it ends on its own.</p></div>
+        <p class="faint cr-fine">Cancel anytime. Your drafts and ideas stay with you on Free.</p></div>
       <div class="cr-costs"><h3 class="h2">What things cost</h3><ul>
         ${cost('rewrite', '2 for a post over 1,000 characters')}${cost('instruct')}${cost('hooks')}${cost('ideas')}${cost('why')}${cost('replies', 'Up to ten at a time')}${cost('brief', '+1 for each PDF')}${cost('briefWrite')}<li><span>${esc(A.picture.label)}<small>Includes the picture</small></span><b>2</b></li>${cost('people')}${cost('week')}${cost('voice', 'Reads up to 120 posts once')}
         <li class="free"><span>Sharpen, picking a visual, tidying what you said</span><b>Free</b></li></ul></div>
@@ -13338,7 +13340,7 @@ ROUTES.legal = () => {
         ${item('You decide what goes out', 'Every post goes out because you scheduled it or posted it. Each platform’s own rules still apply to what you post there.')}
         ${item('Not financial advice', 'Hookworthy helps you write about markets. It doesn’t give financial advice, and a better first line isn’t a trade signal.')}
         ${item('Scores are a guide', 'The hook score is five checks on your words. It can’t promise reach, and it doesn’t try to.')}
-        ${item('Plans and usage', 'Usage counts only when Claude answers, so an error or a cancel costs nothing. The 7-day Pro trial needs no card and goes back to Free on its own. Free stays free.')}
+        ${item('Plans and usage', 'Usage counts only when Claude answers, so an error or a cancel costs nothing. Free stays free.')}
       </div>
     </section>
   </div>`);
@@ -16184,7 +16186,6 @@ ROUTES.upgrade = () => {
     ['What counts as a rewrite?', 'One Claude rewrite of a post, with three versions to pick from. Bigger jobs, like Plan my week or Learn my voice, count as a few and say so on the button. Sharpen doesn’t count: it’s free with Claude for 50 a day, and unlimited on your device.'],
     ['What happens when I run out?', 'Nothing breaks. You get the quick version on the spot, free, and Free refills each month. On Pro, your first month’s leftovers roll over into the second.'],
     ['Can I get more than 250 rewrites?', `Yes. Add ${CR.BOOSTS.map(b => `${fmtN(b.add)} for $${b.price}`).join(', ')} a month on top of Pro or Studio. Change or drop it any month, and it refills with your plan.`],
-    ['Is the trial really free?', 'Yes. Seven days of Pro, no card. It ends on its own and you’re back on Free with everything you wrote. One trial per account.'],
     ['Will it sound like ChatGPT?', 'It shouldn’t. It learns from your posts, follows your tone sliders and never uses anything on your never-say list. If a word isn’t you, add it to that list.'],
     ...(BILLING ? [['Can I cancel anytime?', 'Yes, from Your plan in the account menu. Your drafts and ideas stay with you on Free.']] : []),
     ['Which platforms?', 'X and LinkedIn post on time once you connect them through your own Hookworthy server. Threads and Bluesky get their own preview and version, and you post those by hand.'],
