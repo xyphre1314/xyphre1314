@@ -346,3 +346,96 @@ FIX3's decisions win where reviewers disagree. The page renders only what `HWCor
 - Hero post bottom: 800 at 1440×900, 768 at 1280×800. The window is the same height for all four examples.
 - Try and the final, with the default, empty, "asdf", "$BTC 100k eoy?", a 320-character line, "so i think honestly basically it is kind of good", "Just shipped v2!…", "This is kind of a big deal for us.", "The Fed meets tomorrow." and "gm": strikes, line, receipt and why equal the engine's at 1440, 390 and 360, and put back / cut again round-trips. Run with `r86/fix3/trytest.js`.
 - The sheet opens from every CTA, traps focus, returns it, and names plan and price when done (`r86/fix3/sheettest.js`). Nothing replays on hover or focus (`r86/fix3/motion.js`).
+
+## Pass 4 (brief: `r86/FIX4.md`, re-rate reviews in `r86/rerate3/`)
+FIX4's decisions win where reviewers disagree. The page still renders only what `HWCore.sharpenLine` returns. New this pass: `cut` items of kind `reshape` (structural words the engine removed) are struck plain, without the squiggle. They stay toggleable and aren't counted as fluff.
+
+**Founder**
+- founder-1 (decision 3): Pro leads with what only Pro does.
+  - The list reads "Everything in Free, plus:", "A ping when a post takes off, replies drafted as they come in", "250 rewrites in your voice a month", then "500 posts a month auto-sent at your time" and "Results, in plain words".
+  - The blurb reads "For catching the post that takes off."
+  - At ≤760, each paid card shows two real reasons: Pro shows the ping and 250 rewrites; Studio shows 8 client voices and their yes before anything posts.
+- founder-2 (decision 4):
+  - The FAQ item "I already use a scheduler." (`#switch`) reads: "Keep it if you like: Sharpen is free, whatever you post with. Or bring your posts along: drop in a Typefully or CSV export, your X archive, or paste them in. They're read in your browser, and your past posts teach Hookworthy how you open and when your people reply." The text follows the app's #switch page.
+  - The footer link "Switching from a scheduler" opens it, and so does `home.html#switch`.
+  - Three answers were trimmed to hold the phone budget.
+- founder-3 (decision 5): the bento's Pro-only moments carry a small "Pro" tag: the Day notification, the Results notifications, and "Drafted in your voice" in Replies.
+- founder-4: the Trader example now carries a real edit. "just wanted to share that i finally hit my first $10k month and honestly it took 3 years" cuts two bits of fluff and splits the line into two beats (engine output). The OG image was re-rendered with it.
+- founder-6: the scheduled done state reads "…puts this line on your queue, at the time you pick."
+- founder-7 / marketing-14: "Cancel anytime. A yearly plan stops renewing and keeps working until the year you paid for ends, and you keep every draft." The sheet subs say "Cancel anytime: a yearly plan runs to the end of the year you paid for."
+- founder-8: Trust adds two quiet rules.
+  - "Plug replies and reruns of your best posts stay off until you switch them on."
+  - "Posts go out through X's official API. Sharpen runs in your browser, so a draft stays there until you ask for a rewrite or schedule it."
+- founder-10: Studio's price block carries the worked total "4 clients: $72 a month" (or $96 month to month).
+- founder-12 (decision 2): the done state's button reads "Open the working demo (it still wears the old look)". The parenthetical sits on a quieter second line.
+
+**Marketing**
+- marketing-2: the Try hint "Tap a struck word to put it back." shows only when something is struck. Otherwise it says "Every fact you wrote is still there." The final's tip follows the same rule.
+- marketing-4: a curly apostrophe in a put-back ("We’re…") no longer breaks the "Your call." label. Tokens are normalised before matching.
+- marketing-7: one name per feature on the plan cards ("auto-sent at your time", "rewrites in your voice").
+- marketing-8 / uiux-6:
+  - Paid done states say "no account was made and nothing can be charged".
+  - Sign-in mode reads "Design preview: sign-in isn't live yet."
+  - The hero's Schedule path labels the line "This line:".
+- marketing-9: Trust's paragraph no longer repeats the never-list. It reads: "Every post is one you wrote or approved, sent at the time you picked. Automation that can get an account restricted isn't here, on purpose."
+- marketing-10 / uiux-10: Replay in Replies is an icon button at the end of the label row, away from Edit and Reply.
+- marketing-11: the Voice row reads "Learning" and turns to "Keeps" once "ngl" is learned.
+- marketing-12: the Ghostwriter example tags Lena "Example client".
+- marketing-13: "Your answer's already written." and "Trades, launches, newsletters. / The point goes first."
+- marketing-15 / uiux-5: there's one instruction per state. When text is waiting, the output says "Tap Sharpen. Your sharpened post lands here."
+
+**UI/UX**
+- uiux-2 / brand-11: the LinkedIn note left the masked feed. Its text is the LinkedIn caption now, so the fade never cuts it.
+- uiux-3 / web-2: `pvFade` re-measures from a ResizeObserver on the preview screens, and on idle.
+- uiux-4:
+  - Studio clients without media keep the comment pinned to the bottom (`.cmt{margin-top:auto}`), so there's no empty block.
+  - Approve resolves the comment ("Applied", or "Resolved" when there was no edit), and Undo puts it back.
+- uiux-7: the hero's replay reads "See it again". Hovering or focusing the draft shows "Edit this in the Sharpen box ↓", and the whole pane opens Try.
+- uiux-8: URLs, @handles and #tags in the Try and final X cards are X blue (`--x-link`). Long URLs are shortened the way X shows them.
+- uiux-9: after you sharpen your own line, Previews offers Example / Yours and shows your line in all four feeds.
+- uiux-11 / web-10: the phone chip scrollers (hero examples, Try starters, Studio picker) fade at the edge that has more.
+- Also:
+  - The Replies label drops its pen in a narrow box (a container query), so "Pro" never runs under Replay at 360 or 761–830.
+  - At 768 the Studio list reads down its two columns.
+
+**Web**
+- web-1 (decision 6): core.js warms on idle after it loads (`HWCore.SHARPEN.warm()`, or one throwaway call), and every Sharpen yields one frame first, so the press state paints. Measured at 4x CPU: first starter tap 144 ms, second 80 ms.
+- web-3: Voice keeps one height through every state at every width. The button fits both labels, and the note keeps a 3-line floor at 761–900.
+- web-4: the phone Try tile locks its height across starters (`lockTry`).
+- web-5: there's a real tablet layout at 761–900.
+  - Studio puts the picker in 4 columns, the review box and voice side by side, and the facts in a row.
+  - Pricing puts Free and Pro side by side, with Studio across the width and its list in two columns.
+- web-6: at ≥1200 the hero caption keeps its first sentence on one row.
+- web-7: the first X preview drops its timestamp, so the handle shows whole at ≥1100.
+- web-8:
+  - At 761–1099 the four half tiles share one fitted cap size (container units).
+  - `.h2.xl` is 60px at 761–1199.
+- web-9 / brand-9: at ≥1200 Who (7 cols) and Trust (5 cols) share a row. Who shows four faces 2×2, and Trust is a single column. Studio stays a band below.
+- web-11: tile moments start as soon as the tile is 12% into view (threshold 0, rootMargin −12%).
+- web-12 / brand-10: the Day morning photo gets a slight depth-of-field blur, so the upscale reads as focus, not softness.
+- web-14: struck-word hit areas are `inset:-2px -6px`, so they no longer cover the line above.
+
+**Brand**
+- brand-1 (decision 2): `concepts/r86/legal.html` is new. It's in Afterglow (same tokens, Inter, nav, footer and wordmark), uses the app's plain-words privacy and terms verbatim, and the footer's "Privacy and terms" points at it.
+- brand-2: one heading treatment per tile size. The one-ink override applies only where the tile is small (Who ≤1099, Trust ≤760).
+- brand-3: the hook-h symbol's viewBox now holds the terminal (`8 4.5 20 23`, overflow visible). The nav, footer and giant marks are re-spaced, and the brand SVGs in `assets/brand/` were updated to match.
+- brand-4: the trader's photo is the notebook from frame 0, cropped in, in Day, Replies and Results.
+- brand-5: Lena's own post uses the coffee-cup crop, so she no longer shares heycape's morning.
+- brand-6: the phone hero light starts on canvas, at the right edge, and leans further at ≤379. The trust line beside it keeps AA contrast: 4.65:1 at 360, 5.75 at 375, 5.62 at 390, 6.22 at 414/430.
+- brand-7: the Previews hook line is no longer a grey box (it read as a text selection). It's set in weight 550, in each platform's ink, and the rest of the post is dimmed.
+- brand-8: heycape's avatar is desaturated (`saturate(.55)`), so the pink stops pulling focus.
+
+**Tooling**
+- `hero-sync.js` is unchanged. It lifts the page's own `FLUFF`, `segments`, `mirrorHTML` and `fpDraftHTML`, so the static Try mirror and the final's draft strike reshape words plainly, exactly as the live page does.
+
+**Skipped, per FIX4**
+- Engine items (decision 1): uiux-1, marketing-1/3/5/6, every hook-* item, founder-5 and founder-11. hero-sync now shows a new engine why for the Founder example: "A real number up front reads as proof…".
+- founder-9: index.html's plan copy. The page can't change index.html.
+- web-13: `sizeHero()` stays synchronous, so CLS stays 0. `pvFade` moved to idle.
+
+**Numbers (final build, against core.js of 2026-10-29 12:50)**
+- `check.js home` and `check.js legal`: ok:true. No errors, overflow, banned words or axe findings at 1440, 390 and 360. axe is 0 in 15 dynamic states at 1440 and 390.
+- CLS is 0 at 1440, 1280, 1100, 1024, 960, 901, 900, 768, 761–780, 430, 414, 390, 375 and 360. Nothing pokes past the viewport, and every heading is two lines or fewer.
+- Screens: 9.69 at 390 (budget 10.0) and 10.46 at 360 (budget 10.5), plus 9.06 at 768 and 8.33 at 1440.
+- Hero post bottom: 766 at 1440×900, 768 at 1280×800, 773 at 390×844 and 776 at 360×780, all above the fold.
+- `trytest` (1440, 390, 360), `sheettest`, `motion`, `p4test`, `mbar` and `cbar` all pass, and `inp` stays under 200 ms. All scripts are in `r86/fix3/`.
