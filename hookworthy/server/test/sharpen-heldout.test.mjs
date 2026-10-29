@@ -58,7 +58,10 @@ test('held-out: the result keeps its contract', () => {
   /* the states the brief names */
   assert.equal(core.sharpenLine('').state, 'empty');
   assert.equal(core.sharpenLine('$BTC 100k eoy?').state === 'thin', false, 'tickers and numbers are words');
-  for (const t of ['asdf jkl', 'lol', 'gm', 'test test 123']) assert.equal(core.sharpenLine(t).state, 'thin', t);
+  for (const t of ['asdf jkl', 'test test 123', 'lorem ipsum dolor sit amet very really basically', 'asdkj fluff wire banana totally the']) assert.equal(core.sharpenLine(t).state, 'thin', t);
+  /* r86 pass 3 (marketing-3): thin is only gibberish. A short real post is complete, and a real seven-word line is never thin */
+  for (const t of ['gm', 'gn', 'wagmi', 'lol', 'just shipped']) { const R = core.sharpenLine(t); assert.equal(R.state, 'clean', t); assert.equal(R.why, 'Short and complete. Nothing to cut.', t); }
+  for (const t of ['honestly most people overthink their first post', 'I think most people overthink their first post', 'honestly i think most people overthink their first post\n\nhere is what i do instead: write the last line first.']) assert.equal(core.sharpenLine(t).state, 'sharp', t);
 });
 
 test('held-out: no fact is lost', () => {

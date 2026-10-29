@@ -1,0 +1,128 @@
+{
+ "key": "marketing",
+ "role": "senior app marketing lead",
+ "score": 8.8,
+ "verdict": "The fixed copy is close to best-in-class. The headlines are specific and X-native, the examples sound like real traders and founders, nothing is padded or banned, and the preview and signup sheet are honest without being clumsy. It falls short at the moment that converts: once visitors sharpen a line of their own, the 'why', 'Kept' and fallback copy is often templated, wrong or contradicts itself, and that undercuts the promise that 'It still sounds like you'.",
+ "to_95": [
+  "Rewrite the 'Why it hits' explanation so it quotes a real phrase from the line, or no phrase at all, never a three-word fragment called 'your point' (marketing-1).",
+  "Rebuild the Kept row so it only says 'your' about the visitor's own numbers and tickers, never 'Your CPI', 'Your AI' or 'Your 0' (marketing-2).",
+  "Stop telling a real line 'Give it a real line', and make the 'Your call' state agree with the typing chip and offer the cut instead of 'there's no clean cut here' (marketing-3).",
+  "Make the receipt count every struck run-up as fluff, so 'Cut 1 bit of fluff' never sits under two struck phrases (marketing-4).",
+  "Clear the static P2s: 'Paste mine', 'A nudge for', unexplained 'Auto-plugs', 'issues', the email error, the FAQ heading, and the put-back and 'Another cut' labels.",
+  "Make the sheet's 'Not live yet' text name the plan, and disclose plan limits on the cards: voice learning uses 5 rewrites, Studio has an 8-client cap, and voice notes appear in no plan."
+ ],
+ "issues": [
+  {
+   "id": "marketing-1",
+   "severity": "P1",
+   "area": "Sharpen result copy (Try tile and final card)",
+   "where": "'Why it hits' line after the visitor sharpens their own line (core.js slWhy template 'It now opens on “…”, your point, not the run-up to it.')",
+   "problem": "In a sample of 15 announcement and run-up lines, 10 got this template, and it always quotes the line's first three words, whatever they are: “thank you to”, “Our newsletter just”, “most traders blow”, “our team has”, “if you’re not”, “How do you”, “Some thoughts about”, “for everyone following”. Calling a three-word fragment 'your point' reads as machine-written in the exact spot where the page promises 'It still sounds like you'. Sometimes it is also untrue. 'quick update for everyone following along: we are now at $40k MRR' becomes 'for everyone following along: we’re now at $40k MRR.', and the why calls “for everyone following” your point. Several whys under the 'Why it hits' label only describe a cut (“really” was talk, not the point.), not why the line hits.",
+   "fix": "In slWhy, quote the line's own clause: subject + verb + object, 3 to 6 words, never ending on a function word or a bare verb (to, of, for, from, the, a, has, just, not, you). Examples: “we hit 1,000 paying users”, “our churn dropped 20%”, “most traders blow up their first account”. If no clean span exists, drop the quote: 'It now opens on the news, not the run-up to it.' Never call a leftover label 'your point'. Keep two or three phrasings so two Sharpens in a row don't read the same. When the why only describes a cut, change the label from 'Why it hits' to 'What went'."
+  },
+  {
+   "id": "marketing-2",
+   "severity": "P1",
+   "area": "Kept row (Try tile and final card)",
+   "where": "keptLine() in home.html: 'Kept' under the sharpened card",
+   "problem": "Every all-caps word and every bare number gets 'your' in front of it. On real lines this produced: 'Your AI and your lowercase.', 'Your CPI.', 'Your ETF and your BTC.', 'Your B2B.' (SaaS silently dropped), 'Your DCA.', 'Your 10th and your lowercase.' and 'Your 0, your 5k followers, your 90 days and your lowercase.' CPI, ETF and AI aren't the writer's facts, and 'Your 0' is nonsense. Macro and market acronyms show up in nearly every line the core crypto audience writes, so this tell appears often, right next to the result.",
+   "fix": "Say 'your' only about the writer's own facts: numbers with their unit ($40k MRR, 90 days, 5k followers), $tickers and percentages. Skip bare 0/1, ordinals that have lost their noun ('10th' should be '10th client' or nothing), and common public acronyms (AI, CPI, ETF, FOMC, SEO, B2B, SaaS, DCA, CEO, PM, US). Show at most three items. If a line has nothing else, show 'Kept: every word you didn’t strike, as you wrote it.' rather than a lone 'Your lowercase.'"
+  },
+  {
+   "id": "marketing-3",
+   "severity": "P1",
+   "area": "Fallback states (thin / unsure) in the Try tile and final card",
+   "where": "'Give it a real line, a few words, and Sharpen has something to work with.'; 'Your call. “…” is marked, but there’s no clean cut here.'; the 'Could cut:' chips; 'Keep it. Start free'",
+   "problem": "Real lines are told they aren't real. 'honestly most people overthink their first post' (7 words), 'I think most people overthink their first post' and a pasted two-paragraph post that starts that way all return the thin state. So do 'just shipped' and 'gm', and 'gm' is a culture post for this audience, so the reply reads as tone-deaf. The unsure state argues with itself. While you type, the chip says 'Fluff: i think that' and explains 'Saying so just hands readers a reason to doubt it'. After Sharpen, the same words become 'Could cut', and the page says there's 'no clean cut here', with 'Keep it. Start free' although nothing changed. 'we are so proud to announce that we raised a $5M series A', the textbook founder fluff, gets the same refusal. A visitor's first own try is where this page converts, and these replies make the product look broken or preachy.",
+   "fix": "The engine should not classify a line of 4 or more ordinary words as thin, and it should cut these lines (the hook juror has the details). Copy: thin → 'Sharpen needs a few more words. Paste the whole first line.' For gm/gn → '“gm” is as short as a post gets. Nothing to cut.' Unsure → show the cut and let the visitor take it: 'Cut “i think that” and it reads: “most people overthink their first tweet.” Tap the words to cut them.' Use the same chip label while typing and after Sharpen ('Could cut' in both whenever the engine may decline). On thin and unsure results, the CTA reads 'Start free', not 'Keep it. Start free'."
+  },
+  {
+   "id": "marketing-4",
+   "severity": "P2",
+   "area": "Receipt line",
+   "where": "#out-st / #fin-n, e.g. 'honestly i just wanted to say that our churn dropped 20% this quarter'",
+   "problem": "Two phrases are struck, but the receipt says 'Cut 1 bit of fluff · Tightened it', because 'i just wanted to say that' is counted as tightening. The hero teaches that 'just wanted to share that' IS fluff and counts it, so the Try tile undercounts the most recognisable fluff there is. The same happens with 'So I wanted to share some thoughts on why' and with 'you should' in 'Hot take: you should honestly never DCA'.",
+   "fix": "Count every struck run-up (wanted to say/share/write/talk about, you should) as a bit of fluff. Keep 'Tightened it' for glue words the reshape drops ('and', 'is', 'the')."
+  },
+  {
+   "id": "marketing-5",
+   "severity": "P2",
+   "area": "Put-back and alternative labels",
+   "where": "Try hint after a put-back; Kept/why after a put-back; #try-alt",
+   "problem": "'“We’re really excited to announce that” is back, so “we” and “just hit” stay too.' 'Stay' is the wrong verb, because those words were struck and are now coming back. After the put-back the panel still says 'Why it hits', above a line that opens on the fluff the page just struck. 'Another cut · 1/2' reuses 'cut', the page's word for removed fluff, as 'version', so it reads as 'cut more words'.",
+   "fix": "Change the hint to '… is back, so “we” and “just hit” come back too.' When a put-back word sits in the line's first five words, switch the label to 'Your call' or 'What changed'. Rename the alternative button 'Another version · 1/2'."
+  },
+  {
+   "id": "marketing-6",
+   "severity": "P2",
+   "area": "Try tile button",
+   "where": "#try-clear 'Paste mine'",
+   "problem": "The button clears the example and focuses the box. It does not paste, so the label promises something it doesn't do (some will expect clipboard paste).",
+   "fix": "Rename it 'Use my line' (keep 'Clear' once the box holds the visitor's own text)."
+  },
+  {
+   "id": "marketing-7",
+   "severity": "P2",
+   "area": "Hero meta row",
+   "where": ".posts: 'Posts to X LinkedIn · A nudge for Threads Bluesky'",
+   "problem": "On its own, 'A nudge for' is cryptic: it doesn't say what the nudge is. The explanation only appears inside a collapsed FAQ.",
+   "fix": "'Posts to X, LinkedIn · Ready to paste on Threads, Bluesky'."
+  },
+  {
+   "id": "marketing-8",
+   "severity": "P2",
+   "area": "Trust tile",
+   "where": ".rules 'Auto-plugs and reruns stay off until you switch them on.'",
+   "problem": "'Auto-plugs' is internal jargon. It is defined only in the FAQ ('one reply you write ahead'), so the trust message leans on a word the visitor doesn't know yet.",
+   "fix": "'Auto-plugs (a reply you write ahead) and reruns stay off until you switch them on.'"
+  },
+  {
+   "id": "marketing-9",
+   "severity": "P2",
+   "area": "Who tile heading",
+   "where": "#w-h 'Trades, launches, issues.'",
+   "problem": "Before the newsletter card is read, 'issues' reads as 'problems', so the first beat of the heading is ambiguous.",
+   "fix": "'Trades, launches, newsletters.' (still two lines at 1440 and 390)."
+  },
+  {
+   "id": "marketing-10",
+   "severity": "P2",
+   "area": "FAQ heading",
+   "where": "#faq-h 'Fair questions. Straight answers.'",
+   "problem": "It is the only stock heading on the page and could sit on any SaaS site. Every other heading is specific to posting on X.",
+   "fix": "Write it in the page's voice, e.g. 'Before you paste a draft.<br>The short answers.' or 'Asked by every creator.<br>Answered plainly.'"
+  },
+  {
+   "id": "marketing-11",
+   "severity": "P2",
+   "area": "Signup sheet error copy",
+   "where": "#sh-err 'That email looks incomplete, like you@example.com.'",
+   "problem": "The sentence reads as if you@example.com is the example of an incomplete email.",
+   "fix": "'That email looks incomplete. Try name@example.com.'"
+  },
+  {
+   "id": "marketing-12",
+   "severity": "P2",
+   "area": "Signup sheet: plan context",
+   "where": "sheetDone() for Start with Pro / Start with Studio; #sh-line when opened from Pricing",
+   "problem": "After 'Start with Pro' or 'Start with Studio', 'Not live yet' says only '…this signs you in and keeps your line.' It never says what the paid plan would do. A Studio sheet opened from Pricing also shows 'Your line:' with the trader starter the visitor tried earlier, which reads oddly in a ghostwriter's plan flow.",
+   "fix": "Make the done text plan-aware: '…Once Hookworthy is live, this signs you in and starts Pro at $12 a month, billed yearly. Nothing is charged today.' (Studio: '$18 per client a month'). Drop the line from sheets opened from Pricing, or label it 'Your last line'."
+  },
+  {
+   "id": "marketing-13",
+   "severity": "P2",
+   "area": "Pricing cards",
+   "where": "#pl-free, #pl-pro, #pl-studio, .plans-fine",
+   "problem": "'Everything in Free, plus:' and 'Everything in Pro' are not parallel. The Free card lists 'Learns your voice from your posts', but only the FAQ says this uses 5 of the 20 free rewrites. Studio's 8-client cap first appears in the fine print ('More than 8 clients?'), and hello@hookworthy.com is plain text.",
+   "fix": "Use 'Everything in Pro, plus:' on Studio. On Free, write 'Learns your voice from your posts (uses 5 rewrites, once)'. Add 'Up to 8 client voices' to the Studio list, and make the email a mailto link."
+  },
+  {
+   "id": "marketing-14",
+   "severity": "P2",
+   "area": "Feature-to-price mapping",
+   "where": "Day tile 'You saved a voice note' vs plan lists and FAQ",
+   "problem": "Voice note to draft is one of the page's best product moments, but no plan and no FAQ names it, so a visitor can't tell what they'd pay for it or whether it exists.",
+   "fix": "Add 'Voice notes turned into drafts' to the plan it belongs to (or to Free, if it's in Free), using the same words as the tile."
+  }
+ ]
+}

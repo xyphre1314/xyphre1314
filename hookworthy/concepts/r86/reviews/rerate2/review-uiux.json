@@ -1,0 +1,169 @@
+{
+  "key": "uiux",
+  "role": "senior UI/UX designer (Linear/Superhuman level): product believability, interaction, motion, hierarchy, states, the signup sheet, a11y",
+  "score": 9.0,
+  "verdict": "The product moments are believable and almost all of them work. The Try box runs the real engine with live squiggles, fluff chips, strike-and-fall, put-back toggles, alternate cuts, Clear/Undo and true receipts, and the signup sheet is honest, adapts to what the visitor came to do, and handles focus, Esc and reduced motion well. Two visible breaks keep it from 9.5: the Day tile's phone feed tears on arrival and on Replay (a black gap opens, then text slides over text), and at 360–375 the Try box's Sharpen button gets clipped in the Cleared/Undo state, on top of a set of smaller state, motion and believability issues.",
+  "to_95": [
+    "Fix the Day tile's push choreography. Every post below the landing post must move together, and nothing may slide over text that is still showing (uiux-1).",
+    "Fix the ≤375px Clear/Undo bar: hide 'Paste mine' while the box is empty or Undo is showing, so Sharpen is never clipped (uiux-2, uiux-4).",
+    "Make the final card change in place while you type: crossfade only the line text after the first landing, and stop re-running the full blur/fade/translate on every pause. Swap the Sharpen button's colours in a single step (uiux-3).",
+    "Tell the visitor the sheet is a preview before they type an email. Also let sign-in mode switch back to 'Start free' (uiux-6, uiux-7).",
+    "Try box states: show that the textarea holds more lines than are visible, and label the over-280 count in words (uiux-5).",
+    "Believability nits: the Studio handle gets cut off once 'scheduled' shows, the time pills look tappable but aren't, the X preview bolds text, and the Voice tile's third state reuses earlier copy (uiux-8, uiux-9, uiux-15, uiux-10).",
+    "A11y polish: aria-label on #rp-text, focus rings drawn on status spans, unclear names for the put-back toggles, and no hover affordance on struck words (uiux-11 to uiux-14)."
+  ],
+  "issues": [
+    {
+      "id": "uiux-1",
+      "severity": "P1",
+      "area": "motion / product moment",
+      "where": "#day phone feed (.fp.yp + .m-push), every width with motion. Plays on arrival and on every Replay.",
+      "problem": "MOMENT.day sets --push only on the first .m-push (t.querySelector). Jun Park jumps up into the landing post's slot, but Sam Okafor stays where he is, so a black gap of about 150px sits in the feed for the first ~1.25s. Between ~1.25s and 1.45s, Jun Park then slides down through heycape's post as it fades in, and its name and text overlap the photo and the action icons. Frames: work-uiux/int/fr-day-1440-700.png, fr-day phone-1440-1100.png, fr-day phone-1440-1250.png, day-replay-300.png.",
+      "fix": "In MOMENT.day, use querySelectorAll('.m-push') and set the same --push on each, or wrap the following posts in one container and translate that. Sequence the two motions: run the push first (0.45s), then land .fp.yp with its --md set to at least the end of the push. Alternatively, reveal yp with clip-path: inset(0 0 100% 0) → inset(0) so no text ever crosses other text. Check the frames at 0/0.7/1.1/1.25/1.45s."
+    },
+    {
+      "id": "uiux-2",
+      "severity": "P1",
+      "area": "layout / states",
+      "where": "Try box .cbar in the 'Cleared · Undo' state (after Clear on your own line), at 360 and 375px",
+      "problem": "Undo, 'Paste mine' and Sharpen don't fit in one row. .cbar scrollWidth is 296 against a clientWidth of 268 (360) and 283 (375), so Sharpen is pushed past the card edge and clipped for the 5-second Undo window. 375 is a common iPhone width. Shot: work-uiux/int/try-undo-360.png.",
+      "fix": "While the box is empty (or Undo is showing), hide 'Paste mine': it does nothing then (see uiux-4). Also give .cbar flex-wrap:wrap with the undo text at flex-basis:100% below 400px, so no future label can push Sharpen out."
+    },
+    {
+      "id": "uiux-3",
+      "severity": "P2",
+      "area": "motion / live feedback",
+      "where": "Final (#fpay.fresh), and #fin-go's class swap while typing",
+      "problem": "Each debounced change to the result re-runs 'land' on the X card: opacity 0, translateY 12px, blur 4px over .45s, and 'up' re-runs on the hits. At a normal typing pace the card blinks and blurs about once per word (6 dips below 60% opacity in 7s of typing), and the beam lights empty space during each dip. 'Watch it sharpen as you type' should look like a morph, not a re-entry. The swap from btn-white to btn-glass also leaves the Sharpen label dark on dark for about 100ms. Shot: work-uiux/int/fin-typing-1440.png.",
+      "fix": "Keep 'fresh' (land) for the first switch from the example to live only. After that, crossfade #fp-sharp's text and the why/kept lines (opacity .6→1, 150ms) and keep the card in place. Swap the button's colour and background together, or with transition:none on that toggle."
+    },
+    {
+      "id": "uiux-4",
+      "severity": "P2",
+      "area": "interaction / labels",
+      "where": "#try-clear 'Paste mine'",
+      "problem": "The label promises a paste, but the button only clears the example and focuses the box. When the box is already empty it does nothing visible.",
+      "fix": "Rename it to 'Use my line' (it clears and focuses), and hide it when the box is empty. Keep '× Clear' once the box holds the visitor's own text."
+    },
+    {
+      "id": "uiux-5",
+      "severity": "P2",
+      "area": "states",
+      "where": "#try-ta / #try-mirror (max-height 168px), #try-count",
+      "problem": "A multi-line draft scrolls inside a 168px box, so lines 3 and later ('second line here…') are hidden with no cue. Over the limit, the counter shows a bare '−39' with no label and no colour change.",
+      "fix": "Add a bottom fade mask plus a '+2 more lines' hint when scrollHeight > clientHeight, or let it grow to about 240px. Show '39 over 280' in place of '−39'."
+    },
+    {
+      "id": "uiux-6",
+      "severity": "P2",
+      "area": "signup sheet / honesty",
+      "where": "#sheet start and sign-in states",
+      "problem": "The 'design preview, no account was made' message only appears after the visitor has typed an email or tapped Continue. The handoff is honest, but nothing sets that expectation before they type.",
+      "fix": "Add a quiet line to the sh-fine row: 'Design preview: nothing is sent yet.' Or put a small 'Preview' tag next to the title. Keep the current done state."
+    },
+    {
+      "id": "uiux-7",
+      "severity": "P2",
+      "area": "signup sheet / flow",
+      "where": "#sheet[data-mode=signin]",
+      "problem": "'Welcome back' hides #sh-alt, so someone who tapped Sign in by mistake has no way to switch to Start free without closing the sheet.",
+      "fix": "In sign-in mode, show 'New here? Start free' in #sh-alt. It should switch the mode back and repaint."
+    },
+    {
+      "id": "uiux-8",
+      "severity": "P2",
+      "area": "product believability",
+      "where": "Studio review card .xname at 1440/1280 once a client is approved",
+      "problem": "Once 'scheduled' replaces 'draft', the handle gets cut to '@priy…' or '@ro…'. A clipped handle on the card that stands for the client's real account looks unfinished. Dan Ridge's '@ridgeline_…' in Replies has the same problem.",
+      "fix": "Show the state as its own small pill on a second line (or under the name) and give the handle flex-shrink:0, or drop the handle once a post is scheduled."
+    },
+    {
+      "id": "uiux-9",
+      "severity": "P2",
+      "area": "affordance",
+      "where": "#day .slots (7:15 AM / 8:40 AM / 12:30 PM)",
+      "problem": "The slots look like a segmented picker (bordered pills, one selected) but are inert spans. Visitors click them and nothing happens.",
+      "fix": "Style the unpicked times as plain muted text with no pill border, or make them real toggles that update the phone's 'heycape · 12m' time."
+    },
+    {
+      "id": "uiux-10",
+      "severity": "P2",
+      "area": "copy / state logic",
+      "where": "#voice Keeps row (#kp-b / #kp-n)",
+      "problem": "Put it back → 'Learned. “ngl” stays from now on.' Then Cut it → back to 'You put “ngl” back once already. Once more and it stays.' That third state contradicts the learning it just announced.",
+      "fix": "Give the third state its own line, e.g. 'Cut again. It stays cut until you put it back twice.', or make 'Cut it' undo the learning: 'Unlearned.'"
+    },
+    {
+      "id": "uiux-11",
+      "severity": "P2",
+      "area": "a11y",
+      "where": "#rp-text",
+      "problem": "aria-label='Your reply' sits on a <p> with no role. ARIA prohibits it there, so assistive tech ignores it (axe flags aria-prohibited-attr).",
+      "fix": "Remove the static aria-label. Set it only in edit mode, together with role=textbox."
+    },
+    {
+      "id": "uiux-12",
+      "severity": "P2",
+      "area": "a11y / visual",
+      "where": "#rv-done 'Approved · Tue 8:15 AM', #rv-mid, #rp-st 'Sent.'",
+      "problem": "Programmatic focus on these tabindex=-1 status spans draws the 2px focus ring, so they look like buttons (work-uiux/int/kbd-studio.png).",
+      "fix": "Add [tabindex='-1']:focus-visible{outline:none} for status text, or move focus to the next real control (Undo) and announce the status through the existing polite live region."
+    },
+    {
+      "id": "uiux-13",
+      "severity": "P2",
+      "area": "a11y",
+      "where": "#try-mirror mark.tog and .fpay .draft .tog",
+      "problem": "Each toggle is a button named only by the word, with aria-pressed=true meaning 'cut'. A screen reader says 'basically, toggle button, pressed', and only the group label says what 'pressed' means.",
+      "fix": "Name each toggle by its action: aria-label='Put back “basically”' when cut and 'Cut “basically” again' when kept, and drop aria-pressed. Keep the group label."
+    },
+    {
+      "id": "uiux-14",
+      "severity": "P2",
+      "area": "discoverability",
+      "where": "Struck words in the Try box and the final draft (pointer:fine)",
+      "problem": "The page's signature control has no hover response beyond the cursor. Nothing shows that tapping un-strikes the word.",
+      "fix": "On hover, fade the strike to about 40% and lift the word to ink colour, as a preview of the put-back. Optionally show a 'put back' tooltip after a 400ms delay."
+    },
+    {
+      "id": "uiux-15",
+      "severity": "P2",
+      "area": "product believability",
+      "where": "#previews X and Bluesky panes (.hk), and the .screens fade",
+      "problem": "The first sentence is set in bold inside an 'X preview', but X never renders bold, so the preview isn't faithful. The fade also cuts the second post partway through its last line ('two years / in.').",
+      "fix": "Mark the hook with a 2px left rule or a soft background tint in place of font-weight. End the fade on a line boundary, or trim the second post so it ends cleanly above the fade."
+    },
+    {
+      "id": "uiux-16",
+      "severity": "P2",
+      "area": "mobile navigation",
+      "where": "#mbar at 390",
+      "problem": "The sticky Start free bar appears at about 300px of scroll, hides again by 600px when the Try tile becomes 'quiet', and comes back at about 1800px. That flicker happens just as the visitor reaches the demo.",
+      "fix": "Show the bar only once the Try tile's top has scrolled above the viewport, or add hysteresis: only show it if it will stay on for at least one screen."
+    },
+    {
+      "id": "uiux-17",
+      "severity": "P2",
+      "area": "interaction consistency",
+      "where": "Nav 'Try it' vs hero 'Try it on your line'",
+      "problem": "The hero button scrolls, finishes the tile's moment and focuses/selects the field. The nav link only scrolls, and the strike moment then plays while the visitor is trying to type.",
+      "fix": "Attach the #try-jump handler to a[href='#sharpen'] in the nav as well (and to the footer 'Sharpen' link)."
+    },
+    {
+      "id": "uiux-18",
+      "severity": "P2",
+      "area": "put-back UX (engine-driven)",
+      "where": "Try box: 'So basically I just wanted to say that we finally launched…', then put back 'So'",
+      "problem": "Putting back one word also restores the 6-word lead-in. The output becomes 'So I just wanted to say that we finally launched…', and that phrase can't be struck again on its own. The note explains it, but a one-word tap undoing a six-word cut reads as the UI ignoring the tap.",
+      "fix": "Engine: keep a put-back opener on its own ('So we finally launched…'). Page, until then: keep the restored phrase as a tappable struck-able segment, so the visitor can cut it again directly."
+    },
+    {
+      "id": "uiux-19",
+      "severity": "P2",
+      "area": "layout",
+      "where": "Hero .ex pills at 360",
+      "problem": "The example pill scroller has no end padding, so 'Designer' runs into the window's right edge.",
+      "fix": "Add padding-inline-end:16px (or scroll-padding) to the .ex .pills scroller on phones."
+    }
+  ]
+}
