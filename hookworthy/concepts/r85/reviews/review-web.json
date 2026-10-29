@@ -1,0 +1,193 @@
+{
+ "key": "web",
+ "role": "Awwwards-level web designer and front-end craftsperson (layout, composition, responsive, motion timing, performance)",
+ "score": 7,
+ "verdict": "The craft is premium: the dark glass, the one beam and real X-style product moments already sit close to Linear and Vercel at 1440. The layout system breaks everywhere else: the hero hides the product on 1280 to 1440 laptops, tablets get a 1,533px stacked pricing column and empty gaps under captions, the 360px phone runs 11.2 screens, and a 234KB engine plus a 2-second intro slow down the first second.",
+ "top3": [
+  "Bring the product into the first viewport: tighten the hero padding, H1 cap and stage margin so the sharpened post shows above the fold at 1440×900 and 1280×800 (prototyped, it works).",
+  "Fix the in-between breakpoints: 3-column pricing down to 901px, pair Previews with Replies and Who with Results, keep nav links to 900px, keep the final panel 2-column, and set .demo margin-top:0 so captions never sit over a gap.",
+  "Bring the phone under budget and speed it up: hide the final example until the visitor types and trim Studio, Who and Trust on phone (360px goes from 11.18 to 9.98 screens, prototyped), lazy-load core.js, and ship 2× images instead of the 800px sprite."
+ ],
+ "issues": [
+  {
+   "id": "web-1", "severity": "P0", "area": "layout",
+   "where": "Hero: .hero .tc, .hero .st, .stage (first viewport at 1440×900 and 1280×800)",
+   "problem": "The window's top edge sits at y=693 at both sizes (measured). At 1440×900 only the title bar and the first draft line show, and the sharpened post (the proof) is cut by the fold. At 1280×800, the most common laptop size, only 107px of window chrome shows. The first screen is all type, which contradicts the brief's 'bigger product moments'. Linear, Vercel and Superhuman all show the product above the fold.",
+   "fix": "Set .hero .tc{padding-block:clamp(48px,7.5vh,80px) 0}; .hero .st{--cap:min(104px,11.2vh)}; .hero .tc-sub{margin-top:22px}; .hero .ctas{margin-top:26px}; .stage{margin-top:clamp(40px,6vh,64px)}. In the prototype the window top moves to y=565 at 1440×900 and y=530 at 1280×800. The whole sharpened post card (y 679–863) then sits above the 900px fold, and at 1280×800 the sharpened line is visible. The H1 stays 2 lines and stays the largest element (≈100px)."
+  },
+  {
+   "id": "web-2", "severity": "P0", "area": "mobile",
+   "where": "Whole page at 360×780 (and 390×844)",
+   "problem": "At 360px the page is 8,721px, or 11.18 screens, which breaks the ≤11-screen hard rule. At 390px it is 9.9. The biggest phone blocks are Studio (1,121–1,145px), the final panel (723–778px, half of it a repeat of the hero example), Day (797–817px), Trust (367px) and Who (368px).",
+   "fix": "At ≤760px: (a) Studio: .st-post .media,#st-tz,#st-q,.facts p:nth-child(n+2){display:none}. (b) Who: .faces p{display:none}; .faces{gap:12px}. (c) Final: hide the example until the visitor types: .fpay:not(.live){display:none}; .fin-panel{gap:0}. In payUpdate(), call pay.classList.toggle('live', live) after live is set, and remove the class in the empty-input reset branch. (d) .morn{height:340px}. (e) Trust: .nev span{display:none}; .nev li{padding-block:10px}. (f) Hero example chips go in one row (see web-21). Prototyped: 390px drops to 7,446px (8.82 screens) and 360px to 7,784px (9.98 screens)."
+  },
+  {
+   "id": "web-3", "severity": "P1", "area": "layout",
+   "where": "Pricing .plans at 761–1099px (@media (max-width:1099px){.plans{grid-template-columns:1fr}})",
+   "problem": "At 1024px each plan is a 976px-wide card with a 920px-wide CTA bar, and the plans take 1,533px of height (544px at 1440). That is the least polished screen on the page and a long scroll before the final CTA. 768px has the same problem.",
+   "fix": "Delete .plans{grid-template-columns:1fr} from the ≤1099 query. At 901–1099 keep 3 columns and add .plan{padding:22px} and .price b{font-size:40px} (prototyped at 1024: all three readable, 564px tall). At ≤900 stack them as compact cards: move the existing phone card block (.plan{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'name price' 'for price' 'note note' 'list list' 'incl incl' 'cta cta'}, .price b{font-size:34px}, the .incl and li.x rules) from the ≤760 query to a ≤900 query."
+  },
+  {
+   "id": "web-4", "severity": "P1", "area": "layout",
+   "where": "Bento: .tile .demo{margin-top:auto} (Try, Previews, Who)",
+   "problem": "When a row partner stretches a tile, the demo is pushed to the bottom and an empty gap opens under the caption. Measured gaps from caption to demo: Try 68px at 1440 (every other tile has 22–27px), Previews 205px at 1024 (121px of it empty), Who 121px at 768. The gaps are uneven and look like broken spacing.",
+   "fix": "Set .tile .demo{margin-top:0} so the caption-to-demo gap is always the tile gap (22px desktop, 16px phone). Let the surfaces take up spare height instead: .t-try .try,.t-try .try-c{flex:1 1 auto} (the compose box grows, like X's composer) and .t-pv .screens{flex:1 1 auto} (the visible .pvw already shares grid-area 1/1, so it stretches). .well already flexes. Prototyped at 1440, 1024 and 768: every caption sits 22px above its demo, with no gaps."
+  },
+  {
+   "id": "web-5", "severity": "P1", "area": "layout",
+   "where": "Bento grid-template-areas at ≤1099px; .faces .av",
+   "problem": "The tablet grid pairs 'pv pv pv who who who'. These two tiles have the most different natural heights, which causes the gaps above. On a 480px-wide tile the 2×2 Who grid also blows the faces up to 204px from a 144px sprite, so they are soft even at 1×.",
+   "fix": "In @media (max-width:1099px) use .bento{grid-template-areas:'try try try try try try' 'day day day day day day' 'pv pv pv rep rep rep' 'who who who res res res' 'st st st st st st' 'tru tru tru tru tru tru'} and add .faces .av{max-width:140px}. Prototyped at 1024 and 768: the pairs come out even, and Results stretches its photo well to match Who."
+  },
+  {
+   "id": "web-6", "severity": "P2", "area": "layout",
+   "where": "Previews segmented control (.t-pv .track) at 761–1099px",
+   "problem": "At 768px, X / Threads / LinkedIn / Bluesky wraps to two rows (74px tall) with Bluesky alone on the second row, which makes the segmented control look broken.",
+   "fix": "In @media (max-width:1099px): .seg button svg{display:none}; .t-pv .track button{padding:0 6px}. Prototyped: one row at 768px."
+  },
+  {
+   "id": "web-7", "severity": "P1", "area": "layout",
+   "where": "Nav .links (@media (max-width:1199px){.links{display:none}})",
+   "problem": "Pricing, Previews and For ghostwriters disappear from the nav at all widths ≤1199px, even though the link group (~360px) fits easily at 1024. Tablet and small-laptop visitors lose the main way to reach pricing and the Studio audience.",
+   "fix": "Move .links{display:none} from the ≤1199 query to a @media (max-width:900px) query. Prototyped at 1024: centred links with ~150px of clearance on each side."
+  },
+  {
+   "id": "web-8", "severity": "P1", "area": "layout",
+   "where": "Final .fin-panel at 901–1199px",
+   "problem": "At ≤1199px the final panel drops to 1 column. At 1024 the example post (max-width 520px) then sits flush left with about 380px of dead space to its right, and the panel grows to 785px tall. This is the climax of the page and it looks unfinished.",
+   "fix": "In @media (max-width:1199px) replace .fin-panel{grid-template-columns:1fr;padding:64px 48px} with .fin-panel{grid-template-columns:minmax(0,1fr) minmax(0,340px);padding:64px 40px;gap:40px} and add .h2.xl{font-size:60px}. Move the 1-column rule to @media (max-width:900px), with .fpay{max-width:none} there."
+  },
+  {
+   "id": "web-9", "severity": "P1", "area": "layout",
+   "where": "Studio caption #st-h inside .st-l",
+   "problem": "Studio is the only full-width tile whose caption is 34px (Try and Day are 40px), because the caption is squeezed into the left column. At 1024 it still breaks into 3 lines, ending in a widow: 'Nothing ships without a / yes.'",
+   "fix": "Move <h2 class='cap big' id='st-h'> out of .st-l so it is the article's first child. Add .t-st > .cap{grid-column:1/-1} and delete .t-st .cap.big{font-size:34px}, so it renders at 40px like the other full-width tiles. Phone keeps .t-st .cap.big{font-size:26px} (24px at ≤374). Drop .t-st .cap from the phone order rules, since it is now first naturally."
+  },
+  {
+   "id": "web-10", "severity": "P1", "area": "flow",
+   "where": "Section rhythm: the bento (.grid-sec) at 1440",
+   "problem": "The bento is one unbroken 2,706px run (3 screens at 1440) of equal-weight glass tiles with 16px gaps. It ends in two stacked full-width bars (rows 8/4, 12, 4/4/4, 12, 12), so the bottom reads like a list instead of a bento. Studio is a different buyer, linked from the nav as 'For ghostwriters', yet it is buried as tile 7 of 8, far from the pricing that sells it.",
+   "fix": "Bento keeps 'try×8 pv×4' 'day×12' 'rep×4 res×4 who×4' 'tru×12'. Studio becomes its own <section class='sec' id='studio'> after the bento with the same tile markup, var(--sec) (144px) above it, and its caption promoted to section scale (.h2, 56px desktop). Section order: hero, bento, Studio, pricing, final. The phone order is unchanged."
+  },
+  {
+   "id": "web-11", "severity": "P1", "area": "interaction",
+   "where": "Hero opening motion (.motion .hero rules, @keyframes defocus/lift/glow, .window --l)",
+   "problem": "For the first ~300ms only the nav is visible. At 0.5s the H1 is a 14px-blurred ghost and the window has not appeared (d-hero-0.5s). The composition settles only at ~2.2s: defocus 1.1s, lift .22s+1.3s, sharpen choreography from .75s, beam 1.9s. LCP is 1.22s even on unthrottled localhost (pf-draft), and the intro is holding it back. Linear and Vercel heroes resolve in under a second.",
+   "fix": ".motion .hero .tc-in{animation:rise-sm .7s var(--ease) both}; .motion .hero .st .l{animation:defocus .7s var(--ease) both} with @keyframes defocus{from{opacity:0;filter:blur(6px)}}; set .tc-sub/.ctas/.micro to .7s with delays .16s/.2s/.24s; .motion .stage{animation:lift .9s var(--ease) .1s both} with @keyframes lift{from{opacity:0;transform:translateY(24px)}}; .window{--l:.55s}; .motion .stage > .light{animation:glow 1.2s linear both}; .motion .hmeta{animation:fade .6s var(--ease) .4s both}. Everything settles by ~1.4s and the choreography stays the same."
+  },
+  {
+   "id": "web-12", "severity": "P1", "area": "perf",
+   "where": "<script src='../../core.js' defer> (234KB, the largest script)",
+   "problem": "The engine loads with defer on every visit. On a throttled phone (slow 4G, 4× CPU), DOMContentLoaded lands at 4.4s and ~250ms long tasks appear. Only the Try tile and the final input need the engine, and both already render a complete static state without it (the prefilled marks, the out-line and the Jun Park example).",
+   "fix": "Remove the script tag. Add const loadCore=()=>loadCore.p||(loadCore.p=new Promise(r=>{const s=document.createElement('script');s.src='../../core.js';s.onload=r;document.head.append(s)})). Trigger it from an IntersectionObserver on #sharpen and #start with rootMargin:'800px 0px', and from the first focus or pointerdown on #try-ta or #fin-in, then call initEngine(). tryApi.play stays a no-op until the engine loads, since the static result is already shown."
+  },
+  {
+   "id": "web-13", "severity": "P1", "area": "perf",
+   "where": "assets/people/photos.jpg (one 800×2844 sprite) and avatars.jpg (144px wide) used at large sizes",
+   "problem": "Images are under-resolved for retina screens. The night and morning halves draw each 800×474 photo at 1013×600 CSS (2.5× upscale at DPR 2), and the Results wall at 818×485. The Who faces are 151px CSS from a 144px sprite, which is visibly soft and JPEG-blocky in a DPR-2 capture. Next to the crisp vector UI this looks cheap compared with Apple, and the sprite forces a 321KB download for any single photo.",
+   "fix": "Split the sprite into separate <picture> files with AVIF plus WebP fallback and srcset. night-desk and morning-run: 1300w/2400w, sizes='(max-width:760px) 100vw, 660px'. notes-wall: 900w/1600w. coffee and team: 480w/960w. The 4 Who portraits: 320×320 WebP (q≈70, ~15KB each), rendered as <img> with object-fit:cover. Keep the avatar sprite only for uses ≤48px. Expect roughly 350KB of images at 2×, versus 459KB now, and all of them sharp."
+  },
+  {
+   "id": "web-14", "severity": "P2", "area": "perf",
+   "where": "backdrop-filter on .window/.stp/.nc/.notif/.plab/.btn-glass; body::after fixed grain layer",
+   "problem": "There are about ten large backdrop blurs plus a position:fixed, full-viewport SVG-noise layer at z-index 90 composited on every frame. In a 4× CPU-throttled headless run, removing the grain and the backdrop blurs halved the frames over 50ms during scroll (35 to 18; p90 83ms to 50ms). These backgrounds are already .86–.94 opaque, so the blur is invisible, and grain at .05 on #08090A is imperceptible.",
+   "fix": "Delete backdrop-filter and -webkit-backdrop-filter from .window, .stp, .nc, .plab and .btn-glass, keeping them only on .nav.scrolled, .notif and .mbar. Remove body::after, or, if the grain must stay, move it to .hero::after with position:absolute so it does not cover the whole page."
+  },
+  {
+   "id": "web-15", "severity": "P2", "area": "perf",
+   "where": "Tile hover glow: pointermove sets --mx/--my on .tile; .tile::after reads them",
+   "problem": "Every pointer move writes two inherited custom properties on the tile, which restyles its whole subtree. The Studio and Day tiles have hundreds of nodes, so hovering them can stutter on mid-range laptops.",
+   "fix": "Replace .tile::after with a child <i class='glow' aria-hidden='true'> (position:absolute;width:920px;height:920px;left:0;top:0;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.06),transparent);opacity:0;transition:opacity .45s). In a requestAnimationFrame-throttled pointermove (pointerType==='mouse' only), set glow.style.transform=`translate3d(${x-460}px,${y-460}px,0)`. Fade it in on .tile:hover. This is compositor-only and triggers no style recalculation."
+  },
+  {
+   "id": "web-16", "severity": "P2", "area": "layout",
+   "where": "Day tile labels: .night .plab ('heycape’s desk, 11:04 PM (example)') and .morn .plab ('8:40 AM')",
+   "problem": "At 1440 the two pills meet at the seam (x 536–775 and 815–889) and read as one cluster in the middle of the tile. The night label also repeats the 11:04 PM already shown in the first step.",
+   "fix": "Delete <span class='plab'>heycape’s desk, 11:04 PM (example)</span>. Move the morning label to the outer corner: .morn .plab{left:auto;right:20px} (right:16px on phone). The post's Example tag and the footer already cover the example disclosure."
+  },
+  {
+   "id": "web-17", "severity": "P2", "area": "layout",
+   "where": "Day tile phone mock: .fp.top (Priya post, margin-top:-46px), .fp.yp --md:1.3s, .notif --md:2.5s",
+   "problem": "The feed starts mid-post with no avatar ('What changed: our team redesigned the onboarding flow.') because the first post is tucked under the notification. Before the moment plays, the phone screen is a 300px black void for 1.3s, which the captured slice d-02 shows as an empty phone.",
+   "fix": "Delete the .fp.top Priya post and the .fp.top{margin-top:-46px} rule so heycape's post sits directly under the tabs. Set style='--md:.35s' on .fp.yp and style='--md:1.1s' on .notif."
+  },
+  {
+   "id": "web-18", "severity": "P2", "area": "layout",
+   "where": "Trust strip .postpill ('Post' → 'Posted. By you.')",
+   "problem": "Both states share one inline-grid cell, so for the first 1.5s the pill is a 159px white bar with 'Post' hugging its left edge and empty space on the right. It looks like a broken button (trust-300 capture).",
+   "fix": ".postpill > span{justify-content:center}; .postpill{padding:0 18px}. Lower the moment delay from style='--md:1.5s' to '--md:.8s'."
+  },
+  {
+   "id": "web-19", "severity": "P2", "area": "layout",
+   "where": "Hero meta row .hmeta ('Since Sept 8…' / 'Posts to X Threads…')",
+   "problem": ".hmeta aligns to the wide 1272px stage (x 84–1356 at 1440), while the nav, H1, bento, pricing, final and footer all use x 144–1296. That puts three different left edges in the first 1.5 screens.",
+   "fix": "At ≥761px: .hmeta{max-width:calc(var(--max) - 2*var(--pad));margin-inline:auto}, which gives 1152px aligned to the bento. Keep the window itself at 1320px as the one deliberate breakout. Leave the phone padding rule as it is."
+  },
+  {
+   "id": "web-20", "severity": "P2", "area": "mobile",
+   "where": "Phone hero .tc-sub and .hero .tc padding (≤760px)",
+   "problem": ".tc-sub br{display:none} breaks the subline as '…in one tap. It / still sounds like you.', leaving a dangling 'It'. The 26px top padding also puts the H1 tighter under the nav than any other section start.",
+   "fix": "Delete .tc-sub br{display:none} from the ≤760 block, because each sentence fits on one line at 16px on 360 and 390 (prototyped). Set .hero .tc{padding-block:36px 0}."
+  },
+  {
+   "id": "web-21", "severity": "P2", "area": "mobile",
+   "where": "Phone hero example picker .ex (label + wrapping chips)",
+   "problem": "The picker takes 118px: a label line, then chips on 2 rows with 'Design systems' alone on the second. It falls below the first screen, so phone visitors never see that the demo has four examples.",
+   "fix": "At ≤760: .ex-l{display:none}; .ex{padding:10px 0 12px}; .ex .pills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-inline:16px;width:100%}; .ex .pills button{flex:none}. Prototyped at 390: all four chips sit in one swipeable row inside the first 844px screen."
+  },
+  {
+   "id": "web-22", "severity": "P2", "area": "mobile",
+   "where": "Phone nav 'Start free' + fixed .mbar 'Sharpen my first line'",
+   "problem": "Two CTAs stay on screen at once: a 56px nav and a 72px bar plus safe area, about 15% of an 844px viewport. The bar covers the bottom of tiles while reading (m-01 hides 'Why it hits', m-03 hides the reply).",
+   "fix": "In syncBar() add document.body.classList.toggle('bar-on', on), plus CSS body.bar-on .nav .btn-sm{opacity:0;pointer-events:none} and .nav .btn-sm{transition:opacity .2s}. Slim the bar: .mbar{padding:8px 16px calc(8px + env(safe-area-inset-bottom))}; .mbar .btn{height:46px}; --mbar:calc(62px + env(safe-area-inset-bottom))."
+  },
+  {
+   "id": "web-23", "severity": "P2", "area": "type",
+   "where": "Pricing heading #p-h (.h2) on phone",
+   "problem": "At 390px the pricing h2 renders at 28px, the same size as the big tile captions (28px). The start of the money section therefore carries no more weight than a tile, and the phone hierarchy flattens.",
+   "fix": "At ≤760: .h2{font-size:clamp(34px,9.4vw,56px)}. This gives 36.7px at 390 and 34px at 360, still 2 lines (verified)."
+  },
+  {
+   "id": "web-24", "severity": "P1", "area": "conversion",
+   "where": "Pricing: .plan.feat on Studio, the only .btn-white CTA",
+   "problem": "The visual emphasis (gradient card and the only white button) sits on the $18 agency plan. The primary audience, traders and creators who post daily, buys Pro. The eye lands on the wrong plan first.",
+   "fix": "Move the feat class to the Pro article and change its CTA to class='btn btn-white' ('Go Pro'). Change the Studio CTA to class='btn btn-glass'."
+  },
+  {
+   "id": "web-25", "severity": "P2", "area": "layout",
+   "where": "Hero window at 761–900px (tablet portrait)",
+   "problem": "The window stacks both panes but keeps the full compose chrome (.note, .replyset, .tools, .foot). It is 737px tall at 768, so the sharpened post starts below the 1024px iPad-portrait fold.",
+   "fix": "In the ≤900 query add .note,.tools,.foot,.replyset{display:none} and .dtext,.ptext{min-height:0}, plus .pane.draft,.pane.sharp{padding-bottom:20px}. This saves ~220px and brings the post into the first screen."
+  },
+  {
+   "id": "web-26", "severity": "P2", "area": "layout",
+   "where": "Studio queue skeleton rows (.qs i bars)",
+   "problem": "The grey placeholder bars read as a loading state, not product. At 768 they stretch to 650px wide with a gap that looks broken. They are already hidden on phone.",
+   "fix": "Remove the <p class='qs'> rows at all sizes (in the markup and in client()'s template) and keep the two count lines with .queue{gap:4px}. This is less chrome and matches what the phone already shows."
+  },
+  {
+   "id": "web-27", "severity": "P2", "area": "layout",
+   "where": "Studio .st-post .media at 761–900px",
+   "problem": "With aspect-ratio 2.2/1 across the full stacked width, the client photo grows to about 540×245. That makes the client post taller than the whole Previews tile and pushes Approve far down.",
+   "fix": "In the ≤900 query: .st-post .media{aspect-ratio:3.2/1;max-width:420px}."
+  },
+  {
+   "id": "web-28", "severity": "P2", "area": "mobile",
+   "where": "Phone full-bleed hero .window::before border",
+   "problem": "With border-radius 0 and full bleed, the masked 1px gradient border still draws vertical hairlines at x=1 and x=389. They look like a rendering artifact against the screen edge.",
+   "fix": "At ≤760: .window::before{padding:1px 0}, which keeps only the top and bottom hairlines."
+  },
+  {
+   "id": "web-29", "severity": "P1", "area": "interaction",
+   "where": "Previews tile arrival moment (MOMENT.pv: [1,2,3,0] steps every 950ms)",
+   "problem": "On arrival the tile steps through Threads, LinkedIn, Bluesky and back to X by itself. That is an auto-cycle, which the hard rules forbid. On phone it was captured mid-flip, with the X chip pressed while the Threads pane showed.",
+   "fix": "Change MOMENT.pv to t=>{ if(t.dataset.user) return; clear(pvT); pv(0,true); }, which replays only the X pane's entrance. Add a single cue: give the Threads chip class m-ring with style='--md:.9s' (the .m-ring::after keyframe already exists), and add .seg button{position:relative} plus .seg .m-ring::after{content:'';position:absolute;inset:-3px;border-radius:999px;box-shadow:0 0 0 1.5px rgba(255,255,255,.5)}."
+  },
+  {
+   "id": "web-30", "severity": "P2", "area": "layout",
+   "where": "Final example draft .fpay .draft",
+   "problem": "With line-height 1.5 and a 6px underline offset, the ember squiggles on line 1 touch the ascenders of line 2 ('so basically i think … / ones you skip'), so the draft looks cramped next to the clean post card.",
+   "fix": ".fpay .draft{line-height:1.75;padding:12px 16px 14px}."
+  }
+ ]
+}

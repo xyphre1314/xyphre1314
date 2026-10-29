@@ -1,0 +1,102 @@
+{
+  "key": "uiux",
+  "role": "senior UI/UX designer (Linear/Superhuman level): product believability, interaction, motion, hierarchy, states, the signup sheet, a11y",
+  "score": 9.0,
+  "verdict": "The interaction design is excellent and very nearly best-in-class. The Try box has real states (squiggle while typing, stale after an edit, Clear with a 5-second Undo, put-back toggles that keep keyboard focus, Another version), the signup sheet is honest and well built (focus trap, Escape, backdrop, drag-to-dismiss, focus returned to the opener, plan and billing carried in), reduced motion gives a finished static page, axe finds nothing and CLS is 0. Two things are still visibly off. First, the struck draft does not show everything Sharpen removed, so on a starter like Founder the page breaks its own 'every cut is marked' promise. Second, the LinkedIn preview ghosts its own key sentence above an empty gap.",
+  "to_95": [
+    "Make the struck draft a true diff of draft vs shown line in the Try box, the final card and the hero. Every token missing from the output must be visibly marked: struck for a cut, and a distinct no-squiggle 'reworded/moved' treatment for reorders and contractions. Today 'I' in 'So I basically think that…', 'we … just hit' in the Founder starter, 'Here are' and '( )' in a thread header, and 'it is'→'It’s' all vanish while still showing as kept.",
+    "Fix the Previews fade. Measure --fe from post text only (leave out .li-note and .split), keep the LinkedIn note fully opaque, and run pvFade again from a ResizeObserver on .screens and on every pill switch. That removes the faded LinkedIn note and the empty gap, and also the gap that opens when the Try tile grows.",
+    "Studio: don't leave a ~200px dead block in the review column for clients without media (Rafael, Lena, Marco). Once Approve applies the client's edit, resolve their comment (tick, 'Done' state) and add an Undo to match the Reply tile.",
+    "Tighten the small state mismatches: the Try placeholder says 'Paste a line above' when a line is already typed; sign-in mode still says 'no account is created yet'; and the hero Schedule sheet labels an example persona's post 'Your line:'."
+  ],
+  "issues": [
+    {
+      "id": "uiux-1",
+      "severity": "P1",
+      "area": "Product truthfulness / core interaction",
+      "where": "Try box mirror (segments()/mirrorHTML()), final card (fpDraftHTML()), Founder starter, any number-first or tightened result",
+      "problem": "Strikes are drawn only from R.cut, so words the engine drops as part of a reorder or tightening look kept in the draft but are missing from the post. Founder starter: 'we … just hit' vanish from '$10k MRR after 14 months.'. 'So I basically think that honestly…': the 'I' disappears unstruck. 'Here are 7 things… (thread)': 'Here are' and the parentheses go unmarked. 'it is going' becomes 'It’s going' unmarked. The tile says 'Your facts stay' and the FAQ says 'Every cut is marked, so you can put any word back', and a careful creator sees the mismatch within seconds.",
+      "fix": "In the page, diff the draft's first line against v.line at word level. Render every removed token not covered by R.cut as a struck, no-squiggle span (class 'tw', aria-label 'Reworded'). Render tokens that moved as a small 'Moved to the front' marker on the out-h receipt. Make each such span togglable through keep[] like a cut, or label it non-togglable in its aria-label. Never show an unstruck word that is absent from the output."
+    },
+    {
+      "id": "uiux-2",
+      "severity": "P1",
+      "area": "Previews tile / visual state",
+      "where": "#previews .pvw.n-li (pvFade, mask-image --fe) at every width",
+      "problem": "pvFade counts .li-note as a content line, so the fade ends exactly at the LinkedIn note. The note that explains the whole LinkedIn point ('LinkedIn cuts you off at “see more”. Your first line has to earn the click.') renders at roughly 5–70% opacity, and the next post is fully masked, leaving an empty gap of about 115px at 1440 and about 30px at 390. It is visible the moment you tap LinkedIn.",
+      "fix": "Measure --fe only from .pt/.pn lines of the .next post (or the last post body), and keep .li-note and .split outside the fade (either exclude them from the mask with a sibling layout, or move the LinkedIn note out of the masked pane into #pv-big). Run pvFade again on pill switch."
+    },
+    {
+      "id": "uiux-3",
+      "severity": "P2",
+      "area": "Layout state",
+      "where": "#previews when #sharpen grows (1280/1440: long draft, multi-line draft, put-backs)",
+      "problem": "The Previews tile shares a grid row with Try and stretches with it, but --fe is measured only on load, resize and font load. When the Try result grows, the feed stays masked at its old height, leaving a 70–230px dead gap above 'Too long for one post?…'.",
+      "fix": "Observe .t-pv .screens with a ResizeObserver and call pvFade, or set align-self:start on .t-pv so it doesn't stretch."
+    },
+    {
+      "id": "uiux-4",
+      "severity": "P2",
+      "area": "Studio states",
+      "where": "#studio .st-post for Rafael, Lena and Marco (desktop 1280/1440); #rv-act after approve",
+      "problem": "The tile height is set by Priya's post, which has an image. Clients without media leave a ~150–200px empty block under 'Approved'. After 'Approve as Priya, with her edit' the edit is applied, but her comment still reads as an open request. Approve has no Undo, unlike the Reply tile.",
+      "fix": "Vertically compose the review column (e.g. pin the action row to the bottom with the comment above it), or give each client a media or link-card. Once approved, mark the comment resolved (tick plus 'Applied'). Add a ghost 'Undo' next to 'Approved · Tue 8:15 AM' that restores the draft state."
+    },
+    {
+      "id": "uiux-5",
+      "severity": "P2",
+      "area": "Empty/stale state copy",
+      "where": "#out-empty while #try-ta has text but hasn't been sharpened (after 'Write my own' then typing)",
+      "problem": "The placeholder still says 'Paste a line above. The sharpened version lands here.' while the receipt says 'Tap Sharpen to see yours.', so the two lines contradict each other.",
+      "fix": "In paint(), when ta has text and outCard is hidden, set out-empty to 'Tap Sharpen. Your sharpened post lands here.'"
+    },
+    {
+      "id": "uiux-6",
+      "severity": "P2",
+      "area": "Signup sheet copy",
+      "where": "#sh-pv in sign-in mode; #sh-line when opened from #pf-sched",
+      "problem": "Sign-in mode still shows 'Design preview: no account is created yet.' Hero Schedule labels another person's example post (e.g. Lena Fischer's) as 'Your line:'.",
+      "fix": "In sheetPaint(), use 'Design preview: there’s nothing to sign in to yet.' for signin. Pass a flag from #pf-sched so the label reads 'This line:' or 'Example line:'."
+    },
+    {
+      "id": "uiux-7",
+      "severity": "P2",
+      "area": "Affordance",
+      "where": "Hero window: .pane.draft (cursor:text) and #pf-go 'Sharpen'",
+      "problem": "The draft pane looks like an editable compose box, but a click scrolls the page about 1,000px to the Try tile. The most prominent control in the window, the white 'Sharpen', only replays an example that is already sharpened. Both promise an edit in place that isn't there.",
+      "fix": "On hover or focus of the draft pane, show an inline cue ('Edit this in the Sharpen box ↓', with the i-arrow icon). Turn #pf-go into a frosted 'Replay' with the replay icon, or label it 'See it again'."
+    },
+    {
+      "id": "uiux-8",
+      "severity": "P2",
+      "area": "Product believability (X feel)",
+      "where": "#out-line / #fp-sharp X cards when the line contains links, @handles or #hashtags",
+      "problem": "URLs, mentions and hashtags render as plain white body text in the X-dark card. On X they are link-coloured, and long URLs are shortened, so the card reads less like a real post exactly when a creator pastes a real one.",
+      "fix": "Inside X-dark cards only, wrap PROTECT matches in a span coloured with X's link blue (#1D9BF0) and display long URLs shortened (host + '…'). This is X's own UI colour, kept out of the brand palette."
+    },
+    {
+      "id": "uiux-9",
+      "severity": "P2",
+      "area": "Bigger product moment",
+      "where": "#previews after the visitor has sharpened their own line",
+      "problem": "'One draft. Four feeds.' always shows heycape's static example, even right after the visitor has sharpened their own line in the tile beside it. That misses the most persuasive moment on the page: seeing your own line in four feeds.",
+      "fix": "When lastLine is set from Try, offer a 'Yours' pill (or swap the first post) that drops the visitor's sharpened line into the X/Threads/LinkedIn/Bluesky panes, cut at LinkedIn's ~210-character 'see more' point. Leave the example as the default until they sharpen."
+    },
+    {
+      "id": "uiux-10",
+      "severity": "P2",
+      "area": "Responsive control crowding",
+      "where": "#replies .mine .lab/.act at 768 (and ~800–1000)",
+      "problem": "The ghost 'Replay' sits about 4px from 'Edit', so the row reads as three peer actions (Replay, Edit, Reply).",
+      "fix": "Keep Replay in the label row (top-right of #rp-box) at every width, or give it margin-right:auto with a visible gap from the Edit/Reply pair."
+    },
+    {
+      "id": "uiux-11",
+      "severity": "P2",
+      "area": "Scroll affordance",
+      "where": "#try-starters and .st-pick on phones (360/390)",
+      "problem": "The horizontal chip rows are clipped hard by the tile edge ('Ne…', 'Le…'), with no edge fade. A third chip cut mid-letter looks like an overflow bug more than a scroller.",
+      "fix": "Add a 24px right-edge mask-image fade (removed when scrolled to the end) and scroll-padding so the last chip ends with the gutter."
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+<title>Hookworthy Taste Test</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,400..900&family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,500&family=Geist+Mono:wght@400;600&family=Geist:wght@400;600;700&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;600;800&family=Onest:wght@400;600&family=Playfair+Display:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@500;700;800&family=Space+Grotesk:wght@500;700&family=Syne:wght@700;800&family=Unbounded:wght@700&display=swap">
+<style>
+/* Layout: a quiet neutral frame (sections of rated tiles) so each tile's own look is judged alone; sticky tally at the bottom. */
+:root{
+  --bg:#F5F5F3; --surface:#FFFFFF; --fg:#151618; --fg-2:#4D5057; --fg-3:#676A71; --line:#E2E2DF;
+  --love:#0B7A4B; --love-bg:#E3F4EA; --meh:#5E6168; --meh-bg:#ECECEA; --no:#B42318; --no-bg:#FBE7E5; --focus:#2457F5;
+  --ui:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101113; --surface:#18191C; --fg:#EDEEF0; --fg-2:#B9BCC2; --fg-3:#9A9DA4; --line:#2B2D31;
+  --love:#5BD69A; --love-bg:#11301F; --meh:#B9BCC2; --meh-bg:#26282C; --no:#FF8A80; --no-bg:#3A1714; --focus:#8AA8FF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101113; --surface:#18191C; --fg:#EDEEF0; --fg-2:#B9BCC2; --fg-3:#9A9DA4; --line:#2B2D31;
+  --love:#5BD69A; --love-bg:#11301F; --meh:#B9BCC2; --meh-bg:#26282C; --no:#FF8A80; --no-bg:#3A1714; --focus:#8AA8FF; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.55 var(--ui);margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 140px}
+h1,h2{margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1{font:700 clamp(30px,4.2vw,46px)/1.08 var(--ui)}
+h2{font:700 clamp(22px,2.4vw,28px)/1.15 var(--ui)}
+p{margin:0}
+.lede{color:var(--fg-2);font-size:17px;max-width:66ch;margin-top:12px}
+.how{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;color:var(--fg-3);font-size:14px}
+.how b{color:var(--fg)}
+section{margin-top:48px}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sh p{color:var(--fg-3);font-size:14px}
+.grid{display:grid;gap:14px;margin-top:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--min,260px)),1fr))}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0;transition:border-color .15s,box-shadow .15s}
+.tile[data-v="love"]{border-color:var(--love);box-shadow:0 0 0 1px var(--love)}
+.tile[data-v="no"]{opacity:.62}
+.prev{position:relative;container-type:inline-size;overflow:hidden;flex:1}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-top:1px solid var(--line)}
+.meta .nm{min-width:0}
+.meta b{display:block;font-size:14px;font-weight:600;line-height:1.25}
+.meta span{display:block;font-size:12.5px;color:var(--fg-3);line-height:1.3;margin-top:2px}
+.vote{display:flex;gap:4px;flex:none}
+.vote button{font:600 12.5px/1 var(--ui);border:1px solid var(--line);background:transparent;color:var(--fg-2);border-radius:999px;padding:8px 10px;cursor:pointer;min-height:34px}
+.vote button:hover{border-color:var(--fg-3);color:var(--fg)}
+.vote button[aria-pressed="true"].l{background:var(--love-bg);border-color:var(--love);color:var(--love)}
+.vote button[aria-pressed="true"].m{background:var(--meh-bg);border-color:var(--meh);color:var(--fg)}
+.vote button[aria-pressed="true"].n{background:var(--no-bg);border-color:var(--no);color:var(--no)}
+button:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.note{margin-top:14px;display:grid;gap:6px}
+.note label{font-size:13.5px;color:var(--fg-3)}
+.note textarea{font:400 15px/1.45 var(--ui);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;resize:vertical;width:100%}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bar .in{max-width:1200px;margin:0 auto;padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tally{display:flex;gap:14px;font-size:14px;color:var(--fg-2);font-variant-numeric:tabular-nums}
+.tally b{color:var(--fg)}
+#status{font-size:13.5px;color:var(--fg-3)}
+.done{font:600 14px/1 var(--ui);background:var(--fg);color:var(--bg);border:0;border-radius:999px;padding:12px 18px;cursor:pointer}
+.done[aria-pressed="true"]{background:var(--love);color:#fff}
+
+/* ---------- Hero mood minis (each is its own world; fixed colours by design) ---------- */
+.mini{aspect-ratio:16/10;max-width:100%;padding:4.5cqw 5cqw;display:flex;flex-direction:column;gap:2.4cqw}
+.mini .n{display:flex;justify-content:space-between;align-items:center;font-size:3cqw}
+.mini .w{font-weight:700}
+.mini .nb{font-size:2.6cqw;padding:1.2cqw 2.4cqw;border-radius:99px}
+.mini h3{margin:1.2cqw 0 0;font-size:7.6cqw;line-height:.98;letter-spacing:-.03em}
+.mini .row{display:flex;gap:2cqw;align-items:center;margin-top:auto}
+.mini .b{font-size:2.9cqw;padding:1.8cqw 3.2cqw;border-radius:99px;font-weight:600;white-space:nowrap}
+.mini .p{flex:1;min-width:0;border-radius:2.4cqw;padding:2cqw 2.6cqw;font-size:2.6cqw;line-height:1.35}
+.mini .p i{font-style:normal;font-weight:700}
+.mini .p s{opacity:.55}
+.av{display:inline-block;width:3.6cqw;height:3.6cqw;border-radius:50%;vertical-align:middle;margin-right:1.2cqw;background:linear-gradient(135deg,#F4B183,#C47E5A)}
+
+.m-x{background:#000;color:#E7E9EA;font-family:"Inter Tight",var(--ui)}
+.m-x h3{font-weight:800}.m-x .nb{background:#E7E9EA;color:#0F1419;font-weight:700}
+.m-x .b{background:#E7E9EA;color:#0F1419}.m-x .p{border:1px solid #2F3336;color:#E7E9EA}.m-x .p small{color:#71767B}
+
+.m-card{background:#0B0B0C;color:#F2EFE8;font-family:"Geist",var(--ui)}
+.m-card h3{font-family:"Instrument Serif",serif;font-weight:400;font-size:8.4cqw;letter-spacing:-.01em}.m-card h3 em{color:#D9C48A}
+.m-card .nb{border:1px solid #D9C48A;color:#D9C48A}.m-card .b{background:#D9C48A;color:#0B0B0C}
+.m-card .p{border:1px solid #2A2826;background:#121213}.m-card .p small{color:#8E8A82}
+
+.m-volt{background:#0D0F0B;color:#EDEFE7;font-family:"Space Grotesk",var(--ui)}
+.m-volt h3{font-weight:700}.m-volt h3 em{font-style:normal;background:#C6FF3D;color:#0D0F0B;padding:0 1cqw}
+.m-volt .w{font-family:"JetBrains Mono",monospace;font-weight:700}.m-volt .nb{background:#C6FF3D;color:#0D0F0B;font-family:"JetBrains Mono",monospace}
+.m-volt .b{background:#C6FF3D;color:#0D0F0B;font-family:"JetBrains Mono",monospace;border-radius:1cqw}
+.m-volt .p{border:1px solid #2A2E22;font-family:"JetBrains Mono",monospace;border-radius:1cqw}.m-volt .p small{color:#8D9480}
+
+.m-poster{background:#FFFFFF;color:#0A0A0A;font-family:"Inter",var(--ui)}
+.m-poster h3{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:9.6cqw;letter-spacing:0;line-height:.92}.m-poster h3 em{font-style:normal;color:#FF3B30}
+.m-poster .nb{background:#0A0A0A;color:#fff;border-radius:0}.m-poster .b{background:#FF3B30;color:#fff;border-radius:0}
+.m-poster .p{border:2px solid #0A0A0A;border-radius:0}
+
+.m-studio{background:#FBFBFD;color:#1D1D1F;font-family:"Inter Tight",var(--ui);align-items:center;text-align:center}
+.m-studio .n{width:100%}.m-studio h3{font-weight:700;font-size:7cqw}.m-studio h3 em{font-style:normal;color:#0B6BFF}
+.m-studio .nb{background:#1D1D1F;color:#fff}.m-studio .row{width:100%;flex-direction:column;gap:1.6cqw}
+.m-studio .b{background:#0B6BFF;color:#fff}.m-studio .p{width:70%;flex:none;background:#fff;box-shadow:0 1cqw 4cqw rgba(0,0,0,.08);text-align:left}
+
+.m-mid{background:radial-gradient(120% 90% at 80% 0%,#1A2350 0%,#070A1A 60%);color:#E8ECFF;font-family:"Manrope",var(--ui)}
+.m-mid h3{font-weight:800}.m-mid h3 em{font-style:normal;color:#8FA5FF}
+.m-mid .nb{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18)}.m-mid .b{background:#E8ECFF;color:#070A1A}
+.m-mid .p{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}.m-mid .p small{color:#9AA3C7}
+
+.m-pink{background:#FF90E8;color:#000;font-family:"Archivo",var(--ui)}
+.m-pink h3{font-weight:900;font-stretch:112%;font-size:7cqw}.m-pink h3 em{font-style:normal;background:#FFE500;padding:0 .8cqw}
+.m-pink .nb{background:#000;color:#fff;border-radius:1cqw}.m-pink .b{background:#000;color:#fff;border-radius:1cqw;box-shadow:.8cqw .8cqw 0 #fff}
+.m-pink .p{background:#fff;border:.45cqw solid #000;box-shadow:1cqw 1cqw 0 #000;border-radius:1cqw}
+
+.m-glass{background:linear-gradient(135deg,#FFD6C2 0%,#E9D7FF 45%,#C9E4FF 100%);color:#101114;font-family:"Plus Jakarta Sans",var(--ui)}
+.m-glass h3{font-weight:800}.m-glass .nb{background:#101114;color:#fff}
+.m-glass .n{background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.7);border-radius:99px;padding:1.2cqw 1.2cqw 1.2cqw 2.4cqw;backdrop-filter:blur(8px)}
+.m-glass .b{background:#101114;color:#fff}.m-glass .p{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);backdrop-filter:blur(10px)}
+
+.m-edit{background:#F4F1EA;color:#1B1A17;font-family:"Manrope",var(--ui)}
+.m-edit h3{font-family:"Playfair Display",serif;font-style:italic;font-weight:600;font-size:7.8cqw;letter-spacing:-.02em}.m-edit h3 em{color:#2347FF}
+.m-edit .nb{border:1px solid #1B1A17}.m-edit .b{background:#1B1A17;color:#F4F1EA}.m-edit .p{background:#fff;border:1px solid #E3DED3}
+
+.m-sky{background:linear-gradient(180deg,#DCEBFF 0%,#FFFFFF 70%);color:#0F172A;font-family:"Inter",var(--ui);align-items:center;text-align:center}
+.m-sky .n{width:100%}.m-sky h3{font-weight:700;font-size:6.6cqw}.m-sky h3 em{font-style:normal;color:#2F7CF6}
+.m-sky .nb{background:#2F7CF6;color:#fff}.m-sky .row{width:100%;flex-direction:column;gap:1.6cqw}
+.m-sky .b{background:#2F7CF6;color:#fff}.m-sky .p{width:70%;flex:none;background:#fff;border:1px solid #E4EAF3;text-align:left}
+
+.m-mono{background:#F2F2EE;color:#111;font-family:"JetBrains Mono",monospace}
+.m-mono h3{font-weight:700;font-size:6.4cqw;letter-spacing:-.04em}.m-mono h3 em{font-style:normal;background:#FFE500;padding:0 .6cqw}
+.m-mono .nb{border:.35cqw solid #111;border-radius:0}.m-mono .b{background:#111;color:#F2F2EE;border-radius:0}
+.m-mono .p{border:.35cqw solid #111;border-radius:0;background:#fff}
+
+/* ---------- Font specimens ---------- */
+.spec{padding:5cqw 5.5cqw;display:grid;gap:2cqw;background:var(--surface);min-height:100%}
+.spec .h{font-size:8.4cqw;line-height:1;letter-spacing:-.025em}
+.spec .t{font-size:3.6cqw;color:var(--fg-2);line-height:1.4}
+.spec .k{font-size:3cqw;color:var(--fg-3)}
+
+/* ---------- Palettes ---------- */
+.pal{display:grid;grid-template-rows:auto auto}
+.pal .sw{display:flex;height:16cqw}
+.pal .sw i{flex:1}
+.pal .demo{padding:4cqw 4.5cqw;display:flex;align-items:center;justify-content:space-between;gap:3cqw;font:700 5cqw/1.05 "Inter Tight",var(--ui);letter-spacing:-.02em}
+.pal .demo span{font:600 3.2cqw/1 var(--ui);padding:2.4cqw 3.6cqw;border-radius:99px;white-space:nowrap;letter-spacing:0}
+
+/* ---------- Buttons ---------- */
+.btns{padding:7cqw 6cqw;display:flex;align-items:center;justify-content:center;gap:4cqw;min-height:34cqw}
+.bt{font:600 4.4cqw/1 "Inter",var(--ui);padding:3.6cqw 5.6cqw;white-space:nowrap;display:inline-flex;align-items:center;gap:2.4cqw}
+.bt-pill{background:#151618;color:#fff;border-radius:99px}
+.bt-sharp{background:#151618;color:#fff;border-radius:0;text-transform:uppercase;letter-spacing:.06em;font-size:3.6cqw}
+.bt-glass{background:rgba(255,255,255,.5);color:#101114;border-radius:99px;border:1px solid rgba(255,255,255,.85);backdrop-filter:blur(8px)}
+.btns.on-glass{background:linear-gradient(135deg,#FFD6C2,#E9D7FF 45%,#C9E4FF)}
+.bt-brutal{background:#FFE500;color:#111;border:.6cqw solid #111;border-radius:1.6cqw;box-shadow:1.4cqw 1.4cqw 0 #111}
+.bt-line{background:transparent;color:var(--fg);border:1px solid var(--fg);border-radius:99px}
+.bt-arrow{background:#151618;color:#fff;border-radius:99px;padding-right:1.6cqw}
+.bt-arrow b{display:inline-grid;place-items:center;width:7cqw;height:7cqw;border-radius:50%;background:#fff;color:#151618;font-size:4cqw}
+
+/* ---------- Logos ---------- */
+.logo{min-height:30cqw;display:grid;place-items:center;padding:6cqw;background:var(--surface);color:var(--fg)}
+.lg{font-size:9cqw;line-height:1}
+.mono-lg{width:18cqw;height:18cqw;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font:800 7cqw/1 "Inter Tight",var(--ui);letter-spacing:-.06em}
+
+/* ---------- Brands ---------- */
+.brand{min-height:20cqw;display:grid;place-items:center;font:700 7.6cqw/1 var(--ui);letter-spacing:-.02em;color:var(--fg);background:var(--surface)}
+
+.sum{margin-top:56px;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.sum ul{margin:10px 0 0;padding-left:18px;color:var(--fg-2);columns:2 260px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Hookworthy Taste Test</h1>
+    <p class="lede">About 60 quick taps to pin down the look you actually want. Judge each tile on gut feel in a second or two, skip anything you're unsure about, and add a note where something almost works.</p>
+    <p class="how"><span><b>Love</b> = more of this</span><span><b>Meh</b> = fine, not it</span><span><b>No</b> = never</span><span>Your picks save as you go, and I'll read them from here.</span></p>
+  </header>
+
+  <section id="moods" aria-labelledby="h-moods"><div class="sh"><h2 id="h-moods">1. First impression</h2><p>The whole vibe at a glance</p></div><div class="grid" style="--min:300px" id="g-moods"></div>
+    <div class="note"><label for="n-moods">Notes on first impressions (optional)</label><textarea id="n-moods" data-note="moods" rows="2" placeholder="e.g. Black Card but friendlier"></textarea></div></section>
+
+  <section id="fonts" aria-labelledby="h-fonts"><div class="sh"><h2 id="h-fonts">2. Fonts</h2><p>Headline + body, no colour</p></div><div class="grid" style="--min:280px" id="g-fonts"></div>
+    <div class="note"><label for="n-fonts">Notes on fonts (optional)</label><textarea id="n-fonts" data-note="fonts" rows="2" placeholder="e.g. I like serif headlines but not this serif"></textarea></div></section>
+
+  <section id="palettes" aria-labelledby="h-palettes"><div class="sh"><h2 id="h-palettes">3. Colours</h2><p>Background, text and the one accent</p></div><div class="grid" style="--min:240px" id="g-palettes"></div>
+    <div class="note"><label for="n-palettes">Notes on colours (optional)</label><textarea id="n-palettes" data-note="palettes" rows="2" placeholder="e.g. dark is fine if it feels expensive"></textarea></div></section>
+
+  <section id="buttons" aria-labelledby="h-buttons"><div class="sh"><h2 id="h-buttons">4. Buttons</h2><p>Shape and finish</p></div><div class="grid" style="--min:240px" id="g-buttons"></div></section>
+
+  <section id="logos" aria-labelledby="h-logos"><div class="sh"><h2 id="h-logos">5. Logo style</h2><p>How the name is set</p></div><div class="grid" style="--min:240px" id="g-logos"></div></section>
+
+  <section id="brands" aria-labelledby="h-brands"><div class="sh"><h2 id="h-brands">6. Brands whose feel you want</h2><p>Just the name, your gut reaction</p></div><div class="grid" style="--min:200px" id="g-brands"></div>
+    <div class="note"><label for="n-brands">Any site or app not listed that you love (or hate)?</label><textarea id="n-brands" data-note="brands" rows="2" placeholder="Names or links"></textarea></div></section>
+
+  <div class="sum" id="sum" aria-live="polite"><h2>Your loves so far</h2><ul id="sum-list"><li>Nothing loved yet.</li></ul></div>
+</div>
+
+<div class="bar" role="region" aria-label="Your progress"><div class="in">
+  <div class="tally"><span><b id="c-love">0</b> love</span><span><b id="c-meh">0</b> meh</span><span><b id="c-no">0</b> no</span><span id="c-left"></span></div>
+  <span id="status" aria-live="polite">Your picks save as you go.</span>
+  <button class="done" id="done" type="button" aria-pressed="false">I'm done</button>
+</div></div>
+
+<script>
+const POST = '<span class="av"></span><i>heycape</i> <small>@heycape_ · 2m</small><br>my first $10k month trading took me 3 years.';
+const MINI = (cls, word, btn, h) => `<div class="mini ${cls}"><div class="n"><span class="w">${word}</span><span class="nb">Start free</span></div><h3>${h || 'They read one line.<br>Make it <em>hookworthy</em>.'}</h3><div class="row"><span class="b">${btn}</span><div class="p">${POST}</div></div></div>`;
+const MOODS = [
+  ['x-night', 'X Night', 'Pure black like X itself, bold tight grotesk', MINI('m-x', 'hookworthy', 'Sharpen my first line')],
+  ['black-card', 'Black Card', 'Premium black, serif headline, champagne accent', MINI('m-card', 'Hookworthy', 'Sharpen my first line')],
+  ['volt-terminal', 'Volt Terminal', 'Trader energy: near-black, mono details, volt green', MINI('m-volt', 'hookworthy_', 'sharpen --first-line')],
+  ['poster', 'Poster', 'Huge condensed type, white, signal red', MINI('m-poster', 'HOOKWORTHY', 'SHARPEN MY FIRST LINE', 'They read<br>one line. <em>Make it hook&shy;worthy.</em>')],
+  ['studio', 'Clean Studio', 'Apple-clean white, centred, product floating', MINI('m-studio', 'hookworthy', 'Sharpen my first line')],
+  ['midnight', 'Midnight', 'Deep navy, soft light, crisp sans (Linear-ish)', MINI('m-mid', 'hookworthy', 'Sharpen my first line')],
+  ['creator-pink', 'Creator Pink', 'Loud creator brand: pink, black borders, hard shadows', MINI('m-pink', 'hookworthy', 'Sharpen my first line')],
+  ['liquid-glass', 'Liquid Glass', 'Soft colour wallpaper, frosted glass panels', MINI('m-glass', 'hookworthy', 'Sharpen my first line')],
+  ['editorial', 'Editorial', 'Cream magazine, italic serif, one blue', MINI('m-edit', 'Hookworthy', 'Sharpen my first line')],
+  ['sky', 'Sky (Typefully-like)', 'White to sky blue, friendly sans', MINI('m-sky', 'hookworthy', 'Sharpen my first line')],
+  ['mono-brutal', 'Mono Brutal', 'Off-white, typewriter mono, yellow highlight', MINI('m-mono', 'hookworthy_', 'sharpen my first line')],
+];
+const FB = st => st.replace(/font-family:([^;]+)/, (m, f) => `font-family:${f},${/Serif|Playfair|Fraunces/.test(f) ? 'Georgia,serif' : 'system-ui,sans-serif'}`);
+const SPEC = (h, t, hs, ts, k) => (hs = FB(hs), ts = FB(ts), `<div class="spec"><div class="h" style="${hs}">${h}</div><div class="t" style="${ts}">${t}</div>${k ? `<div class="k" style="${ts}">${k}</div>` : ''}</div>`);
+const L1 = 'They read one line.<br>Make it hookworthy.', T1 = 'Hookworthy sharpens your first line in one tap. It still sounds like you.';
+const FONTS = [
+  ['inter-tight', 'Inter Tight', 'X-native, tight and bold', SPEC(L1, T1, 'font-family:"Inter Tight";font-weight:800', 'font-family:Inter')],
+  ['geist', 'Geist + Geist Mono', 'Vercel-precise', SPEC(L1, T1, 'font-family:Geist;font-weight:700;letter-spacing:-.04em', 'font-family:Geist', '<span style="font-family:\'Geist Mono\'">11:04 PM → 8:40 AM</span>')],
+  ['instrument-serif', 'Instrument Serif + Inter', 'Editorial premium', SPEC(L1, T1, 'font-family:"Instrument Serif";font-weight:400;font-size:9.6cqw;letter-spacing:-.01em', 'font-family:Inter')],
+  ['anton', 'Anton + Inter', 'Poster, condensed caps', SPEC('THEY READ ONE LINE.<br>MAKE IT HOOKWORTHY.', T1, 'font-family:Anton;font-weight:400;letter-spacing:0', 'font-family:Inter')],
+  ['archivo-wide', 'Archivo Expanded', 'Wide, loud, sporty', SPEC(L1, T1, 'font-family:Archivo;font-weight:800;font-stretch:125%;font-size:7cqw', 'font-family:Archivo')],
+  ['space-grotesk', 'Space Grotesk + JetBrains Mono', 'Tech / crypto', SPEC(L1, T1, 'font-family:"Space Grotesk";font-weight:700', 'font-family:"Space Grotesk"', '<span style="font-family:\'JetBrains Mono\'">$10k · 3 years · your lowercase</span>')],
+  ['playfair', 'Playfair italic + Manrope', 'Luxury magazine', SPEC(L1, T1, 'font-family:"Playfair Display";font-style:italic;font-weight:600', 'font-family:Manrope')],
+  ['unbounded', 'Unbounded + Manrope', 'Wide, futuristic', SPEC(L1, T1, 'font-family:Unbounded;font-weight:700;font-size:6.6cqw;letter-spacing:-.03em', 'font-family:Manrope')],
+  ['syne', 'Syne + Inter', 'Art-world, quirky', SPEC(L1, T1, 'font-family:Syne;font-weight:800', 'font-family:Inter')],
+  ['jakarta', 'Plus Jakarta Sans', 'Friendly modern SaaS', SPEC(L1, T1, 'font-family:"Plus Jakarta Sans";font-weight:800', 'font-family:"Plus Jakarta Sans"')],
+  ['fraunces', 'Fraunces + Figtree', 'Warm editorial (seen in Margin Notes)', SPEC(L1, T1, 'font-family:Fraunces;font-weight:500', 'font-family:Figtree')],
+  ['bricolage', 'Bricolage + Onest', 'Chunky, playful (seen in Tangerine Pen)', SPEC(L1, T1, 'font-family:"Bricolage Grotesque";font-weight:700', 'font-family:Onest')],
+];
+const PAL = (cols, bg, fg, ac, act, label) => `<div class="pal"><div class="sw">${cols.map(c => `<i style="background:${c}" title="${c}"></i>`).join('')}</div><div class="demo" style="background:${bg};color:${fg}">${label}<span style="background:${ac};color:${act}">Sharpen</span></div></div>`;
+const PALETTES = [
+  ['x-black', 'X Black', 'Black, white, grey, one blue', PAL(['#000000', '#16181C', '#71767B', '#E7E9EA', '#1D9BF0'], '#000000', '#E7E9EA', '#E7E9EA', '#0F1419', 'One line.')],
+  ['graphite-volt', 'Graphite + Volt', 'Near-black with volt green', PAL(['#0D0F0B', '#1C1F18', '#8D9480', '#EDEFE7', '#C6FF3D'], '#0D0F0B', '#EDEFE7', '#C6FF3D', '#0D0F0B', 'One line.')],
+  ['black-champagne', 'Black + Champagne', 'Quiet luxury', PAL(['#0B0B0C', '#1A1918', '#8E8A82', '#F2EFE8', '#D9C48A'], '#0B0B0C', '#F2EFE8', '#D9C48A', '#0B0B0C', 'One line.')],
+  ['white-red', 'White + Signal Red', 'Stark and graphic', PAL(['#FFFFFF', '#F2F2F2', '#6B6B6B', '#0A0A0A', '#FF3B30'], '#FFFFFF', '#0A0A0A', '#FF3B30', '#FFFFFF', 'One line.')],
+  ['navy-electric', 'Navy + Electric', 'Night blue, bright blue', PAL(['#070A1A', '#121838', '#9AA3C7', '#E8ECFF', '#6E8BFF'], '#070A1A', '#E8ECFF', '#6E8BFF', '#070A1A', 'One line.')],
+  ['bone-cobalt', 'Bone + Cobalt', 'Warm white, ink, deep blue', PAL(['#F4F1EA', '#E6E1D6', '#6B665C', '#111111', '#2347FF'], '#F4F1EA', '#111111', '#2347FF', '#FFFFFF', 'One line.')],
+  ['pink-black', 'Pink + Black', 'Creator loud', PAL(['#FF90E8', '#FFE500', '#FFFFFF', '#000000', '#23A094'], '#FF90E8', '#000000', '#000000', '#FFFFFF', 'One line.')],
+  ['sky-cobalt', 'Sky + Cobalt', 'Typefully-ish', PAL(['#FFFFFF', '#DCEBFF', '#64748B', '#0F172A', '#2F7CF6'], '#FFFFFF', '#0F172A', '#2F7CF6', '#FFFFFF', 'One line.')],
+  ['forest-lime', 'Forest + Lime', 'Deep green, cream, lime', PAL(['#0F2A1E', '#1D3B2C', '#A9B8A9', '#F3EEDF', '#B7F36B'], '#0F2A1E', '#F3EEDF', '#B7F36B', '#0F2A1E', 'One line.')],
+  ['plum-peach', 'Plum + Peach', 'Dusky and warm', PAL(['#2A1033', '#45204F', '#BFA6C4', '#FFF1EA', '#FFB38A'], '#2A1033', '#FFF1EA', '#FFB38A', '#2A1033', 'One line.')],
+  ['pure-mono', 'Pure Black & White', 'No colour at all', PAL(['#FFFFFF', '#E5E5E5', '#8A8A8A', '#3A3A3A', '#000000'], '#FFFFFF', '#000000', '#000000', '#FFFFFF', 'One line.')],
+  ['graphite-orange', 'Graphite + Orange', 'Raycast-ish heat', PAL(['#111111', '#1E1E1E', '#8A8A8A', '#F2F2F2', '#FF5A1F'], '#111111', '#F2F2F2', '#FF5A1F', '#111111', 'One line.')],
+];
+const BTN = (inner, cls) => `<div class="btns ${cls || ''}">${inner}</div>`;
+const BUTTONS = [
+  ['pill', 'Solid pill', 'Rounded, confident', BTN('<span class="bt bt-pill">Sharpen my first line</span>')],
+  ['sharp', 'Sharp rectangle', 'Square corners, caps', BTN('<span class="bt bt-sharp">Sharpen my first line</span>')],
+  ['glass', 'Frosted glass', 'See-through, soft', BTN('<span class="bt bt-glass">Sharpen my first line</span>', 'on-glass')],
+  ['brutal', 'Hard shadow', 'Thick border, offset shadow', BTN('<span class="bt bt-brutal">Sharpen my first line</span>')],
+  ['outline', 'Hairline outline', 'Minimal, quiet', BTN('<span class="bt bt-line">Sharpen my first line</span>')],
+  ['arrow', 'Pill with arrow dot', 'Apple / Linear style', BTN('<span class="bt bt-arrow">Sharpen my first line <b>→</b></span>')],
+];
+const HOOK = '<svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true" style="vertical-align:-.12em;margin-right:.18em"><path d="M15 3v10.5a5 5 0 0 1-10 0V12l3 2.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const LG = (inner, style) => `<div class="logo"><span class="lg" style="${style}">${inner}</span></div>`;
+const LOGOS = [
+  ['lower-bold', 'Lowercase bold', 'Tight and modern', LG('hookworthy', 'font-family:"Inter Tight";font-weight:800;letter-spacing:-.05em')],
+  ['serif-italic', 'Serif italic', 'Editorial', LG('Hookworthy', 'font-family:"Instrument Serif";font-style:italic;font-size:11cqw')],
+  ['mono', 'Mono with cursor', 'Writer / terminal', LG('hookworthy_', 'font-family:"JetBrains Mono";font-weight:700;font-size:8cqw;letter-spacing:-.04em')],
+  ['caps', 'Condensed caps', 'Poster', LG('HOOKWORTHY', 'font-family:Anton;font-size:11cqw')],
+  ['glyph', 'Hook mark + name', 'Icon you could use alone', LG(HOOK + 'hookworthy', 'font-family:Geist;font-weight:600;letter-spacing:-.03em')],
+  ['monogram', 'Monogram', 'hw in a circle', '<div class="logo"><span class="mono-lg">hw</span></div>'],
+  ['split', 'Split weight', 'hook bold, worthy light', LG('<b style="font-weight:800">hook</b><span style="font-weight:400">worthy</span>', 'font-family:"Inter Tight";letter-spacing:-.04em')],
+  ['squiggle', 'Squiggle under hook', 'The fluff mark as logo', LG('<span style="text-decoration:underline wavy #E39B17;text-decoration-thickness:.07em;text-underline-offset:.16em">hook</span>worthy', 'font-family:Manrope;font-weight:800;letter-spacing:-.04em')],
+];
+const BRANDS = ['Linear', 'Vercel', 'Raycast', 'Superhuman', 'Arc', 'Apple', 'Stripe', 'Notion', 'Cursor', 'Perplexity', 'beehiiv', 'Gumroad', 'Substack', 'Typefully', 'Wispr Flow', 'Granola']
+  .map(n => [n.toLowerCase().replace(/[^a-z]/g, ''), n, '', `<div class="brand">${n}</div>`]);
+
+const SECTIONS = { moods: MOODS, fonts: FONTS, palettes: PALETTES, buttons: BUTTONS, logos: LOGOS, brands: BRANDS };
+const NAME = {}; const SEC = {};
+const state = {}; // id -> love|meh|no
+let total = 0;
+
+for (const [sec, items] of Object.entries(SECTIONS)) {
+  const g = document.getElementById('g-' + sec);
+  g.innerHTML = items.map(([id, name, sub, prev]) => {
+    const key = sec + '.' + id; NAME[key] = name; SEC[key] = sec; total++;
+    return `<article class="tile" data-k="${key}"><div class="prev" aria-hidden="true">${prev}</div><div class="meta"><div class="nm"><b>${name}</b>${sub ? `<span>${sub}</span>` : ''}</div><div class="vote" role="group" aria-label="Rate ${name}"><button type="button" class="l" data-v="love" aria-pressed="false">Love</button><button type="button" class="m" data-v="meh" aria-pressed="false">Meh</button><button type="button" class="n" data-v="no" aria-pressed="false">No</button></div></div></article>`;
+  }).join('');
+}
+
+const $ = id => document.getElementById(id);
+function paint(key) {
+  const t = document.querySelector(`.tile[data-k="${CSS.escape(key)}"]`); if (!t) return;
+  const v = state[key] || '';
+  t.dataset.v = v;
+  t.querySelectorAll('.vote button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+}
+function tally() {
+  const c = { love: 0, meh: 0, no: 0 };
+  Object.values(state).forEach(v => { if (c[v] != null) c[v]++; });
+  $('c-love').textContent = c.love; $('c-meh').textContent = c.meh; $('c-no').textContent = c.no;
+  const left = total - (c.love + c.meh + c.no); $('c-left').textContent = left ? `${left} to go` : 'All rated';
+  const loves = Object.keys(state).filter(k => state[k] === 'love');
+  const order = Object.keys(SECTIONS);
+  loves.sort((a, b) => order.indexOf(SEC[a]) - order.indexOf(SEC[b]));
+  const label = { moods: 'Look', fonts: 'Font', palettes: 'Colours', buttons: 'Button', logos: 'Logo', brands: 'Brand' };
+  $('sum-list').innerHTML = loves.length ? loves.map(k => `<li>${label[SEC[k]]}: ${NAME[k]}</li>`).join('') : '<li>Nothing loved yet.</li>';
+}
+
+/* ---------- saving: db when available, this browser otherwise ---------- */
+let db = null; const chains = {};
+function local(set) { try { if (set) localStorage.setItem('hw-taste', JSON.stringify(set)); else return JSON.parse(localStorage.getItem('hw-taste') || '{}'); } catch (e) { return {}; } }
+function status(t) { $('status').textContent = t; }
+function save(path, body) {
+  if (!db) return Promise.resolve();
+  const prev = chains[path] || Promise.resolve();
+  const next = prev.then(() => { status('Saving…'); return db.doc(path).set(body); })
+    .then(() => status('Saved. I can read your picks.'))
+    .catch(e => status(e && e.code === 'invalid_argument' ? 'View-only here: picks stay in this browser.' : 'Couldn’t save online: picks stay in this browser.'));
+  chains[path] = next.catch(() => {}); return next;
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('.vote button'); if (!b) return;
+  const key = b.closest('.tile').dataset.k; const v = b.dataset.v;
+  state[key] = state[key] === v ? '' : v; if (!state[key]) delete state[key];
+  paint(key); tally();
+  const l = local(); l.votes = state; local(l);
+  save('votes/' + key.replace('.', '--'), { key, section: SEC[key], name: NAME[key], vote: state[key] || 'none', at: Date.now() });
+});
+const timers = {};
+document.querySelectorAll('textarea[data-note]').forEach(t => t.addEventListener('input', () => {
+  const k = t.dataset.note; clearTimeout(timers[k]);
+  timers[k] = setTimeout(() => { const l = local(); l.notes = Object.assign(l.notes || {}, { [k]: t.value }); local(l); save('notes/' + k, { section: k, text: t.value, at: Date.now() }); }, 700);
+}));
+$('done').addEventListener('click', () => {
+  const on = $('done').getAttribute('aria-pressed') !== 'true';
+  $('done').setAttribute('aria-pressed', String(on)); $('done').textContent = on ? 'Done ✓' : "I'm done";
+  const l = local(); l.done = on; local(l);
+  save('meta/status', { done: on, at: Date.now() });
+});
+
+function restore(votes, notes, done) {
+  Object.assign(state, votes || {}); Object.keys(state).forEach(paint);
+  Object.entries(notes || {}).forEach(([k, v]) => { const t = document.querySelector(`textarea[data-note="${k}"]`); if (t && !t.value) t.value = v; });
+  if (done) { $('done').setAttribute('aria-pressed', 'true'); $('done').textContent = 'Done ✓'; }
+  tally();
+}
+const saved = local(); restore(saved.votes, saved.notes, saved.done);
+
+(async () => {
+  try {
+    if (!window.claude || !window.claude.use) { status('Preview: picks stay in this browser.'); return; }
+    db = await window.claude.use('db');
+    if (!db) { status('Picks stay in this browser on this view.'); return; }
+    const [vs, ns, ms] = await Promise.all([db.collection('votes').get(), db.collection('notes').get(), db.doc('meta/status').get()]);
+    const votes = {}; vs.docs.forEach(d => { const x = d.data(); if (x && x.key && x.vote && x.vote !== 'none') votes[x.key] = x.vote; });
+    const notes = {}; ns.docs.forEach(d => { const x = d.data(); if (x && x.section) notes[x.section] = x.text || ''; });
+    restore(votes, notes, ms.exists && ms.data().done);
+    status('Your picks save as you go.');
+  } catch (e) { status('Couldn’t reach saved picks: they stay in this browser.'); }
+})();
+tally();
+</script>

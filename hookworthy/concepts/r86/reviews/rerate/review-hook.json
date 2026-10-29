@@ -1,0 +1,169 @@
+{
+ "key": "hook",
+ "role": "Sharpen engine juror: senior X ghostwriter and copy chief who reads JS",
+ "score": 7.0,
+ "verdict": "The engine is trustworthy where it counts most: every number, $ticker, %, @handle, #tag and link survived all 159 unseen lines, about 47 of 50 already-sharp lines were left alone, and the homepage showed exactly what the engine did in all 38 page runs. But only 70% of outputs are post-ready (111 h / 31 o / 17 m), with a common construction (‘I want to be honest about…’) coming out as a broken sentence, meaning words (‘actually agree’, ‘not quite’, quoted phrases) cut as filler, and 15 explanations that are not true for the edit (‘Nothing to cut’, ‘would change what you mean’).",
+ "to_95": [
+  "Fix the 'to be honest' cut so it never fires inside a verb phrase (want/need/have/going/trying/promised to be [really] honest). Add an SL_MEAN guard so any version that drops it is rejected (hook-1, P0).",
+  "Guard the words that carry meaning. Add SL_MEAN rules for 'not quite' / 'not really', and for 'actually agree/disagree/enjoy/think/believe'. Never cut a soft word that is the subject ('Honestly is…', 'Just is…') or the echo in 'I mean literally'. Treat any quoted span as verbatim (hook-2, hook-3, hook-4).",
+  "Add SL_BROKEN guards for the fragment templates: a sentence that is only an intro phrase ('In today's issue.'), 'About the time…' left after cutting 'Let me tell you', 'Can I say that…?', a forced Q/A on a plain subject ('Most people? They're…'), and 'of you'll' (hook-5).",
+  "Stop reporting fluffy lines as clean. Mark the stock frames ('I want you to know that', 'then this might be for you', 'Here's a list of some of the', 'personally', 'In the world of X,', 'I wanted to take a moment to talk about', 'I've noticed that'). When hookUp has no candidate, fall back to softCut, so 'here's the thing' lines get their So/really/basically cut (hook-6, hook-7).",
+  "Make every explanation true. The page's unsure copy must not say 'would change what you mean' beside a chip that calls the same word a warm-up word. Clean must not say 'Nothing soft to cut' when soft words remain. The receipt must count every struck word (hook-8, hook-13).",
+  "Keep the draft's first-letter case when a body follows ('here's how I cut…' bug), and keep a list header's trailing colon (hook-9, hook-10).",
+  "Then re-run a fresh, unseen set of 120 or more lines. The bar is at least 90% h, 0 m on meaning or grammar, and no false why/say."
+ ],
+ "issues": [
+  {
+   "id": "hook-1",
+   "severity": "P0",
+   "area": "engine: broken output",
+   "where": "core.js SOFT 'honest' rule (~line 125: /to be honest/) and the HEDGE cut list (~line 1234); slOK does not catch the result. Unseen #92.",
+   "problem": "'to be honest' is cut as a hedge even when it is the verb's complement, which leaves an ungrammatical sentence. The page then shows it under 'Why it hits'. #92 'So I basically tried the 75 Hard challenge and I want to be really honest about how it went' becomes 'I tried the 75 Hard challenge. I want about how it went.' It reproduces broadly: 'I have to be honest with you, this launch flopped' → 'I have with you, this launch flopped.' 'I need to be honest about something' → 'I need about something.' 'I am going to be honest, I almost quit' → 'I’m going I almost quit.' 'I promised to be honest about my numbers…' → 'I promised about my numbers…'. These are everyday creator openers, so a visitor trying the Try tile can hit one.",
+   "fix": "Only treat 'to be honest' as a hedge when it is a sentence adverbial: at the line or clause start, or after , . ; and followed by a comma or the end. Add a negative lookbehind (?<!\\b(?:want|wants|wanted|need|needs|have|has|had|going|gonna|trying|try|tried|promised|decided|got|able|chose|meant)\\s) before 'to be (?:really |totally |brutally )?honest'. Also add SL_MEAN /\\b(?:want|wanted|need|have|has|had|going|trying|try|promised|decided)\\s+to be (?:\\w+ )?honest\\b/i so any version without it is rejected."
+  },
+  {
+   "id": "hook-2",
+   "severity": "P1",
+   "area": "engine: meaning changed",
+   "where": "SL_MEAN in core.js (sharpenLine block); softMarks for 'actually', 'quite' and 'really'. Unseen #27, #57, #24.",
+   "problem": "Some qualifiers carry the point, and the engine cuts them as filler. #57 'We're not quite profitable yet.' → 'We're not profitable yet.' (a fact changed; the page says 'Filler from talking out loud'). #27 'I actually agree with Vitalik on this one.' → 'I agree…', which loses the concession that is the whole post. #24 'not really bullish' → 'not bullish'. Probes: 'We are not quite at 1k subscribers.' → 'We aren’t at 1k subscribers.' and 'I actually disagree with Naval here.' → 'I disagree…'. SL_MEAN already protects 'actually liked/prefer/matters', but not agree/disagree/enjoy.",
+   "fix": "Add to SL_MEAN: /\\bnot (?:quite|really)\\b/i and /\\bactually (?:agree[sd]?|disagree[sd]?|enjoy(?:s|ed)?|think|believe|want(?:s|ed)?|need(?:s|ed)?|care[sd]?)\\b/i. Mirror the same exceptions in softMarks so the page never underlines them as fluff."
+  },
+  {
+   "id": "hook-3",
+   "severity": "P1",
+   "area": "engine: soft word used as a word",
+   "where": "softMarks/softCut and SL_BROKEN. Unseen #70, #155.",
+   "problem": "A soft word that is the subject, or the deliberate echo, gets deleted. #70 'Honestly is the most underrated word in marketing.' → 'Is the most underrated word in marketing.' (also 'Just is the most overused word on X.' → 'Is the most…'). #155 '…and I mean literally.' → '…and I mean.'",
+   "fix": "Never mark a soft word that is directly followed by is|was|are|has, or directly preceded by 'I mean'/'mean it'. Add an SL_BROKEN check that rejects a version starting with a bare verb (Is|Was|Are|Has) when the draft did not, or ending in /\\bI mean[.!]?$/i."
+  },
+  {
+   "id": "hook-4",
+   "severity": "P1",
+   "area": "engine: quotes altered",
+   "where": "slFacts / softMarks. Unseen #152, #154.",
+   "problem": "Words inside quotation marks are edited, which misquotes the thing being mocked. #152: 'just early' → 'early'. #154: 'really changes everything' → 'changes everything', and the sarcasm marker 'Truly' is cut. Oddly, 'Love how everyone was 'just hedging' in 2022.' is left alone, so the behaviour is inconsistent.",
+   "fix": "Treat any span in '…' \"…\" “…” ‘…’ (opened after whitespace or the start, closed before punctuation or whitespace, so apostrophes don't count) as verbatim. Exclude it from softMarks, and add it to slFacts so slOK rejects any version that changes it. Leave a sentence-initial 'Truly'/'Wow' alone when the line has a quoted span (sarcasm)."
+  },
+  {
+   "id": "hook-5",
+   "severity": "P1",
+   "area": "engine: awkward templates",
+   "where": "the contrast/ask moves and the WORDY swaps in hookUp. Unseen #66, #18, #44, #87, #7.",
+   "problem": "Several moves produce lines a copy chief would send back. #66: 'In today's issue, we're going to be taking…' → 'In today's issue. We're taking…' (the alt, '…2026. In today's issue.', is worse; the same happens with 'In this thread,' and 'In this week's video,'). #18: 'Let me tell you about the time I lost $180k…' → 'About the time I lost $180k…'. #44: 'Can I just say that customer support is…?' → 'Can I say that customer support is…?' (it now reads as asking permission). #87: 'Most people? They’re just overcomplicating their workouts too much.' #7: 'Most of you'll round-trip this entire bull run.'",
+   "fix": "Add SL_BROKEN patterns. (1) A sentence that is only an intro phrase: /(?:^|[.!?]\\s)(?:in|on|for) (?:today['’]s|this(?: week['’]s)?|my|our|the latest) [\\w'’ ]{1,24}\\.(?=\\s|$)/i. (2) A version starting /^about the\\b/i when the draft started 'Let me tell you about'; rewrite 'Let me tell you about the time I X' as 'I X'. (3) Rewrite 'Can I (just) say (that) X?' as 'X.' (drop the frame and the question mark). (4) Block the 'ask' move when the asked part is a bare quantifier subject (Most people|Everyone|Nobody) and the answer starts with a pronoun. (5) Never contract will/are after 'of you|of us|of them'."
+  },
+  {
+   "id": "hook-6",
+   "severity": "P1",
+   "area": "engine: misses obvious fluff, then says there is none",
+   "where": "softMarks / SL_WARMX / WORDY. Unseen #50, #83, #158 (reported as clean), and #12, #58, #63, #71, #76, #126 (sharpened but the frame stays).",
+   "problem": "Stock frames go untouched. When nothing else is flagged, the result reads 'Nothing soft to cut', or 'Nothing to cut.' on the page, which is false. Examples: #50 '…I want you to know that it's completely normal…'. #83 'If you are a founder who is struggling to find the time… then this might be for you'. #158 'Here's a list of some of the tools that I personally use…'. #63 'I wanted to take a moment to talk about something that’s important…'. #76 'In the world of B2B marketing,'. #71 'I've noticed that'. #126 'I want to tell you a story about'. #12 'I've been thinking a lot lately about whether or not'.",
+   "fix": "Add marks with cut rules for: 'I want you to know that' (throat), 'completely' before normal/fine/wrong/true (intens), ', then this might be for you' (bait), 'Here(?:'s| is) a list of (?:some of )?the' → 'The' (label), 'personally' before use/think/believe (filler), '^In the world of [\\w ]{1,30}, ' (stock), 'I wanted to take a (?:moment|second) to talk about' (throat; SL_WARMX already matches it but nothing cuts it), 'I've noticed that' (throat), 'I want to tell you a story about' (throat), and 'I've been thinking (?:a lot )?(?:lately )?about (?:whether or not )?' (throat). Until a frame is handled, clean's why should say 'Nothing Sharpen can cut safely.' and not claim that nothing soft is there."
+  },
+  {
+   "id": "hook-7",
+   "severity": "P1",
+   "area": "engine: bails on 'here's the thing' lines",
+   "where": "sharpenLine: when hookUp(...).best is null it returns 'unsure'. Unseen #141 and #42.",
+   "problem": "hookUp returns no candidate for any 'here is/here's the thing…' line. sharpenLine then keeps the line and says 'Kept as written: cutting “So” here would change how it lands or not help.' That is false: softCut gives a clean, fact-safe version ('Here's the thing about trading $BTC on leverage that nobody tells you…'). The short probe 'So here is the thing about leverage that nobody really tells you' fails the same way.",
+   "fix": "When the list is empty, or no candidate passes okL, try softCut(draft).s as a fallback candidate. Accept it if same() is false and slOK passes (explain it with slExplain, moves ['soft']). Use 'unsure' only when that fallback fails too."
+  },
+  {
+   "id": "hook-8",
+   "severity": "P1",
+   "area": "page: unsure copy contradicts itself",
+   "where": "home.html unsureWhy() (~line 2165), used by the Try tile and the final card. Seen with #141 and #146 at 1440 (shots/try-141.png).",
+   "problem": "In the unsure state the panel says '“So” is marked, but cutting it would change what you mean. Your call.' Directly above it, the Marked chip says '“So” A warm-up word. Readers decide in the first few words, so don't spend one clearing your throat.' Two opposite claims sit on one screen. The page's wording is also stronger than the engine's own ('would change how it lands or not help'). For #146 (lorem ipsum) and #141 it is simply untrue.",
+   "fix": "Render R.why, the engine's hedged reason, or a neutral line: 'Marked, not cut. Your call.' In the unsure state, title the chips 'Could cut:' and don't show the fluff explanation under them. Better still, fix hook-7 so these lines aren't unsure at all."
+  },
+  {
+   "id": "hook-9",
+   "severity": "P1",
+   "area": "engine: case lost when a body follows",
+   "where": "sharpenLine/hookUp with rest (the multi-line path the app always uses; the Try textarea accepts it too).",
+   "problem": "With a body under the first line, the sharpened line comes back with a lowercase first letter. 'Here's how I basically cut our AWS bill from $14k/month to $3.2k/month in about two weeks:\\n\\n1. reserved instances' → 'here's how I cut our AWS bill…:', and the page shows it that way. Also 'This is basically how I write every hook:\\nstep 1' → 'this is how I write every hook:', and 'Here is how I basically grew to 10k followers:\\n1. reply' → 'here’s how I grew to 10k followers:'. The same drafts on one line keep their capital.",
+   "fix": "After picking best, if /^\\p{Lu}/u matches the draft and not the line, apply cap(line). Also add a slOK guard that rejects a version whose case-flip at the first letter differs from the draft's."
+  },
+  {
+   "id": "hook-10",
+   "severity": "P2",
+   "area": "engine: list header colon",
+   "where": "the number move / tidy in hookUp. Unseen #9, #86, #93, #104, #116, #122.",
+   "problem": "On a single line, a list header that ends with ':' comes back ending in '.' ('5 things I wish I had known before I started trading perps.'). The colon is what tells the reader a list follows, and people paste the first line alone into the Try tile. With a body attached, the colon is kept.",
+   "fix": "If the draft ends with ':' (optionally followed by an emoji or 👇), keep the ':' whether or not rest is present."
+  },
+  {
+   "id": "hook-11",
+   "severity": "P2",
+   "area": "engine: touches already-sharp lines",
+   "where": "number move and intensifier cuts. Unseen #39 and #116 (#41 is a harmless split).",
+   "problem": "'We hit $10k MRR today. It took 14 months, 3 pivots and one very patient co-founder.' → '$10k MRR today. … one patient co-founder.' The cut drops the actor and the warmth in an already-sharp line. In #116, 'Activation went from 22% to 38%' → 'Activation: 22% to 38%.' and the closing colon is lost.",
+   "fix": "Skip the number move when the number is already within the first 3 words. Don't cut a lone 'very' in a line with no other marks and hookScore ≥ 70."
+  },
+  {
+   "id": "hook-12",
+   "severity": "P2",
+   "area": "engine: per-word reasons not true",
+   "where": "slCut kind assignment and SL_KWHY. Unseen #0, #1, #53, #112, #116.",
+   "problem": "'move' ('Not needed once the line was reordered.') is given to cuts where nothing was reordered. In #0 'going to' was swapped for 'will'. #1 'so' is a warm-up word, #112 'Quick thread on' is a label, and #116 'went from' became a colon. 'announce' ('Announces the news instead of saying it.') is given to 'Just wanted to quickly say' in a thank-you (#53). The homepage doesn't show per-word reasons, but the app does.",
+   "fix": "Report a WORDY substitution as 'swap' with 'Said as “will”.' Give a sentence-initial so/anyway the kind 'open', and 'thread on' the kind 'label'. Use 'tight' when the move is straight/warm and no reorder happened. Give 'just wanted to (quickly) say' the kind 'throat'."
+  },
+  {
+   "id": "hook-13",
+   "severity": "P2",
+   "area": "receipt (say) undercounts or overclaims",
+   "where": "slExplain say builder. Unseen #92, #12, #90.",
+   "problem": "#92 strikes 6 spans ('So', 'basically', 'and', 'to be', 'really', 'honest') but the receipt reads 'Cut the warm-up · Cut 2 filler words · Split it into two beats'. #12 says 'Cut the warm-up' while 'I've been thinking a lot lately about whether or not' still opens the line. #90 says 'Cut 1 hedge' for 'kind of' in 'some kind of magic number'. That isn't a hedge, and it was never underlined, so a word gets struck that the visitor never saw flagged.",
+   "fix": "Include tight cuts in the count ('Cut 4 words'). Say 'Cut the warm-up' only when the first content word of the line is now the first word of the claim. Give 'some kind of' → 'some' the kind 'tight' and show it in the receipt as 'Tightened it'."
+  },
+  {
+   "id": "hook-14",
+   "severity": "P2",
+   "area": "false fluff flags on kept lines",
+   "where": "softMarks. Unseen #85, #135, #139.",
+   "problem": "The line is correctly kept, but the meaning word is shown as Marked fluff: 'Just' in 'Just Do It is still the best tagline ever written.', 'I think' in 'I think, therefore I post.', and 'Really' in 'Really? That's your take?'.",
+   "fix": "Don't mark a soft word that starts a Title-Cased phrase (a quote, brand or title), one that stands alone as a sentence ending in '?', or 'I think' followed by ', therefore'."
+  },
+  {
+   "id": "hook-15",
+   "severity": "P2",
+   "area": "Kept row and facts",
+   "where": "slFacts (core.js) and keptLine (home.html ~line 2145). Unseen #92, #154, #127.",
+   "problem": "The Kept row shows 'Your 75.' when the fact is '75 Hard', and 'Your AI.' on a sarcasm line about AI wrappers. Engine kept[] lists the pronoun 'She' as a fact (#127; not shown on the page, but the app gets it). Facts that are missed: 'Next.js' and 'RWAs'.",
+   "fix": "In slFacts, join a number with a directly following Capitalised word ('75 Hard'), drop He/She/They/It from name detection, and accept dotted names (Next.js) and plural acronyms (RWAs). In keptLine, skip bare common acronyms (AI, CEO, CT) unless they're tickers."
+  },
+  {
+   "id": "hook-16",
+   "severity": "P2",
+   "area": "page: put-back state",
+   "where": "home.html render(): outKeep.hidden = st === 'clean', and the clean branch ignores R.say/R.why. Put-back runs on #27, #57, #37, #155.",
+   "problem": "Put-back works and stays true to the engine: the word returns and the line re-renders. But the engine says 'Kept as you chose · You put back “actually”. Nothing else to cut.' and the page shows 'Nothing to cut.' plus the rewrite pitch. The 'Keep it. Start free' button also disappears at the very moment the visitor made a choice.",
+   "fix": "When keepT is non-empty and R.say === 'Kept as you chose', show R.say/R.why and keep #out-keep visible. Apply the same rule in the final card (keepFin)."
+  },
+  {
+   "id": "hook-17",
+   "severity": "P2",
+   "area": "page: final fluff counter",
+   "where": "home.html fpaint() (#fin-n).",
+   "problem": "The counter says '1 bit of fluff' while the card strikes 2 words (#154: 'really', 'Truly'), and '3 bits of fluff' while it strikes 4 (#87).",
+   "fix": "After payUpdate, count FR.cut items whose kind is fluff (FLUFF(kind)), or relabel the counter '… marked'."
+  },
+  {
+   "id": "hook-18",
+   "severity": "P2",
+   "area": "engine: gibberish passes",
+   "where": "slThin. Unseen #146.",
+   "problem": "'lorem ipsum dolor sit amet very really basically' is treated as a real line and answered with 'Kept as written: cutting “basically”…'. It should get the thin message.",
+   "fix": "Mark a line thin when, among its first 6 words or more, fewer than 2 are in STOP and none is a fact."
+  },
+  {
+   "id": "hook-19",
+   "severity": "P2",
+   "area": "engine: voice markers cut",
+   "where": "TAIL_RX / open words / 'just' cuts. Unseen #8, #33, #32, #80, #95.",
+   "problem": "Cuts that flatten voice: the self-deprecating 'lol' in a lowercase CT line (#8); 'anyway' in 'anyway i quit my job today' (#33), where the understatement is the post; 'just' in a dismissive jab ('is just a fancy word for…', #32, #80); 'way' in the payoff 'way less than you think' (#95).",
+   "fix": "Keep a closing 'lol' when the draft is all lowercase. Keep 'anyway' at the start of a lowercase one-liner. Don't cut 'just' in /\\bis just (?:a|an|rich|people)\\b/ or 'to just <verb>'. Don't cut 'way' before less/more/better/worse at the end of the line."
+  }
+ ]
+}

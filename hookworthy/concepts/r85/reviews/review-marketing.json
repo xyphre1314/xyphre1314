@@ -1,0 +1,213 @@
+{
+ "key": "marketing",
+ "role": "Senior app marketing lead (growth, lifecycle and copy for consumer/prosumer apps)",
+ "score": 6,
+ "verdict": "The voice is the page’s real asset: the headline, the fluff explanations (“Out loud it buys you a second; in the feed it costs you one”) and the “Kept your $10k, your 3 years and your lowercase” notes sound like a creator talking to a creator. But the conversion path is broken. Every CTA lands on a second demo, the Try box’s aha moment has no next step, nothing on the page signs anyone up, and the pricing copy contradicts the “nothing posts without you” promise.",
+ "top3": [
+  "Give the aha a next step: put a white “Keep it. Start free” button under every sharpened result (Try tile and closing box) that opens one real signup sheet (Continue with X / Google) carrying the visitor’s line.",
+  "Re-route the CTAs. The hero primary goes to the Try box with the field focused (not 8 screens down), the secondary becomes “Start free”, the phone gets one sticky CTA instead of two, plan buttons open the sheet with their plan, and Pro (not Studio) is the featured plan.",
+  "Fix the lines that cost trust: “go out on their own” in pricing, “Already sharp” on flabby or bait lines, “Watch another real one”, and the undated X payout claim. Then give newsletter writers, founders and ghostwriters their own hook (Who cards, hero pills, starter chips)."
+ ],
+ "issues": [
+  {
+   "id": "marketing-1",
+   "severity": "P0",
+   "area": "conversion",
+   "where": "Try tile (#sharpen): directly under #out-hits inside #try-out",
+   "problem": "This is the activation moment: the visitor pastes their own line and watches it sharpen. Then it dead-ends, with no button, no “keep it” and no next step. On phone the only CTA in view is the sticky bar, which says “Sharpen my first line” and sends them ~6 screens down to a second paste box. The highest-intent second on the page is left with nothing to click.",
+   "fix": "After a visitor-triggered Sharpen (touched === true, output not stale), reveal a row under #out-hits: a white button “Keep it. Start free” that opens the signup sheet (marketing-3) with the sharpened text, plus the micro line “Free forever · No card” beside or under it. Keep it hidden during the auto-played intro and whenever #try-out is .stale. When the line came back unchanged, the button reads “Start free” and sits under the marketing-4 copy."
+  },
+  {
+   "id": "marketing-2",
+   "severity": "P0",
+   "area": "conversion",
+   "where": "Hero CTAs (#hero-cta a.btn-white “Sharpen my first line”, a.btn-glass “Try it on your line”)",
+   "problem": "The two buttons promise the same thing, so the choice reads as noise. The primary jumps to #start, skipping the whole page including the Try box one scroll below (measured landing at y=4859 of 5986 on desktop and y=7111 of 8354 on phone). It also leaves focus on <body>, so the visitor still has to find and tap the field. The ghost button lands on the Try box with nothing focused, and the example text is still in the way.",
+   "fix": "Primary (white): “Sharpen my first line” → #sharpen. On arrival, focus #try-ta and select its example text so a paste replaces it. Secondary (glass): “Start free” → opens the signup sheet. Keep the micro “Free forever · No card · Nothing posts without you”. Result: one button to try and one to sign up, each going somewhere different."
+  },
+  {
+   "id": "marketing-3",
+   "severity": "P0",
+   "area": "conversion",
+   "where": ".nav-r .btn “Start free”, .plan .btn (“Start free”, “Go Pro”, “Start Studio”), #mbar .btn, #fp-go (href=#signup), .signin (href=#signin)",
+   "problem": "Every Start/plan button goes to #start, the closing paste box, which has no Start free button. “Start free to keep it” points to #signup, which doesn’t exist. A ghostwriter who clicks “Start Studio” lands on “Paste a first line…”. Intent and destination never match, and there is no way to sign up anywhere on the page.",
+   "fix": "Build one signup sheet (a dialog) and open it from every Start/plan button. Title: “Start free” (from a plan button: “Start Pro” / “Start Studio”). Sub: “Free forever. No card.” Pro sub: “$12 a month, billed yearly. Or $16 month to month.” Studio sub: “$18 a month per client voice, billed yearly. Or $24 month to month.” Buttons: “Continue with X” (white), “Continue with Google” (glass), and a text link “Use email instead”. If the visitor sharpened a line in the Try tile or the closing box, show it at the top in an .xcard captioned “Your line is saved. It’ll be in your drafts.” Fine print: “Nothing posts without you.” “Sign in” opens the same sheet titled “Welcome back”."
+  },
+  {
+   "id": "marketing-4",
+   "severity": "P0",
+   "area": "trust",
+   "where": "Try tile go() no-change branch (#out-why “Already sharp. Nothing to cut.” / #out-note “Post it as it is.”); final payUpdate() no-change branch (#fp-why, #fp-note “Start free and post it as it is.”)",
+   "problem": "I ran real audience lines through the box. It calls these “Already sharp”: “asdf”; “In this week’s issue of my newsletter, I wanted to talk a little bit about why most people quit writing.”; “This is the most important thread you’ll read this year about Bitcoin 🧵”; “Most founders are leaving a lot of value on the table by not posting on LinkedIn consistently.” Praising flab and engagement bait, in front of the exact audiences we target, at the moment they’re judging us, is a credibility killer. The final box also labels the unchanged line “Sharpened:”.",
+   "fix": "Copy: #out-why → “No fluff to cut here.”; #out-note → “Want a stronger opener? Rewrites in your voice: 20 free a month.” Final: #fp-why → “No fluff to cut here.”; #fp-note → “Start free for 20 rewrites in your voice.” Over an unchanged line, swap the sr label “Sharpened:” for “As you wrote it:”. Engine (pass to its owner): these should be caught: “I wanted to talk a little bit about”, “In this week’s issue”, “the most important thread you’ll read this year” (MOVE.bait exists but didn’t fire), “leaving value on the table”, “i’ve been thinking a lot about this lately”, and “officially” (kept in “We have officially launched our new feature today.”)."
+  },
+  {
+   "id": "marketing-5",
+   "severity": "P0",
+   "area": "trust",
+   "where": "Pricing: #pl-free li:nth-child(5), #pl-pro li:nth-child(5)",
+   "problem": "“15 posts a month go out on their own” and “Up to 500 posts a month go out on their own” say the opposite of the page’s core promise (“Nothing posts without you”, “We never post for you”, “Posted. By you.”). It reads as the small print walking the promise back, right where people decide to pay.",
+   "fix": "Free: “Schedule 15 posts a month. They go out at the times you pick.” Pro: “Schedule up to 500 posts a month.”"
+  },
+  {
+   "id": "marketing-6",
+   "severity": "P1",
+   "area": "interaction",
+   "where": "Try tile: label[for=try-ta] (currently .sr), #try-clear, below .try-c",
+   "problem": "The field is pre-filled and the auto-play sharpens it, so the box looks like another demo, not an input. The only hint you can type is a “Clear” button, which sounds destructive. Visitors without a line ready have nothing to start from, and the box gives no audience a way in except traders.",
+   "fix": "Make the label visible above the card: “Paste the line you were about to post.” Rename “Clear” → “Use my line” (it clears and focuses, as now). Add one starter row under the card: “No line handy? Try a” + chips “Trader” · “Founder” · “Newsletter” · “Ghostwriter”. Each chip fills #try-ta and runs go(true). Verbatim lines, all tested to sharpen well: Trader “honestly the best trade i made this year was the one i didnt take” (→ “best trade i made this year? the one i didnt take.”); Founder “We’re really excited to announce that we basically just hit $10k MRR after 14 months” (→ “We hit $10k MRR after 14 months.”); Newsletter “just wanted to share that i finally hit 10,000 subscribers on my newsletter, took me 2 years lol”; Ghostwriter “I just think that most founders honestly post way too much about fundraising” (→ “Most founders post too much about fundraising.”)."
+  },
+  {
+   "id": "marketing-7",
+   "severity": "P1",
+   "area": "mobile",
+   "where": "Phone: .nav-r .btn “Start free” + #mbar “Sharpen my first line”",
+   "problem": "From the first scroll to the closing section, every phone screen carries two CTAs (Start free at the top, Sharpen my first line at the bottom) that go to the same place. Together they eat ~130px of 844. The bar also covers the Try output (“Why it hits” is cut off in m-01), stays on over the plan cards that have their own buttons, and tells someone who is already in a sharpen box to go sharpen somewhere else.",
+   "fix": "#mbar label → “Start free”, opening the signup sheet. At ≤640px, hide the nav “Start free” while #mbar.on (the nav keeps the logo and Sign in). Hide #mbar while #sharpen or #pricing is ≥25% in view, as it already hides for #start."
+  },
+  {
+   "id": "marketing-8",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Hero sub (.tc-sub) and <meta name=description>",
+   "problem": "“Hookworthy sharpens your first line in one tap. It still sounds like you.” repeats the brand word straight under “Make it hookworthy.” It skips the mechanic that makes the product different (it marks the fluff) and the trader/founder fear (an AI changing my numbers). The engine already keeps every number, ticker and name (HWCore.SHARPEN); the page never says so.",
+   "fix": "“Hookworthy marks the fluff in your first line and cuts it in one tap.<br> Your numbers, names and voice stay.” (2 lines at 1440, 3 at 390). In the Try tile, the same promise lives in the heading “Your facts stay.”; leave that as is."
+  },
+  {
+   "id": "marketing-9",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Who tile (.t-who .faces li h3 + p); footer “For” column",
+   "problem": "The four cards are identity labels with no benefit (“You post every day. Like heycape, a trader (example)”). This is the one tile where newsletter writers, founders and ghostwriters should see their own reason to care, and it gives none. “You post every day” doesn’t even say trader. The footer calls the primary audience “Daily posters”.",
+   "fix": "Cards (h3 / p): 1 “You post your trades.” / “Your number leads. Your ticker stays exact. Like heycape.” 2 “You build in public.” / “Updates that read like news, not a press release. Like Priya.” 3 “You write a newsletter.” / “A first line that gets the issue opened. Like Ana.” 4 “You ghostwrite.” / “Each client sounds like them, not you. Like Theo.” Make card 4 a link to #studio. Replace the four “(example)” with one line under the grid: “Example accounts.” Footer: “Daily posters” → “Traders”."
+  },
+  {
+   "id": "marketing-10",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Hero window example picker (.ex-l “Watch another real one”, .ex button pills, EX array in script)",
+   "problem": "“Real” contradicts the “Example” tag on the same card and the footer’s “example accounts”, which invites the “so it’s fake?” reaction. The pills name topics (“$10k month / Sizing down / Churn / Design systems”) when they should name the reader. There’s no newsletter example, and “Sizing down” is the same line the page shows 5 more times below.",
+   "fix": ".ex-l → “See another”. Pills → “Trader” ($10k month), “Founder” (Churn), “Newsletter” (new, replacing Sizing down), “Builder” (Design systems). New EX entry: { who: 'Ana Ruiz', handle: '@anaruiz', av: '|23.53%', draft: 'In this week’s issue I just wanted to talk a little bit about why I almost quit writing this newsletter.', soft: ['In this week’s issue', 'I just wanted to talk a little bit about'], after: 'I almost quit writing this newsletter. This week: why.', move: 'Got straight to it', why: 'The confession is the hook. “This week: why.” gets the issue opened.', note: 'Kept your newsletter and your almost. Cut the warm-up.' }"
+  },
+  {
+   "id": "marketing-11",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Pricing lede (#pricing .lede) and plan bullets (#pl-free li:2, li:4; #pl-pro li:1; Studio li:5)",
+   "problem": "“Free Sharpen marks and fixes any line, unlimited. Claude rewrites in your voice: 20 a month free.” is clunky (“Free Sharpen” reads like a product name). It introduces Claude cold, the first mention on the page. It ties “in your voice” to rewrites only, as if Sharpen weren’t. The Free plan juggles three units (Sharpen, Claude rewrites, “touch-ups”), and “touch-ups” is never defined. “add up to 1,750 more” doesn’t say how.",
+   "fix": "Lede: “Sharpen any line, free and unlimited. Full rewrites in your voice, by Claude: 20 a month free, 250 on Pro.” Free li2: “20 rewrites a month in your voice” (define touch-ups in “See everything included” or cut them). Free li4: “Previews for X, Threads, LinkedIn and Bluesky”. Pro li1: “<b>250 rewrites a month</b>. Need more? Add up to 1,750.” Studio li5: “500 rewrites a month for each client”."
+  },
+  {
+   "id": "marketing-12",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Pricing: .plan.feat (Studio), .plan .btn labels, .bill toggle, Studio .price span, #p-h",
+   "problem": "The featured plan (white button, .feat) is Studio, which serves the narrowest audience, while the first audience (traders posting daily) is Pro. Button labels don’t match each other (“Start free / Go Pro / Start Studio”). The Yearly toggle hides that it saves 25%. “per client voice, a month” reads awkwardly. The heading says Free is free but doesn’t tell anyone when to pay.",
+   "fix": "Move .feat and .btn-white to Pro and make Studio’s button .btn-glass. Labels: “Start free” / “Start Pro” / “Start Studio”. Toggle: “Yearly · save 25%” / “Monthly” (12 vs 16 and 18 vs 24 are both 25%). Studio unit: “a month, per client voice”. #p-h: “Sharpening is free. Forever.<br><span class=d>Pro when you post every day.</span>” (2 lines at 1440 and 390)."
+  },
+  {
+   "id": "marketing-13",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "<head>: <title>, meta description, missing Open Graph and Twitter tags",
+   "problem": "This audience lives on X. The link card is the first impression of every share, and there is none (assets/og.png exists but isn’t referenced). The title “Hookworthy: They read one line” doesn’t say what the product does.",
+   "fix": "<title>Hookworthy: Sharpen your first line, in your voice</title>; meta description “Hookworthy marks the fluff in your first line and cuts it in one tap. Your numbers, names and voice stay. Write, preview and schedule for X, Threads, LinkedIn and Bluesky. Free forever.” Add og:title “They read one line. Make it hookworthy.”, og:description (same as meta), og:image ../../assets/og.png (absolute URL when live), twitter:card summary_large_image."
+  },
+  {
+   "id": "marketing-14",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Closing section (#start): #fin-form submit, #fp-note link #fp-go",
+   "problem": "After the visitor sharpens their line, the only next step is an inline grey underlined link (“Start free to keep it.”) inside a caption, pointing to a dead anchor. On phone the result renders below the micro line, so after tapping the button they have to scroll to find it.",
+   "fix": "Once #fpay shows a visitor result, the form’s button becomes a white “Keep it. Start free” (opens the sheet with the line); re-editing the input turns it back into “Sharpen”. Drop the link from #fp-note (the note becomes only what was cut). On ≤640px, scroll #fpay into view (block: 'nearest') after submit."
+  },
+  {
+   "id": "marketing-15",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Trust tile Never list (.nev li: Auto-replies, Auto-reposts)",
+   "problem": "The app spec (DESIGN.new.md glossary) includes Auto-plug (a reply you write ahead, sent automatically at a like count) and Weekly reruns. “No auto-replies” and “No surprise reruns” are the lines a sceptical reply guy will screenshot once those features ship.",
+   "fix": "Auto-replies: “Every reply is one you wrote.” Auto-reposts: “Reruns only when you set them.” Keep Auto-DMs “Not a setting. Not ever.” and Auto-deletes “Your posts stay yours.”"
+  },
+  {
+   "id": "marketing-16",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Under the hero window (.hmeta .since)",
+   "problem": "“Since Sept 8, X pays for original posts, not replies.” is the strongest why-now hook for monetised X creators (our first audience), but it’s 13.5px grey with no year and no source, and it never says why it matters here. Undated platform claims read as made up, and this one ages badly.",
+   "fix": "“<b>Since Sept 8, [year],</b> X pays creators for original posts, not replies. Your first line just became the job.” Fill in the year from X’s actual announcement (unverified here) and link the date to it. If it can’t be sourced, cut the line rather than keep it vague."
+  },
+  {
+   "id": "marketing-17",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Studio tile: .t-st .facts (three <p>), #rv-cap",
+   "problem": "“8 client voices: $144 a month” collides with Pro’s “Billed yearly at $144” two screens later: the same number with two meanings. “Anyone with the link can comment. Only you can post.” followed by “A client’s post goes out only from their own connected X account” leaves the reader unsure who posts. The ghostwriter’s actual pain (approvals lost in DMs and docs) is never named. “Priya, the client, is approving” is stiff.",
+   "fix": "Facts: “<b>Clients approve from a link.</b> No more drafts lost in DMs and Google Docs.” / “They sign in with X or Google to comment. Posts go out from the client’s own X account, never yours.” / “<b>3 client voices: $54 a month</b>, billed yearly ($72 month to month).” #rv-cap: “Priya’s review link”."
+  },
+  {
+   "id": "marketing-18",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Trust tile heading #t-h and .tfoot",
+   "problem": "“We never post for you.” first reads as “we don’t do posting”, which is odd for a scheduling app. “You hit post.” is untrue for scheduled posts (nobody hits post at 8:40). The real fear for X creators is bots acting in their name, and the heading doesn’t say that.",
+   "fix": "#t-h: “No bots in your name.<br><span class=d>Not even ours.</span>” .tfoot: “<b>Every post is one you sent,</b> or scheduled yourself.”"
+  },
+  {
+   "id": "marketing-19",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Hero window .foot, reply sent state (rpSend), postpill",
+   "problem": "The trust promise appears about eight times (“Nothing posts without you” ×3, “Sent. By you, as always.”, “Posted. By you.”, “Every post is one you pressed send on”, “We never post for you”, “Their yes before anything posts”). Said that often it starts to sound defensive and makes readers wonder why.",
+   "fix": "Keep it in the hero micro, the Trust tile and the closing micro. Window .foot text: “Nothing posts without you.” → “Ready when you are.” Reply sent: “Sent. By you, as always.” → “Sent.” Postpill: keep “Posted. By you.” (it’s the Trust tile’s own moment)."
+  },
+  {
+   "id": "marketing-20",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Reply tile: #rp-h, #rp-text (and RP0)",
+   "problem": "“Answer every reply. / Drafted. You send it.” sounds like a chore and is clunky. The drafted answer also contradicts heycape’s own post: the post says “half size until i get a green day”, the reply says “until i have two green days”. A product that promises “your facts stay” changes the facts in its own demo, and a trader will notice.",
+   "fix": "#rp-h: “Reply while it’s hot.<br><span class=d>Your answer’s drafted.</span>” (21/22 characters, fits the tile in 2 lines). #rp-text: “half, until i get a green day. then back to normal size. no hero trades in between.”"
+  },
+  {
+   "id": "marketing-21",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Previews tile: .pvw .split captions, .li-note, PV[] notes",
+   "problem": "The captions don’t match each other: lowercase “splits where your sentence ends, never mid-word” versus “split at a full stop, same as on X”. The LinkedIn note (“It’s the only line people see above “see more””) is wrong as drawn, because the preview shows two lines above “see more”.",
+   "fix": "X: “Splits at the end of a sentence, never mid-word.” Bluesky: “Splits at the end of a sentence, same as on X.” .li-note: “LinkedIn cuts you off at “see more”. Your first line has to earn the click.” PV[2]: “Plenty of room. The first line still does the work.”"
+  },
+  {
+   "id": "marketing-22",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Day tile: .plab “heycape’s desk, 11:04 PM (example)”, .slots em “You pick it; it waits.”",
+   "problem": "“example” appears 14 times on the page; the post tags and the footer line already disclose it. The semicolon line is stiff, and “it waits” doesn’t say what it waits for.",
+   "fix": ".plab: “heycape’s desk, 11:04 PM”. .slots em: “Pick a time. It goes out then, not before.”"
+  },
+  {
+   "id": "marketing-23",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Hero window: #pf-note under the draft vs .hits in the Sharpened pane",
+   "problem": "The best proof on the page (“Kept your $10k, your 3 years and your lowercase. Cut the throat-clearing.”) is the smallest, greyest text in the window, under the draft, while “Why it hits” gets the big row. For a sceptical trader, “Kept” matters more than “Why”.",
+   "fix": "Move the note into the Sharpened pane as a second row under .hits with its own label: “Kept” + “your $10k, your 3 years, your lowercase.” Put “Cut the throat-clearing.” on the draft side as the .ph-h right label in place of “Fluff marked”. Apply the same to all EX notes (split at “Cut”)."
+  },
+  {
+   "id": "marketing-24",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Button and label terms across the page: #try-go, paint()/go() status strings, #fin-form submit, .hits labels, nav .links",
+   "problem": "One action has three names (“Sharpen”, “Sharpen it”, “Sharpen my first line”). “Why it hits” has a colon in one place and not the other. The nav spends a slot on “Previews” and offers nothing for the first audience. The app spec calls fluff “soft words”, so a new user meets a second term right after signing up.",
+   "fix": "In-product buttons say “Sharpen” everywhere (#try-go and the closing submit). “Sharpen my first line” is only the hero CTA. Status strings: “Edited. Tap Sharpen again.” / “Type a first line, then tap Sharpen.” Labels: “Why it hits” without a colon everywhere. Nav: “Try it” (#sharpen) · “Scheduling” (#day) · “For ghostwriters” (#studio) · “Pricing”. Tell the app team to rename “soft words” to “fluff” to match the homepage."
+  },
+  {
+   "id": "marketing-25",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Try tile flags vs note (paint()/sharpen())",
+   "problem": "For “gm. so i’ve been thinking … i think most people are honestly sizing way too big on alts”, the Fluff chips show only “i think” and “honestly”, but the note says it cut “gm”, “so”, “i think” and “honestly”. Words disappear without being marked. Also, on crypto X, “gm” is voice, not fluff; cutting it breaks “it still sounds like you” for our first audience.",
+   "fix": "Every word that gets cut must also appear as a chip before Sharpen. Treat “gm”, “gn”, “wagmi”, “ngmi” and “lfg” as voice: never cut them, never flag them. If they’re the whole opener, leave them and say so in the note: “Kept your gm.”"
+  }
+ ]
+}

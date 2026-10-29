@@ -1,0 +1,155 @@
+import { test, before, after } from 'node:test';
+import assert from 'node:assert/strict';
+import { createServer, request } from 'node:http';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { createRequire } from 'node:module';
+
+process.env.HW_DATA_DIR = mkdtempSync(join(tmpdir(), 'hw-cr-'));
+process.env.ANTHROPIC_API_KEY = 'test-key';
+process.env.HOOKWORTHY_TOKEN = 'owner-token';
+process.env.HOOKWORTHY_TOKENS = 'free-token:free,pro-token:pro,odd-token:gold,api-token:free,help-token:free';
+delete process.env.HW_PLAN;
+const C = createRequire(import.meta.url)('../../core.js').CREDITS;
+const AI = await import('../lib/ai.mjs');
+const CR = await import('../lib/credits.mjs');
+const { handle, resetRateLimits } = await import('../server.mjs');
+
+let calls = 0, failNext = false;
+AI.setClient({ beta: { messages: { create: async req => { calls++; if (failNext) { failNext = false; throw new Error('boom'); } return { model: req.model, stop_reason: 'end_turn', content: [{ type: 'text', text: '{"options":[{"text":"a","why":"b"}]}' }] }; } } } });
+
+let srv, port;
+before(async () => { srv = createServer(handle); await new Promise(r => srv.listen(0, '127.0.0.1', r)); port = srv.address().port; });
+after(() => srv.close());
+const call = (path, { method = 'GET', body, token, cookie } = {}) => new Promise((res, rej) => {
+  const headers = { ...(body ? { 'content-type': 'application/json' } : {}), ...(token ? { authorization: `Bearer ${token}` } : {}), ...(cookie ? { cookie } : {}) };
+  const r = request({ host: '127.0.0.1', port, path, method, headers }, resp => { let d = ''; resp.on('data', c => d += c); resp.on('end', () => { let j = null; try { j = JSON.parse(d); } catch { /* not json */ } res({ status: resp.statusCode, json: j, headers: resp.headers }); }); });
+  r.on('error', rej); if (body) r.write(JSON.stringify(body)); r.end();
+});
+const ai = (token, body) => { resetRateLimits(); return call('/api/ai', { method: 'POST', token, body: { prompt: 'Rewrite this', json: true, ...body } }); };
+
+/* ---------- the shared table ---------- */
+test('credits: what each action costs, before the click', () => {
+  assert.equal(C.cost('rewrite'), 1);
+  assert.equal(C.cost('rewrite', { chars: 1400 }), 2, 'a post over 1,000 characters counts double');
+  assert.equal(C.cost('instruct', { chars: 300 }), 1);
+  assert.equal(C.cost('picture', { docs: 1 }), 2, 'the picture Claude reads adds one');
+  assert.equal(C.cost('brief', { docs: 2 }), 3);
+  assert.equal(C.cost('briefWrite'), 2);
+  assert.equal(C.cost('week'), 3);
+  assert.equal(C.cost('voice'), 5);
+  assert.equal(C.cost('sharpen'), 0, 'Sharpen stays free');
+  assert.equal(C.cost('sharpen', { tier: 'complex' }), 5, 'the bigger model is never free, whatever the caller calls it');
+  assert.equal(C.cost('nonsense'), 1);
+  assert.equal(C.cost('rewrite', { docs: 99 }), 4, 'files are capped at three');
+});
+test('credits: every plan refills on the monthly anniversary; paid plans roll over once, after the first month', () => {
+  const t = new Date(2026, 9, 4, 15, 30).getTime();
+  assert.equal(C.next('free', t, t), new Date(2026, 10, 4, 15, 30).getTime());
+  const jan31 = new Date(2027, 0, 31, 9).getTime();
+  assert.equal(C.next('pro', jan31 + 1000, jan31), new Date(2027, 1, 28, 9).getTime(), 'a 31st joiner refills on the last day of a short month');
+  let st = C.fresh('pro', jan31); st = C.spend(st, 100); assert.equal(st.bal, 150);
+  const s1 = C.status(st, 'pro', new Date(2027, 1, 28, 10).getTime());
+  assert.equal(s1.left, 400); assert.equal(s1.rolled, 150);
+  const s2 = C.status({ ...st, bal: 400 }, 'pro', new Date(2027, 1, 28, 10).getTime());
+  assert.equal(s2.left, 500, 'rollover stops at one extra month');
+  const s3 = C.status({ ...st, bal: 200 }, 'pro', new Date(2027, 4, 1).getTime());
+  assert.equal(s3.left, 250, 'only the first month rolls over: later refills start at the plan amount');
+  const s4 = C.status({ ...st, bal: 300, next: new Date(2027, 2, 31, 9).getTime() }, 'pro', new Date(2027, 2, 31, 10).getTime());
+  assert.equal(s4.left, 250, 'the second refill drops leftovers');
+  let f = C.fresh('free', t); f = C.spend(f, 19); assert.equal(C.status(f, 'free', t + 3600e3).left, 1);
+  assert.equal(C.status(f, 'free', new Date(2026, 10, 4, 15, 31).getTime()).left, 20, 'Free comes back to 20 a month, never more');
+  assert.equal(C.spend(f, 2), null, 'not enough: nothing is taken');
+  const sv = C.fresh('studio', t, 3); assert.equal(sv.bal, 1500, 'Studio: 500 per client voice');
+  assert.equal(C.status(sv, 'studio', t).amount, 1500);
+  assert.equal(C.status({ ...sv, bal: 200 }, 'studio', new Date(2026, 10, 4, 15, 31).getTime()).left, 1700, 'and rolls over once, per voice');
+});
+test('credits: Pro adds rewrites as a monthly add-on, Free never does', () => {
+  const t = new Date(2026, 9, 4, 15, 30).getTime();
+  assert.deepEqual(C.BOOSTS.map(b => b.add), [250, 750, 1750]);
+  const b = C.fresh('pro', t, 1, 'b750'); assert.equal(b.bal, 1000); assert.equal(C.status(b, 'pro', t).amount, 1000);
+  assert.equal(C.status({ ...b, bal: 0 }, 'pro', new Date(2026, 10, 4, 15, 31).getTime()).left, 1000, 'the add-on refills every month with the plan');
+  const up = C.setBoost(C.spend(C.fresh('pro', t), 50), 'pro', 'b250', t); assert.equal(up.bal, 450, 'adding mid-month lands the difference now');
+  const down = C.setBoost(up, 'pro', null, t); assert.equal(down.bal, 200); assert.equal(down.boost, undefined);
+  assert.equal(C.setBoost(C.fresh('free', t), 'free', 'b1750', t).bal, 20, 'Free ignores add-ons');
+  assert.equal(C.fresh('free', t, 1, 'b750').bal, 20);
+  assert.equal(C.fresh('pro', t, 1, 'nope').bal, 250, 'an unknown add-on adds nothing');
+});
+test('credits: the meter says low at about 80% used, and Plenty on paid plans', () => {
+  const now = Date.now();
+  assert.equal(C.status({ ...C.fresh('free', now), bal: 5 }, 'free', now).low, false);
+  assert.equal(C.status({ ...C.fresh('free', now), bal: 4 }, 'free', now).low, true);
+  assert.equal(C.status(C.fresh('free', now), 'free', now).plenty, false, 'Free always shows the count');
+  assert.equal(C.status({ ...C.fresh('pro', now), bal: 100 }, 'pro', now).plenty, true);
+  assert.equal(C.status({ ...C.fresh('pro', now), bal: 50 }, 'pro', now).plenty, false);
+  const tr = C.fresh('trial', now); assert.equal(tr.bal, 100); assert.equal(C.status(tr, 'trial', now + 7 * 864e5).ended, true);
+  assert.equal(C.settle({ plan: 'free', bal: 'x', next: 5 }, 'free', now).bal, 20, 'a broken saved ledger starts fresh');
+});
+
+/* ---------- the server ---------- */
+test('credits: off for the owner by default, so a self-hosted server never meters its own key', async () => {
+  const h = await call('/api/health', { token: 'owner-token' });
+  assert.deepEqual(h.json.credits, { metered: false });
+  for (let i = 0; i < 12; i++) assert.equal((await ai('owner-token', { act: 'rewrite' })).status, 200);
+  const r = await ai('owner-token', { act: 'voice', tier: 'complex' }); assert.equal(r.status, 200); assert.equal(r.json.credits, undefined);
+});
+test('credits: Free spends down to a clear 402, with the refill time; a failed call costs nothing', async () => {
+  const h = await call('/api/health', { token: 'free-token' });
+  assert.equal(h.json.credits.metered, true); assert.equal(h.json.credits.plan, 'free'); assert.equal(h.json.credits.left, 20); assert.ok(h.json.credits.next > Date.now());
+  assert.equal(JSON.stringify(h.json.credits).includes('free-token'), false, 'the token never comes back');
+  const v = await ai('free-token', { act: 'voice', tier: 'complex' }); assert.equal(v.status, 200); assert.equal(v.json.cost, 5); assert.equal(v.json.credits.left, 15);
+  const n0 = calls; failNext = true; const bad = await ai('free-token', { act: 'rewrite' }); assert.equal(bad.status, 502); assert.equal(calls, n0 + 1);
+  assert.equal((await call('/api/health', { token: 'free-token' })).json.credits.left, 15, 'refunded');
+  const s = await ai('free-token', { act: 'sharpen' }); assert.equal(s.status, 200); assert.equal(s.json.cost, 0); assert.equal(s.json.credits.left, 15);
+  for (let i = 0; i < 14; i++) assert.equal((await ai('free-token', { act: 'rewrite' })).status, 200);
+  const before = calls; const long = await ai('free-token', { act: 'rewrite', chars: 1500 });
+  assert.equal(long.status, 402); assert.equal(long.json.code, 'out_of_credits'); assert.equal(long.json.cost, 2); assert.equal(long.json.credits.left, 1); assert.equal(calls, before, 'Claude is never called');
+  assert.equal((await ai('free-token', { act: 'rewrite' })).json.credits.left, 0);
+  const out = await ai('free-token', { act: 'rewrite' }); assert.equal(out.status, 402); assert.match(out.json.error, /needs 1 credit and 0 are left/);
+  assert.equal((await ai('free-token', { act: 'sharpen' })).status, 200, 'Sharpen keeps working at zero');
+});
+test('credits: each hosted token has its own balance and plan; unknown plans and tokens are refused', async () => {
+  const p = await call('/api/health', { token: 'pro-token' }); assert.equal(p.json.credits.plan, 'pro'); assert.equal(p.json.credits.amount, 250);
+  const r = await ai('pro-token', { act: 'week' }); assert.equal(r.json.credits.left, 247);
+  assert.equal((await call('/api/ai', { method: 'POST', token: 'odd-token', body: { prompt: 'x' } })).status, 401, 'a token with a made-up plan never signs in');
+  assert.equal((await call('/api/ai', { method: 'POST', token: 'nobody', body: { prompt: 'x' } })).status, 401);
+  const lg = await call('/login?token=pro-token'); assert.equal(lg.status, 302); assert.match(lg.headers['set-cookie'][0], /hw=pro-token/);
+  const viaCookie = await call('/api/health', { cookie: 'hw=pro-token' }); assert.equal(viaCookie.json.credits.left, 247);
+  assert.equal((await call('/login?token=nope')).status, 401);
+  const locked = await call('/api/health'); assert.equal(locked.json.locked, true); assert.equal(locked.json.credits, undefined);
+});
+test('credits: past 50 helpers on Free, the app gets a plain 402 that says when they come back', async () => {
+  for (let i = 0; i < 50; i++) assert.equal((await ai('help-token', { act: 'sharpen' })).status, 200);
+  const r = await ai('help-token', { act: 'sharpen' }); assert.equal(r.status, 402); assert.equal(r.json.code, 'helpers_out');
+  assert.match(r.json.error, /50 free Claude touch-ups.*midnight.*Pro/); assert.equal(r.json.credits.left, 20); assert.equal(r.json.credits.helpers.left, 0);
+  assert.equal((await ai('help-token', { act: 'rewrite' })).status, 200, 'rewrites still go through');
+});
+test('credits: a free helper dressed up as a big job pays like one', async () => {
+  const r = await ai('pro-token', { act: 'sharpen', tier: 'complex' }); assert.equal(r.json.cost, 5);
+  const big = await ai('pro-token', { act: 'sharpen', prompt: 'x'.repeat(30 * 1024) }); assert.equal(big.json.cost, 1, 'a helper with a huge prompt is charged');
+});
+test('credits: 50 free helpers a day; then Free waits for midnight and paid plans pay 1; refills come back on time', () => {
+  const env = { HOOKWORTHY_TOKENS: 'fair-token:free,fair-pro:pro' }; const now = new Date(2026, 9, 4, 12).getTime();
+  assert.equal(CR.FAIR_ASSISTS, 50);
+  for (let i = 0; i < CR.FAIR_ASSISTS; i++) assert.equal(CR.reserve('fair-token', { act: 'visual' }, { env, now }).cost, 0);
+  assert.equal(CR.status('fair-token', { env, now }).helpers.left, 0);
+  const out = CR.reserve('fair-token', { act: 'visual' }, { env, now }); assert.equal(out.ok, false); assert.equal(out.code, 'helpers_out');
+  assert.equal(out.credits.left, 20, 'Free never pays for a helper with its rewrites'); assert.equal(out.credits.helpers.next, new Date(2026, 9, 5).getTime(), 'back at midnight');
+  assert.equal(CR.reserve('fair-token', { act: 'rewrite' }, { env, now }).cost, 1, 'rewrites still work');
+  for (let i = 0; i < CR.FAIR_ASSISTS; i++) CR.reserve('fair-pro', { act: 'sharpen' }, { env, now });
+  const paid = CR.reserve('fair-pro', { act: 'sharpen' }, { env, now }); assert.equal(paid.ok, true); assert.equal(paid.cost, 1); assert.equal(paid.credits.left, 249);
+  const next = CR.reserve('fair-token', { act: 'visual' }, { env, now: now + 864e5 }); assert.equal(next.cost, 0, 'the fair-use count resets each day');
+  assert.equal(CR.status('fair-token', { env, now: now + 864e5 }).left, 19, 'the monthly allowance doesn\'t reset with it');
+  const ok = CR.reserve('fair-token', { act: 'rewrite' }, { env, now: now + 864e5 }); assert.equal(ok.credits.left, 18); ok.refund(); ok.refund();
+  assert.equal(CR.status('fair-token', { env, now: now + 864e5 }).left, 19, 'a refund lands once');
+  assert.equal(CR.status('someone', { env: {} }).metered, false);
+  assert.equal(CR.planFor('anyone', { HW_PLAN: 'pro' }), 'pro', 'with no token set, HW_PLAN meters everyone');
+  assert.equal(CR.planFor('other', { HW_PLAN: 'pro', HOOKWORTHY_TOKEN: 'main' }), null);
+});
+test('credits: the developer API (v1 rewrite and ideas) draws on the same allowance', async () => {
+  const v1 = (path, body) => { resetRateLimits(); return call(path, { method: 'POST', token: 'api-token', body }); };
+  const i = await v1('/api/v1/ideas', { niche: 'trading' }); assert.equal(i.status, 200); assert.equal(i.json.credits.left, 19);
+  for (let k = 0; k < 19; k++) { const r = await v1('/api/v1/rewrite', { text: 'Short line' }); assert.equal(r.status, 200); assert.equal(r.headers['x-credits-left'], String(18 - k)); }
+  const out = await v1('/api/v1/rewrite', { text: 'Short line' }); assert.equal(out.status, 402); assert.equal(out.json.code, 'out_of_credits');
+});

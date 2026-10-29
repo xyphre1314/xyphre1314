@@ -1,0 +1,122 @@
+<title>Hookworthy Section Pick</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one row per homepage part, four options side by side (2x2 on phones); tap the one you'd keep. Then a "what's missing" chip set. Dark by choice: every option is dark. */
+@font-face{font-family:Inter;src:url(fonts/Inter-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{
+  --bg:#050506; --surface:#0E0F11; --fg:#F2F3F5; --fg-2:#B4B8BF; --fg-3:#8E929A; --line:#24262A;
+  --pick:#F2F3F5; --focus:#FFFFFF; --ui:Inter,system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.55 var(--ui);margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:44px 140px}
+h1,h2{margin:0;letter-spacing:-.03em;text-wrap:balance;font-weight:700}
+h1{font-size:clamp(32px,4.6vw,52px);line-height:1.04}
+h2{font-size:clamp(22px,2.4vw,28px);line-height:1.15}
+p{margin:0}
+.lede{color:var(--fg-2);font-size:17px;max-width:68ch;margin-top:14px}
+.part{margin-top:48px;padding-top:24px;border-top:1px solid var(--line)}
+.part .sub{color:var(--fg-3);font-size:14px;margin-top:4px}
+.opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.opt{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;cursor:pointer;color:inherit;font:inherit;text-align:left;min-width:0}
+.opt:hover{border-color:var(--fg-3)}
+.opt[aria-pressed="true"]{border-color:var(--pick);box-shadow:0 0 0 1px var(--pick)}
+.opt img{width:100%;display:block;border-radius:8px;max-width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.opt.ph img{aspect-ratio:390/844}
+.opt .lb{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 4px 4px;font-size:14px}
+.opt .lb b{font-weight:600}
+.opt .lb span{font-size:12.5px;color:var(--fg-3)}
+.opt[aria-pressed="true"] .lb span{color:var(--fg)}
+.view{display:flex;gap:6px;margin-top:12px}
+.view button,.chips button{font:600 13.5px/1 var(--ui);border:1px solid var(--line);background:transparent;color:var(--fg-2);border-radius:999px;padding:9px 14px;cursor:pointer;min-height:38px}
+.view button[aria-pressed="true"],.chips button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.note{margin-top:14px;display:grid;gap:6px}
+.note label{font-size:13.5px;color:var(--fg-3)}
+.note textarea{font:400 15px/1.45 var(--ui);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;resize:vertical;width:100%}
+.same{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);color:var(--fg-2);font-size:15px;max-width:72ch}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bar .in{max-width:1320px;margin:0 auto;padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--fg-2)}
+#tally b{color:var(--fg)}
+@media (max-width:900px){.opts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Build it from your favourite parts</h1>
+    <p class="lede">None of the four layouts won outright, so pick part by part. For each part of the homepage, tap the version you'd keep. Switch to phone view if you mostly browse on your phone. I'll build one page from your picks.</p>
+    <div class="view" role="group" aria-label="Screens to show"><button type="button" data-view="d" aria-pressed="true">Desktop</button><button type="button" data-view="m" aria-pressed="false">Phone</button></div>
+  </header>
+  <div id="parts"></div>
+  <p class="same">Pricing and the closing “Good ideas die in bad first lines.” look nearly the same in all four, so they're not in the pick. They'll follow whatever you choose above.</p>
+  <section class="part" aria-labelledby="h-miss">
+    <h2 id="h-miss">What would make it “way better”?</h2>
+    <p class="sub">Tap everything that's true. This tells me where to push next.</p>
+    <div class="chips" id="miss" role="group" aria-label="What's missing"></div>
+    <div class="note"><label for="n-all">Anything else, in your words (optional)</label><textarea id="n-all" rows="2" placeholder="e.g. a site I love the layout of, or what feels off"></textarea></div>
+  </section>
+</div>
+
+<div class="bar" role="region" aria-label="Your picks"><div class="in">
+  <span id="tally"></span>
+  <span id="status" aria-live="polite">Your picks save as you go.</span>
+</div></div>
+
+<script>
+const OPTS = [['a', 'Current', 'Afterglow'], ['b', 'Story', 'pinned window'], ['c', 'Bento', 'grid of demos'], ['d', 'Cinema', 'title cards']];
+const PARTS = [
+  ['hero', 'First screen', 'What you see the moment the page opens'],
+  ['try', 'Try it / Sharpen', 'Where you test it on your own line'],
+  ['tour', 'Feature tour', 'How previews, your day, replies and results are shown'],
+  ['studio', 'For ghostwriters (Studio)', 'Client voices, comments, approvals'],
+  ['trust', 'Trust', '“We never post for you.”'],
+];
+const MISS = ['More visuals or imagery', 'More motion and interaction', 'Less text', 'Bigger product moments', 'More personality', 'Sections feel too similar', 'Too dark overall', 'Feels like a template', 'Not enough X / creator feel'];
+const $ = id => document.getElementById(id);
+let view = 'd';
+function draw() {
+  $('parts').innerHTML = PARTS.map(([id, name, sub]) => `<section class="part" aria-labelledby="h-${id}"><h2 id="h-${id}">${name}</h2><p class="sub">${sub}</p>
+    <div class="opts" role="group" aria-label="${name}: pick one">${OPTS.map(([k, n, s]) => `<button type="button" class="opt${view === 'm' ? ' ph' : ''}" data-part="${id}" data-k="${k}" aria-pressed="false"><img src="img/${k}-${id}-${view}.jpg" alt="${n} version of ${name}" loading="lazy"><span class="lb"><b>${n}</b><span>${s}</span></span></button>`).join('')}</div></section>`).join('');
+  paint();
+}
+$('miss').innerHTML = MISS.map(m => `<button type="button" data-m="${m}" aria-pressed="false">${m}</button>`).join('');
+const state = { picks: {}, miss: [], note: '' };
+function paint() {
+  document.querySelectorAll('.opt').forEach(b => { const on = state.picks[b.dataset.part] === b.dataset.k; b.setAttribute('aria-pressed', String(on)); b.querySelector('.lb span').textContent = on ? 'Keep this ✓' : OPTS.find(o => o[0] === b.dataset.k)[2]; });
+  document.querySelectorAll('#miss button').forEach(b => b.setAttribute('aria-pressed', String(state.miss.includes(b.dataset.m))));
+  document.querySelectorAll('.view button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+  if (document.activeElement !== $('n-all') && !$('n-all').value) $('n-all').value = state.note || '';
+  const n = Object.keys(state.picks).length; $('tally').innerHTML = `<b>${n}</b> of ${PARTS.length} parts picked`;
+}
+function local(set) { try { if (set) localStorage.setItem('hw-parts', JSON.stringify(set)); else return JSON.parse(localStorage.getItem('hw-parts') || '{}'); } catch (e) { return {}; } }
+let db = null; const chains = {};
+function status(t) { $('status').textContent = t; }
+function save(path, body) {
+  local(state); if (!db) return;
+  const prev = chains[path] || Promise.resolve();
+  chains[path] = prev.then(() => { status('Saving…'); return db.doc(path).set(body); })
+    .then(() => status('Saved. I can read your picks.'))
+    .catch(e => status(e && e.code === 'invalid_argument' ? 'View-only here: picks stay in this browser.' : 'Couldn’t save online: picks stay in this browser.'));
+}
+document.addEventListener('click', e => {
+  const v = e.target.closest('.view button'); if (v) { view = v.dataset.view; draw(); return; }
+  const o = e.target.closest('.opt');
+  if (o) { const p = o.dataset.part; state.picks[p] = state.picks[p] === o.dataset.k ? '' : o.dataset.k; if (!state.picks[p]) delete state.picks[p]; paint(); save('picks/' + p, { part: p, pick: state.picks[p] || 'none', at: Date.now() }); return; }
+  const m = e.target.closest('#miss button');
+  if (m) { const x = m.dataset.m; state.miss = state.miss.includes(x) ? state.miss.filter(y => y !== x) : [...state.miss, x]; paint(); save('meta/missing', { list: state.miss, note: state.note, at: Date.now() }); }
+});
+let t; $('n-all').addEventListener('input', e => { state.note = e.target.value; clearTimeout(t); t = setTimeout(() => save('meta/missing', { list: state.miss, note: state.note, at: Date.now() }), 700); });
+Object.assign(state, local()); state.picks = state.picks || {}; state.miss = state.miss || []; draw();
+(async () => {
+  try {
+    if (!window.claude || !window.claude.use) { status('Preview: picks stay in this browser.'); return; }
+    db = await window.claude.use('db');
+    if (!db) { status('Picks stay in this browser on this view.'); return; }
+    const [ps, mm] = await Promise.all([db.collection('picks').get(), db.doc('meta/missing').get()]);
+    ps.docs.forEach(d => { const x = d.data(); if (x && x.part && x.pick && x.pick !== 'none') state.picks[x.part] = x.pick; });
+    if (mm.exists) { const x = mm.data(); state.miss = x.list || []; state.note = x.note || ''; }
+    paint(); status('Your picks save as you go.');
+  } catch (e) { status('Couldn’t reach saved picks: they stay in this browser.'); }
+})();
+</script>

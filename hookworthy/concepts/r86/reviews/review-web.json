@@ -1,0 +1,160 @@
+{
+ "key": "web",
+ "role": "Awwwards-level web designer and front-end craftsperson (layout and composition at every width, rhythm, motion timing, performance, polish)",
+ "score": 8.0,
+ "verdict": "Round 85 fixed last round's structural problems: the post sits above the fold at 1440×900 and 1280×800, pricing and the bento pairs hold up at 1024, the phone page is 9.5 screens at 390 and 10.5 at 360, and CLS on load is 0. What still keeps it below best-in-class is a set of stretch-to-fill voids and moving parts that are visible on the first look at a section: a black hole in the Previews pane, three stretched gaps in Studio, a blank Try tile for 1.5s, a hero that changes height when you pick an example (on phones the chips jump under your thumb), and a final input that moves while you type.",
+ "to_95": [
+  "Lock the hero window to one height for all four examples at every width, so the phone chips stop jumping under the thumb (fix.css web-1, plus the 59-character Founder line in snippets.js).",
+  "Remove the stretch-to-fill voids: let Previews hug its posts (web-2), stack the Studio columns from the top with a fixed min-height for every client (web-5), and put Keep under the Try card (web-3). The first bento row drops from 764px to 721px and Studio from 683px to 660px, with no holes.",
+  "Never show an empty product moment: start the Try moment at 380ms and keep the example result visible at .35 opacity (web-4); land the hero post about 1.0s after first paint and fade the falling words before they cross the next line (web-13).",
+  "Keep the final input still while you type with align-items:start (web-7). It moves 20px at 1440 and 30px at 1024 today.",
+  "Re-compose 901–1199 Studio (no truncated queue rows) and 761–900 Day side by side: 768 goes from 9.80 to 9.37 screens (web-6, web-8).",
+  "Make core.js lazy for real, after the intro (web-18), then clear the P2 polish list: widows, the pricing lede grid, the Replay placement, the phone nav and the footer."
+ ],
+ "issues": [
+  {
+   "id": "web-1", "severity": "P1", "area": "interaction",
+   "where": "Hero window #proof, example chips .ex (phone: grid-area ex below .body), .dtext / .ptext / .window .hits",
+   "problem": "Picking an example resizes the window. Measured heights for Trader / Founder / Newsletter / Builder: 424/447/447/447 at 1440, 503/553/503/526 at 768, 481/533/507/481 at 390 and 507/533/507/481 at 360. On phones the chips sit under the window body, so the row you just tapped jumps by up to 52px (chip y 808→860→834→808 at 390), and everything below it shifts too. Separately, the .ptext min-height (2.72em) leaves an empty line inside the Trader X card in the first screen at 1440.",
+   "fix": "Append fix.css web-1: .ptext,.ptext.long{min-height:0}; at ≥1200 .window .body{min-height:397px}; at 901–1199 420px; at 761–900 503px; at ≤760 .dtext{min-height:4.8em} and .ptext,.ptext.long{min-height:2.72em}. Then shorten EX[1].after so it fits 2 lines on phones (59 characters measured as 2 lines at 390, 375 and 360): 'Churn: down 34%. What changed: our team rebuilt onboarding.' Verified: the window is 447px for every example at 1440, 470 at 1024, 553 at 768/900 and constant on phones. The chips never move, and the post bottom stays above the fold (794px at 1440×900, 762px at 1280×800, 763px at 390×844, 756px at 360×780). If marketing keeps the long Founder line, use .ptext{min-height:4.08em} on phones instead (also tested stable, but the Trader card then shows a blank third line)."
+  },
+  {
+   "id": "web-2", "severity": "P1", "area": "layout",
+   "where": "Previews tile at ≥1100: .t-pv .screens{flex:1 1 auto} stretched to the Try tile's 764px",
+   "problem": "The X preview pane is stretched to the row height, which leaves about 150px of pure black inside the device pane under the second post at 1440 and 1280. It is the first thing on the right when you scroll past the hero, and it reads as a broken render, not a feed.",
+   "fix": "fix.css web-2: .t-pv .screens{flex:0 0 auto}; .t-pv .pv-note{margin-top:auto}. At ≥1100 the feed type steps up to fill honestly: .t-pv .pt{font-size:15px;line-height:1.47}, .pn 15px, 40px avatars, .ppost padding-bottom 16px, .split margin 0 0 16px 52px. Tested at 1440 and 1280: the pane hugs its posts, a 38px tile gap sits above the note, and the first row shrinks from 764px to 721px."
+  },
+  {
+   "id": "web-3", "severity": "P2", "area": "layout",
+   "where": "Try result .try-out (grid 1fr | 15em; .side holds hits + Keep + micro)",
+   "problem": "The side column (reasons, then Keep and the micro line) is taller than the card, so there is a 90px hole under the card at 1440 and 135px at 1024. The primary 'Keep it. Start free' sits at the bottom of a narrow 15em column instead of under the line it keeps.",
+   "fix": "fix.css web-3: .try-out{grid-template-areas:'h h' 'card hits' 'keep hits'}; .try-out .side{display:contents}; #out-card{grid-area:card}; #out-hits{grid-area:hits}; #out-keep{grid-area:keep;flex-direction:row;align-items:center;gap:12px}; phones: 'h' 'card' 'hits' 'keep'. Move the entrance to the children: .motion .try-out.fresh #out-hits,.motion .try-out.fresh #out-keep{animation:up .4s var(--ease) .22s both}. The [hidden] toggles in showEmpty/showCard still work because [hidden] is display:none!important."
+  },
+  {
+   "id": "web-4", "severity": "P1", "area": "interaction",
+   "where": "Try tile arrival: .motion .arm .try-out:not(.fresh){opacity:0} + tryApi.play() 760ms delay + squig 0.5s × 140ms stagger",
+   "problem": "Screencast after scrolling to #sharpen: from 300ms to 1,500ms the bottom 300px of the biggest tile is empty, and the result arrives at about 1.8s. The page's main product moment starts with a hole, and a visitor who scrolls on before 1.8s never sees a result.",
+   "fix": "fix.css web-4: .motion .arm .try-out:not(.fresh){opacity:.35}, so the example result waits dimmed and is never a hole. In the script, tryApi.play: later(…, 380) (was 760). CSS line 365: squig .4s with calc(var(--k,0) * 90ms). The result then lands about 0.8s after arrival."
+  },
+  {
+   "id": "web-5", "severity": "P1", "area": "layout",
+   "where": "Studio at ≥1200: .st-post{min-height:520px}, .rv-act / .queue / .facts {margin-top:auto}",
+   "problem": "All three columns are stretched to the 520px box, and each one opens a dead band in the middle: 115px between the never-say list and the facts, 75px between the comment and Approve, and 90px between the voice and the queue. The tile reads as stretched to fill, not composed, and it is the tile the nav sends ghostwriters to.",
+   "fix": "fix.css web-5: at ≥901 .st-post{min-height:0}; .rv-act{margin-top:4px}; .queue{margin-top:6px}; .facts{margin-top:6px}; at ≥1200 .studio{min-height:497px}. 497 is the tallest client after Approve (Priya's approved line wraps), measured for all 4 clients before and after Approve, so switching or approving never changes the height. The tile goes from 683px to 660px, with every column stacking from the top."
+  },
+  {
+   "id": "web-6", "severity": "P1", "area": "layout",
+   "where": "Studio at 901–1199 (1024 laptops, iPad landscape): three columns .92fr / (1.4fr | 1fr)",
+   "problem": "The columns are too narrow. Queue rows truncate at about 20 characters ('Customer churn: down …', 'Our pricing page had 9 …'), Priya's handle shows as '@…' and the review text wraps every 3–4 words. Studio is the buyer-specific proof, and at this width it looks cramped and cut off.",
+   "fix": "fix.css web-6 at 901–1199: .t-st{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-areas:'cap cap' 'pick nv' 'box box' 'facts facts';gap:20px 40px}; .st-l{display:contents}; place .st-pick / .nv-box / .studio / .facts in those areas; .studio{min-height:449px}; .st-post .media{aspect-ratio:3/1}; .facts{flex-direction:row;gap:24px} .facts p{flex:1 1 0}. Tested at 1024: no truncation, full-width review, 816px tall and stable for all clients."
+  },
+  {
+   "id": "web-7", "severity": "P1", "area": "interaction",
+   "where": "Final .fin-panel{align-items:center} with the live card growing on input",
+   "problem": "When the live result and the Keep button appear, the right column grows and re-centres the left one. The input you are typing in moves down 20px at 1440 and 30px at 1024 (measured: y 6320→6340 and 7001→7031), and the panel grows 39–60px. At the climax of the page, the field moves under the caret.",
+   "fix": "fix.css web-7: @media (min-width:901px){.fin-panel{align-items:start}.fin-l{padding-top:20px}}. Re-measured: the input y stays the same before typing, while typing and after clearing at both widths. The panel can still grow below, which is expected and user-initiated."
+  },
+  {
+   "id": "web-8", "severity": "P2", "area": "layout",
+   "where": "761–900 (tablet portrait): .t-day{grid-template-columns:1fr}, .morn{min-height:460px}",
+   "problem": "At 768 the Day tile stacks into 1,072px. The steps hug a 440px column with an empty right half of the night photo, and a 600px-tall phone follows. That is more than one iPad screen for one idea, and the page is 9.8 screens of 1024.",
+   "fix": "fix.css web-8: .t-day{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}; .night{padding:28px 24px 24px}; .steps{max-width:none}; .morn{min-height:0;padding-top:64px}; .phone{width:262px;height:560px}. Also .qpost{grid-template-columns:1fr} .qpost .media{display:none} (the Results quote was squeezed to 5 lines of 1–3 words) and .studio{min-height:858px} (switching clients moved the page by up to 58px at 768). Tested: Day is 600px, and 768 goes from 9.80 to 9.37 screens."
+  },
+  {
+   "id": "web-9", "severity": "P2", "area": "layout",
+   "where": "Replies .mine .lab (label 'Drafted in your voice' + Replay button)",
+   "problem": "At 1440, 1280 and 768 the 232–260px-wide reply box cannot fit the label and Replay on one row, so Replay drops onto its own right-aligned line above the text. It looks like a wrapping accident in the product UI.",
+   "fix": "fix.css web-9: .mine{position:relative}; .mine .lab .replay{position:absolute;left:7px;bottom:11px;margin:0;height:30px} (phones: left 5px, bottom 10px, height 36px). Replay takes the empty left end of the Edit / Reply row. It is already hidden in the Sent state, so nothing collides."
+  },
+  {
+   "id": "web-10", "severity": "P2", "area": "type",
+   "where": "Short copy across the page",
+   "problem": "Widows and bad breaks at the tested widths: 'thread.' (Previews note, 1440/390), '2-/post thread' (broken at the hyphen at 768), 'off.' (Trust rule, 1440), 'on Pro.' (pricing lede, 1440), 'one.' (Try why, 768/390), 'type.' (final sub, 1024), 'years.' (hero post, 390), 'down / 34%' (Studio mark split, 360).",
+   "fix": "fix.css web-10: text-wrap:pretty on .pv-note,.rules,.lede,.why,.fin-sub,.tfoot,.hits p,.faces p,.facts p,.price-n,.plan li span,.ptext,.xtext; .st-post mark{white-space:nowrap}. In the markup (line 1277) and PV (line 1731) write '2‑post' with U+2011, a non-breaking hyphen. Headings were re-checked and are all still 2 lines at every width."
+  },
+  {
+   "id": "web-11", "severity": "P2", "area": "layout",
+   "where": "Pricing .head at ≥1200 (grid 1fr | 24em)",
+   "problem": "The lede starts at x=912 while the Studio column starts at x=923. The 11px miss sits right above three perfectly aligned cards.",
+   "fix": "fix.css web-11: at ≥1200 .head{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--gap)} .head .h2{grid-column:1/3} .head .lede{grid-column:3;max-width:none}, and keep #faq .head{display:block}. The lede then sits exactly on the third plan column."
+  },
+  {
+   "id": "web-12", "severity": "P2", "area": "layout",
+   "where": "Voice tile .t-voi{align-items:center}",
+   "problem": "Voice is the only tile whose caption floats in the vertical middle. Every other tile anchors its caption top-left, so this full-width strip breaks the bento's reading line.",
+   "fix": "fix.css web-12: .t-voi{align-items:start}."
+  },
+  {
+   "id": "web-13", "severity": "P1", "area": "interaction",
+   "where": "Hero choreography: .window{--l:.8s}, post land at l+.5s, draftHTML W=.46, heroFall after all strikes, @keyframes fall (.95s, 78px, opacity linear)",
+   "problem": "Screencast from navigation at 1440: the Sharpened half of the window is empty from about 0.7s to 1.8s (the post lands at about 1.9s, roughly 1.6s after first paint). The struck words then fall after the post has landed, so the eye is pulled back left, and the falling copies stay near full opacity as they cross 'month trading, took me 3 years', which is illegible for a moment. This is all in the first 5 seconds of the page.",
+   "fix": "fix.css web-13: .window{--l:.5s}; .fallen{color:#8D929A;animation-duration:.7s}; @keyframes fall{0%{opacity:1;transform:none}55%{opacity:0}100%{opacity:0;transform:translate(var(--dx,0),44px) rotate(var(--rot,8deg))}}. snippets.js: draftHTML W=.32; .post land .55s at calc(var(--l) + .45s); .ptext focus .6s at the same delay. Re-recorded: the post is in place about 1.0s after first paint, and no fallen copy is visible over the second line."
+  },
+  {
+   "id": "web-14", "severity": "P2", "area": "mobile",
+   "where": "Phone nav when the bottom bar is on: body.bar-on .nav-r .btn-sm{opacity:0;visibility:hidden}",
+   "problem": "The hidden Start free still takes its 92px, so 'Sign in' floats mid-right next to an empty hole on every scrolled phone screen (390-02…06).",
+   "fix": "fix.css web-14, transform only so there is no layout shift: .nav-r .btn-sm{width:96px;padding:0}; .signin{transition:transform .35s var(--ease),color .2s,background-color .2s}; body.bar-on .signin{transform:translateX(102px)}. Verified: Sign in sits on the right edge, and CLS stays 0 at 390 and 360 (a max-width collapse was tried first and cost 0.004 CLS)."
+  },
+  {
+   "id": "web-15", "severity": "P2", "area": "mobile",
+   "where": "body{padding-bottom:var(--mbar)} at ≤760",
+   "problem": "The bar is hidden from the final section down (finIn), yet 62px of padding is always reserved, which leaves an empty band under the footer. That is 0.07 of a screen spent on nothing, at 360 where the page sits exactly on the 10.5-screen target.",
+   "fix": "fix.css web-15: @media (max-width:760px){body{padding-bottom:0}}. With all fixes applied: 390 = 9.53 screens and 360 = 10.46 (was 10.50), no horizontal scroll, CLS 0."
+  },
+  {
+   "id": "web-16", "severity": "P2", "area": "mobile",
+   "where": "Try .cbar 'Sharpen Ctrl ↵' (kbd shown whenever pointer:fine)",
+   "problem": "At 360 wide with a fine pointer (a narrow desktop window, or an iPad with a trackpad in split view), the kbd hint makes the Sharpen pill overflow the card edge by about 15px.",
+   "fix": "fix.css web-16: @media (max-width:760px){.btn kbd{display:none}}."
+  },
+  {
+   "id": "web-17", "severity": "P2", "area": "mobile",
+   "where": "Studio approve on phone: .rv-act column (span + .done)",
+   "problem": "For Rafael and Marco the approved sentence wraps to 2 lines, so the tile grows 21px 650ms after the tap. That is outside the 500ms input window, so it counts as layout shift and nudges Trust.",
+   "fix": "fix.css web-17: @media (max-width:760px){.rv-act{min-height:90px;align-content:flex-start}}. Measured: 766px for all 4 clients before and after Approve."
+  },
+  {
+   "id": "web-18", "severity": "P2", "area": "perf",
+   "where": "Engine loader: addEventListener('load') → IntersectionObserver rootMargin '600px 0px' on #sharpen/#start (lines 2130–2133)",
+   "problem": "#sharpen is within 600px of the first viewport at every width tested, so the 'lazy' engine is in practice eager. core.js (234KB) arrives at 167ms (1440) and 330–380ms (4× CPU), and costs 98ms compile + 28ms first softMarks at 4× CPU. That lands inside the hero intro, where rAF frames of 100–150ms were recorded between 170ms and 640ms on a throttled phone.",
+   "fix": "snippets.js web-18: run the idle wake and the observer 1,600ms after load (the intro has settled), with rootMargin '0px 0px 240px 0px'. Keep the pointerdown/focusin wakes. The pre-rendered Try example means nothing waits."
+  },
+  {
+   "id": "web-19", "severity": "P2", "area": "layout",
+   "where": "Footer: Privacy (#privacy) and Terms (#terms); phone .ft ul wrap",
+   "problem": "Both links point at anchors that don't exist on this page, so they do nothing, which is a dead end in the place people check before signing up. On phones the link row wraps with 'Terms' alone on a line.",
+   "fix": "Replace both items with <li><a href=\"../../index.html#legal\">Privacy and terms</a></li> (the app has a real #legal page). Then fix.css web-19: @media (max-width:760px){.ft ul{display:grid;grid-template-columns:repeat(2,max-content);column-gap:28px}} gives a clean 2×2 grid at the same height as today."
+  },
+  {
+   "id": "web-20", "severity": "P2", "area": "layout",
+   "where": "Footer .giant{font-size:clamp(56px,15.4vw,222px)}",
+   "problem": "The 6% wordmark spans the container only at 1440. At 768 it covers about 600 of 720px and at 1024 about 810 of 976px, ending short of the right edge like a mis-set line.",
+   "fix": "fix.css web-20: .giant{font-size:min(222px,calc((min(100vw,var(--max)) - 2 * var(--pad)) / 5.15))}. The 5.15 width-to-em ratio was measured at 1440 (1,135px at 222px)."
+  },
+  {
+   "id": "web-21", "severity": "P2", "area": "layout",
+   "where": "Nav .links at 761–900 (display:none)",
+   "problem": "Tablet portrait loses Pricing and FAQ from the nav entirely, although three links fit.",
+   "fix": "fix.css web-21: @media (min-width:761px) and (max-width:900px){.links{display:flex}.links a:nth-child(2){display:none}} keeps Try it, Pricing and FAQ. Measured clearance: 131px or more from the logo and 76px or more from Sign in at 761, 768, 820 and 900."
+  },
+  {
+   "id": "web-22", "severity": "P2", "area": "interaction",
+   "where": "Day tile moment: .fp.yp / .m-push --md:1.8s, .notif --md:2.35s",
+   "problem": "The story takes about 2.9s. The phone screen is a black feed with one stranger's post from about 0.7s to 1.9s before your post slides in, so a normal scroll passes the tile before the payoff.",
+   "fix": "In the markup: .fp.yp and .fp.m-push style='--md:1.25s', .notif style='--md:1.75s'. The steps keep .1/.75/1.15s. The whole moment settles in about 2.1s, and the screen is never empty for more than about 0.6s."
+  },
+  {
+   "id": "web-23", "severity": "P2", "area": "perf",
+   "where": "Pointer glow: every .tile gets a 920×920 <i class='glow'> with will-change:transform at load (lines 337–339, 2161–2166)",
+   "problem": "Nine always-promoted, invisible 920×920 layers. Removing the will-change alone dropped the drawing layers from 64 to 55 in a DPR-2 LayerTree capture. That is GPU memory and compositing work spent on an effect that only exists under a mouse.",
+   "fix": "snippets.js web-23: create the glow on the first pointerenter (mouse only), drop will-change from .tile > .glow, and add .tile:hover > .glow{will-change:transform}."
+  },
+  {
+   "id": "web-24", "severity": "P2", "area": "layout",
+   "where": "Photo panes: .dn > .ph (Day night/morning), .well > .ph (Results)",
+   "problem": "The 800px sprite is drawn at about 1.27× CSS, which is 2.5× device pixels on retina, in the most photographic tile. The morning half is visibly soft next to the crisp vector UI, and no higher-res source exists.",
+   "fix": "fix.css web-24: give the photo panes the hero's existing film grain, .dn > .ph::before,.well > .ph::before{content:'';position:absolute;inset:0;z-index:2;opacity:.07;mix-blend-mode:screen;background-image:(the same feTurbulence SVG as .hero::after)}. Grain hides upscale softness (compared at DPR 2), costs one cached data-URI, and keeps the photos as they are."
+  }
+ ]
+}

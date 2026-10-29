@@ -1,0 +1,82 @@
+{
+ "key": "motion",
+ "expert": "Motion & interaction designer (ex-Apple marketing motion / Rive / Framer)",
+ "field": "Motion design, choreography and micro-interactions",
+ "criteria": ["First-second motion", "Sharpen moment", "Micro-interactions", "Choreography", "Reduced motion"],
+ "scores": {
+  "arc-a": {
+   "criteria": {"First-second motion": 4, "Sharpen moment": 8, "Micro-interactions": 8, "Choreography": 5, "Reduced motion": 8},
+   "overall": 7.0,
+   "verdict": "The most satisfying physical Sharpen of the five, but it shows up a second and a half late and is a mess for 300ms in the middle.",
+   "loved": "The soft words lift off as amber stickers, tilt, fly into a 'Peeled off' tray and shrink to 15px chips. They stay draggable and spring back on a (.34,1.56,.5,1) curve, and the 'heycape' cursor gliding over to tap Sharpen makes 'one tap' visible. Nobody else turns the product into a toy.",
+   "problems": [
+    "Too much wind-up. At 1440x900 the headline and composer sit still, the cursor shows up around 1.5s, and the stickers don't lift until about 3.3s after navigation, with the sharp line settling about 4.0s. For the first 3 seconds almost nothing happens.",
+    "From 3.5 to 3.75s the mid-flight frames can't be read. 'is honestly just' flies across 'after a loss' while the sentence collapses into 'ost underrated thing in trading … izing down'. The peel, the gap closing and the cap/'?' inserts all run at once.",
+    "The gaps close by animating font-size, max-width, padding and margin, which are layout properties. Measured CLS was 0.144 (0.056 at load plus about 0.09 from the Sharpen itself), and that kind of animation risks jank on mid-range phones.",
+    "On 1440x900 the receipt and the tray land at or just under the fold, so the 'why' of the edit arrives where you can't see it. Scroll reveals are a generic 26px fade-up with no stagger."
+   ],
+   "fix": "Re-time the hero. Start the cursor at 0.4s and tap at about 1.2s. Peel the stickers up and out of the text's path first (0–350ms). Close the gaps with transforms or a FLIP only after they clear (350–800ms), then land the caps/'?' and the receipt by about 2.0s, above the fold."
+  },
+  "arc-b": {
+   "criteria": {"First-second motion": 6, "Sharpen moment": 6, "Micro-interactions": 6, "Choreography": 5, "Reduced motion": 7},
+   "overall": 6.0,
+   "verdict": "Plenty of energy, bad timing: the whole edit is over before your eye leaves the headline, and switching examples gives the answer away first.",
+   "loved": "The lime highlighter sweeping across the sharp line (background-size, 1s, expo-out) after a rose strike through the soft words. Because the struck 'before' stays on screen, the edit still reads as a diff even if you missed it live.",
+   "problems": [
+    "On load the strike draws at about 0.5s, the lime sweep finishes about 1.25s and the receipt prints by about 1.75s. Nobody has finished reading 'Good ideas die in bad first lines.' by then, so the moment plays to an empty room.",
+    "Spoiler flash when switching examples. Clicking 'Churn' paints the new sharp line at full opacity, fades it out over 350ms (the old transition is still on), draws the strike, then fades it back in. The answer appears, disappears and reappears.",
+    "Load jump: the hero card grows as JS fills the example. CLS was 0.119, and 0.19 with reduced motion. The receipt 'printer' animation also happens mostly under the fold at 1440x900.",
+    "Springy hover tilts (-1.5deg, 1.5deg) are on almost every button, which turns into noise. In my scroll run there was a 394ms main-thread stall mid-scroll."
+   ],
+   "fix": "Hold the soft line still for about 800ms, then strike (0.9s), sweep (1.2–1.9s) and print the receipt somewhere you can see it. On switch, set opacity:0 with transition:none before swapping the text, so the answer never shows up before the strike."
+  },
+  "awwwards-b": {
+   "criteria": {"First-second motion": 8, "Sharpen moment": 8, "Micro-interactions": 6, "Choreography": 8, "Reduced motion": 9},
+   "overall": 7.8,
+   "verdict": "The only Sharpen whose motion explains the edit: an editor's pencil works through the draft in reading order, then the clean line typesets itself.",
+   "loved": "The sequence. At 0.25s the blue underline wipes under 'sharp'. The draft fades in, then from about 1.0 to 1.8s pencil strokes draw left to right (strike, caret '?', capital marks, move-loop) with margin notes 'warm-up, hedge, filler'. The set line then arrives word by word (32ms stagger) with the italic 'Led with the question' last. It's real choreography, and it repeats on every proof sheet as you scroll.",
+   "problems": [
+    "The strokes are 1.5px pencil on 13px mono. At a glance it reads as faint scribble, and the gesture only lands if you lean in.",
+    "The payoff comes at about 2.3s and ends on a soft fade. There's no final emphasis beat, so the result doesn't hit as hard as the setup.",
+    "On auto-cycle (7.2s) the sheet goes fully blank for about 0.4s. The marks then take about 2s more before any answer appears, leaving a lot of empty paper.",
+    "The micro-interactions are polite (.98 press, dots, 'Next proof') with nothing to play with. On phone the set line sits at the fold."
+   ],
+   "fix": "Compress the markup to about 700ms with 2.5px strokes, then land the set line with one 180ms settle (a slight scale or weight snap, plus the headline's blue underline echoing under it), so the payoff lands by about 1.6s."
+  },
+  "apple-b": {
+   "criteria": {"First-second motion": 3, "Sharpen moment": 4, "Micro-interactions": 6, "Choreography": 5, "Reduced motion": 9},
+   "overall": 4.8,
+   "verdict": "Beautiful wallpaper: the feed drifts and the one sharp post just sits there, so the product's signature move never happens above the fold.",
+   "loved": "The Try section's swap blurs the old result out (blur 8px, translateY 8px, .45s) and focus-pulls the new one in. That's the right literal metaphor for 'sharpen', and the restrained .97 press on the button matches it.",
+   "problems": [
+    "The first 3 seconds are static except a background drift of about 11px/s (64–92s loops). It reads as ambience and doesn't point the eye anywhere.",
+    "No soft-to-sharp moment in the hero. The 'was' line is struck in tiny grey type and the post is already labelled 'Sharpened'. It's a still diagram of an edit, not the edit.",
+    "During the Try swap the new 'before' appears instantly while the old 'after' is still blurring out, so for a beat they're mismatched (Dev Raman's draft over heycape's result).",
+    "Hovers are colour-only. The scroll reveals are generic fade-ups, and the drift runs forever with no pause when off-screen."
+   ],
+   "fix": "Bring the blur-to-focus move into the hero. The white card arrives as the soft draft (amber underlines, slight blur) and at about 0.8s focus-pulls into the sharp post while the soft feed keeps drifting behind it."
+  },
+  "typefully-a": {
+   "criteria": {"First-second motion": 7, "Sharpen moment": 5, "Micro-interactions": 7, "Choreography": 6, "Reduced motion": 8},
+   "overall": 6.3,
+   "verdict": "The most professionally timed entrance, but it's an entrance, not a transformation: you see before and after side by side and never see one become the other.",
+   "loved": "A clean, well-staggered intro on one expo-out curve (.22,1,.36,1). Amber squiggles draw on the soft words, the post slides out from the draft's side, the receipt drops in at 0.7s and the rule under 'hookworthy' draws at 0.9s, all settled by about 1.5s. The carousel pauses on hover and on focus.",
+   "problems": [
+    "Pressing 'Sharpen' on the draft doesn't sharpen it. It jumps to the next example, which breaks the button's promise.",
+    "The auto-cycle (every 6.5s) and the example picks blank all three cards for about 200ms. The post's first line, the payoff, arrives last (+.38s delay) and the post sits as an empty shell for about 0.6s, so it feels like a reload.",
+    "Scroll motion is a generic 18px rise. The feature scroll-spy is useful but static.",
+    "The soft-word squiggle fades in through text-decoration-color, so on dark it's too subtle to catch in the first second."
+   ],
+   "fix": "Make Sharpen act on the visible draft. Strike its soft words in place (300ms), then have that same line slide across into the post and focus-pull sharp (blur 4px to 0, 400ms), so the before visibly becomes the after."
+  }
+ },
+ "ranking": ["awwwards-b", "arc-a", "typefully-a", "arc-b", "apple-b"],
+ "pick": "awwwards-b",
+ "pickWhy": "Its motion is the explanation: strokes draw in reading order, margin notes name the soft words and the clean line typesets after, so even a skim understands what Sharpen does. It also carries the same grammar down the page and degrades to a complete static proof under reduced motion.",
+ "combo": "Use awwwards-b's reading-order pencil choreography and then land the payoff with arc-a's physicality: the cut words peel off as stickers into a draggable tray, with arc-a's cursor tapping Sharpen. Use apple-b's blur-to-focus pull for the final set line.",
+ "measurements": {
+  "sharpenPayoffAfterNav_s": {"arc-a": 4.0, "arc-b": 1.25, "awwwards-b": 2.3, "apple-b": "none in hero", "typefully-a": "none (entrance done ~1.5s; first swap at ~6.8s)"},
+  "heroCLS": {"arc-a": 0.144, "arc-b": "0.119 (0.191 with reduced motion)", "awwwards-b": 0.015, "apple-b": 0, "typefully-a": 0.042},
+  "method": "CDP screencast plus 250ms screenshot loops at 1440x900, reduced-motion captures, and scripted clicks on hero switchers. Headless timings are approximate."
+ }
+}
