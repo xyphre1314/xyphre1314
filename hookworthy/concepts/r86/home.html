@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hookworthy: sharpen and schedule your X posts</title>
-<meta name="description" content="Cut the fluff from your first line in one tap, then schedule it. It still sounds like you. Free forever, no card.">
+<meta name="description" content="Cut the fluff from your first line in one tap, then schedule it for X. It still sounds like you. Free forever, no card.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#08090A">
 <link rel="icon" type="image/svg+xml" href="../../assets/brand/afterglow-icon.svg">
@@ -12,16 +12,18 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hookworthy">
 <meta property="og:title" content="They read one line. Make it hookworthy.">
-<meta property="og:description" content="Cut the fluff from your first line in one tap, then schedule it. It still sounds like you.">
-<!-- og:image and twitter:image stay relative in this preview; the deploy step writes the absolute https:// URL (and og:url) once the live domain exists. -->
-<meta property="og:image" content="../../assets/og-afterglow.png">
+<meta property="og:description" content="Cut the fluff from your first line in one tap, then schedule it for X. It still sounds like you.">
+<!-- og:url, og:image and twitter:image are absolute and assume the site is served at the root of hookworthy.com (X's card scraper needs absolute URLs). -->
+<meta property="og:url" content="https://hookworthy.com/">
+<link rel="canonical" href="https://hookworthy.com/">
+<meta property="og:image" content="https://hookworthy.com/assets/og-afterglow.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="They read one line. Make it hookworthy. A draft with its fluff struck out, and the sharper post it became.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="They read one line. Make it hookworthy.">
-<meta name="twitter:description" content="Cut the fluff from your first line in one tap. It still sounds like you.">
-<meta name="twitter:image" content="../../assets/og-afterglow.png">
+<meta name="twitter:description" content="Cut the fluff from your first line in one tap, then schedule it for X. It still sounds like you.">
+<meta name="twitter:image" content="https://hookworthy.com/assets/og-afterglow.png">
 <meta name="twitter:image:alt" content="They read one line. Make it hookworthy. A draft with its fluff struck out, and the sharper post it became.">
 <link rel="preload" href="../../fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion')</script>
@@ -32,9 +34,11 @@
    Name: the drawn logo is lowercase; every typed mention is "Hookworthy".
    Motion: an illustrative tile plays its moment once as it arrives, and again only from its own Replay button.
    Nothing replays under the pointer or keyboard, nothing loops, and the page never presses a visitor's button. */
-@font-face{font-family:"Inter V";src:url("../../fonts/Inter-Variable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+@font-face{font-family:"Inter V";src:url("../../fonts/Inter-Variable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+/* until Inter arrives (slow first visit), text shows at once in a local face scaled to Inter's metrics, so the swap moves nothing */
+@font-face{font-family:"Inter Fallback";src:local("Arial"),local("Helvetica Neue"),local("Helvetica"),local("Liberation Sans");size-adjust:107.4%;ascent-override:90.2%;descent-override:22.48%;line-gap-override:0%}
 
-/* tokens: every colour on the page comes from here (platform colours inside the Threads/LinkedIn/Bluesky previews excepted).
+/* tokens: every colour on the page comes from here, the platform previews' own palettes included (--pf-*).
    Inks step down from soft white; ink-4 is decorative only (rail icons, separators, rings). Surfaces step up from X black.
    Radius scale: 24 tiles, plans, final, sheet · 20 phone tiles · 18 X cards and the window · 16 media and inner panels ·
    12 small cards and rows · 8–10 icon tiles and thumbnails · 999 pills */
@@ -46,8 +50,14 @@
   --ink-4:#6C7179;
   --line:rgba(255,255,255,.07);
   --line-2:rgba(255,255,255,.11);
-  --s0:#000; --s1:#0B0C0E; --s2:#141518; --s3:#1A1B1E;
-  --x:var(--s0); --x-line:#2F3336; --x-ink:#E7E9EA; --x-ink-2:#B4B8BE; --x-mute:#7D8288;
+  --s0:#000; --s1:#0B0C0E; --s2:#141518; --s3:#1A1B1E; --s4:#26282C; --s5:#3A3D43;
+  --white:#fff; --pill-1:#FFFFFF; --pill-2:#ECEDEF; --pill-3:#E9EAEC;
+  --x:var(--s0); --x-line:#2F3336; --x-ink:#E7E9EA; --x-ink-2:#B4B8BE; --x-mute:#7D8288; --x-rule:#333639;
+  --wave:#4A4E55; --shell:#111214; --ph-bg:#15120E; --notif:#26272A;
+  /* each app preview keeps that app's own palette, gathered here */
+  --pf-th-bg:#101010; --pf-th-ink:#F3F5F7; --pf-th-line:#2A2A2A; --pf-th-mute:#9A9A9A;
+  --pf-li-bg:#1B1F23; --pf-li-ink:rgba(255,255,255,.92); --pf-li-line:#2E3439; --pf-li-mute:#A9ADB1; --pf-li-rule:#33383E; --pf-li-more:#C0C4C8;
+  --pf-bs-bg:#161E27; --pf-bs-ink:#F1F3F5; --pf-bs-line:#29343F; --pf-bs-mute:#97A6B6; --pf-bs-rule:#2E3B49;
   --glow:255 170 128; --hot:255 238 228; --ember:#FFAA80;
   --ease:cubic-bezier(.16,1,.3,1); --ease-io:cubic-bezier(.65,0,.35,1); --spring:cubic-bezier(.34,1.4,.5,1);
   --pad:24px; --max:1200px; --wide:1320px; --sec:144px; --mbar:0px; --gap:16px;
@@ -58,15 +68,16 @@
 html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:80px}
 html.locked{overflow:hidden;padding-right:var(--sbw,0px)}
 [hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Inter V",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:clip;padding-bottom:var(--mbar)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Inter V","Inter Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:clip;padding-bottom:var(--mbar)}
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 svg{display:block;flex:none}
 button,input,textarea{font:inherit;color:inherit}
 button{background:none;border:0;padding:0;margin:0;cursor:pointer}
 p{margin:0}
-::selection{background:rgba(255,255,255,.22);color:#fff}
+::selection{background:rgba(255,255,255,.22);color:var(--white)}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
+[tabindex="-1"]:focus-visible{outline:none}
 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 .skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-weight:500;font-size:14px}
 .skip:focus{top:12px}
@@ -86,12 +97,18 @@ p{margin:0}
 .av.lt{filter:saturate(.88) contrast(1.04) brightness(.9)}
 .av.v2{background-image:url(../../assets/people/avatars-2.jpg)}
 .av.me{background-image:url(../../assets/people/you-dark.jpg);background-size:cover;background-position:center}
-.av.you{background:radial-gradient(circle at 50% 38%,#3A3D43 0 22%,transparent 23%),radial-gradient(ellipse 60% 44% at 50% 100%,#3A3D43 0 70%,transparent 71%),var(--s3)}
+.av.you{background:radial-gradient(circle at 50% 38%,var(--s5) 0 22%,transparent 23%),radial-gradient(ellipse 60% 44% at 50% 100%,var(--s5) 0 70%,transparent 71%),var(--s3)}
 /* example photos: one sprite of six (desk, whiteboard, run, cafe, team, notes). --i picks one. Never --i:1 (a whiteboard of other prices) */
-.ph{position:absolute;inset:0;overflow:hidden;background:#15120E;border-radius:inherit}
+.ph{position:absolute;inset:0;overflow:hidden;background:var(--ph-bg);border-radius:inherit}
 .ph img{position:absolute;top:0;left:50%;max-width:none;transform:translate(calc(-50% + var(--fx,0%)),calc(var(--i,0) * -100% / 6));filter:saturate(.88) contrast(1.04)}
 .ph.fh img{height:600%;width:auto}
 .ph.fw img{width:100%;height:auto}
+/* the trader's journal: frame 3 cropped in to the open notebook and its pen (no cup, no phone, no plant), in every place it shows */
+.ph.jr{--jw:182%;--jy:-7.56%}
+.ph.jr img{width:var(--jw);height:auto;transform:translate(calc(-50% + 1.3%),calc(-50% + var(--jy)))}
+.media .ph.jr img{filter:saturate(.8) contrast(1.06) brightness(.74)}
+.thread .ph.jr{--jy:-8.8%}
+.qpost .ph.jr{--jw:296%;--jy:-7.2%}
 /* media radius: 16px inside X cards (X's own), 12px inside the phone, 8px for the small thumbnail */
 .media{position:relative;margin-top:10px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--x-line)}
 .media .ph{border-radius:0}
@@ -123,6 +140,10 @@ p{margin:0}
 /* put it back: a struck word is a toggle. Tap it and Sharpen runs again with that word kept */
 .tog{cursor:pointer;border-radius:4px;pointer-events:auto;transition:background-color .15s}
 .tog:hover{background-color:rgba(255,255,255,.07)}
+/* a struck word previews its put-back under the pointer: the strike fades and the word lifts to ink */
+@media (hover:hover) and (pointer:fine){
+  .try-c.done .ed-mirror.struck mark.c.tog:hover,.fpay .draft .cut.tog:hover{color:var(--x-ink);background-image:linear-gradient(rgba(247,248,248,.24),rgba(247,248,248,.24))}
+}
 .tog:focus-visible{outline-offset:1px}
 .tog.kept{text-decoration:underline dotted rgba(247,248,248,.45);text-decoration-thickness:1px;text-underline-offset:.3em}
 
@@ -137,7 +158,7 @@ p{margin:0}
 .lit-card{box-shadow:inset 0 0 0 1px var(--x-line),inset 0 1px 0 rgba(255,236,224,.16),0 1px 2px rgba(0,0,0,.5),0 28px 56px -30px rgba(0,0,0,.95)}
 /* the rim has to be seen to mean something: a soft glint on the top edge, the hero spec at low power */
 .lit-card::after{content:"";position:absolute;top:0;left:14%;right:14%;height:1px;pointer-events:none;
-  background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.42) 62%,rgba(var(--hot)/0));box-shadow:0 0 8px rgba(var(--glow)/.18)}
+  background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.6) 62%,rgba(var(--hot)/0));box-shadow:0 0 8px rgba(var(--glow)/.28)}
 .xrow{display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:12px}
 .xav{width:40px;height:40px}
 .xname{display:flex;align-items:center;flex-wrap:nowrap;white-space:nowrap;gap:0 5px;font-size:15px;line-height:1.35;color:var(--x-mute);min-width:0;overflow:hidden}
@@ -157,19 +178,19 @@ p{margin:0}
 .hits .n2{margin-top:4px;font-size:14px;color:var(--ink-3)}
 
 /* ---------- buttons: only live controls get a white fill or a hover ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:500 15px/1 "Inter V",system-ui,sans-serif;letter-spacing:-.012em;white-space:nowrap;cursor:pointer;
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:500 15px/1 "Inter V","Inter Fallback",system-ui,sans-serif;letter-spacing:-.012em;white-space:nowrap;cursor:pointer;
   transition:transform .35s var(--ease),background-color .25s var(--ease),box-shadow .35s var(--ease),border-color .25s var(--ease),color .2s,opacity .2s}
 .btn:focus-visible{border-radius:999px}
 .btn:active{transform:scale(.975)}
-.btn-white{color:#08090A;background:linear-gradient(180deg,#FFFFFF 0%,#ECEDEF 100%);box-shadow:inset 0 -1px 0 rgba(0,0,0,.14),inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,.5),0 10px 24px -10px rgba(0,0,0,.9)}
-.btn-white:hover{transform:translateY(-1px);box-shadow:inset 0 -1px 0 rgba(0,0,0,.14),inset 0 1px 0 #fff,0 2px 4px rgba(0,0,0,.5),0 16px 32px -12px rgba(0,0,0,.95),0 0 0 4px rgba(255,255,255,.06)}
+.btn-white{color:var(--bg);background:linear-gradient(180deg,var(--pill-1) 0%,var(--pill-2) 100%);box-shadow:inset 0 -1px 0 rgba(0,0,0,.14),inset 0 1px 0 var(--white),0 1px 2px rgba(0,0,0,.5),0 10px 24px -10px rgba(0,0,0,.9)}
+.btn-white:hover{transform:translateY(-1px);box-shadow:inset 0 -1px 0 rgba(0,0,0,.14),inset 0 1px 0 var(--white),0 2px 4px rgba(0,0,0,.5),0 16px 32px -12px rgba(0,0,0,.95),0 0 0 4px rgba(255,255,255,.06)}
 .btn-white:active{transform:scale(.975)}
 .btn-glass{color:var(--ink);background:rgba(255,255,255,.055);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.09),0 10px 24px -12px rgba(0,0,0,.9)}
 .btn-glass:hover{background:rgba(255,255,255,.085);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.1),0 10px 24px -12px rgba(0,0,0,.9)}
 .btn:disabled{opacity:.4;cursor:default;transform:none}
 .btn-white:disabled{box-shadow:none}
 .btn-sm{height:34px;padding:0 15px;font-size:14px}
-.btn kbd{display:inline-flex;align-items:center;gap:1px;font:500 12px/1 "Inter V",system-ui,sans-serif;opacity:.55;margin-left:-2px;letter-spacing:0}
+.btn kbd{display:inline-flex;align-items:center;gap:1px;font:500 12px/1 "Inter V","Inter Fallback",system-ui,sans-serif;opacity:.55;margin-left:-2px;letter-spacing:0}
 .btn kbd .ico{width:12px;height:12px;stroke-width:1.5}
 .pills{display:flex;flex-wrap:wrap;gap:4px}
 .pills button{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:32px;padding:0 13px;border-radius:999px;font-size:13px;font-weight:500;letter-spacing:-.006em;color:var(--ink-3);transition:color .2s,background-color .2s,box-shadow .2s}
@@ -177,7 +198,7 @@ p{margin:0}
 .pills button[aria-pressed="true"]{color:var(--ink);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.08),0 1px 2px rgba(0,0,0,.4)}
 .pills button:focus-visible{border-radius:999px}
 .track{display:inline-flex;gap:2px;padding:4px;border-radius:999px;background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px var(--line)}
-.mini{position:relative;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;color:#08090A;background:linear-gradient(180deg,#fff,#E9EAEC);transition:transform .2s var(--ease),background-color .2s}
+.mini{position:relative;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;color:var(--bg);background:linear-gradient(180deg,var(--pill-1),var(--pill-3));transition:transform .2s var(--ease),background-color .2s}
 .mini:hover{box-shadow:0 0 0 3px rgba(255,255,255,.1)}
 .mini:active{transform:scale(.96)}
 .mini.ghost{background:none;color:var(--x-ink);box-shadow:inset 0 0 0 1px var(--x-line);font-weight:500}
@@ -242,7 +263,7 @@ main{position:relative;overflow-x:clip}
 .window > :not(.spec){position:relative;z-index:1}
 .bar{grid-area:bar;height:50px;display:grid;grid-template-columns:72px minmax(0,1fr) 72px;align-items:center;padding:0 16px}
 .dots{display:flex;gap:7px}
-.dots i{width:11px;height:11px;border-radius:50%;background:#26282C;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+.dots i{width:11px;height:11px;border-radius:50%;background:var(--s4);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
 .ttl{display:none;font-size:12px;color:var(--ink-3);font-weight:500}
 .ex{display:flex;align-items:center;justify-content:center;gap:12px}
 .ex-l{font-size:13px;color:var(--ink-3);white-space:nowrap}
@@ -265,12 +286,22 @@ main{position:relative;overflow-x:clip}
 .note{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px;font-size:13px;line-height:1.45;color:var(--ink-3);max-width:34em}
 .note .ck{margin-right:2px}
 .note s{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;text-decoration:none;color:var(--x-mute);box-shadow:inset 0 0 0 1px var(--line-2);background:linear-gradient(rgba(247,248,248,.5),rgba(247,248,248,.5)) 10px 56%/calc(100% - 20px) 1px no-repeat}
+.cbody{min-width:0;flex:1}
+.window > .body.sizer{position:absolute;left:0;right:0;top:0;min-height:0;visibility:hidden;pointer-events:none;z-index:-1}
+.body.sizer *{animation:none!important;transition:none!important}
+.cbody .kept{margin-top:10px;font-size:13px;line-height:1.45;color:var(--ink-3);text-wrap:pretty}
+.cbody .kept:empty{display:none}
+/* the draft is a door: a click takes it to the Try box, filled in */
+.js .pane.draft{cursor:text}
+.js .pane.draft button{cursor:pointer}
+.cbody{border-radius:12px}
+.cbody:focus-visible{outline-offset:6px}
 .replyset{display:flex;align-items:center;gap:7px;margin:auto 0 0 54px;padding:16px 0 14px;font-size:13px;font-weight:500;color:var(--ink-2)}
 .replyset .ico{width:15px;height:15px}
 .tools{display:flex;align-items:center;gap:4px;height:64px;border-top:1px solid var(--line)}
 .tools .ic{width:32px;height:32px;display:grid;place-items:center;color:var(--ink-4)}
 .tools .ic .ico{width:18px;height:18px}
-.post{margin-top:14px;border-radius:16px;padding:18px 22px 14px;position:relative;background:#000}
+.post{margin-top:14px;border-radius:16px;padding:18px 22px 14px;position:relative;background:var(--s0)}
 .who{display:flex;align-items:center;gap:12px}
 .who .av{width:40px;height:40px}
 .who .nm{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0;font-size:15px;line-height:1.25;color:var(--x-mute)}
@@ -280,7 +311,6 @@ main{position:relative;overflow-x:clip}
 .post .xacts{margin-top:12px;max-width:92%;color:var(--x-mute)}
 .window .hits{margin-top:12px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;align-items:baseline}
 .window .hits .k{margin:0}
-.window .hits p:first-of-type{min-height:3em}
 /* one window height for all four examples at every width, so a pick never moves the page (measured: r86/fix/heroh.js) */
 @media (min-width:1200px){.window .body{min-height:385px}}
 @media (min-width:901px) and (max-width:1199px){.window .body{min-height:441px}}
@@ -295,11 +325,13 @@ html:not(.motion) #pf-go{display:none}
 .since{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--ink-2)}
 .since i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px rgba(255,255,255,.08)}
 .since b{color:var(--ink);font-weight:500}
-.posts{display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px}
+.posts{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+/* two groups that never split: what posts by itself, and what's handed to you ready to paste */
+.posts .pg{display:inline-flex;align-items:center;gap:0 12px;white-space:nowrap}
 @media (min-width:901px) and (max-width:1199px){.hmeta{flex-direction:column;align-items:flex-start;gap:8px}}
-.posts span{display:inline-flex;align-items:center;gap:7px;color:var(--ink-2)}
+.posts .pg > span{display:inline-flex;align-items:center;gap:7px;color:var(--ink-2)}
 .posts svg{width:14px;height:14px;fill:currentColor}
-.posts i{font-style:normal;color:var(--ink-4);margin:0 -4px}
+.posts i{font-style:normal;color:var(--ink-4);margin:0 -3px}
 /* the cut fluff peels off the line and falls away (hero and Try) */
 .drops{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:visible}
 .fallen{position:absolute;white-space:pre;line-height:normal;color:var(--ink-2);
@@ -320,12 +352,13 @@ html:not(.motion) #pf-go{display:none}
 .motion .window.play .fl{animation:mark .3s var(--ease) var(--l) both}
 .motion .window.play .cut{animation:strike var(--t,.3s) var(--ease-io) calc(var(--l) + .37s + var(--d,0s)) both}
 .motion .window.play #pf-go{animation:press .28s var(--ease-io) calc(var(--l) + .29s) both}
-.motion .window.play .post{animation:land .55s var(--ease) calc(var(--l) + .45s) both}
-.motion .window.play .ptext{animation:focus .6s var(--ease) calc(var(--l) + .45s) both}
+.motion .window.play .post,.motion .window.play .hits,.motion .window.play .move{animation:wake .55s var(--ease) calc(var(--l) + .45s) both}
+.motion .window.play .post::after{animation:glint .9s var(--ease) calc(var(--l) + .6s) both}
 /* picking another example crossfades the post (the strike still plays): the pane is never empty after the first load */
-.motion .window.play.swap .post,.motion .window.play.swap .hits,.motion .window.play.swap .move{animation:fade .2s var(--ease) both}
-.motion .window.play.swap .ptext{animation:none}
-.motion .window.play .note,.motion .window.play .hits,.motion .window.play .move{animation:fade .5s var(--ease) calc(var(--l) + .65s) both}
+/* a pick never blanks the sharpened pane: the new post comes up from dim */
+.motion .window.play.swap .post,.motion .window.play.swap .hits,.motion .window.play.swap .move{animation:dimin .26s var(--ease) both}
+@keyframes dimin{from{opacity:.35}}
+.motion .window.play .note,.motion .window.play .kept{animation:fade .5s var(--ease) calc(var(--l) + .65s) both}
 @keyframes fade{from{opacity:0}}
 @keyframes defocus{from{opacity:0;filter:blur(6px)}}
 @keyframes rise-sm{from{opacity:0;transform:translateY(10px)}}
@@ -335,19 +368,21 @@ html:not(.motion) #pf-go{display:none}
 @keyframes strike{from{background-size:0% max(1.5px,.07em);color:var(--x-ink)}}
 @keyframes press{50%{transform:scale(.94);filter:brightness(.88)}}
 @keyframes land{from{opacity:0;transform:translateY(12px) scale(.985);filter:blur(4px)}}
-@keyframes focus{from{filter:blur(4px)}}
+@keyframes glint{from{opacity:0;transform:scaleX(.3)}}
 @keyframes up{from{opacity:0;transform:translateY(8px)}}
 @keyframes pop{from{opacity:0;transform:translateY(8px)}}
 @keyframes drop{from{opacity:0;transform:translateY(-120%)}}
 @keyframes swap{from{opacity:0;transform:translateY(6px)}}
 @keyframes pick{from{background-color:var(--s2);color:var(--x-ink-2);box-shadow:0 0 0 0 rgba(255,255,255,0)}}
-@keyframes fill{from{background-color:#4A4E55}}
+@keyframes fill{from{background-color:var(--wave)}}
 @keyframes draw{from{transform:scaleX(0)}}
 @keyframes ring{from{opacity:.7;transform:scale(.7)}to{opacity:0;transform:scale(1.9)}}
 @keyframes ring2{0%{opacity:0;box-shadow:0 0 0 0 rgba(255,255,255,.55)}20%{opacity:1}100%{opacity:0;box-shadow:0 0 0 10px rgba(255,255,255,0)}}
 @keyframes out{to{opacity:0;transform:translateY(-6px)}}
 @keyframes num{from{opacity:0;transform:translateY(4px)}}
 @keyframes push{from{transform:translateY(var(--push,0px))}}
+/* revealed top-down at the pace the posts below move down: it opens its own slot, so no text ever crosses other text */
+@keyframes ins{from{clip-path:inset(0 0 100% 0)}}
 @keyframes sheet{from{opacity:0;transform:translateY(16px) scale(.98)}}
 @keyframes sheet-m{from{transform:translateY(100%)}}
 @keyframes backdrop{from{opacity:0}}
@@ -367,11 +402,12 @@ html:not(.motion) #pf-go{display:none}
     "try try try try try try try try pv  pv  pv  pv"
     "voi voi voi voi voi voi voi voi voi voi voi voi"
     "day day day day day day day day day day day day"
-    "rep rep rep rep res res res res who who who who"
+    "rep rep rep rep rep rep res res res res res res"
+    "who who who who who who who who who who who who"
     "st  st  st  st  st  st  st  st  st  st  st  st"
     "tru tru tru tru tru tru tru tru tru tru tru tru"}
 .t-try{grid-area:try}.t-pv{grid-area:pv}.t-voi{grid-area:voi}.t-day{grid-area:day}.t-rep{grid-area:rep}.t-res{grid-area:res}.t-who{grid-area:who}.t-st{grid-area:st}.t-tru{grid-area:tru}
-.tile{position:relative;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:22px;min-width:0;overflow:hidden}
+.tile{position:relative;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:22px;min-width:0;overflow:hidden;overflow:clip}
 .tile > *{position:relative;z-index:1}
 .cap{font-size:26px;line-height:1.14;letter-spacing:-.028em}
 .cap.big{font-size:40px;line-height:1.04;letter-spacing:-.036em}
@@ -391,7 +427,8 @@ html:not(.motion) #pf-go{display:none}
 .motion .arm .m-fill{animation:fill .12s linear calc(var(--md,0s) + var(--k,0) * .06s) both paused}
 .motion .arm .m-ring::after{animation:ring2 1.1s var(--ease) var(--md,0s) both paused}
 .motion .arm .m-push{animation:push .45s var(--ease) var(--md,0s) both paused}
-.motion .arm.go .m-pop,.motion .arm.go .m-land,.motion .arm.go .m-drop,.motion .arm.go .m-pick,.motion .arm.go .m-fill,.motion .arm.go .m-ring::after,.motion .arm.go .m-push{animation-play-state:running}
+.motion .arm .m-ins{animation:ins .45s var(--ease) var(--md,0s) both paused}
+.motion .arm.go .m-pop,.motion .arm.go .m-land,.motion .arm.go .m-drop,.motion .arm.go .m-pick,.motion .arm.go .m-fill,.motion .arm.go .m-ring::after,.motion .arm.go .m-push,.motion .arm.go .m-ins{animation-play-state:running}
 .m-ring{position:relative}
 .m-ring::after{content:"";position:absolute;inset:-3px;border-radius:999px;pointer-events:none;opacity:0}
 
@@ -401,8 +438,9 @@ html:not(.motion) #pf-go{display:none}
 .try-c{padding:18px 18px 12px;display:flex;flex-direction:column}
 .try-c:has(.ed-ta:focus-visible){box-shadow:inset 0 0 0 1px var(--x-line),0 0 0 2px var(--ink),0 28px 56px -30px rgba(0,0,0,.95)}
 .ed{position:relative}
-.ed-mirror,.ed-ta{font:400 22px/1.42 "Inter V",system-ui,sans-serif;letter-spacing:-.016em;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;tab-size:4;padding:6px 0;margin:0;border:0;width:100%;font-kerning:normal;font-optical-sizing:auto;max-height:calc(1.42em * 5 + 12px)}
+.ed-mirror,.ed-ta{font:400 22px/1.42 "Inter V","Inter Fallback",system-ui,sans-serif;letter-spacing:-.016em;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;tab-size:4;padding:6px 0;margin:0;border:0;width:100%;font-kerning:normal;font-optical-sizing:auto;max-height:calc(1.42em * 5 + 6px)}
 .ed-mirror{position:absolute;inset:0;color:transparent;overflow:hidden;pointer-events:none}
+.ed.more{-webkit-mask-image:linear-gradient(#000 calc(100% - 1.5em),rgba(0,0,0,.15));mask-image:linear-gradient(#000 calc(100% - 1.5em),rgba(0,0,0,.15))}
 .ed-mirror mark{background:transparent;color:transparent;text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.28em;text-decoration-skip-ink:none}
 .ed-mirror mark.x{text-decoration:none}
 /* after Sharpen the mirror carries the text, so a cut word can dim and turn into a put-back toggle */
@@ -437,7 +475,7 @@ html:not(.motion) #pf-go{display:none}
 .why{margin:8px 0 0 52px;font-size:15px;line-height:1.5;color:var(--x-ink-2);min-height:1.5em}
 .why:empty{display:none}
 .why b{color:var(--x-ink);font-weight:600}
-.cbar{display:flex;align-items:center;gap:8px;margin:14px 0 0 52px;padding-top:12px;border-top:1px solid var(--x-line)}
+.cbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:14px 0 0 52px;padding-top:12px;border-top:1px solid var(--x-line)}
 .count{font-size:13px;color:var(--x-mute);margin-right:auto;white-space:nowrap}
 .count.over{color:var(--ink);font-weight:600}
 .btn-x{height:36px;padding:0 15px;font-size:14px}
@@ -466,6 +504,7 @@ html:not(.motion) #pf-go{display:none}
 .hits .k + p{margin-bottom:0}
 .hits p + .k{margin-top:12px}
 .hits .n2:empty{display:none}
+.hits .kp{margin-top:10px;font-size:14px;color:var(--ink-3)}
 /* the way on from "Nothing to cut": an inline text button */
 .inl{position:relative;display:inline;padding:0;font:inherit;font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.4);border-radius:4px;text-align:left}
 .inl:hover{text-decoration-color:var(--ink)}
@@ -474,6 +513,7 @@ html:not(.motion) #pf-go{display:none}
 .keep .micro{white-space:nowrap;margin:0}
 #out-keep{scroll-margin-bottom:20px}
 .motion .try-out.fresh .xcard,.motion .try-out.fresh .empty-c{animation:land .55s var(--ease) both}
+.motion .try-out.fresh .lit-card::after{animation:glint .9s var(--ease) .25s both}
 .motion .try-out.fresh #out-hits,.motion .try-out.fresh #out-keep{animation:up .4s var(--ease) .22s both}
 /* arriving at the tile: the example result is there from the start, dimmed; it wakes once the fluff is struck */
 .motion .arm .try-out:not(.fresh) #out-card,.motion .arm .try-out:not(.fresh) #out-hits{opacity:.35}
@@ -489,7 +529,8 @@ html:not(.motion) #pf-go{display:none}
 .screens{display:grid;flex:1 1 auto}
 /* beside another tile the feed takes the row's height (it never sets it), and the dimmed next post fills the rest */
 @media (min-width:761px){.t-pv .screens{flex:1 1 0;min-height:300px}}
-.pvw{grid-area:1/1;visibility:hidden;border-radius:16px;padding:14px 16px 6px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 calc(100% - 56px),transparent);mask-image:linear-gradient(#000 calc(100% - 56px),transparent)}
+/* the feed fades out ending exactly on a line's bottom edge (--fe, measured), so no line is ever sliced through */
+.pvw{grid-area:1/1;visibility:hidden;border-radius:16px;padding:14px 16px 6px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 calc(var(--fe,100%) - 56px),transparent var(--fe,100%));mask-image:linear-gradient(#000 calc(var(--fe,100%) - 56px),transparent var(--fe,100%))}
 /* the feed keeps going: someone else's post follows yours, dimmed, so spare height reads as feed, never as a void */
 .ppost.next,.li.next{opacity:.5;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
 .li.next{margin-top:4px}
@@ -502,22 +543,23 @@ html:not(.motion) #pf-go{display:none}
 .ppost .tl{position:absolute;left:17px;top:42px;bottom:2px;width:2px;border-radius:2px}
 .pn{margin:0 0 2px;font-size:14px;line-height:1.3;display:flex;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;gap:0 5px}
 .pn b{font-weight:650;flex:none}
+.pn .tag{flex:none;height:17px;font-size:10.5px;color:inherit}
 .pn > span{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .pt{font-size:14px;line-height:1.4;white-space:pre-line;overflow-wrap:anywhere}
-.pt .hk{font-weight:600}
+.pt .hk{background:rgba(255,255,255,.09);border-radius:3px;padding:1px 2px;margin:0 -2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .split{margin:0 0 12px 46px;padding-top:8px;font-size:12px;line-height:1.35;font-weight:500;color:var(--ink-3);background:repeating-linear-gradient(90deg,rgba(255,255,255,.26) 0 5px,transparent 5px 10px) 0 0/100% 1px no-repeat}
-.n-x{background:#000;color:#E7E9EA;box-shadow:inset 0 0 0 1px #2F3336,0 30px 60px -36px rgba(0,0,0,.95)}.n-x .pn span{color:#7D8288}.n-x .tl{background:#333639}
-.n-th{background:#101010;color:#F3F5F7;box-shadow:inset 0 0 0 1px #2A2A2A,0 30px 60px -36px rgba(0,0,0,.95)}.n-th .pn span{color:#9A9A9A}
-.n-li{background:#1B1F23;color:rgba(255,255,255,.92);box-shadow:inset 0 0 0 1px #2E3439,0 30px 60px -36px rgba(0,0,0,.95)}
-.n-bs{background:#161E27;color:#F1F3F5;box-shadow:inset 0 0 0 1px #29343F,0 30px 60px -36px rgba(0,0,0,.95)}.n-bs .pn span{color:#97A6B6}.n-bs .tl{background:#2E3B49}.n-bs .split{color:#97A6B6}
-.n-li .more{color:#C0C4C8;font-weight:600}
+.n-x{background:var(--x);color:var(--x-ink);box-shadow:inset 0 0 0 1px var(--x-line),0 30px 60px -36px rgba(0,0,0,.95)}.n-x .pn span{color:var(--x-mute)}.n-x .tl{background:var(--x-rule)}
+.n-th{background:var(--pf-th-bg);color:var(--pf-th-ink);box-shadow:inset 0 0 0 1px var(--pf-th-line),0 30px 60px -36px rgba(0,0,0,.95)}.n-th .pn span{color:var(--pf-th-mute)}
+.n-li{background:var(--pf-li-bg);color:var(--pf-li-ink);box-shadow:inset 0 0 0 1px var(--pf-li-line),0 30px 60px -36px rgba(0,0,0,.95)}
+.n-bs{background:var(--pf-bs-bg);color:var(--pf-bs-ink);box-shadow:inset 0 0 0 1px var(--pf-bs-line),0 30px 60px -36px rgba(0,0,0,.95)}.n-bs .pn span{color:var(--pf-bs-mute)}.n-bs .tl{background:var(--pf-bs-rule)}.n-bs .split{color:var(--pf-bs-mute)}
+.n-li .more{color:var(--pf-li-more);font-weight:600}
 .li{padding:2px 2px 12px}
 .li-h{display:flex;gap:10px;align-items:center;margin-bottom:12px}
 .li-h .av{width:40px;height:40px}
-.li-h p{display:flex;flex-direction:column;font-size:13px;line-height:1.35;color:#A9ADB1}
-.li-h b{font-size:14px;color:rgba(255,255,255,.92)}
-.li-a{display:flex;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1px solid #33383E;font-size:13px;font-weight:600;color:#A9ADB1}
-.li-note{margin-top:10px;font-size:12px;color:#A9ADB1}
+.li-h p{display:flex;flex-direction:column;font-size:13px;line-height:1.35;color:var(--pf-li-mute)}
+.li-h b{font-size:14px;color:var(--pf-li-ink)}
+.li-a{display:flex;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1px solid var(--pf-li-rule);font-size:13px;font-weight:600;color:var(--pf-li-mute)}
+.li-note{margin-top:10px;font-size:12px;color:var(--pf-li-mute)}
 .pv-note{font-size:15px;line-height:1.45;color:var(--ink);font-weight:500;letter-spacing:-.008em;min-height:2.9em}
 @media (min-width:1100px){
   .pvw{padding:16px 18px 8px}
@@ -570,7 +612,7 @@ html:not(.motion) #pf-go{display:none}
 
 /* ---- 11 PM to 8:40&nbsp;AM: night on the left, morning on the right, the post living in a feed ---- */
 .t-day{padding:0;gap:0;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);min-height:600px}
-.dn{position:relative;min-width:0;overflow:hidden}
+.dn{position:relative;min-width:0;overflow:hidden;overflow:clip}
 .dn > .ph{z-index:0}
 .night{padding:32px 32px 28px;display:flex;flex-direction:column;gap:22px}
 .night > .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,10,.9) 0%,rgba(8,9,10,.72) 26%,rgba(8,9,10,.35) 56%,rgba(8,9,10,.62) 100%),linear-gradient(90deg,rgba(8,9,10,0) 70%,rgba(8,9,10,.5) 100%)}
@@ -594,30 +636,30 @@ html:not(.motion) #pf-go{display:none}
 .vn .pb{width:14px;height:24px;margin-left:6px;color:var(--ink-4);display:grid;place-items:center;flex:none}
 .vn .pb .ico{width:14px;height:14px}
 .wave{flex:1;height:18px;display:flex;align-items:center;gap:2px;min-width:0;overflow:hidden}
-.wave i{flex:none;width:3px;border-radius:2px;background:#4A4E55}
+.wave i{flex:none;width:3px;border-radius:2px;background:var(--wave)}
 .wave i.p{background:var(--x-ink)}
 .vn .tnum{font-size:12px;color:var(--x-ink-2)}
 .quote{margin-top:8px;padding:9px 12px;border-radius:12px;font-size:14px;line-height:1.6;color:var(--x-ink);box-shadow:inset 0 0 0 1px var(--x-line)}
 .slots{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px;font-size:13px;color:var(--x-ink-2)}
-.slots span{padding:6px 10px;border-radius:999px;font-weight:500;line-height:1;color:var(--x-ink-2);background:var(--s2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.slots span.pick{color:#08090A;background-color:var(--x-ink);box-shadow:0 0 0 3px rgba(255,255,255,.1)}
+.slots span{padding:6px 4px;font-weight:500;line-height:1;color:var(--x-mute)}
+.slots span.pick{padding:6px 10px;border-radius:999px;color:var(--bg);background-color:var(--x-ink);box-shadow:0 0 0 3px rgba(255,255,255,.1)}
 .slots em{font-style:normal;margin-left:4px}
 /* the phone, rising from the bottom edge */
 .morn{display:flex;justify-content:center;align-items:flex-start;padding-top:64px}
-.phone{position:relative;width:300px;height:640px;margin:0 0 -120px;padding:10px;border-radius:48px;background:linear-gradient(180deg,var(--s3),#111214);flex:none;
+.phone{position:relative;width:300px;height:640px;margin:0 0 -120px;padding:10px;border-radius:48px;background:linear-gradient(180deg,var(--s3),var(--shell));flex:none;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 1px 0 rgba(255,255,255,.18),0 2px 4px rgba(0,0,0,.5),0 40px 80px -30px rgba(0,0,0,.9),0 90px 160px -60px rgba(0,0,0,.9)}
-.scrn{position:relative;height:100%;border-radius:38px;background:#000;overflow:hidden;color:var(--x-ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.isl{position:absolute;top:9px;left:50%;width:84px;height:24px;margin-left:-42px;border-radius:999px;background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.04);z-index:4}
-.sbar{display:flex;justify-content:space-between;align-items:center;height:42px;padding:6px 26px 0 30px;font-size:13px;font-weight:600;color:#fff}
-.sbar svg{height:11px;width:auto;fill:#fff}
+.scrn{position:relative;height:100%;border-radius:38px;background:var(--s0);overflow:hidden;color:var(--x-ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.isl{position:absolute;top:9px;left:50%;width:84px;height:24px;margin-left:-42px;border-radius:999px;background:var(--s0);box-shadow:0 0 0 1px rgba(255,255,255,.04);z-index:4}
+.sbar{display:flex;justify-content:space-between;align-items:center;height:42px;padding:6px 26px 0 30px;font-size:13px;font-weight:600;color:var(--white)}
+.sbar svg{height:11px;width:auto;fill:var(--white)}
 .sbar .ind{display:flex;gap:5px;align-items:center}
-.sbar,.ptop,.ptabs{position:relative;z-index:2;background:#000}
+.sbar,.ptop,.ptabs{position:relative;z-index:2;background:var(--s0)}
 .ptop{display:grid;grid-template-columns:28px 1fr 28px;align-items:center;padding:4px 14px 0}
 .ptop .av{width:28px;height:28px}
 .ptabs{display:flex;margin-top:8px;border-bottom:1px solid var(--x-line);font-size:13px;font-weight:600}
 .ptabs span{flex:1;text-align:center;padding:10px 0 9px;color:var(--x-mute)}
 .ptabs .on{color:var(--x-ink)}
-.ptabs .on b{display:inline-block;font-weight:650;padding-bottom:9px;margin-bottom:-9px;box-shadow:inset 0 -3px 0 #fff}
+.ptabs .on b{display:inline-block;font-weight:650;padding-bottom:9px;margin-bottom:-9px;box-shadow:inset 0 -3px 0 var(--white)}
 .pfeed{position:relative}
 .fp{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:9px;padding:11px 13px;border-bottom:1px solid var(--x-line)}
 .fp.yp{box-shadow:inset 0 1px 0 rgba(255,236,224,.16)}
@@ -628,8 +670,9 @@ html:not(.motion) #pf-go{display:none}
 .fp .media{margin-top:8px;border-radius:12px}
 .fp .xacts{margin-top:9px;max-width:none}
 .fp .xacts .ico{width:14px;height:14px}
-.notif{position:absolute;top:44px;left:8px;right:8px;z-index:3;display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:9px;padding:10px 12px;border-radius:18px;
-  background:rgba(38,39,42,.94);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 14px 30px -10px rgba(0,0,0,.8)}
+/* the banner covers the tabs down to their hairline, so nothing peeks out under it */
+.notif{position:absolute;top:44px;left:8px;right:8px;z-index:3;display:grid;grid-template-columns:30px minmax(0,1fr);align-content:center;min-height:80px;column-gap:9px;padding:10px 12px;border-radius:18px;
+  background:var(--notif);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 14px 30px -10px rgba(0,0,0,.8)}
 .hw{width:30px;height:30px;border-radius:8px;background:var(--s1);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
 .hw svg{width:20px;height:20px}
 .notif .nh{display:flex;justify-content:space-between;font-size:12px;line-height:1.3;color:var(--x-ink-2)}
@@ -656,14 +699,15 @@ html:not(.motion) #pf-go{display:none}
 .mine .xtext[contenteditable]{outline:1px solid rgba(255,255,255,.28);outline-offset:4px;caret-color:var(--ink)}
 .mine .xtext[contenteditable]:focus-visible{outline:2px solid var(--ink)}
 .tw .rest{visibility:hidden}
-.motion .tw.typing .ty::after{content:"";display:inline-block;width:2px;height:1.05em;margin:0 0 -.18em 1px;background:var(--ink);animation:blink .7s steps(1) infinite}
+/* the caret takes no room in the line, so typing never re-wraps the reply */
+.motion .tw.typing .ty::after{content:"";display:inline-block;width:2px;height:1.05em;margin:0 -3px -.18em 1px;background:var(--ink);animation:blink .7s steps(1) infinite}
 .mine .act{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;min-height:30px}
 .mine .act .sent-st{margin-right:auto;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--x-ink)}
 .mine.sent{background:transparent;box-shadow:inset 0 0 0 1px var(--x-line)}
 .motion .mine.flash{animation:land .45s var(--ease) both}
 
 /* ---- results: notes arrive on the 8:40&nbsp;AM morning ---- */
-.well{position:relative;border-radius:18px;overflow:hidden;padding:56px 16px 16px;box-shadow:inset 0 0 0 1px var(--line-2);flex:1 0 auto;display:flex;flex-direction:column;justify-content:space-between}
+.well{position:relative;border-radius:18px;overflow:hidden;overflow:clip;padding:56px 16px 16px;box-shadow:inset 0 0 0 1px var(--line-2);flex:1 0 auto;display:flex;flex-direction:column;justify-content:space-between}
 .well > .ph img{filter:blur(10px) brightness(.66) saturate(1.05);transform:translate(calc(-50% + var(--fx,0%)),calc(var(--i,0) * -100% / 6)) scale(1.1)}
 /* the 8:40 morning as a lock screen: the clock reads 9:31, the latest note */
 .well .lock{position:relative;z-index:1;align-self:center;margin:-34px 0 18px;font-size:64px;line-height:1;font-weight:600;letter-spacing:-.04em;color:rgba(247,248,248,.9);text-shadow:0 2px 24px rgba(0,0,0,.35)}
@@ -677,6 +721,7 @@ html:not(.motion) #pf-go{display:none}
 .nc .ns{margin-top:4px;font-size:13px;line-height:1.4;color:var(--x-ink-2)}
 .qpost{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:10px;align-items:center;margin-top:8px;padding:8px 8px 8px 11px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--x-line);font-size:13px;line-height:1.4;color:var(--x-ink)}
 .qpost .media{margin:0;aspect-ratio:1;border-radius:8px}
+.qpost > span{text-wrap:pretty}
 
 /* ---- who: one hook for each kind of poster ---- */
 .faces{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}
@@ -689,6 +734,15 @@ html:not(.motion) #pf-go{display:none}
 .faces a h3 .ico{width:13px;height:13px;color:var(--ink-3);transition:transform .25s var(--ease),color .2s}
 .faces a:hover h3 .ico{transform:translateX(2px);color:var(--ink)}
 .who-n{font-size:13px;color:var(--ink-3)}
+/* ≥1100 a band, like Voice and Trust: the heading at band size, the four kinds of poster in one row under it */
+@media (min-width:1100px){
+  .t-who .cap{font-size:40px;line-height:1.04;letter-spacing:-.036em}
+  .faces{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 28px}
+  .faces li > a,.faces li > div{display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:14px;align-items:center}
+  .faces .av{grid-row:1/3;width:56px;height:56px;margin:0}
+  .faces h3{align-self:end}
+  .faces p{align-self:start}
+}
 
 /* ---- studio ---- */
 .t-st{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.8fr);gap:24px 36px;align-items:stretch}
@@ -697,10 +751,22 @@ html:not(.motion) #pf-go{display:none}
 .st-pick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0;background:none;box-shadow:none;align-self:start;width:100%}
 .st-pick button{height:44px;padding:0 15px 0 6px;font-size:14px;justify-content:flex-start;box-shadow:inset 0 0 0 1px var(--line-2)}
 .st-pick .av{width:32px;height:32px}
-.studio{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);border-radius:18px;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px var(--line-2);overflow:hidden}
+.st-pick .sp-m{display:none}
+/* ≥1200: the client list reads like the app's own switcher, each client with their next slot */
+@media (min-width:1200px){
+  .st-pick{grid-template-columns:minmax(0,1fr);gap:6px}
+  .st-pick button{height:52px;padding:0 16px 0 10px;font-size:15px}
+  .st-pick .av{width:34px;height:34px}
+  .st-pick .sp-m{display:inline;margin-left:auto;font-size:13px;font-weight:400;color:var(--ink-3)}
+  .st-pick button[aria-pressed="true"] .sp-m{color:var(--ink-2)}
+}
+.studio{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);border-radius:18px;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px var(--line-2);overflow:hidden;overflow:clip}
 .st-post{padding:20px;display:flex;flex-direction:column;gap:12px;border-right:1px solid var(--line);min-width:0;min-height:520px}
 .st-lab{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.3;color:var(--ink-3)}
 .st-lab .ico{width:14px;height:14px;color:var(--ink-2)}
+/* the post's state sits on the link row, so the client's name and handle are never cut short */
+.st-state{margin-left:auto;display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:500;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.st-state.ok{color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
 .st-post .xcard{padding:14px 16px}
 .st-post .xtext{font-size:16px;line-height:1.45}
 .st-post .media{aspect-ratio:2.2/1}
@@ -741,7 +807,7 @@ html:not(.motion) #pf-go{display:none}
   .st-voice .queue{margin-top:20px}
   .facts{margin-top:28px}
 }
-@media (min-width:1200px){.studio{min-height:497px}}
+@media (min-width:1200px){.studio{min-height:497px}.t-st .facts{margin-top:auto}}
 /* 901–1199: the picker and the never-say list share a band, the review gets the full width, the facts close the tile */
 @media (min-width:901px) and (max-width:1199px){
   .t-st{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-areas:"cap cap" "pick nv" "box box" "facts facts";gap:20px 40px}
@@ -763,7 +829,6 @@ html:not(.motion) #pf-go{display:none}
 .t-tru .tl-l{grid-row:span 2}
 .t-tru .tl-l{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
 .nev{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-@media (min-width:761px) and (max-width:1099px){.nev,.t-tru .rules{max-width:560px}}
 .nev li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:12px 0;box-shadow:inset 0 -1px 0 var(--line-2);min-width:0}
 .nev li:first-child{padding-top:0}
 .nev .nw{display:block;font-size:24px;line-height:1.2;font-weight:500;letter-spacing:-.028em;color:var(--ink-2)}
@@ -771,6 +836,7 @@ html:not(.motion) #pf-go{display:none}
 .nev .nn{flex:none;font-size:15px;line-height:1.4;color:var(--ink-3)}
 .rules{grid-column:2;display:flex;align-items:flex-start;gap:10px;margin:0;font-size:15px;line-height:1.5;color:var(--ink-2)}
 .rules .ico{width:16px;height:16px;margin-top:3px;color:var(--ink-3);flex:none}
+.rules span{text-wrap:balance}
 
 /* ---------- pricing ---------- */
 .sec{position:relative;padding-top:var(--sec)}
@@ -841,13 +907,18 @@ html:not(.motion) #pf-go{display:none}
 .h2.xl{font-size:clamp(34px,10.4vw,72px)}
 .fin-sub{margin-top:22px;font-size:18px;line-height:1.5;color:var(--ink-2)}
 .fin-form{display:flex;gap:10px;margin-top:32px;flex-wrap:wrap}
-.fin-field{position:relative;flex:1 1 300px;min-width:0;height:56px;border-radius:999px;background:#000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.08),0 12px 30px -14px rgba(0,0,0,.9)}
+.fin-field{position:relative;flex:1 1 300px;min-width:0;height:56px;border-radius:999px;background:var(--s0);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.08),0 12px 30px -14px rgba(0,0,0,.9)}
 .fin-field:focus-within{box-shadow:inset 0 0 0 2px var(--ink)}
-.fin-mirror,.fin-in{position:absolute;inset:0;padding:0 126px 0 22px;font:400 17px/56px "Inter V",system-ui,sans-serif;letter-spacing:-.008em;white-space:pre;border:0;margin:0;width:100%}
+.fin-mirror,.fin-in{position:absolute;inset:0;padding:0 126px 0 22px;font:400 17px/56px "Inter V","Inter Fallback",system-ui,sans-serif;letter-spacing:-.008em;white-space:pre;border:0;margin:0;width:100%}
 .fin-mirror{color:transparent;overflow:hidden;pointer-events:none;left:22px;right:126px;width:auto;padding:0}
 .fin-mirror span{display:inline-block;white-space:pre}
 .fin-mirror mark{background:transparent;color:transparent;text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.28em;text-decoration-skip-ink:none}
 .fin-in{background:transparent;color:var(--x-ink);outline:0;caret-color:var(--ink);border-radius:999px}
+.fin-field{--fpl:22px;--fpr:126px;--a0:#000;--a1:#000}
+.fin-field.ovl{--a0:transparent}
+.fin-field.ovr{--a1:transparent}
+.fin-in{-webkit-mask-image:linear-gradient(90deg,var(--a0) var(--fpl),#000 calc(var(--fpl) + 24px),#000 calc(100% - var(--fpr) - 24px),var(--a1) calc(100% - var(--fpr)));mask-image:linear-gradient(90deg,var(--a0) var(--fpl),#000 calc(var(--fpl) + 24px),#000 calc(100% - var(--fpr) - 24px),var(--a1) calc(100% - var(--fpr)))}
+.fin-mirror{-webkit-mask-image:linear-gradient(90deg,var(--a0),#000 24px,#000 calc(100% - 24px),var(--a1));mask-image:linear-gradient(90deg,var(--a0),#000 24px,#000 calc(100% - 24px),var(--a1))}
 .fin-in::placeholder{color:var(--ink-3)}
 .fin-n{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:500;color:var(--ink-3);pointer-events:none;transition:color .2s}
 .fin-n.say{color:var(--ink)}
@@ -865,6 +936,11 @@ html:not(.motion) #pf-go{display:none}
 .motion .fpay.fresh .xcard,.motion .fpay.fresh .empty-c{animation:land .45s var(--ease) both}
 .motion .fpay.fresh .hits,.motion .fpay.fresh .keep{animation:up .35s var(--ease) .18s both}
 .motion .fpay.fresh .draft .cut{animation:strike .3s var(--ease-io) both}
+.motion .fpay.fresh .lit-card::after{animation:glint .9s var(--ease) .2s both}
+.motion .fpay.morph #fp-sharp,.motion .fpay.morph #fp-hits,.motion .fpay.morph .draft{animation:morph .15s linear both}
+@keyframes morph{from{opacity:.6}}
+/* Sharpen and Keep trade places in one step: colour and fill never pass through dark-on-dark */
+#try-go,#fin-go{transition:transform .35s var(--ease),box-shadow .35s var(--ease),opacity .2s}
 
 /* ---------- footer ---------- */
 footer{position:relative;overflow:hidden;padding:104px 0 0;color:var(--ink-3);font-size:14px}
@@ -901,6 +977,10 @@ footer .wrap{container-type:inline-size}
 .sh-t{margin:18px 0 0;font-size:28px;line-height:1.1;font-weight:600;letter-spacing:-.03em}
 .sh-t:focus{outline:none}
 .sh-sub{margin-top:8px;font-size:15px;line-height:1.5;color:var(--ink-2)}
+/* said before anyone types: this is a preview */
+.sh-pv{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;line-height:1.4;color:var(--ink-3)}
+.sh-pv span{flex:none;width:6px;height:6px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink-3)}
+.sh-grab{display:none}
 .sh-line{margin-top:18px}
 .sh-line .k{display:block;font-size:13px;color:var(--ink-3);margin-bottom:6px}
 .sh-line .xcard{padding:12px 14px}
@@ -914,7 +994,7 @@ footer .wrap{container-type:inline-size}
 .sh-or{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--ink-3)}
 .sh-or::before,.sh-or::after{content:"";flex:1;height:1px;background:var(--line-2)}
 .sh-em{display:flex;gap:8px}
-.sh-em input{flex:1;width:0;min-width:0;height:48px;padding:0 16px;border-radius:999px;border:0;background:#000;color:var(--ink);font-size:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);outline:0}
+.sh-em input{flex:1;width:0;min-width:0;height:48px;padding:0 16px;border-radius:999px;border:0;background:var(--s0);color:var(--ink);font-size:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);outline:0}
 .sh-em input:focus-visible{box-shadow:inset 0 0 0 2px var(--ink)}
 .sh-em input::placeholder{color:var(--ink-3)}
 .sh-em .btn{width:auto;flex:none;height:48px}
@@ -930,7 +1010,11 @@ footer .wrap{container-type:inline-size}
 .mbar{display:none}
 
 /* no widows in short copy */
-.pv-note,.rules,.lede,.why,.fin-sub,.tfoot,.hits p,.faces p,.facts p,.price-n,.plan li span,.ptext,.xtext,.plans-fine,.qa .a p{text-wrap:pretty}
+.pv-note,.rules,.lede,.why,.fin-sub,.tfoot,.hits p,.faces p,.facts p,.price-n,.plan li span,.ptext,.xtext,.plans-fine,.qa .a p,.fp .fx,.fpay .draft,.dtext{text-wrap:pretty}
+.plans-fine .nw{white-space:nowrap}
+.fpay .draft{text-wrap:balance}
+.plans-fine a{color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.3)}
+.plans-fine a:hover{color:var(--ink)}
 .st-post mark{white-space:nowrap}
 
 /* ---------- responsive ---------- */
@@ -950,14 +1034,17 @@ footer .wrap{container-type:inline-size}
 @media (max-width:1099px){
   .bento{grid-template-columns:repeat(6,minmax(0,1fr));
     grid-template-areas:"try try try try try try" "voi voi voi voi voi voi" "day day day day day day" "pv pv pv rep rep rep" "res res res who who who" "st st st st st st" "tru tru tru tru tru tru"}
+  /* Results and Who share a row: their heads take one size, the largest that keeps "Trades, launches, newsletters." on one line */
+  .t-res,.t-who{container-type:inline-size}
+  .t-res .cap,.t-who .cap{font-size:min(26px,calc(100cqi / 13.8))}
+  .faces{gap:20px 14px}
+  .faces .av{width:64px;height:64px}
   .t-pv .track button{padding:0 6px}
   .plan{padding:22px}
   .price b{font-size:40px}
   .t-tru{grid-template-columns:1fr}
   .rules{grid-column:1}
   .t-voi .vl{grid-template-columns:1fr}
-  .faces{gap:20px 14px}
-  .faces .av{width:64px;height:64px}
   .well .lock{display:none}
   .well{justify-content:flex-end}
 }
@@ -980,7 +1067,8 @@ footer .wrap{container-type:inline-size}
   .fin-l{padding-top:0}
   .fpay{max-width:none}
   .plans{grid-template-columns:1fr}
-  .plan{padding:20px 22px;border-radius:20px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name price" "for price" "note note" "list list" "incl incl" "cta cta";column-gap:12px;align-items:start}
+  /* the price column can run taller than the name: the "for" row (1fr) takes the difference, so every card's name and line sit alike */
+  .plan{padding:20px 22px;border-radius:20px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr;grid-template-areas:"name price" "for price" "note note" "list list" "incl incl" "cta cta";column-gap:12px;align-items:start}
   .plan .h3{grid-area:name;font-size:20px}
   .plan .for{grid-area:for;margin:2px 0 0;font-size:14px}
   .plan .price{grid-area:price;flex-direction:column;align-items:flex-end;gap:3px;text-align:right}
@@ -992,6 +1080,7 @@ footer .wrap{container-type:inline-size}
 }
 /* tablet portrait: three nav links fit; night and morning stay side by side */
 @media (min-width:761px) and (max-width:900px){
+  .st-post .media{max-width:none;aspect-ratio:3/1}
   .links{display:flex}
   .links a:nth-child(2){display:none}
   .t-day{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
@@ -1049,10 +1138,11 @@ footer .wrap{container-type:inline-size}
   .bar{display:contents}
   .dots{grid-area:bar;align-self:center;justify-self:start;margin-left:16px;gap:6px}.dots i{width:9px;height:9px}
   .ttl{display:block;grid-area:bar;align-self:center;justify-self:center}
-  .ex{grid-area:ex;padding:6px 0 8px;border-top:1px solid var(--line)}
+  .ex{grid-area:ex;min-width:0;padding:6px 0 8px;border-top:1px solid var(--line)}
   .ex-l{display:none}
   .ex .pills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:0 16px;gap:6px;width:100%;background:none;box-shadow:none}
   .ex .pills::-webkit-scrollbar{display:none}
+  .ex .pills::after{content:"";flex:0 0 10px}
   .ex .pills button{flex:none;height:36px;padding:0 13px;font-size:13px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
   .pane{padding:12px 16px 0}
   .pane.draft,.pane.sharp{padding-bottom:16px}
@@ -1065,15 +1155,14 @@ footer .wrap{container-type:inline-size}
   .who{gap:10px}.who .nm{font-size:14px}
   .ptext,.ptext.long{font-size:19px;line-height:1.36;margin-top:8px;min-height:2.72em}
   .post .xacts{margin-top:10px}.post .xacts .ico{width:16px;height:16px}
-  .window .hits{margin-top:12px;grid-template-columns:1fr;gap:0}
-  .window .hits .k{margin:6px 0 2px}
-  .window .hits .k:first-child{margin-top:0}
-  .window .hits p{font-size:14px}
-  .window .hits .k:first-child,#pf-why{display:none}
-  .window .hits .k{margin-top:0}
+  /* on a phone the post speaks for itself: the why waits for the Try box, where it's yours */
+  .window .hits{display:none}
+  .cbody .kept{margin-top:6px}
   .hmeta{margin-top:14px;flex-direction:column;align-items:flex-start;gap:10px;font-size:13px;padding-inline:var(--pad)}
   .since{font-size:14px;align-items:flex-start}.since i{margin-top:7px}
-  .posts{gap:4px 12px;font-size:13px}
+  /* each group on its own line, never a lone word: what posts by itself, then what's handed to you ready to paste */
+  .posts{flex-direction:column;align-items:flex-start;gap:4px;font-size:13px}
+  .posts .pgs{display:none}
   .posts svg{width:13px;height:13px}
   .xrow{grid-template-columns:36px minmax(0,1fr);column-gap:10px}
   .xav{width:36px;height:36px}
@@ -1105,6 +1194,8 @@ footer .wrap{container-type:inline-size}
   .starters span{flex:none;margin-right:2px;scroll-snap-align:start}
   .starters button{flex:none;height:36px}
   .try-out{grid-template-columns:minmax(0,1fr);grid-template-areas:"h" "card" "hits" "keep";gap:10px}
+  /* the receipt row holds two lines, so a starter whose receipt wraps never nudges the page */
+  .out-h{min-height:40px}
   .try-out .xcard{padding:14px 14px 12px}
   .try-out .xtext{font-size:19.5px}
   .try-out .xtext.long{font-size:16px}
@@ -1122,8 +1213,8 @@ footer .wrap{container-type:inline-size}
   .split{margin-left:44px}
   .pt{font-size:14px}
   .pv-note{min-height:2.9em;font-size:14px}
-  .t-pv .screens{height:330px}
-  .pvw{max-height:330px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
+  .t-pv .screens{height:316px}
+  .pvw{max-height:316px;overflow:hidden}
 
   .t-voi{gap:14px}
   .t-voi .vl{gap:10px}
@@ -1181,7 +1272,7 @@ footer .wrap{container-type:inline-size}
   .st-post{gap:10px}
   .st-post .xcard{padding:12px 13px}
   .st-post .xtext{font-size:15px}
-  .st-post .xname > span:nth-last-child(-n+3){display:none}
+  .st-post #rv-handle{display:none}
   .st-post .media,#st-tz,#st-q,.st-voice h3{display:none}
   .cmt{margin-left:10px;font-size:14px;padding:9px 12px 10px}
   .rv-act{flex-direction:column;align-items:flex-start;gap:8px;min-height:68px;align-content:flex-start}
@@ -1199,9 +1290,9 @@ footer .wrap{container-type:inline-size}
   .facts p{font-size:14px;padding:9px 0}
   .facts p:nth-child(2){display:none}
 
-  .t-tru{gap:14px}
-  .nev li{padding:10px 0}
-  .nev .nw{font-size:20px}
+  .t-tru{gap:12px}
+  .nev li{padding:8px 0}
+  .nev .nw{font-size:18px}
   .nev .nn{font-size:14px}
   .rules{font-size:14px}
 
@@ -1234,13 +1325,14 @@ footer .wrap{container-type:inline-size}
   .fin-field{flex-basis:100%;height:54px}
   .fin-mirror,.fin-in{font-size:16px;line-height:54px}
   .fin-in{padding:0 112px 0 18px}
+  .fin-field{--fpl:18px;--fpr:112px}
   .fin-mirror{left:18px;right:112px}
   .fin-n{right:16px;font-size:12px}
   .fpay:not(.live){display:none}
   .fpay.live{margin-top:22px}
   .fpay .xtext{font-size:17px}
   .fpay .draft{font-size:14px;padding:10px 12px 12px}
-  footer{padding:48px 0 0}
+  footer{padding:36px 0 0}
   .ft{grid-template-columns:1fr;gap:10px;padding-top:24px}
   .ft > div:first-child p,.ft > div:nth-child(2),.ft > div:nth-child(3),.ft h2{display:none}
   .ft ul{display:grid;grid-template-columns:repeat(2,max-content);column-gap:28px}
@@ -1261,6 +1353,18 @@ footer .wrap{container-type:inline-size}
   .sh-done-acts{flex-direction:column}
   .sh-done-acts .btn{flex:none;width:100%;height:48px}
   .sh-icon{width:36px;height:36px}
+  /* a sheet that rises from the bottom edge has a grabber, and a drag down puts it away */
+  .sh-grab{display:block;position:absolute;top:0;left:50%;width:132px;height:30px;margin-left:-66px;touch-action:none;cursor:grab;z-index:2}
+  .sh-grab::before{content:"";position:absolute;left:48px;top:8px;width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.2)}
+}
+@media (max-width:379px){
+  .nt-h{font-size:13.5px}
+  /* the example's count steps aside for "Write my own", so Sharpen keeps its place on the row */
+  .try-c.isx .count{display:none}
+  .try-c.isx .cbar{justify-content:flex-end}
+  .cbar{gap:6px}
+  .cbar .btn-x{padding:0 13px}
+  .t-who .cap{font-size:min(22px,5.95vw)}
 }
 @media (max-width:374px){
   :root{--sec:46px}
@@ -1343,7 +1447,7 @@ footer .wrap{container-type:inline-size}
 <section class="hero" aria-labelledby="h1">
   <div class="wrap tc">
     <div class="tc-in"><h1 class="st" id="h1" style="--em:8.4"><span class="l">They read one line.</span><br><span class="l d">Make it hookworthy.</span></h1></div>
-    <p class="tc-sub">Cut the fluff from your first line in one tap, then schedule it. It still sounds like you.</p>
+    <p class="tc-sub">Cut the fluff from your first line in one tap, then schedule it for X. It still sounds like you.</p>
     <div class="ctas" id="hero-cta">
       <button class="btn btn-white" type="button" data-sheet="free">Start free</button>
       <a class="btn btn-glass" href="#sharpen" id="try-jump">Try it on your line</a>
@@ -1366,7 +1470,7 @@ footer .wrap{container-type:inline-size}
             <button type="button" data-ex="0" aria-pressed="true">Trader</button>
             <button type="button" data-ex="1" aria-pressed="false">Founder</button>
             <button type="button" data-ex="2" aria-pressed="false">Newsletter</button>
-            <button type="button" data-ex="3" aria-pressed="false">Designer</button>
+            <button type="button" data-ex="3" aria-pressed="false">Ghostwriter</button>
           </span>
         </div>
       </div>
@@ -1382,9 +1486,10 @@ footer .wrap{container-type:inline-size}
           <div class="ph-h"><b>Draft</b><button class="mini" id="pf-go" type="button" aria-label="Sharpen this draft again">Sharpen</button></div>
           <div class="compose">
             <span class="av me" id="pf-av" aria-hidden="true"></span>
-            <div>
-              <p class="dtext" id="pf-draft"><span class="sr">Draft: </span><span class="fl"><span class="cut" style="--d:0.000s;--t:0.320s">just wanted to share that</span></span> i finally hit my first $10k month trading, took me 3 years</p>
+            <div class="cbody" id="pf-body">
+              <p class="dtext" id="pf-draft"><span class="sr">Draft: </span><span class="fl"><span class="cut" style="--d:0.000s;--t:0.320s">just wanted to share that</span></span> i finally hit my first $10k month trading, took me 3 years</p>
               <p class="note" id="pf-cut"><span class="ck">Cut</span><s>just wanted to share that</s></p>
+              <p class="kept" id="pf-kept">Kept: $10k, 3 years. Kept your lowercase.</p>
             </div>
           </div>
           <p class="replyset" aria-hidden="true"><svg class="ico"><use href="#i-globe"/></svg>Everyone can reply</p>
@@ -1402,17 +1507,17 @@ footer .wrap{container-type:inline-size}
               <span class="av me" id="pf-av2" aria-hidden="true"></span>
               <p class="nm"><b id="pf-name">heycape</b><span class="tag">Example</span><span id="pf-handle">@heycape_</span><span aria-hidden="true">·</span><span>2m</span></p>
             </div>
-            <p class="ptext" id="pf-sharp"><span class="sr">Sharpened: </span>i finally hit my first $10k month trading, took me 3 years.</p>
+            <p class="ptext" id="pf-sharp"><span class="sr">Sharpened: </span>i finally hit my first $10k month trading, took me 3 years.</p>
             <div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div>
           </article>
-          <div class="hits"><span class="k">Why it hits</span><p id="pf-why">It now opens on “i finally hit”, your point, not the run-up to it.</p><span class="k">Kept</span><p id="pf-kept">Your $10k, your 3 years and your lowercase.</p></div>
+          <div class="hits"><span class="k">Why it hits</span><p id="pf-why">“i finally hit my first $10k month” is now the first thing people read.</p></div>
           <div class="foot"><span>Your best time: 8:40&nbsp;AM</span><button class="pill" type="button" id="pf-sched">Schedule</button></div>
         </div>
       </div>
     </figure>
     <div class="hmeta">
       <p class="since"><i aria-hidden="true"></i><span><b>On X, the first line decides if anyone reads the second.</b> That’s the line Sharpen works on.</span></p>
-      <p class="posts">Posts to <span><svg aria-hidden="true"><use href="#n-x"/></svg>X</span><span><svg aria-hidden="true"><use href="#n-li"/></svg>LinkedIn</span><i aria-hidden="true">·</i>A nudge for <span><svg aria-hidden="true"><use href="#n-threads"/></svg>Threads</span><span><svg aria-hidden="true"><use href="#n-bsky"/></svg>Bluesky</span></p>
+      <p class="posts"><span class="pg">Posts to <span><svg aria-hidden="true"><use href="#n-x"/></svg>X</span><i aria-hidden="true">·</i><span><svg aria-hidden="true"><use href="#n-li"/></svg>LinkedIn</span></span><i class="pgs" aria-hidden="true">·</i><span class="pg">Ready to paste on <span><svg aria-hidden="true"><use href="#n-threads"/></svg>Threads</span><i aria-hidden="true">·</i><span><svg aria-hidden="true"><use href="#n-bsky"/></svg>Bluesky</span></span></p>
     </div>
   </div>
 </section>
@@ -1427,19 +1532,19 @@ footer .wrap{container-type:inline-size}
       <div class="try demo">
         <div class="drops" id="drops" aria-hidden="true"></div>
         <label class="try-l" for="try-ta">Paste the line you were about to post.</label>
-        <div class="xcard try-c done">
+        <div class="xcard try-c done isx">
           <div class="xrow">
             <span class="av you xav" aria-hidden="true"></span>
             <div class="ed">
               <textarea class="ed-ta" id="try-ta" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Your first line…" aria-describedby="try-flags">basically i stopped chasing $SOL and honestly my pnl is up 40% since june</textarea>
-              <div class="ed-mirror struck" id="try-mirror" role="group" aria-label="Words Sharpen cut. Tap one to put it back."><mark class="c tog" role="button" tabindex="0" aria-pressed="true" aria-label="basically" data-w="basically" style="--k:0">basically</mark><span aria-hidden="true"> i stopped chasing $SOL </span><mark class="c x tog" role="button" tabindex="0" aria-pressed="true" aria-label="and" data-w="and" style="--k:1">and</mark><span aria-hidden="true"> </span><mark class="c tog" role="button" tabindex="0" aria-pressed="true" aria-label="honestly" data-w="honestly" style="--k:2">honestly</mark><span aria-hidden="true"> my pnl is up 40% since june&#8203;</span></div>
+              <div class="ed-mirror struck" id="try-mirror" role="group" aria-label="Words Sharpen cut. Tap one to put it back."><mark class="c tog" role="button" tabindex="0" aria-label="Put back “basically”" data-w="basically" style="--k:0">basically</mark><span aria-hidden="true"> i stopped chasing $SOL and </span><mark class="c tog" role="button" tabindex="0" aria-label="Put back “honestly”" data-w="honestly" style="--k:1">honestly</mark><span aria-hidden="true"> my pnl is up 40% since june&#8203;</span></div>
             </div>
           </div>
           <p class="flags" id="try-flags"><span class="hint"><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg>Tap a struck word to put it back.</span></p>
           <p class="why" id="try-why"></p>
           <div class="cbar">
             <span class="count tnum" id="try-count" aria-hidden="true">73 / 280</span>
-            <span class="undo" id="try-undo" hidden>Cleared · <button type="button" id="try-undo-b">Undo</button></span><button class="btn btn-glass btn-x" type="button" id="try-clear">Paste mine</button>
+            <span class="undo" id="try-undo" hidden>Cleared · <button type="button" id="try-undo-b">Undo</button></span><button class="btn btn-glass btn-x" type="button" id="try-clear">Write my own</button>
             <button class="btn btn-glass btn-x" type="button" id="try-go">Sharpen<kbd id="try-kbd" hidden></kbd></button>
           </div>
         </div>
@@ -1459,7 +1564,7 @@ footer .wrap{container-type:inline-size}
             </article>
             <p class="empty-c" id="out-empty" hidden></p>
           </div>
-          <div class="hits" id="out-hits"><span class="k" id="out-k">Why it hits</span><p id="out-why">The full stop before “my pnl is” is the pause that makes the second beat land.</p><p class="n2" id="out-note"></p><span class="k" id="out-kk">Kept</span><p id="out-kept">Your $SOL, your 40% and your lowercase.</p></div>
+          <div class="hits" id="out-hits"><span class="k" id="out-k">Why it hits</span><p id="out-why">The full stop before “my pnl is up 40%” is the pause that makes the second beat land.</p><p class="n2" id="out-note"></p><p class="kp" id="out-kept">Kept: $SOL, 40%. Kept your lowercase.</p></div>
           <div class="keep" id="out-keep"><button class="btn btn-white btn-x" type="button" id="try-keep">Start free</button><p class="micro">Free forever<i aria-hidden="true">·</i>No card</p></div>
           <p class="sr" id="try-status" role="status"></p>
         </div>
@@ -1478,7 +1583,7 @@ footer .wrap{container-type:inline-size}
       <div class="screens demo" id="pv-screens">
         <div class="pvw n-x on" data-n="0" role="group" aria-label="X preview">
           <p class="scr-h"><svg aria-hidden="true"><use href="#n-x"/></svg>X preview</p>
-          <div class="ppost"><span class="av me" aria-hidden="true"></span><span class="tl" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>@heycape_ · 1m</span></p><p class="pt"><span class="hk">i lost $4,000 in march doubling my size to win it back.</span>
+          <div class="ppost"><span class="av me" aria-hidden="true"></span><span class="tl" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span class="tag">Example</span><span>@heycape_ · 1m</span></p><p class="pt"><span class="hk">i lost $4,000 in march doubling my size to win it back.</span>
 
 now i do the opposite. after any red day, i cut my size in half, no matter how sure i feel.</p></div></div>
           <p class="split">Splits between sentences, so each post reads whole.</p>
@@ -1487,7 +1592,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         </div>
         <div class="pvw n-th" data-n="1" role="group" aria-label="Threads preview">
           <p class="scr-h"><svg aria-hidden="true"><use href="#n-threads"/></svg>Threads preview</p>
-          <div class="ppost"><span class="av me" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>1m</span></p><p class="pt"><span class="hk">i lost $4,000 in march doubling my size to win it back.</span>
+          <div class="ppost"><span class="av me" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span class="tag">Example</span><span>1m</span></p><p class="pt"><span class="hk">i lost $4,000 in march doubling my size to win it back.</span>
 
 now i do the opposite. after any red day, i cut my size in half, no matter how sure i feel.
 
@@ -1499,11 +1604,11 @@ the rule is boring: half size until i get a green day, then back to normal size.
           <div class="li"><div class="li-h"><span class="av me" aria-hidden="true"></span><p><b>heycape</b><span>Trader · Example</span><span>1m</span></p></div><p class="pt">i lost $4,000 in march doubling my size to win it back.
 
 now i do the opposite. after any red day, i cut my size i<span class="more">…see more</span></p><div class="li-a" aria-hidden="true"><span>Like</span><span>Comment</span><span>Repost</span><span>Send</span></div><p class="li-note">LinkedIn cuts you off at “see more”. Your first line has to earn the click.</p></div>
-          <div class="li next" aria-hidden="true"><div class="li-h"><span class="av lt" style="--y:52.94%"></span><p><b>Dan Ridge</b><span>Trader · Example</span><span>2h</span></p></div><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div>
+          <div class="li next" aria-hidden="true"><div class="li-h"><span class="av lt" style="--y:52.94%"></span><p><b>Dan Ridge</b><span>Trader</span><span>2h</span></p></div><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div>
         </div>
         <div class="pvw n-bs" data-n="3" role="group" aria-label="Bluesky preview">
           <p class="scr-h"><svg aria-hidden="true"><use href="#n-bsky"/></svg>Bluesky preview</p>
-          <div class="ppost"><span class="av me" aria-hidden="true"></span><span class="tl" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>@heycape.bsky.social · 1m</span></p><p class="pt"><span class="hk">i lost $4,000 in march doubling my size to win it back.</span>
+          <div class="ppost"><span class="av me" aria-hidden="true"></span><span class="tl" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span class="tag">Example</span><span>@heycape.bsky.social · 1m</span></p><p class="pt"><span class="hk">i lost $4,000 in march doubling my size to win it back.</span>
 
 now i do the opposite. after any red day, i cut my size in half, no matter how sure i feel.</p></div></div>
           <p class="split">Same split as on X.</p>
@@ -1536,7 +1641,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <div class="ph fh" style="--i:0;--fx:-8%" aria-hidden="true"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div>
         <h2 class="cap big" id="day-h">Say it at 11&nbsp;PM.<br><span class="d">Post it at 8:40&nbsp;AM.</span></h2>
         <ol class="steps" aria-label="One idea, from night to morning (example)">
-          <li class="stp m-pop" style="--md:.1s"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-mic"/></svg></span><div><p class="nt-h"><b>You saved a voice note</b><time class="tnum">11:04&nbsp;PM</time></p>
+          <li class="stp m-pop" style="--md:.1s"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-mic"/></svg></span><div><p class="nt-h"><b>You said it out loud</b><time class="tnum">11:04&nbsp;PM</time></p>
             <div class="vn" aria-hidden="true"><span class="pb"><svg class="ico"><use href="#i-mic"/></svg></span><span class="wave"><i class="p m-fill" style="height:5px;--k:0;--md:.35s"></i><i class="p m-fill" style="height:9px;--k:1;--md:.35s"></i><i class="p m-fill" style="height:14px;--k:2;--md:.35s"></i><i class="p m-fill" style="height:8px;--k:3;--md:.35s"></i><i class="p m-fill" style="height:16px;--k:4;--md:.35s"></i><i class="p m-fill" style="height:18px;--k:5;--md:.35s"></i><i class="p m-fill" style="height:12px;--k:6;--md:.35s"></i><i class="p m-fill" style="height:17px;--k:7;--md:.35s"></i><i class="p m-fill" style="height:18px;--k:8;--md:.35s"></i><i class="p m-fill" style="height:13px;--k:9;--md:.35s"></i><i class="p m-fill" style="height:10px;--k:10;--md:.35s"></i><i class="p m-fill" style="height:15px;--k:11;--md:.35s"></i><i class="p m-fill" style="height:11px;--k:12;--md:.35s"></i><i class="p m-fill" style="height:7px;--k:13;--md:.35s"></i><i style="height:6px"></i><i style="height:12px"></i><i style="height:17px"></i><i style="height:14px"></i><i style="height:9px"></i><i style="height:15px"></i><i style="height:18px"></i><i style="height:12px"></i><i style="height:7px"></i><i style="height:14px"></i><i style="height:17px"></i><i style="height:10px"></i><i style="height:6px"></i><i style="height:14px"></i><i style="height:18px"></i><i style="height:11px"></i><i style="height:8px"></i><i style="height:13px"></i><i style="height:16px"></i><i style="height:9px"></i><i style="height:5px"></i><i style="height:11px"></i><i style="height:15px"></i><i style="height:12px"></i><i style="height:8px"></i><i style="height:6px"></i></span><span class="tnum">0:42</span></div></div></li>
           <li class="stp m-pop" style="--md:.75s"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-pen"/></svg></span><div><p class="nt-h"><b>Drafted in your voice</b><time class="tnum">11:05&nbsp;PM</time></p>
             <p class="quote"><span class="fl"><span class="cut">so basically</span></span> i lost $4,000 in march doubling my size to win it back.</p></div></li>
@@ -1556,7 +1661,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
             <div class="ptop" aria-hidden="true"><span class="av me"></span><span></span><span></span></div>
             <div class="ptabs" aria-hidden="true"><span class="on"><b>For you</b></span><span>Following</span></div>
             <div class="pfeed">
-              <article class="fp yp m-pop" style="--md:1.25s"><span class="av me" aria-hidden="true"></span><div><p class="fn"><b>heycape</b><span class="tag">Example</span><span>· 12m</span></p><p class="fx">i lost $4,000 in march doubling my size to win it back.</p><div class="media" aria-hidden="true"><div class="ph fw" style="--i:3"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div><div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg></div></div></article>
+              <article class="fp yp m-ins" style="--md:1.25s"><span class="av me" aria-hidden="true"></span><div><p class="fn"><b>heycape</b><span class="tag">Example</span><span>· 12m</span></p><p class="fx">i lost $4,000 in march doubling my size to win it back.</p><div class="media" aria-hidden="true"><div class="ph jr" style="--i:3"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div><div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg></div></div></article>
               <div class="fp m-push" style="--md:1.25s" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="fn"><b>Jun Park</b><span>· 2h</span></p><p class="fx">why do most design systems fail? nobody owns them.</p></div></div>
               <div class="fp m-push dim" style="--md:1.25s" aria-hidden="true"><span class="av" style="--y:88.24%"></span><div><p class="fn"><b>Sam Okafor</b><span>· 3h</span></p><p class="fx">the best feedback i got this year came from a customer who almost left.</p></div></div>
             </div>
@@ -1570,11 +1675,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       <h2 class="cap" id="rp-h">Reply while it’s hot.<br><span class="d">Your answer’s drafted.</span></h2>
       <div class="demo">
         <div class="xcard thread">
-          <div class="xrow tl"><span class="av me xav" aria-hidden="true"></span><div><p class="xname"><b>heycape</b><span class="tag">Example</span><span>@heycape_ · 1h</span></p><p class="xtext">i lost $4,000 in march doubling my size to win it back.</p><div class="media" aria-hidden="true"><div class="ph fw" style="--i:3"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div></div></div>
-          <div class="xrow tl m-pop" style="--md:.15s"><span class="av lt xav" style="--y:52.94%" aria-hidden="true"></span><div><p class="xname"><b>Dan Ridge</b><span class="tag">Example</span><span>@ridgeline_dan · 3m</span></p><p class="xtext">so how much do you size down now? half? a quarter?</p></div></div>
+          <div class="xrow tl"><span class="av me xav" aria-hidden="true"></span><div><p class="xname"><b>heycape</b><span class="tag">Example</span><span>@heycape_ · 1h</span></p><p class="xtext">i lost $4,000 in march doubling my size to win it back.</p><div class="media" aria-hidden="true"><div class="ph jr" style="--i:3"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div></div></div>
+          <div class="xrow tl m-pop" style="--md:.15s"><span class="av lt xav" style="--y:52.94%" aria-hidden="true"></span><div><p class="xname"><b>Dan Ridge</b><span>@ridgeline_dan · 3m</span></p><p class="xtext">so how much do you size down now? half? a quarter?</p></div></div>
           <div class="xrow m-pop" style="--md:.5s"><span class="av me xav" aria-hidden="true"></span><div class="mine lit-card" id="rp-box">
             <p class="lab"><span id="rp-lab"><svg class="ico" aria-hidden="true"><use href="#i-pen"/></svg>Drafted in your voice</span><button class="replay" type="button" data-replay="rep" id="rp-replay"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg>Replay</button></p>
-            <p class="xtext tw" id="rp-text" aria-label="Your reply">half, until i get a green day. then back to normal size. no hero trades in between.</p>
+            <p class="xtext tw" id="rp-text">half, until i get a green day. then back to normal size. no hero trades in between.</p>
             <div class="act" id="rp-act"><button class="mini ghost" type="button" id="rp-edit">Edit</button><button class="mini" type="button" id="rp-send">Reply</button></div>
           </div></div>
         </div>
@@ -1589,7 +1694,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <p class="lock tnum" aria-hidden="true">9:31</p>
         <ul class="nstack">
           <li class="nc"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><b>Hookworthy</b><span>9:30&nbsp;AM</span></p><p class="nb">Your 8:40 post got more replies than usual.</p><p class="ns">Measured against your own posts, not bigger accounts.</p>
-            <div class="qpost"><span>i lost $4,000 in march doubling my size to win it back.</span><div class="media" aria-hidden="true"><div class="ph fh" style="--i:3"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div></div></div></li>
+            <div class="qpost"><span>i lost $4,000 in march doubling my size to win it back.</span><div class="media" aria-hidden="true"><div class="ph jr" style="--i:3"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div></div></div></li>
           <li class="nc"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><b>Hookworthy</b><span>9:31&nbsp;AM</span></p><p class="nb">Write next: how you size down, step by step. That’s what they asked.</p></div></li>
         </ul>
       </div>
@@ -1597,7 +1702,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
     <!-- Who it's for: one hook each -->
     <article class="tile glass t-who" id="who" aria-labelledby="w-h">
-      <h2 class="cap" id="w-h">Trades, launches, issues.<br><span class="d">Each one opens stronger.</span></h2>
+      <h2 class="cap" id="w-h">Trades, launches, newsletters.<br><span class="d">Each one opens stronger.</span></h2>
       <ul class="faces demo">
         <li><div><span class="av me" aria-hidden="true"></span><h3>You post your trades.</h3><p>Your number leads. Your ticker stays exact.</p></div></li>
         <li><div><span class="av lt" style="--y:23.53%" aria-hidden="true"></span><h3>You write a newsletter.</h3><p>A first line that gets the issue opened.</p></div></li>
@@ -1611,26 +1716,26 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       <h2 class="cap big" id="st-h">Every client, their voice.<br><span class="d">Approved from one link.</span></h2>
       <div class="st-l">
         <div class="pills track st-pick" role="group" aria-label="Your clients (examples)">
-          <button type="button" data-c="0" aria-pressed="true"><span class="av v2" style="--y:20%" aria-hidden="true"></span>Priya Nair</button>
-          <button type="button" data-c="1" aria-pressed="false"><span class="av lt" style="--y:64.71%" aria-hidden="true"></span>Rafael Ortiz</button>
-          <button type="button" data-c="2" aria-pressed="false"><span class="av" style="--y:47.06%" aria-hidden="true"></span>Lena Fischer</button>
-          <button type="button" data-c="3" aria-pressed="false"><span class="av v2" style="--y:0%" aria-hidden="true"></span>Marco Vitale</button>
+          <button type="button" data-c="0" aria-pressed="true"><span class="av v2" style="--y:20%" aria-hidden="true"></span>Priya Nair<span class="sp-m"><span class="sr">, next post </span>Tue 8:15&nbsp;AM</span></button>
+          <button type="button" data-c="1" aria-pressed="false"><span class="av lt" style="--y:64.71%" aria-hidden="true"></span>Rafael Ortiz<span class="sp-m"><span class="sr">, next post </span>Wed 7:40&nbsp;AM</span></button>
+          <button type="button" data-c="2" aria-pressed="false"><span class="av" style="--y:47.06%" aria-hidden="true"></span>Lena Fischer<span class="sp-m"><span class="sr">, next post </span>Mon 6:30&nbsp;PM</span></button>
+          <button type="button" data-c="3" aria-pressed="false"><span class="av v2" style="--y:0%" aria-hidden="true"></span>Marco Vitale<span class="sp-m"><span class="sr">, next post </span>Thu 8:05&nbsp;AM</span></button>
         </div>
         <div class="nv-box">
           <p class="nv-l"><span id="nv-n">Priya</span> never says</p>
           <p class="nevers" id="st-never"><span class="nvw sqz"><span class="strike">synergy</span></span><span class="nvw sqz"><span class="strike">excited to announce</span></span><span class="nvw sqz"><span class="strike">thought leader</span></span><span class="nvw sqz"><span class="strike">humbled</span></span></p>
         </div>
         <div class="facts">
-          <p><b>Clients approve from a link.</b> Posts go out from their X account, never yours.</p>
+          <p><b>Clients approve from a link.</b> Posts go out from their own connected X account.</p>
           <p><b>4 clients: $72 a month</b>, billed yearly ($96 month to month).</p>
         </div>
       </div>
       <div class="studio" id="st-box">
         <div class="st-post">
-          <p class="st-lab"><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg><span id="rv-cap">Priya’s review link</span></p>
+          <p class="st-lab"><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg><span id="rv-cap">Priya’s review link</span><span class="st-state" id="rv-state">Draft</span></p>
           <article class="xcard" aria-labelledby="rv-cap">
             <div class="xrow"><span class="av v2 xav" style="--y:20%" id="rv-av" aria-hidden="true"></span><div>
-              <p class="xname"><b id="rv-name">Priya Nair</b><span class="tag">Example</span><span id="rv-handle">@priyanair</span><span aria-hidden="true">·</span><span id="rv-state">draft</span></p>
+              <p class="xname"><b id="rv-name">Priya Nair</b><span class="tag">Example</span><span id="rv-handle">@priyanair</span></p>
               <p class="xtext" id="rv-doc">Customer churn: <mark>down 34%</mark>. What changed: our team redesigned the onboarding flow.</p>
               <div class="media" id="rv-media" aria-hidden="true"><div class="ph fw" id="rv-ph" style="--i:4"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div>
             </div></div>
@@ -1651,14 +1756,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     <article class="tile glass t-tru" id="trust" aria-labelledby="t-h">
       <div class="tl-l">
         <h2 class="cap" id="t-h">Nothing goes out<br><span class="d">without your say-so.</span></h2>
-        <p class="tfoot">Every post is one you wrote or approved, sent at the time you picked.</p>
+        <p class="tfoot">Every post is one you wrote or approved, sent at the time you picked. No auto-DMs or auto-follows, on purpose: automation like that can get an account restricted.</p>
       </div>
       <ul class="nev" aria-label="What Hookworthy never does">
         <li><span class="nw"><span>Auto-DMs</span></span><span class="sr">: </span><span class="nn">Never.</span></li>
         <li><span class="nw"><span>Auto-deletes</span></span><span class="sr">: </span><span class="nn">Never.</span></li>
         <li><span class="nw"><span>Auto-follows and likes</span></span><span class="sr">: </span><span class="nn">Never.</span></li>
       </ul>
-      <p class="rules"><svg class="ico" aria-hidden="true"><use href="#i-rule"/></svg><span>Auto-plugs and reruns stay off until you switch them on.</span></p>
+      <p class="rules"><svg class="ico" aria-hidden="true"><use href="#i-rule"/></svg><span>Plug replies (one reply you write ahead) and reruns stay off until you switch them on.</span></p>
     </article>
 
   </div>
@@ -1680,8 +1785,9 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span><b>Sharpen any line, as often as you like</b></span></li>
           <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span><span class="desk">15 posts a month sent at your time. After that, one tap sends each.</span><span class="mob">15 auto-sent posts a month, then one tap each</span></span></li>
           <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>20 rewrites in your voice a month</span></li>
-          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Learns your voice from your posts</span></li>
-          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Previews for X, Threads, LinkedIn and Bluesky</span></li>
+          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Learns your voice (5 rewrites, once)</span></li>
+          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Say it: talk instead of typing</span></li>
+          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Previews for X, Threads, LinkedIn, Bluesky</span></li>
         </ul>
         <button class="incl" type="button" aria-expanded="false" aria-controls="pl-free">See everything included</button>
         <button class="btn btn-glass" type="button" data-sheet="free" data-from="pricing">Start free</button>
@@ -1704,17 +1810,18 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <h3 class="h3">Studio</h3><p class="for">For ghostwriters and agencies.</p>
         <div class="price"><b class="tnum" data-y="$18" data-m="$24">$18</b><span>a month, per client</span><span class="u2" data-y="billed yearly" data-m="billed monthly">billed yearly</span></div><p class="price-n" data-y="Billed yearly. Or $24 month to month." data-m="Month to month. $18 if you pay yearly.">Billed yearly. Or $24 month to month.</p>
         <ul id="pl-studio">
-          <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span><b>Everything in Pro</b></span></li>
-          <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>500 rewrites per client a month, pooled</span></li>
-          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Each client gets their own voice, X account and review link</span></li>
+          <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span><b>Everything in Pro, plus:</b></span></li>
+          <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Up to 8 client voices, plus your own</span></li>
+          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>500 auto-sent posts a month per client</span></li>
+          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>500 rewrites per client a month, pooled</span></li>
           <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Their yes before anything posts</span></li>
-          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Your own voice is included</span></li>
+          <li class="x"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Sent from each client’s own X account</span></li>
         </ul>
         <button class="incl" type="button" aria-expanded="false" aria-controls="pl-studio">See everything included</button>
         <button class="btn btn-glass" type="button" data-sheet="studio" data-from="pricing">Start with Studio</button>
       </article>
     </div>
-    <p class="plans-fine">Cancel anytime. Your drafts and ideas stay with you on Free.<span class="mf"> More than 8 clients? Talk to us: hello@hookworthy.com</span></p>
+    <p class="plans-fine">Cancel anytime. Your drafts and ideas stay with you on Free.<span class="mf"> More than 8 clients? <span class="nw">Talk to us: <a href="mailto:hello@hookworthy.com?subject=Studio%20for%20more%20than%208%20clients">hello@hookworthy.com</a></span></span></p>
   </div>
 </section>
 
@@ -1722,7 +1829,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 <section class="sec" id="faq" aria-labelledby="faq-h">
   <div class="wrap">
     <div class="head">
-      <h2 class="h2" id="faq-h">Fair questions.<br><span class="d">Straight answers.</span></h2>
+      <h2 class="h2" id="faq-h">Before you hand it<br><span class="d">your first line.</span></h2>
     </div>
     <ul class="qa">
       <li><h3><button type="button" id="qb1" aria-expanded="false" aria-controls="qa1">Will it sound like me?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
@@ -1730,11 +1837,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       <li><h3><button type="button" id="qb6" aria-expanded="false" aria-controls="qa6">Can I bring my old posts?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
         <div class="a" id="qa6" role="region" aria-labelledby="qb6" hidden><p>Yes. Drop in your X archive, a Typefully or CSV export, or paste posts in. They’re read in your browser, and they teach Hookworthy how you open and when your people reply.</p></div></li>
       <li><h3><button type="button" id="qb2" aria-expanded="false" aria-controls="qa2">Does it post without me?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
-        <div class="a" id="qa2" role="region" aria-labelledby="qb2" hidden><p>Only what you schedule, at the time you pick. X and LinkedIn posts go out then; Threads and Bluesky get a nudge with the post ready to paste. Auto-plugs (one reply you write ahead) and reruns stay off until you turn them on.</p></div></li>
+        <div class="a" id="qa2" role="region" aria-labelledby="qb2" hidden><p>Only what you schedule, at the time you pick. X and LinkedIn posts go out then; Threads and Bluesky get a nudge with the post ready to paste. Plug replies (one reply you write ahead) and reruns stay off until you switch them on.</p></div></li>
       <li><h3><button type="button" id="qb3" aria-expanded="false" aria-controls="qa3">Is it just AI writing?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
         <div class="a" id="qa3" role="region" aria-labelledby="qb3" hidden><p>No. Sharpen is an editor: it cuts the fluff, tightens and reorders what’s left, and never adds a fact or a number. Rewrites in your voice run on Claude, only when you ask, and show every changed word. If a line needs a number you didn’t give, it writes [your number] and waits for yours.</p></div></li>
       <li><h3><button type="button" id="qb4" aria-expanded="false" aria-controls="qa4">What about my clients’ accounts?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
-        <div class="a" id="qa4" role="region" aria-labelledby="qb4" hidden><p>On Studio, each client gets their own voice, their own X account and a review link. They sign in with X or Google to comment and approve. A client’s post goes out from their own account, never yours.</p></div></li>
+        <div class="a" id="qa4" role="region" aria-labelledby="qb4" hidden><p>On Studio, each client gets their own voice and a review link, and connects the X account they already have. Hookworthy doesn’t provide accounts. Clients sign in with X or Google to comment and approve, and their posts go out from their own connected account, never yours.</p></div></li>
       <li><h3><button type="button" id="qb5" aria-expanded="false" aria-controls="qa5">What’s free?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
         <div class="a" id="qa5" role="region" aria-labelledby="qb5" hidden><p>Sharpen, as often as you like. Plus 20 rewrites in your voice a month (learning your voice once uses 5), previews for all four apps, and 15 posts a month sent at your time (after that, you tap to send). No card. Posting every day? Pro is $12 a month, billed yearly.</p></div></li>
     </ul>
@@ -1762,7 +1869,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <p class="sr" id="fin-status" role="status"></p>
       </div>
       <div class="fpay" id="fpay" role="group" aria-labelledby="fp-name">
-        <p class="draft" id="fp-draft"><span class="sr">Draft: </span><span class="fl"><span class="cut">just wanted to say that</span></span> i held $BTC through a 30% drawdown <span class="cut">and</span> it paid off</p>
+        <p class="draft" id="fp-draft"><span class="sr">Draft: </span><span class="fl"><span class="cut">just wanted to say that</span></span> i held $BTC through a 30% drawdown and it paid off</p>
         <p class="tip" id="fp-tip" hidden>Tap a struck word to put it back.</p>
         <div id="fp-live">
           <div class="light" aria-hidden="true"><i class="beam"></i><i class="core"></i><i class="bloom"></i><i class="hot"></i></div>
@@ -1774,7 +1881,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
             </div></div>
           </article>
           <p class="empty-c" id="fp-empty" hidden></p>
-          <div class="hits" id="fp-hits"><span class="k" id="fp-k">Why it hits</span><p id="fp-why">The full stop before “it paid off” is the pause that makes the second beat land.</p><p class="n2" id="fp-note">An example. Paste your own line and this turns into yours as you type.</p><span class="k" id="fp-kk">Kept</span><p id="fp-kept">Your $BTC, your 30% and your lowercase.</p></div>
+          <div class="hits" id="fp-hits"><span class="k" id="fp-k">Why it hits</span><p id="fp-why">The full stop before “it paid off” is the pause that makes the second beat land.</p><p class="n2" id="fp-note">An example. Paste your own line and this turns into yours as you type.</p><p class="kp" id="fp-kept">Kept: $BTC, 30%. Kept your lowercase.</p></div>
         </div>
         <div class="keep" id="fp-keep" hidden><button class="btn btn-white" type="button" id="fin-keep">Keep it. Start free</button></div>
       </div>
@@ -1801,10 +1908,12 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 <!-- the signup sheet: one for every Start button. A design preview: it never says an account was made -->
 <dialog class="sheet" id="sheet" aria-labelledby="sh-t" aria-describedby="sh-sub">
   <div class="sh-p">
+    <span class="sh-grab" id="sh-grab" aria-hidden="true"></span>
     <button class="sh-x" type="button" id="sh-x" aria-label="Close"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
     <span class="sh-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span>
     <h2 class="sh-t" id="sh-t">Start free</h2>
     <p class="sh-sub" id="sh-sub">Free forever. No card.</p>
+    <p class="sh-pv" id="sh-pv"><span aria-hidden="true"></span>Design preview: no account is created yet.</p>
     <div class="sh-line" id="sh-line" hidden><span class="k">Your line:</span><div class="xcard lit-card"><p class="xtext" id="sh-text"></p></div></div>
     <div class="sh-plan" id="sh-plan" hidden>
       <div class="pills track" role="group" aria-label="Plan" id="sh-plans"><button type="button" data-p="free" aria-pressed="true">Free</button><button type="button" data-p="pro" aria-pressed="false">Pro</button><button type="button" data-p="studio" aria-pressed="false">Studio</button></div>
@@ -1815,10 +1924,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       <button class="btn btn-glass" type="button" data-go="google"><svg aria-hidden="true"><use href="#n-g"/></svg>Continue with Google</button>
       <p class="sh-or">or</p>
       <form class="sh-em" id="sh-form" novalidate><label class="sr" for="sh-email">Email</label><input id="sh-email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="sh-err"><button class="btn btn-glass" type="submit">Continue</button></form>
-      <p class="sh-err" id="sh-err" hidden>Add your email, like you@example.com.</p>
+      <p class="sh-err" id="sh-err" hidden>Add your email.</p>
     </div>
     <div class="sh-done" id="sh-done" hidden><p id="sh-done-t">This is a design preview, so no account was made. Once Hookworthy is live, this signs you in.</p><div class="sh-done-acts"><a class="btn btn-white" href="https://claude.ai/artifact/U91RtwmxGET54EqnSh3hSD" target="_blank" rel="noopener">Open the demo app<svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg></a><button class="btn btn-glass" type="button" id="sh-back">Back to the page</button></div></div>
-    <p class="sh-fine" id="sh-fine">Nothing posts without you.<span id="sh-alt"> Have an account? <button class="inl" type="button" id="sh-to-signin">Sign in</button></span></p>
+    <p class="sh-fine" id="sh-fine">Nothing posts without you.<span id="sh-alt"> Have an account? <button class="inl" type="button" id="sh-to-signin">Sign in</button></span><span id="sh-alt2" hidden> New here? <button class="inl" type="button" id="sh-to-start">Start free</button></span></p>
   </div>
 </dialog>
 
@@ -1843,11 +1952,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const E = () => (window.HWCore && window.HWCore.sharpenLine ? window.HWCore : null);
 
   /* ---------- falling fluff: a copy of each cut word dissolves inside the line gap (motion only) ---------- */
-  function dropWords(els, layer, stagger = .09) {
+  function dropWords(els, layer, stagger = .09, clip) {
     if (RM || !layer) return;
-    const base = layer.getBoundingClientRect(); layer.innerHTML = ''; let k = 0;
+    const base = layer.getBoundingClientRect(), box = clip && clip.getBoundingClientRect(); layer.innerHTML = ''; let k = 0;
     els.forEach(el => {
       const rs = el.getClientRects(); if (rs.length !== 1) return; const r = rs[0], cs = getComputedStyle(el);
+      /* a word scrolled out of a long draft's box stays put: no ghost floats over what's below */
+      if (box && (r.top < box.top - 1 || r.bottom > box.bottom + 1)) return;
       const g = document.createElement('span'); g.className = 'fallen'; g.textContent = el.textContent;
       g.style.fontFamily = cs.fontFamily; g.style.fontSize = cs.fontSize; g.style.fontWeight = cs.fontWeight; g.style.letterSpacing = cs.letterSpacing;
       g.style.left = (r.left - base.left) + 'px'; g.style.top = (r.top - base.top) + 'px';
@@ -1859,7 +1970,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
   /* ---------- the signup sheet: one for every Start button. A design preview: it never says an account was made ---------- */
   const sheet = $('#sheet');
-  let opener = null, plan = 'free', bill = 'y', billing = 'y', lastLine = '', sheetOpen = false;
+  let opener = null, plan = 'free', bill = 'y', billing = 'y', lastLine = '', sheetOpen = false, from = '', sheetLine = '';
   const PLAN = {
     free: { t: 'Start free', y: 'Free forever. No card.', m: 'Free forever. No card.' },
     pro: { t: 'Start with Pro', y: '$12 a month, billed yearly ($144). Or $16 month to month. Cancel anytime.', m: '$16 a month, billed monthly. Or $12 a month, billed yearly. Cancel anytime.' },
@@ -1871,8 +1982,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     schedule: { t: 'Schedule it free', sub: 'Free forever. No card.' }
   };
   let intent = '';
+  /* the plan and price the visitor picked, said back at the honest end of the preview */
+  const PICKED = {
+    pro: { y: 'Pro at $12 a month, billed yearly ($144)', m: 'Pro at $16 a month, billed monthly' },
+    studio: { y: 'Studio at $18 a month per client, billed yearly', m: 'Studio at $24 a month per client, billed monthly' }
+  };
   const DONE = {
-    start: line => `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in${line ? ' and keeps your line' : ''}.`,
+    start: line => plan === 'free' ? `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in on Free ($0, no card)${line ? ' and keeps your line' : ''}.`
+      : `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in and starts ${PICKED[plan][bill]}${line ? ', with your line kept' : ''}. Nothing is charged today.`,
     rewrite: line => `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in and writes three takes of ${line ? 'your line' : 'it'}.`,
     schedule: line => `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in and schedules ${line ? 'your line' : 'it'} at your best time.`,
     signin: () => 'This is a design preview, so there’s nothing to sign in to yet. Once Hookworthy is live, this is where your drafts and your queue come back.'
@@ -1881,20 +1998,21 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const signin = sheet.dataset.mode === 'signin', p = PLAN[plan], it = !signin && plan === 'free' && INTENT[intent];
     $('#sh-t').textContent = signin ? 'Welcome back' : it ? it.t : p.t;
     $('#sh-sub').textContent = signin ? 'Sign in to pick up your drafts and your queue.' : it ? it.sub : p[bill];
-    if (signin) $('#sh-line').hidden = true;
+    /* your line rides along, except into sign-in and into Studio (a client's plan, not your trade) */
+    $('#sh-line').hidden = signin || !sheetLine || plan === 'studio';
+    $('#sh-plan').hidden = signin || from !== 'pricing';
     $$('#sh-plans button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.p === plan)));
     $$('#sh-bill button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.b === bill)));
     $('#sh-bill').hidden = plan === 'free';
-    $('#sh-alt').hidden = signin;
+    $('#sh-alt').hidden = signin; $('#sh-alt2').hidden = !signin;
   }
   function openSheet(o = {}, src) {
     if (!sheet || sheet.open) return;
     opener = src || document.activeElement;
     plan = o.plan || 'free'; bill = billing; sheet.dataset.mode = o.mode || 'start'; intent = o.intent || ''; sheet.classList.remove('closing');
     const ln = o.line === undefined ? lastLine : o.line;
-    $('#sh-line').hidden = !ln; $('#sh-text').textContent = ln || '';
-    $('#sh-plan').hidden = o.from !== 'pricing' || o.mode === 'signin';
-    $('#sh-acts').hidden = false; $('#sh-done').hidden = true; $('#sh-err').hidden = true; $('#sh-sub').hidden = false; $('#sh-fine').hidden = false;
+    from = o.from || ''; sheetLine = ln || ''; $('#sh-text').textContent = sheetLine;
+    $('#sh-acts').hidden = false; $('#sh-done').hidden = true; $('#sh-err').hidden = true; $('#sh-sub').hidden = false; $('#sh-fine').hidden = false; $('#sh-pv').hidden = false;
     const t = $('#sh-t'); t.removeAttribute('tabindex');
     const em = $('#sh-email'); em.value = ''; em.removeAttribute('aria-invalid');
     sheetPaint();
@@ -1912,7 +2030,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }
   sheet.addEventListener('cancel', e => { e.preventDefault(); closeSheet(); });
   sheet.addEventListener('close', () => {
-    document.documentElement.classList.remove('locked'); sheetOpen = false; syncBar();
+    document.documentElement.classList.remove('locked'); sheetOpen = false; syncBar(); shP.style.transform = '';
     if (opener && opener.isConnected) opener.focus({ preventScroll: true }); opener = null;
   });
   sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
@@ -1926,7 +2044,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* after a choice: the honest end of the preview, with a way on and a way back */
   function sheetDone() {
     const mode = sheet.dataset.mode === 'signin' ? 'signin' : plan === 'free' && DONE[intent] ? intent : 'start';
-    $('#sh-acts').hidden = true; $('#sh-plan').hidden = true; $('#sh-sub').hidden = true; $('#sh-fine').hidden = true;
+    $('#sh-acts').hidden = true; $('#sh-plan').hidden = true; $('#sh-sub').hidden = true; $('#sh-fine').hidden = true; $('#sh-pv').hidden = true;
     $('#sh-done-t').textContent = DONE[mode](!$('#sh-line').hidden);
     $('#sh-done').hidden = false;
     const t = $('#sh-t'); t.textContent = 'Not live yet'; t.tabIndex = -1; t.focus();
@@ -1934,13 +2052,21 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   $$('#sheet [data-go]').forEach(b => b.addEventListener('click', sheetDone));
   $('#sh-form').addEventListener('submit', e => {
     e.preventDefault(); const em = $('#sh-email'), v = em.value.trim(), ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v), er = $('#sh-err');
-    er.textContent = ok ? '' : v ? 'That email looks incomplete, like you@example.com.' : 'Add your email.';
+    er.textContent = ok ? '' : v ? 'That email looks incomplete. Try name@example.com.' : 'Add your email.';
     er.hidden = ok; if (ok) em.removeAttribute('aria-invalid'); else em.setAttribute('aria-invalid', 'true');
     if (!ok) { em.focus(); return; } sheetDone();
   });
   $('#sh-x').addEventListener('click', closeSheet);
   $('#sh-back').addEventListener('click', closeSheet);
-  $('#sh-to-signin').addEventListener('click', () => { sheet.dataset.mode = 'signin'; $('#sh-plan').hidden = true; $('#sh-err').hidden = true; sheetPaint(); sheet.querySelector('[data-go="x"]').focus(); });
+  $('#sh-to-signin').addEventListener('click', () => { sheet.dataset.mode = 'signin'; $('#sh-err').hidden = true; sheetPaint(); sheet.querySelector('[data-go="x"]').focus(); });
+  /* tapped Sign in by mistake: the way back to Start free, without closing the sheet */
+  $('#sh-to-start').addEventListener('click', () => { sheet.dataset.mode = 'start'; $('#sh-err').hidden = true; sheetPaint(); sheet.querySelector('[data-go="x"]').focus(); });
+  /* phones: drag the grabber down to put the sheet away */
+  const shP = sheet.querySelector('.sh-p'), grab = $('#sh-grab'); let dragY = null;
+  grab.addEventListener('pointerdown', e => { dragY = e.clientY; grab.setPointerCapture(e.pointerId); });
+  grab.addEventListener('pointermove', e => { if (dragY != null) shP.style.transform = `translateY(${Math.max(0, e.clientY - dragY)}px)`; });
+  const endDrag = e => { if (dragY == null) return; const dy = e.clientY - dragY; dragY = null; if (dy > 80) closeSheet(); else shP.style.transform = ''; };
+  grab.addEventListener('pointerup', endDrag); grab.addEventListener('pointercancel', endDrag);
   $$('#sh-plans button').forEach(b => b.addEventListener('click', () => { plan = b.dataset.p; sheetPaint(); }));
   $$('#sh-bill button').forEach(b => b.addEventListener('click', () => { bill = b.dataset.b; sheetPaint(); }));
   document.addEventListener('click', e => {
@@ -1955,22 +2081,24 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const EX = [
     { who: 'heycape', handle: '@heycape_', av: 'me', draft: 'just wanted to share that i finally hit my first $10k month trading, took me 3 years',
       cut: [['just wanted to share that', 'announce']], after: 'i finally hit my first $10k month trading, took me 3 years.', say: 'Cut 1 bit of fluff',
-      why: 'It now opens on “i finally hit”, your point, not the run-up to it.', kept: 'Your $10k, your 3 years and your lowercase.' },
+      why: '“i finally hit my first $10k month” is now the first thing people read.', kept: 'Kept: $10k, 3 years. Kept your lowercase.' },
     { who: 'Priya Nair', handle: '@priyanair', av: 'v2|20%', draft: 'Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.',
-      cut: [['was reduced by', 'move'], ['after', 'move'], ['was', 'move'], ['by', 'move']], after: 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', say: 'Number first · Made it active',
-      why: '“34%” comes first, and “our team redesigned” sounds like you were there. “Was redesigned by” sounds like a press release.', kept: 'Your 34%.' },
+      cut: [], after: 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', say: 'Number first · Made it active',
+      why: '“34%” comes first, and “our team redesigned” sounds like you were there. “Was redesigned by” sounds like a press release.', kept: 'Kept: 34%.' },
     { who: 'Ana Ruiz', handle: '@anaruiz', av: 'lt|23.53%', draft: 'I just wanted to say thank you to everyone who subscribed, we just crossed 5,000 readers',
-      cut: [['I just wanted to say', 'throat'], ['we just crossed', 'move']], after: '5,000 readers. Thank you to everyone who subscribed.', say: 'Cut 1 bit of fluff · Number first',
-      why: '“5,000 readers” comes first, so it reads as proof before anyone decides whether to keep reading.', kept: 'Your 5,000 readers.' },
-    { who: 'Jun Park', handle: '@junpark', av: '|29.41%', draft: 'honestly most design systems fail because nobody really owns them',
-      cut: [['honestly', 'honest'], ['because', 'move'], ['really', 'intens']], after: 'why do most design systems fail? nobody owns them.', say: 'Cut 2 bits of fluff · Asked, then answered',
-      why: 'The question opens a gap, and “nobody owns them” closes it before the thumb moves.', kept: 'Your lowercase.' }
+      cut: [['I just wanted to say', 'throat']], after: '5,000 readers. Thank you to everyone who subscribed.', say: 'Cut 1 bit of fluff · Number first',
+      why: '“5,000 readers” comes first, so it reads as proof before anyone decides whether to keep reading.', kept: 'Kept: 5,000 readers.' },
+    { who: 'Lena Fischer', handle: '@lenaf', av: '|47.06%', draft: 'I just think you don’t need a morning routine, you need one thing you do before your phone',
+      cut: [['I just think', 'opinion']], after: 'You don’t need a morning routine. You need one thing you do before your phone.', say: 'Cut 1 bit of fluff · Split it into two beats',
+      why: 'The full stop before “You need one thing” is the pause that makes the second beat land.', kept: '' }
   ];
   /* EX-END */
   /* DRAFT-START */
   const FLUFF = k => !/^(?:move|tight|swap)$/.test(k);
-  /* display only: a number never splits from its unit, a time never from AM/PM (the engine's text is otherwise shown verbatim) */
-  const nb = h => String(h).replace(/(\d)\s(AM|PM|years?|months?|weeks?|days?|hours?|minutes?|readers|posts|subscribers|followers)\b/g, '$1\u00a0$2');
+  /* display only (the engine's text is otherwise shown verbatim): a number never splits from its unit, a time never from AM/PM,
+     a one-letter word ("i", "a") never ends a line, and a short last word never sits alone on one */
+  const nb = h => String(h).replace(/(\d)\s(AM|PM|years?|months?|weeks?|days?|hours?|minutes?|readers|posts|subscribers|followers)\b/g, '$1\u00a0$2')
+    .replace(/(^|\s)([aAiI])\s(?=\S)/g, '$1$2\u00a0').replace(/ (\S{1,7})$/, '\u00a0$1');
   function draftHTML(e) {
     const W = .32, gap = .03, n = e.cut.length, tot = e.cut.reduce((a, c) => a + c[0].length, 0);
     const avail = W - gap * (n - 1), base = .07; let t = 0, h = '', last = 0;
@@ -2000,18 +2128,36 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }
   /* a pick crossfades the post (never an empty pane) while the draft's strike plays again */
   function replay() { if (RM) return; proof.style.setProperty('--l', '.12s'); proof.classList.remove('play'); void proof.offsetWidth; proof.classList.add('play', 'swap'); heroFall(.12); }
+  /* one example into a window body (the live one, or the sizer below) */
+  function paintEx(root, e) {
+    const q = id => root.querySelector('#' + id), ps = q('pf-sharp');
+    q('pf-draft').innerHTML = draftHTML(e); q('pf-cut').innerHTML = cutNote(e); q('pf-kept').textContent = e.kept;
+    q('pf-name').textContent = e.who; q('pf-handle').textContent = e.handle; q('pf-move').textContent = e.say;
+    ps.innerHTML = '<span class="sr">Sharpened: </span>' + nb(esc(e.after)); ps.classList.toggle('long', e.after.length > 62);
+    q('pf-why').textContent = e.why;
+  }
   function showEx(i) {
     const e = EX[i]; curEx = i;
     setAv($('#pf-av'), e.av); setAv($('#pf-av2'), e.av);
-    pfDraft.innerHTML = draftHTML(e);
-    $('#pf-name').textContent = e.who; $('#pf-handle').textContent = e.handle; $('#pf-move').textContent = e.say;
-    $('#pf-sharp').innerHTML = '<span class="sr">Sharpened: </span>' + nb(esc(e.after)); $('#pf-sharp').classList.toggle('long', e.after.length > 62);
-    $('#pf-why').textContent = e.why; $('#pf-kept').textContent = e.kept; $('#pf-cut').innerHTML = cutNote(e);
+    paintEx(proof, e);
     $('#pf-status').textContent = `${e.who} example: ${e.after}`;
-    $$('.ex button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.ex === i)));
+    $$('#proof .ex button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.ex === i)));
     replay();
   }
-  $$('.ex button').forEach(b => b.addEventListener('click', () => showEx(+b.dataset.ex)));
+  /* one window height for all four examples, measured at this width: a hidden copy of the body takes each example in turn,
+     and the tallest sets the body's floor. The live body is never touched, so nothing on screen restarts */
+  const pfBody = proof.querySelector('.body');
+  function sizeHero() {
+    const c = pfBody.cloneNode(true); c.classList.add('sizer'); c.setAttribute('aria-hidden', 'true'); c.style.minHeight = '';
+    proof.appendChild(c); let h = 0;
+    EX.forEach(e => { paintEx(c, e); h = Math.max(h, c.getBoundingClientRect().height); });
+    c.remove(); pfBody.style.minHeight = Math.ceil(h) + 'px';
+  }
+  sizeHero();
+  if (document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(sizeHero);
+  let heroW = innerWidth, heroRaf = 0;
+  addEventListener('resize', () => { if (innerWidth === heroW) return; heroW = innerWidth; cancelAnimationFrame(heroRaf); heroRaf = requestAnimationFrame(sizeHero); });
+  $$('#proof .ex button').forEach(b => b.addEventListener('click', () => showEx(+b.dataset.ex)));
   $('#pf-go').addEventListener('click', () => showEx(curEx));
   /* the window's Schedule is real: it opens the sheet with this example's line */
   $('#pf-sched').addEventListener('click', e => openSheet({ plan: 'free', intent: 'schedule', line: EX[curEx].after }, e.currentTarget));
@@ -2025,13 +2171,24 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     $('#pv-big').textContent = PV[i];
   }
   $$('.seg button').forEach(b => b.addEventListener('click', () => pv(+b.dataset.n, true)));
+  function pvFade() {
+    $$('.pvw').forEach(w => {
+      const top = w.getBoundingClientRect().top, H = w.clientHeight, ends = [];
+      w.querySelectorAll('.pt,.pn,.split,.li-note').forEach(t => { const r = document.createRange(); r.selectNodeContents(t); [...r.getClientRects()].forEach(x => { if (x.height) ends.push(x.bottom - top); }); });
+      const fit = ends.filter(e => e <= H - 2); w.style.setProperty('--fe', (fit.length ? Math.min(H, Math.max(...fit) + 4) : H) + 'px');
+    });
+  }
+  pvFade(); if (document.fonts) document.fonts.ready.then(pvFade); addEventListener('resize', () => requestAnimationFrame(pvFade));
 
   /* ---------- the voice it learned: put "ngl" back, and the strike retracts ---------- */
-  const kpB = $('#kp-b'), kpW = $('#kp-w'), kpN = $('#kp-n');
+  /* the app's rule: put a word back twice and it's learned. Cut a learned word and it's unlearned, so the count starts over */
+  const kpB = $('#kp-b'), kpW = $('#kp-w'), kpN = $('#kp-n'); let kpBack = 1;
+  const KP = { '1|1': 'Put back once. Do it once more and it stays.', '2|1': 'Learned. “ngl” stays from now on.', '0|0': 'Cut again, and unlearned. Put it back twice and it stays.', '1|0': 'You put “ngl” back once already. Once more and it stays.' };
   kpB.addEventListener('click', () => {
     const on = !kpW.classList.contains('on'); kpW.classList.toggle('on', on);
+    if (on) kpBack = Math.min(2, kpBack + 1); else if (kpBack >= 2) kpBack = 0;
     kpB.textContent = on ? 'Cut it' : 'Put it back';
-    kpN.textContent = on ? 'Learned. “ngl” stays from now on.' : 'You put “ngl” back once already. Once more and it stays.';
+    kpN.textContent = KP[`${kpBack}|${on ? 1 : 0}`];
   });
 
   /* ---------- reply: the answer is drafted; you edit it and you send it ---------- */
@@ -2059,7 +2216,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }
   function rpStopEdit(restore) {
     if (restore) rpText.textContent = rpSaved;
-    rpText.removeAttribute('contenteditable'); rpText.removeAttribute('role'); rpText.removeAttribute('aria-multiline');
+    rpText.removeAttribute('contenteditable'); rpText.removeAttribute('role'); rpText.removeAttribute('aria-multiline'); rpText.removeAttribute('aria-label');
     if (!rpText.textContent.trim()) rpText.textContent = RP0;
     const b = $('#rp-edit'); if (b) b.textContent = 'Edit';
   }
@@ -2070,7 +2227,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     rpSaved = rpText.textContent;
     try { rpText.contentEditable = 'plaintext-only'; } catch (err) { rpText.contentEditable = 'true'; }
     if (!rpText.hasAttribute('contenteditable')) rpText.setAttribute('contenteditable', 'true');
-    rpText.setAttribute('role', 'textbox'); rpText.setAttribute('aria-multiline', 'true');
+    rpText.setAttribute('role', 'textbox'); rpText.setAttribute('aria-multiline', 'true'); rpText.setAttribute('aria-label', 'Your reply');
     b.textContent = 'Done'; rpText.focus();
     const r = document.createRange(); r.selectNodeContents(rpText); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
   }
@@ -2129,7 +2286,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const mid = c.done && c.fix ? c.fix : c.doc[1];
     $('#rv-doc').innerHTML = esc(c.doc[0]) + `<mark>${esc(mid)}</mark>` + esc(c.doc[2]);
     $('#rv-media').hidden = c.img < 0; if (c.img >= 0) $('#rv-ph').style.setProperty('--i', c.img);
-    $('#rv-state').textContent = c.done ? 'scheduled' : 'draft';
+    $('#rv-state').textContent = c.done ? 'Scheduled' : 'Draft'; $('#rv-state').classList.toggle('ok', !!c.done);
     $('#cm-on').textContent = c.doc[1]; $('#cm-t').textContent = c.cm;
     $('#st-name').textContent = c.f; $('#nv-n').textContent = c.f; $('#st-name').parentNode.lastChild.textContent = ` in ${c.pr} own voice`;
     $('#st-voice').innerHTML = `<b>Sounds like:</b> ${esc(c.v)}`;
@@ -2142,7 +2299,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function approve() {
     const c = CL[cur], act = $('#rv-act'), mk = $('#rv-doc mark');
     c.done = true;
-    const fin = () => { act.innerHTML = doneRow(c); queue(c, true); $('#rv-state').textContent = 'scheduled'; $('#rv-done').focus(); };
+    const fin = () => { act.innerHTML = doneRow(c); queue(c, true); $('#rv-state').textContent = 'Scheduled'; $('#rv-state').classList.add('ok'); $('#rv-done').focus(); };
     if (c.fix && mk) {
       mk.textContent = c.fix; mk.classList.add('fixed');
       act.innerHTML = `<span tabindex="-1" id="rv-mid">Edit made: “${esc(c.fix)}”.</span>`; $('#rv-mid').focus();
@@ -2172,9 +2329,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
   /* ---------- nav + the one phone CTA ---------- */
   const nav = $('#nav'), bar = $('#mbar'), navBtn = $('.nav-r .btn-sm');
-  let heroOut = false, finIn = false; const quiet = new Set();
+  /* the bar comes up once you're past the Try box (which has its own buttons), so it never blinks on and off at the demo */
+  let pastTry = false, finIn = false; const quiet = new Set();
   function syncBar() {
-    const on = heroOut && !finIn && !sheetOpen && !quiet.size;
+    const on = pastTry && !finIn && !sheetOpen && !quiet.size;
     bar.classList.toggle('on', on); document.body.classList.toggle('bar-on', on);
     if (on) { bar.removeAttribute('inert'); bar.removeAttribute('aria-hidden'); } else { bar.setAttribute('inert', ''); bar.setAttribute('aria-hidden', 'true'); }
   }
@@ -2184,24 +2342,28 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const onScroll = () => nav.classList.toggle('scrolled', scrollY > 8);
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(es => es.forEach(x => { heroOut = !x.isIntersecting && x.boundingClientRect.top < 0; syncBar(); })).observe($('#hero-cta'));
     new IntersectionObserver(es => es.forEach(x => { finIn = x.isIntersecting || x.boundingClientRect.top < 0; syncBar(); })).observe($('#start'));
-    /* where the page has its own buttons (the Try result, the plans), the bar steps back */
-    const qo = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting && x.intersectionRatio >= .25 * Math.min(1, innerHeight / x.boundingClientRect.height)) quiet.add(x.target.id); else quiet.delete(x.target.id); syncBar(); }), { threshold: [0, .1, .2, .25, .3, .4, .5] });
-    ['sharpen', 'pricing'].forEach(id => qo.observe(document.getElementById(id)));
+    const qo = new IntersectionObserver(es => es.forEach(x => {
+      if (x.target.id === 'sharpen') pastTry = x.boundingClientRect.top < 0;
+      if (x.isIntersecting && x.intersectionRatio >= .25 * Math.min(1, innerHeight / x.boundingClientRect.height)) quiet.add(x.target.id); else quiet.delete(x.target.id); syncBar();
+    }), { threshold: [0, .1, .2, .25, .3, .4, .5, .6, .7, .8, .9, 1] });
+    /* where the page has its own white buttons (the Try result, Studio's Approve, the plans), the bar steps back */
+    ['sharpen', 'studio', 'pricing'].forEach(id => qo.observe(document.getElementById(id)));
   }
 
   /* ---------- the real engine: the Try tile and the final line both call HWCore.sharpenLine, and only render what it returns ---------- */
-  const lead = t => t.length - t.replace(/^\s+/, '').length;
   /* a put-back word stays kept while you edit the same line; a different line starts from what Sharpen would do */
   const wordSet = t => new Set((String(t).toLowerCase().match(/[\p{L}\p{N}$%']+/gu) || []));
   const sameLine = (a, b) => { const A = wordSet(a), B = wordSet(b); if (!A.size || !B.size) return false; let n = 0; A.forEach(w => { if (B.has(w)) n++; }); return n / Math.max(A.size, B.size) >= .5; };
   const inLine = (keep, t) => keep.filter(w => new RegExp(`(?<![\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'iu').test(t));
   /* KEPT-START */
-  /* "Kept": the facts carried over verbatim (R.kept), in the hero's own words: "Your $SOL, your 40% and your lowercase."
-     Nothing from inside a link or a handle is listed, and a unit right after a number travels with it ("$10k MRR", "3 years") */
+  /* "Kept": the writer's own facts carried over verbatim (R.kept), as plain items: "Kept: $SOL, 40%." Then "Kept your lowercase."
+     when the draft is all lowercase. Never "your" in front of a fact: public acronyms (CPI, ETF, AI), years, a bare 0 or 1 and an
+     ordinal without its noun aren't the writer's facts, so they aren't listed. Nothing from inside a link or a handle is listed,
+     and a unit right after a number travels with it ("$10k MRR", "3 years") */
   const KEPT_TICK = /^(?:btc|eth|sol|xrp|bnb|doge|avax|pepe|wif|arb|sui|ltc|spx|qqq|nvda|tsla|aapl)$/i;
-  const KEPT_UNIT = /^\s+(?:months?|years?|weeks?|days?|hours?|minutes?|subscribers|readers|followers|customers|clients|trades|posts|users|people|members|sales)\b/i;
+  const KEPT_UNIT = /^\s+(?:months?|years?|weeks?|days?|hours?|minutes?|subscribers|readers|followers|customers|clients|trades|posts|users|people|members|sales|decks|deals|signups|downloads|orders|reps|pounds|kg|miles|km)\b/i;
+  const KEPT_PUBLIC = /^(?:AI|CPI|PPI|ETFS?|FOMC|FED|SEC|SEO|B2B|B2C|SAAS|DCA|CEO|CTO|CFO|COO|PM|US|USA|UK|EU|API|UI|UX|PR|HR|IPO|GDP|NFTS?|DAO|DEFI|ATH|ROI|KPI|MVP|VCS?|IRL|TBH|IMO|FYI|LOL|PSA|NFA|DYOR|GM|GN|LFG|OK)$/i;
   const PROTECT = /https?:\/\/\S+|www\.\S+|(?<![\p{L}\p{N}_])[@#][\p{L}\p{N}_]+/gu;
   const spansOf = t => [...String(t).matchAll(PROTECT)].map(m => [m.index, m.index + m[0].length, m[0]]);
   function keptLine(draft, line, kept) {
@@ -2210,7 +2372,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const at = f => { let i = -1; while ((i = line.indexOf(f, i + 1)) >= 0) if (!P.some(([a, b, w]) => i >= a && i + f.length <= b && w !== f)) return i; return -1; };
     for (const f of kept || []) {
       if (bits.length >= 3) break;
-      if (used.has(f) || /^(?:19|20)\d\d$/.test(f) || !(/[$\d%@#]/.test(f) || /^[A-Z][A-Z0-9&]{1,5}$/.test(f) || KEPT_TICK.test(f))) continue;
+      if (used.has(f) || /^(?:19|20)\d\d$/.test(f) || /^[01]$/.test(f) || /^\d+(?:st|nd|rd|th)$/i.test(f) || (!f.startsWith('$') && KEPT_PUBLIC.test(f))) continue;
+      if (!(/[$\d%@#]/.test(f) || /^[A-Z][A-Z0-9&]{1,5}$/.test(f) || KEPT_TICK.test(f))) continue;
       const i = at(f); if (i < 0) continue;
       let u = '';
       if (/^[$€£]?[\d.,]+[kKmMbB]?$/.test(f)) {
@@ -2221,17 +2384,12 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       if (!bits.includes(f + u)) bits.push(f + u);
     }
     const bare = s => (kept || []).reduce((a, f) => a.split(f).join(' '), String(s).replace(PROTECT, ' ')), d = bare(draft), l = bare(line);
-    if (/[a-z]/.test(d) && d === d.toLowerCase() && l === l.toLowerCase()) bits.push('lowercase');
-    if (!bits.length) return '';
-    const s = list(bits.slice(0, 4).map(x => 'your ' + x));
-    return s[0].toUpperCase() + s.slice(1) + '.';
+    const lower = /[a-z]/.test(d) && d === d.toLowerCase() && l === l.toLowerCase();
+    return [bits.length ? `Kept: ${bits.slice(0, 3).join(', ')}.` : '', lower ? 'Kept your lowercase.' : ''].filter(Boolean).join(' ');
   }
   /* KEPT-END */
   /* the version on show: the best line, or one of its alternatives */
   const verOf = (R, i) => R.state !== 'sharp' ? { line: R.line, say: R.say, why: R.why, cut: [] } : i > 0 && R.alts[i - 1] ? R.alts[i - 1] : { line: R.line, say: R.say, why: R.why, cut: R.cut };
-  const flagged = (R, a, b) => (R.marks || []).some(m => a < m[1] && b > m[0]);
-  const unsureWhy = R => { const m = (R.marks || [])[0], w = m ? R.draft.slice(m[0], m[1]) : ''; return w ? `“${w}” is marked, but there’s no clean cut here.` : 'Kept as written.'; };
-  const CLEAN_WHY = 'Sharpen only cuts what’s soft. Want it to lead harder? ';
   /* links, handles, tags and tickers are never edited: no mark or cut inside one, and a line that lost one isn't shown as sharpened */
   const LOCK = /https?:\/\/\S+|www\.\S+|(?<![\p{L}\p{N}_])[@#$][\p{L}\p{N}_]+/gu;
   function guard(R) {
@@ -2240,19 +2398,25 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const hit = (a, b) => P.some(p => a < p[1] && b > p[0]), safe = l => P.every(p => l.includes(p[2]));
     const G = { ...R, marks: (R.marks || []).filter(m => !hit(m[0], m[1])), cut: (R.cut || []).filter(c => !hit(c.at[0], c.at[1])),
       alts: (R.alts || []).filter(a => safe(a.line)).map(a => ({ ...a, cut: (a.cut || []).filter(c => !hit(c.at[0], c.at[1])) })) };
-    return R.state === 'sharp' && !safe(R.line) ? { ...G, state: G.marks.length ? 'unsure' : 'clean', line: R.draft, cut: [], alts: [], say: '', why: '' } : G;
+    return R.state === 'sharp' && !safe(R.line) ? { ...G, state: G.marks.length ? 'unsure' : 'clean', line: R.draft, cut: [], alts: [], say: 'Kept as written', why: '' } : G;
   }
-  /* what the result panel says: the engine's own words, except the clean/unsure labels the page owns */
+  /* what the result panel says: the engine's own words (say, why, kept). The page adds only labels and the way on.
+     A sharpened line is "Why it hits", unless a word the writer put back now opens it: then it's their call */
+  const opensOn = (line, keepL) => { const head = ' ' + (String(line).toLowerCase().match(/[\p{L}\p{N}$%']+/gu) || []).slice(0, 5).join(' ') + ' '; return keepL.some(w => head.includes(' ' + w.toLowerCase().trim() + ' ')); };
+  const REWRITE = '<button class="inl" type="button" data-rw>Get a rewrite in your voice, free</button>';
   function viewOf(R, v, keepL) {
-    const st = R.state, sharp = st === 'sharp', chose = !sharp && keepL.length > 0 && !!R.say;
-    if (sharp) return { say: v.say, k: 'Why it hits', why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept), keep: true, status: `Sharpened: ${v.line}` };
-    if (chose) return { say: R.say, k: 'Your call.', why: esc(R.why), kept: '', keep: true, status: R.say };
-    if (st === 'clean') return { say: 'How it would post', k: 'Nothing to cut.', why: esc(CLEAN_WHY) + REWRITE, kept: '', keep: false, status: 'Nothing to cut.' };
-    return { say: 'How it would post', k: 'Your call.', why: esc(unsureWhy(R)), kept: '', keep: true, status: 'Your call.' };
+    const st = R.state, sharp = st === 'sharp', words = (String(R.line).match(/\S+/g) || []).length;
+    if (sharp) return { say: v.say, k: keepL.length && opensOn(v.line, keepL) ? 'Your call.' : 'Why it hits', why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
+    const say = R.say || 'Kept as written';
+    /* nothing cut and nothing put back: the way on is a rewrite in your voice (not for a two-word post like "gm") */
+    if (st === 'clean' && !keepL.length) return { say, k: '', why: esc(R.why) + (words >= 3 ? `${R.why ? ' ' : ''}Want it to lead harder? ${REWRITE}` : ''), kept: '', keep: false, cta: 'Start free', status: say };
+    return { say, k: '', why: esc(R.why), kept: '', keep: true, cta: keepL.length ? 'Keep it. Start free' : 'Start free', status: say };
   }
   /* after a put-back: which other struck words came back with it */
-  const backNote = (word, before, after) => { const gone = [...before].filter(w => w && w.toLowerCase() !== word.toLowerCase() && !after.has(w)); return gone.length ? `“${word}” is back, so ${list(gone.map(w => `“${w}”`))} ${gone.length === 1 ? 'stays' : 'stay'} too.` : `“${word}” is back. Tap it to cut it again.`; };
-  const REWRITE = '<button class="inl" type="button" data-rw>Get a rewrite in your voice, free</button>';
+  const backNote = (word, before, after) => { const gone = [...before].filter(w => w && w.toLowerCase() !== word.toLowerCase() && !after.has(w)); return gone.length ? `“${word}” is back, so ${list(gone.map(w => `“${w}”`))} ${gone.length === 1 ? 'comes' : 'come'} back too.` : `“${word}” is back. Tap it to cut it again.`; };
+  /* MARKUP-START */
+  const lead = t => t.length - t.replace(/^\s+/, '').length;
+  const flagged = (R, a, b) => (R.marks || []).some(m => a < m[1] && b > m[0]);
   /* the struck draft: [{a, b, cut, fl, kept, w}] in draft offsets, from the version's cut list, the marks and the put-back words */
   function segments(R, v, keepL) {
     const S = [], over = (a, b) => S.some(x => a < x.b && b > x.a);
@@ -2264,8 +2428,29 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     });
     return S.sort((p, q) => p.a - q.a);
   }
-  /* a toggle per struck word: its name is the word, pressed means cut (the group says what tapping does) */
-  const togAttrs = x => ` role="button" tabindex="0" aria-pressed="${x.cut ? 'true' : 'false'}" aria-label="${esc(x.w)}" data-w="${esc(x.w)}"${x.cut ? '' : ' data-kept="1"'}`;
+  /* a toggle per struck word, named by what a tap does: "Put back “honestly”", then "Cut “honestly” again" */
+  const togAttrs = x => ` role="button" tabindex="0" aria-label="${x.cut ? `Put back “${esc(x.w)}”` : `Cut “${esc(x.w)}” again`}" data-w="${esc(x.w)}"${x.cut ? '' : ' data-kept="1"'}`;
+  /* the Try mirror: squiggles under soft words while you type; after Sharpen it carries the text, cut words struck and tappable */
+  function mirrorHTML(t, S, done) {
+    const off = lead(t); let h = '', last = 0;
+    const txt = s => s ? (done ? `<span aria-hidden="true">${esc(s)}</span>` : esc(s)) : '';
+    S.forEach((x, k) => {
+      const a = x.a + off, b = x.b + off, cls = [x.cut ? 'c' : '', x.fl ? '' : 'x', done && (x.cut || x.kept) ? 'tog' : '', x.kept ? 'kept' : '', x.back ? 'back' : ''].filter(Boolean).join(' ');
+      h += txt(t.slice(last, a)) + `<mark${cls ? ` class="${cls}"` : ''}${done && (x.cut || x.kept) ? togAttrs(x) : ''} style="--k:${k}">${esc(t.slice(a, b))}</mark>`; last = b;
+    });
+    return h + (done ? `<span aria-hidden="true">${esc(t.slice(last))}&#8203;</span>` : esc(t.slice(last)) + '&#8203;');
+  }
+  /* the final's draft card: the same strikes and toggles, as running text */
+  function fpDraftHTML(raw, S) {
+    const off = lead(raw); let h = '', last = 0;
+    S.forEach(x => {
+      const a = x.a + off, b = x.b + off, w = esc(raw.slice(a, b));
+      const inner = x.cut ? `<span class="cut tog"${togAttrs(x)}>${w}</span>` : x.kept ? `<span class="tog kept"${togAttrs(x)}>${w}</span>` : w;
+      h += nb(esc(raw.slice(last, a))) + (x.fl ? `<span class="fl">${inner}</span>` : inner); last = b;
+    });
+    return '<span class="sr">Draft: </span>' + h + nb(esc(raw.slice(last)));
+  }
+  /* MARKUP-END */
 
   /* ---- Try ---- */
   const ta = $('#try-ta'), mir = $('#try-mirror'), flags = $('#try-flags'), why = $('#try-why'), out = $('#try-out'), cnt = $('#try-count'), card = $('.try-c');
@@ -2281,21 +2466,16 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const outSt = s => { const el = $('#out-st'); if (el.textContent !== s) el.textContent = s; };
   outSt.last = $('#out-st').textContent;
   const tryPrimary = fresh => { goBtn.classList.toggle('btn-white', !fresh); goBtn.classList.toggle('btn-glass', fresh); };
-  const keepLabel = () => { tryKeep.textContent = touched ? 'Keep it. Start free' : 'Start free'; };
+  /* Keep says "Keep it" only when there's a sharpened line (or your own choices) to keep */
+  let tryCta = 'Start free';
+  const keepLabel = () => { tryKeep.textContent = touched ? tryCta : 'Start free'; };
+  /* a long draft scrolls inside the box: the last visible line fades, so the box never looks like it ends there */
+  const edBox = ta.closest('.ed');
+  const moreCue = () => edBox.classList.toggle('more', ta.scrollHeight - ta.scrollTop - ta.clientHeight > 2);
   function showWhy(k) {
     const b = flags.querySelector(`button[data-k="${k}"]`); if (!b) return;
     const w = b.firstChild ? b.firstChild.textContent : b.textContent, next = `<b>“${esc(w)}”</b> ${esc(b.dataset.why || '')}`; if (why.innerHTML !== next) why.innerHTML = next;
     $$('#try-flags button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  }
-  /* the mirror: squiggles under soft words while you type; after Sharpen it carries the text, cut words struck and tappable */
-  function mirrorHTML(t, S, done) {
-    const off = lead(t); let h = '', last = 0;
-    const txt = s => s ? (done ? `<span aria-hidden="true">${esc(s)}</span>` : esc(s)) : '';
-    S.forEach((x, k) => {
-      const a = x.a + off, b = x.b + off, cls = [x.cut ? 'c' : '', x.fl ? '' : 'x', done && (x.cut || x.kept) ? 'tog' : '', x.kept ? 'kept' : '', x.back ? 'back' : ''].filter(Boolean).join(' ');
-      h += txt(t.slice(last, a)) + `<mark${cls ? ` class="${cls}"` : ''}${done && (x.cut || x.kept) ? togAttrs(x) : ''} style="--k:${k}">${esc(t.slice(a, b))}</mark>`; last = b;
-    });
-    return h + (done ? `<span aria-hidden="true">${esc(t.slice(last))}&#8203;</span>` : esc(t.slice(last)) + '&#8203;');
   }
   function setMirror(html, done) {
     mir.innerHTML = html; card.classList.toggle('done', !!done);
@@ -2317,17 +2497,17 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* typing: the soft words get their squiggle, and the result waits for a tap */
   function paint() {
     const H = E(), t = ta.value, n = t.length;
-    cnt.textContent = n > 280 ? `−${n - 280}` : `${n} / 280`; cnt.classList.toggle('over', n > 280);
+    cnt.textContent = n > 280 ? `${n - 280} over 280` : `${n} / 280`; cnt.classList.toggle('over', n > 280);
     goBtn.disabled = !t.trim();
     mir.classList.remove('struck', 'anim');
     if (H) {
       const first = t.replace(/^\s+/, '').split('\n')[0].replace(/\s+$/, '');
       marks = (first && H.softMarks(first, keepT)) || [];
       setMirror(mirrorHTML(t, marks.map(m => ({ a: m[0], b: m[1], fl: true })), false), false);
-      chips(t, marks, 'Fluff:');
+      chips(t, marks, 'Could cut:');
       if (!marks.length) why.textContent = t.trim() ? '' : 'Type or paste the first line of a post.';
     } else { setMirror(esc(t) + '&#8203;', false); if (!pendingUp) { pendingUp = true; loadCore().then(() => { pendingUp = false; paint(); }); } }
-    fit();
+    fit(); moreCue();
     clearLabel();
     if (!t.trim()) { showEmpty('Paste a line above. The sharpened version lands here.'); outSt('How it would post'); tryPrimary(false); return; }
     const stale = t !== sharpenedFor, rw = $('#out-why [data-rw]');
@@ -2341,7 +2521,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const ms = [...mir.querySelectorAll('mark.c')].filter(m => !only || only.includes(m)); mir.classList.add('struck'); if (!ms.length || RM) return 0;
     mir.classList.remove('anim'); void mir.offsetWidth; mir.classList.add('anim');
     const d = (ms.length - 1) * 90 + 300;
-    later(() => dropWords(ms, $('#drops'), .09), d, tryT);
+    later(() => dropWords(ms, $('#drops'), .09, ta), d, tryT);
     return d;
   }
   /* render one sharpenLine result. how: 'go' (Sharpen), 'back' (a word put back or cut again), 'alt' (another cut) */
@@ -2349,10 +2529,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const raw = ta.value, st = R.state;
     clear(tryT); out.classList.remove('stale', 'hold');
     if (st === 'empty' || st === 'thin') {
-      showEmpty(st === 'empty' ? 'Paste a line above. The sharpened version lands here.' : 'Give it a real line, a few words, and Sharpen has something to work with.');
+      showEmpty(st === 'empty' ? 'Paste a line above. The sharpened version lands here.' : 'Sharpen needs a few more words. Paste the whole first line.');
       setMirror(esc(raw) + '&#8203;', false); flags.innerHTML = ''; why.textContent = '';
       outSt.last = 'How it would post'; outSt(outSt.last); tryPrimary(false); fresh();
-      $('#try-status').textContent = st === 'thin' ? 'Give it a real line, a few words.' : '';
+      $('#try-status').textContent = st === 'thin' ? 'Sharpen needs a few more words. Paste the whole first line.' : '';
       return;
     }
     showCard(); if (how === 'go') ta.scrollTop = 0;
@@ -2367,18 +2547,18 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (sharp) {
       if (how === 'go') d = strikeAndDrop();
       else { const fresh2 = [...mir.querySelectorAll('mark.c')].filter(m => !prevCut.has(m.dataset.w)); if (fresh2.length) d = strikeAndDrop(fresh2); else mir.classList.add('struck'); }
-    } else if (!(how === 'back' && word && keepT.includes(word))) { if (st === 'unsure') chips(raw, R.marks || [], 'Could cut:', true); else chips(raw, R.marks || [], 'Fluff:'); }
+    } else if (!(how === 'back' && word && keepT.includes(word))) chips(raw, R.marks || [], 'Could cut:', st === 'unsure');
     const line = v.line, V = viewOf(R, v, keepT);
     outLine.className = 'xtext' + (sharp ? '' : ' same') + (line.length > 140 ? ' long' : '');
     outLine.textContent = nb(line);
-    const k = $('#out-k'), w = $('#out-why'), nt = $('#out-note'), kk = $('#out-kk'), kp = $('#out-kept');
-    k.textContent = V.k; w.innerHTML = V.why;
+    const k = $('#out-k'), w = $('#out-why'), nt = $('#out-note'), kp = $('#out-kept');
+    k.textContent = V.k; k.hidden = !V.k; w.innerHTML = V.why; w.hidden = !V.why;
     nt.textContent = [R.note, R.rest.trim() ? 'First line only. The rest stays as you wrote it.' : ''].filter(Boolean).join(' ');
-    kp.textContent = V.kept; kk.hidden = kp.hidden = !V.kept;
+    kp.textContent = V.kept; kp.hidden = !V.kept;
     outSt.last = V.say; outSt(outSt.last);
-    outKeep.hidden = !V.keep; keepLabel();
+    outKeep.hidden = !V.keep; tryCta = V.cta; keepLabel();
     const n = R.alts.length + 1; tryAlt.hidden = !(sharp && touched && R.alts.length);
-    $('#try-alt-t').textContent = `Another cut · ${ver + 1}/${n}`;
+    $('#try-alt-t').textContent = `Another version · ${ver + 1}/${n}`;
     tryLine = line; if (touched) lastLine = tryLine;
     tryPrimary(true);
     $('#try-status').textContent = V.status;
@@ -2416,15 +2596,16 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   flags.addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) showWhy(+b.dataset.k); });
   flags.addEventListener('focusin', e => { const b = e.target.closest('button[data-k]'); if (b) showWhy(+b.dataset.k); });
   ta.addEventListener('input', () => { touched = true; tryReplay.hidden = true; clear(tryT); paint(); keepLabel(); });
-  ta.addEventListener('scroll', () => { mir.scrollTop = ta.scrollTop; });
+  ta.addEventListener('scroll', () => { mir.scrollTop = ta.scrollTop; moreCue(); }, { passive: true });
   let pendingSel = false;
   ta.addEventListener('pointerdown', () => { if (!touched && !picked) pendingSel = true; });
   ta.addEventListener('focus', () => { loadCore(); if (!touched && !picked) { picked = true; ta.select(); } });
   ta.addEventListener('mouseup', e => { if (pendingSel) { e.preventDefault(); pendingSel = false; } });
   ta.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (ta.value.trim()) go(); } });
-  /* "Paste mine" while the example shows; "Clear" once the box holds your own line, with a few seconds to undo it */
-  const TRY0 = ta.value, undoEl = $('#try-undo'); let undoT = 0, undone = null;
-  function clearLabel() { const own = ta.value && ta.value !== TRY0; $('#try-clear').innerHTML = own ? `${icn('close')}Clear` : 'Paste mine'; }
+  /* "Write my own" while the example shows (it clears the box and focuses it); "Clear" once the box holds your own line,
+     with a few seconds to undo it. With the box empty there's nothing to clear, so the button steps away (and Sharpen never clips) */
+  const TRY0 = ta.value, undoEl = $('#try-undo'), clrBtn = $('#try-clear'); let undoT = 0, undone = null;
+  function clearLabel() { const own = ta.value && ta.value !== TRY0; clrBtn.hidden = !ta.value; card.classList.toggle('isx', !!ta.value && !own); const h = own ? `${icn('close')}Clear` : 'Write my own'; if (clrBtn.innerHTML !== h) clrBtn.innerHTML = h; }
   $('#try-clear').addEventListener('click', () => {
     const own = ta.value && ta.value !== TRY0; undone = own ? { v: ta.value, k: keepT.slice() } : null;
     touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = ''; paint(); keepLabel(); ta.focus();
@@ -2451,35 +2632,40 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     finish() { clear(tryT); card.classList.remove('intro'); mir.classList.add('struck'); mir.classList.remove('anim'); }
   };
   tryReplay.addEventListener('click', () => { const t = $('#sharpen'); t.classList.add('arm', 'go'); tryApi.play(); });
+  /* every way into the Try box (the hero button, the nav and footer links, the hero's draft) lands the same way: the tile's
+     moment finishes at once and the box takes focus. From the hero's draft, the box arrives with that draft in it */
   let jumped = false;
-  $('#try-jump').addEventListener('click', e => {
-    e.preventDefault(); loadCore(); jumped = true; $('#sharpen').classList.remove('arm'); tryApi.finish();
+  function jumpToTry(line) {
+    loadCore(); jumped = true; $('#sharpen').classList.remove('arm'); tryApi.finish();
+    if (line) { touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = line; ta.scrollTop = 0; paint(); keepLabel(); }
     $('#sharpen').scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' });
-    setTimeout(() => { ta.focus({ preventScroll: true }); if (!touched) ta.select(); }, RM ? 0 : 480);
-  });
+    setTimeout(() => { ta.focus({ preventScroll: true }); if (line) { const n = ta.value.length; ta.setSelectionRange(n, n); } else if (!touched) ta.select(); }, RM ? 0 : 480);
+  }
+  $$('a[href="#sharpen"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); jumpToTry(); }));
+  const pfB = $('#pf-body');
+  pfB.setAttribute('role', 'button'); pfB.tabIndex = 0; pfB.setAttribute('aria-label', 'Try this draft in the Sharpen box'); pfB.setAttribute('aria-describedby', 'pf-draft');
+  /* the whole compose pane is the door (its Sharpen button aside), the way a real compose box takes a tap anywhere */
+  $('#proof .pane.draft').addEventListener('click', e => { if (!e.target.closest('button')) jumpToTry(EX[curEx].draft); });
+  pfB.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jumpToTry(EX[curEx].draft); } });
 
   /* ---- the final: squiggles as you type; the card beside it sharpens your line live ---- */
   const fi = $('#fin-in'), fm = $('#fin-mtext'), fmir = $('#fin-mirror'), fn = $('#fin-n'), pay = $('#fpay'), finGo = $('#fin-go');
   const fpDraft = $('#fp-draft'), fpHead = $('#fp-head'), fpSharp = $('#fp-sharp'), fpWhy = $('#fp-why'), fpNote = $('#fp-note'), fpAv = $('#fp-av'), fpK = $('#fp-k'), fpTip = $('#fp-tip');
-  const fpCard = $('#fp-card'), fpEmpty = $('#fp-empty'), fpHits = $('#fp-hits'), fpKeep = $('#fp-keep'), fpKK = $('#fp-kk'), fpKept = $('#fp-kept');
+  const fpCard = $('#fp-card'), fpEmpty = $('#fp-empty'), fpHits = $('#fp-hits'), fpKeep = $('#fp-keep'), fpKept = $('#fp-kept'), finKeep = $('#fin-keep'), finField = $('.fin-field');
   const EX0 = { draft: fpDraft.innerHTML, head: fpHead.innerHTML, sharp: fpSharp.innerHTML, why: fpWhy.textContent, note: fpNote.textContent, kept: fpKept.hidden ? '' : fpKept.textContent, av: fpAv.className, y: fpAv.style.getPropertyValue('--y') };
   let live = false, lastKey = '', timer = 0, finLine = '', sayT = 0, keepF = [], FR = null;
-  const flash = () => { if (!RM) { pay.classList.remove('fresh'); void pay.offsetWidth; pay.classList.add('fresh'); } };
-  function keepFin(on) { fpKeep.hidden = !on; finGo.classList.toggle('btn-white', !on); finGo.classList.toggle('btn-glass', on); }
+  /* the card lands once, when the example turns into your line. After that it changes in place while you type:
+     only the words crossfade, the card never re-enters */
+  const flash = () => { if (!RM) { pay.classList.remove('fresh', 'morph'); void pay.offsetWidth; pay.classList.add('fresh'); } };
+  const morph = () => { if (!RM) { pay.classList.remove('fresh', 'morph'); void pay.offsetWidth; pay.classList.add('morph'); } };
+  function keepFin(on, cta) { fpKeep.hidden = !on; if (cta) finKeep.textContent = cta; finGo.classList.toggle('btn-white', !on); finGo.classList.toggle('btn-glass', on); }
+  /* a line longer than the field fades at the edge it runs past, never clipped mid-letter under the counter */
+  const finEdge = () => { const o = fi.scrollWidth - fi.clientWidth > 1; finField.classList.toggle('ovr', o && fi.scrollLeft < fi.scrollWidth - fi.clientWidth - 1); finField.classList.toggle('ovl', o && fi.scrollLeft > 1); };
   /* the beam's hot spot on the panel's top hairline sits exactly where the beam crosses it */
   function finFx() {
     const pn = $('.fin-panel'), lv = $('#fp-live'); if (!pn || !lv || narrow() || lv.offsetParent === null) return;
     const a = pn.getBoundingClientRect(), b = lv.getBoundingClientRect();
     pn.style.setProperty('--fx', ((b.left + b.width * .88 + (b.top - a.top) * Math.tan(20 * Math.PI / 180) - a.left) / a.width * 100).toFixed(1) + '%');
-  }
-  function fpDraftHTML(raw, S) {
-    const off = lead(raw); let h = '', last = 0;
-    S.forEach(x => {
-      const a = x.a + off, b = x.b + off, w = esc(raw.slice(a, b));
-      const inner = x.cut ? `<span class="cut tog"${togAttrs(x)}>${w}</span>` : x.kept ? `<span class="tog kept"${togAttrs(x)}>${w}</span>` : w;
-      h += nb(esc(raw.slice(last, a))) + (x.fl ? `<span class="fl">${inner}</span>` : inner); last = b;
-    });
-    return '<span class="sr">Draft: </span>' + h + nb(esc(raw.slice(last)));
   }
   function payUpdate(force, tog) {
     const H = E(); if (!H) { loadCore().then(H2 => H2 && payUpdate(force, tog)); return; }
@@ -2488,12 +2674,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (!raw.trim()) {
       keepF = []; if (!live) return; live = false; lastKey = ''; pay.classList.remove('live');
       fpDraft.innerHTML = EX0.draft; fpHead.innerHTML = EX0.head; fpSharp.className = 'xtext'; fpSharp.innerHTML = EX0.sharp; fpCard.hidden = false; fpEmpty.hidden = true; fpHits.hidden = false; fpTip.hidden = true;
-      fpK.textContent = 'Why it hits'; fpWhy.textContent = EX0.why; fpNote.textContent = EX0.note; fpKept.textContent = EX0.kept; fpKK.hidden = fpKept.hidden = !EX0.kept; fpAv.className = EX0.av; fpAv.style.setProperty('--y', EX0.y); keepFin(false); finLine = ''; if (!sayT) fn.textContent = ''; flash(); finFx(); return;
+      fpK.textContent = 'Why it hits'; fpK.hidden = false; fpWhy.hidden = false; fpWhy.textContent = EX0.why; fpNote.textContent = EX0.note; fpKept.textContent = EX0.kept; fpKept.hidden = !EX0.kept; fpAv.className = EX0.av; fpAv.style.setProperty('--y', EX0.y); keepFin(false); finLine = ''; if (!sayT) fn.textContent = ''; flash(); finFx(); return;
     }
     const prevCut = new Set([...fpDraft.querySelectorAll('.cut')].map(x => x.dataset.w));
     keepF = FR && sameLine(raw, FR.draft) ? inLine(keepF, raw) : []; FR = guard(H.sharpenLine(raw, { keep: keepF }));
     const st = FR.state, sharp = st === 'sharp';
     const key = st + '|' + FR.line + '|' + FR.note + '|' + keepF.join(',');
+    const first = !live;
     if (!live) { fpHead.innerHTML = '<b id="fp-name">You</b><span>@you · now</span>'; fpAv.className = 'av you xav'; }
     live = true; pay.classList.add('live');
     const S = st === 'empty' || st === 'thin' ? [] : segments(FR, verOf(FR, 0), keepF);
@@ -2505,18 +2692,18 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (!sayT) fn.textContent = nf ? `${nf} bit${nf === 1 ? '' : 's'} of fluff` : '';
     if (key === lastKey && !force) return; lastKey = key;
     if (st === 'thin' || st === 'empty') {
-      fpCard.hidden = true; fpHits.hidden = true; fpEmpty.hidden = false; fpEmpty.textContent = 'Give it a real line, a few words, and Sharpen has something to work with.'; keepFin(false); finLine = '';
+      fpCard.hidden = true; fpHits.hidden = true; fpEmpty.hidden = false; fpEmpty.textContent = 'Sharpen needs a few more words. Paste the whole first line.'; keepFin(false); finLine = '';
     } else {
       fpCard.hidden = false; fpEmpty.hidden = true; fpHits.hidden = false;
       fpSharp.className = 'xtext' + (sharp ? '' : ' same');
       fpSharp.innerHTML = `<span class="sr">${sharp ? 'Sharpened: ' : 'As you wrote it: '}</span>` + nb(esc(FR.line));
       const V = viewOf(FR, verOf(FR, 0), keepF);
-      fpK.textContent = V.k; fpWhy.innerHTML = V.why;
+      fpK.textContent = V.k; fpK.hidden = !V.k; fpWhy.innerHTML = V.why; fpWhy.hidden = !V.why;
       fpNote.textContent = FR.note;
-      fpKept.textContent = V.kept; fpKK.hidden = fpKept.hidden = !V.kept;
-      finLine = FR.line; lastLine = FR.line; keepFin(V.keep);
+      fpKept.textContent = V.kept; fpKept.hidden = !V.kept;
+      finLine = FR.line; lastLine = FR.line; keepFin(V.keep, V.cta);
     }
-    flash(); finFx();
+    if (first || (force && !tog)) flash(); else morph(); finFx();
   }
   const fpaint = () => {
     const H = E(), t = fi.value; if (!H) { fm.textContent = t; return; }
@@ -2528,13 +2715,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function say(msg) { clearTimeout(sayT); fn.textContent = msg; fn.classList.add('say'); sayT = setTimeout(() => { sayT = 0; fn.classList.remove('say'); fpaint(); }, 2500); }
   fi.addEventListener('input', () => { if (sayT) { clearTimeout(sayT); sayT = 0; fn.classList.remove('say'); } loadCore().then(() => { fpaint(); clearTimeout(timer); timer = setTimeout(payUpdate, 350); }); });
   fi.addEventListener('focus', () => loadCore());
-  fi.addEventListener('scroll', () => { fmir.scrollLeft = fi.scrollLeft; });
-  ['keyup', 'click', 'select'].forEach(ev => fi.addEventListener(ev, () => { fmir.scrollLeft = fi.scrollLeft; }));
+  fi.addEventListener('scroll', () => { fmir.scrollLeft = fi.scrollLeft; finEdge(); });
+  ['keyup', 'click', 'select', 'input', 'focus', 'blur'].forEach(ev => fi.addEventListener(ev, () => { fmir.scrollLeft = fi.scrollLeft; requestAnimationFrame(finEdge); }));
   $('#fin-form').addEventListener('submit', async e => {
     e.preventDefault(); clearTimeout(timer);
     if (!fi.value.trim()) { say('Paste a line first'); payUpdate(); fi.focus(); return; }
     await loadCore(); fpaint(); payUpdate(true);
-    if (FR) $('#fin-status').textContent = FR.state === 'thin' ? 'Give it a real line, a few words.' : viewOf(FR, verOf(FR, 0), keepF).status;
+    if (FR) $('#fin-status').textContent = FR.state === 'thin' ? 'Sharpen needs a few more words. Paste the whole first line.' : viewOf(FR, verOf(FR, 0), keepF).status;
     if (narrow()) { fi.blur(); setTimeout(() => { const el = fpKeep.hidden ? (fpHits.hidden ? fpEmpty : fpHits) : fpKeep; el.scrollIntoView({ block: 'end', behavior: RM ? 'auto' : 'smooth' }); }, 60); }
   });
   async function toggleFin(el) {
@@ -2565,7 +2752,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const MOMENT = {
     try: () => tryApi.play(),
     rep: () => rpType(),
-    day: t => { const yp = t.querySelector('.fp.yp'), pu = t.querySelector('.m-push'); if (yp && pu) pu.style.setProperty('--push', -yp.offsetHeight + 'px'); }
+    day: t => { const yp = t.querySelector('.fp.yp'); if (yp) t.querySelectorAll('.m-push').forEach(pu => pu.style.setProperty('--push', -yp.offsetHeight + 'px')); }
   };
   function play(t) {
     if (RM) return;

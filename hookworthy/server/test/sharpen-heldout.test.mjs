@@ -85,7 +85,8 @@ test('held-out: no meaning flip', () => {
   const bad = [];
   for (const x of runs) {
     const R = x.R, d = R.draft, l = R.line, why = [];
-    if (cnt(l, NEG) < cnt(outside(d, R.marks), NEG)) why.push('a negation went');
+    /* "whether or not" is a choice, not a negation: "thinking about whether or not X is Y" → "Is X Y?" keeps the meaning */
+    if (cnt(l, NEG) < cnt(outside(d, R.marks).replace(/\bwhether or not\b/gi, 'whether'), NEG)) why.push('a negation went');
     KEEP.forEach(re => { if (re.test(d) && !re.test(l)) why.push(`lost ${re}`); });
     /* "just" = recently: if the verb is still there, so is the "just" in front of it */
     for (const m of d.matchAll(/\bjust (\w+ed|hit|got|made|won|lost|sold|bought|ran|flipped|crossed|launched|shipped|pushed|dropped|reclaimed)\b/gi)) if (new RegExp(`\\b${m[1]}\\b`, 'i').test(l) && !new RegExp(`\\bjust ${m[1]}\\b`, 'i').test(l)) why.push(`cut the "just" of "just ${m[1]}"`);
@@ -105,7 +106,8 @@ test('held-out: no broken template', () => {
     /* a capital mid-sentence the writer didn't write */
     (l.match(/(?<=[\p{L}\p{N},;%)'’] )\p{Lu}[\p{L}’']*/gu) || []).filter(w => !/^I(?:['’]\w+)?$/.test(w) && !new RegExp(`(?<![\\p{L}])${w}(?![\\p{L}])`, 'u').test(d)).forEach(w => why.push(`new capital "${w}"`));
     /* a never-say word: never added, and never left in a sharpened line ("leverage" the trader's noun is a word, "leverage your data" is the never-say verb) */
-    const NEVER = /\b(?:unlock\w*|supercharg\w*|elevat(?:e|es|ed|ing)|seamless\w*|game[- ]?changer|delv(?:e|es|ed|ing)|ai-powered)\b|\bleverag\w* (?:your|our|their|the|this|that|it|them|ai|data|my)\b/gi;
+    /* the writer's own nouns stay theirs: a token unlock ("$ARB unlock is next week") and trading "on leverage that…" are not the never-say verbs */
+    const NEVER = /\b(?<!(?:\$[A-Za-z]{2,10}|\btoken|\bthe|\bnext|\bvesting)\s)unlock\w*\b|\b(?:supercharg\w*|elevat(?:e|es|ed|ing)|seamless\w*|game[- ]?changer|delv(?:e|es|ed|ing)|ai-powered)\b|(?<!\b(?:on|with|of|using|no|max|high|low|more|less|\d+x)\s)\bleverag\w* (?:your|our|their|the|this|that|it|them|ai|data|my)\b/gi;
     if (cnt(l, NEVER) > cnt(d, NEVER) || (x.R.state === 'sharp' && cnt(l, NEVER))) why.push('a never-say word');
     if (why.length) bad.push(`${label(x)}: ${why.join('; ')}`);
   }

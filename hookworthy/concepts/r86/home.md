@@ -247,3 +247,102 @@ FIX2's decisions win where reviewers disagree. All engine text (say, why, cuts, 
 - Hero post bottom: 800 at 1440×900 and 768 at 1280×800 (above the fold). The window height is constant across the 4 examples at every width.
 - The FIX test lines pass in Try and the final at 1440 and 390 (`engine2.js`). `states2.js`, `sheet-test.js` and the intent tests pass.
 - `hero-sync.js` passes, run last against the current core.js.
+
+## Pass 3 (brief: `r86/FIX3.md`, re-rate reviews in `r86/rerate2/`)
+FIX3's decisions win where reviewers disagree. The page renders only what `HWCore.sharpenLine` returns (state, line, cut, say, why, kept, alts, note). For clean and unsure lines it now shows the engine's own `say` and `why` too. The page's own "no clean cut here" and "Sharpen only cuts what's soft" lines are gone.
+
+**Founder**
+- founder-3: hero sub "Cut the fluff from your first line in one tap, then schedule it for X. It still sounds like you." Meta, OG and Twitter descriptions match.
+- founder-5 (decision 4): the Trust sub adds "No auto-DMs or auto-follows, on purpose: automation like that can get an account restricted."
+- founder-6/11 (decision 5): index.html sets Studio's allowance per client voice (500 auto-posts a month per client voice; rewrites pooled).
+  - The Studio card lists "Everything in Pro, plus:", "Up to 8 client voices, plus your own", "500 auto-sent posts a month per client", "500 rewrites per client a month, pooled", "Their yes before anything posts" and "Sent from each client's own X account".
+  - The Studio tile fact reads "Posts go out from their own connected X account."
+  - FAQ #qa4: each client "connects the X account they already have. Hookworthy doesn't provide accounts."
+- founder-7: "More than 8 clients? Talk to us: hello@hookworthy.com" is a mailto link (subject preset), with the address shown and kept on one line.
+- founder-8 (decision 6): "Write my own" clears the box and focuses it. It reads "× Clear" on your own text and hides while the box is empty, so Undo and Sharpen always fit.
+- founder-9 (decision 7): the hero draft pane is a door. A click anywhere in it except Sharpen, or Enter on the focusable draft, scrolls to Try with that draft filled in and focused. It doesn't sharpen; the receipt says "Tap Sharpen to see yours."
+- founder-10 (decision 8): the done state names the plan and price, e.g. "…starts Pro at $12 a month, billed yearly ($144). Nothing is charged today." Free reads "…signs you in on Free ($0, no card)."
+- founder-12 (decision 9): Designer becomes Ghostwriter. Lena Fischer's draft "I just think you don't need a morning routine, you need one thing you do before your phone" sharpens to "You don't need a morning routine. You need one thing you do before your phone.", her post in Studio (state sharp, cut "I just think", split into two beats).
+- founder-13 (decision 10): og:url, a canonical link and absolute og:image/twitter:image, under a comment that they assume the site is served at the root of hookworthy.com.
+
+**Marketing**
+- marketing-2 (decision 2): `keptLine` renders "Kept: $SOL, 40%." and adds "Kept your lowercase." only for an all-lowercase draft. It never says "your" before a fact.
+  - Skipped: public acronyms (AI, CPI, ETF, FOMC, SEO, B2B…), years, a bare 0 or 1 and ordinals without their noun.
+  - At most three items. A few more units travel with their number (decks, deals, signups…).
+  - The hero, Try and the final share the format. The hero's Kept row moved under the draft's Cut row, so the draft reads as a ledger: Cut / Kept.
+- marketing-3 (page half): thin reads "Sharpen needs a few more words. Paste the whole first line." The chip label is "Could cut:" while typing and after Sharpen. Keep says "Keep it. Start free" only on a sharpened line (or one with your own put-backs), and "Start free" on clean, unsure and thin.
+- marketing-5 (page half): "“x” is back, so “y” comes back too." When a word you put back opens the line, the label is "Your call." "Another version · 1/2".
+- marketing-6/7/8/9/10/11/13/14:
+  - "Write my own".
+  - The platform row "Posts to X · LinkedIn · Ready to paste on Threads · Bluesky": two groups that never split; on phones one group per line.
+  - "Plug replies (one reply you write ahead)" in Trust and #qa2.
+  - "Trades, launches, newsletters."
+  - FAQ head "Before you hand it / your first line."
+  - The email error "That email looks incomplete. Try name@example.com."
+  - Free card: "Learns your voice (5 rewrites, once)" and "Say it: talk instead of typing" (the app's dictation; nothing claims it transcribes audio files). The Day tile's step reads "You said it out loud".
+- marketing-12: Studio sheets never carry your line, from Pricing or after switching to Studio; switching back to Pro or Free brings it back.
+
+**UI/UX**
+- uiux-1: the Day post is inserted, not dropped on top. It is revealed top-down (clip-path) at the pace every post below moves down (all `.m-push` share `--push`), so no text crosses other text.
+- uiux-2/4: see founder-8, plus `flex-wrap` and tighter gaps at ≤379; at ≤379 the example's count steps aside for "Write my own". Sharpen never clips at 360–414 in any state (example, own text, Undo, over 280).
+- uiux-3: the final card lands once (example → your line). After that it changes in place: only the words crossfade (.6 → 1, 150 ms). Sharpen/Keep swap colour and fill in one step (no colour transition on #try-go and #fin-go).
+- uiux-5: a long draft fades at the box's last whole line. The count reads "40 over 280".
+- uiux-6/7 (decision 8): "Design preview: no account is created yet." sits under the sheet's sub, before any input. Sign-in mode shows "New here? Start free", which switches back.
+- uiux-8: the review card's Draft/Scheduled state is a pill on the review-link row, so names and handles never clip. Dan Ridge lost his tag (brand-3), so his handle shows whole.
+- uiux-9: unpicked time slots are plain text; only the picked one is a pill.
+- uiux-10: Keeps follows the app's rule (put back twice and it's learned; cut a learned word and it's unlearned). Every state has its own true line.
+- uiux-11/12/13/14:
+  - #rp-text gets `aria-label` only in edit mode, with role=textbox.
+  - Status text that takes focus draws no ring.
+  - Toggles are named by action ("Put back “honestly”" / "Cut “honestly” again", no aria-pressed).
+  - Struck words preview their put-back on hover (the strike fades, the word lifts to ink).
+- uiux-15: the X/Threads/Bluesky hook is a quiet tint, not bold. The feed fade ends on a line's bottom edge (`--fe`, measured), so no line is sliced.
+- uiux-16 / web-6: the phone bar comes up only once you're past the Try box (no on/off at the demo), and steps back for Studio as well as Try and Pricing.
+- uiux-17: the nav "Try it" and footer "Sharpen" links land the way the hero button does.
+- uiux-19: the hero pills scroller has end padding. Its min-width bug at 360 (the Ghostwriter pill widened the window) is fixed.
+
+**Web**
+- web-1 / brand-2: the 3em why floor is gone. The hero body height is measured on a hidden clone for all four examples at the current width (`sizeHero()`, on load, fonts and resize), so the window is exactly as tall as the tallest example, phones included. No dead band, and the window is still one height across picks.
+- web-2 / brand-4 / brand-5:
+  - Studio ≥1200: the client picker is a list with each client's next slot, and the facts close the column level with the review box.
+  - Trust 761–1099: the never-list runs the full width.
+  - Who ≥1100 is a band like Voice and Trust: a 40px head and the four kinds of poster in one row. Replies and Results share the row above, 6/6. At 761–1099, Results and Who keep their pair, and their heads share one fitted size (container units).
+- web-3: the hero's sharpened post, why and receipt wait at .35 from first paint and wake when the strike lands. A pick comes up from .35, never from 0.
+- web-4: see marketing-7.
+- web-5: the phone notification is opaque and covers the tabs down to their hairline.
+- web-7: Try snaps to whole lines with a fade. Falling words skip anything scrolled out of the box.
+- web-8: the final field fades at the edge a long line runs past, never under the counter.
+- web-9:
+  - `nb()` (display only) binds a one-letter word to the next word and a short last word to the one before.
+  - "Talk to us: hello@…" is nowrap.
+  - The final's example draft is balanced.
+  - Feed text, `.qpost` and Trust's rules are pretty or balanced.
+- web-10: on phones the plan card's "for" row takes the price column's extra height (grid row 1fr), so name and line sit alike on every card. The Try receipt row holds two lines.
+- web-11: `overflow: clip` on tiles, `.dn`, `.well` and `.studio`.
+- web-12: `font-display: swap` with a metric-matched local fallback ("Inter Fallback").
+- web-13: at 761–900 the Studio photo fills the card (3:1).
+- web-14: phone sheet grabber. A drag of more than 80px puts it away; a shorter one snaps back.
+- Also: the Replies typing caret takes no room in the line (it re-wrapped the reply, a 0.015 shift at 780).
+
+**Brand**
+- brand-1: the trader post's photo is cropped in to the journal and pen (`.ph.jr`, frame 3 at 182%/296%) in the Day feed, Replies and Results.
+- brand-3: one rule for the Example tag: the protagonist of each tile is tagged (heycape in all four previews), the supporting cast isn't (Dan Ridge in Replies and LinkedIn), and the footer covers everyone.
+- brand-6: the warm rim's glint is brighter on output cards (.6/.28) and draws in once when a line is sharpened (hero, Try, final).
+- brand-7: stray greys are now tokens (`--s4 --s5 --wave --shell --ph-bg --notif --white --pill-*`), and each platform preview's palette is a named group (`--pf-th-* --pf-li-* --pf-bs-*`). X previews use the `--x-*` tokens.
+
+**Tooling**
+- `hero-sync.js` lifts the page's MARKUP block (`segments`, `togAttrs`, `mirrorHTML`, `fpDraftHTML`). `--write` now also rebuilds the Try default's struck mirror and the final example's draft from the engine, so an engine change never needs a hand edit. Kept rows are matched with their classes.
+
+**Skipped, per FIX3**
+- Engine items (decision 1): founder-1/2, marketing-1, the engine halves of marketing-3/4/5, web-15, uiux-18.
+- founder-4 (decision 13): the app's trial copy.
+- web-12's Sharpen-only engine bundle: core.js isn't the page's to change.
+
+**Numbers (final build, run against the current core.js)**
+- `check.js home`: ok:true. axe 0 at 1440 and 390, and in 15 dynamic states at both widths (Try sharp/put back/clean/thin, final live/put back, Studio approved, reply edit/sent, FAQ open, Keeps, sheet Pro/sign-in/done).
+- CLS 0 at 1440, 1280, 1024, 960, 901, 768, 761–780, 390 and 360. Nothing pokes past the viewport.
+- Every heading is two lines or fewer at 1440, 1280, 1024, 960, 901, 768, 761–780, 390 and 360.
+- Screens: 9.61 at 390 (budget 10.0), 10.43 at 360 (budget 10.5), 9.60 at 768, 8.32 at 1440.
+- Hero post bottom: 800 at 1440×900, 768 at 1280×800. The window is the same height for all four examples.
+- Try and the final, with the default, empty, "asdf", "$BTC 100k eoy?", a 320-character line, "so i think honestly basically it is kind of good", "Just shipped v2!…", "This is kind of a big deal for us.", "The Fed meets tomorrow." and "gm": strikes, line, receipt and why equal the engine's at 1440, 390 and 360, and put back / cut again round-trips. Run with `r86/fix3/trytest.js`.
+- The sheet opens from every CTA, traps focus, returns it, and names plan and price when done (`r86/fix3/sheettest.js`). Nothing replays on hover or focus (`r86/fix3/motion.js`).
