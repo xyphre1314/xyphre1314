@@ -22,8 +22,9 @@ const L = (t, o) => S(t, o).line;
 test('juror 3, hook-1: an opinion frame takes its "that"; "breaks" only when it does', () => {
   assert.equal(L('I think that in 5 years nobody will remember this.'), 'In 5 years nobody will remember this.');
   assert.equal(L('I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'), 'In 2026, the companies that will win are the ones that are willing to say something interesting.');
-  assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "Most people need to sleep more and eat more protein, and that's it.");
-  assert.equal(L("I think that's pretty much it for today."), "That's it for today.");
+  /* the cut lands (no bail-out); "just need" (= simply) and the closing "pretty much it" are the writer's voice and stay */
+  assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "Most people just need to sleep more and eat more protein, and that's pretty much it.");
+  assert.equal(L("I think that's pretty much it for today."), "That's pretty much it for today.");
   /* an unsure line says "breaks" only when the cut version is broken or says something else */
   const { rows } = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-heldout.json'), 'utf8'));
   const D = core.SHARPEN._dbg;
@@ -121,6 +122,23 @@ test('juror 3, hook-6/9 and uiux-1: strikes are every removed word, fluff was ma
   const R = S("We just hit $10k MRR after 14 months of building in public. Here's everything that actually worked:");
   if (R.state === 'sharp' && !/^We just hit/.test(R.line)) { assert.ok(R.cut.some(c => /We just hit/.test(c.text) || c.text === 'We'), R.line); assert.match(L(R.draft, { keep: ['We just hit'] }), /We just hit/); }
   assert.match(L('Maybe I’m wrong, but I think it’s still early for ETH.', { keep: ['I think'] }), /I think/);
+});
+
+test('rounds G-J: the misses found at first contact stay fixed', () => {
+  assert.equal(L("After a lot of thought, we've decided to sunset our free plan starting next month"), "We're sunsetting our free plan starting next month.");
+  assert.equal(S("Cold email still works. Lazy cold email doesn't.").state, 'clean', 'a real 7-word post is never thin');
+  assert.equal(L("I'll be honest, I almost didn't post this because I thought nobody would care"), "I almost didn't post this because I thought nobody would care.");
+  assert.equal(L("I've said this before and I'll say it again: your first line is 80% of the work"), 'Your first line is 80% of the work.');
+  assert.match(L('Not gonna lie, I was really nervous about raising prices but we lost basically zero customers'), /basically zero customers/);
+  assert.doesNotMatch(L("If there's one thing I've learned from writing online for 4 years, it's that consistency beats virality"), /\?/);
+  assert.equal(L("Not financial advice obviously but I've been slowly accumulating $LINK under 15 for the past month"), "I've been slowly accumulating $LINK under 15 for the past month. Not financial advice.");
+  assert.doesNotMatch(L('I genuinely believe that the best founders are the ones who are obsessed with the problem, not the solution'), /aren['’]t the solution/);
+  assert.doesNotMatch(L("I want to take a second to talk about something that I think doesn't get discussed enough in the startup world, which is how lonely it can be to be a solo founder, especially in the early days when nobody believes in what you're building and every week feels like you're shouting into the void. Last week we finally crossed 1,000 paying customers."), /(?:^|\. )Something that/);
+  /* a sharp line keeps its shape; a sincere "just" (= merely, simply) stays */
+  for (const t of ['If your pricing page needs a FAQ, your pricing is too complicated.', 'Funding rates are negative and price is still going up. Shorts are about to have a bad week.', 'Quarterly planning is just guessing with a spreadsheet.']) assert.equal(L(t), t);
+  /* the news leads a post over 280, and a feeling said in the first person keeps its weight */
+  assert.match(L("I've been building in public for almost two years now and I wanted to share something that I really think a lot of people get wrong, which is that they focus way too much on follower count and not nearly enough on whether the people following them actually care about what they're building. We just hit $20k MRR with 3,100 followers."), /^We just hit \$20k MRR with 3,100 followers\./);
+  assert.match(L("I don't usually post about my personal life on here but I just got married this weekend and I'm really happy"), /really happy/);
 });
 
 test('web-1: SHARPEN.warm() compiles every path once, and the first call after it is fast', () => {

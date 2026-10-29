@@ -91,3 +91,38 @@ o = better, with a soft spot; m = unchanged when it should change, worse, wrong,
 - sharpen-eval (48): 44 h / 4 o / 0 m = 91.7% h (unchanged from baseline).
 - Rounds as they stand now (not first contact): A 98.8% · B 97.5% · C 96.3% · D 98.8% · E 100% · F 96.3%.
 - Invariants over 833 distinct lines (fixture, 159, rounds, probes): receipt = strikes, no moved word struck, a why names all its cuts or none, no quote ending on a small word, Kept never a public acronym/0/"lowercase", why ≤ 140: 0 violations.
+
+# Pass 4 (ENGINE4): rounds G–J, graded under the calibrated standard
+Standard: h = a good creator would post it exactly as is, with no "it's fine but…". Each round is 80–81 new lines, half of them
+needing work (layered run-ups, labels, hedges, buried numbers, over-280 posts), half already sharp. First-contact outputs
+were recorded (round-X.first.json / .first.txt) and graded (round-X.graded.json) before any change for that round.
+
+## Round G — first contact (after the hook-1…16 / marketing / uiux / web fixes; 80 lines, 40 need work)
+- 66 h / 12 o / 2 m = **82.5% h** · needs-work **30/40 = 75.0%** · should-stay 36/40. Explanations false: 0.
+- m: #29 "sunseting" (ing of "sunset") · #60 "Cold email still works. Lazy cold email doesn't." called thin (trailing full stops hid the verbs).
+- o: "It's honestly kind of wild that…" (split made "wild" attach to the first fact) · "I've been thinking a lot lately about why…" · "…and I wanted to talk about how it's going" · "really happy" flattened · "Hardest ones to get?" · "Long story short," · leftover "The current market:" · over-280 with the run-up kept · 3 sharp lines reshaped (Q/A ×2, a split).
+- Fixes: doubled consonants (sunsetting, committing…); thin never misses a verb behind a full stop; "It's (kind of) wild/crazy that" frame; "Why do X?" from "been thinking about why X, and it's because Y"; "…. Here's how it's going:"; a first-person feeling keeps its intensifier; no Q/A built on "ones"; "Long story short"; a crisp line (nothing soft, its own full stop) gets no Q/A or split; "Day 90", "Year 2" are one fact; the news leads on every candidate of an over-280 post, which also loses its run-up.
+
+## Round H — first contact (after round-G fixes; 81 lines, 40 need work)
+- 63 h / 16 o / 2 m = **77.8% h** · needs-work **22/40 = 55.0%** · should-stay 41/41. Explanations false: 3.
+- m: #4 "Because I thought nobody would care." (a disclaimer cut took the clause's head) · #27 "I'll say it again: …. I've said this before." (the frame reordered behind the point).
+- Explanations false: #7 one frame struck in pieces and the kept "I" struck · #24 quote "$HYPE looks" · #39 quote "We're 14 months".
+- o: 16 frames the table didn't know: "I need to talk about something that's been bugging me:", "Just my two cents but", "Let me be clear:", "This is going to sound crazy but", "It turns out that", "What I've realized after 8 years… is that", "One thing I've noticed is that", "I know this is a hot take but", "So yeah,", "Thrilled to finally be able to share that", "Can't believe I'm saying this but", "Here's a thought:", "I want to be really transparent with you all about our numbers:", a mid-line "and I'm so happy to finally announce that", "I've personally read", a buried "the one that actually worked was X, which bumped conversions by 19%".
+- Fixes: all of the above as frames (with "I almost didn't post this" kept when "because" follows); a sentence that opens on "Because/Although" with no main clause is a fragment; quotes never stop before "like", "in" (14 months in), "for" (asked for), "of" (80% of), a pronoun object, or "than"; "8 years of design work taught me this: …"; "X bumped conversions by 19%. It was the one thing that actually worked this quarter."; a disclaimer that holds a meaning word ("Maybe it's just me but") goes whole, and a call's own hedge is read outside it.
+
+## Round I — first contact (after round-H fixes; 80 lines, 40 need work)
+- 65 h / 13 o / 2 m = **81.3% h** · needs-work **26/40 = 65.0%** · should-stay 39/40. Explanations false: 0.
+- m: #22 "basically zero customers" → "zero customers" (approximate became absolute) · #39 "Something that doesn't get discussed enough…, which is how lonely…" (fragment after the news moved up).
+- o: "I just wanted to drop a quick note to say that", "I'm starting to think that", "genuinely so proud", "Not sure if anyone else feels this way but", "It's safe to say that", "I recently realized that", "Just thinking out loud here but", "I don't usually do this but… a quick win:", "Here are a few things that I wish I knew", "What I'm trying to say is that", "One of the things I love most about… is", "For those of you who have been asking, yes,", and a sharp line's "is just guessing" lost its "just".
+- Fixes: all of those frames; "basically zero/never" is a qualifier; "just" before guessing/gambling/pretending (= merely) stays; "Things I wish I knew…", "My favorite part of X: Y", "Not enough people in X talk about Y"; "Something that…, which is…" is a fragment.
+
+## Round J — first contact (after round-I fixes; 80 lines, 40 need work) — the fourth and last round
+- 63 h / 14 o / 3 m = **78.8% h** · needs-work **23/40 = 57.5%** · should-stay 40/40. Explanations false: 1 (#36 quote "just expensive").
+- m: #22 "There's one thing I've learned…? It's that…" (condQ on "If there's one thing") · #25 "Obviously but I've been…" (the NFA moved, its "obviously but" stayed) · #28 "The best founders aren't the solution." (notFlip took the "not" for the subject).
+- o: "It's been a crazy year… but the biggest lesson by far is that", "I'm honestly kind of embarrassed to admit this", "One thing that… get wrong… is that", "I wanted to write a quick thread on", "Just a quick tip for anyone learning React:", "This is kind of a weird one but", "Not to get too personal on here but", "So we did a thing:", "Not sure why more people aren't talking about the fact that", "After spending… on it, I'm happy to say that" (unsure: the cut would dangle), "I've said it once and I'll say it a thousand times:", "I know it sounds counterintuitive but", "In my honest opinion", "I've been thinking a lot about burnout lately." kept in an over-280 post.
+- Fixes: all except "Not sure why more people aren't talking about…" (every rewrite drops a negation, so the guard rejects it) and the burnout sentence (cutting it loses the topic).
+
+## Verdict on the bar (ENGINE4)
+- First contact, overall / needs-work: G 82.5% / 75.0% · H 77.8% / 55.0% · I 81.3% / 65.0% · J 78.8% / 57.5%.
+- Bar: two consecutive rounds ≥ 92% overall and ≥ 85% on needs-work, 0 misses, every explanation true. **Not met** in the four rounds the brief allows. Should-stay lines are fine at first contact (156/161 h); the gap is the long tail of run-up frames on the needs-work half, plus one or two structural misses per round.
+- After each round's fixes those rounds stand at G 98.8% · H 100% · I 100% · J 97.5% (not first contact).
