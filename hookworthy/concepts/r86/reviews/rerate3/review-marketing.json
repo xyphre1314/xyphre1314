@@ -1,0 +1,135 @@
+{
+ "key": "marketing",
+ "role": "senior app marketing lead: growth, lifecycle and copy for consumer/prosumer apps",
+ "score": 9.0,
+ "verdict": "The static copy is close to best-in-class. Headline pairs are tight and concrete, the voice is consistent and honest, the X-creator texture ($SOL, pnl, lowercase, 'no hero trades') is real, and pricing and the preview sheet tell the truth in plain words. What holds it under 9.5 is the copy the visitor sees after tapping Sharpen on their own line: about 1 in 5 'why' quotes break off mid-phrase, the put-back hint appears when nothing is struck, and a few reorders come out garbled. All of these land in the product's key conversion moment.",
+ "to_95": [
+  "Stop the 'why' quotes from ending mid-phrase. Quote up to a clause or noun-phrase boundary, never ending on a preposition, article or dangling verb ('…seed round led', '…about cold', '…on the first', '…10,000 GitHub'). If no clean boundary fits in the window, use the non-quoting template ('The run-up is gone, so the first words people read are yours.').",
+  "Never show 'Tap a struck word to put it back.' when nothing in the draft is struck. For move-only results, use the hero's own line 'Every fact you wrote is still there.' Strike the words a move removes (for example 'Here are') so the FAQ promise 'Every cut is marked' stays true.",
+  "Suppress reorder moves whose output isn't a whole sentence, or fall back to cuts only. Visible failures: 'overrated for most people: i actually think dca.', 'real reason most newsletters stall?' (lost 'the'), and 'We shipped dark mode. The onboarding checklist this week.' (This is the engine juror's area, but it shows up as page copy in the demo.)",
+  "Make the put-back label say 'Your call.' when the kept phrase contains a curly apostrophe. The Founder starter currently shows 'Why it hits' over 'You kept “We’re really excited to announce that”…'.",
+  "Clean up the P2 microcopy below: the 'Nothing to cut' wording, plan-bullet terms, 'Nothing is charged today', the sign-in preview pill, Trust/FAQ duplication, and Replay sitting next to Reply."
+ ],
+ "issues": [
+  {
+   "id": "marketing-1",
+   "severity": "P1",
+   "area": "Try box / final result copy ('Why it hits')",
+   "where": "#out-why and #fp-why, text from HWCore.sharpenLine().why",
+   "problem": "The why templates quote the first N words of the new line and often cut off mid-phrase. Examples: 'The run-up is gone, so the line starts on “We've raised a $4M seed round led”.'; '“the thing nobody tells you about cold” is now the first thing people read.'; 'It now opens on “The market usually dumps on the first”…'; '…“Our open-source library just passed 10,000 GitHub”.'; 'The question opens a gap, and “posting” closes it…'. In a 20-line sample of founder and announcement drafts, about 1 in 5 explanations read broken. This is the product's own voice at the moment a visitor decides whether to trust it.",
+   "fix": "In core.js's why builder, end a quote only at a clause boundary or a complete noun phrase. Never end on a/an/the/of/to/in/on/at/for/by/from/with/my/our/your or on a bare verb ('led'), and always include a number's unit ('10,000 GitHub stars'). If no clean span fits in about 8 words, use 'The run-up is gone, so the first words people read are yours.'"
+  },
+  {
+   "id": "marketing-2",
+   "severity": "P1",
+   "area": "Try box hint truth",
+   "where": "#try-flags after Sharpen on a move-only result, e.g. hero Founder draft > tap the draft > Sharpen, or 'Here are 7 lessons I learned…'",
+   "problem": "The hint 'Tap a struck word to put it back.' shows even though nothing in the draft is struck, so the instruction points at nothing. On 'Here are 7 lessons…', the words 'Here are' disappear without being marked, which contradicts the FAQ's 'Every cut is marked, so you can put any word back.' The hero window handles the same case correctly with 'Every fact you wrote is still there.'",
+   "fix": "In render(), show HINT only when the mirror holds at least one .tog. Otherwise show 'Every fact you wrote is still there.' (the hero's string). Also strike, as toggles, any draft words that a move drops (for example 'Here are'), so every removed word can be put back and the FAQ promise holds."
+  },
+  {
+   "id": "marketing-3",
+   "severity": "P1",
+   "area": "Demo output quality as copy (engine, shown on the page)",
+   "where": "Try box and final, on the visitor's own lines",
+   "problem": "Some reorder moves produce lines a creator would never post, each with a confident explanation. 'this might be controversial but i actually think dca is overrated for most people' becomes 'overrated for most people: i actually think dca.' with '“actually think dca” now ends the line, where the reader’s attention lands.' A Q&A reorder drops the article: 'real reason most newsletters stall? the first line is boring.' A split breaks the meaning: 'We shipped dark mode. The onboarding checklist this week.' 'We've raised a $4M seed round led by @a16z' ends with no full stop, while every other result gets one. For a trading-first audience, one garbled result in the live demo undoes the headline 'Your facts stay.'",
+   "fix": "Engine: accept a reorder only if its output parses as a whole sentence (keeps subject, verb and article). Otherwise return the cuts-only line with 'Cut N bits of fluff'. End every sharpened line with terminal punctuation, also when it ends on a protected @handle or link."
+  },
+  {
+   "id": "marketing-4",
+   "severity": "P2",
+   "area": "Put-back label",
+   "where": "Try box, Founder starter > tap “We’re really excited to announce that”",
+   "problem": "The label reads 'Why it hits' above 'You kept “We’re really excited to announce that”, so the line opens on it, as you chose.' That implies the corporate opener is why the line hits, which contradicts the page's thesis. Cause: opensOn() splits words on a straight apostrophe only, so the curly ’ in 'We’re' never matches. The final input shows 'Your call.' correctly.",
+   "fix": "In opensOn() and wordSet(), normalise ’ to ' (or add ’ to the character class [\\p{L}\\p{N}$%'’]) so the label switches to 'Your call.'"
+  },
+  {
+   "id": "marketing-5",
+   "severity": "P2",
+   "area": "'Nothing to cut' state copy",
+   "where": "#out-st plus #out-why / #fp-why on clean lines ('I quit my job.', 'hi', '$ETH reclaimed 3k. shorts are trapped.')",
+   "problem": "The status says 'Nothing to cut' and the body then repeats it ('Nothing soft to cut. It reads clean as it is.' / 'Short and complete. Nothing to cut.'). 'no safe move makes it stronger' is internal engine language that a creator won't parse.",
+   "fix": "Body copy: 'Already sharp. Every word is doing work.' (clean) and 'Short and complete.' (very short). Replace 'Nothing soft to cut, and no safe move makes it stronger.' with 'Already lean. Moving words around wouldn’t make it hit harder.'"
+  },
+  {
+   "id": "marketing-6",
+   "severity": "P2",
+   "area": "Why template truth",
+   "where": "Number-first results ('7 lessons', hero Founder '34%')",
+   "problem": "'“7 lessons” comes first, so it reads as proof before anyone decides whether to keep reading.' A lesson count isn't proof; the proof is '12,400 subscribers'. The same 19-word template repeats across many results. On the hero's Founder example, '“34%” comes first' isn't literally true, because the line opens 'Customer churn: down 34%'.",
+   "fix": "Use 'proof' only when the leading number is an outcome (money, subscribers, %, signups). For a count of items, use '“7 lessons” up front tells people exactly what they get.' Shorten the proof template to '“$10k MRR” leads, so the proof lands before the scroll.' For Priya: '“down 34%” is in the first four words, and “our team redesigned” sounds like you were there.'"
+  },
+  {
+   "id": "marketing-7",
+   "severity": "P2",
+   "area": "Pricing bullets: consistency and clarity",
+   "where": "#pl-free, #pl-pro, #pl-studio, .price-n monthly copy",
+   "problem": "The same feature has three names: 'sent at your time' (Free desktop, Pro), 'auto-sent' (Free phone, Studio) and 'you tap to send' (FAQ). 'Learns your voice (5 rewrites, once)' is cryptic. Studio's monthly note 'Month to month. $18 if you pay yearly.' drops the unit. On phones, Pro shows only '500 posts a month sent at your time', which hides the reasons a daily poster upgrades.",
+   "fix": "Use one term everywhere: 'auto-sent at your time'. Change to 'Learning your voice uses 5 rewrites, once'. Change to '$18 a month per client if you pay yearly.' On phones, make Pro's second visible bullet 'Replies drafted as they come in' (or '250 rewrites in your voice a month')."
+  },
+  {
+   "id": "marketing-8",
+   "severity": "P2",
+   "area": "Signup sheet honesty wording",
+   "where": "#sh-done-t for Pro/Studio; #sh-pv in Sign-in mode; 'Your line:' on the hero Schedule path",
+   "problem": "'…starts Pro at $12 a month, billed yearly ($144). Nothing is charged today.' reads like a deferred charge or trial, and there is no trial. In Sign-in mode the pill says 'Design preview: no account is created yet.', but signing in doesn't create an account. From the hero's Schedule button, the sheet labels an example's line (Lena's) as 'Your line:'.",
+   "fix": "Replace 'Nothing is charged today.' with 'This preview can’t charge you.' (or cut it, since 'no account was made' already covers it). In Sign-in mode, change the pill to 'Design preview: sign-in isn’t live yet.' When the line comes from a hero example, label it 'This line:'."
+  },
+  {
+   "id": "marketing-9",
+   "severity": "P2",
+   "area": "Trust tile and FAQ duplication",
+   "where": "#trust .tfoot and .rules; FAQ 'Does it post without me?'",
+   "problem": "The paragraph says 'No auto-DMs or auto-follows', then the list right under it repeats Auto-DMs and Auto-follows. 'Plug replies (one reply you write ahead) and reruns stay off until you switch them on.' appears word for word in Trust and in the FAQ. 'reruns' is never explained. The founder asked for less text.",
+   "fix": "Trust paragraph: 'Every post is one you wrote or approved, sent at the time you picked. Automation that can get an account restricted isn’t here, on purpose.' Keep the rules line in Trust as 'Plug replies and reruns of your best posts stay off until you switch them on.' In the FAQ, end after '…ready to paste.'"
+  },
+  {
+   "id": "marketing-10",
+   "severity": "P2",
+   "area": "Replies tile scannability",
+   "where": "#rp-box: 'Replay' button next to 'Edit' / 'Reply'",
+   "problem": "'Replay' and 'Reply' are near-identical words in one small card, so a reader skimming can confuse the animation control with the send action.",
+   "fix": "In this tile only, make Replay icon-only (keep aria-label 'Replay'), or rename it 'Play again'."
+  },
+  {
+   "id": "marketing-11",
+   "severity": "P2",
+   "area": "Voice tile labels",
+   "where": "#voice .vlist",
+   "problem": "The row labelled 'Keeps' opens with 'ngl' struck out, so the label contradicts what is shown until the visitor taps. The 'heycape’s voice' card lists the habit 'your numbers first', mixing heycape and 'you' in one card.",
+   "fix": "Rename the row 'Learning' (it flips to 'Keeps' once learned), or start the demo with 'ngl' unstruck and a 'Cut it' button. Change the chip to 'numbers first'."
+  },
+  {
+   "id": "marketing-12",
+   "severity": "P2",
+   "area": "Hero 'Ghostwriter' example",
+   "where": "#proof pill 'Ghostwriter' showing Lena Fischer's post",
+   "problem": "The pill promises a ghostwriting scenario, but the window shows Lena's own post with nothing to say it was written for a client. It reads like a fourth creator rather than the Studio use case.",
+   "fix": "For this example, add a tag next to the handle: 'Written for Lena' (or 'Client' in place of 'Example'). Optionally make the why mention her voice: '…in Lena’s voice, the way she says it.'"
+  },
+  {
+   "id": "marketing-13",
+   "severity": "P2",
+   "area": "Second lines of two tile headlines",
+   "where": "#rp-h 'Your answer’s drafted.'; #w-h 'Each one opens stronger.'",
+   "problem": "Every other pair turns on a concrete payoff ('Post it at 8:40 AM.', 'Approved from one link.'). These two are flat or vague, and the who heading lists three audiences while its fourth row is ghostwriting.",
+   "fix": "'Reply while it’s hot. Your answer’s already written.' and 'Trades, launches, newsletters. The point goes first.' (or 'Whatever you post, it opens on the point.')"
+  },
+  {
+   "id": "marketing-14",
+   "severity": "P2",
+   "area": "Fine print clarity",
+   "where": ".plans-fine; FAQ 'What about my clients’ accounts?'",
+   "problem": "'Your drafts and ideas stay with you on Free.' doesn't say what happens when you cancel. 'Hookworthy doesn’t provide accounts.' reads defensive and raises a doubt nobody had.",
+   "fix": "'Cancel anytime. You drop to Free and keep every draft.' and replace the FAQ sentence with 'Nobody shares a password: each client connects their own X account.'"
+  },
+  {
+   "id": "marketing-15",
+   "severity": "P2",
+   "area": "Empty-state double instruction",
+   "where": "Try box after Write my own / Clear",
+   "problem": "Two instructions show at once: 'Type or paste the first line of a post.' under the box and 'Paste a line above. The sharpened version lands here.' in the output.",
+   "fix": "Keep only the output one, and leave the line under the box empty when the box is empty (the placeholder 'Your first line…' already prompts)."
+  }
+ ]
+}

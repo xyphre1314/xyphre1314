@@ -1,0 +1,105 @@
+{
+  "key": "brand",
+  "role": "senior brand designer: identity systems for software companies",
+  "score": 9.1,
+  "verdict": "Afterglow is held with real discipline: ember appears only as light, rim glints and the fluff squiggle (checked in the CSS), Inter with optical sizing carries every heading, and the hero, Try, Day and Studio tiles could sit next to Linear's own work. It falls short of 9.5 at the edges: two exits from the page land on the earlier blue-and-serif brand, the two-tone heading rule changes between tiles of the same size, and a handful of imagery and mark choices are visible within seconds (a strategy notebook used as a trader's journal, one stock frame owned by two people, a hook highlight that looks like a text selection, a faint hero light on phones).",
+  "to_95": [
+    "Put the two exits back on-brand. Footer 'Privacy and terms' and the sheet's 'Open the demo app' both lead to the old system: Newsreader serif headings, mono eyebrows, a blue #2445F5 'Start free' pill, a Title-case 'Hookworthy' wordmark with the stroke-3.2 hook, and #0D0D0D ground. Serve privacy and terms in the existing Afterglow sheet on this page, and reskin the demo app's chrome with the Afterglow tokens. Until the reskin, label the button 'Open the demo app (earlier design)'.",
+    "Use one two-tone heading rule. Every heading set at 40px or larger uses the white+grey pair, and only the 26px half-tiles use one ink. That means scoping the line-611 override so the Who heading (40px at ≥1100) and the Trust heading (40px at ≥761) get --ink-2 on .d.",
+    "Make the Afterglow light read on phones. At ≤760, bring the hero source on-canvas (about --lx:92%; --a:34deg; --bw:160px; --bl:420px; --k:1.25) so the beam visibly lands on the window's top-right edge. Show the final card's small light once .fpay.live appears instead of display:none.",
+    "Fix the story imagery with crops only. Drop the media from the Replies thread instance of the journal post. Crop the journal tighter to the pen and ruled lines so the strategy diagrams don't read. Give Lena's post frame 3 cropped to the latte cup instead of the running frame that already belongs to heycape's morning and the Results wallpaper.",
+    "Fix the hook-h symbol so its terminal stops clipping (overflow='visible' on <symbol id='hk-h'>, or widen the viewBox to 20 units). Open the h→o join from -.02em to about +.01em.",
+    "Retire the grey 'selection' box on the Previews hook line, and move the LinkedIn 'see more' note out of the masked fade.",
+    "Restore bento rhythm below the fold by pairing Who (7 cols) with Trust (5 cols) on one row at ≥1100."
+  ],
+  "issues": [
+    {
+      "id": "brand-1",
+      "severity": "P1",
+      "area": "Brand consistency across touchpoints",
+      "where": "Footer 'Privacy and terms' (../../index.html#legal); signup sheet done state 'Open the demo app' (claude.ai/artifact/U91Rtw…)",
+      "problem": "Both links leave Afterglow and land in the previous identity. That page has Newsreader serif display headings, monospace eyebrow labels (banned on this page), a blue #2445F5 'Start free' pill, a Title-case 'Hookworthy' lockup with the older stroke-3.2 round-capped hook, theme-color #0D0D0D, and Figtree in the app. A visitor who checks privacy, or who signs up and opens the demo, sees what looks like a different company at a moment of trust.",
+      "fix": "Footer: change the link to a button that opens the existing <dialog class='sheet'> with an Afterglow 'Privacy and terms' view. Use the two short cards ('What stays in your browser' / 'What leaves, and when') in glass panels with Inter .cap headings and no eyebrows. Demo app: apply the Afterglow tokens to the app shell (Inter only with opsz, #08090A ground, white and frosted pills instead of blue, ember only as the squiggle, the r86 hk-h symbol and the lowercase lockup). Until that ships, rename the sheet button 'Open the demo app (earlier design)'."
+    },
+    {
+      "id": "brand-2",
+      "severity": "P2",
+      "area": "Type system / heading treatment",
+      "where": "Line 611: .t-who .cap .d, .t-tru .cap .d {color:var(--ink)}; visible at 1280/1440 where Who, Studio and Trust stack",
+      "problem": "The comment says 'small tiles speak in one ink', but Who is set at 40px at ≥1100 and Trust at 40px at ≥761, the same band size as Voice and Studio, which are two-tone. Scrolling at 1280 shows three consecutive band headings as mono, two-tone, mono. Separately, FAQ and Final split one sentence into white+grey, while Trust's one-sentence heading stays mono. The signature white+grey pair reads as inconsistent instead of systematic.",
+      "fix": "Keep the one-ink override only while those tiles are at 26px/22px: wrap it as @media (max-width:1099px){.t-who .cap .d{color:var(--ink)}} and @media (max-width:760px){.t-tru .cap .d{color:var(--ink)}}, and let the default .cap .d {color:var(--ink-2)} apply above. Rule: every heading at 40px or larger uses the pair."
+    },
+    {
+      "id": "brand-3",
+      "severity": "P2",
+      "area": "Wordmark construction",
+      "where": "<symbol id='hk-h' viewBox='8 4.5 19.8 23'> used by .mark (nav, footer) and .giant",
+      "problem": "The hook's terminal stroke runs to x=27.95 (centre 26 + 1.95 half-stroke), but the symbol viewport ends at 27.8. Symbol instances clip even though the outer svg has overflow:visible, so the terminal and its vertical run get a flat right side, which shows in the giant footer wordmark. The h→o gap is also about a third of the o→o gap (at 224px: ~1.3px vs ~4.3px). A vertical terminal beside a round needs at least as much space as round-round, so the hook crowds the first o.",
+      "fix": "Add overflow='visible' to <symbol id='hk-h'>, or set viewBox='8 4.5 20 23' and update width .626em→.632em. Change margin-right on .mark .mk-h and .giant svg from -.02em to about +.01em. Mirror both in assets/brand/afterglow-wordmark*.svg."
+    },
+    {
+      "id": "brand-4",
+      "severity": "P2",
+      "area": "Imagery / story fit",
+      "where": "'Trader's journal' crop (.ph.jr, frame 3) in the Day phone, the Replies thread and the Results thumbnail",
+      "problem": "The crop shows a notebook of mind-maps, boxes and arrows, which reads as a product-strategy notebook rather than a trading journal. It illustrates the page's main trader story ('i lost $4,000 in march…') three times, so the mismatch is repeated.",
+      "fix": "Crops and sizes only: (a) remove the .media from the Replies thread instance, since a text-only original post reads more native on X and saves height; (b) in the Day phone and Results thumbnail, crop frame 3 tighter to the pen and the ruled, less-diagrammed lower-right page (raise --jw about 30% and shift --jy toward the pen) so it reads as 'a journal' without the strategy diagrams."
+    },
+    {
+      "id": "brand-5",
+      "severity": "P2",
+      "area": "Imagery / example-account realism",
+      "where": "Frame 2 (running at sunrise) appears as heycape's morning (Day .morn), as the Results lock-screen wallpaper, and as Lena Fischer's own posted photo (Studio CL[2].img = 2)",
+      "problem": "One stock frame belongs to two different example people. Anyone who switches the Studio client to Lena sees heycape's morning run posted as Lena's photo, which undermines the 'these are real kinds of accounts' illusion the page works hard for.",
+      "fix": "Set Lena's post to frame 3 cropped to the latte cup only (top-left quadrant, no phone, no notebook), which also fits 'one thing you do before your phone'. Or set img:-1 (text only) like Rafael."
+    },
+    {
+      "id": "brand-6",
+      "severity": "P2",
+      "area": "Signature light on phones",
+      "where": "@media ≤760: .stage .light {--lx:104%; --a:46deg; --bw:130px; --bl:300px}; .fin .light {display:none}",
+      "problem": "At 390 and 360 the beam starts off-canvas, so the Afterglow moment shrinks to a faint haze at the right edge and a 1px rim glint. The final card's second light is removed entirely, so the opening and closing lights that define the brand barely register at the width most X creators arrive at.",
+      "fix": "At ≤760 set .stage .light {--lx:92%; --a:34deg; --bw:160px; --bl:420px; --sink:140px; --k:1.25} so the .hot spot sits visibly on the window's top-right edge, matching the 1440 composition. Keep it static. Show .fin .light when .fpay.live is present (scaled down: --bw:72px; --bl:240px)."
+    },
+    {
+      "id": "brand-7",
+      "severity": "P2",
+      "area": "Mark vocabulary",
+      "where": "Previews tile: .pt .hk {background:rgba(255,255,255,.09)} on the hook line in the X and Bluesky previews",
+      "problem": "A grey rounded box behind the first line reads as a text selection. It adds a fifth mark to a system that already has, each with one meaning: ember squiggle (fluff), strike (cut), dotted underline (kept) and outlined box (comment anchor).",
+      "fix": "Remove the background. Mark the hook by weight and ink instead (.pt .hk {font-weight:500; color:var(--x-ink)} with the rest of .pt at --x-ink-2), as the hero's sharpened post already does."
+    },
+    {
+      "id": "brand-8",
+      "severity": "P2",
+      "area": "Colour discipline / imagery",
+      "where": "heycape avatar (you-dark.jpg), shown about 13 times including the hero draft and the final card",
+      "problem": "The pink bubble-gum is the only saturated non-ember hue on the page. In the hero and final card it sits about 20px from the ember squiggle and competes with it as 'the warm accent'.",
+      "fix": "Grade only the you-avatar: .av.me {filter:saturate(.55) contrast(1.04)}, or desaturate the gum in the asset once. Do not shift it toward ember, which would make ember a fill."
+    },
+    {
+      "id": "brand-9",
+      "severity": "P2",
+      "area": "Bento identity",
+      "where": "grid-template-areas: after try|pv, the rows voi, day, who, st and tru are all 12-column bands (rep|res is the only split row)",
+      "problem": "Five of six rows below the first are full-width bands, so the body reads as a stack of glass cards and the 'Bento grid' half of the settled layout weakens after the first row.",
+      "fix": "At ≥1100 put Who (7 cols, faces as 2×2 like at 768) and Trust (5 cols) on one row, 'who×7 tru×5', with Studio full width below. This keeps the family, restores a split row and saves about 250px."
+    },
+    {
+      "id": "brand-10",
+      "severity": "P2",
+      "area": "Photography resolution",
+      "where": "Day tile .night / .morn backgrounds (frames 0 and 2, 800×474 source shown about 600px tall)",
+      "problem": "That is a ~1.3× upscale at 1x and ~2.5× on retina. The uncovered morning skyline on the right half turns visibly soft at 2x and reads as a low-res stock photo rather than atmosphere.",
+      "fix": "Treat it as atmosphere, as the Results tile already does: .morn > .ph img {filter:blur(1.5px) saturate(.85) contrast(1.04) brightness(.86)}. The phone stays sharp, so the softness reads as depth of field. Optionally cap .t-day min-height at 540px to cut the upscale."
+    },
+    {
+      "id": "brand-11",
+      "severity": "P2",
+      "area": "Product moment polish",
+      "where": "Previews tile, LinkedIn tab at 1024–1440: .li-note inside the masked .screens fade",
+      "problem": "'LinkedIn cuts you off at \"see more\". Your first line has to earn the click.' fades out under the pane's bottom mask, so the one sentence that makes the point looks like a rendering glitch, and the pane leaves a dead gap above the tile footnote.",
+      "fix": "Move the li-note text into the tile footnote (#pv-big) for the LinkedIn tab, replacing 'Plenty of room. The first line still does the work.', or exclude .n-li from the bottom mask."
+    }
+  ]
+}
