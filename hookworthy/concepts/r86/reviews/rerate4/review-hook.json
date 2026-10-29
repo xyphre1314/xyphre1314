@@ -1,0 +1,196 @@
+{
+ "key": "hook",
+ "role": "Sharpen engine juror: senior X ghostwriter and copy chief who reads JS",
+ "score": 6.5,
+ "verdict": "The on-device engine is fast and leaves sharp lines alone (22/23 untouched), and the homepage renders it faithfully (every one of 42 page runs matched HWCore.sharpenLine, put-back included). But on 147 fresh lines only 77.6% are post-ready (h 114, o 19, m 14), with six meaning or fact changes (\"We don't just write your posts\" -> \"We don't write your posts\", \"basically free\" -> \"free\", \"probably going to shut down\" -> \"We'll shut down\"), five broken outputs (an eaten comma, a split ZWJ emoji, a duplicated teaser, fragments) and 17 false receipts, so it falls well short of a \"your facts stay\" promise at 9.5.",
+ "to_95": [
+  "Close the three meaning and fact families in the shared guards (slGuard, slMeanOK; both sharpenLine and fromClaude use them). (1) A restrictor after a negation is never soft (\"don't just\", \"isn't just\", \"not really\", \"didn't really\"), and \"not just A, B\" never splits into \"not A. B.\" (2) An approximator before an absolute, a multiplier, a superlative or a number stays (\"basically free\", \"basically doubled\", \"basically the cheapest\"). (3) A hedge on a plan or forecast stays (\"I think I'm going to\", \"probably going to\", \"we're basically going to hit $50k\"), and \"going to\" never becomes \"'ll\" when a hedge was cut in the same sentence.",
+  "Stop producing broken text. softCut must keep a clause comma (or turn it into a full stop) when it cuts \"tbh,\", \"honestly,\", \"ngl,\" or \"imo,\" between two clauses. Fix the tail-emoji regex at core.js:2480 to take whole emoji sequences (ZWJ, skin tone, keycap) and add a grapheme-integrity guard. Never run the \"What changed:\" move when the draft already teases it (\"Here's what changed\"). Make slBroken reject a fragment that opens on a noun phrase plus \", because\", a split at the \"and\" of a compound subject or the last item of a series, and a verbless opener left by a put-back (\"Really why @jessepollak.\").",
+  "Make every receipt true. slBeats (core.js:2907) must not split on a decimal point (\"4.2x\" and \"24.1\" read as three beats today). Say \"Nothing I can cut safely\", not \"Nothing soft to cut\", when a run-up or soft word stays. \"ok so\" and \"Really really really\" are not \"Short and complete\". Strike reasons must fit the context: \"I almost didn't post this\" is not a trust disclaimer, and \"any kind of social life\" is not a hedge. \"The line says the same\" can never accompany a changed meaning.",
+  "Catch the openers it misses or keeps inconsistently: \"Just a friendly reminder:\", \"In today's fast-paced digital landscape,\", \"What if I told you that\", \"TIL that … actually\", \"currently in the process of\". Banned-word swaps must read idiomatically and leave no banned word (\"leverage LinkedIn … open up smooth growth\" does both).",
+  "Hold put-back versions to the same broken-line guards; when a put-back version breaks, fall back to the soft-only cut. Then re-run a fresh unseen set: at least 90% h, 0 meaning or fact m, no false receipt.",
+  "Claude path: add a no-new-content-words check, enforce stanceKeep, verify the why against the diff, and make the banned-word check count-based (details under claude_path)."
+ ],
+ "issues": [
+  {
+   "id": "hook-1",
+   "severity": "P0",
+   "area": "Engine: meaning",
+   "where": "core.js slGuard and slMeanOK, the contrast/split move and softCut of \"just\"/\"really\" after a negation. Unseen #91; probes",
+   "problem": "\"not just A, B\" flips to \"not A. B.\": \"I don't just want more followers, I want the right followers\" -> \"I don't want more followers. I want the right followers.\" The same happens to \"We don't just write your posts, we learn your voice\" -> \"We don't write your posts. We learn your voice.\", \"Bitcoin isn't just digital gold, it's…\" -> \"Bitcoin isn't digital gold.\" and \"I don't just trade, I teach people to trade\" -> \"I don't trade.\" The cut list calls \"just\" \"Filler from talking out loud.\"",
+   "fix": "Add a \"mean\" guard for (not|n't|never|no)\\s+(\\w+\\s+)?(just|only|simply|merely|really): the restrictor is never marked or cut there, and slMeanOK fails any version that drops it or splits \"not just A, B\" at the comma. Add the four lines above as regression tests that expect the line unchanged or only other fluff cut."
+  },
+  {
+   "id": "hook-2",
+   "severity": "P0",
+   "area": "Engine: facts",
+   "where": "SOFT \"filler\"/\"intens\" (basically, really) and slMeanOK. Unseen #96, #146, #116; probes",
+   "problem": "Approximators that carry the fact get cut: \"It's basically free if you use the student plan\" -> \"It's free…\", \"She basically doubled our revenue\" -> \"She doubled…\", \"I didn't really train for this marathon\" -> \"I didn't train…\", \"basically the cheapest since 2016\" -> \"the cheapest\". The why still says \"The line says the same without it\". The engine keeps \"not really\" in one line (#104) but cuts \"didn't really\" in another (#146).",
+   "fix": "Keep basically, practically, pretty much, nearly and almost before an absolute (free, impossible, nothing, everyone, every, all, zero, never), a multiplier (doubled, tripled, halved, 10x), a superlative (the cheapest, best, most) or a number. Keep \"really\" right after a negated verb (didn't, isn't, wasn't, don't really). Mark these, don't cut them, with the why \"Kept “basically free”: it says nearly, not exactly\"."
+  },
+  {
+   "id": "hook-3",
+   "severity": "P0",
+   "area": "Engine: facts and stance",
+   "where": "stanceKeep (price calls only), the CONTRACT_W \"going to\" -> \"'ll\" swap. Unseen #102, #105, #140; probes",
+   "problem": "Hedged plans and forecasts become commitments: \"I think I'm going to quit X for a month\" -> \"I'll quit X for a month.\", \"We're probably going to shut down the free plan next month\" -> \"We'll shut down the free plan next month.\", \"I think we're basically going to hit $50k MRR this month\" -> \"We'll hit $50k MRR this month.\", \"We're probably launching on Product Hunt next week\" -> \"We're launching…\". For a company account, that is a false announcement.",
+   "fix": "Extend stanceKeep from price calls to any sentence about the future: going to, will or 'll, plan to, launching, next week/month/year, this month/quarter. \"I think\", \"probably\", \"might\" and \"maybe\" stay there and get the stance note. Block the \"going to\" -> \"'ll\" swap in any sentence where a hedge was cut."
+  },
+  {
+   "id": "hook-4",
+   "severity": "P1",
+   "area": "Engine: grammar",
+   "where": "softCut (the honest/opinion/tail kinds eat the trailing comma). Unseen #0; probes",
+   "problem": "Cutting a soft word that sits between two clauses also removes the comma, which leaves a run-on: \"i think $SOL is just getting started the chart looks really really bullish\", \"I quit my job the commute was killing me.\", \"this is the best entry in months I’m loading up.\"",
+   "fix": "In softCut, when the span has a word before it and \", \" plus a finite clause after it, replace it with \". \" (in the writer's case) or keep the comma. Add an slBroken rule for two finite clauses joined with no punctuation where the draft had one."
+  },
+  {
+   "id": "hook-5",
+   "severity": "P1",
+   "area": "Engine: emoji integrity",
+   "where": "core.js:2480, the tailE regex in hookUp; also the ask/answer move. Unseen #61; probes",
+   "problem": "A ZWJ emoji at the end of the line gets split: \"🚶‍♂️\" -> \"🚶‍ ♂️\" (shown on the homepage card as a walker plus a loose ♂ sign). The same happens to ❤️‍🔥, 👨‍💻, 🏳️‍🌈 and 🏃‍♀️. A probe gave \"Best thing for your health 🚶‍? Sleep ♂️\", and \"Most underrated habit 🙌🏽? Walking.\" moves the emoji inside the question. The emoji-count guard passes because the pictograph count is unchanged.",
+   "fix": "Match whole sequences: \\p{Extended_Pictographic}\\uFE0F?\\p{EMod}?(?:\\u200D\\p{Extended_Pictographic}\\uFE0F?\\p{EMod}?)*|\\p{RI}{2}|[0-9#*]\\uFE0F?\\u20E3. Add an slOK guard: every emoji grapheme cluster in the draft (Intl.Segmenter) appears intact in the line, with no ZWJ next to whitespace. The ask move keeps a tail emoji at the very end."
+  },
+  {
+   "id": "hook-6",
+   "severity": "P1",
+   "area": "Engine: result-first move",
+   "where": "\"Led with the result\" / \"What changed:\" move. Unseen #81",
+   "problem": "\"Just redesigned our onboarding and activation went from 31% to 58%. Here's what changed 👇\" -> \"Activation went from 31% to 58%. What changed: we just redesigned our onboarding. Here's what changed 👇\". It says \"what changed\" twice, gives away the payoff the thread promised, and is longer than the draft. The why (\"stay to find out how\") is false.",
+   "fix": "Skip the move when the draft already has a teaser (here's what/how/why, 👇, 🧵), or let it drop the teaser only when the payoff fits on line one. Reject any version that repeats a 2+ word phrase, and any version longer than the draft unless the move is a pure reorder."
+  },
+  {
+   "id": "hook-7",
+   "severity": "P1",
+   "area": "Engine: fragments and put-back",
+   "where": "slBroken; the contrast split on long lines; put-back re-runs. Unseen #41, #49; put-back of #17, #24, #50",
+   "problem": "Some splits and cuts leave lines a creator would not post. #41: \"The honest version of what happened in between, because the polished version … isn't the whole story.\" #49 loses the \"and\" of a three-part list and orphans the third item. Put-backs: #17 +\"Really\" -> \"Really why @jessepollak. The Base team are building…\", #17 +\"I think\" -> \"Why I think @jessepollak. …\", #24 +\"i think\" -> \"this: i think most people…\", #50 +\"As\" -> \"As a ghostwriter for 12 SaaS founders, the hook is 80%…\" (dangling modifier).",
+   "fix": "slBroken should reject a sentence that opens on a noun phrase plus \", because\" with no finite verb; a split at an \"and\" that joins a compound subject (X and Y are…) or the last item of a series; and a first sentence that is verbless and opens on a kept adverb or \"this:\". When the put-back's best version fails, show the soft-only version (the draft minus the remaining cuts) instead."
+  },
+  {
+   "id": "hook-8",
+   "severity": "P1",
+   "area": "Engine: misses and swaps",
+   "where": "SOFT lists, HK_SWAP/PLAIN_W. Unseen #7, #18, #53, #68, #75, #57",
+   "problem": "Run-ups are left whole and the why calls them clean: \"Just a friendly reminder:\" (while \"Just a quick reminder that\" and \"Just a heads up:\" are cut), \"In today's fast-paced digital landscape,\", \"What if I told you that\", \"TIL that you can actually\", \"I'm currently in the process of\". The banned-word line keeps \"leverage\" and swaps in \"open up smooth growth\".",
+   "fix": "Add \"just a (friendly|quick|gentle) reminder:?\", \"in today's (fast-paced )?(digital )?(world|landscape|age|economy),\", \"what if i told you( that)?\", \"TIL that\" -> \"TIL\", and \"(currently )?in the process of\" to label/stock/wordy. Banned-word swaps go to plain verbs (leverage -> use, supercharge/unlock … growth -> grow). A sharpened line may never keep a banned word; when no clean swap exists, mark the word instead of swapping it."
+  },
+  {
+   "id": "hook-9",
+   "severity": "P1",
+   "area": "Engine: explanations",
+   "where": "slBeats (core.js:2907), HK_WHY_SL, slTiny, SL_KWHY/cut reasons, slExplain. 17 of 147 lines false",
+   "problem": "Receipts that aren't true: \"Split it into three beats\" on two-sentence lines with a decimal (#6 \"4.2x\", #143 \"24.1\", \"$2.5M\"); \"Nothing soft to cut\" when a run-up or soft word stays (#7, #18, #53, #68); \"Short and complete. Nothing to cut.\" for \"ok so\" and \"Really really really\", where the page also offers a rewrite; strike reasons that don't fit (\"Tells people to trust what follows less\" for \"I almost didn't post this, but\", \"Hedges the claim\" for \"any kind of social life\"); \"The line says the same without it\" when the meaning changed; \"You kept “probably”, so the line opens on it\" when it is the 3rd word.",
+   "fix": "slBeats: split only on [.!?]+ followed by whitespace or the end (reuse slSents). When marks are empty but slExtra or a known frame is present, say \"Nothing I can cut safely here\". slTiny counts a line complete only if it has a content word, and filler-only lines get \"That's all filler. Add the point.\" Key the strike reasons to context (a vulnerability frame gets \"A run-up to the story\"). Gate \"opens on it\" on the kept word being in the first 2 words."
+  },
+  {
+   "id": "hook-10",
+   "severity": "P2",
+   "area": "Engine: voice (sarcasm, feelings)",
+   "where": "intens/hedge cuts. Unseen #35, #88, #134, #137",
+   "problem": "It cuts the words that carry a joke or a feeling: \"1 very tired founder\" -> \"1 tired founder\", \"kind of okay with it\" -> \"okay with it\", \"what a totally shocking surprise\" -> \"what a shocking surprise\", and \"that's going to really change everything\" -> \"that'll\" (a cosmetic edit on a sarcastic line).",
+   "fix": "No intensifier cuts in a sentence that opens on an irony marker (Oh great, Wow, Sure, Love how, Nothing says). Keep hedges on first-person feelings. A version whose only change is a contraction is not a sharpen (return clean)."
+  },
+  {
+   "id": "hook-11",
+   "severity": "P2",
+   "area": "Homepage: Kept row and put-back note",
+   "where": "home.html keptLine/KEPT_UNIT and backNote; slFacts. Unseen #103, #116, #50",
+   "problem": "The Kept row shows \"83\" for \"83(b)\" and \"0.4\" without \"gwei\". After putting back \"As\" the note says \"“can tell you that” comes back too\", but it did not (the new cut is \"I can tell you that\").",
+   "fix": "slFacts keeps parenthesised suffixes (83(b), 401(k)). Add gwei, bps, sats, lbs and kg to KEPT_UNIT. backNote should compare cuts by draft offsets: a span that overlaps a new cut is still cut."
+  },
+  {
+   "id": "hook-12",
+   "severity": "P2",
+   "area": "Homepage: thin message",
+   "where": "render()/payUpdate thin branch. Unseen #123, #126",
+   "problem": "\"Sharpen needs a few more words. Paste the whole first line.\" is shown for \"the the the the the\" and six words of lorem ipsum. It is not true there.",
+   "fix": "Return a thin reason from the engine (few words, or not a sentence) and say \"This doesn't read as a sentence yet.\" for the second."
+  },
+  {
+   "id": "hook-13",
+   "severity": "P0",
+   "area": "Claude path: validator lets new claims through",
+   "where": "SHARPEN.fromClaude \"nothing new\" block (core.js ~3283-3290)",
+   "problem": "Run locally with stand-in JSON (no API call), fromClaude ACCEPTS \"We basically doubled our revenue in 6 months…\" -> \"We tripled our revenue…\", \"I think I might start a newsletter this year.\" -> \"I started a newsletter this year.\", \"We just launched our analytics dashboard\" -> \"We launched the best analytics dashboard\", and an added \"Insane.\" It checks digits, number words, facts, emoji, [blanks], negations and AI words, but not new content words, multipliers or tense.",
+   "fix": "Add lexical containment. Every word in Claude's line (lowercased, apostrophes normalised, light stemming) must be in the draft, in a closed allowlist (articles, be/have/do, pronouns, conjunctions, prepositions, what/why/how, contractions and their expansions) or a target of the engine's own swaps (WORDY, CONTRACT_W, PLAIN_W). Otherwise reject with \"added word\". Count doubled/tripled/halved/Nx as numbers. The line's verb tenses must be a subset of the draft's."
+  },
+  {
+   "id": "hook-14",
+   "severity": "P1",
+   "area": "Claude path: stance and meaning",
+   "where": "fromClaude (stanceKeep is computed for the note only); the shared slMeanOK/slGuardOK",
+   "problem": "It accepts \"I think $SOL is going to outperform $ETH this cycle, honestly.\" -> \"$SOL will outperform $ETH this cycle.\" The prompt says the stance stays, but the validator never checks it. Because the guards are shared, it also accepts the hook-1/2/3 flips from Claude (\"I don't want more followers\", \"It's free…\", \"I didn't train…\", \"We'll shut down…\").",
+   "fix": "Reject when any stanceKeep(body) word is missing from the line (unless the writer cut it before). Ship hook-1, hook-2 and hook-3 in the shared guards so both engines get them."
+  },
+  {
+   "id": "hook-15",
+   "severity": "P1",
+   "area": "Claude path: blocks good edits",
+   "where": "fromClaude aiWord(line) with SL_AIW (absolute)",
+   "problem": "Any line with \"unlock\" or \"elevated\" is rejected even when the draft had it, and those are everyday trading terms. Good edits of \"the $ARB token unlock next week…\" and \"Funding is basically elevated on every major perp…\" were rejected with \"banned word\", so crypto writers, the first audience, always fall back to the engine on those lines.",
+   "fix": "Reject only a banned word the line adds (count-based, like slMore), or exempt domain phrases: token unlock(s), unlock schedule, elevated funding/volatility/rates/OI."
+  },
+  {
+   "id": "hook-16",
+   "severity": "P1",
+   "area": "Claude path: why not checked against the edit",
+   "where": "fromClaude whyOf",
+   "problem": "whyOf only checks that quoted words exist somewhere in the draft or the line, so \"“Honestly” went, so the claim stands on its own.\" is accepted while the line still opens on \"Honestly\". The why is the one free-text field the user sees as \"Why it hits\".",
+   "fix": "For a quote inside a went/cut/gone/dropped/removed clause, require it to be absent from the line and present in E.cut. For \"first\", \"leads\" or \"comes first\", require it in the line's first six words. Otherwise use the engine's E.why."
+  },
+  {
+   "id": "hook-17",
+   "severity": "P2",
+   "area": "Claude path: endpoint and prompt hygiene",
+   "where": "server.mjs POST /api/v1/sharpen; core.js sharpenAI and SHARPEN_AI",
+   "problem": "An \"unchanged\": true from Claude on a fluffy line is returned to API callers as source \"claude\", \"Nothing to cut\", with the marks dropped (the app ignores non-sharp answers, which is good). The first line goes to Claude uncapped (the body allows 64KB), and \"</line>\" in the user's text is not escaped. The prompt has no example of a meaning-carrying \"basically\", \"not just\" or a hedged plan, which are the families the guards miss.",
+   "fix": "On unchanged, when sharpenLine(text) is sharp with fluff cuts, answer with the rules result (reason \"claude_unchanged\"). Cap the line sent to Claude (for example 1,000 chars, above that use rules) and strip \"</line>\". Add three few-shots: a \"not just A, B\" line coming back unchanged, \"basically free\" kept, and \"I think we're going to hit $X\" keeping \"I think\"."
+  }
+ ],
+ "claude_path": {
+  "judgement": "The design is right: Claude proposes only a line and a why, and the engine builds the receipt from its own diff. The engine's guards, no-longer, no new number/emoji/negation and casing all apply, any failure falls back to the engine, there are no credits, there is a fair-use cap, and the app swaps Claude's line in only when it is \"sharp\". The prompt is tight and its 10 few-shots all pass the validator. As code, though, the validator is not yet the safety net its comment claims. It would let real bad edits through, and it blocks some good ones.",
+  "lets_bad_through": [
+   "New claims and changed facts: \"doubled\" -> \"tripled\", \"might start\" -> \"started\", \"the best\" added, \"Insane.\" added. There is no new-content-word, multiplier or tense check.",
+   "Meaning flips the shared guards miss: \"don't just\" -> \"don't\", \"basically free\" -> \"free\", \"didn't really\" -> \"didn't\", \"probably going to\" -> \"will\".",
+   "A dropped price-call stance (\"I think $SOL is going to…\" -> \"$SOL will…\"). The prompt asks to keep it; the validator never checks.",
+   "A why that claims a cut that did not happen. Only the quoted words' existence is checked.",
+   "A broken ZWJ emoji. The pictograph count is unchanged."
+  ],
+  "blocks_good": [
+   "Every edit of a line that has \"unlock\" or \"elevated\" (token unlocks, elevated funding): the absolute banned-word test.",
+   "An ask-then-answer that drops \"just\" in \"the most underrated habit is just going for a walk\" (the guard calls that \"just\" meaning). That is defensible, but it is stricter than the prompt's own guidance."
+  ],
+  "fixes": [
+   "Lexical containment: no word outside the draft, a closed function-word list and the engine's own swap targets. Treat multipliers as numbers, and allow no new tense.",
+   "Enforce stanceKeep, and add the hook-1/2/3 guards to the shared slGuard so both paths gain them.",
+   "Make the banned-word check count-based (reject only a word the line adds), with a crypto exemption list.",
+   "Verify the why against E.cut and the line's opening words; otherwise use E.why.",
+   "On \"unchanged\" over a line the engine would sharpen, return the rules result. Cap and sanitise the line sent to Claude.",
+   "Add an offline eval: run fromClaude over a table of hand-written bad and good model replies (like work-hook/claude-validator-probe.js) in CI. It needs no API."
+  ],
+  "probe_files": [
+   "work-hook/claude-validator-probe.js",
+   "work-hook/claude-prompt-selfcheck.js"
+  ]
+ },
+ "stats": {
+  "lines": 147,
+  "h": 114,
+  "o": 19,
+  "m": 14,
+  "h_pct": 77.6,
+  "m_meaning_or_fact": 6,
+  "m_broken_text": 5,
+  "m_missed_or_bad_swap": 3,
+  "explanations_false": 17,
+  "sharp_lines_untouched": "22/23",
+  "page_runs_matching_engine": "42/42 (24 Try with put-back, 15 final input at 1440; 3 Try at 390)",
+  "engine_ms": {
+   "median": 6,
+   "p95": 27,
+   "first_call": 629
+  }
+ }
+}

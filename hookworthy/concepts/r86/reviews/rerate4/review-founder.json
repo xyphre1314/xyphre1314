@@ -1,0 +1,78 @@
+{
+  "key": "founder",
+  "role": "startup co-founder who took two creator/prosumer SaaS products to millions in ARR (positioning, objections, pricing, conversion path, truthfulness)",
+  "score": 9.0,
+  "verdict": "The positioning is clear in five seconds ('They read one line' plus a one-tap result in X's own clothes), the pricing is exact and matches the app to the dollar, and the honest preview sheet, the live demo and the carried-over line make one of the cleanest conversion paths I have reviewed. It falls short of 9.5 for two credibility reasons: the on-device demo still breaks or does nothing on the openers newsletter writers (segment #2) actually paste, while praising the result, and the linked privacy page contradicts the homepage about what is sent to Claude.",
+  "to_95": [
+    "Make the demo hold up on newsletter and announcement openers, since the Try box and the final card are the conversion engine. 'In today's issue: why I stopped writing listicles and what I do instead' becomes the broken 'I stopped writing listicles and what I do instead.' under 'Why it hits' and next to a white 'Keep it. Start free' button. 'I wanted to talk a little bit about something that has been on my mind lately, which is burnout' comes back 'Nothing to cut' with no Could-cut chips. 'New issue is out! This week: …' is called 'It reads clean as it is.' Fix the engine for these shapes. As a page-side guard, never show 'Why it hits' or 'Keep it' on a line that fails the engine's own broken-sentence check (SHARPEN._dbg.slBroken or equivalent): show the draft unchanged with its soft words as Could-cut chips instead.",
+    "Make concepts/r86/legal.html tell the same truth as the homepage. It says 'Only what you ask for. A rewrite with Claude sends that text to Claude; Quick mode stays on your device', but the homepage (Trust tile and FAQ) says Claude sharpens the line in the app. The app does send the first line, the voice spec, the never-say list and the keep list to /api/v1/sharpen on every Sharpen. On Pro, breakout replies are also sent to Claude automatically to draft answers (server breakoutDrafts). Add both to 'What leaves, and when', and add one homepage FAQ line for the ghostwriter's confidentiality question: what Claude sees, and that drafts stay in the browser otherwise.",
+    "On phones, show Pro's real upgrade trigger. The Free card shows '15 auto-sent posts a month, then one tap each' at 390, but the Pro card shows only the ping and the 250 rewrites. '500 posts a month auto-sent' sits behind 'See everything included'. Make it a .pk item on the Pro card (for example 'Posts every day, auto-sent (500 a month)').",
+    "Then clear the P2s below: a Studio claim that runs ahead of the server, the Pro overage path, the apologetic done state, and the final card without a direct sign-up."
+  ],
+  "issues": [
+    {
+      "id": "founder-1",
+      "severity": "P1",
+      "area": "Conversion path / demo truthfulness",
+      "where": "Try tile (#sharpen) and final card (#fpay), on-device HWCore.sharpenLine",
+      "problem": "Segment #2 (newsletter writers) pastes lines that the demo mishandles while sounding confident. 'In today's issue: why I stopped writing listicles and what I do instead' becomes 'I stopped writing listicles and what I do instead.', a broken sentence shown under 'Why it hits: The run-up is gone…' with 'Keep it. Start free'. 'I wanted to talk a little bit about something that has been on my mind lately, which is burnout' is returned unchanged ('Nothing Sharpen can cut safely here') with no Could-cut chips, although it is the archetypal fluffy opener. 'New issue is out! This week: the 3 pricing mistakes that cost me $40k' gets 'Nothing soft to cut. It reads clean as it is.' 'This might be a controversial opinion but I actually think cold email still works really well in 2026' keeps its whole hedge and only loses 'really'. A prospect who tries their own line and gets one of these judges the product by it, and the pricing headline promises 'Sharpening is free. Forever.' (Screens: work-founder/try3-0..3.png.)",
+      "fix": "In core.js, add rules for these opener shapes. (1) Label run-ups that end in an embedded question: cut 'In today's issue:' but keep and capitalise 'Why', giving 'Why I stopped writing listicles, and what I do instead.' (2) 'I wanted to talk (a little bit) about … which is X' becomes 'X.' plus the rest, or at least marks 'a little bit' and 'lately' as Could cut. (3) 'New issue is out!' and 'This week:' count as run-ups. (4) 'This might be a controversial opinion but I actually think' is a hedge to cut. On the page, gate the sharp view: if the engine's broken-sentence check fails for v.line, render it as 'unsure' (draft unchanged, chips shown) and never as 'Why it hits' with a Keep button. When state is clean or unsure and the draft has soft marks, keep the Could-cut chips visible."
+    },
+    {
+      "id": "founder-2",
+      "severity": "P1",
+      "area": "Truthfulness / trust (privacy)",
+      "where": "Footer link 'Privacy and terms' (concepts/r86/legal.html, 'What leaves, and when'), compared with the homepage Trust tile and FAQ 'Is it just AI writing?'",
+      "problem": "The privacy page says only rewrites go to Claude ('Only what you ask for. A rewrite with Claude sends that text to Claude; Quick mode stays on your device'). The homepage itself says 'In the app, Claude sharpens your line'. In the real app, every Sharpen POSTs the first line, the voice spec, the never-say list and the keep list to api/v1/sharpen (index.html sharpenByClaude). On Pro, the server's breakout tick sends a post's first replies plus your voice to Claude without a tap (server.mjs breakoutDrafts and BO.tick). Ghostwriters and agencies (Studio, the highest-priced buyer) read this page for client confidentiality, and a contradiction there costs the deal. The page also says 'your Hookworthy server' (self-host wording) on a hosted-SaaS site.",
+      "fix": "Rewrite 'What leaves, and when' as follows: 'Sharpen in the app sends the first line (and your voice settings) to Claude through Hookworthy. A rewrite sends the post. On Pro, when a post takes off, its first replies go to Claude so your answers are drafted. The demo on the homepage never leaves your browser. A post you schedule goes to X or LinkedIn at the time you picked.' Replace 'your Hookworthy server' with 'Hookworthy'. Add a seventh FAQ, 'Who sees my drafts?', with a two-sentence answer that matches."
+    },
+    {
+      "id": "founder-3",
+      "severity": "P2",
+      "area": "Pricing / upgrade trigger (mobile)",
+      "where": "#pricing Pro card at 390 and 360 (only .pk items show)",
+      "problem": "At phone width the Free card shows its cap ('15 auto-sent posts a month, then one tap each'), but the Pro card shows only 'A ping when a post takes off' and '250 rewrites'. The remedy for that cap ('500 posts a month auto-sent'), the most common reason a daily poster upgrades, is hidden behind 'See everything included'. The FAQ already names the trigger ('Posting every day? Pro is $12…'), but the card that sells Pro at the moment of choice does not.",
+      "fix": "Give the Pro card's '500 posts a month auto-sent at your time' li the class pk, with a mobile span such as 'Post every day: 500 auto-sent a month'. Keep the ping as the first item."
+    },
+    {
+      "id": "founder-4",
+      "severity": "P2",
+      "area": "Truthfulness vs the real app (Studio)",
+      "where": "Studio tile ('Posts go out from their own connected X account'), Studio plan ('500 auto-sent posts a month per client', 'Sent from each client’s own X account'), FAQ 'What about my clients’ accounts?'",
+      "problem": "The server holds one X connection (lib/x.mjs reads a single 'x-token'). The app auto-sends a client's post only when that one connected account is the client's (index.html r69 guard). Otherwise the post waits as 'Post it from @handle. Nothing sent it'. So four clients each auto-posting from their own account, the core of Studio's per-client auto-send line, is not something the real app can do today. The copy is consistent with the app's rule (never through your account), so this is not a lie. But the feature runs ahead of the build, on the highest-ACV plan.",
+      "fix": "Copy only, with no new auth proposed. Keep 'Sent from each client’s own X account' but make the plan and the FAQ conditional the way the app is: 'Goes out from each client’s own X account once they connect it. Until then it waits for you to post it.' Also note it on the build list, so the line isn't in the launch build until per-client connections exist."
+    },
+    {
+      "id": "founder-5",
+      "severity": "P2",
+      "area": "Pricing objection: running out",
+      "where": "#pricing Pro and Studio cards, FAQ 'What’s free?'",
+      "problem": "The page states allowances (250 rewrites on Pro, 500 per client on Studio) but never says what happens at the limit. The app answers it ('Need more? Add up to 1,750 a month', CREDITS.BOOSTS at $8/$22/$45, first-month rollover). Heavy users, the best-paying ones, will ask.",
+      "fix": "Add one short line to the Pro card's full list (the .incl expansion): 'Need more? Add up to 1,750 a month.' Or add one clause to the pricing lede, since the app's own plan card already uses that exact wording."
+    },
+    {
+      "id": "founder-6",
+      "severity": "P2",
+      "area": "Conversion path: end of the preview",
+      "where": "Signup sheet done state (#sh-done)",
+      "problem": "At the visitor's moment of highest intent, the only forward action is 'Open the working demo (it still wears the old look)'. It points to an external claude.ai artifact and apologises for itself. Honest, but it leaks momentum and premium feel.",
+      "fix": "Label it 'Open the working app', with a quieter second line 'Earlier design, same engine.', or drop the parenthetical and say it once in the sheet's fine print. Keep 'Back to the page' as the secondary."
+    },
+    {
+      "id": "founder-7",
+      "severity": "P2",
+      "area": "Conversion path: final section",
+      "where": "#start (final panel)",
+      "problem": "The last section's only white button is 'Sharpen', a second demo. 'Keep it. Start free' appears only after the visitor types. The phone bar hides when the final card is in view, so a visitor who decided during pricing or the FAQ gets another demo instead of the sign-up. The nav pill still works, but the section itself doesn't close.",
+      "fix": "Under the field's micro line, add a quiet text link that always shows: 'Or start free, no line needed' (opens the sheet, plan free). Keep Sharpen as the white button."
+    },
+    {
+      "id": "founder-8",
+      "severity": "P2",
+      "area": "Claim precision",
+      "where": "#pricing lede ('Sharpen is free and unlimited, with Claude in the app') and Free card ('Sharpen any line, as often as you like')",
+      "problem": "This is true in effect, since the engine always answers, but the Claude part has a silent fair-use cap (HW_SHARPEN_DAILY 300 a day per account, then the engine). The app's selection 'Sharpen' toolbar also counts against Free's 50 Claude touch-ups a day, which the app's own FAQ mentions and the homepage never does. A pedant reading the app after the homepage sees two different promises.",
+      "fix": "Keep the headline. Change the lede to 'Sharpen is free and unlimited. In the app, Claude does it for everyday use, with the on-device engine always there.', or add 'fair use' to the full Free list. Make the app's Free FAQ line read the same way."
+    }
+  ]
+}
