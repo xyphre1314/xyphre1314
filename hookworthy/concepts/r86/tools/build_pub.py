@@ -21,3 +21,13 @@ open(f'{out_dir}/index.html','w',encoding='utf-8').write(out)
 json.dump({k:k for k in files},open(f'{out_dir}/files.json','w'))
 print(len(out)//1024,'KB',json.dumps({k:k for k in files}))
 left=re.findall(r'\.\./\.\./[^"\' )]*',out); print('left', sorted(set(left)))
+# legal.html rides along as its own page (keeps its doctype); asset paths map like the main page, home.html links go to the artifact root
+L=open(f'{H}/concepts/r86/legal.html',encoding='utf-8').read()
+L=re.sub(r'<link[^>]*rel="apple-touch-icon"[^>]*>\n?','',L)
+L=re.sub(r'\.\./\.\./((?:fonts|assets/people|assets/brand)/[\w.\-]+|core\.js)',rel,L)
+L=re.sub(r'href="home\.html(#[\w-]+)?"',lambda m:f'href="./{m.group(1) or ""}"',L)
+for pub,src in files.items():
+    os.makedirs(os.path.dirname(f'{out_dir}/{pub}') or out_dir,exist_ok=True); shutil.copyfile(src,f'{out_dir}/{pub}')
+open(f'{out_dir}/legal.html','w',encoding='utf-8').write(L); files['legal.html']='legal.html'
+json.dump({k:k for k in files},open(f'{out_dir}/files.json','w'))
+print('with legal', json.dumps({k:k for k in files}), 'left', sorted(set(re.findall(r'\.\./\.\./[^"\' )]*',L))))
