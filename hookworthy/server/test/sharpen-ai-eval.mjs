@@ -46,7 +46,7 @@ async function one(x, i) {
   if (r.usage) { tot.calls++; tot.input += u.input_tokens || 0; tot.output += u.output_tokens || 0; tot.read += u.cache_read_input_tokens || 0; tot.write += u.cache_creation_input_tokens || 0; if (u.cache_read_input_tokens) tot.hits++; tot.ms += ms; }
   let verdict, claude = r.data && typeof r.data.line === 'string' ? r.data.line : '';
   if (r.result) verdict = r.result.state === 'clean' ? 'pass: unchanged' : `pass: ${r.result.say}`;
-  else if (r.reason === 'invalid' && r.data) { const tr = {}; core.SHARPEN.fromClaude(x.t, r.data, { trace: tr }); verdict = `rejected: ${tr.reject || 'invalid'}`; }
+  else if ((r.reason === 'invalid' || r.reason === 'claude_unchanged') && r.data) verdict = `rejected: ${r.reject || 'invalid'}`;
   else verdict = `${r.reason}${r.error ? `: ${String(r.error.message || '').slice(0, 80)}` : ''}`;
   if (r.data && r.data.unchanged && !r.result) claude = `(unchanged) ${claude}`;
   const key = verdict.replace(/:.*$/, '') + (verdict.startsWith('rejected') ? `: ${verdict.split(': ')[1]}` : '');

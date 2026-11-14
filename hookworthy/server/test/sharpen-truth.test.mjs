@@ -106,7 +106,10 @@ test('truth: links, handles, tags and tickers are atoms (never marked, cut or sp
     const lead = (t.match(/^([@#]\w+|\$[A-Za-z]\w*)/) || [])[1]; if (lead && R.state === 'sharp' && !R.line.startsWith(lead)) bad.push(`${t}: ${lead} is no longer first`);
   }
   assert.deepEqual(bad, []);
-  assert.equal(S('@justin_really is basically the best trader').line, '@justin_really is the best trader.');
+  /* r86 pass 5 (juror 4, hook-2): "basically the best" says nearly the best, so it stays; the handle is still one atom, never marked or cut */
+  const jr = S('@justin_really is basically the best trader');
+  assert.equal(jr.line, '@justin_really is basically the best trader'); assert.deepEqual(jr.marks, []); assert.match(jr.why, /“basically the best”/);
+  assert.equal(S('@justin_really is honestly the best trader').line, '@justin_really is the best trader.');
 });
 
 test('truth: the first word keeps the first line\'s case, whatever the body does', () => {

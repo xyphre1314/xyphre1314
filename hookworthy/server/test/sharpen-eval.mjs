@@ -92,7 +92,9 @@ export function check(e, r) {
   if (r.same) issues.push('unchanged');
   if (nums(line) !== nums(e.t)) issues.push(`numbers ${nums(e.t)} → ${nums(line)}`);
   if (BANNED.test(line)) issues.push('banned word');
-  if (HEDGE.test(line)) issues.push(`hedge left: ${line.match(HEDGE)[0]}`);
+  /* r86 pass 5 (juror 4, hook-1/2): under a negation "really" and "just" carry the meaning ("don't really mean" ≠ "don't mean"), so they are not a hedge left */
+  const hl = line.replace(/\b(?:not|never|\w+n['’]t)\s+(?:\w+\s+)?(?:really|just)\b/gi, ' ');
+  if (HEDGE.test(hl)) issues.push(`hedge left: ${hl.match(HEDGE)[0]}`);
   if (/\p{Extended_Pictographic}|🧵/u.test(line) && !/\p{Extended_Pictographic}/u.test(e.t)) issues.push('emoji added');
   if (/\bhere[’']s (why|how|what)\b/i.test(line) && !e.body) issues.push('loop with nothing after it');
   if (/:$/.test(line) && !e.body) issues.push('ends on a colon with nothing after it');

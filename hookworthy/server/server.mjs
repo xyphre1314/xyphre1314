@@ -82,11 +82,14 @@ const strList = (a, n) => (Array.isArray(a) ? a : []).filter(w => typeof w === '
    else { reason }. usage is Claude's token count when a call was made */
 export async function sharpenClaude({ text, voice = null, never = [], keep = [] }) {
   const nv = [...never, ...(voice && Array.isArray(voice.never) ? strList(voice.never, 60) : [])];
+  /* r86 pass 5 (hook-17): a first line past the cap goes to the engine, never cut short on its way to Claude */
+  if ([...String(text == null ? '' : text).replace(/^\s+/, '').split('\n')[0].trim()].length > core.SHARPEN.AI_MAX) return { reason: 'long' };
   let r;
   try { r = await AI.complete({ ...core.prompts.sharpen({ text, voice, never: nv, keep }), timeout: SHARPEN_TIMEOUT_MS }); }
   catch (e) { const c = e && e.code; return { reason: c === 'no_key' || c === 'timeout' || c === 'refused' ? c : c === 'invalid_json' || c === 'empty_completion' ? 'invalid' : 'error', error: e }; }
-  const result = r.truncated ? null : core.SHARPEN.fromClaude(text, r.data, { keep, never: nv });
-  return result ? { result, usage: r.usage, model: r.model, data: r.data } : { reason: 'invalid', usage: r.usage, model: r.model, data: r.data };
+  const tr = {}, result = r.truncated ? null : core.SHARPEN.fromClaude(text, r.data, { keep, never: nv, trace: tr });
+  /* "unchanged" on a line the engine has fluff marked in: the engine's answer, said as such */
+  return result ? { result, usage: r.usage, model: r.model, data: r.data } : { reason: tr.reject === 'unchanged' ? 'claude_unchanged' : 'invalid', reject: r.truncated ? 'truncated' : tr.reject, usage: r.usage, model: r.model, data: r.data };
 }
 
 export async function handle(req, res) {
@@ -167,12 +170,13 @@ export async function handle(req, res) {
     if (p === '/api/v1/check' && req.method === 'POST') { const b = await body(req); const text = String(b.text || ''); const hist = Array.isArray(b.history) ? b.history.slice(0, 3000).map(core.normPost).filter(Boolean) : null; const tuned = hist ? core.learnHooks(hist) : null; return send(res, 200, { hook: core.hookScore(text), ...(tuned ? { mine: tuned.ready ? { ...core.personalScore(text, tuned), tested: tuned.val } : { ready: false, n: tuned.n, need: tuned.need } } : {}), kind: core.kindOf(text), checks: core.checkPost(text, { never: b.never || [], limit: b.limit || 280, platform: b.platform || 'x' }) }); }
     if (p === '/api/v1/rewrite' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' }); const spec = core.prompts.rewrite({ text: b.text, kind: b.kind || 'punchier', lang: b.lang, voice: b.voice || null, platform: b.platform || 'X', limit: b.limit || 280 }); const { q, r } = await withCredits(req, { act: 'rewrite', chars: String(b.text || '').length }, () => AI.complete({ ...spec, json: true })); if (!r) return outOfCredits(res, q); return send(res, 200, r.data, q.metered ? { 'x-credits-left': String(q.credits.left) } : {}); }
     /* POST /api/v1/sharpen { text, voice?, never?, keep? }: always 200 with sharpenLine's contract and source 'claude' |
-       'rules'; a rules answer says why (thin, no_key, cap, timeout, invalid, refused, error). Never spends credits */
+       'rules'; a rules answer says why (thin, long, no_key, cap, timeout, invalid, claude_unchanged, refused, error). Never spends credits */
     if (p === '/api/v1/sharpen' && req.method === 'POST') {
       const b = await body(req, 64 * 1024), text = typeof b.text === 'string' ? b.text : '', keep = strList(b.keep, 30), never = strList(b.never, 60);
       const voice = b.voice && typeof b.voice === 'object' && !Array.isArray(b.voice) ? b.voice : null;
       const rules = reason => send(res, 200, { ...core.sharpenLine(text, { keep }), source: 'rules', reason });
       if (core.SHARPEN.tooThin(text)) return rules('thin');
+      if ([...text.replace(/^\s+/, '').split('\n')[0].trim()].length > core.SHARPEN.AI_MAX) return rules('long');
       if (!AI.hasKey()) return rules('no_key');
       const who = tokenOf(req) || `ip:${ip}`;
       if ((sharpenUse.get(sharpenKey(who)) || 0) >= sharpenCap() || !allow(ip) || !sharpenTake(who)) return rules('cap');

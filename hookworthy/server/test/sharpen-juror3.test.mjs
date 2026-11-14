@@ -20,7 +20,9 @@ const S = (t, o) => core.sharpenLine(t, o);
 const L = (t, o) => S(t, o).line;
 
 test('juror 3, hook-1: an opinion frame takes its "that"; "breaks" only when it does', () => {
-  assert.equal(L('I think that in 5 years nobody will remember this.'), 'In 5 years nobody will remember this.');
+  /* r86 pass 5 (juror 4, hook-3): a forecast keeps its "I think": without it, it's a certainty the writer never posted */
+  assert.equal(L('I think that in 5 years nobody will remember this.'), 'I think that in 5 years nobody will remember this.');
+  assert.equal(L('Honestly, I think that in 5 years nobody will remember this.'), 'I think that in 5 years nobody will remember this.');
   assert.equal(L('I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'), 'In 2026, the companies that will win are the ones that are willing to say something interesting.');
   /* the cut lands (no bail-out); "just need" (= simply) and the closing "pretty much it" are the writer's voice and stay */
   assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "Most people just need to sleep more and eat more protein, and that's pretty much it.");
@@ -96,7 +98,10 @@ test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are 
   assert.ok(quotes(S('Pleased to announce that our open-source library just passed 10,000 GitHub stars').why).every(q => !/\bGitHub$/.test(q)));
   assert.match(S('Here are 10 VS Code extensions I can’t live without:').why, /^“10 VS Code extensions” comes first, so people know what they’re getting\.$/);
   assert.doesNotMatch(S('Here are 3 stretches I do every single morning before work:').why, /proof/);
-  assert.equal(S('So I have been thinking about this a lot lately and I honestly believe that the vast majority of retail traders are basically just gambling, because they don\'t have a plan, they don\'t size their positions properly, they don\'t use stop losses, and they really just chase whatever coin is pumping on their timeline that day, which is exactly why 90% of them lose money.').say.match(/Split it into (\w+) beats/)[1], 'three');
+  /* r86 pass 5 (juror 4, hook-7): the split never takes the last item of a series ("…stop losses, and they chase…" stays one
+     list), and the receipt counts the beats the line really has */
+  { const r = S('So I have been thinking about this a lot lately and I honestly believe that the vast majority of retail traders are basically just gambling, because they don\'t have a plan, they don\'t size their positions properly, they don\'t use stop losses, and they really just chase whatever coin is pumping on their timeline that day, which is exactly why 90% of them lose money.');
+    const n = (r.line.match(/[.!?]+(?=\s|$)/g) || []).length; assert.equal(r.say.match(/Split it into (\w+) beats/)[1], ['', 'one', 'two', 'three'][n]); assert.match(r.line, /stop losses, and they chase/); }
   assert.equal(L('this might be controversial but i actually think dca is overrated for most people'), 'i actually think dca is overrated for most people.');
   assert.equal(L('so i think the real reason most newsletters stall is that the first line is boring'), 'the real reason most newsletters stall? the first line is boring.');
   assert.equal(L('Quick update: we shipped dark mode and the onboarding checklist this week'), 'We shipped dark mode and the onboarding checklist this week.');

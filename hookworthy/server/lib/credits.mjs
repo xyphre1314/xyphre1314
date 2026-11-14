@@ -79,7 +79,8 @@ export function reserve(token, { act, docs = 0, chars = 0, tier, bytes = 0 } = {
     /* the call failed (no answer, an error, a refusal): nothing was written, so nothing is owed */
     refund() {
       if (done) return; done = true;
-      const cur = load(token, plan, Date.now());
+      /* settled at the reservation's own time, so a refund never lands in a month the call wasn't made in */
+      const cur = load(token, plan, now);
       /* capped at a full month plus rollover, counting client voices and any add-on */
       if (cost > 0) { const A = C.status(cur.rec.st, plan).amount, cap = A * (C.PLANS[plan].roll ? 2 : 1); cur.rec.st = { ...cur.rec.st, bal: Math.min(cap, cur.rec.st.bal + cost) }; }
       else cur.rec.assists = Math.max(0, (cur.rec.assists || 0) - 1);
