@@ -5,8 +5,10 @@
 // source (between their START/END markers), and runs HWCore.sharpenLine on:
 //   - the four hero examples (EX): line, cut words + kinds, receipt (say) and the Kept row;
 //   - the hero's static first frame (#pf-draft, #pf-sharp, #pf-move, #pf-cut, #pf-kept) against EX[0];
-//   - the Try tile's pre-rendered default ($SOL) and the final's example card.
+//   - the Try tile's pre-rendered default and the final's example card;
+//   - the Who tile's four mini posts (WHO): each persona's line and cuts, and the static list drawn by the page's whoHTML.
 // The hero shows the engine's own "why" and "say" verbatim, so they are checked (and rewritten by --write) like the line.
+// Sharpened lines are drawn with the page's own display helpers (nb, beats, xbeats), so a wrap falls between beats.
 // The Kept rows ("Kept: $SOL, 40%. Kept your lowercase.") come from the page's own keptLine, lifted the same way, and the Try
 // default's struck mirror and the final's struck draft are rebuilt by --write with the page's own markup helpers (MARKUP block).
 //
@@ -20,8 +22,8 @@ let src = fs.readFileSync(SRC, 'utf8'), tail = fs.readFileSync(TAIL, 'utf8');
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
-const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\nreturn { EX, draftHTML, cutNote, keptLine, FLUFF, nb, segments, mirrorHTML, fpDraftHTML };`)(esc, list);
-const { EX, draftHTML, cutNote, keptLine, nb, segments, mirrorHTML, fpDraftHTML } = lib;
+const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, FLUFF, nb, beats, xbeats, hitK, segments, mirrorHTML, fpDraftHTML };`)(esc, list);
+const { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, nb, beats, xbeats, hitK, segments, mirrorHTML, fpDraftHTML } = lib;
 const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const fromEngine = d => { const R = H.sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept) : '' }; };
@@ -43,8 +45,9 @@ const e0 = fixed[0];
 const STATIC = [
   ['pf-draft', /(<p class="dtext" id="pf-draft">)([\s\S]*?)(<\/p>)/, draftHTML(e0)],
   ['pf-move', /(<span id="pf-move">)([\s\S]*?)(<\/span>)/, esc(e0.say)],
-  ['pf-sharp', /(<p class="ptext(?: long)?" id="pf-sharp">)([\s\S]*?)(<\/p>)/, '<span class="sr">Sharpened: </span>' + nb(esc(e0.after))],
+  ['pf-sharp', /(<p class="ptext(?: long)?" id="pf-sharp">)([\s\S]*?)(<\/p>)/, '<span class="sr">Sharpened: </span>' + beats(e0.after, x => nb(esc(x)))],
   ['pf-why', /(<p id="pf-why">)([\s\S]*?)(<\/p>)/, esc(e0.why)],
+  ['pf-k', /(<span class="k" id="pf-k">)([\s\S]*?)(<\/span>)/, hitK(e0.say)],
   ['pf-kept', /(<p(?: class="[^"]*")? id="pf-kept">)([\s\S]*?)(<\/p>)/, esc(e0.kept)],
   ['pf-cut', /(<p class="note" id="pf-cut">)([\s\S]*?)(<\/p>)/, cutNote(e0)]
 ];
@@ -64,13 +67,15 @@ if (ta) {
   const st = (src.match(/<span id="out-st">([\s\S]*?)<\/span>/) || [])[1], kept = (src.match(/<p(?: class="[^"]*")? id="out-kept">([\s\S]*?)<\/p>/) || [])[1];
   const why = (src.match(/<p id="out-why">([\s\S]*?)<\/p>/) || [])[1];
   const fixSrc = (re, v) => { src = src.replace(re, (all, a, b, c) => a + v + c); };
-  if (line !== esc(g.after)) { bad.push(`Try default line\n    page:   ${line}\n    engine: ${g.after}`); fixSrc(/(<p class="xtext" id="out-line">)([\s\S]*?)(<\/p>)/, esc(g.after)); }
+  if (line !== xbeats(g.after)) { bad.push(`Try default line\n    page:   ${line}\n    engine: ${g.after}`); fixSrc(/(<p class="xtext" id="out-line">)([\s\S]*?)(<\/p>)/, xbeats(g.after)); }
   if (!same(struck, g.cut.map(c => esc(c[0])))) bad.push(`Try default strikes\n    page:   ${JSON.stringify(struck)}\n    engine: ${JSON.stringify(g.cut)}`);
   /* the struck mirror is exactly what the page's own mirrorHTML draws for the engine's result */
   const mir = (src.match(/<div class="ed-mirror struck" id="try-mirror"[^>]*>([\s\S]*?)<\/div>/) || [])[1], mirWant = mirrorHTML(ta, segments(g.R, { cut: g.R.cut }, []), true);
   if (mir !== mirWant) { bad.push(`Try default mirror markup\n    page:   ${mir}\n    wanted: ${mirWant}`); src = src.replace(/(<div class="ed-mirror struck" id="try-mirror"[^>]*>)([\s\S]*?)(<\/div>)/, (all, a, b, c) => a + mirWant + c); }
   if (st !== esc(g.say)) { bad.push(`Try default receipt\n    page:   ${st}\n    engine: ${g.say}`); fixSrc(/(<span id="out-st">)([\s\S]*?)(<\/span>)/, esc(g.say)); }
   if (kept !== esc(g.kept)) { bad.push(`Try default kept\n    page:   ${kept}\n    engine: ${g.kept}`); fixSrc(/(<p(?: class="[^"]*")? id="out-kept">)([\s\S]*?)(<\/p>)/, esc(g.kept)); }
+  const ok = (src.match(/<span class="k" id="out-k">([\s\S]*?)<\/span>/) || [])[1];
+  if (ok !== hitK(g.say)) { bad.push(`Try default label\n    page:   ${ok}\n    wanted: ${hitK(g.say)}`); fixSrc(/(<span class="k" id="out-k">)([\s\S]*?)(<\/span>)/, hitK(g.say)); }
   if (why !== esc(g.R.why)) { bad.push(`Try default why\n    page:   ${why}\n    engine: ${g.R.why}`); fixSrc(/(<p id="out-why">)([\s\S]*?)(<\/p>)/, esc(g.R.why)); }
 }
 const fpD = (tail.match(/<p class="draft" id="fp-draft">([\s\S]*?)<\/p>/) || [])[1];
@@ -79,7 +84,7 @@ if (fpD) {
   const g = fromEngine(draft);
   const struck = [...fpD.matchAll(/<span class="cut">([\s\S]*?)<\/span>/g)].map(m => m[1]);
   const line = (tail.match(/<p class="xtext" id="fp-sharp"><span class="sr">Sharpened: <\/span>([\s\S]*?)<\/p>/) || [])[1];
-  if (line !== esc(g.after)) { bad.push(`Final example line\n    page:   ${line}\n    engine: ${g.after}`); tail = tail.replace(/(<p class="xtext" id="fp-sharp"><span class="sr">Sharpened: <\/span>)([\s\S]*?)(<\/p>)/, (all, a, b, c) => a + esc(g.after) + c); }
+  if (line !== xbeats(g.after)) { bad.push(`Final example line\n    page:   ${line}\n    engine: ${g.after}`); tail = tail.replace(/(<p class="xtext" id="fp-sharp"><span class="sr">Sharpened: <\/span>)([\s\S]*?)(<\/p>)/, (all, a, b, c) => a + xbeats(g.after) + c); }
   if (!same(struck, g.cut.map(c => c[0]))) bad.push(`Final example strikes\n    page:   ${JSON.stringify(struck)}\n    engine: ${JSON.stringify(g.cut)}`);
   /* the example's draft is the page's own fpDraftHTML for the engine's result; its strikes aren't toggles (those are for your own line) */
   const fpWant = fpDraftHTML(draft, segments(g.R, { cut: g.R.cut }, [])).replace(/<span class="cut tog"[^>]*>/g, '<span class="cut">');
@@ -88,7 +93,24 @@ if (fpD) {
   const fixTail = (re, v) => { tail = tail.replace(re, (all, a, b, c) => a + v + c); };
   if (fw !== esc(g.why)) { bad.push(`Final example why\n    page:   ${fw}\n    engine: ${g.why}`); fixTail(/(<p id="fp-why">)([\s\S]*?)(<\/p>)/, esc(g.why)); }
   if (fk !== esc(g.kept)) { bad.push(`Final example kept\n    page:   ${fk}\n    engine: ${g.kept}`); fixTail(/(<p(?: class="[^"]*")? id="fp-kept">)([\s\S]*?)(<\/p>)/, esc(g.kept)); }
+  const fkl = (tail.match(/<span class="k" id="fp-k">([\s\S]*?)<\/span>/) || [])[1];
+  if (fkl !== hitK(g.say)) { bad.push(`Final example label\n    page:   ${fkl}\n    wanted: ${hitK(g.say)}`); fixTail(/(<span class="k" id="fp-k">)([\s\S]*?)(<\/span>)/, hitK(g.say)); }
   if (g.R.state !== 'sharp') bad.push(`Final example: engine says "${g.R.state}"`);
+}
+
+/* 4. the Who tile: each persona's sharpened line is the engine's, and the static list is the page's own whoHTML */
+const wfixed = WHO.map((w, i) => {
+  const g = fromEngine(w.draft), out = { ...w };
+  if (g.R.state !== 'sharp') bad.push(`WHO[${i}] ${w.n}: engine says "${g.R.state}"; pick a draft that sharpens`);
+  if (w.after !== g.after) { bad.push(`WHO[${i}] ${w.n} line\n    page:   ${w.after}\n    engine: ${g.after}`); out.after = g.after; }
+  if (!same(w.cut, g.cut)) { bad.push(`WHO[${i}] ${w.n} cut\n    page:   ${JSON.stringify(w.cut)}\n    engine: ${JSON.stringify(g.cut)}`); out.cut = g.cut; }
+  return out;
+});
+{
+  const re = /(<ul class="wposts xcard demo"[^>]*>)([\s\S]*?)(\n      <\/ul>)/, m = src.match(re);
+  const want = '\n' + wfixed.map((w, i) => '        ' + whoHTML(w, i)).join('\n');
+  if (!m) bad.push('static Who list not found');
+  else if (m[2] !== want) { bad.push('static Who list markup'); src = src.replace(re, (all, a, b, c) => a + want + c); }
 }
 
 if (WRITE) {
@@ -96,6 +118,8 @@ if (WRITE) {
   const body = fixed.map(e => `    { who: ${q(e.who)}, handle: ${q(e.handle)}, av: ${q(e.av)}, draft: ${q(e.draft)},\n      cut: [${e.cut.map(c => `[${q(c[0])}, ${q(c[1])}]`).join(', ')}], after: ${q(e.after)}, say: ${q(e.say)},\n      why: ${q(e.why)}, kept: ${q(e.kept)} }`).join(',\n');
   const a = src.indexOf('/* EX-START */'), b = src.indexOf('/* EX-END */');
   src = src.slice(0, a) + `/* EX-START */\n  const EX = [\n${body}\n  ];\n  ` + src.slice(b);
+  const wbody = wfixed.map(w => `    { k: ${q(w.k)}, n: ${q(w.n)}, h: ${q(w.h)}, av: ${q(w.av)}, draft: ${q(w.draft)},\n      cut: [${w.cut.map(c => `[${q(c[0])}, ${q(c[1])}]`).join(', ')}], after: ${q(w.after)}${w.studio ? ', studio: true' : ''} }`).join(',\n');
+  src = src.replace(/(const WHO = \[\n)[\s\S]*?(\n  \];)/, (all, x, y) => x + wbody + y);
   fs.writeFileSync(SRC, src); fs.writeFileSync(TAIL, tail);
   console.log('wrote', SRC, 'and', TAIL);
 }
