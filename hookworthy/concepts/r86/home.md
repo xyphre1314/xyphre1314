@@ -439,3 +439,90 @@ FIX4's decisions win where reviewers disagree. The page still renders only what 
 - Screens: 9.69 at 390 (budget 10.0) and 10.46 at 360 (budget 10.5), plus 9.06 at 768 and 8.33 at 1440.
 - Hero post bottom: 766 at 1440×900, 768 at 1280×800, 773 at 390×844 and 776 at 360×780, all above the fold.
 - `trytest` (1440, 390, 360), `sheettest`, `motion`, `p4test`, `mbar` and `cbar` all pass, and `inp` stays under 200 ms. All scripts are in `r86/fix3/`.
+
+## Pass 5 (brief: `r86/FIX5.md`, re-rate reviews in `r86/rerate4/`)
+FIX5's decisions win where reviewers disagree. The lead's fixes (the sheet notice selector, legal's "What leaves, and when") and the other engineer's copy (Trust, the Try label, the lede, FAQ #qa3) were the starting point. Engine text is still shown verbatim.
+
+**Shared**
+- Two-beat lines (brand-1, web-1): `beats()` (display only, in the DRAFT block hero-sync lifts) wraps each short sentence of a sharpened line in an inline-block `.bt`. Wraps fall between beats in the hero, Try and the final.
+  - When any sentence runs past 64 characters, the line wraps normally, but a 1–3 letter opener stays with the next word.
+  - The OG image's post breaks at the full stop too.
+- Hero window (web-2, web-3):
+  - "Why it hits" keeps 20px above the footer line for every example at every width (`.window .hits{margin-bottom:20px}`, measured by `sizeHero`).
+  - The opening settles about 1.3s after first paint (it was 2.1s): `--l` .25s, the strike at l+.25, wake .4s, glint .55s, Cut/Kept at l+.45. The fluff falls as the strike ends (.45s, .05s stagger).
+  - No animated blur: `defocus` is a fade; `land` and `fall` use transform and opacity only.
+- Receipts that don't repeat (marketing-3). The six built-in examples each show a different move, all engine output written by hero-sync:
+  - Trader: two beats.
+  - Founder: number first.
+  - Newsletter: "I think the reason most newsletters fail is that nobody reads past the first line" → asked, then answered.
+  - Ghostwriter: "I would argue that your evening sets up…" → a hedge cut, "the claim stands on its own". Lena's Studio post matches.
+  - Try default: "i don’t think you should size up after a red day" → said it straight.
+  - Final: "thrilled to share that my trading newsletter just hit 20,000 subscribers" → the run-up cut.
+- FAQ #qa3 (marketing-4) is FIX5's answer verbatim: "Your words, edited. …"
+- Pro, sold one way (marketing-6, founder-3):
+  - "For posting every day."
+  - The list leads with "500 posts a month auto-sent at your time" (phones: "500 auto-sent posts a month"), then the takeoff ping.
+
+**Brand**
+- brand-2: one bento heading system, with two steps and one tone rule. The statement is ink and the payoff grey, everywhere.
+  - Lead (`.cap.big`: Try, Voice, Day, Studio, Trust, and Who from 1100) is 40px, or `min(28px,6.6vw)` on phones.
+  - Standard is 26px, 22px at 761–900, and `min(22px,5.6vw)` on phones.
+  - The per-tile tone overrides and the container-query sizes are gone.
+- brand-3 / uiux-7 / web-9: Who is four mini X posts in one X card.
+  - Each post shows its persona's tag (Trader, Newsletter, Founder, Ghostwriter), the struck draft faint (≥901) and the engine's sharpened line.
+  - "Try it" loads that draft into Sharpen; the ghostwriter's post links to Studio.
+  - On phones and at 761–900 the action is an icon and the whole post is the tap target.
+  - The data is a WHO block; hero-sync checks each line and writes the static list with the page's `whoHTML`.
+- brand-4: `.plans-fine` sits above the cards' shadows.
+- brand-5: the wordmark is one outlined drawing (`#wm`: the hook h plus "ookworthy" outlines from `assets/brand/afterglow-wordmark.svg`) in the nav, footer and giant mark.
+  - The h's shoulder rose 0.4 units to the o's overshoot, and its bowl dips 0.35 below the baseline.
+  - The same path is in the sprite, the app icon (`build.py`), the brand SVGs and the favicon. The 180px icon and the OG image were re-rendered.
+- brand-6/7, marketing-13, legal.html:
+  - It has the homepage nav (Sign in and Start free open the homepage sheet through `?sheet=signin|free`), the same wordmark, a 72px h1 and no example-accounts line.
+  - "Scores are a guide" became "Sharpen is a guide", and "score" became "sharpen".
+  - The lead's "What leaves, and when" stays as written.
+- brand-8 / web-10: the hero receipt sits on its own line under "Sharpened" when it doesn't fit beside it, and the footer line is balanced.
+
+**UI/UX**
+- uiux-1: reduced motion keeps "Another version" (`.replay.alt`). Only the true replays go.
+- uiux-2 (page half): the final card gets "Another version · n/m" beside Keep.
+- uiux-3: `#sh-err` has `role="alert"`.
+- uiux-4: the phone bar re-checks the Try tile's position on scroll, so a jump back to the top hides it.
+- uiux-5 / founder-6 / marketing-10b: in the done state, "Back to the page" is the white button. The demo is a quiet link: "Try the working demo (earlier design)".
+- uiux-6: in Previews "Yours", the example's posts follow yours, dimmed, so a short line never leaves a hole.
+
+**Web**
+- web-4: at ≥901 the plan cards share subgrid rows, so prices, lists and buttons line up at every width.
+- web-5: the Studio highlight wraps (box-decoration-break: clone) and the phone text is balanced.
+- web-6: FAQ answers open and close by their height and padding (static under reduced motion).
+- web-7: the page warms core.js one `warmSteps()` step per idle callback, and phones load core.js only when Try or the final comes near, or on first touch.
+- web-8: phone budget, see Numbers.
+
+**Founder and marketing**
+- founder-4: the Studio plan, the tile fact and FAQ #qa4 say posts go out from a client's own X account once they connect it; until then a post waits for you.
+- founder-5: Pro's full list adds "Need more? Add up to 1,750 a month" (the app's own line).
+- founder-7: the final always offers "Or start free, no line needed" ("Or just start free" in the promises row at ≤374).
+- founder-8 / marketing-9: the lede is only the rewrite allowance, and the "Claude in the app" claim left it.
+- marketing-8:
+  - A cut-only result is labelled "What changed"; a move keeps "Why it hits" (`hitK`, checked by hero-sync).
+  - A brand-new line says "Tap Sharpen to see yours."; only an edit of the same line says "Edited".
+- marketing-9: the final note says "An example. Yours replaces it as you type." Trust's lock line is "Posts go out through X’s official API. This page’s demo never leaves your browser." The Pro bullet is "Results: what landed, and what to write next".
+- marketing-10a/c:
+  - The paid sheet subs are one glance ("$12 a month, billed yearly ($144). Cancel anytime.").
+  - A line rides into the sheet only once it was sharpened or a word was put back, and never from pricing.
+- marketing-11: "Learns your voice from 8 posts (uses 5 rewrites, once)".
+- marketing-12: the plug/reruns rule is gone. On desktop Trust adds the FAQ's posting fact: "X and LinkedIn posts go out at the time you picked. Threads and Bluesky get a nudge, ready to paste."
+
+**Skipped**
+- Engine-side (FIX5): marketing-2/7, founder-1, hook items, the broken-line and verdict text (uiux-2's gate), and marketing-8b/d (engine strings).
+- web-7, partly: two of the engine's own warm steps (whole `sharpenLine` warm calls) still take 44–66ms at 1x (115–317ms at 4x). Only core.js can split them.
+- FIX5 item 9 / founder-2's "Who sees my drafts?": it doesn't fit the 360 budget.
+- marketing-5 / brand-6's nouns inside "What leaves, and when": the lead's text, kept per FIX5.
+
+**Numbers (final build, against core.js of 2026-10-29 14:36)**
+- `check.js home` and `check.js legal`: ok:true. axe is 0 in all 15 dynamic states at 1440 and 390.
+- CLS is 0 at 1440, 1280, 1100, 1024, 960, 901, 900, 768, 761–780, 430, 414, 390, 375 and 360. Nothing pokes past the viewport, and every heading is two lines or fewer.
+- Screens: 9.74 at 390 (budget 10.0), 10.44 at 360 (budget 10.5), 9.13 at 768 and 8.45 at 1440.
+- Hero post bottom: 766 at 1440×900, 768 at 1280×800, 773 at 390×844 and 776 at 360×780.
+- The hero opening settles about 1.3s after first paint. Hits-to-footer is ≥20px for every example at 901–1440.
+- `trytest` (1440, 390, 360), `sheettest` (1440, 390; now also `?sheet=` and the line rules), `motion`, `p4test`, `r86/fix5/p5test.js` (1440, 390), `mbar`, `cbar` and `inp` all pass. Phone hero contrast is ≥4.65:1.
