@@ -1378,7 +1378,7 @@ footer .wrap{container-type:inline-size}
   .vc-h .av{width:26px;height:26px}
   .vc-h .xname{font-size:14px}
   .vc-h .lrn{font-size:12px}
-  .vc-h .tag{display:none}
+  .vc-h .tag,.vc-h .av{display:none}
   .vrow.nvr .nv:nth-child(n+3){display:none}
   .t-voi .tfoot{display:none}
   .vrow.hbr{display:none}
@@ -2582,7 +2582,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
      still get the whole line */
   function fitLine(el) {
     if (el._full == null) el._full = el.innerHTML; else el.innerHTML = el._full;
-    if (!el.clientWidth || el.scrollWidth <= el.clientWidth + 1) return;
+    if (!el.clientWidth || el.scrollWidth <= el.clientWidth) return;
     const sr = document.createElement('span'), box = document.createElement('span'), dots = document.createTextNode('…');
     sr.className = 'sr'; sr.textContent = el.textContent; box.setAttribute('aria-hidden', 'true');
     while (el.firstChild) box.appendChild(el.firstChild);
@@ -2592,7 +2592,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const tidy = () => { const T = texts(); while (T.length && !T[T.length - 1].data.trim()) drop(T.pop());
       if (T.length) T[T.length - 1].data = T[T.length - 1].data.replace(/[\s,;:.·–—…-]+$/, '');
       box.querySelectorAll('s,span,mark').forEach(x => { if (!x.textContent.trim()) drop(x); }); };
-    for (let k = 0; k < 60 && el.scrollWidth > el.clientWidth + 1; k++) { const T = texts().filter(t => t.data.trim()); if (!T.length) break; T[T.length - 1].data = T[T.length - 1].data.replace(/\S+\s*$/, ''); tidy(); }
+    for (let k = 0; k < 60 && el.scrollWidth > el.clientWidth; k++) { const T = texts().filter(t => t.data.trim()); if (!T.length) break; T[T.length - 1].data = T[T.length - 1].data.replace(/\S+\s*$/, ''); tidy(); }
   }
   const fitAll = () => $$('.t-who .wd, #st-q .qs li span').forEach(fitLine);
   let cur = 0; const stT = [];
