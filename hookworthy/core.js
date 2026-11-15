@@ -333,7 +333,7 @@
   }
   const slInG = (G, a, b) => G.some(g => a < g[1] && b > g[0]);
   /* where the soft words are: [start, end, why, kind], first match wins, no overlaps; keep: words this voice puts back */
-  const softKept = (frag, keep) => !!keep && keep.length > 0 && keep.map(k => String(k).toLowerCase()).includes(String(frag).toLowerCase().replace(/[,:.!\s]+$/, '').trim());
+  const softKept = (frag, keep) => !!keep && keep.length > 0 && keep.map(k => String(k).toLowerCase()).includes(String(frag).toLowerCase().replace(/[,:.!\s]+$/, '').replace(/^[,;:\s]+/, '').trim());
   /* r86 pass 6 (juror 5, hook-7): the engine keeps what the Claude prompt keeps, so the homepage and the app teach one rule.
      Kept: a frame that says how to take the line (rule 4: "Hot take:", "Unpopular opinion:", "Honest question:", "PSA:",
      "Reminder:", "this might be controversial, but", "Not to brag, but"); a disclaimer where the writer put it ("not financial
@@ -393,7 +393,12 @@
       const pw = m[1].trim(), pa = a + m[0].indexOf(m[1]), kd = /^(?:honestly|personally)$/i.test(pw) ? 'honest' : /^(?:actually|just)$/i.test(pw) ? 'filler' : 'intens';
       add.push([pa, pa + pw.length, SOFT.find(x => x.k === kd).why, kd]); const core = m[0].replace(m[1], ''); keep.push(core, `${core} that`); trim.push([lcw(m[0]), core]); op.add(lcw(m[0])).add(lcw(core)).add(lcw(`${core} that`));
     }
-    const res = { keep: [...new Set(keep)], mask: [...new Set([...mask, ...trim.map(x => x[1]), ...trim.map(x => `${x[1]} that`)])], op, tone, add, trim, dbl };
+    /* an opinion no soft mark covers ("After hiring 300 people, I think…") is the writer's hedge too: kept, and every kept one must survive */
+    for (const m of t.matchAll(/\b(?:i|we)\s+(?:think|believe|feel like|reckon)\b/gi)) if (!raw.some(r => r[0] <= m.index && r[1] >= m.index + m[0].length)) { keep.push(m[0]); mask.push(m[0]); op.add(lcw(m[0])); }
+    const opk = raw.filter((r, i) => kept.has(i)).map(r => lcw(txt(r).replace(/[,:.!\s]+$/, '').replace(/\s+(?:that|but)$/i, ''))).concat([...t.matchAll(/\b(?:i|we)\s+(?:think|believe|feel like|reckon)\b/gi)].filter(m => !raw.some(r => r[0] <= m.index && r[1] >= m.index + m[0].length)).map(m => lcw(m[0]))).map(f => [f, (trim.find(x => f.startsWith(x[0])) || [null, f])[1].toLowerCase().replace(/’/g, "'")]);
+    /* the kept spans softCut's second pass must not cut into ("really excited about this one" holds a "really") */
+    const spans = raw.filter((r, i) => kept.has(i) && !/^(?:opinion|hedge)$/.test(r[3])).map(r => txt(r).replace(/[,:.!\s]+$/, '').trim()).filter(w => /\s/.test(w));
+    const res = { keep: [...new Set(keep)], mask: [...new Set([...mask, ...trim.map(x => x[1]), ...trim.map(x => `${x[1]} that`)])], op, opk, tone, spans, add, trim, dbl };
     if (SL_POL.size > 400) SL_POL.clear(); SL_POL.set(t, res);
     return res;
   }
@@ -437,6 +442,8 @@
     const keepC = (bf, af, sep) => /,/.test(sep) && /[\p{L}\p{N}%)$]\s+$/u.test(bf) && !/[,;:]\s*$/.test(bf) && /^\S/.test(af) && wordsN(bf.split(/[,;:.!?—–]/).pop()) >= 2 && slFinite(bf.split(/[,;:.!?—–]/).pop()) && slFinite(af.split(/[,;:.!?—–]/)[0]);
     softMarks(L0, keep).filter(m => !only || only.test(m[3])).sort((a, b) => b[0] - a[0]).forEach(m => { cut.unshift(s.slice(m[0], m[1])); kinds.unshift(m[3]); const sep = s.slice(m[1]).match(/^[,:]?[ \t]*/)[0], af = s.slice(m[1] + sep.length), bf = s.slice(0, m[0]); s = (/^\s*(?:[.!?…]|\n|$)/.test(af) ? bf.replace(/[\s,;:—–-]+$/, '') : keepC(bf, af, sep) ? bf.replace(/\s+$/, '') + ', ' : bf) + af; });
     const G = slGuard(s), GM = [];
+    /* r86 pass 6 (hook-7): and the spans the prompt's rules keep ("really excited about this one"), so the second pass can't cut into them */
+    { const ls = lcw(s); slPolicy(L0).spans.forEach(w => { const k = lcw(w); for (let p = ls.indexOf(k); p >= 0; p = ls.indexOf(k, p + 1)) { const e = p + k.length; if (!/[\p{L}\p{N}]/u.test(ls[p - 1] || '') && !/[\p{L}\p{N}]/u.test(ls[e] || '') && !G.some(g => p < g[1] && e > g[0])) G.push([p, e, 'mean']); } }); G.sort((a, b) => a[0] - b[0]); }
     /* r86 pass 2: guarded spans (links, quotes, meaning words) are masked while the soft words go, then put back */
     /* r86 pass 4 (hook-3, hook-9): a #tag, @handle or $ticker is masked as an atom ("Qy…q"), so a label after it ("#buildinpublic
        update:") reads as mid-line, the way the marks read it, and is never cut unmarked */
@@ -2284,7 +2291,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     },
     /* r86 pass 3: "I've been writing this for 200 weeks straight and I want to share what I learned" → "…200 weeks straight. Here's what I learned:" */
     thinkingWhy(x) { const m = body(x).match(/^(?:i|we)(?:['’]ve| have) been thinking (?:a lot |so much )?(?:lately |recently )?about why (.{6,80}?),? and (?:(i Qk[a-z]q|i think|i realized|i['’]m pretty sure|i['’]m convinced) )?(?:it['’]s|it is) (?:mostly |usually |simply )?because (.{6,})$/i); return m && slFinite(m[1]) ? { t: `${/^i Qk/i.test(m[2] || '') ? `${m[2]} ${m[1]}` : capFirst(m[1])} because ${m[3]}${endP(x) || '.'}`, mv: 'straight' } : null; }, /* r86 pass 6: a kept "I think" (masked) rides along */
-    shareWrong(x) { const m = body(x).match(/^(.{12,}?),? and (?:i|we) (?:just )?(?:wanted|want) to (?:share|talk about|point out) something (?:that )?((?:a lot of|most|many) (?:people|founders|creators|traders|writers|devs|developers|designers) (?:get|have) wrong)(?:,? which is that|:)\s+(.{10,})$/i); return m && slFinite(m[1]) && slFinite(m[3]) ? { t: `${m[1]}. ${capFirst(m[2].replace(/ wrong$/i, ' this wrong'))}: ${m[3]}${endP(x) || '.'}`, mv: 'contrast' } : null; },
+    shareWrong(x) { const m = body(x).match(/^(.{12,}?),? and (?:i|we) (?:just )?(?:wanted|want) to (?:share|talk about|point out) something (?:that )?((?:i Qk[a-z]q )?(?:a lot of|most|many) (?:people|founders|creators|traders|writers|devs|developers|designers) (?:get|have) wrong)(?:,? which is that|:)\s+(.{10,})$/i); return m && slFinite(m[1]) && slFinite(m[3]) ? { t: `${m[1]}. ${capFirst(m[2].replace(/ wrong$/i, ' this wrong'))}: ${m[3]}${endP(x) || '.'}`, mv: 'contrast' } : null; }, /* r86 pass 6: a kept "I think" (masked) rides along */
     andShare(x) {
       const m = body(x).replace(/:$/, '').match(/^(.{12,}?),? and (?:so )?(i|we) (?:just )?(?:want|wanted|['’]d like|would like|am going|['’]m going|am gonna|['’]m gonna) to (?:share|tell you|show you|talk about|break down|walk you through|write about) (what|how|why) (i|we|it|this|they|it['’]s|we['’]re|i['’]m|things are|things have) (.{3,50})$/i); if (!m || /\b(?:and|but)\s*$/i.test(m[1])) return null;
       return { t: `${m[1]}. Here’s ${m[3].toLowerCase()} ${m[4]} ${m[5]}:`, mv: 'loop', loop: true };
@@ -3105,10 +3112,12 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return j;
   };
   function slMainFin(z) {
-    const w = slTokW(z), o = []; let relAt = -1;
+    /* the raw tokens beside the words, so a relative after a comma (", which is…") reads as an aside on the clause, not on the noun phrase */
+    const w = slTokW(z), rw = (String(z).match(/\S+/g) || []).filter(x => lcw(x).replace(/’/g, "'").replace(/^[^\p{L}\p{N}$€£@#']+|[^\p{L}\p{N}%']+$/gu, '')), o = []; let relAt = -1;
     for (let i = 0; i < w.length; i++) {
       const x = w[i], p = o.length ? o[o.length - 1] : '';
-      if (p && SL_RELP.test(x) && !SL_AUXW.test(p) && !slVerbW(p) && !SL_PASTW.test(p) && !SL_PREP.test(p) && !/^(?:so|such|now|and|but|or|than|is|that|like|said|says|know|think|believe|mean|means|realize|realized)$/.test(p)) {
+      if (p && SL_RELP.test(x) && /,$/.test(rw[i - 1] || '')) { if (/^(?:which|who)$/.test(x)) { i = slRelEnd(w, i + 1) - 1; continue; } }
+      else if (p && SL_RELP.test(x) && !SL_AUXW.test(p) && !slVerbW(p) && !SL_PASTW.test(p) && !SL_PREP.test(p) && !/^(?:so|such|now|and|but|or|than|is|that|like|said|says|know|think|believe|mean|means|realize|realized)$/.test(p)) {
         let j = i + 1; if (SL_PRON.test(w[j] || '') || /^(?:people|everyone|nobody|someone|most)$/.test(w[j] || '')) j++;
         /* "something that I think is important": the "I think" is an aside, the clause's verb is "is" */
         if (j > i + 1 && /^(?:think|believe|guess|feel|know|bet|suspect|reckon|hope|thought|said)$/.test(w[j] || '') && SL_AUXW.test(w[j + 1] || '')) j++;
@@ -3132,7 +3141,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* a noun phrase up front ("a formula that…", "a redesign I did…"): its own words are never the verb; the main verb comes after its clause */
     if (o.length && SL_DET.test(o[0])) {
       const a = Math.min(...[relAt, cAt].filter(x => x > 0), Infinity);
-      if (a < Infinity && !o.slice(1, a).some(y => SL_AUXW.test(y) || SL_PASTW.test(y))) { const r = o.slice(a); return r.some((x, i) => slFinTok(r, i)); }
+      if (a < Infinity && !o.slice(1, a).some((y, q) => SL_AUXW.test(y) || SL_PASTW.test(y) || (slVerbW(y) && SL_SUBJW.test(o[q])))) { const r = o.slice(a); return r.some((x, i) => slFinTok(r, i)); }
     }
     return o.some((x, i) => slFinTok(o, i));
   }
@@ -3153,12 +3162,15 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function slHard(line, draft) {
     const L = String(line), D = String(draft);
     if (slEndDisc(L) && !slEndDisc(D)) return 'ends on a disclaimer';
+    /* 9. (hook-7) every soft-looking word the prompt's rules keep is still in the line: the one hedge of a clause ("I think"), a
+       frame ("Hot take"), the disclaimer, the tone ("lol"), a feeling ("pretty happy with it"), a softener ("pretty good") */
+    { const LL = lcw(L).replace(/\s+/g, ' '); if (slPolicy(D).opk.some(([f, c]) => !LL.includes(f) && !LL.includes(c))) return 'kept word dropped'; }
     /* a frame that opened the line opens it still: never mid-line ("…? Then Unpopular opinion: most…") */
     { const f = D.match(/^\P{L}*((?:hot take|unpopular opinion|controversial opinion|spicy take|honest question|genuine question|serious question|real question|psa|reminder|not to (?:brag|complain|be dramatic|be that guy)|(?:this is )?not financial advice|nfa)\b)/iu); if (f && lcw(L).includes(lcw(f[1])) && !new RegExp(`^\\P{L}*${f[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(L.replace(HK_VOICE, ''))) return 'frame moved'; }
     /* a line that points at a thread keeps a pointer: 🧵, 👇, "thread", "here's why", or a "why…:" header */
-    { const P1 = /🧵|👇|⬇|↓|\bthread\b|\(thread\)|\bhere['’]s (?:why|how|what)\b|\b(?:a few|some) (?:thoughts|notes|lessons) on\b/iu, P2 = /^\P{L}*(?:why|how|what)\b[^.!?]*:\s*$|:\s*$/iu; if (P1.test(D) && !P1.test(L) && !P2.test(L)) return 'pointer lost'; }
+    { const P1 = /🧵|👇|⬇|↓|\bthread\b|\(thread\)|\bhere['’]s (?:why|how|what)\b|\b(?:a few|some) (?:thoughts|notes|lessons) on\b/iu, P2 = /^\P{L}*(?:why|how|what)\b[^.!?]*:\s*$|:\s*$|^[^.!?]{3,60}:\s+\S/iu; if (P1.test(D) && !P1.test(L) && !P2.test(L)) return 'pointer lost'; }
     /* an opinion verb left without its clause: "Why I think @jessepollak. The Base team are building…" (a split took its verb) */
-    { const ov = z => slSents(z).filter(s => { const m = s.replace(/[.!?…:]+["”’)]*$/, '').match(/\b(?:i|we)\s+(?:think|believe|feel like|reckon|guess|bet|suspect)\s+(?:that\s+)?(\S.*)$/iu); return !!m && wordsN(m[1]) >= 1 && !/^(?:so|not|it|this|that|yes|no)$/i.test(m[1].trim()) && !slMainFin(m[1]) && !/\?$/.test(s); }).length; if (ov(L) > ov(D)) return 'opinion lost its clause'; }
+    { const ov = z => slSents(z).filter(s => { const m = s.replace(/[.!?…:]+["”’)]*$/, '').match(/\b(?:i|we)\s+(?:(?:really|genuinely|honestly|truly|personally|actually|just|kind of|kinda|sort of|sorta)\s+)*(?:think|believe|feel like|reckon|guess|bet|suspect)\s+(?:that\s+)?(\S.*)$/iu); return !!m && wordsN(m[1]) >= 1 && !/^(?:so|not|it|this|that|yes|no)$/i.test(m[1].trim()) && !slMainFin(m[1]) && !/\?$/.test(s); }).length; if (ov(L) > ov(D)) return 'opinion lost its clause'; }
     /* a hedge left in front of an order: "Probably talk to your users…" */
     { const hv = z => slSents(z).filter(s => { const m = s.match(/^\P{L}*(?:probably|maybe|perhaps|possibly|likely)\s+([a-z]+)/iu), v = m ? m[1].toLowerCase() : ''; return !!v && (SL_VERB.has(v) || (!/(?:s|ed|ing|ly|er|est)$/.test(v) && !/^(?:the|a|an|not|no|my|our|your|his|her|their|its|this|that|these|those|i|we|you|they|he|she|it|worth|true|right|wrong|fine|nothing|never|too|so|just|one|because|why|how|what|when|in|on|at|for|with|to|of|best|worst|more|less|most|all|some|both|still|only|even|also|already|tomorrow|today|tonight|soon|next|now|then|later|yes|nah|ok|okay|half|twice|about|around|over|under)$/.test(v))); }).length; if (hv(L) > hv(D)) return 'hedged order'; }
     /* the writer's closing "lol" stays the close: never inside a question or mid-line ("…I own lol? My…") */
@@ -3170,7 +3182,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (SL_P3.test(L) && !SL_P3.test(D)) { const lw = lcw(L).match(/[\p{L}\p{N}$'-]+/gu) || [], k = lcw(D).indexOf(lw.slice(0, 3).join(' ')); if (k > 0 && SL_ANTE.test(D.slice(0, k))) return 'pronoun lost its antecedent'; }
     if (slNPSentN(L) > slNPSentN(D)) return 'fragment';
     /* a frame split off as its own sentence: "Not to brag or anything. But I…" */
-    { const inf = z => slSents(z).filter(s => /^\P{L}*(?:not )?to\s/iu.test(s) && !slFinite(s)).length; if (inf(L) > inf(D)) return 'fragment'; }
+    { const inf = z => slSents(z).filter(s => /^\P{L}*(?:not )?to\s/iu.test(s) && !slFinite(s.replace(/(\p{L})-(\p{L})/gu, '$1$2'))).length; if (inf(L) > inf(D)) return 'fragment'; }
     if ([...L.matchAll(SL_IDENT)].some(m => !lcw(D).includes(lcw(m[0]).replace(/^[^a-z]+/, '').replace(/[.!]$/, '')))) return 'invented sentence';
     const M = lcw(slMasked(D)), LL = lcw(L), has = w => new RegExp(`(?<![\\p{L}\\p{N}])${w}(?![\\p{L}\\p{N}])`, 'u').test(LL);
     for (const m of M.matchAll(/\b(sleep(?:s|ing)?|slept|bullish|bearish|long|short|hooked|sold|bet(?:s|ting)?|bank(?:s|ing)?|count(?:s|ing)?|pass(?:es|ing)?|out|down|big|high|keen|hard|easy|cheap|heavy|lowkey|doubl(?:e|es|ed|ing)|go(?:es|ing)? all in|all in)\s+on\b/g)) if (has(m[1]) && !has(`${m[1]}\\s+on`)) return 'idiom split';
@@ -3582,7 +3594,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
         const w00 = draft.slice(marks[0][0], marks[0][1]), w0 = w00.length > 44 ? w00.slice(0, 42).replace(/\s+\S*$/, '') + '…' : w00, fbS = tidyT(softCut(draft, keep).s).replace(/\s+([.!?:])/g, '$1').trim(), thin = slThin(fbS) || slTiny(fbS);
         /* r86 pass 4 (hook-1): "breaks" only when the cut version really breaks or changes the meaning; otherwise it's the writer's call */
         const broke = !thin && (slBroken(fbS, draft) || !slMeanOK(fbS, draft) || !slGuardOK(fbS, draft) || !facts.every(f => slHas(fbS, f.v)));
-        const why = lone ? `Marked “${w0}”, not cut: the line already lands, and here it’s your voice.` : thin ? `Marked “${w0}”, not cut: without the soft words there’s too little left to post. Add the detail.` : broke ? `Marked “${w0}”, not cut: without it this line breaks or says something else. Your call.` : `Marked “${w0}”, not cut. Your call.`;
+        /* r86 pass 6: when the guard that held it back is the thread pointer, say that, not "breaks" */
+        const why = !thin && slHard(fbS, draft) === 'pointer lost' ? 'Marked, not cut: the run-up carries your pointer to the thread, and the line needs one.' : lone ? `Marked “${w0}”, not cut: the line already lands, and here it’s your voice.` : thin ? `Marked “${w0}”, not cut: without the soft words there’s too little left to post. Add the detail.` : broke ? `Marked “${w0}”, not cut: without it this line breaks or says something else. Your call.` : `Marked “${w0}”, not cut. Your call.`;
         return { ...R, state: 'unsure', say: 'Kept as written', why: why.length > 140 ? (thin ? 'Marked, not cut: without the soft words there’s too little left to post. Add the detail.' : broke ? 'Marked, not cut: cutting it here would break the line or change what it says. Your call.' : 'Marked, not cut. Your call.') : why, note: noteOf(draft) };
       }
       /* nothing is marked: say why truly. A soft-looking word that carries the meaning, a frame no rule can cut safely, or nothing soft at all */

@@ -278,5 +278,9 @@ test('v3.2: "7 really useful tools" → "7 tools" ships; new or changed numbers 
 });
 test('v3.2: on-device, "I think" stays on a forecast dated by a month', () => {
   for (const t of ['i think the fed cuts in december', 'I think we ship v2 in May']) assert.match(core.sharpenLine(t).line, /^i think/i, t);
-  assert.doesNotMatch(core.sharpenLine('I think we may ship v2 soon').line, /^i think/i);
+  /* r86 pass 6 (juror 5, hook-7): on a plan every hedge stays, as the v4 prompt says ("i think we could ship the beta by march"),
+     so "I think" stays beside "may"; only a doubled word collapses, and a claim about now keeps the modal over "I think" */
+  assert.match(core.sharpenLine('I think we may ship v2 soon').line, /^i think we may ship v2 soon/i);
+  assert.match(core.sharpenLine('ngl i think we could maybe ship the beta by march').line, /^i think we could ship the beta by march/i);
+  assert.equal(core.sharpenLine('I think it was probably the best decision of my life.').line, 'It was probably the best decision of my life.');
 });

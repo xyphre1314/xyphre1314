@@ -57,10 +57,13 @@ test('juror 4, hook-3: a hedged plan or forecast keeps its hedge; "going to" nev
   assert.equal(L("I think we're basically going to hit $50k MRR this month\n\nHere's the boring stuff that got us there:"), "I think we're going to hit $50k MRR this month.");
   /* the note says why, on a plan as on a call */
   assert.match(S("I think I'm going to quit X for a month.").why, /Kept “I think”: on a plan or a forecast/);
-  /* a hedge on a claim about now is still a hedge, and goes */
-  assert.equal(L('I think most people overthink their first post'), 'Most people overthink their first post.');
-  assert.equal(L('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it'), '$ARB unlock is next week. everyone is way too relaxed about it.');
-  assert.equal(L('This might sound obvious but you should probably talk to your users before you build'), 'Talk to your users before you build.');
+  /* r86 pass 6 (juror 5, hook-7): a hedge on a claim about now is the one hedge its clause keeps, as the Claude prompt keeps it;
+     only a second hedge on the same clause goes */
+  assert.equal(L('I think most people overthink their first post'), 'I think most people overthink their first post');
+  assert.equal(L('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it'), '$ARB unlock is next week. i think everyone is way too relaxed about it.');
+  assert.equal(L('I think most people probably overthink their first post'), 'Most people probably overthink their first post.');
+  /* r86 pass 6 (juror 5, hook-7): "probably" is the clause's one hedge, so it stays; never "Probably talk to your users" */
+  assert.equal(L('This might sound obvious but you should probably talk to your users before you build'), 'You should probably talk to your users before you build.');
   /* "then this might be for you" keeps its "might" */
   assert.match(L('If you are a founder who is struggling to find the time to post consistently on social media, then this might be for you'), /this might be for you\.$/);
 });
@@ -80,7 +83,8 @@ test('juror 4, hook-4/5: a cut between clauses keeps the comma; every emoji stay
   });
   /* the ask move keeps a tail emoji at the very end */
   assert.match(L('Walking is honestly the most underrated habit 🙌🏽'), /\? Walking\.? ?🙌🏽$/u);
-  assert.equal(L('Reminder that walking 10k steps a day is literally one of the most underrated things you can do for your health 🚶‍♂️'), 'Walking 10k steps a day is one of the most underrated things you can do for your health 🚶‍♂️');
+  /* r86 pass 6 (juror 5, hook-7): "Reminder" says how to take the line, so it stays (the prompt's rule 4); the emoji still stays whole */
+  assert.equal(L('Reminder that walking 10k steps a day is literally one of the most underrated things you can do for your health 🚶‍♂️'), 'Reminder that walking 10k steps a day is one of the most underrated things you can do for your health 🚶‍♂️');
 });
 
 test('juror 4, hook-6/7: no repeated teaser, no fragment from a split, no broken put-back', () => {
@@ -146,7 +150,10 @@ test('juror 4, hook-10/11: the joke and the feeling stay; a contraction alone is
   assert.match(L("So I basically got laid off this morning along with 200 other people, and honestly I'm kind of okay with it."), /I'm kind of okay with it\.$/);
   assert.match(L('I ran my first marathon yesterday in 4:12 and I\'m still kind of emotional about it'), /kind of emotional/);
   /* "is going to" → "'ll" and nothing else is not a sharpen */
-  assert.equal(S('I really think that the next big wave in crypto is going to be stablecoin payments').state, 'clean');
+  /* r86 pass 6 (juror 5, hook-7): the padding in "I really think" is a real cut now ("I think" stays), so the padded line is a sharpen;
+     the same line without it is still no sharpen */
+  assert.equal(S('I think that the next big wave in crypto is going to be stablecoin payments').state, 'clean');
+  assert.equal(L('I really think that the next big wave in crypto is going to be stablecoin payments'), 'I think that the next big wave in crypto will be stablecoin payments.');
   const f = S('Most people miss the 83(b) election deadline and honestly it costs them');
   assert.ok(f.kept.includes('83(b)'), f.kept.join(', ')); assert.match(f.line, /83\(b\)/);
   assert.ok(S('Just a heads up: $ETH gas is currently at 0.4 gwei, which is basically the cheapest it has been since 2016.').kept.includes('0.4 gwei'));

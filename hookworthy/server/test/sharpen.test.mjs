@@ -9,28 +9,35 @@ const core = createRequire(import.meta.url)('../../core.js');
 test('soft words: a whole warm-up is one mark and one cut; idioms and real words stay', () => {
   const t = 'just wanted to share that i finally hit my first $10k month trading lol';
   const m = core.softMarks(t); assert.equal(t.slice(m[0][0], m[0][1]), 'just wanted to share that'); assert.equal(m[0][3], 'announce');
-  assert.equal(core.softCut(t).s, 'i finally hit my first $10k month trading');
+  /* r86 pass 6 (juror 5, hook-7): the closing "lol" is tone, and the Claude prompt keeps it */
+  assert.equal(core.softCut(t).s, 'i finally hit my first $10k month trading lol');
   for (const keep of ['look at this chart: funding flipped', 'so what? nobody reads threads', 'well done beats well said', 'what kind of trader are you?', 'just 3 people came', 'so far so good'])
     assert.equal(core.softMarks(keep).length, 0, keep);
   /* r86: "honestly?" on its own is a beat, not filler (the held-out jury graded cutting it a miss); "honestly," is still cut */
   assert.equal(core.softCut('honestly? most threads are too long').s, 'honestly? most threads are too long');
   assert.equal(core.softCut('honestly, most threads are too long').s, 'most threads are too long');
-  assert.equal(core.softCut('Hey everyone! Quick reminder that my course launches tomorrow, really excited about this one').s, 'My course launches tomorrow');
-  /* words this voice put back stay */
-  assert.equal(core.softMarks('honestly i think pricing is wrong', ['honestly']).length, 1);
+  /* r86 pass 6 (juror 5, hook-7): how they feel about it is the tone the Claude prompt keeps */
+  assert.equal(core.softCut('Hey everyone! Quick reminder that my course launches tomorrow, really excited about this one').s, 'My course launches tomorrow, really excited about this one');
+  /* words this voice put back stay (r86 pass 6: a stacked "i think", since a lone one is the clause's hedge and stays anyway) */
+  assert.equal(core.softMarks('honestly i think pricing is probably wrong', ['honestly']).length, 1);
   /* every soft word says why, in a sentence, with no invented number */
   core.SOFT.forEach(s => { assert.ok(s.why.length > 30 && /\.$/.test(s.why), s.k); assert.doesNotMatch(s.why, /\b\d+(?:%|x)\b|\bstud(?:y|ies)\b|\bresearch\b/i, s.k); });
 });
 
 test('one tap: the moves top first lines make, with the facts kept', () => {
   const S = t => E.hgSharpen(t).first;
-  assert.equal(S('so i think the biggest mistake i made this cycle was honestly not taking profits on the way up'), 'biggest mistake i made this cycle? not taking profits on the way up.', 'ask then answer, lowercase kept, "not" never contracted into "wasn’t"');
-  assert.equal(S('not financial advice but i basically stopped trading the first hour after the open and my win rate went from 38% to 61%'), 'my win rate went from 38% to 61%. what changed: i stopped trading the first hour after the open.', 'the buried result leads');
+  /* r86 pass 6 (juror 5, hook-7): the lone "i think" stays and "not financial advice" stays where the writer put it, as the
+     Claude prompt keeps them; lowercase kept, "not" never contracted into "wasn’t" */
+  assert.equal(S('so i think the biggest mistake i made this cycle was honestly not taking profits on the way up'), 'i think the biggest mistake i made this cycle was not taking profits on the way up.', 'lowercase kept, "not" never contracted into "wasn’t"');
+  assert.equal(S('not financial advice but i basically stopped trading the first hour after the open and my win rate went from 38% to 61%'), 'not financial advice but i stopped trading the first hour after the open. my win rate went from 38% to 61%.', 'the disclaimer stays up front, never moved to the end');
+  assert.equal(S('so i think the biggest mistake i made this cycle was probably not taking profits on the way up'), 'biggest mistake i made this cycle? probably not taking profits on the way up.', 'a stacked hedge keeps the modal, and the move still lands');
   assert.equal(S('Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.'), 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', 'passive made active');
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), 'I’ve hired over 300 people. The best interview question is four words:', 'a colon only because the post answers it');
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. The best interview question is four words.', 'no colon with nothing after it');
+  /* r86 pass 6 (juror 5, hook-7): the claim's one hedge ("I think", "kind of") stays through the move */
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), 'I’ve hired over 300 people. I think the best interview question is four words:', 'a colon only because the post answers it');
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is four words.', 'no colon with nothing after it');
   assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'want to build muscle? track your protein.');
-  assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week changed my energy.', 'a never-say word said plainly');
+  assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week has been kind of a big deal for my energy.', 'a never-say word said plainly');
+  assert.equal(S('honestly lifting 3 days a week has been a game changer for my energy'), 'lifting 3 days a week changed my energy.', 'a never-say word said plainly');
   assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter\nShort version: warm intros closed 4x more.'), 'Our sales team stopped doing cold calls this quarter. Here’s why:');
   assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter'), 'Our sales team stopped doing cold calls this quarter.', 'no "Here’s why" bait when the post stops there');
   /* strong lines are left alone */
@@ -41,7 +48,7 @@ test('the receipt: every sharpen says which move it made and why that move works
   const r = E.hgSharpen('honestly most design systems fail because nobody really owns them');
   assert.equal(r.main, 'ask'); assert.match(r.why, /question/i); assert.deepEqual(r.cuts, ['honestly', 'really']);
   const n = E.hgSharpen('I’ve been thinking a lot about pricing lately and I think we were really undercharging');
-  assert.equal(n.first, 'Pricing: we were undercharging.'); assert.ok(n.why.length > 20);
+  assert.equal(n.first, 'Pricing: I think we were undercharging.'); assert.ok(n.why.length > 20); /* r86 pass 6 (hook-7): the lone "I think" stays */
   Object.values(core.SHARPEN.MOVE_WHY).forEach(w => { assert.match(w, /\.$/); assert.doesNotMatch(w, /\b\d+(?:%|x)\b|algorithm|reach|viral|engag/i); });
 });
 
@@ -67,5 +74,7 @@ test('the eval: one tap gets most real drafts to Ready, with no fact lost or inv
   let ready = 0; const hard = [];
   for (const e of EVAL) { const r = E.hgSharpen(e.t + (e.body ? '\n' + e.body : '')), c = check(e, r); if (c.to >= 70) ready++; if (c.issues.length) hard.push(`${e.t} → ${r.first}: ${c.issues.join(', ')}`); }
   assert.deepEqual(hard, [], 'no number lost or added, no banned word, no hedge left, no loop with nothing after it');
-  assert.ok(ready >= 40, `Ready after one tap: ${ready}/${EVAL.length}`);
+  /* r86 pass 6 (juror 5, hook-7): 34/48 (was ≥ 40). The engine now keeps what the Claude prompt keeps (one hedge per clause, the
+     frames, "lol", the writer's "!"), and hookScore still docks a kept "I think", so fewer lines clear 70 after one tap */
+  assert.ok(ready >= 33, `Ready after one tap: ${ready}/${EVAL.length}`);
 });

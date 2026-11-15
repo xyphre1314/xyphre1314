@@ -76,7 +76,8 @@ test('juror 3, hook-4/5/8: the words that carry the meaning stay', () => {
   { const y = L("Honestly we just shipped yet another update and it's really fast now."); assert.match(y, /^We just shipped yet another update/); assert.doesNotMatch(y, /\b(?:Honestly|really)\b/); }
   assert.doesNotMatch(L("Unpopular opinion but I really think that most junior developers would honestly be much better off spending their first year actually learning how to read other people's code and debug real production issues rather than just building yet another todo app with whatever the trendiest framework of the month happens to be at the time."), /\b(?:really|honestly|actually)\b/);
   assert.match(L("I'm not saying you should never use an ORM, but I am saying you should really understand the SQL it generates."), /\bI am saying\b/);
-  assert.equal(L('Hot take: most apps don\'t need microservices. A monolith is probably fine.'), "Most apps don't need microservices. A monolith is probably fine.");
+  /* r86 pass 6 (juror 5, hook-7): "Hot take:" tells readers how to take the line, so it stays, as the Claude prompt keeps it */
+  assert.equal(L('Hot take: most apps don\'t need microservices. A monolith is probably fine.'), "Hot take: most apps don't need microservices. A monolith is probably fine.");
 });
 
 test('juror 3, hook-7/9/12/13/15/16: tails, lists, idioms, salad, stance and disclaimers', () => {
@@ -86,12 +87,13 @@ test('juror 3, hook-7/9/12/13/15/16: tails, lists, idioms, salad, stance and dis
   assert.equal(S('purple elephant spreadsheet tomorrow banana').state, 'thin');
   /* a market-structure claim is a call; a call that hedges itself drops the opinion frame */
   assert.equal(L('Just a quick thread on why I think the halving is already priced in 👇'), 'Why I think the halving is already priced in 👇');
-  assert.equal(L('In my humble opinion, the vast majority of altcoins will probably never see their ATHs again.'), 'Most altcoins will probably never see their ATHs again.');
-  /* a disclaimer is never fluff: alone it's complete, up front on a call it moves to the end */
+  /* r86 pass 6 (juror 5, hook-7): on a forecast every hedge stays, "In my humble opinion" included, as the Claude prompt keeps it */
+  assert.equal(L('In my humble opinion, the vast majority of altcoins will probably never see their ATHs again.'), 'In my humble opinion, most altcoins will probably never see their ATHs again.');
+  /* a disclaimer is never fluff: alone it's complete, and r86 pass 6 (hook-7): up front it stays where the writer put it, never moved to the end */
   for (const t of ['This is not financial advice.', 'NFA. Not financial advice. DYOR.']) { const R = S(t); assert.equal(R.state, 'clean', t); assert.equal(R.why, 'A disclaimer. Nothing to cut.'); assert.deepEqual(R.marks, []); }
   const R = S('I just wanted to quickly say that I am not a financial advisor and this is not financial advice but I really think $LINK is very undervalued right now');
-  assert.equal(R.line, 'I really think $LINK is undervalued right now. Not financial advice.'); assert.match(R.say, /Moved the disclaimer to the end/);
-  assert.equal(L('I think we\'re probably in the boring middle of the cycle right now, nfa'), "We're probably in the boring middle of the cycle right now, nfa.");
+  assert.equal(R.line, 'I am not a financial advisor and this is not financial advice but I think $LINK is undervalued right now.'); assert.doesNotMatch(R.say, /Moved the disclaimer to the end/);
+  assert.equal(L('I think we\'re probably in the boring middle of the cycle right now, nfa'), "I think we're probably in the boring middle of the cycle right now, nfa");
 });
 
 test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are counts, reorders are sentences', () => {
@@ -104,10 +106,11 @@ test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are 
      list), and the receipt counts the beats the line really has */
   { const r = S('So I have been thinking about this a lot lately and I honestly believe that the vast majority of retail traders are basically just gambling, because they don\'t have a plan, they don\'t size their positions properly, they don\'t use stop losses, and they really just chase whatever coin is pumping on their timeline that day, which is exactly why 90% of them lose money.');
     const n = (r.line.match(/[.!?]+(?=\s|$)/g) || []).length; assert.equal(r.say.match(/Split it into (\w+) beats/)[1], ['', 'one', 'two', 'three'][n]); assert.match(r.line, /stop losses, and they chase/); }
-  assert.equal(L('this might be controversial but i actually think dca is overrated for most people'), 'i actually think dca is overrated for most people.');
-  assert.equal(L('so i think the real reason most newsletters stall is that the first line is boring'), 'the real reason most newsletters stall? the first line is boring.');
+  /* r86 pass 6 (juror 5, hook-7/12): a frame that says how to take the line stays, a lone "i think" stays, and so does the "!" */
+  assert.equal(L('this might be controversial but i actually think dca is overrated for most people'), 'this might be controversial but i actually think dca is overrated for most people');
+  assert.equal(L('so i think the real reason most newsletters stall is that the first line is boring'), 'i think the real reason most newsletters stall is that the first line is boring.');
   assert.equal(L('Quick update: we shipped dark mode and the onboarding checklist this week'), 'We shipped dark mode and the onboarding checklist this week.');
-  assert.equal(L("Thrilled to announce we've raised a $4M seed round led by @a16z!"), "We've raised a $4M seed round led by @a16z.");
+  assert.equal(L("Thrilled to announce we've raised a $4M seed round led by @a16z!"), "We've raised a $4M seed round led by @a16z!");
   /* every quote over the held-out lines ends on a phrase: never on a small word, a verb before its particle, or a lone quote mark */
   const { rows } = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-heldout.json'), 'utf8'));
   const SMALL = /^(?:a|an|the|to|of|for|from|in|on|at|by|with|and|or|but|my|our|your|their|is|are|was|were|has|have|had|that|this|as|what|why|how|who|led)$/i;
@@ -138,13 +141,14 @@ test('rounds G-J: the misses found at first contact stay fixed', () => {
   assert.equal(L("I've said this before and I'll say it again: your first line is 80% of the work"), 'Your first line is 80% of the work.');
   assert.match(L('Not gonna lie, I was really nervous about raising prices but we lost basically zero customers'), /basically zero customers/);
   assert.doesNotMatch(L("If there's one thing I've learned from writing online for 4 years, it's that consistency beats virality"), /\?/);
-  assert.equal(L("Not financial advice obviously but I've been slowly accumulating $LINK under 15 for the past month"), "I've been slowly accumulating $LINK under 15 for the past month. Not financial advice.");
+  /* r86 pass 6 (juror 5, hook-7): the disclaimer stays where the writer put it, never moved to the end */
+  assert.equal(L("Not financial advice obviously but I've been slowly accumulating $LINK under 15 for the past month"), "Not financial advice obviously but I've been slowly accumulating $LINK under 15 for the past month");
   assert.doesNotMatch(L('I genuinely believe that the best founders are the ones who are obsessed with the problem, not the solution'), /aren['’]t the solution/);
   assert.doesNotMatch(L("I want to take a second to talk about something that I think doesn't get discussed enough in the startup world, which is how lonely it can be to be a solo founder, especially in the early days when nobody believes in what you're building and every week feels like you're shouting into the void. Last week we finally crossed 1,000 paying customers."), /(?:^|\. )Something that/);
   /* a sharp line keeps its shape; a sincere "just" (= merely, simply) stays */
   for (const t of ['If your pricing page needs a FAQ, your pricing is too complicated.', 'Funding rates are negative and price is still going up. Shorts are about to have a bad week.', 'Quarterly planning is just guessing with a spreadsheet.']) assert.equal(L(t), t);
   /* the news leads a post over 280, and a feeling said in the first person keeps its weight */
-  assert.match(L("I've been building in public for almost two years now and I wanted to share something that I really think a lot of people get wrong, which is that they focus way too much on follower count and not nearly enough on whether the people following them actually care about what they're building. We just hit $20k MRR with 3,100 followers."), /^We just hit \$20k MRR with 3,100 followers\./);
+  assert.match(L("I've been building in public for almost two years now and I wanted to share something that I really think a lot of people get wrong, which is that they focus way too much on follower count and not nearly enough on whether the people following them actually care about what they're building. We just hit $20k MRR with 3,100 followers."), /^(?:We just hit )?\$20k MRR with 3,100 followers\./); /* r86 pass 6: the kept "I think" puts the share-wrong reshape over 280, so the number-led version (news first, run-up kept) ranks first; the news still leads */
   assert.match(L("I don't usually post about my personal life on here but I just got married this weekend and I'm really happy"), /really happy/);
 });
 

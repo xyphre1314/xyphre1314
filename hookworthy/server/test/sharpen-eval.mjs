@@ -85,16 +85,23 @@ export const EVAL = [
 
 /* the hard failures, checked on every line */
 const BANNED = /\b(unlock|supercharge|leverage|elevate|seamless|game[- ]?changer|delve|ai-powered)\b/i;
-const HEDGE = /\b(i think|i feel like|i believe|i guess|honestly|tbh|ngl|imo|basically|literally|actually|kind of|sort of|kinda|sorta|probably|maybe|perhaps|really|very|just wanted|quick thought|not financial advice|excited to|thrilled to)\b/i;
+/* r86 pass 6 (juror 5, hook-7): the Claude prompt keeps one hedge per clause ("I think", "probably", "kind of" on a claim) and the
+   writer's "not financial advice" where it was, so one hedge left is their stance, not a failure. Padding left is, and so are two
+   hedges stacked on one clause that isn't a call */
+const PAD = /\b(honestly|tbh|ngl|basically|literally|actually|really|very|just wanted|quick thought|excited to|thrilled to)\b/i;
+const HEDGE = /\b(i think|i feel like|i believe|i guess|imo|kind of|sort of|kinda|sorta|probably|maybe|perhaps)\b/gi;
 const nums = s => (String(s).match(/\$?\d[\d,.]*\s?(?:%|k|x|ms|lbs|km)?/gi) || []).map(x => x.replace(/[\s,]/g, '').replace(/\.$/, '').toLowerCase()).sort().join('|');
 export function check(e, r) {
   const issues = [], line = r.first, from = core.hookScore(e.t).score, to = core.hookScore(line + (e.body ? '\n\n' + e.body : '')).score;
-  if (r.same) issues.push('unchanged');
+  if (r.same && core.softMarks(e.t).length) issues.push('unchanged');
   if (nums(line) !== nums(e.t)) issues.push(`numbers ${nums(e.t)} → ${nums(line)}`);
   if (BANNED.test(line)) issues.push('banned word');
   /* r86 pass 5 (juror 4, hook-1/2): under a negation "really" and "just" carry the meaning ("don't really mean" ≠ "don't mean"), so they are not a hedge left */
   const hl = line.replace(/\b(?:not|never|\w+n['’]t)\s+(?:\w+\s+)?(?:really|just)\b/gi, ' ');
-  if (HEDGE.test(hl)) issues.push(`hedge left: ${hl.match(HEDGE)[0]}`);
+  /* the strength of a feeling ("really excited", "very proud") is the writer's, and the prompt keeps it */
+  const hp = hl.replace(/\b(?:really|very|so|super)\s+(?=(?:excited|proud|happy|grateful|nervous|scared|tired|sad|glad|stoked|pumped|thrilled|impressed|sorry|lucky|bored|worried)\b)/gi, ' ');
+  if (PAD.test(hp)) issues.push(`padding left: ${hp.match(PAD)[0]}`);
+  if (!core.SHARPEN.stanceKeep(e.t).length && hl.split(/[.!?;:]|,\s*(?:and|but|so)\b|\s(?:and|but|so|because)\s/i).some(c => (c.match(HEDGE) || []).length > 1)) issues.push('stacked hedge left');
   if (/\p{Extended_Pictographic}|🧵/u.test(line) && !/\p{Extended_Pictographic}/u.test(e.t)) issues.push('emoji added');
   if (/\bhere[’']s (why|how|what)\b/i.test(line) && !e.body) issues.push('loop with nothing after it');
   if (/:$/.test(line) && !e.body) issues.push('ends on a colon with nothing after it');

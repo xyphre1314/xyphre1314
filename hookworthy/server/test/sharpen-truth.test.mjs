@@ -149,7 +149,8 @@ test('truth: the round failures stay fixed', () => {
   assert.doesNotMatch(S('I think most newsletter writers are honestly undercharging for sponsorships').line, /\?/);
   assert.equal(S("I've been writing this newsletter for 200 weeks straight and I want to share what I learned").line.includes('200 weeks straight'), true);
   assert.equal(S('We hit $10k MRR today after 14 months').line, 'We hit $10k MRR today after 14 months');
-  assert.equal(S('Honestly I think most people are really just overcomplicating their workouts way too much').line, 'Most people are overcomplicating their workouts.');
+  /* r86 pass 6 (juror 5, hook-7): the lone "I think" stays (one hedge per clause, as the Claude prompt keeps it) */
+  assert.equal(S('Honestly I think most people are really just overcomplicating their workouts way too much').line, 'I think most people are overcomplicating their workouts.');
   assert.equal(S('Gonna be honest with you guys, I almost quit writing last month.').line, 'I almost quit writing last month.');
   assert.equal(S("I'd like to take a moment to thank everyone who joined our webinar on Tuesday").line, 'Thank you to everyone who joined our webinar on Tuesday.');
   assert.equal(S('honestly i just wanted to say that our churn dropped 20% this quarter').say, 'Cut 2 bits of fluff');
