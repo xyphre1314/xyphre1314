@@ -1555,6 +1555,8 @@ footer .wrap{container-type:inline-size}
   .ex .pills button{padding:0 11px}
   .tile{gap:12px}
 }
+/* the narrowest phones: the counter steps aside for good, so Clear and Sharpen always share one row */
+@media (max-width:339px){.try-c .count{display:none}.try-c .cbar{justify-content:flex-end}}
 @media (max-width:374px){
   :root{--sec:46px}
   /* the final's micro line keeps to one row: its third promise is said all over the page */
@@ -3259,7 +3261,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     c.style.cssText = 'position:absolute;left:0;top:0;width:' + ta.offsetWidth + 'px;visibility:hidden;pointer-events:none;min-height:0;height:auto';
     if (sized) c.style.fieldSizing = 'content'; edBox.appendChild(c); let h = 0;
     [TRY0, ...STARTERS].forEach(v => { c.value = v; if (!sized) { c.style.height = 'auto'; c.style.height = c.scrollHeight + 'px'; } h = Math.max(h, c.getBoundingClientRect().height); });
-    edBox.removeChild(c); if (h > ta.getBoundingClientRect().height + 1) ta.style.minHeight = Math.ceil(h) + 'px';
+    edBox.removeChild(c); ta.style.minHeight = Math.ceil(h) + 'px';
   };
   let tryW = 0; const lockTry = () => { if (innerWidth === tryW) return; tryW = innerWidth; lockTa(); if (!narrow()) { out.style.minHeight = ''; return; } if (touched) return; out.style.minHeight = ''; out.style.minHeight = out.offsetHeight + 'px'; };
   lockTry(); addEventListener('resize', lockTry);
