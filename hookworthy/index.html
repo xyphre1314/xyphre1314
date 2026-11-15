@@ -8594,13 +8594,14 @@ async function sharpenByClaude(text) {
 }
 function claudeSharpenOn() { return (LLM.mode === 'server' && !!LLM.server && !!LLM.server.sharpen) || (LLM.mode === 'claude' && !!LLM.sample); }
 async function sharpenFirst() {
-  const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text; let r = hookUpFor(before), pre = null;
-  /* r86: the engine found nothing to cut, but Claude can still see a sharper line: ask it first (a connected server only) */
-  if (!r && claudeSharpenOn() && !HWCore.SHARPEN.tooThin(firstLine(before))) {
-    toast('Asking Claude for a sharper first line…', { icon: 'bolt', tone: 'accent', ms: LLM.mode === 'claude' ? 9000 : 3000 });
-    pre = await sharpenByClaude(before);
+  const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text; let r = hookUpFor(before), pre = null, asked = false;
+  /* round 86 (blind set 5): with Claude on, Claude goes first, so no engine line flashes before Claude's; the engine's strict
+     line is only the fallback when Claude can't answer (no key, cap, timeout, a refusal or every version rejected) */
+  if (claudeSharpenOn() && !HWCore.SHARPEN.tooThin(firstLine(before))) {
+    toast('Asking Claude for a sharper first line…', { icon: 'bolt', tone: 'accent', ms: 9000 });
+    asked = true; pre = await sharpenByClaude(before);
     if (tw.text !== before || !S.draft.tweets.includes(tw)) return;
-    if (pre && pre.state === 'sharp') r = hookUpPack(pre, before.slice(firstLine(before).length), x => hookFor(x).score, hookFor(before).score);
+    r = pre && pre.state === 'sharp' ? hookUpPack(pre, before.slice(firstLine(before).length), x => hookFor(x).score, hookFor(before).score) : pre && pre.state === 'clean' ? null : r;
   }
   if (!r) { if (pre && pre.state === 'clean') toast(`Claude says your first line is already sharp.${pre.why ? ' ' + esc(pre.why) : ''}`, { icon: 'bolt', tone: 'accent' }); setImprove(tw.id, 'score'); return; }
   if (pre) { r.ai = true; r.alts.forEach(a => { a.ai = true; }); }
@@ -8642,7 +8643,7 @@ async function sharpenFirst() {
   };
   const verdict = c => (c.state === 'sharp' ? swapIn(c) : keepNote(c));
   show();
-  if (!pre) sharpenByClaude(before).then(c => { if (!c) return; if (settled) verdict(c); else late = c; });
+  if (!asked) sharpenByClaude(before).then(c => { if (!c) return; if (settled) verdict(c); else late = c; });
 }
 function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
