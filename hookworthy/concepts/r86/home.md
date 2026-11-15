@@ -687,3 +687,57 @@ core.js was being changed by the engine pass throughout (10:35, 10:56, 11:01 bui
 - marketing-6 "Auto-reposts" (see Trust), marketing-9c two-line drafts on phones (budget).
 
 **Numbers (final build, against core.js of 2026-11-15 11:09)**: screens 9.97 at 390 (budget 10.0), 10.49 at 360 (budget 10.5), 9.44 at 768, 8.72 at 1440. CLS 0 at 15 widths from 360 to 1920, no overflow and no heading over two lines from 320 to 1920 (`sweep.js`). Hero post bottom 766 at 1440×900 and 734 at 1280×800. Studio 694px at 1440 and 734px at 390 for all four clients. `check.js home` and `legal` ok:true. `trytest`, `sheettest` (1440, 390), `p7test` (1440, 390) and the new `r86/fix8/p8test.js` (1440, 390) pass; `p6test` now reports its old "who placeholder" expectation, which is the intended change (Who drafts arrive sharpened). claude_try.py still patches (build_pub.py in scratchpad/pub, no assertion). First tap on a 4x-throttled 390 phone (`r86/fix8/tap.js`, starter): 83–105 ms tap to result after warm-up (click event 56–96 ms); a tap during warm-up waits on the engine step in progress (155 ms to result in this run). core.js's warm steps still run 65–670 ms each at 4x, which only core.js can split. hero-sync passes, run last.
+
+## Pass 9 (brief: `r86/FIX9.md`, re-rate reviews in `r86/rerate8/`)
+core.js changed under this pass (11:51, 12:38, 12:41, 12:48 builds); every example and check was re-run against the 12:49 build, and hero-sync ran last. No engine text is rewritten by the page. `sharpen.js` had not shipped when this pass finished, so the page still loads core.js (see Skipped).
+
+**Brand**
+- brand-1: the warm rim is visibly warm: `.lit-card::after` runs 8–92% of the top edge, ember at its ends and hot white at 62%, with a 14px ember glow. The Try result catches the light: a soft ember bloom over its top edge (`.try-out .lit-card::before`, inside `#out-card`'s own stacking context). It is the finished state, so reduced motion keeps it. The Try card wears the rim only on a sharpened line; "Kept as written" and "Nothing to cut" are plain X cards.
+- brand-2: "Example" is muted meta text after the name ("heycape · Example @heycape_"), with no border (`.tag.eg`). The bordered pill stays for Who's roles and "Pro".
+- brand-3: Studio's never-say words are 17px, like the Voice tile's, with a .6em row gap.
+- brand-4: Lena's cafe frame is cropped to the cup and her notebook (`.ph.cafe`, no plant and no window light) and graded into the night (saturate .7, contrast 1.1, brightness .6, sepia .12, a deeper vignette).
+- brand-6: heycape's avatar is lifted (saturate .8, contrast 1.08, brightness 1.08, a 12% ring).
+- brand-7 (part): the preview hook line is 600, not 550.
+
+**UI/UX**
+- uiux-2: a kept hedge's reason shows once. `noteOnce()` drops R.note when it only repeats the why (it compares them case-, quote- and "your"-blind), in the Try box and the final.
+- uiux-3: Clear (or a starter that replaced your line), then Undo, brings back the result too: the stash keeps R and the version on show when they belong to that line, and Undo renders them again.
+- uiux-4: on a touch screen, the first tap on the untouched default goes to the box (focus, keyboard, the example selected), not to a struck word. Toggles wake once the box has had focus or after a Sharpen. Keyboard toggles are always live.
+- uiux-7: the Day slots are a readout: plain times, with the best one marked by a dot and set in ink. There is no pill and no selected state.
+- uiux-9: the first line the visitor sharpens opens Previews on "Yours", and the pill rings once when the feeds come into view. After that the choice is theirs.
+- uiux-1 (page half): the guard refuses a version that opens on words the engine marked as fluff and left in (`gOpensMarked`, in the GUARD block and in hero-sync). "Hey everyone, I wanted to share some thoughts on…" now reads "Kept as written" with both spans marked, never "It now opens on “I wanted to share…”".
+- uiux-8: starters and persona drafts show "Write my own", and only your own line shows "Clear".
+- uiux-10: on phones, a hero or Who jump that sharpens leaves focus on the result's receipt, not the field, so no keyboard comes up over the result.
+
+**Web**
+- web-4: the Replies teaser is now two dimmed replies (Jun Park, Sam Okafor) in a flex child that takes only the room left and runs into the card's bottom edge, fading as it goes. It never adds height.
+- web-2: on a single-column hero (≤900) the window's spare height collects under the sharpened post, never between Draft and Sharpened. Post bottoms: 798 at 390×844 and 749 at 360×780 (Trader).
+- web-3: at ≥1100 `#try-out` sits on the tile's bottom padding, so a compact result's slack falls between the starters and the receipt.
+- web-5: a tapped starter scrolls fully into view. A measured spacer after the last chip makes the row's end land on a chip's edge, so no chip is cut at the left at any snap point.
+- web-6: no lone word anywhere in Studio, for all four clients from 320 to 1920 (`r86/fix9/orph.js`). Never lists that would leave one phrase alone take the narrowest width that keeps their row count (`balanceRow`), Rafael's and Marco's lists fit one row on a phone, "London time" is bound, the highlight keeps its full stop, and the voice column is `text-wrap: pretty`.
+- web-7: at 761–900 the final's beam is short (118px at 16°). It starts below the form and lands only on the card.
+
+**Founder**
+- founder-2 / marketing-6: the Ghostwriter tab's foot reads "Waits for Lena’s yes · Mon 6:30 PM" with "Send to Lena" (the time shows from 1200px up). It opens the sheet on Studio, yearly: "Send it for Lena’s yes", the price, "Lena’s line:" with the line, and a done state that says the line would go to her review link and out once she approves. The tab's draft is now "I just wanted to remind you that your evening sets up your morning and your alarm only starts it", so the engine's why names the line ("The run-up is gone, so the line starts on “Your evening sets up your morning”."). Studio's Lena post is the same line.
+- founder-3 / marketing-10: Free card: "Past a daily fair-use limit, a lighter check runs on your device. Still free." legal.html says the same. Phone heights are unchanged.
+- founder-4: Free lists "Your best time to post, read from your own posts". Best times are not plan-gated in the app.
+- founder-5: Pro lists "More rewrites: +250 for $8 a month", with "Or +750 for $22, +1,750 for $45. On Pro and Studio." (core.js CR_BOOSTS; the juror's $12/$25 was wrong).
+- founder-6: the phone Studio link reads "Start with Studio · $18 a client" on the same line.
+- founder-7: the FAQ answer opens "It’s AI that edits your line, not AI that writes you a new one."
+
+**Marketing**
+- marketing-3: the ChatGPT answer is positioning only: "In the app, Claude makes the edit, and this demo runs on your device, without Claude. Nothing goes out until you send it." (the claude_try.py sentence is verbatim). Reply billing lives on the Pro card.
+- marketing-4: Pro has one reply bullet, "Replies drafted in your voice: free when a post takes off, then up to ten per rewrite", after "A ping when a post takes off". Both sub-notes are gone.
+- marketing-5 / marketing-8: the Voice head is "It learns how you write. / Lowercase and all.", and phones show the "lowercase stays lowercase" habit, its proof.
+- Voice never-says ("to the moon", "huge news", "let that sink in") are checked against the engine by hero-sync. Each is cut as an opener (colon, comma, "!") and as a closer, and at most one unnatural form may stay. All three pass on the 12:49 core.js. Marco's list no longer holds "not financial advice" (the engine keeps it on purpose): it is "guaranteed", "wagmi", "ngmi".
+- marketing-7: under the hero draft, a move's plain strikes are labelled by the move's own name ("Cut [Big news] Number first [we just hit]"), never "Reworded" for a deletion. A cut that opens the draft takes its colon or comma with it ("Big news:", "Honestly,") in the hero and in Who.
+- marketing-11: the review link's button speaks as the client ("Approve with my edit", "Approve"), next to "Priya’s view".
+
+**Warm-up**: core.js's warmSteps now hands over 561 steps, so one step per idle callback never finished before a tap (533–867 ms first tap at 4x). Each idle callback now runs as many steps as leave 16 ms of headroom, stops on a touch, and still parks off-screen.
+
+**Skipped**
+- `sharpen.js` (FIX9 item 6): not in the repo when this pass finished. loadCore, the warm-up and build_pub.py still use core.js.
+- Engine: "Already tight" on hype openers (founder-1's clean-state copy is the engine's R.why), stacked run-ups (the page guard covers the display), thread openers and the jargon reasons (marketing-2), "on a call" (marketing-9), put-back pins (uiux-5), hedge and bait openers (uiux-6), and the full-bundle cost (web-1).
+- brand-5 (a small-size master of the wordmark): this needs a new drawing of the hook-h, and it was not in FIX9's list. brand-7's other weight changes were left too.
+
+**Numbers (final build, against core.js of 2026-11-15 12:49)**: screens 9.94 at 390 (budget 10.0), 10.46 at 360 (budget 10.5), 9.45 at 768, 8.73 at 1440. CLS is 0 at 15 widths from 360 to 1920. There is no overflow and no heading over two lines from 320 to 1920 (`sweep.js`). Hero post bottom is 766 at 1440×900 and 734 at 1280×800. `check.js home` and `legal` are ok:true (axe 0). `trytest`, `sheettest`, `p7test` and `p8test` (1440, 390) pass, and the new `r86/fix9/p9test.js` passes at 1440, 390 and 360. claude_try.py still patches (build_pub.py in scratchpad/pub, no assertion). First tap on a 4x-throttled 390 phone (`r86/fix8/tap.js`, Announcement starter): 75–140 ms tap to result once warm-up has run, and 247–502 ms when tapped 1.5 s after the tile arrives (the line is worked out cold). core.js's warm steps still make 50–270 ms tasks at 4x, and building the step list takes about 370 ms in Node. hero-sync passes, run last.

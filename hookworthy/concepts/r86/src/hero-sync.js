@@ -6,7 +6,8 @@
 //   - the four hero examples (EX): line, cut words + kinds, receipt (say) and the Kept row;
 //   - the hero's static first frame (#pf-draft, #pf-sharp, #pf-move, #pf-cut, #pf-kept) against EX[0];
 //   - the Try tile's pre-rendered default and the final's example card;
-//   - the Who tile's four mini posts (WHO): each persona's line and cuts, and the static list drawn by the page's whoHTML.
+//   - the Who tile's four mini posts (WHO): each persona's line and cuts, and the static list drawn by the page's whoHTML;
+//   - the Voice tile's never-say words: the demo must cut each one as an opener and as a closer (it can't rewrite these).
 // The hero shows the engine's own "why" and "say" verbatim (the say through the page's display-only sayTxt, which writes
 // "Split it into two beats" as "Split into 2 beats"), so they are checked (and rewritten by --write) like the line.
 // The Try default's counter must show its true length.
@@ -26,12 +27,12 @@ let src = fs.readFileSync(SRC, 'utf8'), tail = fs.readFileSync(TAIL, 'utf8');
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
-const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\n${between(src, '/* GUARD-START */', '/* GUARD-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole };`)(esc, list);
-const { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole } = lib;
+const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\n${between(src, '/* GUARD-START */', '/* GUARD-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole, gOpensMarked };`)(esc, list);
+const { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole, gOpensMarked } = lib;
 const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 /* every example must also pass the page's own output guard (GUARD block): a line it would refuse is never shown as sharpened */
-const whole = (where, R) => { const w = R.state === 'sharp' ? gWhole(R.line, R.draft) : ''; if (w) bad.push(`${where}: the page guard refuses this line (${w}); pick another draft`); };
+const whole = (where, R) => { const w = R.state === 'sharp' ? gWhole(R.line, R.draft) || gOpensMarked(R, R) : ''; if (w) bad.push(`${where}: the page guard refuses this line (${w}); pick another draft`); };
 const fromEngine = d => { const R = H.sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept) : '' }; };
 
 /* 1. the four hero examples */
@@ -122,6 +123,23 @@ const wfixed = WHO.map((w, i) => {
   const want = '\n' + wfixed.map((w, i) => '        ' + whoHTML(w, i)).join('\n');
   if (!m) bad.push('static Who list not found');
   else if (m[2] !== want) { bad.push('static Who list markup'); src = src.replace(re, (all, a, b, c) => a + want + c); }
+}
+
+/* 5. the Voice tile's never-say words: each one is a phrase the demo itself cuts where a visitor would type it (tried as an opener
+   with a colon, a comma and a "!", and as a closer; at most one of the four may stay), so the page never shows a cut the Try box
+   won't make */
+{
+  const row = (src.match(/<div class="vrow nvr">([\s\S]*?)<\/div>/) || [])[1] || '';
+  const words = [...row.matchAll(/<span class="strike">([^<]+)<\/span>/g)].map(m => m[1]);
+  if (!words.length) bad.push('Voice never-say list not found');
+  const cap = p => p[0].toUpperCase() + p.slice(1);
+  for (const p of words) {
+    const ctx = [`${cap(p)}: sol flipped eth in daily volume`, `${p}, sol flipped eth in daily volume`, `${cap(p)}! sol flipped eth in daily volume`, `sol flipped eth in daily volume. ${cap(p)}.`];
+    const miss = ctx.filter(t => { const R = H.sharpenLine(t); return !(R.state === 'sharp' && (R.cut || []).some(c => c.text.toLowerCase().replace(/[^a-z' ]/g, '').trim() === p.toLowerCase())); });
+    /* a phrase has a natural place (an opener, or a closer): one unnatural form may stay, never two */
+    if (miss.length > 1) bad.push(`Voice never-say "${p}": the demo keeps it in ${miss.length} of ${ctx.length} lines (e.g. "${miss[0]}"); pick a phrase the engine cuts`);
+    else if (miss.length) console.log(`note: Voice never-say "${p}" stays in "${miss[0]}" (its other ${ctx.length - 1} forms are cut)`);
+  }
 }
 
 if (WRITE) {
