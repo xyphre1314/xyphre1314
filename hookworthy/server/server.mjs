@@ -181,7 +181,8 @@ export async function handle(req, res) {
       const voice = b.voice && typeof b.voice === 'object' && !Array.isArray(b.voice) ? b.voice : null;
       /* v4.1 (hook4-2): once Claude's versions were all rejected, the engine's line ships only as a plain cut that passes every hard
          guard; otherwise the draft comes back as written, with an honest why */
-      const rules = reason => send(res, 200, { ...core.sharpenLine(text, { keep, strict: reason === 'invalid' }), source: 'rules', reason });
+      /* round 7: every rules answer is strict (cut-only, guarded, the draft's own words in order): the fallback never ships a reshaped or broken line */
+      const rules = reason => send(res, 200, { ...core.sharpenLine(text, { keep, strict: true }), source: 'rules', reason });
       if (core.SHARPEN.tooThin(text)) return rules('thin');
       if ([...text.replace(/^\s+/, '').split('\n')[0].trim()].length > core.SHARPEN.AI_MAX) return rules('long');
       if (!AI.hasKey()) return rules('no_key');

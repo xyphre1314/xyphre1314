@@ -25,7 +25,7 @@ const lift = (from, to) => { const a = html.indexOf(from), b = html.indexOf(to, 
 const src = [lift('function hookUpFor(', '\n/* one tap'), lift('const HG_DEFAULT', '\n/* word diff that ignores case')].join('\n');
 const S = { ws: 'w', draft: { tweets: [] } }, UI = {}, MEM = { memKeepList: () => [], memPref: () => ({}) };
 const firstLine = t => { const v = String(t || ''), n = v.indexOf('\n'); return n < 0 ? v : v.slice(0, n); };
-const app = new Function('HWCore', 'hookScore', 'cap', 'S', 'UI', 'MEM', 'memFor', 'firstLine', 'hookFor', `${src}\nreturn { hgSharpen, hookUpFor };`)(core, core.hookScore, core.cap, S, UI, MEM, () => ({ n: 0 }), firstLine, t => ({ score: core.hookScore(t).score }));
+const app = new Function('HWCore', 'hookScore', 'cap', 'S', 'UI', 'MEM', 'memFor', 'firstLine', 'hookFor', 'claudeSharpenOn', `${src}\nreturn { hgSharpen, hookUpFor };`)(core, core.hookScore, core.cap, S, UI, MEM, () => ({ n: 0 }), firstLine, t => ({ score: core.hookScore(t).score }), () => false);
 const composer = t => { S.draft.tweets = [{ text: t }]; UI.hkC = null; const r = app.hookUpFor(t); return r ? r.line : null; };
 const runs = rows.map(r => ({ ...r, R: core.sharpenLine(r.t), H: app.hgSharpen(r.t), C: composer(r.t) }));
 const label = x => `#${rows.indexOf(rows.find(r => r.t === x.t)) + 1} ${JSON.stringify(x.t.split('\n')[0])} → ${JSON.stringify(x.R.line)}`;

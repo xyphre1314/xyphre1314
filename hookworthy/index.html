@@ -8541,11 +8541,12 @@ function watchEdit(ta, before, after, { label = '', lead = false, done } = {}) {
    homepage give the same first line for the same draft: same guards, same cuts, same reasons. Their casing and their facts
    stay; a reason to read on only when more of the post follows. Cached per text */
 function hookUpFor(text) {
-  const t = String(text || ''), mn = `${S.ws}:${memFor().n}:${memFor().v || 0}`; if (UI.hkC && UI.hkC.t === t && UI.hkC.mn === mn) return UI.hkC.r;
+  const strict = claudeSharpenOn(), t = String(text || ''), mn = `${S.ws}:${memFor().n}:${memFor().v || 0}:${strict ? 's' : ''}`; if (UI.hkC && UI.hkC.t === t && UI.hkC.mn === mn) return UI.hkC.r;
   const keep = MEM.memKeepList(memFor()), line = firstLine(t), rest = t.slice(line.length);
   const more = !!rest.trim() || S.draft.tweets.filter(x => x.text.trim()).length > 1;
   /* this voice's memory: the words it keeps and the moves it likes nudge what Sharpen offers */
-  const R = HWCore.sharpenLine(t, { keep, more, pref: MEM.memPref(memFor()) }), r = hookUpPack(R, rest, x => hookFor(x).score, hookFor(t).score);
+  /* round 7: with Claude on, the instant line is the engine's strict one (cut-only, guarded); when that finds nothing safe, Sharpen asks Claude first */
+  const R = HWCore.sharpenLine(t, { keep, more, pref: MEM.memPref(memFor()), strict }), r = hookUpPack(R, rest, x => hookFor(x).score, hookFor(t).score);
   if (r) r.kept = keep.filter(w => new RegExp(`(?<![\\p{L}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'iu').test(line));
   UI.hkC = { t, mn, r }; return UI.hkC.r;
 }
@@ -8591,7 +8592,7 @@ async function sharpenByClaude(text) {
     return j && j.source === 'claude' && (j.state === 'sharp' || j.state === 'clean') && typeof j.line === 'string' ? j : null;
   } catch (e) { return null; } finally { clearTimeout(t); }
 }
-const claudeSharpenOn = () => (LLM.mode === 'server' && !!LLM.server && !!LLM.server.sharpen) || (LLM.mode === 'claude' && !!LLM.sample);
+function claudeSharpenOn() { return (LLM.mode === 'server' && !!LLM.server && !!LLM.server.sharpen) || (LLM.mode === 'claude' && !!LLM.sample); }
 async function sharpenFirst() {
   const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text; let r = hookUpFor(before), pre = null;
   /* r86: the engine found nothing to cut, but Claude can still see a sharper line: ask it first (a connected server only) */

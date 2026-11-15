@@ -44,7 +44,8 @@ const POST = 'I just wanted to share that our team shipped v2 and signups went u
 const LINE = 'Our team shipped v2 and signups went up 31% this week.';
 const WHY = 'The run-up is gone, so “Our team shipped v2” is the first thing people read.';
 const CONTRACT = ['state', 'draft', 'line', 'rest', 'cut', 'marks', 'move', 'say', 'why', 'kept', 'alts', 'long', 'note'];
-const rulesFor = (text, keep = []) => core.sharpenLine(text, { keep });
+/* round 7: every rules answer from the endpoint is the engine's strict line */
+const rulesFor = (text, keep = []) => core.sharpenLine(text, { keep, strict: true });
 /* v4.1 (hook4-2): once every Claude version is rejected, the engine's line ships only as a plain cut that passes its hard guards */
 const strictFor = (text, keep = []) => core.sharpenLine(text, { keep, strict: true });
 const TEMPLATE_REST = 'The rest of the post follows, for context only. Use it to see what the line sets up or points at, so you keep that setup. Don\'t edit it, quote it, or move any of its words, facts or numbers into the line.';
@@ -56,7 +57,7 @@ test('a version that passes comes back as Claude’s, in the engine’s contract
   assert.equal(r.status, 200); assert.equal(r.json.source, 'claude'); assert.equal(r.json.reason, undefined);
   for (const k of CONTRACT) assert.ok(k in r.json, `contract field ${k}`);
   assert.equal(r.json.state, 'sharp'); assert.equal(r.json.line, LINE); assert.equal(r.json.rest, 'Here is what changed.');
-  assert.notEqual(r.json.line, rulesFor(POST).line, 'Claude’s line, not the engine’s');
+  assert.notEqual(r.json.line, core.sharpenLine(POST).line, 'Claude’s line, not the engine’s');
   /* the cut list is the engine's word diff, never the model's: the run-up, as written, with its kind and reason */
   assert.deepEqual(r.json.cut.map(c => [c.text, c.kind]), [['I just wanted to share that', 'announce']]);
   assert.deepEqual(r.json.cut[0].at, [0, 27]); assert.ok(r.json.cut[0].why);
@@ -77,7 +78,7 @@ test('the versions: the first that passes ships, the other passing ones are alts
   const n = await sharpen({ text: POST });
   assert.equal(n.json.source, 'rules'); assert.equal(n.json.reason, 'invalid'); assert.equal(n.json.line, strictFor(POST).line);
   /* the engine's own answer here reorders the line, so the fallback is its cut-only version */
-  assert.equal(rulesFor(POST).line, 'Signups went up 31% this week. What changed: our team shipped v2.'); assert.equal(n.json.line, 'Our team shipped v2 and signups went up 31% this week.'); assert.equal(n.json.state, 'sharp');
+  assert.equal(core.sharpenLine(POST).line, 'Signups went up 31% this week. What changed: our team shipped v2.'); assert.equal(n.json.line, 'Our team shipped v2 and signups went up 31% this week.'); assert.equal(n.json.state, 'sharp');
   const s = await sharpenClaude({ text: POST });
   assert.equal(s.reason, 'invalid'); assert.equal(s.reject, 'fact "31%" lost'); assert.deepEqual(s.rejects, ['fact "31%" lost', 'hype added'], 'one reason per version');
 });
