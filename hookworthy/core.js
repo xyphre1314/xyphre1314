@@ -3693,7 +3693,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const norm = z => lcw(z).replace(/^[\s,.;:!?—-]+|[\s,.;:!?—-]+$/g, ''), L = lcw(line), D = lcw(draft), head = lcw((String(line).match(/\S+/g) || []).slice(0, 6).join(' '));
     const cuts = (E && E.cut || []).map(c => norm(c.text));
     const qRe = /“([^”]{1,140})”|"([^"]{1,140})"|‘([^’]{1,140})’(?!\p{L})/gu;
-    for (const part of s.split(/(?<=[.;:!?])\s+|,\s+(?=(?:and|but|so)\b)|\s+(?=but\b)/)) {
+    /* v4.1 (hook4-5): ", then …" starts a new claim: "“X” first, then “Y” lands it" says first only of X */
+    for (const part of s.split(/(?<=[.;:!?])\s+|,\s+(?=(?:and|but|so|then)\b)|\s+(?=but\b)/)) {
       const qs = [...part.matchAll(qRe)].map(m => m[1] || m[2] || m[3]).flatMap(q => q.split(/…|\.\.\./)).map(norm).filter(Boolean); if (!qs.length) continue;
       if (!qs.every(q => D.includes(q) || L.includes(q))) return '';
       const gone = /\b(?:went|goes|gone|cut|cuts|dropped|drops|removed|out|deleted|trimmed|without)\b/i.test(part.replace(qRe, ' ')), stays = /\b(?:stays?|stayed|kept|keeps?|is still|remains?)\b/i.test(part.replace(qRe, ' ')), first = /\b(?:first|leads?|opens?|up front|starts?)\b/i.test(part.replace(qRe, ' '));
@@ -3839,6 +3840,21 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     }
     return '';
   }
+  /* v4.1 (round-5 hook4-3): a scope word says how much of the claim holds ("mostly just hype" is not "just hype"). Checked
+     like a quantifier: while the word it scopes over (the next content word in its sentence, else the one before it) is
+     in the line, the scope word is too */
+  V3.SCOPE = /\b(?:mostly|largely|partly|partially|mainly|primarily|often|usually|generally|typically|sometimes|occasionally|frequently|rarely|seldom|in part|for the most part|most of the time)\b/gi;
+  function v41ScopeOK(line, draft) {
+    const LS = v3stems(line), d = String(draft), need = {};
+    for (const m of d.matchAll(rx(V3.SCOPE.source, 'gi'))) {
+      const s0 = d.slice(0, m.index).search(/[^.!?;:]*$/), rest = d.slice(m.index + m[0].length), e1 = rest.search(/[.!?;:](?=\s|$)/);
+      const after = v3content(e1 < 0 ? rest : rest.slice(0, e1)).filter(w => w !== 'speaking'), before = v3content(d.slice(s0, m.index));
+      const anchor = after[0] || before[before.length - 1]; if (!anchor || !LS.has(slStemC(anchor))) continue;
+      const k = lcw(m[0]).replace(/\s+/g, ' '); need[k] = (need[k] || 0) + 1;
+    }
+    for (const [k, n] of Object.entries(need)) if (cnt(line, new RegExp(`\\b${k.replace(/ /g, '\\s+')}\\b`, 'gi')) < n) return `scope "${k}" lost`;
+    return '';
+  }
 
   /* obvious breakage only, each counted against the draft so the writer's own style never trips it */
   V3.BREAK = [
@@ -3937,7 +3953,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const toks = z => v3toks(z).map(t => t.w), DT = new Set(toks(draft).map(slStemC)), L8 = toks(line).slice(0, 8).map(slStemC);
     const cutAtStart = toks(draft).slice(0, 2).join(' ') !== toks(line).slice(0, 2).join(' ');
     const lead = z => lcw(z).replace(/^[^\p{L}\p{N}$@#]+/u, ''), norm = z => lcw(z).replace(/^[\s,.;:!?—-]+|[\s,.;:!?—-]+$/g, '');
-    for (const part of s.split(/(?<=[.;:!?])\s+|,\s+(?=(?:and|but|so)\b)|\s+(?=but\b)/)) {
+    for (const part of s.split(/(?<=[.;:!?])\s+|,\s+(?=(?:and|but|so|then)\b)|\s+(?=but\b)/)) {
       const bare = part.replace(qRe, ' '), kept = /\b(?:still|stays?|stayed|kept|keeps?)\b/i.test(bare);
       if (!same && V4_RUNUP.test(bare) && !cutAtStart) return false;
       if (!same && V4_SPLIT.test(bare) && !kept && slSents(line).length <= slSents(draft).length) return false;
@@ -3967,6 +3983,43 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* the run-ups that cost a first version its place: an announcement, a throat-clear, an opener, a disclaimer. A financial
      disclaimer is the writer's to keep */
   const V4_RUNK = /^(?:announce|throat|open|disclaim)$/, V4_FIN = /\b(?:financial|investment|legal|tax)\s+advi[cs]e\b|\bnfa\b|\bdyor\b|\bfinancial advis[oe]r\b|\bdo your own research\b/i;
+  /* ---------------- r86 v4.1: the version order and the receipt after the round-5 v4 review (hook4-3, hook4-5, hook4-8) ----------------
+     The words that say how sure the writer is. A degree word ("kind of") is not one, IMHO is the delaying frame the prompt
+     cuts on an opinion, and an opinion label ("Hot take:") stands in for "I think" */
+  V3.EPI = /\b(?:i|we)\s+(?:(?:really|honestly|genuinely|truly|personally|do|still|kind of|kinda|actually|just)\s+)*(?:think|believe|reckon|feel like|feel that|guess|suspect|bet|doubt)\b|\b(?:i|we)(?:['’]m|['’]re| am| are)\s+(?:(?:just|really|actually|honestly|slowly)\s+)?(?:starting|beginning) to (?:think|believe|feel|suspect|wonder)\b|\b(?:i|we)\s+(?:might|could|may)\s+be\s+wrong\b|\bi['’]d (?:say|argue|guess|bet)\b|\b(?:probably|maybe|perhaps|possibly|likely|unlikely|arguably|apparently|presumably|seemingly|might|could)\b|(?<!\b(?:in|by|since|until|of|early|late|mid|this|next|last)[- ])\bmay(?! \d)\b|\bseem(?:s|ed)?\b|\bimo\b|\bin my (?:honest )?opinion\b|\bnot (?:sure|convinced)\b|\b(?:hot take|unpopular opinion|controversial opinion|spicy take)\b/gi;
+  const v41EpiN = z => cnt(z, rx(V3.EPI.source, 'gi'));
+  /* a line leaves the claim bare when it keeps fewer of these than the draft has sentences that carry one and still stand
+     in the line (their own words, the hedges aside) */
+  const v41Bare = (draft, line) => { const LS = v3stems(line); return v41EpiN(line) < slSents(draft).filter(s => v41EpiN(s) && v3survives(s.replace(rx(V3.EPI.source, 'gi'), ' '), LS)).length; };
+  /* hard news: grief, illness, a lost job, a hard diagnosis. The writer's framing before it is how they chose to tell it */
+  const V41_HARD = /\b(?:passed away|passed on|died|funeral|grie(?:f|ving|ve)|miscarr\w*|stillb\w+|cancer|tumou?r|diagnos(?:ed|is)|chemo\w*|terminal(?:ly)? ill|hospice|hospitali[sz]ed|in the (?:hospital|icu|er)|surgery|a stroke|heart attack|illness|chronic(?:ally)? ill|laid off|lay-?offs?|(?:was|were|got|been|being) let go|lost (?:my|our|his|her|their) (?:job|dad|mom|mum|father|mother|son|daughter|brother|sister|wife|husband|partner|baby|best friend|grand\w+)|(?:got|was|were|been|being) fired|divorc\w*|depression|anxiety|panic attacks?|burn(?:ed|t)? ?out|suicid\w*|rehab|relaps\w*|eating disorder)\b/i;
+  /* the clauses before the hard news, when they say something (two content words or more): '' when there are none */
+  function v41HardFrame(draft) {
+    const h = V41_HARD.exec(draft); if (!h) return '';
+    let at = 0, out = ''; for (const c of v3clauses(draft)) { const i = draft.indexOf(c, at); if (i < 0) break; if (i + c.length > h.index) break; out += ` ${c}`; at = i + c.length; }
+    return v3content(out).length >= 2 ? out.trim() : '';
+  }
+  /* a version that only splits the draft: the same words in the same order, a connector or two gone, more sentences */
+  const v41SplitOnly = (draft, line) => { const W = z => v3toks(z).map(t => t.w).filter(w => !/^(?:and|so|but|then|which|because)$/.test(w)).join(' '); return slSents(line).length > slSents(draft).length && W(line) === W(draft); };
+  /* a list or thread header: the draft ends on a colon or a thread pointer; a version leads with the list when it is one
+     sentence that still ends on it */
+  const V41_HDR = /(?::|🧵|👇|⬇️?)\s*$/u;
+  const v41LeadsList = (draft, line) => V41_HDR.test(String(line).trim()) && slSents(line).length === 1 && !v41SplitOnly(draft, line);
+  /* "Led with the claim" only when the line's first content clause comes from a later clause of the draft, and something the
+     draft said before it still follows it (a move, not a cut run-up) */
+  const V41_CL = /(?<=[.!?;:,])\s+|\s+(?=(?:and|but|because|although|though|whereas|so)\s)|\s*[—–]\s*|\s-\s/i;
+  function v41Led(draft, line) {
+    const cl = z => String(z).split(V41_CL).filter(c => v3content(c).length >= 2), L = cl(line), D = cl(draft); if (!L.length || D.length < 2) return false;
+    const st = c => new Set(v3content(c).map(slStemC)), l0 = st(L[0]), ov = c => { const s = st(c); return [...l0].filter(w => s.has(w)).length / l0.size; };
+    let bi = 0; D.forEach((c, i) => { if (ov(c) > ov(D[bi])) bi = i; });
+    if (!bi || ov(D[bi]) < 0.5) return false;
+    const after = new Set(L.slice(1).flatMap(c => v3content(c).map(slStemC)));
+    return D.slice(0, bi).some(c => v3content(c).some(w => after.has(slStemC(w))));
+  }
+  /* a Claude "clean" verdict says so in its own words, never in the on-device engine's */
+  const V41_KEPT = 'Claude kept it as written.';
+  /* the stance note says "on a call" or "on a plan or a forecast" only when the sentence it sits in is one */
+  const v41Fut = z => cnt(z, rx(V3.FUT.source, 'gi')) > 0 || /\b(?:plan(?:s|ning)? (?:to|on)|about to|hop(?:e|es|ing) to|intend(?:s|ing)? to|expect(?:s|ing)? to|next (?:week|month|year|quarter|season)|tomorrow|tonight|soon|by (?:eoy|eom|the end of|q[1-4]|20\d\d))\b/i.test(z);
   function fromClaudeV3(text, data, opts = {}) {
     const trace = opts.trace && typeof opts.trace === 'object' ? opts.trace : {};
     const no = (k, all) => { trace.reject = k; if (all) trace.rejects = all; return null; };
@@ -3985,7 +4038,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const marks = softMarks(draft, keep), facts = slFacts(draft, marks), kept = facts.filter(f => !f.link && slKeepW(f.v)).map(f => f.v);
       const st = stanceKeep(body).filter(w => !keep.some(k => k.toLowerCase() === w.toLowerCase())), call = isCall(body);
       const longOf = l => xLength(rest.trim() ? `${l}\n${rest}` : l) > 280;
-      const stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${String(k).replace(/,?\s+that$/i, '')}”: on a ${call ? 'call' : 'plan or a forecast'}, it’s your stance, not filler.` : ''; };
+      /* v4.1 (hook4-5): "on a plan or a forecast" only when the sentence the stance sits in looks ahead */
+      const stOf = k => slSents(body).find(s => lcw(s).includes(lcw(k))) || body;
+      const stDeg = k => /^(?:kind of|kinda|sort of|sorta|a little|a bit|pretty|somewhat)$/i.test(k) ? (SL_FEELW.test(lcw((stOf(k).slice(lcw(stOf(k)).indexOf(lcw(k)) + k.length).match(/^\s+((?:a |an )?[\p{L}'’]+)/u) || ['', ''])[1])) ? 'it’s how you feel' : 'it’s your tone') : '';
+      const stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${String(k).replace(/,?\s+that$/i, '')}”: ${call ? 'on a call, it’s your stance' : v41Fut(stOf(k)) ? 'on a plan or a forecast, it’s your stance' : stDeg(k) || 'it’s how sure you are'}, not filler.` : ''; };
       const noteOf = l => [stNote(l), slApxNote(draft, l), longOf(l) ? SL_LONG : ''].filter(Boolean).join(' ');
       const nvRe = never.map(w => new RegExp(`(?<![\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'giu'));
       const aiN = z => cnt(z, rx(SL_AIW.source, 'giu')) + cnt(z, rx(SL_LEVV.source, 'gi')) + nvRe.reduce((n, re) => n + cnt(lcw(z), re), 0), aiWord = z => aiN(z) > 0;
@@ -4010,14 +4066,15 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
         if ([...line].length > SHARPEN_AI_MAX || (V3.opts.length && [...line].length > Math.max([...draft].length * 1.25, [...draft].length + 25))) return ['longer'];
         if (norm(line) === norm(draft)) return ['same'];
         line = line.replace(new RegExp(`(${SL_URL.source})\\.$`, 'iu'), '$1');
-        for (const f of [() => v3NumOK(line, draft, facts), () => v3NegOK(line, draft), () => v3HedgeOK(line, draft, body, st), () => v3DegreeOK(line, draft, marks), () => v3FutureOK(line, draft), () => v3ClaimOK(line, draft),
+        for (const f of [() => v3NumOK(line, draft, facts), () => v3NegOK(line, draft), () => v3HedgeOK(line, draft, body, st), () => v3DegreeOK(line, draft, marks), () => v3FutureOK(line, draft), () => v3ClaimOK(line, draft), () => v41ScopeOK(line, draft),
           () => (aiN(line) > aiN(draft) ? 'banned word' : ''), () => (keep.every(k => !lcw(draft).includes(lcw(k)) || lcw(line).includes(lcw(k))) ? '' : 'put-back'), () => v3BrokenOK(line, draft),
           () => (V3.opts.tone ? v3ToneOK(line, draft) : ''), () => (V3.opts.pointer ? v3PointerOK(line, draft) : ''), () => v3FrameOK(line, draft), () => v3ObjectOK(line, draft), () => v3DangleOK(line, draft),
           () => (V3.opts.added ? v3AddOK(line, draft) : '')]) { const r = f(); if (r) return [r]; }
         if (slSkip(draft)) return ['thin'];
         /* the receipt, from the engine's own diff and rules; v4 (hook-4): "Asked, then answered" only for a real question,
            "Gave it an end" only for a new end, and a why (Claude's, else the engine's) only when it is true for this edit */
-        const cand0 = slReordered(draft, line) ? SL_AI_MOVES : SL_AI_CUT, cand = v4AskOK(line) ? cand0 : cand0.filter(k => k !== 'ask');
+        /* v4.1 (hook4-5): "Led with the claim" only for a claim that came from a later clause of the draft */
+        const cand0 = slReordered(draft, line) ? SL_AI_MOVES : SL_AI_CUT, cand = cand0.filter(k => (k !== 'ask' || v4AskOK(line)) && (k !== 'lead' || v41Led(draft, line)));
         const e1 = slExplain(draft, line, cand, marks), mv = e1.moves.length ? e1.moves : ['tight'], E = slExplain(draft, line, mv, marks);
         const whyE = slAIWhy(why, draft, line, E, aiWord) || (v4WhyOK(E.why, draft, line) ? E.why : v4SafeWhy(draft, line, E));
         return [null, { ...R, state: 'sharp', line, cut: E.cut, marks, move: E.move, say: v4Say(draft, line, E.say), why: whyE, long: longOf(line), note: noteOf(line), moves: E.moves.length ? E.moves : ['tight'],
@@ -4027,15 +4084,24 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       for (let i = 0; i < vers.length; i++) {
         const why = typeof vers[i].why === 'string' ? vers[i].why : '', [bad, res] = check(vers[i].line, why);
         /* a version that is the draft as written: version 1 (or a reply marked unchanged) is Claude saying it's already sharp.
-           v4 (hook-11): a later copy of the draft is that verdict only when no earlier version passed */
-        if (bad === 'same') { reasons.push('unchanged'); if (i === 0 || (data.unchanged && !ok.length)) { trace.rejects = reasons; trace.pick = i; return { ...R, state: slSkip(draft) ? 'thin' : 'clean', say: 'Nothing to cut', why: v4Clean(slAIWhy(why, draft, draft, { cut: [] }, aiWord) || HK_WHY_SL.sharp), pick: i }; } continue; }
+           v4 (hook-11): a later copy of the draft is that verdict only when no earlier version passed. v4.1 (hook4-5): its why is
+           Claude's, or "Claude kept it as written", never the on-device engine's */
+        if (bad === 'same') { reasons.push('unchanged'); if (i === 0 || (data.unchanged && !ok.length)) { trace.rejects = reasons; trace.pick = i; return { ...R, state: slSkip(draft) ? 'thin' : 'clean', say: 'Nothing to cut', why: v4Clean(slAIWhy(why, draft, draft, { cut: [] }, aiWord) || V41_KEPT), pick: i }; } continue; }
         reasons.push(bad || 'ok'); if (res && !ok.some(o => o.res.line === res.line)) ok.push({ i, res });
       }
       trace.rejects = reasons;
       if (!ok.length) return no(reasons.find(r => r !== 'unchanged') || reasons[0], reasons);
-      /* v4 (hook-3): a first passing version that still opens on a run-up gives way to a later passing one that doesn't */
+      /* v4 (hook-3): a first passing version that still opens on a run-up gives way to a later passing one that doesn't.
+         v4.1: on hard news the writer's framing before the news stays in version 1 (hook4-8); where the draft says how sure
+         it is, a version that still says so goes ahead of the bare claim (hook4-3); a version that only splits a list header
+         gives way to one that leads with the list (hook4-8). Each step keeps what the steps before it secured */
       const runUp = l => { const p = Math.max(0, String(l).search(/\S/)), m = softMarks(l, keep).find(r => r[0] <= p); return !!m && V4_RUNK.test(m[3]) && !V4_FIN.test(String(l).slice(m[0], m[1])); };
-      if (ok.length > 1 && runUp(ok[0].res.line)) { const j = ok.findIndex((o, k) => k > 0 && !runUp(o.res.line)); if (j > 0) { ok.unshift(ok.splice(j, 1)[0]); trace.promoted = ok[0].i; } }
+      const frame = v41HardFrame(draft), framed = l => !!frame && v3survives(frame, v3stems(l)), bare = l => v41Bare(draft, l), hdr = V41_HDR.test(draft.trim());
+      const promote = (k, worse, fine) => { if (ok.length < 2 || !worse(ok[0].res.line)) return; const cur = ok[0].res.line, j = ok.findIndex((o, n) => n > 0 && !worse(o.res.line) && fine(o.res.line, cur)); if (j > 0) { ok.unshift(ok.splice(j, 1)[0]); trace.promoted = ok[0].i; (trace.promo = trace.promo || []).push(k); } };
+      promote('runup', l => runUp(l) && !framed(l), () => true);
+      promote('hard', l => !!frame && !framed(l), () => true);
+      promote('hedge', bare, (l, cur) => (framed(l) || !framed(cur)) && (!runUp(l) || runUp(cur)));
+      promote('list', l => hdr && v41SplitOnly(draft, l), (l, cur) => v41LeadsList(draft, l) && (!bare(l) || bare(cur)) && (framed(l) || !framed(cur)));
       trace.pick = ok[0].i;
       /* alts carry what the app's receipt reads (line, why, say, move, moves, cut), so "Another" can show them */
       return { ...ok[0].res, alts: ok.slice(1).map(o => ({ line: o.res.line, why: o.res.why, say: o.res.say, move: o.res.move, moves: o.res.moves, cut: o.res.cut })), pick: ok[0].i };
