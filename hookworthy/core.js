@@ -125,7 +125,7 @@
     /* r86 pass 2: "just wanted to quickly say thank you…" is a run-up, not an announcement */
     { k: 'throat', re: new RegExp(`${S0}(?:(?:i|we) )?(?:just )?(?:wanted|want|would like|['’]d like) to (?:quickly |just )?say(?: that)?\\b,?(?= \\S)`, 'gi'),
       why: 'A run-up to the point. Say the thing itself and the line starts there.', short: 'is a run-up to the point', cw: 'A run-up to the point.' },
-    { k: 'announce', re: new RegExp(`(?:${S0}|(?<=^[^.!?]{4,80},\\s)|(?<=^[^.!?]{12,120}\\s(?:and|but|so)\\s))(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:(?:so|super|really|very|beyond|incredibly|truly|extremely|genuinely|honestly|absolutely) ){0,2}(?:excited|thrilled|happy|proud|pleased|humbled|delighted|stoked|pumped|grateful|honou?red|blessed) to (?:finally )?(?:be able to )?(?:(?:announce|share|show|introduce)(?: (?:it|this|these|them))?(?: with (?:you|you all|y['’]?all|you guys|everyone|everybody|the world|all of you)(?: guys| all)?)?|say|tell you|let you know)(?: that)?|${S0}(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:so |super |really |very )?(?:excited|thrilled|happy|proud|pleased|delighted|stoked) to (?=welcome (?:@\\w|our\\b|my\\b|a\\b|an\\b|the\\b|two\\b|three\\b))`, 'gi'),
+    { k: 'announce', re: new RegExp(`(?:${S0}|(?<=^[^.!?]{4,80},\\s)|(?<=^[^.!?]{12,120}\\s(?:and|but|so)\\s))(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:(?:so|super|really|very|beyond|incredibly|truly|extremely|genuinely|honestly|absolutely) ){0,2}(?:excited|thrilled|happy|proud|pleased|humbled|delighted|stoked|pumped|grateful|honou?red|blessed)(?:,?\\s+(?:and|&)\\s+(?:(?:so|super|really|very|incredibly|truly) )?(?:excited|thrilled|happy|proud|pleased|humbled|delighted|stoked|pumped|grateful|honou?red|blessed))? to (?:finally )?(?:be able to )?(?:(?:announce|share|show|introduce)(?: (?:it|this|these|them))?(?: with (?:you|you all|y['’]?all|you guys|everyone|everybody|the world|all of you)(?: guys| all)?)?|say|tell you|let you know)(?: that)?|${S0}(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:so |super |really |very )?(?:excited|thrilled|happy|proud|pleased|delighted|stoked) to (?=welcome (?:@\\w|our\\b|my\\b|a\\b|an\\b|the\\b|two\\b|three\\b))`, 'gi'),
       why: 'Announcing the announcement. Lead with the news itself: what you did shows the excitement better than saying it.', short: 'announces the news instead of saying it' },
     /* r86 pass 6 (hook-8): and mid-line after "but"/"and"/"so": "…a little bit personal, but I wanted to share that I was laid off…" */
     { k: 'announce', re: new RegExp(`(?:${S0}|(?<=^[^.!?]{12,120}\\s(?:and|but|so)\\s(?=(?:i|we)\\s+(?:just\\s+)?(?:wanted|want)\\s+to\\s+(?:share|say|let (?:you|everyone|y['’]all|you all) know)\\s+that\\s+(?:i|we|my|our|it|this|the)\\b)))(?:(?:in )?(?:today['’]s|this week['’]s|this) (?:issue|newsletter|edition|post|thread|episode|video)[,:]?\\s+|(?:today|this week|real quick),? )?(?:(?:i|we) )?(?:just )?(?:wanted|want|would like|['’]d like|thought i['’]?d|am going|['’]m going|(?:i['’]m|we['’]re|i am|we are) (?:going|gonna)) to (?:quickly )?(?:(?:share|give|post) (?:you )?(?:a |an )?(?:quick |short |small |little )?update(?: on)?|share|say|announce|let (?:you|everyone|y['’]all|you all) know|talk (?:a (?:little )?bit |a little )?about|write about|post about|explain|show you|break down|walk you through|give (?:a quick |an |a )update on)(?: (?:that|some (?:quick )?thoughts on|a few thoughts on|my thoughts on|some thoughts about))?\\b`, 'gi'),
@@ -161,8 +161,12 @@
       why: 'Telling them how to feel about it. The result already says that, so end on the result.', short: 'tells them how to feel instead of showing it' },
     { k: 'opinion', re: /\b(?:(?=i )(?<!\b(?:as an?|after|since|having|while|when|before|from|with|despite|unlike|like) [^,.!?]{2,120},?\s)i (?:(?:really|personally|honestly|just|actually|genuinely|truly|firmly|strongly|do|kind of|kinda|sort of) ){0,2}(?:think|feel like(?! (?:a|an|the|my|such|nothing|everything|crap|garbage|death|myself|home|it|this|that|giving up|quitting|crying)\b)|believe|guess|reckon|feel that)(?!\s*(?:[.:;!?)]|$))(?: that(?!['’]\w)(?! (?:is|was|are|were|will|would|can|could|has|had|might|must|should|isn['’]t|wasn['’]t|matters|works|makes|means|helps|happens|changes)\b)(?= )|(?! (?:about|of|through|back|so|twice|again|too|in)\b))|(?:i['’]d|i would) (?:argue|say)(?: that)?(?= (?:the|most|every|this|that|it|you|we|people|nobody|no one|a|an)\b)|(?:i['’]m|i am) (?:starting|beginning) to (?:think|believe|feel|suspect)(?: that)?(?= \S)|in my (?:humble |honest )?opinion|imo|imho)\b,?/gi,
       why: 'Your name is on the post, so it’s already your opinion. Saying so just hands readers a reason to doubt it.', short: 'hedges a claim that’s already yours' },
-    { k: 'honest', re: /\b(?:honestly|(?<!\b(?:want|wants|wanted|need|needs|have|has|had|going|gonna|trying|try|tried|promised|decided|got|able|chose|meant)\s)to be (?:totally |completely |brutally |100% )?honest(?: with (?:you|y['’]?all|you all|you guys|everyone))?|tbh|ngl|(?:i['’]?m )?not (?:gonna|going to) lie|no cap(?=,?\s|[.!]?$)|if i['’]m (?:being )?(?:totally |completely |100% |brutally |really )?honest|truthfully|frankly|personally(?=,?\s+i\b|,\s))\b(?!\?),?/gi,
+    /* v4.1 (hook4-1): a frame goes with its tail ("honest with myself", "lie to you"), so no "with you all," is left behind */
+    { k: 'honest', re: /\b(?:honestly|(?<!\b(?:want|wants|wanted|need|needs|have|has|had|going|gonna|trying|try|tried|promised|decided|got|able|chose|meant)\s)to be (?:totally |completely |brutally |100% )?honest(?: with (?:you all|you guys|y['’]?all|you|everyone|myself|yourself|ourselves))?|tbh|ngl|(?:i['’]?m )?not (?:gonna|going to) lie(?: to (?:you all|you guys|y['’]?all|you|everyone|ya))?|no cap(?=,?\s|[.!]?$)|if i['’]m (?:being )?(?:totally |completely |100% |brutally |really )?honest(?: with (?:you all|you guys|y['’]?all|you|everyone|myself|yourself|ourselves))?|truthfully|frankly|personally(?=,?\s+i\b|,\s))\b(?!\?),?/gi,
       why: 'It hints the rest might not be honest. Lines that land never announce their honesty.', short: 'hints the rest might not be honest' },
+    /* v4.1 (hook4-6): "fwiw" goes the way "ngl" does */
+    { k: 'honest', re: /(?:^|(?<=[.!?]\s{1,3})|(?<=,\s))(?:fwiw|for what it['’]?s worth)\b,?(?=\s+\S)/gi,
+      why: 'A modest run-up. It tells people to weigh the line less, so let it stand on its own.', short: 'tells people to weigh the line less', cw: 'Tells people to weigh the line less.' },
     { k: 'intens', re: /(?<!\b(?:really|very|so|super),?\s)\b(?:really|very|quite|somewhat|pretty much|extremely|incredibly|totally|completely(?= (?:normal|fine|wrong|true|okay|ok|natural|valid|understandable|different)\b)|(?<=\b(?:is|are|was|were|['’]s|['’]re)\s)(?:genuinely|truly)(?= (?:the (?:most|best|worst|biggest|hardest|only)|one of|so|an? (?:great|good|bad|huge|big|real)|incredible|amazing|insane|wild|great|good|bad|terrible|awful|crazy|unbelievable|impressive|hilarious|embarrassing|useful|helpful|life[- ]changing)\b))\b(?!,?\s(?:really|very|so|super)\b)/gi,
       why: 'An intensifier propping up a weaker word. Cut it, or trade the pair for one sharp word: “very tired” → “exhausted”.', short: 'props up the word next to it' },
     { k: 'filler', re: new RegExp(String.raw`\b(?:(?<!\b(?:not|only|is it|it['’]s|it is|that['’]s|that is|i['’]m|you['’]re) )(?:(?<!(?:^|[.!?]\s{1,3}))just|(?<=(?:^|[.!?]\s{1,3}))just(?! (?:a|an|the|my|our|your|their|one|two|me|you|us|some|plain|pure)\b))(?! (?:by\b|\$?\d|one\b|two\b|a few\b|now\b|in case\b|as\b|like\b|because\b|enough\b|in time\b|me\b|(?:can['’]?t|cannot|couldn['’]?t|won['’]?t|don['’]?t|didn['’]?t)\b|[a-z]+ing\b|${JUST_PAST}))|(?<!\b(?:what|who|which|that|you['’]re|you are) )actually(?![^.!?\n]*\?)(?! (?:liked?|loved?|prefer(?:red|s)?|matters?|works?|worked|happened|need(?:ed|s)?|want(?:ed|s)?|read|use[ds]?|cares?|cared|miss(?:es|ed)?|enjoy(?:s|ed)?)\b)|basically|literally|simply|essentially|officially(?= (?:launched|shipped|released|opened|joined|started|hit|crossed|signed|live|out)\b))\b`, 'gi'),
@@ -282,7 +286,16 @@
     /(?<=\b(?:used to|i once|once) (?:think|thought|believe|believed)\b[^]*?)\bi (?:now )?(?:think|believe)\b/gi,
     /\b(?:more|less|better|worse|faster|slower|bigger|smaller|harder|easier|longer|further|rather|sooner|later|other)\s+than\s+(?:i|we|you|they|he|she|anyone|anybody|people|most|ever)\b[^.!?,;\n]{0,40}/gi,
     /\bas\s+[a-z]+\s+as\s+(?:i|we|you|they|he|she|it)\b[^.!?,;\n]{0,30}/gi,
-    /\bway\s+(?:less|more|better|worse|too(?! much\s*(?:[.!?,;]|$))|bigger|smaller|harder|easier|faster|slower|longer|shorter|cheaper|earlier|later|fewer|over|off)\b/gi
+    /\bway\s+(?:less|more|better|worse|too(?! much\s*(?:[.!?,;]|$))|bigger|smaller|harder|easier|faster|slower|longer|shorter|cheaper|earlier|later|fewer|over|off)\b/gi,
+    /* v4.1 (hook4-7): "really" under a negation is a degree on it ("nobody really reads" is not "nobody reads", "I don't think it
+       really matters" is not "…it matters"): never cut within the negation's clause */
+    /(?<=\b(?:not|never|no|nobody|nothing|none|neither|nor|hardly|barely|cannot|\w+n['’]t)\b(?:\s+(?!(?:and|but|so|or|because|while|which|who|if|when)\b)[\p{L}\p{N}'’$-]+){0,5}?\s+)really\b/giu,
+    /* v4.1 (hook4-7): and on a feeling it is the feeling's strength ("really grateful", "really want to stop", "really means the world") */
+    /\breally(?=\s+(?:okay|ok|fine|nervous|scared|terrified|afraid|sad|emotional|tired|exhausted|happy|proud|excited|overwhelmed|lost|stuck|burnt|burned|sick|bored|jealous|worried|anxious|hurt|upset|numb|relieved|grateful|thankful|impressed|surprised|shocked|obsessed|addicted|annoyed|frustrated|disappointed|embarrassed|confused|heartbroken|homesick|lonely|depressed|giddy|stoked|pumped|thrilled|humbled|blessed|glad|sorry|mad|angry|stressed|ashamed|guilty|torn|conflicted|struggling|moved|touched|inspired|motivated|hopeful|insecure|honou?red|love[ds]?|loving|hate[ds]?|hating|like[ds]?|enjoy(?:s|ed|ing)?|want(?:s|ed)?|wish(?:es|ed)?|miss(?:es|ed|ing)?|regret(?:s|ted)?|dread(?:s|ed)?|appreciate[ds]?|mean(?:s|t)? (?:the world|a lot|so much|everything))\b(?!\s+to\s+(?:share|announce|say|report|tell|introduce|welcome|be|have|join|launch|present|unveil|reveal)\b))/giu,
+    /* v4.1 (hook4-1): a view still forming is the stance: "I'm starting to think", "I'm beginning to believe", "I've come to realize" */
+    /\b(?:starting|beginning|coming|learning|growing|come|came|started|begun|began|grown)\s+to\s+(?:think|believe|feel|realize|realise|suspect|wonder|see|understand|doubt|question|accept|appreciate|trust)\b/gi,
+    /* v4.1 (hook4-7): a scope word says how much of the claim holds: "mostly just rebranded blogging" is not "just rebranded blogging" */
+    /\b(?:mostly|largely|partly|partially|mainly|primarily|often|usually|generally|typically|sometimes|occasionally|frequently|rarely|seldom)\b/gi
   ];
   const SL_SARC = /\b(?:very|so|truly|how|real(?:ly)?) (?:original|innovative|creative|unique|brave|helpful|useful|groundbreaking|fresh|novel)[.!]*\s*$|(?:^|\s)\/s\b|\bwhat could (?:possibly )?go wrong\b|\bnothing says\b|\bsaid no (?:one|founder|trader|creator|designer|dev|developer|engineer|marketer)\b|\b(?:oh|wow),? (?:great|cool|amazing|nice|perfect|wonderful|fantastic|good)\b|\btruly (?:groundbreaking|revolutionary|innovative|inspiring|visionary|original|unique|brave)\b|\bgroundbreaking stuff\b|\bbecause that (?:worked|went) so well\b|\btruly (?:shocking|surprising|unexpected|unprecedented|stunning|novel)\b|\b(?:can['’]t believe|who could have (?:guessed|predicted)|shocked|shocking)\b[^.!?]*\b(?:another|yet another)\b/i;
   const SL_QUOTE = /(?<![\p{L}\p{N}])(?:"[^"\n]{1,120}"|“[^”\n]{1,120}”|['‘](?=\S)(?:[^'’\n]|['’](?=\p{L}))+?['’](?![\p{L}\p{N}]))/gu;
@@ -297,6 +310,10 @@
     const quotes = [...t.matchAll(rx(SL_QUOTE.source, SL_QUOTE.flags))];
     quotes.forEach(m => add(m.index, m.index + m[0].length));
     SL_GUARDS.forEach(re => all(re));
+    /* v4.1 (hook4-7): an "actually" inside the sentence carries the surprise or the contrast ("I actually ran a marathon", "the
+       newsletter you'd actually pay for", "I'm actually fine with it"). Only an opening "Actually," and the padding in "I actually
+       think" contrast with nothing */
+    for (const m of t.matchAll(/(?<=[\p{L}\p{N}'’,)]\s+)actually\b(?!,)(?!\s+(?:think|thinks|thought|believe|believes|feel like|reckon|guess|suppose)\b)/giu)) if (!/(?:^|[.!?…]\s*)$/.test(t.slice(0, m.index).replace(/\s+$/, ' ').trimEnd())) add(m.index, m.index + m[0].length);
     /* a sentence that opens on "Just" + a thing means "only": "Just protein and sleep." */
     for (const m of t.matchAll(/(?:^|(?<=[.!?]\s{1,3}))just\s+([\p{L}'’-]+)/giu)) { const w = lcw(m[1]); if (!SL_VERB.has(w) && !/(?:ed|ing)$/.test(w) && !/^(?:wanted|want|a|an|the|another|quick|quickly|realized|thought|got|hit|in|for|to|so|because|like|saying|keep|do|be|stop|start)$/.test(w) && !/^my (?:two cents|2 cents|opinion|take|humble opinion|thoughts)\b/i.test(t.slice(m.index + 5))) add(m.index, m.index + m[0].length); }
     /* "I mean literally": that word, everywhere in the line, is the point */
@@ -362,6 +379,8 @@
       if ((k === 'label' || k === 'disclaim') && SL_FRAMEK.test(w)) kept.add(i);
       else if (k === 'tail' && SL_TONEW.test(w.replace(/[.!\s]+$/, ''))) kept.add(i);
       else if (k === 'feel') kept.add(i);
+      /* v4.1 (hook4-1): a view still forming ("I'm starting to think") is the stance itself, not a hedge on it */
+      else if (k === 'opinion' && /\b(?:starting|beginning) to\b/i.test(w)) kept.add(i);
       else if (k === 'hedge' && KO.test(w) && SL_FEELW.test(nextW(r))) kept.add(i);
       /* a softener is the writer's degree, not an intensifier: "pretty good", "a little nervous", "somewhat true" */
       else if (k === 'intens' && /^(?:pretty|somewhat|fairly|slightly|a (?:little|bit))$/i.test(w) && !/^(?:much)$/.test(nextW(r))) kept.add(i);
@@ -376,7 +395,7 @@
       const seg = t.slice(c[0], c[1]);
       if (call || slFutReal(seg) || (ST_ASSET.test(seg) && /\b(?:could|might|may|would|will|can)\b/i.test(seg))) { ms.forEach(([, i]) => kept.add(i)); return; }
       if (lab) return;
-      const hedges = ms.filter(([r]) => r[3] === 'hedge' && !pad(r)), ops = ms.filter(([r]) => r[3] === 'opinion' && !/^\P{L}*(?:imho|in my (?:humble |honest )?opinion)\b/iu.test(txt(r)));
+      const hedges = ms.filter(([r]) => r[3] === 'hedge' && !pad(r)), ops = ms.filter(([r]) => r[3] === 'opinion' && !/^\P{L}*(?:imho|in my humble opinion)\b/iu.test(txt(r)));
       /* an unmarked modal in the clause ("i think i might…", "i might have been kind of wrong") is its one hedge */
       let o = t.slice(c[0], c[1]); ms.forEach(([r]) => { o = o.slice(0, r[0] - c[0]) + ' '.repeat(r[1] - r[0]) + o.slice(r[1] - c[0]); });
       if (SL_HEDGE2.test(o)) return;
@@ -439,7 +458,8 @@
     const L0 = String(line || ''), cut = [], kinds = []; keep = [...(keep || []), ...stanceKeep(L0), ...slPolicy(L0).keep];
     let s = L0;
     /* r86 pass 5 (hook-4): a cut between two clauses keeps the comma after it: "…getting started tbh, the chart looks…" */
-    const keepC = (bf, af, sep) => /,/.test(sep) && /[\p{L}\p{N}%)$]\s+$/u.test(bf) && !/[,;:]\s*$/.test(bf) && /^\S/.test(af) && wordsN(bf.split(/[,;:.!?—–]/).pop()) >= 2 && slFinite(bf.split(/[,;:.!?—–]/).pop()) && slFinite(af.split(/[,;:.!?—–]/)[0]);
+    /* v4.1: not after a verb that takes the clause as its object ("and I think if I'm being honest, the only reason" → "and I think the only reason") */
+    const keepC = (bf, af, sep) => /,/.test(sep) && /[\p{L}\p{N}%)$]\s+$/u.test(bf) && !/[,;:]\s*$/.test(bf) && !/\b(?:think|thought|believe|believed|feel like|guess|know|knew|realize|realized|realise|realised|hope|bet|swear|mean|say|said|that|qk[a-z]q)\s*$/i.test(bf) && /^\S/.test(af) && wordsN(bf.split(/[,;:.!?—–]/).pop()) >= 2 && slFinite(bf.split(/[,;:.!?—–]/).pop()) && slFinite(af.split(/[,;:.!?—–]/)[0]);
     softMarks(L0, keep).filter(m => !only || only.test(m[3])).sort((a, b) => b[0] - a[0]).forEach(m => { cut.unshift(s.slice(m[0], m[1])); kinds.unshift(m[3]); const sep = s.slice(m[1]).match(/^[,:]?[ \t]*/)[0], af = s.slice(m[1] + sep.length), bf = s.slice(0, m[0]); s = (/^\s*(?:[.!?…]|\n|$)/.test(af) ? bf.replace(/[\s,;:—–-]+$/, '') : keepC(bf, af, sep) ? bf.replace(/\s+$/, '') + ', ' : bf) + af; });
     const G = slGuard(s), GM = [];
     /* r86 pass 6 (hook-7): and the spans the prompt's rules keep ("really excited about this one"), so the second pass can't cut into them */
@@ -961,15 +981,15 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "1. Cut what delays the point: \"So\", \"ok so\", \"Hey friends\", \"First of all\", \"I just wanted to say\", \"I wanted to take a second to\", \"I had the privilege of\", \"I have come to the conclusion that\", \"One of the things I find myself thinking about is\", \"Let's talk about something that\", \"It's no secret that\", \"At the end of the day\", \"In today's fast-paced landscape\", \"Not sure if this will resonate but\", \"so let's dive right in\", \"feel free to\", and a sentence that only announces the next one (\"I have some news.\", \"Let's talk about pricing.\"). Cut padding (\"honestly\", \"ngl\", \"not gonna lie\", \"tbh\", \"basically\", \"literally\", \"genuinely\" when it only pads, \"kind of just\", \"actually\" that contrasts with nothing) and weak openers (\"It's really important to remember that\", \"There are like 6…\", \"The importance of…\").",
     "2. Fix the grammar of the hook. Split every comma splice, not only the first: each sentence must stand alone. Turn passive into active when the doer is named (\"the decision was made by our founding team\" → \"our founding team decided\"; \"It is believed by many that\" → \"Many believe\"). Plain words beat AI-speak (leverage → use, utilize → use, supercharge, unlock, seamless, game-changer).",
     "3. Keep the writer's order. Most great edits cut and split in place. Move a beat only to bring a buried number or result forward, and only if the line still ends on a beat that lands: a credential, a cost, the turn. Never end on a tag (\"Nobody tells you that.\", \"I need to vent about it.\", \"I put together a list.\", \"This week's newsletter is a little different.\"), an apology or a disclaimer. A setup and its reveal keep their order: \"the thing nobody tells you about raising: the money is the easy part\", \"revenue is up, churn is down, and I made a big mistake\", a story that builds to its payoff.",
-    "4. Keep the frame when it tells the reader how to take the line: \"Hot take:\", \"Unpopular opinion:\", \"This might get me some hate, but\", \"Honest question:\", \"Agree?\", \"for anyone new\", \"gm everyone\", \"Reminder:\", \"PSA:\", \"Wrote up how…\", \"grab a coffee\". A label that names the line an opinion (\"Hot take:\", \"Unpopular opinion:\") already hedges it, so on a take that isn't a forecast it replaces \"I think\" and a softener on the claim: \"Hot take: I think X is kind of Y\" → \"Hot take: X is Y\" (a negated \"I don't think\" stays: it carries the \"not\"). Cut a frame that only delays: \"ngl\", \"Not gonna lie\", \"Not sure who needs to hear this but\", \"Here's an unpopular opinion that might ruffle some feathers:\", and on an opinion that isn't a call \"IMHO\" and \"In my humble opinion\".",
+    "4. Keep the frame when it tells the reader how to take the line: \"Hot take:\", \"Unpopular opinion:\", \"This might get me some hate, but\", \"Honest question:\", \"Agree?\", \"for anyone new\", \"gm everyone\", \"Reminder:\", \"PSA:\", \"Wrote up how…\", \"grab a coffee\". A label that names the line an opinion (\"Hot take:\", \"Unpopular opinion:\") already hedges it, so on a take that isn't a forecast it replaces \"I think\" and a softener on the claim (\"kind of\", \"sort of\"), never a scope word: \"Hot take: I think X is kind of Y\" → \"Hot take: X is Y\", but \"Hot take: I think X is mostly Y\" → \"Hot take: X is mostly Y\" (a negated \"I don't think\" stays: it carries the \"not\"). Cut a frame that only delays: \"ngl\", \"Not gonna lie\", \"Not sure who needs to hear this but\", \"Here's an unpopular opinion that might ruffle some feathers:\", and on an opinion that isn't a call \"IMHO\" and \"In my humble opinion\". On grief, illness, a layoff or other hard news, the writer's framing is how they chose to tell it (\"This is hard to write\", \"This one's personal\", their doubt about posting it): version 1 keeps it and cuts only the padding around it (\"So\", \"I wanted to share that\"); the stark news alone can be version 2.",
     "5. If the clean line is still generic (no number, result or story), make it tight and say in why what would make it a hook; never write that for them.",
     "",
     "# Never",
     "- Add a fact, number, name, result, time, emoji or hashtag, or a claim word the line doesn't make (best, only, huge, every, nailed, viral, just, still). Pull nothing up from the rest of the post.",
     "- Change a number, $, %, ticker, @handle, #tag, link, `code` or name: copy each one exactly.",
     "- Drop a negation or flip one (\"not dead\" stays \"not dead\"; \"don't just write\" never becomes \"don't write\").",
-    "- Drop a hedge below one per clause. Where a clause stacks hedges, keep one and cut the rest: \"I think it was probably\" → \"it was probably\"; \"I feel like it's kind of a mess\" → \"it's kind of a mess\"; \"I really, truly think\" → \"I think\". When you choose, keep the modal (\"probably\", \"might\", \"could\", \"maybe\") over \"I think\". On a forecast, plan or price call keep every hedge (\"I think\", \"I believe\", \"imo\", \"nfa\", \"probably\", \"might\", \"could\", \"I'd say 60%\", its \"if\"), so it stays exactly as sure as they wrote it; only a doubled word collapses: \"could maybe\" → \"could\", \"might possibly\" → \"might\". Never make a plan or forecast certain: a plan stays a plan, a guess stays a guess, the past stays past.",
-    "- Drop a softener or the tone: \"kind of okay\", \"kind of regretting\", \"a little nervous\", \"pretty impressed\", \"still kind of processing\", \"lol\", \"lmao\", \"haha\" all stay, and so does the strength of a feeling (\"really proud\"). \"kind of\" before a verb (\"it kind of just shows up\") is padding. An approximator stays with its absolute or number: \"basically always\", \"almost never\", \"pretty much every\", \"about 40%\".",
+    "- Drop a hedge below one per clause. Where a clause stacks hedges, keep one and cut the rest: \"I think it was probably\" → \"it was probably\"; \"I feel like it's probably too late\" → \"it's probably too late\"; \"I really, truly think\" → \"I think\". When you choose, keep the modal (\"probably\", \"might\", \"could\", \"maybe\") over \"I think\". The hedges that say how sure they are (\"I think\", \"I believe\", \"I feel like\", \"I might be wrong\", \"imo\", \"probably\", \"maybe\", \"might\", \"seems\") are their doubt: where a sentence has one, version 1 keeps at least one, and a degree word (\"kind of\", \"a bit\", \"pretty\") never stands in for it (\"I feel like the intro is a bit long\" keeps \"I feel like\"). An opinion label (rule 4) counts as one. The bare claim can be version 2. On a forecast, plan or price call keep every hedge (\"I think\", \"I believe\", \"imo\", \"nfa\", \"probably\", \"might\", \"could\", \"I'd say 60%\", its \"if\"), so it stays exactly as sure as they wrote it; only a doubled word collapses: \"could maybe\" → \"could\", \"might possibly\" → \"might\". Never make a plan or forecast certain: a plan stays a plan, a guess stays a guess, the past stays past.",
+    "- Drop a softener or the tone: \"kind of okay\", \"kind of regretting\", \"a little nervous\", \"pretty impressed\", \"still kind of processing\", \"lol\", \"lmao\", \"haha\" all stay, and so does the strength of a feeling (\"really proud\"). \"kind of\" before a verb (\"it kind of just shows up\") is padding. An approximator stays with its absolute or number: \"basically always\", \"almost never\", \"pretty much every\", \"about 40%\". A scope word stays with its claim: \"mostly\", \"largely\", \"partly\", \"often\", \"usually\", \"generally\", \"sometimes\" (\"it's mostly hype\" never becomes \"it's hype\").",
     "- Leave a verb without its object: \"it's something nobody teaches you\" → \"nobody teaches you this\", not \"Nobody teaches you.\"",
     "- Drop the pointer to the thread (\"Here's why\", \"Here's what happened:\", \"(thread)\", 🧵, 👇, \"a few thoughts on…:\") or what it promises. \"(thread)\" → \"Here are 9 lessons I learned:\" is fine.",
     "- Move an emoji off the end, or into the middle of a sentence.",
@@ -981,8 +1001,8 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "",
     "# Return",
     "JSON only: {\"versions\":[{\"line\":\"...\",\"why\":\"...\"}],\"unchanged\":false}",
-    "- Version 1 is the one line you would post for them: the edit a top ghostwriter would post. When a frame or preamble only delays the point, version 1 drops it and the light edit goes second. Before you write it, check it silently: every fact and name copied exactly, every negation kept, no hedged clause left bare and every hedge on a call kept, nothing added, the writer's order unless a move clearly wins, every sentence complete, ends on a beat that lands, still sounds like them. If it fails a check, fix it before you answer.",
-    "- Version 2 (optional) is a different honest move: the light edit (padding cut, frame kept, nothing moved) when version 1 cuts a frame or restructures, or the restructure when version 1 kept the order. Give a third only if it is genuinely different. Never pad with a near-copy.",
+    "- Version 1 is the one line you would post for them: the edit a top ghostwriter would post. When a frame or preamble only delays the point, version 1 drops it and the light edit goes second (on hard news, rule 4 keeps their framing in version 1). When the line introduces a list or thread, version 1 leads with what the list is; a version that only splits the header goes second. Before you write it, check it silently: every fact and name copied exactly, every negation and scope word kept, no hedged clause left bare, their doubt still said where they said it and every hedge on a call kept, nothing added, the writer's order unless a move clearly wins, every sentence complete, ends on a beat that lands, still sounds like them. If it fails a check, fix it before you answer.",
+    "- Version 2 (optional) is a different honest move: the light edit (padding cut, frame kept, nothing moved) when version 1 cuts a frame or restructures, the restructure when version 1 kept the order, or the bare claim when version 1 keeps a hedge of theirs. Give a third only if it is genuinely different. Never pad with a near-copy.",
     "- \"why\": one plain sentence, at most 140 characters, true for that version: what went or moved, and why it reads better. Quote only words in their line or yours. Say only what this edit did: no \"the run-up is gone\" or \"X comes first\" unless it is so.",
     "",
     "# Examples",
@@ -1023,6 +1043,10 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "{\"versions\":[{\"line\":\"The hardest part of freelancing is probably learning to say no to good clients.\",\"why\":\"“Honestly” and “I think” went: “probably” is the one hedge it needs.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
+    "<line>Honestly I feel like most onboarding flows are way too long</line>",
+    "{\"versions\":[{\"line\":\"I feel like most onboarding flows are way too long.\",\"why\":\"“Honestly” went. “I feel like” stays: it’s your one hedge, so it still reads as your view.\"},{\"line\":\"Most onboarding flows are way too long.\",\"why\":\"The bare claim: “I feel like” went too.\"}],\"unchanged\":false}",
+    "</example>",
+    "<example>",
     "<line>ngl i think we could maybe ship the beta by march</line>",
     "{\"versions\":[{\"line\":\"i think we could ship the beta by march\",\"why\":\"“ngl” and the doubled “maybe” went. “i think” and “could” stay: it’s a plan, and it stays one.\"}],\"unchanged\":false}",
     "</example>",
@@ -1033,6 +1057,10 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "<example>",
     "<line>Not gonna lie, this might sound obvious, but most churn starts in the first week</line>",
     "{\"versions\":[{\"line\":\"Most churn starts in the first week.\",\"why\":\"“Not gonna lie” and “this might sound obvious, but” went, so the claim comes first.\"},{\"line\":\"This might sound obvious, but most churn starts in the first week.\",\"why\":\"The light edit: only “Not gonna lie” went. The frame stays.\"}],\"unchanged\":false}",
+    "</example>",
+    "<example>",
+    "<line>So this one is hard to write, but I wanted to share that my mom was diagnosed with cancer last month</line>",
+    "{\"versions\":[{\"line\":\"This one is hard to write, but my mom was diagnosed with cancer last month.\",\"why\":\"“So” and “I wanted to share that” went. “This one is hard to write” stays: it’s how you chose to tell it.\"},{\"line\":\"My mom was diagnosed with cancer last month.\",\"why\":\"The news alone: the framing went too.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>Reminder: file your 83(b) within 30 days. I didn't, and it cost me $186k.</line>",
@@ -2515,7 +2543,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* "we have decided to remove the free plan, which was a hard call" → "We're removing the free plan. It was a hard call." */
     decided(x) {
       const m = body(x).match(/^(we|i)(?: have|['’]ve)? (?:finally |officially )?decided to (\w+) (.{3,60}?)(?:,? which (?:was|has been|is) (.{4,60}))?$/i); if (!m) return null;
-      return { t: `${HK_SUBJ(m[1]) === 'We' ? 'We’re' : 'I’m'} ${ingOf(m[2])} ${m[3]}.${m[4] ? ` It was ${m[4]}${endP(x) || '.'}` : ''}`, mv: 'straight' };
+      /* v4.1 (hook4-1): a second verb under the same "to" takes the same form: "…shut down our app and go all in" → "…and going
+         all in". One that might be a noun ("and support engineers") leaves the move out */
+      let bad = false; const r3 = m[3].replace(/\b(and|or)((?:\s+(?:then|also|just|finally|fully))?)\s+([a-z]+)\b(\s+[^\s,.!?;:]+)?/gi, (all, c, adv, v, nx) => { const lv = v.toLowerCase(); if (!SL_VERB.has(lv)) return all; const n = lcw((nx || '').trim()); if (!n || /^(?:the|a|an|our|my|your|their|his|her|its|this|that|these|those|all|everyone|everybody|it|them|us|me|him|on|in|into|to|from|for|with|at|up|down|out|off|back|over|away|more|less|full|fully|entirely|exclusively|everything|something|some|any|every|each|both|hard|ahead|forward|home)$/.test(n)) return `${c}${adv} ${ingOf(lv)}${nx || ''}`; bad = true; return all; }); if (bad) return null;
+      return { t: `${HK_SUBJ(m[1]) === 'We' ? 'We’re' : 'I’m'} ${ingOf(m[2])} ${r3}.${m[4] ? ` It was ${m[4]}${endP(x) || '.'}` : ''}`, mv: 'straight' };
     },
     /* "you should be tracking your protein if you want to build muscle" → "Want to build muscle? Track your protein." */
     ifWant(x) {
@@ -2857,11 +2888,14 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* r86 pass 3: thin is only gibberish: no real word, mostly non-words, a placeholder, lorem ipsum, or word salad (six or
      more words with almost no small words, no verb and no fact). A short real post ("gm", "just shipped") is complete */
   const slWs = t => String(t || '').replace(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]{2}/gu, m => ` ${m} `).match(/[\p{L}\p{N}$%][\p{L}\p{N}$%'’.-]*/gu) || [];
+  const SL_LOREMW = /^(?:lorem|ipsum|dolor|amet|consectetur|consectetuer|adipiscing|adipisicing|elit|sed|eiusmod|tempor|incididunt|labore|dolore|magna|aliqua|enim|minim|veniam|quis|nostrud|exercitation|ullamco|laboris|nisi|aliquip|commodo|consequat|duis|aute|irure|reprehenderit|voluptate|velit|esse|cillum|fugiat|nulla|pariatur|excepteur|sint|occaecat|cupidatat|proident|sunt|culpa|qui|officia|deserunt|mollit|anim|laborum|ut|et|ea|ex|sit|in|id|est|non|ad|do)$/i;
+  const slLorem = s => { if (!/\b(?:lorem|ipsum)\b|\bdolor sit amet\b/i.test(s)) return false; const ws = slWs(s).map(w => w.replace(/[.,’']+$/, '')); return ws.length > 0 && ws.filter(w => SL_LOREMW.test(w) && !/^(?:in|do|ad|id|ex|sit|non|est)$/i.test(w)).length * 2 >= ws.length; };
   function slThin(t) {
     /* r86 pass 4: a word's own trailing full stop never hides it ("works." is a verb) */
     const s = String(t || ''), ws = slWs(s).map(w => w.replace(/[.’']+$/, '') || w), rw = ws.filter(slReal);
     if (!rw.length || rw.length < ws.length * .5) return true;
-    if (/\blorem ipsum\b|\bdolor sit amet\b/i.test(s)) return true;
+    /* v4.1 (hook4-4): placeholder text is thin only when it is at least half the line's words: a real tip that names lorem ipsum is a post */
+    if (slLorem(s)) return true;
     if (/^\W*(?:test(?:ing)?|asdf\w*|qwerty|foo|bar|baz|hello world|placeholder)(?:[\s,.!?:;-]+(?:test(?:ing)?|\d+|one|two|three|foo|bar|baz|again))*[\s.!?]*$/i.test(s)) return true;
     if (ws.length >= 4 && !/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(s)) {
       const fw = ws.filter(w => SL_FW.test(lcw(w)) || STOP.has(lcw(w))).length, verb = ws.some(w => /^[a-z]{3,}(?:ed|ing|s)$/i.test(w) || SL_AUXW.test(lcw(w)) || slVerbW(lcw(w)) || SL_PASTW.test(lcw(w))), fact = ws.some(w => /\d|^\$|^[A-Z]{2,}/.test(w));
@@ -3146,7 +3180,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return o.some((x, i) => slFinTok(o, i));
   }
   const SL_HOOKSH = /[?:→]|👇|🧵/u, SL_THANKS = /^\P{L}*(?:(?:huge|big|massive|special|quick|a)\s+)?(?:shout ?-?outs?|thanks|thank you|kudos|props|congrats|congratulations|happy (?:birthday|anniversary|friday|monday|new year)|welcome|rip)\b/iu;
-  const slAndNPN = z => { let n = 0; slSents(z).forEach(s => { if (/\?["”’)]*$/.test(s)) return; s.split(/,?\s+(?:and|so|but)\s+|^\P{L}*and\s+/iu).slice(1).forEach(c => { const cl = c.split(/[,;:.!?—–]/)[0]; if (!SL_HOOKSH.test(cl) && ((wordsN(cl) >= 2 && !slMainFin(cl)) || /^\P{L}*(?:how|what|why|where)\s/iu.test(cl) || /^\P{L}*(?:it|this|that|them)\P{L}*$/iu.test(cl))) n++; }); }); return n; };
+  /* v4.1: after a progressive, "and going all in" is its second verb, not a noun phrase */
+  const slAndNPN = z => { let n = 0; slSents(z).forEach(s => { if (/\?["”’)]*$/.test(s)) return; const prog = /\b(?:am|is|are|was|were|['’]m|['’]re|['’]s)\s+(?:[a-z]+ly\s+|not\s+|still\s+|now\s+)?[a-z]{3,}ing\b/i.test(s); s.split(/,?\s+(?:and|so|but)\s+|^\P{L}*and\s+/iu).slice(1).forEach(c => { const cl = c.split(/[,;:.!?—–]/)[0]; if (prog && /^\P{L}*[a-z]{2,}ing\b/iu.test(cl) &&!SL_INGADJ.test(lcw(cl.trim().split(/\s+/)[0]))) return; if (!SL_HOOKSH.test(cl) && ((wordsN(cl) >= 2 && !slMainFin(cl)) || /^\P{L}*(?:how|what|why|where)\s/iu.test(cl) || /^\P{L}*(?:it|this|that|them)\P{L}*$/iu.test(cl))) n++; }); }); return n; };
   const slNPSentN = z => slSents(z).filter((x, i, a) => !(i > 0 && /\?["”’)]*$/.test(a[i - 1])) && !SL_HOOKSH.test(x) && !SL_THANKS.test(x) && !/^\P{L}*(?:\S+\s+){0,2}[$€£]?\d/u.test(x) && wordsN(x) >= 4 && SL_DET.test(slTokW(x)[0] || '') && !slMainFin(x)).length;
   const SL_CONJS = /(?:^|[.!?]\s+)\P{L}*(?:or|nor|than|which|whom|whose)\b/giu, SL_CONJ1 = /^\P{L}*(?:and|but|yet|or|nor)\b/iu;
   const SL_ORTAG = /(?:^|[.!?]\s+)\P{L}*(?:or|and)\s+(?:anything|something|whatever|so|not|nothing|anyone)\b/giu;
@@ -3159,6 +3194,62 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* 8. (hook-7) a line that now ends on a disclaimer or an apology the writer put up front: the prompt never ends on one */
   const SL_DISCEND = /^\P{L}*(?:but\s+|and\s+)?(?:i (?:might|could|may) be (?:totally |completely |dead )?wrong(?: (?:here|though|tho|about this))?|correct me if i['’]m wrong|(?:this is |this['’]s |it['’]s )?not (?:financial|investment|legal|tax) advice|nfa|dyor|do your own research|(?:that['’]s |this is )?(?:just |only )?my (?:humble )?(?:opinion|two cents|2 cents|take)(?: though| tho)?|no offen[cs]e|(?:i['’]m|i am) not (?:a |an |your )?(?:expert|financial advis[oe]r)|what do i know|sorry)\P{L}*$/iu;
   const slEndDisc = z => { const ss = slSents(z); return ss.length > 0 && SL_DISCEND.test(ss[ss.length - 1].replace(/\s*(?:\p{Extended_Pictographic}️?\s*)+$/u, '')); };
+  /* ---------------- v4.1 (round-5 hook4-1/2, round-6 founder-1 and uiux-1): more hard rejects, each counted against the draft ---------------- */
+  /* 10. a coordinated bare verb left after a tense swap: "We're shutting down our app and go all in" (the draft's "decided to
+     shut down … and go" kept its second verb bare under "to"). "going to"/"trying to" + verb, and a later "to" + verb, govern it */
+  const slProgBareN = z => { let n = 0; for (const s of slSents(z)) { const w = slTokW(s.split(/[;:—–]|,\s*(?=(?:but|so|because|which|who|while|though|although)\b)/i)[0]); for (let i = 0; i < w.length; i++) {
+    if (!/^(?:am|is|are|was|were|i'm|we're|you're|they're|he's|she's|it's)$/.test(w[i])) continue;
+    let j = i + 1; while (j < w.length && /ly$|^(?:not|just|still|also|now|all|both)$/.test(w[j])) j++;
+    if (!/^[a-z]{3,}ing$/.test(w[j] || '') || SL_INGADJ.test(w[j]) || w[j + 1] === 'to') continue;
+    for (let k = j + 1; k < w.length && k <= j + 16; k++) {
+      if (/^(?:that|which|who|because|if|when|while|but|so|than|i|we|you|they|he|she|can|will|would|could|should|might|must|may|do|does|did|don't|didn't|won't|can't)$/.test(w[k]) || (w[k] === 'to' && SL_VERB.has(w[k + 1] || ''))) break;
+      if (w[k] === 'and' || w[k] === 'or') { let q = k + 1; while (/^(?:then|also|just|now|finally|eventually|fully|completely)$/.test(w[q] || '')) q++; if (SL_VERB.has(w[q] || '')) n++; break; }
+    }
+  } } return n; };
+  /* 11. a cut frame's tail left behind: "and I think with myself, the only reason…", "With you all, I almost quit", "To you, the
+     first 1,000…" (the draft's "honest with myself", "lie to you"): every "with you"/"to myself" sits after the word it did */
+  const SL_TAILW = /(?<![\p{L}\p{N}'’])(with|to)\s+(you\s+all|you\s+guys|y['’]?all|you|everyone|everybody|myself|yourself|yourselves|ourselves|ya)(?![\p{L}\p{N}'’])/giu;
+  const slTails = z => [...String(z).matchAll(SL_TAILW)].map(m => { const p = String(z).slice(0, m.index).match(/([\p{L}\p{N}'’]+)\P{L}*$/u); return `${p ? lcw(p[1]).replace(/’/g, "'") : '^'} ${lcw(m[1])} ${lcw(m[2]).replace(/\s+/g, ' ')}`; }).filter(k => !/^(?:you|thank|thanks) to /.test(k));
+  const slTailLost = (L, D) => { const bag = new Map(); slTails(D).forEach(k => bag.set(k, (bag.get(k) || 0) + 1)); return slTails(L).some(k => { const n = bag.get(k) || 0; if (!n) return true; bag.set(k, n - 1); return false; }); };
+  /* 12. a verbless opener before ", and" holds the line's only clause: "Eight years into my career…, and most code comments are
+     kind of useless" (the draft's "…, and I'm starting to think…" said whose view it was). The writer's own shape stands only
+     with the clause it opened onto: the same first word after ", and" */
+  const slNoFin = z => !slTokW(z).some((x, i, w) => SL_AUXW.test(x) || /n't$/.test(x) || /^(?:i|we|you|they|he|she|it)$/.test(x) || ((SL_PASTW.test(x) || SL_PAST2.test(x)) && !SL_DET.test(w[i - 1] || '')));
+  const slHeadW = z => { const w = slTokW(z).filter(x => !/^(?:honestly|just|really|actually|basically|literally|genuinely|truly|so|now|finally|officially|kind|kinda|sort|sorta|of)$/.test(x)); return (w[0] || '').replace(/'(?:m|re|ve|s|ll|d)$/, ''); };
+  const slOpenAnd = (L, D) => slSents(L).some(s => { const m = s.match(/^(.{6,120}?),\s+and\s+(.+)$/); if (!m || !slNoFin(m[1]) || wordsN(m[1]) < 2 || !slFinite(m[2])) return false; const k = lcw(D).indexOf(`${lcw(m[1])}, and `); return k < 0 || slHeadW(D.slice(k + m[1].length + 6)) !== slHeadW(m[2]); });
+  /* 13. a stance said as a process stays: "I'm starting to think", "I'm beginning to believe", "I've come to realize" */
+  const SL_STANCEP = /\b(?:starting|beginning|coming|learning|growing|come|came|started|begun|began|grown)\s+to\s+(?:think|believe|feel|realize|realise|suspect|wonder|see|understand|doubt|question|accept|appreciate|trust)\b/giu;
+  /* and a negated opinion carries its "not" as the writer's view: "I don't think $SOL is done" never becomes "$SOL isn't done" */
+  const SL_NEGOP = /\b(?:i|we)\s+(?:don['’]t|do not|didn['’]t|did not)\s+(?:really\s+|actually\s+|honestly\s+)?(?:think|believe|feel like|reckon|expect)\b/giu;
+  const slStanceLost = (L, D) => { const LL = lcw(L).replace(/\s+/g, ' ').replace(/’/g, "'"); return [...String(D).matchAll(SL_STANCEP)].some(m => !LL.includes(lcw(m[0]).replace(/\s+/g, ' '))) || cnt(L, SL_NEGOP) < cnt(D, SL_NEGOP); };
+  /* 14. (founder-1) a sentence that is only a subordinate clause: "If you're not using stop losses. You're gambling.", "That most
+     newsletters are just link dumps." A question ("When is…?") and a clause with its main clause after a comma are whole */
+  const SL_SUBORD = /^\P{L}*(?:if|when|whenever|unless|although|though|even though|even if|because|since|while|whereas|once|until|as long as|as soon as)\b/iu;
+  const SL_THATC = /^\P{L}*that\s+(?=(?:i|we|you|they|he|she|it|there|the|a|an|my|our|your|their|his|her|its|most|many|some|every|no|all|people|nobody|everyone|everybody|someone|anyone|these|those)\b)/iu;
+  const slSubOnly1 = s => {
+    if (SL_THATC.test(s)) return slFinite(s.replace(SL_THATC, ''));
+    if (!SL_SUBORD.test(s) || /^\P{L}*(?:when|since|until|once|while|whenever)\s+(?:is|are|was|were|do|does|did|will|would|can|could|should|has|have|had|isn['’]t|aren['’]t|don['’]t|doesn['’]t|didn['’]t)\b/iu.test(s) || /^\P{L}*since when\b/iu.test(s)) return false;
+    const b = s.replace(/[.!?…]+["”’)]*$/, ''), parts = b.split(/,|;|:|\s[—–-]\s/);
+    if (parts.length < 2) return slFinite(b.replace(SL_SUBORD, ''));
+    return !slFinite(parts.slice(1).join(' ').replace(/^\s*(?:then|and|but|so)\s+/i, ''));
+  };
+  const slSubOnlyN = z => slSents(z).filter(slSubOnly1).length;
+  /* 15. (founder-1) a that-clause left without its verb: "Most people don't realize that the first line? The whole tweet." */
+  const SL_THATV = /\b(?:realize[sd]?|realise[sd]?|realizing|know|knows|knew|knowing|think|thinks|thought|believe[sd]?|say|says|said|mean|means|meant|feel|feels|felt|hope[sd]?|guess|bet|suspect|swear|admit|forget|forgot|remember|notice[sd]?|learn(?:ed|t)?|understand|agree|argue|claim|wish|doubt|show(?:s|ed)?|prove[sd]?|find|found|tell|told|see|saw|hear|heard|promise[sd]?)\s+that\s+((?:the|a|an|my|our|your|their|his|her|its|this|these|those|most|many|some|every|no|all|people|nobody|everyone|everybody|someone|anyone|i|we|you|they|he|she|it|there)\b.*)$/i;
+  const slThatNoVN = z => slSents(z).filter(s => { const m = s.match(SL_THATV); return !!m && !slFinite(m[1].replace(/[.!?…]+["”’)]*$/, '')); }).length;
+  /* 16. (uiux-1) two finite verbs in one clause after a swap: "We raised a Series A is closed." (a pronoun, its past-tense verb,
+     then a copula with no relative word, conjunction or subject between). Saying and knowing verbs take a clause and don't count */
+  const SL_COGV = /^(?:thought|knew|felt|said|told|found|saw|heard|realized|realised|learned|learnt|noticed|bet|guessed|figured|meant|promised|swore|admitted|showed|proved|wished|hoped|believed|assumed|suspected|read|wrote|decided|made|kept|got|predicted|argued|claimed|agreed|warned|reminded|taught|understood|forgot|remembered|discovered|confirmed|guaranteed|insisted|explained|mentioned|replied|tweeted|posted)$/;
+  const slDblPredN = z => slSents(z).filter(s => { const w = slTokW(s.split(/[,;:—–]/)[0]); let i = 0; while (i < w.length && /^(?:so|today|now|finally|then|and|but|well|officially|just|also|recently|yesterday)$/.test(w[i])) i++; if (!/^(?:i|we|you|they|he|she)$/.test(w[i] || '')) return false; const v = w[i + 1] || ''; if (!(SL_PASTW.test(v) || SL_PAST2.test(v)) || SL_COGV.test(v)) return false; for (let k = i + 2; k < w.length; k++) { const x = w[k]; if (/^(?:that|which|who|whom|whose|what|when|where|why|how|and|but|or|so|because|if|while|until|since|as|than|to|i|we|you|they|he|she|it|there|this|these|those)$/.test(x)) return false; if (/^(?:is|are|was|were|isn't|aren't|wasn't|weren't)$/.test(x)) return k > i + 2; } return false; }).length;
+  /* 17. (uiux-1) the content words come from the draft: a word the line adds is one the engine's own swaps and moves write, or a
+     form of a draft word ("raise" → "raising", "writing" → "written", "partnership" → "partnering") */
+  let SL_ADDW = null;
+  const slAddW = () => { if (SL_ADDW) return SL_ADDW; const out = new Set(slSwapW()), add = s => String(s).toLowerCase().replace(/’/g, "'").split(/[^a-z']+/).forEach(w => { const x = w.replace(/^'+|'+$/g, ''); if (x.length > 1) out.add(x); }); Object.values(HM).forEach(f => add(String(f))); [WORDY, HK_SWAP, PLAIN_W, CONTRACT_W].forEach(T => T.forEach(([, r]) => add(String(r)))); [HK_ING, HK_BASE, HK_PP].forEach(M => Object.values(M).forEach(add)); return (SL_ADDW = out); };
+  const slForms = w => { const x = String(w).toLowerCase().replace(/’/g, "'"), o = new Set([slStemC(x)]), b = x.replace(/ing$/, ''); if (b !== x) [b + 'e', b, b.replace(/([b-df-hj-np-tv-z])\1$/, '$1')].forEach(y => o.add(slStemC(y))); if (/ied$/.test(x)) o.add(slStemC(x.replace(/ied$/, 'y'))); if (/e[dn]$/.test(x)) { o.add(slStemC(x.replace(/d$/, ''))); o.add(slStemC(x.replace(/(?:t?ten|en)$/, 'e'))); } [HK_ING[x], HK_BASE[x]].filter(Boolean).forEach(y => o.add(slStemC(y))); if (x.length >= 8) o.add('#' + x.slice(0, 7)); return o; };
+  const slNewWord = (line, draft) => { const W = slAddW(), D = new Set(); slWords(draft).forEach(w => slForms(w).forEach(f => D.add(f))); return slWords(line).find(w => { const x = w.toLowerCase().replace(/’/g, "'"); if (SL_FNW.has(x) || W.has(x)) return false; for (const f of slForms(x)) if (D.has(f)) return false; return true; }) || ''; };
+  /* 18. (uiux-1) a stub left as the last sentence: "hope you're all having a great week! pricing." (two words or fewer, no verb,
+     after a full stop or "!", and not a sentence the draft has) */
+  const slStubEnd = (L, D) => { const ss = slSents(L); if (ss.length < 2 || /[?:]["”’)]*$/.test(ss[ss.length - 2])) return false; const s = ss[ss.length - 1], w = slTokW(s); if (!w.length || w.length > 2 || slFinite(s) || /[$€£\d@#]|\p{Extended_Pictographic}/u.test(s) || /^(?:thanks|thank|congrats|gm|gn|lfg|wagmi|cheers|enjoy|onward|onwards|soon|finally|nope|yep|yes|no|same|period|facts|anyway|anyways|wild|crazy|insane|lol|lmao|haha|again|never|always|today|tomorrow)$/i.test(w[0])) return false; return !slSents(D).some(x => lcw(x).replace(/[.!?]+$/, '') === lcw(s).replace(/[.!?]+$/, '')); };
   function slHard(line, draft) {
     const L = String(line), D = String(draft);
     if (slEndDisc(L) && !slEndDisc(D)) return 'ends on a disclaimer';
@@ -3187,6 +3278,16 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const M = lcw(slMasked(D)), LL = lcw(L), has = w => new RegExp(`(?<![\\p{L}\\p{N}])${w}(?![\\p{L}\\p{N}])`, 'u').test(LL);
     for (const m of M.matchAll(/\b(sleep(?:s|ing)?|slept|bullish|bearish|long|short|hooked|sold|bet(?:s|ting)?|bank(?:s|ing)?|count(?:s|ing)?|pass(?:es|ing)?|out|down|big|high|keen|hard|easy|cheap|heavy|lowkey|doubl(?:e|es|ed|ing)|go(?:es|ing)? all in|all in)\s+on\b/g)) if (has(m[1]) && !has(`${m[1]}\\s+on`)) return 'idiom split';
     for (const m of M.matchAll(/(?<!\b(?:should|could|would|must|might|may|will|can|to)\s+(?:not\s+)?(?:be\s+)?)\b(?:am|is|are|was|were|['’]m|['’]re|['’]s)\s+(?:not\s+)?(?:(?:still|just|really|actually|now|currently|literally|basically|seriously|honestly|finally|already|even|always|never)\s+)?([a-z]{3,}ing)\b/g)) { const v = m[1]; if (v === 'going' || has(v)) continue; if (slIngBase(v).some(b => has(`${b}(?:s|es)?`))) return 'tense changed'; }
+    /* v4.1: the guards above (10-18) */
+    if (slProgBareN(L) > slProgBareN(D)) return 'verb agreement';
+    if (slTailLost(L, D)) return 'frame tail left';
+    if (slOpenAnd(L, D)) return 'verbless opener';
+    if (slStanceLost(L, D)) return 'stance dropped';
+    if (slSubOnlyN(L) > slSubOnlyN(D)) return 'subordinate clause alone';
+    if (slThatNoVN(L) > slThatNoVN(D)) return 'that-clause lost its verb';
+    if (slDblPredN(L) > slDblPredN(D)) return 'doubled predicate';
+    if (slStubEnd(L, D)) return 'stub at the end';
+    { const nw = slNewWord(L, D); if (nw) return 'word added'; }
     return '';
   }
   const slBroken = (line, draft) => SL_BROKEN.some(re => cnt(line, re) > cnt(draft, re)) || slCapsNew(line, draft) > 0 || slFragN(line) > slFragN(draft) || slVerblessN(line) > slVerblessN(draft) || slNotBut(line) > slNotBut(draft) || !slEmojiOK(line, draft) || slBackN(line, draft) || slRunOn(line, draft) || slFragsN(line, draft) > slFragsN(draft, draft) || !!slHard(line, draft);
@@ -3300,9 +3401,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     filler: 'Filler from talking out loud. In the feed it costs a second and adds nothing.',
     swap: 'Same claim in plainer words, so nothing snags the reader.',
     /* r86 pass 6 (juror 5, hook-8): on-device can't tell a sharp line from a flat one, so it never says "it reads clean" */
-    sharp: 'Nothing safe to cut on-device. It stays as you wrote it.',
-    clean: 'Nothing safe to cut on-device, and no move I trust makes it stronger.',
-    safe: 'Nothing I can cut safely here. The rest is your call.',
+    /* v4.1 (round-6 marketing-3): one human line for every clean state, with no "on-device" and no "I" */
+    sharp: 'Already tight. Nothing to cut without changing what you said.',
+    clean: 'Already tight. Nothing to cut without changing what you said.',
+    safe: 'Already tight. Nothing to cut without changing what you said.',
     unsafe: 'Couldn’t sharpen this one safely, so it stays as you wrote it.'
   };
   const slFig = z => { const m = String(z).match(/(?<![\w.,])[$€£]?\d|\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|fifty|hundred|a (?:year|month|week|day|decade))\b/i); return m ? (z.slice(0, m.index).match(/\S+/g) || []).length : -1; };
@@ -3529,7 +3631,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const vm = draft.match(HK_VOICE), body = vm ? draft.slice(vm[0].length) : draft;
     /* r86 pass 5 (hook-12): a thin line says which kind of thin it is: too few words, or words that aren't a sentence yet */
     /* r86 pass 6 (juror 5, hook-12): a key mash or a test ("asdf test test", "qwerty") says so, not "needs a few more words" */
-    if (!body.trim() || slThin(body)) { const ws = slWs(body), junk = ws.filter(w => !slReal(w.replace(/[.’']+$/, '')) || /^(?:test(?:ing)?|asdf\w*|qwerty\w*|foo|bar|baz|hjkl|jkl\w*|placeholder|blah+)$/i.test(w)).length, gib = !!ws.length && !/\blorem\b/i.test(body) && junk * 2 >= ws.length && ws.some(w => !slReal(w.replace(/[.’']+$/, '')) || /^(?:test(?:ing)?|asdf\w*|qwerty\w*|hjkl|jkl\w*|placeholder)$/i.test(w)), few = !gib && ws.length < 4 && !/\blorem\b/i.test(body); return { ...R, state: 'thin', thin: gib ? 'test' : few ? 'few' : 'sentence', why: gib ? 'This reads like a test, not a post. Paste a first line you’d really post.' : few ? 'Sharpen needs a few more words. Paste the whole first line.' : 'This doesn’t read as a sentence yet.' }; }
+    /* v4.1 (hook4-4): the reason is the result's `thin` field ('test', 'few', 'sentence', 'filler'), for the page to show; placeholder text reads as a test */
+    if (!body.trim() || slThin(body)) { const ws = slWs(body), junk = ws.filter(w => !slReal(w.replace(/[.’']+$/, '')) || /^(?:test(?:ing)?|asdf\w*|qwerty\w*|foo|bar|baz|hjkl|jkl\w*|placeholder|blah+)$/i.test(w)).length, gib = !!ws.length && (slLorem(body) || (!/\blorem\b/i.test(body) && junk * 2 >= ws.length && ws.some(w => !slReal(w.replace(/[.’']+$/, '')) || /^(?:test(?:ing)?|asdf\w*|qwerty\w*|hjkl|jkl\w*|placeholder)$/i.test(w)))), few = !gib && ws.length < 4 && !/\blorem\b/i.test(body); return { ...R, state: 'thin', thin: gib ? 'test' : few ? 'few' : 'sentence', why: gib ? 'This reads like a test, not a post. Paste a first line you’d really post.' : few ? 'Sharpen needs a few more words. Paste the whole first line.' : 'This doesn’t read as a sentence yet.' }; }
     /* r86 pass 5 (hook-9): "ok so", "Really really really", "the the the": no word that says anything. Not a short post */
     if (slTiny(body) && !slWs(body).some(w => !SL_FILLW.test(lcw(w)) && !SL_FW.test(lcw(w)))) { const fill = slWs(body).every(w => SL_FILLW.test(lcw(w))); return { ...R, state: 'thin', thin: fill ? 'filler' : 'sentence', why: fill ? 'That’s all filler. Add the point.' : 'This doesn’t read as a sentence yet.' }; }
     /* r86 pass 4 (hook-16): a line that is only a disclaimer is complete as it is */
@@ -3541,7 +3644,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const st = stanceKeep(body).filter(w => !keep.some(k => k.toLowerCase() === w.toLowerCase()));
     /* the stance note only while the stance is really still in the line */
     /* r86 pass 6 (hook-4 on-device): the note says why truly: a "kind of" on a feeling is how they feel, and a hedge with no future word around it is how sure they are, not a plan */
-    const call = isCall(body), stQ = w => String(w).replace(/,?\s+that$/i, ''), stWhy = k => { const nx = lcw((body.slice(lcw(body).indexOf(lcw(k)) + k.length).match(/^\s+((?:a |an )?[\p{L}'’]+)/u) || ['', ''])[1]); return /^(?:kind of|kinda|sort of|sorta|a little|a bit|pretty)$/i.test(k) && SL_FEELW.test(nx) ? 'it’s how you feel, not filler.' : call ? 'on a call, it’s your stance, not filler.' : slFutReal(body) ? 'on a plan or a forecast, it’s your stance, not filler.' : 'it’s how sure you are, not filler.'; }, stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${stQ(k)}”: ${stWhy(k)}` : ''; };
+    /* v4.1 (hook4-5): read the sentence the stance word sits in, not the whole line: a question is neither a call nor a plan, and
+       "this week" alone is a time, not a forecast ("I feel like most of you are too levered going into FOMC this week") */
+    const stCl = k => slSents(body).find(s => lcw(s).includes(lcw(k))) || body, stFut = c => slFutReal(String(c).replace(/\bthis (?:week|weekend|month|quarter|year|summer|fall|autumn|winter|spring|cycle)\b/gi, ' '));
+    const call = isCall(body), stQ = w => String(w).replace(/,?\s+that$/i, ''), stWhy = k => { const nx = lcw((body.slice(lcw(body).indexOf(lcw(k)) + k.length).match(/^\s+((?:a |an )?[\p{L}'’]+)/u) || ['', ''])[1]), c = stCl(k), q = /\?["”’)]*\s*$/.test(c), deg = /^(?:kind of|kinda|sort of|sorta|a little|a bit|pretty)$/i.test(k); return deg && SL_FEELW.test(nx) ? 'it’s how you feel, not filler.' : !q && isCall(c) ? 'on a call, it’s your stance, not filler.' : !q && stFut(c) ? 'on a plan or a forecast, it’s your stance, not filler.' : deg ? 'it’s how strongly you mean it, not filler.' : 'it’s how sure you are, not filler.'; }, stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${stQ(k)}”: ${stWhy(k)}` : ''; };
     const noteOf = l => [stNote(l), slApxNote(draft, l), longOf(l) ? SL_LONG : ''].filter(Boolean).join(' ');
     const score0 = hookScore(rest ? `${draft}\n${rest}` : draft).score;
     /* r86 pass 2: when unsure, do less. A lone "very" on a line that already lands is the writer's voice */
@@ -3620,6 +3726,13 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       if (alts.length >= 2) break; if (same(o.line, best.line) || !okL(o) || nearSame(o.line, best.line)) continue;
       const e = slExplain(draft, o.line, o.moves, marks), k = e.move || 'soft'; if (used.has(k)) continue; used.add(k);
       alts.push({ line: o.line, say: e.say, why: e.why, move: e.move, moves: o.moves, cut: e.cut });
+    }
+    /* v4.1 (hook4-2): opts.strict is the server's answer once Claude's versions were all rejected. Then only a plain cut ships: a
+       version that trips a hard guard, or reshaped the line rather than cut it, leaves the draft as written, and says so */
+    if (opts.strict) {
+      const plain = (l, cut) => !slHard(l, draft) && !(cut || []).some(c => c.kind === 'reshape' || c.kind === 'move') && slReorderOnly(l, draft);
+      for (let i = alts.length - 1; i >= 0; i--) if (!plain(alts[i].line, alts[i].cut)) alts.splice(i, 1);
+      if (!plain(best.line, E.cut)) return { ...R, state: 'clean', say: 'Nothing to cut', why: HK_WHY_SL.unsafe, note: noteOf(draft) };
     }
     return { ...R, state: 'sharp', line: best.line, cut: E.cut, move: E.move, say: E.say, why: E.why, alts, long: longOf(best.line), note: noteOf(best.line), moves: best.moves, score: { from: H ? H.from : score0, to: best.score != null ? best.score : hookScore(rest ? `${best.line}\n${rest}` : best.line).score } };
   }
@@ -4099,7 +4212,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const runUp = l => { const p = Math.max(0, String(l).search(/\S/)), m = softMarks(l, keep).find(r => r[0] <= p); return !!m && V4_RUNK.test(m[3]) && !V4_FIN.test(String(l).slice(m[0], m[1])); };
       const frame = v41HardFrame(draft), framed = l => !!frame && v3survives(frame, v3stems(l)), bare = l => v41Bare(draft, l), hdr = V41_HDR.test(draft.trim());
       const promote = (k, worse, fine) => { if (ok.length < 2 || !worse(ok[0].res.line)) return; const cur = ok[0].res.line, j = ok.findIndex((o, n) => n > 0 && !worse(o.res.line) && fine(o.res.line, cur)); if (j > 0) { ok.unshift(ok.splice(j, 1)[0]); trace.promoted = ok[0].i; (trace.promo = trace.promo || []).push(k); } };
-      promote('runup', l => runUp(l) && !framed(l), () => true);
+      promote('runup', l => runUp(l) && !framed(l), (l, cur) => !bare(l) || bare(cur));
       promote('hard', l => !!frame && !framed(l), () => true);
       promote('hedge', bare, (l, cur) => (framed(l) || !framed(cur)) && (!runUp(l) || runUp(cur)));
       promote('list', l => hdr && v41SplitOnly(draft, l), (l, cur) => v41LeadsList(draft, l) && (!bare(l) || bare(cur)) && (framed(l) || !framed(cur)));

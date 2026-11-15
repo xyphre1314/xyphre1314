@@ -179,7 +179,9 @@ export async function handle(req, res) {
     if (p === '/api/v1/sharpen' && req.method === 'POST') {
       const b = await body(req, 64 * 1024), text = typeof b.text === 'string' ? b.text : '', keep = strList(b.keep, 30), never = strList(b.never, 60);
       const voice = b.voice && typeof b.voice === 'object' && !Array.isArray(b.voice) ? b.voice : null;
-      const rules = reason => send(res, 200, { ...core.sharpenLine(text, { keep }), source: 'rules', reason });
+      /* v4.1 (hook4-2): once Claude's versions were all rejected, the engine's line ships only as a plain cut that passes every hard
+         guard; otherwise the draft comes back as written, with an honest why */
+      const rules = reason => send(res, 200, { ...core.sharpenLine(text, { keep, strict: reason === 'invalid' }), source: 'rules', reason });
       if (core.SHARPEN.tooThin(text)) return rules('thin');
       if ([...text.replace(/^\s+/, '').split('\n')[0].trim()].length > core.SHARPEN.AI_MAX) return rules('long');
       if (!AI.hasKey()) return rules('no_key');
