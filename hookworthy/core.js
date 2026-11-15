@@ -301,7 +301,11 @@
     /* v4.1 (hook4-1): a view still forming is the stance: "I'm starting to think", "I'm beginning to believe", "I've come to realize" */
     /\b(?:starting|beginning|coming|learning|growing|come|came|started|begun|began|grown)\s+to\s+(?:think|believe|feel|realize|realise|suspect|wonder|see|understand|doubt|question|accept|appreciate|trust)\b/gi,
     /* v4.1 (hook4-7): a scope word says how much of the claim holds: "mostly just rebranded blogging" is not "just rebranded blogging" */
-    /\b(?:mostly|largely|partly|partially|mainly|primarily|often|usually|generally|typically|sometimes|occasionally|frequently|rarely|seldom)\b/gi
+    /\b(?:mostly|largely|partly|partially|mainly|primarily|often|usually|generally|typically|sometimes|occasionally|frequently|rarely|seldom)\b/gi,
+    /* v4.2 (hook41-1, hook41-5): "how proud I really am" is the feeling's strength, and "I really don't care" is a degree on the
+       negated feeling: neither "really" is filler */
+    /(?<=\bhow \w+ (?:i|we|you|they|he|she)\s+)really(?=\s+(?:am|are|is|was|were|feel|felt)\b)/gi,
+    /\breally(?=\s+(?:do not|does not|did not|don['’]t|doesn['’]t|didn['’]t|can['’]t|cannot|won['’]t|wouldn['’]t|never)\s+(?:care|like|love|want|mind|enjoy|believe|trust|understand|get|know|think|feel|need|see|miss|regret|blame|buy|agree)\b)/gi
   ];
   const SL_SARC = /\b(?:very|so|truly|how|real(?:ly)?) (?:original|innovative|creative|unique|brave|helpful|useful|groundbreaking|fresh|novel)[.!]*\s*$|(?:^|\s)\/s\b|\bwhat could (?:possibly )?go wrong\b|\bnothing says\b|\bsaid no (?:one|founder|trader|creator|designer|dev|developer|engineer|marketer)\b|\b(?:oh|wow),? (?:great|cool|amazing|nice|perfect|wonderful|fantastic|good)\b|\btruly (?:groundbreaking|revolutionary|innovative|inspiring|visionary|original|unique|brave)\b|\bgroundbreaking stuff\b|\bbecause that (?:worked|went) so well\b|\btruly (?:shocking|surprising|unexpected|unprecedented|stunning|novel)\b|\b(?:can['’]t believe|who could have (?:guessed|predicted)|shocked|shocking)\b[^.!?]*\b(?:another|yet another)\b/i;
   const SL_QUOTE = /(?<![\p{L}\p{N}])(?:"[^"\n]{1,120}"|“[^”\n]{1,120}”|['‘](?=\S)(?:[^'’\n]|['’](?=\p{L}))+?['’](?![\p{L}\p{N}]))/gu;
@@ -1797,7 +1801,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     [/\bbp\b/, ' basis points'], [/\bstopped out\b/i, 'hit my stop'], [/\bCT\b/, 'crypto Twitter'], [/\bFOMC\b/, 'the Fed meeting (FOMC)'], [/\bv1\b/, 'first version']];
   const CONTRACT_W = [
     [/\b(do|does|did|is|are|was|were|have|has|had|would|should|could|must) not\b/gi, (m, v) => v + 'n’t'], [/\bwill not\b/gi, 'won’t'], [/\bcan ?not\b/gi, 'can’t'],
-    [/\bI am\b/gi, 'I’m'], [/(?<!\b(?:on|in|from|over|around|out|up|down|of|to|at|near|through|back|right|from)\s)(?<!\bhow \w+\s)(?<!\b(?:so|as|too) \w+\s)\b(it|that|there|here|what|who) is\b(?=\s+[\p{L}\p{N}$])(?!\s+to\b)/giu, '$1’s'], [/(?<=^|[.!?,;:—]\s*|\b(?:and|but|so|because|if|when|that|unless|since|while|think|guess|bet|know|hope|feel like)\s)(?<!\b(?:of|for|to|with|from|all|both)\s)(you|we|they) are\b(?=\s+[\p{L}\p{N}$])/giu, '$1’re'],
+    /* v4.2 (hook41-1): "I am" stays open where the predicate moved ahead of it ("how proud I am of", "who I am today") or nothing
+       follows it but a preposition or punctuation ("than I am.", "I am in"): "proud I'm of" is not English */
+    [/(?<!\b(?:who|what|where|than|whoever|whatever)\s)(?<!\bhow \w+\s)(?<!\b(?:so|as|too|how) \w+\s)\bI am\b(?=\s+[\p{L}\p{N}$])(?!\s+(?:of|to|at|in|on|for|with|about|from|by|into|onto|over|under|after|before|than|as|like|around|through|without|within|toward|towards|against|among|between|behind|beyond|near|off|out|up|down|today|now|here|there|right now|anymore|again|too|either|not\b(?=[^.!?\n]{0,14}(?:[.!?]|$))))/giu, 'I’m'], [/(?<!\b(?:on|in|from|over|around|out|up|down|of|to|at|near|through|back|right|from)\s)(?<!\bhow \w+\s)(?<!\b(?:so|as|too) \w+\s)\b(it|that|there|here|what|who) is\b(?=\s+[\p{L}\p{N}$])(?!\s+to\b)/giu, '$1’s'], [/(?<=^|[.!?,;:—]\s*|\b(?:and|but|so|because|if|when|that|unless|since|while|think|guess|bet|know|hope|feel like)\s)(?<!\b(?:of|for|to|with|from|all|both)\s)(you|we|they) are\b(?=\s+[\p{L}\p{N}$])(?!\s+(?:of|to|at|in|on|for|with|about|from|by|into|onto|over|under|after|before|than|as|like|around|through|without|within|toward|towards|against|among|between|behind|beyond|near|off|out|up|down|today|now|here|there|anymore|again|too|either)\b)/giu, '$1’re'],
     [/\b(I|we|you|they) have (?=(?:been|had|seen|done|made|learned|lost|tried|never|always|ever|got|spent|written|built|shipped|just)\b)/gi, '$1’ve '],
     [/(?<!\b(?:of|for|to|with|from|all|both)\s)\b(I|we|you|they) will\b(?=\s+[a-z])/gi, '$1’ll'], [/(?<!\b(?:of|for|to|with|from|all|both)\s)\b(I|we|you|they) would\b(?=\s+(?:love|like|rather|be|have)\b)/gi, '$1’d'], [/\blet us\b/gi, 'let’s']
   ];
@@ -1835,15 +1841,38 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   }
   /* casing: sentence starts follow the author (capital, or lowercase in CT style); "i" stays theirs */
   function caseFix(s, st, start) {
-    let x = s.replace(/(^|[.!?]["”’)]*\s+|\n\s*)([a-z])([\p{L}\p{N}’'$-]*)/gu, (m, a, c, r, off) => (off === 0 && !start) || capKeep(c + r) ? m : a + (st.low ? c : c.toUpperCase()) + r);
+    /* v4.2 (hook41-1): the full stop of an initialism or a title ("U.S. citizen", "Dr. Patel") ends no sentence */
+    let x = s.replace(/(^|[.!?]["”’)]*\s+|\n\s*)([a-z])([\p{L}\p{N}’'$-]*)/gu, (m, a, c, r, off) => (off === 0 && !start) || capKeep(c + r) || (/\.\s+$/.test(a) && SL_ABBR.test(s.slice(0, off + 1))) ? m : a + (st.low ? c : c.toUpperCase()) + r);
     if (st.low) x = x.replace(/(^|[.!?]\s+|\n\s*)([A-Z])(?=[a-z]|(?<=A)\s)/g, (m, a, c, off) => (off === 0 && !start) ? m : a + c.toLowerCase());
     if (st.loI) x = x.replace(/\bI(?=\s|['’](?:m|ve|ll|d)\b)/g, 'i'); else x = x.replace(/\bi(?=\s|['’](?:m|ve|ll|d)\b)/g, 'I');
     return x;
   }
   const aposFix = (s, st) => st.noApos ? s.replace(/\b(\w+)’(t|s|m|re|ve|ll|d)\b/g, (m, w, c) => (/^(i|it|that|what|here|there|who|he|she|let)$/i.test(w) && c === 's' ? w + c : w + c)) : st.apos === "'" ? s.replace(/(\w)’(?=\w)/g, "$1'") : s;
+  const SL_ABBR = /(?:(?<![\p{L}\p{N}])(?:\p{L}\.){2,}|(?<![\p{L}\p{N}])(?:Mr|Mrs|Ms|Dr|St|Jr|Sr|vs|Prof|Gen|Sen|Rep|Gov|Lt|Col|Capt|Inc|Ltd|Corp|approx|No|Vol|Fig)\.)$/u;
+  /* v4.2 (hook41-1): the writer's article and casing stay theirs. An article the tidy changed in front of a word the draft has with
+     the other article, and a capital the draft wrote lowercase after the same word, go back to the draft's ("a U.S. citizen") */
+  const slRxE = z => String(z).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  function slWriterForm(line, draft) {
+    const D = String(draft);
+    let L = String(line).replace(/(?<![\p{L}\p{N}&'’.-])\b(a|an|A|An)(\s+)([\p{L}\p{N}$][\p{L}\p{N}’'.-]*)/gu, (m, art, sp, w) => {
+      const dm = [...D.matchAll(new RegExp(`(?<![\\p{L}\\p{N}&'’.-])(a|an)\\s+${slRxE(w)}(?![\\p{L}\\p{N}])`, 'giu'))];
+      if (!dm.length || dm.some(x => x[1].toLowerCase() === art.toLowerCase())) return m;
+      const want = dm[0][1].toLowerCase(); return (art[0] === 'A' ? want[0].toUpperCase() + want.slice(1) : want) + sp + w; });
+    const T = L.split(/(\s+)/);
+    for (let i = 2; i < T.length; i += 2) {
+      const prev = T[i - 2], w = T[i], m = w.match(/^(\p{Lu})(\p{Ll}[\p{L}’'-]*)(.*)$/u); if (!m || !prev) continue;
+      if (/[.!?]["”’)]*$/.test(prev) && !SL_ABBR.test(prev)) continue;
+      const lw = m[1].toLowerCase() + m[2], P = `(?:^|\\s)${slRxE(prev)}\\s+`;
+      if (new RegExp(P + slRxE(lw) + '(?![\\p{L}\\p{N}])', 'u').test(D) && !new RegExp(P + slRxE(m[1] + m[2]) + '(?![\\p{L}\\p{N}])', 'u').test(D)) T[i] = lw + m[3];
+    }
+    return T.join('');
+  }
+  const SL_ACRW = /^(?:NASA|NATO|NAFTA|FOMO|FUD|FAANG|FIFA|SCOTUS|SWAT|SWOT|SIM|SNAP|HODL|MOOC|MAGA|RAM|ROM|LAN|LIDAR|RADAR|LASER|SCUBA|NIMBY|YOLO|GIF|JPEG|SaaS|PaaS|DAO|DeFi|OPEC|UNICEF|UNESCO|AWOL)$/;
   function fixArticles(s) {
     return s.replace(/(?<![\p{L}\p{N}&'’.-])\b(a|an|A|An)\s+([\p{L}\p{N}$][\p{L}\p{N}’'-]*)/gu, (m, art, w) => {
-      let v; if (/^[A-Z]{2,}$/.test(w)) v = /^[AEFHILMNORSX]/.test(w); else if (/^\d/.test(w)) v = /^(8|11|18|80)/.test(w); else if (/^\$/.test(w)) v = false;
+      /* v4.2 (hook41-1): by sound. An initialism is said letter by letter ("a U.S. citizen", "a UX", "an MVP", "an SEO"); an
+         acronym said as a word takes the word's sound ("a NASA", "a FOMO"); a single capital is its letter's name */
+      let v; if (SL_ACRW.test(w)) v = /^[AEIO]/.test(w); else if (/^[A-Z]{2,}s?$/.test(w) || /^[A-Z]$/.test(w) || /^(?:[A-Z]\.){1,}/.test(w)) v = /^[AEFHILMNORSX]/.test(w); else if (/^\d/.test(w)) v = /^(8|11|18|80)/.test(w); else if (/^\$/.test(w)) v = false;
       else { const l = w.toLowerCase(); v = (/^[aeiou]/.test(l) && !/^(u[nst]i|use|usu|uti|eu|one|once|ur[aei])/.test(l)) || /^(hour|honest|heir)/.test(l); }
       const want = v ? 'an' : 'a'; if (art.toLowerCase() === want) return m; return (art[0] === 'A' ? want[0].toUpperCase() + want.slice(1) : want) + ' ' + w;
     });
@@ -1877,6 +1906,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     condQ(x) {
       if (/^if there(?:['’]s| is)\b/i.test(body(x))) return null;
       const m = body(x).match(/^if (you|your|the|my|our|it|price|\$?[A-Z][\w$]*)\b(.+?),\s+(?:then\s+)?(.{6,})$/i) || body(x).match(/^if (you)\b(.+) ((?:you['’]re|you are|you|it['’]s|that['’]s)\b.{3,40})$/i); if (!m) return null;
+      /* v4.2 (hook41-1): only an open condition becomes a question. "If I had to guess," is a hedge frame and a "had/were/would"
+         condition is hypothetical: as "I had to guess?" it says something else */
+      if (/^(?:i|we)$/i.test(m[1]) || /\b(?:had|were|was|did|would|could|might|should|['’]d|guess|honest|honestly|ask me|anything|i['’]m|i am|we['’]re)\b/i.test(m[2])) return null;
       let cond; if (/^you$/i.test(m[1])) { const rest = m[2].trim(); if (!VERB0.test(rest)) return null; cond = rest; } else cond = m[1] + m[2];
       if (/\b(and|but|or)\b.*,/.test(cond) || cond.split(' ').length > 14) return null;
       return `${capFirst(cond.trim())}? ${capFirst(m[3].trim())}${endP(x) || '.'}`;
@@ -2699,13 +2731,16 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     }
     /* the words this voice keeps, and on a price call the writer's stance ("i think", "imo", "probably") */
     /* r86 pass 2: and the guarded spans (links, quotes, the words that carry the meaning), so no step can cut into them */
-    const l0 = p0.split('\n')[0], dm = softMarks(l0).filter(r => r[3] === 'disclaim'), gp = slGuard(l0).filter(g => g[2] !== 'atom' && !dm.some(r => g[0] >= r[0] && g[1] <= r[1])).map(g => l0.slice(g[0], g[1])).filter(w => !/^(?:lol|lmao|lmfao|haha+|hehe)$/i.test(w));
+    const l0 = p0.split('\n')[0], dm = softMarks(l0).filter(r => r[3] === 'disclaim'), gpS = slGuard(l0).filter(g => g[2] !== 'atom' && !dm.some(r => g[0] >= r[0] && g[1] <= r[1])), gp = gpS.map(g => l0.slice(g[0], g[1])).filter(w => !/^(?:lol|lmao|lmfao|haha+|hehe)$/i.test(w));
     /* r86 pass 6 (hook-7): and what the prompt's rules keep (slPolicy); a doubled hedge ("could maybe") is never masked, and a kept
        "I really think" comes back as "I think" */
     const PL = slPolicy(l0), uk = (opts.keep || []).map(lcw);
     const keep = [...new Set([...(opts.keep || []), ...stanceKeep(l0).filter(w => !PL.dbl.has(lcw(w)) || uk.includes(lcw(w))), ...PL.mask, ...gp])].filter(w => w && w.length > 1).sort((a, b) => b.length - a.length); if (!keep.length) return hookUp0(post, opts);
     const KM = [], re = new RegExp(`(?<![\\p{L}\\p{N}])(${keep.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\p{L}\\p{N}])`, 'giu');
-    const masked = p0.replace(re, m => { if (KM.length >= 26) return m; let v = m; if (!uk.includes(lcw(m))) PL.trim.forEach(([f, c]) => { if (lcw(v).startsWith(f)) v = c + v.slice(f.length); }); const pm = PL.op.has(lcw(m)) && /^((?:i|we)\s+)/i.exec(v); if (pm) { KM.push(v.slice(pm[1].length)); return `${pm[1]}Qk${String.fromCharCode(96 + KM.length)}q`; } KM.push(v); return `Qk${String.fromCharCode(96 + KM.length)}q`; }); if (!KM.length) return hookUp0(post, opts);
+    /* v4.2 (hook41-1): a guarded span is masked where it is guarded, not wherever its words recur: the "so" of "I'm so grateful"
+       is kept, the "So" of "So excited to share that" goes with its announce */
+    const kOther = new Set([...(opts.keep || []), ...stanceKeep(l0), ...PL.mask].map(lcw));
+    const masked = p0.replace(re, (m, _g, off) => { if (KM.length >= 26) return m; if (off + m.length <= l0.length && !kOther.has(lcw(m)) && !gpS.some(([a, b]) => off >= a && off + m.length <= b)) return m; let v = m; if (!uk.includes(lcw(m))) PL.trim.forEach(([f, c]) => { if (lcw(v).startsWith(f)) v = c + v.slice(f.length); }); const pm = PL.op.has(lcw(m)) && /^((?:i|we)\s+)/i.exec(v); if (pm) { KM.push(v.slice(pm[1].length)); return `${pm[1]}Qk${String.fromCharCode(96 + KM.length)}q`; } KM.push(v); return `Qk${String.fromCharCode(96 + KM.length)}q`; }); if (!KM.length) return hookUp0(post, opts);
     /* a kept phrase that a move put at the start of a sentence starts it the way the line does */
     const up0 = /^\P{L}*\p{Lu}/u.test(l0);
     const un = s => typeof s === 'string' ? s.replace(/(^|[.!?]\s+)?Qk([a-z])q/gi, (m, pre, i) => { const w = KM[i.toLowerCase().charCodeAt(0) - 97]; return pre != null && up0 && !/[./:]\S/.test(w) ? pre + capFirst(w) : (pre || '') + w; }) : s, unO = o => { if (!o) return o; const x = { ...o, line: un(o.line) }; if ('text' in o) { x.text = un(o.text); x.score = hookScore(x.text).score; } else x.score = hookScore(x.line).score; return x; };
@@ -3065,7 +3100,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     return rel || SL_PREP.test(w0);
   }
   const slNP = z => { const w = (String(z).trim().match(/\S+/g) || []).map(x => lcw(x).replace(/^[^\p{L}\p{N}$€£]+|[^\p{L}\p{N}%']+$/gu, '')).filter(Boolean); if (w.length < 2 || !SL_DET.test(w[0]) || /^[$€£]?\d/.test(w[0])) return false; return !w.slice(1).some((x, i) => SL_AUXW.test(x) || SL_RELW.test(x) || ((SL_PASTW.test(x) || slVerbW(x)) && !SL_DET.test(w[i]) && !/^(?:a|an|the|to|of|for|in|on|with|by|from)$/.test(w[i]))); };
-  const slSents = z => (String(z).match(/(?:[^.!?]|[.!?](?=[^\s.!?"”’)]))+(?:[.!?]+["”’)]*)?/g) || []).map(x => x.trim()).filter(Boolean);
+  /* v4.2 (hook41-1): an initialism's or a title's full stop ("a U.S. citizen", "Dr. Patel said") ends no sentence when a lowercase word follows */
+  const slSents = z => (String(z).match(/(?:[^.!?]|[.!?](?=[^\s.!?"”’)]))+(?:[.!?]+["”’)]*)?/g) || []).map(x => x.trim()).filter(Boolean).reduce((o, x) => { if (o.length && SL_ABBR.test(o[o.length - 1]) && /^\p{Ll}/u.test(x)) o[o.length - 1] += ' ' + x; else o.push(x); return o; }, []);
   const slFragN = z => slSents(z).filter((x, i, a) => !(i > 0 && /\?["”’)]*$/.test(a[i - 1])) && slFrag1(x)).length;
   /* r86 pass 3: a finite verb somewhere in the sentence: an auxiliary or contraction, a past form, a known verb after its
      subject, or a verb up front (an instruction). "It with you all", "Pricing after 6 months of testing" have none */
@@ -3499,14 +3535,14 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (v < 0) return '';
     let last = /^(?:is|are|was|were|am|be|has|have|had|do|does|did|will|would|can|could|should|i'm|we're|you're|they're|it's)$/.test(w[v]) ? -1 : v, seen = false;
     for (let j = v + 1; j < Math.min(w.length, 7); j++) {
-      if (/[,;:.!?)]["”’)]*$/.test(raw[j - 1])) break;
+      if (/[,;:.!?)]["”’)]*$/.test(raw[j - 1]) && !SL_ABBR.test(raw[j - 1])) break;
       if (seen && SL_QSTOP.test(w[j])) break;
       if ((!SL_QSM.test(w[j]) && !SL_QSTOP.test(w[j])) || /^[A-Z]$/.test(raw[j].replace(/[^\p{L}]/gu, ''))) { last = j; seen = true; }
     }
     if (last < 1 || (last === v && v < 1)) return '';
     /* r86 pass 4 (hook-10, marketing-1): the quote ends where a phrase ends ("…a $4M seed round", "…10,000 GitHub stars"),
        never on "led" before "by", the first noun of a compound or a small word: a little further, a little back, or no quote */
-    if (!slEndOK(raw, w, last)) { let k = -1; for (let j = last + 1; j < Math.min(w.length, 8); j++) { if (/[,;:.!?)]["”’)]*$/.test(raw[j - 1])) break; if (slEndOK(raw, w, j)) { k = j; break; } } if (k < 0) for (let j = last - 1; j >= Math.max(1, v); j--) if (slEndOK(raw, w, j)) { k = j; break; } if (k < 0) return ''; last = k; }
+    if (!slEndOK(raw, w, last)) { let k = -1; for (let j = last + 1; j < Math.min(w.length, 8); j++) { if (/[,;:.!?)]["”’)]*$/.test(raw[j - 1]) && !SL_ABBR.test(raw[j - 1])) break; if (slEndOK(raw, w, j)) { k = j; break; } } if (k < 0) for (let j = last - 1; j >= Math.max(1, v); j--) if (slEndOK(raw, w, j)) { k = j; break; } if (k < 0) return ''; last = k; }
     let o = raw.slice(0, last + 1).join(' ').replace(/[,.;:!?]+$/, ''); if (/^["“‘']/.test(o) && !/\S["”’'](?:\s|$)/.test(o.slice(1))) o = o.replace(/^["“‘']+/, ''); if (!/(?:^|\s)['‘"“]\S/.test(o)) o = o.replace(/["”’']+$/, '');
     return o.length > 56 || wordsN(o) < 2 || !slQBal(o) ? '' : o;
   }
@@ -3537,7 +3573,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const slQBal = o => (String(o).match(/`/g) || []).length % 2 === 0 && (String(o).match(/(?:^|\s)['‘]\S/g) || []).length === (String(o).match(/\S['’](?=\s|$)/g) || []).length && (String(o).match(/“/g) || []).length === (String(o).match(/”/g) || []).length && (String(o).match(/"/g) || []).length % 2 === 0;
   /* the opening words of z, up to a phrase end: n to max words, '' when no clean end exists */
   function slPh(z, n = 3, max = 8) {
-    const seg = String(z).replace(/^[\s"“'‘(]+/, '').split(/(?<=[.!?:;])\s+/)[0], raw = seg.split(/\s+/).filter(Boolean), w = raw.map(x => lcw(x).replace(/’/g, "'").replace(/^[^\p{L}\p{N}$€£@#']+|[^\p{L}\p{N}%']+$/gu, ''));
+    const seg = slSents(String(z).replace(/^[\s"“'‘(]+/, ''))[0].split(/(?<=[:;])\s+/)[0] || '', raw = seg.split(/\s+/).filter(Boolean), w = raw.map(x => lcw(x).replace(/’/g, "'").replace(/^[^\p{L}\p{N}$€£@#']+|[^\p{L}\p{N}%']+$/gu, ''));
     for (let j = Math.max(0, n - 1); j < Math.min(raw.length, max); j++) if (slEndOK(raw, w, j)) { const o = raw.slice(0, j + 1).join(' ').replace(/^['‘"“]|[.,;:!?…"”’')]+$/g, ''); return slQBal(o) && o.length <= 56 ? o : ''; }
     for (let j = Math.min(n - 2, raw.length - 1); j >= 1; j--) if (slEndOK(raw, w, j)) { const o = raw.slice(0, j + 1).join(' ').replace(/^['‘"“]|[.,;:!?…"”’')]+$/g, ''); return slQBal(o) ? o : ''; }
     return '';
@@ -3708,7 +3744,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const okL = o => o && o.line && !same(o.line, draft) && slOK(o.line, draft, facts) && !slThin(o.line) && !slTiny(o.line) && atomOK(o.line) && keptIn(o.line) && !cnt(o.line, SL_BANV);
     /* a link at the end never takes a full stop: "…/levelsio." breaks it */
     const endFix = l => String(l).replace(new RegExp(`(${SL_URL.source})\\.$`, 'iu'), '$1');
-    const fix = o => o && o.line ? { ...o, line: endFix(caseOf(o.line)) } : o;
+    const fix = o => o && o.line ? { ...o, line: endFix(caseOf(slWriterForm(o.line, draft))) } : o;
     let best = list.map(fix).find(okL) || null;
     /* r86 pass 2: no version beat the draft's score, so take the clean one (soft words and frames out, nothing moved) if it's
        safe; failing that, the soft words out and nothing else. Either is still a real sharpen */
