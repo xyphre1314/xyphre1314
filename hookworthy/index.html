@@ -8634,7 +8634,10 @@ async function sharpenFirst() {
     watchEdit(ta, was, v.text, { label: shMoveLabel(v, (v.cuts || r.cuts || []).length), lead: /^(number|result|active|payoff)$/.test(v.main || ''), done: () => { renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); receipt(v, a1); if (!settled) { settled = true; if (late) verdict(late); } } }); SFX.play(a1 >= 70 ? 'hook' : 'swap'); };
   const keepNote = c => {
     if (i !== 0 || tw.text !== list[0].text || !S.draft.tweets.includes(tw) || String(c.draft || '').trim() !== firstLine(before).trim()) return;
-    toast(`Claude says your first line was already sharp.${c.why ? ' ' + esc(c.why) : ''}`, { icon: 'bolt', tone: 'accent', ms: 6000, action: 'Put mine back', onAction: () => { UI.hookFrom = hookFor(tw.text).score; if (S.draft.ai) delete S.draft.ai[tw.id]; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); } });
+    /* Claude judged the line already sharp: the writer's line comes back on its own; the engine's edit stays one "Use the edit" away */
+    const ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(tw.text).score; if (S.draft.ai) delete S.draft.ai[tw.id];
+    tw.text = before; save(); if (ta) ta.value = before; renderThread({ focusId: tw.id, pos: firstLine(before).length });
+    toast(`Claude kept your line as you wrote it.${c.why ? ' ' + esc(c.why) : ''}`, { icon: 'bolt', tone: 'accent', ms: 6000, action: 'Use the edit', onAction: () => { i = 0; show(); } });
   };
   const verdict = c => (c.state === 'sharp' ? swapIn(c) : keepNote(c));
   show();
