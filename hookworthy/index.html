@@ -8574,18 +8574,36 @@ function shReceipt(v, head, cuts = [], note = '') {
    else (no server, demo, an error, a rules answer) is null, silently. The server gives Claude 12 s; this waits a little longer */
 async function sharpenByClaude(text) {
   await LLM.ready;
+  /* in a Claude viewer (no server): the same prompt and the same validator, on the viewer's own Claude, free like the engine */
+  if (LLM.mode === 'claude' && LLM.sample) {
+    const keep = MEM.memKeepList(memFor()), never = NEVER();
+    try {
+      const P = HWCore.prompts.sharpen({ text, voice: voiceSpec(), never, keep }), data = await LLM.sample.json(P.cached + '\n\n' + P.prompt, { modelTier: 'complex' });
+      const c = HWCore.SHARPEN.fromClaude(text, data, { keep, never });
+      return c && (c.state === 'sharp' || c.state === 'clean') ? c : null;
+    } catch (e) { if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(e && e.code)) { LLM.mode = 'offline'; LLM.why = e.code; document.documentElement.dataset.ai = 'offline'; refreshAIBadge(); } return null; }
+  }
   if (LLM.mode !== 'server' || !LLM.server || !LLM.server.sharpen) return null;
   const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 14000);
   try {
     const r = await fetch('api/v1/sharpen', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, voice: voiceSpec(), never: NEVER(), keep: MEM.memKeepList(memFor()) }), signal: ctl.signal });
     const j = r.ok ? await r.json().catch(() => null) : null;
-    return j && j.source === 'claude' && j.state === 'sharp' && typeof j.line === 'string' ? j : null;
+    return j && j.source === 'claude' && (j.state === 'sharp' || j.state === 'clean') && typeof j.line === 'string' ? j : null;
   } catch (e) { return null; } finally { clearTimeout(t); }
 }
-function sharpenFirst() {
-  const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text, r = hookUpFor(before);
-  if (!r) { setImprove(tw.id, 'score'); return; }
-  const list = [{ text: r.text, say: r.say, why: r.why, main: r.main, moves: r.moves }, ...r.alts]; let i = 0;
+const claudeSharpenOn = () => (LLM.mode === 'server' && !!LLM.server && !!LLM.server.sharpen) || (LLM.mode === 'claude' && !!LLM.sample);
+async function sharpenFirst() {
+  const tw = S.draft.tweets[0]; if (!tw) return; const before = tw.text; let r = hookUpFor(before), pre = null;
+  /* r86: the engine found nothing to cut, but Claude can still see a sharper line: ask it first (a connected server only) */
+  if (!r && claudeSharpenOn() && !HWCore.SHARPEN.tooThin(firstLine(before))) {
+    toast('Asking Claude for a sharper first line…', { icon: 'bolt', tone: 'accent', ms: LLM.mode === 'claude' ? 9000 : 3000 });
+    pre = await sharpenByClaude(before);
+    if (tw.text !== before || !S.draft.tweets.includes(tw)) return;
+    if (pre && pre.state === 'sharp') r = hookUpPack(pre, before.slice(firstLine(before).length), x => hookFor(x).score, hookFor(before).score);
+  }
+  if (!r) { if (pre && pre.state === 'clean') toast(`Claude says your first line is already sharp.${pre.why ? ' ' + esc(pre.why) : ''}`, { icon: 'bolt', tone: 'accent' }); setImprove(tw.id, 'score'); return; }
+  if (pre) { r.ai = true; r.alts.forEach(a => { a.ai = true; }); }
+  const list = [{ text: r.text, say: r.say, why: r.why, main: r.main, moves: r.moves, ...(r.ai ? { ai: true } : {}) }, ...r.alts]; let i = 0;
   /* what it learns: the move kept (counted when the post ships), or undone; a pure cut that's undone means those words are theirs */
   const moveOf = v => (v.moves || []).find(k => k !== 'end' && k !== 'soft') || '', keptNote = r.kept && r.kept.length ? `Kept “${esc(r.kept[0])}”: you put it back before.` : '';
   /* r74: the receipt arrives as the new line settles, so the eye goes line first, reason second. Claude's version names itself */
@@ -8613,9 +8631,14 @@ function sharpenFirst() {
   const show = () => { const v = list[i], was = tw.text, ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(was).score; tw.text = v.text; save(); if (ta) ta.value = v.text; /* typing during the replay lands in the new text */
     const a1 = hookFor(tw.text).score; mark(v);
     /* a number or a result that moved to the front gets a beat of highlight as it lands: you see the move, not just the result */
-    watchEdit(ta, was, v.text, { label: shMoveLabel(v, (v.cuts || r.cuts || []).length), lead: /^(number|result|active|payoff)$/.test(v.main || ''), done: () => { renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); receipt(v, a1); if (!settled) { settled = true; if (late) swapIn(late); } } }); SFX.play(a1 >= 70 ? 'hook' : 'swap'); };
+    watchEdit(ta, was, v.text, { label: shMoveLabel(v, (v.cuts || r.cuts || []).length), lead: /^(number|result|active|payoff)$/.test(v.main || ''), done: () => { renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); receipt(v, a1); if (!settled) { settled = true; if (late) verdict(late); } } }); SFX.play(a1 >= 70 ? 'hook' : 'swap'); };
+  const keepNote = c => {
+    if (i !== 0 || tw.text !== list[0].text || !S.draft.tweets.includes(tw) || String(c.draft || '').trim() !== firstLine(before).trim()) return;
+    toast(`Claude says your first line was already sharp.${c.why ? ' ' + esc(c.why) : ''}`, { icon: 'bolt', tone: 'accent', ms: 6000, action: 'Put mine back', onAction: () => { UI.hookFrom = hookFor(tw.text).score; if (S.draft.ai) delete S.draft.ai[tw.id]; tw.text = before; save(); renderThread({ focusId: tw.id, pos: firstLine(before).length }); } });
+  };
+  const verdict = c => (c.state === 'sharp' ? swapIn(c) : keepNote(c));
   show();
-  sharpenByClaude(before).then(c => { if (!c) return; if (settled) swapIn(c); else late = c; });
+  if (!pre) sharpenByClaude(before).then(c => { if (!c) return; if (settled) verdict(c); else late = c; });
 }
 function paintHook() {
   const t0 = S.draft.tweets[0]; if (!t0) return; const b = $('.tw .hook'); if (!b) return;
@@ -12651,7 +12674,7 @@ function composerClick(e) {
     case 'fmore': UI.fOff = (UI.fOff || 0) + 1; renderExtras(S.draft.tweets[0].id); SFX.play('swap'); break;
     case 'vminfo': openVoiceMatch(el); break;
     case 'reviews': toggleCmPanel(); break;
-    case 'hookinfo': hookUpFor(S.draft.tweets[0].text) ? sharpenFirst() : setImprove(S.draft.tweets[0].id, 'score'); break;
+    case 'hookinfo': hookUpFor(S.draft.tweets[0].text) || claudeSharpenOn() ? sharpenFirst() : setImprove(S.draft.tweets[0].id, 'score'); break;
     case 'imptab': { const tid = (el.closest('.tw') || {}).dataset ? el.closest('.tw').dataset.id : S.draft.tweets[0].id; UI.imp = { id: tid, tab: el.dataset.t }; renderExtras(tid); SFX.play('tick'); break; }
     case 'impclose': { const tw = el.closest('.tw'), tid = tw.dataset.id; UI.imp = null; renderExtras(tid); const rb = $('[data-cact="riff"]', tw) || $('[data-cact="hookinfo"]', tw); rb && rb.focus({ preventScroll: true }); break; }
     /* a number or a name is the one thing only the writer knows: the caret goes to the front of line one, ready for it */
