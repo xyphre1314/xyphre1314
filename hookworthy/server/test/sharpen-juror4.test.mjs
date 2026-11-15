@@ -61,7 +61,8 @@ test('juror 4, hook-3: a hedged plan or forecast keeps its hedge; "going to" nev
      only a second hedge on the same clause goes */
   assert.equal(L('I think most people overthink their first post'), 'I think most people overthink their first post');
   assert.equal(L('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it'), '$ARB unlock is next week. i think everyone is way too relaxed about it.');
-  assert.equal(L('I think most people probably overthink their first post'), 'Most people probably overthink their first post.');
+  /* v4.2 (round-7 marketing-4): "I think" is the one hedge kept; "probably" is the second one */
+  assert.equal(L('I think most people probably overthink their first post'), 'I think most people overthink their first post.');
   /* r86 pass 6 (juror 5, hook-7): "probably" is the clause's one hedge, so it stays; never "Probably talk to your users" */
   assert.equal(L('This might sound obvious but you should probably talk to your users before you build'), 'You should probably talk to your users before you build.');
   /* "then this might be for you" keeps its "might" */
@@ -131,7 +132,8 @@ test('juror 4, hook-9/12: receipts are true, thin lines say which kind of thin',
   /* a short real post is still complete */
   for (const t of ['gm', 'lol', 'just shipped', 'honestly same']) assert.equal(S(t).state, 'clean', t);
   /* a strike reason that fits: a vulnerable opener is a run-up to the story */
-  const v = S("I almost didn't post this, but I've been struggling with burnout for the last few months and I think it's important to talk about.");
+  /* v4.2 (hook41-5): on hard news ("struggling with burnout") the framing stays, so the run-up reason is read on a line that isn't */
+  const v = S("I almost didn't post this, but I finally finished my first marathon and I think it's important to talk about.");
   assert.equal(v.cut.find(c => /almost didn't post/.test(c.text)).why, 'A run-up to the story. Start on the story itself.');
   /* "opens on it" only when the kept word is in the first two words */
   for (const t of ['Honestly the best trade this year was doing nothing at all.', 'I think the market is probably going to chop for a while']) {
@@ -139,7 +141,7 @@ test('juror 4, hook-9/12: receipts are true, thin lines say which kind of thin',
   }
   /* nothing marked, but a frame no rule can cut: it says so, not "nothing soft" */
   const fr = S("This week's issue is about the 3 habits that helped me write faster, link in bio");
-  assert.equal(fr.state, 'clean'); assert.equal(fr.why, 'Already tight. Nothing to cut without changing what you said.'); /* v4.1 (round-6 marketing-3): one human clean line */
+  assert.equal(fr.state, 'clean'); assert.equal(fr.why, 'Already tight. Cutting more would change what you said.'); /* v4.1 (round-6 marketing-3): one human clean line */
 });
 
 test('juror 4, hook-10/11: the joke and the feeling stay; a contraction alone is no sharpen; facts keep their suffix and unit', () => {

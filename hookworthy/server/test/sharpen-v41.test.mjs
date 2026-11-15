@@ -18,7 +18,7 @@ const core = createRequire(import.meta.url)('../../core.js');
 const S = (t, o) => core.sharpenLine(t, o), L = (t, o) => S(t, o).line;
 const hard = core.SHARPEN._dbg.hard;
 const versions = r => [r.line, ...(r.alts || []).map(a => a.line)].filter(l => l !== r.draft);
-const CLEAN = 'Already tight. Nothing to cut without changing what you said.';
+const CLEAN = 'Already tight. Cutting more would change what you said.';
 
 test('v4.1, hook4-1: every new hard guard rejects what it names and passes its clean twin', () => {
   const W37 = 'So after a lot of back and forth, we\'ve decided to shut down our consumer app and go all in on B2B.';
@@ -230,7 +230,8 @@ test('v4.1, hook4-7 and founder-2: the engine keeps what the Claude prompt keeps
   assert.equal(L('In my opinion, the best traders are the ones who sit on their hands most of the time.'), 'In my opinion, the best traders are the ones who sit on their hands most of the time.');
   assert.equal(L('honestly IMO most landing pages are bloated'), 'IMO most landing pages are bloated.');
   assert.equal(L('the best traders do nothing most days imo'), 'the best traders do nothing most days imo');
-  assert.equal(L('In my opinion, most landing pages are kind of bloated.'), 'Most landing pages are kind of bloated.');
+  /* v4.2 (round-7 marketing-4): the opinion is the clause's one hedge, kept; the softener on top goes */
+  assert.equal(L('In my opinion, most landing pages are kind of bloated.'), 'In my opinion, most landing pages are bloated.');
   assert.equal(L('Hot take: in my opinion most landing pages are bloated'), 'Hot take: most landing pages are bloated.');
   assert.equal(L('IMHO most landing pages are bloated.'), 'Most landing pages are bloated.');
 });

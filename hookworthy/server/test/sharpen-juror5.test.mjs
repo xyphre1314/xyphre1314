@@ -68,7 +68,8 @@ test('juror 5, hook-1: the broken and changed lines come back whole, or as writt
   for (const t of ['Does anyone else feel like their motivation to work out completely disappears in the winter, or is it just me?', "This is not financial advice, but I'm not selling a single $SOL under $400."]) { const R = S(t); assert.equal(R.line, t); assert.notEqual(R.state, 'sharp'); }
   assert.equal(L('gm. i honestly feel like most of you are kinda sleeping on $TIA rn'), 'gm. i feel like most of you are sleeping on $TIA rn.');
   assert.doesNotMatch(L("As a founder, I've learned that it's really important to basically always talk to your customers as much as you possibly can."), /^I['’]m a founder\./);
-  assert.equal(L('So this is a little bit personal, but I wanted to share that I was laid off today after 6 years at the company.'), 'This is a little bit personal. But I was laid off today after 6 years at the company.');
+  /* v4.2 (hook41-5): hard news keeps its framing whole and is never split */
+  assert.equal(L('So this is a little bit personal, but I wanted to share that I was laid off today after 6 years at the company.'), 'This is a little bit personal, but I was laid off today after 6 years at the company.');
   /* "just" before a hyphenated past verb is "recently": it stays */
   assert.match(L('Not to brag or anything but I just mass-migrated 200 services to the new cluster without a single outage!'), /\bjust mass-migrated\b/);
   /* a guard that drops every version says so; it never says the line "reads clean" */
@@ -93,8 +94,9 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   for (const t of ["Not financial advice obviously but I've been slowly accumulating $LINK under 15 for the past month", 'nfa but i genuinely believe $HYPE is the most undervalued L1 right now']) { const l = L(t); assert.match(l, /^(?:not financial advice|nfa)\b/i, t); assert.doesNotMatch(l, /(?:not financial advice|nfa)[.!]?$/i, t); }
   /* one hedge per clause: a lone "I think" stays (its padding goes), a stacked one gives way to the modal */
   assert.equal(L('I genuinely think AI agents are overhyped right now'), 'I think AI agents are overhyped right now.');
-  assert.equal(L('I think one of the biggest mistakes I made as a first-time founder was probably hiring way too fast.'), 'One of the biggest mistakes I made as a first-time founder was probably hiring way too fast.');
-  assert.equal(L('Honestly, I feel like dark mode is kind of overrated and most apps would probably be better without it.'), 'Dark mode is kind of overrated and most apps would probably be better without it.');
+  /* v4.2 (round-7 marketing-4): "I think" stays as the one hedge, the second hedge goes */
+  assert.equal(L('I think one of the biggest mistakes I made as a first-time founder was probably hiring way too fast.'), 'I think one of the biggest mistakes I made as a first-time founder was hiring way too fast.');
+  assert.equal(L('Honestly, I feel like dark mode is kind of overrated and most apps would probably be better without it.'), 'I feel like dark mode is overrated and most apps would probably be better without it.');
   assert.equal(L("I've been coding for 10 years and I honestly think that most developers are kind of overcomplicating their side projects."), "I've been coding for 10 years. I think that most developers are overcomplicating their side projects.");
   /* on a call every hedge stays; a doubled hedge is one hedge; "What could possibly go wrong" is the joke, not a doubled hedge */
   assert.equal(L('Not gonna lie, I really think $SOL could potentially hit $300 by Q2 if the ETF gets approved.'), 'I think $SOL could hit $300 by Q2 if the ETF gets approved.');
@@ -104,7 +106,8 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
 
 test('juror 5, hook-8: the missing run-ups go, "so tired" stays, and clean copy is honest', () => {
   assert.equal(L("I've put together a list of some of the best free resources for learning Solidity in 2026:"), 'Some of the best free resources for learning Solidity in 2026:');
-  assert.equal(L("A lot of people have been asking me what I'm buying, so I figured I'd just share my top 5 picks for this month:"), "A lot of people have been asking me what I'm buying. My top 5 picks for this month:");
+  /* v4.2 (round-7 founder-1): "a lot of people have been asking me …, so" goes whole when the rest is the list */
+  assert.equal(L("A lot of people have been asking me what I'm buying, so I figured I'd just share my top 5 picks for this month:"), 'My top 5 picks for this month:');
   assert.equal(L("As a ghostwriter, I've written over 2,000 posts for founders, and I can tell you that most of them make the exact same mistake."), "As a ghostwriter, I've written over 2,000 posts for founders. Most of them make the exact same mistake.");
   assert.equal(L("In this week's issue of my newsletter, I wanted to talk a little bit about why I think email is still the best channel out there."), "This week's issue of my newsletter: why I think email is still the best channel out there.");
   /* "so" before an adjective is an intensifier, never a warm-up */
