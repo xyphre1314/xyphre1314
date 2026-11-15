@@ -265,3 +265,18 @@ const TABLE4 = [
 test('v3.1: discourse frames ship, forecasts and negations still hold', () => {
   for (const [name, t, data, want] of TABLE4) { const { r, reject } = F(t, data); assert.equal(r ? 'accept' : reject, want, name); }
 });
+
+/* r86 v3.2: round-5 juror findings. A number and its noun a few words apart in the draft are not a new fact; a forecast
+   dated by a month keeps its "I think" on the device too */
+test('v3.2: "7 really useful tools" → "7 tools" ships; new or changed numbers still rejected', () => {
+  const rows = [
+    ['Here are 7 really useful tools that I personally use every single day to run my business:', 'Here are 7 tools I use every single day to run my business:', 'accept'],
+    ['Here are 7 really useful tools I use', 'Here are 8 tools I use', 'fact "7" lost'],
+    ['Here are 7 really useful tools I use', 'Here are 7 tools and 2 apps I use', 'fact "2 apps" added'],
+  ];
+  for (const [t, line, want] of rows) { const { r, reject } = F(t, { line }); assert.equal(r ? 'accept' : reject, want, t); }
+});
+test('v3.2: on-device, "I think" stays on a forecast dated by a month', () => {
+  for (const t of ['i think the fed cuts in december', 'I think we ship v2 in May']) assert.match(core.sharpenLine(t).line, /^i think/i, t);
+  assert.doesNotMatch(core.sharpenLine('I think we may ship v2 soon').line, /^i think/i);
+});

@@ -23,7 +23,7 @@ test('juror 3, hook-1: an opinion frame takes its "that"; "breaks" only when it 
   /* r86 pass 5 (juror 4, hook-3): a forecast keeps its "I think": without it, it's a certainty the writer never posted */
   assert.equal(L('I think that in 5 years nobody will remember this.'), 'I think that in 5 years nobody will remember this.');
   assert.equal(L('Honestly, I think that in 5 years nobody will remember this.'), 'I think that in 5 years nobody will remember this.');
-  assert.equal(L('I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'), 'In 2026, the companies that will win are the ones that are willing to say something interesting.');
+  assert.equal(L('I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'), 'I think that in 2026, the companies that will win are the ones that are willing to say something interesting.'); /* round 5: a dated forecast keeps its stance */
   /* the cut lands (no bail-out); "just need" (= simply) and the closing "pretty much it" are the writer's voice and stay */
   assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "Most people just need to sleep more and eat more protein, and that's pretty much it.");
   assert.equal(L("I think that's pretty much it for today."), "That's pretty much it for today.");

@@ -194,7 +194,7 @@
   const isCall = t => (ST_FORE.test(t) && ST_ASSET.test(t)) || ST_SELF.test(t);
   /* r86 pass 5 (hook-3): a plan or a forecast is a call too. "I think I'm going to quit X", "We're probably launching next
      week": without the hedge it's an announcement they never made. The words that say a sentence is about the future */
-  const ST_PLAN = /\b(?:will|won['’]t|going to (?!(?:the|a|an|my|your|our|their|his|her|this|that|bed|work|school|church|college|jail|court|sleep|hell|war|lie|be honest)\b)|gonna (?!(?:lie|be honest)\b)|plan(?:s|ning)? (?:to|on)|hop(?:e|es|ing) to|about to|intend(?:s|ing)? to|expect(?:s|ing)? to|aim(?:s|ing)? to|might|may|could|likely|launching|shutting down|next (?:week|month|year|quarter|season|weekend|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|this (?:week|weekend|month|quarter|summer|fall|autumn|winter|spring)|tomorrow|tonight|(?:coming|launching|shipping|dropping|more) soon|by (?:eoy|eom|eow|the end of|summer|spring|fall|winter|january|february|march|april|june|july|august|september|october|november|december|q[1-4]|20\d\d)|in q[1-4])\b|(?<=\p{L})['’]ll\b/iu;
+  const ST_PLAN = /\b(?:will|won['’]t|going to (?!(?:the|a|an|my|your|our|their|his|her|this|that|bed|work|school|church|college|jail|court|sleep|hell|war|lie|be honest)\b)|gonna (?!(?:lie|be honest)\b)|plan(?:s|ning)? (?:to|on)|hop(?:e|es|ing) to|about to|intend(?:s|ing)? to|expect(?:s|ing)? to|aim(?:s|ing)? to|might|may|could|likely|launching|shutting down|next (?:week|month|year|quarter|season|weekend|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|this (?:week|weekend|month|quarter|summer|fall|autumn|winter|spring)|tomorrow|tonight|(?:coming|launching|shipping|dropping|more) soon|by (?:eoy|eom|eow|the end of|summer|spring|fall|winter|january|february|march|april|june|july|august|september|october|november|december|q[1-4]|20\d\d)|in q[1-4]|(?:in|by|before|until|this|next|come|early|late|mid)[- ](?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?|20\d\d)|on (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(?:later|end of) (?:this|the) (?:week|month|year|quarter)|eo[ymwq]|soon|eventually|someday|one day)\b|(?<=\p{L})['’]ll\b/iu;
   /* the clause a hedge sits in: from the last break before it to the next one after it */
   const ST_BRK = /[.!?;:]+(?=\s|$)|,\s*(?=(?:and|but|so|because|which|while|though|although|yet|i|we|you|they|he|she|it|this|that)\b)|\s(?:and|but|so|because|although|though|whereas|which|while|why|how|what|that|who|where)\s/gi;
   function stanceKeep(text) {
@@ -206,7 +206,7 @@
     SOFT.filter(s => s.k === 'opinion' || s.k === 'hedge').forEach(s => { for (const m of t.matchAll(rx(s.re.source, gFlags(s.re.flags)))) { const w = m[0].replace(/[,\s]+$/, '').replace(/^(?:personally|honestly|frankly),?\s+/i, ''); if (!w) continue; const c = clauseOf(m.index, m.index + m[0].length); if (!call && (!ST_PLAN.test(c) || /^\s*(?:if|when)\b/i.test(c))) continue; hits.push({ w, k: s.k, a: m.index, c }); } });
     if (!hits.length) return [];
     /* r86 pass 4 (hook-15): "In my humble opinion, X will probably…": the call already hedges, so the opinion frame on top can go */
-    hits.forEach(h => { if (h.k === 'hedge') { out.push(h.w); return; } const i0 = t.indexOf(h.c), c2 = i0 < 0 ? h.c : t2.slice(i0, i0 + h.c.length); const inner = hits.some(x => x.k === 'hedge' && (call || x.c === h.c)) || /\b(?:might|could|may|likely|possibly|probably|maybe|perhaps)\b/i.test(call ? t2 : c2); if (!inner) out.push(h.w); });
+    hits.forEach(h => { if (h.k === 'hedge') { out.push(h.w); return; } const i0 = t.indexOf(h.c), c2 = i0 < 0 ? h.c : t2.slice(i0, i0 + h.c.length); const inner = hits.some(x => x.k === 'hedge' && (call || x.c === h.c)) || /\b(?:might|could|(?<!\b(?:in|by|before|until|this|next|early|late|mid|since|of)[- ])may|likely|possibly|probably|maybe|perhaps)\b/i.test(call ? t2 : c2); if (!inner) out.push(h.w); });
     return [...new Set(out)];
   }
   /* r86 pass 2: what Sharpen never marks, never cuts and never splits, found once per line.
@@ -3568,7 +3568,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   V3.TIMEN = /^(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|january|february|march|april|june|july|august|september|october|november|december)$/i;
   function v3NumOK(line, draft, facts) {
     const lost = facts.find(f => !slHas(line, f.v) && !V3.TIMEN.test(f.v)); if (lost) return `fact "${lost.v}" lost`;
-    const dl = lcw(draft), added = slFacts(line, softMarks(line)).find(f => !slHas(draft, f.v) && !dl.includes(lcw(f.v))); if (added) return `fact "${added.v}" added`;
+    /* "7 really useful tools" → "7 tools": the number and its noun were both in the draft, a few words apart; that's a cut, not a new fact */
+    const near = v => { const m = String(v).match(/^([$€£]?[\d][\d.,]*[kKmMbB%x]?)\s+([\p{L}'’-]+)$/u); if (!m) return false; const e = z => z.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); return new RegExp(`(?<![\\p{L}\\p{N}])${e(m[1])}\\s+(?:[\\p{L}'’-]+\\s+){1,3}${e(m[2])}(?![\\p{L}\\p{N}])`, 'iu').test(draft); };
+    const dl = lcw(draft), added = slFacts(line, softMarks(line)).find(f => !slHas(draft, f.v) && !dl.includes(lcw(f.v)) && !near(f.v)); if (added) return `fact "${added.v}" added`;
     const dd = new Set(slDigitRuns(draft)), nd = slDigitRuns(line).find(x => !dd.has(x)); if (nd) return `number "${nd}" added`;
     if (slMore(line, draft, V3.NUMW)) return 'number word added';
     /* a number word is a number wherever it stands: "It took three years, but…" can't lose its three years with its clause */
