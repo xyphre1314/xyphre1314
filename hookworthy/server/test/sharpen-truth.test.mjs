@@ -50,7 +50,8 @@ test('truth: a why that names cuts names every one of them, and quotes are phras
   const bad = [];
   for (const x of runs.filter(r => r.R.state === 'sharp')) {
     const R = x.R, cuts = R.cut.filter(c => c.kind !== 'reshape').map(c => c.text.replace(/[,:;.!—-]+$/, '')), q = quotes(R.why);
-    const named = q.filter(s => cuts.includes(s));
+    /* v4.4: a word cut twice is named once, as “really” (twice) */
+    const named = q.filter(s => cuts.includes(s)).flatMap(s => { const m = R.why.match(new RegExp(`“${s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}” \\((twice|\\d+ times)\\)`)); return Array(m ? (m[1] === 'twice' ? 2 : parseInt(m[1], 10)) : 1).fill(s); });
     if (named.length && named.length !== cuts.length) bad.push(`${label(x)}: why names ${named.length} of ${cuts.length} cuts`);
     if (q.some(s => cuts.some(c => c !== s && c.startsWith(s) && !s.includes(' '))) && !named.length) bad.push(`${label(x)}: a cut quoted cut short`);
     /* the line's own words: never a quote that ends on a small word ("thank you to", "most traders blow" is fine, "Our newsletter just" is not) */

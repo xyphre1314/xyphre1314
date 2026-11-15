@@ -112,7 +112,7 @@
      header and keeps it. The Claude prompt and its validator say the same (SL_TAKE_RU) */
   const SL_TAKE_SUBJ = String.raw`(?:(?:i (?:really )?think|i believe|imo|honestly|personally|frankly|tbh|ngl|(?:i |we )?Q[kz][a-z]q),?\s+)?(?:it|they|this|that|these|those|(?:most|many|some|all|none|half|each|both|a lot|plenty|few|several|one|neither|either) of (?:them|it|these|those))(?![a-z])`;
   const SL_TAKE_RU = new RegExp(String.raw`^\P{L}*(?:(?:ok(?:ay)?,? )?so,? )?here(?:['’]s| is) my (?:(?:honest|hot|quick|unpopular|real) )?(?:take|thoughts?|two cents|read) on [^.!?:\n]{2,40}?[a-z0-9][:.]\s+${SL_TAKE_SUBJ}`, 'iu');
-  const SL_EMO1 = String.raw`(?:(?:[\uD83C-\uD83E][\uDC00-\uDFFF]|[☀-➿])️?)`;
+  const SL_EMO1 = String.raw`(?:(?:[\uD83C-\uD83E][\uDC00-\uDFFF]|[\u2600-\u27BF])️?)`;
   const SOFT = [
     /* v4.3 (round-8 founder-1, marketing-1, hook42-1): the hype openers the demo called "Already tight". Each goes when the cut
        leaves a whole line, and stays marked when it doesn't: "huge news,", "Big news!", "This is huge.", "nobody is talking
@@ -581,6 +581,8 @@
   /* r86 pass 4 (hook-16): a disclaimer, said as one: "not financial advice", "nfa", "dyor", "I'm not a financial advisor" */
   const SL_DISC1 = /^(?:(?:this is |this['’]s |it['’]s )?not (?:financial|investment|legal|tax) advice|nfa|dyor|do your own research|always dyor|(?:i['’]m|i am) not (?:a |your )?financial advis[oe]r(?:,? (?:and|so) (?:this is |this['’]s |it['’]s |it is )?not (?:financial|investment) advice)?)$/i;
   /* the soft words out, nothing else changed. Returns { s, cut: [the words cut, as written] } */
+  /* v4.4 (hook43-1): a joining word at the end of what comes before a cut: no clause has ended there */
+  const SL_JOINE = /(?<![\p{L}\p{N}'’])(?:and|but|or|nor|yet|so|because|cause|cuz|coz|if|when|whenever|while|though|although|since|unless|until|till|whereas|than|as|plus|then|that|which|who|where|whether|like)[ \t]*$/iu;
   function softCut(line, keep, only) {
     /* r86 pass 3: what is marked is what goes: the marks are cut first, as marked, so a word cut before another can't
        shield it ("Personally I think…" loses both), then the table runs again over what is left */
@@ -589,7 +591,6 @@
     /* r86 pass 5 (hook-4): a cut between two clauses keeps the comma after it: "…getting started tbh, the chart looks…" */
     /* v4.1: not after a verb that takes the clause as its object ("and I think if I'm being honest, the only reason" → "and I think the only reason") */
     /* v4.4 (hook43-1): nor after a joining word, where no clause has ended ("…four years now and if I'm being honest, the thing" → "…now and the thing", never "now and, the thing") */
-    const SL_JOINE = /(?<![\p{L}\p{N}'’])(?:and|but|or|nor|yet|so|because|cause|cuz|coz|if|when|whenever|while|though|although|since|unless|until|till|whereas|than|as|plus|then|that|which|who|where|whether|like)[ \t]*$/iu;
     const keepC = (bf, af, sep) => /,/.test(sep) && /[\p{L}\p{N}%)$]\s+$/u.test(bf) && !/[,;:]\s*$/.test(bf) && !SL_JOINE.test(bf) && !/\b(?:think|thought|believe|believed|feel like|guess|know|knew|realize|realized|realise|realised|hope|bet|swear|mean|say|said|that|qk[a-z]q)\s*$/i.test(bf) && /^\S/.test(af) && wordsN(bf.split(/[,;:.!?—–]/).pop()) >= 2 && slFinite(bf.split(/[,;:.!?—–]/).pop()) && slFinite(af.split(/[,;:.!?—–]/)[0]);
     softMarks(L0, keep).filter(m => !only || only.test(m[3])).sort((a, b) => b[0] - a[0]).forEach(m => { cut.unshift(s.slice(m[0], m[1])); kinds.unshift(m[3]); const sep = s.slice(m[1]).match(/^[,:]?[ \t]*/)[0]; let bf = s.slice(0, m[0]);
       /* v4.4 (hook43-1): a pair of commas round the cut, after a joining word, goes with it ("but, honestly, it went fine" → "but it went fine") */
@@ -3541,13 +3542,19 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const slStubEnd = (L, D) => { const ss = slSents(L); if (ss.length < 2 || /[?:]["”’)]*$/.test(ss[ss.length - 2]) || /\?["”’)]*$/.test(ss[ss.length - 1])) return false; const s = ss[ss.length - 1], w = slTokW(s); if (!w.length || w.length > 2 || slFinite(s) || /[$€£\d@#]|\p{Extended_Pictographic}/u.test(s) || /^(?:thanks|thank|congrats|gm|gn|lfg|wagmi|cheers|enjoy|onward|onwards|soon|finally|nope|yep|yes|no|same|period|facts|anyway|anyways|wild|crazy|insane|lol|lmao|haha|again|never|always|today|tomorrow)$/i.test(w[0])) return false; return !slSents(D).some(x => lcw(x).replace(/[.!?]+$/, '') === lcw(s).replace(/[.!?]+$/, '')); };
   /* v4.4 (hook43-1): an ellipsis the writer followed with a lowercase word is mid-sentence. A line that capitalises the word
      after it, or turns it into a stop, makes a fragment of the rest ("…and it's... Not great.") */
-  const slEllCase = (L, D) => { const n = z => lcw(z).replace(/[’‘]/g, "'"), R = []; for (const m of String(D).matchAll(/([\p{L}\p{N}’'$%]+)(?:\.{2,}|…)["”’)]*\s+(\p{Ll}[^.!?…]{0,60})/gu)) R.push([n(m[1]), (n(m[2]).match(/[\p{L}\p{N}'$%-]+/gu) || []).slice(0, 4)]); if (!R.length) return false; for (const m of String(L).matchAll(/([\p{L}\p{N}’'$%]+)(?:\.{2,}|…|[.!?])["”’)]*\s+(\p{Lu}[\p{L}’']*)/gu)) { const p = n(m[1]), w = n(m[2]); if (w === 'i' || /^i'/.test(w)) continue; if (R.some(([q, ws]) => q === p && ws.includes(w))) return true; } return false; };
+  const SL_ELL_D = /([\p{L}\p{N}’'$%]+)(?:\.{2,}|…)["”’)]*\s+(\p{Ll}[^.!?…]{0,60})/gu, SL_ELL_W = /[\p{L}\p{N}'$%-]+/gu, SL_ELL_L = /([\p{L}\p{N}’'$%]+)(?:\.{2,}|…|[.!?])["”’)]*\s+(\p{Lu}[\p{L}’']*)/gu;
+  const slEllCase = (L, D) => { const n = z => lcw(z).replace(/[’‘]/g, "'"), R = []; for (const m of String(D).matchAll(SL_ELL_D)) R.push([n(m[1]), (n(m[2]).match(SL_ELL_W) || []).slice(0, 4)]); if (!R.length) return false; for (const m of String(L).matchAll(SL_ELL_L)) { const p = n(m[1]), w = n(m[2]); if (w === 'i' || /^i'/.test(w)) continue; if (R.some(([q, ws]) => q === p && ws.includes(w))) return true; } return false; };
   /* v4.4 (hook43-1): a sentence that ends on a word no sentence ends on: an article, a joining word, a possessive or a "be"
      contraction ("…for the year and it's. Not great."). An ellipsis ends a sentence only when the writer capitalised after it */
   const SL_DANGLEW = /(?<![\p{L}\p{N}'’])(?:a|an|the|and|but|or|nor|because|cause|than|my|your|our|their|its|it['’]s|that['’]s|i['’]m|you['’]re|we['’]re|they['’]re|he['’]s|she['’]s|there['’]s|what['’]s|very)\s*(?:[.!?]+|\.{2,}|…)["”’)]*\s*$/iu;
-  const slDangleN = z => { const t = String(z).trim(); const parts = []; let at = 0; for (const m of t.matchAll(/(?:[.!?]+|…)["”’)]*(?=\s+(\S)|$)/gu)) { const e = m.index + m[0].length, nx = m[1] || ''; if (/(?:\.{2,}|…)["”’)]*$/.test(m[0]) && nx && /\p{Ll}/u.test(nx)) continue; parts.push(t.slice(at, e)); at = e; } return parts.filter(x => SL_DANGLEW.test(x)).length; };
+  const SL_STOPS = /(?:[.!?]+|…)["”’)]*(?=\s+(\S)|$)/gu;
+  const slDangleN = z => { const t = String(z).trim(); const parts = []; let at = 0; for (const m of t.matchAll(SL_STOPS)) { const e = m.index + m[0].length, nx = m[1] || ''; if (/(?:\.{2,}|…)["”’)]*$/.test(m[0]) && nx && /\p{Ll}/u.test(nx)) continue; parts.push(t.slice(at, e)); at = e; } return parts.filter(x => SL_DANGLEW.test(x)).length; };
   /* v4.4 (hook43-1): a joining word left in front of a comma ("…four years now and, the thing…") */
   const SL_JOINC = /(?<![\p{L}\p{N}'’])(?:and|but|or|nor|yet|because|cause|if|than|the|a|an|of|to|with|my|your|our|their)\s*,(?!\d)|(?<=[\p{L}\p{N}]\s+)so\s*,(?!\d)/giu;
+  const SL_JOINC2 = /(?<![\p{L}\p{N}'])(and|but|or|nor|yet|so|because|if|than|that|the|a|an|to|of|with|my|your|our|their|think|thought|believe|believed|feel|felt|guess|know|knew|realized|realised|realize|hope|bet|mean|say|said|is|was|are|were|am|i'm|we're|you're|they're|it's)\s*,\s*([\p{L}\p{N}$@#][\p{L}\p{N}'$-]*)/gu;
+  const SL_CUTSHORT = /\b(?:and|but|so|or)\s+([\p{L}][\p{L}'-]*)\s*[.!]+["”’)]*(?=\s|$)/gu, SL_DASHR = /^\P{L}*?[—–]|[—–]\s*[.!?:]|[.!?:]\s+[—–]|[—–]\s*$/gu;
+  const SL_SUBJLESS = /(?:^|[.!?]\s+)\P{L}*(haven['’]t|hasn['’]t|hadn['’]t|didn['’]t|doesn['’]t|don['’]t|can['’]t|couldn['’]t|won['’]t|wouldn['’]t|isn['’]t|wasn['’]t|aren['’]t|weren['’]t|have|has|had)\s+(?!(?:i|you|we|they|he|she|it|there|this|that|anyone|anybody|you all|y['’]all)\b)\p{L}[^.!?]*[.!]/giu;
+  const SL_HOWX = /\bhow (\w+) (i am|i'm|we are|we're|you are|you're|they are|they're|it is|it's|he is|she is)\b/g;
   function slHard(line, draft) {
     const L = String(line), D = String(draft);
     if (slEndDisc(L) && !slEndDisc(D)) return 'ends on a disclaimer';
@@ -3556,15 +3563,15 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (slDangleN(L) > slDangleN(D)) return 'dangling fragment';
     if (cnt(L, SL_JOINC) > cnt(D, SL_JOINC)) return 'joining word before a comma';
     /* v4.4 (hunt): and one the draft had, whose aside went but whose comma stayed ("but, honestly, it" → "but, it", "I think, the") */
-    { const n = z => lcw(z).replace(/[’‘]/g, "'"), DD = n(D); for (const m of n(L).matchAll(/(?<![\p{L}\p{N}'])(and|but|or|nor|yet|so|because|if|than|that|the|a|an|to|of|with|my|your|our|their|think|thought|believe|believed|feel|felt|guess|know|knew|realized|realised|realize|hope|bet|mean|say|said|is|was|are|were|am|i'm|we're|you're|they're|it's)\s*,\s*([\p{L}\p{N}$@#][\p{L}\p{N}'$-]*)/gu)) if (!(m[1] === 'so' && /(?:^|[.!?]\s+)\P{L}*$/u.test(n(L).slice(0, m.index))) && !new RegExp(String.raw`(?<![\p{L}\p{N}'])${slRxE(m[1])}\s*,\s*${slRxE(m[2])}(?![\p{L}\p{N}])`, 'u').test(DD)) return 'joining word before a comma'; }
+    { const n = z => lcw(z).replace(/[’‘]/g, "'"), DD = n(D); for (const m of n(L).matchAll(SL_JOINC2)) if (!(m[1] === 'so' && /(?:^|[.!?]\s+)\P{L}*$/u.test(n(L).slice(0, m.index))) && !new RegExp(String.raw`(?<![\p{L}\p{N}'])${slRxE(m[1])}\s*,\s*${slRxE(m[2])}(?![\p{L}\p{N}])`, 'u').test(DD)) return 'joining word before a comma'; }
     /* v4.4 (hunt): a clause cut down to its subject at the end ("Coffee is great and all but sleep.") */
-    { const n = z => lcw(z).replace(/[’‘]/g, "'"), DD = n(D); for (const m of n(L).matchAll(/\b(?:and|but|so|or)\s+([\p{L}][\p{L}'-]*)\s*[.!]+["”’)]*(?=\s|$)/gu)) if (new RegExp(String.raw`(?<![\p{L}\p{N}'])${slRxE(m[1])}\s+(?:is|are|was|were|has|have|had|will|would|can|could|should|does|do|did|makes|made|wins|beats|matters)\b`, 'u').test(DD) && !new RegExp(String.raw`(?<![\p{L}\p{N}'])${slRxE(m[1])}\s*[.!]`, 'u').test(DD)) return 'clause cut short'; }
+    { const n = z => lcw(z).replace(/[’‘]/g, "'"), DD = n(D); for (const m of n(L).matchAll(SL_CUTSHORT)) if (new RegExp(String.raw`(?<![\p{L}\p{N}'])${slRxE(m[1])}\s+(?:is|are|was|were|has|have|had|will|would|can|could|should|does|do|did|makes|made|wins|beats|matters)\b`, 'u').test(DD) && !new RegExp(String.raw`(?<![\p{L}\p{N}'])${slRxE(m[1])}\s*[.!]`, 'u').test(DD)) return 'clause cut short'; }
     /* v4.4 (hunt): a dash left at the start, before a stop or at the end */
-    { const DR = /^\P{L}*?[—–]|[—–]\s*[.!?:]|[.!?:]\s+[—–]|[—–]\s*$/gu; if (cnt(L, DR) > cnt(D, DR)) return 'stray dash'; }
+    if (cnt(L, SL_DASHR) > cnt(D, SL_DASHR)) return 'stray dash';
     /* v4.4 (hunt): a split that left the second clause without its subject ("…for 2 years. haven't made a dollar.") */
-    { const SV = /(?:^|[.!?]\s+)\P{L}*(haven['’]t|hasn['’]t|hadn['’]t|didn['’]t|doesn['’]t|don['’]t|can['’]t|couldn['’]t|won['’]t|wouldn['’]t|isn['’]t|wasn['’]t|aren['’]t|weren['’]t|have|has|had)\s+(?!(?:i|you|we|they|he|she|it|there|this|that|anyone|anybody|you all|y['’]all)\b)\p{L}[^.!?]*[.!]/giu; for (const m of String(L).matchAll(SV)) if (m.index > 0 && new RegExp(String.raw`\b(?:and|but|so)\s+${slRxE(lcw(m[1]).replace(/[’‘]/g, "'"))}\b`, 'i').test(lcw(D).replace(/[’‘]/g, "'"))) return 'split lost its subject'; }
+    { for (const m of String(L).matchAll(SL_SUBJLESS)) if (m.index > 0 && new RegExp(String.raw`\b(?:and|but|so)\s+${slRxE(lcw(m[1]).replace(/[’‘]/g, "'"))}\b`, 'i').test(lcw(D).replace(/[’‘]/g, "'"))) return 'split lost its subject'; }
     /* v4.4: "how excited we are to…" cut down to "Excited we are to…": an exclamation that lost its "how" */
-    for (const m of lcw(D).replace(/[’‘]/g, "'").matchAll(/\bhow (\w+) (i am|i'm|we are|we're|you are|you're|they are|they're|it is|it's|he is|she is)\b/g)) if (new RegExp(String.raw`(?:^|[.!?:]\s+)\P{L}*${m[1]} ${m[2]}\b`, 'u').test(lcw(L).replace(/[’‘]/g, "'"))) return 'exclamation lost its how';
+    for (const m of lcw(D).replace(/[’‘]/g, "'").matchAll(SL_HOWX)) if (new RegExp(String.raw`(?:^|[.!?:]\s+)\P{L}*${m[1]} ${m[2]}\b`, 'u').test(lcw(L).replace(/[’‘]/g, "'"))) return 'exclamation lost its how';
     /* v4.3: no stray stop pair ("MRR.! 🚀") the draft didn't have */
     if (cnt(L, /\.[!?]|[!?]\.(?!\.)/g) > cnt(D, /\.[!?]|[!?]\.(?!\.)/g)) return 'stray punctuation';
     /* v4.3: a plural after "most"/"many" stays plural ("most launches flop" never becomes "does most launch flop") */
@@ -3992,6 +3999,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     ['Honestly I’m just curious, what does everyone here actually do for a living? Love how every ‘passive income’ guru is actually just selling a course.'],
     ['gm. purple elephant spreadsheet tomorrow banana']
   ];
+  /* v4.4 (page pass 10): and short lines with a curly quote (two-byte text, compiled apart), of the shapes the homepage's
+     starters and drafts take: a wordy "due to the fact that", a "just wanted to share that i…", a "Honestly, most X don’t…".
+     Each runs its marks and its cut on their own first, then hookUp, then the whole path. Their words are not the page's, so this warms the paths, not the answers */
+  const SH_WARM_2B = ['due to the fact that it’s live', 'due to the fact that it’s a slow week, we’re posting less', 'just wanted to share that i’m hiring and honestly it’s about time', 'Honestly, most people don’t need a coach, they need a plan'];
   /* v4.3: short lines of each shape, for the full-path warm steps */
   const SH_WARM_SHORT = ['So basically I just wanted to say we launched', 'We are excited to announce v2 is live', 'nfa but i think $ETH hits 5k', 'Here are 7 lessons I learned:', 'Why do most founders never ask for the sale', 'honestly most people overthink this, just ship it', 'Big news! we just hit $10k MRR', 'Fun fact: nobody reads the footer.'];
   function sharpenLine(text, opts = {}) {
@@ -4755,13 +4766,15 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
        pieces of a few ms in Node, so a page can spread them over idle callbacks with no long task */
     warmSteps: () => {
       /* V8 compiles a regex once for one-byte text and again for text with a curly quote or an emoji (two-byte), so each runs on both */
-      const W0 = SH_WARM[0][0], W1 = SH_WARM[1][0], W2 = SH_WARM[2][0], W1u = `${W1} — it’s live 🚀`, steps = [], PP = [];
+      const W0 = SH_WARM[0][0], W1 = SH_WARM[1][0], W2 = SH_WARM[2][0], W1u = `${W1} — it’s live 🚀`, W2u = W2.replace(/\bour\b/, 'our team’s').replace(/(?<=\d)%/, '% 🚀'), steps = [], PP = [];
       const reOf = x => x instanceof RegExp ? x : Array.isArray(x) && x[0] instanceof RegExp ? x[0] : x && x.re instanceof RegExp ? x.re : null;
       const once = (re, w) => { for (const r of [re, rx(re.source, gFlags(re.flags))]) { r.lastIndex = 0; r.exec(w); r.lastIndex = 0; } };
-      [SOFT, SL_GUARDS, HEDGE_RX, WORDY, HK_SWAP, CONTRACT_W, PLAIN_W, JARGON_W, SL_BROKEN, [OPENER_RX, TAIL_RX, HK_BAIT, HK_OPEN], [ST_FORE, ST_ASSET, ST_SELF, ST_PLAN, ST_BRK, SL_URL, SL_QUOTE, SL_SARC, SL_FRAMEK, SL_FRAMELEAD, SL_DEADLEAD, SL_HARDN_RE, SL_HN_LIFE, SL_HESIT, SL_TAKE_RU, SL_ASKED, SL_BANV, HYPE_RX, TELL_RX, HK_VOICE, SL_PASSIVE, SL_QOPEN], Object.values(V3).filter(v => v instanceof RegExp)].forEach(T => (T || []).forEach(x => { const re = reOf(x); if (re) steps.push(() => once(re, W0), () => once(re, W2), () => once(re, W1u)); }));
+      [SOFT, SL_GUARDS, HEDGE_RX, WORDY, HK_SWAP, CONTRACT_W, PLAIN_W, JARGON_W, SL_BROKEN, [OPENER_RX, TAIL_RX, HK_BAIT, HK_OPEN], [ST_FORE, ST_ASSET, ST_SELF, ST_PLAN, ST_BRK, SL_URL, SL_QUOTE, SL_SARC, SL_FRAMEK, SL_FRAMELEAD, SL_DEADLEAD, SL_HARDN_RE, SL_HN_LIFE, SL_HESIT, SL_TAKE_RU, SL_ASKED, SL_BANV, HYPE_RX, TELL_RX, HK_VOICE, SL_PASSIVE, SL_QOPEN], [SL_ELL_D, SL_ELL_W, SL_ELL_L, SL_STOPS, SL_DANGLEW, SL_JOINC, SL_JOINC2, SL_CUTSHORT, SL_DASHR, SL_SUBJLESS, SL_HOWX, SL_JOINE, SL_LIKEN, HK_FEELSAY], Object.values(V3).filter(v => v instanceof RegExp)].forEach(T => (T || []).forEach(x => { const re = reOf(x); if (re) steps.push(() => once(re, W0), () => once(re, W2), () => once(re, W1u)); }));
       ['so', 'honestly', 'just', 'really', 'basically', 'i think', 'i just wanted to share that', 'big news', 'hey everyone'].forEach(w => steps.push(() => softWhy(w)));
       steps.push(() => isCall(W0), () => stanceKeep(W0), () => slSents(W0), () => slGuard(W1), () => slGuard(W0), () => softMarks(W0, [], true), () => slPolicy(W1), () => slPolicy(W0), () => softMarks(W0), () => softCut(W1), () => softCut(W0), () => slFacts(W2, []), () => sub(W0, WORDY), () => sub(W0, HK_SWAP), () => sub(W0, CONTRACT_W));
       [HM, HM2, MOVES].forEach(T => Object.values(T).forEach(f => steps.push(() => { try { f(W1); } catch (e) { /* warming only */ } }, () => { try { f(W2); } catch (e) { /* warming only */ } })));
+      /* v4.4 (page pass 10): and on two-byte text, so a first line with a curly quote ("due to the fact that it’s…") finds them warm */
+      [HM, HM2, MOVES].forEach(T => Object.values(T).forEach(f => steps.push(() => { try { f(W1u); } catch (e) { /* warming only */ } }, () => { try { f(W2u); } catch (e) { /* warming only */ } })));
       /* the reads a version goes through, one at a time, on a cut line and on the draft */
       /* the first clause of 20 to 110 characters (a loop: a bounded ".{20,110}?" regex alone costs ~60 ms to compile) */
       const short = t => { const d = t.split('\n')[0]; for (let i = 20; i < Math.min(d.length - 1, 110); i++) if (/[,.!?:]/.test(d[i]) && /\s/.test(d[i + 1])) return d.slice(0, i + 1); return d.split(/\s+/).slice(0, 16).join(' '); };
@@ -4776,8 +4789,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       /* the full paths last, on short lines of each shape (a whole sharpenLine runs every move and guard, so even warm it is the
          biggest step); their pieces are warm by now */
       /* a ladder of tiny lines first, so the first call of each big function compiles its own regexes in a few small steps */
-      const tiny = ['gm', 'we shipped it.', 'so we shipped it', 'honestly we shipped it', 'we shipped v2, 31% more signups'];
-      steps.push(() => hookScore(W2), ...tiny.map(t => () => { try { hookUp(t); } catch (e) { /* warming only */ } }), ...tiny.map(t => () => { sharpenLine(t); }), ...SH_WARM_SHORT.map(t => () => { try { hookUp(t); } catch (e) { /* warming only */ } }), ...SH_WARM_SHORT.map(t => () => { sharpenLine(t); }));
+      const tiny = ['gm', 'we shipped it.', 'so we shipped it', 'honestly we shipped it', 'we shipped v2, 31% more signups'], tiny2 = ['it’s live.', 'so it’s live', 'honestly it’s live', 'we’re live, 31% more signups'];
+      steps.push(() => hookScore(W2), ...tiny.map(t => () => { try { hookUp(t); } catch (e) { /* warming only */ } }), ...tiny.map(t => () => { sharpenLine(t); }), ...SH_WARM_SHORT.map(t => () => { try { hookUp(t); } catch (e) { /* warming only */ } }), ...SH_WARM_SHORT.map(t => () => { sharpenLine(t); }), ...tiny2.map(t => () => { try { hookUp(t); } catch (e) { /* warming only */ } }), ...tiny2.map(t => () => { sharpenLine(t); }), ...SH_WARM_2B.flatMap(t => [() => softMarks(t), () => softCut(t), () => { try { hookUp(t); } catch (e) { /* warming only */ } }, () => { sharpenLine(t); }]));
       return steps;
     },
     /* in a browser, warm() spreads the steps over idle callbacks (no long task) and resolves with the ms spent; elsewhere,
