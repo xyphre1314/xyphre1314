@@ -2561,6 +2561,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     ['sharpen', 'studio', 'pricing'].forEach(id => qo.observe(document.getElementById(id)));
   }
 
+  /* a thin line says why in the engine's own words (a test, filler, not a sentence yet); a short one asks for the whole line */
+  const thinSay = X => (X && X.thin && X.thin !== 'few' && X.why) ? X.why : 'Sharpen needs a few more words. Paste the whole first line.';
   /* ---------- the real engine: the Try tile and the final line both call HWCore.sharpenLine, and only render what it returns ---------- */
   /* a put-back word stays kept while you edit the same line; a different line starts from what Sharpen would do */
   /* words, case- and apostrophe-blind ("We’re" and "We're" are one word) */
@@ -2802,7 +2804,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const stale = t !== sharpenedFor, rw = $('#out-why [data-rw]');
     /* one instruction at a time: an edit of the line on show dims its result ("Edited"); any other line gets an empty post */
     if (stale && (outCard.hidden || !sameLine(t, sharpenedFor))) showPh();
-    else if (!stale && !outPh.hidden) { if (R && (R.state === 'empty' || R.state === 'thin')) showEmpty('Sharpen needs a few more words. Paste the whole first line.'); else showCard(); }
+    else if (!stale && !outPh.hidden) { if (R && (R.state === 'empty' || R.state === 'thin')) showEmpty(thinSay(R)); else showCard(); }
     out.classList.toggle('stale', stale && !outCard.hidden); if (rw) rw.disabled = stale;
     if (stale) { outKeep.hidden = true; tryAlt.hidden = true; }
     outSt(stale ? (!outCard.hidden ? 'Edited. Tap Sharpen again.' : 'Tap Sharpen to see yours.') : outSt.last || 'How it would post');
@@ -2821,10 +2823,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const raw = ta.value, st = R.state;
     clear(tryT); out.classList.remove('stale', 'hold');
     if (st === 'empty' || st === 'thin') {
-      showEmpty(st === 'empty' ? 'Paste a line above. The sharpened version lands here.' : 'Sharpen needs a few more words. Paste the whole first line.');
+      showEmpty(st === 'empty' ? 'Paste a line above. The sharpened version lands here.' : thinSay(R));
       setMirror(esc(raw) + '&#8203;', false); flags.innerHTML = ''; why.textContent = '';
       outSt.last = 'How it would post'; outSt(outSt.last); tryPrimary(false); fresh();
-      $('#try-status').textContent = st === 'thin' ? 'Sharpen needs a few more words. Paste the whole first line.' : '';
+      $('#try-status').textContent = st === 'thin' ? thinSay(R) : '';
       return;
     }
     showCard(); if (how === 'go') ta.scrollTop = 0;
@@ -3005,7 +3007,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (!sayT) fn.textContent = nf ? `${nf} bit${nf === 1 ? '' : 's'} of fluff` : '';
     if (key === lastKey && !force) return; lastKey = key;
     if (st === 'thin' || st === 'empty') {
-      fpCard.hidden = true; fpHits.hidden = true; fpEmpty.hidden = false; fpEmpty.textContent = 'Sharpen needs a few more words. Paste the whole first line.'; keepFin(false); finLine = ''; fpAlt.hidden = true;
+      fpCard.hidden = true; fpHits.hidden = true; fpEmpty.hidden = false; fpEmpty.textContent = thinSay(FR); keepFin(false); finLine = ''; fpAlt.hidden = true;
     } else {
       fpCard.hidden = false; fpEmpty.hidden = true; fpHits.hidden = false;
       fpSharp.className = 'xtext' + (sharp ? '' : ' same');
@@ -3036,7 +3038,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     e.preventDefault(); clearTimeout(timer);
     if (!fi.value.trim()) { say('Paste a line first'); payUpdate(); fi.focus(); return; }
     await loadCore(); await frame(); fpaint(); payUpdate(true);
-    if (FR) $('#fin-status').textContent = FR.state === 'thin' ? 'Sharpen needs a few more words. Paste the whole first line.' : viewOf(FR, verOf(FR, 0), keepF).status;
+    if (FR) $('#fin-status').textContent = FR.state === 'thin' ? thinSay(FR) : viewOf(FR, verOf(FR, 0), keepF).status;
     if (narrow()) { fi.blur(); setTimeout(() => { const el = fpKeep.hidden ? (fpHits.hidden ? fpEmpty : fpHits) : fpKeep; el.scrollIntoView({ block: 'end', behavior: RM ? 'auto' : 'smooth' }); }, 60); }
   });
   async function toggleFin(el) {

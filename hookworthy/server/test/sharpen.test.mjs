@@ -33,8 +33,8 @@ test('one tap: the moves top first lines make, with the facts kept', () => {
   assert.equal(S('so i think the biggest mistake i made this cycle was probably not taking profits on the way up'), 'biggest mistake i made this cycle? probably not taking profits on the way up.', 'a stacked hedge keeps the modal, and the move still lands');
   assert.equal(S('Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.'), 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', 'passive made active');
   /* r86 pass 6 (juror 5, hook-7): the claim's one hedge ("I think", "kind of") stays through the move */
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), 'I’ve hired over 300 people. I think the best interview question is four words:', 'a colon only because the post answers it');
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is four words.', 'no colon with nothing after it');
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), 'I’ve hired over 300 people. I think the best interview question is just four words:', 'a colon only because the post answers it'); /* v4.1: "just four words" is "only four words" */
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is just four words.', 'no colon with nothing after it');
   assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'want to build muscle? track your protein.');
   assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week has been kind of a big deal for my energy.', 'a never-say word said plainly');
   assert.equal(S('honestly lifting 3 days a week has been a game changer for my energy'), 'lifting 3 days a week changed my energy.', 'a never-say word said plainly');
@@ -76,5 +76,7 @@ test('the eval: one tap gets most real drafts to Ready, with no fact lost or inv
   assert.deepEqual(hard, [], 'no number lost or added, no banned word, no hedge left, no loop with nothing after it');
   /* r86 pass 6 (juror 5, hook-7): 34/48 (was ≥ 40). The engine now keeps what the Claude prompt keeps (one hedge per clause, the
      frames, "lol", the writer's "!"), and hookScore still docks a kept "I think", so fewer lines clear 70 after one tap */
-  assert.ok(ready >= 33, `Ready after one tap: ${ready}/${EVAL.length}`);
+  /* v4.1 (hook4-7): 32/48. An "actually" that carries the contrast, "really" under a negation and "just" before a number now stay,
+     and hookScore still docks them, so two more lines land just under 70 */
+  assert.ok(ready >= 32, `Ready after one tap: ${ready}/${EVAL.length}`);
 });
