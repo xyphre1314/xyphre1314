@@ -1329,7 +1329,7 @@ footer .wrap{container-type:inline-size}
   .try-c{padding:14px 14px 10px}
   .ed-mirror,.ed-ta,.t-try .fallen{font-size:17px}
   .flags,.why,.cbar{margin-left:0}
-  .flags{margin-top:10px}
+  .flags,.flags:empty{margin-top:10px;min-height:32px}
   .flags button{height:36px}
   .why{font-size:14px}
   .cbar{margin-top:10px}
@@ -1741,7 +1741,7 @@ footer .wrap{container-type:inline-size}
           <p class="why" id="try-why"></p>
           <div class="cbar">
             <span class="count tnum" id="try-count" aria-hidden="true">58 / 280</span>
-            <span class="undo" id="try-undo" hidden>Cleared · <button type="button" id="try-undo-b">Undo</button></span><button class="btn btn-glass btn-x" type="button" id="try-clear">Write my own</button>
+            <span class="undo" id="try-undo" hidden><span id="try-undo-l">Cleared</span> · <button type="button" id="try-undo-b">Undo</button></span><button class="btn btn-glass btn-x" type="button" id="try-clear">Write my own</button>
             <button class="btn btn-glass btn-x" type="button" id="try-go">Sharpen<kbd id="try-kbd" hidden></kbd></button>
           </div>
         </div>
@@ -3048,12 +3048,21 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* "Write my own" while the example shows (it clears the box and focuses it); "Clear" once the box holds your own line,
      with a few seconds to undo it. With the box empty there's nothing to clear, so the button steps away (and Sharpen never clips) */
   const TRY0 = ta.value, undoEl = $('#try-undo'), clrBtn = $('#try-clear'); let undoT = 0, undone = null;
+  /* the starters: each a different move, and each fits two lines of the box on a 360px phone, so a pick never moves the page */
+  const STARTERS = ['due to the fact that it’s a red week, i’m trading half size', 'So excited to share: after 14 months, we hit $10k MRR',
+    'Here are 5 things 3 years of newsletters taught me', 'Real talk: after 40 founders, I write every first line last', '$ETH reclaimed 3k. shorts are trapped.'];
   function clearLabel() { const own = ta.value && ta.value !== TRY0; clrBtn.hidden = !ta.value; card.classList.toggle('isx', !!ta.value && !own); const h = own ? `${icn('close')}Clear` : 'Write my own'; if (clrBtn.innerHTML !== h) clrBtn.innerHTML = h; }
-  $('#try-clear').addEventListener('click', () => {
-    const own = ta.value && ta.value !== TRY0; undone = own ? { v: ta.value, k: keepT.slice() } : null;
-    touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = ''; paint(); keepLabel(); ta.focus();
-    clearTimeout(undoT); undoEl.hidden = !undone; cnt.hidden = !!undone;
+  /* the visitor's own line never vanishes without a way back: Clear, a starter or a persona's draft that replaces it offers
+     Undo for a few seconds ("Cleared · Undo", "Replaced · Undo"). Lines the page put there go without asking */
+  const ours = v => v === TRY0 || STARTERS.includes(v) || WHO.some(w => w.draft === v) || EX.some(e => e.draft === v);
+  function stash(label, next, any) {
+    const own = !!ta.value.trim() && (any ? ta.value !== TRY0 : !ours(ta.value)) && ta.value !== next; undone = own ? { v: ta.value, k: keepT.slice() } : null;
+    clearTimeout(undoT); $('#try-undo-l').textContent = label; undoEl.hidden = !undone; cnt.hidden = !!undone;
     if (undone) undoT = setTimeout(() => { undoEl.hidden = true; cnt.hidden = false; undone = null; }, 5000);
+  }
+  $('#try-clear').addEventListener('click', () => {
+    stash('Cleared', '', true);
+    touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = ''; paint(); keepLabel(); ta.focus();
   });
   ta.addEventListener('input', () => { if (!undone) return; clearTimeout(undoT); undone = null; undoEl.hidden = true; cnt.hidden = false; });
   /* the counter is true on first paint */
@@ -3061,9 +3070,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   $('#try-undo-b').addEventListener('click', () => { if (!undone) return; ta.value = undone.v; keepT = undone.k; undone = null; clearTimeout(undoT); undoEl.hidden = true; cnt.hidden = false; paint(); ta.focus(); });
   goBtn.addEventListener('click', go);
   tryKeep.addEventListener('click', e => openSheet({ plan: 'free', line: touched ? tryLine : '' }, e.currentTarget));
-  const STARTERS = ['due to the fact that it’s a red week, i’m trading half size', 'We’re so excited to share: after 14 months, we hit $10k MRR',
-    'Here are 5 things I learned writing a newsletter for 3 years', 'Real talk: after 40 founders, I write every first line last', '$ETH reclaimed 3k. shorts are trapped.'];
   $$('#try-starters button').forEach(b => b.addEventListener('click', async () => {
+    stash('Replaced', STARTERS[+b.dataset.s]);
     touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = STARTERS[+b.dataset.s];
     await loadCore(); await frame(); paint(); go();
   }));
@@ -3083,7 +3091,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   let jumped = false;
   function jumpToTry(line) {
     loadCore(); jumped = true; $('#sharpen').classList.remove('arm'); tryApi.finish();
-    if (line) { touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = line; ta.scrollTop = 0; paint(); keepLabel(); }
+    if (line) { stash('Replaced', line); touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = line; ta.scrollTop = 0; paint(); keepLabel(); }
     $('#sharpen').scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' });
     setTimeout(() => { ta.focus({ preventScroll: true }); if (line) { const n = ta.value.length; ta.setSelectionRange(n, n); } else if (!touched) ta.select(); }, RM ? 0 : 480);
   }
@@ -3245,7 +3253,15 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     sc.addEventListener('scroll', edge, { passive: true }); addEventListener('resize', edge); edge();
   });
   /* phones: the Try result keeps the default's height as its floor, so a starter never moves the tiles below */
-  let tryW = 0; const lockTry = () => { if (innerWidth === tryW) return; tryW = innerWidth; if (!narrow()) { out.style.minHeight = ''; return; } if (touched) return; out.style.minHeight = ''; out.style.minHeight = out.offsetHeight + 'px'; };
+  const lockTa = () => {
+    ta.style.minHeight = ''; if (!narrow()) return;
+    const c = ta.cloneNode(); c.removeAttribute('id'); c.removeAttribute('aria-describedby'); c.setAttribute('aria-hidden', 'true'); c.tabIndex = -1;
+    c.style.cssText = 'position:absolute;left:0;top:0;width:' + ta.offsetWidth + 'px;visibility:hidden;pointer-events:none;min-height:0;height:auto';
+    if (sized) c.style.fieldSizing = 'content'; edBox.appendChild(c); let h = 0;
+    [TRY0, ...STARTERS].forEach(v => { c.value = v; if (!sized) { c.style.height = 'auto'; c.style.height = c.scrollHeight + 'px'; } h = Math.max(h, c.getBoundingClientRect().height); });
+    edBox.removeChild(c); if (h > ta.getBoundingClientRect().height + 1) ta.style.minHeight = Math.ceil(h) + 'px';
+  };
+  let tryW = 0; const lockTry = () => { if (innerWidth === tryW) return; tryW = innerWidth; lockTa(); if (!narrow()) { out.style.minHeight = ''; return; } if (touched) return; out.style.minHeight = ''; out.style.minHeight = out.offsetHeight + 'px'; };
   lockTry(); addEventListener('resize', lockTry);
 
   /* the pointer light: created on the first mouse visit, compositor-only */
