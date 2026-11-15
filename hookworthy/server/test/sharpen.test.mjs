@@ -34,12 +34,12 @@ test('one tap: the moves top first lines make, with the facts kept', () => {
   assert.equal(S('so i think the biggest mistake i made this cycle was probably not taking profits on the way up'), 'i think the biggest mistake i made this cycle was probably not taking profits on the way up.', 'a stacked hedge keeps the modal, and the move still lands');
   assert.equal(S('Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.'), 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', 'passive made active');
   /* r86 pass 6 (juror 5, hook-7): the claim's one hedge ("I think", "kind of") stays through the move */
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), 'I’ve hired over 300 people. I think the best interview question is just four words:', 'a colon only because the post answers it'); /* v4.1: "just four words" is "only four words" */
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is just four words.', 'no colon with nothing after it');
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), "I've hired over 300 people. I think the best interview question is just four words:", 'a colon only because the post answers it'); /* v4.5: a draft with no apostrophe gets a straight one */ /* v4.1: "just four words" is "only four words" */
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), "I've hired over 300 people. I think the best interview question is just four words.", 'no colon with nothing after it');
   assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'want to build muscle? track your protein.');
   assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week has been kind of a big deal for my energy.', 'a never-say word said plainly');
   assert.equal(S('honestly lifting 3 days a week has been a game changer for my energy'), 'lifting 3 days a week changed my energy.', 'a never-say word said plainly');
-  assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter\nShort version: warm intros closed 4x more.'), 'Our sales team stopped doing cold calls this quarter. Here’s why:');
+  assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter\nShort version: warm intros closed 4x more.'), "Our sales team stopped doing cold calls this quarter. Here's why:");
   assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter'), 'Our sales team stopped doing cold calls this quarter.', 'no "Here’s why" bait when the post stops there');
   /* strong lines are left alone */
   for (const t of ['Most people quit right before it starts working.', 'My best trade this year? The one I didn’t take.', 'Stop chasing green candles.']) assert.ok(E.hgSharpen(t).same, t);
@@ -49,7 +49,7 @@ test('the receipt: every sharpen says which move it made and why that move works
   const r = E.hgSharpen('honestly most design systems fail because nobody really owns them');
   assert.equal(r.main, 'ask'); assert.match(r.why, /question/i); assert.deepEqual(r.cuts, ['honestly']); /* v4.1 (hook4-7): "nobody really owns them" keeps its degree */
   const n = E.hgSharpen('I’ve been thinking a lot about pricing lately and I think we were really undercharging');
-  assert.equal(n.first, 'Pricing: I think we were undercharging.'); assert.ok(n.why.length > 20); /* r86 pass 6 (hook-7): the lone "I think" stays */
+  assert.equal(n.first, 'Pricing: I think we were really undercharging.'); /* v4.5 (hook44-3): "really" before the verb is the writer's degree */ assert.ok(n.why.length > 20); /* r86 pass 6 (hook-7): the lone "I think" stays */
   Object.values(core.SHARPEN.MOVE_WHY).forEach(w => { assert.match(w, /\.$/); assert.doesNotMatch(w, /\b\d+(?:%|x)\b|algorithm|reach|viral|engag/i); });
 });
 
@@ -81,5 +81,7 @@ test('the eval: one tap gets most real drafts to Ready, with no fact lost or inv
      and hookScore still docks them, so two more lines land just under 70 */
   /* v4.2 (round-7 marketing-4): 31/48. "I think" heading a claim is now the clause's one kept hedge (the second hedge goes instead),
      and hookScore still docks a kept "I think", so one more line lands just under 70. Safety over the score */
-  assert.ok(ready >= 31, `Ready after one tap: ${ready}/${EVAL.length}`);
+  /* v4.5 (hook44-3): 30/48. "really" right before the verb ("we were really undercharging") is the writer's degree and stays,
+     and hookScore still docks it, so that line lands under 70. Meaning over the score */
+  assert.ok(ready >= 30, `Ready after one tap: ${ready}/${EVAL.length}`);
 });

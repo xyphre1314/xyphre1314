@@ -117,7 +117,7 @@ test('v4.4: coverage (z-54, z-72, z-107), long run-ons in beats, and true receip
   for (const [m, o] of MODES) assert.equal(L(z72, o), "If you're just starting out at the gym, just focus on showing up 3 times a week.", m);
   assert.equal(S('My advice is simple: start small.').line, 'My advice is simple: start small.');
   assert.equal(L("I don't usually post stuff like this but I just wanted to say how grateful I am for my friends this year."), "I don't usually post stuff like this. But I'm so grateful for my friends this year.");
-  assert.equal(L('We just wanted to let you know how excited we are to finally launch this.'), 'We’re so excited to finally launch this.');
+  assert.equal(L('We just wanted to let you know how excited we are to finally launch this.'), "We're so excited to finally launch this."); /* v4.5: straight, as the draft has no curly apostrophe */
   assert.equal(hard('Excited we are to finally launch this.', 'We just wanted to let you know how excited we are to finally launch this.'), 'exclamation lost its how');
   /* a line over 280 is said in beats where it can be */
   const z35 = "I've been building this company for almost four years now and if I'm being honest, the thing that I wish someone had told me at the very beginning is that you will basically never feel ready for any of the big moments, whether that's hiring your first employee, raising your first round, or firing someone who you really like, and that's completely okay because nobody actually does.";
@@ -127,7 +127,8 @@ test('v4.4: coverage (z-54, z-72, z-107), long run-ons in beats, and true receip
   assert.equal(L('My mom, my dad, and I honestly went to the beach every summer for ten years.'), 'My mom, my dad, and I went to the beach every summer for ten years.');
   /* receipts: an ellipsis mid-sentence ends no beat; a word cut twice is named once */
   assert.equal(S('Spent 6 hours on this landing page and the conversion rate is... 0.4%').say, 'Split it into two beats');
-  assert.equal(S('I think a lot of designers really overthink their portfolios when they should just show 3 really good case studies.').why, '“really” (twice) were talk, not the point. The line says the same without them.');
+  /* v4.5 (hook44-3): "really overthink" now keeps its degree, so the word cut twice is read on two adjectives */
+  assert.equal(S('I think the best designers make really simple things with really boring tools.').why, '“really” (twice) were talk, not the point. The line says the same without them.');
 });
 
 test('v4.4: the 60-line hunt, every mode: no hard guard, no page guard, none of this file\'s break shapes', () => {

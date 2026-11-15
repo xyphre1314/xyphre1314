@@ -63,7 +63,8 @@ test('juror 5, hook-1: no version the engine returns trips a guard, on the juror
 
 test('juror 5, hook-1: the broken and changed lines come back whole, or as written with honest copy', () => {
   assert.equal(L("I just wanted to quickly say that I closed my $PEPE position today for a 4x and honestly I'm very happy with it."), "I closed my $PEPE position today for a 4x. I'm very happy with it.");
-  assert.equal(L("So I've been experimenting a lot with subject lines lately, and I think I've basically found a formula that really works."), "I've been experimenting a lot with subject lines lately. I think I've found a formula that works.");
+  /* v4.5 (hook44-3): "really" before the clause's verb ("a formula that really works") is the writer's degree, and stays */
+  assert.equal(L("So I've been experimenting a lot with subject lines lately, and I think I've basically found a formula that really works."), "I've been experimenting a lot with subject lines lately. I think I've found a formula that really works.");
   assert.equal(L('Not to brag or anything, but I just hit a 405 lb deadlift for the very first time today!!'), 'Not to brag or anything, but I just hit a 405 lb deadlift for the first time today!!');
   for (const t of ['Does anyone else feel like their motivation to work out completely disappears in the winter, or is it just me?', "This is not financial advice, but I'm not selling a single $SOL under $400."]) { const R = S(t); assert.equal(R.line, t); assert.notEqual(R.state, 'sharp'); }
   assert.equal(L('gm. i honestly feel like most of you are kinda sleeping on $TIA rn'), 'gm. i feel like most of you are sleeping on $TIA rn.');
@@ -81,7 +82,8 @@ test('juror 5, hook-1: the broken and changed lines come back whole, or as writt
 test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   /* the frames that say how to take the line */
   for (const t of ['hot take: most airdrops are a tax on your time', 'Honest question: does anyone actually read terms of service pages?', 'Unpopular opinion: your first hire should be a salesperson, not an engineer.', 'PSA: rotate your API keys. Yes, the ones in that old repo too.', 'Reminder: rest days are part of the program.']) assert.equal(L(t), t);
-  assert.equal(L('Honest question: why do so many founders seem to think they really need to raise money?'), 'Honest question: why do so many founders seem to think they need to raise money?');
+  /* v4.5 (hook44-3): "they really need" is not "they need": the degree on the verb is the writer's, so nothing is left to cut */
+  assert.equal(L('Honest question: why do so many founders seem to think they really need to raise money?'), 'Honest question: why do so many founders seem to think they really need to raise money?');
   /* an opinion label stands in for "I think" and a softener, on a take that isn't a forecast */
   assert.equal(L('Hot take: I genuinely think code reviews are kind of a waste of time for teams under 5 people.'), 'Hot take: code reviews are a waste of time for teams under 5 people.');
   /* the tone: a closing "lol", a feeling, "kind of" on a feeling, a softener */
