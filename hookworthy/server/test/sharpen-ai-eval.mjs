@@ -1,12 +1,16 @@
-/* r86: the owner's eval for Sharpen through Claude. Every juror line set (concepts/r86/reviews/rerate*, hook/unseen.json)
-   goes through the Claude path (the same sharpenClaude the endpoint runs) and the rules path (core.sharpenLine), and a
-   side-by-side markdown table comes out for hand grading: draft | rules | claude | validator verdict.
-   It calls the real Anthropic API and costs money (~$1 for the ~300 lines), so it runs ONLY when ANTHROPIC_API_KEY is set:
+/* r86 v3: the owner's eval for Sharpen through Claude. Every juror line set (concepts/r86/reviews/rerate*, hook/unseen.json)
+   goes through the Claude path (the same sharpenClaude the endpoint runs: the v3 prompt, the sharpen tier, the light
+   validator) and the rules path (core.sharpenLine), and a side-by-side markdown table comes out for hand grading:
+   draft | rules | claude (the version that shipped, and the others Claude offered) | validator verdict.
+   It calls the real Anthropic API and costs money (about $3 for the ~300 lines on Opus 5.5, about $1.50 on Sonnet 5.5),
+   so it runs ONLY when ANTHROPIC_API_KEY is set:
 
-     cd server && ANTHROPIC_API_KEY=sk-ant-... node test/sharpen-ai-eval.mjs [--limit 40] [--concurrency 4] [--out file.md]
+     cd server && ANTHROPIC_API_KEY=sk-ant-... node test/sharpen-ai-eval.mjs [--model claude-sonnet-5-5] [--limit 40] [--concurrency 4] [--out file.md]
 
-   Not part of `npm test`. Prints total tokens, cache hits and the estimated cost at the quick tier's prices
-   (Sonnet 5.5: $2/MTok in, $10/MTok out, $0.20/MTok cache reads, $2.50/MTok 5-minute cache writes). */
+   --model points the sharpen tier at another model for this run (the same as HW_MODEL_SHARPEN; default claude-opus-5-5).
+   Not part of `npm test`. Prints total tokens (thinking is billed as output), cache hits and the estimated cost at the
+   model's prices: Opus 5.5 $4/MTok in, $20/MTok out, $0.20/MTok cache reads, $5/MTok 5-minute cache writes; Sonnet 5.5
+   $2, $10, $0.10, $2.50. */
 import { readFileSync, readdirSync, existsSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -20,6 +24,8 @@ if (!process.env.ANTHROPIC_API_KEY) {
 
 const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
 const LIMIT = +arg('limit', 0) || Infinity, CONC = Math.max(1, Math.min(8, +arg('concurrency', 4) || 4));
+/* the model is read when lib/ai.mjs loads, so --model goes into the environment before the server is imported */
+if (arg('model', '')) process.env.HW_MODEL_SHARPEN = arg('model', '');
 const OUT = arg('out', join(process.cwd(), `sharpen-ai-eval-${new Date().toISOString().slice(0, 10)}.md`));
 process.env.HW_DATA_DIR = process.env.HW_DATA_DIR || mkdtempSync(join(tmpdir(), 'hw-eval-'));
 
@@ -35,7 +41,8 @@ for (const d of readdirSync(REV).filter(x => /^rerate/.test(x)).sort()) {
   for (const r of JSON.parse(readFileSync(f, 'utf8'))) { const t = String(r.t || r.text || ''); if (!t.trim() || seen.has(t)) continue; seen.add(t); lines.push({ set: d, n: r.n || '', t }); }
 }
 const todo = lines.slice(0, LIMIT);
-console.log(`sharpen-ai-eval: ${todo.length} lines from ${[...new Set(todo.map(x => x.set))].join(', ')} on ${AI.MODELS.quick} (quick tier), ${CONC} at a time`);
+const MODEL = AI.MODELS.sharpen;
+console.log(`sharpen-ai-eval: ${todo.length} lines from ${[...new Set(todo.map(x => x.set))].join(', ')} on ${MODEL} (sharpen tier, low effort), ${CONC} at a time`);
 
 const tot = { calls: 0, input: 0, output: 0, read: 0, write: 0, hits: 0, ms: 0 }, verdicts = {}, rows = [];
 async function one(x, i) {
@@ -44,11 +51,14 @@ async function one(x, i) {
   const t0 = Date.now(), r = await sharpenClaude({ text: x.t }); const ms = Date.now() - t0;
   const u = r.usage || {};
   if (r.usage) { tot.calls++; tot.input += u.input_tokens || 0; tot.output += u.output_tokens || 0; tot.read += u.cache_read_input_tokens || 0; tot.write += u.cache_creation_input_tokens || 0; if (u.cache_read_input_tokens) tot.hits++; tot.ms += ms; }
-  let verdict, claude = r.data && typeof r.data.line === 'string' ? r.data.line : '';
-  if (r.result) verdict = r.result.state === 'clean' ? 'pass: unchanged' : `pass: ${r.result.say}`;
-  else if ((r.reason === 'invalid' || r.reason === 'claude_unchanged') && r.data) verdict = `rejected: ${r.reject || 'invalid'}`;
+  /* v3: Claude returns up to three versions; the first that passes ships, the rest that pass are alts */
+  const vers = r.data && Array.isArray(r.data.versions) ? r.data.versions.filter(v => v && typeof v.line === 'string') : [];
+  let verdict, claude = r.result ? r.result.line : vers[0] ? vers[0].line : '';
+  if (r.result) verdict = r.result.state === 'clean' ? 'pass: unchanged' : `pass: version ${(r.pick || 0) + 1} of ${vers.length} · ${r.result.say}`;
+  else if (r.reason === 'invalid' && r.data) verdict = `rejected: ${(r.rejects || [r.reject || 'invalid']).join(' / ')}`;
   else verdict = `${r.reason}${r.error ? `: ${String(r.error.message || '').slice(0, 80)}` : ''}`;
-  if (r.data && r.data.unchanged && !r.result) claude = `(unchanged) ${claude}`;
+  const others = vers.map(v => v.line).filter(l => l !== claude);
+  if (others.length) claude += ` ⏎ also offered: ${others.join(' ⏎ ')}`;
   const key = verdict.replace(/:.*$/, '') + (verdict.startsWith('rejected') ? `: ${verdict.split(': ')[1]}` : '');
   verdicts[key] = (verdicts[key] || 0) + 1;
   rows[i] = { ...x, rules, claude, why: r.result ? r.result.why : r.data && r.data.why, verdict, model: r.model };
@@ -60,16 +70,18 @@ await Promise.all(Array.from({ length: CONC }, async () => { while (next < todo.
 const cell = s => String(s == null ? '' : s).replace(/\|/g, '\\|').replace(/\n/g, ' ⏎ ');
 const first = t => String(t).split('\n')[0];
 const md = [`# Sharpen: Claude vs rules (${new Date().toISOString().slice(0, 10)})`, '',
-  `${todo.length} juror lines · model ${AI.MODELS.quick} · grade each Claude line h (a pro would post it), o (better, not there) or m (worse or wrong).`, '',
+  `${todo.length} juror lines · model ${MODEL} (sharpen tier) · grade each Claude line h (a pro would post it), o (better, not there) or m (worse or wrong).`, '',
   '| # | set | draft | rules | claude | validator verdict | grade |', '|---|---|---|---|---|---|---|',
-  ...rows.map((r, i) => `| ${i + 1} | ${cell(`${r.set} ${r.n}`)} | ${cell(first(r.t))} | ${cell(r.rules.state === 'sharp' ? r.rules.line : `(${r.rules.state}) ${r.rules.line}`)} | ${cell(r.claude)}${r.why ? `<br><sub>${cell(r.why)}</sub>` : ''} | ${cell(r.verdict)}${r.model && r.model !== AI.MODELS.quick ? ` (${cell(r.model)})` : ''} | |`)];
+  ...rows.map((r, i) => `| ${i + 1} | ${cell(`${r.set} ${r.n}`)} | ${cell(first(r.t))} | ${cell(r.rules.state === 'sharp' ? r.rules.line : `(${r.rules.state}) ${r.rules.line}`)} | ${cell(r.claude)}${r.why ? `<br><sub>${cell(r.why)}</sub>` : ''} | ${cell(r.verdict)}${r.model && r.model !== MODEL ? ` (${cell(r.model)})` : ''} | |`)];
 writeFileSync(OUT, md.join('\n') + '\n');
 
-const P = { in: 2, out: 10, read: 0.2, write: 2.5 }, $ = n => `$${n.toFixed(4)}`;
+/* per-MTok prices: Opus 5.5 and Sonnet 5.5 (5-minute cache writes are 1.25x input); another model is priced as Opus */
+const PRICES = { 'claude-opus-5-5': { in: 4, out: 20, read: 0.2, write: 5 }, 'claude-sonnet-5-5': { in: 2, out: 10, read: 0.1, write: 2.5 } };
+const P = PRICES[MODEL] || PRICES['claude-opus-5-5'], $ = n => `$${n.toFixed(4)}`;
 const cost = (tot.input * P.in + tot.output * P.out + tot.read * P.read + tot.write * P.write) / 1e6;
 console.log(`\nwrote ${OUT}`);
 console.log(`verdicts: ${Object.entries(verdicts).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(' · ')}`);
 console.log(`Claude calls ${tot.calls} · avg ${tot.calls ? Math.round(tot.ms / tot.calls) : 0} ms`);
 console.log(`tokens: input ${tot.input} · output ${tot.output} · cache reads ${tot.read} · cache writes ${tot.write} · total ${tot.input + tot.output + tot.read + tot.write}`);
 console.log(`cache hits: ${tot.hits}/${tot.calls} calls read the cached prefix`);
-console.log(`estimated cost: ${$(cost)} total · ${$(tot.calls ? cost / tot.calls : 0)} per tap (Sonnet 5.5: $2/MTok in, $10/MTok out, $0.20/MTok cache reads, $2.50/MTok cache writes)`);
+console.log(`estimated cost: ${$(cost)} total · ${$(tot.calls ? cost / tot.calls : 0)} per tap (${MODEL}: $${P.in}/MTok in, $${P.out}/MTok out, $${P.read}/MTok cache reads, $${P.write}/MTok cache writes)`);

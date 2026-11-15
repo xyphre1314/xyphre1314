@@ -7598,7 +7598,7 @@ function crMeterHTML(where = 'side') {
   if (where === 'page') {
     return `<section class="cr-meter cr-page" data-where="page" data-s="${s}" aria-label="Your AI usage">
       <div class="cr-ph"><span class="label">${st.plan === 'free' ? 'Your AI usage today' : `Your AI usage · ${esc(st.name)}`}</span><span class="cr-big">${st.plenty ? 'Plenty left' : crPct(st)}${st.rolled ? ' <small>with last month’s leftovers</small>' : ''}</span></div>
-      ${bar}<p class="cr-sub">${esc(crWhen(st, true))} ${st.plan === 'free' ? `Quick mode and Sharpen on your device stay unlimited, with ${CR.HELPERS} Claude touch-ups a day.` : `Quick mode never counts, and Sharpen is free for ${CR.HELPERS} a day.`}</p></section>`;
+      ${bar}<p class="cr-sub">${esc(crWhen(st, true))} ${st.plan === 'free' ? `Quick mode and Sharpen stay unlimited, and Sharpen never counts against your usage.` : `Quick mode and Sharpen never count.`}</p></section>`;
   }
   const sub = crWhen(st);
   return `<a class="cr-meter" data-where="side" data-s="${s}" href="#upgrade" aria-label="${esc(crSay(st))} Open Plans." data-tip="${esc(st.plenty ? `Plenty left · ${crWhen(st)}` : 'Rewrites use a little · Sharpen is free')}">
@@ -8569,12 +8569,13 @@ function shReceipt(v, head, cuts = [], note = '') {
   return `<span class="shr"><span class="shr-h"><b>${esc(head)}.</b> ${esc(shMoveLabel(v, cuts.length))}.</span>${v.why ? `<span class="shr-why">${esc(v.why)}</span>` : ''}${c.length ? `<span class="shr-cut"><span class="sr">Cut:</span>${c.map(w => `<s>${esc(w)}</s>`).join('')}${cuts.length > c.length ? `<i>+${cuts.length - c.length}</i>` : ''}</span>` : ''}${note ? `<span class="shr-why">${note}</span>` : ''}</span>`;
 }
 /* r86: in the app, Claude sharpens the line through your Hookworthy server (api/v1/sharpen), free like the engine. The
-   server holds Claude's line to the engine's own guards and sends it in the engine's shape, or says it used the engine.
-   Only a server with Claude on is asked; anything else (no server, demo, an error, a rules answer) is null, silently */
+   server holds Claude's versions to hard safety (facts, negations, hedges) and sends the first that passes in the engine's
+   shape, its other passing versions as alts, or says it used the engine. Only a server with Claude on is asked; anything
+   else (no server, demo, an error, a rules answer) is null, silently. The server gives Claude 12 s; this waits a little longer */
 async function sharpenByClaude(text) {
   await LLM.ready;
   if (LLM.mode !== 'server' || !LLM.server || !LLM.server.sharpen) return null;
-  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 9000);
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 14000);
   try {
     const r = await fetch('api/v1/sharpen', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, voice: voiceSpec(), never: NEVER(), keep: MEM.memKeepList(memFor()) }), signal: ctl.signal });
     const j = r.ok ? await r.json().catch(() => null) : null;
@@ -8600,7 +8601,11 @@ function sharpenFirst() {
     if (i !== 0 || tw.text !== list[0].text || !S.draft.tweets.includes(tw) || String(c.draft || '').trim() !== firstLine(before).trim()) return;
     const P = hookUpPack(c, before.slice(firstLine(before).length), x => hookFor(x).score, r.from); if (!P || P.line.trim() === firstLine(list[0].text).trim()) return;
     const v = { text: P.text, say: P.say, why: P.why, main: P.main, moves: P.moves, cuts: P.cuts, ai: true };
-    for (let k = list.length - 1; k > 0; k--) if (firstLine(list[k].text).trim() === P.line.trim()) list.splice(k, 1); list.unshift(v);
+    /* Claude's other versions that passed come next, each with its own struck words; "Another" reaches the engine's after them */
+    const soft = x => !/^(?:move|swap|tight|reshape)$/.test(x.kind), ais = [v, ...P.alts.map((a, k) => ({ text: a.text, say: a.say, why: a.why, main: a.main, moves: a.moves, cuts: (((c.alts || [])[k] || {}).cut || []).filter(soft).map(x => x.text), ai: true }))];
+    for (const a of ais) for (let k = list.length - 1; k > 0; k--) if (firstLine(list[k].text).trim() === firstLine(a.text).trim()) list.splice(k, 1);
+    const same = (a, b) => firstLine(a.text).trim() === firstLine(b.text).trim();
+    list.unshift(...ais.filter((a, k) => !k || (!same(a, list[0]) && !ais.slice(0, k).some(b => same(a, b)))));
     const ta = $(`.tw[data-id="${tw.id}"] .tw-input`); UI.hookFrom = hookFor(tw.text).score; tw.text = v.text; save(); if (ta) ta.value = v.text; mark(v);
     renderThread({ focusId: tw.id, pos: firstLine(v.text).length }); receipt(v, hookFor(tw.text).score);
   };
@@ -12983,7 +12988,7 @@ function crWhatHTML() {
   const A = CR.ACTS, row = (k, extra = '') => `<li><span>${esc(A[k].label)}${extra ? `<small>${extra}</small>` : ''}</span><b>${A[k].c}</b></li>`;
   return `<details class="cr-what"><summary>${ic('spark', 'sm')} What uses rewrites?${ic('down', 'sm')}</summary><ul>
     ${row('rewrite', '2 for a post over 1,000 characters')}${row('hooks')}${row('replies', 'Up to ten at a time')}${row('week')}${row('voice', 'Reads up to 120 posts once')}
-    <li class="free"><span>Sharpen, tidying what you said, picking a visual<small>Free for ${CR.HELPERS} a day with Claude, unlimited on your device</small></span><b>Free</b></li></ul></details>`;
+    <li class="free"><span>Sharpen, tidying what you said, picking a visual<small>Sharpen is unlimited. Tidying and visuals: ${CR.HELPERS} a day with Claude</small></span><b>Free</b></li></ul></details>`;
 }
 /* how credits work: the allowance per plan side by side, and what each thing costs (Plans page) */
 function creditsExplainHTML() {

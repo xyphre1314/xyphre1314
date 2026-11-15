@@ -5,7 +5,10 @@
    - default: Sonnet 5.5, medium effort. Anything that writes in the author's voice: rewrites, first lines,
      the Room, replies, the week plan, posts from a brief or a picture.
    - complex: Opus 5.5, high effort. Voice study, the one deep read every later rewrite depends on.
-   Each tier can be pointed at another model with HW_MODEL_QUICK / HW_MODEL_DEFAULT / HW_MODEL_COMPLEX.
+   - sharpen: Opus 5.5, low effort. The one-tap Sharpen of a first line (r86 v3): on the second blind held-out set Opus
+     shipped 94.0% postable against Sonnet's 85.5% with the same prompt (concepts/r86/reviews/claude-sharpen/RESULTS-v3.md).
+     Opus 5.5 can't turn thinking off, so low effort is the latency lever; the app shows the engine's line instantly anyway.
+   Each tier can be pointed at another model with HW_MODEL_QUICK / HW_MODEL_DEFAULT / HW_MODEL_COMPLEX / HW_MODEL_SHARPEN.
    Refusals fall back server-side ("default") where the model offers it. Haiku has none, so a tier
    pointed at Haiku goes without one. Calls that send a schema get structured outputs, so the reply is
    valid JSON by construction. */
@@ -14,13 +17,15 @@ import Anthropic from '@anthropic-ai/sdk';
 export const MODELS = {
   quick: process.env.HW_MODEL_QUICK || 'claude-sonnet-5-5',
   default: process.env.HW_MODEL_DEFAULT || 'claude-sonnet-5-5',
-  complex: process.env.HW_MODEL_COMPLEX || 'claude-opus-5-5'
+  complex: process.env.HW_MODEL_COMPLEX || 'claude-opus-5-5',
+  sharpen: process.env.HW_MODEL_SHARPEN || 'claude-opus-5-5'
 };
 /* Haiku (only if a tier is pointed at it) declines without a server-side fallback: a fallbacks list would 400 */
 const hasFallback = model => !/haiku/i.test(String(model));
-const EFFORT = { quick: 'low', default: 'medium', complex: 'high' };
-/* thinking counts toward max_tokens, so each cap leaves room for it; 20000 stays under the SDK's non-streaming ceiling */
-const MAX_TOKENS = { quick: 8000, default: 16000, complex: 20000 };
+const EFFORT = { quick: 'low', default: 'medium', complex: 'high', sharpen: 'low' };
+/* thinking counts toward max_tokens, so each cap leaves room for it; 20000 stays under the SDK's non-streaming ceiling.
+   Sharpen's answer is up to three short versions, but Opus thinks on every call, so its cap is generous */
+const MAX_TOKENS = { quick: 8000, default: 16000, complex: 20000, sharpen: 16000 };
 const SYSTEM = 'You are the writing engine inside Hookworthy, an app where creators write, schedule and grow on X, Threads, LinkedIn and Bluesky. The people reading your output post it under their own name, so it has to sound like them and stay true to what they wrote.';
 const JSON_ONLY = ' When the task asks for JSON, reply with only that JSON value.'; // only for calls without a schema
 const MAX_SCHEMA_BYTES = 16 * 1024;

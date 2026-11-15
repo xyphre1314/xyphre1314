@@ -63,11 +63,13 @@ const helpersOut = (res, q) => send(res, 402, { error: `That’s today’s ${CR.
 async function withCredits(req, info, run) { const q = CR.reserve(tokenOf(req), info); if (!q.ok) return { q }; try { return { q, r: await run() }; } catch (e) { q.refund(); throw e; } }
 const spent = q => q.metered ? { cost: q.cost, credits: q.credits } : {};
 
-/* r86: Sharpen through Claude. Free and unlimited like the on-device Sharpen: no credits, ever. Claude proposes the line
-   (Sonnet 5.5 at low effort, the quick tier), core.SHARPEN.fromClaude holds it to the engine's guards and builds the
-   receipt, and anything that goes wrong is the engine's own line instead. A fair-use cap per token per day
-   (HW_SHARPEN_DAILY, 300) and the per-IP rate limit only decide which of the two answers */
-export const SHARPEN_TIMEOUT_MS = 6000;
+/* r86 v3: Sharpen through Claude. Free and unlimited like the on-device Sharpen: no credits, ever. Claude proposes up to
+   three versions of the first line (the sharpen tier: Opus 5.5 at low effort, HW_MODEL_SHARPEN to change it), with the rest
+   of the post as context only; core.SHARPEN.fromClaude (the light validator) ships the first version that keeps every fact
+   and the meaning, the other passing versions become alts, and anything that goes wrong is the engine's own line instead.
+   The app shows the engine's line the moment you tap, so 12 s only bounds how long Claude may take to replace it. A fair-use
+   cap per token per day (HW_SHARPEN_DAILY, 300) and the per-IP rate limit only decide which of the two answers */
+export const SHARPEN_TIMEOUT_MS = 12000;
 const sharpenUse = new Map();
 export const resetSharpenCaps = () => sharpenUse.clear(); // tests
 const sharpenCap = () => { const v = String(process.env.HW_SHARPEN_DAILY ?? '').trim(); return v !== '' && Number.isFinite(+v) ? Math.max(0, Math.floor(+v)) : 300; };
@@ -82,14 +84,16 @@ const strList = (a, n) => (Array.isArray(a) ? a : []).filter(w => typeof w === '
    else { reason }. usage is Claude's token count when a call was made */
 export async function sharpenClaude({ text, voice = null, never = [], keep = [] }) {
   const nv = [...never, ...(voice && Array.isArray(voice.never) ? strList(voice.never, 60) : [])];
+  /* gibberish, under three real words or only a disclaimer: the engine answers, and Claude is never asked */
+  if (core.SHARPEN.tooThin(text)) return { reason: 'thin' };
   /* r86 pass 5 (hook-17): a first line past the cap goes to the engine, never cut short on its way to Claude */
   if ([...String(text == null ? '' : text).replace(/^\s+/, '').split('\n')[0].trim()].length > core.SHARPEN.AI_MAX) return { reason: 'long' };
   let r;
   try { r = await AI.complete({ ...core.prompts.sharpen({ text, voice, never: nv, keep }), timeout: SHARPEN_TIMEOUT_MS }); }
   catch (e) { const c = e && e.code; return { reason: c === 'no_key' || c === 'timeout' || c === 'refused' ? c : c === 'invalid_json' || c === 'empty_completion' ? 'invalid' : 'error', error: e }; }
   const tr = {}, result = r.truncated ? null : core.SHARPEN.fromClaude(text, r.data, { keep, never: nv, trace: tr });
-  /* "unchanged" on a line the engine has fluff marked in: the engine's answer, said as such */
-  return result ? { result, usage: r.usage, model: r.model, data: r.data } : { reason: tr.reject === 'unchanged' ? 'claude_unchanged' : 'invalid', reject: r.truncated ? 'truncated' : tr.reject, usage: r.usage, model: r.model, data: r.data };
+  /* no version passed (trace.rejects says why, one reason per version): the engine's answer */
+  return result ? { result, usage: r.usage, model: r.model, data: r.data, pick: tr.pick } : { reason: 'invalid', reject: r.truncated ? 'truncated' : tr.reject, rejects: tr.rejects, usage: r.usage, model: r.model, data: r.data };
 }
 
 export async function handle(req, res) {
@@ -170,7 +174,8 @@ export async function handle(req, res) {
     if (p === '/api/v1/check' && req.method === 'POST') { const b = await body(req); const text = String(b.text || ''); const hist = Array.isArray(b.history) ? b.history.slice(0, 3000).map(core.normPost).filter(Boolean) : null; const tuned = hist ? core.learnHooks(hist) : null; return send(res, 200, { hook: core.hookScore(text), ...(tuned ? { mine: tuned.ready ? { ...core.personalScore(text, tuned), tested: tuned.val } : { ready: false, n: tuned.n, need: tuned.need } } : {}), kind: core.kindOf(text), checks: core.checkPost(text, { never: b.never || [], limit: b.limit || 280, platform: b.platform || 'x' }) }); }
     if (p === '/api/v1/rewrite' && req.method === 'POST') { const b = await body(req); if (!allow(ip)) return send(res, 429, { error: 'Slow down a little', code: 'rate_limited' }); if (!AI.hasKey()) return send(res, 503, { error: 'Set ANTHROPIC_API_KEY in server/.env', code: 'no_key' }); const spec = core.prompts.rewrite({ text: b.text, kind: b.kind || 'punchier', lang: b.lang, voice: b.voice || null, platform: b.platform || 'X', limit: b.limit || 280 }); const { q, r } = await withCredits(req, { act: 'rewrite', chars: String(b.text || '').length }, () => AI.complete({ ...spec, json: true })); if (!r) return outOfCredits(res, q); return send(res, 200, r.data, q.metered ? { 'x-credits-left': String(q.credits.left) } : {}); }
     /* POST /api/v1/sharpen { text, voice?, never?, keep? }: always 200 with sharpenLine's contract and source 'claude' |
-       'rules'; a rules answer says why (thin, long, no_key, cap, timeout, invalid, claude_unchanged, refused, error). Never spends credits */
+       'rules'; Claude's answer carries its other passing versions in alts. A rules answer says why (thin, long, no_key, cap,
+       timeout, invalid, refused, error). Never spends credits */
     if (p === '/api/v1/sharpen' && req.method === 'POST') {
       const b = await body(req, 64 * 1024), text = typeof b.text === 'string' ? b.text : '', keep = strList(b.keep, 30), never = strList(b.never, 60);
       const voice = b.voice && typeof b.voice === 'object' && !Array.isArray(b.voice) ? b.voice : null;
