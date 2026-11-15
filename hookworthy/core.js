@@ -3499,7 +3499,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   V3.RESTRICT = new Set('just only simply merely always necessarily all every entirely completely quite exactly'.split(' '));
   function v3NegOK(line, draft) {
     const D = v3toks(draft), L = v3toks(line), isNeg = w => V3.NEG.test(w), stem = slStemC;
-    const lineNegHeads = new Set(); L.forEach((t, j) => { if (!isNeg(t.w)) return; for (let k = j + 1; k < Math.min(L.length, j + 6); k++) { if (isNeg(L[k].w)) break; lineNegHeads.add(stem(L[k].w)); } });
+    const lineNegHeads = new Set(); L.forEach((t, j) => { if (!isNeg(t.w)) return; if (j && /^(?:not|never)$/.test(t.w) && /^(?:has|have|had|is|are|was|were|do|does|did|can|could|will|would|should)$/.test(L[j - 1].w)) lineNegHeads.add(stem(L[j - 1].w)); for (let k = j + 1; k < Math.min(L.length, j + 6); k++) { if (isNeg(L[k].w)) break; lineNegHeads.add(stem(L[k].w)); } });
     const lineStems = new Set(L.map(t => stem(t.w)));
     for (let i = 0; i < D.length; i++) {
       if (!isNeg(D[i].w)) continue;
@@ -3552,9 +3552,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
 
   /* forecasts: the future stays future, and nothing becomes a promise. "I'm going to talk about…" points at the post; it is not a forecast */
   V3.FUT = /\b(?:will|won['’]t|shall)\b|\bgonna\b(?! (?:lie|be honest))|['’]ll\b|\bgoing to(?= (?!(?:the|a|an|my|your|our|their|his|her|this|that|bed|work|school|church|college|jail|court|sleep|hell|war|be honest|lie)\b)[a-z])/gi;
-  V3.META_FUT = /\b(?:i['’]m|i am|we['’]re|we are|i['’]ll|we['’]ll|i will|we will|gonna)\s+(?:going to\s+)?(?:be\s+)?(?:talk(?:ing)?|explain(?:ing)?|shar(?:e|ing)|show(?:ing)?|break(?:ing)? (?:it )?down|walk(?:ing)? (?:you )?through|tell(?:ing)? you|cover(?:ing)?|go(?:ing)? (?:over|through)|div(?:e|ing) into|unpack(?:ing)?|answer(?:ing)?|writ(?:e|ing) about)\b/gi;
+  V3.META_FUT = /\b(?:i['’]m|i am|we['’]re|we are|i['’]ll|we['’]ll|i will|we will|gonna)\s+(?:going to\s+)?(?:be\s+)?(?:talk(?:ing)?|explain(?:ing)?|shar(?:e|ing)|show(?:ing)?|break(?:ing)? (?:it )?down|walk(?:ing)? (?:you )?through|tell(?:ing)? you|cover(?:ing)?|go(?:ing)? (?:over|through)|div(?:e|ing) into|unpack(?:ing)?|answer(?:ing)?|writ(?:e|ing) about)\b|\b(?:i['’]ll|i will|i['’]m (?:going to|gonna)|i am (?:going to|gonna)|gonna|let me)\s+(?:be (?:honest|real|blunt|frank|straight|transparent)(?: with (?:you|y['’]all|you guys|everyone))?|say (?:it|this) (?:again|once more)|admit|level with you|try something(?: (?:a little |a bit )?(?:new|different))?)\b/gi;
   function v3FutureOK(line0, draft0) {
-    const meta = z => String(z).replace(rx(V3.META_FUT.source, 'gi'), ' '), draft = meta(draft0), line = meta(line0), fut = z => cnt(z, rx(V3.FUT.source, 'gi'));
+    const meta = z => String(z).replace(rx(V3.META_FUT.source, 'gi'), ' ').replace(/\bthere will be no\b/gi, 'no'), draft = meta(draft0), line = meta(line0), fut = z => cnt(z, rx(V3.FUT.source, 'gi'));
     const LS = v3stems(line); let need = 0; for (const c of v3clauses(draft)) if (v3survives(c, LS)) need += fut(c);
     if (fut(line) < need) return 'future lost';
     if (fut(line) > fut(draft)) return 'future added';
@@ -3593,7 +3593,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (slMore(line, draft, V3.RESTR_ADD)) return 'restrictor added';
     if (more(V3.HYPE) && !/game[- ]?changer|life[- ]?changer/i.test(draft)) return 'hype added';      /* the engine's own game-changer swap writes "huge" */
     if (V3.opts.quant) {
-      const LW = new Set(v3toks(line).map(t => slStemC(t.w))), L = lcw(line);
+      const LW = new Set(v3toks(line).map(t => slStemC(t.w))), L = lcw(String(line).replace(/\bthe (?:vast |overwhelming )?majority(?: of)?\b/gi, 'most'));
       for (const m of String(dsw).matchAll(V3.QUANT)) { const q = lcw(m[1]), w = lcw(m[2]); if (V3_STOP.has(w) || V3.QSKIP.test(w) || !LW.has(slStemC(w))) continue;
         if (!new RegExp(`\\b${q}\\b`, 'i').test(L)) return `quantifier "${m[1]} ${m[2]}" lost`; }
     }

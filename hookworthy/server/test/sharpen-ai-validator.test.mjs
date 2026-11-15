@@ -248,3 +248,20 @@ test('validator eval: the prompt\'s own examples pass the validator with their w
   assert.ok(long.includes('x'.repeat(core.SHARPEN.AI_MAX)) && !long.includes('x'.repeat(core.SHARPEN.AI_MAX + 1)));
   assert.ok(long.length < 1200);
 });
+
+/* r86 v3.1: discourse frames read as forecasts in v3 and threw away good lines on the held-out sets (RESULTS-v3.md).
+   Each good row must ship; each bad row beside it proves the forecast and negation checks still hold */
+const TABLE4 = [
+  ['good: "I\'ll be honest" is a frame, not a forecast', "I'll be honest, when we started this company three years ago I had absolutely no idea what I was doing", { line: 'When we started this company three years ago, I had absolutely no idea what I was doing.' }, 'accept'],
+  ['good: "going to be real with you" is a frame', "I'm going to be real with you guys for a second, I've been struggling with my mental health a lot this year", { line: "I've been struggling with my mental health a lot this year." }, 'accept'],
+  ['good: "I\'ll say it again" is a frame', "I've said it before and I'll say it again, the best newsletters feel like a letter from a friend", { line: 'The best newsletters feel like a letter from a friend.' }, 'accept'],
+  ['good: "gonna try something different" points at the post', 'Gonna try something a little different today and share our actual investor update from October', { line: "Today I'm sharing our actual investor update from October." }, 'accept'],
+  ['good: "there will be no issue" → "No issue"', 'I am taking my first week off, so there will be no issue this Sunday, but I\'ll be back on the 30th', { line: "I'm taking my first week off. No issue this Sunday, but I'll be back on the 30th." }, 'accept'],
+  ['good: "the vast majority" is still "most"', "I'm increasingly convinced that the vast majority of companies using it don't actually need it", { line: "I'm increasingly convinced the vast majority of companies using it don't actually need it." }, 'accept'],
+  ['bad: a frame cut, but the real forecast lost too', "I'll be honest, we will ship v2 in May", { line: 'We ship v2 in May.' }, 'future lost'],
+  ['bad: "there will be" a crash, made present', 'there will be a crash next year honestly', { line: 'A crash is coming next year.' }, 'future lost'],
+  ['bad: "has not" made positive', 'We have not shipped it yet', { line: 'We have shipped it.' }, 'negation of "shipped" lost'],
+];
+test('v3.1: discourse frames ship, forecasts and negations still hold', () => {
+  for (const [name, t, data, want] of TABLE4) { const { r, reject } = F(t, data); assert.equal(r ? 'accept' : reject, want, name); }
+});
