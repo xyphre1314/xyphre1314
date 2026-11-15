@@ -5,7 +5,7 @@ src = open(os.path.join(d, 'src.html')).read()
 sprite = open(os.path.join(d, 'sprite.txt')).read()
 tail = open(os.path.join(d, 'tail.txt')).read()
 # the app icon's glyph: the wordmark's own h (flat stem, Inter 600 weight), on the 32px icon grid
-hw = '  <symbol id="hw" viewBox="0 0 32 32"><g transform="translate(8.1 6.8) scale(.8) translate(-8 -4.5)" fill="none" stroke="#F7F8F8" stroke-width="3.9" stroke-linejoin="round"><path d="M10 4.5V27.5"/><path d="M10 17.5a4.9 4.9 0 0 1 9.8 0V22.75a3.1 3.1 0 0 0 6.2 0V20.6" stroke-linecap="round"/></g></symbol>\n</svg>'
+hw = '  <symbol id="hw" viewBox="0 0 32 32"><g transform="translate(8.1 6.8) scale(.8) translate(-8 -4.5)" fill="none" stroke="#F7F8F8" stroke-width="3.9" stroke-linejoin="round"><path d="M10 4.5V27.5"/><path d="M10 17.5a4.9 4.9 0 0 1 9.8 0V22.75a3.1 3.1 0 0 0 6.2 0V19" stroke-linecap="butt"/></g></symbol>\n</svg>'
 sprite = sprite.rstrip()
 assert sprite.endswith('</svg>')
 sprite = sprite[:-len('</svg>')] + hw.lstrip()

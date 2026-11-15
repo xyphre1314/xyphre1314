@@ -526,3 +526,63 @@ FIX5's decisions win where reviewers disagree. The lead's fixes (the sheet notic
 - Hero post bottom: 766 at 1440×900, 768 at 1280×800, 773 at 390×844 and 776 at 360×780.
 - The hero opening settles about 1.3s after first paint. Hits-to-footer is ≥20px for every example at 901–1440.
 - `trytest` (1440, 390, 360), `sheettest` (1440, 390; now also `?sheet=` and the line rules), `motion`, `p4test`, `r86/fix5/p5test.js` (1440, 390), `mbar`, `cbar` and `inp` all pass. Phone hero contrast is ≥4.65:1.
+
+## Pass 6 (brief: `r86/FIX6.md`, re-rate reviews in `r86/rerate5/`)
+FIX6's items win where reviewers disagree. Engine text is still shown verbatim, with one new display-only helper: `sayTxt` writes the engine's "Split it into two beats" as "Split into 2 beats" (marketing-7). hero-sync lifts it and checks the hero and Try receipts through it. The engine changed twice during this pass (opinion phrases such as "I think" and "I would argue" are now kept), so every example was re-picked against core.js of 2026-11-15 05:32.
+
+**Examples (founder-1/3, brand-1, uiux-1, marketing-8)**
+- Try default: "so basically you should sell into strength, not into panic" → "sell into strength, not into panic." The cuts are "so", "basically" (both fluff, with the squiggle) and "you should" (plain). They are verbatim deletions, so the struck mirror leaves exactly the output. Receipt: "Cut 2 bits of fluff · Said it straight", a move the hero doesn't use. The counter's static text is the true length (58), it is set again on first paint, and hero-sync checks it.
+- Hero Trader is a trade: "just wanted to share that i sold half my $BTC at 98k and honestly i’m holding the rest" → "i sold half my $BTC at 98k. i’m holding the rest." The OG card was re-rendered with it (`assets/og-afterglow.png`).
+- Hero Newsletter: "So the reason most newsletters fail is that nobody reads past the first line" (asked, then answered). Hero Ghostwriter: "Honestly, your evening sets up your morning more than your alarm does". Lena's Studio post is unchanged.
+- Final example: "my trading newsletter literally just hit 20,000 subscribers" ("“literally” was talk, not the point").
+- Starters: a swap (due to the fact that → because), a run-up cut, a count first ("Here are 5 things"), a label cut ("Real talk:") and the clean line.
+- Who: heycape "so i’m up 18%…", Priya "Excited to share that dark mode is live…", Theo "Honestly, most founders…".
+- Every why the visitor can reach from the hero, the Try default, the final and the starters is a different template. Ana's and Priya's Who whys share one ("It now opens on…"), and Theo's why is never shown.
+
+**Founder**
+- founder-2: one rewrite, shown in the Voice card, labelled "One rewrite, three takes · Example". It has one draft and three takes from three angles: Number first, A question, The story. At ≥761 the takes are three cards under the voice columns. On phones they are a swipe row, and the Habits and Never-says rows step aside (the takes show those habits, and Studio shows a never-say list).
+- founder-4 / marketing-3/4/5: "scheduled" replaces "auto-sent". "Learns your voice from 8 posts" has no metering, and the one-time 5-rewrite cost moved to "Will it sound like me?". The Pro list says "More rewrites from $8 a month" (core.js CR_BOOSTS).
+- founder-5: the FAQ "Is my writing used to train AI?" replaces "What’s free?", which the plans answer, and sits after "Is it just AI writing?".
+- founder-6: the done state's link reads "Open the working app (demo data)".
+- founder-7 / marketing-9: a new line that hasn't been sharpened shows an empty X card under "Tap Sharpen to see yours.", never the last line's result. An edit of the line on show dims it ("Edited. Tap Sharpen again."). There is one instruction per state.
+
+**Marketing**
+- marketing-2: the #qa3 answer is rewritten as plain sentences: "No. Sharpen only cuts and reorders the words you wrote…". It keeps "this demo runs on your device, without Claude." for claude_try.py. The Reply heading reads "Your answer’s already drafted." (Pro drafts replies as they come in).
+- marketing-10: the Trust lock line reads "Posts go out through X’s and LinkedIn’s official APIs." (the server posts through api.x.com and api.linkedin.com). The demo note stays on the Try label.
+
+**UI/UX**
+- uiux-2 / brand-6: the final's draft card is as wide as the post card.
+- uiux-4: in Previews "Yours", a line over 280 (X) or 300 (Bluesky) splits into two posts with the thread rail. The split falls at the last full stop that fits, else the last comma, else the last space.
+- uiux-5 / web-5: typing after Clear ends Undo and brings the counter back.
+- uiux-6: under 380px the hero post hides the handle, so "2m" stays whole.
+- uiux-7: an open Pro card on a phone hides the "$144 billed yearly" line.
+- uiux-8: the three Replay buttons have three names. uiux-9: the done state sets `aria-describedby="sh-done-t"`.
+- uiux-10: on touch screens the draft pane shows a quiet "Tap to edit ↓" chip.
+- uiux-11: struck words get a 6px vertical and 2px side hit area (`.tog::after`) at every width, with no layout shift.
+
+**Web**
+- web-1 / brand-2: at ≥1200 Trust's three rows share the row height, and the rules follow at the tile's gap.
+- web-2: on a single-column hero the window's spare height sits in the draft pane, so the post card ends the window. ≤379 gives a few pixels back, so the post still ends above the fold at 360×780.
+- web-3: Results keeps its 9:31 clock from 761 to 1099.
+- web-4: the Try tile at ≥1200 leaves 11px under Start free with the new default. Studio clients without a photo keep the comment and Approve under the post, with the spare height at the bottom.
+- web-6: the Studio highlight is nowrap. web-7: the four hero pills fit at 360, and a scroller counts as "end" when its last item shows whole.
+- web-9: core.js loads only on a first touch of Try, the final or Who, or when the Try tile is within 200px of the viewport. There is no idle load. Dead CSS was removed (.who-n, .ph.cup, .thread .media, .ph-h .mini, .lede b, .tfoot b, .plan .h3 .tag) along with overridden phone declarations.
+
+**Brand**
+- brand-3 / web-8: the notebook crop is `--cw:200%` (1.04–1.39× at DPR 2). Lena's Studio photo is the full-width cafe frame (0.7–1.0× at DPR 2). The Day morning backdrop is the full frame height, 1.27× in CSS pixels like the night one, and blurred. The large blurred backdrops can't reach 1.5× at DPR 2 at desktop sizes with this 800px sprite.
+- brand-4: the phone light's hot core lands on the window's top edge at about 85%, and the beam rises steeply to the right, clear of both buttons. `--k` is 1.38. To keep the light off the text, the phone hero micro line is "Free forever · No card" (the third promise is in Trust, the final and the sheet). Contrast is ≥5.1:1 for every hero text at 360–430.
+- brand-5: the hook-h ends in a flat cut (`V19`, butt cap) in `#wm`, `#hw` (build.py), `#hk-h`, every `assets/brand/*.svg`, legal.html and the OG card. The 180px icon was re-rendered.
+- brand-7: the never-say lists get row gap (.5–.6em; 9px on phones).
+
+**Skipped / partial**
+- marketing-8 (hand-written whys) and uiux-3 (a why that quotes the whole line): whys stay the engine's verbatim. The examples were chosen so their whys differ and none quotes its whole line. A visitor's own lines can still get a full-line quote, which is engine-side.
+- marketing-1 (forecast hedges) and the hook items: engine-side.
+- web-9's deferred stylesheet split: not done. Only dead rules were trimmed, about 0.7 KB.
+
+**Numbers (final build, against core.js of 2026-11-15 05:32)**
+- `check.js home` and `check.js legal`: ok:true. axe is 0 at 1440 and 390, and in every `axestates.js` state.
+- CLS is 0 at 1920, 1440, 1280, 1100, 1024, 960, 901, 900, 780, 768, 761, 430, 414, 390, 375 and 360. No overflow and no heading over two lines anywhere from 320 to 1920 (`r86/fix6/sweep.js`).
+- Screens: 9.79 at 390 (budget 10.0), 10.41 at 360 (budget 10.5), 9.28 at 768 and 8.61 at 1440.
+- Hero post bottom: 766 at 1440×900, 768 at 1280×800, 825 at 390×844 and 776 at 360×780.
+- `trytest` (1440, 390, 360), `sheettest`, `motion`, `p4test`, `p5test`, `mbar`, `cbar`, `inp` and the new `r86/fix6/p6test.js` (1440, 390) all pass. p4/p5 now type the old Founder starter line instead of clicking the starter.
+- claude_try.py still patches (build_pub.py from a scratch copy: no assertion error). hero-sync passes, run last.

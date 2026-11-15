@@ -7,7 +7,9 @@
 //   - the hero's static first frame (#pf-draft, #pf-sharp, #pf-move, #pf-cut, #pf-kept) against EX[0];
 //   - the Try tile's pre-rendered default and the final's example card;
 //   - the Who tile's four mini posts (WHO): each persona's line and cuts, and the static list drawn by the page's whoHTML.
-// The hero shows the engine's own "why" and "say" verbatim, so they are checked (and rewritten by --write) like the line.
+// The hero shows the engine's own "why" and "say" verbatim (the say through the page's display-only sayTxt, which writes
+// "Split it into two beats" as "Split into 2 beats"), so they are checked (and rewritten by --write) like the line.
+// The Try default's counter must show its true length.
 // Sharpened lines are drawn with the page's own display helpers (nb, beats, xbeats), so a wrap falls between beats.
 // The Kept rows ("Kept: $SOL, 40%. Kept your lowercase.") come from the page's own keptLine, lifted the same way, and the Try
 // default's struck mirror and the final's struck draft are rebuilt by --write with the page's own markup helpers (MARKUP block).
@@ -22,8 +24,8 @@ let src = fs.readFileSync(SRC, 'utf8'), tail = fs.readFileSync(TAIL, 'utf8');
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
-const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, FLUFF, nb, beats, xbeats, hitK, segments, mirrorHTML, fpDraftHTML };`)(esc, list);
-const { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, nb, beats, xbeats, hitK, segments, mirrorHTML, fpDraftHTML } = lib;
+const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML };`)(esc, list);
+const { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML } = lib;
 const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const fromEngine = d => { const R = H.sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept) : '' }; };
@@ -44,7 +46,7 @@ const fixed = EX.map((e, i) => {
 const e0 = fixed[0];
 const STATIC = [
   ['pf-draft', /(<p class="dtext" id="pf-draft">)([\s\S]*?)(<\/p>)/, draftHTML(e0)],
-  ['pf-move', /(<span id="pf-move">)([\s\S]*?)(<\/span>)/, esc(e0.say)],
+  ['pf-move', /(<span id="pf-move">)([\s\S]*?)(<\/span>)/, esc(sayTxt(e0.say))],
   ['pf-sharp', /(<p class="ptext(?: long)?" id="pf-sharp">)([\s\S]*?)(<\/p>)/, '<span class="sr">Sharpened: </span>' + beats(e0.after, x => nb(esc(x)))],
   ['pf-why', /(<p id="pf-why">)([\s\S]*?)(<\/p>)/, esc(e0.why)],
   ['pf-k', /(<span class="k" id="pf-k">)([\s\S]*?)(<\/span>)/, hitK(e0.say)],
@@ -72,7 +74,10 @@ if (ta) {
   /* the struck mirror is exactly what the page's own mirrorHTML draws for the engine's result */
   const mir = (src.match(/<div class="ed-mirror struck" id="try-mirror"[^>]*>([\s\S]*?)<\/div>/) || [])[1], mirWant = mirrorHTML(ta, segments(g.R, { cut: g.R.cut }, []), true);
   if (mir !== mirWant) { bad.push(`Try default mirror markup\n    page:   ${mir}\n    wanted: ${mirWant}`); src = src.replace(/(<div class="ed-mirror struck" id="try-mirror"[^>]*>)([\s\S]*?)(<\/div>)/, (all, a, b, c) => a + mirWant + c); }
-  if (st !== esc(g.say)) { bad.push(`Try default receipt\n    page:   ${st}\n    engine: ${g.say}`); fixSrc(/(<span id="out-st">)([\s\S]*?)(<\/span>)/, esc(g.say)); }
+  if (st !== esc(sayTxt(g.say))) { bad.push(`Try default receipt\n    page:   ${st}\n    engine: ${g.say}`); fixSrc(/(<span id="out-st">)([\s\S]*?)(<\/span>)/, esc(sayTxt(g.say))); }
+  /* the counter's first paint is the default's true length */
+  const cnt = (src.match(/<span class="count tnum" id="try-count"[^>]*>([\s\S]*?)<\/span>/) || [])[1], cntWant = `${ta.length} / 280`;
+  if (cnt !== cntWant) { bad.push(`Try default count\n    page:   ${cnt}\n    wanted: ${cntWant}`); src = src.replace(/(<span class="count tnum" id="try-count"[^>]*>)([\s\S]*?)(<\/span>)/, (all, a, b, c) => a + cntWant + c); }
   if (kept !== esc(g.kept)) { bad.push(`Try default kept\n    page:   ${kept}\n    engine: ${g.kept}`); fixSrc(/(<p(?: class="[^"]*")? id="out-kept">)([\s\S]*?)(<\/p>)/, esc(g.kept)); }
   const ok = (src.match(/<span class="k" id="out-k">([\s\S]*?)<\/span>/) || [])[1];
   if (ok !== hitK(g.say)) { bad.push(`Try default label\n    page:   ${ok}\n    wanted: ${hitK(g.say)}`); fixSrc(/(<span class="k" id="out-k">)([\s\S]*?)(<\/span>)/, hitK(g.say)); }

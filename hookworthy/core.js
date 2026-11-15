@@ -103,7 +103,8 @@
   const gFlags = f => f.includes('g') ? f : f + 'g';
   const S0 = '(?:^|(?<=^[\\s,.:;!—–-]+)|(?<=^[\\s,.:;!—–-]*Q[kz][a-z]q[\\s,.:;!—–-]+)|(?<=[.!?:]\\s{1,3}))';
   /* r86: "just" before a past-tense verb means "recently" ("btc just reclaimed 68k", "just shipped v2"): news, not filler */
-  const JUST_PAST = String.raw`(?:(?!(?:n|f|sp|s|bl|proc|succ|exc|br|h|w)eed\b|red\b|bed\b|shed\b)[a-z]{2,}ed\b|(?:hit|got|made|won|lost|sold|bought|ran|broke|began|put|cut|set|quit|left|found|wrote|built|sent|paid|spent|took|came|went|saw|told|said|heard|did|had|became|fell|grew|rose|drew|shut|led|met|threw|woke|stole|sank|swam|beat|forgot|flew|gave|wore|won|ate|drank|bit|hung|slept|kept|felt|meant|shot|struck|swore|tore|spoke)\b)`;
+  /* r86 pass 6: and a hyphenated past verb ("just mass-migrated", "just soft-launched") */
+  const JUST_PAST = String.raw`(?:(?:[a-z]+-)*(?!(?:n|f|sp|s|bl|proc|succ|exc|br|h|w)eed\b|red\b|bed\b|shed\b)[a-z]{2,}ed\b|(?:hit|got|made|won|lost|sold|bought|ran|broke|began|put|cut|set|quit|left|found|wrote|built|sent|paid|spent|took|came|went|saw|told|said|heard|did|had|became|fell|grew|rose|drew|shut|led|met|threw|woke|stole|sank|swam|beat|forgot|flew|gave|wore|won|ate|drank|bit|hung|slept|kept|felt|meant|shot|struck|swore|tore|spoke)\b)`;
   const SOFT = [
     /* r86 pass 6 (juror 5, hook-8): the run-ups the engine missed, in their general form. "I've put together a list of (some
        of) the best…", "I figured I'd (just) share…" at the start of a sentence, and "(and) I can tell you that" */
@@ -126,7 +127,8 @@
       why: 'A run-up to the point. Say the thing itself and the line starts there.', short: 'is a run-up to the point', cw: 'A run-up to the point.' },
     { k: 'announce', re: new RegExp(`(?:${S0}|(?<=^[^.!?]{4,80},\\s)|(?<=^[^.!?]{12,120}\\s(?:and|but|so)\\s))(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:(?:so|super|really|very|beyond|incredibly|truly|extremely|genuinely|honestly|absolutely) ){0,2}(?:excited|thrilled|happy|proud|pleased|humbled|delighted|stoked|pumped|grateful|honou?red|blessed) to (?:finally )?(?:be able to )?(?:(?:announce|share|show|introduce)(?: (?:it|this|these|them))?(?: with (?:you|you all|y['’]?all|you guys|everyone|everybody|the world|all of you)(?: guys| all)?)?|say|tell you|let you know)(?: that)?|${S0}(?:(?:i|we)(?:['’]m|['’]re| am| are) )?(?:so |super |really |very )?(?:excited|thrilled|happy|proud|pleased|delighted|stoked) to (?=welcome (?:@\\w|our\\b|my\\b|a\\b|an\\b|the\\b|two\\b|three\\b))`, 'gi'),
       why: 'Announcing the announcement. Lead with the news itself: what you did shows the excitement better than saying it.', short: 'announces the news instead of saying it' },
-    { k: 'announce', re: new RegExp(`${S0}(?:(?:in )?(?:today['’]s|this week['’]s|this) (?:issue|newsletter|edition|post|thread|episode|video)[,:]?\\s+|(?:today|this week|real quick),? )?(?:(?:i|we) )?(?:just )?(?:wanted|want|would like|['’]d like|thought i['’]?d|am going|['’]m going|(?:i['’]m|we['’]re|i am|we are) (?:going|gonna)) to (?:quickly )?(?:(?:share|give|post) (?:you )?(?:a |an )?(?:quick |short |small |little )?update(?: on)?|share|say|announce|let (?:you|everyone|y['’]all|you all) know|talk about|write about|post about|explain|show you|break down|walk you through|give (?:a quick |an |a )update on)(?: (?:that|some (?:quick )?thoughts on|a few thoughts on|my thoughts on|some thoughts about))?\\b`, 'gi'),
+    /* r86 pass 6 (hook-8): and mid-line after "but"/"and"/"so": "…a little bit personal, but I wanted to share that I was laid off…" */
+    { k: 'announce', re: new RegExp(`(?:${S0}|(?<=^[^.!?]{12,120}\\s(?:and|but|so)\\s(?=(?:i|we)\\s+(?:just\\s+)?(?:wanted|want)\\s+to\\s+(?:share|say|let (?:you|everyone|y['’]all|you all) know)\\s+that\\s+(?:i|we|my|our|it|this|the)\\b)))(?:(?:in )?(?:today['’]s|this week['’]s|this) (?:issue|newsletter|edition|post|thread|episode|video)[,:]?\\s+|(?:today|this week|real quick),? )?(?:(?:i|we) )?(?:just )?(?:wanted|want|would like|['’]d like|thought i['’]?d|am going|['’]m going|(?:i['’]m|we['’]re|i am|we are) (?:going|gonna)) to (?:quickly )?(?:(?:share|give|post) (?:you )?(?:a |an )?(?:quick |short |small |little )?update(?: on)?|share|say|announce|let (?:you|everyone|y['’]all|you all) know|talk (?:a (?:little )?bit |a little )?about|write about|post about|explain|show you|break down|walk you through|give (?:a quick |an |a )update on)(?: (?:that|some (?:quick )?thoughts on|a few thoughts on|my thoughts on|some thoughts about))?\\b`, 'gi'),
       why: 'Announcing the announcement. Lead with the news itself: what you did shows the excitement better than saying it.', short: 'announces the post instead of starting it' },
     { k: 'label', re: new RegExp(`${S0}(?:(?:just )?(?:a )?(?:quick |short |small )?update for (?:everyone|all of you|those|anyone|folks|people|you all|y['’]all)(?: (?:who(?:['’]s| has been| have been| is| are)? )?(?:following|been following|keeping up|asking|waiting)[^:.!?\\n]{0,50})?(?=:)|(?:(?:a |an |some |another |the |my |our )?(?:(?:quick|big|small|huge|major|short|exciting|personal|weekly|monthly|daily|final|little|life|product|team|startup|company) )?(?:update|thought|note|take|news) (?:on|about|from|for) (?:the |our |my |this |a |an )?(?<upd>[a-z][\\w-]*)(?: [\\w-]+){0,3}(?=:\\s+(?=[^]*?\\b\\k<upd>\\b)))|(?:just )?(?:a )?quick (?:tip|reminder|note|psa|question)(?= for (?:anyone|anybody|everyone|all|those|the|founders|creators|writers|devs|developers|designers|traders|people|you|new)\\b)|(?:just )?(?:a )?quick (?:[a-z]+ )?(?:thought|reminder|update|psa|take|question|one|tip|note)(?! (?:on|about|for|from)\\b)(?: that)?|(?:just )?(?:a )?(?:friendly |gentle |daily |weekly |monthly |quick |annual |yearly |little )?reminder that|psa|fun fact|real talk|food for thought|(?:hot take|unpopular opinion|controversial opinion|spicy take|story time|hear me out|okay hear me out|fun fact|friendly reminder|gentle reminder|life update|small win|quick story|random thought|random take|shower thought|serious question)(?:,?\\s+but(?=\\s))?|(?:reminder|update|note|question|tip|breaking|announcement|rant|thread|lesson|honest question|real question|genuine question|quick question|(?:huge|big|exciting|some|great|good) news|(?:a )?(?:quick|small|little|big|huge) win)(?=:\\s)|my (?:hot|honest|unpopular|controversial|spicy) take(?: is)?(?: that)?(?= \\S)|in case you missed it|icymi|pro tip|life hack|(?:just )?(?:a )?(?:quick )?heads[- ]up(?: that)?|(?:(?:some|a few) )?(?:quick |random |short )?(?:thoughts|notes) on(?= (?:why|how|what|when|whether)\\b)|(?:i (?:just )?(?:wanted|want) to (?:write|do|post|share) )?(?:just )?(?:here(?: is|['’]s) )?(?:a |my )?(?:(?:really |super |very )?(?:quick|short) |mini |little |new )?thread (?:on|about|of(?= (?:\\d+|my|the|some|all|every)\\b))(?= \\S)|[a-z]+ (?:tip|hack|reminder|lesson)(?=:\\s)|new (?:post|issue|episode|video|essay|article|blog post|thread|drop|podcast(?: episode)?)(?=:\\s*\\S)|(?:in )?(?:this week['’]s|today['’]s|this|the latest|our latest|my latest) (?:issue|edition|newsletter|episode)(?=:)|our new (?:case study|post|guide|report|article|video|episode|podcast|course) is (?:live|out|up|here)(?=[:!—-])|(?:(?:ok(?:ay)?,? )?so )?(?:here['’]s|here is) my (?:honest |hot |quick |unpopular |real )?(?:take|thoughts?|two cents|read) on [^.!?:\\n]{2,40}[a-z0-9](?=[.]\\s+\\S)|(?:(?:ok(?:ay)?,? )?so )?(?:here['’]s|here is) my (?:honest |hot |quick |unpopular |real )?(?:take|thoughts?|two cents|read) on(?= [^.!?:\\n]{2,40}[a-z0-9]:\\s+\\S))\\b[:,.!—-]*`, 'gi'),
       why: 'A label, not a line. Delete it and the post starts where your point does.', short: 'is a label, not the point' },
@@ -345,6 +347,8 @@
   const SL_FEELW = /^(?:okay|ok|fine|nervous|scared|terrified|sad|emotional|regret\w*|processing|tired|exhausted|happy|proud|excited|overwhelmed|lost|stuck|burnt|burned|done|sick|bored|jealous|worried|anxious|hurt|upset|numb|relieved|grateful|impressed|surprised|shocked|obsessed|addicted|miss\w*|lov\w*|hat\w*|enjoy\w*|want\w*|wish\w*|lik\w*|dread\w*|freak\w*|annoyed|frustrated|disappointed|embarrassed|confused|heartbroken|homesick|lonely|depressed|giddy|stoked|pumped|thrilled|humbled|blessed)$/i;
   const SL_HEDGE2 = /\b(?:might|could|may(?! \d)|probably|maybe|perhaps|possibly|likely|unlikely)\b/i;
   const SL_INGADJ = /^(?:boring|interesting|amazing|annoying|exciting|confusing|frustrating|overwhelming|depressing|terrifying|surprising|disappointing|embarrassing|exhausting|inspiring|refreshing|fascinating|concerning|worrying|alarming|humbling|underwhelming|misleading|promising|tempting|demanding|rewarding|satisfying|relaxing|disgusting|shocking|stunning|entertaining|intimidating|irritating|tiring|thrilling|devastating|encouraging|compelling|telling|lacking|missing|puzzling|revealing|sobering|crushing|nerve-wracking|heartbreaking|eye-opening|mind-blowing)$/i;
+  /* a plan or forecast said by its future words ("next week", "by March", "will", "the biggest story of 2027"), not by a bare "might" */
+  const slFutReal = z => ST_PLAN.test(String(z).replace(/\b(?:might|could|may|likely)\b/gi, ' ')) || /\b(?:in|of|by|for|before|until|through)\s+20(?:2[6-9]|[3-9]\d)\b/i.test(z);
   const SL_POL = new Map();
   function slPolicy(t) {
     const hit = SL_POL.get(t); if (hit) return hit;
@@ -352,7 +356,7 @@
     const cls = []; { let s = 0; for (const m of t.matchAll(/[.!?;:]+(?=\s|$)|,\s*(?=(?:and|but|so|because|which|while|though|although|yet)\b)|\s(?:and|but|so|because|although|though|whereas|while|yet)\s/gi)) { cls.push([s, m.index]); s = m.index + m[0].length; } cls.push([s, t.length]); }
     const txt = r => t.slice(r[0], r[1]), nextW = r => ((t.slice(r[1]).match(/^\s+([\p{L}'’]+)/u) || ['', ''])[1]).toLowerCase();
     const KO = /^(?:kind of|kinda|sort of|sorta)$/i, dblAt = new Set();
-    for (const m of t.matchAll(/\b(?:could|might|may|would|will|can)\s+(maybe|possibly|perhaps|potentially)\b/gi)) { const pa = m.index + m[0].length - m[1].length; dblAt.add(pa); dbl.add(lcw(m[1])); add.push([pa, pa + m[1].length, SOFT.find(x => x.k === 'hedge').why, 'hedge']); }
+    for (const m of t.matchAll(/(?<!\b(?:what|how|who|where|why|when|which)\s+)\b(?:could|might|may|would|will|can)\s+(maybe|possibly|perhaps|potentially)\b/gi)) { const pa = m.index + m[0].length - m[1].length; dblAt.add(pa); dbl.add(lcw(m[1])); add.push([pa, pa + m[1].length, SOFT.find(x => x.k === 'hedge').why, 'hedge']); }
     raw.forEach((r, i) => {
       const w = txt(r), k = r[3];
       if ((k === 'label' || k === 'disclaim') && SL_FRAMEK.test(w)) kept.add(i);
@@ -368,22 +372,28 @@
       const ms = raw.map((r, i) => [r, i]).filter(([r, i]) => !kept.has(i) && !dblAt.has(r[0]) && r[0] >= c[0] && r[0] < c[1] && (r[3] === 'opinion' || r[3] === 'hedge'));
       if (!ms.length) return;
       /* a plan or forecast is said by its future words ("next week", "by March", "will"), not by a bare "might" or "could" */
-      if (call || ST_PLAN.test(t.slice(c[0], c[1]).replace(/\b(?:might|could|may|likely)\b/gi, ' '))) { ms.forEach(([, i]) => kept.add(i)); return; }
+      /* and an asset with a modal is a price call: "$HYPE could 10x from here" */
+      const seg = t.slice(c[0], c[1]);
+      if (call || slFutReal(seg) || (ST_ASSET.test(seg) && /\b(?:could|might|may|would|will|can)\b/i.test(seg))) { ms.forEach(([, i]) => kept.add(i)); return; }
       if (lab) return;
       const hedges = ms.filter(([r]) => r[3] === 'hedge' && !pad(r)), ops = ms.filter(([r]) => r[3] === 'opinion' && !/^\P{L}*(?:imho|in my (?:humble |honest )?opinion)\b/iu.test(txt(r)));
-      if (hedges.length) { kept.add(hedges[0][1]); return; }
-      /* an unmarked modal in the clause ("i think i might…") is its one hedge */
+      /* an unmarked modal in the clause ("i think i might…", "i might have been kind of wrong") is its one hedge */
       let o = t.slice(c[0], c[1]); ms.forEach(([r]) => { o = o.slice(0, r[0] - c[0]) + ' '.repeat(r[1] - r[0]) + o.slice(r[1] - c[0]); });
-      if (!SL_HEDGE2.test(o) && ops.length) kept.add(ops[0][1]);
+      if (SL_HEDGE2.test(o)) return;
+      if (hedges.length) { kept.add(hedges[0][1]); return; }
+      if (ops.length) kept.add(ops[0][1]);
     });
-    const mask = []; raw.forEach((r, i) => { if (!kept.has(i)) return; const w = txt(r).replace(/[,:.!\s]+$/, '').trim(); keep.push(w); if (!/^(?:intens|feel)$/.test(r[3])) mask.push(w); });
+    /* what hookUp masks so its other cutters can't take it: not a softener or a feeling (the soft table keeps those by itself,
+       and a mask would hide them from the rules that read the next word), not a closing "lol" (it rides on every version, as
+       the lowercase "lol" does); an opinion is masked after its pronoun ("I Qk…q"), so a run-up before it still reads "and I…" */
+    const mask = [], op = new Set(); let tone = ''; raw.forEach((r, i) => { if (!kept.has(i)) return; const w = txt(r).replace(/[,:.!\s]+$/, '').trim(); keep.push(w); if (r[3] === 'tail' && !/\S/.test(t.slice(r[1]).replace(/[.!\s]/g, ''))) tone = w; else if (!/^(?:intens|feel|tail)$/.test(r[3])) mask.push(w); if (r[3] === 'opinion') op.add(lcw(w)); });
     /* the padding inside a kept opinion, on a call too ("I really think" → "I think") */
-    for (const m of t.matchAll(/\b(?:i|we)\s+((?:really|genuinely|honestly|truly|personally|actually|just|firmly|strongly)\s+)(?:think|believe|feel like|feel that|reckon|guess)\b/gi)) {
+    for (const m of t.matchAll(/\b(?:i|we)\s+((?:(?:really|genuinely|honestly|truly|personally|actually|just|firmly|strongly|kind of|kinda|sort of|sorta)\s+)+)(?:think|believe|feel like|feel that|reckon|guess)\b/gi)) {
       const a = m.index, b = a + m[0].length; if (raw.some((r, i) => !kept.has(i) && r[0] <= a && r[1] >= b)) continue;
       const pw = m[1].trim(), pa = a + m[0].indexOf(m[1]), kd = /^(?:honestly|personally)$/i.test(pw) ? 'honest' : /^(?:actually|just)$/i.test(pw) ? 'filler' : 'intens';
-      add.push([pa, pa + pw.length, SOFT.find(x => x.k === kd).why, kd]); const core = m[0].replace(m[1], ''); keep.push(core, `${core} that`); trim.push([lcw(m[0]), core]);
+      add.push([pa, pa + pw.length, SOFT.find(x => x.k === kd).why, kd]); const core = m[0].replace(m[1], ''); keep.push(core, `${core} that`); trim.push([lcw(m[0]), core]); op.add(lcw(m[0])).add(lcw(core)).add(lcw(`${core} that`));
     }
-    const res = { keep: [...new Set(keep)], mask: [...new Set([...mask, ...trim.map(x => x[1]), ...trim.map(x => `${x[1]} that`)])], add, trim, dbl };
+    const res = { keep: [...new Set(keep)], mask: [...new Set([...mask, ...trim.map(x => x[1]), ...trim.map(x => `${x[1]} that`)])], op, tone, add, trim, dbl };
     if (SL_POL.size > 400) SL_POL.clear(); SL_POL.set(t, res);
     return res;
   }
@@ -440,7 +450,8 @@
       s = out + s.slice(at);
     });
     s = s.replace(/^(\s*)that\s+(?=(?:i|we|my|our|the|this|it|you|your|a|an|they|he|she)\b)/i, '$1');
-    s = s.replace(/[ \t]{2,}/g, ' ').replace(/[ \t]+([,.!?;:])/g, '$1').replace(/^[,;:.!?\s]+/, '').replace(/([.!?])[,;:]+/g, '$1').replace(/([!?])\.+(?=\s|$)/g, '$1').trim();
+    /* r86 pass 6: a closing tag cut after the writer's own full stop leaves one stop, not "move.." */
+    s = s.replace(/[ \t]{2,}/g, ' ').replace(/[ \t]+([,.!?;:])/g, '$1').replace(/^[,;:.!?\s]+/, '').replace(/([.!?])[,;:]+/g, '$1').replace(/([!?])\.+(?=\s|$)/g, '$1').replace(/(?<![.\d])\.\.(?![.\d])/g, '.').trim();
     if (cut.some(c => /^(?:can|could|may) (?:i|we)\b|^what if i (?:told|said to) you\b/i.test(c))) s = s.replace(/\?(\s*)$/, '.$1');
     if (cut.length && /^\P{L}*\p{Lu}/u.test(String(line || '')) && !/[.!?]\s+\p{Ll}/u.test(String(line || ''))) s = s.replace(/([.!?]["”’)]*\s+)(\p{Ll}[\p{L}\p{N}’'$-]*)/gu, (m, a, w) => capKeep(w) ? m : a + w[0].toUpperCase() + w.slice(1));
     s = unG(s); const up = /^\P{L}*\p{Lu}/u.test(String(line || '')); if (cut.length && up) s = capFirst(s);
@@ -2272,7 +2283,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       return { t: `${capFirst(m[1])}:`, mv: 'warm' };
     },
     /* r86 pass 3: "I've been writing this for 200 weeks straight and I want to share what I learned" → "…200 weeks straight. Here's what I learned:" */
-    thinkingWhy(x) { const m = body(x).match(/^(?:i|we)(?:['’]ve| have) been thinking (?:a lot |so much )?(?:lately |recently )?about why (.{6,80}?),? and (?:(?:i think|i realized|i['’]m pretty sure|i['’]m convinced) )?(?:it['’]s|it is) (?:mostly |usually |simply )?because (.{6,})$/i); return m && slFinite(m[1]) ? { t: `${capFirst(m[1])} because ${m[2]}${endP(x) || '.'}`, mv: 'straight' } : null; },
+    thinkingWhy(x) { const m = body(x).match(/^(?:i|we)(?:['’]ve| have) been thinking (?:a lot |so much )?(?:lately |recently )?about why (.{6,80}?),? and (?:(i Qk[a-z]q|i think|i realized|i['’]m pretty sure|i['’]m convinced) )?(?:it['’]s|it is) (?:mostly |usually |simply )?because (.{6,})$/i); return m && slFinite(m[1]) ? { t: `${/^i Qk/i.test(m[2] || '') ? `${m[2]} ${m[1]}` : capFirst(m[1])} because ${m[3]}${endP(x) || '.'}`, mv: 'straight' } : null; }, /* r86 pass 6: a kept "I think" (masked) rides along */
     shareWrong(x) { const m = body(x).match(/^(.{12,}?),? and (?:i|we) (?:just )?(?:wanted|want) to (?:share|talk about|point out) something (?:that )?((?:a lot of|most|many) (?:people|founders|creators|traders|writers|devs|developers|designers) (?:get|have) wrong)(?:,? which is that|:)\s+(.{10,})$/i); return m && slFinite(m[1]) && slFinite(m[3]) ? { t: `${m[1]}. ${capFirst(m[2].replace(/ wrong$/i, ' this wrong'))}: ${m[3]}${endP(x) || '.'}`, mv: 'contrast' } : null; },
     andShare(x) {
       const m = body(x).replace(/:$/, '').match(/^(.{12,}?),? and (?:so )?(i|we) (?:just )?(?:want|wanted|['’]d like|would like|am going|['’]m going|am gonna|['’]m gonna) to (?:share|tell you|show you|talk about|break down|walk you through|write about) (what|how|why) (i|we|it|this|they|it['’]s|we['’]re|i['’]m|things are|things have) (.{3,50})$/i); if (!m || /\b(?:and|but)\s*$/i.test(m[1])) return null;
@@ -2633,7 +2644,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const PL = slPolicy(l0), uk = (opts.keep || []).map(lcw);
     const keep = [...new Set([...(opts.keep || []), ...stanceKeep(l0).filter(w => !PL.dbl.has(lcw(w)) || uk.includes(lcw(w))), ...PL.mask, ...gp])].filter(w => w && w.length > 1).sort((a, b) => b.length - a.length); if (!keep.length) return hookUp0(post, opts);
     const KM = [], re = new RegExp(`(?<![\\p{L}\\p{N}])(${keep.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\p{L}\\p{N}])`, 'giu');
-    const masked = p0.replace(re, m => { if (KM.length >= 26) return m; let v = m; if (!uk.includes(lcw(m))) PL.trim.forEach(([f, c]) => { if (lcw(v).startsWith(f)) v = c + v.slice(f.length); }); KM.push(v); return `Qk${String.fromCharCode(96 + KM.length)}q`; }); if (!KM.length) return hookUp0(post, opts);
+    const masked = p0.replace(re, m => { if (KM.length >= 26) return m; let v = m; if (!uk.includes(lcw(m))) PL.trim.forEach(([f, c]) => { if (lcw(v).startsWith(f)) v = c + v.slice(f.length); }); const pm = PL.op.has(lcw(m)) && /^((?:i|we)\s+)/i.exec(v); if (pm) { KM.push(v.slice(pm[1].length)); return `${pm[1]}Qk${String.fromCharCode(96 + KM.length)}q`; } KM.push(v); return `Qk${String.fromCharCode(96 + KM.length)}q`; }); if (!KM.length) return hookUp0(post, opts);
     /* a kept phrase that a move put at the start of a sentence starts it the way the line does */
     const up0 = /^\P{L}*\p{Lu}/u.test(l0);
     const un = s => typeof s === 'string' ? s.replace(/(^|[.!?]\s+)?Qk([a-z])q/gi, (m, pre, i) => { const w = KM[i.toLowerCase().charCodeAt(0) - 97]; return pre != null && up0 && !/[./:]\S/.test(w) ? pre + capFirst(w) : (pre || '') + w; }) : s, unO = o => { if (!o) return o; const x = { ...o, line: un(o.line) }; if ('text' in o) { x.text = un(o.text); x.score = hookScore(x.text).score; } else x.score = hookScore(x.line).score; return x; };
@@ -2659,8 +2670,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* 1. clean: warm-ups, hedges and bait out, the end finished */
     /* r86 pass 2: a lowercase line's closing "lol" is its tone: off before the cuts, back on every version */
     const lolG = slGuard(Lr).find(g => g[2] === 'mean' && /^(?:lol|lmao|lmfao|haha+|hehe)$/i.test(Lr.slice(g[0], g[1])) && !/\S/.test(Lr.slice(g[1]).replace(/[.!]/g, '')));
-    const lolT = lolG ? Lr.slice(lolG[0], lolG[1]) : '';
-    let x = lolT ? L.replace(/\s+(?:lol|lmao|lmfao|haha+|hehe)[.!]*\s*$/i, '') : L;
+    /* r86 pass 6 (hook-7): and on any line, the closing "lol"/"lmao" the prompt keeps as tone */
+    const lolP = !lolG && slPolicy(Lr).tone ? (Lr.match(/\s(lol|lmao|lmfao|haha+|hehe|smh)[.!]*\s*$/i) || ['', ''])[1] : '';
+    const lolT = lolG ? Lr.slice(lolG[0], lolG[1]) : lolP;
+    let x = lolT ? L.replace(/\s+(?:lol|lmao|lmfao|haha+|hehe|smh)[.!]*\s*$/i, '') : L;
     const cutW = []; /* the words cut, as written: the receipt shows them struck */
     for (let i = 0; i < 3; i++) { const y = x.replace(HK_OPEN, m => { cutW.push(m.replace(/[\s,.:!—-]+$/, '')); return ''; }); if (y === x) break; x = y; said.add('warm'); }
     /* r74: the shared soft-word table: whole warm-ups (an announcement, a label, a disclaimer, backstory) go as one piece */
@@ -2697,7 +2710,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (said.has('warm')) { const rc = x.match(/^((?:an?|the|this|my|our) (?:[a-z-]+ ){0,3}[a-z-]+(?: (?:i|we) [a-z]+(?: [a-z]+){0,4})?) (?:that|which) ((?:basically |really |literally |perfectly )?(?:shows|explains|proves|breaks down|captures|sums up|predicts|nails)\b.{4,})$/i); if (rc && !/\b(?:is|are|was|were|has|have|had)\b/i.test(rc[1])) x = `${rc[1]} ${rc[2]}`; }
     const draftColon = /:\s*(?:\p{Extended_Pictographic}️?\s*)*$/u.test(L), ptr = /👇|🧵|⬇|↓/u.test(tailE);
     let hdr = draftColon;
-    { const xr = (opts.unmask ? opts.unmask(x) : x).replace(/[.!:]+$/, ''); if (said.has('warm') && !/\?$/.test(xr) && slSents(xr).length === 1 && !tailE && !/:\s/.test(xr) && wordsN(xr) <= 20 && !/,\s+(?:and\s+|but\s+|so\s+|which\s+)?(?!(?:and|but|why|how|what|when)\b)\S+[^,]*$/i.test(xr) && !/^(?:the |our |my )?(?:official )?(?:launch|release|arrival|debut|availability|partnership|collaboration|introduction) (?:of|with)\b/i.test(xr) && (slFrag1(xr + '.') || slNP(xr) || /^(?:why|how|what)\b/i.test(xr)) && (/^(?:why|how|what)\b/i.test(xr) || !slMainFin(xr)) && !slFrag1(Lr) && (SL_DET.test(lcw((xr.match(/[\p{L}\p{N}$€£][\p{L}\p{N},.]*/u) || [''])[0]).replace(/[.,]+$/, '')) || (/^(?:why|how)\b/i.test(xr) && sc0.kinds.includes('label')) || (/^how\b/i.test(xr) && slModal(xr) && sc0.kinds.some(k => /^(?:announce|throat)$/.test(k))) || (/^what\b(?!\s+(?:if|do|does|did|is|are|was|were|would|should|could|can|will|about|now|else)\b)/i.test(xr) && sc0.kinds.some(k => /^(?:label|announce|throat)$/.test(k))))) { x = x.replace(/[.!:]*$/, ptr || /(?<![\p{L}\p{N}_])[@#][\p{L}\p{N}_]+$|https?:\/\/\S+$/u.test(xr) || new RegExp(`(?:${SL_URL.source})$`, 'iu').test(xr) ? '' : ':'); hdr = true; } }
+    { const xr = (opts.unmask ? opts.unmask(x) : x).replace(/[.!:]+$/, ''); if (said.has('warm') && !/\?$/.test(xr) && slSents(xr).length === 1 && !tailE && !/:\s/.test(xr) && wordsN(xr) <= 20 && !/,\s+(?:and\s+|but\s+|so\s+|which\s+)?(?!(?:and|but|why|how|what|when)\b)\S+[^,]*$/i.test(xr) && !/^(?:the |our |my )?(?:official )?(?:launch|release|arrival|debut|availability|partnership|collaboration|introduction) (?:of|with)\b/i.test(xr) && (slFrag1(xr + '.') || slNP(xr) || /^(?:why|how|what)\b/i.test(xr) || (SL_DET.test(lcw((xr.match(/[\p{L}\p{N}$€£][\p{L}\p{N},.]*/u) || [''])[0])) && /\b(?:of|about|on) (?:how|why|what)\b/i.test(xr) && !slMainFin(xr))) && (/^(?:why|how|what)\b/i.test(xr) || !slMainFin(xr)) && !slFrag1(Lr) && (SL_DET.test(lcw((xr.match(/[\p{L}\p{N}$€£][\p{L}\p{N},.]*/u) || [''])[0]).replace(/[.,]+$/, '')) || (/^(?:why|how)\b/i.test(xr) && sc0.kinds.includes('label')) || (/^how\b/i.test(xr) && slModal(xr) && sc0.kinds.some(k => /^(?:announce|throat)$/.test(k))) || (/^what\b(?!\s+(?:if|do|does|did|is|are|was|were|would|should|could|can|will|about|now|else)\b)/i.test(xr) && sc0.kinds.some(k => /^(?:label|announce|throat)$/.test(k))))) { x = x.replace(/[.!:]*$/, ptr || /(?<![\p{L}\p{N}_])[@#][\p{L}\p{N}_]+$|https?:\/\/\S+$/u.test(xr) || new RegExp(`(?:${SL_URL.source})$`, 'iu').test(xr) ? '' : ':'); hdr = true; } }
     if ((/[\p{L}\p{N}%)$]$/u.test(opts.unmask ? opts.unmask(x) : x) || (/['’"”]$/.test(opts.unmask ? opts.unmask(x) : x) && !/[.!?…]['’"”]$/.test(opts.unmask ? opts.unmask(x) : x))) && !/\b(?:lol|lmao|lmfao|haha+|hehe)$/i.test(opts.unmask ? opts.unmask(x) : x) && !/(?:https?:\/\/\S+|\b[\w-]+\.(?:com|io|xyz|co|ai|app|dev|so|gg|me|org|net|ly|to)(?:\/\S*)?|#[\w]+)$/i.test(opts.unmask ? opts.unmask(x) : x)) { x += /^(?:anyone|anybody|who else|am i the only|is it just me|wdyt|thoughts|what if|what about|how about)\b|^(?:(?:why|how|what|who|when|where|which) (?:is|are|was|were|do|does|did|can|could|should|would|will|has|have|am)|(?:is|are|do|does|did|can|could|should|would|will|has|have|am|isn['’]t|aren['’]t|don['’]t|doesn['’]t))\b(?!['’]t\b)(?! believe\b)/i.test(x) && !/^(?:can['’]?t|cannot|don['’]t|doesn['’]t|isn['’]t|aren['’]t) (?:believe|wait|stop|stand|imagine|help)\b/i.test(x) ? '?' : '.'; said.add('end'); }
     const base = x, baseSaid = [...said];
     /* 2. moves, then a second move on what the first one made */
@@ -3097,21 +3110,34 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const x = w[i], p = o.length ? o[o.length - 1] : '';
       if (p && SL_RELP.test(x) && !SL_AUXW.test(p) && !slVerbW(p) && !SL_PASTW.test(p) && !SL_PREP.test(p) && !/^(?:so|such|now|and|but|or|than|is|that|like|said|says|know|think|believe|mean|means|realize|realized)$/.test(p)) {
         let j = i + 1; if (SL_PRON.test(w[j] || '') || /^(?:people|everyone|nobody|someone|most)$/.test(w[j] || '')) j++;
+        /* "something that I think is important": the "I think" is an aside, the clause's verb is "is" */
+        if (j > i + 1 && /^(?:think|believe|guess|feel|know|bet|suspect|reckon|hope|thought|said)$/.test(w[j] || '') && SL_AUXW.test(w[j + 1] || '')) j++;
         if (relAt < 0) relAt = o.length; i = slRelEnd(w, j) - 1; continue;
       }
+      /* "a story about my dad, and why he's the reason…": a wh-clause after "and" or a preposition is part of the noun phrase */
+      if (p && /^(?:why|how|what|where|when|whether)$/.test(x) && (p === 'and' || SL_PREP.test(p))) { if (SL_DET.test(o[0]) && !o.slice(1).some(y => SL_AUXW.test(y) || SL_PASTW.test(y))) return false; break; }
       o.push(x);
     }
-    /* a noun phrase up front ("a formula that…", "a redesign I did…"): its own words are never the verb; the main verb comes after
-       the relative clause. A contact clause ("a redesign I did") only after a short noun phrase: no verb, wh-word or time word in it */
+    /* a contact clause after a short noun phrase ("a redesign I did", "every SaaS I audit"): no verb, wh-word or time word between
+       the determiner and the pronoun. Its pronoun and verb go, wherever it sits */
+    const NOTNP = y => SL_AUXW.test(y) || SL_PASTW.test(y) || SL_PREP.test(y) || slVerbW(y) || /ly$/.test(y) || /^(?:and|but|or|so|how|what|why|when|where|who|whether|if|to|ago|later|earlier|last|next|this|today|yesterday|now|then)$/.test(y);
+    let cAt = -1;
+    for (let k = 2; k < o.length; k++) {
+      if (!/^(?:i|we|you|they|he|she)(?:'(?:ve|d|ll|re|m))?$/.test(o[k])) continue;
+      let d = -1; for (let q = k - 1; q >= Math.max(0, k - 5); q--) { if (SL_DET.test(o[q]) && q < k - 1) { d = q; break; } if (NOTNP(o[q])) break; }
+      if (d < 0) continue;
+      const npInit = o.slice(1, k).every(y => !NOTNP(y) || SL_DET.test(y)) && SL_DET.test(o[0]), e = slRelEnd(o, k + 1);
+      if (npInit && cAt < 0) cAt = k; if (relAt > k) relAt -= e - k; o.splice(k, e - k); k--;
+    }
+    /* a noun phrase up front ("a formula that…", "a redesign I did…"): its own words are never the verb; the main verb comes after its clause */
     if (o.length && SL_DET.test(o[0])) {
-      const k = o.findIndex((x, i) => i >= 2 && i <= 6 && /^(?:i|we|you|they|he|she)$/.test(x) && !o.slice(1, i).some(y => SL_AUXW.test(y) || SL_PASTW.test(y) || SL_PREP.test(y) || slVerbW(y) || /ly$/.test(y) || /^(?:and|but|or|so|how|what|why|when|where|who|whether|if|to|ago|later|earlier|last|next|this|today|yesterday|now|then)$/.test(y)));
-      if (k > 0 && (relAt < 0 || k < relAt)) { const r = o.slice(slRelEnd(o, k + 1)); return r.some((x, i) => slFinTok(r, i)); }
-      if (relAt > 0 && !o.slice(1, relAt).some(y => SL_AUXW.test(y) || SL_PASTW.test(y))) { const r = o.slice(relAt); return r.some((x, i) => slFinTok(r, i)); }
+      const a = Math.min(...[relAt, cAt].filter(x => x > 0), Infinity);
+      if (a < Infinity && !o.slice(1, a).some(y => SL_AUXW.test(y) || SL_PASTW.test(y))) { const r = o.slice(a); return r.some((x, i) => slFinTok(r, i)); }
     }
     return o.some((x, i) => slFinTok(o, i));
   }
   const SL_HOOKSH = /[?:→]|👇|🧵/u, SL_THANKS = /^\P{L}*(?:(?:huge|big|massive|special|quick|a)\s+)?(?:shout ?-?outs?|thanks|thank you|kudos|props|congrats|congratulations|happy (?:birthday|anniversary|friday|monday|new year)|welcome|rip)\b/iu;
-  const slAndNPN = z => { let n = 0; slSents(z).forEach(s => { if (/\?["”’)]*$/.test(s)) return; s.split(/,\s+(?:and|so|but)\s+|^\P{L}*and\s+/iu).slice(1).forEach(c => { const cl = c.split(/[,;:.!?—–]/)[0]; if (wordsN(cl) >= 2 && !SL_HOOKSH.test(cl) && !slMainFin(cl)) n++; }); }); return n; };
+  const slAndNPN = z => { let n = 0; slSents(z).forEach(s => { if (/\?["”’)]*$/.test(s)) return; s.split(/,?\s+(?:and|so|but)\s+|^\P{L}*and\s+/iu).slice(1).forEach(c => { const cl = c.split(/[,;:.!?—–]/)[0]; if (!SL_HOOKSH.test(cl) && ((wordsN(cl) >= 2 && !slMainFin(cl)) || /^\P{L}*(?:how|what|why|where)\s/iu.test(cl) || /^\P{L}*(?:it|this|that|them)\P{L}*$/iu.test(cl))) n++; }); }); return n; };
   const slNPSentN = z => slSents(z).filter((x, i, a) => !(i > 0 && /\?["”’)]*$/.test(a[i - 1])) && !SL_HOOKSH.test(x) && !SL_THANKS.test(x) && !/^\P{L}*(?:\S+\s+){0,2}[$€£]?\d/u.test(x) && wordsN(x) >= 4 && SL_DET.test(slTokW(x)[0] || '') && !slMainFin(x)).length;
   const SL_CONJS = /(?:^|[.!?]\s+)\P{L}*(?:or|nor|than|which|whom|whose)\b/giu, SL_CONJ1 = /^\P{L}*(?:and|but|yet|or|nor)\b/iu;
   const SL_ORTAG = /(?:^|[.!?]\s+)\P{L}*(?:or|and)\s+(?:anything|something|whatever|so|not|nothing|anyone)\b/giu;
@@ -3127,12 +3153,24 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function slHard(line, draft) {
     const L = String(line), D = String(draft);
     if (slEndDisc(L) && !slEndDisc(D)) return 'ends on a disclaimer';
+    /* a frame that opened the line opens it still: never mid-line ("…? Then Unpopular opinion: most…") */
+    { const f = D.match(/^\P{L}*((?:hot take|unpopular opinion|controversial opinion|spicy take|honest question|genuine question|serious question|real question|psa|reminder|not to (?:brag|complain|be dramatic|be that guy)|(?:this is )?not financial advice|nfa)\b)/iu); if (f && lcw(L).includes(lcw(f[1])) && !new RegExp(`^\\P{L}*${f[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(L.replace(HK_VOICE, ''))) return 'frame moved'; }
+    /* a line that points at a thread keeps a pointer: 🧵, 👇, "thread", "here's why", or a "why…:" header */
+    { const P1 = /🧵|👇|⬇|↓|\bthread\b|\(thread\)|\bhere['’]s (?:why|how|what)\b|\b(?:a few|some) (?:thoughts|notes|lessons) on\b/iu, P2 = /^\P{L}*(?:why|how|what)\b[^.!?]*:\s*$|:\s*$/iu; if (P1.test(D) && !P1.test(L) && !P2.test(L)) return 'pointer lost'; }
+    /* an opinion verb left without its clause: "Why I think @jessepollak. The Base team are building…" (a split took its verb) */
+    { const ov = z => slSents(z).filter(s => { const m = s.replace(/[.!?…:]+["”’)]*$/, '').match(/\b(?:i|we)\s+(?:think|believe|feel like|reckon|guess|bet|suspect)\s+(?:that\s+)?(\S.*)$/iu); return !!m && wordsN(m[1]) >= 1 && !/^(?:so|not|it|this|that|yes|no)$/i.test(m[1].trim()) && !slMainFin(m[1]) && !/\?$/.test(s); }).length; if (ov(L) > ov(D)) return 'opinion lost its clause'; }
+    /* a hedge left in front of an order: "Probably talk to your users…" */
+    { const hv = z => slSents(z).filter(s => { const m = s.match(/^\P{L}*(?:probably|maybe|perhaps|possibly|likely)\s+([a-z]+)/iu), v = m ? m[1].toLowerCase() : ''; return !!v && (SL_VERB.has(v) || (!/(?:s|ed|ing|ly|er|est)$/.test(v) && !/^(?:the|a|an|not|no|my|our|your|his|her|their|its|this|that|these|those|i|we|you|they|he|she|it|worth|true|right|wrong|fine|nothing|never|too|so|just|one|because|why|how|what|when|in|on|at|for|with|to|of|best|worst|more|less|most|all|some|both|still|only|even|also|already|tomorrow|today|tonight|soon|next|now|then|later|yes|nah|ok|okay|half|twice|about|around|over|under)$/.test(v))); }).length; if (hv(L) > hv(D)) return 'hedged order'; }
+    /* the writer's closing "lol" stays the close: never inside a question or mid-line ("…I own lol? My…") */
+    if (/\b(?:lol|lmao|lmfao|haha+|hehe|smh)[.!]*\s*$/i.test(D) && cnt(L, /\b(?:lol|lmao|lmfao|haha+|hehe|smh)\b/gi) && !/\b(?:lol|lmao|lmfao|haha+|hehe|smh)[.!]*\s*(?:\p{Extended_Pictographic}️?\s*)*$/iu.test(L)) return 'tone word moved';
     if (cnt(L, SL_CUTPRED) > cnt(D, SL_CUTPRED)) return 'cut-off predicate';
     if (slAndNPN(L) > slAndNPN(D)) return 'verbless and-clause';
     if (cnt(L, SL_CONJS) > cnt(D, SL_CONJS) || cnt(L, SL_ORTAG) > cnt(D, SL_ORTAG) || (SL_CONJ1.test(L) && !SL_CONJ1.test(D))) return 'dangling conjunction';
     if (cnt(L, SL_QTAG) > cnt(D, SL_QTAG) || cnt(L, SL_QNOSUBJ) > cnt(D, SL_QNOSUBJ)) return 'question lost';
     if (SL_P3.test(L) && !SL_P3.test(D)) { const lw = lcw(L).match(/[\p{L}\p{N}$'-]+/gu) || [], k = lcw(D).indexOf(lw.slice(0, 3).join(' ')); if (k > 0 && SL_ANTE.test(D.slice(0, k))) return 'pronoun lost its antecedent'; }
     if (slNPSentN(L) > slNPSentN(D)) return 'fragment';
+    /* a frame split off as its own sentence: "Not to brag or anything. But I…" */
+    { const inf = z => slSents(z).filter(s => /^\P{L}*(?:not )?to\s/iu.test(s) && !slFinite(s)).length; if (inf(L) > inf(D)) return 'fragment'; }
     if ([...L.matchAll(SL_IDENT)].some(m => !lcw(D).includes(lcw(m[0]).replace(/^[^a-z]+/, '').replace(/[.!]$/, '')))) return 'invented sentence';
     const M = lcw(slMasked(D)), LL = lcw(L), has = w => new RegExp(`(?<![\\p{L}\\p{N}])${w}(?![\\p{L}\\p{N}])`, 'u').test(LL);
     for (const m of M.matchAll(/\b(sleep(?:s|ing)?|slept|bullish|bearish|long|short|hooked|sold|bet(?:s|ting)?|bank(?:s|ing)?|count(?:s|ing)?|pass(?:es|ing)?|out|down|big|high|keen|hard|easy|cheap|heavy|lowkey|doubl(?:e|es|ed|ing)|go(?:es|ing)? all in|all in)\s+on\b/g)) if (has(m[1]) && !has(`${m[1]}\\s+on`)) return 'idiom split';
@@ -3249,9 +3287,11 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     q: 'Same question in fewer words, so it reads in one glance.',
     filler: 'Filler from talking out loud. In the feed it costs a second and adds nothing.',
     swap: 'Same claim in plainer words, so nothing snags the reader.',
-    sharp: 'Nothing soft to cut. It reads clean as it is.',
-    clean: 'Nothing soft to cut, and no safe move makes it stronger.',
-    safe: 'Nothing I can cut safely here. The rest is your call.'
+    /* r86 pass 6 (juror 5, hook-8): on-device can't tell a sharp line from a flat one, so it never says "it reads clean" */
+    sharp: 'Nothing safe to cut on-device. It stays as you wrote it.',
+    clean: 'Nothing safe to cut on-device, and no move I trust makes it stronger.',
+    safe: 'Nothing I can cut safely here. The rest is your call.',
+    unsafe: 'Couldn’t sharpen this one safely, so it stays as you wrote it.'
   };
   const slFig = z => { const m = String(z).match(/(?<![\w.,])[$€£]?\d|\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|fifty|hundred|a (?:year|month|week|day|decade))\b/i); return m ? (z.slice(0, m.index).match(/\S+/g) || []).length : -1; };
   /* r86 pass 5 (hook-9): a beat ends on a stop followed by a space or the end, so "4.2x", "24.1" and "$2.5M" are not beats */
@@ -3476,7 +3516,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     R.long = longOf(draft); R.note = R.long ? SL_LONG : '';
     const vm = draft.match(HK_VOICE), body = vm ? draft.slice(vm[0].length) : draft;
     /* r86 pass 5 (hook-12): a thin line says which kind of thin it is: too few words, or words that aren't a sentence yet */
-    if (!body.trim() || slThin(body)) { const few = slWs(body).length < 4 && !/\blorem\b/i.test(body); return { ...R, state: 'thin', thin: few ? 'few' : 'sentence', why: few ? 'Sharpen needs a few more words. Paste the whole first line.' : 'This doesn’t read as a sentence yet.' }; }
+    /* r86 pass 6 (juror 5, hook-12): a key mash or a test ("asdf test test", "qwerty") says so, not "needs a few more words" */
+    if (!body.trim() || slThin(body)) { const ws = slWs(body), junk = ws.filter(w => !slReal(w.replace(/[.’']+$/, '')) || /^(?:test(?:ing)?|asdf\w*|qwerty\w*|foo|bar|baz|hjkl|jkl\w*|placeholder|blah+)$/i.test(w)).length, gib = !!ws.length && !/\blorem\b/i.test(body) && junk * 2 >= ws.length && ws.some(w => !slReal(w.replace(/[.’']+$/, '')) || /^(?:test(?:ing)?|asdf\w*|qwerty\w*|hjkl|jkl\w*|placeholder)$/i.test(w)), few = !gib && ws.length < 4 && !/\blorem\b/i.test(body); return { ...R, state: 'thin', thin: gib ? 'test' : few ? 'few' : 'sentence', why: gib ? 'This reads like a test, not a post. Paste a first line you’d really post.' : few ? 'Sharpen needs a few more words. Paste the whole first line.' : 'This doesn’t read as a sentence yet.' }; }
     /* r86 pass 5 (hook-9): "ok so", "Really really really", "the the the": no word that says anything. Not a short post */
     if (slTiny(body) && !slWs(body).some(w => !SL_FILLW.test(lcw(w)) && !SL_FW.test(lcw(w)))) { const fill = slWs(body).every(w => SL_FILLW.test(lcw(w))); return { ...R, state: 'thin', thin: fill ? 'filler' : 'sentence', why: fill ? 'That’s all filler. Add the point.' : 'This doesn’t read as a sentence yet.' }; }
     /* r86 pass 4 (hook-16): a line that is only a disclaimer is complete as it is */
@@ -3487,7 +3528,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     R.marks = marks; R.kept = facts.filter(f => !f.link && slKeepW(f.v)).map(f => f.v);
     const st = stanceKeep(body).filter(w => !keep.some(k => k.toLowerCase() === w.toLowerCase()));
     /* the stance note only while the stance is really still in the line */
-    const call = isCall(body), stQ = w => String(w).replace(/,?\s+that$/i, ''), stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${stQ(k)}”: on a ${call ? 'call' : 'plan or a forecast'}, it’s your stance, not filler.` : ''; };
+    /* r86 pass 6 (hook-4 on-device): the note says why truly: a "kind of" on a feeling is how they feel, and a hedge with no future word around it is how sure they are, not a plan */
+    const call = isCall(body), stQ = w => String(w).replace(/,?\s+that$/i, ''), stWhy = k => { const nx = lcw((body.slice(lcw(body).indexOf(lcw(k)) + k.length).match(/^\s+((?:a |an )?[\p{L}'’]+)/u) || ['', ''])[1]); return /^(?:kind of|kinda|sort of|sorta|a little|a bit|pretty)$/i.test(k) && SL_FEELW.test(nx) ? 'it’s how you feel, not filler.' : call ? 'on a call, it’s your stance, not filler.' : slFutReal(body) ? 'on a plan or a forecast, it’s your stance, not filler.' : 'it’s how sure you are, not filler.'; }, stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${stQ(k)}”: ${stWhy(k)}` : ''; };
     const noteOf = l => [stNote(l), slApxNote(draft, l), longOf(l) ? SL_LONG : ''].filter(Boolean).join(' ');
     const score0 = hookScore(rest ? `${draft}\n${rest}` : draft).score;
     /* r86 pass 2: when unsure, do less. A lone "very" on a line that already lands is the writer's voice */
@@ -3550,7 +3592,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       /* r86 pass 5: a restrictor under a negation is quoted with it: “don't just”, “didn't really” */
       if (gHit && /^(?:just|only|simply|merely|really)$/i.test(gq)) { const nm = [...draft.slice(0, gHit[1]).matchAll(/\b(?:not|never|cannot|\w+n['’]t)\s+(?:[a-z]+\s+)?(?:just|only|simply|merely|really)$/gi)].pop(); if (nm) { gq = nm[0]; gHit = [nm.index, gHit[1], 'neg']; } } if (gHit && (gHit[2] !== 'neg' || /\bjust$/i.test(gq)) && /\b(?:a|an|the|my|our|your|one|two|what|not|actually|just|even|every|all|of|really|very|so)$/i.test(gq)) { let e = gHit[1]; for (let k = 0; k < 4; k++) { const nx = draft.slice(e).match(/^\s+[\p{L}\p{N}'’$-]+[,;:.!?]?/u); if (!nx) break; gq += nx[0]; e += nx[0].length; const lw = lcw(nx[0].trim()); if (/[,;:.!?]$/.test(lw)) { gq = gq.replace(/[,;:.!?]+$/, ''); break; } if (!SL_QSM.test(lw) && (SL_QB.test(lcw((draft.slice(e).match(/^\s+([\p{L}']+)/u) || ['', ''])[1])) || !/\S/.test(draft.slice(e)))) break; } }
       const apx = slApxPh(draft), apxHit = apx && G.some(g => g[0] < apx.b && g[1] > apx.a) && apx.text.length <= 40;
-      const why = apxHit ? `Kept “${apx.text}”: it says nearly, not exactly.` : gHit ? `Kept “${gq.slice(0, 48)}”: here it’s part of what you mean, not filler.` : st.length && stNote(draft) ? `Kept “${stQ(st[0])}”: on a ${call ? 'price call' : 'plan or a forecast'} it’s your stance, not filler.` : slExtra(draft).length ? HK_WHY_SL.safe : score0 >= 70 ? HK_WHY_SL.sharp : HK_WHY_SL.clean;
+      /* r86 pass 6 (hook-1/8): an edit was found but a hard guard dropped it: say so, never "it reads clean" */
+      const hardHit = [...list, H && H.base].filter(o => o && o.line).map(fix).some(o => !same(o.line, draft) && !!slHard(o.line, draft));
+      const why = apxHit ? `Kept “${apx.text}”: it says nearly, not exactly.` : gHit ? `Kept “${gq.slice(0, 48)}”: here it’s part of what you mean, not filler.` : st.length && stNote(draft) ? `Kept “${stQ(st[0])}”: ${stWhy(st[0])}` : hardHit ? HK_WHY_SL.unsafe : slExtra(draft).length ? HK_WHY_SL.safe : score0 >= 70 ? HK_WHY_SL.sharp : HK_WHY_SL.clean;
       return { ...R, state: 'clean', say: 'Nothing to cut', why: why.length > 140 ? HK_WHY_SL.safe : why, note: noteOf(draft) };
     }
     const E = slExplain(draft, best.line, best.moves, marks);
