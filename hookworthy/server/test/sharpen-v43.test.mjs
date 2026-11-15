@@ -149,13 +149,14 @@ test('v4.3, hook42-3 and round-8 receipts: true, plain, and said once', () => {
 });
 
 test('v4.3, hook42-4 and uiux-5: a put-back opener keeps the question and pins only itself', () => {
-  assert.equal(L('ok but why does every productivity app basically turn into a second job after like a week', { keep: ['ok but'] }), 'ok but why does every productivity app turn into a second job after a week?');
+  /* v4.4 (hook43-2): "like a week" is the writer's "about a week", so it stays */
+  assert.equal(L('ok but why does every productivity app basically turn into a second job after like a week', { keep: ['ok but'] }), 'ok but why does every productivity app turn into a second job after like a week?');
   assert.equal(L('honestly what is the point of a pitch deck nobody reads'), 'what’s the point of a pitch deck nobody reads?');
   assert.equal(L('so like how are you all getting your first 100 subscribers'), 'how are you all getting your first 100 subscribers?');
   /* the other cuts and reshapes stand around a pinned opener */
   assert.equal(L('Hey everyone, I wanted to share some thoughts on why most traders lose money', { keep: ['Hey everyone'] }), 'Hey everyone, some thoughts on why most traders lose money:');
   const p = S('ok but why does every productivity app basically turn into a second job after like a week', { keep: ['ok but'] });
-  assert.match(p.why, /^You kept “ok but”/); assert.deepEqual(p.cut.map(c => c.text), ['basically', 'like']);
+  assert.match(p.why, /^You kept “ok but”/); assert.deepEqual(p.cut.map(c => c.text), ['basically']);
   /* "opens on it" only for a word that really opens it: "Some" is not "So" */
   assert.doesNotMatch(S('Hey everyone, I wanted to share some thoughts on why most traders lose money', { keep: ['So'] }).why, /You kept “So”/);
 });
