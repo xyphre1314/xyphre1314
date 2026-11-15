@@ -13102,7 +13102,8 @@ const HG_DEFAULT = 'so i think consistency is honestly the most underrated way t
    Whole warm-ups go as one piece ("just wanted to share that"), so a cut never leaves a stray "that" at the front */
 const HG_HEDGES = HWCore.SOFT.map(s => [s.re, s.why, s.k]);
 /* where the soft words are: [start, end, why, kind], no overlaps; words this voice put back (r64) aren't soft */
-function hgMarks(text, keep) { return HWCore.softMarks(String(text || ''), keep); }
+/* round 86 v4.3: a 'frame' mark ("Not to brag, but") is a kept frame, not a soft word: the composer never squiggles or strikes it */
+function hgMarks(text, keep) { return HWCore.softMarks(String(text || ''), keep).filter(m => m[3] !== 'frame'); }
 /* the soft words out, nothing else changed: the composer's one-tap Sharpen and the first step of the homepage's.
    words: what was cut, as written, for the receipt. A line that started lowercase on purpose stays lowercase */
 function hgClean(line, keep) { const r = HWCore.softCut(line, keep); return { s: r.s, cut: r.cut.length, words: r.cut, kinds: r.kinds }; }
