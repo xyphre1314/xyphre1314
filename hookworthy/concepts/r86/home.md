@@ -635,3 +635,55 @@ Engine items stayed with the engine pass (core.js changed several times during t
 - The OG card and the app icon still use the stroke hook-h (see brand-2).
 
 **Numbers (final build, against core.js of 2026-11-15 09:54)**: screens 9.90 at 390 (budget 10.0), 10.47 at 360 (budget 10.5), 9.33 at 768, 8.65 at 1440. Hero post bottom 766 at 1440×900 and 734 at 1280×800. The Try tile is 739px at 390 and 713px at 360 for the default and all five starters. First tap on a 4x-throttled 390 phone (`r86/fix7/tap.js`): a starter after warm-up lands in 87–105ms with no long task (click event 72–96ms). A typed line takes about 150ms, about 105ms of it in sharpenLine. During warm-up a tap can wait on one engine warm step of 430–775ms at 4x, which only core.js can split. `check.js home` and `legal` ok:true, CLS 0 at 15 widths from 360 to 1920, no overflow and no heading over two lines from 320 to 1920 (`sweep.js`). `trytest`, `sheettest`, `p6test` and the new `r86/fix7/p7test.js` (1440, 390) pass. claude_try.py still patches. hero-sync passes, run last.
+
+## Pass 8 (brief: `r86/FIX8.md`, re-rate reviews in `r86/rerate7/`)
+core.js was being changed by the engine pass throughout (10:35, 10:56, 11:01 builds); no engine text is rewritten by the page, and hero-sync ran last.
+
+**Truth: reply drafts and their cost (founder-2/3/4, marketing-2)**
+- Checked in the app: the breakout alert's first reply drafts are made on the server (`breakoutDrafts`, AI.complete outside `withCredits`), so they cost no rewrites. "Draft all in my voice" and Radar replies cost 1 rewrite per batch of up to ten (CR_ACTS `replies: { c: 1 }`).
+- FAQ "Is it just AI writing, like ChatGPT?", two short paragraphs: "No. A chatbot writes you a new post. Sharpen edits your own line: it cuts fluff, puts the point first and swaps a wordy phrase for a plain one. It knows your voice and your never-say list, and a check rejects any version that changes your facts." / "In the app, Claude makes the edit, and this demo runs on your device, without Claude. Rewrites use Claude when you ask. On Pro and Studio, a post that takes off arrives with its first replies drafted, free. Other reply drafts use 1 rewrite for up to ten. Nothing goes out until you send it." The claude_try.py sentence is verbatim (patch check passes).
+- Pro card: "250 rewrites in your voice a month" is now a phone-visible bullet (with 500 posts); "A ping when a post takes off, with its first replies drafted" + "Those first drafts don’t use your rewrites."; "Replies drafted in your voice as they come in" + "Up to ten replies per rewrite."
+- legal.html: what leaves now says Pro/Studio breakout drafts go to Claude unasked; hosted wording ("Hookworthy’s servers", synced data "stays in your account, encrypted"); sync explains why drafts come back at sign-in; usage line states the reply-draft cost.
+- Free row: "Past a daily fair-use limit, it runs on your device. Still free." (from 375px up; at 360 the budget keeps it to the FAQ/legal).
+
+**Demo states (uiux-1 page half, uiux-3, uiux-5, founder-7, marketing-11)**
+- An `unsure` result always reads "Kept as written"; a "tight" why from the engine is never shown on it. The page's own as-written copy (guard drops) no longer says "Already tight": the words the engine wanted to cut stay marked ("Marked, not cut: cutting it would change what you said. Your call.").
+- After Sharpen the chip row is "Marked:"; "Could cut:" is only the typing suggestion.
+- Clean copy is the engine's `R.why` verbatim.
+- Who "Try it" and the hero draft now arrive sharpened (the visitor's tap asked for it): "Sharpening it…" while the box scrolls in, then the strike plays in view. A persona/starter line that is stale says "Tap Sharpen to see it sharpened." After a Who jump, "Back to who it’s for" returns to that row with focus on its button.
+- Put-back note: "Back in: “so”, and “you should” with it."; a line that opens on a word you put back shows the engine's why with no "Your call." label over it.
+
+**Layout and craft**
+- Trust ≥1200 (brand-1, web-1, uiux-7, founder-10): the cause was natural-height rows in a tile stretched by Who. The Never list is now `flex:1` and each row `flex:1` with its words centred, the rules follow the list (24px). Rows 85/97/97px at 1280–1440, no band, and it can't come back if Who grows. Intro: "Every post is one you wrote or approved. No automation that can get your account restricted. On purpose." ("Auto-reposts" was not adopted: the app has an Auto-repost setting key and weekly reruns.)
+- Studio (web-2, uiux-2): Marco's post carries a small inline-SVG BTC chart (X-dark frame, white/grey candles, dashed 58k level, white ring at the break, no ember). Rafael's carries a quoted post of his own ("Passed on a deal I liked today…"). `sizeStudio()` measures all four clients at this width and locks `#st-box`: 694/694/694/694 at 1440, 734×4 at 390 (phones hide the media and quote, as before).
+- Try (web-3): falling-word ghosts are cleared on every edit, Clear, starter or re-render (`unDrop`), and their timer is cancelled.
+- Who (brand-2, uiux-4, marketing-9c): fluff in the drafts wears the ember squiggle (1px, offset 3px); a move's plain strikes ("and", "why") stay plain. 761–900 keeps the one-line struck draft and "Try it". Phones show "Try it" (icon only at ≤359); Studio's link is an arrow below 414px and at 761–900 so the Ghostwriter tag is never cut.
+- Previews "Yours" on LinkedIn keeps the feed full (the example's posts follow, dimmed) (uiux-8).
+- Try result packs to the top of its reserved height (web-6).
+- Text-button hit areas (`.inl`, the mailto) extend outside the text (web-8).
+- photos.webp (192 KB vs 321 KB) served through `<picture>` with the JPEG fallback (web-7; Day backdrops already blur 1.5px).
+
+**Brand**
+- Results well: its own crop of frame 2, the sky band at ~1.9× under the blur (`.ph.sky`, container-sized), no longer Day's frame again.
+- OS notifications: "Hookworthy · Pro" in the timestamp colour, no pill (the Replies tile keeps its in-app pill).
+- Pro card: hairline top .34, one surface step up, a white glint on its top edge (no ember).
+- Phone beam: `--lx:92%; --a:64deg; --bw:104px` (66deg/96px below 380), so it lands on the window's top edge and clears "Try it on your line".
+
+**Marketing**
+- Hero Founder: "Big news: we just hit $10k MRR, 14 months after launching" → "$10k MRR, 14 months after launching." (Cut 1 bit of fluff · Number first; Kept: $10k MRR, 14 months). Ghostwriter (Lena, "Example client"): "I just wanted to remind you that your evening honestly sets up your morning more than your alarm does" → "Your evening sets up your morning more than your alarm does." (Cut 2 bits of fluff), the same post Lena approves in Studio. Both engine-verified and guard-clean.
+- Starters named by move: Wordy, Announcement, List, Real talk, Already sharp; the Announcement starter is now "So excited to share: our first hire starts on Monday" (the $10k MRR line moved to the hero).
+- Headings: Who "Trades, launches, newsletters. / Same fluff, same fix."; Voice "Your lowercase stays. / Your never-say words go." with "Paste 8 of your posts and it learns how you write: your habits and your never-say words. You choose every change." as its footnote.
+- The Try tile's own "Free forever · No card" is gone (hero and final keep it).
+- Phones: at 360 the Try label is "This demo runs on your device." (the instruction stays for screen readers); the Voice card keeps one Habits row ("numbers first", "short lines").
+
+**Other**
+- Sheet email error: "!" glyph, weight 500, and an ink ring + halo on `[aria-invalid=true]` (uiux-6). Done-state link: "Open the working app on claude.ai (demo data)" (founder-9).
+- Nav at 761–900 keeps "For ghostwriters" and drops FAQ (founder-8).
+- Warm-up: steps from `HWCore.SHARPEN.warmSteps()` run one per idle callback only while the Try tile or the final is within 600px of the screen (parked otherwise), and a touch still pauses them for 3 s.
+
+**Skipped**
+- Engine: "Already tight" on run-up lines, run-up coverage, colon fragments ("How I grew my newsletter to 10k:"), "i think" consistency, chunked warm steps.
+- web-5 (reserve the tallest result at desktop): it would bring back the Try tile's empty band at ≥1200 that pass 5/6 removed; the growth is input-driven (CLS 0).
+- marketing-6 "Auto-reposts" (see Trust), marketing-9c two-line drafts on phones (budget).
+
+**Numbers (final build, against core.js of 2026-11-15 11:09)**: screens 9.97 at 390 (budget 10.0), 10.49 at 360 (budget 10.5), 9.44 at 768, 8.72 at 1440. CLS 0 at 15 widths from 360 to 1920, no overflow and no heading over two lines from 320 to 1920 (`sweep.js`). Hero post bottom 766 at 1440×900 and 734 at 1280×800. Studio 694px at 1440 and 734px at 390 for all four clients. `check.js home` and `legal` ok:true. `trytest`, `sheettest` (1440, 390), `p7test` (1440, 390) and the new `r86/fix8/p8test.js` (1440, 390) pass; `p6test` now reports its old "who placeholder" expectation, which is the intended change (Who drafts arrive sharpened). claude_try.py still patches (build_pub.py in scratchpad/pub, no assertion). First tap on a 4x-throttled 390 phone (`r86/fix8/tap.js`, starter): 83–105 ms tap to result after warm-up (click event 56–96 ms); a tap during warm-up waits on the engine step in progress (155 ms to result in this run). core.js's warm steps still run 65–670 ms each at 4x, which only core.js can split. hero-sync passes, run last.

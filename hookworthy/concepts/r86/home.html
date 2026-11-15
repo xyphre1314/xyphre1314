@@ -524,7 +524,7 @@ html:not(.motion) #pf-go{display:none}
 .starters button:hover{color:var(--ink);background:rgba(255,255,255,.06)}
 .starters button:focus-visible{border-radius:999px}
 /* the result: the post under its receipt, the reasons to its right, Keep right under the line it keeps */
-.try-out{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,15em);grid-template-areas:"h h" "card hits" "keep hits";gap:10px 24px;align-items:start;min-width:0;transition:opacity .25s}
+.try-out{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,15em);grid-template-areas:"h h" "card hits" "keep hits";gap:10px 24px;align-items:start;align-content:start;min-width:0;transition:opacity .25s}
 .try-out.stale{opacity:.5}
 /* a new line, not sharpened yet: an empty post waits for it (the label above says what to do) */
 .ph-card{padding:16px 18px 18px;box-shadow:inset 0 0 0 1px var(--x-line)}
@@ -553,9 +553,13 @@ html:not(.motion) #pf-go{display:none}
 /* the way on from "Nothing to cut": an inline text button */
 .inl{position:relative;display:inline;padding:0;font:inherit;font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.4);border-radius:4px;text-align:left}
 .inl:hover{text-decoration-color:var(--ink)}
+.inl::after{content:"";position:absolute;inset:-6px -2px}
+.plans-fine a{position:relative}
+.plans-fine a::after{content:"";position:absolute;inset:-6px -2px}
 .empty-c{display:grid;place-items:center;min-height:132px;padding:20px;border-radius:18px;box-shadow:inset 0 0 0 1px var(--line-2);background:repeating-linear-gradient(135deg,rgba(255,255,255,.015) 0 8px,transparent 8px 16px);font-size:15px;line-height:1.5;color:var(--ink-2);text-align:center;text-wrap:balance}
 .keep{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .keep .micro{white-space:nowrap;margin:0}
+.keep .back-w{font-size:14px;color:var(--ink-2)}
 #out-keep{scroll-margin-bottom:20px}
 .motion .try-out.fresh .xcard,.motion .try-out.fresh .empty-c{animation:land .55s var(--ease) both}
 .motion .try-out.fresh .lit-card::after{animation:glint .9s var(--ease) .25s both}
@@ -771,6 +775,7 @@ html:not(.motion) #pf-go{display:none}
 /* a quiet "Pro" on the moments only Pro does, in the honesty tag's own style */
 .tag.pro{height:17px;padding:0 6px;font-size:10.5px;margin-left:6px}
 .nhl{display:inline-flex;align-items:center;min-width:0}
+.npro{font-weight:400;white-space:nowrap}
 .mine .xtext{margin:0;border-radius:6px;white-space:pre-wrap}
 .mine .xtext[contenteditable]{outline:1px solid rgba(255,255,255,.28);outline-offset:4px;caret-color:var(--ink)}
 .mine .xtext[contenteditable]:focus-visible{outline:2px solid var(--ink)}
@@ -788,6 +793,8 @@ html:not(.motion) #pf-go{display:none}
 /* the 8:40 morning as a lock screen: the clock reads 9:31, the latest note */
 .well .lock{position:relative;z-index:1;align-self:center;margin:-34px 0 18px;font-size:64px;line-height:1;font-weight:600;letter-spacing:-.04em;color:rgba(247,248,248,.9);text-shadow:0 2px 24px rgba(0,0,0,.35)}
 .well > .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,10,.15),rgba(8,9,10,.5))}
+.well > .ph.sky{container-type:size}
+.well > .ph.sky img{width:max(190cqw,175cqh);height:auto;top:0;transform:translate(calc(-50% + 9%),calc(-2 * 100% / 6)) scale(1.1);transform-origin:50% 0}
 .well > *:not(.ph){position:relative;z-index:1}
 .nstack{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .nc{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:11px;padding:12px 14px;border-radius:18px;background:rgba(0,0,0,.9);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 18px 36px -18px rgba(0,0,0,.9)}
@@ -798,6 +805,20 @@ html:not(.motion) #pf-go{display:none}
 .qpost{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:10px;align-items:center;margin-top:8px;padding:8px 8px 8px 11px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--x-line);font-size:13px;line-height:1.4;color:var(--x-ink)}
 .qpost .media{margin:0;aspect-ratio:1;border-radius:8px}
 .qpost > span{text-wrap:pretty}
+.media.chart{background:#000}
+.media.chart svg{position:absolute;inset:0;width:100%;height:100%}
+.media.chart .g{stroke:rgba(255,255,255,.07);stroke-width:1;vector-effect:non-scaling-stroke}
+.media.chart .lv{stroke:rgba(247,248,248,.55);stroke-width:1;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}
+.media.chart .wk{stroke:rgba(247,248,248,.5);stroke-width:1;vector-effect:non-scaling-stroke}
+.media.chart .up{fill:#000;stroke:rgba(247,248,248,.85);stroke-width:1;vector-effect:non-scaling-stroke}
+.media.chart .dn{fill:rgba(247,248,248,.4)}
+.ck-t{position:absolute;left:12px;top:9px;z-index:1;font-size:11.5px;font-weight:500;color:var(--x-ink-2)}
+.ck-l{position:absolute;right:10px;z-index:1;transform:translateY(-135%);padding:1px 7px;border-radius:999px;font-size:11px;font-weight:600;color:var(--x-ink);background:rgba(0,0,0,.8);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);font-variant-numeric:tabular-nums}
+.ck-m{position:absolute;z-index:1;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;box-shadow:0 0 0 1.5px var(--x-ink),0 0 0 5px rgba(0,0,0,.55)}
+.rv-qt{margin-top:10px;padding:10px 12px 11px;border-radius:14px;box-shadow:inset 0 0 0 1px var(--x-line)}
+.rv-qt .xname{font-size:13.5px;gap:0 5px}
+.rv-qt .xname .av{width:18px;height:18px;margin-right:2px}
+.rv-qt .qt{margin:3px 0 0;font-size:14px;line-height:1.4;color:var(--x-ink);text-wrap:pretty}
 
 /* ---- who: one hook for each kind of poster ---- */
 /* Who: four mini X posts in one card, the struck draft faint above each sharpened line */
@@ -809,6 +830,7 @@ html:not(.motion) #pf-go{display:none}
 .wp .xname{font-size:14px}
 .wd{margin-top:3px;font-size:13.5px;line-height:1.45;color:var(--x-mute);text-wrap:pretty}
 .wd s{text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:rgba(247,248,248,.45);color:var(--x-mute)}
+.wd .fl{text-decoration-thickness:1px;text-underline-offset:3px}
 .wp .xtext{margin-top:3px;font-size:16px;line-height:1.4;font-weight:500;letter-spacing:-.008em}
 .wtry{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 11px;margin-top:-2px;border-radius:999px;font-size:13px;font-weight:500;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2);white-space:nowrap;transition:color .2s,background-color .2s}
 .wtry .ico{width:12px;height:12px;transition:transform .25s var(--ease)}
@@ -934,10 +956,12 @@ a.wtry:hover .ico{transform:translateX(2px)}
 /* ≥1200 Trust is the 5-column half of a row: one column, the list under the heading */
 @media (min-width:1200px){
   .t-tru{display:flex;flex-direction:column;align-items:stretch;gap:22px}
-  /* the three rows keep their natural height; whatever the Who tile adds to the row sits in one place, above the rules */
-  .nev li{flex-wrap:wrap;padding:14px 0}
-  .nev li:first-child{padding-top:4px}
-  .rules-g{margin-top:auto}
+  /* whatever height the Who tile gives the row, the three Never rows share it evenly: each row grows, its words centred on it,
+     and the rules follow the list directly, so the spare height never pools in one band */
+  .nev{flex:1 1 auto}
+  .nev li{flex:1 1 0;flex-wrap:wrap;align-items:center;align-content:center;padding:12px 0;min-height:60px}
+  .nev li:first-child{padding-top:0}
+  .rules-g{margin-top:2px}
 }
 .rules span{text-wrap:balance}
 
@@ -951,8 +975,10 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .bill button[aria-pressed="true"] .sv{color:var(--ink)}
 .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap);align-items:stretch}
 .plan{padding:28px;display:flex;flex-direction:column;border-radius:24px}
-.plan.feat{background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.022) 60%)}
-.plan.feat::before{background:linear-gradient(180deg,rgba(255,255,255,.24) 0%,rgba(255,255,255,.09) 30%,rgba(255,255,255,.05) 100%)}
+.plan.feat{background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.03) 60%)}
+.plan.feat::before{background:linear-gradient(180deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.12) 30%,rgba(255,255,255,.07) 100%)}
+.plan.feat::after{content:"";position:absolute;top:0;left:16%;right:16%;height:1px;z-index:4;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.6) 55%,rgba(255,255,255,0));box-shadow:0 0 10px rgba(255,255,255,.18)}
 .plan > *{position:relative;z-index:1}
 .plan .h3{margin:0;display:flex;align-items:center;gap:10px;font-size:22px;line-height:1.28;font-weight:600;letter-spacing:-.018em;color:var(--ink)}
 .for{color:var(--ink-2);font-size:15px;margin:6px 0 22px}
@@ -995,6 +1021,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .qa .pm .ico{width:14px;height:14px}
 .qa button[aria-expanded="true"] .pm{transform:rotate(45deg);color:var(--ink)}
 .qa .a{padding:0 48px 22px 4px;font-size:16px;line-height:1.6;color:var(--ink-2)}
+.qa .a p + p{margin-top:10px}
 .qa .a.moving{transition:height .28s var(--ease),padding-bottom .28s var(--ease)}
 .motion .qa .a.open{animation:fade .3s var(--ease) both}
 
@@ -1111,7 +1138,9 @@ footer .wrap{container-type:inline-size}
 .sh-em input:focus-visible{box-shadow:inset 0 0 0 2px var(--ink)}
 .sh-em input::placeholder{color:var(--ink-3)}
 .sh-em .btn{width:auto;flex:none;height:48px}
-.sh-err{font-size:14px;color:var(--ink)}
+.sh-err{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--ink)}
+.sh-err::before{content:"!";flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:12px;font-weight:700;line-height:1}
+.sh-em input[aria-invalid="true"]{box-shadow:inset 0 0 0 1.5px var(--ink),0 0 0 4px rgba(247,248,248,.16)}
 .sh-fine{margin-top:16px;font-size:13px;line-height:1.5;color:var(--ink-3)}
 .sh-fine .inl{font-size:13px}
 .sh-done{margin-top:18px;font-size:15px;line-height:1.55;color:var(--ink-2)}
@@ -1199,15 +1228,18 @@ footer .wrap{container-type:inline-size}
   /* the half tiles take the Standard step at 22px, with a little more room at their sides for it */
   .cap:not(.big){font-size:22px}
   .t-pv,.t-rep,.t-res,.t-who{padding-inline:22px}
-  /* the Who posts as on a phone: name and kind, an icon action, the whole post tappable */
-  .wd,.wp .xname > span:not(.tag),.wtry .wt{display:none}
-  .wtry{width:32px;height:32px;padding:0;justify-content:center;margin-top:-4px}
+  /* the Who posts as on a phone: name and kind, the struck draft on one line, the action keeps its label, the whole post tappable */
+  .wp .xname > span:not(.tag){display:none}
+  .wd{white-space:nowrap;overflow:hidden;margin-top:1px;font-size:13px;line-height:1.4}
   .wtry::after{content:"";position:absolute;inset:0}
+  /* Studio's link is an arrow here (its name stays), so the Ghostwriter tag is never cut */
+  a.wtry{width:32px;padding:0;justify-content:center}
+  a.wtry .wt{display:none}
   /* the reply thread gives its sides a little back, so "Drafted in your voice" and its Pro tag stay on one line */
   .t-rep .thread{padding-inline:14px}
   .st-post .media{max-width:none;aspect-ratio:3/1}
   .links{display:flex}
-  .links a:nth-child(2){display:none}
+  .links a:nth-child(4){display:none}
   .t-day{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
   .night{padding:28px 24px 24px}
   .steps{max-width:none}
@@ -1279,7 +1311,7 @@ footer .wrap{container-type:inline-size}
   /* the phone beam is narrow and starts just past the right edge, so the trust line above the window keeps AA contrast (4.5:1 or more at 360) */
   /* the phone light lands on the window's top edge, right of the short promise line and clear of the buttons */
   .hero .micro .m3{display:none}
-  .stage .light{--lx:88%;--a:52deg;--bw:150px;--bl:420px;--sink:140px;--k:1.38}
+  .stage .light{--lx:92%;--a:64deg;--bw:104px;--bl:420px;--sink:140px;--k:1.5}
   .stage .light .bloom{left:-210px;width:300px;height:40px;top:-14px;opacity:.62}
   .stage .light .hot{left:-120px;width:170px;height:20px;top:-6px}
   .spec{width:220px;right:12px}
@@ -1388,8 +1420,11 @@ footer .wrap{container-type:inline-size}
   .vc-h .tag,.vc-h .av{display:none}
   .vrow.nvr .nv:nth-child(n+3){display:none}
   .t-voi .tfoot{display:none}
-  .vrow.hbr{display:none}
-  .vrow.nvr{grid-template-columns:auto minmax(0,1fr);align-items:baseline;gap:10px}
+  /* one row of habits (the heading already says the lowercase stays), so "It learns how you write" keeps its proof */
+  .vrow.hbr,.vrow.nvr{grid-template-columns:auto minmax(0,1fr);align-items:baseline;gap:10px}
+  .vrow.hbr{align-items:center}
+  .vrow.hbr dd{flex-wrap:nowrap;white-space:nowrap;overflow:hidden}
+  .vrow.hbr .chip:first-child{display:none}
   .vrow.nvr dd{flex-wrap:nowrap;white-space:nowrap;overflow:hidden;gap:0}
   .vrow .nv{font-size:15px;margin-right:9px}
   .rw{padding:12px 0 14px;gap:8px}
@@ -1433,10 +1468,12 @@ footer .wrap{container-type:inline-size}
   .wd{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;font-size:13px;line-height:1.4}
   .wp .xtext{font-size:15px}
   .wp .xname > span:not(.tag){display:none}
-  /* on a phone the whole post is the tap target; its action shrinks to an icon (the label stays as its accessible name) */
-  .wtry{width:32px;height:32px;padding:0;justify-content:center;margin-top:-4px}
-  .wtry .wt{display:none}
+  /* on a phone the whole post is the tap target; its action keeps a short visible label, so the arrow never reads as "scroll up" */
+  .wtry{height:30px;padding:0 10px;gap:4px;margin-top:-3px;font-size:12.5px}
   .wtry::after{content:"";position:absolute;inset:0}
+  /* Studio's link is an arrow below 414px (its name stays), so the Ghostwriter tag is never cut; the narrowest phones do the same for Try */
+  @media (max-width:413px){a.wtry{width:32px;padding:0;justify-content:center}a.wtry .wt{display:none}}
+  @media (max-width:359px){.wtry{width:32px;padding:0;justify-content:center}.wtry .wt{display:none}.wp .xname .tag{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;line-height:16px}}
 
   .st-l{display:contents}
   .st-pick{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:0 16px;width:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;}
@@ -1449,7 +1486,7 @@ footer .wrap{container-type:inline-size}
   .st-post .xcard{padding:12px 13px}
   .st-post .xtext{font-size:15px}
   .st-post #rv-handle{display:none}
-  .st-post .media{display:none}
+  .st-post .media,.st-post .rv-qt{display:none}
   .cmt{margin-left:10px;font-size:14px;padding:9px 12px 10px}
   .rv-act{flex-direction:column;align-items:flex-start;gap:8px;min-height:68px;align-content:flex-start}
   .st-voice{display:none}
@@ -1543,7 +1580,7 @@ footer .wrap{container-type:inline-size}
 @media (max-width:480px){.h2:not(.xl){font-size:clamp(32px,9vw,36px)}}
 @media (max-width:379px){
   /* the narrowest phones: the beam leans a little further, so it clears the buttons */
-  .stage .light{--lx:88%;--a:54deg;--bw:130px}
+  .stage .light{--lx:92%;--a:66deg;--bw:96px}
   .nt-h{font-size:13.5px}
   /* the example's count steps aside for "Write my own", so Sharpen keeps its place on the row */
   .try-c.isx .count{display:none}
@@ -1575,8 +1612,10 @@ footer .wrap{container-type:inline-size}
   /* the final's micro line keeps to one row: its third promise is said all over the page */
   .fin .micro i:nth-of-type(2),.fin .micro span:nth-of-type(3){display:none}
   .fin .micro .fa-i,.fin .micro .fa-s{display:inline}
-  /* the Try label keeps to one line; Trust and the FAQ say where the demo runs */
-  .try-l .tl2{display:none}
+  /* the Try label keeps to one line, and that line says where the demo runs (the instruction stays for screen readers) */
+  .try-l .tl1{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  /* the fair-use note is for wider screens; the FAQ and the app say it here */
+  .plan li .li-n.fu{display:none}
   .fin .micro .fa-l{display:none}
   .fin .micro .fin-alt{flex-basis:auto;margin-top:0;font-size:inherit}
   .hero .tc{padding-block:18px 0}
@@ -1743,7 +1782,7 @@ footer .wrap{container-type:inline-size}
       <h2 class="cap big" id="sh-h">Your facts stay.<br><span class="d">The <span class="sq">fluff</span> goes.</span></h2>
       <div class="try demo">
         <div class="drops" id="drops" aria-hidden="true"></div>
-        <label class="try-l" for="try-ta">Paste the line you were about to post.<span class="tl2"> This demo runs on your device.</span></label>
+        <label class="try-l" for="try-ta"><span class="tl1">Paste the line you were about to post.</span><span class="tl2"> This demo runs on your device.</span></label>
         <div class="xcard try-c done isx">
           <div class="xrow">
             <span class="av you xav" aria-hidden="true"></span>
@@ -1760,7 +1799,7 @@ footer .wrap{container-type:inline-size}
             <button class="btn btn-glass btn-x" type="button" id="try-go">Sharpen<kbd id="try-kbd" hidden></kbd></button>
           </div>
         </div>
-        <p class="starters" id="try-starters"><span>No line handy? Try one:</span><button type="button" data-s="0">Trader</button><button type="button" data-s="1">Founder</button><button type="button" data-s="2">Newsletter</button><button type="button" data-s="3">Ghostwriter</button><button type="button" data-s="4">Already sharp</button></p>
+        <p class="starters" id="try-starters"><span>No line handy? Try one:</span><button type="button" data-s="0">Wordy</button><button type="button" data-s="1">Announcement</button><button type="button" data-s="2">List</button><button type="button" data-s="3">Real talk</button><button type="button" data-s="4">Already sharp</button></p>
         <div class="try-out" id="try-out">
           <p class="out-h"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="out-st">Cut 2 bits of fluff · Said it straight</span><button class="replay alt" type="button" id="try-alt" hidden><svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg><span id="try-alt-t">Another take · 1/2</span></button><button class="replay" type="button" id="try-replay" aria-label="Replay the sharpen"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg><span class="rl">Replay</span></button></p>
           <div id="out-card">
@@ -1778,7 +1817,7 @@ footer .wrap{container-type:inline-size}
             <div class="xcard ph-card" id="out-ph" aria-hidden="true" hidden><div class="xrow"><span class="av you xav"></span><div><p class="xname"><b>You</b><span>@you</span><span>·</span><span>now</span></p><p class="ph-bars"><i></i><i></i></p></div></div></div>
           </div>
           <div class="hits" id="out-hits"><span class="k" id="out-k">Why it hits</span><p id="out-why">Said plainly, “sell into strength” reads like you’ve earned it.</p><p class="n2" id="out-note"></p><p class="kp" id="out-kept">Kept your lowercase.</p></div>
-          <div class="keep" id="out-keep"><button class="btn btn-white btn-x" type="button" id="try-keep">Start free</button><p class="micro">Free forever<i aria-hidden="true">·</i>No card</p></div>
+          <div class="keep" id="out-keep"><button class="btn btn-white btn-x" type="button" id="try-keep">Start free</button><button class="inl back-w" type="button" id="try-back" hidden>Back to who it’s for</button></div>
           <p class="sr" id="try-status" role="status"></p>
         </div>
       </div>
@@ -1836,8 +1875,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     <!-- Sounds like you: the voice it learned -->
     <article class="tile glass t-voi" id="voice" aria-labelledby="vo-h">
       <div class="vl">
-        <h2 class="cap big" id="vo-h">It learns how you write.<br><span class="d">You choose every change.</span></h2>
-        <p class="tfoot">Paste 8 of your posts. It picks up your habits and your never-say words.</p>
+        <h2 class="cap big" id="vo-h">Your lowercase stays.<br><span class="d">Your never-say words go.</span></h2>
+        <p class="tfoot">Paste 8 of your posts and it learns how you write: your habits and your never-say words. You choose every change.</p>
       </div>
       <div class="xcard vcard demo" role="group" aria-labelledby="vo-name">
         <div class="vc-h"><span class="av me" aria-hidden="true"></span><p class="xname"><b id="vo-name">heycape’s voice</b><span class="tag">Example</span></p><span class="lrn">Learned from 8 posts</span></div>
@@ -1861,7 +1900,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     <!-- 11 PM to 8:40 AM: full width, the post living in a feed -->
     <article class="tile glass t-day" id="day" data-m="day" aria-labelledby="day-h">
       <div class="dn night">
-        <div class="ph fh" style="--i:0;--fx:-8%" aria-hidden="true"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div>
+        <div class="ph fh" style="--i:0;--fx:-8%" aria-hidden="true"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div>
         <h2 class="cap big" id="day-h">Say it at 11&nbsp;PM.<br><span class="d">Post it at 8:40&nbsp;AM.</span></h2>
         <ol class="steps" aria-label="One idea, from night to morning (example)">
           <li class="stp m-pop" style="--md:.1s"><span class="ni" aria-hidden="true"><svg class="ico"><use href="#i-mic"/></svg></span><div><p class="nt-h"><b>You said it out loud</b><time class="tnum">11:04&nbsp;PM</time></p>
@@ -1873,18 +1912,18 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         </ol>
       </div>
       <div class="dn morn">
-        <div class="ph fh" style="--i:2;--fx:-22%" aria-hidden="true"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div>
+        <div class="ph fh" style="--i:2;--fx:-22%" aria-hidden="true"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div>
         <span class="plab">8:40&nbsp;AM</span>
         <button class="replay plab" type="button" data-replay="day" aria-label="Replay the morning post"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg>Replay</button>
         <figure class="phone m-land" style="--md:.2s" aria-label="Posted at 8:40 AM, the time you picked: heycape’s post in a feed (example)">
           <div class="scrn">
             <span class="isl" aria-hidden="true"></span>
             <div class="sbar" aria-hidden="true"><span class="tnum">8:52</span><span class="ind"><svg viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="15" height="8" rx="1.6"/><rect x="22.5" y="4" width="1.6" height="4" rx=".8" fill-opacity=".5"/></svg></span></div>
-            <div class="notif m-drop" style="--md:1.75s"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><span class="nhl"><b>Hookworthy</b><span class="tag pro">Pro</span></span><span>now</span></p><p>Your 8:40 post is taking off. Good moment to answer replies.</p></div></div>
+            <div class="notif m-drop" style="--md:1.75s"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><span class="nhl"><b>Hookworthy</b><span class="npro">&nbsp;· Pro</span></span><span>now</span></p><p>Your 8:40 post is taking off. Good moment to answer replies.</p></div></div>
             <div class="ptop" aria-hidden="true"><span class="av me"></span><span></span><span></span></div>
             <div class="ptabs" aria-hidden="true"><span class="on"><b>For you</b></span><span>Following</span></div>
             <div class="pfeed">
-              <article class="fp yp m-ins" style="--md:1.25s"><span class="av me" aria-hidden="true"></span><div><p class="fn"><b>heycape</b><span class="tag">Example</span><span>· 12m</span></p><p class="fx">i lost $4,000 in march doubling my size to win it back.</p><div class="media" aria-hidden="true"><div class="ph crop jr"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div><div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg></div></div></article>
+              <article class="fp yp m-ins" style="--md:1.25s"><span class="av me" aria-hidden="true"></span><div><p class="fn"><b>heycape</b><span class="tag">Example</span><span>· 12m</span></p><p class="fx">i lost $4,000 in march doubling my size to win it back.</p><div class="media" aria-hidden="true"><div class="ph crop jr"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div></div><div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg></div></div></article>
               <div class="fp m-push" style="--md:1.25s" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="fn"><b>Jun Park</b><span>· 2h</span></p><p class="fx">why do most design systems fail? nobody owns them.</p></div></div>
               <div class="fp m-push dim" style="--md:1.25s" aria-hidden="true"><span class="av" style="--y:88.24%"></span><div><p class="fn"><b>Sam Okafor</b><span>· 3h</span></p><p class="fx">the best feedback i got this year came from a customer who almost left.</p></div></div>
             </div>
@@ -1914,11 +1953,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     <article class="tile glass t-res" id="results" aria-labelledby="rs-h">
       <h2 class="cap" id="rs-h">Know what landed.<br><span class="d">And what to write next.</span></h2>
       <div class="well demo">
-        <div class="ph fh" style="--i:2;--fx:-20%" aria-hidden="true"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div>
+        <div class="ph sky" aria-hidden="true"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div>
         <p class="lock tnum" aria-hidden="true">9:31</p>
         <ul class="nstack">
-          <li class="nc"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><span class="nhl"><b>Hookworthy</b><span class="tag pro">Pro</span></span><span>9:30&nbsp;AM</span></p><p class="nb">Your 8:40 post got more replies than usual.</p><p class="ns">Measured against your own posts, not bigger accounts.</p>
-            <div class="qpost"><span>i lost $4,000 in march doubling my size to win it back.</span><div class="media" aria-hidden="true"><div class="ph crop jr"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div></div></div></li>
+          <li class="nc"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><span class="nhl"><b>Hookworthy</b><span class="npro">&nbsp;· Pro</span></span><span>9:30&nbsp;AM</span></p><p class="nb">Your 8:40 post got more replies than usual.</p><p class="ns">Measured against your own posts, not bigger accounts.</p>
+            <div class="qpost"><span>i lost $4,000 in march doubling my size to win it back.</span><div class="media" aria-hidden="true"><div class="ph crop jr"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div></div></div></div></li>
           <li class="nc"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><b>Hookworthy</b><span>9:31&nbsp;AM</span></p><p class="nb">Write next: how you size down, step by step. That’s what they asked.</p></div></li>
         </ul>
       </div>
@@ -1926,12 +1965,12 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
     <!-- Who it's for: one hook each -->
     <article class="tile glass t-who" id="who" aria-labelledby="w-h">
-      <h2 class="cap" id="w-h">Trades, launches, newsletters.<br><span class="d">The point goes first.</span></h2>
+      <h2 class="cap" id="w-h">Trades, launches, newsletters.<br><span class="d">Same fluff, same fix.</span></h2>
       <ul class="wposts xcard demo" aria-label="Four first lines, sharpened">
-        <li class="wp"><span class="av me xav" aria-hidden="true"></span><div class="wb"><p class="xname"><b>heycape</b><span>@heycape_</span><span class="tag">Trader</span></p><p class="wd"><span class="sr">Draft: </span><s>honestly</s> i’m up 18% this month <s>and</s> it’s <s>literally</s> just from trading less</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">i’m up 18% this month.</span> <span class="bt">it’s just from trading less.</span></p></div><button class="wtry" type="button" data-w="0" aria-label="Try heycape’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
-        <li class="wp"><span class="av lt xav" style="--y:23.53%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Ana Ruiz</b><span>@anaruiz</span><span class="tag">Newsletter</span></p><p class="wd"><span class="sr">Draft: </span><s>So</s> <s>in this issue I wanted to talk about</s> <s>why</s> open rates lie</p><p class="xtext"><span class="sr">Sharpened: </span>Open rates lie.</p></div><button class="wtry" type="button" data-w="1" aria-label="Try Ana Ruiz’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
-        <li class="wp"><span class="av v2 xav" style="--y:20%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Priya Nair</b><span>@priyanair</span><span class="tag">Founder</span></p><p class="wd"><span class="sr">Draft: </span><s>Excited to share that</s> dark mode is live, 9 months after the first request</p><p class="xtext"><span class="sr">Sharpened: </span>Dark mode is live, 9 months after the first request.</p></div><button class="wtry" type="button" data-w="2" aria-label="Try Priya Nair’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
-        <li class="wp"><span class="av xav" style="--y:17.65%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Theo Mensah</b><span>@theowrites</span><span class="tag">Ghostwriter</span></p><p class="wd"><span class="sr">Draft: </span><s>Honestly</s>, most founders don’t need a ghostwriter, they need a better first line</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">Most founders don’t need a ghostwriter.</span> <span class="bt">They need a better first line.</span></p></div><a class="wtry" href="#studio" aria-label="See Studio, for ghostwriters"><span class="wt">Studio</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+        <li class="wp"><span class="av me xav" aria-hidden="true"></span><div class="wb"><p class="xname"><b>heycape</b><span>@heycape_</span><span class="tag">Trader</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>honestly</s></span> i’m up 18% this month <s>and</s> it’s <span class="fl"><s>literally</s></span> just from trading less</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">i’m up 18% this month.</span> <span class="bt">it’s just from trading less.</span></p></div><button class="wtry" type="button" data-w="0" aria-label="Try heycape’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
+        <li class="wp"><span class="av lt xav" style="--y:23.53%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Ana Ruiz</b><span>@anaruiz</span><span class="tag">Newsletter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>So</s></span> <span class="fl"><s>in this issue I wanted to talk about</s></span> <s>why</s> open rates lie</p><p class="xtext"><span class="sr">Sharpened: </span>Open rates lie.</p></div><button class="wtry" type="button" data-w="1" aria-label="Try Ana Ruiz’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
+        <li class="wp"><span class="av v2 xav" style="--y:20%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Priya Nair</b><span>@priyanair</span><span class="tag">Founder</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Excited to share that</s></span> dark mode is live, 9 months after the first request</p><p class="xtext"><span class="sr">Sharpened: </span>Dark mode is live, 9 months after the first request.</p></div><button class="wtry" type="button" data-w="2" aria-label="Try Priya Nair’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
+        <li class="wp"><span class="av xav" style="--y:17.65%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Theo Mensah</b><span>@theowrites</span><span class="tag">Ghostwriter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Honestly</s></span>, most founders don’t need a ghostwriter, they need a better first line</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">Most founders don’t need a ghostwriter.</span> <span class="bt">They need a better first line.</span></p></div><a class="wtry" href="#studio" aria-label="See Studio, for ghostwriters"><span class="wt">Studio</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
       </ul>
     </article>
 
@@ -1962,7 +2001,9 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
             <div class="xrow"><span class="av v2 xav" style="--y:20%" id="rv-av" aria-hidden="true"></span><div>
               <p class="xname"><b id="rv-name">Priya Nair</b><span class="tag">Example</span><span id="rv-handle">@priyanair</span></p>
               <p class="xtext" id="rv-doc">Customer churn: <mark>down 34%</mark>. What changed: our team redesigned the onboarding flow.</p>
-              <div class="media" id="rv-media" aria-hidden="true"><div class="ph fw" id="rv-ph" style="--i:4"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></div></div>
+              <div class="media" id="rv-media" aria-hidden="true"><div class="ph fw" id="rv-ph" style="--i:4"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div></div>
+              <div class="media chart" id="rv-chart" role="img" aria-label="Chart: BTC losing the 58k level (example)" hidden><span class="ck-t" aria-hidden="true">BTC · 4h</span><span class="ck-l" style="top:68.5%" aria-hidden="true">58k</span><i class="ck-m" style="left:70.8%;top:68.5%" aria-hidden="true"></i><svg viewBox="0 0 440 200" preserveAspectRatio="none" aria-hidden="true"><line class="g" x1="0" x2="440" y1="164.6" y2="164.6"/><line class="g" x1="0" x2="440" y1="109.2" y2="109.2"/><line class="g" x1="0" x2="440" y1="53.8" y2="53.8"/><line class="lv" x1="0" x2="440" y1="136.9" y2="136.9"/><line class="wk" x1="22.0" x2="22.0" y1="42.8" y2="64.9"/><rect class="dn" x="18.0" y="53.8" width="8" height="5.6" rx="1"/><line class="wk" x1="40.1" x2="40.1" y1="51.1" y2="76.0"/><rect class="dn" x="36.1" y="59.4" width="8" height="11.1" rx="1"/><line class="wk" x1="58.2" x2="58.2" y1="55.2" y2="74.6"/><rect class="up" x="54.2" y="60.8" width="8" height="9.7" rx="1"/><line class="wk" x1="76.3" x2="76.3" y1="52.5" y2="81.5"/><rect class="dn" x="72.3" y="60.8" width="8" height="16.6" rx="1"/><line class="wk" x1="94.4" x2="94.4" y1="73.2" y2="98.2"/><rect class="dn" x="90.4" y="77.4" width="8" height="15.2" rx="1"/><line class="wk" x1="112.5" x2="112.5" y1="76.0" y2="96.8"/><rect class="up" x="108.5" y="81.5" width="8" height="11.1" rx="1"/><line class="wk" x1="130.6" x2="130.6" y1="70.5" y2="89.8"/><rect class="dn" x="126.6" y="81.5" width="8" height="4.2" rx="1"/><line class="wk" x1="148.7" x2="148.7" y1="82.9" y2="114.8"/><rect class="dn" x="144.7" y="85.7" width="8" height="23.5" rx="1"/><line class="wk" x1="166.8" x2="166.8" y1="100.9" y2="135.5"/><rect class="dn" x="162.8" y="109.2" width="8" height="19.4" rx="1"/><line class="wk" x1="184.9" x2="184.9" y1="103.7" y2="134.2"/><rect class="up" x="180.9" y="107.8" width="8" height="20.8" rx="1"/><line class="wk" x1="203.0" x2="203.0" y1="91.2" y2="112.0"/><rect class="up" x="199.0" y="96.8" width="8" height="11.0" rx="1"/><line class="wk" x1="221.0" x2="221.0" y1="95.4" y2="117.5"/><rect class="dn" x="217.0" y="96.8" width="8" height="16.6" rx="1"/><line class="wk" x1="239.1" x2="239.1" y1="107.8" y2="132.8"/><rect class="dn" x="235.1" y="113.4" width="8" height="16.6" rx="1"/><line class="wk" x1="257.2" x2="257.2" y1="114.8" y2="136.9"/><rect class="up" x="253.2" y="118.9" width="8" height="11.1" rx="1"/><line class="wk" x1="275.3" x2="275.3" y1="109.2" y2="123.1"/><rect class="up" x="271.3" y="114.8" width="8" height="4.1" rx="1"/><line class="wk" x1="293.4" x2="293.4" y1="112.0" y2="131.4"/><rect class="dn" x="289.4" y="114.8" width="8" height="12.4" rx="1"/><line class="wk" x1="311.5" x2="311.5" y1="124.5" y2="148.0"/><rect class="dn" x="307.5" y="127.2" width="8" height="18.0" rx="1"/><line class="wk" x1="329.6" x2="329.6" y1="138.3" y2="161.8"/><rect class="dn" x="325.6" y="145.2" width="8" height="12.5" rx="1"/><line class="wk" x1="347.7" x2="347.7" y1="150.8" y2="170.2"/><rect class="up" x="343.7" y="153.5" width="8" height="4.2" rx="1"/><line class="wk" x1="365.8" x2="365.8" y1="149.4" y2="172.9"/><rect class="dn" x="361.8" y="153.5" width="8" height="15.3" rx="1"/><line class="wk" x1="383.9" x2="383.9" y1="160.5" y2="178.5"/><rect class="up" x="379.9" y="164.6" width="8" height="4.2" rx="1"/><line class="wk" x1="402.0" x2="402.0" y1="159.1" y2="179.8"/><rect class="dn" x="398.0" y="164.6" width="8" height="11.1" rx="1"/></svg></div>
+              <div class="rv-qt" id="rv-quote" hidden><p class="xname"><span class="av lt" style="--y:64.71%" aria-hidden="true"></span><b>Rafael Ortiz</b><span>@rortiz · Jan 9</span></p><p class="qt">Passed on a deal I liked today. Writing down why, so I can check myself in December.</p></div>
             </div></div>
           </article>
           <div class="cmt"><span class="av v2" style="--y:20%" id="cm-av" aria-hidden="true"></span><div><p class="cw"><b id="cm-n">Priya</b> on “<span id="cm-on">down 34%</span>”<span class="cm-ok" id="cm-ok" hidden><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg>Applied</span></p><p id="cm-t">Add “since June”. Then it’s good to go.</p></div></div>
@@ -1981,7 +2022,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     <article class="tile glass t-tru" id="trust" aria-labelledby="t-h">
       <div class="tl-l">
         <h2 class="cap big" id="t-h">Nothing goes out<br><span class="d">without your say-so.</span></h2>
-        <p class="tfoot">Every post is one you wrote or approved, sent at the time you picked. Automation that can get an account restricted isn’t here, on purpose.</p>
+        <p class="tfoot">Every post is one you wrote or approved. No automation that can get your account restricted. On purpose.</p>
       </div>
       <ul class="nev" aria-label="What Hookworthy never does">
         <li><span class="nw"><span>Auto-DMs</span></span><span class="sr">: </span><span class="nn">Never.</span></li>
@@ -2010,7 +2051,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <h3 class="h3">Free</h3><p class="for">For anyone with a draft.</p>
         <div class="price"><b>$0</b><span>forever</span></div><p class="price-n">No card needed.</p>
         <ul id="pl-free">
-          <li class="pk"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span><b>Sharpen any line, as often as you like</b></span></li>
+          <li class="pk"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span><b>Sharpen any line, as often as you like</b><span class="li-n fu">Past a daily fair-use limit, it runs on your device. Still free.</span></span></li>
           <li class="pk"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span><span class="desk">15 scheduled posts a month. After that, you tap to send.</span><span class="mob">15 scheduled posts a month, then you tap to send</span></span></li>
           <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>20 rewrites in your voice a month<span class="li-n">Learning your voice uses 5 rewrites, once.</span></span></li>
           <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Learns your voice from 8 posts</span></li>
@@ -2026,9 +2067,9 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <ul id="pl-pro">
           <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span><b>Everything in Free, plus:</b></span></li>
           <li class="pk"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>500 scheduled posts a month</span></li>
-          <li class="pk"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>A ping when a post takes off</span></li>
-          <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Replies drafted in your voice as they come in</span></li>
-          <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>250 rewrites in your voice a month</span></li>
+          <li class="pk"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>250 rewrites in your voice a month</span></li>
+          <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>A ping when a post takes off, with its first replies drafted<span class="li-n">Those first drafts don’t use your rewrites.</span></span></li>
+          <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Replies drafted in your voice as they come in<span class="li-n">Up to ten replies per rewrite.</span></span></li>
           <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>More rewrites from $8 a month</span></li>
           <li><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg><span>Results: what landed, and what to write next</span></li>
         </ul>
@@ -2067,8 +2108,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <div class="a" id="qa6" role="region" aria-labelledby="qb6" hidden><p>Keep it if you like: Sharpen is free, whatever you post with. Or bring your posts along: drop in a Typefully or CSV export, your X archive, or paste them in. They’re read in your browser, and your past posts teach Hookworthy how you open and when your people reply.</p></div></li>
       <li><h3><button type="button" id="qb2" aria-expanded="false" aria-controls="qa2">Does it post without me?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
         <div class="a" id="qa2" role="region" aria-labelledby="qb2" hidden><p>Only what you schedule, at the time you pick. X and LinkedIn posts go out then; Threads and Bluesky get a nudge with the post ready to paste.</p></div></li>
-      <li><h3><button type="button" id="qb3" aria-expanded="false" aria-controls="qa3">Is it just AI writing?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
-        <div class="a" id="qa3" role="region" aria-labelledby="qb3" hidden><p>Your words, tightened, not new writing. Sharpen cuts fluff, moves the point up front and swaps a wordy phrase for a plain one. It never adds a claim, and a check throws out any version that changes a number, a name, a negation or a hedge. In the app, Claude makes that edit, and this demo runs on your device, without Claude. Rewrites in your voice and Pro’s reply drafts use Claude too, only when you ask, and nothing goes out until you send it.</p></div></li>
+      <li><h3><button type="button" id="qb3" aria-expanded="false" aria-controls="qa3">Is it just AI writing, like ChatGPT?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
+        <div class="a" id="qa3" role="region" aria-labelledby="qb3" hidden><p>No. A chatbot writes you a new post. Sharpen edits your own line: it cuts fluff, puts the point first and swaps a wordy phrase for a plain one. It knows your voice and your never-say list, and a check rejects any version that changes your facts.</p><p>In the app, Claude makes the edit, and this demo runs on your device, without Claude. Rewrites use Claude when you ask. On Pro and Studio, a post that takes off arrives with its first replies drafted, free. Other reply drafts use 1 rewrite for up to ten. Nothing goes out until you send it.</p></div></li>
       <li><h3><button type="button" id="qb5" aria-expanded="false" aria-controls="qa5">Is my writing used to train AI?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
         <div class="a" id="qa5" role="region" aria-labelledby="qb5" hidden><p>No. Hookworthy doesn’t train any model on your posts. What you send to Claude goes through Anthropic’s API, and Anthropic doesn’t train on API inputs by default.</p></div></li>
       <li><h3><button type="button" id="qb4" aria-expanded="false" aria-controls="qa4">What about my clients’ accounts?<span class="pm" aria-hidden="true"><svg class="ico b"><use href="#i-plus"/></svg></span></button></h3>
@@ -2155,7 +2196,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       <form class="sh-em" id="sh-form" novalidate><label class="sr" for="sh-email">Email</label><input id="sh-email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="sh-err"><button class="btn btn-glass" type="submit">Continue</button></form>
       <p class="sh-err" id="sh-err" role="alert" hidden>Add your email.</p>
     </div>
-    <div class="sh-done" id="sh-done" hidden><p id="sh-done-t">This is a design preview, so no account was made. Once Hookworthy is live, this signs you in.</p><div class="sh-done-acts"><button class="btn btn-white" type="button" id="sh-back">Back to the page</button><a class="sh-demo" href="https://claude.ai/artifact/U91RtwmxGET54EqnSh3hSD" target="_blank" rel="noopener">Open the working app (demo data)<svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg></a></div></div>
+    <div class="sh-done" id="sh-done" hidden><p id="sh-done-t">This is a design preview, so no account was made. Once Hookworthy is live, this signs you in.</p><div class="sh-done-acts"><button class="btn btn-white" type="button" id="sh-back">Back to the page</button><a class="sh-demo" href="https://claude.ai/artifact/U91RtwmxGET54EqnSh3hSD" target="_blank" rel="noopener">Open the working app on claude.ai (demo data)<svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg></a></div></div>
     <p class="sh-fine" id="sh-fine">Nothing posts without you.<span id="sh-alt"> Have an account? <button class="inl" type="button" id="sh-to-signin">Sign in</button></span><span id="sh-alt2" hidden> New here? <button class="inl" type="button" id="sh-to-start">Start free</button></span></p>
   </div>
 </dialog>
@@ -2180,7 +2221,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the engine compiles its rules on first use. Once it loads (the Try tile is near), its warm-up runs one step per idle
      callback, then the lines a first tap is most likely to send (the Try default and the starters) are worked out ahead, so
      that tap only renders. A touch on Try, the final or Who pauses the warm-up for a few seconds, so no step competes with the visitor */
-  let warmHold = 0;
+  /* and it only runs while the Try tile (or the final line) is near the screen: scrolled away, it parks until they're back */
+  let warmHold = 0, warmNear = true, warmPark = null;
   const memo = new Map(), mk = (t, o) => t + '\u0001' + ((o && o.keep) || []).join('\u0001');
   let HW = null;
   /* the page's handle on the engine: everything is HWCore's own, except that a line it has already worked out comes back at once */
@@ -2191,8 +2233,12 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const W2 = wrap(H);
     let steps = null; try { steps = H.SHARPEN && H.SHARPEN.warmSteps ? H.SHARPEN.warmSteps() : null; } catch (e) { }
     const jobs = (steps || [() => H.sharpenLine('warm up')]).concat([TRY0, ...STARTERS].map(t => () => W2.sharpenLine(t, { keep: [] })));
-    let i = 0; const next = d => { if (i >= jobs.length) return; const wait = warmHold - performance.now(); if (wait > 0) { setTimeout(() => idle(next, 2000), wait); return; }
+    let i = 0; const next = d => { if (i >= jobs.length) return; if (!warmNear) { warmPark = () => idle(next, 2000); return; }
+      const wait = warmHold - performance.now(); if (wait > 0) { setTimeout(() => idle(next, 2000), wait); return; }
       if (d && d.timeRemaining && d.timeRemaining() < 8 && !d.didTimeout) { idle(next, 2000); return; } try { jobs[i++](); } catch (e) { } idle(next, 2000); };
+    if ('IntersectionObserver' in window) { const near = new Set(); const wo = new IntersectionObserver(es => { es.forEach(x => { if (x.isIntersecting) near.add(x.target); else near.delete(x.target); });
+      warmNear = near.size > 0; if (warmNear && warmPark) { const f = warmPark; warmPark = null; f(); } if (i >= jobs.length) wo.disconnect(); }, { rootMargin: '600px 0px 600px 0px' });
+      ['#sharpen', '#start'].forEach(s => wo.observe($(s))); }
     idle(next, 2000);
   };
   const loadCore = () => coreP || (coreP = new Promise(res => {
@@ -2207,7 +2253,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* ---------- falling fluff: a copy of each cut word dissolves inside the line gap (motion only) ---------- */
   function dropWords(els, layer, stagger = .09, clip) {
     if (RM || !layer) return;
-    const base = layer.getBoundingClientRect(), box = clip && clip.getBoundingClientRect(); layer.innerHTML = ''; let k = 0;
+    const base = layer.getBoundingClientRect(), box = clip && clip.getBoundingClientRect(); clearTimeout(layer._t); layer.innerHTML = ''; let k = 0;
     els.forEach(el => {
       const rs = el.getClientRects(); if (rs.length !== 1) return; const r = rs[0], cs = getComputedStyle(el);
       /* a word scrolled out of a long draft's box stays put: no ghost floats over what's below */
@@ -2218,8 +2264,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       g.style.setProperty('--dx', (k % 2 ? 26 : -18) + 'px'); g.style.setProperty('--rot', (k % 2 ? 9 : -7) + 'deg'); g.style.setProperty('--gd', (k * stagger).toFixed(2) + 's');
       layer.appendChild(g); k++;
     });
-    setTimeout(() => { layer.innerHTML = ''; }, 550 + k * stagger * 1000);
+    layer._t = setTimeout(() => { layer.innerHTML = ''; }, 550 + k * stagger * 1000);
   }
+  /* the text changed under them: no ghost of a cut word hangs over an edited or emptied box */
+  const unDrop = () => { const l = $('#drops'); if (l) { clearTimeout(l._t); l.innerHTML = ''; } };
 
   /* ---------- the signup sheet: one for every Start button. A design preview: it never says an account was made ---------- */
   const sheet = $('#sheet');
@@ -2352,7 +2400,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     { k: 'Ghostwriter', n: 'Theo Mensah', h: '@theowrites', av: '|17.65%', draft: 'Honestly, most founders don’t need a ghostwriter, they need a better first line',
       cut: [['Honestly', 'honest']], after: 'Most founders don’t need a ghostwriter. They need a better first line.', studio: true }
   ];
-  const whoDraft = w => { let h = '', last = 0; w.cut.forEach(([c]) => { const i = w.draft.indexOf(c, last); if (i < 0) return; h += esc(w.draft.slice(last, i)) + `<s>${esc(c)}</s>`; last = i + c.length; }); return h + esc(w.draft.slice(last)); };
+  const whoDraft = w => { let h = '', last = 0; w.cut.forEach(([c, k]) => { const i = w.draft.indexOf(c, last); if (i < 0) return; h += esc(w.draft.slice(last, i)) + (/^(?:move|tight|swap|reshape)$/.test(k) ? `<s>${esc(c)}</s>` : `<span class="fl"><s>${esc(c)}</s></span>`); last = i + c.length; }); return h + esc(w.draft.slice(last)); };
   const whoAv = key => { if (key === 'me') return 'class="av me xav"'; const [c, y] = key.split('|'); return `class="av${c ? ' ' + c : ''} xav" style="--y:${y}"`; };
   const whoHTML = (w, i) => `<li class="wp"><span ${whoAv(w.av)} aria-hidden="true"></span><div class="wb"><p class="xname"><b>${esc(w.n)}</b><span>${esc(w.h)}</span><span class="tag">${esc(w.k)}</span></p>`
     + `<p class="wd"><span class="sr">Draft: </span>${whoDraft(w)}</p><p class="xtext"><span class="sr">Sharpened: </span>${beats(w.after, x => nb(esc(x)))}</p></div>`
@@ -2364,15 +2412,15 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     { who: 'heycape', handle: '@heycape_', av: 'me', draft: 'just wanted to share that i sold half my $BTC at 98k and honestly i’m holding the rest',
       cut: [['just wanted to share that', 'announce'], ['and', 'reshape'], ['honestly', 'honest']], after: 'i sold half my $BTC at 98k. i’m holding the rest.', say: 'Cut 2 bits of fluff · Split it into two beats',
       why: 'The full stop before “i’m holding the rest” is the pause that makes the second beat land.', kept: 'Kept: $BTC, 98k. Kept your lowercase.' },
-    { who: 'Priya Nair', handle: '@priyanair', av: 'v2|20%', draft: 'Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.',
-      cut: [['was reduced by', 'reshape'], ['after', 'reshape'], ['was', 'reshape'], ['by', 'reshape']], after: 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', say: 'Number first · Made it active',
-      why: 'A real number up front reads as proof, before anyone has decided whether to keep reading.', kept: 'Kept: 34%.' },
+    { who: 'Priya Nair', handle: '@priyanair', av: 'v2|20%', draft: 'Big news: we just hit $10k MRR, 14 months after launching',
+      cut: [['Big news', 'label'], ['we just hit', 'reshape']], after: '$10k MRR, 14 months after launching.', say: 'Cut 1 bit of fluff · Number first',
+      why: '“$10k MRR” comes first, so it reads as proof before anyone decides whether to keep reading.', kept: 'Kept: $10k MRR, 14 months.' },
     { who: 'Ana Ruiz', handle: '@anaruiz', av: 'lt|23.53%', draft: 'So the reason most newsletters fail is that nobody reads past the first line',
       cut: [['So', 'open'], ['is that', 'reshape']], after: 'The reason most newsletters fail? Nobody reads past the first line.', say: 'Cut 1 bit of fluff · Asked, then answered',
       why: 'The question opens a gap, and “Nobody reads past the first line” closes it before the thumb moves.', kept: '' },
-    { who: 'Lena Fischer', handle: '@lenaf', av: '|47.06%', draft: 'Honestly, your evening sets up your morning more than your alarm does',
-      cut: [['Honestly', 'honest']], after: 'Your evening sets up your morning more than your alarm does.', say: 'Cut 1 bit of fluff',
-      why: 'Without “Honestly”, the claim stands on its own.', kept: '' }
+    { who: 'Lena Fischer', handle: '@lenaf', av: '|47.06%', draft: 'I just wanted to remind you that your evening honestly sets up your morning more than your alarm does',
+      cut: [['I just wanted to remind you that', 'throat'], ['honestly', 'honest']], after: 'Your evening sets up your morning more than your alarm does.', say: 'Cut 2 bits of fluff',
+      why: 'It now opens on what you came to say, not the run-up to it.', kept: '' }
   ];
   /* EX-END */
   /* DRAFT-START */
@@ -2491,12 +2539,12 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       const n = +w.dataset.n, t = document.createElement('div'); t.innerHTML = pvOrig.get(w);
       const head = t.querySelector('.scr-h').outerHTML, next = t.querySelector('.next') ? t.querySelector('.next').outerHTML : '';
       /* the feed stays full under a short line: the example's own posts follow, dimmed like any other post in the feed */
-      const rest = [...t.querySelectorAll('.ppost:not(.next)')].map(e => { e.classList.add('next'); e.setAttribute('aria-hidden', 'true');
+      const rest = [...t.querySelectorAll('.ppost:not(.next),.li:not(.next)')].map(e => { e.classList.add('next'); e.setAttribute('aria-hidden', 'true');
         e.querySelectorAll('.tl').forEach(x => x.remove()); e.querySelectorAll('.hk').forEach(x => x.replaceWith(...x.childNodes)); return e.outerHTML; }).join('');
       const handle = ['@you · now', 'now', '', '@you.bsky.social · now'][n];
       w.innerHTML = head + (n === 2
         ? `<div class="li"><div class="li-h"><span class="av you" aria-hidden="true"></span><p><b>You</b><span>Your headline</span><span>now</span></p></div><p class="pt">${esc(nl > 210 ? [...L].slice(0, 200).join('').replace(/\s+\S*$/, '') : L)}${nl > 210 ? '<span class="more">…see more</span>' : ''}</p><div class="li-a" aria-hidden="true"><span>Like</span><span>Comment</span><span>Repost</span><span>Send</span></div></div>`
-        : pvPosts(L, n, handle)) + next + (n === 2 ? '' : rest);
+        : pvPosts(L, n, handle)) + next + rest;
     });
     $('#pv-big').textContent = mode === 'me' && L ? PV_ME[+$('.pvw.on').dataset.n](nl) : PV[+$('.pvw.on').dataset.n];
     requestAnimationFrame(pvFade);
@@ -2597,13 +2645,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     { n: 'Priya Nair', f: 'Priya', pr: 'her', h: '@priyanair', av: 'v2|20%', img: 4, slot: 'Tue 8:15 AM', v: 'plain, numbers first, a little dry. Short sentences. No exclamation marks.', nv: ['synergy', 'excited to announce', 'thought leader', 'humbled'], tz: ['Tuesdays', '8:15 AM', 'London'],
       doc: ['Customer churn: ', 'down 34%', '. What changed: our team redesigned the onboarding flow.'], cm: 'Add “since June”. Then it’s good to go.', fix: 'down 34% since June',
       w: ['Customer churn: down 34%. What changed…', 'Hiring our first PM took five months…'], wf: 'Customer churn: down 34% since June…', a: ['Our pricing page had 9 plans. Now it has 2…', 'Support replies take 2 hours now, not 2 days…', 'We said no to our biggest customer’s feature…'] },
-    { n: 'Rafael Ortiz', f: 'Rafael', pr: 'his', h: '@rortiz', av: 'lt|64.71%', img: -1, slot: 'Wed 7:40 AM', v: 'contrarian, warm, cites the deal. Ends on a question.', nv: ['disrupt', 'to the moon', 'crushing it'], tz: ['Wednesdays', '7:40 AM', 'Mexico City'],
+    { n: 'Rafael Ortiz', f: 'Rafael', pr: 'his', h: '@rortiz', av: 'lt|64.71%', img: -1, media: 'quote', slot: 'Wed 7:40 AM', v: 'contrarian, warm, cites the deal. Ends on a question.', nv: ['disrupt', 'to the moon', 'crushing it'], tz: ['Wednesdays', '7:40 AM', 'Mexico City'],
       doc: ['The deal I passed on this year taught me more than ', 'the five I closed', '. What did yours teach you?'], cm: 'Make it four. One hasn’t closed yet.', fix: 'the four I closed',
       w: ['The deal I passed on this year taught me…'], wf: 'The deal I passed on this year taught me more than the four I closed…', a: ['Founders who answer the hard question first…', 'I read every deck to the last slide…', 'Small rounds close faster. Here’s why…', 'What I ask before the first call…'] },
     { n: 'Lena Fischer', f: 'Lena', pr: 'her', h: '@lenaf', av: '|47.06%', img: 3, slot: 'Mon 6:30 PM', v: 'gentle and direct. Second person. One idea per post.', nv: ['hustle', 'grindset', 'manifest'], tz: ['Mondays', '6:30 PM', 'Berlin'],
       doc: ['Your evening sets up your morning ', 'more than your alarm does', '.'], cm: 'Yes. This is exactly how I say it.', fix: '',
       w: ['Your evening sets up your morning…'], a: ['Rest is part of the work…', 'One walk a day, no phone…', 'You can start again on a Wednesday…', 'Write the hard thing down first…', 'You don’t need a morning routine…'] },
-    { n: 'Marco Vitale', f: 'Marco', pr: 'his', h: '@marcov', av: 'v2|0%', img: -1, slot: 'Thu 8:05 AM', v: 'lowercase, chart first, says when he was wrong.', nv: ['guaranteed', 'not financial advice lol', 'wagmi'], tz: ['Thursdays', '8:05 AM', 'Rome'],
+    { n: 'Marco Vitale', f: 'Marco', pr: 'his', h: '@marcov', av: 'v2|0%', img: -1, media: 'chart', slot: 'Thu 8:05 AM', v: 'lowercase, chart first, says when he was wrong.', nv: ['guaranteed', 'not financial advice lol', 'wagmi'], tz: ['Thursdays', '8:05 AM', 'Rome'],
       doc: ['i was wrong on btc at 58k. here’s the chart that told me, and ', 'i ignored it', '.'], cm: 'keep this. it’s the whole post.', fix: '',
       w: ['i was wrong on btc at 58k…', 'the trade i keep not taking…', 'what a red week taught me…'], a: ['i size down after two red days…', 'my one rule for alts…'] }
   ];
@@ -2649,6 +2697,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     setAv($('#rv-av'), c.av); setAv($('#cm-av'), c.av); setAv($('#sv-av'), c.av);
     const mid = c.done && c.fix ? c.fix : c.doc[1];
     $('#rv-doc').innerHTML = esc(c.doc[0]) + `<mark>${esc(mid)}</mark>` + esc(c.doc[2]);
+    $('#rv-chart').hidden = c.media !== 'chart'; $('#rv-quote').hidden = c.media !== 'quote';
     $('#rv-media').hidden = c.img < 0; if (c.img >= 0) { const ph = $('#rv-ph'); ph.className = c.crop ? `ph crop ${c.crop}` : 'ph fw' + (c.img === 3 ? ' hi' : ''); if (c.crop) ph.style.removeProperty('--i'); else ph.style.setProperty('--i', c.img); }
     $('#rv-state').textContent = c.done ? 'Scheduled' : 'Draft'; $('#rv-state').classList.toggle('ok', !!c.done);
     $('#cm-on').textContent = c.doc[1]; $('#cm-t').textContent = c.cm;
@@ -2675,8 +2724,18 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   $$('.st-pick button').forEach(b => b.addEventListener('click', () => client(+b.dataset.c, true)));
   $('#rv-ok').addEventListener('click', approve);
   queue(CL[0], false);
-  fitAll(); if (document.fonts) document.fonts.ready.then(fitAll);
-  { let fw = innerWidth, fr = 0; addEventListener('resize', () => { if (innerWidth === fw) return; fw = innerWidth; cancelAnimationFrame(fr); fr = requestAnimationFrame(fitAll); }); }
+  /* one review-box height for all four clients, measured at this width (each client in turn, in one task, so nothing paints
+     in between): the tallest sets the floor, and a pick never moves the tile's edge or the pricing below it */
+  const stBox = $('#st-box');
+  function sizeStudio() {
+    const keep = cur, act = $('#rv-act').innerHTML, done = !!CL[keep].done; stBox.style.minHeight = ''; let h = 0;
+    CL.forEach((c, i) => { client(i); h = Math.max(h, stBox.getBoundingClientRect().height); });
+    client(keep); if (!done) { $('#rv-act').innerHTML = act; $('#rv-ok').addEventListener('click', approve); }
+    stBox.style.minHeight = Math.ceil(h) + 'px';
+  }
+  const fitStudio = () => { fitAll(); sizeStudio(); };
+  fitStudio(); if (document.fonts) document.fonts.ready.then(fitStudio);
+  { let fw = innerWidth, fr = 0; addEventListener('resize', () => { if (innerWidth === fw) return; fw = innerWidth; cancelAnimationFrame(fr); fr = requestAnimationFrame(fitStudio); }); }
 
   /* ---------- pricing ---------- */
   $$('.bill button').forEach(b => b.addEventListener('click', () => {
@@ -2844,9 +2903,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     return asWritten(R);
   }
   /* the page's own words when it keeps a line as written: soft words stay marked as "Could cut", and it's the writer's call */
-  const asWritten = R => { const m = (R.marks || []).length;
-    return { ...R, state: m ? 'unsure' : 'clean', line: R.draft, cut: [], alts: [], say: 'Kept as written',
-      why: m ? 'Nothing to cut without changing what you said. The marked words are your call.' : 'Already tight. Nothing to cut without changing what you said.' }; };
+  /* the engine did want a cut here, so the page never calls the line "tight": the words it would have cut stay marked */
+  const asWritten = R => { const M = (R.marks || []).length ? R.marks : (R.cut || []).filter(c => FLUFF(c.kind) && c.at).map(c => [c.at[0], c.at[1], '']);
+    return { ...R, marks: M, state: M.length ? 'unsure' : 'clean', line: R.draft, cut: [], alts: [], say: 'Kept as written',
+      why: M.length ? `Marked, not cut: cutting ${M.length > 1 ? 'them' : 'it'} would change what you said. Your call.` : 'Cutting here would change what you said.' }; };
   /* GUARD-END */
   /* the version on show: the best line, or one of its alternatives */
   const verOf = (R, i) => R.state !== 'sharp' ? { line: R.line, say: R.say, why: R.why, cut: [] } : i > 0 && R.alts[i - 1] ? R.alts[i - 1] : { line: R.line, say: R.say, why: R.why, cut: R.cut };
@@ -2866,14 +2926,17 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const REWRITE = '<button class="inl" type="button" data-rw>Get a rewrite in your voice, free</button>';
   function viewOf(R, v, keepL) {
     const st = R.state, sharp = st === 'sharp', words = (String(R.line).match(/\S+/g) || []).length;
-    if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? 'Your call.' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
-    const say = sayTxt(R.say || 'Kept as written');
+    /* a line that opens on a word the writer put back carries the engine's own "you kept it" why, with no label over it */
+    if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
+    /* a line the engine marked but kept is "Kept as written", never "tight" */
+    const say = sayTxt(st === 'unsure' ? 'Kept as written' : R.say || 'Kept as written');
+    if (st === 'unsure' && /\btight\b/i.test(R.why || '')) R = { ...R, why: 'Marked, not cut: cutting it would change what you said. Your call.' };
     /* nothing cut and nothing put back: the way on is a rewrite in your voice (not for a two-word post like "gm") */
     if ((st === 'clean' || st === 'unsure') && !keepL.length) return { say, k: '', why: esc(R.why) + (words >= 3 ? `${R.why ? ' ' : ''}Want it to lead harder? ${REWRITE}` : ''), kept: '', keep: false, cta: 'Start free', status: say };
     return { say, k: '', why: esc(R.why), kept: '', keep: true, cta: keepL.length ? 'Keep it. Start free' : 'Start free', status: say };
   }
   /* after a put-back: which other struck words came back with it */
-  const backNote = (word, before, after) => { const gone = [...before].filter(w => w && w.toLowerCase() !== word.toLowerCase() && !after.has(w)); return gone.length ? `“${word}” is back, so ${list(gone.map(w => `“${w}”`))} ${gone.length === 1 ? 'comes' : 'come'} back too.` : `“${word}” is back. Tap it to cut it again.`; };
+  const backNote = (word, before, after) => { const gone = [...before].filter(w => w && w.toLowerCase() !== word.toLowerCase() && !after.has(w)); return gone.length ? `Back in: “${word}”, and ${list(gone.map(w => `“${w}”`))} with it.` : `“${word}” is back. Tap it to cut it again.`; };
   /* MARKUP-START */
   const lead = t => t.length - t.replace(/^\s+/, '').length;
   const flagged = (R, a, b) => (R.marks || []).some(m => a < m[1] && b > m[0]);
@@ -2963,7 +3026,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function showPh() { outCard.hidden = true; outEmpty.hidden = true; outPh.hidden = false; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; tryLine = ''; }
   /* typing: the soft words get their squiggle, and the result waits for a tap */
   function paint() {
-    const H = E(), t = ta.value, n = t.length;
+    const H = E(), t = ta.value, n = t.length; unDrop();
     cnt.textContent = n > 280 ? `${n - 280} over 280` : `${n} / 280`; cnt.classList.toggle('over', n > 280);
     goBtn.disabled = !t.trim();
     mir.classList.remove('struck', 'anim');
@@ -2983,7 +3046,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     else if (!stale && !outPh.hidden) { if (R && (R.state === 'empty' || R.state === 'thin')) showEmpty(thinSay(R)); else showCard(); }
     out.classList.toggle('stale', stale && !outCard.hidden); if (rw) rw.disabled = stale;
     if (stale) { outKeep.hidden = true; tryAlt.hidden = true; }
-    outSt(stale ? (!outCard.hidden ? 'Edited. Tap Sharpen again.' : 'Tap Sharpen to see yours.') : outSt.last || 'How it would post');
+    /* a line the page put there (a starter, a persona's draft) isn't "yours"; a line on its way to Sharpen says so */
+    outSt(stale ? (!outCard.hidden ? 'Edited. Tap Sharpen again.' : autoGo ? 'Sharpening it…' : ours(t) ? 'Tap Sharpen to see it sharpened.' : 'Tap Sharpen to see yours.') : outSt.last || 'How it would post');
     tryPrimary(!stale && !outCard.hidden);
   }
   function fresh(kind) { if (RM) return; out.classList.remove('fresh', 'wake', 'swap'); void out.offsetWidth; out.classList.add('fresh'); if (kind) out.classList.add(kind); }
@@ -2997,7 +3061,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* render one sharpenLine result. how: 'go' (Sharpen), 'back' (a word put back or cut again), 'alt' (another cut) */
   function render(how, word) {
     const raw = ta.value, st = R.state;
-    clear(tryT); out.classList.remove('stale', 'hold');
+    clear(tryT); unDrop(); out.classList.remove('stale', 'hold');
     if (st === 'empty' || st === 'thin') {
       showEmpty(st === 'empty' ? 'Paste a line above. The sharpened version lands here.' : thinSay(R));
       setMirror(esc(raw) + '&#8203;', false); flags.innerHTML = ''; why.textContent = '';
@@ -3018,7 +3082,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (sharp) {
       if (how === 'go') d = strikeAndDrop();
       else { const fresh2 = [...mir.querySelectorAll('mark.c')].filter(m => !prevCut.has(m.dataset.w)); if (fresh2.length) d = strikeAndDrop(fresh2); else mir.classList.add('struck'); }
-    } else if (!(how === 'back' && word && keepT.includes(word))) chips(raw, R.marks || [], 'Could cut:', st === 'unsure');
+    /* after Sharpen, words it kept are "Marked" (the result says why); "Could cut" is only the typing state's suggestion */
+    } else if (!(how === 'back' && word && keepT.includes(word))) chips(raw, R.marks || [], 'Marked:', st === 'unsure');
     const line = v.line, V = viewOf(R, v, keepT);
     outLine.className = 'xtext' + (sharp ? '' : ' same') + (line.length > 140 ? ' long' : '');
     outLine.innerHTML = xbeats(line);
@@ -3069,7 +3134,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   tryAlt.addEventListener('click', () => { if (!R || R.state !== 'sharp') return; ver = (ver + 1) % (R.alts.length + 1); render('alt'); tryAlt.focus(); });
   flags.addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) showWhy(+b.dataset.k); });
   flags.addEventListener('focusin', e => { const b = e.target.closest('button[data-k]'); if (b) showWhy(+b.dataset.k); });
-  ta.addEventListener('input', () => { touched = true; tryReplay.hidden = true; clear(tryT); paint(); keepLabel(); });
+  ta.addEventListener('input', () => { touched = true; tryReplay.hidden = true; clear(tryT); unDrop(); autoGo = false; paint(); keepLabel(); });
   ta.addEventListener('scroll', () => { mir.scrollTop = ta.scrollTop; moreCue(); }, { passive: true });
   let pendingSel = false;
   ta.addEventListener('pointerdown', () => { if (!touched && !picked) pendingSel = true; });
@@ -3080,7 +3145,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
      with a few seconds to undo it. With the box empty there's nothing to clear, so the button steps away (and Sharpen never clips) */
   const TRY0 = ta.value, undoEl = $('#try-undo'), clrBtn = $('#try-clear'); let undoT = 0, undone = null;
   /* the starters: each a different move, and each fits two lines of the box on a 360px phone, so a pick never moves the page */
-  const STARTERS = ['due to the fact that it’s a red week, i’m trading half size', 'So excited to share: after 14 months, we hit $10k MRR',
+  const STARTERS = ['due to the fact that it’s a red week, i’m trading half size', 'So excited to share: our first hire starts on Monday',
     'Here are 5 things 3 years of newsletters taught me', 'Real talk: after 40 founders, I write every first line last', '$ETH reclaimed 3k. shorts are trapped.'];
   function clearLabel() { const own = ta.value && ta.value !== TRY0; clrBtn.hidden = !ta.value; card.classList.toggle('isx', !!ta.value && !own); const h = own ? `${icn('close')}Clear` : 'Write my own'; if (clrBtn.innerHTML !== h) clrBtn.innerHTML = h; }
   /* the visitor's own line never vanishes without a way back: Clear, a starter or a persona's draft that replaces it offers
@@ -3120,16 +3185,24 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   tryReplay.addEventListener('click', () => { const t = $('#sharpen'); t.classList.add('arm', 'go'); tryApi.play(); });
   /* every way into the Try box (the hero button, the nav and footer links, the hero's draft) lands the same way: the tile's
      moment finishes at once and the box takes focus. From the hero's draft, the box arrives with that draft in it */
-  let jumped = false;
+  /* a draft sent from the hero or Who arrives sharpened: the visitor's tap ("Try it") asked for exactly that, so Sharpen runs
+     once the box is in view, and the strike plays where they can see it */
+  let jumped = false, autoGo = false;
   function jumpToTry(line) {
-    loadCore(); jumped = true; $('#sharpen').classList.remove('arm'); tryApi.finish();
-    if (line) { stash('Replaced', line); touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = line; ta.scrollTop = 0; paint(); keepLabel(); }
+    loadCore(); jumped = true; $('#sharpen').classList.remove('arm'); tryApi.finish(); tryBack.hidden = true; backTo = null;
+    if (line) { stash('Replaced', line); touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = line; ta.scrollTop = 0; autoGo = true; paint(); keepLabel(); }
     $('#sharpen').scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' });
-    setTimeout(() => { ta.focus({ preventScroll: true }); if (line) { const n = ta.value.length; ta.setSelectionRange(n, n); } else if (!touched) ta.select(); }, RM ? 0 : 480);
+    setTimeout(async () => { ta.focus({ preventScroll: true }); if (line) { const n = ta.value.length; ta.setSelectionRange(n, n); } else if (!touched) ta.select();
+      if (line && autoGo) { autoGo = false; if (ta.value === line && await loadCore()) { goNow = true; go(); } else paint(); } }, RM ? 0 : 480);
   }
   $$('a[href="#sharpen"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); jumpToTry(); }));
   /* the Who tile's posts: Try it puts that persona's draft in the Sharpen box */
-  $$('.wtry[data-w]').forEach(b => b.addEventListener('click', () => jumpToTry(WHO[+b.dataset.w].draft)));
+  const tryBack = $('#try-back'); let backTo = null;
+  $$('.wtry[data-w]').forEach(b => b.addEventListener('click', () => { jumpToTry(WHO[+b.dataset.w].draft); backTo = b; tryBack.hidden = false; }));
+  /* the visitor came from the Who tile: one tap takes them back to the row they left, focus on its button */
+  tryBack.addEventListener('click', () => { const b = backTo; tryBack.hidden = true; backTo = null; if (!b) return; b.closest('.wp').scrollIntoView({ block: 'center', behavior: RM ? 'auto' : 'smooth' }); setTimeout(() => b.focus({ preventScroll: true }), RM ? 0 : 450); });
+  ta.addEventListener('input', () => { tryBack.hidden = true; backTo = null; });
+  $$('#try-starters button,#try-clear').forEach(b => b.addEventListener('click', () => { tryBack.hidden = true; backTo = null; }));
   const pfB = $('#pf-body');
   pfB.setAttribute('role', 'button'); pfB.tabIndex = 0; pfB.setAttribute('aria-label', 'Try this draft in the Sharpen box'); pfB.setAttribute('aria-describedby', 'pf-draft');
   /* the whole compose pane is the door (its Sharpen button aside), the way a real compose box takes a tap anywhere */
