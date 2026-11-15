@@ -19,7 +19,7 @@ const S = (t, o) => core.sharpenLine(t, o), L = (t, o) => S(t, o).line;
 const hard = core.SHARPEN._dbg.hard;
 const versions = r => [r.line, ...(r.alts || []).map(a => a.line)].filter(l => l !== r.draft);
 /* v4.3 (round-8 founder-1, page pass 9): the softer clean copy, still only what the engine knows */
-const CLEAN = 'Nothing here reads as filler, so it stays as you wrote it.';
+const CLEAN = 'This quick check found nothing to cut, so it stays as you wrote it.';
 
 test('v4.1, hook4-1: every new hard guard rejects what it names and passes its clean twin', () => {
   const W37 = 'So after a lot of back and forth, we\'ve decided to shut down our consumer app and go all in on B2B.';
