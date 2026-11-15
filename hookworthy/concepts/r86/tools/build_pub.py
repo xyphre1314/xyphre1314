@@ -14,6 +14,8 @@ def rel(m):
     pub = 'core.js' if p=='core.js' else p.replace('assets/people/','people/').replace('assets/brand/','brand/')
     files[pub]=f'{H}/{p}'; return pub
 out=re.sub(r'\.\./\.\./((?:fonts|assets/people|assets/brand)/[\w.\-]+|core\.js)',rel,out)
+import sys; sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)))); import claude_try
+out=claude_try.patch(out)
 out=out.replace('href="../../index.html#legal"','href="https://claude.ai/artifact/U91RtwmxGET54EqnSh3hSD#legal" target="_blank" rel="noopener"')
 for pub,src in files.items():
     os.makedirs(os.path.dirname(f'{out_dir}/{pub}') or out_dir,exist_ok=True); shutil.copyfile(src,f'{out_dir}/{pub}')
