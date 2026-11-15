@@ -101,9 +101,9 @@
   /* r86 pass 4 (web-1): compiled once per flags and source; the two-level map hashes the (long) source string once, not a new key per call */
   const RXC = new Map(), rx = (src, flags) => { let m = RXC.get(flags); if (!m) RXC.set(flags, m = new Map()); let r = m.get(src); if (!r) m.set(src, r = new RegExp(src, flags)); r.lastIndex = 0; return r; };
   const gFlags = f => f.includes('g') ? f : f + 'g';
-  /* v4.3 (round-8 founder-1): and after a leading emoji ("🚨 BREAKING:", "🚀 So excited to…"), so an emoji never hides the run-up
-     behind it. The emoji stays: only the words after it are read. (In a 'u' table the surrogate pair never matches, so those read as before.) */
-  const S0 = '(?:^|(?<=^[\\s,.:;!—–-]+)|(?<=^[\\s,.:;!—–-]*Q[kz][a-z]q[\\s,.:;!—–-]+)|(?<=[.!?:]\\s{1,3})|(?<=^\\s*(?:(?:[\\uD83C-\\uD83E][\\uDC00-\\uDFFF]|[\\u2600-\\u27BF])\\uFE0F?\\s*)+\\s))';
+  /* v4.3 (round-8 founder-1): and after one leading emoji ("🚨 BREAKING:", "🚀 So excited to…"), so an emoji never hides the run-up
+     behind it. One emoji and one space: a looser lookbehind costs ~50 ms more to compile across the table. The emoji stays: only the words after it are read. (In a 'u' table the surrogate pair never matches, so those read as before.) */
+  const S0 = '(?:^|(?<=^[\\s,.:;!—–-]+)|(?<=^[\\s,.:;!—–-]*Q[kz][a-z]q[\\s,.:;!—–-]+)|(?<=[.!?:]\\s{1,3})|(?<=^(?:[\\uD83C-\\uD83E][\\uDC00-\\uDFFF]|[\\u2600-\\u27BF])\\uFE0F? ))';
   /* r86: "just" before a past-tense verb means "recently" ("btc just reclaimed 68k", "just shipped v2"): news, not filler */
   /* r86 pass 6: and a hyphenated past verb ("just mass-migrated", "just soft-launched") */
   const JUST_PAST = String.raw`(?:(?:[a-z]+-)*(?!(?:n|f|sp|s|bl|proc|succ|exc|br|h|w)eed\b|red\b|bed\b|shed\b)[a-z]{2,}ed\b|(?:hit|got|made|won|lost|sold|bought|ran|broke|began|put|cut|set|quit|left|found|wrote|built|sent|paid|spent|took|came|went|saw|told|said|heard|did|had|became|fell|grew|rose|drew|shut|led|met|threw|woke|stole|sank|swam|beat|forgot|flew|gave|wore|won|ate|drank|bit|hung|slept|kept|felt|meant|shot|struck|swore|tore|spoke)\b)`;
@@ -121,8 +121,10 @@
        claim, never marked */
     { k: 'stock', re: new RegExp(String.raw`${S0}(?:(?:(?:this is|it['’]s|some|big,?) )?(?:huge|big|massive|major|insane|crazy|wild|amazing|exciting|incredible) news(?: (?:everyone|guys|all|y['’]all|fam|frens|folks))?(?:\s*[!.,]+|\s+[—–-])|this is (?:huge|massive|insane|wild|crazy|big|everything)(?:\s*[!.]+|,)|huge if true(?:\s*[!.]+|,))(?=\s+\S)`, 'gi'),
       why: 'Hype before the news. The news itself says how big it is.', short: 'says it’s big instead of showing it', cw: 'Hype before the news.' },
-    { k: 'stock', re: new RegExp(String.raw`${S0}wow[.!,]*\s+just wow[.!]*(?=\s+\S)|${S0}let (?:that|this|it) sink in[.!:,]*(?=\s+\S)|${S0}(?:(?:and )?(?:we['’]re |we are |it['’]s |this is )?(?:going |headed |heading )?)?to the moon(?: and back)?(?:\s*[!.]+|,)(?=\s+\S)|,?(?<![\s,](?:go|goes|going|gone|went|send|sends|sending|sent|head|heads|headed|heading|shoot|shoots|shooting|shot|fly|flies|flying|flew|rocket|rockets|rocketing|ride|riding|take|takes|taking|took|is|are|was|were|be|been|way|straight|right|back|off|up|it|them|me|us|this|that|['’]s|['’]re))\s+(?:and )?to the moon(?: and back)?[!.]*(?=[ \t]*(?:${SL_EMO1}[ \t]*)*$)|(?<=^\s*[$#]?[A-Za-z][A-Za-z0-9]{1,9}\s)to the moon(?: and back)?(?=\s*[,!.—–-]\s*\S)`, 'gi'),
+    { k: 'stock', re: new RegExp(String.raw`${S0}wow[.!,]*\s+just wow[.!]*(?=\s+\S)|${S0}let (?:that|this|it) sink in[.!:,]*(?=\s+\S)|${S0}(?:(?:and )?(?:we['’]re |we are |it['’]s |this is )?(?:going |headed |heading )?)?to the moon(?: and back)?(?:\s*[!.:]+|,)(?=\s+\S)|,?(?<![\s,](?:go|goes|going|gone|went|send|sends|sending|sent|head|heads|headed|heading|shoot|shoots|shooting|shot|fly|flies|flying|flew|rocket|rockets|rocketing|ride|riding|take|takes|taking|took|is|are|was|were|be|been|way|straight|right|back|off|up|it|them|me|us|this|that|['’]s|['’]re))\s+(?:and )?to the moon(?: and back)?[!.]*(?=[ \t]*(?:${SL_EMO1}[ \t]*)*$)|(?<=^\s*[$#]?[A-Za-z][A-Za-z0-9]{1,9}\s)to the moon(?: and back)?(?=\s*[,!.—–-]\s*\S)`, 'gi'),
       why: 'A stock phrase. It tells people how to feel, and the news already does that.', short: 'tells people how to feel about the news', cw: 'Tells people how to feel about the news.' },
+    { k: 'stock', re: new RegExp(String.raw`(?<=[.!?]["”’)]*\s{1,3})(?:(?:this is|that['’]s|it['’]s|what) )?(?:(?:absolutely|truly|so|just) )?(?:huge|massive|major|insane|wild|amazing|incredible|big)(?: (?:news|day|win))?(?: (?:for us|for everyone|guys|everyone|y['’]all|fam))?[.!]*(?=[ \t]*(?:${SL_EMO1}[ \t]*)*$)`, 'gi'),
+      why: 'Hype after the news. The news already says how big it is.', short: 'says it’s big instead of showing it', cw: 'Hype after the news.' },
     { k: 'throat', re: new RegExp(String.raw`${S0}(?:(?:why|how) (?:is|are|['’]s) )?(?:nobody|no one|no-one|not enough people|hardly anyone)(?: is| are|['’]s)? (?:talking|posting|tweeting|writing) about (?:this|it)(?: (?:yet|enough|right now|rn))?(?:\s*\?+|,? but\b|\s*[.!:]+|,)(?=\s+\S)`, 'gi'),
       why: 'A run-up that sells the post instead of saying it. Start on the thing itself.', short: 'sells the post instead of saying it', cw: 'Sells the post instead of saying it.' },
     /* v4.3 (round-8 uiux-1): "I wanted to share a quick story about how I lost $4,000…", "Let me tell you a story about how we…": with
@@ -257,6 +259,27 @@
     { k: 'tail', re: /[ \t]?\b(?:lol|lmao|lmfao|haha+|hehe|smh)\b[.!]*(?=[ \t]*(?:\n|$))/gi,
       why: 'A nervous laugh at the end takes the weight off the line. Let it land.', short: 'takes the weight off the line' }
   ];
+  /* v4.3 (page pass 9, perf): the few giant entries are compiled in pieces. V8 compiles a regex on its first run (30-45 ms for
+     the largest here), so an entry over ~1,500 characters is cut, at the alternatives of its main group, into pieces of ~900,
+     each its own entry with the same kind and reasons. Each piece warms in its own short step, and the first Sharpen of a cold
+     page never waits on one long compile. A piece that would not compile alone leaves the entry whole */
+  {
+    const altsOf = src => { const out = []; let d = 0, cls = false, at = 0; for (let i = 0; i < src.length; i++) { const ch = src[i]; if (ch === '\\') { i++; continue; } if (cls) { if (ch === ']') cls = false; continue; } if (ch === '[') cls = true; else if (ch === '(') d++; else if (ch === ')') d--; else if (ch === '|' && d === 0) { out.push(src.slice(at, i)); at = i + 1; } } out.push(src.slice(at)); return out; };
+    const groups = src => { const out = []; let d = 0, cls = false, st = -1; for (let i = 0; i < src.length; i++) { const ch = src[i]; if (ch === '\\') { i++; continue; } if (cls) { if (ch === ']') cls = false; continue; } if (ch === '[') cls = true; else if (ch === '(') { if (d === 0) st = i; d++; } else if (ch === ')') { d--; if (d === 0) out.push([st, i + 1]); } } return out; };
+    const split = (x, depth = 0) => {
+      const src = x.re.source; if (src.length <= 1500 || altsOf(src).length > 1 || depth > 3) return [x];
+      /* the largest group, and inside it the largest group again while it has one alternative: P(?:A|B)S is P(?:A)S or P(?:B)S */
+      let g = groups(src).sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]))[0];
+      for (let n = 0; g && n < 4 && /^\(\?:/.test(src.slice(g[0], g[1])) && altsOf(src.slice(g[0] + 3, g[1] - 1)).length < 2; n++) { const o = g[0] + 3, h = groups(src.slice(o, g[1] - 1)).sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]))[0]; g = h ? [o + h[0], o + h[1]] : null; }
+      if (!g || !/^\(\?:/.test(src.slice(g[0], g[1]))) return [x];
+      const inner = src.slice(g[0] + 3, g[1] - 1), alts = altsOf(inner); if (alts.length < 2) return [x];
+      const k = Math.ceil(src.length / 900), size = inner.length / k, chunks = []; let cur = [];
+      alts.forEach(a => { cur.push(a); if (cur.join('|').length >= size && chunks.length < k - 1) { chunks.push(cur); cur = []; } }); if (cur.length) chunks.push(cur);
+      let out; try { out = chunks.map(c => ({ ...x, re: new RegExp(src.slice(0, g[0]) + '(?:' + c.join('|') + ')' + src.slice(g[1]), x.re.flags) })); } catch (e) { return [x]; }
+      return out.length > 1 ? out.flatMap(y => split(y, depth + 1)) : out;
+    };
+    const whole = SOFT.splice(0); whole.forEach(x => SOFT.push(...split(x)));
+  }
   /* r86: a price call's hedge is the writer's stance, not filler. "i think eth goes to 5k" without "i think" is a
      certainty they never posted, so on a call the opinion words and hedges stay, for the site and the app alike */
   const ST_FORE = /\b(?:will|won['’]t|going to(?! lie\b)|gonna(?! lie\b| be honest\b)|breaks? \$?\d|(?:out|under)perform\w*|beats?|leads?|lags?|go(?:es)? to|to \$?\d[\d,.]*k?|pulls? back|dips?|rips?|pumps?|dumps?|moons?|sends?|breaks? (?:out|down)|bottom(?:ed|s)?|top(?:ped|s)?|targets?|hits?|flip(?:s|ping|ped)?|sees?|reclaims?|retests?|eoy|eow|undervalued|overvalued|mispriced|underpriced|overpriced|at (?:this|these|current|today['’]s) (?:valuation|levels|prices?|market cap)|higher|lower|(?:is|are|['’]s|['’]re) about to|(?:in|at) the (?:boring |early |late )?(?:middle|start|end|top|bottom|beginning) of (?:the|this) cycle|mid-cycle|early in the cycle|late in the cycle|look(?:s|ing)? (?:strong|weak|bullish|bearish|ready|primed|heavy|toppy|cheap|expensive)|(?:get|gets|be) cut|rate cuts?|still early|breakout|reset|consolidat\w*|accumulat\w*|bull(?:ish)?|bear(?:ish)?|rally|crash|correction|squeeze|the (?:top|bottom) is in|by (?:eoy|summer|march|june|december|q\d|the halving))\b/i;
@@ -433,9 +456,9 @@
   /* v4.3 (hook42-1): the deadpan and news labels, and the frames that say how to take a line. A frame up front gets a true why
      ("Your frame sets it up."), never "Already tight" */
   const SL_DEADPAN = /^(?:fun fact|breaking(?: news)?|update|life update|psa|plot twist|til|reminder|honest question)$/i;
-  const SL_FRAMELEAD = /^\P{L}*(?:(?:fun fact|breaking(?: news)?|update|life update|psa|plot twist|til|reminder|honest question|genuine question|serious question|real question|hot take|unpopular opinion|controversial opinion|spicy take)\s*:|this (?:may|might|could|will) be (?:a |an )?(?:controversial|unpopular|hot|spicy) (?:take|opinion|one),? but\b|this might get me (?:some )?hate,? but\b)/iu;
+  const SL_FRAMELEAD = /^\P{L}*(?:(?:fun fact|breaking(?: news)?|update|life update|psa|plot twist|til|reminder|honest question|genuine question|serious question|real question|hot take|unpopular opinion|controversial opinion|spicy take)\s*:|(?:hot take|unpopular opinion|controversial opinion|spicy take),?\s+but\b|this (?:may|might|could|will) be (?:a |an )?(?:controversial|unpopular|hot|spicy) (?:take|opinion|one),? but\b|this might get me (?:some )?hate,? but\b)/iu;
   /* the label is the line's first words, a colon follows, and the body is one or two sentences, the first a whole one */
-  const slDeadpanBody = b => { const ss = slSents(String(b).trim()); return ss.length >= 1 && ss.length <= 2 && slFinite(ss[0]) && !/^\P{L}*(?:that|which|and|but|so|or)\b/iu.test(ss[0]); };
+  const slDeadpanBody = b => { const ss = slSents(String(b).trim()).filter(x => /[\p{L}\p{N}]/u.test(x)); return ss.length >= 1 && ss.length <= 2 && slFinite(ss[0]) && !/^\P{L}*(?:that|which|and|but|so|or)\b/iu.test(ss[0]); };
   const slDeadpan = (t, r) => { const s = String(t), p = s.search(/[\p{L}\p{N}]/u); if (r[0] !== p || !SL_DEADPAN.test(s.slice(r[0], r[1]).replace(/[\s:,.!—–-]+$/, ''))) return false; const m = s.slice(r[1]).match(/^\s*:\s*/); return !!m && slDeadpanBody(s.slice(r[1] + m[0].length)); };
   const SL_DEADLEAD = /^\P{L}*(?:fun fact|breaking(?: news)?|update|life update|psa|plot twist|til|reminder|honest question)\s*:\s*/iu;
   const SL_POL = new Map();
@@ -549,7 +572,7 @@
     /* r86 pass 5 (hook-4): a cut between two clauses keeps the comma after it: "…getting started tbh, the chart looks…" */
     /* v4.1: not after a verb that takes the clause as its object ("and I think if I'm being honest, the only reason" → "and I think the only reason") */
     const keepC = (bf, af, sep) => /,/.test(sep) && /[\p{L}\p{N}%)$]\s+$/u.test(bf) && !/[,;:]\s*$/.test(bf) && !/\b(?:think|thought|believe|believed|feel like|guess|know|knew|realize|realized|realise|realised|hope|bet|swear|mean|say|said|that|qk[a-z]q)\s*$/i.test(bf) && /^\S/.test(af) && wordsN(bf.split(/[,;:.!?—–]/).pop()) >= 2 && slFinite(bf.split(/[,;:.!?—–]/).pop()) && slFinite(af.split(/[,;:.!?—–]/)[0]);
-    softMarks(L0, keep).filter(m => !only || only.test(m[3])).sort((a, b) => b[0] - a[0]).forEach(m => { cut.unshift(s.slice(m[0], m[1])); kinds.unshift(m[3]); const sep = s.slice(m[1]).match(/^[,:]?[ \t]*/)[0], af = s.slice(m[1] + sep.length), bf = s.slice(0, m[0]); s = (/^\s*(?:[.!?…]|\n|$)/.test(af) ? bf.replace(/[\s,;:—–-]+$/, '') + (/^:/.test(sep) && /\p{L}/u.test(bf) && !/^\s*[.!?…]/.test(af) ? ':' : '') : keepC(bf, af, sep) ? bf.replace(/\s+$/, '') + ', ' : bf) + af; });
+    softMarks(L0, keep).filter(m => !only || only.test(m[3])).sort((a, b) => b[0] - a[0]).forEach(m => { cut.unshift(s.slice(m[0], m[1])); kinds.unshift(m[3]); const sep = s.slice(m[1]).match(/^[,:]?[ \t]*/)[0], bf = s.slice(0, m[0]); let af = s.slice(m[1] + sep.length); if (/[.!?…]["”’)]*\s*$/.test(bf) && /^[.!?…]+/.test(af)) af = af.replace(/^[.!?…]+/, ''); s = (/^\s*(?:[.!?…]|\n|$)/.test(af) ? bf.replace(/[\s,;:—–-]+$/, '') + (/^:/.test(sep) && /\p{L}/u.test(bf) && !/^\s*[.!?…]/.test(af) ? ':' : '') : keepC(bf, af, sep) ? bf.replace(/\s+$/, '') + ', ' : bf) + af; });
     const G = slGuard(s), GM = [];
     /* r86 pass 6 (hook-7): and the spans the prompt's rules keep ("really excited about this one"), so the second pass can't cut into them */
     /* v4.1: a kept span that holds a guarded word ("really excited about this one") is masked whole, longest first */
@@ -577,7 +600,11 @@
   const SL_ASKED = /^(?:so,? )?(?:a lot of|so many|lots of|many of|tons of|plenty of|some of) (?:you|people|folks|y['’]all|readers|followers|founders|traders|creators)(?: (?:have been|keep|have|are|kept))? ask(?:ing|ed)? (?:me )?((?:how|why|what|which|where|when) [^,.!?:;]{2,60}?),? (?:so|and) here(?:['’]s| is) my (?:(?:exact|whole|full|current|daily|simple|honest|complete|step-by-step|personal) )?(?:process|answer|take|system|setup|routine|strategy|approach|playbook|breakdown|plan|method|stack|framework|thoughts|story)\b([.!:]*)\s*$/i;
   const SW_RE = new Map(), SW_C = new Map();
   const swRe = x => { let r = SW_RE.get(x); if (!r) SW_RE.set(x, r = new RegExp(`^(?:${x.re.source})$`, x.re.flags.replace('g', ''))); return r; };
-  const softWhy = w => { const lc = String(w || '').toLowerCase(); if (SW_C.has(lc)) return SW_C.get(lc); const s = SOFT.find(x => swRe(x).test(lc)) || null; if (SW_C.size > 2000) SW_C.clear(); SW_C.set(lc, s); return s; };
+  /* v4.3 (page pass 9, perf): an entry can match the whole phrase only if its table regex (already compiled for the marks) matches
+     at the phrase's start, so that read comes first and the anchored copy compiles only for the few entries that pass it. Same
+     answer as before, without compiling an anchored copy of every entry on the first receipt (~250 ms cold) */
+  const swAt0 = (x, lc) => { const r = rx(x.re.source, gFlags(x.re.flags)); r.lastIndex = 0; const m = r.exec(lc); r.lastIndex = 0; return !!m && m.index === 0; };
+  const softWhy = w => { const lc = String(w || '').toLowerCase(); if (SW_C.has(lc)) return SW_C.get(lc); const s = SOFT.find(x => swAt0(x, lc) && swRe(x).test(lc)) || null; if (SW_C.size > 2000) SW_C.clear(); SW_C.set(lc, s); return s; };
   function hookScore(raw) {
     const text = (raw || '').trim();
     const zero = { clarity: 0, curiosity: 0, specificity: 0, tension: 0, brevity: 0 };
@@ -2833,6 +2860,23 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const best = fix(r.best);
       return { ...r, from, base: { line: pre + r.base.line, score: hookScore(pre + r.base.line).score }, best: best && best.score > from ? best : null, alts: (r.alts || []).map(fix).filter(a => a.score > from), voice: pre.trim() };
     }
+    /* v4.3 (round-8 uiux-5): a put-back opener is a pin on that word only. The line after it is sharpened on its own, as if the
+       opener weren't there, so the other cuts and reshapes stand ("so" back: "so sell into strength…", not "so you should sell…"),
+       and the opener goes back in front */
+    if (!opts.pinned && opts.keep && opts.keep.length) {
+      const l0p = p0.split('\n')[0];
+      for (const k of opts.keep) {
+        const kw = String(k || '').trim(); if (!kw || kw.length > 40) continue;
+        const pm = l0p.match(new RegExp(`^(\\P{L}*)(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})([,:;!—–-]*\\s+)(?=\\S)`, 'iu')); if (!pm) continue;
+        const mk0 = softMarks(l0p, [], true).find(r => r[0] === pm[1].length && lcw(l0p.slice(r[0], r[1])) === lcw(pm[2])), sw = mk0 ? { k: mk0[3] } : softWhy(kw); if (!sw || !/^(?:open|honest|filler|stock|throat|announce|label|disclaim)$/.test(sw.k) || SL_FRAMEK.test(kw)) continue;
+        const pre = pm[0], restT = p0.slice(pre.length), lowR = /^\P{L}*\p{Ll}/u.test(restT) || !/[.!?:]\s*$/.test(pre);
+        const r = hookUp(restT, { ...opts, keep: opts.keep.filter(x => x !== k), pinned: true }); if (!r) break;
+        const from = hookScore(p0).score;
+        const fx = o => { if (!o || !o.line) return o; let ln = o.line; if (lowR && /^\P{L}*\p{Lu}\p{Ll}/u.test(ln) && !/^\P{L}*I\b/.test(ln) && !properish((ln.match(/^\P{L}*([\p{L}’']+)/u) || ['', ''])[1], restT.replace(/^\S+\s*/, ''))) ln = ln.replace(/\p{Lu}/u, c => c.toLowerCase()); const line = pre + ln, text = pre + (o.text != null ? (o.text.startsWith(o.line) ? ln + o.text.slice(o.line.length) : o.text) : ln); return { ...o, line, text, score: hookScore(text).score }; };
+        /* the writer chose the opener, so a version is judged on the rest: the inner call already beat the rest's own score */
+        return { ...r, from, base: fx(r.base), best: fx(r.best), alts: (r.alts || []).map(fx) };
+      }
+    }
     /* the words this voice keeps, and on a price call the writer's stance ("i think", "imo", "probably") */
     /* r86 pass 2: and the guarded spans (links, quotes, the words that carry the meaning), so no step can cut into them */
     const l0 = p0.split('\n')[0], dm = softMarks(l0).filter(r => r[3] === 'disclaim'), gpS = slGuard(l0).filter(g => g[2] !== 'atom' && !dm.some(r => g[0] >= r[0] && g[1] <= r[1])), gp = gpS.map(g => l0.slice(g[0], g[1])).filter(w => !/^(?:lol|lmao|lmfao|haha+|hehe)$/i.test(w));
@@ -3453,6 +3497,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function slHard(line, draft) {
     const L = String(line), D = String(draft);
     if (slEndDisc(L) && !slEndDisc(D)) return 'ends on a disclaimer';
+    /* v4.3: no stray stop pair ("MRR.! 🚀") the draft didn't have */
+    if (cnt(L, /\.[!?]|[!?]\.(?!\.)/g) > cnt(D, /\.[!?]|[!?]\.(?!\.)/g)) return 'stray punctuation';
     /* v4.3: a plural after "most"/"many" stays plural ("most launches flop" never becomes "does most launch flop") */
     { const Q = String.raw`(?:most|many|a lot of|lots of|so many|all|few|some|plenty of|several)`; for (const m of lcw(D).replace(/[’‘]/g, "'").matchAll(new RegExp(String.raw`\b${Q}\s+([a-z]{3,}?)(es|s)\b`, 'g'))) { if (/(?:ss|us|is)$/.test(m[1] + m[2])) continue; if (new RegExp(String.raw`\b${Q}\s+${m[1]}(?![a-z])`).test(lcw(L).replace(/[’‘]/g, "'")) && !new RegExp(String.raw`\b${Q}\s+${m[1]}${m[2]}\b`).test(lcw(L).replace(/[’‘]/g, "'"))) return 'plural lost'; } }
     /* 9. (hook-7) every soft-looking word the prompt's rules keep is still in the line: the one hedge of a clause ("I think"), a
@@ -3507,7 +3553,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* v4.2 (round-7 marketing-3): a one-line draft cut down to a header that promises a list or a thread nobody wrote: "How important
      it is to ship fast:", "A story about how I almost lost my startup:". With a body under it, or a thread pointer in the draft, a
      header is the format */
-  const slColonFrag = (line, draft) => { const t = z => String(z).replace(new RegExp(`(?:\\s*${EMO_SEQ})+\\s*$`, 'u'), '').trim(); return /:$/.test(t(line)) && slSents(t(line)).length === 1 && !/:$/.test(t(draft)) && !/^\P{L}*(?:some|a few|a couple of|my) (?:(?:quick|random|short|honest|personal|early|initial|unfiltered) )?(?:thoughts|notes|observations|reflections) (?:on|about)\b/iu.test(t(line)) && !/🧵|👇|⬇|↓|\bthread\b|\(?\b\d{1,2}\/\d{0,2}\)?(?=\s|$)/iu.test(draft) && !(!/^\P{L}*(?:how|why|what|when|where)\b/iu.test(t(line)) && /\d|\b(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|fifty|hundred|dozen)\b/i.test(slSents(t(line)).pop() || '')); };
+  const slColonFrag = (line, draft) => { const t = z => String(z).replace(new RegExp(`(?:\\s*${EMO_SEQ})+\\s*$`, 'u'), '').trim(); return /:$/.test(t(line)) && slSents(t(line)).length === 1 && !/:$/.test(t(draft)) && !/(?:^\P{L}*|,\s+)(?:some|a few|a couple of|my) (?:(?:quick|random|short|honest|personal|early|initial|unfiltered) )?(?:thoughts|notes|observations|reflections) (?:on|about)\b/iu.test(t(line)) && !/🧵|👇|⬇|↓|\bthread\b|\(?\b\d{1,2}\/\d{0,2}\)?(?=\s|$)/iu.test(draft) && !(!/^\P{L}*(?:how|why|what|when|where)\b/iu.test(t(line)) && /\d|\b(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|fifty|hundred|dozen)\b/i.test(slSents(t(line)).pop() || '')); };
   /* "So excited to share that X" → "So X": the "So" was the announce's intensifier, so it goes with it */
   const SL_FEEL_A = 'excited|thrilled|happy|proud|pleased|humbled|delighted|stoked|pumped|grateful|honou?red|blessed|glad';
   const slSoLeft = (L, D) => new RegExp(`^\\P{L}*so,?\\s+(?:(?:super|really|very|incredibly|so|beyond|truly|extremely)\\s+)*(?:${SL_FEEL_A})\\b`, 'iu').test(D) && /^\P{L}*so\b/iu.test(L) && !new RegExp(`^\\P{L}*so,?\\s+(?:(?:super|really|very|incredibly|so|beyond|truly|extremely)\\s+)*(?:${SL_FEEL_A})\\b`, 'iu').test(L);
@@ -3602,7 +3648,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const core = idx.filter(i => !SL_GLUE.test(D[i].w)), base = core.length ? core : idx, have = base.filter(i => (bag.get(D[i].w) || 0) > 0).length;
       /* v4.3 (round-8 uiux-1): a mark whose closing words open the line ("I wanted to share some thoughts on" → "Some thoughts on…")
          lost only its front: the words that stay are never struck */
-      let keepT = 0; for (let k = idx.length - 2; k >= 1; k--) { const tl = idx.slice(k).map(i => D[i].w).join(' '); if ((' ' + ow).startsWith(' ' + tl + ' ') || ow === tl) { keepT = idx.length - k; break; } }
+      let keepT = 0; for (let k = idx.length - 2; k >= 1; k--) { const tw = idx.slice(k).map(i => D[i].w), tl = tw.join(' '); if (tw.some(w => !SL_GLUE.test(w)) && (' ' + ow + ' ').includes(' ' + tl + ' ') && !(' ' + ow + ' ').includes(' ' + idx.slice(k - 1).map(i => D[i].w).join(' ') + ' ')) { keepT = idx.length - k; break; } }
       if (keepT >= 2) { idx.forEach((i, k) => { if (k < idx.length - keepT) gone[i] = done[i] = true; else D[i].m = null; }); return; }
       if (have * 2 <= base.length) idx.forEach(i => { gone[i] = done[i] = true; }); else idx.forEach(i => { D[i].m = null; });
     });
@@ -3633,9 +3679,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     swap: 'Same claim in plainer words, so nothing snags the reader.',
     /* r86 pass 6 (juror 5, hook-8): on-device can't tell a sharp line from a flat one, so it never says "it reads clean" */
     /* v4.1 (round-6 marketing-3): one human line for every clean state, with no "on-device" and no "I" */
-    sharp: 'Already tight. Cutting more would change what you said.',
-    clean: 'Already tight. Cutting more would change what you said.',
-    safe: 'Already tight. Cutting more would change what you said.',
+    /* v4.3 (round-8 founder-1, page pass 9): softer, and still only what the engine knows: it found no filler */
+    sharp: 'Nothing here reads as filler, so it stays as you wrote it.',
+    clean: 'Nothing here reads as filler, so it stays as you wrote it.',
+    safe: 'Nothing here can go without changing what you said, so it stays as you wrote it.',
     unsafe: 'Couldn’t sharpen this one safely, so it stays as you wrote it.',
     /* v4.2 (hook41-3): a line with marked words is never "Already tight" */
     marked: 'Nothing safe to cut here. The marked words are your call.'
@@ -3903,7 +3950,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* v4.1 (hook4-5): read the sentence the stance word sits in, not the whole line: a question is neither a call nor a plan, and
        "this week" alone is a time, not a forecast ("I feel like most of you are too levered going into FOMC this week") */
     const stCl = k => slSents(body).find(s => lcw(s).includes(lcw(k))) || body, stFut = c => slFutReal(String(c).replace(/\bthis (?:week|weekend|month|quarter|year|summer|fall|autumn|winter|spring|cycle)\b/gi, ' '));
-    const call = isCall(body), stQ = w => String(w).replace(/,?\s+that$/i, ''), stWhy = k => { const nx = lcw((body.slice(lcw(body).indexOf(lcw(k)) + k.length).match(/^\s+((?:a |an )?[\p{L}'’]+)/u) || ['', ''])[1]), c = stCl(k), q = /\?["”’)]*\s*$/.test(c), deg = /^(?:kind of|kinda|sort of|sorta|a little|a bit|pretty)$/i.test(k); return deg && SL_FEELW.test(nx) ? 'it’s how you feel, not filler.' : !q && isCall(c) ? 'on a call, it’s your stance, not filler.' : !q && stFut(c) ? 'on a plan or a forecast, it’s your stance, not filler.' : deg ? 'it’s how strongly you mean it, not filler.' : 'it’s how sure you are, not filler.'; }, stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${stQ(k)}”: ${stWhy(k)}` : ''; };
+    const call = isCall(body), stQ = w => String(w).replace(/,?\s+that$/i, ''), stWhy = k => { const nx = lcw((body.slice(lcw(body).indexOf(lcw(k)) + k.length).match(/^\s+((?:a |an )?[\p{L}'’]+)/u) || ['', ''])[1]), c = stCl(k), q = /\?["”’)]*\s*$/.test(c), deg = /^(?:kind of|kinda|sort of|sorta|a little|a bit|pretty)$/i.test(k); return deg && SL_FEELW.test(nx) ? 'it’s how you feel, not filler.' : !q && isCall(c) ? 'on a prediction, it’s your stance, not filler.' : !q && stFut(c) ? 'on a plan or a forecast, it’s your stance, not filler.' : deg ? 'it’s how strongly you mean it, not filler.' : 'it’s how sure you are, not filler.'; }, stNote = l => { const k = st.find(w => lcw(l).includes(lcw(w))); return k ? `Kept your “${stQ(k)}”: ${stWhy(k)}` : ''; };
     /* v4.3 (uiux-2): a kept word's reason is said once. The page prints R.why and R.note one under the other, so when the why
        already gives a kept word its reason ("Kept “In my humble opinion”: …"), the note doesn't say it again */
     const noteOf = (l, why) => { const W = String(why || ''), said = q => /\bKept\b/.test(W) && W.includes(`“${q}”`); return [stNote(l), slApxNote(draft, l), longOf(l) ? SL_LONG : ''].filter(Boolean).filter(p => { const m = p.match(/^Kept (?:your )?“([^”]+)”/); return !m || !said(m[1]); }).join(' '); };
@@ -4000,7 +4047,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const E = slExplain(draft, best.line, best.moves, marks);
     /* r86 pass 3 (marketing-4): a word the writer put back that now opens the line: the why says it was their call, not that the line hits */
     /* r86 pass 5 (hook-9): "opens on it" only when it does: the kept word starts in the line's first two words */
-    { const lw = lcw(best.line), two = ((best.line.match(/^\s*\S+(?:\s+\S+)?/) || [''])[0]).length, kb = keep.find(k => { const p = lw.indexOf(lcw(k).trim()); return p >= 0 && p < two; }); if (kb) { const n = E.fluff.length, w = `You kept “${kb}”, so the line opens on it, as you chose.${n ? ` The other ${n === 1 ? 'cut stands' : `${n} cuts stand`}.` : ''}`; E.why = w.length <= 140 ? w : 'You kept your words up front, as you chose. The other cuts stand.'; } }
+    { const lw = lcw(best.line), two = ((best.line.match(/^\s*\S+(?:\s+\S+)?/) || [''])[0]).length, kb = keep.find(k => { const kk = lcw(k).trim(), p = kk ? lw.search(new RegExp(`(?<![\\p{L}\\p{N}])${kk.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'u')) : -1; return p >= 0 && p < two; }); if (kb) { const n = E.fluff.length, w = `You kept “${kb}”, so the line opens on it, as you chose.${n ? ` The other ${n === 1 ? 'cut stands' : `${n} cuts stand`}.` : ''}`; E.why = w.length <= 140 ? w : 'You kept your words up front, as you chose. The other cuts stand.'; } }
     const alts = [], used = new Set([E.move || 'soft']);
     for (const o0 of best.fb ? [] : list) {
       const o = fix(o0);
@@ -4627,21 +4674,27 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* v4.2 (page pass 8): smaller steps. Each regex of the engine's tables is compiled and run once on its own (V8 caches the
        compiled code by source and flags, so every later use is warm), then each move runs on its own, then the full paths.
        The steps do no more than the old ones did, in smaller pieces, so the output stays the same */
+    /* v4.3 (page pass 9): the list itself is free to build (closures only, nothing runs until a step does), and each step is
+       one small piece: a regex's first run (it compiles then), its second (V8 tiers it up), a cut pair, one read on one pair, one
+       short full path. The cut pairs fill in as their steps run, so the reads after them find them. Same work as before, in
+       pieces of a few ms in Node, so a page can spread them over idle callbacks with no long task */
     warmSteps: () => {
-      const W0 = SH_WARM[0][0], W1 = SH_WARM[1][0], W2 = SH_WARM[2][0], steps = [];
+      const W0 = SH_WARM[0][0], W1 = SH_WARM[1][0], W2 = SH_WARM[2][0], steps = [], PP = [];
       const reOf = x => x instanceof RegExp ? x : Array.isArray(x) && x[0] instanceof RegExp ? x[0] : x && x.re instanceof RegExp ? x.re : null;
-      const run = re => { for (const r of [re, rx(re.source, gFlags(re.flags))]) { r.lastIndex = 0; r.exec(W0); r.lastIndex = 0; r.exec(W2); r.lastIndex = 0; } };
-      [SOFT, SL_GUARDS, HEDGE_RX, WORDY, HK_SWAP, CONTRACT_W, PLAIN_W, JARGON_W, SL_BROKEN, [OPENER_RX, TAIL_RX, HK_BAIT, HK_OPEN]].forEach(T => (T || []).forEach(x => { const re = reOf(x); if (re) steps.push(() => run(re)); }));
-      SOFT.forEach(x => steps.push(() => swRe(x).test('so')));
+      const once = (re, w) => { for (const r of [re, rx(re.source, gFlags(re.flags))]) { r.lastIndex = 0; r.exec(w); r.lastIndex = 0; } };
+      [SOFT, SL_GUARDS, HEDGE_RX, WORDY, HK_SWAP, CONTRACT_W, PLAIN_W, JARGON_W, SL_BROKEN, [OPENER_RX, TAIL_RX, HK_BAIT, HK_OPEN]].forEach(T => (T || []).forEach(x => { const re = reOf(x); if (re) steps.push(() => once(re, W0), () => once(re, W2)); }));
+      ['so', 'honestly', 'just', 'really', 'basically', 'i think', 'i just wanted to share that', 'big news', 'hey everyone'].forEach(w => steps.push(() => softWhy(w)));
       steps.push(() => slGuard(W0), () => slPolicy(W0), () => softMarks(W0), () => softCut(W0), () => slFacts(W2, []), () => sub(W0, WORDY), () => sub(W0, HK_SWAP), () => sub(W0, CONTRACT_W));
-      [HM, HM2, MOVES].forEach(T => Object.values(T).forEach(f => steps.push(() => { try { f(W1); f(W2); } catch (e) { /* warming only */ } })));
+      [HM, HM2, MOVES].forEach(T => Object.values(T).forEach(f => steps.push(() => { try { f(W1); } catch (e) { /* warming only */ } }, () => { try { f(W2); } catch (e) { /* warming only */ } })));
       /* the reads a version goes through, one at a time, on a cut line and on the draft */
-      const pairs = SH_WARM.slice(0, 8).map(([t]) => { const d = t.split('\n')[0]; let l = d; try { l = tidyT(softCut(d).s); } catch (e) { /* warming only */ } return [l || d, d]; });
-      const reads = [slEndDisc, slProgBareN, slTailLost, slOpenAnd, slStanceLost, slSubOnlyN, slNfOnlyN, slThatNoVN, slDblPredN, slStubEnd, slNewWord, slNPSentN, slAndNPN, slFragN, slVerblessN, slNotBut, slEmojiOK, slBackN, slRunOn, slFragsN, slCapsNew, slMeanOK, slGuardOK, slReorderOnly, slSoLeft, slContrN, slIfQ, slArtN, slObjFragN, slColonFrag, slWhole, slWriterForm, slHardNews, slMainFin, slFinite, slHedgeLeft, slBeats, slNP, slFrag1, slClause, slExtra, slSwaps, isCall, stanceKeep, slFutReal, slThin, slTiny, slSents];
-      reads.forEach(f => steps.push(() => pairs.forEach(([l, d]) => { try { f(l, d); f(d, d); } catch (e) { /* warming only */ } })));
-      steps.push(...pairs.map(([l, d]) => () => { try { slHard(l, d); } catch (e) { /* warming only */ } }), ...pairs.map(([l, d]) => () => { try { slExplain(d, l, ['warm'], softMarks(d)); } catch (e) { /* warming only */ } }));
+      SH_WARM.slice(0, 8).forEach(([t]) => steps.push(() => { const d = t.split('\n')[0]; let l = d; try { l = tidyT(softCut(d).s); } catch (e) { /* warming only */ } PP.push([l || d, d]); }));
+      const reads = [slEndDisc, slProgBareN, slTailLost, slOpenAnd, slStanceLost, slSubOnlyN, slNfOnlyN, slThatNoVN, slDblPredN, slStubEnd, slNewWord, slNPSentN, slAndNPN, slFragN, slVerblessN, slNotBut, slEmojiOK, slBackN, slRunOn, slFragsN, slCapsNew, slMeanOK, slGuardOK, slReorderOnly, slSoLeft, slContrN, slIfQ, slArtN, slObjFragN, slColonFrag, slWhole, slWriterForm, slHardNews, slMainFin, slFinite, slHedgeLeft, slBeats, slNP, slFrag1, slClause, slExtra, slSwaps, isCall, stanceKeep, slFutReal, slThin, slTiny, slSents, slStillRun];
+      reads.forEach(f => [0, 1, 2, 3, 4, 5, 6, 7].forEach(k => steps.push(() => { const p = PP[k]; if (!p) return; try { f(p[0], p[1]); f(p[1], p[1]); } catch (e) { /* warming only */ } })));
+      [0, 1, 2, 3, 4, 5, 6, 7].forEach(k => steps.push(() => { const p = PP[k]; if (p) try { slHard(p[0], p[1]); } catch (e) { /* warming only */ } }, () => { const p = PP[k]; if (p) try { slExplain(p[1], p[0], ['warm'], softMarks(p[1])); } catch (e) { /* warming only */ } }));
       SH_WARM.forEach(([t, k]) => steps.push(() => slPolicy(t.split('\n')[0]), () => softMarks(t, k || []), () => softCut(t, k || []), () => slGuard(t), () => stanceKeep(t), () => hookScore(t)));
-      steps.push(() => hookScore(W2), () => hookUp(W0), ...SH_WARM.map(([t]) => () => { try { hookUp(t); } catch (e) { /* warming only */ } }), ...SH_WARM.map(([t, k]) => () => { sharpenLine(t, k ? { keep: k } : {}); softMarks(t, k || []); slGuard(t); }));
+      /* the full paths, on the first clause of each warm line (a long line is slow on its own, warm or not; its pieces are warm by now) */
+      const short = t => { const d = t.split('\n')[0], m = d.match(/^.{20,110}?[,.!?:](?=\s)/); return m ? m[0] : d.split(/\s+/).slice(0, 16).join(' '); };
+      steps.push(() => hookScore(W2), ...SH_WARM.map(([t]) => () => { try { hookUp(short(t)); } catch (e) { /* warming only */ } }), ...SH_WARM.map(([t, k]) => () => { sharpenLine(short(t), k ? { keep: k } : {}); }), ...SH_WARM.map(([t, k]) => () => { sharpenLine(short(t), { keep: k || [], strict: true }); }));
       return steps;
     },
     /* in a browser, warm() spreads the steps over idle callbacks (no long task) and resolves with the ms spent; elsewhere,
