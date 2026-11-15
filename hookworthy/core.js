@@ -2757,7 +2757,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       y = y.replace(/(\?\s+)to (?=[a-z]+\b(?![^.!?]*\b(?:i|my|me|i['’]\w+)\b))/i, '$1').replace(/(\?\s+)([a-z])/, (m, a, c) => a + c.toUpperCase());
       if (!more && !hdr && !c.colon && /:$/.test(y)) y = y.replace(/:$/, '.');
       y = caseFix(y, sty, true); if (sty.low) y = y.replace(/^(\P{L}*)(\p{Lu})(?=\p{Ll})/u, (m, a, b) => /^(I|I['’]\w+)$/.test((y.match(/^\P{L}*([\p{L}’']+)/u) || [])[1] || '') || names0.some(n => y.slice(a.length).startsWith(n)) || /^(X|BTC|ETH|SOL)\b/.test(y.slice(a.length)) ? m : a + b.toLowerCase());
-      y = y.replace(/(:\s+)([A-Z])([a-z]+)\b(?! [A-Z][a-z])/g, (m, a, b, r) => properish(b + r, L.replace(/^\S+\s*/, '')) ? m : a + b.toLowerCase() + r);
+      /* r86 pass 6 (hook-12): a capital the writer put after their own colon ("BREAKING: The…") stays */
+      y = y.replace(/(:\s+)([A-Z])([a-z]+)\b(?! [A-Z][a-z])/g, (m, a, b, r) => properish(b + r, L.replace(/^\S+\s*/, '')) || new RegExp(`:\\s+${b}${r}\\b`).test(Lr) ? m : a + b.toLowerCase() + r);
       y = aposFix(fixArticles(y), sty).replace(/(https?:\/\/\S+?|\b[\w-]+\.(?:com|io|xyz|co|ai|app|dev|so|gg|me|org|net|ly|to)(?:\/\S*?)?|#\w+|\p{Extended_Pictographic}\uFE0F?)\.$/u, '$1');
       const key = lcw(y).replace(/[^a-z0-9$%.?:→]+/g, ' ').trim(); if (seen.has(key)) continue; seen.add(key);
       if (numsOf(y).sort().join('|') !== n0 || ticksOf(y).sort().join('|') !== k0) { T(y, 'facts'); continue; }
