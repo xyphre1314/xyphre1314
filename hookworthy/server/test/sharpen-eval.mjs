@@ -97,7 +97,9 @@ export function check(e, r) {
   if (nums(line) !== nums(e.t)) issues.push(`numbers ${nums(e.t)} → ${nums(line)}`);
   if (BANNED.test(line)) issues.push('banned word');
   /* r86 pass 5 (juror 4, hook-1/2): under a negation "really" and "just" carry the meaning ("don't really mean" ≠ "don't mean"), so they are not a hedge left */
-  const hl = line.replace(/\b(?:not|never|\w+n['’]t)\s+(?:\w+\s+)?(?:really|just)\b/gi, ' ');
+  /* v4.1 (hook4-7): and the words the engine guards on purpose (an "actually" that carries the surprise, a "really" under a negation or on a feeling) */
+  const lg = (() => { let o = '', at = 0; core.SHARPEN.guard(line).forEach(([a, b]) => { if (a < at) return; o += line.slice(at, a) + ' '; at = b; }); return o + line.slice(at); })();
+  const hl = lg.replace(/\b(?:not|never|\w+n['’]t)\s+(?:\w+\s+)?(?:really|just)\b/gi, ' ');
   /* the strength of a feeling ("really excited", "very proud") is the writer's, and the prompt keeps it */
   const hp = hl.replace(/\b(?:really|very|so|super)\s+(?=(?:excited|proud|happy|grateful|nervous|scared|tired|sad|glad|stoked|pumped|thrilled|impressed|sorry|lucky|bored|worried)\b)/gi, ' ');
   if (PAD.test(hp)) issues.push(`padding left: ${hp.match(PAD)[0]}`);

@@ -23,7 +23,7 @@ test('juror 3, hook-1: an opinion frame takes its "that"; "breaks" only when it 
   /* r86 pass 5 (juror 4, hook-3): a forecast keeps its "I think": without it, it's a certainty the writer never posted */
   assert.equal(L('I think that in 5 years nobody will remember this.'), 'I think that in 5 years nobody will remember this.');
   assert.equal(L('Honestly, I think that in 5 years nobody will remember this.'), 'I think that in 5 years nobody will remember this.');
-  assert.equal(L('I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'), 'I think that in 2026, the companies that will win are the ones that are willing to say something interesting.'); /* round 5: a dated forecast keeps its stance */
+  assert.equal(L('I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'), 'I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'); /* v4.1 (hook4-7): the "actually" carries the contrast */ /* round 5: a dated forecast keeps its stance */
   /* the cut lands (no bail-out); "just need" (= simply) and the closing "pretty much it" are the writer's voice and stay */
   /* r86 pass 6 (juror 5, hook-7): one hedge per clause, as the Claude prompt keeps it: a lone "I think" stays, its padding goes */
   assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "I think that most people just need to sleep more and eat more protein, and that's pretty much it.");
@@ -71,10 +71,10 @@ test('juror 3, hook-4/5/8: the words that carry the meaning stay', () => {
   assert.equal(L('idk who needs to hear this but you can just log off'), 'you can just log off.');
   for (const t of ['you can just say no.', 'you can just leave.', 'Basically everyone I know is burned out.', 'Pretty much every trader I know lost money in May.']) assert.equal(L(t), t);
   assert.match(L('today i learned that you can just ask people for things and they\'ll often say yes'), /you can just ask/);
-  assert.equal(L("Love how every 'passive income' guru is actually just selling a course on passive income."), "Love how every 'passive income' guru is just selling a course on passive income.");
+  assert.equal(L("Love how every 'passive income' guru is actually just selling a course on passive income."), "Love how every 'passive income' guru is actually just selling a course on passive income."); /* v4.1 (hook4-7): there "actually" is the sarcasm */
   /* a sincere "yet another" guards only its own clause */
   { const y = L("Honestly we just shipped yet another update and it's really fast now."); assert.match(y, /^We just shipped yet another update/); assert.doesNotMatch(y, /\b(?:Honestly|really)\b/); }
-  assert.doesNotMatch(L("Unpopular opinion but I really think that most junior developers would honestly be much better off spending their first year actually learning how to read other people's code and debug real production issues rather than just building yet another todo app with whatever the trendiest framework of the month happens to be at the time."), /\b(?:really|honestly|actually)\b/);
+  assert.doesNotMatch(L("Unpopular opinion but I really think that most junior developers would honestly be much better off spending their first year actually learning how to read other people's code and debug real production issues rather than just building yet another todo app with whatever the trendiest framework of the month happens to be at the time."), /\b(?:really|honestly)\b/); /* v4.1 (hook4-7): "actually learning" carries the contrast and stays */
   assert.match(L("I'm not saying you should never use an ORM, but I am saying you should really understand the SQL it generates."), /\bI am saying\b/);
   /* r86 pass 6 (juror 5, hook-7): "Hot take:" tells readers how to take the line, so it stays, as the Claude prompt keeps it */
   assert.equal(L('Hot take: most apps don\'t need microservices. A monolith is probably fine.'), "Hot take: most apps don't need microservices. A monolith is probably fine.");

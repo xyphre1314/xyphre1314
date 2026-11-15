@@ -45,6 +45,8 @@ const LINE = 'Our team shipped v2 and signups went up 31% this week.';
 const WHY = 'The run-up is gone, so “Our team shipped v2” is the first thing people read.';
 const CONTRACT = ['state', 'draft', 'line', 'rest', 'cut', 'marks', 'move', 'say', 'why', 'kept', 'alts', 'long', 'note'];
 const rulesFor = (text, keep = []) => core.sharpenLine(text, { keep });
+/* v4.1 (hook4-2): once every Claude version is rejected, the engine's line ships only as a plain cut that passes its hard guards */
+const strictFor = (text, keep = []) => core.sharpenLine(text, { keep, strict: true });
 const TEMPLATE_REST = 'The rest of the post follows, for context only. Use it to see what the line sets up or points at, so you keep that setup. Don\'t edit it, quote it, or move any of its words, facts or numbers into the line.';
 const TEMPLATE_ASK = 'Sharpen the line in <line>. Put the one version you would post first. Reply with the JSON only.';
 
@@ -73,7 +75,9 @@ test('the versions: the first that passes ships, the other passing ones are alts
   for (const k of ['line', 'why', 'say', 'move', 'moves', 'cut']) assert.ok(k in r.json.alts[0], `an alt carries ${k}`);
   answer = () => say(['Our team shipped v2 and signups went up this week.', 'Our team shipped v2 and signups went up 31% this week. Insane.']);
   const n = await sharpen({ text: POST });
-  assert.equal(n.json.source, 'rules'); assert.equal(n.json.reason, 'invalid'); assert.equal(n.json.line, rulesFor(POST).line);
+  assert.equal(n.json.source, 'rules'); assert.equal(n.json.reason, 'invalid'); assert.equal(n.json.line, strictFor(POST).line);
+  /* the engine's own answer here reorders the line, so the fallback is its cut-only version */
+  assert.equal(rulesFor(POST).line, 'Signups went up 31% this week. What changed: our team shipped v2.'); assert.equal(n.json.line, 'Our team shipped v2 and signups went up 31% this week.'); assert.equal(n.json.state, 'sharp');
   const s = await sharpenClaude({ text: POST });
   assert.equal(s.reason, 'invalid'); assert.equal(s.reject, 'fact "31%" lost'); assert.deepEqual(s.rejects, ['fact "31%" lost', 'hype added'], 'one reason per version');
 });
@@ -117,7 +121,7 @@ test('anything the hard checks catch is the engine’s line, reason invalid: a l
     answer = () => say({ why: 'Cut the run-up.', ...out });
     const r = await sharpen({ text, never });
     assert.equal(r.status, 200, name); assert.equal(r.json.source, 'rules', name); assert.equal(r.json.reason, 'invalid', name);
-    assert.equal(r.json.line, rulesFor(text).line, `${name}: the engine’s own answer`);
+    assert.equal(r.json.line, strictFor(text).line, `${name}: the engine’s own answer, cut-only`);
   }
   answer = () => reply('not json at all');
   const g = await sharpen({ text: POST }); assert.equal(g.json.source, 'rules'); assert.equal(g.json.reason, 'invalid');
@@ -284,7 +288,7 @@ test('a reply that changes a fact, the stance, the tense or adds a claim word is
     answer = () => say({ why: 'Tighter.', ...out });
     const r = await sharpen({ text });
     assert.equal(r.status, 200, name); assert.equal(r.json.source, 'rules', name); assert.equal(r.json.reason, 'invalid', name);
-    assert.equal(r.json.line, rulesFor(text).line, `${name}: the engine’s own answer`);
+    assert.equal(r.json.line, strictFor(text).line, `${name}: the engine’s own answer, cut-only`);
   }
   /* and a good edit of a trader's line is Claude's, even with "unlock" or "elevated" in it */
   for (const [text, line] of [['Honestly the $ARB token unlock next week is going to be really brutal for holders.', 'The $ARB token unlock next week will be brutal for holders.'],

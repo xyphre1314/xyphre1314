@@ -46,7 +46,7 @@ test('one tap: the moves top first lines make, with the facts kept', () => {
 
 test('the receipt: every sharpen says which move it made and why that move works', () => {
   const r = E.hgSharpen('honestly most design systems fail because nobody really owns them');
-  assert.equal(r.main, 'ask'); assert.match(r.why, /question/i); assert.deepEqual(r.cuts, ['honestly', 'really']);
+  assert.equal(r.main, 'ask'); assert.match(r.why, /question/i); assert.deepEqual(r.cuts, ['honestly']); /* v4.1 (hook4-7): "nobody really owns them" keeps its degree */
   const n = E.hgSharpen('I’ve been thinking a lot about pricing lately and I think we were really undercharging');
   assert.equal(n.first, 'Pricing: I think we were undercharging.'); assert.ok(n.why.length > 20); /* r86 pass 6 (hook-7): the lone "I think" stays */
   Object.values(core.SHARPEN.MOVE_WHY).forEach(w => { assert.match(w, /\.$/); assert.doesNotMatch(w, /\b\d+(?:%|x)\b|algorithm|reach|viral|engag/i); });

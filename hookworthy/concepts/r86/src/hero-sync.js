@@ -10,6 +10,8 @@
 // The hero shows the engine's own "why" and "say" verbatim (the say through the page's display-only sayTxt, which writes
 // "Split it into two beats" as "Split into 2 beats"), so they are checked (and rewritten by --write) like the line.
 // The Try default's counter must show its true length.
+// Every example must also pass the page's own output guard (its GUARD block, lifted the same way): no doubled verb, no stub,
+// no word from nowhere.
 // Sharpened lines are drawn with the page's own display helpers (nb, beats, xbeats), so a wrap falls between beats.
 // The Kept rows ("Kept: $SOL, 40%. Kept your lowercase.") come from the page's own keptLine, lifted the same way, and the Try
 // default's struck mirror and the final's struck draft are rebuilt by --write with the page's own markup helpers (MARKUP block).
@@ -24,16 +26,19 @@ let src = fs.readFileSync(SRC, 'utf8'), tail = fs.readFileSync(TAIL, 'utf8');
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
-const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML };`)(esc, list);
-const { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML } = lib;
+const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\n${between(src, '/* GUARD-START */', '/* GUARD-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole };`)(esc, list);
+const { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole } = lib;
 const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+/* every example must also pass the page's own output guard (GUARD block): a line it would refuse is never shown as sharpened */
+const whole = (where, R) => { const w = R.state === 'sharp' ? gWhole(R.line, R.draft) : ''; if (w) bad.push(`${where}: the page guard refuses this line (${w}); pick another draft`); };
 const fromEngine = d => { const R = H.sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept) : '' }; };
 
 /* 1. the four hero examples */
 const fixed = EX.map((e, i) => {
   const g = fromEngine(e.draft), out = { ...e };
   if (g.R.state !== 'sharp') bad.push(`EX[${i}] ${e.who}: engine says "${g.R.state}" for this draft; pick a draft that sharpens`);
+  whole(`EX[${i}] ${e.who}`, g.R);
   if (e.after !== g.after) { bad.push(`EX[${i}] ${e.who} line\n    page:   ${e.after}\n    engine: ${g.after}`); out.after = g.after; }
   if (e.why !== g.why) { bad.push(`EX[${i}] ${e.who} why\n    page:   ${e.why}\n    engine: ${g.why}`); out.why = g.why; }
   if (!same(e.cut, g.cut)) { bad.push(`EX[${i}] ${e.who} cut\n    page:   ${JSON.stringify(e.cut)}\n    engine: ${JSON.stringify(g.cut)}`); out.cut = g.cut; }
@@ -63,7 +68,7 @@ if (/class="ptext long" id="pf-sharp"/.test(src) !== longCls) { bad.push('static
 /* 3. the Try default and the final's example */
 const ta = (src.match(/<textarea class="ed-ta" id="try-ta"[^>]*>([\s\S]*?)<\/textarea>/) || [])[1];
 if (ta) {
-  const g = fromEngine(ta);
+  const g = fromEngine(ta); whole('Try default', g.R);
   const line = (src.match(/<p class="xtext" id="out-line">([\s\S]*?)<\/p>/) || [])[1];
   const struck = [...(src.match(/<div class="ed-mirror struck" id="try-mirror"[^>]*>([\s\S]*?)<\/div>/) || ['', ''])[1].matchAll(/<mark class="c[^"]*"[^>]*>([\s\S]*?)<\/mark>/g)].map(m => m[1]);
   const st = (src.match(/<span id="out-st">([\s\S]*?)<\/span>/) || [])[1], kept = (src.match(/<p(?: class="[^"]*")? id="out-kept">([\s\S]*?)<\/p>/) || [])[1];
@@ -86,7 +91,7 @@ if (ta) {
 const fpD = (tail.match(/<p class="draft" id="fp-draft">([\s\S]*?)<\/p>/) || [])[1];
 if (fpD) {
   const draft = fpD.replace(/<span class="sr">[\s\S]*?<\/span>/, '').replace(/<[^>]+>/g, '').replace(/\u00a0/g, ' ');
-  const g = fromEngine(draft);
+  const g = fromEngine(draft); whole('Final example', g.R);
   const struck = [...fpD.matchAll(/<span class="cut">([\s\S]*?)<\/span>/g)].map(m => m[1]);
   const line = (tail.match(/<p class="xtext" id="fp-sharp"><span class="sr">Sharpened: <\/span>([\s\S]*?)<\/p>/) || [])[1];
   if (line !== xbeats(g.after)) { bad.push(`Final example line\n    page:   ${line}\n    engine: ${g.after}`); tail = tail.replace(/(<p class="xtext" id="fp-sharp"><span class="sr">Sharpened: <\/span>)([\s\S]*?)(<\/p>)/, (all, a, b, c) => a + xbeats(g.after) + c); }
@@ -107,6 +112,7 @@ if (fpD) {
 const wfixed = WHO.map((w, i) => {
   const g = fromEngine(w.draft), out = { ...w };
   if (g.R.state !== 'sharp') bad.push(`WHO[${i}] ${w.n}: engine says "${g.R.state}"; pick a draft that sharpens`);
+  whole(`WHO[${i}] ${w.n}`, g.R);
   if (w.after !== g.after) { bad.push(`WHO[${i}] ${w.n} line\n    page:   ${w.after}\n    engine: ${g.after}`); out.after = g.after; }
   if (!same(w.cut, g.cut)) { bad.push(`WHO[${i}] ${w.n} cut\n    page:   ${JSON.stringify(w.cut)}\n    engine: ${JSON.stringify(g.cut)}`); out.cut = g.cut; }
   return out;

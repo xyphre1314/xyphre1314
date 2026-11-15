@@ -125,7 +125,7 @@ test('juror 4, hook-9/12: receipts are true, thin lines say which kind of thin',
     if (m) assert.equal(m[1], ['', 'one', 'two', 'three'][n], `${t}: ${R.say} on ${R.line}`);
   }
   for (const [t, w, k] of [['ok so', 'That’s all filler. Add the point.', 'filler'], ['Really really really', 'That’s all filler. Add the point.', 'filler'],
-    ['the the the the the', 'This doesn’t read as a sentence yet.', 'sentence'], ['lorem ipsum dolor sit amet', 'This doesn’t read as a sentence yet.', 'sentence']]) {
+    ['the the the the the', 'This doesn’t read as a sentence yet.', 'sentence'], ['lorem ipsum dolor sit amet', 'This reads like a test, not a post. Paste a first line you’d really post.', 'test']]) {
     const R = S(t); assert.equal(R.state, 'thin', t); assert.equal(R.why, w, t); assert.equal(R.thin, k, t);
   }
   /* a short real post is still complete */
@@ -139,7 +139,7 @@ test('juror 4, hook-9/12: receipts are true, thin lines say which kind of thin',
   }
   /* nothing marked, but a frame no rule can cut: it says so, not "nothing soft" */
   const fr = S("This week's issue is about the 3 habits that helped me write faster, link in bio");
-  assert.equal(fr.state, 'clean'); assert.equal(fr.why, 'Nothing I can cut safely here. The rest is your call.');
+  assert.equal(fr.state, 'clean'); assert.equal(fr.why, 'Already tight. Nothing to cut without changing what you said.'); /* v4.1 (round-6 marketing-3): one human clean line */
 });
 
 test('juror 4, hook-10/11: the joke and the feeling stay; a contraction alone is no sharpen; facts keep their suffix and unit', () => {

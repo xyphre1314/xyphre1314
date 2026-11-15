@@ -578,6 +578,8 @@ html:not(.motion) #pf-go{display:none}
 .screens{display:grid;flex:1 1 auto}
 /* beside another tile the feed takes the row's height (it never sets it), and the dimmed next post fills the rest */
 @media (min-width:761px){.t-pv .screens{flex:1 1 0;min-height:300px}}
+/* beside a Try tile that grew for a long line, the feed keeps its height and the note follows it; the spare height sits below */
+@media (min-width:1100px){.t-pv .screens{max-height:470px}}
 /* the feed fades out ending exactly on a line's bottom edge (--fe, measured), so no line is ever sliced through */
 .pvw{grid-area:1/1;visibility:hidden;border-radius:16px;padding:14px 16px 6px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 calc(var(--fe,100%) - 56px),transparent var(--fe,100%));mask-image:linear-gradient(#000 calc(var(--fe,100%) - 56px),transparent var(--fe,100%))}
 /* the feed keeps going: someone else's post follows yours, dimmed, so spare height reads as feed, never as a void */
@@ -811,7 +813,7 @@ html:not(.motion) #pf-go{display:none}
 .wtry{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 11px;margin-top:-2px;border-radius:999px;font-size:13px;font-weight:500;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2);white-space:nowrap;transition:color .2s,background-color .2s}
 .wtry .ico{width:12px;height:12px;transition:transform .25s var(--ease)}
 .wtry:hover{color:var(--ink);background:rgba(255,255,255,.06)}
-.wtry[data-w]:hover .ico{transform:translateY(1px)}
+.wtry[data-w]:hover .ico{transform:translateY(-1px)}
 a.wtry:hover .ico{transform:translateX(2px)}
 @media (min-width:901px) and (max-width:1099px){.t-who .wp .xname > span:not(.tag){display:none}}
 /* from 1100 Who spans 7+ columns (a band, or 7/5 with Trust), so its heading takes the Lead step */
@@ -906,6 +908,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
   .st-post .media{aspect-ratio:3/1}
   .facts{grid-area:facts;flex-direction:row;gap:24px;margin:0}
   .facts p{flex:1 1 0;padding:12px 0 0}
+  .facts p.st-go{flex:none;padding-top:10px}
 }
 .facts p{padding:11px 0;border-top:1px solid var(--line-2);font-size:14px;line-height:1.45;color:var(--ink-2)}
 .facts p b{color:var(--ink);font-weight:500}
@@ -971,6 +974,8 @@ a.wtry:hover .ico{transform:translateX(2px)}
 /* above the cards' shadows, so the line reads in one even grey */
 .plans-fine{position:relative;z-index:1;margin:20px auto 0;max-width:70ch;font-size:14px;line-height:1.5;color:var(--ink-3);text-align:center;text-wrap:balance}
 .plans-fine .mf{user-select:text}
+/* wider screens: the cancel line, then the clients line under it */
+@media (min-width:761px){.plans-fine .mf{display:block}}
 /* the lede starts exactly on the third plan column */
 @media (min-width:1200px){
   #pricing .head{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--gap)}
@@ -1122,7 +1127,7 @@ footer .wrap{container-type:inline-size}
 .mbar{display:none}
 
 /* no widows in short copy */
-.pv-note,.rules,.lede,.why,.fin-sub,.tfoot,.hits p,.facts p,.price-n,.plan li span,.ptext,.xtext,.plans-fine,.qa .a p,.fp .fx,.fpay .draft,.dtext{text-wrap:pretty}
+.pv-note,.rules,.lede,.why,.fin-sub,.tfoot,#cm-t,.hits p,.facts p,.price-n,.plan li span,.ptext,.xtext,.plans-fine,.qa .a p,.fp .fx,.fpay .draft,.dtext{text-wrap:pretty}
 .plans-fine .nw{white-space:nowrap}
 .fpay .draft{text-wrap:balance}
 .plans-fine a{color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.3)}
@@ -1224,6 +1229,7 @@ footer .wrap{container-type:inline-size}
   .st-voice .queue{margin-top:20px}
   .facts{grid-area:facts;flex-direction:row;gap:24px;margin:0}
   .facts p{flex:1 1 0;padding:12px 0 0}
+  .facts p.st-go{flex:none;padding-top:10px}
   /* plans: Free and Pro side by side, Studio across the width under them, each laid out like the desktop card */
   .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
   .plan{display:flex;flex-direction:column;align-items:stretch;padding:24px;border-radius:24px}
@@ -1616,7 +1622,7 @@ footer .wrap{container-type:inline-size}
   <symbol id="n-bsky" viewBox="0 0 24 24"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></symbol>
   <symbol id="i-globe" viewBox="0 0 16 16"><circle vector-effect="non-scaling-stroke" cx="8" cy="8" r="6.2"/><path vector-effect="non-scaling-stroke" d="M1.8 8h12.4M8 1.8c1.7 1.8 2.5 3.8 2.5 6.2S9.7 12.4 8 14.2C6.3 12.4 5.5 10.4 5.5 8S6.3 3.6 8 1.8z"/></symbol>
   <symbol id="i-play" viewBox="0 0 16 16"><path d="M5 2.8v10.4L13 8z"/></symbol>
-  <symbol id="wm" viewBox="-5.66 11.25 533.25 98.75"><g transform="translate(-28.950 -0.976) scale(3.1613)" fill="none" stroke="currentColor" stroke-width="3.9" stroke-linejoin="round"><path d="M10 4.5V27.5"/><path d="M10 17.5a4.9 4.9 0 0 1 9.8 0V22.75a3.1 3.1 0 0 0 6.2 0V19" stroke-linecap="butt"/></g><path fill="currentColor" d="M89.52 87.16Q81.87 87.16 76.1 83.74Q70.33 80.32 67.14 74.2Q63.94 68.08 63.94 59.99Q63.94 51.86 67.14 45.72Q70.33 39.58 76.1 36.14Q81.87 32.7 89.52 32.7Q97.22 32.7 102.96 36.14Q108.71 39.58 111.91 45.72Q115.11 51.86 115.11 59.99Q115.11 68.08 111.91 74.2Q108.71 80.32 102.96 83.74Q97.22 87.16 89.52 87.16ZM89.52 76.86Q93.59 76.86 96.51 74.77Q99.42 72.67 100.98 68.87Q102.54 65.06 102.54 59.98Q102.54 54.83 100.98 51.03Q99.42 47.23 96.51 45.12Q93.59 43 89.52 43Q85.48 43 82.56 45.1Q79.63 47.21 78.07 51.02Q76.51 54.83 76.51 59.98Q76.51 65.08 78.07 68.88Q79.63 72.67 82.55 74.77Q85.46 76.86 89.52 76.86Z M144.52 87.16Q136.87 87.16 131.1 83.74Q125.33 80.32 122.14 74.2Q118.94 68.08 118.94 59.99Q118.94 51.86 122.14 45.72Q125.33 39.58 131.1 36.14Q136.87 32.7 144.52 32.7Q152.22 32.7 157.96 36.14Q163.71 39.58 166.91 45.72Q170.11 51.86 170.11 59.99Q170.11 68.08 166.91 74.2Q163.71 80.32 157.96 83.74Q152.22 87.16 144.52 87.16ZM144.52 76.86Q148.59 76.86 151.51 74.77Q154.42 72.67 155.98 68.87Q157.54 65.06 157.54 59.98Q157.54 54.83 155.98 51.03Q154.42 47.23 151.51 45.12Q148.59 43 144.52 43Q140.48 43 137.56 45.1Q134.63 47.21 133.07 51.02Q131.51 54.83 131.51 59.98Q131.51 65.08 133.07 68.88Q134.63 72.67 137.55 74.77Q140.46 76.86 144.52 76.86Z M187.67 69.66V54.91H189.06L209.03 33.76H223.87L199.89 59.52H197.39ZM176.33 86V13.25H188.75V86ZM210.3 86 192.43 62.28 200.78 53.58 225.15 86Z M238.76 86 222.75 33.76H235.78L241.11 53.74Q242.51 59.13 243.87 65.02Q245.23 70.92 246.57 76.98H244.9Q246.3 70.96 247.75 65.06Q249.19 59.16 250.65 53.74L256.13 33.76H267.67L273.07 53.74Q274.52 59.15 275.95 65.04Q277.38 70.94 278.78 76.98H277.07Q278.42 70.95 279.77 65.06Q281.12 59.18 282.5 53.74L287.85 33.76H301.03L285 86H272.18L265.9 64.35Q264.99 61.13 264.11 57.72Q263.24 54.3 262.39 50.81Q261.54 47.32 260.64 43.97H263.14Q262.27 47.31 261.39 50.81Q260.52 54.3 259.65 57.73Q258.78 61.15 257.84 64.35L251.47 86Z M326.52 87.16Q318.87 87.16 313.1 83.74Q307.33 80.32 304.14 74.2Q300.94 68.08 300.94 59.99Q300.94 51.86 304.14 45.72Q307.33 39.58 313.1 36.14Q318.87 32.7 326.52 32.7Q334.22 32.7 339.96 36.14Q345.71 39.58 348.91 45.72Q352.11 51.86 352.11 59.99Q352.11 68.08 348.91 74.2Q345.71 80.32 339.96 83.74Q334.22 87.16 326.52 87.16ZM326.52 76.86Q330.59 76.86 333.51 74.77Q336.42 72.67 337.98 68.87Q339.54 65.06 339.54 59.98Q339.54 54.83 337.98 51.03Q336.42 47.23 333.51 45.12Q330.59 43 326.52 43Q322.48 43 319.56 45.1Q316.63 47.21 315.07 51.02Q313.51 54.83 313.51 59.98Q313.51 65.08 315.07 68.88Q316.63 72.67 319.55 74.77Q322.46 76.86 326.52 76.86Z M358.33 86V33.76H370.3V42.45H370.56Q371.99 37.94 375.17 35.58Q378.34 33.21 383.28 33.21Q384.48 33.21 385.57 33.28Q386.65 33.35 387.43 33.44V44.54Q386.73 44.41 385.05 44.25Q383.37 44.1 381.58 44.1Q378.54 44.1 376.07 45.47Q373.6 46.85 372.17 49.53Q370.75 52.21 370.75 56.15V86Z M421.12 33.76V43.68H389.45V33.76ZM398.17 19.94H410.59V71.08Q410.59 73.87 411.75 75.01Q412.9 76.15 415.88 76.15Q417 76.15 418.53 76.11Q420.06 76.06 421.01 76.02L421.46 85.9Q419.99 86.04 417.9 86.1Q415.81 86.16 413.79 86.16Q405.9 86.16 402.04 82.82Q398.17 79.47 398.17 72.72Z M438.75 56.22V86H426.33V13.25H438.71V46.96H436.38Q438.81 40.03 443.32 36.41Q447.83 32.8 454.54 32.8Q460.01 32.8 464.16 35.15Q468.31 37.51 470.66 42.06Q473 46.61 473 53.24V86H460.57V55.19Q460.57 49.55 457.82 46.58Q455.08 43.61 450.11 43.61Q446.85 43.61 444.28 44.96Q441.71 46.32 440.23 49.11Q438.75 51.9 438.75 56.22Z M479.96 106.2 480.62 96.2 485.68 96.29Q487.62 96.45 489.01 95.93Q490.4 95.4 491.39 94.07Q492.39 92.73 493.09 90.46L494.75 85.83L474.69 33.76H487.87L497.45 61.26Q498.98 65.75 500.27 70.24Q501.57 74.73 502.86 79.27H499.45Q500.72 74.73 502.06 70.23Q503.4 65.72 504.92 61.26L514.55 33.76H527.56L504.42 94.15Q502.85 98.26 500.58 101.01Q498.31 103.75 495.22 105.12Q492.13 106.5 488.1 106.5Q485.96 106.5 483.87 106.41Q481.78 106.32 479.96 106.2Z"/></symbol>
+  <symbol id="wm" viewBox="-5.66 11.25 533.25 98.75"><path fill="currentColor" d="M8.92 56.22V86H-3.5V13.25H8.88V46.96H6.55Q8.98 40.03 13.49 36.41Q18 32.8 24.71 32.8Q30.18 32.8 34.33 35.15Q38.48 37.51 40.83 42.06Q43.17 46.61 43.17 53.24V72.4A3.4 3.4 0 0 0 49.97 72.4V59.1H60.57V72.4A14.915 14.6 0 0 1 30.74 72.4V55.19Q30.74 49.55 27.99 46.58Q25.25 43.61 20.28 43.61Q17.02 43.61 14.45 44.96Q11.88 46.32 10.4 49.11Q8.92 51.9 8.92 56.22Z"/><path fill="currentColor" d="M89.52 87.16Q81.87 87.16 76.1 83.74Q70.33 80.32 67.14 74.2Q63.94 68.08 63.94 59.99Q63.94 51.86 67.14 45.72Q70.33 39.58 76.1 36.14Q81.87 32.7 89.52 32.7Q97.22 32.7 102.96 36.14Q108.71 39.58 111.91 45.72Q115.11 51.86 115.11 59.99Q115.11 68.08 111.91 74.2Q108.71 80.32 102.96 83.74Q97.22 87.16 89.52 87.16ZM89.52 76.86Q93.59 76.86 96.51 74.77Q99.42 72.67 100.98 68.87Q102.54 65.06 102.54 59.98Q102.54 54.83 100.98 51.03Q99.42 47.23 96.51 45.12Q93.59 43 89.52 43Q85.48 43 82.56 45.1Q79.63 47.21 78.07 51.02Q76.51 54.83 76.51 59.98Q76.51 65.08 78.07 68.88Q79.63 72.67 82.55 74.77Q85.46 76.86 89.52 76.86Z M144.52 87.16Q136.87 87.16 131.1 83.74Q125.33 80.32 122.14 74.2Q118.94 68.08 118.94 59.99Q118.94 51.86 122.14 45.72Q125.33 39.58 131.1 36.14Q136.87 32.7 144.52 32.7Q152.22 32.7 157.96 36.14Q163.71 39.58 166.91 45.72Q170.11 51.86 170.11 59.99Q170.11 68.08 166.91 74.2Q163.71 80.32 157.96 83.74Q152.22 87.16 144.52 87.16ZM144.52 76.86Q148.59 76.86 151.51 74.77Q154.42 72.67 155.98 68.87Q157.54 65.06 157.54 59.98Q157.54 54.83 155.98 51.03Q154.42 47.23 151.51 45.12Q148.59 43 144.52 43Q140.48 43 137.56 45.1Q134.63 47.21 133.07 51.02Q131.51 54.83 131.51 59.98Q131.51 65.08 133.07 68.88Q134.63 72.67 137.55 74.77Q140.46 76.86 144.52 76.86Z M187.67 69.66V54.91H189.06L209.03 33.76H223.87L199.89 59.52H197.39ZM176.33 86V13.25H188.75V86ZM210.3 86 192.43 62.28 200.78 53.58 225.15 86Z M238.76 86 222.75 33.76H235.78L241.11 53.74Q242.51 59.13 243.87 65.02Q245.23 70.92 246.57 76.98H244.9Q246.3 70.96 247.75 65.06Q249.19 59.16 250.65 53.74L256.13 33.76H267.67L273.07 53.74Q274.52 59.15 275.95 65.04Q277.38 70.94 278.78 76.98H277.07Q278.42 70.95 279.77 65.06Q281.12 59.18 282.5 53.74L287.85 33.76H301.03L285 86H272.18L265.9 64.35Q264.99 61.13 264.11 57.72Q263.24 54.3 262.39 50.81Q261.54 47.32 260.64 43.97H263.14Q262.27 47.31 261.39 50.81Q260.52 54.3 259.65 57.73Q258.78 61.15 257.84 64.35L251.47 86Z M326.52 87.16Q318.87 87.16 313.1 83.74Q307.33 80.32 304.14 74.2Q300.94 68.08 300.94 59.99Q300.94 51.86 304.14 45.72Q307.33 39.58 313.1 36.14Q318.87 32.7 326.52 32.7Q334.22 32.7 339.96 36.14Q345.71 39.58 348.91 45.72Q352.11 51.86 352.11 59.99Q352.11 68.08 348.91 74.2Q345.71 80.32 339.96 83.74Q334.22 87.16 326.52 87.16ZM326.52 76.86Q330.59 76.86 333.51 74.77Q336.42 72.67 337.98 68.87Q339.54 65.06 339.54 59.98Q339.54 54.83 337.98 51.03Q336.42 47.23 333.51 45.12Q330.59 43 326.52 43Q322.48 43 319.56 45.1Q316.63 47.21 315.07 51.02Q313.51 54.83 313.51 59.98Q313.51 65.08 315.07 68.88Q316.63 72.67 319.55 74.77Q322.46 76.86 326.52 76.86Z M358.33 86V33.76H370.3V42.45H370.56Q371.99 37.94 375.17 35.58Q378.34 33.21 383.28 33.21Q384.48 33.21 385.57 33.28Q386.65 33.35 387.43 33.44V44.54Q386.73 44.41 385.05 44.25Q383.37 44.1 381.58 44.1Q378.54 44.1 376.07 45.47Q373.6 46.85 372.17 49.53Q370.75 52.21 370.75 56.15V86Z M421.12 33.76V43.68H389.45V33.76ZM398.17 19.94H410.59V71.08Q410.59 73.87 411.75 75.01Q412.9 76.15 415.88 76.15Q417 76.15 418.53 76.11Q420.06 76.06 421.01 76.02L421.46 85.9Q419.99 86.04 417.9 86.1Q415.81 86.16 413.79 86.16Q405.9 86.16 402.04 82.82Q398.17 79.47 398.17 72.72Z M438.75 56.22V86H426.33V13.25H438.71V46.96H436.38Q438.81 40.03 443.32 36.41Q447.83 32.8 454.54 32.8Q460.01 32.8 464.16 35.15Q468.31 37.51 470.66 42.06Q473 46.61 473 53.24V86H460.57V55.19Q460.57 49.55 457.82 46.58Q455.08 43.61 450.11 43.61Q446.85 43.61 444.28 44.96Q441.71 46.32 440.23 49.11Q438.75 51.9 438.75 56.22Z M479.96 106.2 480.62 96.2 485.68 96.29Q487.62 96.45 489.01 95.93Q490.4 95.4 491.39 94.07Q492.39 92.73 493.09 90.46L494.75 85.83L474.69 33.76H487.87L497.45 61.26Q498.98 65.75 500.27 70.24Q501.57 74.73 502.86 79.27H499.45Q500.72 74.73 502.06 70.23Q503.4 65.72 504.92 61.26L514.55 33.76H527.56L504.42 94.15Q502.85 98.26 500.58 101.01Q498.31 103.75 495.22 105.12Q492.13 106.5 488.1 106.5Q485.96 106.5 483.87 106.41Q481.78 106.32 479.96 106.2Z"/></symbol>
   <symbol id="hk-h" viewBox="8 4.5 20 23" overflow="visible"><g fill="none" stroke="currentColor" stroke-width="3.9" stroke-linejoin="round"><path d="M10 4.5V27.5" stroke-linecap="butt"/><path d="M10 17.5a4.9 4.9 0 0 1 9.8 0V22.75a3.1 3.1 0 0 0 6.2 0V19" stroke-linecap="butt"/></g></symbol>
   <symbol id="i-replay" viewBox="0 0 16 16"><path vector-effect="non-scaling-stroke" d="M2.9 8.6A5.1 5.1 0 1 0 4.6 4.3"/><path vector-effect="non-scaling-stroke" d="M2.6 2.4v2.9h2.9"/></symbol>
   <symbol id="i-close" viewBox="0 0 16 16"><path vector-effect="non-scaling-stroke" d="M4 4l8 8M12 4l-8 8"/></symbol>
@@ -1707,7 +1713,7 @@ footer .wrap{container-type:inline-size}
           </div>
         </div>
         <div class="pane sharp">
-          <div class="ph-h"><b>Sharpened</b><span class="move"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="pf-move">Cut 2 bits of fluff · Split into 2 beats</span></span></div>
+          <div class="ph-h"><b>Sharpened</b><span class="move"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="pf-move">Cut 2 bits of fluff · Split into 2 beats</span></span></div>
           <article class="post lit-card" aria-labelledby="pf-name">
             <div class="who">
               <span class="av me" id="pf-av2" aria-hidden="true"></span>
@@ -1756,7 +1762,7 @@ footer .wrap{container-type:inline-size}
         </div>
         <p class="starters" id="try-starters"><span>No line handy? Try one:</span><button type="button" data-s="0">Trader</button><button type="button" data-s="1">Founder</button><button type="button" data-s="2">Newsletter</button><button type="button" data-s="3">Ghostwriter</button><button type="button" data-s="4">Already sharp</button></p>
         <div class="try-out" id="try-out">
-          <p class="out-h"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="out-st">Cut 2 bits of fluff · Said it straight</span><button class="replay alt" type="button" id="try-alt" hidden><svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg><span id="try-alt-t">Another take · 1/2</span></button><button class="replay" type="button" id="try-replay" aria-label="Replay the sharpen"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg><span class="rl">Replay</span></button></p>
+          <p class="out-h"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="out-st">Cut 2 bits of fluff · Said it straight</span><button class="replay alt" type="button" id="try-alt" hidden><svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg><span id="try-alt-t">Another take · 1/2</span></button><button class="replay" type="button" id="try-replay" aria-label="Replay the sharpen"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg><span class="rl">Replay</span></button></p>
           <div id="out-card">
             <article class="xcard lit-card" aria-label="Your sharpened post">
               <div class="xrow">
@@ -1944,7 +1950,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <p class="nevers" id="st-never"><span class="nvw sqz"><span class="strike">synergy</span></span><span class="nvw sqz"><span class="strike">excited to announce</span></span><span class="nvw sqz"><span class="strike">thought leader</span></span><span class="nvw sqz"><span class="strike">humbled</span></span></p>
         </div>
         <div class="facts">
-          <p><b>Clients approve from a link.</b> Posts go out from their own X account once they connect it.<span class="st-go-m"> <button class="inl" type="button" data-sheet="studio" data-from="studio" data-bill="y">Start with Studio</button></span></p>
+          <p><b>Clients approve from a link.</b> Posts go out from their own X account once they connect&nbsp;it.<span class="st-go-m"> <button class="inl" type="button" data-sheet="studio" data-from="studio" data-bill="y">Start with Studio</button></span></p>
           <p><b>4 clients: $72 a month</b>, billed yearly <span class="nwr">($96 month to month)</span>.</p>
           <p class="st-go"><button class="btn btn-glass btn-sm" type="button" data-sheet="studio" data-from="studio" data-bill="y">Start with Studio<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button></p>
         </div>
@@ -2171,20 +2177,32 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the engine's first call compiles its rules (a few hundred ms): do that while the page is idle, never on a tap */
   /* the engine compiles its regexes on first use; warm it one step per idle callback (each step is short), so no warm-up
      task blocks a tap. An engine without steps gets one throwaway call */
+  /* the engine compiles its rules on first use. Once it loads (the Try tile is near), its warm-up runs one step per idle
+     callback, then the lines a first tap is most likely to send (the Try default and the starters) are worked out ahead, so
+     that tap only renders. A touch on Try, the final or Who pauses the warm-up for a few seconds, so no step competes with the visitor */
+  let warmHold = 0;
+  const memo = new Map(), mk = (t, o) => t + '\u0001' + ((o && o.keep) || []).join('\u0001');
+  let HW = null;
+  /* the page's handle on the engine: everything is HWCore's own, except that a line it has already worked out comes back at once */
+  const wrap = H => { if (!H || !H.sharpenLine) return H; if (HW && Object.getPrototypeOf(HW) === H) return HW;
+    HW = Object.create(H); HW.sharpenLine = (t, o) => { const k = mk(t, o); let r = memo.get(k); if (!r) { r = H.sharpenLine(t, o); if (memo.size > 60) memo.clear(); memo.set(k, r); } return r; }; return HW; };
   const warmCore = H => {
     if (warmed || !H) return; warmed = true;
+    const W2 = wrap(H);
     let steps = null; try { steps = H.SHARPEN && H.SHARPEN.warmSteps ? H.SHARPEN.warmSteps() : null; } catch (e) { }
-    if (!steps) { idle(() => { try { H.sharpenLine('warm up'); } catch (e) { } }); return; }
-    let i = 0; const next = () => { if (i >= steps.length) return; try { steps[i++](); } catch (e) { } idle(next, 2000); }; idle(next, 2000);
+    const jobs = (steps || [() => H.sharpenLine('warm up')]).concat([TRY0, ...STARTERS].map(t => () => W2.sharpenLine(t, { keep: [] })));
+    let i = 0; const next = d => { if (i >= jobs.length) return; const wait = warmHold - performance.now(); if (wait > 0) { setTimeout(() => idle(next, 2000), wait); return; }
+      if (d && d.timeRemaining && d.timeRemaining() < 8 && !d.didTimeout) { idle(next, 2000); return; } try { jobs[i++](); } catch (e) { } idle(next, 2000); };
+    idle(next, 2000);
   };
   const loadCore = () => coreP || (coreP = new Promise(res => {
-    if (window.HWCore) return res(window.HWCore);
+    if (window.HWCore) return res(wrap(window.HWCore));
     const s = document.createElement('script'); s.src = '../../core.js'; s.async = true;
-    s.onload = () => { res(window.HWCore || null); warmCore(window.HWCore); }; s.onerror = () => res(null); document.head.append(s);
+    s.onload = () => { res(wrap(window.HWCore) || null); warmCore(window.HWCore); }; s.onerror = () => res(null); document.head.append(s);
   }));
   /* one frame before the engine runs, so the tap's pressed state paints first and the tap itself stays fast */
   const frame = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
-  const E = () => (window.HWCore && window.HWCore.sharpenLine ? window.HWCore : null);
+  const E = () => (window.HWCore && window.HWCore.sharpenLine ? wrap(window.HWCore) : null);
 
   /* ---------- falling fluff: a copy of each cut word dissolves inside the line gap (motion only) ---------- */
   function dropWords(els, layer, stagger = .09, clip) {
@@ -2369,8 +2387,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
      past it. A long paragraph wraps normally, with a short sentence opener ("it", "my") held to the word after it. f formats text */
   /* the label over the engine's why: a move (beats, number first, a question, said straight) is "Why it hits"; a plain cut is "What changed" */
   const hitK = say => /^Cut \d+ bits? of fluff$/.test(String(say)) ? 'What changed' : 'Why it hits';
-  /* display only: the receipt counts in numerals throughout ("Cut 2 bits of fluff · Split into 2 beats") */
-  const sayTxt = say => String(say).replace(/\bSplit it into (two|three|four) beats\b/, (m, n) => `Split into ${{ two: 2, three: 3, four: 4 }[n]} beats`);
+  /* display only: the receipt counts in numerals throughout ("Cut 2 bits of fluff · Split into 2 beats"), and each of its parts
+     stays on one line, so a narrow receipt breaks at the "·", never inside "Said it straight" */
+  const sayTxt = say => String(say).replace(/\bSplit it into (two|three|four) beats\b/, (m, n) => `Split into ${{ two: 2, three: 3, four: 4 }[n]} beats`)
+    .split(' · ').map(x => x.replace(/ /g, '\u00a0')).join(' · ');
   const beats = (t, f) => { t = String(t); const s = t.split(/(?<=[.!?…])\s+(?=\S)/);
     if (s.length < 2) return f(t);
     if (s.every(x => x.length <= 64)) return s.map(x => `<span class="bt">${f(x)}</span>`).join(' ');
@@ -2898,7 +2918,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* ---- Try ---- */
   const ta = $('#try-ta'), mir = $('#try-mirror'), flags = $('#try-flags'), why = $('#try-why'), out = $('#try-out'), cnt = $('#try-count'), card = $('.try-c');
   const goBtn = $('#try-go'), outLine = $('#out-line'), outCard = $('#out-card article'), outEmpty = $('#out-empty'), outPh = $('#out-ph'), outHits = $('#out-hits'), outKeep = $('#out-keep'), tryReplay = $('#try-replay'), tryAlt = $('#try-alt'), tryKeep = $('#try-keep');
-  let R = null, ver = 0, keepT = [], sharpenedFor = ta.value, touched = false, sharpenedOnce = false, tryLine = outLine.textContent, picked = false, pendingUp = false, marks = null;
+  let goNow = false, R = null, ver = 0, keepT = [], sharpenedFor = ta.value, touched = false, sharpenedOnce = false, tryLine = outLine.textContent, picked = false, pendingUp = false, marks = null;
   const tryT = [];
   const HINT = `<span class="hint">${icn('undo')}Tap a struck word to put it back.</span>`, NOCUT = `<span class="hint">${icn('tick')}Every fact you wrote is still there.</span>`;
   const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
@@ -3024,7 +3044,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   async function go() {
     clear(tryT);
     const H = E() || await loadCore(); if (!H || !H.sharpenLine) return;
-    await frame();
+    if (goNow) goNow = false; else await frame();
     touched = true; sharpenedOnce = true; tryReplay.hidden = true; ver = 0;
     keepT = sameLine(ta.value, sharpenedFor) ? inLine(keepT, ta.value) : []; sharpenedFor = ta.value; R = guard(H.sharpenLine(ta.value, { keep: keepT }));
     render('go');
@@ -3082,7 +3102,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   $$('#try-starters button').forEach(b => b.addEventListener('click', async () => {
     stash('Replaced', STARTERS[+b.dataset.s]);
     touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = STARTERS[+b.dataset.s];
-    await loadCore(); await frame(); paint(); go();
+    /* only what the box itself needs before the result lands (the typing state's squiggles would be replaced at once) */
+    await loadCore(); await frame(); const n = ta.value.length; cnt.textContent = `${n} / 280`; cnt.classList.remove('over'); goBtn.disabled = false; fit(); moreCue(); clearLabel(); goNow = true; go();
   }));
   /* the tile's moment (once on arrival, again from Replay): the squiggles draw in, the fluff is struck and dissolves, the post wakes */
   const tryApi = {
@@ -3213,6 +3234,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* wake the engine (the Try example is already sharpened, so nothing waits on it) */
   const wake = () => loadCore();
   ['pointerdown', 'focusin'].forEach(ev => ['#sharpen', '#start', '#who'].forEach(s => $(s).addEventListener(ev, wake, { once: true, passive: true })));
+  /* the visitor's own touch pauses the warm-up for a few seconds: what they asked for is worked out on demand */
+  ['#sharpen', '#start', '#who'].forEach(s => $(s).addEventListener('pointerdown', () => { warmHold = performance.now() + 3000; }, { passive: true }));
   /* web-9: nobody downloads the engine on spec. It loads on a first touch of Try, the final or Who, or as the Try tile comes
      near the viewport (never on idle, and never inside the hero's opening moment) */
   addEventListener('load', () => setTimeout(() => {

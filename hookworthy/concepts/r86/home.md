@@ -586,3 +586,52 @@ FIX6's items win where reviewers disagree. Engine text is still shown verbatim, 
 - Hero post bottom: 766 at 1440×900, 768 at 1280×800, 825 at 390×844 and 776 at 360×780.
 - `trytest` (1440, 390, 360), `sheettest`, `motion`, `p4test`, `p5test`, `mbar`, `cbar`, `inp` and the new `r86/fix6/p6test.js` (1440, 390) all pass. p4/p5 now type the old Founder starter line instead of clicking the starter.
 - claude_try.py still patches (build_pub.py from a scratch copy: no assertion error). hero-sync passes, run last.
+
+## Pass 7 (brief: `r86/FIX7.md`, re-rate reviews in `r86/rerate6/`)
+Engine items stayed with the engine pass (core.js changed several times during this pass; every example was re-checked against core.js of 2026-11-15 09:31 and later). The page adds one thin safety net of its own, and no engine text was rewritten.
+
+**Page-side output guard (uiux to_95 #1, founder-1's page half)**
+- `guard()` now ends in `guardWhole()` (a GUARD-START/END block). A version is shown as "Sharpened" only when it reads whole. It is dropped when a clause it built has two verbs and nothing between them ("We raised a Series A is closed"), when it leaves a stub the draft never had ("…great week! pricing."), a clause with no main clause ("If you're not using stop losses.", "That most newsletters are…"), a that-clause question ("…realize that the first line?"), or a word that is neither the writer's nor one of the engine's own template and plain-word swaps.
+- A dropped main line falls back to a whole alternative, else to "Kept as written" with the soft marks as "Could cut" chips, "Nothing to cut without changing what you said. The marked words are your call." and the rewrite link. Lines the writer wrote that way are never second-guessed.
+- Calibration: it refuses all six broken lines the jurors found, and 0 of 824 versions the current engine gives for the 1,577-line held-out set. hero-sync lifts the block and fails any hero, Try, final or Who example the guard would refuse.
+
+**Truth and copy (marketing-1/3/4/5/6/7/8/9/10/11, uiux-2, founder-2/3)**
+- FAQ "Is it just AI writing?": "Your words, tightened, not new writing. Sharpen cuts fluff, moves the point up front and swaps a wordy phrase for a plain one. It never adds a claim, and a check throws out any version that changes a number, a name, a negation or a hedge. In the app, Claude makes that edit, and this demo runs on your device, without Claude. Rewrites in your voice and Pro’s reply drafts use Claude too, only when you ask, and nothing goes out until you send it." The claude_try.py sentence is kept verbatim, and "Same rules here" is gone. Swapped words are not marked in the demo; the FAQ now says swaps happen.
+- "Will it sound like me?": "Learning your voice uses 5 rewrites, once." The same sentence sits under the Free card's "20 rewrites in your voice a month" (in the expanded list on phones).
+- Who's trader row is a real edit: "honestly i’m up 18% this month and it’s literally just from trading less" → "i’m up 18% this month. it’s just from trading less." (Cut 2 bits of fluff · Split into 2 beats, engine-verified). The engine now keeps "actually", so the marketing juror's draft became a one-fluff edit.
+- Results heading: "Know what landed. / And what to write next."
+- Studio has its own way in: "Start with Studio →" after the price fact (a text link at the end of the client fact on phones). It opens the sheet on Studio, yearly picked, with the plan and billing pills, whatever the pricing toggle says (`data-bill="y"`).
+- Pro's bullet is split: "A ping when a post takes off" and "Replies drafted in your voice as they come in".
+- "Another take · n/m" in the Try box and the final. The clean starter is "Already sharp". Wherever the page writes its own clean copy it says "Already tight. Nothing to cut without changing what you said." (the engine now uses the same line).
+- The short cancel line at every width, on a 70ch measure: "Cancel anytime: a yearly plan runs to the end of the year you paid for." with "More than 8 clients? Talk to us" under it from 761px up.
+- Who's Try buttons point up (`#i-top`), toward the Try box.
+
+**UI/UX**
+- uiux-3: phones show each persona's struck draft on one line above the sharpened one. It ends at a whole word with its own "…" (`fitLine`), and screen readers get the whole draft. The Voice card keeps its context on phones: a one-row "heycape’s voice · Learned from 8 posts" header and a Never-says row (two strikes that fit whole). The tile's footnote steps aside there.
+- uiux-4: struck-word hit areas are at least 24px wide and 32px tall (`.tog::after`, insets with `min()`), drawn outside the text, so nothing shifts.
+- uiux-5: a starter or a persona's draft that replaces the visitor's own line offers "Replaced · Undo" for 5 seconds, like Clear.
+- uiux-6: the Try receipt never breaks inside a part (`sayTxt` binds each part with no-break spaces, so it breaks only at "·"). Replay is icon-only at ≤760. The Learning cell and the receipt are balanced.
+- uiux-7 / web-9: Who hides handles at 901–1099, so no name is cut.
+
+**Web**
+- web-2: no unit splits ("20 a month", "250 on Pro", "500 per client", "8 clients", "($96 month to month)", "paid for").
+- web-3: at ≥1200 the post pane is 1.3× the draft pane, so the Founder line sets in two lines. The window body dropped from 400 to 370px at 1440, and the draft pane's band went from about 80–120px to 17–80px (composer room under a two-line draft).
+- web-4: the Studio queue ends each row at a whole word with its own "…" (`fitLine`, at every width and client).
+- web-6: on phones the Try box holds the tallest starter's height (measured from a hidden copy), the chip row keeps its place when empty, and the starters each fit two lines at 360. The tile no longer moves between starters at 360–430. At ≥1100 the feed previews cap at 470px, so a tall Try tile leaves the spare height below Previews' note.
+- web-7: Trust's rows keep their natural height at ≥1200, with the spare height above the rules.
+- web-8: the night backdrop gets the same blur and grade as the morning one.
+- web-5 / first tap: once core.js loads, its warm steps run one per idle callback (each waits for idle time). Then the Try default and the five starters are worked out ahead into a small memo (the page's own handle on HWCore; everything else is HWCore's own). A touch on Try, the final or Who pauses the warm-up for 3 seconds. A starter skips the typing-state paint and the second frame wait.
+
+**Brand**
+- brand-1: on phones the section heads are `clamp(32px,9vw,36px)` (35px at 390 against the H1's 42.6px). The final's `.xl` keeps its size.
+- brand-2: the hook-h in `#wm` (nav, footer and giant wordmark), legal.html and `assets/brand/afterglow-wordmark*.svg` is now one filled path built on Inter's own h outline in "worthy": the same stem, notched shoulder and arch. Only the right leg is custom, a U hook ending in a flat cut. The app icon (`#hw`, `#hk-h`, the 180px PNG) and the OG card keep the stroke hook-h for now.
+- brand-3: Lena's cafe frame gets its own grade (saturate .8, contrast 1.08, brightness .72) and a soft vignette in Studio. Every Studio photo carries the 5% grain.
+- brand-4: the hero receipt accounts for every struck word. "Cut" lists the fluff chips. Then "Split at" (a beat split) or "Reworded" lists the move's plain strikes, e.g. "Cut [just wanted to share that] [honestly] Split at [and]". cutNote is lifted by hero-sync.
+
+**Skipped**
+- Engine: founder's broken splits and IMO, marketing-2, marketing-3's engine strings, uiux's "Series A is closed", and web-5's sharpen-only bundle. The page guard covers the broken lines' display.
+- uiux-2's marking of swapped words in the cards (optional in FIX7). The FAQ now says Sharpen swaps wordy phrases.
+- marketing-4's optional heading "…newsletters, clients."
+- The OG card and the app icon still use the stroke hook-h (see brand-2).
+
+**Numbers (final build, against core.js of 2026-11-15 09:54)**: screens 9.90 at 390 (budget 10.0), 10.47 at 360 (budget 10.5), 9.33 at 768, 8.65 at 1440. Hero post bottom 766 at 1440×900 and 734 at 1280×800. The Try tile is 739px at 390 and 713px at 360 for the default and all five starters. First tap on a 4x-throttled 390 phone (`r86/fix7/tap.js`): a starter after warm-up lands in 87–105ms with no long task (click event 72–96ms). A typed line takes about 150ms, about 105ms of it in sharpenLine. During warm-up a tap can wait on one engine warm step of 430–775ms at 4x, which only core.js can split. `check.js home` and `legal` ok:true, CLS 0 at 15 widths from 360 to 1920, no overflow and no heading over two lines from 320 to 1920 (`sweep.js`). `trytest`, `sheettest`, `p6test` and the new `r86/fix7/p7test.js` (1440, 390) pass. claude_try.py still patches. hero-sync passes, run last.

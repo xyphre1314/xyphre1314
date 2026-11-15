@@ -122,5 +122,5 @@ test('juror 5, hook-12: the colon case, the "!", the sarcastic echo and a test l
   for (const t of ['Love waking up to -40% on my bags. Really love that for me.', 'Love when a client says "make it pop". Really love that.']) assert.equal(L(t), t);
   for (const t of ['asdf test test', 'qwerty', 'test test 123']) { const R = S(t); assert.equal(R.state, 'thin', t); assert.equal(R.thin, 'test', t); assert.equal(R.why, 'This reads like a test, not a post. Paste a first line you’d really post.', t); }
   /* placeholder text and a word said five times keep their own message */
-  assert.equal(S('the the the the the').thin, 'sentence'); assert.equal(S('lorem ipsum dolor sit amet').thin, 'sentence');
+  assert.equal(S('the the the the the').thin, 'sentence'); assert.equal(S('lorem ipsum dolor sit amet').thin, 'test'); /* v4.1 (hook4-4): placeholder text reads as a test */
 });
