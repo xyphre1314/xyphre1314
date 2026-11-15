@@ -158,6 +158,9 @@ p{margin:0}
 }
 .tog:focus-visible{outline-offset:1px}
 .tog.kept{text-decoration:underline dotted rgba(247,248,248,.45);text-decoration-thickness:1px;text-underline-offset:.3em}
+/* a mark the line keeps (a frame like "Not to brag, but", or a marked word a sharpened version left in) wears the same kept
+   underline: never the ember squiggle, which means fluff, and never a strike */
+.held{text-decoration:underline dotted rgba(247,248,248,.45);text-decoration-thickness:1px;text-underline-offset:.3em;text-decoration-skip-ink:none}
 
 /* ---------- surfaces ---------- */
 .glass{position:relative;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.042),rgba(255,255,255,.016) 60%,rgba(255,255,255,.012));
@@ -488,6 +491,7 @@ html:not(.motion) #pf-go{display:none}
 .ed.more{-webkit-mask-image:linear-gradient(#000 calc(100% - 1.5em),rgba(0,0,0,.15));mask-image:linear-gradient(#000 calc(100% - 1.5em),rgba(0,0,0,.15))}
 .ed-mirror mark{background:transparent;color:transparent;text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.28em;text-decoration-skip-ink:none}
 .ed-mirror mark.x{text-decoration:none}
+.ed-mirror mark.held{text-decoration:underline dotted rgba(247,248,248,.45);text-decoration-thickness:1px;text-underline-offset:.3em}
 /* after Sharpen the mirror carries the text, so a cut word can dim and turn into a put-back toggle */
 .ed-mirror.struck mark.c{background:linear-gradient(rgba(247,248,248,.62),rgba(247,248,248,.62)) 0 56%/100% max(1.5px,.07em) no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .try-c.done .ed-mirror{z-index:2;color:var(--x-ink)}
@@ -498,7 +502,7 @@ html:not(.motion) #pf-go{display:none}
 .ed-mirror mark.back{background:linear-gradient(rgba(247,248,248,.62),rgba(247,248,248,.62)) 0 56%/0% max(1.5px,.07em) no-repeat}
 .motion .ed-mirror.struck.anim mark.c{animation:strike .3s var(--ease-io) calc(var(--k,0) * 90ms) both}
 .motion .ed-mirror mark.back{animation:unstrike .25s var(--ease-io) both}
-.motion .try-c.intro .ed-mirror mark:not(.x){animation:squig .4s var(--ease) calc(var(--k,0) * 90ms) both}
+.motion .try-c.intro .ed-mirror mark:not(.x):not(.held){animation:squig .4s var(--ease) calc(var(--k,0) * 90ms) both}
 .ed-ta{position:relative;display:block;field-sizing:content;background:transparent;color:var(--x-ink);resize:none;outline:0;overflow-y:auto;min-height:2.9em;caret-color:var(--ink);border-radius:0;scrollbar-width:none}
 .ed-ta::placeholder{color:var(--x-mute)}
 .flags{margin:12px 0 0 52px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:32px;font-size:14px;color:var(--x-mute)}
@@ -510,6 +514,8 @@ html:not(.motion) #pf-go{display:none}
 .flags .hint{display:inline-flex;align-items:center;gap:7px;color:var(--x-ink-2)}
 .flags .hint .ico{width:14px;height:14px;color:var(--x-mute)}
 .flags .chp{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;font-size:14px;font-weight:500;color:var(--x-ink);box-shadow:inset 0 0 0 1px var(--x-line);text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.28em;text-decoration-skip-ink:none}
+.flags button.held,.flags .chp.held{text-decoration:underline dotted rgba(247,248,248,.45);text-decoration-thickness:1px;text-underline-offset:.3em}
+.flags .k~.k{margin-left:6px}
 .flags .xn,.flags .more{color:var(--x-mute);text-decoration:none;display:inline-block}
 .flags .more{font-size:13px;margin-left:2px}
 .undo{margin-right:auto;font-size:13px;color:var(--x-ink-2);white-space:nowrap}
@@ -1078,6 +1084,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .fin-mirror{color:transparent;overflow:hidden;pointer-events:none;left:22px;right:126px;width:auto;padding:0}
 .fin-mirror span{display:inline-block;white-space:pre}
 .fin-mirror mark{background:transparent;color:transparent;text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.28em;text-decoration-skip-ink:none}
+.fin-mirror mark.held{text-decoration:underline dotted rgba(247,248,248,.45);text-decoration-thickness:1px;text-underline-offset:.3em}
 .fin-in{background:transparent;color:var(--x-ink);outline:0;caret-color:var(--ink);border-radius:999px}
 .fin-field{--fpl:22px;--fpr:126px;--a0:#000;--a1:#000}
 .fin-field.ovl{--a0:transparent}
@@ -2246,13 +2253,15 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
   /* ---------- the engine loads when it's needed: as the Try tile comes near, or on a first touch of Try, the final or Who ---------- */
   let coreP = null, warmed = false;
-  const idle = (fn, t) => (window.requestIdleCallback || (f => setTimeout(f, 200)))(fn, { timeout: t || 3000 });
-  /* the engine's first call compiles its rules (a few hundred ms): do that while the page is idle, never on a tap */
-  /* the engine compiles its regexes on first use; warm it one step per idle callback (each step is short), so no warm-up
-     task blocks a tap. An engine without steps gets one throwaway call */
-  /* the engine compiles its rules on first use. Once it loads (the Try tile is near), its warm-up runs in idle time, as many
-     short steps per idle callback as fit, then the lines a first tap is most likely to send (the Try default and the starters) are worked out ahead, so
-     that tap only renders. A touch on Try, the final or Who pauses the warm-up for a few seconds, so no step competes with the visitor */
+  /* an idle period, or where a browser has none (Safari), the moment after a frame, with an 8 ms deadline: either way a deadline */
+  const idle = (fn, t) => window.requestIdleCallback ? requestIdleCallback(fn, { timeout: t || 3000 })
+    : requestAnimationFrame(() => setTimeout(() => { const end = performance.now() + 8; fn({ didTimeout: false, timeRemaining: () => Math.max(0, end - performance.now()) }); }, 0));
+  /* the engine compiles its rules on first use. Once it loads (the Try tile is near), its warm-up runs in idle time: the engine
+     hands over ~1,800 small steps (warmSteps() only lists them; it runs nothing), then the lines a first tap is most likely to send
+     (the Try default and the starters) are worked out ahead, so that tap only renders. Each idle callback runs as many steps as
+     its deadline has room for, keeping headroom of 1.5x what a step has cost lately, so a long step only starts in a long idle
+     period, and it stops when input is pending. A touch on Try, the final or Who pauses the warm-up for a few seconds, so no step
+     competes with the visitor. An engine without steps gets one throwaway call */
   /* and it only runs while the Try tile (or the final line) is near the screen: scrolled away, it parks until they're back */
   let warmHold = 0, warmNear = true, warmPark = null;
   const memo = new Map(), mk = (t, o) => t + '\u0001' + ((o && o.keep) || []).join('\u0001');
@@ -2262,23 +2271,33 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     HW = Object.create(H); HW.sharpenLine = (t, o) => { const k = mk(t, o); let r = memo.get(k); if (!r) { r = H.sharpenLine(t, o); if (memo.size > 60) memo.clear(); memo.set(k, r); } return r; }; return HW; };
   const warmCore = H => {
     if (warmed || !H) return; warmed = true;
-    const W2 = wrap(H);
-    let steps = null; try { steps = H.SHARPEN && H.SHARPEN.warmSteps ? H.SHARPEN.warmSteps() : null; } catch (e) { }
-    const jobs = (steps || [() => H.sharpenLine('warm up')]).concat([TRY0, ...STARTERS].map(t => () => W2.sharpenLine(t, { keep: [] })));
-    let i = 0; const next = d => { if (i >= jobs.length) return; if (!warmNear) { warmPark = () => idle(next, 2000); return; }
+    const W2 = wrap(H), sch = navigator.scheduling, pending = () => !!(sch && sch.isInputPending && sch.isInputPending());
+    /* est: what a step has cost lately (a decaying max), so a callback only starts a step it has room for */
+    let jobs = null, i = 0, est = 1;
+    const next = d => {
+      /* the step list is built in the first idle callback, never in the script's onload */
+      if (!jobs) { let steps = null; try { steps = H.SHARPEN && H.SHARPEN.warmSteps ? H.SHARPEN.warmSteps() : null; } catch (e) { }
+        jobs = (steps || [() => H.sharpenLine('warm up')]).concat([TRY0, ...STARTERS].map(t => () => W2.sharpenLine(t, { keep: [] }))); }
+      if (i >= jobs.length) return; if (!warmNear) { warmPark = () => idle(next, 2000); return; }
       const wait = warmHold - performance.now(); if (wait > 0) { setTimeout(() => idle(next, 2000), wait); return; }
-      if (d && d.timeRemaining && d.timeRemaining() < 8 && !d.didTimeout) { idle(next, 2000); return; }
-      /* as many steps as this idle period has room for (each is short; the engine hands over hundreds): a timed-out callback runs one */
-      do { try { jobs[i++](); } catch (e) { } } while (i < jobs.length && warmNear && warmHold <= performance.now() && d && d.timeRemaining && !d.didTimeout && d.timeRemaining() > 16);
+      const room = () => (d && d.timeRemaining ? d.timeRemaining() : 0), timed = !d || d.didTimeout;
+      /* the first step needs room for itself (a long one waits for a long idle period); a timed-out callback runs exactly one.
+         A skipped period eases the estimate, so one long step never stalls the warm-up through a run of short frames */
+      if (!timed && room() < Math.min(est * 1.5 + 2, 40)) { est *= .85; idle(next, 2000); return; }
+      let k = 0;
+      while (i < jobs.length && warmNear && warmHold <= performance.now() && !(k && pending()) && (timed ? !k : !k || room() > est * 1.5 + 2)) {
+        const t = performance.now(); try { jobs[i++](); } catch (e) { } k++; est = Math.max(performance.now() - t, est * .75);
+      }
       idle(next, 2000); };
     if ('IntersectionObserver' in window) { const near = new Set(); const wo = new IntersectionObserver(es => { es.forEach(x => { if (x.isIntersecting) near.add(x.target); else near.delete(x.target); });
-      warmNear = near.size > 0; if (warmNear && warmPark) { const f = warmPark; warmPark = null; f(); } if (i >= jobs.length) wo.disconnect(); }, { rootMargin: '600px 0px 600px 0px' });
+      warmNear = near.size > 0; if (warmNear && warmPark) { const f = warmPark; warmPark = null; f(); } if (jobs && i >= jobs.length) wo.disconnect(); }, { rootMargin: '600px 0px 600px 0px' });
       ['#sharpen', '#start'].forEach(s => wo.observe($(s))); }
     idle(next, 2000);
   };
   const loadCore = () => coreP || (coreP = new Promise(res => {
     if (window.HWCore) return res(wrap(window.HWCore));
-    const s = document.createElement('script'); s.src = '../../core.js'; s.async = true;
+    /* the Sharpen-only bundle: the same window.HWCore, sharpenLine and softMarks as core.js, byte for byte, a third smaller */
+    const s = document.createElement('script'); s.src = '../../sharpen.js'; s.async = true;
     s.onload = () => { res(wrap(window.HWCore) || null); warmCore(window.HWCore); }; s.onerror = () => res(null); document.head.append(s);
   }));
   /* one frame before the engine runs, so the tap's pressed state paints first and the tap itself stays fast */
@@ -2425,7 +2444,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
   /* ---------- the opening shot: four real one-tap results, picked by you, one play each ----------
      Every example is exactly what HWCore.sharpenLine returns for its draft: the line, the words cut (with their kind)
-     and the receipt. r86/fix/hero-sync.js checks them against core.js, and rewrites them when the engine changes. */
+     and the receipt. r86/fix/hero-sync.js checks them against the engine (sharpen.js is core.js's own Sharpen code), and rewrites them when it changes. */
   /* WHO-START */
   /* the Who tile: four kinds of poster, each a mini X post with its own engine-sharpened first line (fluff struck faintly above) */
   const WHO = [
@@ -2969,11 +2988,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }
   /* a version that opens on words the engine itself marked as fluff and left in (an opener cut, the run-up behind it kept) would
      contradict its own strike ("It now opens on “I wanted to share…”"): it isn't shown as sharpened. Words the writer put back
-     aren't marks, so a line that opens on one is theirs */
+     aren't marks, so a line that opens on one is theirs. A frame ("Not to brag, but") is a mark the engine keeps on purpose, and so
+     is one its own why says stays ("“I wanted to share” went, and “Some thoughts” stays: it tells people more is coming") */
   function gOpensMarked(R, v) {
-    const L = gNorm(v.line).replace(/^[^\p{L}\p{N}$]+/u, '');
+    const L = gNorm(v.line).replace(/^[^\p{L}\p{N}$]+/u, ''), stays = [...String(v.why || '').matchAll(/“([^”]+)” stays?\b/g)].map(x => gNorm(x[1]).trim());
     for (const m of R.marks || []) {
-      if ((v.cut || []).some(c => c.at && c.at[0] < m[1] && c.at[1] > m[0])) continue;
+      if (m[3] === 'frame' || (v.cut || []).some(c => c.at && c.at[0] < m[1] && c.at[1] > m[0])) continue;
+      if (stays.some(w => w && gNorm(R.draft.slice(m[0], m[1])).trim().startsWith(w))) continue;
       const w = gNorm(R.draft.slice(m[0], m[1])).trim(); if (w.length > 2 && L.startsWith(w)) return 'opens on a marked “' + w + '”';
     }
     return '';
@@ -3027,11 +3048,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* MARKUP-START */
   const lead = t => t.length - t.replace(/^\s+/, '').length;
   const flagged = (R, a, b) => (R.marks || []).some(m => a < m[1] && b > m[0]);
-  /* the struck draft: [{a, b, cut, fl, kept, w}] in draft offsets, from the version's cut list, the marks and the put-back words */
+  /* a mark the line keeps: a frame (the engine never cuts one), or any mark a sharpened version left in. It is drawn as kept */
+  const held = (R, m) => m[3] === 'frame' || R.state === 'sharp';
+  /* the struck draft: [{a, b, cut, fl, held, kept, w}] in draft offsets, from the version's cut list, the marks and the put-back words */
   function segments(R, v, keepL) {
     const S = [], over = (a, b) => S.some(x => a < x.b && b > x.a);
     (v.cut || []).forEach(c => { const [a, b] = c.at; S.push({ a, b, cut: true, fl: FLUFF(c.kind) && flagged(R, a, b), w: c.text }); });
-    (R.marks || []).forEach(m => { if (!over(m[0], m[1])) S.push({ a: m[0], b: m[1], cut: false, fl: true }); });
+    (R.marks || []).forEach(m => { if (!over(m[0], m[1])) { const h = held(R, m); S.push({ a: m[0], b: m[1], cut: false, fl: !h, held: h }); } });
     (keepL || []).forEach(w => {
       const re = new RegExp(`(?<![\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'giu');
       for (const m of R.draft.matchAll(re)) if (!over(m.index, m.index + m[0].length)) S.push({ a: m.index, b: m.index + m[0].length, kept: true, w });
@@ -3045,7 +3068,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const off = lead(t); let h = '', last = 0;
     const txt = s => s ? (done ? `<span aria-hidden="true">${esc(s)}</span>` : esc(s)) : '';
     S.forEach((x, k) => {
-      const a = x.a + off, b = x.b + off, cls = [x.cut ? 'c' : '', x.fl ? '' : 'x', done && (x.cut || x.kept) ? 'tog' : '', x.kept ? 'kept' : '', x.back ? 'back' : ''].filter(Boolean).join(' ');
+      const a = x.a + off, b = x.b + off, cls = [x.cut ? 'c' : '', x.fl ? '' : 'x', x.held ? 'held' : '', done && (x.cut || x.kept) ? 'tog' : '', x.kept ? 'kept' : '', x.back ? 'back' : ''].filter(Boolean).join(' ');
       h += txt(t.slice(last, a)) + `<mark${cls ? ` class="${cls}"` : ''}${done && (x.cut || x.kept) ? togAttrs(x) : ''} style="--k:${k}">${esc(t.slice(a, b))}</mark>`; last = b;
     });
     return h + (done ? `<span aria-hidden="true">${esc(t.slice(last))}&#8203;</span>` : esc(t.slice(last)) + '&#8203;');
@@ -3055,7 +3078,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const off = lead(raw); let h = '', last = 0;
     S.forEach(x => {
       const a = x.a + off, b = x.b + off, w = esc(raw.slice(a, b));
-      const inner = x.cut ? `<span class="cut tog"${togAttrs(x)}>${w}</span>` : x.kept ? `<span class="tog kept"${togAttrs(x)}>${w}</span>` : w;
+      const inner = x.cut ? `<span class="cut tog"${togAttrs(x)}>${w}</span>` : x.kept ? `<span class="tog kept"${togAttrs(x)}>${w}</span>` : x.held ? `<span class="held">${w}</span>` : w;
       h += nb(esc(raw.slice(last, a))) + (x.fl ? `<span class="fl">${inner}</span>` : inner); last = b;
     });
     return '<span class="sr">Draft: </span>' + h + nb(esc(raw.slice(last)));
@@ -3101,10 +3124,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the chip row: one chip per word (a repeat shows ×n), six at most. "Could cut" chips are suggestions, with no fluff lecture */
   function chips(t, M, label, plain) {
     const off = lead(t), seen = new Map();
-    M.forEach(m => { const w = t.slice(m[0] + off, m[1] + off), key = w.toLowerCase(); const e = seen.get(key); if (e) e.n++; else seen.set(key, { w, why: m[2], n: 1 }); });
-    const all = [...seen.values()], C = all.slice(0, 6), more = all.length - C.length;
-    flags.innerHTML = C.length ? `<span class="k">${label}</span>` + C.map((c, k) => plain ? `<span class="chp">${esc(c.w)}${c.n > 1 ? ` ×${c.n}` : ''}</span>`
-      : `<button type="button" data-k="${k}" aria-pressed="false" data-why="${esc(c.why)}">${esc(c.w)}${c.n > 1 ? `<span class="xn"> ×${c.n}</span>` : ''}</button>`).join('') + (more > 0 ? `<span class="more">+${more}</span>` : '') : '';
+    M.forEach(m => { const w = t.slice(m[0] + off, m[1] + off), key = w.toLowerCase(); const e = seen.get(key); if (e) e.n++; else seen.set(key, { w, why: m[2], n: 1, held: m[3] === 'frame' }); });
+    /* a frame the engine keeps is never "Could cut": it follows the suggestions under its own "Marked:", in the kept style */
+    const typing = label === 'Could cut:', all = typing ? [...seen.values()].sort((p, q) => p.held - q.held) : [...seen.values()], C = all.slice(0, 6), more = all.length - C.length;
+    let lab = '';
+    flags.innerHTML = C.length ? C.map((c, k) => { const L = typing && c.held ? 'Marked:' : label, head = L !== lab ? `<span class="k">${L}</span>` : ''; lab = L;
+      return head + (plain ? `<span class="chp${c.held ? ' held' : ''}">${esc(c.w)}${c.n > 1 ? ` ×${c.n}` : ''}</span>`
+        : `<button type="button"${c.held ? ' class="held"' : ''} data-k="${k}" aria-pressed="false" data-why="${esc(c.why)}">${esc(c.w)}${c.n > 1 ? `<span class="xn"> ×${c.n}</span>` : ''}</button>`); }).join('') + (more > 0 ? `<span class="more">+${more}</span>` : '') : '';
     if (C.length && !plain) showWhy(0); else why.textContent = '';
   }
   function showEmpty(msg) { outCard.hidden = true; outPh.hidden = true; outEmpty.hidden = false; outEmpty.textContent = msg; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; out.classList.remove('stale', 'hold'); tryLine = ''; }
@@ -3120,7 +3146,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (H) {
       const first = t.replace(/^\s+/, '').split('\n')[0].replace(/\s+$/, '');
       marks = (first && H.softMarks(first, keepT)) || [];
-      setMirror(mirrorHTML(t, marks.map(m => ({ a: m[0], b: m[1], fl: true })), false), false);
+      setMirror(mirrorHTML(t, marks.map(m => ({ a: m[0], b: m[1], fl: m[3] !== 'frame', held: m[3] === 'frame' })), false), false);
       chips(t, marks, 'Could cut:');
       if (!marks.length) why.textContent = '';
     } else { setMirror(esc(t) + '&#8203;', false); if (!pendingUp) { pendingUp = true; loadCore().then(() => { pendingUp = false; paint(); }); } }
@@ -3385,7 +3411,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const fpaint = () => {
     const H = E(), t = fi.value; if (!H) { fm.textContent = t; return; }
     const m = (t.trim() && H.softMarks(t.replace(/^\s+/, ''), keepF)) || [], off = lead(t);
-    let h = '', last = 0; m.forEach(x => { h += esc(t.slice(last, x[0] + off)) + `<mark>${esc(t.slice(x[0] + off, x[1] + off))}</mark>`; last = x[1] + off; });
+    let h = '', last = 0; m.forEach(x => { h += esc(t.slice(last, x[0] + off)) + `<mark${x[3] === 'frame' ? ' class="held"' : ''}>${esc(t.slice(x[0] + off, x[1] + off))}</mark>`; last = x[1] + off; });
     fm.innerHTML = h + esc(t.slice(last)); fmir.scrollLeft = fi.scrollLeft;
     if (!sayT && !t.trim()) fn.textContent = '';
   };

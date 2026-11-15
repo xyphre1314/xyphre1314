@@ -1,7 +1,8 @@
 // r86 hero-sync: every example the homepage shows as "sharpened in one tap" must be exactly what the engine returns.
 // Usage:  node hero-sync.js            -> checks, prints every mismatch, exits 1 if any
 //         node hero-sync.js --write    -> rewrites the stale fields in work/src.html (then run: cd work && python3 build.py)
-// It loads /home/user/xyphre1314/hookworthy/core.js in Node, lifts EX, draftHTML, cutNote and keptLine out of the page
+// It loads the engine the page itself loads (loadCore's script: sharpen.js since pass 10, else core.js) from
+// /home/user/xyphre1314/hookworthy in Node, lifts EX, draftHTML, cutNote and keptLine out of the page
 // source (between their START/END markers), and runs HWCore.sharpenLine on:
 //   - the four hero examples (EX): line, cut words + kinds, receipt (say) and the Kept row;
 //   - the hero's static first frame (#pf-draft, #pf-sharp, #pf-move, #pf-cut, #pf-kept) against EX[0];
@@ -18,12 +19,19 @@
 // default's struck mirror and the final's struck draft are rebuilt by --write with the page's own markup helpers (MARKUP block).
 //
 const fs = require('fs'), path = require('path');
-const CORE = '/home/user/xyphre1314/hookworthy/core.js';
+const ROOT = '/home/user/xyphre1314/hookworthy';
 const SRC = path.join(__dirname, 'work/src.html'), TAIL = path.join(__dirname, 'work/tail.txt');
-const H = require(CORE);
-if (!H.sharpenLine) { console.error('core.js has no sharpenLine yet'); process.exit(2); }
 const WRITE = process.argv.includes('--write');
 let src = fs.readFileSync(SRC, 'utf8'), tail = fs.readFileSync(TAIL, 'utf8');
+/* the engine the page loads: loadCore's s.src ('../../sharpen.js' or '../../core.js') */
+const ENG = ((src.match(/s\.src = '\.\.\/\.\.\/((?:sharpen|core)\.js)'/) || [])[1]) || 'core.js';
+const CORE = path.join(ROOT, ENG);
+const H = require(CORE);
+if (!H.sharpenLine) { console.error(ENG + ' has no sharpenLine yet'); process.exit(2); }
+console.log('engine:', ENG);
+/* the app runs core.js and the page its Sharpen-only bundle: every draft checked here must get the same result from both */
+const APP = ENG === 'core.js' ? null : require(path.join(ROOT, 'core.js')), split = [];
+const sharpenLine = (t, o) => { const R = H.sharpenLine(t, o); if (APP) { const A = APP.sharpenLine(t, o); if (JSON.stringify(A) !== JSON.stringify(R)) split.push(t); } return R; };
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
@@ -33,7 +41,7 @@ const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 /* every example must also pass the page's own output guard (GUARD block): a line it would refuse is never shown as sharpened */
 const whole = (where, R) => { const w = R.state === 'sharp' ? gWhole(R.line, R.draft) || gOpensMarked(R, R) : ''; if (w) bad.push(`${where}: the page guard refuses this line (${w}); pick another draft`); };
-const fromEngine = d => { const R = H.sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept) : '' }; };
+const fromEngine = d => { const R = sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept) : '' }; };
 
 /* 1. the four hero examples */
 const fixed = EX.map((e, i) => {
@@ -135,7 +143,7 @@ const wfixed = WHO.map((w, i) => {
   const cap = p => p[0].toUpperCase() + p.slice(1);
   for (const p of words) {
     const ctx = [`${cap(p)}: sol flipped eth in daily volume`, `${p}, sol flipped eth in daily volume`, `${cap(p)}! sol flipped eth in daily volume`, `sol flipped eth in daily volume. ${cap(p)}.`];
-    const miss = ctx.filter(t => { const R = H.sharpenLine(t); return !(R.state === 'sharp' && (R.cut || []).some(c => c.text.toLowerCase().replace(/[^a-z' ]/g, '').trim() === p.toLowerCase())); });
+    const miss = ctx.filter(t => { const R = sharpenLine(t); return !(R.state === 'sharp' && (R.cut || []).some(c => c.text.toLowerCase().replace(/[^a-z' ]/g, '').trim() === p.toLowerCase())); });
     /* a phrase has a natural place (an opener, or a closer): one unnatural form may stay, never two */
     if (miss.length > 1) bad.push(`Voice never-say "${p}": the demo keeps it in ${miss.length} of ${ctx.length} lines (e.g. "${miss[0]}"); pick a phrase the engine cuts`);
     else if (miss.length) console.log(`note: Voice never-say "${p}" stays in "${miss[0]}" (its other ${ctx.length - 1} forms are cut)`);
@@ -152,5 +160,8 @@ if (WRITE) {
   fs.writeFileSync(SRC, src); fs.writeFileSync(TAIL, tail);
   console.log('wrote', SRC, 'and', TAIL);
 }
+/* sharpen.js is generated from core.js (node tools/build-sharpen.mjs): a draft they disagree on means it is stale */
+if (split.length) console.log(`warning: ${ENG} and core.js disagree on ${split.length} draft(s) here, e.g. "${split[0]}": sharpen.js is stale (node tools/build-sharpen.mjs)`);
+else if (APP) console.log(`${ENG} and core.js agree on every draft checked`);
 if (bad.length) { console.log(`${bad.length} mismatch(es):\n- ` + bad.join('\n- ')); process.exit(WRITE ? 0 : 1); }
-console.log('hero-sync: every example matches HWCore.sharpenLine');
+console.log(`hero-sync: every example matches HWCore.sharpenLine (${ENG})`);
