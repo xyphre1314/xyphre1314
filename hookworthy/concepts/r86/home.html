@@ -112,8 +112,9 @@ p{margin:0}
 .ph.jr{--i:0;--cw:200%;--cx:-21.25%;--cy:-8.79%}
 .qpost .ph.jr{--cw:470.6%;--cx:-19.4%;--cy:-10.55%}
 .media .ph.crop img{filter:saturate(.85) contrast(1.06) brightness(.86)}
-/* Lena's table (frame 3): cropped in to the cup and her notebook (no plant, no window light), for her evening post */
-.ph.cafe{--i:3;--cw:156.9%;--cx:1.875%;--cy:-.53%}
+/* Lena's table (frame 3): cropped in to the cup and the top of her open notebook (no plant, no phone, no window light), for her
+   evening post: the region x 112-442, from y 55 */
+.ph.cafe{--i:3;--cw:242.4%;--cx:15.375%;--cy:-1.934%}
 /* media radius: 16px inside X cards (X's own), 12px inside the phone, 8px for the small thumbnail */
 .media{position:relative;margin-top:10px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--x-line)}
 .media .ph{border-radius:0}
@@ -2319,9 +2320,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }));
   /* a tile's set-up (measuring, fitting lines, locking heights) waits until the tile comes near, then runs in an idle moment, so the
      page's start-up never blocks the opening shot. It returns its runner: an interaction that needs the set-up calls it first */
-  const near = (el, fn, m) => { let done = false; const run = () => { if (!done) { done = true; fn(); } };
+  /* a set-up that can change a tile's height (now) runs as soon as the tile is within m px, well before it can be seen */
+  const near = (el, fn, m, now) => { let done = false; const run = () => { if (!done) { done = true; fn(); } };
     if (!el || !('IntersectionObserver' in window)) { idle(run, 1500); return run; }
-    const o = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting)) { o.disconnect(); idle(run, 300); } }, { rootMargin: (m || 700) + 'px 0px' }); o.observe(el); return run; };
+    const o = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting)) { o.disconnect(); if (now) run(); else idle(run, 300); } }, { rootMargin: (m || 700) + 'px 0px' }); o.observe(el); return run; };
   /* one frame before the engine runs, so the tap's pressed state paints first and the tap itself stays fast */
   const frame = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
   const E = () => (window.HWCore && window.HWCore.sharpenLine ? wrap(window.HWCore) : null);
@@ -2891,10 +2893,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const fitStudio = () => { $$('#st-q .qs li > span').forEach(fitRow); sizeStudio(); };
   /* Studio is set up as it comes near (or when someone reaches for it first: a pick, the hero's "Send to Marco") */
   const stInit = near($('#studio'), () => { stReady = true; fitStudio(); if (document.fonts) document.fonts.ready.then(fitStudio);
-    let fw = innerWidth, fr = 0; addEventListener('resize', () => { if (innerWidth === fw) return; fw = innerWidth; cancelAnimationFrame(fr); fr = requestAnimationFrame(fitStudio); }); });
+    let fw = innerWidth, fr = 0; addEventListener('resize', () => { if (innerWidth === fw) return; fw = innerWidth; cancelAnimationFrame(fr); fr = requestAnimationFrame(fitStudio); }); }, 1200, true);
   /* the Who tile's struck drafts are fitted to their one line as the tile comes near */
   near($('#who'), () => { fitWho(); if (document.fonts) document.fonts.ready.then(fitWho);
-    let ww = innerWidth, wr = 0; addEventListener('resize', () => { if (innerWidth === ww) return; ww = innerWidth; cancelAnimationFrame(wr); wr = requestAnimationFrame(fitWho); }); });
+    let ww = innerWidth, wr = 0; addEventListener('resize', () => { if (innerWidth === ww) return; ww = innerWidth; cancelAnimationFrame(wr); wr = requestAnimationFrame(fitWho); }); }, 1000, true);
   /* the hero's "Send to Marco": his review link, with his yes as the next tap */
   function toClient(i) {
     stInit(); client(i, true);
@@ -3030,7 +3032,25 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   });
   const gSubseq = (a, b) => { let k = 0; for (const w of b) { if (w === a[k]) k++; if (k === a.length) return true; } return !a.length; };
   const gSents = t => String(t).split(/(?<=[.!?])\s+(?=\S)/).map(s => s.trim()).filter(Boolean);
+  /* the engine's own v4.5 hard rejects, counted against the draft as the engine counts them (its regexes, copied verbatim): an
+     "it's/there's/here's" after a verb or a preposition ("googling it's a skill"), a condition a split left with no main clause
+     (", so if you're just starting out."), an opinion verb heading an order ("I think basically never assume…") and a sentence
+     that newly opens on a bare thinking verb ("Think most…"). The page refuses what the engine refuses */
+  const G_CWOFF = /(?<=(?<![\p{L}\p{N}'’])(?:(?!(?:\p{L}*thing|morning|evening|spring|king|ring|wing|string|sing|ceiling|feeling|meeting|during|wedding|darling|sibling)(?![\p{L}\p{N}]))\p{L}{2,}ing|do|does|did|done|make|makes|made|fix|fixes|fixed|use|uses|used|get|gets|got|keep|keeps|kept|try|tries|tried|love|loves|loved|hate|hates|hated|want|wants|wanted|need|needs|needed|build|builds|built|ship|ships|shipped|google|googled|call|calls|called|ignore|ignored|skip|skipped|buy|bought|sell|sold|post|posted|share|shared|launch|launched|take|took|give|gave|put|send|sent|leave|left|run|ran|watch|watched|of|in|on|at|for|with|from|about|into|onto|over|under|by|without|through|to)\s+)(?:it|there|here)['’]s(?![\p{L}\p{N}])/giu;
+  const G_CONDCUT = /,\s+(?:(?:and|but|so|or)\s+)?(?:if|when|whenever|once|unless|until|even if)\s+[^,.!?;:—–]{3,80}(?:[.!?]+(?=\s|$)|$)/giu;
+  const G_OPIMP = /\b(?:i|we)\s+(?:(?:really|honestly|genuinely|truly|personally|actually|just)\s+)?(?:think|believe|reckon|guess|feel like)\s+(?:that\s+)?(?:(?:basically|just|simply|always|never|really|actually|literally|probably|definitely|absolutely|not)\s+)+([a-z]+)\b/gi;
+  const G_THINK0 = /(?:^|(?<=[.!?]["”’)]*\s{1,3}))\P{L}{0,3}(?:think|thought|believe|reckon|suspect|doubt|suppose)\s+(?!about\b|of\b|twice\b|again\b|big\b|different(?:ly)?\b|outside\b|before\b|for\b|it\s+through\b)/giu;
+  const gCnt = (x, re) => (String(x).match(re) || []).length, gLc = t => String(t).toLowerCase().replace(/’/g, "'");
+  const gOpImp = z => [...String(z).matchAll(G_OPIMP)].filter(m => { const w = gLc(m[1]); return !/^(?:i|you|we|they|he|she|it|this|that|these|those|there|here|people|most|many|everyone|everybody|nobody|someone|anyone|the|a|an|my|our|your|their|his|her|its|some|any|all|no|every|each|one|so|too|again|yet|enough|sure|true|right|wrong|good|bad|worth|about)$/.test(w) && !/(?:s|ed|ing|ly|er|est)$/.test(w); }).length;
+  function gHard(line, draft) {
+    if (gCnt(line, G_CWOFF) > gCnt(draft, G_CWOFF)) return 'contraction off its subject';
+    if (gCnt(line, G_CONDCUT) > gCnt(draft, G_CONDCUT)) return 'condition cut off';
+    if (gOpImp(line) > gOpImp(draft)) return 'opinion verb before an order';
+    if (gCnt(line, G_THINK0) > gCnt(draft, G_THINK0)) return 'thinking verb lost its subject';
+    return '';
+  }
   function gWhole(line, draft) {
+    { const h = gHard(line, draft); if (h) return h; }
     const D = gWords(draft), DS = new Set(D.map(gStem)), DP = new Set(D.filter(w => w.length >= 5).map(w => w.slice(0, 5))), Dn = new Set(gSents(draft).map(s => gWords(s).join(' ')));
     const dn = gWords(draft).join(' ');
     /* a word from nowhere (a new form of the writer's own word, "sunset" to "sunsetting", is theirs) */
@@ -3086,7 +3106,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the engine did want a cut here, so the page never calls the line "tight": the words it would have cut stay marked */
   const asWritten = R => { const M = (R.marks || []).length ? R.marks : (R.cut || []).filter(c => FLUFF(c.kind) && c.at).map(c => [c.at[0], c.at[1], '']);
     return { ...R, marks: M, state: M.length ? 'unsure' : 'clean', line: R.draft, cut: [], alts: [], say: 'Kept as written',
-      why: M.length ? `Marked, not cut: cutting ${M.length > 1 ? 'them' : 'it'} would change what you said. Your call.` : 'Cutting here would change what you said.' }; };
+      why: M.length ? `Marked, not cut: it would change what you said. Your call.` : 'Cutting here would change what you said.' }; };
   /* GUARD-END */
   /* the version on show: the best line, or one of its alternatives */
   const verOf = (R, i) => R.state !== 'sharp' ? { line: R.line, say: R.say, why: R.why, cut: [] } : i > 0 && R.alts[i - 1] ? R.alts[i - 1] : { line: R.line, say: R.say, why: R.why, cut: R.cut };
@@ -3113,7 +3133,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
     /* a line the engine marked but kept is "Kept as written", never "tight" */
     const say = sayTxt(st === 'unsure' ? 'Kept as written' : R.say || 'Kept as written');
-    if (st === 'unsure' && /\btight\b/i.test(R.why || '')) R = { ...R, why: 'Marked, not cut: cutting it would change what you said. Your call.' };
+    if (st === 'unsure' && /\btight\b/i.test(R.why || '')) R = { ...R, why: 'Marked, not cut: it would change what you said. Your call.' };
     /* nothing cut and nothing put back: the way on is a rewrite in your voice (not for a two-word post like "gm") */
     if ((st === 'clean' || st === 'unsure') && !keepL.length) return { say, k: '', why: esc(R.why) + (words >= 3 ? `${R.why ? ' ' : ''}Want it to lead harder? ${REWRITE}` : ''), kept: '', keep: false, cta: 'Start free', status: say };
     return { say, k: '', why: esc(R.why), kept: '', keep: true, cta: keepL.length ? 'Keep it. Start free' : 'Start free', status: say };
@@ -3596,7 +3616,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     edBox.removeChild(c); ta.style.minHeight = Math.ceil(h) + 'px';
   };
   let tryW = 0; const lockTry = () => { if (innerWidth === tryW) return; tryW = innerWidth; lockTa(); if (!narrow()) { out.style.minHeight = ''; return; } if (touched) return; out.style.minHeight = ''; out.style.minHeight = out.offsetHeight + 'px'; };
-  near($('#sharpen'), () => { lockTry(); addEventListener('resize', lockTry); stOn = true; stTail(); if (document.fonts) document.fonts.ready.then(stTail); });
+  near($('#sharpen'), () => { lockTry(); addEventListener('resize', lockTry); stOn = true; stTail(); if (document.fonts) document.fonts.ready.then(stTail); }, 1000, true);
 
   /* the pointer light: created on the first mouse visit, compositor-only */
   if (matchMedia('(hover:hover) and (pointer:fine)').matches) $$('.tile').forEach(t => {
