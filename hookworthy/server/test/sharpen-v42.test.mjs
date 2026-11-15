@@ -86,7 +86,10 @@ test('v4.2, P0 sweep: 100 tempting lines, every mode, no version trips a hard gu
   assert.match(L('That\'s exactly who I really am at my core.'), /who I really am/);
   assert.doesNotMatch(L("A lot of people have been asking me which mic I use, so here are the 3 I'd buy again:"), /^Here are the 3/);
   assert.doesNotMatch(L("Here are a few things I've learned from running a newsletter for 3 years."), /^Things\b/);
-  for (const t of ['In this post I want to share how I paid off $40k of debt in 18 months.', 'I wanted to take a moment to share some thoughts on why consistency matters.']) assert.doesNotMatch(L(t), /:$/, t);
+  assert.doesNotMatch(L('In this post I want to share how I paid off $40k of debt in 18 months.'), /:$/);
+  /* v4.3 (round-8 uiux-1): "some thoughts on…" is the pointer itself, so it stays and leads, with the colon the Claude prompt's
+     own example gives a one-liner ("Some of my key takeaways from SaaStr last week:") */
+  assert.equal(L('I wanted to take a moment to share some thoughts on why consistency matters.'), 'Some thoughts on why consistency matters:');
 });
 
 test('v4.2, hook41-3: receipts say only what is true', () => {

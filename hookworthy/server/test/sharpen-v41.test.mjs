@@ -18,7 +18,8 @@ const core = createRequire(import.meta.url)('../../core.js');
 const S = (t, o) => core.sharpenLine(t, o), L = (t, o) => S(t, o).line;
 const hard = core.SHARPEN._dbg.hard;
 const versions = r => [r.line, ...(r.alts || []).map(a => a.line)].filter(l => l !== r.draft);
-const CLEAN = 'Already tight. Cutting more would change what you said.';
+/* v4.3 (round-8 founder-1, page pass 9): the softer clean copy, still only what the engine knows */
+const CLEAN = 'Nothing here reads as filler, so it stays as you wrote it.';
 
 test('v4.1, hook4-1: every new hard guard rejects what it names and passes its clean twin', () => {
   const W37 = 'So after a lot of back and forth, we\'ve decided to shut down our consumer app and go all in on B2B.';
@@ -265,10 +266,12 @@ test('v4.1, hook4-6 and marketing-2: the run-ups the engine missed', () => {
 test('v4.1, hook4-5 and marketing-3: the notes say what is true, and a clean line is one human sentence', () => {
   /* a question is neither a call nor a plan; "this week" alone is a time, not a forecast */
   const q = S('Is it just me or has the funding on $DOGE perps been kinda insane this week?');
-  assert.doesNotMatch(q.why + q.note, /plan or a forecast|on a call/); assert.match(q.note, /how strongly you mean it/);
+  assert.doesNotMatch(q.why + q.note, /plan or a forecast|on a call|on a prediction/); assert.match(`${q.why} ${q.note}`, /how strongly you mean it/);
+  /* v4.3 (uiux-2): a kept word's reason is said once, in the why or the note, never in both */
+  assert.equal((`${q.why} ${q.note}`.match(/how strongly you mean it/g) || []).length, 1);
   const r = S('Real talk: I feel like most of you are way too levered going into FOMC this week.');
   assert.doesNotMatch(r.note, /plan or a forecast/); assert.match(r.note, /how sure you are/);
-  assert.match(S('I think $SOL could probably hit $300 by Q2.').note + S('I think $SOL could probably hit $300 by Q2.').why, /on a call/);
+  assert.match(S('I think $SOL could probably hit $300 by Q2.').note + S('I think $SOL could probably hit $300 by Q2.').why, /on a prediction/); /* v4.3 (marketing-9): "on a call" read as a phone call */
   assert.match(S("I think we'll probably ship the beta next week.").note + S("I think we'll probably ship the beta next week.").why, /plan or a forecast/);
   /* a closing #tag is not a beat */
   assert.match(S('I think I finally figured out why our builds were so slow, and honestly it was kind of embarrassing. #100DaysOfCode').say, /two beats/);

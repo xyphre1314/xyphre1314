@@ -139,7 +139,7 @@ test('receipts v4.1 (hook4-5): "Led with the claim" only for a claim from a late
   assert.match(S('After 10 years of running ads, the one thing that still works is a plain offer', 'A plain offer still works. That is the one thing I learned in 10 years of running ads.'), /Led with the claim/);
   const N = (t, line) => F(t, [line]).r.note;
   assert.equal(N('Real talk: I feel like most of you are way too levered going into FOMC this week.', 'I feel like most of you are way too levered going into FOMC this week.'), 'Kept your “I feel like”: it’s how sure you are, not filler.');
-  assert.equal(N('Real talk: I feel like $ETH will rip next week', 'I feel like $ETH will rip next week.'), 'Kept your “I feel like”: on a call, it’s your stance, not filler.');
+  assert.equal(N('Real talk: I feel like $ETH will rip next week', 'I feel like $ETH will rip next week.'), 'Kept your “I feel like”: on a prediction, it’s your stance, not filler.');
   assert.equal(N('ok so i think we will ship the beta next week', 'i think we will ship the beta next week'), 'Kept your “i think”: on a plan or a forecast, it’s your stance, not filler.');
 });
 
