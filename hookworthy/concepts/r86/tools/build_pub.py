@@ -4,7 +4,7 @@ H='/home/user/xyphre1314/hookworthy'; D=os.path.dirname(os.path.abspath(__file__
 # Since pass 12 the repo's home.html is minified (concepts/r86/src/build.py). The preview is built from the same readable sources
 # (build.assemble()), so claude_try.py can patch it, and it is minified at the end the same way. First: the sources in src/ must be
 # exactly what home.html was built from.
-import sys; sys.path.insert(0, f'{H}/concepts/r86/src'); import build
+import sys; sys.dont_write_bytecode = True; sys.path.insert(0, f'{H}/concepts/r86/src'); import build
 s=build.assemble()
 assert build.minify(s.replace(build.LOAD_SRC, build.LOAD_MIN))[0]==open(f'{H}/concepts/r86/home.html',encoding='utf-8').read(), 'concepts/r86/src does not build to concepts/r86/home.html (run src/build.py)'
 head=re.search(r'<head[^>]*>(.*?)</head>',s,re.S|re.I).group(1)
