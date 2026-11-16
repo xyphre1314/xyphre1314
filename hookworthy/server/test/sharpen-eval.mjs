@@ -10,6 +10,9 @@
    r86: both paths now go through HWCore.sharpenLine; five outputs moved and were graded again (4 h, 1 o, the same 43 h).
    v4.7: two moved and were graded again: the 5,000-readers line keeps “We just crossed” (h), and the AI-code-review line no
    longer gains a “Here’s what we found:” its draft never wrote (o).
+   v4.8 (round-11 founder-1): two moved. The plain cut is now version 1 and "Asked, then answered" is the other take, so the
+   protein line is the r73 line again (m, as graded then) and the design-systems line keeps its own order (o). The v4.7 flips
+   (both h) are in `v47` and still ship as the other take.
    The held-out check on lines the engine was never tuned on is sharpen-heldout.test.mjs. */
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
@@ -73,13 +76,13 @@ export const EVAL = [
   { n: 'fitness', t: 'honestly lifting 3 days a week has been kind of a game changer for my energy', was: 'lifting 3 days a week has been a game changer for my energy.', gb: 'm', ga: 'o', now: 'lifting 3 days a week changed my energy.' },
   { n: 'fitness', t: 'i ran 5km every morning for 365 days and the hardest part was honestly never the running', was: 'i ran 5km every morning for 365 days. the hardest part was never the running.', gb: 'h', ga: 'h', now: 'i ran 5km every morning for 365 days. the hardest part was never the running.' },
   { n: 'fitness', t: 'Just wanted to share that I lost 22 lbs in 4 months without cutting carbs', was: 'That I lost 22 lbs in 4 months without cutting carbs.', gb: 'm', ga: 'h', now: 'I lost 22 lbs in 4 months without cutting carbs.' },
-  { n: 'fitness', t: 'you should really be tracking your protein if you want to build muscle', was: 'you should be tracking your protein if you want to build muscle.', gb: 'm', ga: 'h', now: 'want to build muscle? track your protein.' },
+  { n: 'fitness', t: 'you should really be tracking your protein if you want to build muscle', was: 'you should be tracking your protein if you want to build muscle.', gb: 'm', ga: 'm', now: 'you should be tracking your protein if you want to build muscle.', v47: 'want to build muscle? track your protein.' },
   { n: 'fitness', t: 'I think a lot of people are probably overtraining and it is actually slowing down their progress', was: 'A lot of people are overtraining. It’s slowing down their progress.', gb: 'o', ga: 'o', now: 'A lot of people are overtraining. It’s slowing down their progress.' },
   // design / engineering
   { n: 'eng', t: 'I think we should probably stop using story points, they don’t really mean anything', was: 'Stop using story points, they don’t mean anything.', gb: 'o', ga: 'h', now: 'Stop using story points. They don’t mean anything.' },
   { n: 'eng', t: 'so i deleted 1,400 lines of code today and the app actually got faster', was: 'i deleted 1,400 lines of code today. the app got faster.', gb: 'h', ga: 'h', now: 'i deleted 1,400 lines of code today. the app got faster.' },
   { n: 'eng', t: 'Here are 5 things I learned from redesigning our checkout flow', body: '1. Fewer fields beat smarter fields.', was: '5 things I learned from redesigning our checkout flow:', gb: 'h', ga: 'h', now: '5 things I learned from redesigning our checkout flow:' },
-  { n: 'eng', t: 'honestly most design systems fail because nobody really owns them', was: 'because nobody owns them, most design systems fail.', gb: 'm', ga: 'h', now: 'why do most design systems fail? nobody owns them.' },
+  { n: 'eng', t: 'honestly most design systems fail because nobody really owns them', was: 'because nobody owns them, most design systems fail.', gb: 'm', ga: 'o', now: 'most design systems fail because nobody really owns them.', v47: 'why do most design systems fail? nobody owns them.' },
   { n: 'eng', t: 'We migrated our entire backend from Rails to Go and our p99 latency dropped from 800ms to 120ms', was: 'We migrated our entire backend from Rails to Go. Our p99 latency dropped from 800ms to 120ms.', gb: 'o', ga: 'h', now: 'Our p99 latency dropped from 800ms to 120ms. What changed: we migrated our entire backend from Rails to Go.' },
   { n: 'eng', t: 'I spent $1,200 on courses and the best lesson was free: ship every day', was: 'I spent $1,200 on courses. The best lesson was free: ship every day.', gb: 'h', ga: 'h', now: 'I spent $1,200 on courses. The best lesson was free: ship every day.' },
   { n: 'eng', t: 'Our team has been experimenting with AI code review for the past 3 months, and the results have been interesting', body: 'It caught 2 real bugs. It also flagged 140 things that weren’t.', was: 'Our team has been experimenting with AI code review for the past 3 months. The results have been interesting.', gb: 'o', ga: 'o', now: 'Our team spent 3 months experimenting with AI code review. The results have been interesting.', v47: 'no “Here’s what we found:” the draft never wrote (UI/UX juror, round 10); the teaser is the writer’s own' }

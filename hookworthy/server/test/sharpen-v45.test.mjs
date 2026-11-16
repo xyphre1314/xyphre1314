@@ -36,10 +36,11 @@ const OBJ = /\b(?:[a-z]+ing|do|does|did|make|made|fix|fixed|use|used|get|got|kee
 const OBJ_OK = /\b(?:[a-z]*thing|morning|evening|feeling|meeting|during)\s+(?:it|there|here)['’]s\b/gi;
 function broken(line, draft) {
   const l = String(line), d = String(draft), out = [];
-  /* the apostrophe is the writer's */
-  const dc = cnt(d, /\p{L}’\p{L}/gu), ds = cnt(d, /\p{L}'\p{L}/gu);
-  if (!dc && cnt(l, /\p{L}’\p{L}/gu)) out.push('curly apostrophe added');
-  if (dc && !ds && cnt(l, /\p{L}'\p{L}/gu)) out.push('straight apostrophe added');
+  /* the apostrophe is the writer's: straight anywhere in the draft stays straight, curly stays curly; v4.8 (brand-4): a draft
+     with none gets the page's typographic ’ */
+  const dc = /’/.test(d), ds = /'/.test(d);
+  if (ds && !dc && cnt(l, /\p{L}’\p{L}/gu)) out.push('curly apostrophe added');
+  if (!ds && cnt(l, /\p{L}'\p{L}/gu)) out.push('straight apostrophe added');
   /* "is" joined to an object pronoun: "googling it's", "getting there's" */
   if (cnt(l, OBJ) - cnt(l, OBJ_OK) > cnt(d, OBJ) - cnt(d, OBJ_OK)) out.push('contraction on an object');
   if (/\blet['’]s (?:know|help|hear)\b/i.test(l) && !/\blet['’]s (?:know|help|hear)\b/i.test(d)) out.push('"let\'s know"');
@@ -67,9 +68,10 @@ test('v4.5, hook44-1: "is" contracts only onto a clause-opening subject, never a
   assert.equal(C('Let us know what you think'), 'Let us know what you think');
   assert.equal(C('Let us begin'), 'Let’s begin');
   /* never across a cut: "I honestly am" → "I am", not "I'm" */
-  assert.equal(L('I honestly am not sure we will make payroll next month.'), "I am not sure we'll make payroll next month.");
-  /* the writer's apostrophe: none or straight → straight; curly only → curly */
-  assert.equal(L('After ghostwriting for 40+ SaaS founders, I can confidently say most of them are honestly way too scared to post their real opinions.'), "I've ghostwritten for 40+ SaaS founders. Most of them are way too scared to post their real opinions.");
+  assert.equal(L('I honestly am not sure we will make payroll next month.'), 'I am not sure we’ll make payroll next month.');
+  /* the writer's apostrophe: straight → straight; curly only → curly; v4.8 (brand-4): none → the page's ’ */
+  assert.equal(L('After ghostwriting for 40+ SaaS founders, I can confidently say most of them are honestly way too scared to post their real opinions.'), 'I’ve ghostwritten for 40+ SaaS founders. Most of them are way too scared to post their real opinions.');
+  assert.equal(L("After ghostwriting for 40+ SaaS founders, I can confidently say most of them are honestly way too scared to post their 'real' opinions."), "I've ghostwritten for 40+ SaaS founders. Most of them are way too scared to post their 'real' opinions.");
   assert.equal(L("I'll be real with you guys, this launch did not go the way I planned."), "This launch didn't go the way I planned.");
   assert.equal(L('I’ve been saying this for months and honestly it is finally happening.'), 'I’ve been saying this for months. It’s finally happening.');
   /* the hard guard reads the class, whatever made it */
@@ -147,7 +149,8 @@ test('v4.5, round 9 marketing-1: thread intros and "Let\'s talk about why" are r
   }
   assert.equal(L('This is a quick thread on why I stopped using Notion for everything 🧵'), 'Why I stopped using Notion for everything 🧵');
   assert.equal(L('So this is a thread about what I learned shipping 12 apps in 12 months'), 'Thread: what I learned shipping 12 apps in 12 months.');
-  assert.equal(L("Let's talk about why your open rates are lying to you"), 'Your open rates are lying to you.');
+  /* v4.8 (round-11 marketing-1): with nothing under it, the topic keeps its "why" and stays a pointer */
+  assert.equal(L("Let's talk about why your open rates are lying to you"), 'Why your open rates are lying to you:');
   assert.equal(L("Let's talk about why your open rates are lying to you\n\n1. Apple MPP inflates opens\n2. Bots click everything"), "Your open rates are lying to you. Here's why:");
   /* a talk about a thing (not a why) is marked, never called clean */
   const st = S('Let me tell you a story about the worst trade I ever made'); assert.equal(st.state, 'unsure');
@@ -162,7 +165,8 @@ test('v4.5: the 60-line hunt, every mode: no hard guard, no page guard, none of 
   /* this file's checks see the shapes v4.4 made (v-82, w-58, v-87) and the hunt's first contact */
   for (const [l, d] of [
     ['Reading the whole error message before googling it’s a skill that took me years to learn.', 'Reading the whole error message before googling it is honestly a skill that took me years to learn.'],
-    ['I’ve ghostwritten for 40+ SaaS founders. Most of them are way too scared to post their real opinions.', 'After ghostwriting for 40+ SaaS founders, I can confidently say most of them are honestly way too scared to post their real opinions.'],
+    /* v4.8 (brand-4): a draft with no apostrophe now gets ’, so the shape is a curly one on a draft that types straight ones */
+    ["I’ve ghostwritten for 40+ SaaS founders. Most of them are way too scared to post their 'real' opinions.", "After ghostwriting for 40+ SaaS founders, I can confidently say most of them are honestly way too scared to post their 'real' opinions."],
     ['Think most side projects would be better off as one HTML file and zero build steps.', 'Kind of think most side projects would be better off as one HTML file and zero build steps tbh.'],
     ["The biggest lesson is that consistency beats talent every single time, so if you're just starting out. Nobody is reading your posts yet, keep going.", "honestly the biggest lesson is that consistency beats talent every single time, so if you're just starting out and nobody is reading your posts yet, keep going."],
     ["Let's know what you think in the replies!", 'Let us know what you think in the replies!'],

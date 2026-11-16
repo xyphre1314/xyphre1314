@@ -151,7 +151,7 @@ test('v4.3, hook42-3 and round-8 receipts: true, plain, and said once', () => {
 test('v4.3, hook42-4 and uiux-5: a put-back opener keeps the question and pins only itself', () => {
   /* v4.4 (hook43-2): "like a week" is the writer's "about a week", so it stays */
   assert.equal(L('ok but why does every productivity app basically turn into a second job after like a week', { keep: ['ok but'] }), 'ok but why does every productivity app turn into a second job after like a week?');
-  assert.equal(L('honestly what is the point of a pitch deck nobody reads'), "what's the point of a pitch deck nobody reads?"); /* v4.5: the writer's (straight) apostrophe */
+  assert.equal(L('honestly what is the point of a pitch deck nobody reads'), 'what’s the point of a pitch deck nobody reads?'); /* v4.8 (brand-4): no apostrophe in the draft, so the page's ’ */
   assert.equal(L('so like how are you all getting your first 100 subscribers'), 'how are you all getting your first 100 subscribers?');
   /* the other cuts and reshapes stand around a pinned opener */
   assert.equal(L('Hey everyone, I wanted to share some thoughts on why most traders lose money', { keep: ['Hey everyone'] }), 'Hey everyone, some thoughts on why most traders lose money:');

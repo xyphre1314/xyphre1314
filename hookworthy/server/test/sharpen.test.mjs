@@ -34,20 +34,25 @@ test('one tap: the moves top first lines make, with the facts kept', () => {
   assert.equal(S('so i think the biggest mistake i made this cycle was probably not taking profits on the way up'), 'i think the biggest mistake i made this cycle was probably not taking profits on the way up.', 'a stacked hedge keeps the modal, and the move still lands');
   assert.equal(S('Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.'), 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', 'passive made active');
   /* r86 pass 6 (juror 5, hook-7): the claim's one hedge ("I think", "kind of") stays through the move */
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), "I've hired over 300 people. I think the best interview question is just four words:", 'a colon only because the post answers it'); /* v4.5: a draft with no apostrophe gets a straight one */ /* v4.1: "just four words" is "only four words" */
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), "I've hired over 300 people. I think the best interview question is just four words.", 'no colon with nothing after it');
-  assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'want to build muscle? track your protein.');
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), 'I’ve hired over 300 people. I think the best interview question is just four words:', 'a colon only because the post answers it'); /* v4.8 (brand-4): a draft with no apostrophe gets the page's ’ */ /* v4.1: "just four words" is "only four words" */
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is just four words.', 'no colon with nothing after it');
+  /* v4.8 (round-11 founder-1): the plain cut is version 1; "Asked, then answered" is another take */
+  assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'you should be tracking your protein if you want to build muscle.');
+  assert.ok(E.hgSharpen('you should really be tracking your protein if you want to build muscle').alts.includes('want to build muscle? track your protein.'));
   assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week has been kind of a big deal for my energy.', 'a never-say word said plainly');
   assert.equal(S('honestly lifting 3 days a week has been a game changer for my energy'), 'lifting 3 days a week changed my energy.', 'a never-say word said plainly');
-  assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter\nShort version: warm intros closed 4x more.'), "Our sales team stopped doing cold calls this quarter. Here's why:");
-  assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter'), 'Our sales team stopped doing cold calls this quarter.', 'no "Here’s why" bait when the post stops there');
+  assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter\nShort version: warm intros closed 4x more.'), 'Our sales team stopped doing cold calls this quarter. Here’s why:');
+  /* v4.8 (round-11 marketing-1): with nothing under it, the topic keeps its "why": the pointer the draft made, not a claim */
+  assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter'), 'Why our sales team stopped doing cold calls this quarter:', 'the topic stays a pointer');
   /* strong lines are left alone */
   for (const t of ['Most people quit right before it starts working.', 'My best trade this year? The one I didn’t take.', 'Stop chasing green candles.']) assert.ok(E.hgSharpen(t).same, t);
 });
 
 test('the receipt: every sharpen says which move it made and why that move works', () => {
   const r = E.hgSharpen('honestly most design systems fail because nobody really owns them');
-  assert.equal(r.main, 'ask'); assert.match(r.why, /question/i); assert.deepEqual(r.cuts, ['honestly']); /* v4.1 (hook4-7): "nobody really owns them" keeps its degree */
+  /* v4.8 (round-11 founder-1): the plain cut leads; the "Asked, then answered" flip is the other take, and says why it works */
+  assert.equal(r.first, 'most design systems fail because nobody really owns them.'); assert.deepEqual(r.cuts, ['honestly']); /* v4.1 (hook4-7): "nobody really owns them" keeps its degree */
+  const ra = r.altP.find(a => a.main === 'ask'); assert.ok(ra, JSON.stringify(r.altP)); assert.match(ra.why, /question/i);
   const n = E.hgSharpen('I’ve been thinking a lot about pricing lately and I think we were really undercharging');
   assert.equal(n.first, 'Pricing: I think we were really undercharging.'); /* v4.5 (hook44-3): "really" before the verb is the writer's degree */ assert.ok(n.why.length > 20); /* r86 pass 6 (hook-7): the lone "I think" stays */
   Object.values(core.SHARPEN.MOVE_WHY).forEach(w => { assert.match(w, /\.$/); assert.doesNotMatch(w, /\b\d+(?:%|x)\b|algorithm|reach|viral|engag/i); });
@@ -83,5 +88,7 @@ test('the eval: one tap gets most real drafts to Ready, with no fact lost or inv
      and hookScore still docks a kept "I think", so one more line lands just under 70. Safety over the score */
   /* v4.5 (hook44-3): 30/48. "really" right before the verb ("we were really undercharging") is the writer's degree and stays,
      and hookScore still docks it, so that line lands under 70. Meaning over the score */
-  assert.ok(ready >= 30, `Ready after one tap: ${ready}/${EVAL.length}`);
+  /* v4.8 (round-11 founder-1): 28/48. The plain cut is version 1 and the "Asked, then answered" flip is the other take, and two
+     flips scored over 70 where their plain cuts don't (the protein and design-systems lines). The writer's own shape over the score */
+  assert.ok(ready >= 28, `Ready after one tap: ${ready}/${EVAL.length}`);
 });

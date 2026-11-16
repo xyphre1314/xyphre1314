@@ -136,7 +136,8 @@ test('v4.7, page juror: a clean line says it is a quick check, never that nothin
 test('v4.7, page juror and hook46-3: the run-ups, as general forms', () => {
   for (const [m, o] of MODES) {
     assert.equal(L('I wanted to take a moment to reflect on how far we have come this year', o), 'I wanted to reflect on how far we have come this year.', m);
-    assert.equal(L('Let me take a minute to explain why we changed our pricing', o), 'Let me explain why we changed our pricing.', m);
+    /* v4.8 (round-11 marketing-1): the whole run-up goes, and the topic keeps its "why" as the pointer */
+    assert.equal(L('Let me take a minute to explain why we changed our pricing', o), 'Why we changed our pricing:', m);
     assert.match(L("I'd like to take a moment to thank all of our early customers who believed in us.", o), /^I'd like to thank all (?:of )?our early customers who believed in us\.$/, m);
     assert.equal(L('So thrilled that this newsletter just passed 20,000 readers, thank you all for being here 💛', o), 'This newsletter just passed 20,000 readers, thank you all for being here 💛', m);
     assert.equal(L('So excited that our first hire starts on Monday', o), 'Our first hire starts on Monday.', m);
@@ -183,8 +184,9 @@ test('v4.7, web juror: a figure lead keeps its verb, "just" (recently) stays, an
   assert.doesNotMatch(JSON.stringify(core.hookScore('We just crossed 5,000 readers. Thank you to everyone who subscribed.').reason), /“just” is filler/);
   /* the unsure note: the safe fillers go and only the doubtful word stays marked; "breaks" only when a check refused that cut */
   assert.equal(L('so basically my newsletter just hit 5,000 readers which is honestly wild'), 'my newsletter just hit 5,000 readers which is wild.');
+  /* v4.8 (round-11 founder-3): a doubled intensifier collapses or goes; "I think" stays as the one hedge, and the why says what went */
   const rr = S('I really really think you should start a newsletter');
-  assert.equal(rr.state, 'unsure'); assert.doesNotMatch(rr.why, /breaks/); assert.match(rr.why, /how strongly you mean it/);
+  assert.equal(rr.line, 'I think you should start a newsletter.'); assert.doesNotMatch(rr.why, /breaks/); assert.match(rr.why, /twice/);
   const q = S('Just wanted to share a quick redesign I did of the @Spotify mobile app. Would love to hear your thoughts!');
   assert.equal(q.why, 'Marked “Just wanted to share”, not cut: without it this line breaks. Your call.');
   assert.ok(hard('A quick redesign I did of the @Spotify mobile app. Would love to hear your thoughts!', q.draft));
@@ -197,7 +199,7 @@ test('v4.7, UI/UX juror: a long-line split keeps compound subjects whole; no poi
   for (const [m, o] of MODES) { const r = S(multi, o); for (const l of versions(r)) assert.doesNotMatch(l, /here['’]s (?:why|how|what)|thread:/i, `${m}: ${l}`); assert.equal(r.line, 'i think this thread is the most useful thing i wrote.', m); }
   assert.match(hard("i think this thread is the most useful thing i wrote. here's why:", 'honestly i think this thread is literally the most useful thing i wrote'), /pointer added/);
   /* a pointer the draft made stays allowed */
-  assert.equal(L('Quick thread on how I size my trades'), "I size my trades. Here's how:");
+  assert.equal(L('Quick thread on how I size my trades'), 'I size my trades. Here’s how:'); /* v4.8 (brand-4): ’ when the draft has none */
   assert.equal(L("I've been writing this newsletter for 200 weeks straight and I want to share what I learned"), "I've been writing this newsletter for 200 weeks straight. Here's what I learned.");
   assert.equal(hard("We doubled demo bookings. Here's how:", "Here's a thread on how we doubled demo bookings"), '');
   /* the news leads a post over 280, with its verb */

@@ -66,7 +66,8 @@ test('v4.2, hook41-1: each new guard rejects the broken form and passes its clea
 
 test('v4.2, hook41-2: the default mode re-checks every reshape; v4.1 and strict stay available', () => {
   /* a reshape that passes the second read ships as before */
-  assert.equal(L('So in this issue I wanted to talk about why open rates lie'), 'Open rates lie.');
+  /* v4.8 (round-11 marketing-1): a why topic keeps its question word, so the line stays the pointer the writer made */
+  assert.equal(L('So in this issue I wanted to talk about why open rates lie'), 'Why open rates lie:');
   assert.equal(L("In this week's issue, we're going to look at three charts that explain the housing market."), "This week's issue: three charts that explain the housing market.");
   /* one that the validator would refuse (a plan's "going to be" said as a fact) falls back to the strict answer */
   const t = "I'm going to be hosting a live AMA on Friday and answering every question.";
@@ -86,7 +87,8 @@ test('v4.2, P0 sweep: 100 tempting lines, every mode, no version trips a hard gu
   assert.match(L('That\'s exactly who I really am at my core.'), /who I really am/);
   assert.doesNotMatch(L("A lot of people have been asking me which mic I use, so here are the 3 I'd buy again:"), /^Here are the 3/);
   assert.doesNotMatch(L("Here are a few things I've learned from running a newsletter for 3 years."), /^Things\b/);
-  assert.doesNotMatch(L('In this post I want to share how I paid off $40k of debt in 18 months.'), /:$/);
+  /* v4.8 (round-11 marketing-1): a "how" topic the draft itself promised is the writer's pointer, kept with its "How" */
+  assert.equal(L('In this post I want to share how I paid off $40k of debt in 18 months.'), 'How I paid off $40k of debt in 18 months:');
   /* v4.3 (round-8 uiux-1): "some thoughts on…" is the pointer itself, so it stays and leads, with the colon the Claude prompt's
      own example gives a one-liner ("Some of my key takeaways from SaaStr last week:") */
   assert.equal(L('I wanted to take a moment to share some thoughts on why consistency matters.'), 'Some thoughts on why consistency matters:');
@@ -100,7 +102,8 @@ test('v4.2, hook41-3: receipts say only what is true', () => {
   /* the clean line doesn't repeat the receipt's "Nothing to cut" */
   const cl = S('$ETH reclaimed 3k. shorts are trapped.'); assert.equal(cl.say, 'Nothing to cut'); assert.doesNotMatch(cl.why, /Nothing to cut/);
   /* a topic said as the claim is said straight, not "tightened" */
-  assert.equal(S('So in this issue I wanted to talk about why open rates lie').say, 'Cut 2 bits of fluff · Said it straight');
+  /* v4.8: a topic keeps its "why", so it is a cut, not a claim said straight */
+  assert.equal(S('So in this issue I wanted to talk about why open rates lie').say, 'Cut 2 bits of fluff');
   /* Claude's receipt names every removed span of three words or more (x-79) */
   const x79 = 'It\'s honestly hard to put into words how proud I really am of my mom for finishing her first 5K today ❤️';
   const c79 = core.SHARPEN.fromClaude(x79, { versions: [{ line: 'I\'m really proud of my mom for finishing her first 5K today ❤️', why: 'Without “honestly”, “I\'m really proud of my mom” reads like you’ve earned it.' }] });
@@ -143,7 +146,7 @@ test('v4.2, hook41-5 and round 7: the run-ups the demo called "Already tight"', 
     ["I've been meaning to write about this for a while, but here's how I grew to 50k followers", "Here's how I grew to 50k followers."],
     ["A lot of people have been asking me how I trade, so here's my process", "Here's how I trade."],
     ['Just a quick thread 🧵 on how I turned $2k into $40k (1/7)', 'How I turned $2k into $40k (1/7)'],
-    ['In this thread I will explain how I grew my newsletter to 10k', "I grew my newsletter to 10k. Here's how:"], /* v4.5: a draft with no apostrophe gets a straight one */
+    ['In this thread I will explain how I grew my newsletter to 10k', 'I grew my newsletter to 10k. Here’s how:'], /* v4.8 (brand-4): a draft with no apostrophe gets the page's ’ */
     ['Just a thought, but maybe we should stop chasing every narrative', 'Maybe we should stop chasing every narrative.'],
     ['With that being said, most founders should write every day.', 'Most founders should write every day.'],
     ["As many of you know, I've been building in public for 2 years.", "I've been building in public for 2 years."],
@@ -179,8 +182,8 @@ test('v4.2, round 7: no dangling header, no object left alone, "I think" kept as
   for (const t of ["I've been thinking a lot lately about how important it is to ship fast", 'Today I want to share some lessons I learned from failing my first startup', 'I want to share something personal that I haven\'t told anyone yet']) assert.doesNotMatch(L(t), /:$/, t);
   /* with a thread pointer, a counted list or a body under it, a header is the format */
   assert.equal(L('In this week\'s edition I\'m going to break down the pricing pages of 10 SaaS companies'), 'The pricing pages of 10 SaaS companies:');
-  assert.match(L('In this thread I will explain why I sold all my ETH'), /^(?:Thread: why I sold all my ETH|I sold all my ETH\. Here's why:)/);
-  assert.equal(L('some thoughts on why most threads flop\nthe first line is a warm-up. the second line is where the post starts.'), "most threads flop. here's why:"); /* v4.5: the writer's (straight) apostrophe */
+  assert.match(L('In this thread I will explain why I sold all my ETH'), /^(?:Thread: why I sold all my ETH|I sold all my ETH\. Here’s why:)/); /* v4.8: ’ when the draft has none */
+  assert.equal(L('some thoughts on why most threads flop\nthe first line is a warm-up. the second line is where the post starts.'), 'most threads flop. here’s why:'); /* v4.8 (brand-4): no apostrophe in the draft, so the page's ’ */
   /* the object of a cut run-up is never a sentence of its own */
   for (const t of ['Let me tell you about the worst trade I ever made', 'I want to talk about something that nobody in crypto wants to admit']) assert.equal(L(t), t, t);
   /* "I think" heading a claim is the clause's one hedge, kept every time; the second hedge goes (marketing-4) */

@@ -254,7 +254,7 @@ html:not(.motion) .replay:not(.alt){display:none}
 /* the wordmark: the hook-h is the word's own h. One colour, no badge */
 /* the wordmark is one outlined drawing (the hook h and "ookworthy", 100 units to the em), never live text beside a drawn h */
 .mark{display:inline-flex;font-size:20px;line-height:1;color:var(--ink);padding:6px 0;border-radius:6px}
-.wm{display:block;width:5.3615em;height:.9875em;fill:currentColor;overflow:visible}
+.wm{display:block;width:5.4025em;height:.9875em;fill:currentColor;overflow:visible}
 .links{display:flex;gap:2px;position:absolute;left:50%;transform:translateX(-50%)}
 .links a,.signin{font-size:14px;font-weight:400;color:var(--ink-3);padding:8px 12px;border-radius:999px;transition:color .2s,background-color .2s}
 .links a:hover,.signin:hover{color:var(--ink);background:rgba(255,255,255,.05)}
@@ -351,15 +351,32 @@ main{position:relative;overflow-x:clip}
 .post > .light{display:none}
 .window .hits{margin-top:12px;margin-bottom:20px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;align-items:baseline}
 .window .hits .k{margin:0}
-/* one window height for all four examples at every width, so a pick never moves the page (measured: r86/fix/heroh.js) */
-/* wide screens: the post gets the wider pane, so the longest example's line sets in two lines and the window has no slack band */
-@media (min-width:1200px){.window .body{min-height:max(var(--hm,0px),370px);grid-template-columns:60px minmax(0,1fr) minmax(0,1.3fr)}}
-/* the fold never slices the window's bottom rows: at the heights where "Everyone can reply" (around 800) or the "Your best time /
-   Schedule" row (around 900) would straddle it, the floor is 20px deeper, so the fold falls in the empty space above them */
-@media (min-width:1200px) and (min-height:790px) and (max-height:825px),(min-width:1200px) and (min-height:872px) and (max-height:902px){.window .body{min-height:max(var(--hm,0px),390px)}}
-@media (min-width:1200px) and (min-height:903px) and (max-height:922px){.window .body{min-height:max(var(--hm,0px),410px)}}
-@media (min-width:901px) and (max-width:1199px){.window .body{min-height:max(var(--hm,0px),441px)}}
-@media (min-width:901px) and (max-width:1099px){.window .body{min-height:max(var(--hm,0px),453px)}}
+/* wide screens: the post gets the wider pane */
+@media (min-width:1200px){.window .body{grid-template-columns:60px minmax(0,1fr) minmax(0,1.3fr)}}
+/* two panes (901+): the window is as tall as the example on show, so it never carries a floor's empty glass (a pick eases the
+   height, see showEx). levelHero() brings the two panes level, giving the shorter pane's text a narrower measure a line at a time;
+   the little that is left is spread over that pane's own gaps, never pooled in one band. The draft's gaps: under the header (the
+   ::before spacer), between the draft, the cut note and the Kept row, and over "Everyone can reply"; the post's: around the card
+   and the "Why it hits" row */
+@media (min-width:901px){
+  .pane.draft::before{content:"";order:1;flex:1 1 0}
+  .pane.draft .ph-h{order:0}
+  .pane.draft .compose{order:2;flex:3 1 auto;margin-top:12px}
+  .pane.draft:has(.kept:empty) .compose{flex-grow:2}
+  .pane.draft .replyset{order:3;margin-top:0;padding:12px 0}
+  .pane.draft .tools{order:4;height:56px}
+  .pane.draft .cbody{display:grid;grid-template-rows:auto 1fr auto 1fr auto 1fr}
+  .pane.draft .cbody:has(.kept:empty){grid-template-rows:auto 1fr auto 1fr}
+  .pane.draft .dtext{grid-row:1}.pane.draft .note{grid-row:3;margin-top:10px}.pane.draft .kept{grid-row:5;margin-top:8px}
+  .pane.sharp{justify-content:space-between}
+  .pane.sharp .post{margin-top:12px;padding:16px 20px 12px}
+  .pane.sharp .ptext{margin-top:8px}
+  .pane.sharp .post .xacts{margin-top:10px}
+  .window .hits{margin-top:12px;margin-bottom:12px}
+  .pane.sharp .foot{margin-top:0;height:52px}
+  /* levelHero's measuring state: each pane at its own height (never painted) */
+  .window.lvl .pane{align-self:start}
+}
 /* one column (≤900): no floor; the window is as tall as the example on show (showEx eases a pick's change) */
 .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;height:56px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
 .foot .pill{white-space:nowrap}
@@ -398,13 +415,17 @@ html:not(.motion) #pf-go{display:none}
 .motion .stage{animation:lift .8s var(--ease) .1s both}
 .motion .stage > .light{animation:glow 1.2s linear both}
 .motion .hmeta{animation:fade .5s var(--ease) .35s both}
-.window{--l:.25s;--k:1;--w:.7s}
-/* armed (the page's first frames): the draft unstruck, the post dimmed. The page plays it once the window is in view and the page
-   has settled (about 1.2 s after first paint), so the strike runs on a free main thread where it can be seen */
+.window{--l:.15s;--k:1;--w:.7s}
+/* armed (the page's first frames): the draft unstruck, the post dimmed, and its words not there yet: each line of the sharpened
+   text is a quiet skeleton bar (a thick underline across the line's own length, the letters transparent), so the answer never shows
+   before its cause. The page plays it once the window is in view, about 0.3 s after first paint */
 .motion .window.arm:not(.play) .cut{background-size:0% max(1.5px,.07em);color:var(--x-ink)}
 .motion .window.arm:not(.play) .fl{text-decoration-color:rgba(var(--glow)/0)}
 .motion .window.arm:not(.play) .post,.motion .window.arm:not(.play) .hits,.motion .window.arm:not(.play) .move{opacity:.35;transform:translateY(4px)}
 .motion .window.arm:not(.play) .post::after,.motion .window.arm:not(.play) .note,.motion .window.arm:not(.play) .kept{opacity:0}
+.motion .window .ptext,.motion .window .ptext .bt{text-decoration:underline rgba(255,255,255,0);text-decoration-thickness:.62em;text-underline-offset:-.6em;text-decoration-skip-ink:none}
+.motion .window.arm:not(.play) .ptext,.motion .window.arm:not(.play) .ptext .bt,.motion .window.arm:not(.play) #pf-why{color:transparent;text-decoration-color:rgba(255,255,255,.16)}
+.motion .window.arm:not(.play) #pf-why{text-decoration-line:underline;text-decoration-thickness:.6em;text-underline-offset:-.58em;text-decoration-skip-ink:none}
 /* cause, then effect: the fluff is marked, then struck, and the post wakes only as the last strike lands. A pick or "See it again"
    puts the new post in the same dimmed state first and runs the same order faster (--k) */
 .motion .window.play .fl{animation:mark calc(.3s * var(--k)) var(--ease) var(--l) both}
@@ -412,6 +433,10 @@ html:not(.motion) #pf-go{display:none}
 .motion .window.play .post,.motion .window.play .hits,.motion .window.play .move{animation:wake calc(.4s * var(--k)) var(--ease) calc(var(--l) + var(--w) * var(--k)) both}
 .motion .window.play .post::after{animation:glint .55s var(--ease) calc(var(--l) + (var(--w) + .1s) * var(--k)) both}
 .motion .window.play .note,.motion .window.play .kept{animation:fade .4s var(--ease) calc(var(--l) + (var(--w) + .05s) * var(--k)) both}
+/* the words arrive with the post: the bars give way to the line as the last strike lands */
+.motion .window.play .ptext,.motion .window.play .ptext .bt{animation:unskel calc(.32s * var(--k)) var(--ease) calc(var(--l) + var(--w) * var(--k)) both}
+.motion .window.play #pf-why{text-decoration-line:underline;text-decoration-thickness:.6em;text-underline-offset:-.58em;text-decoration-skip-ink:none;text-decoration-color:rgba(255,255,255,0);animation:unskel calc(.32s * var(--k)) var(--ease) calc(var(--l) + (var(--w) + .05s) * var(--k)) both}
+@keyframes unskel{from{color:transparent;text-decoration-color:rgba(255,255,255,.16)}}
 @keyframes fade{from{opacity:0}}
 @keyframes defocus{from{opacity:0}}
 @keyframes rise-sm{from{opacity:0;transform:translateY(10px)}}
@@ -451,15 +476,10 @@ html:not(.motion) #pf-go{display:none}
 /* ================= the bento ================= */
 .grid-sec{position:relative;padding-top:112px}
 .bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);
+  /* Who and Trust each have a row of their own: a tile is only ever as tall as its own content or a partner of the same build
+     (Replies and Results, two X cards of one height), never stretched to a taller neighbour's height (that is what kept opening
+     Trust's empty band). Trust closes the bento, right before pricing */
   grid-template-areas:
-    "try try try try try try try try pv  pv  pv  pv"
-    "voi voi voi voi voi voi voi voi voi voi voi voi"
-    "day day day day day day day day day day day day"
-    "rep rep rep rep rep rep res res res res res res"
-    "who who who who who who who tru tru tru tru tru"
-    "st  st  st  st  st  st  st  st  st  st  st  st"}
-@media (min-width:1100px) and (max-width:1199px){
-  .bento{grid-template-areas:
     "try try try try try try try try pv  pv  pv  pv"
     "voi voi voi voi voi voi voi voi voi voi voi voi"
     "day day day day day day day day day day day day"
@@ -467,17 +487,16 @@ html:not(.motion) #pf-go{display:none}
     "who who who who who who who who who who who who"
     "st  st  st  st  st  st  st  st  st  st  st  st"
     "tru tru tru tru tru tru tru tru tru tru tru tru"}
-}
 /* below the first two screens, a tile or section is rendered only as it comes near (style, layout and paint wait), so the first
    layout covers the hero and the Try row, not the whole page. Each keeps its last rendered size, so nothing jumps */
 .js .t-try,.js .t-pv,.js .t-voi,.js .t-day,.js .t-rep,.js .t-res,.js .t-who,.js .t-st,.js .t-tru,.js #pricing,.js #faq,.js #start,.js footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
 /* the placeholders are each block's content height as rendered at that width (padding comes on top), so the scrollbar is right
-   before anything below the hero has rendered (measured: r86/fix12/cis3.js) */
-.js .t-try{contain-intrinsic-size:auto 642px}.js .t-pv{contain-intrinsic-size:auto 642px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 472px}.js .t-res{contain-intrinsic-size:auto 472px}.js .t-who{contain-intrinsic-size:auto 544px}.js .t-st{contain-intrinsic-size:auto 581px}.js .t-tru{contain-intrinsic-size:auto 544px}.js #pricing{contain-intrinsic-size:auto 1080px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 551px}.js footer{contain-intrinsic-size:auto 543px}
-@media (min-width:1100px) and (max-width:1199px){.js .t-try{contain-intrinsic-size:auto 676px}.js .t-pv{contain-intrinsic-size:auto 676px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 472px}.js .t-res{contain-intrinsic-size:auto 472px}.js .t-who{contain-intrinsic-size:auto 356px}.js .t-st{contain-intrinsic-size:auto 776px}.js .t-tru{contain-intrinsic-size:auto 238px}.js #pricing{contain-intrinsic-size:auto 1151px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 493px}.js footer{contain-intrinsic-size:auto 535px}}
-@media (min-width:901px) and (max-width:1099px){.js .t-try{contain-intrinsic-size:auto 597px}.js .t-pv{contain-intrinsic-size:auto 509px}.js .t-voi{contain-intrinsic-size:auto 611px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 509px}.js .t-res{contain-intrinsic-size:auto 641px}.js .t-who{contain-intrinsic-size:auto 641px}.js .t-st{contain-intrinsic-size:auto 751px}.js .t-tru{contain-intrinsic-size:auto 351px}.js #pricing{contain-intrinsic-size:auto 1127px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 507px}.js footer{contain-intrinsic-size:auto 517px}}
-@media (min-width:761px) and (max-width:900px){.js .t-try{contain-intrinsic-size:auto 631px}.js .t-pv{contain-intrinsic-size:auto 500px}.js .t-voi{contain-intrinsic-size:auto 655px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 500px}.js .t-res{contain-intrinsic-size:auto 535px}.js .t-who{contain-intrinsic-size:auto 535px}.js .t-st{contain-intrinsic-size:auto 844px}.js .t-tru{contain-intrinsic-size:auto 396px}.js #pricing{contain-intrinsic-size:auto 1552px}.js #faq{contain-intrinsic-size:auto 535px}.js #start{contain-intrinsic-size:auto 776px}.js footer{contain-intrinsic-size:auto 500px}}
-@media (max-width:760px){.js .t-try{contain-intrinsic-size:auto 690px}.js .t-pv{contain-intrinsic-size:auto 484px}.js .t-voi{contain-intrinsic-size:auto 488px}.js .t-day{contain-intrinsic-size:auto 710px}.js .t-rep{contain-intrinsic-size:auto 413px}.js .t-res{contain-intrinsic-size:auto 345px}.js .t-who{contain-intrinsic-size:auto 470px}.js .t-st{contain-intrinsic-size:auto 672px}.js .t-tru{contain-intrinsic-size:auto 302px}.js #pricing{contain-intrinsic-size:auto 1080px}.js #faq{contain-intrinsic-size:auto 398px}.js #start{contain-intrinsic-size:auto 376px}.js footer{contain-intrinsic-size:auto 280px}}
+   before anything below the hero has rendered (measured: r86/fix13/cis3.js) */
+.js .t-try{contain-intrinsic-size:auto 642px}.js .t-pv{contain-intrinsic-size:auto 642px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 472px}.js .t-res{contain-intrinsic-size:auto 472px}.js .t-who{contain-intrinsic-size:auto 314px}.js .t-st{contain-intrinsic-size:auto 581px}.js .t-tru{contain-intrinsic-size:auto 238px}.js #pricing{contain-intrinsic-size:auto 945px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 551px}.js footer{contain-intrinsic-size:auto 541px}
+@media (min-width:1100px) and (max-width:1199px){.js .t-try{contain-intrinsic-size:auto 676px}.js .t-pv{contain-intrinsic-size:auto 676px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 472px}.js .t-res{contain-intrinsic-size:auto 472px}.js .t-who{contain-intrinsic-size:auto 356px}.js .t-st{contain-intrinsic-size:auto 776px}.js .t-tru{contain-intrinsic-size:auto 238px}.js #pricing{contain-intrinsic-size:auto 1042px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 493px}.js footer{contain-intrinsic-size:auto 534px}}
+@media (min-width:901px) and (max-width:1099px){.js .t-try{contain-intrinsic-size:auto 597px}.js .t-pv{contain-intrinsic-size:auto 641px}.js .t-voi{contain-intrinsic-size:auto 611px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 501px}.js .t-res{contain-intrinsic-size:auto 501px}.js .t-who{contain-intrinsic-size:auto 641px}.js .t-st{contain-intrinsic-size:auto 751px}.js .t-tru{contain-intrinsic-size:auto 351px}.js #pricing{contain-intrinsic-size:auto 1019px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 507px}.js footer{contain-intrinsic-size:auto 516px}}
+@media (min-width:761px) and (max-width:900px){.js .t-try{contain-intrinsic-size:auto 631px}.js .t-pv{contain-intrinsic-size:auto 625px}.js .t-voi{contain-intrinsic-size:auto 655px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 509px}.js .t-res{contain-intrinsic-size:auto 509px}.js .t-who{contain-intrinsic-size:auto 625px}.js .t-st{contain-intrinsic-size:auto 844px}.js .t-tru{contain-intrinsic-size:auto 396px}.js #pricing{contain-intrinsic-size:auto 1435px}.js #faq{contain-intrinsic-size:auto 535px}.js #start{contain-intrinsic-size:auto 776px}.js footer{contain-intrinsic-size:auto 499px}}
+@media (max-width:760px){.js .t-try{contain-intrinsic-size:auto 703px}.js .t-pv{contain-intrinsic-size:auto 496px}.js .t-voi{contain-intrinsic-size:auto 493px}.js .t-day{contain-intrinsic-size:auto 695px}.js .t-rep{contain-intrinsic-size:auto 416px}.js .t-res{contain-intrinsic-size:auto 348px}.js .t-who{contain-intrinsic-size:auto 551px}.js .t-st{contain-intrinsic-size:auto 679px}.js .t-tru{contain-intrinsic-size:auto 307px}.js #pricing{contain-intrinsic-size:auto 1128px}.js #faq{contain-intrinsic-size:auto 401px}.js #start{contain-intrinsic-size:auto 394px}.js footer{contain-intrinsic-size:auto 281px}}
 .t-try{grid-area:try}.t-pv{grid-area:pv}.t-voi{grid-area:voi}.t-day{grid-area:day}.t-rep{grid-area:rep}.t-res{grid-area:res}.t-who{grid-area:who}.t-st{grid-area:st}.t-tru{grid-area:tru}
 .tile{position:relative;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:22px;min-width:0;overflow:hidden;overflow:clip}
 .tile > *{position:relative;z-index:1}
@@ -571,6 +590,13 @@ html:not(.motion) #pf-go{display:none}
 .ph-bars{display:grid;gap:9px;margin-top:12px}
 .ph-bars i{display:block;height:12px;border-radius:6px;background:rgba(255,255,255,.07)}
 .ph-bars i + i{width:62%}
+/* while a new line waits for Sharpen, its result's place is held by the result's own outline: the empty post and, where "Why it
+   hits" will be, two bars under its label */
+.hb{display:none}
+.try-out.isph #out-hits > p:not(.hb){display:none}
+.try-out.isph #out-hits .hb{display:grid;margin-top:8px}
+.try-out.isph #out-hits .hb i{height:10px}
+.try-out.isph #out-k{color:var(--x-mute)}
 .try-out.hold{opacity:0;transition:none}
 .out-h{grid-area:h;display:flex;align-items:center;gap:8px;padding-left:4px;font-size:14px;font-weight:500;color:var(--ink-2);min-height:28px}
 .out-h > .ico{width:14px;height:14px;flex:none}
@@ -691,6 +717,7 @@ html:not(.motion) #pf-go{display:none}
 .vhero{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l c" "n c";align-items:center;gap:10px 28px;padding:20px 0 18px;border-bottom:1px solid var(--x-line)}
 .vhero .kp-l{grid-area:l}.vhero .kp-c{grid-area:c}
 .kp-n{grid-area:n;margin:0;font-size:13px;line-height:1.4;color:var(--x-mute);text-wrap:pretty}
+@media (max-width:389px){.kp-n .kpx{display:none}}
 .kp-l{margin:0;font-size:30px;line-height:1.2;font-weight:500;letter-spacing:-.026em;color:var(--x-ink);text-wrap:balance}
 .kp-w{background:linear-gradient(rgba(247,248,248,.62),rgba(247,248,248,.62)) 0 56%/100% max(1.5px,.07em) no-repeat;color:var(--x-mute);transition:color .25s}
 .kp-w.on{background-size:0% max(1.5px,.07em);color:var(--x-ink);text-decoration-color:transparent}
@@ -762,6 +789,16 @@ html:not(.motion) #pf-go{display:none}
 /* Previews' "Yours" rings once, the first time it opens on the visitor's own line */
 .motion .pv-who button.ping{animation:ping 1.1s var(--ease) .25s both}
 @keyframes ping{from{box-shadow:0 0 0 0 rgba(255,255,255,.55)}to{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
+/* the body's one sunrise: at 8:40 AM a low ember light (ember is only ever light) falls from the upper right onto the phone's top
+   edge. It lives in the phone's layer, over its frame and under its screen, so the rim catches it and the post stays clean; the
+   top edge carries the window's specular line. It fades in after the phone lands, and simply sits there without motion */
+.phone > .light.sun{left:70%;top:0;z-index:-1;--a:42deg;--bw:230px;--bl:560px;--sink:40px;--k:1}
+.phone > .sun .bloom{left:-250px;top:-52px;width:420px;height:104px}
+.phone > .sun .hot{left:-110px;top:-8px;width:200px;height:16px}
+.phone::after{content:"";position:absolute;top:0;left:30%;right:17%;height:1px;z-index:5;pointer-events:none;border-radius:1px;
+  background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.8) 66%,rgba(var(--hot)/.12));box-shadow:0 0 9px 1px rgba(var(--glow)/.32)}
+.motion .t-day.arm:not(.go) .phone > .sun,.motion .t-day.arm:not(.go) .phone::after{opacity:0}
+.motion .t-day.arm.go .phone > .sun,.motion .t-day.arm.go .phone::after{animation:glow 1.4s linear 1s both}
 /* the phone, rising from the bottom edge */
 .morn{display:flex;justify-content:center;align-items:flex-start;padding-top:64px}
 .phone{position:relative;width:300px;height:640px;margin:0 0 -120px;padding:10px;border-radius:48px;background:linear-gradient(180deg,var(--s3),var(--shell));flex:none;
@@ -878,6 +915,11 @@ html:not(.motion) #pf-go{display:none}
 .rv-qt .xname{font-size:13.5px;gap:0 5px}
 .rv-qt .xname .av{width:18px;height:18px;margin-right:2px}
 .rv-qt .qt{margin:3px 0 0;font-size:14px;line-height:1.4;color:var(--x-ink);text-wrap:pretty}
+/* beside the photos and the chart, Rafael's quoted post reads at post size, so his review is about as full as the others */
+@media (min-width:901px){.rv-qt{margin-top:12px;padding:12px 14px 13px}.rv-qt .xname .av{width:20px;height:20px}.rv-qt .qt{margin-top:5px;font-size:15.5px;line-height:1.45}}
+@media (min-width:901px) and (max-width:1199px){.rv-qt{padding:15px 16px 16px}.rv-qt .qt{margin-top:6px;font-size:16px}}
+/* 1100–1199 the review runs wider still: the photos and the chart take a wider crop, so Rafael's quote is as full as they are */
+@media (min-width:1100px) and (max-width:1199px){.t-st .st-post .media{aspect-ratio:3.6/1}.t-st .st-voice{gap:10px}.t-st .st-voice .queue{margin-top:14px;gap:4px}}
 
 /* ---- who: one hook for each kind of poster ---- */
 /* Who: four mini X posts in one card, the struck draft faint above each sharpened line */
@@ -897,17 +939,14 @@ html:not(.motion) #pf-go{display:none}
 .wtry[data-w]:hover .ico{transform:translateY(-1px)}
 a.wtry:hover .ico{transform:translateX(2px)}
 @media (min-width:901px) and (max-width:1099px){.t-who .wp .xname > span:not(.tag){display:none}}
-/* from 1100 Who spans 7+ columns (a band, or 7/5 with Trust), so its heading takes the Lead step */
+/* from 1100 Who is a band, so its heading takes the Lead step */
 @media (min-width:1100px){.t-who .cap{font-size:40px;line-height:1.04;letter-spacing:-.036em}}
-/* 1100–1199 Who is a band: its four posts two by two */
-@media (min-width:1100px) and (max-width:1199px){
+/* from 1100 Who is a band: its four posts two by two. A post beside a taller one keeps its own rhythm (the spare height sits under
+   it, never between its draft and its sharpened line) */
+@media (min-width:1100px){
   .wposts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px}
   .wp:nth-child(2){border-top:0}
-}
-/* ≥1200 Who shares a row with Trust: the feed fills the tile's height, its rows spread evenly */
-@media (min-width:1200px){
-  .t-who .wposts{flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-around;padding-block:6px}
-  .t-who .wp{padding:16px 0}
+  .wp{align-content:start}
 }
 
 /* ---- studio ---- */
@@ -974,16 +1013,17 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .motion .qs li.lit{animation:rowlit 1.2s var(--ease) both}
 @keyframes rowlit{from{background-color:rgba(255,255,255,.12)}}
 .facts{margin-top:auto;display:flex;flex-direction:column}
-/* the columns stack from the top (no stretched voids), and every client, before and after Approve, is one height */
+/* the columns stack from the top (no stretched voids), and every client, before and after Approve, is one height. A client whose
+   post is shorter (Rafael's quote) spreads the difference over the review's own gaps, so it never pools under Approve */
 @media (min-width:901px){
-  .st-post{min-height:0}
+  .st-post{min-height:0;justify-content:space-between}
   .rv-act{margin-top:4px}
   .st-voice .queue{margin-top:20px}
   .facts{margin-top:28px}
 }
 /* ≥1200: each column stacks from the top too. Approve sits right under the comment it answers and the queue 24px under "Goes out";
    the box is the tallest client's height (sizeStudio), the client list is compact enough never to stretch it, and the little slack
-   a shorter client leaves sits once, at the bottom */
+   a shorter client leaves is spread over the review's gaps */
 @media (min-width:1200px){.t-st .facts{margin-top:auto}.rv-act{margin-top:4px}.st-voice .queue{margin-top:12px}.st-l{gap:16px}
   /* Lena's photo and Marco's chart are a little taller than Priya's photo, so each client fills about the same height */
   .st-post .media.chart,#rv-media:has(> .ph.cafe){aspect-ratio:1.85/1}}
@@ -1021,19 +1061,13 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .rules-g{grid-column:2;display:flex;flex-direction:column;gap:8px}
 .rules{display:flex;align-items:flex-start;gap:10px;margin:0;font-size:15px;line-height:1.5;color:var(--ink-2)}
 .rules .ico{width:16px;height:16px;margin-top:3px;color:var(--ink-3);flex:none}
-/* ≥1200 Trust is the 5-column half of a row: one column, the list under the heading */
-@media (min-width:1200px){
-  .t-tru{display:flex;flex-direction:column;align-items:stretch;gap:22px}
-  /* the rows are as tall as their words. Whatever height the Who tile gives the row is one deliberate space, under the intro:
-     the heading opens the tile, and the Never list and its rules close it, anchored to the tile's foot */
-  .nev{flex:none;margin-top:auto;box-shadow:inset 0 1px 0 var(--line-2)}
-  .nev li,.nev li:first-child{flex-wrap:wrap;align-items:baseline;padding:14px 0}
-  .rules-g{margin-top:2px}
-}
 .rules span{text-wrap:balance}
 
 /* ---------- pricing ---------- */
 .sec{position:relative;padding-top:var(--sec)}
+/* (the page's scroll-padding, 80px, or 60px on a phone, comes on top of this margin) */
+#pricing,#faq{scroll-margin-top:calc(16px - var(--sec))}
+@media (max-width:760px){#pricing,#faq{scroll-margin-top:calc(20px - var(--sec))}}
 .head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,24em);gap:20px 56px;align-items:end;margin-bottom:40px}
 .head .lede{padding-bottom:8px}
 .bill{margin-bottom:20px}
@@ -1061,8 +1095,15 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .plan li .li-n{display:block;margin-top:2px;font-size:13.5px;color:var(--ink-3)}
 .plan .btn{margin-top:auto}
 /* desktop: the three cards share rows (name, for, price, note, list, button), so prices and lists line up whatever wraps */
-@supports (grid-template-rows:subgrid){@media (min-width:901px){.plan{display:grid;grid-row:span 6;grid-template-rows:subgrid;row-gap:0;align-content:start}.plan .btn{align-self:end}}}
+@supports (grid-template-rows:subgrid){@media (min-width:901px){.plan{display:grid;grid-row:span 7;grid-template-rows:subgrid;row-gap:0;align-content:start}.plan .btn{align-self:end}}}
 .incl{display:none}
+/* from 761 each card shows its four key rows, and "See everything included" opens the rest of all three at once (they share rows,
+   so the cards stay level, open or closed) */
+@media (min-width:761px){
+  .js .plans:not(.open) .plan li:not(.d4){display:none}
+  .js .incl{display:inline-flex;align-items:center;justify-self:start;align-self:start;height:32px;margin:-12px 0 20px;padding:0;font-size:14px;font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.35)}
+  .js .incl:hover{text-decoration-color:rgba(247,248,248,.8)}
+}
 .price .u2,.plan .mob{display:none}
 /* above the cards' shadows, so the line reads in one even grey */
 .plans-fine{position:relative;z-index:1;margin:20px auto 0;max-width:70ch;font-size:14px;line-height:1.5;color:var(--ink-3);text-align:center;text-wrap:balance}
@@ -1163,7 +1204,7 @@ footer{position:relative;overflow:hidden;padding:104px 0 0;color:var(--ink-3);fo
 /* the sign-off: the wordmark spans the content width (never more), its baseline on the page's last pixel, the hook whole */
 footer .wrap{container-type:inline-size}
 /* the giant mark: the same drawing, cut at the baseline by the page's end */
-.giant{margin:64px 0 0;font-size:min(224px,calc(100cqi / 5.3615));height:.79em;overflow:hidden;color:var(--ink);opacity:.07;user-select:none}
+.giant{margin:64px 0 0;font-size:min(224px,calc(100cqi / 5.4025));height:.79em;overflow:hidden;color:var(--ink);opacity:.07;user-select:none}
 .giant .wm{margin:-.014em 0 0 -.02em}
 
 /* ---------- the signup sheet (a design preview: it never claims an account was made) ---------- */
@@ -1173,6 +1214,10 @@ footer .wrap{container-type:inline-size}
 .motion .sheet[open]::backdrop{animation:backdrop .25s var(--ease) both}
 .sh-p{position:relative;width:min(452px,100%);border-radius:24px;padding:28px;background:linear-gradient(180deg,var(--s2) 0%,var(--s1) 100%);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.08),0 30px 80px -20px rgba(0,0,0,.9),0 0 0 1px rgba(0,0,0,.6)}
+/* the brand's light is there when the visitor commits: the lit-card's ember hairline, centred over the icon and the title (no
+   bloom, no beam) */
+.sh-p::after{content:"";position:absolute;top:0;left:22%;right:22%;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(var(--glow)/0),rgba(var(--glow)/.7) 30%,rgba(var(--hot)/.95) 50%,rgba(var(--glow)/.7) 70%,rgba(var(--glow)/0));box-shadow:0 0 14px 1px rgba(var(--glow)/.38)}
 .motion .sheet[open] .sh-p{animation:sheet .35s var(--ease) both}
 /* it leaves the way it came */
 .motion .sheet.closing .sh-p{animation:sheet-out .16s var(--ease-io) both}
@@ -1250,8 +1295,10 @@ footer .wrap{container-type:inline-size}
 }
 @media (max-width:1099px){
   .bento{grid-template-columns:repeat(6,minmax(0,1fr));
-    grid-template-areas:"try try try try try try" "pv pv pv rep rep rep" "voi voi voi voi voi voi" "day day day day day day" "res res res who who who" "st st st st st st" "tru tru tru tru tru tru"}
-  /* Results and Who share a row: their heads take one size, the largest that keeps "Trades, launches, newsletters." on one line */
+    grid-template-areas:"try try try try try try" "pv pv pv who who who" "voi voi voi voi voi voi" "day day day day day day" "rep rep rep res res res" "st st st st st st" "tru tru tru tru tru tru"}
+  /* rows are paired by build, so no tile is stretched past its own content: Previews (a feed that runs on under its fade) sits
+     beside Who right after Try, and Replies (a thread whose teaser runs to the card's edge) beside Results, the two X moments of
+     the morning. The half tiles' heads take one size, the largest that keeps "Trades, launches, newsletters." on one line */
   .t-pv,.t-rep,.t-res,.t-who{container-type:inline-size}
   .t-pv .track button{padding:0 6px}
   .plan{padding:22px}
@@ -1339,6 +1386,7 @@ footer .wrap{container-type:inline-size}
   .plan{display:flex;flex-direction:column;align-items:stretch;padding:24px;border-radius:24px}
   .plan:last-child{grid-column:1/-1}
   .plan:last-child ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,auto);grid-auto-flow:column;column-gap:28px}
+  .js .plans:not(.open) .plan:last-child ul{grid-template-rows:repeat(2,auto)}
   .plan .h3{font-size:22px}
   .plan .for{margin:6px 0 18px;font-size:15px}
   .plan .price{flex-direction:row;align-items:baseline;gap:8px;text-align:left}
@@ -1399,7 +1447,7 @@ footer .wrap{container-type:inline-size}
   .ex .pills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:0 16px;gap:6px;width:100%;background:none;box-shadow:none}
   .ex .pills::-webkit-scrollbar{display:none}
   .ex .pills::after{content:"";flex:0 0 10px}
-  .sx{--fl:#000;--fr:transparent;-webkit-mask-image:linear-gradient(90deg,var(--fl),#000 28px,#000 calc(100% - 40px),var(--fr));mask-image:linear-gradient(90deg,var(--fl),#000 28px,#000 calc(100% - 40px),var(--fr))}
+  .sx{--fl:#000;--fr:transparent;-webkit-mask-image:linear-gradient(90deg,var(--fl),#000 28px,#000 calc(100% - 76px),var(--fr) calc(100% - 8px));mask-image:linear-gradient(90deg,var(--fl),#000 28px,#000 calc(100% - 76px),var(--fr) calc(100% - 8px))}
   .sx.l{--fl:transparent}
   .sx.end{--fr:#000}
   .ex .pills button{flex:none;height:36px;padding:0 13px;font-size:13px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
@@ -1678,7 +1726,25 @@ footer .wrap{container-type:inline-size}
   .ex .pills button{padding:0 11px}
   .tile{gap:12px}
 }
+/* ≤900 (tablet portrait and phones): each persona's struck draft reads whole, in up to two lines across the post's full width, so
+   the before/after shows all its fluff. The action keeps its label and moves up beside the name; a tag that doesn't fit beside it
+   steps under the name, never clipped */
+@media (max-width:900px){
+  .t-who .wp{grid-template-areas:"av nm bt" "av wd wd" "av tx tx"}
+  .t-who .wp .xname{flex-wrap:wrap;row-gap:1px;white-space:normal}
+  .t-who .wp .xname > *{white-space:nowrap}
+  .t-who .wtry{align-self:start;margin:-3px 0;padding:0 7px;gap:3px}
+  .t-who .wd{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;text-overflow:clip;margin-top:2px}
+}
+@media (min-width:761px) and (max-width:900px){.t-who .wd{font-size:12.5px}}
+/* 761–900: the Try card keeps room for a two-line result, so a longer line than the example's never grows the tile */
+@media (min-width:761px) and (max-width:900px){#out-line{min-height:2.9em;min-height:2lh}}
+@media (max-width:374px){.t-who .wp{padding:10px 0}.t-who .wd{margin-top:1px}}
+/* the narrowest phones give the posts a little more measure (a smaller avatar, a step smaller type), so a draft keeps to two
+   rows and a sharpened two-beat line runs on as prose instead of taking a third */
+@media (max-width:400px){.t-who .xtext .bt{display:inline}.t-who .wp{grid-template-columns:32px minmax(0,1fr) auto;column-gap:9px}.t-who .wp .av{width:32px;height:32px}.t-who .wp .xtext{font-size:14.5px}.t-who .wd{font-size:12.5px}}
 /* the narrowest phones: the counter steps aside for good, so Clear and Sharpen always share one row */
+@media (max-width:760px){.cbar:has(#try-undo:not([hidden])) #try-clear{display:none}}
 @media (max-width:339px){.signin{display:none}.try-c .count{display:none}.try-c .cbar{justify-content:flex-end}.flags,.flags:empty{min-height:42px}.try-out .xtext{min-height:3.9em}}
 @media (max-width:374px){
   :root{--sec:46px}
@@ -1846,7 +1912,7 @@ footer .wrap{container-type:inline-size}
             <p class="empty-c" id="out-empty" hidden></p>
             <div class="xcard ph-card" id="out-ph" aria-hidden="true" hidden><div class="xrow"><span class="av you xav"></span><div><p class="xname"><b>You</b><span>@you</span><span>·</span><span>now</span></p><p class="ph-bars"><i></i><i></i></p></div></div></div>
           </div>
-          <div class="hits" id="out-hits"><span class="k" id="out-k">Why it hits</span><p id="out-why">Said plainly, “sell into strength” reads like you’ve earned it.</p><p class="n2" id="out-note"></p><p class="kp" id="out-kept">Kept your lowercase.</p></div>
+          <div class="hits" id="out-hits"><span class="k" id="out-k">Why it hits</span><p id="out-why">Said plainly, “sell into strength” reads like you’ve earned it.</p><p class="n2" id="out-note"></p><p class="kp" id="out-kept">Kept your lowercase.</p><p class="ph-bars hb" aria-hidden="true"><i></i><i></i></p></div>
           <div class="keep" id="out-keep"><button class="btn btn-white btn-x" type="button" id="try-keep">Start free</button><button class="inl back-w" type="button" id="try-back" hidden>Back to who it’s for</button></div>
           <p class="sr" id="try-status" role="status"></p>
         </div>
@@ -1916,7 +1982,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <div class="vc-h"><span class="av me" aria-hidden="true"></span><p class="xname"><b id="vo-name">heycape’s voice</b><span class="tag eg">Example</span></p><span class="lrn">Learned from 8 posts</span></div>
         <div class="vhero">
           <p class="kp-l"><span class="kp-w sqz" id="kp-w">ngl</span> eth looks strong here.</p>
-          <p class="kp-n" id="kp-n" aria-live="polite">Put back once. Twice and it stays.</p>
+          <p class="kp-n" id="kp-n" aria-live="polite"><span class="kpx">You put it back once. </span>Once more and it stays.</p>
           <div class="kp-c">
             <button class="mini kp-b" type="button" id="kp-b" aria-describedby="kp-n">Put it back</button>
             <span class="kp-s" id="kp-s" aria-hidden="true"><i class="on"></i><i></i></span>
@@ -1956,7 +2022,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <div class="ph fh" style="--i:2;--fx:-22%" aria-hidden="true"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div>
         <span class="plab">8:40&nbsp;AM</span>
         <button class="replay plab" type="button" data-replay="day" aria-label="Replay the morning post"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg>Replay</button>
-        <figure class="phone m-land" style="--md:.2s" aria-label="Posted at 8:40 AM, the time you picked: heycape’s post in a feed (example)">
+        <figure class="phone m-land" style="--md:.2s" aria-label="Posted at 8:40 AM, the time you picked: heycape’s post in a feed (example)"><div class="light sun" aria-hidden="true"><i class="beam"></i><i class="core"></i><i class="bloom"></i><i class="hot"></i></div>
           <div class="scrn">
             <span class="isl" aria-hidden="true"></span>
             <div class="sbar" aria-hidden="true"><span class="tnum">8:52</span><span class="ind"><svg viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="15" height="8" rx="1.6"/><rect x="22.5" y="4" width="1.6" height="4" rx=".8" fill-opacity=".5"/></svg></span></div>
@@ -2212,7 +2278,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const PLAN = {
     free: { t: 'Start free', y: 'Free forever. No card.', m: 'Free forever. No card.' },
     pro: { t: 'Start with Pro', y: '$12 a month, billed yearly ($144). Cancel anytime.', m: '$16 a month, billed monthly. Cancel anytime.' },
-    studio: { t: 'Start with Studio', y: '$18 a month per client, billed yearly. Cancel anytime.', m: '$24 a month per client, billed monthly. Cancel anytime.' }
+    studio: { t: 'Start with Studio', y: '$18 a month per client, billed yearly ($216 per client). Cancel anytime.', m: '$24 a month per client, billed monthly. Cancel anytime.' }
   };
   /* what the visitor came to do, when it isn't simply "start" */
   const INTENT = {
@@ -2224,14 +2290,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the plan and price the visitor picked, said back at the honest end of the preview */
   const PICKED = {
     pro: { y: 'Pro at $12 a month, billed yearly ($144)', m: 'Pro at $16 a month, billed monthly' },
-    studio: { y: 'Studio at $18 a month per client, billed yearly', m: 'Studio at $24 a month per client, billed monthly' }
+    studio: { y: 'Studio at $18 a month per client, billed yearly ($216 per client)', m: 'Studio at $24 a month per client, billed monthly' }
   };
   const DONE = {
     /* an example's line is never "kept" as yours: only your own line rides into your account */
     start: (line, ex) => plan === 'free' ? `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in on Free ($0, no card)${line && !ex ? ' and keeps your line' : ''}.`
       : `This is a design preview, so no account was made and nothing can be charged. Once Hookworthy is live, this signs you in and starts ${PICKED[plan][bill]}${line && !ex ? ', with your line kept' : ''}.`,
     rewrite: (line, ex) => `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in and writes three takes of ${line ? (ex ? 'this line' : 'your line') : 'it'}.`,
-    schedule: () => 'This is a design preview, so no account was made. Once Hookworthy is live, this signs you in, and each post you schedule goes out at the time you pick.',
+    schedule: () => 'This is a design preview, so no account was made. Once Hookworthy is live, this signs you in, and your scheduled posts go out at the time you pick: 15 a month on Free, then one tap each.',
     signin: () => 'This is a design preview, so there’s nothing to sign in to yet. Once Hookworthy is live, this is where your drafts and your queue come back.'
   };
   function sheetPaint() {
@@ -2444,13 +2510,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     q('pf-when').innerHTML = gw ? `Waits for ${GW.f}’s yes<span class="fw-t"> · ${GW.when}</span>` : 'Your best time: 8:40&nbsp;AM';
     q('pf-sched').textContent = gw ? `Send to ${GW.f}` : 'Schedule';
   }
-  /* one column (≤900): the window is as tall as the example on show, so a short post never leaves a band under it. A pick (the
+  /* the window is as tall as the example on show at every width, so a short example never leaves a band in it. A pick (the
      visitor's own tap) eases the height from the old example's to the new one's */
   const oneCol = () => matchMedia('(max-width:900px)').matches;
   function showEx(i) {
-    const e = EX[i], h0 = oneCol() && !RM ? pfBody.getBoundingClientRect().height : 0; curEx = i;
+    const e = EX[i], h0 = !RM ? pfBody.getBoundingClientRect().height : 0; curEx = i;
     setAv($('#pf-av'), e.av); setAv($('#pf-av2'), e.av);
-    paintEx(proof, e);
+    paintEx(proof, e); levelHero();
     if (h0) { const h1 = pfBody.getBoundingClientRect().height; clearTimeout(pfBody._t);
       if (Math.abs(h1 - h0) > 1) { pfBody.style.overflow = 'clip'; pfBody.style.height = h0 + 'px'; void pfBody.offsetHeight; pfBody.style.transition = 'height .26s cubic-bezier(.2,.8,.2,1)'; pfBody.style.height = h1 + 'px';
         pfBody._t = setTimeout(() => { pfBody.style.height = ''; pfBody.style.transition = ''; pfBody.style.overflow = ''; }, 300); } }
@@ -2458,37 +2524,50 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     $$('#proof .ex button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.ex === i)));
     replay();
   }
-  /* one window height for all four examples, measured at this width: a hidden copy of the body takes each example in turn,
-     and the tallest sets the body's floor. The live body is never touched, so nothing on screen restarts */
   const pfBody = proof.querySelector('.body');
-  function sizeHero() {
-    if (oneCol()) { pfBody.style.removeProperty('--hm'); heroFonts = !document.fonts || document.fonts.status === 'loaded'; return; }
-    /* four copies, filled before they go in, then measured together: one layout, not four */
-    const cs = EX.map(e => { const c = pfBody.cloneNode(true); c.classList.add('sizer'); c.setAttribute('aria-hidden', 'true'); c.style.removeProperty('--hm'); paintEx(c, e); return c; });
-    proof.append(...cs); const h = Math.max(...cs.map(c => c.getBoundingClientRect().height));
-    /* the tallest example joins the stylesheet's floors (max()), which stay live: a floor that keeps the fold off a row of text
-       still applies at that height */
-    cs.forEach(c => c.remove()); pfBody.style.setProperty('--hm', Math.ceil(h) + 'px'); heroFonts = !document.fonts || document.fonts.status === 'loaded';
+  /* two panes: both end level, so neither shows a band of empty glass. Measured at their own heights (.lvl, never painted), the
+     shorter pane's text (the draft, or the post's line) takes a measure 5% narrower at a time while that gains it height without
+     passing the taller pane; the window's height is always the taller pane's own, so levelling never moves the page. What's left
+     (under ~24px) is spread over the shorter pane's gaps by the stylesheet */
+  function levelHero() {
+    const dt = $('#pf-draft'), pt = $('#pf-sharp'); dt.style.maxWidth = pt.style.maxWidth = '';
+    if (oneCol()) return;
+    const pd = proof.querySelector('.pane.draft'), ps = proof.querySelector('.pane.sharp');
+    proof.classList.add('lvl');
+    const hs = () => [pd.getBoundingClientRect().height, ps.getBoundingClientRect().height];
+    let [a, b] = hs();
+    for (let n = 0; n < 3 && Math.abs(a - b) > 24; n++) {
+      const isD = a < b, el = isD ? dt : pt, short = Math.min(a, b), tall = Math.max(a, b), keep = el.style.maxWidth, w0 = el.getBoundingClientRect().width;
+      let w = w0, got = false;
+      while ((w *= .95) >= w0 * .6) {
+        el.style.maxWidth = Math.floor(w) + 'px';
+        const [a2, b2] = hs(), s2 = isD ? a2 : b2;
+        if (s2 > short + 1) { if (s2 <= tall + 1) { a = a2; b = b2; got = true; } break; }
+      }
+      if (!got) { el.style.maxWidth = keep; break; }
+    }
+    proof.classList.remove('lvl');
   }
-  let heroFonts = false;
-  /* the CSS floors already hold the tallest example at every width, so this refinement waits for an idle moment after first paint */
-  idle(sizeHero, 600);
-  if (document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(() => { if (!heroFonts) idle(sizeHero, 600); });
+  let heroFonts = !document.fonts || document.fonts.status === 'loaded';
+  /* levelled before the first paint where the script runs in time; the fonts' arrival and a new width level it again */
+  levelHero();
+  if (!heroFonts) document.fonts.ready.then(() => { heroFonts = true; levelHero(); });
   let heroW = innerWidth, heroRaf = 0;
-  addEventListener('resize', () => { if (innerWidth === heroW) return; heroW = innerWidth; cancelAnimationFrame(heroRaf); heroRaf = requestAnimationFrame(sizeHero); });
+  addEventListener('resize', () => { if (innerWidth === heroW) return; heroW = innerWidth; cancelAnimationFrame(heroRaf); heroRaf = requestAnimationFrame(levelHero); });
   $$('#proof .ex button').forEach(b => b.addEventListener('click', () => showEx(+b.dataset.ex)));
   $('#pf-go').addEventListener('click', () => showEx(curEx));
   /* the window's Schedule opens the sheet to schedule your own posts (an example's post is never queued as yours). The Ghostwriter's
      "Send to Marco" opens his review link in Studio, where his yes is the next tap */
   $('#pf-sched').addEventListener('click', e => { if (curEx === GW.ex) toClient(GW.c); else openSheet({ plan: 'free', intent: 'schedule', line: '' }, e.currentTarget); });
-  /* the opening plays where it can be seen: with the window at least 40% in view, and no sooner than ~1.2 s after first paint, when
-     the page's start-up work is done, so the strike runs on a free main thread. It plays once; the pills and "See it again" replay it */
+  /* the opening plays where it can be seen: with the window at least 40% in view, about 0.3 s after first paint (the page's
+     start-up tasks are done by then, so the strike runs on a free main thread), and the post's words land by ~1.3 s. It plays once;
+     the pills and "See it again" replay it */
   if (!RM) {
     window.__hwHero = 1;
     let inView = !('IntersectionObserver' in window), timeOk = false;
-    const heroStart = () => { if (heroGo || !inView || !timeOk) return; heroGo = true; requestAnimationFrame(() => { proof.classList.add('play'); heroFall(.25, 1); }); };
+    const heroStart = () => { if (heroGo || !inView || !timeOk) return; heroGo = true; requestAnimationFrame(() => { proof.classList.add('play'); heroFall(.15, 1); }); };
     /* the clock starts at first paint (the script can run before it); a browser without paint timing starts it a moment later */
-    let t0 = null; const fromPaint = t => { if (t0 != null) return; t0 = t; setTimeout(() => { timeOk = true; heroStart(); }, Math.max(0, t + 1200 - performance.now())); };
+    let t0 = null; const fromPaint = t => { if (t0 != null) return; t0 = t; setTimeout(() => { timeOk = true; heroStart(); }, Math.max(0, t + 300 - performance.now())); };
     const f0 = performance.getEntriesByName && performance.getEntriesByName('first-contentful-paint')[0];
     if (f0) fromPaint(f0.startTime);
     else { try { const po = new PerformanceObserver(l => { const e = l.getEntriesByName('first-contentful-paint')[0]; if (e) { po.disconnect(); fromPaint(e.startTime); } }); po.observe({ type: 'paint', buffered: true }); } catch (e) { }
@@ -2570,13 +2649,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* ---------- the voice it learned: put "ngl" back, and the strike retracts ---------- */
   /* the app's rule: put a word back twice and it's learned. Cut a learned word and it's unlearned, so the count starts over */
   const kpB = $('#kp-b'), kpW = $('#kp-w'), kpN = $('#kp-n'); let kpBack = 1;
-  const KP = { '1|1': 'Put back once. Twice and it stays.', '2|1': 'Learned: “ngl” stays from now on.',
-    '0|0': 'Unlearned. Put it back twice and it stays.', '1|0': 'Put back once. Twice and it stays.' };
+  /* (the narrowest phones drop the .kpx words, so the line keeps to two rows beside the button) */
+  const KP = { '1|1': 'Put back once. Do it again and it stays.', '2|1': 'Learned: “ngl” stays from now on.',
+    '0|0': 'Unlearned. Put it back twice<span class="kpx"> and it stays</span>.', '1|0': '<span class="kpx">You put it back once. </span>Once more and it stays.' };
   kpB.addEventListener('click', () => {
     const on = !kpW.classList.contains('on'); kpW.classList.toggle('on', on);
     if (on) kpBack = Math.min(2, kpBack + 1); else if (kpBack >= 2) kpBack = 0;
     kpB.textContent = on ? 'Cut it' : 'Put it back';
-    kpN.textContent = KP[`${kpBack}|${on ? 1 : 0}`];
+    kpN.innerHTML = KP[`${kpBack}|${on ? 1 : 0}`];
     $$('#kp-s i').forEach((d, j) => d.classList.toggle('on', j < kpBack));
   });
 
@@ -2631,7 +2711,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (rpEditing()) rpStopEdit();
     rpState = 'sent'; rpBox.classList.add('sent'); rpBox.classList.remove('lit-card'); rpReplay.hidden = true;
     rpLab.innerHTML = '<span style="color:var(--x-ink);font-weight:650">heycape</span> @heycape_ · now';
-    rpAct.innerHTML = `<span class="sent-st" tabindex="-1" id="rp-st">${icn('tick', 1)}Sent.</span><button class="mini ghost" type="button" id="rp-undo">Undo</button>`;
+    rpAct.innerHTML = `<span class="sent-st" tabindex="-1" id="rp-st">${icn('tick', 1)}Sent (demo)</span><button class="mini ghost" type="button" id="rp-undo">Undo</button>`;
     $('#rp-undo').addEventListener('click', () => rpDraft(true));
     if (!RM) { rpBox.classList.remove('flash'); void rpBox.offsetWidth; rpBox.classList.add('flash'); }
     $('#rp-st').focus();
@@ -2777,9 +2857,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     billing = b.dataset.b; $$('.bill button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     $$('[data-y]').forEach(el => { el.textContent = el.dataset[billing]; if (!RM) { el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); } });
   }));
+  /* a phone opens one card; from 761 the cards share rows, so one tap opens all three (each button says so) */
   $$('.incl').forEach(b => b.addEventListener('click', () => {
-    const open = b.closest('.plan').classList.toggle('open'); b.setAttribute('aria-expanded', String(open));
-    b.textContent = open ? 'Show less' : 'See everything included';
+    const all = !narrow(), plans = $('.plans'), open = all ? !plans.classList.contains('open') : !b.closest('.plan').classList.contains('open');
+    if (all) { plans.classList.toggle('open', open); $$('.plan').forEach(p => p.classList.toggle('open', open)); } else b.closest('.plan').classList.toggle('open', open);
+    (all ? $$('.incl') : [b]).forEach(x => { x.setAttribute('aria-expanded', String(open)); x.textContent = open ? 'Show less' : 'See everything included'; });
   }));
 
   /* ---------- FAQ: disclosures ---------- */
@@ -3099,14 +3181,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         : `<button type="button"${c.held ? ' class="held"' : ''} data-k="${k}" aria-pressed="false" data-why="${esc(c.why)}">${esc(c.w)}${c.n > 1 ? `<span class="xn"> ×${c.n}</span>` : ''}</button>`); }).join('') + (more > 0 ? `<span class="more">+${more}</span>` : '') : '';
     if (C.length && !plain) showWhy(0); else why.textContent = '';
   }
-  function showEmpty(msg) { outCard.hidden = true; outPh.hidden = true; outEmpty.hidden = false; outEmpty.textContent = msg; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; out.classList.remove('stale', 'hold'); tryLine = ''; pvYours(''); }
+  function showEmpty(msg) { out.classList.remove('isph'); outCard.hidden = true; outPh.hidden = true; outEmpty.hidden = false; outEmpty.textContent = msg; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; out.classList.remove('stale', 'hold'); tryLine = ''; pvYours(''); }
   /* the engine didn't load, even after one retry: said plainly where the result would land, never a spinner that never ends */
   const DOWN = 'The demo engine didn’t load. Reload to try again.';
   function tryDown() { showEmpty(DOWN); outSt.last = 'How it would post'; outSt(outSt.last); tryPrimary(false); const st = $('#try-status'); if (st.textContent !== DOWN) st.textContent = DOWN; }
   function engineDown() { if (ta.value.trim() && ta.value !== sharpenedFor) tryDown(); finDown(); }
-  function showCard() { outCard.hidden = false; outPh.hidden = true; outEmpty.hidden = true; outHits.hidden = false; }
+  function showCard() { out.classList.remove('isph'); outCard.hidden = false; outPh.hidden = true; outEmpty.hidden = true; outHits.hidden = false; }
   /* a different line from the one on show: its result isn't here yet, so an empty post waits (never the last line's result) */
-  function showPh() { outCard.hidden = true; outEmpty.hidden = true; outPh.hidden = false; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; tryLine = ''; pvYours(''); }
+  function showPh() { out.classList.add('isph'); $('#out-k').textContent = 'Why it hits'; outCard.hidden = true; outEmpty.hidden = true; outPh.hidden = false; outHits.hidden = false; outKeep.hidden = true; tryAlt.hidden = true; tryLine = ''; pvYours(''); }
   /* whose line it is: the visitor's ("You"), or the example's author, said quietly after the name, as everywhere on the page */
   const byWho = t => { if (!ours(t)) return null; const w = WHO.find(x => x.draft === t), e = EX.find(x => x.draft === t);
     if (w) return { n: w.n, h: w.h, av: w.av, tag: 'Example' }; if (e) return { n: e.who, h: e.handle, av: e.av, tag: EX.indexOf(e) === GW.ex ? 'Example client' : 'Example' };
@@ -3268,11 +3350,19 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     stash('Cleared', '');
     touched = true; keepT = []; tryReplay.hidden = true; clear(tryT); ta.value = ''; paint(); keepLabel(); ta.focus();
   });
-  ta.addEventListener('input', () => { if (!undone) return; clearTimeout(undoT); undone = null; undoEl.hidden = true; cnt.hidden = false; });
+  ta.addEventListener('input', () => { if (!undone || undone.typed) return; clearTimeout(undoT); undone = null; undoEl.hidden = true; cnt.hidden = false; });
+  /* the example (or a starter, a persona's draft) starts selected, so the first keystroke replaces it: "Replaced · Undo" brings it
+     back, with its result, for a few seconds while you type */
+  let over = null;
+  ta.addEventListener('beforeinput', e => { over = null; const v = ta.value;
+    if (/^(?:insert|delete)/.test(e.inputType) && v && ours(v) && ta.selectionStart === 0 && ta.selectionEnd === v.length)
+      over = { v, k: keepT.slice(), R: R && sharpenedFor === v && !outCard.hidden ? R : null, ver, typed: true, x: v === TRY0 && !R }; });
+  ta.addEventListener('input', () => { if (!over) return; undone = over; over = null; clearTimeout(undoT); $('#try-undo-l').textContent = 'Replaced'; undoEl.hidden = false; cnt.hidden = true;
+    undoT = setTimeout(() => { undoEl.hidden = true; cnt.hidden = false; undone = null; }, 6000); });
   /* the counter is true on first paint */
   cnt.textContent = `${ta.value.length} / 280`;
   $('#try-undo-b').addEventListener('click', () => { if (!undone) return; const u = undone; ta.value = u.v; keepT = u.k; undone = null; clearTimeout(undoT); undoEl.hidden = true; cnt.hidden = false;
-    if (u.R) { R = u.R; ver = u.ver; sharpenedFor = u.v; paint(); render('alt'); } else paint(); ta.focus(); });
+    if (u.x) { touched = false; picked = true; } if (u.R) { R = u.R; ver = u.ver; sharpenedFor = u.v; paint(); render('alt'); } else paint(); ta.focus(); });
   goBtn.addEventListener('click', go);
   tryKeep.addEventListener('click', e => openSheet({ plan: 'free', line: touched ? tryLine : '', example: ours(sharpenedFor) }, e.currentTarget));
   /* phones: the starter row snaps chip by chip, and its end is a snap point too, so a spacer after the last chip makes that end
@@ -3505,8 +3595,16 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     [TRY0, ...STARTERS].forEach(v => { c.value = v; if (!sized) { c.style.height = 'auto'; c.style.height = c.scrollHeight + 'px'; } h = Math.max(h, c.getBoundingClientRect().height); });
     edBox.removeChild(c); ta.style.minHeight = Math.ceil(h) + 'px';
   };
-  let tryW = 0; const lockTry = () => { if (innerWidth === tryW) return; tryW = innerWidth; lockTa(); if (!narrow()) { out.style.minHeight = ''; return; } if (touched) return; out.style.minHeight = ''; out.style.minHeight = out.offsetHeight + 'px'; };
-  near($('#sharpen'), () => { lockTry(); addEventListener('resize', lockTry); stOn = true; stTail(); if (document.fonts) document.fonts.ready.then(stTail); }, 1000, true);
+  /* the tile keeps one height while it's used, at every width: the result area holds the room the example's result takes here,
+     less whatever sits above it at the moment (a typing hint, the Undo chip, a longer line), so the tile's edge and everything below
+     it stay put. Only a line taller than the examples grows it. Measured on the untouched example; a new width measures again */
+  const tryBox = $('#sharpen .try'); let tryH0 = 0;
+  const holdTry = () => { if (!tryH0) return; const m = Math.max(0, Math.round(tryH0 - (out.getBoundingClientRect().top - tryBox.getBoundingClientRect().top))) + 'px';
+    if (out.style.minHeight !== m) out.style.minHeight = m; };
+  let tryW = 0; const lockTry = () => { if (innerWidth === tryW) return; tryW = innerWidth; lockTa();
+    out.style.minHeight = ''; tryH0 = out.getBoundingClientRect().bottom - tryBox.getBoundingClientRect().top; holdTry(); };
+  near($('#sharpen'), () => { lockTry(); addEventListener('resize', lockTry); stOn = true; stTail(); if (document.fonts) document.fonts.ready.then(stTail);
+    if ('ResizeObserver' in window) { const ro = new ResizeObserver(holdTry); ro.observe(card); ro.observe($('#try-starters')); } }, 1000, true);
 
   /* the pointer light: created on the first mouse visit, compositor-only */
   if (matchMedia('(hover:hover) and (pointer:fine)').matches) $$('.tile').forEach(t => {

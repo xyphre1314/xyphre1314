@@ -117,7 +117,9 @@ test('v4.4: coverage (z-54, z-72, z-107), long run-ons in beats, and true receip
   for (const [m, o] of MODES) assert.equal(L(z72, o), "If you're just starting out at the gym, just focus on showing up 3 times a week.", m);
   assert.equal(S('My advice is simple: start small.').line, 'My advice is simple: start small.');
   assert.equal(L("I don't usually post stuff like this but I just wanted to say how grateful I am for my friends this year."), "I don't usually post stuff like this. But I'm so grateful for my friends this year.");
-  assert.equal(L('We just wanted to let you know how excited we are to finally launch this.'), "We're so excited to finally launch this."); /* v4.5: straight, as the draft has no curly apostrophe */
+  /* v4.8 (round-11 uiux-1): the announcement grammar then takes the feeling too, and the writer's own verb leads; the draft has no
+     apostrophe, so the page's ’ (brand-4) */
+  assert.equal(L('We just wanted to let you know how excited we are to finally launch this.'), 'We’re finally launching this.');
   assert.equal(hard('Excited we are to finally launch this.', 'We just wanted to let you know how excited we are to finally launch this.'), 'exclamation lost its how');
   /* a line over 280 is said in beats where it can be */
   const z35 = "I've been building this company for almost four years now and if I'm being honest, the thing that I wish someone had told me at the very beginning is that you will basically never feel ready for any of the big moments, whether that's hiring your first employee, raising your first round, or firing someone who you really like, and that's completely okay because nobody actually does.";

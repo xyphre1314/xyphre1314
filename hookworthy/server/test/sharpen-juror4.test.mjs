@@ -82,8 +82,8 @@ test('juror 4, hook-4/5: a cut between clauses keeps the comma; every emoji stay
     assert.deepEqual(l, d, `${t} (${at}) → ${R.line}: emoji changed`);
     assert.doesNotMatch(R.line, /‍\s|\s‍/u, `${t} (${at}): a ZWJ next to a space`);
   });
-  /* the ask move keeps a tail emoji at the very end */
-  assert.match(L('Walking is honestly the most underrated habit 🙌🏽'), /\? Walking\.? ?🙌🏽$/u);
+  /* the ask move keeps a tail emoji at the very end (v4.8: as another take; the plain cut leads) */
+  { const w = S('Walking is honestly the most underrated habit 🙌🏽'); assert.equal(w.line, 'Walking is the most underrated habit 🙌🏽'); assert.ok(w.alts.some(a => /\? Walking\.? ?🙌🏽$/u.test(a.line)), JSON.stringify(w.alts)); }
   /* r86 pass 6 (juror 5, hook-7): "Reminder" says how to take the line, so it stays (the prompt's rule 4); the emoji still stays whole */
   assert.equal(L('Reminder that walking 10k steps a day is literally one of the most underrated things you can do for your health 🚶‍♂️'), 'Reminder that walking 10k steps a day is one of the most underrated things you can do for your health 🚶‍♂️');
 });
