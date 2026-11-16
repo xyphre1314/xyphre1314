@@ -31,7 +31,12 @@ if (!H.sharpenLine) { console.error(ENG + ' has no sharpenLine yet'); process.ex
 console.log('engine:', ENG);
 /* the app runs core.js and the page its Sharpen-only bundle: every draft checked here must get the same result from both */
 const APP = ENG === 'core.js' ? null : require(path.join(ROOT, 'core.js')), split = [];
-const sharpenLine = (t, o) => { const R = H.sharpenLine(t, o); if (APP) { const A = APP.sharpenLine(t, o); if (JSON.stringify(A) !== JSON.stringify(R)) split.push(t); } return R; };
+/* since pass 12 the built page loads sharpen.min.js (made from sharpen.js by concepts/r86/tools/minify.js, its banner carrying
+   sharpen.js's sha256): it must be current, and give the same result as sharpen.js for every draft checked here */
+const MINP = path.join(ROOT, 'sharpen.min.js'), MIN = ENG === 'sharpen.js' && fs.existsSync(MINP) ? require(MINP) : null, minSplit = [];
+const minStale = MIN && !fs.readFileSync(MINP, 'utf8').split('\n')[0].includes('sha256:' + require('crypto').createHash('sha256').update(fs.readFileSync(CORE)).digest('hex').slice(0, 16));
+const sharpenLine = (t, o) => { const R = H.sharpenLine(t, o); if (APP) { const A = APP.sharpenLine(t, o); if (JSON.stringify(A) !== JSON.stringify(R)) split.push(t); }
+  if (MIN && JSON.stringify(MIN.sharpenLine(t, o)) !== JSON.stringify(R)) minSplit.push(t); return R; };
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
@@ -163,5 +168,8 @@ if (WRITE) {
 /* sharpen.js is generated from core.js (node tools/build-sharpen.mjs): a draft they disagree on means it is stale */
 if (split.length) console.log(`warning: ${ENG} and core.js disagree on ${split.length} draft(s) here, e.g. "${split[0]}": sharpen.js is stale (node tools/build-sharpen.mjs)`);
 else if (APP) console.log(`${ENG} and core.js agree on every draft checked`);
+if (MIN) { if (minStale) bad.push('sharpen.min.js is stale: sharpen.js changed since it was made (run build.py, which remakes it)');
+  if (minSplit.length) bad.push(`sharpen.min.js and sharpen.js disagree on ${minSplit.length} draft(s), e.g. "${minSplit[0]}"`);
+  else console.log(`sharpen.min.js ${minStale ? 'is STALE' : 'is current'} and agrees with sharpen.js on every draft checked`); }
 if (bad.length) { console.log(`${bad.length} mismatch(es):\n- ` + bad.join('\n- ')); process.exit(WRITE ? 0 : 1); }
 console.log(`hero-sync: every example matches HWCore.sharpenLine (${ENG})`);

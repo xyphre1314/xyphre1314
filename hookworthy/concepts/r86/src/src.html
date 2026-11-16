@@ -254,7 +254,7 @@ html:not(.motion) .replay:not(.alt){display:none}
 /* the wordmark: the hook-h is the word's own h. One colour, no badge */
 /* the wordmark is one outlined drawing (the hook h and "ookworthy", 100 units to the em), never live text beside a drawn h */
 .mark{display:inline-flex;font-size:20px;line-height:1;color:var(--ink);padding:6px 0;border-radius:6px}
-.wm{display:block;width:5.3325em;height:.9875em;fill:currentColor;overflow:visible}
+.wm{display:block;width:5.3615em;height:.9875em;fill:currentColor;overflow:visible}
 .links{display:flex;gap:2px;position:absolute;left:50%;transform:translateX(-50%)}
 .links a,.signin{font-size:14px;font-weight:400;color:var(--ink-3);padding:8px 12px;border-radius:999px;transition:color .2s,background-color .2s}
 .links a:hover,.signin:hover{color:var(--ink);background:rgba(255,255,255,.05)}
@@ -337,19 +337,30 @@ main{position:relative;overflow-x:clip}
 .who .av{width:40px;height:40px}
 .who .nm{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0;font-size:15px;line-height:1.25;color:var(--x-mute)}
 .who .nm b{font-weight:650;color:var(--ink);letter-spacing:-.01em}
+/* the name, its tag and the time never shrink; a long handle gives way first, with an ellipsis, so "2m" is never clipped */
+.who .nm > *{flex:none}
+.who .nm #pf-handle{flex:0 99 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.who .nm .tag{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .ptext{margin-top:10px;font-size:25px;line-height:1.36;letter-spacing:-.022em;color:var(--ink);font-weight:500}
 .ptext.long{font-size:21px;line-height:1.46}
 /* a sharpened line's beats: each short sentence wraps as one unit (see beats()) */
 .bt{display:inline-block}
 .post .xacts{margin-top:12px;max-width:92%;color:var(--x-mute)}
+/* the phone hero's light: it falls on the Sharpened card and lands on its rim (the final card's composition). Only what is above
+   the card's top edge shows, so the card's words are never washed */
+.post > .light{display:none}
 .window .hits{margin-top:12px;margin-bottom:20px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;align-items:baseline}
 .window .hits .k{margin:0}
 /* one window height for all four examples at every width, so a pick never moves the page (measured: r86/fix/heroh.js) */
 /* wide screens: the post gets the wider pane, so the longest example's line sets in two lines and the window has no slack band */
-@media (min-width:1200px){.window .body{min-height:370px;grid-template-columns:60px minmax(0,1fr) minmax(0,1.3fr)}}
-@media (min-width:901px) and (max-width:1199px){.window .body{min-height:441px}}
-@media (min-width:901px) and (max-width:1099px){.window .body{min-height:453px}}
-@media (min-width:761px) and (max-width:900px){.window .body{min-height:499px}}
+@media (min-width:1200px){.window .body{min-height:max(var(--hm,0px),370px);grid-template-columns:60px minmax(0,1fr) minmax(0,1.3fr)}}
+/* the fold never slices the window's bottom rows: at the heights where "Everyone can reply" (around 800) or the "Your best time /
+   Schedule" row (around 900) would straddle it, the floor is 20px deeper, so the fold falls in the empty space above them */
+@media (min-width:1200px) and (min-height:790px) and (max-height:825px),(min-width:1200px) and (min-height:872px) and (max-height:902px){.window .body{min-height:max(var(--hm,0px),390px)}}
+@media (min-width:1200px) and (min-height:903px) and (max-height:922px){.window .body{min-height:max(var(--hm,0px),410px)}}
+@media (min-width:901px) and (max-width:1199px){.window .body{min-height:max(var(--hm,0px),441px)}}
+@media (min-width:901px) and (max-width:1099px){.window .body{min-height:max(var(--hm,0px),453px)}}
+/* one column (≤900): no floor; the window is as tall as the example on show (showEx eases a pick's change) */
 .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;height:56px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
 .foot .pill{white-space:nowrap}
 /* the client's slot shows where the pane has room for it */
@@ -460,9 +471,13 @@ html:not(.motion) #pf-go{display:none}
 /* below the first two screens, a tile or section is rendered only as it comes near (style, layout and paint wait), so the first
    layout covers the hero and the Try row, not the whole page. Each keeps its last rendered size, so nothing jumps */
 .js .t-try,.js .t-pv,.js .t-voi,.js .t-day,.js .t-rep,.js .t-res,.js .t-who,.js .t-st,.js .t-tru,.js #pricing,.js #faq,.js #start,.js footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
-.js .t-try,.js .t-pv{contain-intrinsic-size:auto 700px}
-.js .t-voi{contain-intrinsic-size:auto 530px}.js .t-st{contain-intrinsic-size:auto 690px}.js #pricing{contain-intrinsic-size:auto 1150px}.js #faq{contain-intrinsic-size:auto 540px}.js #start{contain-intrinsic-size:auto 700px}.js footer{contain-intrinsic-size:auto 640px}
-@media (max-width:760px){.js .t-try{contain-intrinsic-size:auto 740px}.js .t-pv{contain-intrinsic-size:auto 530px}.js .t-rep{contain-intrinsic-size:auto 450px}.js .t-res{contain-intrinsic-size:auto 380px}.js .t-tru{contain-intrinsic-size:auto 340px}.js .t-st{contain-intrinsic-size:auto 715px}.js #faq{contain-intrinsic-size:auto 450px}.js #start{contain-intrinsic-size:auto 440px}.js footer{contain-intrinsic-size:auto 330px}}
+/* the placeholders are each block's content height as rendered at that width (padding comes on top), so the scrollbar is right
+   before anything below the hero has rendered (measured: r86/fix12/cis3.js) */
+.js .t-try{contain-intrinsic-size:auto 642px}.js .t-pv{contain-intrinsic-size:auto 642px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 472px}.js .t-res{contain-intrinsic-size:auto 472px}.js .t-who{contain-intrinsic-size:auto 544px}.js .t-st{contain-intrinsic-size:auto 581px}.js .t-tru{contain-intrinsic-size:auto 544px}.js #pricing{contain-intrinsic-size:auto 1080px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 551px}.js footer{contain-intrinsic-size:auto 543px}
+@media (min-width:1100px) and (max-width:1199px){.js .t-try{contain-intrinsic-size:auto 676px}.js .t-pv{contain-intrinsic-size:auto 676px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 472px}.js .t-res{contain-intrinsic-size:auto 472px}.js .t-who{contain-intrinsic-size:auto 356px}.js .t-st{contain-intrinsic-size:auto 776px}.js .t-tru{contain-intrinsic-size:auto 238px}.js #pricing{contain-intrinsic-size:auto 1151px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 493px}.js footer{contain-intrinsic-size:auto 535px}}
+@media (min-width:901px) and (max-width:1099px){.js .t-try{contain-intrinsic-size:auto 597px}.js .t-pv{contain-intrinsic-size:auto 509px}.js .t-voi{contain-intrinsic-size:auto 611px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 509px}.js .t-res{contain-intrinsic-size:auto 641px}.js .t-who{contain-intrinsic-size:auto 641px}.js .t-st{contain-intrinsic-size:auto 751px}.js .t-tru{contain-intrinsic-size:auto 351px}.js #pricing{contain-intrinsic-size:auto 1127px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 507px}.js footer{contain-intrinsic-size:auto 517px}}
+@media (min-width:761px) and (max-width:900px){.js .t-try{contain-intrinsic-size:auto 631px}.js .t-pv{contain-intrinsic-size:auto 500px}.js .t-voi{contain-intrinsic-size:auto 655px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 500px}.js .t-res{contain-intrinsic-size:auto 535px}.js .t-who{contain-intrinsic-size:auto 535px}.js .t-st{contain-intrinsic-size:auto 844px}.js .t-tru{contain-intrinsic-size:auto 396px}.js #pricing{contain-intrinsic-size:auto 1552px}.js #faq{contain-intrinsic-size:auto 535px}.js #start{contain-intrinsic-size:auto 776px}.js footer{contain-intrinsic-size:auto 500px}}
+@media (max-width:760px){.js .t-try{contain-intrinsic-size:auto 690px}.js .t-pv{contain-intrinsic-size:auto 484px}.js .t-voi{contain-intrinsic-size:auto 488px}.js .t-day{contain-intrinsic-size:auto 710px}.js .t-rep{contain-intrinsic-size:auto 413px}.js .t-res{contain-intrinsic-size:auto 345px}.js .t-who{contain-intrinsic-size:auto 470px}.js .t-st{contain-intrinsic-size:auto 672px}.js .t-tru{contain-intrinsic-size:auto 302px}.js #pricing{contain-intrinsic-size:auto 1080px}.js #faq{contain-intrinsic-size:auto 398px}.js #start{contain-intrinsic-size:auto 376px}.js footer{contain-intrinsic-size:auto 280px}}
 .t-try{grid-area:try}.t-pv{grid-area:pv}.t-voi{grid-area:voi}.t-day{grid-area:day}.t-rep{grid-area:rep}.t-res{grid-area:res}.t-who{grid-area:who}.t-st{grid-area:st}.t-tru{grid-area:tru}
 .tile{position:relative;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:22px;min-width:0;overflow:hidden;overflow:clip}
 .tile > *{position:relative;z-index:1}
@@ -613,8 +628,8 @@ html:not(.motion) #pf-go{display:none}
 .screens{display:grid;flex:1 1 auto}
 /* beside another tile the feed takes the row's height (it never sets it), and the dimmed next post fills the rest */
 @media (min-width:761px){.t-pv .screens{flex:1 1 0;min-height:300px}}
-/* beside a Try tile that grew for a long line, the feed keeps its height and the note follows it; the spare height sits below */
-@media (min-width:1100px){.t-pv .screens{max-height:470px}}
+/* beside a Try tile that grew for a long line, the feed grows with the tile (the dimmed posts that follow fill it, and the fade still
+   ends on a whole line), so the note stays right under the feed and no band opens anywhere */
 /* the feed fades out ending exactly on a line's bottom edge (--fe, measured), so no line is ever sliced through */
 .pvw{grid-area:1/1;visibility:hidden;border-radius:16px;padding:14px 16px 6px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 calc(var(--fe,100%) - 56px),transparent var(--fe,100%));mask-image:linear-gradient(#000 calc(var(--fe,100%) - 56px),transparent var(--fe,100%))}
 /* the feed keeps going: someone else's post follows yours, dimmed, so spare height reads as feed, never as a void */
@@ -633,7 +648,6 @@ html:not(.motion) #pf-go{display:none}
 .pn > span{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .pt{font-size:14px;line-height:1.4;white-space:pre-line;overflow-wrap:anywhere}
 .pvw .ppost:not(.next) .pt{color:color-mix(in srgb,currentColor 78%,transparent)}
-.pt .hk{font-weight:600}
 .n-x .pt .hk{color:var(--x-ink)}.n-th .pt .hk{color:var(--pf-th-ink)}.n-bs .pt .hk{color:var(--pf-bs-ink)}
 .pt{text-wrap:pretty}
 .split{margin:0 0 12px 46px;padding-top:8px;font-size:12px;line-height:1.35;font-weight:500;color:var(--ink-3);background:repeating-linear-gradient(90deg,rgba(255,255,255,.26) 0 5px,transparent 5px 10px) 0 0/100% 1px no-repeat}
@@ -672,9 +686,11 @@ html:not(.motion) #pf-go{display:none}
 .vc-h .av{width:32px;height:32px}
 .vc-h .xname{flex:1}
 .vc-h .lrn{flex:none;font-size:13px;color:var(--x-mute)}
-/* the tile's one moment, at post size: the word it's learning, struck, and the tap that puts it back. Two put-backs and it stays;
-   the dots count them (the sentence is for screen readers) */
-.vhero{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 28px;padding:22px 0 20px;border-bottom:1px solid var(--x-line)}
+/* the tile's one moment, at post size: the word it's learning, struck, and the tap that puts it back. Two put-backs and it stays:
+   the rule is said under the line, on screen, and the dots count the put-backs */
+.vhero{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l c" "n c";align-items:center;gap:10px 28px;padding:20px 0 18px;border-bottom:1px solid var(--x-line)}
+.vhero .kp-l{grid-area:l}.vhero .kp-c{grid-area:c}
+.kp-n{grid-area:n;margin:0;font-size:13px;line-height:1.4;color:var(--x-mute);text-wrap:pretty}
 .kp-l{margin:0;font-size:30px;line-height:1.2;font-weight:500;letter-spacing:-.026em;color:var(--x-ink);text-wrap:balance}
 .kp-w{background:linear-gradient(rgba(247,248,248,.62),rgba(247,248,248,.62)) 0 56%/100% max(1.5px,.07em) no-repeat;color:var(--x-mute);transition:color .25s}
 .kp-w.on{background-size:0% max(1.5px,.07em);color:var(--x-ink);text-decoration-color:transparent}
@@ -683,10 +699,9 @@ html:not(.motion) #pf-go{display:none}
 @media (min-width:761px) and (max-width:1099px){.kp-l{font-size:26px}}
 /* the button keeps one width whichever label it shows, and the count sits on its far side, so a tap never moves the button */
 .kp-b{min-width:7.8em;justify-content:center;height:34px;font-size:14px}
-.kp-s{order:-1;display:inline-flex;align-items:center;justify-content:flex-end;gap:5px;width:13em;font-size:13px;color:var(--x-ink-2);white-space:nowrap}
+.kp-s{order:-1;display:inline-flex;align-items:center;gap:5px}
 .kp-s i{width:7px;height:7px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink-4);transition:background-color .25s,box-shadow .25s}
 .kp-s i.on{background:var(--x-ink);box-shadow:none}
-.kp-s span{margin-left:4px}
 /* what it already knows, in one row: the habits, then the never-says */
 .vlist{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:10px 32px;padding:14px 0}
 .vrow{display:flex;align-items:center;gap:6px 12px;min-width:0}
@@ -906,7 +921,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 /* ≥1200: the client list reads like the app's own switcher, each client with their next slot */
 @media (min-width:1200px){
   .st-pick{grid-template-columns:minmax(0,1fr);gap:6px}
-  .st-pick button{height:52px;padding:0 16px 0 10px;font-size:15px}
+  .st-pick button{height:44px;padding:0 16px 0 8px;font-size:15px}
   .st-pick .av{width:34px;height:34px}
   .st-pick .sp-m{display:inline;margin-left:auto;font-size:13px;font-weight:400;color:var(--ink-3)}
   .st-pick button[aria-pressed="true"] .sp-m{color:var(--ink-2)}
@@ -966,7 +981,12 @@ a.wtry:hover .ico{transform:translateX(2px)}
   .st-voice .queue{margin-top:20px}
   .facts{margin-top:28px}
 }
-@media (min-width:1200px){.studio{min-height:497px}.t-st .facts{margin-top:auto}.rv-act{margin-top:auto}.st-voice .queue{margin-top:auto;padding-top:20px}}
+/* ≥1200: each column stacks from the top too. Approve sits right under the comment it answers and the queue 24px under "Goes out";
+   the box is the tallest client's height (sizeStudio), the client list is compact enough never to stretch it, and the little slack
+   a shorter client leaves sits once, at the bottom */
+@media (min-width:1200px){.t-st .facts{margin-top:auto}.rv-act{margin-top:4px}.st-voice .queue{margin-top:12px}.st-l{gap:16px}
+  /* Lena's photo and Marco's chart are a little taller than Priya's photo, so each client fills about the same height */
+  .st-post .media.chart,#rv-media:has(> .ph.cafe){aspect-ratio:1.85/1}}
 /* 901–1199: the picker and the never-say list share a band, the review gets the full width, the facts close the tile */
 @media (min-width:901px) and (max-width:1199px){
   .t-st{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-areas:"cap cap" "pick nv" "box box" "facts facts";gap:20px 40px}
@@ -1004,11 +1024,10 @@ a.wtry:hover .ico{transform:translateX(2px)}
 /* ≥1200 Trust is the 5-column half of a row: one column, the list under the heading */
 @media (min-width:1200px){
   .t-tru{display:flex;flex-direction:column;align-items:stretch;gap:22px}
-  /* whatever height the Who tile gives the row, the three Never rows share it evenly: each row grows, its words centred on it,
-     and the rules follow the list directly, so the spare height never pools in one band */
-  .nev{flex:1 1 auto}
-  .nev li{flex:1 1 0;flex-wrap:wrap;align-items:center;align-content:center;padding:12px 0;min-height:60px}
-  .nev li:first-child{padding-top:0}
+  /* the rows are as tall as their words. Whatever height the Who tile gives the row is one deliberate space, under the intro:
+     the heading opens the tile, and the Never list and its rules close it, anchored to the tile's foot */
+  .nev{flex:none;margin-top:auto;box-shadow:inset 0 1px 0 var(--line-2)}
+  .nev li,.nev li:first-child{flex-wrap:wrap;align-items:baseline;padding:14px 0}
   .rules-g{margin-top:2px}
 }
 .rules span{text-wrap:balance}
@@ -1049,7 +1068,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .plans-fine{position:relative;z-index:1;margin:20px auto 0;max-width:70ch;font-size:14px;line-height:1.5;color:var(--ink-3);text-align:center;text-wrap:balance}
 .plans-fine .mf{user-select:text}
 /* wider screens: the cancel line, then the clients line under it */
-@media (min-width:761px){.plans-fine .mf{display:block}}
+@media (min-width:761px){.plans-fine .mf,.plans-fine .fs{display:block}}
 /* the lede starts exactly on the third plan column */
 @media (min-width:1200px){
   #pricing .head{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--gap)}
@@ -1085,6 +1104,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .fin .light .bloom{left:-230px;width:300px;height:56px;top:-28px}
 .fin .light .hot{left:-120px;width:150px;height:18px;top:-9px}
 #fp-live{position:relative}
+#fp-hits:focus,#fp-empty:focus{outline:none}
 #fp-live > .xcard,#fp-live > .empty-c,#fp-live > .hits{position:relative;z-index:1}
 #fp-live:has(> #fp-card[hidden]) > .light{display:none}
 .fin-l,.fpay{position:relative;z-index:1;min-width:0}
@@ -1143,7 +1163,7 @@ footer{position:relative;overflow:hidden;padding:104px 0 0;color:var(--ink-3);fo
 /* the sign-off: the wordmark spans the content width (never more), its baseline on the page's last pixel, the hook whole */
 footer .wrap{container-type:inline-size}
 /* the giant mark: the same drawing, cut at the baseline by the page's end */
-.giant{margin:64px 0 0;font-size:min(224px,calc(100cqi / 5.3325));height:.79em;overflow:hidden;color:var(--ink);opacity:.07;user-select:none}
+.giant{margin:64px 0 0;font-size:min(224px,calc(100cqi / 5.3615));height:.79em;overflow:hidden;color:var(--ink);opacity:.07;user-select:none}
 .giant .wm{margin:-.014em 0 0 -.02em}
 
 /* ---------- the signup sheet (a design preview: it never claims an account was made) ---------- */
@@ -1247,6 +1267,7 @@ footer .wrap{container-type:inline-size}
   .rail{display:none}
   .pane + .pane{border-left:0;border-top:1px solid var(--line)}
   .note,.tools,.foot,.replyset{display:none}
+  .window .hits{margin-bottom:0}
   .dtext,.ptext,.ptext.long{min-height:0}
   .window .body{grid-template-rows:auto minmax(0,1fr);align-content:stretch}
   .pane.draft,.pane.sharp{padding-bottom:20px}
@@ -1283,9 +1304,9 @@ footer .wrap{container-type:inline-size}
   .wp .xname > span:not(.tag){display:none}
   .wd{white-space:nowrap;overflow:hidden;margin-top:1px;font-size:13px;line-height:1.4;padding-bottom:6px;margin-bottom:-6px}
   .wtry::after{content:"";position:absolute;inset:0}
-  /* Studio's link is an arrow here (its name stays), so the Ghostwriter tag is never cut */
-  a.wtry{width:32px;padding:0;justify-content:center}
-  a.wtry .wt{display:none}
+  /* each action sits beside the struck draft it acts on and keeps its label; the name row keeps its full width for the tag */
+  .wp{grid-template-areas:"av nm nm" "av wd bt" "av tx tx"}
+  .wtry{height:24px;padding:0 9px;margin:-3px 0;align-self:center;font-size:12.5px}
   /* the reply thread gives its sides a little back, so "Drafted in your voice" and its Pro tag stay on one line */
   .t-rep .thread{padding-inline:14px}
   .st-post .media{max-width:none;aspect-ratio:3/1}
@@ -1362,13 +1383,13 @@ footer .wrap{container-type:inline-size}
   /* the phone beam is narrow and starts just past the right edge, so the trust line above the window keeps AA contrast (4.5:1 or more at 360) */
   /* the phone light lands on the window's top edge, right of the short promise line and clear of the buttons */
   .hero .micro .m3{display:none}
-  .stage .light{--lx:92%;--a:64deg;--bw:104px;--bl:420px;--sink:140px;--k:1.5}
-  .stage .light .bloom{left:-210px;width:300px;height:40px;top:-14px;opacity:.62}
-  .stage .light .hot{left:-120px;width:170px;height:20px;top:-6px}
-  .spec{width:220px;right:12px}
+  /* the stage's beam steps aside for the card's own: the light lands on the Sharpened post's rim */
+  .stage > .light,.window > .spec{display:none}
+  .post > .light{display:block;--lx:78%;--ly:0;--a:30deg;--bw:120px;--bl:220px;--sink:60px;--k:1.1;clip-path:inset(-600px -600px 0 -600px)}
+  .post > .light .bloom{left:-170px;width:240px;height:36px;top:-18px;opacity:.7}
+  .post > .light .hot{left:-90px;width:150px;height:18px;top:-9px}
   /* on a phone the example pills sit right under the title bar: a pick never moves the row you just tapped */
   .window{border-radius:0;grid-template-areas:"bar" "ex" "body";grid-template-rows:34px auto auto}
-  .window .body{min-height:440px}
   .window::before{border-radius:0;padding:1px 0}
   .bar{display:contents}
   .dots{grid-area:bar;align-self:center;justify-self:start;margin-left:16px;gap:6px}.dots i{width:9px;height:9px}
@@ -1466,10 +1487,12 @@ footer .wrap{container-type:inline-size}
   .vc-h .xname{font-size:14px}
   .vc-h .lrn{font-size:12px}
   .vc-h .tag,.vc-h .av{display:none}
-  .vhero{grid-template-columns:minmax(0,1fr);gap:10px;padding:14px 0}
+  /* a phone: the line, then the button with its count, and the rule beside them */
+  .vhero{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"l l" "c n";gap:10px 12px;padding:14px 0}
   .kp-l{font-size:min(24px,6.2vw)}
-  .kp-c{gap:12px}
-  .kp-s{order:0;justify-content:flex-start;width:auto}
+  .kp-c{gap:10px}
+  .kp-s{order:0}
+  .kp-n{font-size:12.5px;line-height:1.35}
   .kp-b{height:32px}
   .vlist{display:grid;gap:4px;padding:8px 0 10px}
   .vrow{gap:10px}
@@ -1521,11 +1544,12 @@ footer .wrap{container-type:inline-size}
   .wd{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;font-size:13px;line-height:1.4;padding-bottom:6px;margin-bottom:-6px}
   .wp .xtext{font-size:15px}
   .wp .xname > span:not(.tag){display:none}
-  /* on a phone the whole post is the tap target; its action keeps a short visible label, so the arrow never reads as "scroll up" */
-  .wtry{height:30px;padding:0 10px;gap:4px;margin-top:-3px;font-size:12.5px}
+  /* on a phone the whole post is the tap target; its action keeps a short visible label ("Try it ↑", "Studio →"), so the arrow
+     never reads as "scroll up". It sits beside the struck draft it acts on, so the name row keeps its full width for the tag */
+  .wp{grid-template-areas:"av nm nm" "av wd bt" "av tx tx"}
+  .wtry{height:24px;padding:0 9px;gap:4px;margin:-3px 0;align-self:center;font-size:12.5px}
   .wtry::after{content:"";position:absolute;inset:0}
-  /* Studio's link is an arrow below 414px (its name stays), so the Ghostwriter tag is never cut; the narrowest phones do the same for Try */
-  @media (max-width:413px){a.wtry{width:32px;padding:0;justify-content:center}a.wtry .wt{display:none}}
+  /* every row's action keeps its label ("Try it ↑", "Studio →"); the narrowest phones show arrows only, all four alike */
   @media (max-width:359px){.wtry{width:32px;padding:0;justify-content:center}.wtry .wt{display:none}.wp .xname .tag{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;line-height:16px}}
 
   .st-l{display:contents}
@@ -1631,8 +1655,6 @@ footer .wrap{container-type:inline-size}
 /* phones: section heads sit a clear step below the hero's line (the final's .xl keeps its size, to rhyme with it) */
 @media (max-width:480px){.h2:not(.xl){font-size:clamp(32px,9vw,36px)}}
 @media (max-width:379px){
-  /* the narrowest phones: the beam leans a little further, so it clears the buttons */
-  .stage .light{--lx:92%;--a:66deg;--bw:96px}
   .nt-h{font-size:13.5px}
   /* the example's count steps aside for "Write my own", so Sharpen keeps its place on the row */
   .try-c.isx .count{display:none}
@@ -1761,6 +1783,7 @@ footer .wrap{container-type:inline-size}
         <div class="pane sharp">
           <div class="ph-h"><b>Sharpened</b><span class="move"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="pf-move">Cut 2 bits of fluff · Split into 2 beats</span></span></div>
           <article class="post lit-card" aria-labelledby="pf-name">
+            <div class="light pl" aria-hidden="true"><i class="beam"></i><i class="core"></i><i class="bloom"></i><i class="hot"></i></div>
             <div class="who">
               <span class="av me" id="pf-av2" aria-hidden="true"></span>
               <p class="nm"><b id="pf-name">heycape</b><span class="tag eg" id="pf-tag">Example</span><span id="pf-handle">@heycape_</span><span aria-hidden="true">·</span><span>2m</span></p>
@@ -1849,6 +1872,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <p class="split">Splits between sentences, so each post reads whole.</p>
           <div class="ppost"><span class="av me" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>@heycape_ · 1m</span></p><p class="pt">the rule is boring: half size until i get a green day, then back to normal size. i used to hate it. now it’s the only reason my account is still here, two years in.</p></div></div>
           <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>Dan Ridge</b><span>@ridgeline_dan · 2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>Jun Park</b><span>@junpark · 3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
         </div>
         <div class="pvw n-th" data-n="1" role="group" aria-label="Threads preview">
           <p class="scr-h"><svg aria-hidden="true"><use href="#n-threads"/></svg>Threads preview</p>
@@ -1858,6 +1882,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
 the rule is boring: half size until i get a green day, then back to normal size. i used to hate it. now it’s the only reason my account is still here, two years in.</p></div></div>
           <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>ridgeline_dan</b><span>2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>junpark</b><span>3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
         </div>
         <div class="pvw n-li" data-n="2" role="group" aria-label="LinkedIn preview">
           <p class="scr-h"><svg aria-hidden="true"><use href="#n-li"/></svg>LinkedIn preview</p>
@@ -1865,6 +1890,7 @@ the rule is boring: half size until i get a green day, then back to normal size.
 
 now i do the opposite. after any red day, i cut my size i<span class="more">…see more</span></p><div class="li-a" aria-hidden="true"><span>Like</span><span>Comment</span><span>Repost</span><span>Send</span></div></div>
           <div class="li next" aria-hidden="true"><div class="li-h"><span class="av lt" style="--y:52.94%"></span><p><b>Dan Ridge</b><span>Trader</span><span>2h</span></p></div><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div>
+          <div class="li next" aria-hidden="true"><div class="li-h"><span class="av" style="--y:29.41%"></span><p><b>Jun Park</b><span>Trader</span><span>3h</span></p></div><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div>
         </div>
         <div class="pvw n-bs" data-n="3" role="group" aria-label="Bluesky preview">
           <p class="scr-h"><svg aria-hidden="true"><use href="#n-bsky"/></svg>Bluesky preview</p>
@@ -1874,6 +1900,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <p class="split">Same split as on X.</p>
           <div class="ppost"><span class="av me" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>@heycape.bsky.social · 1m</span></p><p class="pt">the rule is boring: half size until i get a green day, then back to normal size. i used to hate it. now it’s the only reason my account is still here, two years in.</p></div></div>
           <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>Dan Ridge</b><span>@ridgeline.bsky.social · 2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>Jun Park</b><span>@junpark.bsky.social · 3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
         </div>
       </div>
       <p class="pv-note" id="pv-big">Too long for one post? It becomes a 2‑post thread.</p>
@@ -1889,10 +1916,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         <div class="vc-h"><span class="av me" aria-hidden="true"></span><p class="xname"><b id="vo-name">heycape’s voice</b><span class="tag eg">Example</span></p><span class="lrn">Learned from 8 posts</span></div>
         <div class="vhero">
           <p class="kp-l"><span class="kp-w sqz" id="kp-w">ngl</span> eth looks strong here.</p>
+          <p class="kp-n" id="kp-n" aria-live="polite">Put back once. Twice and it stays.</p>
           <div class="kp-c">
             <button class="mini kp-b" type="button" id="kp-b" aria-describedby="kp-n">Put it back</button>
-            <span class="kp-s" id="kp-s" aria-hidden="true"><i class="on"></i><i></i><span id="kp-sl">Put back 1 of 2</span></span>
-            <span class="sr" id="kp-n" aria-live="polite">You put “ngl” back once already. Once more and it stays.</span>
+            <span class="kp-s" id="kp-s" aria-hidden="true"><i class="on"></i><i></i></span>
           </div>
         </div>
         <dl class="vlist">
@@ -1933,13 +1960,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <div class="scrn">
             <span class="isl" aria-hidden="true"></span>
             <div class="sbar" aria-hidden="true"><span class="tnum">8:52</span><span class="ind"><svg viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="15" height="8" rx="1.6"/><rect x="22.5" y="4" width="1.6" height="4" rx=".8" fill-opacity=".5"/></svg></span></div>
-            <div class="notif m-drop" style="--md:1.75s"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><span class="nhl"><b>Hookworthy</b><span class="npro">&nbsp;· Pro</span></span><span>now</span></p><p>Your 8:40 post is taking off. Good moment to answer replies.</p></div></div>
+            <div class="notif m-drop" style="--md:1.75s"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><span class="nhl"><b>Hookworthy</b><span class="npro">&nbsp;· Pro</span></span><span>now</span></p><p>Your 8:40 post is taking off. Its first replies are drafted.</p></div></div>
             <div class="ptop" aria-hidden="true"><span class="av me"></span><span></span><span></span></div>
             <div class="ptabs" aria-hidden="true"><span class="on"><b>For you</b></span><span>Following</span></div>
             <div class="pfeed">
               <article class="fp yp m-ins" style="--md:1.25s"><span class="av me" aria-hidden="true"></span><div><p class="fn"><b>heycape</b><span class="tag eg">Example</span><span>· 12m</span></p><p class="fx">i lost $4,000 in march doubling my size to win it back.</p><div class="media" aria-hidden="true"><div class="ph crop jr"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div></div><div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg></div></div></article>
-              <div class="fp m-push" style="--md:1.25s" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="fn"><b>Jun Park</b><span>· 2h</span></p><p class="fx">why do most design systems fail? nobody owns them.</p></div></div>
-              <div class="fp m-push dim" style="--md:1.25s" aria-hidden="true"><span class="av" style="--y:88.24%"></span><div><p class="fn"><b>Sam Okafor</b><span>· 3h</span></p><p class="fx">the best feedback i got this year came from a customer who almost left.</p></div></div>
+              <div class="fp m-push" style="--md:1.25s" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="fn"><b>Jun Park</b><span>· 2h</span></p><p class="fx">funding flipped negative overnight. watching 3k on eth.</p></div></div>
+              <div class="fp m-push dim" style="--md:1.25s" aria-hidden="true"><span class="av" style="--y:88.24%"></span><div><p class="fn"><b>Sam Okafor</b><span>· 3h</span></p><p class="fx">my rule: no trades in the first 15 minutes after the open.</p></div></div>
             </div>
           </div>
         </figure>
@@ -2094,7 +2121,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
 
   /* ---------- the engine loads when it's needed: as the Try tile comes near, or on a first touch of Try, the final or Who ---------- */
-  let coreP = null, warmed = false;
+  let coreP = null, warmed = false, coreDown = false;
   /* an idle period, or where a browser has none (Safari), the moment after a frame, with an 8 ms deadline: either way a deadline */
   const idle = (fn, t) => window.requestIdleCallback ? requestIdleCallback(fn, { timeout: t || 3000 })
     : requestAnimationFrame(() => setTimeout(() => { const end = performance.now() + 8; fn({ didTimeout: false, timeRemaining: () => Math.max(0, end - performance.now()) }); }, 0));
@@ -2136,11 +2163,19 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       ['#sharpen', '#start'].forEach(s => wo.observe($(s))); }
     idle(next, 2000);
   };
+  /* the Sharpen-only bundle: the same window.HWCore, sharpenLine and softMarks as core.js, byte for byte, a third smaller.
+     A failed load (a dropped connection, a blocked script) is retried once. If that fails too, loadCore resolves null for good,
+     every caller shows the demo's error state (engineDown), and nothing asks again: no loop, no retry storm */
   const loadCore = () => coreP || (coreP = new Promise(res => {
-    if (window.HWCore) return res(wrap(window.HWCore));
-    /* the Sharpen-only bundle: the same window.HWCore, sharpenLine and softMarks as core.js, byte for byte, a third smaller */
-    const s = document.createElement('script'); s.src = '../../sharpen.js'; s.async = true;
-    s.onload = () => { res(wrap(window.HWCore) || null); warmCore(window.HWCore); }; s.onerror = () => res(null); document.head.append(s);
+    if (window.HWCore && window.HWCore.sharpenLine) return res(wrap(window.HWCore));
+    let tries = 0;
+    const add = () => {
+      const s = document.createElement('script'); s.src = '../../sharpen.js'; s.async = true;
+      const fail = () => { s.remove(); if (++tries < 2) { setTimeout(add, 700); return; } coreDown = true; res(null); engineDown(); };
+      s.onload = () => { const H = wrap(window.HWCore); if (!H || !H.sharpenLine) { fail(); return; } res(H); warmCore(window.HWCore); };
+      s.onerror = fail; document.head.append(s);
+    };
+    add();
   }));
   /* a tile's set-up (measuring, fitting lines, locking heights) waits until the tile comes near, then runs in an idle moment, so the
      page's start-up never blocks the opening shot. It returns its runner: an interaction that needs the set-up calls it first */
@@ -2320,8 +2355,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       cut: [['just wanted to share that', 'announce'], ['and', 'reshape'], ['honestly', 'honest']], after: 'i sold half my $BTC at 98k. i’m holding the rest.', say: 'Cut 2 bits of fluff · Split it into two beats',
       why: 'The full stop before “i’m holding the rest” gives it its own beat.', kept: 'Kept: $BTC, 98k. Kept your lowercase.' },
     { who: 'Priya Nair', handle: '@priyanair', av: 'v2|20%', draft: 'Big news: we just hit $10k MRR, 14 months after launching',
-      cut: [['Big news', 'label'], ['we just hit', 'reshape']], after: '$10k MRR, 14 months after launching.', say: 'Cut 1 bit of fluff · Number first',
-      why: '“$10k MRR” comes first, so it reads as proof before anyone decides whether to keep reading.', kept: 'Kept: $10k MRR, 14 months.' },
+      cut: [['Big news', 'label']], after: 'We just hit $10k MRR, 14 months after launching.', say: 'Cut 1 bit of fluff',
+      why: 'Your “Big news” frame went, so the line opens on “We just hit $10k MRR”.', kept: 'Kept: $10k MRR, 14 months.' },
     { who: 'Ana Ruiz', handle: '@anaruiz', av: 'lt|23.53%', draft: 'So the reason most newsletters fail is that nobody reads past the first line',
       cut: [['So', 'open'], ['is that', 'reshape']], after: 'The reason most newsletters fail? Nobody reads past the first line.', say: 'Cut 1 bit of fluff · Asked, then answered',
       why: 'The question opens a gap, and “Nobody reads past the first line” closes it before the thumb moves.', kept: '' },
@@ -2409,10 +2444,16 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     q('pf-when').innerHTML = gw ? `Waits for ${GW.f}’s yes<span class="fw-t"> · ${GW.when}</span>` : 'Your best time: 8:40&nbsp;AM';
     q('pf-sched').textContent = gw ? `Send to ${GW.f}` : 'Schedule';
   }
+  /* one column (≤900): the window is as tall as the example on show, so a short post never leaves a band under it. A pick (the
+     visitor's own tap) eases the height from the old example's to the new one's */
+  const oneCol = () => matchMedia('(max-width:900px)').matches;
   function showEx(i) {
-    const e = EX[i]; curEx = i;
+    const e = EX[i], h0 = oneCol() && !RM ? pfBody.getBoundingClientRect().height : 0; curEx = i;
     setAv($('#pf-av'), e.av); setAv($('#pf-av2'), e.av);
     paintEx(proof, e);
+    if (h0) { const h1 = pfBody.getBoundingClientRect().height; clearTimeout(pfBody._t);
+      if (Math.abs(h1 - h0) > 1) { pfBody.style.overflow = 'clip'; pfBody.style.height = h0 + 'px'; void pfBody.offsetHeight; pfBody.style.transition = 'height .26s cubic-bezier(.2,.8,.2,1)'; pfBody.style.height = h1 + 'px';
+        pfBody._t = setTimeout(() => { pfBody.style.height = ''; pfBody.style.transition = ''; pfBody.style.overflow = ''; }, 300); } }
     $('#pf-status').textContent = `${e.who} example: ${e.after}`;
     $$('#proof .ex button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.ex === i)));
     replay();
@@ -2421,10 +2462,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
      and the tallest sets the body's floor. The live body is never touched, so nothing on screen restarts */
   const pfBody = proof.querySelector('.body');
   function sizeHero() {
+    if (oneCol()) { pfBody.style.removeProperty('--hm'); heroFonts = !document.fonts || document.fonts.status === 'loaded'; return; }
     /* four copies, filled before they go in, then measured together: one layout, not four */
-    const cs = EX.map(e => { const c = pfBody.cloneNode(true); c.classList.add('sizer'); c.setAttribute('aria-hidden', 'true'); c.style.minHeight = ''; paintEx(c, e); return c; });
+    const cs = EX.map(e => { const c = pfBody.cloneNode(true); c.classList.add('sizer'); c.setAttribute('aria-hidden', 'true'); c.style.removeProperty('--hm'); paintEx(c, e); return c; });
     proof.append(...cs); const h = Math.max(...cs.map(c => c.getBoundingClientRect().height));
-    cs.forEach(c => c.remove()); pfBody.style.minHeight = Math.ceil(h) + 'px'; heroFonts = !document.fonts || document.fonts.status === 'loaded';
+    /* the tallest example joins the stylesheet's floors (max()), which stay live: a floor that keeps the fold off a row of text
+       still applies at that height */
+    cs.forEach(c => c.remove()); pfBody.style.setProperty('--hm', Math.ceil(h) + 'px'); heroFonts = !document.fonts || document.fonts.status === 'loaded';
   }
   let heroFonts = false;
   /* the CSS floors already hold the tallest example at every width, so this refinement waits for an idle moment after first paint */
@@ -2476,7 +2520,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       if (!pvOrig.has(w)) pvOrig.set(w, w.innerHTML);
       if (mode === 'ex' || !L) { w.innerHTML = pvOrig.get(w); return; }
       const n = +w.dataset.n, t = document.createElement('div'); t.innerHTML = pvOrig.get(w);
-      const head = t.querySelector('.scr-h').outerHTML, next = t.querySelector('.next') ? t.querySelector('.next').outerHTML : '';
+      const head = t.querySelector('.scr-h').outerHTML, next = [...t.querySelectorAll('.next')].map(e => e.outerHTML).join('');
       /* the feed stays full under a short line: the example's own posts follow, dimmed like any other post in the feed */
       const rest = [...t.querySelectorAll('.ppost:not(.next),.li:not(.next)')].map(e => { e.classList.add('next'); e.setAttribute('aria-hidden', 'true');
         e.querySelectorAll('.tl').forEach(x => x.remove()); e.querySelectorAll('.hk').forEach(x => x.replaceWith(...x.childNodes)); return e.outerHTML; }).join('');
@@ -2526,13 +2570,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* ---------- the voice it learned: put "ngl" back, and the strike retracts ---------- */
   /* the app's rule: put a word back twice and it's learned. Cut a learned word and it's unlearned, so the count starts over */
   const kpB = $('#kp-b'), kpW = $('#kp-w'), kpN = $('#kp-n'); let kpBack = 1;
-  const KP = { '1|1': ['Put back once. Do it once more and it stays.', 'Put back 1 of 2'], '2|1': ['Learned. “ngl” stays from now on.', 'Learned: “ngl” stays'],
-    '0|0': ['Cut again, and unlearned. Put it back twice and it stays.', 'Cut again: unlearned'], '1|0': ['You put “ngl” back once already. Once more and it stays.', 'Put back 1 of 2'] };
+  const KP = { '1|1': 'Put back once. Twice and it stays.', '2|1': 'Learned: “ngl” stays from now on.',
+    '0|0': 'Unlearned. Put it back twice and it stays.', '1|0': 'Put back once. Twice and it stays.' };
   kpB.addEventListener('click', () => {
     const on = !kpW.classList.contains('on'); kpW.classList.toggle('on', on);
     if (on) kpBack = Math.min(2, kpBack + 1); else if (kpBack >= 2) kpBack = 0;
     kpB.textContent = on ? 'Cut it' : 'Put it back';
-    const [say, short] = KP[`${kpBack}|${on ? 1 : 0}`]; kpN.textContent = say; $('#kp-sl').textContent = short;
+    kpN.textContent = KP[`${kpBack}|${on ? 1 : 0}`];
     $$('#kp-s i').forEach((d, j) => d.classList.toggle('on', j < kpBack));
   });
 
@@ -2930,7 +2974,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the engine did want a cut here, so the page never calls the line "tight": the words it would have cut stay marked */
   const asWritten = R => { const M = (R.marks || []).length ? R.marks : (R.cut || []).filter(c => FLUFF(c.kind) && c.at).map(c => [c.at[0], c.at[1], '']);
     return { ...R, marks: M, state: M.length ? 'unsure' : 'clean', line: R.draft, cut: [], alts: [], say: 'Kept as written',
-      why: M.length ? `Marked, not cut: it would change what you said. Your call.` : 'Cutting here would change what you said.' }; };
+      why: M.length ? KEPT_WHY : CLEAN_WHY }; };
+  /* the page's own words for a line it keeps are the engine's own (v4.7's "marked" and "safe" copy): never absolute, only what
+     this quick check did */
+  const KEPT_WHY = 'This quick check found nothing safe to cut. The marked words are your call.', CLEAN_WHY = 'This quick check found nothing it could cut safely, so it stays as you wrote it.';
   /* GUARD-END */
   /* the version on show: the best line, or one of its alternatives */
   const verOf = (R, i) => R.state !== 'sharp' ? { line: R.line, say: R.say, why: R.why, cut: [] } : i > 0 && R.alts[i - 1] ? R.alts[i - 1] : { line: R.line, say: R.say, why: R.why, cut: R.cut };
@@ -2957,7 +3004,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
     /* a line the engine marked but kept is "Kept as written", never "tight" */
     const say = sayTxt(st === 'unsure' ? 'Kept as written' : R.say || 'Kept as written');
-    if (st === 'unsure' && /\btight\b/i.test(R.why || '')) R = { ...R, why: 'Marked, not cut: it would change what you said. Your call.' };
+    if (st === 'unsure' && /\btight\b/i.test(R.why || '')) R = { ...R, why: KEPT_WHY };
     /* nothing cut and nothing put back: the way on is a rewrite in your voice (not for a two-word post like "gm") */
     if ((st === 'clean' || st === 'unsure') && !keepL.length) return { say, k: '', why: esc(R.why) + (words >= 3 ? `${R.why ? ' ' : ''}Want it to lead harder? ${REWRITE}` : ''), kept: '', keep: false, cta: 'Start free', status: say };
     return { say, k: '', why: esc(R.why), kept: '', keep: true, cta: keepL.length ? 'Keep it. Start free' : 'Start free', status: say };
@@ -3053,6 +3100,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (C.length && !plain) showWhy(0); else why.textContent = '';
   }
   function showEmpty(msg) { outCard.hidden = true; outPh.hidden = true; outEmpty.hidden = false; outEmpty.textContent = msg; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; out.classList.remove('stale', 'hold'); tryLine = ''; pvYours(''); }
+  /* the engine didn't load, even after one retry: said plainly where the result would land, never a spinner that never ends */
+  const DOWN = 'The demo engine didn’t load. Reload to try again.';
+  function tryDown() { showEmpty(DOWN); outSt.last = 'How it would post'; outSt(outSt.last); tryPrimary(false); const st = $('#try-status'); if (st.textContent !== DOWN) st.textContent = DOWN; }
+  function engineDown() { if (ta.value.trim() && ta.value !== sharpenedFor) tryDown(); finDown(); }
   function showCard() { outCard.hidden = false; outPh.hidden = true; outEmpty.hidden = true; outHits.hidden = false; }
   /* a different line from the one on show: its result isn't here yet, so an empty post waits (never the last line's result) */
   function showPh() { outCard.hidden = true; outEmpty.hidden = true; outPh.hidden = false; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; tryLine = ''; pvYours(''); }
@@ -3071,17 +3122,22 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     mir.classList.remove('struck', 'anim');
     if (H) {
       const first = t.replace(/^\s+/, '').split('\n')[0].replace(/\s+$/, '');
-      marks = (first && H.softMarks(first, keepT)) || [];
+      try { marks = (first && H.softMarks(first, keepT)) || []; } catch (e) { marks = []; }
       setMirror(mirrorHTML(t, marks.map(m => ({ a: m[0], b: m[1], fl: m[3] !== 'frame', held: m[3] === 'frame' })), false), false);
       chips(t, marks, 'Could cut:');
       if (!marks.length) why.textContent = '';
-    } else { setMirror(esc(t) + '&#8203;', false); if (!pendingUp) { pendingUp = true; loadCore().then(() => { pendingUp = false; paint(); }); } }
+    } else {
+      setMirror(esc(t) + '&#8203;', false); flags.innerHTML = ''; why.textContent = '';
+      /* repaint once, and only when a real engine arrived (a failed load resolves null: engineDown says so, nothing loops) */
+      if (!coreDown && !pendingUp) { pendingUp = true; loadCore().then(H2 => { pendingUp = false; if (H2) paint(); }); }
+    }
     fit(); moreCue();
     clearLabel();
     { const p = t.trim() ? byWho(t) : null; if (p) setAv(tryAv, p.av); else { tryAv.className = 'av you xav'; tryAv.style.removeProperty('--y'); } setWho(outPh, p); }
     if (!t.trim()) { showEmpty('Paste a line above. The sharpened version lands here.'); outSt('How it would post'); tryPrimary(false); return; }
     const stale = t !== sharpenedFor, rw = $('#out-why [data-rw]');
     /* one instruction at a time: an edit of the line on show dims its result ("Edited"); any other line gets an empty post */
+    if (stale && coreDown) { tryDown(); return; }
     if (stale && (outCard.hidden || !sameLine(t, sharpenedFor))) showPh();
     else if (!stale && !outPh.hidden) { if (R && (R.state === 'empty' || R.state === 'thin')) showEmpty(thinSay(R)); else showCard(); }
     out.classList.toggle('stale', stale && !outCard.hidden); if (rw) rw.disabled = stale;
@@ -3152,7 +3208,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }
   async function go() {
     clear(tryT);
-    const H = E() || await loadCore(); if (!H || !H.sharpenLine) return;
+    const H = E() || await loadCore(); if (!H || !H.sharpenLine) { goNow = false; tryDown(); return; }
     if (goNow) goNow = false; else await frame();
     touched = true; sharpenedOnce = true; tryReplay.hidden = true; ver = 0;
     keepT = sameLine(ta.value, sharpenedFor) ? inLine(keepT, ta.value) : []; sharpenedFor = ta.value; R = guard(H.sharpenLine(ta.value, { keep: keepT }));
@@ -3161,7 +3217,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* put it back: a struck word joins the keep list and Sharpen runs again; a kept word can be cut again the same way */
   async function toggleWord(el) {
     const w = el.dataset.w, back = !el.dataset.kept; if (!w) return;
-    const H = E() || await loadCore(); if (!H || !H.sharpenLine) return;
+    const H = E() || await loadCore(); if (!H || !H.sharpenLine) { tryDown(); return; }
     await frame();
     const lw = w.toLowerCase();
     keepT = back ? [...keepT.filter(x => x.toLowerCase() !== lw), w] : keepT.filter(x => x.toLowerCase() !== lw);
@@ -3298,8 +3354,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     pn.style.setProperty('--fx', ((b.left + b.width * .88 + (b.top - a.top) * Math.tan(20 * Math.PI / 180) - a.left) / a.width * 100).toFixed(1) + '%');
   }
   /* alt: the visitor asked for another version of the same result, so it changes in place */
+  /* the final's error state: the visitor's line can't be sharpened here, so the example card steps aside for the message.
+     An emptied field brings the example back */
+  function finDown() {
+    const on = !!fi.value.trim(); fpDraft.hidden = on; fpCard.hidden = on; fpHits.hidden = on; fpEmpty.hidden = !on; fpTip.hidden = true; fpAlt.hidden = true;
+    if (on) { fpEmpty.textContent = DOWN; keepFin(false); finLine = ''; $('#fin-status').textContent = DOWN; }
+  }
   function payUpdate(force, tog, alt) {
-    const H = E(); if (!H) { loadCore().then(H2 => H2 && payUpdate(force, tog)); return; }
+    const H = E(); if (!H) { if (coreDown) finDown(); else loadCore().then(H2 => H2 ? payUpdate(force, tog) : finDown()); return; }
     const raw = fi.value;
     if (!tog || tog === true) fpTip.textContent = 'Tap a struck word to put it back.';
     if (!raw.trim()) {
@@ -3356,7 +3418,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (!fi.value.trim()) { say('Paste a line first'); payUpdate(); fi.focus(); return; }
     await loadCore(); await frame(); fpaint(); payUpdate(true);
     if (FR) $('#fin-status').textContent = FR.state === 'thin' ? thinSay(FR) : viewOf(FR, verOf(FR, 0), keepF).status;
-    if (narrow()) { fi.blur(); setTimeout(() => { const el = fpKeep.hidden ? (fpHits.hidden ? fpEmpty : fpHits) : fpKeep; el.scrollIntoView({ block: 'end', behavior: RM ? 'auto' : 'smooth' }); }, 60); }
+    /* a phone: focus follows the result (its Keep button, else the result itself), so the keyboard closes and a screen reader or
+       switch user lands where the answer is, never on the page's top */
+    if (narrow()) { const el = fpKeep.hidden ? (fpHits.hidden ? fpEmpty : fpHits) : fpKeep, f = fpKeep.hidden ? el : finKeep;
+      if (f !== finKeep) f.tabIndex = -1; f.focus({ preventScroll: true });
+      setTimeout(() => el.scrollIntoView({ block: 'end', behavior: RM ? 'auto' : 'smooth' }), 60); }
   });
   async function toggleFin(el) {
     const w = el.dataset.w, back = !el.dataset.kept; if (!w) return;
