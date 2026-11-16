@@ -7,9 +7,13 @@ One independent juror (a senior X ghostwriter) wrote each set of 120 first lines
 | 1 | v3 | 8.5 | 83.3% / 72.6% | 6.0 | 66.7% / 49.3% | 4 |
 | 2 | v4 | 9.2 | 93.3% / 89.0% | 7.0 | 75.0% / 60.3% | 3 |
 | 3 | v4.1 | 9.4 | 95.8% / 94.4% | 7.2 | 85.8% / 77.8% | 5 |
-| 4 | v4.2 | **9.6** | 98.3% / 98.6% | 8.8 | 90.8% / 91.7% | **0** |
+| 4 | v4.2 | 9.6 | 98.3% / 98.6% | 8.8 | 90.8% / 91.7% | 0 |
+| 5 | v4.3 | **9.6** | 99.2% / 98.6% | 8.6 | 92.5% / 89.2% | 2 |
+| 6 | v4.4 | 9.6 (unchanged) | – | 9.1 | 95.0% / 91.8% | 1 |
+| 7 | v4.5 | 9.6 (unchanged) | – | 9.0 | 90.8% / 85.1% | 1 |
+| 8 | v4.6 | 9.6 (unchanged) | – | **9.5** | 96.7% / 94.6% | **0** |
 
-On set 4, the juror said the Claude path "matches Typefully's AI rewrite on edit quality and beats it on safety and restraint".
+Sets 5–8 are ordinary everyday drafts (the juror's fairer baseline). Since v4.3 the app asks Claude first, and the engine's strict line is only the fallback. v4.6 adds a positive whole-sentence check on every split or reshape. On set 4, the juror said the Claude path "matches Typefully's AI rewrite on edit quality and beats it on safety and restraint".
 
 Caveats:
 - Claude's lines came from an Opus stand-in at default effort. Production runs Opus at low effort with a 12 s timeout.
