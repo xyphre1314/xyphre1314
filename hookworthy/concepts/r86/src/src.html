@@ -134,6 +134,10 @@ p{margin:0}
 .h2,.st,.cap{margin:0;font-weight:600;color:var(--ink);font-feature-settings:"calt","kern"}
 .h2{font-size:clamp(34px,10.4vw,72px);line-height:1;letter-spacing:-.042em}
 .h2 .d,.st .d,.cap .d{color:var(--ink-2)}
+/* the page's one unhedged promise breaks the tone rule on purpose: Trust's heading is ink all through */
+#t-h .d{color:var(--ink)}
+/* the final card's name row: the handle gives way first, so the time is never clipped */
+#fp-head > *{flex:none}#fp-head > .hd{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .lede{font-size:17px;line-height:1.55;letter-spacing:-.006em;color:var(--ink-2);max-width:26em;text-wrap:pretty}
 .tc{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .tc-in{container-type:inline-size;width:100%}
@@ -799,6 +803,8 @@ html:not(.motion) #pf-go{display:none}
   background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.8) 66%,rgba(var(--hot)/.12));box-shadow:0 0 9px 1px rgba(var(--glow)/.32)}
 .motion .t-day.arm:not(.go) .phone > .sun,.motion .t-day.arm:not(.go) .phone::after{opacity:0}
 .motion .t-day.arm.go .phone > .sun,.motion .t-day.arm.go .phone::after{animation:glow 1.4s linear 1s both}
+/* night and morning meet on a hairline, not a hard cut */
+@media (min-width:761px){.morn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;z-index:3;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.1) 25%,rgba(255,255,255,.1) 75%,rgba(255,255,255,0))}}
 /* the phone, rising from the bottom edge */
 .morn{display:flex;justify-content:center;align-items:flex-start;padding-top:64px}
 .phone{position:relative;width:300px;height:640px;margin:0 0 -120px;padding:10px;border-radius:48px;background:linear-gradient(180deg,var(--s3),var(--shell));flex:none;
@@ -2075,7 +2081,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       <h2 class="cap" id="w-h">Trades, launches, newsletters.<br><span class="d">Same fluff, same fix.</span></h2>
       <ul class="wposts xcard demo" aria-label="Four first lines, sharpened">
         <li class="wp"><span class="av me xav" aria-hidden="true"></span><div class="wb"><p class="xname"><b>heycape</b><span>@heycape_</span><span class="tag">Trader</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>honestly</s></span> i’m up 18% this month <s>and</s> it’s <span class="fl"><s>literally</s></span> just from trading less</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">i’m up 18% this month.</span> <span class="bt">it’s just from trading less.</span></p></div><button class="wtry" type="button" data-w="0" aria-label="Try heycape’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
-        <li class="wp"><span class="av lt xav" style="--y:23.53%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Ana Ruiz</b><span>@anaruiz</span><span class="tag">Newsletter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>So</s></span> <span class="fl"><s>in this issue I wanted to talk about</s></span> <s>why</s> open rates lie</p><p class="xtext"><span class="sr">Sharpened: </span>Open rates lie.</p></div><button class="wtry" type="button" data-w="1" aria-label="Try Ana Ruiz’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
+        <li class="wp"><span class="av lt xav" style="--y:23.53%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Ana Ruiz</b><span>@anaruiz</span><span class="tag">Newsletter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>So</s></span> <span class="fl"><s>in this issue I wanted to talk about</s></span> why open rates lie</p><p class="xtext"><span class="sr">Sharpened: </span>Why open rates lie:</p></div><button class="wtry" type="button" data-w="1" aria-label="Try Ana Ruiz’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
         <li class="wp"><span class="av v2 xav" style="--y:20%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Priya Nair</b><span>@priyanair</span><span class="tag">Founder</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Excited to share that</s></span> dark mode is live, 9 months after the first request</p><p class="xtext"><span class="sr">Sharpened: </span>Dark mode is live, 9 months after the first request.</p></div><button class="wtry" type="button" data-w="2" aria-label="Try Priya Nair’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
         <li class="wp"><span class="av xav" style="--y:17.65%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Theo Mensah</b><span>@theowrites</span><span class="tag">Ghostwriter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Honestly,</s></span> founders don’t need more posts, they need better first lines</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">Founders don’t need more posts.</span> <span class="bt">They need better first lines.</span></p></div><a class="wtry" href="#studio" aria-label="See Studio, for ghostwriters"><span class="wt">Studio</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
       </ul>
@@ -2399,7 +2405,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     { k: 'Trader', n: 'heycape', h: '@heycape_', av: 'me', draft: 'honestly i’m up 18% this month and it’s literally just from trading less',
       cut: [['honestly', 'honest'], ['and', 'reshape'], ['literally', 'filler']], after: 'i’m up 18% this month. it’s just from trading less.' },
     { k: 'Newsletter', n: 'Ana Ruiz', h: '@anaruiz', av: 'lt|23.53%', draft: 'So in this issue I wanted to talk about why open rates lie',
-      cut: [['So', 'open'], ['in this issue I wanted to talk about', 'announce'], ['why', 'reshape']], after: 'Open rates lie.' },
+      cut: [['So', 'open'], ['in this issue I wanted to talk about', 'announce']], after: 'Why open rates lie:' },
     { k: 'Founder', n: 'Priya Nair', h: '@priyanair', av: 'v2|20%', draft: 'Excited to share that dark mode is live, 9 months after the first request',
       cut: [['Excited to share that', 'announce']], after: 'Dark mode is live, 9 months after the first request.' },
     { k: 'Ghostwriter', n: 'Theo Mensah', h: '@theowrites', av: '|17.65%', draft: 'Honestly, founders don’t need more posts, they need better first lines',
@@ -2423,9 +2429,9 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     { who: 'Priya Nair', handle: '@priyanair', av: 'v2|20%', draft: 'Big news: we just hit $10k MRR, 14 months after launching',
       cut: [['Big news', 'label']], after: 'We just hit $10k MRR, 14 months after launching.', say: 'Cut 1 bit of fluff',
       why: 'Your “Big news” frame went, so the line opens on “We just hit $10k MRR”.', kept: 'Kept: $10k MRR, 14 months.' },
-    { who: 'Ana Ruiz', handle: '@anaruiz', av: 'lt|23.53%', draft: 'So the reason most newsletters fail is that nobody reads past the first line',
-      cut: [['So', 'open'], ['is that', 'reshape']], after: 'The reason most newsletters fail? Nobody reads past the first line.', say: 'Cut 1 bit of fluff · Asked, then answered',
-      why: 'The question opens a gap, and “Nobody reads past the first line” closes it before the thumb moves.', kept: '' },
+    { who: 'Ana Ruiz', handle: '@anaruiz', av: 'lt|23.53%', draft: 'So basically the reason most newsletters fail is that nobody reads past the first line',
+      cut: [['So', 'open'], ['basically', 'filler']], after: 'The reason most newsletters fail is that nobody reads past the first line.', say: 'Cut 2 bits of fluff',
+      why: 'The run-up is gone, so the first words people read are yours.', kept: '' },
     { who: 'Marco Vitale', handle: '@marcov', av: 'v2|0%', draft: 'honestly i was wrong on btc at 58k. here’s the chart that told me, and i ignored it',
       cut: [['honestly', 'honest'], ['and', 'reshape']], after: 'i was wrong on btc at 58k. here’s the chart that told me. i ignored it.', say: 'Cut 1 bit of fluff · Split it into three beats',
       why: 'Short beats with full stops between them. Each pause makes the next one land.', kept: 'Kept: btc, 58k. Kept your lowercase.' }
@@ -2934,8 +2940,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const PROTECT = /https?:\/\/\S+|www\.\S+|(?<![\p{L}\p{N}_])[@#][\p{L}\p{N}_]+/gu;
   const spansOf = t => [...String(t).matchAll(PROTECT)].map(m => [m.index, m.index + m[0].length, m[0]]);
   function keptLine(draft, line, kept) {
-    const bits = [], used = new Set(), g = draft.match(/^(gm|gn|gmi|wagmi|lfg)\b/i), P = spansOf(line);
-    if (g && line.toLowerCase().startsWith(g[1].toLowerCase())) bits.push(g[1]);
+    /* a greeting ("gm") is voice, not a fact: it is never listed (pass 13, marketing-7) */
+    const bits = [], used = new Set(), P = spansOf(line);
     const at = f => { let i = -1; while ((i = line.indexOf(f, i + 1)) >= 0) if (!P.some(([a, b, w]) => i >= a && i + f.length <= b && w !== f)) return i; return -1; };
     for (const f of kept || []) {
       if (bits.length >= 3) break;
@@ -3464,7 +3470,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const st = FR.state, sharp = st === 'sharp', fv = verOf(FR, fver);
     const key = st + '|' + fv.line + '|' + FR.note + '|' + keepF.join(',');
     const first = !live;
-    if (!live) { fpHead.innerHTML = '<b id="fp-name">You</b><span>@you · now</span>'; fpAv.className = 'av you xav'; }
+    if (!live) { fpHead.innerHTML = '<b id="fp-name">You</b><span class="hd">@you</span><span aria-hidden="true">·</span><span>now</span>'; fpAv.className = 'av you xav'; }
     live = true; pay.classList.add('live');
     const S = st === 'empty' || st === 'thin' ? [] : segments(FR, fv, keepF);
     fpDraft.innerHTML = fpDraftHTML(raw, S);
