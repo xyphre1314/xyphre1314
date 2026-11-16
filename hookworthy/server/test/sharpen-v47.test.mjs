@@ -155,7 +155,8 @@ test('v4.7, page juror and hook46-3: the run-ups, as general forms', () => {
 
 test('v4.7, hook46-1/2: strict never ships the verbless announce cut; a put-back after a split keeps the capital', () => {
   const p26 = "We're thrilled to finally announce our $3M seed round to help small teams ship faster! 🚀";
-  assert.equal(L(p26), 'We raised a $3M seed round to help small teams ship faster! 🚀');
+  /* v4.9 (round-12 uiux-3): no "We raised" the draft never wrote; the writer's own verb leads in its -ing form */
+  assert.equal(L(p26), "We're finally announcing our $3M seed round to help small teams ship faster! 🚀");
   const st = S(p26, { strict: true });
   assert.ok(st.state !== 'sharp' || D.mainFin(st.line), `strict: ${st.line}`);
   assert.doesNotMatch(st.line, /^Our \$3M seed round/);

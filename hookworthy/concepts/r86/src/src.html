@@ -7,7 +7,7 @@
 <meta name="description" content="Cut the fluff from your first line in one tap, then schedule it for X. It still sounds like you. Free forever, no card.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#08090A">
-<link rel="icon" type="image/svg+xml" href="../../assets/brand/afterglow-icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../assets/brand/afterglow-favicon.svg">
 <link rel="apple-touch-icon" href="../../assets/brand/afterglow-icon-180.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hookworthy">
@@ -135,7 +135,6 @@ p{margin:0}
 .h2{font-size:clamp(34px,10.4vw,72px);line-height:1;letter-spacing:-.042em}
 .h2 .d,.st .d,.cap .d{color:var(--ink-2)}
 /* the page's one unhedged promise breaks the tone rule on purpose: Trust's heading is ink all through */
-#t-h .d{color:var(--ink)}
 /* the final card's name row: the handle gives way first, so the time is never clipped */
 #fp-head > *{flex:none}#fp-head > .hd{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .lede{font-size:17px;line-height:1.55;letter-spacing:-.006em;color:var(--ink-2);max-width:26em;text-wrap:pretty}
@@ -155,7 +154,8 @@ p{margin:0}
 .tog{position:relative;cursor:pointer;border-radius:4px;pointer-events:auto;transition:background-color .15s}
 /* a bigger target for a thumb than the word itself: at least 24px each way (6px above and below, and a short word like "so"
    widens to 24px), drawn outside the text so nothing shifts */
-.tog::after{content:"";position:absolute;inset:min(-6px,calc(50% - 12px)) min(-2px,calc(50% - 12px))}
+.tog::after{content:"";position:absolute;inset:min(-6px,calc(50% - 12px)) min(-2px,calc(50% - 13px));z-index:1}
+.tog.sm::after{z-index:2}
 .tog:hover{background-color:rgba(255,255,255,.07)}
 /* a struck word previews its put-back under the pointer: the strike fades and the word lifts to ink */
 @media (hover:hover) and (pointer:fine){
@@ -319,7 +319,8 @@ main{position:relative;overflow-x:clip}
 .dtext{margin-top:6px;font-size:21px;line-height:1.58;letter-spacing:-.014em;color:var(--x-ink);font-weight:400;min-height:3.2em;text-wrap:pretty}
 .note{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px;font-size:13px;line-height:1.45;color:var(--ink-3);max-width:34em}
 .note .ck{margin-right:2px}
-.note .ck.k2{margin-left:10px}
+.note{column-gap:16px}
+.note .cg{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px}
 .note s{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;text-decoration:none;color:var(--x-mute);box-shadow:inset 0 0 0 1px var(--line-2);background:linear-gradient(rgba(247,248,248,.5),rgba(247,248,248,.5)) 10px 56%/calc(100% - 20px) 1px no-repeat}
 .cbody{min-width:0;flex:1}
 .window > .body.sizer{position:absolute;left:0;right:0;top:0;min-height:0;visibility:hidden;pointer-events:none;z-index:-1}
@@ -344,6 +345,7 @@ main{position:relative;overflow-x:clip}
 /* the name, its tag and the time never shrink; a long handle gives way first, with an ellipsis, so "2m" is never clipped */
 .who .nm > *{flex:none}
 .who .nm #pf-handle{flex:0 99 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.who .nm.nohd #pf-handle{display:none}
 .who .nm .tag{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .ptext{margin-top:10px;font-size:25px;line-height:1.36;letter-spacing:-.022em;color:var(--ink);font-weight:500}
 .ptext.long{font-size:21px;line-height:1.46}
@@ -480,27 +482,27 @@ html:not(.motion) #pf-go{display:none}
 /* ================= the bento ================= */
 .grid-sec{position:relative;padding-top:112px}
 .bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);
-  /* Who and Trust each have a row of their own: a tile is only ever as tall as its own content or a partner of the same build
-     (Replies and Results, two X cards of one height), never stretched to a taller neighbour's height (that is what kept opening
-     Trust's empty band). Trust closes the bento, right before pricing */
+  /* no tile is ever stretched past its own content to a taller neighbour's height (that is what kept opening Trust's empty band):
+     each row of the bento's end pairs a tile that is as tall as its own content with one built to give. Trust (its own height)
+     sits beside Replies (a thread whose teaser runs on to the card's edge), and Results (its own height) beside Who (four posts
+     that share out any spare height between them). Studio closes the bento, full width, right before pricing */
   grid-template-areas:
     "try try try try try try try try pv  pv  pv  pv"
     "voi voi voi voi voi voi voi voi voi voi voi voi"
     "day day day day day day day day day day day day"
-    "rep rep rep rep rep rep res res res res res res"
-    "who who who who who who who who who who who who"
-    "st  st  st  st  st  st  st  st  st  st  st  st"
-    "tru tru tru tru tru tru tru tru tru tru tru tru"}
+    "rep rep rep rep rep rep rep tru tru tru tru tru"
+    "res res res res res who who who who who who who"
+    "st  st  st  st  st  st  st  st  st  st  st  st"}
 /* below the first two screens, a tile or section is rendered only as it comes near (style, layout and paint wait), so the first
    layout covers the hero and the Try row, not the whole page. Each keeps its last rendered size, so nothing jumps */
 .js .t-try,.js .t-pv,.js .t-voi,.js .t-day,.js .t-rep,.js .t-res,.js .t-who,.js .t-st,.js .t-tru,.js #pricing,.js #faq,.js #start,.js footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
 /* the placeholders are each block's content height as rendered at that width (padding comes on top), so the scrollbar is right
    before anything below the hero has rendered (measured: r86/fix13/cis3.js) */
-.js .t-try{contain-intrinsic-size:auto 642px}.js .t-pv{contain-intrinsic-size:auto 642px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 472px}.js .t-res{contain-intrinsic-size:auto 472px}.js .t-who{contain-intrinsic-size:auto 314px}.js .t-st{contain-intrinsic-size:auto 581px}.js .t-tru{contain-intrinsic-size:auto 238px}.js #pricing{contain-intrinsic-size:auto 945px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 551px}.js footer{contain-intrinsic-size:auto 541px}
-@media (min-width:1100px) and (max-width:1199px){.js .t-try{contain-intrinsic-size:auto 676px}.js .t-pv{contain-intrinsic-size:auto 676px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 472px}.js .t-res{contain-intrinsic-size:auto 472px}.js .t-who{contain-intrinsic-size:auto 356px}.js .t-st{contain-intrinsic-size:auto 776px}.js .t-tru{contain-intrinsic-size:auto 238px}.js #pricing{contain-intrinsic-size:auto 1042px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 493px}.js footer{contain-intrinsic-size:auto 534px}}
-@media (min-width:901px) and (max-width:1099px){.js .t-try{contain-intrinsic-size:auto 597px}.js .t-pv{contain-intrinsic-size:auto 641px}.js .t-voi{contain-intrinsic-size:auto 611px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 501px}.js .t-res{contain-intrinsic-size:auto 501px}.js .t-who{contain-intrinsic-size:auto 641px}.js .t-st{contain-intrinsic-size:auto 751px}.js .t-tru{contain-intrinsic-size:auto 351px}.js #pricing{contain-intrinsic-size:auto 1019px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 507px}.js footer{contain-intrinsic-size:auto 516px}}
-@media (min-width:761px) and (max-width:900px){.js .t-try{contain-intrinsic-size:auto 631px}.js .t-pv{contain-intrinsic-size:auto 625px}.js .t-voi{contain-intrinsic-size:auto 655px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 509px}.js .t-res{contain-intrinsic-size:auto 509px}.js .t-who{contain-intrinsic-size:auto 625px}.js .t-st{contain-intrinsic-size:auto 844px}.js .t-tru{contain-intrinsic-size:auto 396px}.js #pricing{contain-intrinsic-size:auto 1435px}.js #faq{contain-intrinsic-size:auto 535px}.js #start{contain-intrinsic-size:auto 776px}.js footer{contain-intrinsic-size:auto 499px}}
-@media (max-width:760px){.js .t-try{contain-intrinsic-size:auto 703px}.js .t-pv{contain-intrinsic-size:auto 496px}.js .t-voi{contain-intrinsic-size:auto 493px}.js .t-day{contain-intrinsic-size:auto 695px}.js .t-rep{contain-intrinsic-size:auto 416px}.js .t-res{contain-intrinsic-size:auto 348px}.js .t-who{contain-intrinsic-size:auto 551px}.js .t-st{contain-intrinsic-size:auto 679px}.js .t-tru{contain-intrinsic-size:auto 307px}.js #pricing{contain-intrinsic-size:auto 1128px}.js #faq{contain-intrinsic-size:auto 401px}.js #start{contain-intrinsic-size:auto 394px}.js footer{contain-intrinsic-size:auto 281px}}
+.js .t-try{contain-intrinsic-size:auto 642px}.js .t-pv{contain-intrinsic-size:auto 642px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 400px}.js .t-res{contain-intrinsic-size:auto 496px}.js .t-who{contain-intrinsic-size:auto 496px}.js .t-st{contain-intrinsic-size:auto 581px}.js .t-tru{contain-intrinsic-size:auto 400px}.js #pricing{contain-intrinsic-size:auto 936px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 533px}.js footer{contain-intrinsic-size:auto 541px}
+@media (min-width:1100px) and (max-width:1199px){.js .t-try{contain-intrinsic-size:auto 676px}.js .t-pv{contain-intrinsic-size:auto 676px}.js .t-voi{contain-intrinsic-size:auto 521px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 445px}.js .t-res{contain-intrinsic-size:auto 512px}.js .t-who{contain-intrinsic-size:auto 512px}.js .t-st{contain-intrinsic-size:auto 750px}.js .t-tru{contain-intrinsic-size:auto 445px}.js #pricing{contain-intrinsic-size:auto 954px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 520px}.js footer{contain-intrinsic-size:auto 534px}}
+@media (min-width:901px) and (max-width:1099px){.js .t-try{contain-intrinsic-size:auto 597px}.js .t-pv{contain-intrinsic-size:auto 677px}.js .t-voi{contain-intrinsic-size:auto 611px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 501px}.js .t-res{contain-intrinsic-size:auto 501px}.js .t-who{contain-intrinsic-size:auto 677px}.js .t-st{contain-intrinsic-size:auto 751px}.js .t-tru{contain-intrinsic-size:auto 355px}.js #pricing{contain-intrinsic-size:auto 953px}.js #faq{contain-intrinsic-size:auto 391px}.js #start{contain-intrinsic-size:auto 520px}.js footer{contain-intrinsic-size:auto 516px}}
+@media (min-width:761px) and (max-width:900px){.js .t-try{contain-intrinsic-size:auto 631px}.js .t-pv{contain-intrinsic-size:auto 670px}.js .t-voi{contain-intrinsic-size:auto 655px}.js .t-day{contain-intrinsic-size:auto 600px}.js .t-rep{contain-intrinsic-size:auto 509px}.js .t-res{contain-intrinsic-size:auto 509px}.js .t-who{contain-intrinsic-size:auto 670px}.js .t-st{contain-intrinsic-size:auto 844px}.js .t-tru{contain-intrinsic-size:auto 400px}.js #pricing{contain-intrinsic-size:auto 1399px}.js #faq{contain-intrinsic-size:auto 535px}.js #start{contain-intrinsic-size:auto 776px}.js footer{contain-intrinsic-size:auto 499px}}
+@media (max-width:760px){.js .t-try{contain-intrinsic-size:auto 703px}.js .t-pv{contain-intrinsic-size:auto 496px}.js .t-voi{contain-intrinsic-size:auto 493px}.js .t-day{contain-intrinsic-size:auto 695px}.js .t-rep{contain-intrinsic-size:auto 416px}.js .t-res{contain-intrinsic-size:auto 348px}.js .t-who{contain-intrinsic-size:auto 605px}.js .t-st{contain-intrinsic-size:auto 679px}.js .t-tru{contain-intrinsic-size:auto 307px}.js #pricing{contain-intrinsic-size:auto 1078px}.js #faq{contain-intrinsic-size:auto 401px}.js #start{contain-intrinsic-size:auto 394px}.js footer{contain-intrinsic-size:auto 281px}}
 .t-try{grid-area:try}.t-pv{grid-area:pv}.t-voi{grid-area:voi}.t-day{grid-area:day}.t-rep{grid-area:rep}.t-res{grid-area:res}.t-who{grid-area:who}.t-st{grid-area:st}.t-tru{grid-area:tru}
 .tile{position:relative;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:22px;min-width:0;overflow:hidden;overflow:clip}
 .tile > *{position:relative;z-index:1}
@@ -536,7 +538,9 @@ html:not(.motion) #pf-go{display:none}
 .try-c:has(.ed-ta:focus-visible){box-shadow:inset 0 0 0 1px var(--x-line),0 0 0 2px var(--ink),0 28px 56px -30px rgba(0,0,0,.95)}
 .ed{position:relative}
 .ed-mirror,.ed-ta{font:400 22px/1.42 "Inter V","Inter Fallback",system-ui,sans-serif;letter-spacing:-.016em;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;tab-size:4;padding:6px 0;margin:0;border:0;width:100%;font-kerning:normal;font-optical-sizing:auto;max-height:calc(1.42em * 5 + 6px)}
-.ed-mirror{position:absolute;inset:0;color:transparent;overflow:hidden;pointer-events:none}
+.ed-mirror{position:absolute;inset:0 -4px;color:transparent;overflow:hidden;pointer-events:none}
+.ed-mirror,.ed-ta{padding-inline:4px}
+.ed-ta{width:calc(100% + 8px);margin-inline:-4px}
 .ed.more{-webkit-mask-image:linear-gradient(#000 calc(100% - 1.5em),rgba(0,0,0,.15));mask-image:linear-gradient(#000 calc(100% - 1.5em),rgba(0,0,0,.15))}
 .ed-mirror mark{background:transparent;color:transparent;text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.28em;text-decoration-skip-ink:none}
 .ed-mirror mark.x{text-decoration:none}
@@ -588,6 +592,7 @@ html:not(.motion) #pf-go{display:none}
 /* the result: the post under its receipt, the reasons to its right, Keep right under the line it keeps */
 .try-out{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,15em);grid-template-areas:"h h" "card hits" "keep hits";gap:10px 24px;align-items:start;align-content:start;min-width:0;transition:opacity .25s}
 .try-out.stale{opacity:.5}
+.fpay.stale > .draft,.fpay.stale > #fp-live{opacity:.5;transition:opacity .2s}
 /* a new line, not sharpened yet: an empty post waits for it (the label above says what to do) */
 .ph-card{padding:16px 18px 18px;box-shadow:inset 0 0 0 1px var(--x-line)}
 .ph-card .xname{color:var(--x-mute)}.ph-card .xname b{color:var(--x-ink-2)}
@@ -945,14 +950,11 @@ html:not(.motion) #pf-go{display:none}
 .wtry[data-w]:hover .ico{transform:translateY(-1px)}
 a.wtry:hover .ico{transform:translateX(2px)}
 @media (min-width:901px) and (max-width:1099px){.t-who .wp .xname > span:not(.tag){display:none}}
-/* from 1100 Who is a band, so its heading takes the Lead step */
-@media (min-width:1100px){.t-who .cap{font-size:40px;line-height:1.04;letter-spacing:-.036em}}
-/* from 1100 Who is a band: its four posts two by two. A post beside a taller one keeps its own rhythm (the spare height sits under
-   it, never between its draft and its sharpened line) */
+/* from 1100 Who sits beside Results, which is as tall as its own content: Who's card fills the tile and its four posts share out
+   any spare height evenly (each keeps its own rhythm: the room sits under a post, never between its draft and its line) */
 @media (min-width:1100px){
-  .wposts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px}
-  .wp:nth-child(2){border-top:0}
-  .wp{align-content:start}
+  .t-who .wposts{flex:1 1 auto;display:flex;flex-direction:column}
+  .t-who .wp{flex:1 1 auto;align-content:start}
 }
 
 /* ---- studio ---- */
@@ -1055,8 +1057,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .motion .studio.swap .st-post > *,.motion .studio.swap .st-voice > *{animation:fade .18s var(--ease) both}
 
 /* ---- trust: what never goes out (static, on purpose) ---- */
-.t-tru{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:16px 56px;align-items:start}
-.t-tru .tl-l{grid-row:span 2}
+.t-tru{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
 .t-tru .tl-l{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
 .nev{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .nev li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:12px 0;box-shadow:inset 0 -1px 0 var(--line-2);min-width:0}
@@ -1064,7 +1065,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .nev .nw{display:block;font-size:24px;line-height:1.2;font-weight:500;letter-spacing:-.028em;color:var(--ink-2)}
 .nev .nw span{background:linear-gradient(rgba(247,248,248,.62),rgba(247,248,248,.62)) 0 56%/100% max(1.5px,.07em) no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .nev .nn{flex:none;font-size:15px;line-height:1.4;color:var(--ink-3)}
-.rules-g{grid-column:2;display:flex;flex-direction:column;gap:8px}
+.rules-g{display:flex;flex-direction:column;gap:8px}
 .rules{display:flex;align-items:flex-start;gap:10px;margin:0;font-size:15px;line-height:1.5;color:var(--ink-2)}
 .rules .ico{width:16px;height:16px;margin-top:3px;color:var(--ink-3);flex:none}
 .rules span{text-wrap:balance}
@@ -1106,7 +1107,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 /* from 761 each card shows its four key rows, and "See everything included" opens the rest of all three at once (they share rows,
    so the cards stay level, open or closed) */
 @media (min-width:761px){
-  .js .plans:not(.open) .plan li:not(.d4){display:none}
+  .js .plans:not(.open) .plan li:not(.d4),.js .plans:not(.open) .plan .li-n.xc{display:none}
   .js .incl{display:inline-flex;align-items:center;justify-self:start;align-self:start;height:32px;margin:-12px 0 20px;padding:0;font-size:14px;font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.35)}
   .js .incl:hover{text-decoration-color:rgba(247,248,248,.8)}
 }
@@ -1143,7 +1144,10 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .fin{padding-top:var(--sec)}
 /* the input column is pinned to the top: the live card grows below and beside it, never around the caret */
 .fin-panel{position:relative;overflow:hidden;isolation:isolate;border-radius:24px;padding:80px 64px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:56px;align-items:start}
-.fin-l{padding-top:clamp(0px,4vw,48px)}
+.fin-l{padding-top:0}
+/* the draft card's top edge meets the heading's cap line (Inter's cap sits .137em under a line-height-1 box) */
+@media (min-width:901px){.fpay{margin-top:8px}}
+@media (min-width:1200px){.fpay{margin-top:10px}}
 /* the second light: a smaller copy of the hero beam enters through the top hairline (its hot spot at --fx) and lands on the card */
 .fin-panel::before{background:radial-gradient(150px 70px at var(--fx,82%) 0%,rgba(var(--hot)/.85) 0%,rgba(var(--glow)/.4) 36%,rgba(var(--glow)/0) 72%),linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(255,255,255,.065) 28%,rgba(255,255,255,.04) 100%)}
 .fin-panel .fglow{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;background:radial-gradient(30% 50% at var(--fx,82%) 0%,rgba(var(--glow)/.07),rgba(var(--glow)/0) 70%)}
@@ -1164,6 +1168,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .fin-mirror{color:transparent;overflow:hidden;pointer-events:none;left:22px;right:126px;width:auto;padding:0}
 .fin-mirror span{display:inline-block;white-space:pre}
 .fin-mirror mark{background:transparent;color:transparent;text-decoration:underline wavy var(--ember);text-decoration-thickness:1.5px;text-underline-offset:.28em;text-decoration-skip-ink:none}
+.fin-mirror mark.off{text-decoration-color:transparent}
 .fin-mirror mark.held{text-decoration:underline dotted rgba(247,248,248,.45);text-decoration-thickness:1px;text-underline-offset:.3em}
 .fin-in{background:transparent;color:var(--x-ink);outline:0;caret-color:var(--ink);border-radius:999px}
 .fin-field{--fpl:22px;--fpr:126px;--a0:#000;--a1:#000}
@@ -1210,13 +1215,17 @@ footer{position:relative;overflow:hidden;padding:104px 0 0;color:var(--ink-3);fo
 /* the sign-off: the wordmark spans the content width (never more), its baseline on the page's last pixel, the hook whole */
 footer .wrap{container-type:inline-size}
 /* the giant mark: the same drawing, cut at the baseline by the page's end */
-.giant{margin:64px 0 0;font-size:min(224px,calc(100cqi / 5.4025));height:.79em;overflow:hidden;color:var(--ink);opacity:.07;user-select:none}
-.giant .wm{margin:-.014em 0 0 -.02em}
+.giant{position:relative;margin:64px 0 0;font-size:min(224px,calc(100cqi / 5.4025));height:.79em;overflow:hidden;color:var(--ink);user-select:none}
+.giant .wm{margin:-.014em 0 0 -.02em;opacity:.07}
+/* the afterglow grazes the mark from above: only the top rim of each letter catches it (the letter less itself moved down a
+   hair), brightest over the k and gone by the ends, so the cut at the page's end reads as the light's horizon */
+.giant .wm.lit{position:absolute;left:0;top:0;opacity:.55;color:rgb(var(--glow));filter:drop-shadow(0 0 5px rgba(var(--glow)/.55));
+  -webkit-mask-image:radial-gradient(46% 150% at 37% 0%,#000 0%,rgba(0,0,0,.4) 50%,transparent 100%);mask-image:radial-gradient(46% 150% at 37% 0%,#000 0%,rgba(0,0,0,.4) 50%,transparent 100%)}
 
 /* ---------- the signup sheet (a design preview: it never claims an account was made) ---------- */
 .sheet{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:16px;border:0;background:transparent;color:var(--ink);overflow:auto;overscroll-behavior:contain}
 .sheet[open]{display:grid;grid-template-columns:minmax(0,1fr);place-items:start center;padding-top:clamp(24px,13vh,132px)}
-.sheet::backdrop{background:rgba(4,5,6,.74)}
+.sheet::backdrop{background:rgba(4,5,6,.78);-webkit-backdrop-filter:blur(10px) saturate(.9);backdrop-filter:blur(10px) saturate(.9)}
 .motion .sheet[open]::backdrop{animation:backdrop .25s var(--ease) both}
 .sh-p{position:relative;width:min(452px,100%);border-radius:24px;padding:28px;background:linear-gradient(180deg,var(--s2) 0%,var(--s1) 100%);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.08),0 30px 80px -20px rgba(0,0,0,.9),0 0 0 1px rgba(0,0,0,.6)}
@@ -1392,7 +1401,6 @@ footer .wrap{container-type:inline-size}
   .plan{display:flex;flex-direction:column;align-items:stretch;padding:24px;border-radius:24px}
   .plan:last-child{grid-column:1/-1}
   .plan:last-child ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,auto);grid-auto-flow:column;column-gap:28px}
-  .js .plans:not(.open) .plan:last-child ul{grid-template-rows:repeat(2,auto)}
   .plan .h3{font-size:22px}
   .plan .for{margin:6px 0 18px;font-size:15px}
   .plan .price{flex-direction:row;align-items:baseline;gap:8px;text-align:left}
@@ -1769,6 +1777,17 @@ footer .wrap{container-type:inline-size}
   .ctas{margin-top:16px}
   .ctas .btn{padding:0 12px;font-size:14px}
 }
+/* ---- pass 14 ---- */
+/* Who (founder-2, brand-5): below 1100 the handle steps aside and each row's kind and its Example tag take a quiet second line
+   under the name, the same in all four rows, so no tag ever drops to a line of its own */
+@media (max-width:1099px){
+  .t-who .wp .xname{flex-wrap:wrap;row-gap:1px;white-space:normal;line-height:18px}
+  .t-who .wp .xname > b{flex:0 0 100%;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .t-who .wp .xname > .tag{order:2;height:16px;padding:0 6px;font-size:10.5px}
+  .t-who .wp .xname > .tag.eg{order:3;height:auto;padding:0;font-size:12.5px;line-height:16px}
+}
+/* phones: the posts keep their old height with the second name line (a little less air around each) */
+@media (min-width:375px) and (max-width:760px){.t-who .wp{padding:12px 0}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
@@ -1834,14 +1853,14 @@ footer .wrap{container-type:inline-size}
         </div>
         <div class="pane draft">
           <div class="drops" id="pf-drops" aria-hidden="true"></div>
-          <div class="ph-h"><b>Draft</b><span class="pf-tap" aria-hidden="true">Tap to edit<svg class="ico"><use href="#i-down"/></svg></span><button class="replay pf-go" id="pf-go" type="button"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg>See it again</button></div>
-          <p class="pf-cue" aria-hidden="true">Edit this in the Sharpen box<svg class="ico" aria-hidden="true"><use href="#i-down"/></svg></p>
+          <div class="ph-h"><b>Draft</b><span class="pf-tap" aria-hidden="true">Try this draft<svg class="ico"><use href="#i-down"/></svg></span><button class="replay pf-go" id="pf-go" type="button"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg>See it again</button></div>
+          <p class="pf-cue" aria-hidden="true">Try this draft in the Sharpen box<svg class="ico" aria-hidden="true"><use href="#i-down"/></svg></p>
           <div class="compose">
             <span class="av me" id="pf-av" aria-hidden="true"></span>
             <div class="cbody" id="pf-body">
               <p class="dtext" id="pf-draft"><span class="sr">Draft: </span><span class="fl"><span class="cut" style="--d:0.000s;--t:0.230s">just wanted to share that</span></span> i sold half my $BTC at 98k <span class="cut" style="--d:0.260s;--t:0.089s">and</span> <span class="fl"><span class="cut" style="--d:0.379s;--t:0.121s">honestly</span></span> i’m holding the rest</p>
-              <p class="note" id="pf-cut"><span class="ck">Cut</span><s>just wanted to share that</s><s>honestly</s><span class="ck k2">Split at</span><s>and</s></p>
-              <p class="kept" id="pf-kept">Kept: $BTC, 98k. Kept your lowercase.</p>
+              <p class="note" id="pf-cut"><span class="cg"><span class="ck">Cut</span><s>just wanted to share that</s><s>honestly</s></span><span class="cg"><span class="ck k2">Split at</span><s>and</s></span></p>
+              <p class="kept" id="pf-kept">Kept $BTC, 98k and your lowercase.</p>
             </div>
           </div>
           <p class="replyset" aria-hidden="true"><svg class="ico"><use href="#i-globe"/></svg>Everyone can reply</p>
@@ -1890,7 +1909,7 @@ footer .wrap{container-type:inline-size}
             <span class="av me xav" id="try-av" aria-hidden="true"></span>
             <div class="ed">
               <textarea class="ed-ta" id="try-ta" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Your first line…" aria-describedby="try-flags">so basically you should sell into strength, not into panic</textarea>
-              <div class="ed-mirror struck" id="try-mirror" role="group" aria-label="Words Sharpen cut. Tap one to put it back."><mark class="c tog" role="button" tabindex="0" aria-label="Put back “so”" data-w="so" style="--k:0">so</mark><span aria-hidden="true"> </span><mark class="c tog" role="button" tabindex="0" aria-label="Put back “basically”" data-w="basically" style="--k:1">basically</mark><span aria-hidden="true"> </span><mark class="c x tog" role="button" tabindex="0" aria-label="Put back “you should”" data-w="you should" style="--k:2">you should</mark><span aria-hidden="true"> sell into strength, not into panic&#8203;</span></div>
+              <div class="ed-mirror struck" id="try-mirror" role="group" aria-label="Words Sharpen cut. Tap one to put it back."><mark class="c tog sm" role="button" tabindex="0" aria-label="Put back “so”" data-w="so" style="--k:0">so</mark><span aria-hidden="true"> </span><mark class="c tog" role="button" tabindex="0" aria-label="Put back “basically”" data-w="basically" style="--k:1">basically</mark><span aria-hidden="true"> </span><mark class="c x tog" role="button" tabindex="0" aria-label="Put back “you should”" data-w="you should" style="--k:2">you should</mark><span aria-hidden="true"> sell into strength, not into panic&#8203;</span></div>
             </div>
           </div>
           <p class="flags" id="try-flags"><span class="hint"><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg>Tap a struck word to put it back.</span></p>
@@ -1943,8 +1962,8 @@ footer .wrap{container-type:inline-size}
 now i do the opposite. after any red day, i cut my size in half, no matter how sure i feel.</p></div></div>
           <p class="split">Splits between sentences, so each post reads whole.</p>
           <div class="ppost"><span class="av me" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>@heycape_ · 1m</span></p><p class="pt">the rule is boring: half size until i get a green day, then back to normal size. i used to hate it. now it’s the only reason my account is still here, two years in.</p></div></div>
-          <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>Dan Ridge</b><span>@ridgeline_dan · 2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
-          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>Jun Park</b><span>@junpark · 3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>Dan Ridge</b><span>@dan.example · 2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>Jun Park</b><span>@jun.example · 3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
         </div>
         <div class="pvw n-th" data-n="1" role="group" aria-label="Threads preview">
           <p class="scr-h"><svg aria-hidden="true"><use href="#n-threads"/></svg>Threads preview</p>
@@ -1953,8 +1972,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 now i do the opposite. after any red day, i cut my size in half, no matter how sure i feel.
 
 the rule is boring: half size until i get a green day, then back to normal size. i used to hate it. now it’s the only reason my account is still here, two years in.</p></div></div>
-          <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>ridgeline_dan</b><span>2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
-          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>junpark</b><span>3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>dan.example</b><span>2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>jun.example</b><span>3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
         </div>
         <div class="pvw n-li" data-n="2" role="group" aria-label="LinkedIn preview">
           <p class="scr-h"><svg aria-hidden="true"><use href="#n-li"/></svg>LinkedIn preview</p>
@@ -1971,8 +1990,8 @@ now i do the opposite. after any red day, i cut my size i<span class="more">…s
 now i do the opposite. after any red day, i cut my size in half, no matter how sure i feel.</p></div></div>
           <p class="split">Same split as on X.</p>
           <div class="ppost"><span class="av me" aria-hidden="true"></span><div><p class="pn"><b>heycape</b><span>@heycape.bsky.social · 1m</span></p><p class="pt">the rule is boring: half size until i get a green day, then back to normal size. i used to hate it. now it’s the only reason my account is still here, two years in.</p></div></div>
-          <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>Dan Ridge</b><span>@ridgeline.bsky.social · 2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
-          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>Jun Park</b><span>@junpark.bsky.social · 3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av lt" style="--y:52.94%"></span><div><p class="pn"><b>Dan Ridge</b><span>@dan.example · 2h</span></p><p class="pt">cpi tomorrow. i’m flat into it and back after the print. no prediction, no position.</p></div></div>
+          <div class="ppost next" aria-hidden="true"><span class="av" style="--y:29.41%"></span><div><p class="pn"><b>Jun Park</b><span>@jun.example · 3h</span></p><p class="pt">funding flipped negative overnight. watching 3k on eth.</p></div></div>
         </div>
       </div>
       <p class="pv-note" id="pv-big">Too long for one post? It becomes a 2‑post thread.</p>
@@ -2032,7 +2051,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <div class="scrn">
             <span class="isl" aria-hidden="true"></span>
             <div class="sbar" aria-hidden="true"><span class="tnum">8:52</span><span class="ind"><svg viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="15" height="8" rx="1.6"/><rect x="22.5" y="4" width="1.6" height="4" rx=".8" fill-opacity=".5"/></svg></span></div>
-            <div class="notif m-drop" style="--md:1.75s"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><span class="nhl"><b>Hookworthy</b><span class="npro">&nbsp;· Pro</span></span><span>now</span></p><p>Your 8:40 post is taking off. Its first replies are drafted.</p></div></div>
+            <div class="notif m-drop" style="--md:1.75s"><span class="hw" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#hw"/></svg></span><div><p class="nh"><span class="nhl"><b>Hookworthy</b><span class="npro">&nbsp;· Pro</span></span><span>now</span></p><p>Your 8:40 post is getting replies. Your answers are drafted.</p></div></div>
             <div class="ptop" aria-hidden="true"><span class="av me"></span><span></span><span></span></div>
             <div class="ptabs" aria-hidden="true"><span class="on"><b>For you</b></span><span>Following</span></div>
             <div class="pfeed">
@@ -2051,13 +2070,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       <div class="demo">
         <div class="xcard thread">
           <div class="xrow tl"><span class="av me xav" aria-hidden="true"></span><div><p class="xname"><b>heycape</b><span class="tag eg">Example</span><span>@heycape_ · 1h</span></p><p class="xtext">i lost $4,000 in march doubling my size to win it back.</p></div></div>
-          <div class="xrow tl m-pop" style="--md:.15s"><span class="av lt xav" style="--y:52.94%" aria-hidden="true"></span><div><p class="xname"><b>Dan Ridge</b><span>@ridgeline_dan · 3m</span></p><p class="xtext">so how much do you size down now? half? a quarter?</p></div></div>
+          <div class="xrow tl m-pop" style="--md:.15s"><span class="av lt xav" style="--y:52.94%" aria-hidden="true"></span><div><p class="xname"><b>Dan Ridge</b><span>@dan.example · 3m</span></p><p class="xtext">so how much do you size down now? half? a quarter?</p></div></div>
           <div class="xrow m-pop" style="--md:.5s"><span class="av me xav" aria-hidden="true"></span><div class="mine lit-card" id="rp-box">
             <p class="lab"><span id="rp-lab"><svg class="ico" aria-hidden="true"><use href="#i-pen"/></svg>Drafted in your voice<span class="tag pro">Pro</span></span><button class="replay rp-rp" type="button" data-replay="rep" id="rp-replay" aria-label="Replay the drafted reply"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg></button></p>
             <p class="xtext tw" id="rp-text">half, until i get a green day. then back to normal size. no hero trades in between.</p>
             <div class="act" id="rp-act"><button class="mini ghost" type="button" id="rp-edit">Edit</button><button class="mini" type="button" id="rp-send">Reply</button></div>
           </div></div>
-          <div class="nexts" aria-hidden="true"><div class="xrow"><span class="av xav" style="--y:29.41%"></span><div><p class="xname"><b>Jun Park</b><span>@junpark · now</span></p><p class="xtext">what made you finally stick to the rule?</p></div></div><div class="xrow"><span class="av xav" style="--y:88.24%"></span><div><p class="xname"><b>Sam Okafor</b><span>@samokafor · now</span></p><p class="xtext">half size after a red day is the one i keep breaking.</p></div></div></div>
+          <div class="nexts" aria-hidden="true"><div class="xrow"><span class="av xav" style="--y:29.41%"></span><div><p class="xname"><b>Jun Park</b><span>@jun.example · now</span></p><p class="xtext">what made you finally stick to the rule?</p></div></div><div class="xrow"><span class="av xav" style="--y:88.24%"></span><div><p class="xname"><b>Sam Okafor</b><span>@sam.example · now</span></p><p class="xtext">half size after a red day is the one i keep breaking.</p></div></div></div>
         </div>
       </div>
     </article>
@@ -2080,10 +2099,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     <article class="tile glass t-who" id="who" aria-labelledby="w-h">
       <h2 class="cap" id="w-h">Trades, launches, newsletters.<br><span class="d">Same fluff, same fix.</span></h2>
       <ul class="wposts xcard demo" aria-label="Four first lines, sharpened">
-        <li class="wp"><span class="av me xav" aria-hidden="true"></span><div class="wb"><p class="xname"><b>heycape</b><span>@heycape_</span><span class="tag">Trader</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>honestly</s></span> i’m up 18% this month <s>and</s> it’s <span class="fl"><s>literally</s></span> just from trading less</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">i’m up 18% this month.</span> <span class="bt">it’s just from trading less.</span></p></div><button class="wtry" type="button" data-w="0" aria-label="Try heycape’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
-        <li class="wp"><span class="av lt xav" style="--y:23.53%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Ana Ruiz</b><span>@anaruiz</span><span class="tag">Newsletter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>So</s></span> <span class="fl"><s>in this issue I wanted to talk about</s></span> why open rates lie</p><p class="xtext"><span class="sr">Sharpened: </span>Why open rates lie:</p></div><button class="wtry" type="button" data-w="1" aria-label="Try Ana Ruiz’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
-        <li class="wp"><span class="av v2 xav" style="--y:20%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Priya Nair</b><span>@priyanair</span><span class="tag">Founder</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Excited to share that</s></span> dark mode is live, 9 months after the first request</p><p class="xtext"><span class="sr">Sharpened: </span>Dark mode is live, 9 months after the first request.</p></div><button class="wtry" type="button" data-w="2" aria-label="Try Priya Nair’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
-        <li class="wp"><span class="av xav" style="--y:17.65%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Theo Mensah</b><span>@theowrites</span><span class="tag">Ghostwriter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Honestly,</s></span> founders don’t need more posts, they need better first lines</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">Founders don’t need more posts.</span> <span class="bt">They need better first lines.</span></p></div><a class="wtry" href="#studio" aria-label="See Studio, for ghostwriters"><span class="wt">Studio</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+        <li class="wp"><span class="av me xav" aria-hidden="true"></span><div class="wb"><p class="xname"><b>heycape</b><span class="tag eg">Example</span><span class="hd">@heycape_</span><span class="tag">Trader</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>honestly</s></span> i’m up 18% this month <s>and</s> it’s <span class="fl"><s>literally</s></span> just from trading less</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">i’m up 18% this month.</span> <span class="bt">it’s just from trading less.</span></p></div><button class="wtry" type="button" data-w="0" aria-label="Try heycape’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
+        <li class="wp"><span class="av lt xav" style="--y:23.53%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Ana Ruiz</b><span class="tag eg">Example</span><span class="hd">@ana.example</span><span class="tag">Newsletter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>So</s></span> <span class="fl"><s>in this issue I wanted to talk about</s></span> why open rates lie</p><p class="xtext"><span class="sr">Sharpened: </span>Why open rates lie:</p></div><button class="wtry" type="button" data-w="1" aria-label="Try Ana Ruiz’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
+        <li class="wp"><span class="av v2 xav" style="--y:20%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Priya Nair</b><span class="tag eg">Example</span><span class="hd">@priya.example</span><span class="tag">Founder</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Excited to share that</s></span> dark mode is live, 9 months after the first request</p><p class="xtext"><span class="sr">Sharpened: </span>Dark mode is live, 9 months after the first request.</p></div><button class="wtry" type="button" data-w="2" aria-label="Try Priya Nair’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
+        <li class="wp"><span class="av xav" style="--y:17.65%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Theo Mensah</b><span class="tag eg">Example</span><span class="hd">@theo.example</span><span class="tag">Ghostwriter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Honestly,</s></span> founders don’t need more posts, they need better first lines</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">Founders don’t need more posts.</span> <span class="bt">They need better first lines.</span></p></div><a class="wtry" href="#studio" aria-label="See Studio, for ghostwriters"><span class="wt">Studio</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
       </ul>
     </article>
 
@@ -2112,11 +2131,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <p class="st-lab"><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg><span id="rv-cap">Priya’s review link</span><span class="st-state" id="rv-state">Draft</span></p>
           <article class="xcard" aria-labelledby="rv-cap">
             <div class="xrow"><span class="av v2 xav" style="--y:20%" id="rv-av" aria-hidden="true"></span><div>
-              <p class="xname"><b id="rv-name">Priya Nair</b><span class="tag eg">Example</span><span id="rv-handle">@priyanair</span></p>
+              <p class="xname"><b id="rv-name">Priya Nair</b><span class="tag eg">Example</span><span id="rv-handle">@priya.example</span></p>
               <p class="xtext" id="rv-doc">Customer churn: <span class="nwr"><mark>down 34%</mark>.</span> What changed: our team redesigned the onboarding flow.</p>
               <div class="media" id="rv-media" aria-hidden="true"><div class="ph fw" id="rv-ph" style="--i:4"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div></div>
               <div class="media chart" id="rv-chart" role="img" aria-label="Chart: BTC losing the 58k level (example)" hidden><span class="ck-t" aria-hidden="true">BTC · 4h</span><span class="ck-l" style="top:68.5%" aria-hidden="true">58k</span><i class="ck-m" style="left:70.8%;top:68.5%" aria-hidden="true"></i><svg viewBox="0 0 440 200" preserveAspectRatio="none" aria-hidden="true"><line class="g" x1="0" x2="440" y1="164.6" y2="164.6"/><line class="g" x1="0" x2="440" y1="109.2" y2="109.2"/><line class="g" x1="0" x2="440" y1="53.8" y2="53.8"/><line class="lv" x1="0" x2="440" y1="136.9" y2="136.9"/><line class="wk" x1="22.0" x2="22.0" y1="42.8" y2="64.9"/><rect class="dn" x="18.0" y="53.8" width="8" height="5.6" rx="1"/><line class="wk" x1="40.1" x2="40.1" y1="51.1" y2="76.0"/><rect class="dn" x="36.1" y="59.4" width="8" height="11.1" rx="1"/><line class="wk" x1="58.2" x2="58.2" y1="55.2" y2="74.6"/><rect class="up" x="54.2" y="60.8" width="8" height="9.7" rx="1"/><line class="wk" x1="76.3" x2="76.3" y1="52.5" y2="81.5"/><rect class="dn" x="72.3" y="60.8" width="8" height="16.6" rx="1"/><line class="wk" x1="94.4" x2="94.4" y1="73.2" y2="98.2"/><rect class="dn" x="90.4" y="77.4" width="8" height="15.2" rx="1"/><line class="wk" x1="112.5" x2="112.5" y1="76.0" y2="96.8"/><rect class="up" x="108.5" y="81.5" width="8" height="11.1" rx="1"/><line class="wk" x1="130.6" x2="130.6" y1="70.5" y2="89.8"/><rect class="dn" x="126.6" y="81.5" width="8" height="4.2" rx="1"/><line class="wk" x1="148.7" x2="148.7" y1="82.9" y2="114.8"/><rect class="dn" x="144.7" y="85.7" width="8" height="23.5" rx="1"/><line class="wk" x1="166.8" x2="166.8" y1="100.9" y2="135.5"/><rect class="dn" x="162.8" y="109.2" width="8" height="19.4" rx="1"/><line class="wk" x1="184.9" x2="184.9" y1="103.7" y2="134.2"/><rect class="up" x="180.9" y="107.8" width="8" height="20.8" rx="1"/><line class="wk" x1="203.0" x2="203.0" y1="91.2" y2="112.0"/><rect class="up" x="199.0" y="96.8" width="8" height="11.0" rx="1"/><line class="wk" x1="221.0" x2="221.0" y1="95.4" y2="117.5"/><rect class="dn" x="217.0" y="96.8" width="8" height="16.6" rx="1"/><line class="wk" x1="239.1" x2="239.1" y1="107.8" y2="132.8"/><rect class="dn" x="235.1" y="113.4" width="8" height="16.6" rx="1"/><line class="wk" x1="257.2" x2="257.2" y1="114.8" y2="136.9"/><rect class="up" x="253.2" y="118.9" width="8" height="11.1" rx="1"/><line class="wk" x1="275.3" x2="275.3" y1="109.2" y2="123.1"/><rect class="up" x="271.3" y="114.8" width="8" height="4.1" rx="1"/><line class="wk" x1="293.4" x2="293.4" y1="112.0" y2="131.4"/><rect class="dn" x="289.4" y="114.8" width="8" height="12.4" rx="1"/><line class="wk" x1="311.5" x2="311.5" y1="124.5" y2="148.0"/><rect class="dn" x="307.5" y="127.2" width="8" height="18.0" rx="1"/><line class="wk" x1="329.6" x2="329.6" y1="138.3" y2="161.8"/><rect class="dn" x="325.6" y="145.2" width="8" height="12.5" rx="1"/><line class="wk" x1="347.7" x2="347.7" y1="150.8" y2="170.2"/><rect class="up" x="343.7" y="153.5" width="8" height="4.2" rx="1"/><line class="wk" x1="365.8" x2="365.8" y1="149.4" y2="172.9"/><rect class="dn" x="361.8" y="153.5" width="8" height="15.3" rx="1"/><line class="wk" x1="383.9" x2="383.9" y1="160.5" y2="178.5"/><rect class="up" x="379.9" y="164.6" width="8" height="4.2" rx="1"/><line class="wk" x1="402.0" x2="402.0" y1="159.1" y2="179.8"/><rect class="dn" x="398.0" y="164.6" width="8" height="11.1" rx="1"/></svg></div>
-              <div class="rv-qt" id="rv-quote" hidden><p class="xname"><span class="av lt" style="--y:64.71%" aria-hidden="true"></span><b>Rafael Ortiz</b><span>@rortiz · Jan 9</span></p><p class="qt">Passed on a deal I liked today. Writing down why, so I can check myself in December.</p></div>
+              <div class="rv-qt" id="rv-quote" hidden><p class="xname"><span class="av lt" style="--y:64.71%" aria-hidden="true"></span><b>Rafael Ortiz</b><span>@rafael.example · Jan 9</span></p><p class="qt">Passed on a deal I liked today. Writing down why, so I can check myself in December.</p></div>
             </div></div>
           </article>
           <div class="cmt"><span class="av v2" style="--y:20%" id="cm-av" aria-hidden="true"></span><div><p class="cw"><b id="cm-n">Priya</b> on “<span id="cm-on">down 34%</span>”<span class="cm-ok" id="cm-ok" hidden><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg>Applied</span></p><p id="cm-t">Add “since June”. Then it’s good to go.</p></div></div>
@@ -2289,7 +2308,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* what the visitor came to do, when it isn't simply "start" */
   const INTENT = {
     rewrite: { t: 'Get your rewrite', sub: 'Three takes in your voice. Free, no card.' },
-    /* the hero's Schedule: an example's post is never queued as yours, so this sheet carries no line */
+    /* the hero's Schedule: the example's post rides along, labelled as the example, and is never queued as yours */
     schedule: { t: 'Schedule your posts free', sub: 'Free forever. No card.' }
   };
   let intent = '';
@@ -2404,11 +2423,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const WHO = [
     { k: 'Trader', n: 'heycape', h: '@heycape_', av: 'me', draft: 'honestly i’m up 18% this month and it’s literally just from trading less',
       cut: [['honestly', 'honest'], ['and', 'reshape'], ['literally', 'filler']], after: 'i’m up 18% this month. it’s just from trading less.' },
-    { k: 'Newsletter', n: 'Ana Ruiz', h: '@anaruiz', av: 'lt|23.53%', draft: 'So in this issue I wanted to talk about why open rates lie',
+    { k: 'Newsletter', n: 'Ana Ruiz', h: '@ana.example', av: 'lt|23.53%', draft: 'So in this issue I wanted to talk about why open rates lie',
       cut: [['So', 'open'], ['in this issue I wanted to talk about', 'announce']], after: 'Why open rates lie:' },
-    { k: 'Founder', n: 'Priya Nair', h: '@priyanair', av: 'v2|20%', draft: 'Excited to share that dark mode is live, 9 months after the first request',
+    { k: 'Founder', n: 'Priya Nair', h: '@priya.example', av: 'v2|20%', draft: 'Excited to share that dark mode is live, 9 months after the first request',
       cut: [['Excited to share that', 'announce']], after: 'Dark mode is live, 9 months after the first request.' },
-    { k: 'Ghostwriter', n: 'Theo Mensah', h: '@theowrites', av: '|17.65%', draft: 'Honestly, founders don’t need more posts, they need better first lines',
+    { k: 'Ghostwriter', n: 'Theo Mensah', h: '@theo.example', av: '|17.65%', draft: 'Honestly, founders don’t need more posts, they need better first lines',
       cut: [['Honestly', 'honest']], after: 'Founders don’t need more posts. They need better first lines.', studio: true }
   ];
   const whoDraft = w => { let h = '', last = 0; w.cut.forEach(([c, k]) => { const i = w.draft.indexOf(c, last); if (i < 0) return;
@@ -2416,7 +2435,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const c2 = c + (!w.draft.slice(0, i).trim() && /^[:,]/.test(w.draft.slice(i + c.length)) ? w.draft[i + c.length] : '');
     h += esc(w.draft.slice(last, i)) + (/^(?:move|tight|swap|reshape)$/.test(k) ? `<s>${esc(c2)}</s>` : `<span class="fl"><s>${esc(c2)}</s></span>`); last = i + c2.length; }); return h + esc(w.draft.slice(last)); };
   const whoAv = key => { if (key === 'me') return 'class="av me xav"'; const [c, y] = key.split('|'); return `class="av${c ? ' ' + c : ''} xav" style="--y:${y}"`; };
-  const whoHTML = (w, i) => `<li class="wp"><span ${whoAv(w.av)} aria-hidden="true"></span><div class="wb"><p class="xname"><b>${esc(w.n)}</b><span>${esc(w.h)}</span><span class="tag">${esc(w.k)}</span></p>`
+  const whoHTML = (w, i) => `<li class="wp"><span ${whoAv(w.av)} aria-hidden="true"></span><div class="wb"><p class="xname"><b>${esc(w.n)}</b><span class="tag eg">Example</span><span class="hd">${esc(w.h)}</span><span class="tag">${esc(w.k)}</span></p>`
     + `<p class="wd"><span class="sr">Draft: </span>${whoDraft(w)}</p><p class="xtext"><span class="sr">Sharpened: </span>${beats(w.after, x => nb(esc(x)))}</p></div>`
     + (w.studio ? `<a class="wtry" href="#studio" aria-label="See Studio, for ghostwriters"><span class="wt">Studio</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>`
       : `<button class="wtry" type="button" data-w="${i}" aria-label="Try ${esc(w.n)}’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button>`) + '</li>';
@@ -2425,16 +2444,16 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const EX = [
     { who: 'heycape', handle: '@heycape_', av: 'me', draft: 'just wanted to share that i sold half my $BTC at 98k and honestly i’m holding the rest',
       cut: [['just wanted to share that', 'announce'], ['and', 'reshape'], ['honestly', 'honest']], after: 'i sold half my $BTC at 98k. i’m holding the rest.', say: 'Cut 2 bits of fluff · Split it into two beats',
-      why: 'The full stop before “i’m holding the rest” gives it its own beat.', kept: 'Kept: $BTC, 98k. Kept your lowercase.' },
-    { who: 'Priya Nair', handle: '@priyanair', av: 'v2|20%', draft: 'Big news: we just hit $10k MRR, 14 months after launching',
+      why: 'The full stop before “i’m holding the rest” gives it its own beat.', kept: 'Kept $BTC, 98k and your lowercase.' },
+    { who: 'Priya Nair', handle: '@priya.example', av: 'v2|20%', draft: 'Big news: we just hit $10k MRR, 14 months after launching',
       cut: [['Big news', 'label']], after: 'We just hit $10k MRR, 14 months after launching.', say: 'Cut 1 bit of fluff',
-      why: 'Your “Big news” frame went, so the line opens on “We just hit $10k MRR”.', kept: 'Kept: $10k MRR, 14 months.' },
-    { who: 'Ana Ruiz', handle: '@anaruiz', av: 'lt|23.53%', draft: 'So basically the reason most newsletters fail is that nobody reads past the first line',
+      why: 'Your “Big news” frame went, so the line opens on “We just hit $10k MRR”.', kept: 'Kept $10k MRR and 14 months.' },
+    { who: 'Ana Ruiz', handle: '@ana.example', av: 'lt|23.53%', draft: 'So basically the reason most newsletters fail is that nobody reads past the first line',
       cut: [['So', 'open'], ['basically', 'filler']], after: 'The reason most newsletters fail is that nobody reads past the first line.', say: 'Cut 2 bits of fluff',
       why: 'The run-up is gone, so the first words people read are yours.', kept: '' },
-    { who: 'Marco Vitale', handle: '@marcov', av: 'v2|0%', draft: 'honestly i was wrong on btc at 58k. here’s the chart that told me, and i ignored it',
+    { who: 'Marco Vitale', handle: '@marco.example', av: 'v2|0%', draft: 'honestly i was wrong on btc at 58k. here’s the chart that told me, and i ignored it',
       cut: [['honestly', 'honest'], ['and', 'reshape']], after: 'i was wrong on btc at 58k. here’s the chart that told me. i ignored it.', say: 'Cut 1 bit of fluff · Split it into three beats',
-      why: 'Short beats with full stops between them. Each pause makes the next one land.', kept: 'Kept: btc, 58k. Kept your lowercase.' }
+      why: 'Short beats with full stops between them. Each pause makes the next one land.', kept: 'Kept btc, 58k and your lowercase.' }
   ];
   /* EX-END */
   /* the Ghostwriter tab (EX[3]) is a client's post: it waits for the client's yes, and its button opens that client's review link
@@ -2478,8 +2497,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
      by the move ("Split at" for a beat split, else "Reworded"). Squiggle means fluff; a plain strike is the move's */
   const cutNote = e => { const f = e.cut.filter(c => FLUFF(c[1])), p = e.cut.filter(c => !FLUFF(c[1])), chip = c => `<s>${esc(c[0])}</s>`;
     if (!f.length && !p.length) return 'Every fact you wrote is still there.';
-    return (f.length ? '<span class="ck">Cut</span>' + f.map(chip).join('') : '')
-      + (p.length ? `<span class="ck${f.length ? ' k2' : ''}">${cutMove(e.say)}</span>` + p.map(chip).join('') : ''); };
+    return (f.length ? '<span class="cg"><span class="ck">Cut</span>' + f.map(chip).join('') + '</span>' : '')
+      + (p.length ? `<span class="cg"><span class="ck${f.length ? ' k2' : ''}">${cutMove(e.say)}</span>` + p.map(chip).join('') + '</span>' : ''); };
   /* the label over a move's plain strikes: "Split at" for a beat split, else the move's own name from the receipt ("Number first",
      "Asked, then answered"), so a word the move dropped is never called "Reworded" */
   const cutMove = say => { const parts = String(say).split(' · '), mv = parts.length > 1 ? parts[parts.length - 1] : '';
@@ -2536,6 +2555,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
      passing the taller pane; the window's height is always the taller pane's own, so levelling never moves the page. What's left
      (under ~24px) is spread over the shorter pane's gaps by the stylesheet */
   function levelHero() {
+    const nm = proof.querySelector('.who .nm'), hd = $('#pf-handle'); nm.classList.remove('nohd');
+    if (hd.scrollWidth > hd.clientWidth + 1 || nm.scrollWidth > nm.clientWidth + 1) nm.classList.add('nohd');
     const dt = $('#pf-draft'), pt = $('#pf-sharp'); dt.style.maxWidth = pt.style.maxWidth = '';
     if (oneCol()) return;
     const pd = proof.querySelector('.pane.draft'), ps = proof.querySelector('.pane.sharp');
@@ -2562,9 +2583,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   addEventListener('resize', () => { if (innerWidth === heroW) return; heroW = innerWidth; cancelAnimationFrame(heroRaf); heroRaf = requestAnimationFrame(levelHero); });
   $$('#proof .ex button').forEach(b => b.addEventListener('click', () => showEx(+b.dataset.ex)));
   $('#pf-go').addEventListener('click', () => showEx(curEx));
-  /* the window's Schedule opens the sheet to schedule your own posts (an example's post is never queued as yours). The Ghostwriter's
-     "Send to Marco" opens his review link in Studio, where his yes is the next tap */
-  $('#pf-sched').addEventListener('click', e => { if (curEx === GW.ex) toClient(GW.c); else openSheet({ plan: 'free', intent: 'schedule', line: '' }, e.currentTarget); });
+  /* the footer's "For" links: back to the opening shot, which plays that kind of poster's example once it's in view */
+  $$('[data-ex-go]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const i = +a.dataset.exGo, pill = $(`#proof .ex [data-ex="${i}"]`);
+    scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); let done = false; const show = () => { if (done) return; done = true; showEx(i); pill.focus({ preventScroll: true }); };
+    if (RM) show(); else { addEventListener('scrollend', show, { once: true }); setTimeout(show, 1200); } }));
+  /* the window's Schedule opens the sheet to schedule your own posts, carrying the post you just watched as the example it is
+     ("Example post:", never "Your line"; it is never queued as yours). The Ghostwriter's "Send to Marco" opens his review link in
+     Studio, where his yes is the next tap */
+  $('#pf-sched').addEventListener('click', e => { if (curEx === GW.ex) toClient(GW.c); else openSheet({ plan: 'free', intent: 'schedule', line: EX[curEx].after, example: true, lineK: 'Example post:' }, e.currentTarget); });
   /* the opening plays where it can be seen: with the window at least 40% in view, about 0.3 s after first paint (the page's
      start-up tasks are done by then, so the strike runs on a free main thread), and the post's words land by ~1.3 s. It plays once;
      the pills and "See it again" replay it */
@@ -2726,16 +2752,16 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
   /* ---------- studio: each client, their voice, their yes (you tap it, as the client). A yes is remembered ---------- */
   const CL = [
-    { n: 'Priya Nair', f: 'Priya', pr: 'her', h: '@priyanair', av: 'v2|20%', img: 4, slot: 'Tue 8:15 AM', v: 'plain, numbers first, a little dry. Short sentences. No exclamation marks.', nv: ['synergy', 'excited to announce', 'thought leader', 'humbled'], tz: ['Tuesdays', '8:15 AM', 'London'],
+    { n: 'Priya Nair', f: 'Priya', pr: 'her', h: '@priya.example', av: 'v2|20%', img: 4, slot: 'Tue 8:15 AM', v: 'plain, numbers first, a little dry. Short sentences. No exclamation marks.', nv: ['synergy', 'excited to announce', 'thought leader', 'humbled'], tz: ['Tuesdays', '8:15 AM', 'London'],
       doc: ['Customer churn: ', 'down 34%', '. What changed: our team redesigned the onboarding flow.'], cm: 'Add “since June”. Then it’s good to go.', fix: 'down 34% since June',
       w: ['Customer churn: down 34%. What changed…', 'Hiring our first PM took five months…'], wf: 'Customer churn: down 34% since June…', a: ['Our pricing page had 9 plans. Now it has 2…', 'Support replies take 2 hours now, not 2 days…', 'We said no to our biggest customer’s feature…'] },
-    { n: 'Rafael Ortiz', f: 'Rafael', pr: 'his', h: '@rortiz', av: 'lt|64.71%', img: -1, media: 'quote', slot: 'Wed 7:40 AM', v: 'contrarian, warm, cites the deal. Ends on a question.', nv: ['disrupt', 'unicorn', 'crushing it'], tz: ['Wednesdays', '7:40 AM', 'Mexico City'],
+    { n: 'Rafael Ortiz', f: 'Rafael', pr: 'his', h: '@rafael.example', av: 'lt|64.71%', img: -1, media: 'quote', slot: 'Wed 7:40 AM', v: 'contrarian, warm, cites the deal. Ends on a question.', nv: ['disrupt', 'unicorn', 'crushing it'], tz: ['Wednesdays', '7:40 AM', 'Mexico City'],
       doc: ['The deal I passed on this year taught me more than ', 'the five I closed', '. What did yours teach you?'], cm: 'Make it four. One hasn’t closed yet.', fix: 'the four I closed',
       w: ['The deal I passed on this year taught me…'], wf: 'The deal I passed on this year taught me more than the four I closed…', a: ['Founders who answer the hard question first…', 'I read every deck to the last slide…', 'Small rounds close faster. Here’s why…', 'What I ask before the first call…'] },
-    { n: 'Lena Fischer', f: 'Lena', pr: 'her', h: '@lenaf', av: '|47.06%', img: 3, crop: 'cafe hi', slot: 'Mon 6:30 PM', v: 'gentle and direct. Second person. One idea per post.', nv: ['hustle', 'grindset', 'manifest'], tz: ['Mondays', '6:30 PM', 'Berlin'],
+    { n: 'Lena Fischer', f: 'Lena', pr: 'her', h: '@lena.example', av: '|47.06%', img: 3, crop: 'cafe hi', slot: 'Mon 6:30 PM', v: 'gentle and direct. Second person. One idea per post.', nv: ['hustle', 'grindset', 'manifest'], tz: ['Mondays', '6:30 PM', 'Berlin'],
       doc: ['Your evening sets up your morning. Your alarm ', 'only starts it', '.'], cm: 'Yes. This is exactly how I say it.', fix: '',
       w: ['Your evening sets up your morning…'], a: ['Rest is part of the work…', 'One walk a day, no phone…', 'You can start again on a Wednesday…', 'Write the hard thing down first…', 'You don’t need a morning routine…'] },
-    { n: 'Marco Vitale', f: 'Marco', pr: 'his', h: '@marcov', av: 'v2|0%', img: -1, media: 'chart', slot: 'Thu 8:05 AM', v: 'lowercase, chart first, says when he was wrong.', nv: ['guaranteed', 'wagmi', 'ngmi'], tz: ['Thursdays', '8:05 AM', 'Rome'],
+    { n: 'Marco Vitale', f: 'Marco', pr: 'his', h: '@marco.example', av: 'v2|0%', img: -1, media: 'chart', slot: 'Thu 8:05 AM', v: 'lowercase, chart first, says when he was wrong.', nv: ['guaranteed', 'wagmi', 'ngmi'], tz: ['Thursdays', '8:05 AM', 'Rome'],
       doc: ['i was wrong on btc at 58k. here’s the chart that told me. ', 'i ignored it', '.'], cm: 'keep this. it’s the whole post.', fix: '',
       w: ['i was wrong on btc at 58k…', 'the trade i keep not taking…', 'what a red week taught me…'], a: ['i size down after two red days…', 'my one rule for alts…'] }
   ];
@@ -2930,16 +2956,20 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const sameLine = (a, b) => { const A = wordSet(a), B = wordSet(b); if (!A.size || !B.size) return false; let n = 0; A.forEach(w => { if (B.has(w)) n++; }); return n / Math.max(A.size, B.size) >= .5; };
   const inLine = (keep, t) => keep.filter(w => new RegExp(`(?<![\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'iu').test(t));
   /* KEPT-START */
-  /* "Kept": the writer's own facts carried over verbatim (R.kept), as plain items: "Kept: $SOL, 40%." Then "Kept your lowercase."
-     when the draft is all lowercase. Never "your" in front of a fact: public acronyms (CPI, ETF, AI), years, a bare 0 or 1 and an
+  /* "Kept": one sentence. The writer's own facts carried over verbatim (R.kept), as plain items, then any word the engine's note
+     says it kept (a stance, an "about"), then "your lowercase" when the draft is all lowercase: "Kept $SOL, 40% and your lowercase."
+     (pass 14, marketing-2: one "Kept" per result; the note keeps only what isn't a kept word). Never "your" in front of a fact: public acronyms (CPI, ETF, AI), years, a bare 0 or 1 and an
      ordinal without its noun aren't the writer's facts, so they aren't listed. Nothing from inside a link or a handle is listed,
      and a unit right after a number travels with it ("$10k MRR", "3 years") */
   const KEPT_TICK = /^(?:btc|eth|sol|xrp|bnb|doge|avax|pepe|wif|arb|sui|ltc|spx|qqq|nvda|tsla|aapl)$/i;
-  const KEPT_UNIT = /^\s+(?:months?|years?|weeks?|days?|hours?|minutes?|subscribers|readers|followers|customers|clients|trades|posts|users|people|members|sales|decks|deals|signups|downloads|orders|reps|pounds|kg|miles|km)\b/i;
+  const KEPT_UNIT = /^\s+(?:months?|years?|weeks?|days?|hours?|minutes?|subscribers|readers|followers|customers|clients|trades|posts|comments|replies|likes|views|reposts|issues|episodes|videos|hires|users|people|members|sales|decks|deals|signups|downloads|orders|reps|pounds|kg|miles|km)\b/i;
   const KEPT_PUBLIC = /^(?:AI|CPI|PPI|ETFS?|FOMC|FED|SEC|SEO|B2B|B2C|SAAS|DCA|CEO|CTO|CFO|COO|PM|US|USA|UK|EU|API|UI|UX|PR|HR|IPO|GDP|NFTS?|DAO|DEFI|ATH|ROI|KPI|MVP|VCS?|IRL|TBH|IMO|FYI|LOL|PSA|NFA|DYOR|GM|GN|LFG|OK)$/i;
   const PROTECT = /https?:\/\/\S+|www\.\S+|(?<![\p{L}\p{N}_])[@#][\p{L}\p{N}_]+/gu;
   const spansOf = t => [...String(t).matchAll(PROTECT)].map(m => [m.index, m.index + m[0].length, m[0]]);
-  function keptLine(draft, line, kept) {
+  const KEPT_NOTE = /Kept (your )?“([^”]+)”:[^.]*\.\s*/g;
+  const keptWords = note => [...String(note || '').matchAll(KEPT_NOTE)].map(m => `${m[1] ? 'your ' : ''}“${m[2]}”`);
+  const noteRest = note => String(note || '').replace(KEPT_NOTE, '').trim();
+  function keptLine(draft, line, kept, note) {
     /* a greeting ("gm") is voice, not a fact: it is never listed (pass 13, marketing-7) */
     const bits = [], used = new Set(), P = spansOf(line);
     const at = f => { let i = -1; while ((i = line.indexOf(f, i + 1)) >= 0) if (!P.some(([a, b, w]) => i >= a && i + f.length <= b && w !== f)) return i; return -1; };
@@ -2958,7 +2988,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     }
     const bare = s => (kept || []).reduce((a, f) => a.split(f).join(' '), String(s).replace(PROTECT, ' ')), d = bare(draft), l = bare(line);
     const lower = /[a-z]/.test(d) && d === d.toLowerCase() && l === l.toLowerCase();
-    return [bits.length ? `Kept: ${bits.slice(0, 3).join(', ')}.` : '', lower ? 'Kept your lowercase.' : ''].filter(Boolean).join(' ');
+    const items = [...bits.slice(0, 3), ...keptWords(note), ...(lower ? ['your lowercase'] : [])];
+    return items.length ? `Kept ${list(items)}.` : '';
   }
   /* KEPT-END */
   /* GUARD-START */
@@ -3089,13 +3120,15 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function viewOf(R, v, keepL) {
     const st = R.state, sharp = st === 'sharp', words = (String(R.line).match(/\S+/g) || []).length;
     /* a line that opens on a word the writer put back carries the engine's own "you kept it" why, with no label over it */
-    if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
+    if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept, R.note), note: noteRest(R.note), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
     /* a line the engine marked but kept is "Kept as written", never "tight" */
     const say = sayTxt(st === 'unsure' ? 'Kept as written' : R.say || 'Kept as written');
     if (st === 'unsure' && /\btight\b/i.test(R.why || '')) R = { ...R, why: KEPT_WHY };
-    /* nothing cut and nothing put back: the way on is a rewrite in your voice (not for a two-word post like "gm") */
-    if ((st === 'clean' || st === 'unsure') && !keepL.length) return { say, k: '', why: esc(R.why) + (words >= 3 ? `${R.why ? ' ' : ''}Want it to lead harder? ${REWRITE}` : ''), kept: '', keep: false, cta: 'Start free', status: say };
-    return { say, k: '', why: esc(R.why), kept: '', keep: true, cta: keepL.length ? 'Keep it. Start free' : 'Start free', status: say };
+    /* marked but kept, nothing put back: the way on is a rewrite in your voice (not for a two-word post like "gm"). A clean line
+       ("Already sharp") is a win, said as one: no offer after it (pass 14, founder-5) */
+    if (st === 'clean' && !keepL.length) return { say, k: '', why: esc(R.why), note: R.note, kept: '', keep: false, cta: 'Start free', status: say };
+    if (st === 'unsure' && !keepL.length) return { say, k: '', why: esc(R.why) + (words >= 3 ? `${R.why ? ' ' : ''}Want it to lead harder? ${REWRITE}` : ''), note: R.note, kept: '', keep: false, cta: 'Start free', status: say };
+    return { say, k: '', why: esc(R.why), note: R.note, kept: '', keep: true, cta: keepL.length ? 'Keep it. Start free' : 'Start free', status: say };
   }
   /* after a put-back: which other struck words came back with it */
   const backNote = (word, before, after) => { const gone = [...before].filter(w => w && w.toLowerCase() !== word.toLowerCase() && !after.has(w)); return gone.length ? `Back in: “${word}”, and ${list(gone.map(w => `“${w}”`))} with it.` : `“${word}” is back. Tap it to cut it again.`; };
@@ -3122,7 +3155,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const off = lead(t); let h = '', last = 0;
     const txt = s => s ? (done ? `<span aria-hidden="true">${esc(s)}</span>` : esc(s)) : '';
     S.forEach((x, k) => {
-      const a = x.a + off, b = x.b + off, cls = [x.cut ? 'c' : '', x.fl ? '' : 'x', x.held ? 'held' : '', done && (x.cut || x.kept) ? 'tog' : '', x.kept ? 'kept' : '', x.back ? 'back' : ''].filter(Boolean).join(' ');
+      const a = x.a + off, b = x.b + off, cls = [x.cut ? 'c' : '', x.fl ? '' : 'x', x.held ? 'held' : '', done && (x.cut || x.kept) ? 'tog' : '', done && (x.cut || x.kept) && x.b - x.a <= 3 ? 'sm' : '', x.kept ? 'kept' : '', x.back ? 'back' : ''].filter(Boolean).join(' ');
       h += txt(t.slice(last, a)) + `<mark${cls ? ` class="${cls}"` : ''}${done && (x.cut || x.kept) ? togAttrs(x) : ''} style="--k:${k}">${esc(t.slice(a, b))}</mark>`; last = b;
     });
     return h + (done ? `<span aria-hidden="true">${esc(t.slice(last))}&#8203;</span>` : esc(t.slice(last)) + '&#8203;');
@@ -3132,7 +3165,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const off = lead(raw); let h = '', last = 0;
     S.forEach(x => {
       const a = x.a + off, b = x.b + off, w = esc(raw.slice(a, b));
-      const inner = x.cut ? `<span class="cut tog"${togAttrs(x)}>${w}</span>` : x.kept ? `<span class="tog kept"${togAttrs(x)}>${w}</span>` : x.held ? `<span class="held">${w}</span>` : w;
+      const sm = x.b - x.a <= 3 ? ' sm' : '', inner = x.cut ? `<span class="cut tog${sm}"${togAttrs(x)}>${w}</span>` : x.kept ? `<span class="tog kept${sm}"${togAttrs(x)}>${w}</span>` : x.held ? `<span class="held">${w}</span>` : w;
       h += nb(esc(raw.slice(last, a))) + (x.fl ? `<span class="fl">${inner}</span>` : inner); last = b;
     });
     return '<span class="sr">Draft: </span>' + h + nb(esc(raw.slice(last)));
@@ -3175,10 +3208,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     else { mir.setAttribute('aria-hidden', 'true'); mir.removeAttribute('role'); mir.removeAttribute('aria-label'); }
     mir.scrollTop = ta.scrollTop;
   }
+  /* the engine's "announcing the announcement" reason is for excitement ("Excited to share…"); a line that only announces the post
+     ("In this thread I'm going to break down…", "I've put together a list of…", "Today I want to talk about…") gets its own */
+  const POST_ANN = 'Announces the post instead of starting it. Open on your first point; the post speaks for itself.';
+  const reasonOf = (w, why) => /^Announcing the announcement\b/.test(why || '') && !/excit|thrill|happy|proud|pleas|delight|stoked|humbl|honou?r|announc|news/i.test(w) ? POST_ANN : why;
   /* the chip row: one chip per word (a repeat shows ×n), six at most. "Could cut" chips are suggestions, with no fluff lecture */
   function chips(t, M, label, plain) {
     const off = lead(t), seen = new Map();
-    M.forEach(m => { const w = t.slice(m[0] + off, m[1] + off), key = w.toLowerCase(); const e = seen.get(key); if (e) e.n++; else seen.set(key, { w, why: m[2], n: 1, held: m[3] === 'frame' }); });
+    M.forEach(m => { const w = t.slice(m[0] + off, m[1] + off), key = w.toLowerCase(); const e = seen.get(key); if (e) e.n++; else seen.set(key, { w, why: reasonOf(w, m[2]), n: 1, held: m[3] === 'frame' }); });
     /* a frame the engine keeps is never "Could cut": it follows the suggestions under its own "Marked:", in the kept style */
     const typing = label === 'Could cut:', all = typing ? [...seen.values()].sort((p, q) => p.held - q.held) : [...seen.values()], C = all.slice(0, 6), more = all.length - C.length;
     let lab = '';
@@ -3274,7 +3311,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     outLine.innerHTML = xbeats(line);
     const k = $('#out-k'), w = $('#out-why'), nt = $('#out-note'), kp = $('#out-kept');
     k.textContent = V.k; k.hidden = !V.k; w.innerHTML = V.why; w.hidden = !V.why;
-    nt.textContent = [noteOnce(R.note, V.why), R.rest.trim() ? 'First line only. The rest stays as you wrote it.' : ''].filter(Boolean).join(' ');
+    nt.textContent = [noteOnce(V.note, V.why), R.rest.trim() ? 'First line only. The rest stays as you wrote it.' : ''].filter(Boolean).join(' ');
     kp.textContent = V.kept; kp.hidden = !V.kept;
     outSt.last = V.say; outSt(outSt.last);
     outKeep.hidden = !V.keep; tryCta = ex ? 'Start free' : V.cta; keepLabel();
@@ -3338,7 +3375,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const TRY0 = ta.value, undoEl = $('#try-undo'), clrBtn = $('#try-clear'); let undoT = 0, undone = null;
   /* the starters: each a different move, and each fits two lines of the box on a 360px phone, so a pick never moves the page */
   const STARTERS = ['due to the fact that it’s a red week, i’m trading half size', 'So excited to share: our first hire starts on Monday',
-    'Here are 5 things 3 years of newsletters taught me', 'Real talk: after 40 founders, I write every first line last', '$ETH reclaimed 3k. shorts are trapped.'];
+    'Here are 5 mistakes from my first year of newsletters:', 'Real talk: after 40 founders, I write every first line last', '$ETH reclaimed 3k. shorts are trapped.'];
   /* each starter is an example account's line (the trader, the founder, the newsletter writer, the ghostwriter) */
   const STARTER_BY = [WHO[0], WHO[2], WHO[1], WHO[3], WHO[0]].map(w => ({ n: w.n, h: w.h, av: w.av, tag: 'Example' }));
   function clearLabel() { const own = ta.value && !ours(ta.value); clrBtn.hidden = !ta.value; card.classList.toggle('isx', !!ta.value && !own); const h = own ? `${icn('close')}Clear` : 'Write my own'; if (clrBtn.innerHTML !== h) clrBtn.innerHTML = h; }
@@ -3429,7 +3466,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   $('#proof .pane.draft').addEventListener('click', e => { if (!e.target.closest('button')) jumpToTry(EX[curEx].draft); });
   pfB.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jumpToTry(EX[curEx].draft); } });
 
-  /* ---- the final: squiggles as you type; the card beside it sharpens your line live ---- */
+  /* ---- the final: squiggles as you type; the card beside it sharpens your line when you tap Sharpen (or press Enter), the same
+     way the Try box does (pass 14, uiux-7). An edit of the line on show dims its result; an emptied field brings the example back ---- */
   const fi = $('#fin-in'), fm = $('#fin-mtext'), fmir = $('#fin-mirror'), fn = $('#fin-n'), pay = $('#fpay'), finGo = $('#fin-go');
   const fpDraft = $('#fp-draft'), fpHead = $('#fp-head'), fpSharp = $('#fp-sharp'), fpWhy = $('#fp-why'), fpNote = $('#fp-note'), fpAv = $('#fp-av'), fpK = $('#fp-k'), fpTip = $('#fp-tip');
   const fpCard = $('#fp-card'), fpEmpty = $('#fp-empty'), fpHits = $('#fp-hits'), fpKeep = $('#fp-keep'), fpKept = $('#fp-kept'), finKeep = $('#fin-keep'), finField = $('.fin-field');
@@ -3442,7 +3480,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const morph = () => { if (!RM) { pay.classList.remove('fresh', 'morph'); void pay.offsetWidth; pay.classList.add('morph'); } };
   function keepFin(on, cta) { fpKeep.hidden = !on; if (cta) finKeep.textContent = cta; finGo.classList.toggle('btn-white', !on); finGo.classList.toggle('btn-glass', on); }
   /* a line longer than the field fades at the edge it runs past, never clipped mid-letter under the counter */
-  const finEdge = () => { const o = fi.scrollWidth - fi.clientWidth > 1; finField.classList.toggle('ovr', o && fi.scrollLeft < fi.scrollWidth - fi.clientWidth - 1); finField.classList.toggle('ovl', o && fi.scrollLeft > 1); };
+  const finEdge = () => { const o = fi.scrollWidth - fi.clientWidth > 1; finField.classList.toggle('ovr', o && fi.scrollLeft < fi.scrollWidth - fi.clientWidth - 1); finField.classList.toggle('ovl', o && fi.scrollLeft > 1);
+    const x0 = fmir.getBoundingClientRect().left + 24; fm.querySelectorAll('mark').forEach(m => m.classList.toggle('off', o && fi.scrollLeft > 1 && m.getBoundingClientRect().left < x0)); };
   /* the beam's hot spot on the panel's top hairline sits exactly where the beam crosses it */
   function finFx() {
     const pn = $('.fin-panel'), lv = $('#fp-live'); if (!pn || !lv || narrow() || lv.offsetParent === null) return;
@@ -3466,6 +3505,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       fpK.textContent = EX0.k; fpK.hidden = false; fpWhy.hidden = false; fpAlt.hidden = true; fpWhy.textContent = EX0.why; fpNote.textContent = EX0.note; fpKept.textContent = EX0.kept; fpKept.hidden = !EX0.kept; fpAv.className = EX0.av; fpAv.style.setProperty('--y', EX0.y); keepFin(false); finLine = ''; if (!sayT) fn.textContent = ''; flash(); finFx(); return;
     }
     const prevCut = new Set([...fpDraft.querySelectorAll('.cut')].map(x => x.dataset.w));
+    finFor = raw; pay.classList.remove('stale');
     if (!alt) { keepF = FR && sameLine(raw, FR.draft) ? inLine(keepF, raw) : []; FR = guard(H.sharpenLine(raw, { keep: keepF })); fver = 0; }
     const st = FR.state, sharp = st === 'sharp', fv = verOf(FR, fver);
     const key = st + '|' + fv.line + '|' + FR.note + '|' + keepF.join(',');
@@ -3489,7 +3529,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       fpSharp.innerHTML = `<span class="sr">${sharp ? 'Sharpened: ' : 'As you wrote it: '}</span>` + xbeats(fv.line);
       const V = viewOf(FR, fv, keepF);
       fpK.textContent = V.k; fpK.hidden = !V.k; fpWhy.innerHTML = V.why; fpWhy.hidden = !V.why;
-      fpNote.textContent = noteOnce(FR.note, V.why);
+      fpNote.textContent = noteOnce(V.note, V.why);
       fpKept.textContent = V.kept; fpKept.hidden = !V.kept;
       finLine = fv.line; if (sharp || keepF.length) lastLine = fv.line; keepFin(V.keep, V.cta);
       /* the same "Another version" as the Try box: the engine's alternatives, in turn */
@@ -3501,11 +3541,17 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const H = E(), t = fi.value; if (!H) { fm.textContent = t; return; }
     const m = (t.trim() && H.softMarks(t.replace(/^\s+/, ''), keepF)) || [], off = lead(t);
     let h = '', last = 0; m.forEach(x => { h += esc(t.slice(last, x[0] + off)) + `<mark${x[3] === 'frame' ? ' class="held"' : ''}>${esc(t.slice(x[0] + off, x[1] + off))}</mark>`; last = x[1] + off; });
-    fm.innerHTML = h + esc(t.slice(last)); fmir.scrollLeft = fi.scrollLeft;
+    fm.innerHTML = h + esc(t.slice(last)); fmir.scrollLeft = fi.scrollLeft; finEdge();
     if (!sayT && !t.trim()) fn.textContent = '';
   };
   function say(msg) { clearTimeout(sayT); fn.textContent = msg; fn.classList.add('say'); sayT = setTimeout(() => { sayT = 0; fn.classList.remove('say'); fpaint(); }, 2500); }
-  fi.addEventListener('input', () => { if (sayT) { clearTimeout(sayT); sayT = 0; fn.classList.remove('say'); } loadCore().then(() => { fpaint(); clearTimeout(timer); timer = setTimeout(payUpdate, 350); }); });
+  let finFor = '';
+  /* a line other than the one on show: its result isn't here until Sharpen, so the card dims and its Keep steps away */
+  const finStale = () => { const was = pay.classList.contains('stale'), st = live && !!fi.value.trim() && fi.value !== finFor; pay.classList.toggle('stale', st);
+    if (st) { keepFin(false); fpAlt.hidden = true; fpTip.hidden = true; if (!sayT) fn.textContent = ''; }
+    else if (was && live) payUpdate(true, true); };
+  fi.addEventListener('input', () => { if (sayT) { clearTimeout(sayT); sayT = 0; fn.classList.remove('say'); }
+    loadCore().then(H => { if (!H) { finDown(); return; } fpaint(); if (!fi.value.trim()) payUpdate(); else finStale(); }); });
   fi.addEventListener('focus', () => loadCore());
   fi.addEventListener('scroll', () => { fmir.scrollLeft = fi.scrollLeft; finEdge(); });
   ['keyup', 'click', 'select', 'input', 'focus', 'blur'].forEach(ev => fi.addEventListener(ev, () => { fmir.scrollLeft = fi.scrollLeft; requestAnimationFrame(finEdge); }));

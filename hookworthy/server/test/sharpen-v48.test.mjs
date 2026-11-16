@@ -124,7 +124,8 @@ test('v4.8, uiux-1: the announcement frame is one grammar (40 variants)', () => 
   assert.deepEqual(m, ['announce']); assert.deepEqual(S('We are super excited to finally launch our new feature that lets you schedule posts').cut.filter(c => c.kind !== 'reshape').map(c => c.text), ['super excited to']);
   /* the reshapes the frame already had stay ("We're partnering…", "We raised…"), and a feeling with no verb after it stays */
   assert.equal(L("We're thrilled to announce our partnership with Coinbase"), 'We’re partnering with Coinbase.'.replace('’', "'"));
-  assert.equal(L("We're super excited to announce our $2.5M pre-seed led by Hustle Fund!"), 'We raised a $2.5M pre-seed led by Hustle Fund!');
+  /* v4.9 (round-12 uiux-3): a round named keeps the writer's verb, never "We raised" (a word the draft never had) */
+  assert.equal(L("We're super excited to announce our $2.5M pre-seed led by Hustle Fund!"), "We're announcing our $2.5M pre-seed led by Hustle Fund!");
   assert.equal(S("I'm so happy that my mom finally got to see the ocean").state, 'clean');
   /* "sharing" and "shipping" are words the page's own guard doesn't know, so a shared thing stays marked */
   assert.equal(S("I'm so excited to share our new newsletter with you all!").state, 'unsure');

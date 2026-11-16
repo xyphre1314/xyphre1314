@@ -188,7 +188,8 @@ test('v4.2, round 7: no dangling header, no object left alone, "I think" kept as
   for (const t of ['Let me tell you about the worst trade I ever made', 'I want to talk about something that nobody in crypto wants to admit']) assert.equal(L(t), t, t);
   /* "I think" heading a claim is the clause's one hedge, kept every time; the second hedge goes (marketing-4) */
   assert.equal(L('i think this is probably the most important chart in crypto right now'), 'i think this is the most important chart in crypto right now.');
-  assert.doesNotMatch(S('i think this is probably the most important chart in crypto right now').why, /i think/i);
+  /* v4.9 (round-12 uiux-4): the why says the cut word was the second hedge, under the kept "i think" (never that it went) */
+  assert.match(S('i think this is probably the most important chart in crypto right now').why, /^“probably” was a second hedge: “i think” already says how sure you are\.$/);
   assert.match(S('I think one of the most underrated skills for a founder is writing').why, /^Kept “I think”: it’s how sure you are/);
   assert.equal(L('I think most founders probably overthink their pitch decks.'), 'I think most founders overthink their pitch decks.');
   assert.match(L('honestly i think SOL is going to flip ETH this cycle, not financial advice'), /^i think SOL/);

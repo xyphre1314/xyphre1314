@@ -15,7 +15,7 @@
 // Every example must also pass the page's own output guard (its GUARD block, lifted the same way): no doubled verb, no stub,
 // no word from nowhere.
 // Sharpened lines are drawn with the page's own display helpers (nb, beats, xbeats), so a wrap falls between beats.
-// The Kept rows ("Kept: $SOL, 40%. Kept your lowercase.") come from the page's own keptLine, lifted the same way, and the Try
+// The Kept rows (one sentence since pass 14: "Kept $SOL, 40% and your lowercase.", with any kept word the engine's note names) come from the page's own keptLine, lifted the same way, and the Try
 // default's struck mirror and the final's struck draft are rebuilt by --write with the page's own markup helpers (MARKUP block).
 //
 const fs = require('fs'), path = require('path');
@@ -46,7 +46,7 @@ const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 /* every example must also pass the page's own output guard (GUARD block): a line it would refuse is never shown as sharpened */
 const whole = (where, R) => { const w = R.state === 'sharp' ? gWhole(R.line, R.draft) || gOpensMarked(R, R) : ''; if (w) bad.push(`${where}: the page guard refuses this line (${w}); pick another draft`); };
-const fromEngine = d => { const R = sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept) : '' }; };
+const fromEngine = d => { const R = sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept, R.note) : '' }; };
 
 /* 1. the four hero examples */
 const fixed = EX.map((e, i) => {
