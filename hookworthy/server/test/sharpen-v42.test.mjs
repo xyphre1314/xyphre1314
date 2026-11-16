@@ -96,7 +96,7 @@ test('v4.2, hook41-3: receipts say only what is true', () => {
   /* "Already tight" only when nothing is marked; the strict answer on a marked line says the words are the writer's call */
   for (const t of HUNT) { const r = S(t); if (/Already tight/.test(r.why)) assert.deepEqual(r.marks, [], t); }
   const st = S('I wanted to share a really interesting chart I came across this week that basically shows how much attention spans have dropped', { strict: true });
-  assert.equal(st.state, 'unsure'); assert.equal(st.why, 'Nothing safe to cut here. The marked words are your call.'); assert.doesNotMatch(st.why, /on-device/i);
+  assert.equal(st.state, 'unsure'); assert.equal(st.why, 'This quick check found nothing safe to cut. The marked words are your call.'); /* v4.7: never absolute */ assert.doesNotMatch(st.why, /on-device/i);
   /* the clean line doesn't repeat the receipt's "Nothing to cut" */
   const cl = S('$ETH reclaimed 3k. shorts are trapped.'); assert.equal(cl.say, 'Nothing to cut'); assert.doesNotMatch(cl.why, /Nothing to cut/);
   /* a topic said as the claim is said straight, not "tightened" */

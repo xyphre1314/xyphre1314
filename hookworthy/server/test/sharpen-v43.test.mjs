@@ -27,7 +27,7 @@ const versions = r => r.state === 'sharp' ? [r.line, ...(r.alts || []).map(a => 
 const MODES = [['default', {}], ['v4.1', { hybrid: false }], ['strict', { strict: true }]];
 const HUNT = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-v43-hunt.json'), 'utf8')).lines;
 const HUNT42 = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-v42-hunt.json'), 'utf8')).lines;
-const CLEANS = ['This quick check found nothing to cut, so it stays as you wrote it.', 'Nothing here can go without changing what you said, so it stays as you wrote it.'];
+const CLEANS = ['This quick check found nothing to cut, so it stays as you wrote it.', 'This quick check found nothing it could cut safely, so it stays as you wrote it.'];
 
 test('v4.3, hook42-1: a deadpan or news label on a whole sentence is part of the line', () => {
   for (const t of ["Fun fact: I've never made money on a trade I had to explain to my wife.", 'Breaking: founder discovers that customers want the thing they asked for.', 'Life update: I now ghostwrite for my former boss.', 'Update: the client picked version one. Of nine.', "update: still haven't replied to that email from march", 'PSA: your landing page doesn\'t need a carousel.', 'Plot twist: the bug was in the test, not the code.', 'TIL: the bug was a timezone. It\'s always a timezone.']) {

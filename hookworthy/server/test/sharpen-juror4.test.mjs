@@ -141,7 +141,7 @@ test('juror 4, hook-9/12: receipts are true, thin lines say which kind of thin',
   }
   /* nothing marked, but a frame no rule can cut: it says so, not "nothing soft" */
   const fr = S("This week's issue is about the 3 habits that helped me write faster, link in bio");
-  assert.equal(fr.state, 'clean'); assert.equal(fr.why, 'Nothing here can go without changing what you said, so it stays as you wrote it.'); /* v4.1 (round-6 marketing-3): one human clean line; v4.3: softer */
+  assert.equal(fr.state, 'clean'); assert.equal(fr.why, 'This quick check found nothing it could cut safely, so it stays as you wrote it.'); /* v4.1 (round-6 marketing-3): one human clean line; v4.3: softer; v4.7: never absolute, it says it is a quick check */
 });
 
 test('juror 4, hook-10/11: the joke and the feeling stay; a contraction alone is no sharpen; facts keep their suffix and unit', () => {

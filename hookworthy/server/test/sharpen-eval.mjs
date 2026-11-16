@@ -8,6 +8,8 @@
    wrong or awkward. was / gb: what round 73's engine gave, and its grade; now / ga: what round 74 gives, and its grade.
    If an output stops matching "now", the script says so: grade it again before trusting the rate.
    r86: both paths now go through HWCore.sharpenLine; five outputs moved and were graded again (4 h, 1 o, the same 43 h).
+   v4.7: two moved and were graded again: the 5,000-readers line keeps “We just crossed” (h), and the AI-code-review line no
+   longer gains a “Here’s what we found:” its draft never wrote (o).
    The held-out check on lines the engine was never tuned on is sharpen-heldout.test.mjs. */
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
@@ -49,7 +51,7 @@ export const EVAL = [
   { n: 'founder', t: 'it is important to talk to your users before you write any code', was: 'talk to your users before you write any code.', gb: 'h', ga: 'h', now: 'talk to your users before you write any code.' },
   // newsletters / creators
   { n: 'creator', t: 'new issue is out!! been doing this every sunday for 3 years lol', body: 'this week: why i stopped using templates.', was: 'new issue is out!! been doing this every sunday for 3 years lol', gb: 'm', ga: 'h', now: '3 years, every sunday. new issue is out.' },
-  { n: 'creator', t: 'I just wanted to say thank you to everyone who subscribed, we just crossed 5,000 readers', was: 'I wanted to say thank you to everyone who subscribed, we crossed 5,000 readers.', gb: 'm', ga: 'h', now: '5,000 readers. Thank you to everyone who subscribed.' },
+  { n: 'creator', t: 'I just wanted to say thank you to everyone who subscribed, we just crossed 5,000 readers', was: 'I wanted to say thank you to everyone who subscribed, we crossed 5,000 readers.', gb: 'm', ga: 'h', now: 'We just crossed 5,000 readers. Thank you to everyone who subscribed.', v47: 'the figure keeps its verb and its “just” (recently)' },
   { n: 'creator', t: 'some thoughts on why most threads flop', body: 'the first line is a warm-up. the second line is where the post starts.', was: 'why most threads flop:', gb: 'o', ga: 'h', now: 'most threads flop. here’s why:' },
   { n: 'creator', t: 'honestly i feel like posting every day is kind of overrated if nobody reads your first line', was: 'nobody reads your first line? then posting every day is overrated.', gb: 'h', ga: 'h', now: 'nobody reads your first line? then posting every day is overrated.' },
   { n: 'creator', t: 'So I went from 200 to 4,000 followers in 90 days just by replying to bigger accounts', was: '200 → 4,000 followers in 90 days. The move: replying to bigger accounts.', gb: 'h', ga: 'h', now: '200 → 4,000 followers in 90 days. The move: replying to bigger accounts.' },
@@ -80,7 +82,7 @@ export const EVAL = [
   { n: 'eng', t: 'honestly most design systems fail because nobody really owns them', was: 'because nobody owns them, most design systems fail.', gb: 'm', ga: 'h', now: 'why do most design systems fail? nobody owns them.' },
   { n: 'eng', t: 'We migrated our entire backend from Rails to Go and our p99 latency dropped from 800ms to 120ms', was: 'We migrated our entire backend from Rails to Go. Our p99 latency dropped from 800ms to 120ms.', gb: 'o', ga: 'h', now: 'Our p99 latency dropped from 800ms to 120ms. What changed: we migrated our entire backend from Rails to Go.' },
   { n: 'eng', t: 'I spent $1,200 on courses and the best lesson was free: ship every day', was: 'I spent $1,200 on courses. The best lesson was free: ship every day.', gb: 'h', ga: 'h', now: 'I spent $1,200 on courses. The best lesson was free: ship every day.' },
-  { n: 'eng', t: 'Our team has been experimenting with AI code review for the past 3 months, and the results have been interesting', body: 'It caught 2 real bugs. It also flagged 140 things that weren’t.', was: 'Our team has been experimenting with AI code review for the past 3 months. The results have been interesting.', gb: 'o', ga: 'h', now: 'Our team spent 3 months experimenting with AI code review. Here’s what we found:' }
+  { n: 'eng', t: 'Our team has been experimenting with AI code review for the past 3 months, and the results have been interesting', body: 'It caught 2 real bugs. It also flagged 140 things that weren’t.', was: 'Our team has been experimenting with AI code review for the past 3 months. The results have been interesting.', gb: 'o', ga: 'o', now: 'Our team spent 3 months experimenting with AI code review. The results have been interesting.', v47: 'no “Here’s what we found:” the draft never wrote (UI/UX juror, round 10); the teaser is the writer’s own' }
 ];
 
 /* the hard failures, checked on every line */
