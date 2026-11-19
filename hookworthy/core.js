@@ -2348,7 +2348,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* advice said straight: "you should X" → "X.", "It is important to X" → "X.", "It is not a good idea to X" → "Don't X." */
     imperative(x) {
       const b = body(x), p = endP(x) || '.';
-      let m = b.match(/^(?:you|we)(?: all)? (?:should|need to|have to|must|gotta|ought to) (?!not\b|be\b|talk about\b|discuss\b|think\b|consider\b|admit\b)(.{4,})$/i); if (m) return `${capFirst(m[1])}${p}`;
+      /* v5.2 (Fable f-85): only a bare verb after the modal makes an order. "we should all probably stop using them" is no
+         "All probably stop using them." */
+      let m = b.match(/^(?:you|we)(?: all)? (?:should|need to|have to|must|gotta|ought to) (?!not\b|be\b|talk about\b|discuss\b|think\b|consider\b|admit\b|(?:all|both|each|probably|maybe|perhaps|possibly|definitely|certainly|really|seriously|totally|also|still|honestly|actually|basically|literally|kind of|sort of|kinda|sorta|at least)\b)(.{4,})$/i); if (m) return `${capFirst(m[1])}${p}`;
       m = b.match(/^(?:you|we)(?: all)? (?:should(?: not|n['’]t)|shouldn['’]t) (.{4,})$/i); if (m) return `Don’t ${m[1].replace(/^be (\w+ing)\b/i, (z, g) => baseOf(g))}${p}`;
       /* r86 pass 3: "it's important to be transparent with all of you" is what the writer does, not advice: no order made of it */
       /* v4.1 (hook4-6): and with the intensifier doubled: "It's really, really important to X" → "X." */
@@ -2372,7 +2374,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       return `${capFirst(m[2])}, ${main}${endP(x) || '.'}`;
     },
     /* "There is a lot of noise right now." → "Lots of noise right now." */
-    thereIs(x) { const m = body(x).match(/^there(?: is|['’]s| are) (?:a lot of|lots of|so much|too much|so many|too many) (.{3,})$/i); return m ? `${capFirst(body(x).match(/(a lot of|lots of)/i) ? 'lots of' : body(x).match(/(so much|too much|so many|too many)/i)[1])} ${m[1]}${endP(x) || '.'}` : null; },
+    /* v5.2 (Fable f-11): "There are a lot of people who think X" → "Lots of people think X": the "who" goes with "There are", or
+       the line is a fragment ("Lots of people who think X."). Any other relative clause after the noun keeps the line as it is */
+    thereIs(x) { let m = body(x).match(/^there(?: is|['’]s| are) (?:a lot of|lots of|so much|too much|so many|too many) (.{3,})$/i); if (!m) return null; let r = m[1]; const rel = r.match(/^((?:[\p{L}-]+\s+){0,2}?[\p{L}-]+)\s+(?:who|that|which)\s+(.+)$/iu); if (rel) { if (!/^are\b/i.test(body(x).slice(5).trim()) || !/(?:s|^people|\bfolks|\bmen|\bwomen|\bchildren)$/i.test(rel[1]) || !/^(?:think|believe|say|feel|want|need|use|do|don['’]t|still|never|keep|try|buy|sell|hold|trade|post|write|read|ask|make|lose|quit|work|build|ship|hire|love|hate|treat|confuse|assume|expect|forget|underestimate|overestimate|miss|skip|ignore|spend)\b/i.test(rel[2])) return null; r = `${rel[1]} ${rel[2]}`; } return `${capFirst(body(x).match(/(a lot of|lots of)/i) ? 'lots of' : body(x).match(/(so much|too much|so many|too many)/i)[1])} ${r}${endP(x) || '.'}`; },
     subjDrop(x) { return SUBJ_DROP.test(x) ? capFirst(x.replace(SUBJ_DROP, '').replace(/^(?:have|['’]ve) been\b/i, 'Been')) : /^(?:I|i) (?:have|['’]ve) been\b/.test(x) ? x.replace(/^(?:I|i) (?:have|['’]ve) been\b/, 'Been') : null; }
   };
   /* a capitalised first word stays capitalised only when it's a name: I, a ticker, or a word written with a capital mid-sentence */
