@@ -2,10 +2,10 @@
 // Usage:  node hero-sync.js            -> checks, prints every mismatch, exits 1 if any
 //         node hero-sync.js --write    -> rewrites the stale fields in work/src.html (then run: cd work && python3 build.py)
 // It loads the engine the page itself loads (loadCore's script: sharpen.js since pass 10, else core.js) from
-// /home/user/xyphre1314/hookworthy in Node, lifts EX, draftHTML, cutNote and keptLine out of the page
+// /home/user/xyphre1314/hookworthy in Node, lifts EX, draftHTML and keptLine out of the page
 // source (between their START/END markers), and runs HWCore.sharpenLine on:
 //   - the four hero examples (EX): line, cut words + kinds, receipt (say) and the Kept row;
-//   - the hero's static first frame (#pf-draft, #pf-sharp, #pf-move, #pf-cut, #pf-kept) against EX[0];
+//   - the hero's static first frame (#pf-draft, #pf-sharp, #pf-move, #pf-kept) against EX[0];
 //   - the Try tile's pre-rendered default and the final's example card;
 //   - the Who tile's four mini posts (WHO): each persona's line and cuts, and the static list drawn by the page's whoHTML;
 //   - the Voice tile's never-say words: the demo must cut each one as an opener and as a closer (it can't rewrite these).
@@ -40,8 +40,8 @@ const sharpenLine = (t, o) => { const R = H.sharpenLine(t, o); if (APP) { const 
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
-const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\n${between(src, '/* GUARD-START */', '/* GUARD-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole, gOpensMarked };`)(esc, list);
-const { EX, WHO, whoHTML, draftHTML, cutNote, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole, gOpensMarked } = lib;
+const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\n${between(src, '/* GUARD-START */', '/* GUARD-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole, gOpensMarked };`)(esc, list);
+const { EX, WHO, whoHTML, draftHTML, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole, gOpensMarked } = lib;
 const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 /* every example must also pass the page's own output guard (GUARD block): a line it would refuse is never shown as sharpened */
@@ -69,9 +69,10 @@ const STATIC = [
   ['pf-sharp', /(<p class="ptext(?: long)?" id="pf-sharp">)([\s\S]*?)(<\/p>)/, '<span class="sr">Sharpened: </span>' + beats(e0.after, x => nb(esc(x)))],
   ['pf-why', /(<p id="pf-why">)([\s\S]*?)(<\/p>)/, esc(e0.why)],
   ['pf-k', /(<span class="k" id="pf-k">)([\s\S]*?)(<\/span>)/, hitK(e0.say)],
-  ['pf-kept', /(<p(?: class="[^"]*")? id="pf-kept">)([\s\S]*?)(<\/p>)/, esc(e0.kept)],
-  ['pf-cut', /(<p class="note" id="pf-cut">)([\s\S]*?)(<\/p>)/, cutNote(e0)]
+  ['pf-kept', /(<p(?: class="[^"]*")? id="pf-kept">)([\s\S]*?)(<\/p>)/, esc(e0.kept)]
 ];
+/* pass 16 (uiux-5): the hero's Cut/Split chip row is gone; the strikes, the receipt and the Kept line say it */
+if (/id="pf-cut"/.test(src)) bad.push('static #pf-cut is back (the hero dropped its chip row in pass 16)');
 for (const [id, re, want] of STATIC) {
   const m = src.match(re); if (!m) { bad.push(`static #${id} not found`); continue; }
   if (m[2] !== want) { bad.push(`static #${id}\n    page:   ${m[2]}\n    wanted: ${want}`); src = src.replace(re, (all, a, b, c) => a + want + c); }

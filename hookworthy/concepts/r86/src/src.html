@@ -26,7 +26,7 @@
 <meta name="twitter:image" content="https://hookworthy.com/assets/og-afterglow.png">
 <meta name="twitter:image:alt" content="They read one line. Make it hookworthy. A draft with its fluff struck out, and the sharper post it became.">
 <link rel="preload" href="../../fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion');setTimeout(function(){var p=document.getElementById('proof');if(p&&!window.__hwHero)p.classList.add('play')},4000)</script>
+<script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion');setTimeout(function(){var p=document.getElementById('proof');if(p&&!window.__hwHero)p.classList.add('play')},2500)</script>
 <style>
 /* Afterglow brand. Cinema's opening shot, then one bento of working product moments.
    Two lights: the hero window and the final card. Ember #FFAA80 is light and the fluff squiggle, never a fill.
@@ -98,8 +98,9 @@ p{margin:0}
 .av.lt{filter:saturate(.88) contrast(1.04) brightness(.9)}
 .av.v2{background-image:url(../../assets/people/avatars-2.jpg)}
 .av.me{background-image:url(../../assets/people/you-dark.jpg);background-size:cover;background-position:center;filter:saturate(.55) contrast(1.08) brightness(1.06);box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+/* the visitor's own avatar (pass 16, brand-3): the glass disc carries the wordmark's h, so "You" is branded, never a blank circle */
 .av.you{border:1px solid transparent;filter:none;box-shadow:0 1px 2px rgba(0,0,0,.45);
-  background:radial-gradient(120% 120% at 30% 18%,rgba(255,255,255,.12),rgba(255,255,255,.03) 46%,rgba(255,255,255,0) 70%) padding-box,linear-gradient(180deg,var(--s3),var(--s2)) padding-box,
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg transform='translate(8.1 6.8) scale(.8) translate(-8 -4.5)' fill='none' stroke='%23F7F8F8' stroke-opacity='.62' stroke-width='3.9' stroke-linejoin='round'%3E%3Cpath d='M10 4.5V27.5'/%3E%3Cpath d='M10 17.5a4.9 4.9 0 0 1 9.8 0V22.75a3.1 3.1 0 0 0 6.2 0V19'/%3E%3C/g%3E%3C/svg%3E") 50% 50%/62% no-repeat padding-box,radial-gradient(120% 120% at 30% 18%,rgba(255,255,255,.12),rgba(255,255,255,.03) 46%,rgba(255,255,255,0) 70%) padding-box,linear-gradient(180deg,var(--s3),var(--s2)) padding-box,
     linear-gradient(180deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.1) 45%,rgba(255,255,255,.05) 70%,rgba(255,255,255,.14) 100%) border-box}
 /* example photos: one sprite of six (desk, whiteboard, run, cafe, team, notes). --i picks one. Never --i:1 (a whiteboard of other prices) */
 .ph{position:absolute;inset:0;overflow:hidden;background:var(--ph-bg);border-radius:inherit}
@@ -117,8 +118,10 @@ p{margin:0}
 /* Lena's table (frame 3): cropped in to the cup and the top of her open notebook (no plant, no phone, no window light), for her
    evening post: the region x 112-442, from y 55 */
 /* Priya's team dinner, cropped to the laptops and the table (cell 4: 560 x 187 source px from x 140, y 225), a 3:1 strip */
-.ph.team{--i:4;--cw:142.86%;--cx:-2.5%;--cy:-7.91%}
-.ph.cafe{--i:3;--cw:242.4%;--cx:15.375%;--cy:-1.934%}
+/* pass 16 (web-2): the frame is drawn 500px wide at most (1.25x on a 2x screen); the strip is the crop, never a zoom */
+.ph.team{--i:4;--cw:500px;--cx:0%;--cy:-6%}
+.st-post .media{max-width:500px}
+.ph.cafe{--i:3;--cw:500px;--cx:4%;--cy:-3%}
 /* media radius: 16px inside X cards (X's own), 12px inside the phone, 8px for the small thumbnail */
 .media{position:relative;margin-top:10px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--x-line)}
 .media .ph{border-radius:0}
@@ -376,9 +379,9 @@ main{position:relative;overflow-x:clip}
   .pane.draft:has(.kept:empty) .compose{flex-grow:2}
   .pane.draft .replyset{order:3;margin-top:0;padding:12px 0}
   .pane.draft .tools{order:4;height:56px}
-  .pane.draft .cbody{display:grid;grid-template-rows:auto 1fr auto 1fr auto 1fr}
-  .pane.draft .cbody:has(.kept:empty){grid-template-rows:auto 1fr auto 1fr}
-  .pane.draft .dtext{grid-row:1}.pane.draft .note{grid-row:3;margin-top:10px}.pane.draft .kept{grid-row:5;margin-top:8px}
+  .pane.draft .cbody{display:grid;grid-template-rows:auto 1fr auto 1fr}
+  .pane.draft .cbody:has(.kept:empty){grid-template-rows:auto 1fr}
+  .pane.draft .dtext{grid-row:1}.pane.draft .kept{grid-row:3;margin-top:8px}
   .pane.sharp{justify-content:space-between}
   .pane.sharp .post{margin-top:12px;padding:16px 20px 12px}
   .pane.sharp .ptext{margin-top:8px}
@@ -427,27 +430,27 @@ html:not(.motion) #pf-go{display:none}
 .motion .stage > .light{animation:glow 1.2s linear both}
 .motion .hmeta{animation:fade .5s var(--ease) .35s both}
 .window{--l:.15s;--k:1;--w:.7s}
-/* armed (the page's first frames): the draft unstruck, the post dimmed, and its words not there yet: each line of the sharpened
-   text is a quiet skeleton bar (a thick underline across the line's own length, the letters transparent), so the answer never shows
-   before its cause. The page plays it once the window is in view, about 0.3 s after first paint */
+/* armed (the page's first frames): the draft unstruck, and the whole result (the post, its "Why it hits" and the receipt) dimmed
+   together, real words and no skeleton bars, so the post and its reason never disagree (pass 16, uiux-1). The page plays it once the
+   window is in view, about 0.3 s after first paint; the strike lands and the result wakes as one */
 .motion .window.arm:not(.play) .cut{background-size:0% max(1.5px,.07em);color:var(--x-ink)}
 .motion .window.arm:not(.play) .fl{text-decoration-color:rgba(var(--glow)/0)}
 .motion .window.arm:not(.play) .post,.motion .window.arm:not(.play) .hits,.motion .window.arm:not(.play) .move{opacity:.35;transform:translateY(4px)}
-.motion .window.arm:not(.play) .post::after,.motion .window.arm:not(.play) .note,.motion .window.arm:not(.play) .kept{opacity:0}
-.motion .window .ptext,.motion .window .ptext .bt{text-decoration:underline rgba(255,255,255,0);text-decoration-thickness:.62em;text-underline-offset:-.6em;text-decoration-skip-ink:none}
-.motion .window.arm:not(.play) .ptext,.motion .window.arm:not(.play) .ptext .bt,.motion .window.arm:not(.play) #pf-why{color:transparent;text-decoration-color:rgba(255,255,255,.16)}
-.motion .window.arm:not(.play) #pf-why{text-decoration-line:underline;text-decoration-thickness:.6em;text-underline-offset:-.58em;text-decoration-skip-ink:none}
+.motion .window.arm:not(.play) .post::after,.motion .window.arm:not(.play) .kept{opacity:0}
 /* cause, then effect: the fluff is marked, then struck, and the post wakes only as the last strike lands. A pick or "See it again"
    puts the new post in the same dimmed state first and runs the same order faster (--k) */
 .motion .window.play .fl{animation:mark calc(.3s * var(--k)) var(--ease) var(--l) both}
 .motion .window.play .cut{animation:strike calc(var(--t,.3s) * var(--k)) var(--ease-io) calc(var(--l) + (.25s + var(--d,0s)) * var(--k)) both}
 .motion .window.play .post,.motion .window.play .hits,.motion .window.play .move{animation:wake calc(.4s * var(--k)) var(--ease) calc(var(--l) + var(--w) * var(--k)) both}
 .motion .window.play .post::after{animation:glint .55s var(--ease) calc(var(--l) + (var(--w) + .1s) * var(--k)) both}
-.motion .window.play .note,.motion .window.play .kept{animation:fade .4s var(--ease) calc(var(--l) + (var(--w) + .05s) * var(--k)) both}
-/* the words arrive with the post: the bars give way to the line as the last strike lands */
-.motion .window.play .ptext,.motion .window.play .ptext .bt{animation:unskel calc(.32s * var(--k)) var(--ease) calc(var(--l) + var(--w) * var(--k)) both}
-.motion .window.play #pf-why{text-decoration-line:underline;text-decoration-thickness:.6em;text-underline-offset:-.58em;text-decoration-skip-ink:none;text-decoration-color:rgba(255,255,255,0);animation:unskel calc(.32s * var(--k)) var(--ease) calc(var(--l) + (var(--w) + .05s) * var(--k)) both}
-@keyframes unskel{from{color:transparent;text-decoration-color:rgba(255,255,255,.16)}}
+.motion .window.play .kept{animation:fade .4s var(--ease) calc(var(--l) + (var(--w) + .05s) * var(--k)) both}
+/* a split point: the caret draws and the word it replaces dims as the strikes land */
+.motion .window.arm:not(.play) .sp{color:var(--x-ink)}
+.motion .window.arm:not(.play) .sp::before{opacity:0}
+.motion .window.play .sp{animation:spm calc(.3s * var(--k)) var(--ease) calc(var(--l) + (.25s + var(--d,0s)) * var(--k)) both}
+.motion .window.play .sp::before{animation:caret calc(.3s * var(--k)) var(--ease) calc(var(--l) + (.25s + var(--d,0s)) * var(--k)) both}
+@keyframes spm{from{color:var(--x-ink)}}
+@keyframes caret{from{opacity:0;transform:scaleY(.2)}}
 @keyframes fade{from{opacity:0}}
 @keyframes defocus{from{opacity:0}}
 @keyframes rise-sm{from{opacity:0;transform:translateY(10px)}}
@@ -538,6 +541,9 @@ html:not(.motion) #pf-go{display:none}
 .motion .arm.go .m-pop,.motion .arm.go .m-land,.motion .arm.go .m-drop,.motion .arm.go .m-pick,.motion .arm.go .m-fill,.motion .arm.go .m-ring::after,.motion .arm.go .m-push,.motion .arm.go .m-ins{animation-play-state:running}
 .m-ring{position:relative}
 .m-ring::after{content:"";position:absolute;inset:-3px;border-radius:999px;pointer-events:none;opacity:0}
+.seg .m-ring::after{inset:0;background:rgba(255,255,255,.12)}
+.motion .arm .seg .m-ring::after{animation-name:tabfill}
+@keyframes tabfill{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
 
 /* ---- try: the real engine, the biggest tile ---- */
 .try{position:relative;display:flex;flex-direction:column;gap:14px;flex:1 1 auto}
@@ -782,8 +788,13 @@ html:not(.motion) #pf-go{display:none}
 /* the morning is the skyline over the water, cropped in: the runner on the path is Lena's photo in Studio */
 .morn > .ph img{height:600%;filter:blur(1.5px) saturate(.85) contrast(1.04) brightness(.86)}
 .night > .ph img{filter:blur(1.5px) saturate(.9) contrast(1.04)}
-@media (min-width:901px){.dn > .ph img{height:calc(6 * min(100%, 521px))}
-  .dn > .ph{-webkit-mask-image:linear-gradient(180deg,#000 calc(min(100%, 521px) - 110px),transparent min(100%, 521px));mask-image:linear-gradient(180deg,#000 calc(min(100%, 521px) - 110px),transparent min(100%, 521px))}}
+/* pass 16 (web-2): each photo is drawn at no more than 500px wide (about 1.25x its 800px frame on a 2x screen), as a crop at the top
+   of its half that fades into the dark ground on every side, never stretched to fill the half */
+.dn > .ph{inset:0 auto auto 50%;width:min(100%,500px);height:296px;transform:translateX(-50%);background:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 52%,transparent),linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(180deg,#000 52%,transparent),linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);mask-composite:intersect}
+.dn > .ph img,.morn > .ph img{width:500px;height:auto}
+.night > .ph{left:auto;right:0;transform:none}
 .plab{position:absolute!important;top:20px;z-index:2;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;font-size:13px;color:var(--ink-2);background:rgba(8,9,10,.84);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .morn .plab{left:20px}
 .morn .replay.plab{left:auto;right:20px;margin:0;color:var(--ink-2)}
@@ -920,7 +931,8 @@ html:not(.motion) #pf-go{display:none}
 .well .lock{position:relative;z-index:1;align-self:center;margin:-34px 0 18px;font-size:64px;line-height:1;font-weight:600;letter-spacing:-.04em;color:rgba(247,248,248,.9);text-shadow:0 2px 24px rgba(0,0,0,.35)}
 .well > .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,10,.15),rgba(8,9,10,.5))}
 .well > .ph.sky{container-type:size}
-.well > .ph.sky img{width:max(190cqw,175cqh);height:auto;top:0;transform:translate(calc(-50% + 9%),calc(-2 * 100% / 6)) scale(1.1);transform-origin:50% 0}
+.well > .ph.sky{-webkit-mask-image:linear-gradient(180deg,#000 150px,transparent 300px);mask-image:linear-gradient(180deg,#000 150px,transparent 300px)}
+.well > .ph.sky img{width:455px;height:auto;top:0;transform:translate(calc(-50% + 9%),calc(-2 * 100% / 6)) scale(1.1);transform-origin:50% 0}
 .well > *:not(.ph){position:relative;z-index:1}
 .nstack{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .nc{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:11px;padding:12px 14px;border-radius:18px;background:rgba(0,0,0,.9);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 18px 36px -18px rgba(0,0,0,.9)}
@@ -960,6 +972,10 @@ html:not(.motion) #pf-go{display:none}
 .wp:first-child{border-top:0}
 .wp .xname{font-size:14px}
 .wd{margin-top:3px;font-size:13.5px;line-height:1.45;color:var(--x-mute);text-wrap:pretty}
+/* a split point (pass 16, brand-2): never struck. The word a split replaced is dimmed, with a thin caret at the break */
+.sp{position:relative;color:var(--x-mute)}
+.sp::before,.ed-mirror.struck mark.c.sp::before{content:"";position:absolute;left:-.24em;top:.08em;height:1.08em;width:1.5px;border-radius:1px;background:rgba(247,248,248,.7);pointer-events:none}
+.ed-mirror.struck mark.c.sp,.fpay .draft .cut.sp,.try-c.done .ed-mirror.struck mark.c.sp.tog:hover,.fpay .draft .cut.sp.tog:hover{background:none;position:relative}
 .wd s{text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:rgba(247,248,248,.45);color:var(--x-mute)}
 .wd .fl{text-decoration-thickness:1px;text-underline-offset:3px}
 .wp .xtext{margin-top:3px;font-size:16px;line-height:1.4;font-weight:500;letter-spacing:-.008em}
@@ -977,7 +993,8 @@ a.wtry:hover .ico{transform:translateX(2px)}
 }
 
 /* ---- studio ---- */
-.t-st{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.8fr);gap:24px 36px;align-items:stretch}
+/* two panes (pass 16, web-3): the client list, and the client's review link with Approve. Nothing else competes for the first look */
+.t-st{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px 36px;align-items:stretch}
 .t-st > .cap{grid-column:1/-1}
 .st-l{display:flex;flex-direction:column;gap:22px;min-width:0}
 .st-pick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0;background:none;box-shadow:none;align-self:start;width:100%}
@@ -992,8 +1009,11 @@ a.wtry:hover .ico{transform:translateX(2px)}
   .st-pick .sp-m{display:inline;margin-left:auto;font-size:13px;font-weight:400;color:var(--ink-3)}
   .st-pick button[aria-pressed="true"] .sp-m{color:var(--ink-2)}
 }
-.studio{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);border-radius:18px;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px var(--line-2);overflow:hidden;overflow:clip}
-.st-post{padding:20px;display:flex;flex-direction:column;gap:12px;border-right:1px solid var(--line);min-width:0;min-height:520px}
+.studio{display:grid;grid-template-columns:minmax(0,1fr);border-radius:18px;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px var(--line-2);overflow:hidden;overflow:clip}
+.st-post{padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:520px}
+.st-voice{display:none!important}
+/* Rafael's quoted post holds about the height of the others' strips, so a pick never leaves a band in the review */
+@media (min-width:901px){.rv-qt:not([hidden]){min-height:128px;display:flex;flex-direction:column;justify-content:center}}
 .st-lab{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.3;color:var(--ink-3)}
 .st-lab .ico{width:14px;height:14px;color:var(--ink-2)}
 /* the post's state sits on the link row, so the client's name and handle are never cut short */
@@ -1052,11 +1072,11 @@ a.wtry:hover .ico{transform:translateX(2px)}
    the box is the tallest client's height (sizeStudio), the client list is compact enough never to stretch it, and the little slack
    a shorter client leaves is spread over the review's gaps */
 @media (min-width:1200px){.t-st .facts{margin-top:auto}.rv-act{margin-top:4px}.st-voice .queue{margin-top:12px}.st-l{gap:16px}
-  /* Lena's photo and Marco's chart are a little taller than Priya's photo, so each client fills about the same height */
-  .st-post .media.chart,#rv-media:has(> .ph.cafe){aspect-ratio:1.85/1}}
+  /* two panes (pass 16): Marco's chart is Priya's strip's shape, so every client fills about the same height */
+  .st-post .media.chart,#rv-media:has(> .ph.cafe){aspect-ratio:3.8/1}}
 /* Priya's strip (brand-2): from 1200, where the review's media was 2.2:1, a shallower 2.6:1; below that it keeps the review's own
    strip (3:1 to 3.6:1) */
-@media (min-width:1200px){#rv-media:has(> .ph.team){aspect-ratio:2.6/1}}
+@media (min-width:1200px){#rv-media:has(> .ph.team){aspect-ratio:3.8/1}}
 /* 901–1199: the picker and the never-say list share a band, the review gets the full width, the facts close the tile */
 @media (min-width:901px) and (max-width:1199px){
   .t-st{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-areas:"cap cap" "pick nv" "box box" "facts facts";gap:20px 40px}
@@ -1064,8 +1084,8 @@ a.wtry:hover .ico{transform:translateX(2px)}
   .t-st > .cap{grid-area:cap}
   .st-pick{grid-area:pick;align-self:center}
   .nv-box{grid-area:nv;align-self:center}
-  .studio{grid-area:box;min-height:449px}
-  .st-post .media{aspect-ratio:3/1}
+  .studio{grid-area:box}
+  .st-post .media{aspect-ratio:3.8/1}
   .facts{grid-area:facts;flex-direction:row;gap:24px;margin:0}
   .facts p{flex:1 1 0;padding:12px 0 0}
   .facts p.st-go{flex:none;padding-top:10px}
@@ -1419,7 +1439,7 @@ footer .wrap{container-type:inline-size}
   .t-st > .cap{grid-area:cap}
   .st-pick{grid-area:pick;grid-template-columns:repeat(4,minmax(0,1fr))}
   .nv-box{grid-area:nv}
-  .studio{grid-area:box;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);min-height:520px}
+  .studio{grid-area:box;grid-template-columns:minmax(0,1fr);min-height:520px}
   .st-post{border-right:1px solid var(--line);border-bottom:0}
   .st-post .media{aspect-ratio:2.2/1}
   .rv-act{margin-top:4px}
@@ -1477,8 +1497,16 @@ footer .wrap{container-type:inline-size}
   /* the phone beam is narrow and starts just past the right edge, so the trust line above the window keeps AA contrast (4.5:1 or more at 360) */
   /* the phone light lands on the window's top edge, right of the short promise line and clear of the buttons */
   .hero .micro .m3{display:none}
-  /* the stage's beam steps aside for the card's own: the light lands on the Sharpened post's rim */
-  .stage > .light,.window > .spec{display:none}
+  /* the stage's own beam on a phone (pass 16, brand-1): narrow, static and low. It rakes in from past the right edge through the
+     band between "Free forever · No card" and the window, under the buttons and right of the trust line, and lands as a hot spot on
+     the window's top hairline. No motion here, with or without reduced motion. The card's own light still lands on the post's rim */
+  .window > .spec{display:none}
+  .stage > .light{--lx:72%;--ly:0;--a:65deg;--bw:54px;--bl:300px;--sink:26px;--k:.95}
+  .motion .stage > .light{animation:none}
+  .stage > .light .beam{filter:blur(14px)}
+  .stage > .light .core{filter:blur(7px)}
+  .stage > .light .bloom{left:-150px;width:300px;height:34px;top:-17px;opacity:.9}
+  .stage > .light .hot{left:-70px;width:150px;height:12px;top:-6px}
   .post > .light{display:block;--lx:78%;--ly:0;--a:30deg;--bw:120px;--bl:220px;--sink:60px;--k:1.1;clip-path:inset(-600px -600px 0 -600px)}
   /* the shaft stays off the text above the card (the receipt runs the card's full width): only its landing shows, a hot spot on
      the rim and a low bloom that reaches no higher than the gap under the receipt */
@@ -1547,6 +1575,8 @@ footer .wrap{container-type:inline-size}
   .starters button{scroll-snap-align:start}
   .starters::-webkit-scrollbar{display:none}
   .starters span{flex:none;margin-right:2px;scroll-snap-align:start}
+  /* the row fades out well inside the tile's edge, so a chip never reads as clipped mid-word (pass 16, web-4) */
+  .starters.sx{-webkit-mask-image:linear-gradient(90deg,var(--fl),#000 28px,#000 calc(100% - 104px),var(--fr) calc(100% - 22px));mask-image:linear-gradient(90deg,var(--fl),#000 28px,#000 calc(100% - 104px),var(--fr) calc(100% - 22px))}
   .starters button{flex:none;height:36px}
   .starters::after{content:"";flex:0 0 var(--tail,0px)}
   .try-out{grid-template-columns:minmax(0,1fr);grid-template-areas:"h" "card" "hits" "keep";gap:10px}
@@ -1672,7 +1702,7 @@ footer .wrap{container-type:inline-size}
   /* every client is the same height, so switching never moves the page */
   .st-post .xtext{min-height:5.8em;text-wrap:balance}
   #cm-t{min-height:2.9em}
-  .nevers{min-height:56px;align-content:flex-start}
+  .nevers{min-height:56px;align-content:center}
   .facts p{font-size:14px;padding:9px 0}
   .facts p:nth-child(2){display:none}
 
@@ -1698,6 +1728,8 @@ footer .wrap{container-type:inline-size}
   .plan.open .price .u2{display:none}
   .js .plan:not(.open) .mob{display:inline}
   .js .plan:not(.open) .desk{display:none}
+  .js .plan:not(.open) .li-n.xc,.js .plan:not(.open) .fu-l{display:none}
+  .js .plan:not(.open) .fu-s{display:inline}
   .plans-fine{margin:12px 0 0;font-size:13px;text-align:left;text-wrap:pretty}
   .plan ul{border-top:0;padding-top:4px}
   .js .incl{grid-area:incl;display:inline-flex;align-items:center;justify-self:start;height:32px;margin-top:2px;font-size:14px;font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.35)}
@@ -1706,6 +1738,7 @@ footer .wrap{container-type:inline-size}
   /* a phone's Studio CTA is a text link at the end of the client fact, so it costs no row */
   .facts p.st-go{display:none}
   .st-go-m{display:inline}
+  .st-go-m .inl,.fin .micro button.fin-alt{padding-block:5px;margin-block:-5px}
   .st-go-m .inl{color:var(--ink);font-weight:500;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.4)}
   .qa .a{padding:0 36px 18px 2px;font-size:15px}
 
@@ -1824,6 +1857,12 @@ footer .wrap{container-type:inline-size}
   .hero .tc{padding-block:18px 0}
   /* the narrowest phones: the fair-use note in one line, the closing card without its action row, a little less air */
   .plan .fu-l{display:none}.plan .fu-s{display:inline}
+  /* the cards' key lines and the space between the cards run a step tighter, so the Free card's full sentence and Pro's reply ping
+     fit the budget (pass 16) */
+  .plan{padding:14px 16px}
+  .plan ul{gap:7px}
+  .plans{gap:10px}
+  .plans-fine{margin-top:8px}
   .fpay:not(.live) .xacts{display:none}
   .fpay:not(.live){margin-top:14px}
   .fin-panel{padding-top:28px}
@@ -1918,8 +1957,7 @@ footer .wrap{container-type:inline-size}
           <div class="compose">
             <span class="av me" id="pf-av" aria-hidden="true"></span>
             <div class="cbody" id="pf-body">
-              <p class="dtext" id="pf-draft"><span class="sr">Draft: </span><span class="fl"><span class="cut" style="--d:0.000s;--t:0.230s">just wanted to share that</span></span> i sold half my $BTC at 98k <span class="cut" style="--d:0.260s;--t:0.089s">and</span> <span class="fl"><span class="cut" style="--d:0.379s;--t:0.121s">honestly</span></span> i’m holding the rest</p>
-              <p class="note" id="pf-cut"><span class="cg"><span class="ck">Cut</span><s>just wanted to share that</s><s>honestly</s></span><span class="cg"><span class="ck k2">Split at</span><s>and</s></span></p>
+              <p class="dtext" id="pf-draft"><span class="sr">Draft: </span><span class="fl"><span class="cut" style="--d:0.000s;--t:0.230s">just wanted to share that</span></span> i sold half my $BTC at 98k <span class="sp" style="--d:0.260s;--t:0.089s">and</span> <span class="fl"><span class="cut" style="--d:0.379s;--t:0.121s">honestly</span></span> i’m holding the rest</p>
               <p class="kept" id="pf-kept">Kept $BTC, 98k and your lowercase.</p>
             </div>
           </div>
@@ -1943,7 +1981,7 @@ footer .wrap{container-type:inline-size}
             <div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div>
           </article>
           <div class="hits"><span class="k" id="pf-k">Why it hits</span><p id="pf-why">The full stop before “i’m holding the rest” gives it its own beat.</p></div>
-          <div class="foot"><span id="pf-when">Your best time: 8:40&nbsp;AM</span><button class="pill" type="button" id="pf-sched">Schedule</button></div>
+          <div class="foot"><span id="pf-when">heycape’s best time: 8:40&nbsp;AM</span><button class="pill" type="button" id="pf-sched">Schedule</button></div>
         </div>
       </div>
     </figure>
@@ -2143,7 +2181,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
 
     <!-- A results note, on the morning it went out -->
     <article class="tile glass t-res" id="results" aria-labelledby="rs-h">
-      <h2 class="cap" id="rs-h">Know what landed.<br><span class="d">And what to write next.</span></h2>
+      <h2 class="cap" id="rs-h">Know what landed<br><span class="d">and what to write next.</span></h2>
       <div class="well demo">
         <div class="ph sky" aria-hidden="true"><picture><source srcset="../../assets/people/photos.webp" type="image/webp"><img src="../../assets/people/photos.jpg" alt="" loading="lazy" decoding="async" width="800" height="2844"></picture></div>
         <p class="lock tnum" aria-hidden="true">9:31</p>
@@ -2159,7 +2197,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     <article class="tile glass t-who" id="who" aria-labelledby="w-h">
       <h2 class="cap" id="w-h">Trades, launches, newsletters.<br><span class="d">Same fluff, same fix.</span></h2>
       <ul class="wposts xcard demo" aria-label="Four first lines, sharpened">
-        <li class="wp"><span class="av me xav" aria-hidden="true"></span><div class="wb"><p class="xname"><b>heycape</b><span class="tag eg">Example</span><span class="hd">@heycape_</span><span class="tag">Trader</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>honestly</s></span> i’m up 18% this month <s>and</s> it’s <span class="fl"><s>literally</s></span> just from trading less</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">i’m up 18% this month.</span> <span class="bt">it’s just from trading less.</span></p></div><button class="wtry" type="button" data-w="0" aria-label="Try heycape’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
+        <li class="wp"><span class="av me xav" aria-hidden="true"></span><div class="wb"><p class="xname"><b>heycape</b><span class="tag eg">Example</span><span class="hd">@heycape_</span><span class="tag">Trader</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>honestly</s></span> i’m up 18% this month <span class="sp">and</span> it’s <span class="fl"><s>literally</s></span> just from trading less</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">i’m up 18% this month.</span> <span class="bt">it’s just from trading less.</span></p></div><button class="wtry" type="button" data-w="0" aria-label="Try heycape’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
         <li class="wp"><span class="av lt xav" style="--y:23.53%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Ana Ruiz</b><span class="tag eg">Example</span><span class="hd">@ana.example</span><span class="tag">Newsletter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>So</s></span> <span class="fl"><s>in this issue I wanted to talk about</s></span> why open rates lie</p><p class="xtext"><span class="sr">Sharpened: </span>Why open rates lie:</p></div><button class="wtry" type="button" data-w="1" aria-label="Try Ana Ruiz’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
         <li class="wp"><span class="av v2 xav" style="--y:20%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Priya Nair</b><span class="tag eg">Example</span><span class="hd">@priya.example</span><span class="tag">Founder</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Excited to share that</s></span> dark mode is live, 9 months after the first request</p><p class="xtext"><span class="sr">Sharpened: </span>Dark mode is live, 9 months after the first request.</p></div><button class="wtry" type="button" data-w="2" aria-label="Try Priya Nair’s draft in Sharpen"><span class="wt">Try it</span><svg class="ico" aria-hidden="true"><use href="#i-top"/></svg></button></li>
         <li class="wp"><span class="av xav" style="--y:17.65%" aria-hidden="true"></span><div class="wb"><p class="xname"><b>Theo Mensah</b><span class="tag eg">Example</span><span class="hd">@theo.example</span><span class="tag">Ghostwriter</span></p><p class="wd"><span class="sr">Draft: </span><span class="fl"><s>Honestly,</s></span> founders don’t need more posts, they need better first lines</p><p class="xtext"><span class="sr">Sharpened: </span><span class="bt">Founders don’t need more posts.</span> <span class="bt">They need better first lines.</span></p></div><a class="wtry" href="#studio" aria-label="See Studio, for ghostwriters"><span class="wt">Studio</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
@@ -2382,7 +2420,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     start: (line, ex) => plan === 'free' ? `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in on Free ($0, no card)${line && !ex ? ' and keeps your line' : ''}.`
       : `This is a design preview, so no account was made and nothing can be charged. Once Hookworthy is live, this signs you in and starts ${PICKED[plan][bill]}${line && !ex ? ', with your line kept' : ''}.`,
     rewrite: (line, ex) => `This is a design preview, so no account was made. Once Hookworthy is live, this signs you in and writes three takes of ${line ? (ex ? 'this line' : 'your line') : 'it'}.`,
-    schedule: (line, ex) => line && !ex ? 'This is a design preview, so no account was made. Once Hookworthy is live, this signs you in with your line ready to schedule. It goes out at the time you pick: 15 posts a month on Free, then one tap each.'
+    schedule: (line, ex) => line && !ex ? 'This is a design preview, so no account was made. Once Hookworthy is live, this signs you in with your line ready to schedule. It goes out at the time you pick: 15 scheduled posts a month on Free. After that, we nudge you and you tap Post.'
       : 'This is a design preview, so no account was made. Once Hookworthy is live, this signs you in, and your scheduled posts go out at the time you pick: 15 a month on Free, then one tap each.',
     signin: () => 'This is a design preview, so there’s nothing to sign in to yet. Once Hookworthy is live, this is where your drafts and your queue come back.'
   };
@@ -2489,12 +2527,15 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     { k: 'Founder', n: 'Priya Nair', h: '@priya.example', av: 'v2|20%', draft: 'Excited to share that dark mode is live, 9 months after the first request',
       cut: [['Excited to share that', 'announce']], after: 'Dark mode is live, 9 months after the first request.' },
     { k: 'Ghostwriter', n: 'Theo Mensah', h: '@theo.example', av: '|17.65%', draft: 'Honestly, founders don’t need more posts, they need better first lines',
-      cut: [['Honestly', 'honest']], after: 'Founders don’t need more posts. They need better first lines.', studio: true }
+      cut: [['Honestly,', 'honest']], after: 'Founders don’t need more posts. They need better first lines.', studio: true }
   ];
   const whoDraft = w => { let h = '', last = 0; w.cut.forEach(([c, k]) => { const i = w.draft.indexOf(c, last); if (i < 0) return;
     /* a cut that opens the draft takes its comma or colon with it ("Honestly,"): the line drops both */
     const c2 = c + (!w.draft.slice(0, i).trim() && /^[:,]/.test(w.draft.slice(i + c.length)) ? w.draft[i + c.length] : '');
-    h += esc(w.draft.slice(last, i)) + (/^(?:move|tight|swap|reshape)$/.test(k) ? `<s>${esc(c2)}</s>` : `<span class="fl"><s>${esc(c2)}</s></span>`); last = i + c2.length; }); return h + esc(w.draft.slice(last)); };
+    const sp = k === 'reshape' && sents(w.after) > sents(w.draft);
+    h += esc(w.draft.slice(last, i)) + (sp ? `<span class="sp">${esc(c2)}</span>` : /^(?:move|tight|swap|reshape)$/.test(k) ? `<s>${esc(c2)}</s>` : `<span class="fl"><s>${esc(c2)}</s></span>`); last = i + c2.length; }); return h + esc(w.draft.slice(last)); };
+  /* sentences in a line: a reshape that adds one is a beat split (drawn as a caret, not a strike) */
+  const sents = t => (String(t).match(/[.!?…](?=\s|$)/g) || []).length || 1;
   const whoAv = key => { if (key === 'me') return 'class="av me xav"'; const [c, y] = key.split('|'); return `class="av${c ? ' ' + c : ''} xav" style="--y:${y}"`; };
   const whoHTML = (w, i) => `<li class="wp"><span ${whoAv(w.av)} aria-hidden="true"></span><div class="wb"><p class="xname"><b>${esc(w.n)}</b><span class="tag eg">Example</span><span class="hd">${esc(w.h)}</span><span class="tag">${esc(w.k)}</span></p>`
     + `<p class="wd"><span class="sr">Draft: </span>${whoDraft(w)}</p><p class="xtext"><span class="sr">Sharpened: </span>${beats(w.after, x => nb(esc(x)))}</p></div>`
@@ -2520,18 +2561,24 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the Ghostwriter tab (EX[3]) is a client's post: it waits for the client's yes, and its button opens that client's review link
      in Studio (CL[3]), where the yes is the next tap. Nothing is queued on the visitor's account */
   const GW = { ex: 3, c: 3, f: 'Marco', when: 'Thu 8:05&nbsp;AM' };
+  /* each example account's own best time (pass 16, founder-3): read from that account's posts, so it differs per account. heycape's
+     is the Day tile's 8:40 AM */
+  const BEST = ['8:40&nbsp;AM', '9:10&nbsp;AM', '6:45&nbsp;AM'];
   /* DRAFT-START */
   /* a struck span is fluff unless it went with a reshape (move, reshape), a tightening (tight) or a plain-word swap (swap):
      those are struck too, without the squiggle, and aren't counted as fluff */
   const FLUFF = k => !/^(?:move|tight|swap|reshape)$/.test(k);
+  /* a split point (pass 16, brand-2): the word a beat split replaced with a full stop. A strike means a cut and only a cut, so a
+     split point is drawn as a thin caret at the break, the word dimmed, never struck */
+  const SPLIT = (k, say) => k === 'reshape' && /\bSplit\b/.test(String(say || ''));
   /* display only (the engine's text is otherwise shown verbatim): a number never splits from its unit, a time never from AM/PM,
      a one-letter word ("i", "a") never ends a line, and a short last word never sits alone on one */
   const nb = h => String(h).replace(/(\d)\s(AM|PM|years?|months?|weeks?|days?|hours?|minutes?|readers|posts|subscribers|followers)\b/g, '$1\u00a0$2')
     .replace(/(^|\s)([aAiI])\s(?=\S)/g, '$1$2\u00a0').replace(/ (\S{1,7})$/, '\u00a0$1');
   /* display only: short sentences of a line are beats that wrap as units, so a line breaks at the full stop, never one word
      past it. A long paragraph wraps normally, with a short sentence opener ("it", "my") held to the word after it. f formats text */
-  /* the label over the engine's why: a move (beats, number first, a question, said straight) is "Why it hits"; a plain cut is "What changed" */
-  const hitK = say => /^Cut \d+ bits? of fluff$/.test(String(say)) ? 'What changed' : 'Why it hits';
+  /* the label over the engine's why: one label everywhere, "Why it hits" (pass 16, uiux-2); the engine's why names the change */
+  const hitK = () => 'Why it hits';
   /* display only: the receipt counts in numerals throughout ("Cut 2 bits of fluff · Split into 2 beats"), and each of its parts
      stays on one line, so a narrow receipt breaks at the "·", never inside "Said it straight" */
   const sayTxt = say => String(say).replace(/\bSplit it into (two|three|four) beats\b/, (m, n) => `Split into ${{ two: 2, three: 3, four: 4 }[n]} beats`)
@@ -2548,22 +2595,12 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     e.cut.forEach(([s, k]) => {
       const i = e.draft.indexOf(s, last); if (i < 0) return;
       const dur = base + Math.max(0, avail - base * n) * s.length / tot, s2 = s + (punctAfter(e.draft, i, s) || '');
-      const cut = `<span class="cut" style="--d:${t.toFixed(3)}s;--t:${dur.toFixed(3)}s">${esc(s2)}</span>`;
+      const tm = `style="--d:${t.toFixed(3)}s;--t:${dur.toFixed(3)}s"`, cut = SPLIT(k, e.say) ? `<span class="sp" ${tm}>${esc(s2)}</span>` : `<span class="cut" ${tm}>${esc(s2)}</span>`;
       h += nb(esc(e.draft.slice(last, i))) + (FLUFF(k) ? `<span class="fl">${cut}</span>` : cut);
       t += dur + gap; last = i + s2.length;
     });
     return '<span class="sr">Draft: </span>' + h + nb(esc(e.draft.slice(last)));
   }
-  /* under the draft, every struck word is accounted for: the fluff it cut ("Cut"), then the small words a move took out, named
-     by the move ("Split at" for a beat split, else "Reworded"). Squiggle means fluff; a plain strike is the move's */
-  const cutNote = e => { const f = e.cut.filter(c => FLUFF(c[1])), p = e.cut.filter(c => !FLUFF(c[1])), chip = c => `<s>${esc(c[0])}</s>`;
-    if (!f.length && !p.length) return 'Every fact you wrote is still there.';
-    return (f.length ? '<span class="cg"><span class="ck">Cut</span>' + f.map(chip).join('') + '</span>' : '')
-      + (p.length ? `<span class="cg"><span class="ck${f.length ? ' k2' : ''}">${cutMove(e.say)}</span>` + p.map(chip).join('') + '</span>' : ''); };
-  /* the label over a move's plain strikes: "Split at" for a beat split, else the move's own name from the receipt ("Number first",
-     "Asked, then answered"), so a word the move dropped is never called "Reworded" */
-  const cutMove = say => { const parts = String(say).split(' · '), mv = parts.length > 1 ? parts[parts.length - 1] : '';
-    return /^Split/.test(mv) ? 'Split at' : mv && !/^Cut\b/.test(mv) ? mv : 'Reworded'; };
   /* DRAFT-END */
   const proof = $('#proof'), pfDraft = $('#pf-draft');
   let curEx = 0; const heroT = [];
@@ -2585,7 +2622,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* one example into a window body (the live one, or the sizer below) */
   function paintEx(root, e) {
     const q = id => root.querySelector('#' + id), ps = q('pf-sharp');
-    q('pf-draft').innerHTML = draftHTML(e); q('pf-cut').innerHTML = cutNote(e); q('pf-kept').textContent = e.kept;
+    q('pf-draft').innerHTML = draftHTML(e); q('pf-kept').textContent = e.kept;
     q('pf-name').textContent = e.who; q('pf-handle').textContent = e.handle; q('pf-move').textContent = sayTxt(e.say);
     /* the ghostwriter's example is a client's post, written for them */
     q('pf-tag').textContent = EX.indexOf(e) === GW.ex ? 'Example client' : 'Example';
@@ -2593,7 +2630,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     q('pf-why').textContent = e.why; q('pf-k').textContent = hitK(e.say);
     /* a client's post isn't scheduled on your plan: it goes to the client's review link and waits for their yes (Studio) */
     const gw = EX.indexOf(e) === GW.ex;
-    q('pf-when').innerHTML = gw ? `Waits for ${GW.f}’s yes<span class="fw-t"> · ${GW.when}</span>` : 'Your best time: 8:40&nbsp;AM';
+    q('pf-when').innerHTML = gw ? `Waits for ${GW.f}’s yes<span class="fw-t"> · ${GW.when}</span>` : `${esc(e.who.split(' ')[0])}’s best time: ${BEST[EX.indexOf(e)] || BEST[0]}`;
     q('pf-sched').textContent = gw ? `Send to ${GW.f}` : 'Schedule';
   }
   /* the window is as tall as the example on show at every width, so a short example never leaves a band in it. A pick (the
@@ -3058,7 +3095,20 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const PROTECT = /https?:\/\/\S+|www\.\S+|(?<![\p{L}\p{N}_])[@#][\p{L}\p{N}_]+/gu;
   const spansOf = t => [...String(t).matchAll(PROTECT)].map(m => [m.index, m.index + m[0].length, m[0]]);
   const KEPT_NOTE = /Kept (your )?“([^”]+)”:[^.]*\.\s*/g;
-  const keptWords = note => [...String(note || '').matchAll(KEPT_NOTE)].map(m => `${m[1] ? 'your ' : ''}“${m[2]}”`);
+  /* pass 16 (web-1): a filler word is never a fact under "Kept". When the engine keeps one on purpose ("Kept “basically lost 30%”:
+     it says nearly, not exactly."), the page leaves it out of Kept, marks it softly in the draft (the dotted "your call") and says
+     "Left “basically”: it says nearly, not exactly." */
+  const KEPT_SOFT = /(?<![\p{L}\p{N}'’])(?:basically|actually|literally|honestly|really|just|potentially|simply|totally|truly|definitely|probably|kinda|pretty much|kind of|sort of)(?![\p{L}\p{N}'’])/iu;
+  const softWord = p => (String(p).match(KEPT_SOFT) || [])[0] || '';
+  const softSay = t => String(t || '').replace(/Kept (?:your )?“([^”]+)”:/g, (m, p) => { const w = softWord(p); return w ? `Left “${w}”:` : m; });
+  const softNotes = note => [...String(note || '').matchAll(KEPT_NOTE)].filter(m => softWord(m[2])).map(m => softSay(m[0]).trim()).join(' ');
+  /* where each soft word sits in the draft: inside the kept phrase the engine names */
+  const softAt = R => { const out = [];
+    for (const m of `${R.note || ''} ${R.why || ''}`.matchAll(/Kept (?:your )?“([^”]+)”:/g)) { const w = softWord(m[1]); if (!w) continue;
+      const p = R.draft.indexOf(m[1]), base = p < 0 ? 0 : p, at = R.draft.slice(base).search(new RegExp(`(?<![\\p{L}\\p{N}])${w}(?![\\p{L}\\p{N}])`, 'iu'));
+      if (at >= 0) out.push([base + at, base + at + w.length]); }
+    return out; };
+  const keptWords = note => [...String(note || '').matchAll(KEPT_NOTE)].filter(m => !softWord(m[2])).map(m => `${m[1] ? 'your ' : ''}“${m[2]}”`);
   const noteRest = note => String(note || '').replace(KEPT_NOTE, '').trim();
   function keptLine(draft, line, kept, note) {
     /* a greeting ("gm") is voice, not a fact: it is never listed (pass 13, marketing-7) */
@@ -3211,9 +3261,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function viewOf(R, v, keepL) {
     const st = R.state, sharp = st === 'sharp', words = (String(R.line).match(/\S+/g) || []).length;
     /* a line that opens on a word the writer put back carries the engine's own "you kept it" why, with no label over it */
-    if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept, R.note), note: noteRest(R.note), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
+    if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept, R.note), note: [noteRest(R.note), softNotes(R.note)].filter(Boolean).join(' '), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
     /* a line the engine marked but kept is "Kept as written", never "tight" */
     const say = sayTxt(st === 'unsure' ? 'Kept as written' : R.say || 'Kept as written');
+    /* a filler word the engine kept is "Left", never "Kept" (pass 16, web-1) */
+    R = { ...R, why: softSay(R.why), note: softSay(R.note) };
     if (st === 'unsure' && /\btight\b/i.test(R.why || '')) R = { ...R, why: KEPT_WHY };
     /* marked but kept, nothing put back: the way on is a rewrite in your voice (not for a two-word post like "gm"). A clean line
        is a pass: the post as written, lit like a sharpened one, under the engine's own honest why ("This quick check found
@@ -3232,8 +3284,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the struck draft: [{a, b, cut, fl, held, kept, w}] in draft offsets, from the version's cut list, the marks and the put-back words */
   function segments(R, v, keepL) {
     const S = [], over = (a, b) => S.some(x => a < x.b && b > x.a);
-    (v.cut || []).forEach(c => { const [a, b] = c.at; S.push({ a, b, cut: true, fl: FLUFF(c.kind) && flagged(R, a, b), w: c.text }); });
+    (v.cut || []).forEach(c => { const [a, b] = c.at; S.push({ a, b, cut: true, fl: FLUFF(c.kind) && flagged(R, a, b), w: c.text, sp: SPLIT(c.kind, v.say) }); });
     (R.marks || []).forEach(m => { if (!over(m[0], m[1])) { const h = held(R, m); S.push({ a: m[0], b: m[1], cut: false, fl: !h, held: h }); } });
+    /* a filler word the engine kept on purpose is a soft mark (the dotted "your call"), never a fact under "Kept" (pass 16, web-1) */
+    softAt(R).forEach(([a, b]) => { if (!over(a, b)) S.push({ a, b, cut: false, fl: false, held: true }); });
     (keepL || []).forEach(w => {
       const re = new RegExp(`(?<![\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'giu');
       for (const m of R.draft.matchAll(re)) if (!over(m.index, m.index + m[0].length)) S.push({ a: m.index, b: m.index + m[0].length, kept: true, w });
@@ -3247,7 +3301,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const off = lead(t); let h = '', last = 0;
     const txt = s => s ? (done ? `<span aria-hidden="true">${esc(s)}</span>` : esc(s)) : '';
     S.forEach((x, k) => {
-      const a = x.a + off, b = x.b + off, cls = [x.cut ? 'c' : '', x.fl ? '' : 'x', x.held ? 'held' : '', done && (x.cut || x.kept) ? 'tog' : '', done && (x.cut || x.kept) && x.b - x.a <= 3 ? 'sm' : '', x.kept ? 'kept' : '', x.back ? 'back' : ''].filter(Boolean).join(' ');
+      const a = x.a + off, b = x.b + off, cls = [x.cut ? 'c' : '', x.fl ? '' : 'x', x.sp ? 'sp' : '', x.held ? 'held' : '', done && (x.cut || x.kept) ? 'tog' : '', done && (x.cut || x.kept) && x.b - x.a <= 3 ? 'sm' : '', x.kept ? 'kept' : '', x.back ? 'back' : ''].filter(Boolean).join(' ');
       h += txt(t.slice(last, a)) + `<mark${cls ? ` class="${cls}"` : ''}${done && (x.cut || x.kept) ? togAttrs(x) : ''} style="--k:${k}">${esc(t.slice(a, b))}</mark>`; last = b;
     });
     return h + (done ? `<span aria-hidden="true">${esc(t.slice(last))}&#8203;</span>` : esc(t.slice(last)) + '&#8203;');
@@ -3257,7 +3311,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const off = lead(raw); let h = '', last = 0;
     S.forEach(x => {
       const a = x.a + off, b = x.b + off, w = esc(raw.slice(a, b));
-      const sm = x.b - x.a <= 3 ? ' sm' : '', inner = x.cut ? `<span class="cut tog${sm}"${togAttrs(x)}>${w}</span>` : x.kept ? `<span class="tog kept${sm}"${togAttrs(x)}>${w}</span>` : x.held ? `<span class="held">${w}</span>` : w;
+      const sm = x.b - x.a <= 3 ? ' sm' : '', inner = x.cut ? `<span class="cut tog${sm}${x.sp ? ' sp' : ''}"${togAttrs(x)}>${w}</span>` : x.kept ? `<span class="tog kept${sm}"${togAttrs(x)}>${w}</span>` : x.held ? `<span class="held">${w}</span>` : w;
       h += nb(esc(raw.slice(last, a))) + (x.fl ? `<span class="fl">${inner}</span>` : inner); last = b;
     });
     return '<span class="sr">Draft: </span>' + h + nb(esc(raw.slice(last)));
@@ -3366,7 +3420,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }
   function fresh(kind) { if (RM) return; out.classList.remove('fresh', 'wake', 'swap'); void out.offsetWidth; out.classList.add('fresh'); if (kind) out.classList.add(kind); }
   function strikeAndDrop(only) {
-    const ms = [...mir.querySelectorAll('mark.c')].filter(m => !only || only.includes(m)); mir.classList.add('struck'); if (!ms.length || RM) return 0;
+    const ms = [...mir.querySelectorAll('mark.c:not(.sp)')].filter(m => !only || only.includes(m)); mir.classList.add('struck'); if (!ms.length || RM) return 0;
     mir.classList.remove('anim'); void mir.offsetWidth; mir.classList.add('anim');
     const d = (ms.length - 1) * 90 + 300;
     later(() => dropWords(ms, $('#drops'), .09, ta), d, tryT);
