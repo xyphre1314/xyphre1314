@@ -141,6 +141,8 @@ p{margin:0}
 .h2,.st,.cap{margin:0;font-weight:600;color:var(--ink);font-feature-settings:"calt","kern"}
 .h2{font-size:clamp(34px,10.4vw,72px);line-height:1;letter-spacing:-.042em}
 .h2 .d,.st .d,.cap .d{color:var(--ink-2)}
+/* the brand name in the H1 is the brightest word of its line (pass 17, brand-1): soft white, never a gradient or the ember */
+.hero .st .bn{color:var(--ink)}
 /* the page's one unhedged promise breaks the tone rule on purpose: Trust's heading is ink all through */
 /* the final card's name row: the handle gives way first, so the time is never clipped */
 #fp-head > *{flex:none}#fp-head > .hd{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -266,6 +268,8 @@ html:not(.motion) .replay:not(.alt){display:none}
 /* the wordmark: the hook-h is the word's own h. One colour, no badge */
 /* the wordmark is one outlined drawing (the hook h and "ookworthy", 100 units to the em), never live text beside a drawn h */
 .mark{display:inline-flex;font-size:20px;line-height:1;color:var(--ink);padding:6px 0;border-radius:6px}
+/* the nav wordmark reads at a glance (pass 17, brand-2): 22px, so the hooked h is legible beside the headline */
+.nav .mark{font-size:22px;padding:5px 0}
 .wm{display:block;width:5.4025em;height:.9875em;fill:currentColor;overflow:visible}
 .links{display:flex;gap:2px;position:absolute;left:50%;transform:translateX(-50%)}
 .links a,.signin{font-size:14px;font-weight:400;color:var(--ink-3);padding:8px 12px;border-radius:999px;transition:color .2s,background-color .2s}
@@ -322,6 +326,12 @@ main{position:relative;overflow-x:clip}
 .pf-tap .ico{width:12px;height:12px}
 @media (hover:none){.pf-tap{display:inline-flex}.pf-cue{display:none}}
 .pane.draft:hover .pf-cue,.pane.draft:has(:focus-visible) .pf-cue{opacity:1;transform:none}
+/* two panes with a mouse (pass 17, web-1): the draft keeps its two natural lines, and the door says where it leads at rest, a quiet
+   row under the draft ("Try this draft in the Sharpen box"), lit on hover or focus. The pane's spare height is spread over its gaps */
+@media (min-width:901px) and (hover:hover){
+  .pf-cue{position:static;order:3;align-self:flex-start;height:30px;margin:0 0 0 54px;opacity:1;transform:none;color:var(--ink-3);background:transparent;box-shadow:inset 0 0 0 1px var(--line-2)}
+  .pane.draft:hover .pf-cue,.pane.draft:has(:focus-visible) .pf-cue{color:var(--ink);background:var(--s3);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 8px 20px -8px rgba(0,0,0,.9)}
+}
 .compose{display:flex;gap:14px;margin-top:16px}
 .compose .av{width:40px;height:40px}
 .dtext{margin-top:6px;font-size:21px;line-height:1.58;letter-spacing:-.014em;color:var(--x-ink);font-weight:400;min-height:3.2em;text-wrap:pretty}
@@ -365,8 +375,8 @@ main{position:relative;overflow-x:clip}
 .post > .light{display:none}
 .window .hits{margin-top:12px;margin-bottom:20px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;align-items:baseline}
 .window .hits .k{margin:0}
-/* wide screens: the post gets the wider pane */
-@media (min-width:1200px){.window .body{grid-template-columns:60px minmax(0,1fr) minmax(0,1.3fr)}}
+/* wide screens: the post gets the wider pane, and the draft keeps a measure that holds each example to two lines (pass 17, web-1) */
+@media (min-width:1200px){.window .body{grid-template-columns:60px minmax(0,1fr) minmax(0,1.15fr)}.pane{padding-inline:28px}}
 /* two panes (901+): the window is as tall as the example on show, so it never carries a floor's empty glass (a pick eases the
    height, see showEx). levelHero() brings the two panes level, giving the shorter pane's text a narrower measure a line at a time;
    the little that is left is spread over that pane's own gaps, never pooled in one band. The draft's gaps: under the header (the
@@ -375,19 +385,24 @@ main{position:relative;overflow-x:clip}
 @media (min-width:901px){
   .pane.draft::before{content:"";order:1;flex:1 1 0}
   .pane.draft .ph-h{order:0}
-  .pane.draft .compose{order:2;flex:3 1 auto;margin-top:12px}
-  .pane.draft:has(.kept:empty) .compose{flex-grow:2}
-  .pane.draft .replyset{order:3;margin-top:0;padding:12px 0}
+  .pane.draft .compose{order:2;flex:2 1 auto;margin-top:4px}
+  .pane.draft:has(.kept:empty) .compose{flex-grow:1}
+  /* pass 17 (web-1): the draft keeps two natural lines, so the pane's spare height is shared by all five of its gaps, one part each:
+     under the header, under the draft, under Kept (both inside the compose block), and above and below "Everyone can reply" (the
+     row grows and centres its words) */
+  .pane.draft .replyset{order:3;margin-top:0;padding:6px 0;flex:2 1 auto}
   .pane.draft .tools{order:4;height:56px}
   .pane.draft .cbody{display:grid;grid-template-rows:auto 1fr auto 1fr}
   .pane.draft .cbody:has(.kept:empty){grid-template-rows:auto 1fr}
-  .pane.draft .dtext{grid-row:1}.pane.draft .kept{grid-row:3;margin-top:8px}
+  .pane.draft .dtext{grid-row:1;font-size:22px;line-height:1.6}.pane.draft .kept{grid-row:3;margin-top:4px}
+  /* a draft with no Kept row (nothing to list) gives its two lines a little more air, so the pane's gaps stay even */
+  .pane.draft:has(.kept:empty) .dtext{line-height:1.7}
   .pane.sharp{justify-content:space-between}
   .pane.sharp .post{margin-top:12px;padding:16px 20px 12px}
   .pane.sharp .ptext{margin-top:8px}
   .pane.sharp .post .xacts{margin-top:10px}
-  .window .hits{margin-top:12px;margin-bottom:12px}
-  .pane.sharp .foot{margin-top:0;height:52px}
+  .window .hits{margin-top:12px;margin-bottom:8px}
+  .pane.sharp .foot{margin-top:0;height:48px}
   /* levelHero's measuring state: each pane at its own height (never painted) */
   .window.lvl .pane{align-self:start}
 }
@@ -552,7 +567,7 @@ html:not(.motion) #pf-go{display:none}
 .try-c:has(.ed-ta:focus-visible){box-shadow:inset 0 0 0 1px var(--x-line),0 0 0 2px var(--ink),0 28px 56px -30px rgba(0,0,0,.95)}
 .ed{position:relative}
 .ed-mirror,.ed-ta{font:400 22px/1.42 "Inter V","Inter Fallback",system-ui,sans-serif;letter-spacing:-.016em;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;tab-size:4;padding:6px 0;margin:0;border:0;width:100%;font-kerning:normal;font-optical-sizing:auto;max-height:calc(1.42em * 5 + 6px)}
-.ed-mirror{position:absolute;inset:0 -4px;color:transparent;overflow:hidden;pointer-events:none}
+.ed-mirror{position:absolute;inset:0 -4px;width:auto;color:transparent;overflow:hidden;pointer-events:none}
 .ed-mirror,.ed-ta{padding-inline:4px}
 .ed-ta{width:calc(100% + 8px);margin-inline:-4px}
 .ed.more{-webkit-mask-image:linear-gradient(#000 calc(100% - 1.5em),rgba(0,0,0,.15));mask-image:linear-gradient(#000 calc(100% - 1.5em),rgba(0,0,0,.15))}
@@ -1128,7 +1143,7 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .plan.feat{background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.03) 60%)}
 .plan.feat::before{background:linear-gradient(180deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.12) 30%,rgba(255,255,255,.07) 100%)}
 .plan.feat::after{content:"";position:absolute;top:0;left:16%;right:16%;height:1px;z-index:4;pointer-events:none;
-  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.6) 55%,rgba(255,255,255,0));box-shadow:0 0 10px rgba(255,255,255,.18)}
+  background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.85) 62%,rgba(var(--hot)/.12));box-shadow:0 0 10px 1px rgba(var(--glow)/.35)}
 .plan > *{position:relative;z-index:1}
 .plan .h3{margin:0;display:flex;align-items:center;gap:10px;font-size:22px;line-height:1.28;font-weight:600;letter-spacing:-.018em;color:var(--ink)}
 .for{color:var(--ink-2);font-size:15px;margin:6px 0 22px}
@@ -1158,7 +1173,8 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .plans-fine{position:relative;z-index:1;margin:20px auto 0;max-width:70ch;font-size:14px;line-height:1.5;color:var(--ink-3);text-align:center;text-wrap:balance}
 .plans-fine .mf{user-select:text}
 /* wider screens: the cancel line, then the clients line under it */
-@media (min-width:761px){.plans-fine .mf,.plans-fine .fs{display:block}}
+@media (min-width:761px){.plans-fine .mf,.plans-fine .fs{display:block}.plans-fine{max-width:84ch}}
+@media (max-width:760px){.plan .for2{display:none}}
 /* the lede starts exactly on the third plan column */
 @media (min-width:1200px){
   #pricing .head{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--gap)}
@@ -1176,6 +1192,12 @@ a.wtry:hover .ico{transform:translateX(2px)}
 /* ---------- FAQ ---------- */
 #faq .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:start}
 #faq .head{display:block;margin:0;position:sticky;top:104px}
+/* pass 17 (web-2): under the heading, a short lede and where to write, so the column beside the list isn't an empty band */
+#faq .faq-l{margin-top:24px;max-width:21em}
+#faq .faq-l a{position:relative;color:var(--ink);white-space:nowrap;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.35)}
+#faq .faq-l a:hover{text-decoration-color:var(--ink)}
+#faq .faq-l a::after{content:"";position:absolute;inset:-6px -2px}
+@media (max-width:900px){#faq .faq-l{display:none}}
 .qa{list-style:none;margin:0;padding:0;border-bottom:1px solid var(--line-2)}
 .qa li{border-top:1px solid var(--line-2)}
 .qa h3{margin:0;font:inherit}
@@ -1192,7 +1214,8 @@ a.wtry:hover .ico{transform:translateX(2px)}
 /* ---------- final: the second light lands on the sharpened card ---------- */
 .fin{padding-top:var(--sec)}
 /* the input column is pinned to the top: the live card grows below and beside it, never around the caret */
-.fin-panel{position:relative;overflow:hidden;isolation:isolate;border-radius:24px;padding:80px 64px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:56px;align-items:start}
+.fin-panel{position:relative;overflow:hidden;isolation:isolate;border-radius:24px;padding:64px 64px 48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:56px;align-items:start}
+.fpay:not(.live) #fp-note{display:none}
 .fin-l{padding-top:0}
 /* the draft card's top edge meets the heading's cap line (Inter's cap sits .137em under a line-height-1 box) */
 @media (min-width:901px){.fpay{margin-top:8px}}
@@ -1347,7 +1370,7 @@ footer .wrap{container-type:inline-size}
 @media (max-width:1199px){
   .head{grid-template-columns:1fr;gap:16px}
   .head .lede{padding-bottom:0}
-  .fin-panel{grid-template-columns:minmax(0,1fr) minmax(0,340px);padding:64px 40px;gap:40px}
+  .fin-panel{grid-template-columns:minmax(0,1fr) minmax(0,340px);padding:56px 40px 40px;gap:40px}
   .h2{font-size:60px}
   #faq .wrap{gap:24px 40px}
 }
@@ -1473,6 +1496,7 @@ footer .wrap{container-type:inline-size}
   .replay::after,.js .incl::after{content:"";position:absolute;left:0;right:0;top:50%;height:40px;margin-top:-20px}
   .nav .wrap{height:56px;gap:12px}
   .mark{font-size:19px}
+  .nav .mark{font-size:21.5px;padding:4px 0}
   .signin{padding:8px 10px}
   .nav-r .btn-sm{height:38px}
   .lede{font-size:15px}
@@ -1495,8 +1519,8 @@ footer .wrap{container-type:inline-size}
   .bleed{padding-inline:0}
   .stage{margin-top:24px;--hx:.82}
   /* the phone beam is narrow and starts just past the right edge, so the trust line above the window keeps AA contrast (4.5:1 or more at 360) */
-  /* the phone light lands on the window's top edge, right of the short promise line and clear of the buttons */
-  .hero .micro .m3{display:none}
+  /* the phone light lands on the window's top edge, under the promise line and clear of the buttons. The line keeps all three
+     promises, "Nothing posts without you" included (pass 17, founder-2, brand-3) */
   /* the stage's own beam on a phone (pass 16, brand-1): narrow, static and low. It rakes in from past the right edge through the
      band between "Free forever · No card" and the window, under the buttons and right of the trust line, and lands as a hot spot on
      the window's top hairline. No motion here, with or without reduced motion. The card's own light still lands on the post's rim */
@@ -1780,7 +1804,7 @@ footer .wrap{container-type:inline-size}
   .ft-b{margin-top:22px;display:block;font-size:13px}
   .ft-b span + span::before{content:" · "}
   .giant{margin-top:18px}
-  .fin .micro i:nth-of-type(2),.fin .micro span:nth-of-type(3){display:none}
+  .fin .micro > span:nth-of-type(-n+2),.fin .micro > i:nth-of-type(-n+2){display:none}
   .fin .micro .fa-i,.fin .micro .fa-s{display:inline}
   .fin .micro .fa-l{display:none}
   .fin .micro .fin-alt{flex-basis:auto;margin-top:0;font-size:inherit}
@@ -1887,6 +1911,29 @@ footer .wrap{container-type:inline-size}
 }
 /* phones: the posts keep their old height with the second name line (a little less air around each) */
 @media (min-width:375px) and (max-width:760px){.t-who .wp{padding:12px 0}}
+/* ---- pass 17 ---- */
+/* web-4, uiux-3: on a phone every control answers a tap 44px each way. An invisible area is centred on it (min 44x44, the
+   control's own box when it is bigger), so no control grows and no row moves. A side scroller gets 4px of padding above and below,
+   taken back by margin, so the area isn't clipped; the Try mirror reaches past the text box the same way (its text stays put) */
+@media (max-width:760px){
+  .nav .mark,.signin,.nav-r .btn-sm,.ex .pills button,.starters button,.st-pick button,.bill button,.t-pv .seg button,#try-clear,#try-go,#try-keep,.ft ul a{position:relative}
+  .nav .mark::after,.signin::after,.nav-r .btn-sm::after,.ex .pills button::after,.starters button::after,.st-pick button::after,.bill button::after,
+  .t-pv .seg button:not(.m-ring)::after,.t-pv .seg .m-ring::before,#try-clear::after,#try-go::after,#try-keep::after,.ft ul a::after,#rv-ok::before{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+  .sx,#proof .ex .pills{padding-block:4px;margin-block:-4px}
+  .replay::after,.js .incl::after{left:min(0px,calc(50% - 22px));right:min(0px,calc(50% - 22px));height:44px;margin-top:-22px}
+  .mini::after{inset:min(-4px,calc(50% - 22px)) min(-4px,calc(50% - 22px))}
+  .plans-fine a::after{inset:min(-6px,calc(50% - 22px)) -2px}
+  .tog::after{inset:min(-12px,calc(50% - 22px)) min(-4px,calc(50% - 22px))}
+  .try-c .ed-mirror{inset:-14px -18px;padding:20px 18px;max-height:calc(1.42em * 5 + 34px)}
+  .ft ul{row-gap:3px}
+  /* the hero's trust line runs nearly the width now ("Nothing posts without you" is back), so the stage's beam rakes in lower and
+     flatter, under the line, and stops at its foot: the line keeps AA contrast (6:1 at 360 and 390) */
+  .stage > .light{--a:74deg;--lx:74%;clip-path:inset(-21px -600px -600px -600px)}
+}
+@media (max-width:374px){
+  .stage > .light{--a:78deg;clip-path:inset(-13px -600px -600px -600px)}
+  .ft ul{row-gap:5px}
+}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
@@ -1915,7 +1962,7 @@ footer .wrap{container-type:inline-size}
 <!-- THE OPENING SHOT: the title, then the wide window the beam lands on -->
 <section class="hero" aria-labelledby="h1">
   <div class="wrap tc">
-    <div class="tc-in"><h1 class="st" id="h1" style="--em:8.4"><span class="l">They read one line.</span><br><span class="l d">Make it hookworthy.</span></h1></div>
+    <div class="tc-in"><h1 class="st" id="h1" style="--em:8.4"><span class="l">They read one line.</span><br><span class="l d">Make it <span class="bn">hookworthy.</span></span></h1></div>
     <p class="tc-sub">Cut the fluff from your first line in one tap, then schedule it for X. It still sounds like you.</p>
     <div class="ctas" id="hero-cta">
       <button class="btn btn-white" type="button" data-sheet="free">Start free</button>
@@ -2001,7 +2048,7 @@ footer .wrap{container-type:inline-size}
       <h2 class="cap big" id="sh-h">Your facts stay.<br><span class="d">The <span class="sq">fluff</span> goes.</span></h2>
       <div class="try demo">
         <div class="drops" id="drops" aria-hidden="true"></div>
-        <label class="try-l" for="try-ta"><span class="tl1">Paste the line you were about to post.</span><span class="tl2"> This demo runs on your device.</span></label>
+        <label class="try-l" for="try-ta"><span class="tl1">Paste the line you were about to post.</span><span class="tl2"> Nothing leaves your device.</span></label>
         <div class="xcard try-c done isx">
           <div class="xrow">
             <span class="av me xav" id="try-av" aria-hidden="true"></span>
@@ -2293,7 +2340,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       <form class="sh-em" id="sh-form" novalidate><label class="sr" for="sh-email">Email</label><input id="sh-email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="sh-err"><button class="btn btn-glass" type="submit">Continue</button></form>
       <p class="sh-err" id="sh-err" role="alert" hidden>Add your email.</p>
     </div>
-    <div class="sh-done" id="sh-done" hidden><p id="sh-done-t">This is a design preview, so no account was made. Once Hookworthy is live, this signs you in.</p><div class="sh-done-acts"><button class="btn btn-white" type="button" id="sh-back">Back to the page</button><a class="sh-demo" href="https://claude.ai/artifact/U91RtwmxGET54EqnSh3hSD" target="_blank" rel="noopener">Open the working app on claude.ai (demo data)<svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg></a></div></div>
+    <div class="sh-done" id="sh-done" hidden><p id="sh-done-t">This is a design preview, so no account was made. Once Hookworthy is live, this signs you in.</p><div class="sh-done-acts"><a class="btn btn-white" href="https://claude.ai/artifact/U91RtwmxGET54EqnSh3hSD" target="_blank" rel="noopener">Open the working app on claude.ai (demo data)<svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg></a><button class="sh-demo" type="button" id="sh-back">Back to the page</button></div></div>
     <p class="sh-fine" id="sh-fine">Nothing posts without you.<span id="sh-alt"> Have an account? <button class="inl" type="button" id="sh-to-signin">Sign in</button></span><span id="sh-alt2" hidden> New here? <button class="inl" type="button" id="sh-to-start">Start free</button></span></p>
   </div>
 </dialog>
@@ -2581,7 +2628,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const hitK = () => 'Why it hits';
   /* display only: the receipt counts in numerals throughout ("Cut 2 bits of fluff · Split into 2 beats"), and each of its parts
      stays on one line, so a narrow receipt breaks at the "·", never inside "Said it straight" */
-  const sayTxt = say => String(say).replace(/\bSplit it into (two|three|four) beats\b/, (m, n) => `Split into ${{ two: 2, three: 3, four: 4 }[n]} beats`)
+  const sayTxt = say => String(say).replace(/\bSplit it into (two|three|four) beats\b/gi, (m, n) => `Split into ${{ two: 2, three: 3, four: 4 }[n.toLowerCase()]} beats`)
     .split(' · ').map(x => x.replace(/ /g, '\u00a0')).join(' · ');
   const beats = (t, f) => { t = String(t); const s = t.split(/(?<=[.!?…])\s+(?=\S)/);
     if (s.length < 2) return f(t);
@@ -2649,9 +2696,10 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }
   const pfBody = proof.querySelector('.body');
   /* two panes: both end level, so neither shows a band of empty glass. Measured at their own heights (.lvl, never painted), the
-     shorter pane's text (the draft, or the post's line) takes a measure 5% narrower at a time while that gains it height without
+     post's text (its "Why it hits", then its line) takes a measure 5% narrower at a time while that gains it height without
      passing the taller pane; the window's height is always the taller pane's own, so levelling never moves the page. What's left
-     (under ~24px) is spread over the shorter pane's gaps by the stylesheet */
+     is spread over the shorter pane's gaps by the stylesheet. The draft is never narrowed (pass 17, web-1): it keeps the pane's
+     whole measure, so a draft wraps in two natural lines, not four ragged ones */
   function levelHero() {
     const nm = proof.querySelector('.who .nm'), hd = $('#pf-handle'); nm.classList.remove('nohd');
     if (hd.scrollWidth > hd.clientWidth + 1 || nm.scrollWidth > nm.clientWidth + 1) nm.classList.add('nohd');
@@ -2668,7 +2716,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       while ((w *= .95) >= w0 * .6) { el.style.maxWidth = Math.floor(w) + 'px'; const h2 = pane.getBoundingClientRect().height;
         if (h2 > h + 1) { if (h2 <= T + 1) got = true; break; } }
       if (!got) { el.style.maxWidth = keep; return; } } };
-    grow(pd, dt); grow(ps, wy); grow(ps, pt);
+    grow(ps, wy); grow(ps, pt);
     proof.classList.remove('lvl');
   }
   /* the frame holds one height through every example (pass 15, web-1): the tallest example's at this width, measured in a hidden
@@ -3258,10 +3306,49 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the note under a why is dropped when it only repeats it ("Kept “IMO”…" and "Kept your “IMO”…"): one reason, said once */
   const noteKey = t => String(t || '').toLowerCase().replace(/<[^>]+>/g, ' ').replace(/[“”"‘’']/g, '').replace(/\byour\s+/g, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
   const noteOnce = (note, why) => { const n = noteKey(note); return n && noteKey(why).includes(n) ? '' : note || ''; };
+  /* display only (pass 17, marketing-2): a "Why it hits" never quotes the line cut off mid-phrase. A quote of the line that stops
+     where the phrase runs on ("“We raised $2M to build the future” is now the first thing people read", the line going on "of
+     payroll") is carried to the end of its clause when that stays short (50 characters), else cut back to where a phrase ends
+     ("“We raised $2M”"). A quote that ends at punctuation, at the line's end or before a joining word ("to", "and", "because") is
+     whole already. Quotes of cut or kept words ("Without “honestly”", "Kept “I think”") are left as the engine wrote them */
+  const Q_JOIN = /^(?:to|and|but|so|or|because|which|who|that|when|while|if|after|before|for|with|as|since|until|unless|than|then|in|on|at|by|from)$/i;
+  const wholeQ = (why, line) => String(why || '').replace(/(^|[^\p{L}])“([^”]{3,})”/gu, (m, pre, q, at, all) => {
+    if (/\b(?:Kept|Left|Marked|Without|without|Back in:?|cut|put back)\s*(?:your\s*)?$/.test(all.slice(Math.max(0, at - 16), at + pre.length)) || /^”\s+(?:went|was|were|stays?|is back)\b/.test(all.slice(at + m.length - 1))) return m;
+    const L = String(line), i = L.toLowerCase().indexOf(q.toLowerCase()); if (i < 0 || (i > 0 && /[\p{L}\p{N}]/u.test(L[i - 1]))) return m;
+    const after = L.slice(i + q.length); if (!/^\s+[\p{L}\p{N}$#@]/u.test(after)) return m;
+    if (Q_JOIN.test(after.trim().split(/\s+/)[0])) return m;
+    const whole = (q + (after.match(/^[^,;:—–.!?…]*/) || [''])[0]).trimEnd();
+    if (whole.length <= 50) return `${pre}“${whole}”`;
+    const ws = q.split(/\s+/); for (let k = ws.length - 1; k >= 2; k--) if (Q_JOIN.test(ws[k])) { const s = ws.slice(0, k).join(' '); if (s.length >= 6) return `${pre}“${s}”`; }
+    return m; });
+  /* pass 17 (uiux-2, founder-1): a paste over 280 is the first post of a thread, never a wall. The post shows the line's first
+     sentence (sentences shorter than ~40 characters run on to the next), or, for one long run-on, its first clause closed with a
+     full stop (a break at "; — and but so because which…" past 40 characters); a quiet note says the rest becomes post 2. When the
+     engine says the line is over 280 (R.long), its own note leads. Nothing is dropped: the rest is post 2 */
+  const POST_MIN = 40, POST_MAX = 220;
+  const clauseCut = t => { for (const m of t.matchAll(/\s*(?:[;—–]|,?\s(?:and|but|so|because|which|while|when|where|though|although|then)\b)\s*/gi)) {
+    if (m.index < POST_MIN) continue; if (m.index > POST_MAX) break; return t.slice(0, m.index).replace(/[\s,:;—–-]+$/, '') + '.'; } return ''; };
+  function firstPost(line) {
+    const t = String(line).trim(), S = t.split(/(?<=[.!?…])\s+(?=\S)/); let p = S[0], i = 1;
+    while (p.length < POST_MIN && i < S.length && (p + ' ' + S[i]).length <= POST_MAX) p += ' ' + S[i++];
+    if (p.length > POST_MAX) return clauseCut(p);
+    return i < S.length ? p : clauseCut(t);
+  }
+  const LONG_PAGE = 'Long for one post, so it opens a thread.', LONG_REST = 'Post 1 is above; the rest becomes post 2.';
   function viewOf(R, v, keepL) {
+    const V = viewOf0(R, v, keepL);
+    if (!R || R.state === 'empty' || R.state === 'thin' || !(R.long || [...String(R.draft || '')].length > 280)) return V;
+    const line = R.state === 'sharp' ? v.line : R.line, post = firstPost(line), eng = R.long && /\bthread\b/i.test(String(V.note || ''));
+    if (!post) return eng ? V : { ...V, note: [V.note, LONG_PAGE].filter(Boolean).join(' ') };
+    /* a "Why it hits" that quotes words now in post 2 would point at text that isn't shown: it steps aside for the note */
+    const lc = s => String(s).toLowerCase(), hid = R.state === 'sharp' && [...String(v.why || '').matchAll(/“([^”]+)”/g)].some(m => lc(line).includes(lc(m[1])) && !lc(post).includes(lc(m[1])));
+    return { ...V, line: post, k: hid ? '' : V.k, why: hid ? '' : V.why, note: [V.note, eng ? '' : LONG_PAGE, LONG_REST].filter(Boolean).join(' '),
+      status: `${R.state === 'sharp' ? 'Sharpened, post 1 of a thread' : 'Post 1 of a thread'}: ${post}` };
+  }
+  function viewOf0(R, v, keepL) {
     const st = R.state, sharp = st === 'sharp', words = (String(R.line).match(/\S+/g) || []).length;
     /* a line that opens on a word the writer put back carries the engine's own "you kept it" why, with no label over it */
-    if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(v.why), kept: keptLine(R.draft, v.line, R.kept, R.note), note: [noteRest(R.note), softNotes(R.note)].filter(Boolean).join(' '), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
+    if (sharp) return { say: sayTxt(v.say), k: keepL.length && opensOn(v.line, keepL) ? '' : hitK(v.say), why: esc(wholeQ(v.why, v.line)), kept: keptLine(R.draft, v.line, R.kept, R.note), note: [noteRest(R.note), softNotes(R.note)].filter(Boolean).join(' '), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${v.line}` };
     /* a line the engine marked but kept is "Kept as written", never "tight" */
     const say = sayTxt(st === 'unsure' ? 'Kept as written' : R.say || 'Kept as written');
     /* a filler word the engine kept is "Left", never "Kept" (pass 16, web-1) */
@@ -3437,7 +3524,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (st === 'empty' || st === 'thin') {
       showEmpty(st === 'empty' ? 'Paste a line above. The sharpened version lands here.' : thinSay(R));
       setMirror(esc(raw) + '&#8203;', false); flags.innerHTML = ''; why.textContent = '';
-      outSt.last = 'How it would post'; outSt(outSt.last); tryPrimary(false); fresh();
+      outSt.last = st === 'thin' ? 'Nothing to post yet' : 'How it would post'; outSt(outSt.last); tryPrimary(false); fresh();
       $('#try-status').textContent = st === 'thin' ? thinSay(R) : '';
       return;
     }
@@ -3462,8 +3549,9 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       setWho(outCard, ex); outCard.setAttribute('aria-label', ex ? `${ex.n}’s post (example)` : 'Your post');
       /* a pass (nothing to cut) is lit like a sharpened line, with a tick on its receipt */
       tryPass = !!V.pass; out.classList.toggle('pass', tryPass);
-      outLine.className = 'xtext' + (sharp || tryPass ? '' : ' same') + (line.length > 140 ? ' long' : ''); outCard.classList.toggle('lit-card', sharp || tryPass);
-      outLine.innerHTML = xbeats(line);
+      const shown = V.line || line;
+      outLine.className = 'xtext' + (sharp || tryPass ? '' : ' same') + (shown.length > 140 ? ' long' : ''); outCard.classList.toggle('lit-card', sharp || tryPass);
+      outLine.innerHTML = xbeats(shown);
       const k = $('#out-k'), w = $('#out-why'), nt = $('#out-note'), kp = $('#out-kept');
       k.textContent = V.k; k.hidden = !V.k; w.innerHTML = V.why; w.hidden = !V.why;
       nt.textContent = [noteOnce(V.note, V.why), R.rest.trim() ? 'First line only. The rest stays as you wrote it.' : ''].filter(Boolean).join(' ');
@@ -3690,7 +3778,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       fpCard.hidden = false; fpEmpty.hidden = true; fpHits.hidden = false;
       const V = viewOf(FR, fv, keepF);
       fpSharp.className = 'xtext' + (sharp || V.pass ? '' : ' same');
-      fpSharp.innerHTML = `<span class="sr">${sharp ? 'Sharpened: ' : 'As you wrote it: '}</span>` + xbeats(fv.line);
+      fpSharp.innerHTML = `<span class="sr">${sharp ? 'Sharpened: ' : 'As you wrote it: '}</span>` + xbeats(V.line || fv.line);
       pay.classList.toggle('pass', !!V.pass); finIntent = V.intent || '';
       fpK.textContent = V.k; fpK.hidden = !V.k; fpWhy.innerHTML = V.why; fpWhy.hidden = !V.why;
       fpNote.textContent = noteOnce(V.note, V.why);
