@@ -5016,6 +5016,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     { k: 'notIt', mv: 'contrast', allow: /^$/, left: l => /\b(?:is|are|was|were)(?: not|n['’]t) (?:really|actually)\b/i.test(l) || /\b(?:is|are|was|were)(?: not|n['’]t) [^,.]{2,60},\s+(?:it|they)(?:['’]s| is|['’]re| are)\s/i.test(l) || /\b(?:is|are|was|were)(?: not|n['’]t) [^.]{2,60}\.\s+(?:it|they)(?:['’]s| is|['’]re| are)\s+(?:actually|really)\b/i.test(l) || /\b(?:do|does|did)(?: not|n['’]t) [^,]{4,80},\s+(?:they|it|we|you)\s/i.test(l) || /\b(?:is|are|was|were)(?: not|n['’]t) (?:really |actually )[^,]{2,60},\s+(?:it|they|that)/i.test(l) || /\b(?:is|are|was|were)(?: not|n['’]t) [^,]{2,60},\s+(?:it|they)(?:['’]s| is|['’]re| are)\s+actually\b/i.test(l),
       f: (t, low) => { const m = t.match(/^(.{3,140}?\b(?:is|are|was|were)(?: not|n['’]t)) (?:really |actually |exactly )?([^,.;!?]{2,60}?),\s+(it|they|that|this)((?:['’]s| is|['’]re| are| was| were)\s+)(?:actually |really |simply )?([^]{2,160}?)([.!?]*)$/iu);
         if (!m) { const n = t.match(/^(.{6,140}?\b(?:do|does|did)(?: not|n['’]t)) (?:really |actually )?([a-z]+\b[^,.;!?]{2,80}?),\s+(they|it|we|you|he|she)\s+(?:actually |really |just )?(\2\b|[a-z]+\b)([^]{2,160}?)([.!?]*)$/iu); if (!n || !slFinite(n[1] + ' ' + n[2]) || lcw(n[4]) !== lcw(n[2].split(/\s+/)[0])) return null; return `${n[1]} ${n[2]}. ${sl53Up(n[3], low)} ${n[4]}${n[5]}${n[6] || (low ? '' : '.')}`; }
+        /* "isn't just X, it's Y" adds, it doesn't replace: the negated "just" keeps the line in one breath (juror 4) */
+        if (/^(?:just|only|merely|simply)\b/i.test(m[2])) return null;
         return `${m[1]} ${m[2]}. ${sl53Up(m[3], low)}${m[4]}${m[5]}${m[6] || (low ? '' : '.')}`; } },
     /* "X, here's the playbook" → "X. Here's the playbook" */
     { k: 'heres', mv: 'contrast', allow: /^$/, left: l => /,\s+here(?:['’]s| is| are)\b/i.test(l),
@@ -5084,7 +5086,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     { const wf = rw.used.find(F => F.whyF); const w = wf ? wf.whyF(d, L) : ''; if (w && w.length <= 160) E.why = w; }
     /* stacked hedges that became one say so, and name the one that stayed */
     if (fw === 'stack') { const left0 = [...L.matchAll(rx(SL_CALL_ST.source, SL_CALL_ST.flags)), ...L.matchAll(rx(SL_CALL_HG.source, SL_CALL_HG.flags))].map(m => m[0]); const n = left0.length + ex.length + E.cut.filter(c => /^(?:hedge|opinion|disclaim)$/.test(c.kind) && !ex.some(x => x[0] === c.at[0])).length; const N = ['', 'One', 'Two', 'Three', 'Four', 'Five'][n] || String(n);
-      if (left0.length === 1 && n >= 2) E.why = `${N} hedges became one. Kept your “${left0[0]}”${isCall(d) || slFutReal(d) ? ': on a call it says the call is yours' : ': it says how sure you are'}.`; }
+      if (left0.length === 1 && n >= 2) E.why = `${N} hedges became one. Kept your “${left0[0]}”${isCall(d) || slFutReal(d) ? ': on a prediction, it says the prediction is yours' : ': it says how sure you are'}.`; }
     return { ...R, state: 'sharp', line: L, marks: [...(R.marks || []).filter(m => !ex.some(x => x[0] < m[1] && x[1] > m[0])), ...ex].sort((x, y) => x[0] - y[0]), cut: E.cut, move: E.move, moves: E.moves, say: E.say, why: E.why, alts: R.state === 'sharp' && R.line !== L ? [{ line: R.line, say: R.say, why: R.why, move: R.move, moves: R.moves, cut: R.cut }] : [], long: xLength(rest.trim() ? `${L}\n${rest}` : L) > 280, note: xLength(rest.trim() ? `${L}\n${rest}` : L) > 280 ? SL_LONG : '', fam53: rw.used.map(F => F.k) };
   }
 
@@ -5121,6 +5123,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const w = slTokW(String(line).replace(HK_VOICE, '')), d = slTokW(String(draft).replace(HK_VOICE, ''));
     if (!w.length || w[0] === d[0] || !SL_DANGLE_W.test(w[0])) return '';
     if (w[0] === 'to' && /^(?:my|our|your|the|all|everyone|everybody|anyone|anybody|whoever|those|every|each|me|you|us|them|him|her|this|that|be|a|an)$/.test(w[1] || '') && w[1] !== 'be') return '';
+    /* "To grow on X, you need to post every day.": a purpose clause with its main clause after the comma is whole */
+    if (w[0] === 'to' && /^\P{L}*to\s+[^,.!?]{3,60},\s+(?:i|we|you|they|he|she|it|most|people|everyone|the|your|my|our)\b/iu.test(String(line).replace(HK_VOICE, ''))) return '';
     if (w[0] === 'like' && !/^(?:um+|uh+|so|and|but|like|i|we|you|it|this|that|the)$/.test(w[1] || '')) return '';
     /* "So tired of…" is the degree; "so I…", "So, the…" is the joining word */
     if (w[0] === 'so' && !/^\P{L}*so\s*,/iu.test(String(line).replace(HK_VOICE, '')) && !/^(?:i|we|you|they|he|she|it|this|that|the|my|our|your|um+|uh+|basically|yeah|anyway|like|here|there|if|when|now|today|then)$/.test(w[1] || '')) return '';
@@ -5145,7 +5149,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const SL_CALL_HG = /(?<![\p{L}\p{N}'’-])(?:probably|maybe|perhaps|possibly|potentially|presumably|arguably|most likely|(?<=\b(?:will|would|could|['’]ll|won['’]t|wouldn['’]t)\s+)likely(?!\s+to\b)|(?<!\b(?:what|which|this|that|the|a|any|some|every|one|same|different|other|right|wrong|no|that['’]s the)\s)(?:kind of|sort of)|kinda|sorta|somewhat)(?![\p{L}\p{N}'’-])/giu;
   const SL_CALL_HY = /(?<![\p{L}\p{N}'’-])(?:amazing|incredible|awesome|insane|epic|unbelievable|phenomenal|fantastic|mind-?blowing|game-?changing|groundbreaking|ground-breaking|revolutionary|world-class|stellar)(?=\s+(?!(?:of|to|for|at|in|on|and|or|but|that|with|by|as|is|was|are|were|than)\b)[\p{L}\p{N}$])/giu;
   const SL_CALL_DEG = /^(?:kind of|sort of|kinda|sorta|somewhat)$/i;
-  const SL_CALL_WHY = { stc: 'Your stance on a call. Tap to cut it if you’re sure.', stv: 'Marks this as your view. Tap to cut it if you’re sure.', hgc: 'How sure you are about the call. Tap to cut it if you’re sure.', hgv: 'How sure you are. Tap to cut it if you’re sure.', deg: 'Softens how strongly you say it. Tap to cut it if you mean it fully.', hy: 'A hype word. Tap to cut it if the news says it alone.' };
+  const SL_CALL_WHY = { stc: 'Your stance on a prediction. Tap to cut it if you’re sure.', stv: 'Marks this as your view. Tap to cut it if you’re sure.', hgc: 'How sure you are about the prediction. Tap to cut it if you’re sure.', hgv: 'How sure you are. Tap to cut it if you’re sure.', deg: 'Softens how strongly you say it. Tap to cut it if you mean it fully.', hy: 'A hype word. Tap to cut it if the news says it alone.' };
   /* the line with [a, b] cut: the comma that set it off goes with it, a sentence start keeps its capital, "a"/"an" fit the next word */
   function slCallCut(line, a, b) {
     const L = String(line); let pre = L.slice(0, a), post = L.slice(b);

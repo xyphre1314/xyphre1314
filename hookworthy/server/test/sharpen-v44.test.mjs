@@ -68,10 +68,11 @@ test('v4.4, hook43-1: a cut between a joining word and a comma takes the comma, 
   const z35 = "I've been building this company for almost four years now and if I'm being honest, the thing that I wish someone had told me at the very beginning is that you will never feel ready.";
   for (const [m, o] of MODES) { const l = L(z35, o); assert.doesNotMatch(l, /\band,/, m); assert.match(l, /four years now(?: and|\.) the thing|four years now\. The thing/i, m); }
   for (const [m, o] of MODES) {
-    assert.equal(L('we shipped it and to be honest, it went fine', o), 'we shipped it and it went fine.', m);
-    assert.equal(L('we shipped it but, honestly, it went fine', o), 'we shipped it but it went fine.', m);
+    /* v5.3 (Fable H9): a lowercase draft with no end stop gets none */
+    assert.equal(L('we shipped it and to be honest, it went fine', o), 'we shipped it and it went fine', m);
+    assert.equal(L('we shipped it but, honestly, it went fine', o), 'we shipped it but it went fine', m);
     assert.equal(L('I think, honestly, the market is cooked.', o), 'I think the market is cooked.', m);
-    assert.equal(L('we shipped it, and honestly, it went fine', o), 'we shipped it, and it went fine.', m);
+    assert.equal(L('we shipped it, and honestly, it went fine', o), 'we shipped it, and it went fine', m);
     assert.equal(L('I read 40 books this year and tbh, only 5 of them were worth it.', o), 'I read 40 books this year and only 5 of them were worth it.', m);
   }
   assert.equal(hard("I've been building this for four years now and, the thing is nobody is ready.", "I've been building this for four years now and if I'm being honest, the thing is nobody is ready."), 'joining word before a comma');
@@ -123,7 +124,7 @@ test('v4.4: coverage (z-54, z-72, z-107), long run-ons in beats, and true receip
   assert.equal(hard('Excited we are to finally launch this.', 'We just wanted to let you know how excited we are to finally launch this.'), 'exclamation lost its how');
   /* a line over 280 is said in beats where it can be */
   const z35 = "I've been building this company for almost four years now and if I'm being honest, the thing that I wish someone had told me at the very beginning is that you will basically never feel ready for any of the big moments, whether that's hiring your first employee, raising your first round, or firing someone who you really like, and that's completely okay because nobody actually does.";
-  assert.equal(L(z35), "I've been building this company for almost four years now. The thing that I wish someone had told me at the beginning is that you'll basically never feel ready for any of the big moments, whether that's hiring your first employee, raising your first round, or firing someone who you really like. That's okay because nobody actually does.");
+  assert.equal(L(z35), "I've been building this company for almost four years now. The thing I wish someone had told me at the beginning is that you'll basically never feel ready for any of the big moments, whether that's hiring your first employee, raising your first round, or firing someone who you really like. That's okay because nobody actually does.");
   /* a list of clauses is still a list: no full stop before its last item */
   assert.doesNotMatch(L("I believe that most retail traders are just gambling, because they don't have a plan. They don't size their positions properly, they don't use stop losses, and they chase whatever coin is pumping on their timeline that day, which is exactly why 90% of them lose money."), /stop losses\. They/);
   assert.equal(L('My mom, my dad, and I honestly went to the beach every summer for ten years.'), 'My mom, my dad, and I went to the beach every summer for ten years.');

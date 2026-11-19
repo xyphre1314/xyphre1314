@@ -50,7 +50,14 @@ test('held-out: the result keeps its contract', () => {
     assert.ok(R.why.length <= 140, `${at}: why is ${R.why.length} characters`);
     assert.equal(R.long, core.xLength(R.rest.trim() ? `${R.line}\n${R.rest}` : R.line) > 280, at);
     R.cut.forEach(c => { assert.equal(R.draft.slice(c.at[0], c.at[1]), c.text, at); assert.ok(c.kind && c.why, at); });
-    if (R.state !== 'thin' && R.state !== 'empty') assert.deepEqual(R.marks, core.softMarks(R.draft), at);
+    /* v5.3: the soft marks, where a kept hedge or stance shows as a 'call' mark ("your call", never a cut), plus the marks of the
+       words a v5.3 family cut. Every soft mark is still there or under a call; every extra mark is a cut; no call is a cut */
+    if (R.state !== 'thin' && R.state !== 'empty') {
+      const sm = core.softMarks(R.draft), mine = R.marks.filter(m => m[3] !== 'call'), calls = R.marks.filter(m => m[3] === 'call'), ov = (a, b) => a[0] < b[1] && a[1] > b[0];
+      for (const m of sm) assert.ok(mine.some(x => x[0] === m[0] && x[1] === m[1] && x[3] === m[3]) || calls.some(c => ov(c, m)) || mine.some(x => x[0] <= m[0] && x[1] >= m[1]), `${at}: soft mark ${JSON.stringify(m)} went missing`);
+      for (const x of mine) if (!sm.some(m => m[0] === x[0] && m[1] === x[1])) assert.ok(R.cut.some(c => ov(c.at, x)), `${at}: mark ${JSON.stringify(x)} is no soft mark and no cut`);
+      for (const c of calls) assert.ok(!R.cut.some(k => ov(k.at, c)), `${at}: a call mark is on a cut word`);
+    }
     R.kept.forEach(k => assert.ok(R.line.includes(k), `${at}: kept "${k}" is not in the line`));
     assert.ok(R.alts.length <= 2, at); assert.equal(new Set(R.alts.map(a => a.move || 'soft')).size, R.alts.length, `${at}: two alts make the same move`);
     if (R.state === 'sharp') assert.ok(R.say && R.why, at);

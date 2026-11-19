@@ -62,7 +62,8 @@ test('juror 4, hook-3: a hedged plan or forecast keeps its hedge; "going to" nev
   assert.equal(L('I think most people overthink their first post'), 'I think most people overthink their first post');
   assert.equal(L('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it'), '$ARB unlock is next week. i think everyone is way too relaxed about it');
   /* v4.2 (round-7 marketing-4): "I think" is the one hedge kept; "probably" is the second one */
-  assert.equal(L('I think most people probably overthink their first post'), 'I think most people overthink their first post.');
+  /* v5.3 (Fable g-74, step 2): on a view, "probably" is the clause's one hedge and the "I think" on top of it goes */
+  assert.equal(L('I think most people probably overthink their first post'), 'Most people probably overthink their first post.');
   /* r86 pass 6 (juror 5, hook-7): "probably" is the clause's one hedge, so it stays; never "Probably talk to your users" */
   assert.equal(L('This might sound obvious but you should probably talk to your users before you build'), 'You should probably talk to your users before you build.');
   /* "then this might be for you" keeps its "might" */

@@ -69,7 +69,8 @@ test('v4.1, hook4-1 and the round-6 jurors: the broken lines come back whole', (
   /* founder-1: no conditional split off its main clause, no "?" after a that-clause, no clause left on "That" */
   assert.equal(L("If you're not using stop losses, you're basically gambling"), "If you're not using stop losses, you're gambling.");
   assert.equal(L("Most people don't realize that the first line is literally the whole tweet"), "Most people don't realize that the first line is the whole tweet.");
-  assert.equal(L('The truth is that most newsletters are basically just link dumps'), 'The truth is that most newsletters are just link dumps.');
+  /* v5.3 (Fable g-43/g-57): "The truth is that" goes whole now, with its "that", so nothing is left dangling */
+  assert.equal(L('The truth is that most newsletters are basically just link dumps'), 'Most newsletters are just link dumps.');
   /* uiux-1: the round swap reads its clause first; a pleasantry before the point is a warm-up */
   assert.equal(L('Excited to share that our Series A is closed'), 'Our Series A is closed.');
   assert.equal(L('Excited to share that our seed round is closed!'), 'Our seed round is closed!');
@@ -206,7 +207,8 @@ test('v4.1, hook4-4: placeholder text is thin only when it is half the line, and
 
 test('v4.1, hook4-7 and founder-2: the engine keeps what the Claude prompt keeps', () => {
   /* "really" under a negation, within its clause, is a degree on it */
-  assert.equal(L('tbh i feel like nobody really reads threads anymore and we\'re all just posting into the void'), 'i feel like nobody really reads threads anymore. we\'re all just posting into the void.');
+  /* v5.3 (Fable g-16, step 5): "i feel like" on a plain view is a run-up, and a lowercase line gets no full stop it never had */
+  assert.equal(L('tbh i feel like nobody really reads threads anymore and we\'re all just posting into the void'), 'nobody really reads threads anymore. we\'re all just posting into the void');
   assert.equal(L("Real talk: if you're not sleeping 7 hours a night, I don't think your workout split really matters."), "If you're not sleeping 7 hours a night, I don't think your workout split really matters.");
   assert.equal(L('Hiring is the hardest part of being a founder and nobody really prepares you for it'), 'Hiring is the hardest part of being a founder. Nobody really prepares you for it.');
   /* …but not across a new clause: "not using a stop loss you're really just gambling" */
