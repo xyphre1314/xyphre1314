@@ -99,10 +99,12 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   /* v4.2 (round-7 marketing-4): "I think" stays as the one hedge, the second hedge goes */
   assert.equal(L('I think one of the biggest mistakes I made as a first-time founder was probably hiring way too fast.'), 'I think one of the biggest mistakes I made as a first-time founder was hiring way too fast.');
   assert.equal(L('Honestly, I feel like dark mode is kind of overrated and most apps would probably be better without it.'), 'I feel like dark mode is overrated and most apps would probably be better without it.');
-  assert.equal(L("I've been coding for 10 years and I honestly think that most developers are kind of overcomplicating their side projects."), "I've been coding for 10 years. I think that most developers are overcomplicating their side projects.");
+  /* v5.0 (round-13 uiux-2): the spare "that" after the kept stance goes */
+  assert.equal(L("I've been coding for 10 years and I honestly think that most developers are kind of overcomplicating their side projects."), "I've been coding for 10 years. I think most developers are overcomplicating their side projects.");
   /* on a call every hedge stays; a doubled hedge is one hedge; "What could possibly go wrong" is the joke, not a doubled hedge */
   assert.equal(L('Not gonna lie, I really think $SOL could potentially hit $300 by Q2 if the ETF gets approved.'), 'I think $SOL could hit $300 by Q2 if the ETF gets approved.');
-  assert.match(L('Not financial advice but I genuinely believe that $HYPE could literally 10x from here.'), /\bI believe that \$HYPE could 10x\b/);
+  /* v5.0 (round-13 uiux-2): the spare "that" goes; the call keeps its stance */
+  assert.match(L('Not financial advice but I genuinely believe that $HYPE could literally 10x from here.'), /\bI believe \$HYPE could 10x\b/);
   assert.equal(L('Sure, just buy the dip. What could possibly go wrong.'), 'Sure, just buy the dip. What could possibly go wrong.');
 });
 

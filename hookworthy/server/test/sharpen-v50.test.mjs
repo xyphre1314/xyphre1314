@@ -183,7 +183,7 @@ test('v5.0 round 13: the spare "that" after a kept stance goes; "really need to"
     ['I think that most people overtrade', 'I think most people overtrade.'],
     ['I believe that cold email is dead', 'I believe cold email is dead.'],
     ['I think that BTC is probably going to break 100k this week', 'I think BTC is probably going to break 100k this week.'],
-    ['i think that maybe we should raise prices', 'i think maybe we should raise prices.'],
+    ['i think that maybe we should raise prices', 'i think we should raise prices.'],
     ['I think that basically what I learned this year is that consistency beats talent every single time', 'I think what I learned this year is that consistency beats talent every single time.'],
     ['honestly i basically just think that eth is going to 5k', 'i think eth is going to 5k.'],
     ['If you are a creator you really need to start writing better hooks', 'If you’re a creator, you need to start writing better hooks.'],
