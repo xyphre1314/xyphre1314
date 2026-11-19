@@ -91,7 +91,7 @@ test('v4.4, hook43-2: a deadpan label on several whole sentences stays; "like" b
   assert.equal(L('Life update: I honestly own a sourdough starter now. It has a name. It has opinions.'), z118);
   const z80 = "I think I've finally found the perfect setup for my home office after like 3 years of trying different things.";
   for (const [m, o] of MODES) assert.equal(L(z80, o), z80, m);
-  assert.equal(S(z80).note, 'Kept “like 3 years”: it says about, not exactly.');
+  assert.equal(S(z80).note, 'Left “like” in: it says about, not exactly.'); /* v5.1 */
   assert.deepEqual(core.softMarks(z80), []);
   for (const [t, keepW] of [['so i think i finally figured out why i couldn’t lose weight for like 5 years', 'like 5 years'], ['TIL that you can actually set up a custom domain for your Substack in like 5 minutes', 'like 5 minutes'], ['it took me like a year to get my first client honestly', 'like a year'], ['ok but why does every productivity app basically turn into a second job after like a week', 'like a week']]) {
     for (const [m, o] of MODES) { const r = S(t, o); assert.ok(r.line.includes(keepW), `${m}: ${t} → ${r.line}`); assert.ok(!r.cut.some(c => /^like$/i.test(c.text)), `${m}: ${t}`); }

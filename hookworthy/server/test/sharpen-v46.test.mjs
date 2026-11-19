@@ -122,7 +122,7 @@ test('v4.6, hook45-1: the positive read, by kind, against its clean twin', () =>
 test('v4.6, hook45-2 and founder-6: "basically" near a value and "very few" stay, with a true note', () => {
   const q2 = S('So I finally set up alerts instead of staring at charts all day and my stress levels have basically dropped to zero.');
   assert.equal(q2.line, 'I finally set up alerts instead of staring at charts all day. My stress levels have basically dropped to zero.');
-  assert.equal(q2.note, 'Kept “basically dropped to zero”: it says nearly, not exactly.');
+  assert.equal(q2.note, 'Left “basically” in: it says nearly, not exactly.'); /* v5.1 */
   const q95 = S('So I redesigned our pricing page last week and conversions basically went up by 30%.');
   for (const l of versions(q95)) assert.match(l, /basically went up by 30%/);
   assert.match(q95.note, /it says nearly, not exactly/);

@@ -109,7 +109,7 @@ test('v4.5, hook44-3: "really" before the verb stays; a softener before a bare v
      or a question it stays ("why do founders think they really need to raise?"), and "really need" + a thing is still a degree */
   assert.equal(L('I really need to start sleeping more honestly.'), 'I need to start sleeping more.');
   assert.equal(L('We really need to talk about how much time meetings eat every week.'), 'We need to talk about how much time meetings eat every week.');
-  for (const t of ['Do you really need to raise a seed round?', 'I really need a break']) { const c = S(t); assert.equal(c.state, 'clean', t); assert.match(c.why, /Kept “[^”]*really/, t); }
+  for (const t of ['Do you really need to raise a seed round?', 'I really need a break']) { const c = S(t); assert.equal(c.state, 'clean', t); assert.match(c.why, /(?:Kept|Left) “[^”]*really/, t); }
   /* a stance verb's "really" and a degree on an adjective may still go */
   assert.equal(L('I really think stablecoins are basically the story of 2027.'), 'I think stablecoins are the story of 2027.');
   assert.equal(L('I think a lot of designers really overthink their portfolios when they should just show 3 really good case studies.'), 'I think a lot of designers really overthink their portfolios when they should just show 3 good case studies.');
@@ -121,7 +121,7 @@ test('v4.5, hook44-3: "really" before the verb stays; a softener before a bare v
   for (const [m, o] of MODES) assert.equal(L(v87, o), 'Kind of think most side projects would be better off as one HTML file and zero build steps.', m);
   assert.equal(hard('Think most side projects would be better off as one HTML file and zero build steps.', v87), 'thinking verb lost its subject');
   const h = S('Honestly think the best marketing is just a product people talk about.'); assert.equal(h.state, 'clean');
-  assert.equal(h.why, 'Kept “Honestly”: without it the line opens on “Think”, which reads like an order.');
+  assert.equal(h.why, 'Left “Honestly” in: without it the line opens on “Think”, which reads like an order.'); /* v5.1 */
 });
 
 test('v4.5, hook44-4: the lesson keeps its label, the issue becomes the label, a long run-on splits where the story turns', () => {

@@ -90,7 +90,7 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   assert.match(L('I think $BTC could maybe hit $120k by end of year, but who knows, I could be totally wrong lol'), /\blol$/);
   assert.equal(L('so we kind of made sync 38% faster in this release, pretty happy with it'), 'we kind of made sync 38% faster in this release, pretty happy with it.');
   assert.equal(L('kind of nervous for my first powerlifting meet this weekend'), 'kind of nervous for my first powerlifting meet this weekend');
-  assert.equal(S('kind of nervous for my first powerlifting meet this weekend').why, 'Kept “kind of”: it’s how you feel, not filler.');
+  assert.equal(S('kind of nervous for my first powerlifting meet this weekend').why, 'Left “kind of” in: it’s how you feel, not filler.'); /* v5.1 */
   assert.match(L('ngl i think i might actually be getting pretty good at this whole writing thing'), /pretty good/);
   /* the disclaimer stays where the writer put it: never moved to the end */
   for (const t of ["Not financial advice obviously but I've been slowly accumulating $LINK under 15 for the past month", 'nfa but i genuinely believe $HYPE is the most undervalued L1 right now']) { const l = L(t); assert.match(l, /^(?:not financial advice|nfa)\b/i, t); assert.doesNotMatch(l, /(?:not financial advice|nfa)[.!]?$/i, t); }

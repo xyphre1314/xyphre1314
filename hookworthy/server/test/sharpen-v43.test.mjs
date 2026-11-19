@@ -126,7 +126,7 @@ test('v4.3, hook42-3 and round-8 receipts: true, plain, and said once', () => {
   /* a stacked run-up is cut as far as the line stays whole, and the receipt says what stayed */
   const r = S('Hey everyone, I wanted to share some thoughts on why most traders lose money');
   assert.equal(r.line, 'Some thoughts on why most traders lose money:');
-  assert.deepEqual(r.cut.map(c => c.text), ['Hey everyone', 'I wanted to share']);
+  assert.deepEqual(r.cut.map(c => c.text), ['Hey everyone,', 'I wanted to share']); /* v5.1 (web-5): the comma the line lost is struck with its word */
   assert.match(r.why, /“Some thoughts” stays/);
   assert.equal(L('So basically I wanted to share a quick story about how I lost $4,000 in March by doubling my size to win it back, and honestly it was the worst week of my trading life'), 'I lost $4,000 in March by doubling my size to win it back. It was the worst week of my trading life.');
   /* "the run-up is gone" only when the line no longer opens on one; a struck run-up is never still in the line */
@@ -138,7 +138,7 @@ test('v4.3, hook42-3 and round-8 receipts: true, plain, and said once', () => {
   }
   /* a kept word's reason is said once: in the why, or in the note, never both */
   for (const t of ['In my humble opinion, most altcoins are going to zero', 'It is what it is, but I am basically done with leverage for good', 'I think BTC is going to 150k by the end of the year, not financial advice', 'Is it just me or has the funding on $DOGE perps been kinda insane this week?']) {
-    const x = S(t), both = `${x.why} ${x.note}`, q = (x.why.match(/^Kept “([^”]+)”/) || [])[1]; assert.ok(q, t);
+    const x = S(t), both = `${x.why} ${x.note}`, q = (x.why.match(/^(?:Kept|Left) “([^”]+)”/) || [])[1]; /* v5.1: a filler word is “left in” */ assert.ok(q, t);
     assert.equal(both.split(`“${q}”`).length - 1, 1, `${t}: ${both}`);
   }
   /* marketing-9: a price call is "a prediction", never "a call" */

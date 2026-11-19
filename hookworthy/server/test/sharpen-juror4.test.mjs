@@ -39,10 +39,10 @@ test('juror 4, hook-2: an approximator in front of a value stays, with the why "
     ['we have nearly zero churn this quarter, honestly', 'nearly zero'], ["We're almost at 10k subscribers and it's honestly wild", 'almost at 10k']];
   for (const [t, ph] of lines) holds(t, (R, at) => assert.ok(lc(R.line).includes(lc(ph)), `${t} (${at}) → ${R.line}: lost "${ph}"`));
   for (const t of ["It's basically free if you use the student plan.", 'She basically doubled our revenue in 6 months.']) {
-    const R = S(t); assert.equal(R.state, 'clean', t); assert.match(R.why, /^Kept “basically \w+”: it says nearly, not exactly\.$/, t);
+    const R = S(t); assert.equal(R.state, 'clean', t); assert.match(R.why, /^Left “basically” in: it says nearly, not exactly\.$/, t); /* v5.1: a filler word is left in, never kept */
   }
   /* on a sharpened line it says so in the note */
-  assert.match(S('honestly it is basically free for most people').note, /Kept “basically free”: it says nearly, not exactly\./);
+  assert.match(S('honestly it is basically free for most people').note, /Left “basically” in: it says nearly, not exactly\./);
   /* a "basically" that is only talk still goes */
   assert.equal(L('So basically we raised a $2.5M seed round led by @a16z'), 'We raised a $2.5M seed round led by @a16z.');
 });

@@ -289,7 +289,7 @@
       why: 'A run-up to the point. It tells people something is coming instead of saying it, so start on the thing itself.', short: 'is a run-up to the point', cw: 'A run-up to the point.' },
     { k: 'wordy', re: /\bin order(?= to\b)/gi,
       why: 'Wordy. “In order to” says what “to” already does, one word later.', short: 'says what “to” already does' },
-    { k: 'throat', re: /\bafter (?:a lot of|lots of|much|weeks of|months of) (?:back and forth|deliberation|thought|thinking|consideration|discussion)\b,?|(?:^|(?<=^(?:(?:ok(?:ay)?,?\s+)?so|well|ok(?:ay)?)[,.!]?\s+))(?:(?:i|we)(?:['’]ve| have) been|i was|we were|was|been) thinking (?:about (?:this|it|that) )?(?:a lot |so much )?(?:about (?:this|it|that) )?(?:(?:for (?:a while|a long time|ages|months|years|weeks)|lately|recently|the other day|last night|this morning|today|earlier|yesterday) )?(?:and )?(?=(?:the|i|we|most|my|our|honestly|personally|frankly)\b)|(?:^|(?<=^(?:(?:ok(?:ay)?,?\s+)?so|well|ok(?:ay)?)[,.!]?\s+))(?:(?:i|we)(?:['’]ve| have) been|i was|we were|was|been) thinking(?: about (?:this|it|that))?(?: (?:a lot|so much))?(?: (?:lately|recently|the other day|last night|this morning|today|earlier|yesterday))?(?:,\s*|\.\s+|\s+(?=and\b))(?:and\s+)?(?=(?:the|i|we|most|my|our|honestly|personally|frankly|nobody|everyone|people)\b)|(?<=^(?:i|we)(?:['’]m|['’]re| am| are) )(?:so |super |really |very |beyond )?(?:excited|thrilled|honou?red|proud|pumped|stoked|humbled|happy|delighted|grateful) to be (?=\w+ing\b)|^(?:so |super |really |very |beyond )?(?:excited|thrilled|honou?red|proud|pumped|stoked|humbled|happy|delighted|grateful) to be (?=\w+ing\b)|\b(?=(?:i can|let me) )(?<!\b(?:as an?|as someone|as somebody|as one|after|since|having|while|when|before|from|with|despite) [^.!?]{2,120})(?:i can (?:confidently |honestly |safely )?(?:tell|promise|assure) you|let me tell you(?! about\b)|i can (?:confidently |honestly |safely )?say)(?: that)?\b,?/gi,
+    { k: 'throat', re: /\bafter (?:a lot of|lots of|much|weeks of|months of) (?:back and forth|deliberation|thought|thinking|consideration|discussion)\b,?|(?:^|(?<=^(?:(?:ok(?:ay)?,?\s+)?so|well|ok(?:ay)?)[,.!]?\s+))(?:(?:i|we)(?:['’]ve| have) been|i was|we were|was|been) thinking (?:about (?:this|it|that) )?(?:a lot |so much )?(?:about (?:this|it|that) )?(?:(?:for (?:a while|a long time|ages|months|years|weeks)|lately|recently|the other day|last night|this morning|today|earlier|yesterday) )?(?:and )?(?=(?:the|i|we|most|my|our|honestly|personally|frankly)\b)|(?:^|(?<=^(?:(?:ok(?:ay)?,?\s+)?so|well|ok(?:ay)?)[,.!]?\s+))(?:(?:i|we)(?:['’]ve| have) been|i was|we were|was|been) thinking(?: about (?:this|it|that))?(?: (?:a lot|so much))?(?: (?:lately|recently|the other day|last night|this morning|today|earlier|yesterday))?(?:,\s*|\.\s+|(?:…|\.{3})\s*|\s*[:—–]\s*|\s+(?=and\b))(?:and\s+)?(?=(?:the|i|we|most|my|our|honestly|personally|frankly|nobody|everyone|people)\b)|(?<=^(?:i|we)(?:['’]m|['’]re| am| are) )(?:so |super |really |very |beyond )?(?:excited|thrilled|honou?red|proud|pumped|stoked|humbled|happy|delighted|grateful) to be (?=\w+ing\b)|^(?:so |super |really |very |beyond )?(?:excited|thrilled|honou?red|proud|pumped|stoked|humbled|happy|delighted|grateful) to be (?=\w+ing\b)|\b(?=(?:i can|let me) )(?<!\b(?:as an?|as someone|as somebody|as one|after|since|having|while|when|before|from|with|despite) [^.!?]{2,120})(?:i can (?:confidently |honestly |safely )?(?:tell|promise|assure) you|let me tell you(?! about\b)|i can (?:confidently |honestly |safely )?say)(?: that)?\b,?/gi,
       why: 'Backstory before the point. Say the decision first; how you got there can be the second line.', short: 'is backstory before the point' },
     /* r86 pass 2: the stock frames that only lead up to the point ("I want you to know that", "here's the thing:",
        "Can I just say that…?", "I'm going to be honest:"). Cut whole, so the line starts on what they lead to */
@@ -596,7 +596,7 @@
   }
   const slInG = (G, a, b) => G.some(g => a < g[1] && b > g[0]);
   /* where the soft words are: [start, end, why, kind], first match wins, no overlaps; keep: words this voice puts back */
-  const softKept = (frag, keep) => !!keep && keep.length > 0 && keep.map(k => String(k).toLowerCase()).includes(String(frag).toLowerCase().replace(/[,:.!\s]+$/, '').replace(/^[,;:\s]+/, '').trim());
+  const softKept = (frag, keep) => !!keep && keep.length > 0 && keep.map(k => String(k).toLowerCase()).includes(String(frag).toLowerCase().replace(/[,:.!…\s]+$/, '').replace(/^[,;:\s]+/, '').trim());
   /* r86 pass 6 (juror 5, hook-7): the engine keeps what the Claude prompt keeps, so the homepage and the app teach one rule.
      Kept: a frame that says how to take the line (rule 4: "Hot take:", "Unpopular opinion:", "Honest question:", "PSA:",
      "Reminder:", "this might be controversial, but", "Not to brag, but"); a disclaimer where the writer put it ("not financial
@@ -756,7 +756,15 @@
      "just" alone left "my take, but"). It may follow an opener or a disclaimer ("So just my take, but", "Not financial advice,
      just my take, but"). "My two cents, but" stays the disclaimer cut it was */
   const SL_TAKEF = /(?:^|(?<=[.!?]\s+)|(?<=,\s+))(?:(?:so|honestly|ok(?:ay)?|look|but|and|anyway|again|tbh|ngl)[,]?\s+)*((?:just |only )?(?:my|our) (?:(?:honest|hot|quick|personal|humble|own|real) )?(?:take|opinion|view|read|thoughts?)(?: here)?,?\s+but)\b(?=\s+\S)/iu;
+  /* v5.1 (round-14 uiux-3): past the writer's "!!", each extra "!" is marked (kind 'punct'), unless the writer put it back */
+  const SL_BANG_WHY = 'Two “!” say it. More reads as shouting.';
+  const slBangOff = keep => (keep || []).some(k => typeof k === 'string' && /^\s*!+\s*$/.test(k));
+  const slBangMarks = (t, keep) => slBangOff(keep) ? [] : [...String(t).matchAll(/!{3,}/g)].map(m => [m.index + 2, m.index + m[0].length, SL_BANG_WHY, 'punct']);
   function softMarksShow(text, keep) {
+    const mk = softMarksShow0(text, keep), bm = slBangMarks(String(text || '').split('\n')[0], keep);
+    return bm.length ? [...mk, ...bm].sort((x, y) => x[0] - y[0]) : mk;
+  }
+  function softMarksShow0(text, keep) {
     const t = String(text || ''), out = softMarks(t, keep), m = t.match(SL_BRAG) || (() => { const f = t.match(SL_TAKEF); if (!f) return null; const at = f.index + f[0].length - f[1].length; return { index: at, 0: f[1], a: at }; })();
     if (!m || slTiny(t)) return out;
     const a = m.a != null ? m.a : t.search(/\p{L}/u), b = m.index + m[0].length;
@@ -3044,9 +3052,12 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       return [{ t: `What ${m[1]} ${m[2]} taught ${me}: ${m[4]}${endP(x) || '.'}`, mv: 'number' }, { t: `${capFirst(m[4])}. ${capFirst(m[1])} ${m[2]} taught ${me} that${endP(x) || '.'}`, mv: 'straight' }];
     },
     /* "I've been thinking a lot about pricing lately and we were undercharging" → "Pricing: we were undercharging." */
+    /* v5.1 (round-14 marketing-2): "…a lot lately about how we price our product, and I think we got it wrong" → "How we price
+       our product: I think we got it wrong." The writer's "I think" is their stance and rides along (never dropped) */
     thinking(x) {
-      const m = body(x).match(/^(?:i|we)(?:['’]ve| have)? been (?:thinking|reflecting|obsessing)(?: (?:a lot|so much|way too much|nonstop))? (?:about|on|over) ([^,]{3,40}?)(?: (?:lately|recently|this week|this month|a lot))?,? (?:and|but|so) (?:i (?:think|realized|realised|learned|figured out)(?: that)? )?(.{6,})$/i); if (!m) return null;
-      return { t: `${capFirst(m[1])}: ${lowFirst(m[2])}${endP(x) || '.'}`, mv: 'warm' };
+      const m = body(x).match(/^(?:i|we)(?:['’]ve| have)? been (?:thinking|reflecting|obsessing)(?: (?:a lot|so much|way too much|nonstop))?(?: (?:lately|recently))? (?:about|on|over) ([^,]{3,40}?)(?: (?:lately|recently|this week|this month|a lot))?,? (?:and|but|so) (?:((?:i|we) (?:Qk[a-z]q|think|believe|feel like|reckon))(?: that)? |i (?:realized|realised|learned|figured out)(?: that)? )?(.{6,})$/i); if (!m) return null;
+      if (/^how\b/i.test(m[1]) && slHowClaim(m[1])) return null;
+      return { t: `${capFirst(m[1])}: ${m[2] ? `${m[2]} ` : ''}${m[2] ? m[3] : lowFirst(m[3])}${endP(x) || '.'}`, mv: 'warm' };
     },
     /* a comma splice made two beats: "Stop using story points, they don't mean anything" → "Stop using story points. They don't mean anything." */
     splice(x) {
@@ -3253,6 +3264,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* v4.5 (round-9 marketing-1): "Let's talk about why your open rates are lying to you" → "Your open rates are lying to you.
        Here's why:": the claim the talk was about, then, when a body follows, the promise the talk made */
     /* v4.8 (round-11 marketing-1): a why/how/what topic the run-up introduced keeps its question word (slTopicQ) */
+    /* v5.1 (round-14 uiux-3): a run-up "about how" + a claim ("…about how most founders actually ship too slowly"): the "how" says
+       "that", so it goes with the run-up and the claim stands as a sentence, never a "How …:" teaser */
+    if (said.has('warm') && cutW.length && /\babout[\s,:—–-]*$/i.test(String(cutW[cutW.length - 1])) && slHowClaim(opts.unmask ? opts.unmask(x) : x) && slSents(x).length === 1 && slFinite(x.replace(/^\P{L}*how\s+/iu, ''))) { x = x.replace(/^(\P{L}*)how\s+/iu, '$1'); if (!sty.low) x = capFirst(x); }
     const topicQ = said.has('warm') ? slTopicQ(Lr, opts.unmask ? opts.unmask(x) : x) : '';
     { const tm = Lr.match(/^\P{L}*(?:(?:so|ok(?:ay)?|alright),? )?(?:let['’]s|let us) (?:(?:quickly|briefly|finally|actually|really|just|all) )?(?:talk|chat) (?:about|through) (?=(?:why|how) )/iu), xm = tm && (more || !topicQ) && !/[?:]\s*$/.test(x) && slSents(x).length === 1 ? x.match(/^\P{L}*(why|how) ((?:i|we|you|your|my|our|the|most|so many|people|they|this|it|founders|creators|traders)\b[^.!?]{6,}?)[.!]*$/iu) : null;
       if (xm && slFinite(xm[2]) && wordsN(xm[2]) >= 3) { const w0 = xm[2].split(' ')[0]; x = `${/^(?:i|we)$/i.test(w0) ? HK_SUBJ(w0) + xm[2].slice(w0.length) : sty.low ? xm[2] : capFirst(xm[2])}.${more ? ` ${sty.low ? 'here' : 'Here'}’s ${xm[1].toLowerCase()}:` : ''}`; } }
@@ -3533,7 +3547,14 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const slApxPh = d => { const m = new RegExp(String.raw`\b(?:basically|pretty much|essentially|kind of|sort of|kinda|sorta)\s+(?:${SL_APV})[^\s,.;:!?]*|${SL_APX_NEAR}`, 'iu').exec(slOutDisc(d)); return m ? { a: m.index, b: m.index + m[0].length, text: d.slice(m.index, m.index + m[0].length) } : null; };
   /* v4.4 (hook43-2): a "like" before a number is the writer's "about" ("after like 3 years"): kept, and the note says so */
   const SL_LIKEN = /(?<=[\p{L}\p{N}’'],?\s+)like\s+(?:~?[$€£]?\d[\d,.]*(?:\s?[kKmMbB%x](?![\p{L}]))?(?:\s+(?:years?|months?|weeks?|days?|hours?|minutes?|mins?|times?|people|followers|subs|subscribers|clients|customers|users|posts|tweets|lines|pages|words|bucks|dollars|grand|miles|km|lbs|kg|pounds|percent))?|a (?:year|month|week|day|hundred|thousand|million|dozen)\b|(?:one|two|three|four|five|six|seven|eight|nine|ten|twenty|thirty|forty|fifty|a hundred)\s+(?:years?|months?|weeks?|days?|hours?|minutes?|times?|people|clients|customers|users|posts|bucks|dollars|grand)\b)/iu;
-  const slApxNote = (d, l) => { const p = slApxPh(d); if (p && lcw(l).includes(lcw(p.text)) && p.text.length <= 40) return `Kept “${p.text}”: it says nearly, not exactly.`; const m = String(d).match(SL_LIKEN); return m && lcw(l).includes(lcw(m[0])) ? `Kept “${m[0].trim()}”: it says about, not exactly.` : ''; };
+  /* v5.1 (round-14 web-1): a filler word is never "kept" as if it were a fact. The one the engine leaves on purpose (an
+     approximator before its value, a "like" that means "about") is named on its own, with why: "Left “basically” in: …" */
+  const slApxW = t => (String(t).match(/^(?:basically|pretty much|practically|virtually|essentially|kind of|sort of|kinda|sorta)/i) || [String(t)])[0];
+  const slApxWhy = p => `Left “${slApxW(p.text)}” in: it says nearly, not exactly.`;
+  const slApxNote = (d, l) => { const p = slApxPh(d); if (p && lcw(l).includes(lcw(p.text)) && p.text.length <= 40) return slApxWhy(p); const m = String(d).match(SL_LIKEN); return m && lcw(l).includes(lcw(m[0])) ? `Left “${m[0].trim().split(/\s+/)[0]}” in: it says about, not exactly.` : ''; };
+  /* the filler words: never listed as kept. One kept on purpose (a hedge, a softener) is "left in", with its reason */
+  const SL_FILLQ = /^(?:basically|honestly|just|literally|actually|really|kind of|kinda|sort of|sorta|pretty much|pretty|totally|genuinely|truly|seriously|lowkey|low-key|legit|like|simply|a little|a bit|essentially|practically|virtually|so|very)$/i;
+  const slLeftIn = z => String(z || '').replace(/\bKept (your )?“([^”]+)”:/g, (m, y, q) => SL_FILLQ.test(q.trim()) ? `Left ${y || ''}“${q}” in:` : m);
   /* v4.8 (round-11 founder-3): a doubled intensifier ("really really", "so so", "very very") collapses to one, or goes with the
      mark it sat in (an announcement frame, a doubled "really really" before "think"); one copy never goes on its own. Before a
      verb of thinking, the "I think" it leaned on stays ("I really, really think you should…" never becomes an order) */
@@ -4282,8 +4303,13 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const SL_TOPIC_PRE = /(?:\b(?:about|on|into|regarding|share|sharing|explain|explaining|discuss|discussing|cover|covering|break(?:ing)? down|unpack(?:ing)?|show(?:ing)? you|tell(?:ing)? you|walk(?:ing)? (?:you )?through|go(?:ing)? (?:over|into)|dig(?:ging)? into|look(?:ing)? at|wonder(?:ing|ed)?)[\s,:—–-]*|\b(?:this|today['’]s|this week['’]s|this month['’]s|my|our|the latest|latest)\s+(?:[\w-]+\s+)?(?:issue|newsletter|edition|thread|episode|essay|letter)\s*:\s*)$/i;
   const SL_TOPIC_HOW = /^how\s+(?:to\s+[a-z]{2,}|i|we|you|they|he|she|it|my|our|your|their|his|her|the|a|an|this|that|these|those|most|some|people|everyone|everybody|nobody|founders|creators|traders|writers|investors|teams|companies|startups|brands|[A-Z$@#][\w$@#.-]*|[a-z]{3,}(?<!ss)s)\b/u;
   const SL_TOPIC_OPN = /^(?:(?:so|and|but|ok(?:ay)?|well|anyway|gm|honestly)[,.]?\s+)+/i;
+  /* v5.1 (round-14 uiux-3): a "how" that says "that" ("about how most founders actually ship too slowly"): the clause is already a
+     claim (a degree, a "never", a "not", a "nobody"), so it is no topic and no "How …:" header. The run-up goes and the claim
+     stands as written: "Most founders actually ship too slowly." */
+  const slHowClaim = z => { const c = String(z || '').replace(/^\P{L}*how\s+/i, ''); return /^how\s/i.test(String(z || '').replace(/^\P{L}+/u, '')) && /(?<![\p{L}'’])(?:too|never|nobody|no one|rarely|barely|hardly|even|no longer|so (?:many|much|few|little))(?![\p{L}'’])|n['’]t(?![\p{L}])|(?<![\p{L}'’])not(?![\p{L}'’])/iu.test(c) && !/^(?:to|not to)\b/i.test(c); };
   function slTopicQ(draft, x) {
     const xr = String(x || '').replace(/^\P{L}+/u, '').replace(SL_TOPIC_OPN, ''), m = xr.match(/^(why|how|what|whether)\b/i); if (!m) return '';
+    if (m[1].toLowerCase() === 'how' && slHowClaim(xr)) return '';
     /* a topic that already points somewhere (a link, an arrow) is a pointer as it is */
     if (/→|https?:\/\/|\b[\w-]+\.(?:com|io|xyz|co|ai|app|dev|so|gg|me|org|net|ly|to)\b/i.test(xr)) return '';
     const q = m[1].toLowerCase(), d = String(draft || ''), head = lcw(xr).split(/\s+/).slice(0, 4).join(' ').replace(/[.!?:,]+$/, ''), at = lcw(d).indexOf(head); if (at < 1) return '';
@@ -4717,7 +4743,59 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* v4.8 (round-11 brand-4): an apostrophe the engine writes matches the writer's: a straight one anywhere in the draft keeps
      the line straight, a curly one keeps it curly, and a draft with none gets the page's own typographic ’ */
   const slAposW = (l, src) => { const S = String(src), c = /’/.test(S), s = /'/.test(S); return s && !c ? String(l).replace(/(\p{L})’(?=\p{L})/gu, "$1'") : !s ? String(l).replace(/(\p{L})'(?=\p{L})/gu, '$1’') : l; };
+  /* v5.1 (round-14): the one entry point. Two things are done around the engine (slSharpenLine), on the draft as the writer typed it:
+     1. "!!!": a run of three or more "!" comes down to the writer's "!!" ("!" and "!!" stay theirs). The engine reads the line
+        with the run already at "!!", and the extra marks are struck and counted as one bit of fluff each
+     2. web-5: a cut right before a comma takes the comma with it when the line lost it ("not gonna lie, I basically…" strikes
+        "not gonna lie,", never leaving an orphan ", I"). A put-back word comes back without its comma */
   function sharpenLine(text, opts = {}) {
+    const R = slSharpenBang(text, opts); if (!R || typeof R !== 'object') return R;
+    const lf = v => v && typeof v === 'object' ? { ...v, ...(typeof v.why === 'string' ? { why: slLeftIn(v.why) } : {}) } : v;
+    return { ...R, why: slLeftIn(R.why), note: slLeftIn(R.note), kept: (R.kept || []).filter(v => !SL_FILLQ.test(String(v).trim())), alts: (R.alts || []).map(lf) };
+  }
+  function slSharpenBang(text, opts) {
+    const o2 = Array.isArray(opts.keep) ? { ...opts, keep: opts.keep.map(w => typeof w === 'string' ? w.replace(/^[\s,;:]+|[\s,;:…]+$/g, '') : w) } : opts;
+    const s0 = String(text == null ? '' : text).replace(/^\s+/, ''), nl = s0.indexOf('\n'), d = (nl < 0 ? s0 : s0.slice(0, nl)).replace(/\s+$/, '');
+    const runs = slBangOff(o2.keep) ? [] : [...d.matchAll(/!{3,}/g)].map(m => ({ a: m.index, n: m[0].length }));
+    if (!runs.length) return slCommaCut(slSharpenLine(text, o2));
+    const d2 = d.replace(/!{3,}/g, '!!'), R = slSharpenLine(d2 + (nl < 0 ? '' : s0.slice(nl)), o2);
+    if (R.state === 'empty' || R.state === 'thin') return slSharpenLine(text, o2);
+    /* the engine's offsets are on the line with "!!": put them back on the draft */
+    const map = p => { let k = 0; for (const r of runs) { if (r.a - k + 2 <= p) k += r.n - 2; else break; } return p + k; };
+    const mapCut = c => { const a = map(c.at[0]), b = c.at[1] > c.at[0] ? map(c.at[1] - 1) + 1 : a; return { ...c, at: [a, b], text: d.slice(a, b) }; };
+    const bang = runs.map(r => ({ text: d.slice(r.a + 2, r.a + r.n), kind: 'punct', why: SL_BANG_WHY, at: [r.a + 2, r.a + r.n] }));
+    /* a cut that took the words in front of the run took its "!!" too ("this is huge!!!" cut whole): the run is struck with it */
+    const nB = z => (String(z).match(/!{2,}/g) || []).length;
+    const withBang = (cut, line) => { const C = cut.map(mapCut), B = []; runs.forEach((r, i) => { const c = nB(line) < nB(d2) && C.find(x => x.at[1] === r.a); if (c) { c.at = [c.at[0], r.a + r.n]; c.text = d.slice(c.at[0], c.at[1]); } else B.push(bang[i]); }); return [...C, ...B].sort((x, y) => x.at[0] - y.at[0]); };
+    const sayN = (say, cut) => { const m = String(say || '').match(/^Cut (\d+) bits? of fluff/); const n = (m ? +m[1] : 0) + (cut || bang).filter(c => c.kind === 'punct').length, c = `Cut ${n} bit${n === 1 ? '' : 's'} of fluff`; return m ? String(say).replace(m[0], c) : [c, ...String(say || '').split(' · ').filter(z => z && !/^(?:Nothing to cut|Kept as written|Kept as you chose|Tightened it|Gave it an end)$/.test(z))].slice(0, 3).join(' · '); };
+    const marks = [...(R.marks || []).map(m => { const a = map(m[0]), b = m[1] > m[0] ? map(m[1] - 1) + 1 : a; return [a, b, ...m.slice(2)]; }), ...slBangMarks(d, o2.keep)].sort((x, y) => x[0] - y[0]);
+    const base = { ...R, draft: d, marks };
+    if (R.state === 'sharp') { const c0 = withBang(R.cut || [], R.line); return slCommaCut({ ...base, cut: c0, say: sayN(R.say, c0), alts: (R.alts || []).map(v => { const c = withBang(v.cut || [], v.line); return { ...v, cut: c, say: sayN(v.say, c) }; }) }); }
+    /* nothing else to cut: the "!!" is the change */
+    return slCommaCut({ ...base, state: 'sharp', line: d2, cut: bang, alts: [], move: '', moves: [], say: sayN(''), why: R.state === 'unsure' ? `${SL_BANG_WHY} The marked words are your call.` : SL_BANG_WHY });
+  }
+  /* web-5: [a, b] cut, comma at b: struck with the cut when the version no longer has a comma there */
+  function slCommaCut(R) {
+    if (!R || R.state !== 'sharp' || !R.draft) return R;
+    const d = R.draft, nz = z => lcw(z).replace(/[’‘]/g, "'");
+    const fix = (cut, line) => (cut || []).map(c => {
+      const b = c.at[1]; if (!/^(?:,|…|\.\.\.)/.test(d.slice(b)) || /^\.\.\./.test(d.slice(b)) && /^\.{4}/.test(d.slice(b))) return c;
+      const pl = /^,/.test(d.slice(b)) ? 1 : /^…/.test(d.slice(b)) ? 1 : 3;
+      /* what is left in front of the cut once every struck span of this version is out */
+      let pre = d.slice(0, c.at[0]); (cut || []).filter(x => x !== c && x.at[1] <= c.at[0]).sort((x, y) => y.at[0] - x.at[0]).forEach(x => { pre = pre.slice(0, x.at[0]) + pre.slice(x.at[1]); });
+      const L = nz(line).trim(), nx = (d.slice(b + pl).match(/^\s*([\p{L}\p{N}$@#'’]+)/u) || [])[1];
+      let gone;
+      if (!/[\p{L}\p{N}]/u.test(pre)) gone = !/^\P{L}*[,…]/u.test(L);
+      else if (pl > 1 || d[b] !== ',') return c;
+      else { const pw = (pre.match(/([\p{L}\p{N}$%'’]+)[^\p{L}\p{N}]*$/u) || [])[1]; if (!pw || !nx) return c; const P = slRxE(nz(pw)), N = slRxE(nz(nx));
+        if (new RegExp(`(?<![\\p{L}\\p{N}])${P}\\s+${N}(?![\\p{L}\\p{N}])`, 'u').test(L)) gone = true;
+        else if (new RegExp(`(?<![\\p{L}\\p{N}])${P},\\s+${N}(?![\\p{L}\\p{N}])`, 'u').test(L)) gone = /,\s*$/.test(pre);
+        else return c; }
+      return gone ? { ...c, at: [c.at[0], b + pl], text: d.slice(c.at[0], b + pl) } : c;
+    });
+    return { ...R, cut: fix(R.cut, R.line), alts: (R.alts || []).map(v => ({ ...v, cut: fix(v.cut, v.line) })) };
+  }
+  function slSharpenLine(text, opts = {}) {
     const keep = (opts.keep || []).filter(w => typeof w === 'string' && w.trim());
     const src = String(text == null ? '' : text).replace(/^\s+/, ''), nl = src.indexOf('\n');
     const draft = (nl < 0 ? src : src.slice(0, nl)).replace(/\s+$/, ''), rest = nl < 0 ? '' : src.slice(nl + 1);
@@ -4750,7 +4828,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const call = isCall(body), stQ = w => String(w).replace(/,?\s+that$/i, ''), stWhy = k => { const nx = lcw((body.slice(lcw(body).indexOf(lcw(k)) + k.length).match(/^\s+((?:a |an )?[\p{L}'’]+)/u) || ['', ''])[1]), c = stCl(k), q = /\?["”’)]*\s*$/.test(c), deg = /^(?:kind of|kinda|sort of|sorta|a little|a bit|pretty)$/i.test(k); return deg && SL_FEELW.test(nx) ? 'it’s how you feel, not filler.' : !q && isCall(c) ? 'on a prediction, it’s your stance, not filler.' : !q && stFut(c) ? 'on a plan or a forecast, it’s your stance, not filler.' : deg ? 'it’s how strongly you mean it, not filler.' : 'it’s how sure you are, not filler.'; }, stC = w => { const tr = slPolicy(body).trim.find(x => lcw(w).replace(/’/g, "'").startsWith(x[0].replace(/’/g, "'"))); return tr ? tr[1] + lcw(w).slice(tr[0].length).replace(/^(\s+that)?.*$/, '$1') : w; }, stNote = l => { /* v5.0: a stance whose padding went is named as it now reads ("i [basically] think" → “i think”) */ const k = st.find(w => lcw(l).includes(lcw(w))) || st.find(w => lcw(l).includes(lcw(stC(w)))); return k ? `Kept your “${stQ(lcw(l).includes(lcw(k)) ? k : stC(k))}”: ${stWhy(k)}` : ''; };
     /* v4.3 (uiux-2): a kept word's reason is said once. The page prints R.why and R.note one under the other, so when the why
        already gives a kept word its reason ("Kept “In my humble opinion”: …"), the note doesn't say it again */
-    const noteOf = (l, why) => { const W = String(why || ''), said = q => /\bKept\b/.test(W) && W.includes(`“${q}”`); return [stNote(l), slApxNote(draft, l), longOf(l) ? SL_LONG : ''].filter(Boolean).filter(p => { const m = p.match(/^Kept (?:your )?“([^”]+)”/); return !m || !said(m[1]); }).join(' '); };
+    const noteOf = (l, why) => { const W = String(why || ''), said = q => /\b(?:Kept|Left)\b/.test(W) && W.includes(`“${q}”`); return [stNote(l), slApxNote(draft, l), longOf(l) ? SL_LONG : ''].filter(Boolean).filter(p => { const m = p.match(/^(?:Kept|Left) (?:your )?“([^”]+)”/); return !m || !said(m[1]); }).join(' '); };
     /* v4.3 (hook42-1): a deadpan or news label on one or two whole sentences, with nothing else marked, is a sharp line: kept as
        written, and the why says what the frame does. Hard news keeps its own why (below) */
     { const dl = body.match(SL_DEADLEAD); if (dl && !marks.length && !frameM && slDeadpanBody(body.slice(dl[0].length)) && !slHardNews(body)) return { ...R, state: 'clean', say: 'Nothing to cut', why: 'Your frame sets it up.', note: noteOf(draft, 'Your frame sets it up.') }; }
@@ -4881,7 +4959,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const hardHit = [...list, H && H.base].filter(o => o && o.line).map(fix).some(o => !same(o.line, draft) && !!slHard(o.line, draft));
       /* v4.5 (hook44-3): a softener kept in front of a bare verb of thinking says why: without it the line reads like an order */
       const thk = draft.match(/^\P{L}{0,3}((?:(?:kind of|kinda|sort of|sorta|honestly|really|genuinely|actually|lowkey|low key|truly|personally|just|still|literally|almost),?\s+)+)(think|thought|believe|reckon|suspect|doubt|suppose)\b/iu), thkW = thk ? thk[1].replace(/[,\s]+$/, '') : '', thkG = thk && G.some(g => g[0] <= thk.index + thk[0].length - thk[2].length - thk[1].length + 3 && g[1] >= thk.index + thk[0].length - thk[2].length - 1);
-      const why = thkG && thkW.length <= 30 ? `Kept “${thkW}”: without it the line opens on “${capFirst(thk[2])}”, which reads like an order.` : apxHit ? `Kept “${apx.text}”: it says nearly, not exactly.` : gHit ? `Kept “${gq.slice(0, 48)}”: here it’s part of what you mean, not filler.` : st.length && stNote(draft) ? `Kept “${stQ(st[0])}”: ${stWhy(st[0])}` : opKept ? `Kept “${opKept}”: it’s how sure you are, not filler.` : hardHit ? HK_WHY_SL.unsafe : slExtra(draft).length ? HK_WHY_SL.safe : score0 >= 70 ? HK_WHY_SL.sharp : HK_WHY_SL.clean;
+      const why = thkG && thkW.length <= 30 ? `Kept “${thkW}”: without it the line opens on “${capFirst(thk[2])}”, which reads like an order.` : apxHit ? slApxWhy(apx) : gHit ? `Kept “${gq.slice(0, 48)}”: here it’s part of what you mean, not filler.` : st.length && stNote(draft) ? `Kept “${stQ(st[0])}”: ${stWhy(st[0])}` : opKept ? `Kept “${opKept}”: it’s how sure you are, not filler.` : hardHit ? HK_WHY_SL.unsafe : slExtra(draft).length ? HK_WHY_SL.safe : score0 >= 70 ? HK_WHY_SL.sharp : HK_WHY_SL.clean;
       /* v4.3 (round-8 founder-1): a kept "Not to brag, but" is marked, never "Already tight"; a frame up front says what it does */
       if (frameM) { const w = `Marked “${draft.slice(frameM[0], frameM[1]).replace(/,?\s+but$/i, '')}”, not cut: it’s your frame, and it tells people how to take the line. Your call.`; return { ...R, state: 'unsure', say: 'Kept as written', why: w.length > 140 ? 'Marked, not cut: it’s your frame, and it tells people how to take the line. Your call.' : w, note: noteOf(draft, w) }; }
       const why2 = why.length > 140 ? HK_WHY_SL.safe : Object.values(HK_WHY_SL).includes(why) && why !== HK_WHY_SL.unsafe && SL_FRAMELEAD.test(body) ? 'Your frame sets it up.' : why;
