@@ -154,8 +154,10 @@ test('juror 4, hook-10/11: the joke and the feeling stay; a contraction alone is
   /* "is going to" → "'ll" and nothing else is not a sharpen */
   /* r86 pass 6 (juror 5, hook-7): the padding in "I really think" is a real cut now ("I think" stays), so the padded line is a sharpen;
      the same line without it is still no sharpen */
-  assert.equal(S('I think that the next big wave in crypto is going to be stablecoin payments').state, 'clean');
-  assert.equal(L('I really think that the next big wave in crypto is going to be stablecoin payments'), 'I think that the next big wave in crypto will be stablecoin payments.');
+  /* v5.0 (round-13 uiux-2): the spare "that" after a kept stance is a real cut too, so the no-sharpen case is the line without it */
+  assert.equal(S('I think the next big wave in crypto is going to be stablecoin payments').state, 'clean');
+  assert.equal(L('I think that the next big wave in crypto is going to be stablecoin payments'), 'I think the next big wave in crypto will be stablecoin payments.');
+  assert.equal(L('I really think that the next big wave in crypto is going to be stablecoin payments'), 'I think the next big wave in crypto will be stablecoin payments.');
   const f = S('Most people miss the 83(b) election deadline and honestly it costs them');
   assert.ok(f.kept.includes('83(b)'), f.kept.join(', ')); assert.match(f.line, /83\(b\)/);
   assert.ok(S('Just a heads up: $ETH gas is currently at 0.4 gwei, which is basically the cheapest it has been since 2016.').kept.includes('0.4 gwei'));

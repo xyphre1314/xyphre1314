@@ -26,7 +26,8 @@ test('juror 3, hook-1: an opinion frame takes its "that"; "breaks" only when it 
   assert.equal(L('I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'), 'I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.'); /* v4.1 (hook4-7): the "actually" carries the contrast */ /* round 5: a dated forecast keeps its stance */
   /* the cut lands (no bail-out); "just need" (= simply) and the closing "pretty much it" are the writer's voice and stay */
   /* r86 pass 6 (juror 5, hook-7): one hedge per clause, as the Claude prompt keeps it: a lone "I think" stays, its padding goes */
-  assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "I think that most people just need to sleep more and eat more protein, and that's pretty much it.");
+  /* v5.0 (round-13 uiux-2): and the spare "that" after the kept stance goes too */
+  assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "I think most people just need to sleep more and eat more protein, and that's pretty much it.");
   assert.equal(L("I think that's pretty much it for today."), "I think that's pretty much it for today.");
   /* an unsure line says "breaks" only when the cut version is broken or says something else */
   const { rows } = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-heldout.json'), 'utf8'));

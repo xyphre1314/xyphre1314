@@ -527,7 +527,8 @@
     if (/^(?:is|are|was|were|am|be|been|being|isn['’]t|aren['’]t|wasn['’]t|weren['’]t)$|['’](?:s|re|m)$/.test(pw)) return /ing$/.test(w) && !/thing$/.test(w) && !SL_ING_ADJ.test(w) && w.length >= 6;
     if (/^(?:do|does|did)$/.test(w)) return true;
     /* v5.0 (round-13 uiux-2): "really need to start…", "really have to stop…": the obligation is said by "need to"; "really" props it up */
-    if (/^(?:need|needs|needed|have|has|had)$/.test(w) && /^\s+to\s+\p{L}/u.test(post)) return false;
+    /* (inside a belief someone holds or a question, "really" is the point: "why do founders think they really need to raise?") */
+    if (/^(?:need|needs|needed|have|has|had)$/.test(w) && /^\s+to\s+\p{L}/u.test(post) && !/^[^.!?]*\?/.test(post) && !/\b(?:think|thinks|thought|believe|believes|believed|feel|feels|felt|seem|seems|seemed|assume|assumes|assumed|convinced|pretend|pretends|claim|claims|insist|insists|why|whether)\b[^.!?;:]*$/i.test(pre)) return false;
     /* a word that is as often an adverb or an adjective ("fire really slow", "ship really fast") is a verb only after its subject */
     if (/^(?:fast|slow|hard|close|clean|clear|free|open|right|wrong|low|high|well|fine|better|light|dry|empty|fit|last|early|late|short|long|loud|quiet|smooth|tight|warm|cool|cold|hot|deep|double|even|flat|full|cheap|safe|easy|simple|quick|soon|far|near|round|level|lean|slim|thin|thick|rough|sharp|straight)$/.test(w) && !/^(?:i|you|we|they|he|she|it|people|nobody|everyone|everybody|someone|this|that|who|which|users|customers|founders|things|prices|markets)$/.test(pw)) return false;
     const vb = z => slVerbW(z) || /^(?:over|under|out|re|mis)(?=\p{L}{3})/u.test(z) && slVerbW(z.replace(/^(?:over|under|out|re|mis)/, ''));
@@ -665,6 +666,8 @@
          read the same way; a second hedge ("probably") is what goes. A call or a plan keeps every hedge (above) */
       if (SL_HEDGE2.test(o)) { if (ops.length) kept.add(ops[0][1]); return; }
       if (ops.length) { kept.add(ops[0][1]); return; }
+      /* v5.0: an opinion hookUp masked ("i Qk…q") is the clause's one hedge too, so a "maybe" after it is the second one */
+      if (/\b(?:i|we)\s+Qk[a-z]q\b/i.test(seg)) return;
       if (hedges.length) kept.add(hedges[0][1]);
     });
     /* what hookUp masks so its other cutters can't take it: not a softener or a feeling (the soft table keeps those by itself,
@@ -4160,9 +4163,27 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     }
     return false;
   };
+  /* v5.0: and a call the stance governs is never split off into a sentence of its own ("i think btc is going to 150k this cycle
+     and eth is going to 10k" → "…this cycle. eth is going to 10k." makes the second call flat) */
+  const slStanceSplit = (L, D) => {
+    const n = z => lcw(z).replace(/[’‘]/g, "'"), DD = n(D), LL = n(L), cut = z => z.split(/[.!?;:](?=\s|$)/)[0];
+    for (const m of DD.matchAll(SL_STV)) {
+      /* the stance's own clause: up to a relative or a result ("…, which is why I've started…" is the writer's, not the view's),
+         split where a new clause starts (a subject and its verb), never at a noun pair ("my sleep and health") */
+      const CL = String.raw`(?=(?:i|we|you|they|he|she|it|this|that|there|(?:the|my|our|most|many|some|every|all|\$?[a-z0-9]+)(?:\s+[a-z0-9$%'-]+){0,3}?)(?:'s|'re|'ll|\s+(?:is|are|was|were|will|won't|would|could|might|should|can|may|goes|hits|flips|tops|stays|cuts|gets|[a-z]{2,}s)\b))`;
+      const dr = cut(DD.slice(m.index + m[0].length)).split(/,\s*(?:which|who|so that|so|because)\b|\s(?:which is why|that's why)\b/)[0], parts = dr.split(new RegExp(String.raw`,?\s+(?:and|but|while|whereas)\s+${CL}|,\s+${CL}`)).map(z => z.trim()).filter(Boolean); if (parts.length < 2) continue;
+      const lm = LL.match(new RegExp(String.raw`\b${m[1]}${SL_STPAD}${m[2] ? String.raw`(?:don't|do not|didn't|did not)${SL_STPAD}` : ''}${m[3]}\b`, 'iu')); if (!lm) continue;
+      const lr = cut(LL.slice(lm.index + lm[0].length));
+      for (const p of parts.slice(1)) { const pk = p.replace(/[^a-z0-9$%' ]+/g, ' ').replace(/\s+/g, ' ').trim(); if (!pk || lr.replace(/[^a-z0-9$%' ]+/g, ' ').replace(/\s+/g, ' ').includes(pk)) continue;
+        /* (a call, a plan, or a judgment its modal hedges: "…and most apps would probably be better without it") */
+        if (!(isCall(p) || slFutReal(p) || ST_PLAN.test(p) || /\b(?:could|might|would|will|won't|should|probably|likely)\b/.test(p))) continue;
+        const sent = slSents(LL).find(x => x.replace(/[^a-z0-9$%' ]+/g, ' ').replace(/\s+/g, ' ').includes(pk)); if (sent && !SL_STV.test(sent)) { SL_STV.lastIndex = 0; return true; } SL_STV.lastIndex = 0; } }
+    return false;
+  };
   function slHard(line, draft) {
     const L = String(line), D = String(draft);
     if (slStanceVLost(L, D)) return 'stance verb dropped';
+    if (slStanceSplit(L, D)) return 'stance split from its call';
     /* v4.7 (round 10): no added pointer, no figure lead that lost its verb */
     if (slPtrAdded(L, D)) return 'pointer added';
     /* v4.7 (page juror, round 10): "just my take" is one hedge; its "just" never goes alone ("my take, but…") */
@@ -4600,7 +4621,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     { const dw = fl.length === 1 && fl[0].kind === 'intens' ? (String(draft).slice(fl[0].at[1]).match(/^,?\s+([\p{L}'’]+)/u) || [])[1] : ''; if (!w && dw && lcw(dw) === lcw(fl[0].text.trim().split(/[,\s]+/).pop())) w = `You said “${lcw(dw)}” twice. Once carries it.`;
       const pr = fl.length === 1 && fl[0].kind === 'intens' ? lcw(fl[0].text.trim()).match(/^(\w+),?\s+\1$/) : null; if (!w && pr) w = `You said “${pr[1]}” twice. The line stands without it.`; }
     /* v4.9 (round-12 uiux-4): a second hedge cut under a kept "I think" says so; the line still hedges, so it never "says the same" */
-    { const om = fl.length && fl.every(c => c.kind === 'hedge') ? String(line).match(/\b(?:i|we) (?:think|feel like|believe|guess|reckon)\b/i) : null; if (!w && allQ && om) { const v = `${allQ} ${fl.length === 1 ? 'was a second hedge' : 'were extra hedges'}: ${q(om[0])} already says how sure you are.`; if (v.length <= 140) w = v; } }
+    { const isThat = c => c.kind === 'filler' && /^that$/i.test(c.text.trim()), hg = fl.filter(c => c.kind === 'hedge'), om = hg.length && fl.every(c => c.kind === 'hedge' || isThat(c)) ? String(line).match(/\b(?:i|we) (?:think|feel like|believe|guess|reckon)\b/i) : null;
+      /* v5.0: and with the spare "that" that went beside it ("i think [that] [maybe] we should…") */
+      if (!w && allQ && om) { const hq = slList(hg.map(c => q(c.text.trim().replace(/[,:;.!—-]+$/, '')))), v = hg.length === fl.length ? `${allQ} ${fl.length === 1 ? 'was a second hedge' : 'were extra hedges'}: ${q(om[0])} already says how sure you are.` : `${hq} ${hg.length === 1 ? 'was a second hedge' : 'were extra hedges'} and “that” was spare: ${q(om[0])} already says how sure you are.`; if (v.length <= 140) w = v; } }
     if (!w && allQ && fi.length === fl.length) w = `${allQ} ${fl.length === 1 ? 'was' : 'were'} talk, not the point. The line says the same without ${fl.length === 1 ? 'it' : 'them'}.`;
     if (!w && allQ && fl.length === 1 && fl[0].kind === 'bait') w = `Without ${allQ}, the claim does the asking.`;
     if (!w && allQ) w = `${allQ} ${fl.length === 1 ? 'was' : 'were'} in the way of the point. The rest stands on its own.`;
@@ -4817,7 +4840,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       if (okM.length) { let acc = []; for (const m of okM) { const k2 = marks.filter(x => x !== m && !acc.includes(x)).map(mkT), o = cutOne(k2); if (okP(o)) acc.push(m); } if (acc.length) { const o = cutOne(marks.filter(x => !acc.includes(x)).map(mkT)); if (okP(o)) best = o; } }
     }
     /* why a marked word wasn't cut, read off the check that refused its own cut: never "breaks" when nothing broke */
-    const SL_HMEAN = /^(?:stance verb dropped|kept word dropped|frame moved|pointer lost|pointer added|predicate dropped|recency lost|stance dropped|tone word moved|plural lost|tense changed|ends on a disclaimer|hedged order|question lost|condition made a question|idiom split|invented sentence|word added|opinion lost its clause|doubled predicate)$/;
+    const SL_HMEAN = /^(?:stance verb dropped|stance split from its call|kept word dropped|frame moved|pointer lost|pointer added|predicate dropped|recency lost|stance dropped|tone word moved|plural lost|tense changed|ends on a disclaimer|hedged order|question lost|condition made a question|idiom split|invented sentence|word added|opinion lost its clause|doubled predicate)$/;
     const markWhy = m => { const o = cutOne(others(m)); if (!o || !o.line) return ''; const l = o.line; if (slThin(l) || slTiny(l)) return 'thin'; if (!facts.every(f => slHas(l, f.v))) return 'fact'; const h = slHard(l, draft); if (h && !SL_HMEAN.test(h)) return /[.]$/.test(l) && !more && slSents(l).length === 1 && slHdrShape(l) && !slHard(l.replace(/\.$/, ':'), draft) ? 'hdr' : 'break'; if (h || !slMeanOK(l, draft) || !slGuardOK(l, draft) || !slOK(l, draft, facts)) return 'mean'; if (slBroken(l, draft) || slWhole(l, draft) || (!more && slColonFrag(l, draft))) return 'left'; return ''; };
     /* v4.8 (round-11 founder-2): "breaks" only when slHard itself refused that word's own cut; a softer read that held it back
        says the check wasn't sure, never that the line breaks */
