@@ -237,7 +237,7 @@
     { k: 'filler', re: /(?<=\b(?:the|my|our|your|these|those|some|few|all|\d+)\s+(?:(?!(?:is|was|are|were|be|been|has|have|had|am|do|does|did)\s)[\p{L}-]+\s+){0,3}?(?![\p{L}-]*ly\s)(?!(?:fact|idea|notion|feeling|sense|belief|hope|fear|news|claim|thought|assumption|realization|myth|truth|lie|rumou?r|possibility|chance|evidence|proof|sign|knowledge|point|way|reason|day|time|moment|year|week|month|after|before|since|until|then|now|than|like|about|over|under|for|from|with|without|into|onto|is|was|are|were|be|been|being|has|have|had|does|did|said|says|think|thought|know|knew|believe|feel|felt|realized|realised|mean|means|meant|just|also|still|even|only|really|very|much|more|most|less|least|ago|later|earlier|again|too|enough|such|sure|clear|true|obvious|possible|likely|so|and|but|because|showed|shows|proved|proves|taught|teaches|told|tells|learned|learnt|noticed|found|seen|saw)\s)[\p{L}-]{3,}\s)that(?=\s+(?:i|we|you)\s+(?:(?:really|personally|actually|just|ever|have|had|['’]ve|['’]d|would|never|still|always|can|could|should|will|often|usually)\s+)*(?!(?:is|are|was|were|am|['’]m|['’]re)\b)[a-z]{2,}\b)/giu,
       why: 'A spare “that”. The clause reads the same without it.', short: 'is a spare “that”', cw: 'A spare “that”.' },
     /* v5.3 (Fable g-103, g-24): a spare "that" after a verb of thinking ("thinking that I was", "pretending that hustle culture…") */
-    { k: 'filler', re: /(?<=\b(?:thinking|believing|realizing|realising|assuming|pretending|hoping|feeling|knowing|wishing|deciding)\s)that(?=\s+(?:i|we|you|they|he|she|it|my|our|your|the|most|everyone|nobody|people|hustle|[a-z]+ing)\b)/gi,
+    { k: 'filler', re: /(?:(?<=\b(?:spent|years?|months?|weeks?|days?|decades?|life|lifetime|keep|kept|stop|stopped|start|started|quit)\b[^.!?,]{0,30}?\s(?:thinking|believing|assuming|feeling|knowing|realizing|realising)\s)|(?<=\b(?:pretending|hoping|wishing)\s))that(?=\s+(?:i|we|you|they|he|she|it|my|our|your|the|most|everyone|nobody|people|hustle|[a-z]+ing)\b)/gi,
       why: 'A spare “that”. The clause reads the same without it.', short: 'is a spare “that”', cw: 'A spare “that”.' },
     /* v5.3 (Fable g-35): padding inside a "why" question about what others think ("Why do so many founders [seem to] think a breakup
        is [somehow] less painful…?"): the question asks the same without it */
@@ -592,7 +592,7 @@
         /* (step 5c) right after a run-up that goes ("I just wanted to say that [I think] we shipped…"), and (a belief before advice) "I
            really believe that if you want X, you need to…" */
         && !(raw.some(q => /^(?:throat|announce)$/.test(q[3]) && q[1] <= r[0] && /^[\s,:]*$/.test(t.slice(q[1], r[0])) && wordsN(t.slice(q[0], q[1])) >= 3) && SL53_STV.test(txt(r)) && wordsN(t.slice(r[1], c[1])) >= 4)
-        && !(SL53_STV.test(txt(r)) && /^[\s,]*(?:that\s+)?if\s+you\b/i.test(t.slice(r[1]))));
+        && !(SL53_STV.test(txt(r)) && /^[\s,]*(?:that\s+)?if\s+you\b[^.!?]*\byou\s+(?:need to|have to|should|must|gotta)\b/i.test(t.slice(r[1]))));
       if (ops.length && !ops2.length) return;
       { const v = ops2.find(([r]) => SL53_STV.test(txt(r))); if (v && v !== ops2[0]) { ops2.splice(ops2.indexOf(v), 1); ops2.unshift(v); } ops.splice(0, ops.length, ...ops2); }
       /* an unmarked modal in the clause ("i think i might…", "i might have been kind of wrong") is its one hedge */
@@ -3156,6 +3156,8 @@
     { k: 'notIt', mv: 'contrast', allow: /^$/, left: l => /\b(?:is|are|was|were)(?: not|n['’]t) (?:really|actually)\b/i.test(l) || /\b(?:is|are|was|were)(?: not|n['’]t) [^,.]{2,60},\s+(?:it|they)(?:['’]s| is|['’]re| are)\s/i.test(l) || /\b(?:is|are|was|were)(?: not|n['’]t) [^.]{2,60}\.\s+(?:it|they)(?:['’]s| is|['’]re| are)\s+(?:actually|really)\b/i.test(l) || /\b(?:do|does|did)(?: not|n['’]t) [^,]{4,80},\s+(?:they|it|we|you)\s/i.test(l) || /\b(?:is|are|was|were)(?: not|n['’]t) (?:really |actually )[^,]{2,60},\s+(?:it|they|that)/i.test(l) || /\b(?:is|are|was|were)(?: not|n['’]t) [^,]{2,60},\s+(?:it|they)(?:['’]s| is|['’]re| are)\s+actually\b/i.test(l),
       f: (t, low) => { const m = t.match(/^(.{3,140}?\b(?:is|are|was|were)(?: not|n['’]t)) (?:really |actually |exactly )?([^,.;!?]{2,60}?),\s+(it|they|that|this)((?:['’]s| is|['’]re| are| was| were)\s+)(?:actually |really |simply )?([^]{2,160}?)([.!?]*)$/iu);
         if (!m) { const n = t.match(/^(.{6,140}?\b(?:do|does|did)(?: not|n['’]t)) (?:really |actually )?([a-z]+\b[^,.;!?]{2,80}?),\s+(they|it|we|you|he|she)\s+(?:actually |really |just )?(\2\b|[a-z]+\b)([^]{2,160}?)([.!?]*)$/iu); if (!n || !slFinite(n[1] + ' ' + n[2]) || lcw(n[4]) !== lcw(n[2].split(/\s+/)[0])) return null; return `${n[1]} ${n[2]}. ${sl53Up(n[3], low)} ${n[4]}${n[5]}${n[6] || (low ? '' : '.')}`; }
+        /* "isn't just X, it's Y" adds, it doesn't replace: the negated "just" keeps the line in one breath (juror 4) */
+        if (/^(?:just|only|merely|simply)\b/i.test(m[2])) return null;
         return `${m[1]} ${m[2]}. ${sl53Up(m[3], low)}${m[4]}${m[5]}${m[6] || (low ? '' : '.')}`; } },
     /* "X, here's the playbook" → "X. Here's the playbook" */
     { k: 'heres', mv: 'contrast', allow: /^$/, left: l => /,\s+here(?:['’]s| is| are)\b/i.test(l),
@@ -3203,6 +3205,8 @@
     if (/:\s*$/.test(rw.t) && /[^.]\.$/.test(L) && !/[.!?]\s/.test(L)) L = L.replace(/\.$/, ':');
     if (!slShipOK(L, d) && /\((?:a )?thread\)$/i.test(L) && slShipOK(L + ':', d)) L += ':';
     if (L === d || !slShipOK(L, d)) return null;
+    /* a word the writer put back stays put back */
+    if (keep.some(k => lcw(d).includes(lcw(k).trim()) && !lcw(L).replace(/[’‘]/g, "'").includes(lcw(k).trim().replace(/[’‘]/g, "'")))) return null;
     const marks = softMarks(d, keep), facts = slFacts(d, marks);
     if (!facts.every(f => slHas(L, f.v))) return null;
     const h = slHard(L, d), allow = new RegExp(rw.used.map(F => F.allow.source).join('|'));
@@ -3220,7 +3224,7 @@
     { const wf = rw.used.find(F => F.whyF); const w = wf ? wf.whyF(d, L) : ''; if (w && w.length <= 160) E.why = w; }
     /* stacked hedges that became one say so, and name the one that stayed */
     if (fw === 'stack') { const left0 = [...L.matchAll(rx(SL_CALL_ST.source, SL_CALL_ST.flags)), ...L.matchAll(rx(SL_CALL_HG.source, SL_CALL_HG.flags))].map(m => m[0]); const n = left0.length + ex.length + E.cut.filter(c => /^(?:hedge|opinion|disclaim)$/.test(c.kind) && !ex.some(x => x[0] === c.at[0])).length; const N = ['', 'One', 'Two', 'Three', 'Four', 'Five'][n] || String(n);
-      if (left0.length === 1 && n >= 2) E.why = `${N} hedges became one. Kept your “${left0[0]}”${isCall(d) || slFutReal(d) ? ': on a call it says the call is yours' : ': it says how sure you are'}.`; }
+      if (left0.length === 1 && n >= 2) E.why = `${N} hedges became one. Kept your “${left0[0]}”${isCall(d) || slFutReal(d) ? ': on a prediction, it says the prediction is yours' : ': it says how sure you are'}.`; }
     return { ...R, state: 'sharp', line: L, marks: [...(R.marks || []).filter(m => !ex.some(x => x[0] < m[1] && x[1] > m[0])), ...ex].sort((x, y) => x[0] - y[0]), cut: E.cut, move: E.move, moves: E.moves, say: E.say, why: E.why, alts: R.state === 'sharp' && R.line !== L ? [{ line: R.line, say: R.say, why: R.why, move: R.move, moves: R.moves, cut: R.cut }] : [], long: xLength(rest.trim() ? `${L}\n${rest}` : L) > 280, note: xLength(rest.trim() ? `${L}\n${rest}` : L) > 280 ? SL_LONG : '', fam53: rw.used.map(F => F.k) };
   }
   function sl53Post(R, text, opts) {
@@ -3238,6 +3242,7 @@
     }
     if (L === R.line || !extra.length) return null;
     L = fixArticles(L.replace(/\s{2,}/g, ' ').trim());
+    if (keep.some(k => lcw(d).includes(lcw(k).trim()) && !lcw(L).includes(lcw(k).trim()))) return null;
     if (!slShipOK(L, d)) return null;
     const marks = [...softMarks(d, keep), ...extra].sort((x, y) => x[0] - y[0]), facts = slFacts(d, softMarks(d, keep));
     if (!facts.every(f => slHas(L, f.v))) return null;
@@ -3250,6 +3255,8 @@
     const w = slTokW(String(line).replace(HK_VOICE, '')), d = slTokW(String(draft).replace(HK_VOICE, ''));
     if (!w.length || w[0] === d[0] || !SL_DANGLE_W.test(w[0])) return '';
     if (w[0] === 'to' && /^(?:my|our|your|the|all|everyone|everybody|anyone|anybody|whoever|those|every|each|me|you|us|them|him|her|this|that|be|a|an)$/.test(w[1] || '') && w[1] !== 'be') return '';
+    /* "To grow on X, you need to post every day.": a purpose clause with its main clause after the comma is whole */
+    if (w[0] === 'to' && /^\P{L}*to\s+[^,.!?]{3,60},\s+(?:i|we|you|they|he|she|it|most|people|everyone|the|your|my|our)\b/iu.test(String(line).replace(HK_VOICE, ''))) return '';
     if (w[0] === 'like' && !/^(?:um+|uh+|so|and|but|like|i|we|you|it|this|that|the)$/.test(w[1] || '')) return '';
     /* "So tired of…" is the degree; "so I…", "So, the…" is the joining word */
     if (w[0] === 'so' && !/^\P{L}*so\s*,/iu.test(String(line).replace(HK_VOICE, '')) && !/^(?:i|we|you|they|he|she|it|this|that|the|my|our|your|um+|uh+|basically|yeah|anyway|like|here|there|if|when|now|today|then)$/.test(w[1] || '')) return '';
@@ -3266,7 +3273,7 @@
   const SL_CALL_HG = /(?<![\p{L}\p{N}'’-])(?:probably|maybe|perhaps|possibly|potentially|presumably|arguably|most likely|(?<=\b(?:will|would|could|['’]ll|won['’]t|wouldn['’]t)\s+)likely(?!\s+to\b)|(?<!\b(?:what|which|this|that|the|a|any|some|every|one|same|different|other|right|wrong|no|that['’]s the)\s)(?:kind of|sort of)|kinda|sorta|somewhat)(?![\p{L}\p{N}'’-])/giu;
   const SL_CALL_HY = /(?<![\p{L}\p{N}'’-])(?:amazing|incredible|awesome|insane|epic|unbelievable|phenomenal|fantastic|mind-?blowing|game-?changing|groundbreaking|ground-breaking|revolutionary|world-class|stellar)(?=\s+(?!(?:of|to|for|at|in|on|and|or|but|that|with|by|as|is|was|are|were|than)\b)[\p{L}\p{N}$])/giu;
   const SL_CALL_DEG = /^(?:kind of|sort of|kinda|sorta|somewhat)$/i;
-  const SL_CALL_WHY = { stc: 'Your stance on a call. Tap to cut it if you’re sure.', stv: 'Marks this as your view. Tap to cut it if you’re sure.', hgc: 'How sure you are about the call. Tap to cut it if you’re sure.', hgv: 'How sure you are. Tap to cut it if you’re sure.', deg: 'Softens how strongly you say it. Tap to cut it if you mean it fully.', hy: 'A hype word. Tap to cut it if the news says it alone.' };
+  const SL_CALL_WHY = { stc: 'Your stance on a prediction. Tap to cut it if you’re sure.', stv: 'Marks this as your view. Tap to cut it if you’re sure.', hgc: 'How sure you are about the prediction. Tap to cut it if you’re sure.', hgv: 'How sure you are. Tap to cut it if you’re sure.', deg: 'Softens how strongly you say it. Tap to cut it if you mean it fully.', hy: 'A hype word. Tap to cut it if the news says it alone.' };
   function slCallCut(line, a, b) {
     const L = String(line); let pre = L.slice(0, a), post = L.slice(b);
     if (/^\s*,/.test(post) && (!/[\p{L}\p{N}]/u.test(pre) || /[,.!?:;—–-]\s*$/.test(pre) || /\b(?:and|but|so|because)\s*$/i.test(pre))) post = post.replace(/^\s*,/, '');
@@ -3316,7 +3323,7 @@
   function slBreakTrue(why, base, draft) {
     const m = String(why || '').match(SL53_BRK); if (!m) return true;
     const q = m[1].replace(/…$/, ''), i = lcw(base).replace(/[’‘]/g, "'").indexOf(lcw(q).replace(/[’‘]/g, "'")); if (i < 0) return false;
-    const cut = slCallCut(base, i, i + q.length); return !cut || !slShipOK(cut, draft) || slFragN(cut) > slFragN(base) || slVerblessN(cut) > slVerblessN(base) || slThin(cut) || slTiny(cut);
+    const cut = slCallCut(base, i, i + q.length); return !cut || !slShipOK(cut, draft) || slFragN(cut) > slFragN(base) || slVerblessN(cut) > slVerblessN(base) || slNPSentN(cut) > slNPSentN(base) || slThin(cut) || slTiny(cut) || /^(?:fragment|not a whole sentence)/.test(slHard(cut, draft));
   }
   const slBreakFix = (why, base, draft) => slBreakTrue(why, base, draft) ? why : String(why).replace(SL53_BRK, (z, q, tail) => /stays/.test(tail) ? `“${q}” stays: this quick check wasn’t sure the line holds up without it.` : `“${q}”, not cut: this quick check wasn’t sure the line holds up without it.`);
   function sharpenLine(text, opts = {}) {
@@ -3338,7 +3345,7 @@
     }
     if (R.draft && R.why) { const w = slBreakFix(R.why, R.state === 'sharp' ? R.line : R.draft, R.draft); if (w !== R.why) R = { ...R, why: w.length > 160 ? 'Marked, not cut: this quick check wasn’t sure the line holds up without it. Your call.' : w }; }
     /* v5.3 (Fable g-74): a stance verb cut where a "probably" stays is a hedge stacked on a hedge, said so, never "talk, not the point" */
-    if (R.state === 'sharp' && /talk, not the point/.test(R.why || '')) { const hl = (R.line.match(/\b(?:probably|most likely|likely)\b/i) || [])[0], sc = (R.cut || []).filter(c => /^(?:opinion|hedge|disclaim)$/.test(c.kind) && /\b(?:think|believe|feel like|reckon|guess|imo|imho|opinion|wrong)\b/i.test(c.text)); if (hl && sc.length) { const N = ['', 'One', 'Two', 'Three', 'Four'][sc.length + 1] || String(sc.length + 1); const fl = (R.cut || []).filter(c => SL_FLUFF(c.kind) && !sc.includes(c)).map(c => `“${c.text.trim().replace(/[,:;.!—-]+$/, '')}”`); R = { ...R, why: `${N} hedges became one. Kept your “${hl}”: it says how sure you are.${fl.length && fl.length <= 2 ? ` ${slList(fl)} went too.` : ''}` }; } }
+    if (R.state === 'sharp' && /talk, not the point/.test(R.why || '')) { const hl = (R.line.match(/\b(?:probably|most likely|likely)\b/i) || [])[0], sc = (R.cut || []).filter(c => /^(?:opinion|hedge|disclaim)$/.test(c.kind) && /\b(?:think|believe|feel like|reckon|guess|imo|imho|opinion|wrong)\b/i.test(c.text)); if (hl && sc.length) { const N = ['', 'One', 'Two', 'Three', 'Four'][sc.length + 1] || String(sc.length + 1); const fl = (R.cut || []).filter(c => SL_FLUFF(c.kind) && !sc.includes(c)).map(c => `“${c.text.trim().replace(/[,:;.!—-]+$/, '')}”`); const all = [...sc.map(c => `“${c.text.trim().replace(/[,:;.!—-]+$/, '')}”`), ...fl], w2 = `${slList(all)} went. “${hl}” stays: it says how sure you are.`; R = { ...R, why: !fl.length ? `${N} hedges became one. Kept your “${hl}”: it says how sure you are.` : w2.length <= 140 ? w2 : R.why }; } }
     /* a note that names a kept word the shipped line no longer has ("Left “I think” in…") goes */
     if (R.note && R.state === 'sharp') { const LL = lcw(R.line).replace(/[’‘]/g, "'"); R = { ...R, note: String(R.note).split(/(?<=\.)\s+(?=(?:Left|Kept|Over|Marked)\b)/).filter(p => { const q = p.match(/^(?:Left|Kept)(?: your)? “([^”]+)”/); return !q || LL.includes(lcw(q[1]).replace(/[’‘]/g, "'")); }).join(' ') }; }
     const lf = v => v && typeof v === 'object' ? { ...v, ...(typeof v.why === 'string' ? { why: slLeftIn(v.why) } : {}) } : v;

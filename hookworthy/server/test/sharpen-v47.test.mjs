@@ -197,7 +197,7 @@ test('v4.7, UI/UX juror: a long-line split keeps compound subjects whole; no poi
   const long = 'So basically I wanted to share that after three years of writing a newsletter every single week, I have finally figured out that the subject line and the very first sentence of the email matter more than anything else you could possibly do, and honestly the rest is just noise that nobody reads anyway, so here is what I do now every week.';
   for (const [m, o] of MODES) for (const l of versions(S(long, o))) { assert.doesNotMatch(l, /that the subject line\./, `${m}: ${l}`); assert.match(l, /the subject line and the first sentence/, `${m}: ${l}`); }
   const multi = 'honestly i think this thread is literally the most useful thing i wrote\n\n1. size down after a red day\n2. never add to a loser\n3. journal every trade';
-  for (const [m, o] of MODES) { const r = S(multi, o); for (const l of versions(r)) assert.doesNotMatch(l, /here['’]s (?:why|how|what)|thread:/i, `${m}: ${l}`); assert.equal(r.line, 'i think this thread is the most useful thing i wrote.', m); }
+  for (const [m, o] of MODES) { const r = S(multi, o); for (const l of versions(r)) assert.doesNotMatch(l, /here['’]s (?:why|how|what)|thread:/i, `${m}: ${l}`); assert.equal(r.line, 'i think this thread is the most useful thing i wrote', m); }
   assert.match(hard("i think this thread is the most useful thing i wrote. here's why:", 'honestly i think this thread is literally the most useful thing i wrote'), /pointer added/);
   /* a pointer the draft made stays allowed */
   assert.equal(L('Quick thread on how I size my trades'), 'I size my trades. Here’s how:'); /* v4.8 (brand-4): ’ when the draft has none */

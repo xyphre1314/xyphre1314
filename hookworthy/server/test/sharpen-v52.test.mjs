@@ -43,7 +43,7 @@ test('v5.2 (2): a degree word on a likelihood word stays', () => {
 test('v5.2 (3): a reflection keeps its clause; an announced topic may still be a header', () => {
   const t18 = "so basically i've been thinking a lot lately about why i can't seem to finish anything i start";
   for (const [m, o] of MODES) for (const r of versions(S(t18, o))) { assert.ok(!lastColon(r.line), `${m}: ${r.line}`); assert.match(r.line, /been thinking a lot lately about why i can't/i, m); }
-  assert.equal(L(t18), "i've been thinking a lot lately about why i can't seem to finish anything i start.");
+  assert.equal(L(t18), "i've been thinking a lot lately about why i can't seem to finish anything i start"); /* v5.3 (Fable H9): no end stop the draft never had */
   assert.equal(L("In today's post I want to talk a little bit about why I think that most LinkedIn content from executives sounds like it was written by a committee"), 'Why I think most LinkedIn content from executives sounds like it was written by a committee:');
   /* a topic the line goes on to answer heads its own answer */
   assert.equal(L("So I've been thinking a lot about why most side projects die and I think it's because people build in private for way too long"), "Why most side projects die: I think it's because people build in private for way too long.");
@@ -61,7 +61,7 @@ test('v5.2 (5): the reminder frame goes with its audience, as "Friendly reminder
 });
 
 test('v5.2 (6): run-ups go whole', () => {
-  assert.equal(L("gm. In today's thread I'm going to be talking about the 5 on-chain metrics that I personally use to time market tops"), 'gm. The 5 on-chain metrics that I use to time market tops:');
+  assert.equal(L("gm. In today's thread I'm going to be talking about the 5 on-chain metrics that I personally use to time market tops"), 'gm. The 5 on-chain metrics I use to time market tops:'); /* v5.3: the spare "that" of an object relative goes */
   assert.equal(L("It's actually pretty crazy to think that I started this newsletter with literally 12 subscribers and now there are 40,000 of you"), 'I started this newsletter with 12 subscribers. Now there are 40,000 of you.');
   assert.equal(L("My deadlift went from 315 to 495 in 14 months, and in this thread I'm going to break down exactly what I changed"), "My deadlift went from 315 to 495 in 14 months. Here's exactly what I changed:");
   assert.equal(L("A lot of people have been asking me how I manage to write 3 issues a week while also working a full-time job, so I figured I'd explain"), "Here's how I manage to write 3 issues a week while also working a full-time job.");

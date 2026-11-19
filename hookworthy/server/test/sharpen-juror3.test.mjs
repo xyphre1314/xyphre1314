@@ -94,7 +94,8 @@ test('juror 3, hook-7/9/12/13/15/16: tails, lists, idioms, salad, stance and dis
   for (const t of ['This is not financial advice.', 'NFA. Not financial advice. DYOR.']) { const R = S(t); assert.equal(R.state, 'clean', t); assert.equal(R.why, 'A disclaimer. Nothing to cut.'); assert.deepEqual(R.marks, []); }
   const R = S('I just wanted to quickly say that I am not a financial advisor and this is not financial advice but I really think $LINK is very undervalued right now');
   assert.equal(R.line, 'I am not a financial advisor and this is not financial advice but I think $LINK is undervalued right now.'); assert.doesNotMatch(R.say, /Moved the disclaimer to the end/);
-  assert.equal(L('I think we\'re probably in the boring middle of the cycle right now, nfa'), "I think we're probably in the boring middle of the cycle right now, nfa");
+  /* v5.3 (step 5b): on a call, a hedge stacked on the stance verb collapses to it */
+  assert.equal(L('I think we\'re probably in the boring middle of the cycle right now, nfa'), "I think we're in the boring middle of the cycle right now, nfa.");
 });
 
 test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are counts, reorders are sentences', () => {
@@ -115,7 +116,7 @@ test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are 
   /* every quote over the held-out lines ends on a phrase: never on a small word, a verb before its particle, or a lone quote mark */
   const { rows } = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-heldout.json'), 'utf8'));
   const SMALL = /^(?:a|an|the|to|of|for|from|in|on|at|by|with|and|or|but|my|our|your|their|is|are|was|were|has|have|had|that|this|as|what|why|how|who|led)$/i;
-  for (const r of rows) { const R = S(r.t), cuts = R.cut.map(c => c.text.replace(/[,:;.!—-]+$/, '')); for (const q of quotes(R.why)) { if (cuts.includes(q) || q.split(/\s+/).length < 2 || /^(?:kind of|sort of)$/i.test(q) /* v5.1: a filler “left in” is quoted on its own */ || new RegExp(`${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[.!?:]`, 'i').test(R.line)) continue; const last = q.split(/\s+/).pop(); assert.ok(!SMALL.test(last) || /^[A-Z]$/.test(last), `${R.draft}: quote "${q}"`); assert.equal((q.match(/`/g) || []).length % 2, 0, `${R.draft}: quote "${q}"`); assert.doesNotMatch(q, /\b(?:came|ran|set|signed|found|figured|talk|deal|dealing)$/, `${R.draft}: quote "${q}"`); } }
+  for (const r of rows) { const R = S(r.t), cuts = R.cut.map(c => c.text.replace(/[,:;.!—-]+$/, '')); for (const q of quotes(R.why)) { if (cuts.includes(q) || q.split(/\s+/).length < 2 || /^(?:kind of|sort of)$/i.test(q) /* v5.1: a filler “left in” is quoted on its own */ || new RegExp(`${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:[.!?:]|$)`, 'i').test(R.line) /* v5.3: or the line's own end, with no stop */) continue; const last = q.split(/\s+/).pop(); assert.ok(!SMALL.test(last) || /^[A-Z]$/.test(last), `${R.draft}: quote "${q}"`); assert.equal((q.match(/`/g) || []).length % 2, 0, `${R.draft}: quote "${q}"`); assert.doesNotMatch(q, /\b(?:came|ran|set|signed|found|figured|talk|deal|dealing)$/, `${R.draft}: quote "${q}"`); } }
 });
 
 test('juror 3, hook-6/9 and uiux-1: strikes are every removed word, fluff was marked first, every strike can be put back', () => {

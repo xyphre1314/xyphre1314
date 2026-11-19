@@ -40,7 +40,8 @@ test('v5.1 (1): "I\'ve been thinking a lot lately about X" is a run-up; the line
     ['been thinking about this a lot. most founders ship too slowly', 'most founders ship too slowly'],
     ['been thinking about this a lot: most founders ship too slowly', 'most founders ship too slowly'],
     ["I've been thinking about this a lot — the best founders ship daily", 'The best founders ship daily.'],
-    ["So I've been thinking about this a lot lately, and I think most founders ship too slowly", 'I think most founders ship too slowly.']
+    /* v5.3 (step 5c): after a run-up that goes, on a line that is no forecast, its "I think" goes too */
+    ["So I've been thinking about this a lot lately, and I think most founders ship too slowly", 'Most founders ship too slowly.']
   ]) {
     const R = S(t); assert.equal(R.state, 'sharp', t); assert.equal(R.line, want, t);
     assert.doesNotMatch(R.line, /been thinking/i, t);
@@ -55,7 +56,7 @@ test('v5.1 (1): "I\'ve been thinking a lot lately about X" is a run-up; the line
 /* ---------------- 2. a filler word is never "kept" ---------------- */
 test('v5.1 (2): a filler word is never in R.kept or a "Kept" note; one left on purpose says why in plain words', () => {
   const nl = S('not gonna lie, I basically lost 30% on that trade');
-  assert.equal(nl.line, 'I basically lost 30% on that trade.'); assert.deepEqual(nl.kept, ['30%']);
+  assert.equal(nl.line, 'I basically lost 30% on that trade'); /* v5.3 (Fable H9): the lowercase draft had no end stop */ assert.deepEqual(nl.kept, ['30%']);
   assert.equal(nl.note, 'Left “basically” in: it says nearly, not exactly.');
   const gm = S('gm, just wanted to say SOL is basically the only chain that matters');
   assert.deepEqual(gm.kept, ['SOL']); assert.equal(gm.note, 'Left “basically” in: it says nearly, not exactly.');

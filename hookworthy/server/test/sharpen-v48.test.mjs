@@ -169,11 +169,12 @@ test('v4.8, marketing-1: a why/how topic keeps its question word, so the line st
 });
 
 test('v4.8, founder-1: the plain cut is version 1; "Asked, then answered" is the other take', () => {
+  /* (v5.3, Fable H9: a lowercase draft with no end stop gets none, in its alts too) */
   for (const [t, want, flip] of [
-    ['basically SOL is the only chain that matters rn imo', 'SOL is the only chain that matters rn imo', 'only chain that matters rn imo? SOL.'],
-    ["tbh ETH is the only L1 i'd hold for 5 years", "ETH is the only L1 i'd hold for 5 years", "only L1 i'd hold for 5 years? ETH."],
-    ['honestly, patience is the only edge most traders never build', 'patience is the only edge most traders never build', 'only edge most traders never build? patience.'],
-    ['you should really be tracking your protein if you want to build muscle', 'you should be tracking your protein if you want to build muscle', 'want to build muscle? track your protein.']
+    ['basically SOL is the only chain that matters rn imo', 'SOL is the only chain that matters rn imo', 'only chain that matters rn imo? SOL'],
+    ["tbh ETH is the only L1 i'd hold for 5 years", "ETH is the only L1 i'd hold for 5 years", "only L1 i'd hold for 5 years? ETH"],
+    ['honestly, patience is the only edge most traders never build', 'patience is the only edge most traders never build', 'only edge most traders never build? patience'],
+    ['you should really be tracking your protein if you want to build muscle', 'you should be tracking your protein if you want to build muscle', 'want to build muscle? track your protein']
   ]) {
     const r = S(t); assert.equal(r.line, want, t); assert.doesNotMatch(r.say, /Asked, then answered/, t);
     const a = r.alts.find(x => x.line === flip); assert.ok(a, `${t}: ${JSON.stringify(r.alts.map(x => x.line))}`); assert.match(a.say, /Asked, then answered/);

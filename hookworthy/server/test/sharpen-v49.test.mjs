@@ -161,11 +161,12 @@ test('v4.9 round 12: "Big announcement:" is hype and goes; deadpan labels stay',
 
 test('v4.9 round 12 (uiux-4): one hedge per clause; a "maybe" stacked on "I think" is marked and may go', () => {
   /* v5.0 (round-13 uiux-2): the spare "that" goes with the second hedge */
-  for (const [t, want] of [['i think that maybe we should raise prices', 'i think we should raise prices'], ['I think maybe we should raise prices', 'I think we should raise prices.'], ['I feel like maybe we should raise prices', 'I feel like we should raise prices.']]) {
-    const r = S(t); assert.equal(r.line, want, t); assert.ok(r.marks.some(m => t.slice(m[0], m[1]) === 'maybe'), t); assert.match(r.why, /second hedge/, t); }
+  for (const [t, want] of [['i think that maybe we should raise prices', 'i think we should raise prices'], ['I think maybe we should raise prices', 'I think we should raise prices.'], ['I feel like maybe we should raise prices', 'We should raise prices.']]) {
+    const r = S(t); assert.equal(r.line, want, t); assert.ok(r.marks.some(m => t.slice(m[0], m[1]) === 'maybe'), t); assert.match(r.why, /second hedge|Without “I feel like” and “maybe”/, t); }
   /* a lone "maybe" is the stance; a call keeps every hedge */
   assert.equal(S('maybe we should raise prices').state, 'clean');
-  assert.equal(S('i think maybe btc goes to 100k next week').state, 'clean');
+  /* v5.3 (step 5b): on a price call, a hedge stacked on the stance verb collapses to it */
+  assert.equal(S('i think maybe btc goes to 100k next week').line, 'i think btc goes to 100k next week');
   /* the stacked hedge is marked even where another cut leads */
   assert.ok(S('i think that maybe we just shipped the biggest update of the year to be honest').marks.some(m => m[3] === 'hedge'));
 });

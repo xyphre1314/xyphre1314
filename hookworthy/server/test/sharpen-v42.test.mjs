@@ -192,7 +192,7 @@ test('v4.2, round 7: no dangling header, no object left alone, "I think" kept as
   /* v4.9 (round-12 uiux-4): the why says the cut word was the second hedge, under the kept "i think" (never that it went) */
   assert.match(S('i think this is probably the most important chart in crypto right now').why, /^Two hedges became one\. Kept your “probably”: it says how sure you are\.$/);
   assert.match(S('I think one of the most underrated skills for a founder is writing').why, /^Kept “I think”: it’s how sure you are/);
-  assert.equal(L('I think most founders probably overthink their pitch decks.'), 'I think most founders overthink their pitch decks.');
+  assert.equal(L('I think most founders probably overthink their pitch decks.'), 'Most founders probably overthink their pitch decks.');
   assert.match(L('honestly i think SOL is going to flip ETH this cycle, not financial advice'), /^i think SOL/);
   /* "I really don't think" is a negated stance, kept (it was read as "I don't think" only after "don't") */
   assert.equal(L("Honestly, I really don't think 'personal branding' is the right goal for most B2B founders."), "I don't think 'personal branding' is the right goal for most B2B founders.");

@@ -283,5 +283,6 @@ test('v3.2: on-device, "I think" stays on a forecast dated by a month', () => {
   assert.match(core.sharpenLine('I think we may ship v2 soon').line, /^i think we may ship v2 soon/i);
   assert.match(core.sharpenLine('ngl i think we could maybe ship the beta by march').line, /^i think we could ship the beta by march/i);
   /* v4.2 (round-7 marketing-4): "I think" heading a claim is the clause's one hedge, kept every time; the second hedge goes */
-  assert.equal(core.sharpenLine('I think it was probably the best decision of my life.').line, 'I think it was the best decision of my life.');
+  /* v5.3 (Fable g-74, step 2): on a view, "probably" is the one hedge the clause keeps and the "I think" on top of it goes */
+  assert.equal(core.sharpenLine('I think it was probably the best decision of my life.').line, 'It was probably the best decision of my life.');
 });

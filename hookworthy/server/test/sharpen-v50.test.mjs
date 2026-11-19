@@ -152,7 +152,8 @@ test('v5.0 round 13: a "thinking about it" run-up goes whole, and never stays as
     ['I was thinking about it, and honestly most launches fail because of the first tweet', 'Most launches fail because of the first tweet.'],
     ['I was thinking about it. Most launches fail because of the first tweet.', 'Most launches fail because of the first tweet.'],
     ['so i was thinking the other day and i realised most people overtrade', 'most people overtrade'],
-    ["So I've been thinking, and I think we should all just stop chasing vanity metrics.", 'I think we should all stop chasing vanity metrics.'],
+    /* v5.3 (step 5c): after a run-up that goes, on a line that is no forecast, its "I think" goes too */
+    ["So I've been thinking, and I think we should all just stop chasing vanity metrics.", 'We should all stop chasing vanity metrics.'],
     ['So I was thinking about it and I think we should raise prices next month', 'I think we should raise prices next month.'],
   ]) { const r = S(t); assert.equal(r.line, want, t); for (const [m, o] of MODES) for (const l of versions(S(t, o))) assert.doesNotMatch(l, /\bthinking\b/i, `${m}: ${t} → ${l}`); }
   /* "thinking that…" is the stance, and a topic after "about" is the line's content */
@@ -182,7 +183,8 @@ test('v5.0 round 13: the spare "that" after a kept stance goes; "really need to"
   for (const [t, want] of [
     ['I think that most people overtrade', 'I think most people overtrade.'],
     ['I believe that cold email is dead', 'I believe cold email is dead.'],
-    ['I think that BTC is probably going to break 100k this week', 'I think BTC is probably going to break 100k this week.'],
+    /* v5.3 (step 5b): on a price call, a hedge stacked on the stance verb collapses to it */
+    ['I think that BTC is probably going to break 100k this week', 'I think BTC is going to break 100k this week.'],
     ['i think that maybe we should raise prices', 'i think we should raise prices'],
     ['I think that basically what I learned this year is that consistency beats talent every single time', 'I think what I learned this year is that consistency beats talent every single time.'],
     ['honestly i basically just think that eth is going to 5k', 'i think eth is going to 5k'],

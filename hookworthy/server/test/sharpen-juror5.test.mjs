@@ -67,7 +67,8 @@ test('juror 5, hook-1: the broken and changed lines come back whole, or as writt
   assert.equal(L("So I've been experimenting a lot with subject lines lately, and I think I've basically found a formula that really works."), "I've been experimenting a lot with subject lines lately. I think I've found a formula that really works.");
   assert.equal(L('Not to brag or anything, but I just hit a 405 lb deadlift for the very first time today!!'), 'Not to brag or anything, but I just hit a 405 lb deadlift for the first time today!!');
   for (const t of ['Does anyone else feel like their motivation to work out completely disappears in the winter, or is it just me?', "This is not financial advice, but I'm not selling a single $SOL under $400."]) { const R = S(t); assert.equal(R.line, t); assert.notEqual(R.state, 'sharp'); }
-  assert.equal(L('gm. i honestly feel like most of you are kinda sleeping on $TIA rn'), 'gm. i feel like most of you are sleeping on $TIA rn.');
+  /* v5.3 (Fable g-16, step 5): "i feel like" on a plain view is a run-up; no end stop the lowercase draft never had */
+  assert.equal(L('gm. i honestly feel like most of you are kinda sleeping on $TIA rn'), 'gm. most of you are sleeping on $TIA rn');
   assert.doesNotMatch(L("As a founder, I've learned that it's really important to basically always talk to your customers as much as you possibly can."), /^I['’]m a founder\./);
   /* v4.2 (hook41-5): hard news keeps its framing whole and is never split */
   assert.equal(L('So this is a little bit personal, but I wanted to share that I was laid off today after 6 years at the company.'), 'This is a little bit personal, but I was laid off today after 6 years at the company.');
@@ -83,7 +84,8 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   /* the frames that say how to take the line */
   for (const t of ['hot take: most airdrops are a tax on your time', 'Honest question: does anyone actually read terms of service pages?', 'Unpopular opinion: your first hire should be a salesperson, not an engineer.', 'PSA: rotate your API keys. Yes, the ones in that old repo too.', 'Reminder: rest days are part of the program.']) assert.equal(L(t), t);
   /* v4.5 (hook44-3): "they really need" is not "they need": the degree on the verb is the writer's, so nothing is left to cut */
-  assert.equal(L('Honest question: why do so many founders seem to think they really need to raise money?'), 'Honest question: why do so many founders seem to think they really need to raise money?');
+  /* v5.3 (Fable g-35): "seem to" inside a why-question about what others think is padding */
+  assert.equal(L('Honest question: why do so many founders seem to think they really need to raise money?'), 'Honest question: why do so many founders think they really need to raise money?');
   /* an opinion label stands in for "I think" and a softener, on a take that isn't a forecast */
   assert.equal(L('Hot take: I genuinely think code reviews are kind of a waste of time for teams under 5 people.'), 'Hot take: code reviews are a waste of time for teams under 5 people.');
   /* the tone: a closing "lol", a feeling, "kind of" on a feeling, a softener */
@@ -97,8 +99,9 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   /* one hedge per clause: a lone "I think" stays (its padding goes), a stacked one gives way to the modal */
   assert.equal(L('I genuinely think AI agents are overhyped right now'), 'I think AI agents are overhyped right now.');
   /* v4.2 (round-7 marketing-4): "I think" stays as the one hedge, the second hedge goes */
-  assert.equal(L('I think one of the biggest mistakes I made as a first-time founder was probably hiring way too fast.'), 'I think one of the biggest mistakes I made as a first-time founder was hiring way too fast.');
-  assert.equal(L('Honestly, I feel like dark mode is kind of overrated and most apps would probably be better without it.'), 'I feel like dark mode is overrated and most apps would probably be better without it.');
+  /* v5.3 (Fable g-28/g-74): an "I think" on the writer's own past goes, and the claim's own "probably" stays */
+  assert.equal(L('I think one of the biggest mistakes I made as a first-time founder was probably hiring way too fast.'), 'One of the biggest mistakes I made as a first-time founder was probably hiring way too fast.');
+  assert.equal(L('Honestly, I feel like dark mode is kind of overrated and most apps would probably be better without it.'), 'Dark mode is overrated. Most apps would probably be better without it.' /* v5.3 (Fable g-16, step 5): "I feel like" on a plain view is a run-up */);
   /* v5.0 (round-13 uiux-2): the spare "that" after the kept stance goes */
   assert.equal(L("I've been coding for 10 years and I honestly think that most developers are kind of overcomplicating their side projects."), "I've been coding for 10 years. I think most developers are overcomplicating their side projects.");
   /* on a call every hedge stays; a doubled hedge is one hedge; "What could possibly go wrong" is the joke, not a doubled hedge */

@@ -336,7 +336,7 @@
     { k: 'filler', re: /(?<=\b(?:the|my|our|your|these|those|some|few|all|\d+)\s+(?:(?!(?:is|was|are|were|be|been|has|have|had|am|do|does|did)\s)[\p{L}-]+\s+){0,3}?(?![\p{L}-]*ly\s)(?!(?:fact|idea|notion|feeling|sense|belief|hope|fear|news|claim|thought|assumption|realization|myth|truth|lie|rumou?r|possibility|chance|evidence|proof|sign|knowledge|point|way|reason|day|time|moment|year|week|month|after|before|since|until|then|now|than|like|about|over|under|for|from|with|without|into|onto|is|was|are|were|be|been|being|has|have|had|does|did|said|says|think|thought|know|knew|believe|feel|felt|realized|realised|mean|means|meant|just|also|still|even|only|really|very|much|more|most|less|least|ago|later|earlier|again|too|enough|such|sure|clear|true|obvious|possible|likely|so|and|but|because|showed|shows|proved|proves|taught|teaches|told|tells|learned|learnt|noticed|found|seen|saw)\s)[\p{L}-]{3,}\s)that(?=\s+(?:i|we|you)\s+(?:(?:really|personally|actually|just|ever|have|had|['’]ve|['’]d|would|never|still|always|can|could|should|will|often|usually)\s+)*(?!(?:is|are|was|were|am|['’]m|['’]re)\b)[a-z]{2,}\b)/giu,
       why: 'A spare “that”. The clause reads the same without it.', short: 'is a spare “that”', cw: 'A spare “that”.' },
     /* v5.3 (Fable g-103, g-24): a spare "that" after a verb of thinking ("thinking that I was", "pretending that hustle culture…") */
-    { k: 'filler', re: /(?<=\b(?:thinking|believing|realizing|realising|assuming|pretending|hoping|feeling|knowing|wishing|deciding)\s)that(?=\s+(?:i|we|you|they|he|she|it|my|our|your|the|most|everyone|nobody|people|hustle|[a-z]+ing)\b)/gi,
+    { k: 'filler', re: /(?:(?<=\b(?:spent|years?|months?|weeks?|days?|decades?|life|lifetime|keep|kept|stop|stopped|start|started|quit)\b[^.!?,]{0,30}?\s(?:thinking|believing|assuming|feeling|knowing|realizing|realising)\s)|(?<=\b(?:pretending|hoping|wishing)\s))that(?=\s+(?:i|we|you|they|he|she|it|my|our|your|the|most|everyone|nobody|people|hustle|[a-z]+ing)\b)/gi,
       why: 'A spare “that”. The clause reads the same without it.', short: 'is a spare “that”', cw: 'A spare “that”.' },
     /* v5.3 (Fable g-35): padding inside a "why" question about what others think ("Why do so many founders [seem to] think a breakup
        is [somehow] less painful…?"): the question asks the same without it */
@@ -732,7 +732,7 @@
         /* (step 5c) right after a run-up that goes ("I just wanted to say that [I think] we shipped…"), and (a belief before advice) "I
            really believe that if you want X, you need to…" */
         && !(raw.some(q => /^(?:throat|announce)$/.test(q[3]) && q[1] <= r[0] && /^[\s,:]*$/.test(t.slice(q[1], r[0])) && wordsN(t.slice(q[0], q[1])) >= 3) && SL53_STV.test(txt(r)) && wordsN(t.slice(r[1], c[1])) >= 4)
-        && !(SL53_STV.test(txt(r)) && /^[\s,]*(?:that\s+)?if\s+you\b/i.test(t.slice(r[1]))));
+        && !(SL53_STV.test(txt(r)) && /^[\s,]*(?:that\s+)?if\s+you\b[^.!?]*\byou\s+(?:need to|have to|should|must|gotta)\b/i.test(t.slice(r[1]))));
       if (ops.length && !ops2.length) return;
       { const v = ops2.find(([r]) => SL53_STV.test(txt(r))); if (v && v !== ops2[0]) { ops2.splice(ops2.indexOf(v), 1); ops2.unshift(v); } ops.splice(0, ops.length, ...ops2); }
       /* an unmarked modal in the clause ("i think i might…", "i might have been kind of wrong") is its one hedge */
@@ -5069,6 +5069,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (/:\s*$/.test(rw.t) && /[^.]\.$/.test(L) && !/[.!?]\s/.test(L)) L = L.replace(/\.$/, ':');
     if (!slShipOK(L, d) && /\((?:a )?thread\)$/i.test(L) && slShipOK(L + ':', d)) L += ':';
     if (L === d || !slShipOK(L, d)) return null;
+    /* a word the writer put back stays put back */
+    if (keep.some(k => lcw(d).includes(lcw(k).trim()) && !lcw(L).replace(/[’‘]/g, "'").includes(lcw(k).trim().replace(/[’‘]/g, "'")))) return null;
     const marks = softMarks(d, keep), facts = slFacts(d, marks);
     if (!facts.every(f => slHas(L, f.v))) return null;
     const h = slHard(L, d), allow = new RegExp(rw.used.map(F => F.allow.source).join('|'));
@@ -5108,6 +5110,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     }
     if (L === R.line || !extra.length) return null;
     L = fixArticles(L.replace(/\s{2,}/g, ' ').trim());
+    if (keep.some(k => lcw(d).includes(lcw(k).trim()) && !lcw(L).includes(lcw(k).trim()))) return null;
     if (!slShipOK(L, d)) return null;
     const marks = [...softMarks(d, keep), ...extra].sort((x, y) => x[0] - y[0]), facts = slFacts(d, softMarks(d, keep));
     if (!facts.every(f => slHas(L, f.v))) return null;
@@ -5206,7 +5209,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function slBreakTrue(why, base, draft) {
     const m = String(why || '').match(SL53_BRK); if (!m) return true;
     const q = m[1].replace(/…$/, ''), i = lcw(base).replace(/[’‘]/g, "'").indexOf(lcw(q).replace(/[’‘]/g, "'")); if (i < 0) return false;
-    const cut = slCallCut(base, i, i + q.length); return !cut || !slShipOK(cut, draft) || slFragN(cut) > slFragN(base) || slVerblessN(cut) > slVerblessN(base) || slThin(cut) || slTiny(cut);
+    const cut = slCallCut(base, i, i + q.length); return !cut || !slShipOK(cut, draft) || slFragN(cut) > slFragN(base) || slVerblessN(cut) > slVerblessN(base) || slNPSentN(cut) > slNPSentN(base) || slThin(cut) || slTiny(cut) || /^(?:fragment|not a whole sentence)/.test(slHard(cut, draft));
   }
   const slBreakFix = (why, base, draft) => slBreakTrue(why, base, draft) ? why : String(why).replace(SL53_BRK, (z, q, tail) => /stays/.test(tail) ? `“${q}” stays: this quick check wasn’t sure the line holds up without it.` : `“${q}”, not cut: this quick check wasn’t sure the line holds up without it.`);
   function sharpenLine(text, opts = {}) {
@@ -5228,7 +5231,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     }
     if (R.draft && R.why) { const w = slBreakFix(R.why, R.state === 'sharp' ? R.line : R.draft, R.draft); if (w !== R.why) R = { ...R, why: w.length > 160 ? 'Marked, not cut: this quick check wasn’t sure the line holds up without it. Your call.' : w }; }
     /* v5.3 (Fable g-74): a stance verb cut where a "probably" stays is a hedge stacked on a hedge, said so, never "talk, not the point" */
-    if (R.state === 'sharp' && /talk, not the point/.test(R.why || '')) { const hl = (R.line.match(/\b(?:probably|most likely|likely)\b/i) || [])[0], sc = (R.cut || []).filter(c => /^(?:opinion|hedge|disclaim)$/.test(c.kind) && /\b(?:think|believe|feel like|reckon|guess|imo|imho|opinion|wrong)\b/i.test(c.text)); if (hl && sc.length) { const N = ['', 'One', 'Two', 'Three', 'Four'][sc.length + 1] || String(sc.length + 1); const fl = (R.cut || []).filter(c => SL_FLUFF(c.kind) && !sc.includes(c)).map(c => `“${c.text.trim().replace(/[,:;.!—-]+$/, '')}”`); R = { ...R, why: `${N} hedges became one. Kept your “${hl}”: it says how sure you are.${fl.length && fl.length <= 2 ? ` ${slList(fl)} went too.` : ''}` }; } }
+    if (R.state === 'sharp' && /talk, not the point/.test(R.why || '')) { const hl = (R.line.match(/\b(?:probably|most likely|likely)\b/i) || [])[0], sc = (R.cut || []).filter(c => /^(?:opinion|hedge|disclaim)$/.test(c.kind) && /\b(?:think|believe|feel like|reckon|guess|imo|imho|opinion|wrong)\b/i.test(c.text)); if (hl && sc.length) { const N = ['', 'One', 'Two', 'Three', 'Four'][sc.length + 1] || String(sc.length + 1); const fl = (R.cut || []).filter(c => SL_FLUFF(c.kind) && !sc.includes(c)).map(c => `“${c.text.trim().replace(/[,:;.!—-]+$/, '')}”`); const all = [...sc.map(c => `“${c.text.trim().replace(/[,:;.!—-]+$/, '')}”`), ...fl], w2 = `${slList(all)} went. “${hl}” stays: it says how sure you are.`; R = { ...R, why: !fl.length ? `${N} hedges became one. Kept your “${hl}”: it says how sure you are.` : w2.length <= 140 ? w2 : R.why }; } }
     /* a note that names a kept word the shipped line no longer has ("Left “I think” in…") goes */
     if (R.note && R.state === 'sharp') { const LL = lcw(R.line).replace(/[’‘]/g, "'"); R = { ...R, note: String(R.note).split(/(?<=\.)\s+(?=(?:Left|Kept|Over|Marked)\b)/).filter(p => { const q = p.match(/^(?:Left|Kept)(?: your)? “([^”]+)”/); return !q || LL.includes(lcw(q[1]).replace(/[’‘]/g, "'")); }).join(' ') }; }
     const lf = v => v && typeof v === 'object' ? { ...v, ...(typeof v.why === 'string' ? { why: slLeftIn(v.why) } : {}) } : v;
