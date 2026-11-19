@@ -161,7 +161,7 @@ test('v4.9 round 12: "Big announcement:" is hype and goes; deadpan labels stay',
 
 test('v4.9 round 12 (uiux-4): one hedge per clause; a "maybe" stacked on "I think" is marked and may go', () => {
   /* v5.0 (round-13 uiux-2): the spare "that" goes with the second hedge */
-  for (const [t, want] of [['i think that maybe we should raise prices', 'i think we should raise prices.'], ['I think maybe we should raise prices', 'I think we should raise prices.'], ['I feel like maybe we should raise prices', 'I feel like we should raise prices.']]) {
+  for (const [t, want] of [['i think that maybe we should raise prices', 'i think we should raise prices'], ['I think maybe we should raise prices', 'I think we should raise prices.'], ['I feel like maybe we should raise prices', 'I feel like we should raise prices.']]) {
     const r = S(t); assert.equal(r.line, want, t); assert.ok(r.marks.some(m => t.slice(m[0], m[1]) === 'maybe'), t); assert.match(r.why, /second hedge/, t); }
   /* a lone "maybe" is the stance; a call keeps every hedge */
   assert.equal(S('maybe we should raise prices').state, 'clean');

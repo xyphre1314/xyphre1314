@@ -29,7 +29,7 @@ test('one tap: the moves top first lines make, with the facts kept', () => {
   /* r86 pass 6 (juror 5, hook-7): the lone "i think" stays and "not financial advice" stays where the writer put it, as the
      Claude prompt keeps them; lowercase kept, "not" never contracted into "wasn’t" */
   assert.equal(S('so i think the biggest mistake i made this cycle was honestly not taking profits on the way up'), 'i think the biggest mistake i made this cycle was not taking profits on the way up.', 'lowercase kept, "not" never contracted into "wasn’t"');
-  assert.equal(S('not financial advice but i basically stopped trading the first hour after the open and my win rate went from 38% to 61%'), 'not financial advice but i stopped trading the first hour after the open. my win rate went from 38% to 61%.', 'the disclaimer stays up front, never moved to the end');
+  assert.equal(S('not financial advice but i basically stopped trading the first hour after the open and my win rate went from 38% to 61%'), 'not financial advice but i stopped trading the first hour after the open. my win rate went from 38% to 61%', 'the disclaimer stays up front, never moved to the end');
   /* v4.2 (round-7 marketing-4): "i think" stays as the clause's hedge, and "probably not" is never cut */
   assert.equal(S('so i think the biggest mistake i made this cycle was probably not taking profits on the way up'), 'i think the biggest mistake i made this cycle was probably not taking profits on the way up.', 'a stacked hedge keeps the modal, and the move still lands');
   assert.equal(S('Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.'), 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', 'passive made active');
@@ -37,10 +37,10 @@ test('one tap: the moves top first lines make, with the facts kept', () => {
   assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), 'I’ve hired over 300 people. I think the best interview question is just four words:', 'a colon only because the post answers it'); /* v4.8 (brand-4): a draft with no apostrophe gets the page's ’ */ /* v4.1: "just four words" is "only four words" */
   assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is just four words.', 'no colon with nothing after it');
   /* v4.8 (round-11 founder-1): the plain cut is version 1; "Asked, then answered" is another take */
-  assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'you should be tracking your protein if you want to build muscle.');
+  assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'you should be tracking your protein if you want to build muscle');
   assert.ok(E.hgSharpen('you should really be tracking your protein if you want to build muscle').alts.includes('want to build muscle? track your protein.'));
-  assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week has been kind of a big deal for my energy.', 'a never-say word said plainly');
-  assert.equal(S('honestly lifting 3 days a week has been a game changer for my energy'), 'lifting 3 days a week changed my energy.', 'a never-say word said plainly');
+  assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week has been kind of a big deal for my energy', 'a never-say word said plainly');
+  assert.equal(S('honestly lifting 3 days a week has been a game changer for my energy'), 'lifting 3 days a week changed my energy', 'a never-say word said plainly');
   assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter\nShort version: warm intros closed 4x more.'), 'Our sales team stopped doing cold calls this quarter. Here’s why:');
   /* v4.8 (round-11 marketing-1): with nothing under it, the topic keeps its "why": the pointer the draft made, not a claim */
   assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter'), 'Why our sales team stopped doing cold calls this quarter:', 'the topic stays a pointer');

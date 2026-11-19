@@ -88,7 +88,7 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   assert.equal(L('Hot take: I genuinely think code reviews are kind of a waste of time for teams under 5 people.'), 'Hot take: code reviews are a waste of time for teams under 5 people.');
   /* the tone: a closing "lol", a feeling, "kind of" on a feeling, a softener */
   assert.match(L('I think $BTC could maybe hit $120k by end of year, but who knows, I could be totally wrong lol'), /\blol$/);
-  assert.equal(L('so we kind of made sync 38% faster in this release, pretty happy with it'), 'we kind of made sync 38% faster in this release, pretty happy with it.');
+  assert.equal(L('so we kind of made sync 38% faster in this release, pretty happy with it'), 'we kind of made sync 38% faster in this release, pretty happy with it');
   assert.equal(L('kind of nervous for my first powerlifting meet this weekend'), 'kind of nervous for my first powerlifting meet this weekend');
   assert.equal(S('kind of nervous for my first powerlifting meet this weekend').why, 'Left “kind of” in: it’s how you feel, not filler.'); /* v5.1 */
   assert.match(L('ngl i think i might actually be getting pretty good at this whole writing thing'), /pretty good/);

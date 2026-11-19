@@ -48,17 +48,17 @@ const struck = (r, d, l) => { const lw = new Set(nz(l).match(/[a-z0-9'$-]+/g) ||
 test('v5.0 P0: padding between the pronoun and the stance verb goes, and the stance stays', () => {
   for (const [t, want] of [
     ['honestly i basically just think eth is going to 5k lol', 'i think eth is going to 5k lol'],
-    ['i basically think btc tops at 120k this cycle', 'i think btc tops at 120k this cycle.'],
-    ['i really just think sol flips eth', 'i think sol flips eth.'],
-    ['honestly, i really, just think eth is going to 5k', 'i think eth is going to 5k.'],
-    ['i, basically, think eth is going to 5k', 'i think eth is going to 5k.'],
-    ['i lowkey think eth is going to 5k', 'i think eth is going to 5k.'],
-    ['i literally believe eth is going to 5k', 'i believe eth is going to 5k.'],
+    ['i basically think btc tops at 120k this cycle', 'i think btc tops at 120k this cycle'],
+    ['i really just think sol flips eth', 'i think sol flips eth'],
+    ['honestly, i really, just think eth is going to 5k', 'i think eth is going to 5k'],
+    ['i, basically, think eth is going to 5k', 'i think eth is going to 5k'],
+    ['i lowkey think eth is going to 5k', 'i think eth is going to 5k'],
+    ['i literally believe eth is going to 5k', 'i believe eth is going to 5k'],
     ['honestly i kinda bet eth is going to 5k lol', 'i bet eth is going to 5k lol'],
-    ['honestly i sort of feel like the fed cuts rates in september', 'i feel like the fed cuts rates in september.'],
-    ['we basically, honestly expect revenue to double next year', 'we expect revenue to double next year.'],
-    ['i still really think eth goes to 5k', 'i still think eth goes to 5k.'],
-    ['honestly i actually think eth goes to 5k', 'i think eth goes to 5k.'],
+    ['honestly i sort of feel like the fed cuts rates in september', 'i feel like the fed cuts rates in september'],
+    ['we basically, honestly expect revenue to double next year', 'we expect revenue to double next year'],
+    ['i still really think eth goes to 5k', 'i still think eth goes to 5k'],
+    ['honestly i actually think eth goes to 5k', 'i think eth goes to 5k'],
   ]) { const r = S(t); assert.equal(r.state, 'sharp', t); assert.equal(r.line, want, t); assert.ok(!r.cut.some(c => c.kind === 'reshape' && /think|believe|feel|bet|expect|\bi\b|\bwe\b/i.test(c.text)), `${t}: ${JSON.stringify(r.cut)}`); }
   /* the receipt names every padding word that went, and the kept stance as it now reads */
   { const r = S('honestly i basically just think eth is going to 5k lol'); assert.deepEqual(r.cut.map(c => c.text), ['honestly', 'basically just']); assert.match(r.why, /“honestly” and “basically just”/); assert.match(r.note, /Kept your “i think”: on a prediction/); }
@@ -90,7 +90,7 @@ test('v5.0 slHard: a version that drops a first-person stance verb on a predicti
     ['we expect revenue to double next year.', 'we basically expect revenue to double next year'],
   ]) assert.equal(hard(l, d), '', `${d} → ${l}`);
   /* a stance that is not on a call or a plan is the one-hedge rule's ("kept word dropped"), as before */
-  assert.equal(hard('most people overtrade.', 'i basically think most people overtrade'), 'kept word dropped');
+  assert.equal(hard('most people overtrade', 'i basically think most people overtrade'), 'kept word dropped');
   /* no mode ships the flat call */
   for (const t of ['honestly i basically just think eth is going to 5k lol', 'i basically think btc tops at 120k this cycle', 'so i literally just believe sol flips eth by march'])
     for (const [m, o] of MODES) for (const l of versions(S(t, o))) assert.ok(stanceKept(l, 'i', t.match(/think|believe/)[0]), `${m}: ${t} → ${l}`);
@@ -151,7 +151,7 @@ test('v5.0 round 13: a "thinking about it" run-up goes whole, and never stays as
     ['Was thinking about this last night and I realized most launches fail because of the first tweet', 'Most launches fail because of the first tweet.'],
     ['I was thinking about it, and honestly most launches fail because of the first tweet', 'Most launches fail because of the first tweet.'],
     ['I was thinking about it. Most launches fail because of the first tweet.', 'Most launches fail because of the first tweet.'],
-    ['so i was thinking the other day and i realised most people overtrade', 'most people overtrade.'],
+    ['so i was thinking the other day and i realised most people overtrade', 'most people overtrade'],
     ["So I've been thinking, and I think we should all just stop chasing vanity metrics.", 'I think we should all stop chasing vanity metrics.'],
     ['So I was thinking about it and I think we should raise prices next month', 'I think we should raise prices next month.'],
   ]) { const r = S(t); assert.equal(r.line, want, t); for (const [m, o] of MODES) for (const l of versions(S(t, o))) assert.doesNotMatch(l, /\bthinking\b/i, `${m}: ${t} → ${l}`); }
@@ -174,7 +174,7 @@ test('v5.0 round 13: "honestly" goes wherever it is the honesty marker, and stay
   for (const t of ['gm. honestly feeling pretty bullish on sol right now ngl', 'honestly i think most people overtrade', 'i honestly can’t believe btc is at 98k', 'we hit 1k subs and honestly it feels unreal',
     'it’s honestly the best tool i’ve used this year', 'honestly, nobody reads past the first line', 'i’m long eth and honestly not worried', 'building in public is honestly the best marketing', 'honestly feeling pretty good about this launch', 'gm frens, honestly bullish on sol'])
     { const r = S(t); assert.equal(r.state, 'sharp', t); assert.doesNotMatch(r.line, /honestly/i, t); }
-  assert.equal(L('gm. honestly feeling pretty bullish on sol right now ngl'), 'gm. feeling pretty bullish on sol right now.');
+  assert.equal(L('gm. honestly feeling pretty bullish on sol right now ngl'), 'gm. feeling pretty bullish on sol right now');
   for (const t of ['I answered honestly and lost the deal', 'we talk honestly about money here', 'Honestly? Best decision I ever made.']) assert.match(L(t), /honestly/i, t);
 });
 
@@ -183,9 +183,9 @@ test('v5.0 round 13: the spare "that" after a kept stance goes; "really need to"
     ['I think that most people overtrade', 'I think most people overtrade.'],
     ['I believe that cold email is dead', 'I believe cold email is dead.'],
     ['I think that BTC is probably going to break 100k this week', 'I think BTC is probably going to break 100k this week.'],
-    ['i think that maybe we should raise prices', 'i think we should raise prices.'],
+    ['i think that maybe we should raise prices', 'i think we should raise prices'],
     ['I think that basically what I learned this year is that consistency beats talent every single time', 'I think what I learned this year is that consistency beats talent every single time.'],
-    ['honestly i basically just think that eth is going to 5k', 'i think eth is going to 5k.'],
+    ['honestly i basically just think that eth is going to 5k', 'i think eth is going to 5k'],
     ['If you are a creator you really need to start writing better hooks', 'If you’re a creator, you need to start writing better hooks.'],
     ['I really need to ship this week', 'I need to ship this week.'],
   ]) assert.equal(L(t), want, t);
@@ -201,7 +201,7 @@ test('v5.0 round 13: corporate run-ups and an issue run-up before a noun-phrase 
     ['We would like to inform you that pricing changes on May 1', 'Pricing changes on May 1.'],
     ["I'm writing to let you know that we moved offices", 'We moved offices.'],
     ["In this week's newsletter, I break down the 3 trades that made my month", 'The 3 trades that made my month:'],
-    ['i basically just want to say that you should never ever trade on margin', 'never ever trade on margin.'],
+    ['i basically just want to say that you should never ever trade on margin', 'never ever trade on margin'],
   ]) assert.equal(L(t), want, t);
 });
 

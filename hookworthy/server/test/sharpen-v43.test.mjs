@@ -47,14 +47,14 @@ test('v4.3, hook42-1: a deadpan or news label on a whole sentence is part of the
 
 test('v4.3, round-8 founder-1 and marketing-1: the hype openers go, or stay marked, never "Nothing to cut"', () => {
   const cut = [
-    ['huge news, BTC just broke 100k', 'BTC just broke 100k.'],
+    ['huge news, BTC just broke 100k', 'BTC just broke 100k'],
     ['Big news! we just hit $10k MRR', 'We just hit $10k MRR.'],
     ['Big news! We just launched our new feature after months of hard work', 'We just launched our new feature after months of hard work.'],
     ['This is huge. Solana just flipped Ethereum in daily fees', 'Solana just flipped Ethereum in daily fees.'],
-    ['nobody is talking about this but the yield curve just un-inverted', 'the yield curve just un-inverted.'],
+    ['nobody is talking about this but the yield curve just un-inverted', 'the yield curve just un-inverted'],
     ['Why is nobody talking about this? The Fed just quietly ended QT.', 'The Fed just quietly ended QT.'],
     ['Wow. Just wow. ETH just flipped 4k', 'ETH just flipped 4k.'],
-    ['wow just wow, the bull market is back', 'the bull market is back.'],
+    ['wow just wow, the bull market is back', 'the bull market is back'],
     ['Let that sink in: SOL flipped ETH in daily volume', 'SOL flipped ETH in daily volume.'],
     ['We went from 0 to $40k MRR in 9 months. Let that sink in.', 'We went from 0 to $40k MRR in 9 months.'],
     ['To the moon! $PEPE just did a 10x', '$PEPE just did a 10x.'],
@@ -81,7 +81,7 @@ test('v4.3, round-8 founder-1 and marketing-1: the hype openers go, or stay mark
 });
 
 test('v4.3, hook42-2: frames and list headers', () => {
-  assert.equal(L("if i'm being real, i don't really know what i'm doing half the time and that's okay"), "i don't really know what i'm doing half the time and that's okay.");
+  assert.equal(L("if i'm being real, i don't really know what i'm doing half the time and that's okay"), "i don't really know what i'm doing half the time and that's okay");
   assert.equal(L("If I'm being totally transparent, I don't really enjoy writing for clients who never give feedback."), "I don't really enjoy writing for clients who never give feedback.");
   assert.equal(L("If I'm being frank, our onboarding is the reason people churn."), 'Our onboarding is the reason people churn.');
   assert.equal(L("Here are a few of the newsletters I've been really enjoying lately, in case you're looking for something new to read:"), "A few newsletters I've been really enjoying lately:");
@@ -106,7 +106,7 @@ test('v4.3, hook42-5: "Here\'s my honest take on X:" goes only when the claim is
   assert.equal(ok && ok.line, "Cold plunges: they're mostly hype.");
   assert.equal(core.SHARPEN.fromClaude("Here's my honest take on remote work: hire people you trust.", { versions: [{ line: 'Remote work: hire people you trust.', why: 'The run-up went.' }], unchanged: false }), null);
   /* "ngl" is cut whole, as the prompt cuts it: "ngl tho" leaves no "tho", "NGL:" no stray colon */
-  assert.equal(L('ngl tho this cycle feels different'), 'this cycle feels different.');
+  assert.equal(L('ngl tho this cycle feels different'), 'this cycle feels different');
   assert.equal(L('NGL: most people who say they want feedback don\'t.'), 'Most people who say they want feedback don\'t.');
   assert.equal(L('ngl i think we could maybe ship the beta by march').replace(/\.$/, ''), 'i think we could ship the beta by march');
   /* and the question it can make agrees: "most launches flop" never becomes "does most launch flop" */

@@ -69,7 +69,7 @@ test('juror 3, hook-3: a label cut never leaves a broken opener', () => {
 });
 
 test('juror 3, hook-4/5/8: the words that carry the meaning stay', () => {
-  assert.equal(L('idk who needs to hear this but you can just log off'), 'you can just log off.');
+  assert.equal(L('idk who needs to hear this but you can just log off'), 'you can just log off');
   for (const t of ['you can just say no.', 'you can just leave.', 'Basically everyone I know is burned out.', 'Pretty much every trader I know lost money in May.']) assert.equal(L(t), t);
   assert.match(L('today i learned that you can just ask people for things and they\'ll often say yes'), /you can just ask/);
   assert.equal(L("Love how every 'passive income' guru is actually just selling a course on passive income."), "Love how every 'passive income' guru is actually just selling a course on passive income."); /* v4.1 (hook4-7): there "actually" is the sarcasm */
@@ -82,7 +82,7 @@ test('juror 3, hook-4/5/8: the words that carry the meaning stay', () => {
 });
 
 test('juror 3, hook-7/9/12/13/15/16: tails, lists, idioms, salad, stance and disclaimers', () => {
-  assert.equal(L('honestly i think $SOL is going to outperform $ETH this cycle, just my opinion though'), 'i think $SOL will outperform $ETH this cycle.');
+  assert.equal(L('honestly i think $SOL is going to outperform $ETH this cycle, just my opinion though'), 'i think $SOL will outperform $ETH this cycle');
   for (const t of ["Funding is negative, OI is climbing, and price won't move. Someone is about to get squeezed.", "I've been writing a newsletter every single week for 3 years. Here are 7 lessons:", 'Kind of a big day: we just crossed 1 million downloads.']) assert.equal(L(t), t);
   assert.ok(S('Kind of a big day: we just crossed 1 million downloads.').kept.includes('1 million downloads'));
   assert.equal(S('purple elephant spreadsheet tomorrow banana').state, 'thin');
@@ -109,7 +109,7 @@ test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are 
     const n = (r.line.match(/[.!?]+(?=\s|$)/g) || []).length; assert.equal(r.say.match(/Split it into (\w+) beats/)[1], ['', 'one', 'two', 'three'][n]); assert.match(r.line, /stop losses, and they chase/); }
   /* r86 pass 6 (juror 5, hook-7/12): a frame that says how to take the line stays, a lone "i think" stays, and so does the "!" */
   assert.equal(L('this might be controversial but i actually think dca is overrated for most people'), 'this might be controversial but i actually think dca is overrated for most people');
-  assert.equal(L('so i think the real reason most newsletters stall is that the first line is boring'), 'i think the real reason most newsletters stall is that the first line is boring.');
+  assert.equal(L('so i think the real reason most newsletters stall is that the first line is boring'), 'i think the real reason most newsletters stall is that the first line is boring');
   assert.equal(L('Quick update: we shipped dark mode and the onboarding checklist this week'), 'We shipped dark mode and the onboarding checklist this week.');
   assert.equal(L("Thrilled to announce we've raised a $4M seed round led by @a16z!"), "We've raised a $4M seed round led by @a16z!");
   /* every quote over the held-out lines ends on a phrase: never on a small word, a verb before its particle, or a lone quote mark */

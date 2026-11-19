@@ -23,7 +23,7 @@ test('sharpen.js: is what core.js builds today (run node tools/build-sharpen.mjs
 
 test('sharpen.js: exposes the subset the homepage calls, and is smaller', () => {
   assert.deepEqual(Object.keys(bundle).sort(), ['SHARPEN', 'SOFT', 'sharpenLine', 'softCut', 'softMarks', 'xLength']);
-  assert.deepEqual(Object.keys(bundle.SHARPEN).sort(), ['SOFT', 'factsOf', 'fragN', 'guard', 'sharpenLine', 'softCut', 'softMarks', 'stanceKeep', 'tooThin', 'warm', 'warmSteps']);
+  assert.deepEqual(Object.keys(bundle.SHARPEN).sort(), ['SOFT', 'callCut', 'factsOf', 'fragN', 'guard', 'sharpenLine', 'softCut', 'softMarks', 'stanceKeep', 'tooThin', 'warm', 'warmSteps']);
   for (const k of ['sharpenLine', 'softMarks', 'softCut', 'xLength']) assert.equal(typeof bundle[k], 'function', k);
   assert.ok(readFileSync(path.join(root, 'sharpen.js')).length < readFileSync(path.join(root, 'core.js')).length * 0.8);
   /* the helpers the page reads give core's answers */

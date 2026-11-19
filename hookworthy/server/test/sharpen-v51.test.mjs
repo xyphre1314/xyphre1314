@@ -37,8 +37,8 @@ test('v5.1 (1): "I\'ve been thinking a lot lately about X" is a run-up; the line
     ["I've been thinking a lot about why most startups fail", 'Why most startups fail:'],
     ['So I’ve been thinking… most founders ship too slowly', 'Most founders ship too slowly.'],
     ["So I've been thinking... most founders ship too slowly", 'Most founders ship too slowly.'],
-    ['been thinking about this a lot. most founders ship too slowly', 'most founders ship too slowly.'],
-    ['been thinking about this a lot: most founders ship too slowly', 'most founders ship too slowly.'],
+    ['been thinking about this a lot. most founders ship too slowly', 'most founders ship too slowly'],
+    ['been thinking about this a lot: most founders ship too slowly', 'most founders ship too slowly'],
     ["I've been thinking about this a lot — the best founders ship daily", 'The best founders ship daily.'],
     ["So I've been thinking about this a lot lately, and I think most founders ship too slowly", 'I think most founders ship too slowly.']
   ]) {
@@ -77,7 +77,7 @@ test('v5.1 (3): a plain claim never becomes a "How …:" teaser; a how-topic the
     ["So I've been thinking a lot lately about how most founders actually ship too slowly", 'Most founders actually ship too slowly.'],
     ['So I’ve been thinking a lot lately about how most founders hire too early', 'Most founders hire too early.'],
     ["I've been thinking about how nobody reads past the first line", 'Nobody reads past the first line.'],
-    ['so i’ve been thinking a lot about how most traders never take profits', 'most traders never take profits.'],
+    ['so i’ve been thinking a lot about how most traders never take profits', 'most traders never take profits'],
     ["Let's talk about how most founders don't talk to users", "Most founders don't talk to users."]
   ]) { const R = S(t); assert.equal(R.line, want, t); for (const [m, o] of MODES) for (const v of versions(S(t, o))) assert.ok(!teaser(v.line), `${m}: ${t} → ${v.line}`); }
   /* a manner "how" is a topic, and with an announcing "about" it stays the pointer */

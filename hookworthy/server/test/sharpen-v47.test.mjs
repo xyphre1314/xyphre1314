@@ -174,7 +174,7 @@ test('v4.7, web juror: a figure lead keeps its verb, "just" (recently) stays, an
     for (const t of ['so we just crossed 1,000 paying users which is literally crazy', 'So I just hit 50,000 followers today and I honestly have no idea how this happened lol', 'Big news: we just hit $10k MRR, 14 months after launching', "We're beyond thrilled to share that we just crossed $50k MRR this month! Thank you to every single customer 🙏"])
       for (const l of versions(S(t, o))) { assert.match(l, /\bjust (?:crossed|hit)\b/i, `${m}: ${t} → ${l}`); assert.deepEqual(broken(l, t), [], `${m}: ${t} → ${l}`); }
   }
-  assert.equal(L('so we just crossed 1,000 paying users which is literally crazy'), 'we just crossed 1,000 paying users which is crazy.');
+  assert.equal(L('so we just crossed 1,000 paying users which is literally crazy'), 'we just crossed 1,000 paying users which is crazy');
   assert.match(hard('1,000 paying users which is crazy.', 'so we just crossed 1,000 paying users which is literally crazy'), /predicate dropped/);
   assert.match(hard('We crossed 1,000 paying users.', 'so we just crossed 1,000 paying users'), /recency lost/);
   /* a stat lead that says what happened, or has its own verb, is fine */
@@ -184,7 +184,7 @@ test('v4.7, web juror: a figure lead keeps its verb, "just" (recently) stays, an
   /* the score no longer docks, or says to cut, a "just" that means recently */
   assert.doesNotMatch(JSON.stringify(core.hookScore('We just crossed 5,000 readers. Thank you to everyone who subscribed.').reason), /“just” is filler/);
   /* the unsure note: the safe fillers go and only the doubtful word stays marked; "breaks" only when a check refused that cut */
-  assert.equal(L('so basically my newsletter just hit 5,000 readers which is honestly wild'), 'my newsletter just hit 5,000 readers which is wild.');
+  assert.equal(L('so basically my newsletter just hit 5,000 readers which is honestly wild'), 'my newsletter just hit 5,000 readers which is wild');
   /* v4.8 (round-11 founder-3): a doubled intensifier collapses or goes; "I think" stays as the one hedge, and the why says what went */
   const rr = S('I really really think you should start a newsletter');
   assert.equal(rr.line, 'I think you should start a newsletter.'); assert.doesNotMatch(rr.why, /breaks/); assert.match(rr.why, /twice/);

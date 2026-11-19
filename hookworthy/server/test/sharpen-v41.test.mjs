@@ -74,7 +74,7 @@ test('v4.1, hook4-1 and the round-6 jurors: the broken lines come back whole', (
   assert.equal(L('Excited to share that our Series A is closed'), 'Our Series A is closed.');
   assert.equal(L('Excited to share that our seed round is closed!'), 'Our seed round is closed!');
   assert.equal(L('Our seed round was oversubscribed in 48 hours.'), 'Our seed round was oversubscribed in 48 hours.');
-  assert.equal(L('hey everyone, hope you are all having a great week! today I want to talk about pricing'), 'today I want to talk about pricing.');
+  assert.equal(L('hey everyone, hope you are all having a great week! today I want to talk about pricing'), 'today I want to talk about pricing');
   /* honesty frames go with their tails */
   assert.equal(L("If I'm being completely honest with you all, I almost quit last month."), 'I almost quit last month.');
   assert.equal(L('Not gonna lie to you, the first 1,000 subscribers were the hardest part.'), 'The first 1,000 subscribers were the hardest part.');
@@ -229,7 +229,7 @@ test('v4.1, hook4-7 and founder-2: the engine keeps what the Claude prompt keeps
   }
   /* founder-2: "In my opinion" and "IMO" are kept the way "I think" is, one hedge per clause; IMHO is the delaying frame */
   assert.equal(L('In my opinion, the best traders are the ones who sit on their hands most of the time.'), 'In my opinion, the best traders are the ones who sit on their hands most of the time.');
-  assert.equal(L('honestly IMO most landing pages are bloated'), 'IMO most landing pages are bloated.');
+  assert.equal(L('honestly IMO most landing pages are bloated'), 'IMO most landing pages are bloated');
   assert.equal(L('the best traders do nothing most days imo'), 'the best traders do nothing most days imo');
   /* v4.2 (round-7 marketing-4): the opinion is the clause's one hedge, kept; the softener on top goes */
   assert.equal(L('In my opinion, most landing pages are kind of bloated.'), 'In my opinion, most landing pages are bloated.');

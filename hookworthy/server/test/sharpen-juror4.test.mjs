@@ -60,7 +60,7 @@ test('juror 4, hook-3: a hedged plan or forecast keeps its hedge; "going to" nev
   /* r86 pass 6 (juror 5, hook-7): a hedge on a claim about now is the one hedge its clause keeps, as the Claude prompt keeps it;
      only a second hedge on the same clause goes */
   assert.equal(L('I think most people overthink their first post'), 'I think most people overthink their first post');
-  assert.equal(L('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it'), '$ARB unlock is next week. i think everyone is way too relaxed about it.');
+  assert.equal(L('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it'), '$ARB unlock is next week. i think everyone is way too relaxed about it');
   /* v4.2 (round-7 marketing-4): "I think" is the one hedge kept; "probably" is the second one */
   assert.equal(L('I think most people probably overthink their first post'), 'I think most people overthink their first post.');
   /* r86 pass 6 (juror 5, hook-7): "probably" is the clause's one hedge, so it stays; never "Probably talk to your users" */
@@ -70,7 +70,7 @@ test('juror 4, hook-3: a hedged plan or forecast keeps its hedge; "going to" nev
 });
 
 test('juror 4, hook-4/5: a cut between clauses keeps the comma; every emoji stays whole', () => {
-  assert.equal(L('honestly i think $SOL is just getting started tbh, the chart looks really really bullish right now'), 'i think $SOL is just getting started, the chart looks really really bullish right now.');
+  assert.equal(L('honestly i think $SOL is just getting started tbh, the chart looks really really bullish right now'), 'i think $SOL is just getting started, the chart looks really really bullish right now');
   assert.equal(L('I quit my job, honestly the commute was killing me.'), 'I quit my job, the commute was killing me.');
   const seg = new Intl.Segmenter('en', { granularity: 'grapheme' }), emo = z => [...seg.segment(z)].map(x => x.segment).filter(g => /\p{Extended_Pictographic}|‍/u.test(g));
   const lines = ['Reminder that walking 10k steps a day is literally one of the most underrated things you can do for your health 🚶‍♂️',

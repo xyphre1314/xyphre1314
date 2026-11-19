@@ -81,8 +81,8 @@ const ANN40 = [
   ["I'm humbled to announce that I'm joining Stripe", "I'm joining Stripe."],
   ["We're really really excited to finally launch the beta", "We're finally launching the beta."],
   ["I'm so so proud to share that we closed our seed round", "We closed our seed round."],
-  ["we are thrilled to share that our app is live", "our app is live."],
-  ["i'm so excited to finally launch my newsletter", "i'm finally launching my newsletter."],
+  ["we are thrilled to share that our app is live", "our app is live"],
+  ["i'm so excited to finally launch my newsletter", "i'm finally launching my newsletter"],
   ["We're incredibly excited to launch Hookworthy on Product Hunt today!", "We're launching Hookworthy on Product Hunt today!"],
   ["We're excited to now introduce dark mode", "We're now introducing dark mode."],
   ["I am really proud to announce that we closed our Series A", "We closed our Series A."],
@@ -170,10 +170,10 @@ test('v4.8, marketing-1: a why/how topic keeps its question word, so the line st
 
 test('v4.8, founder-1: the plain cut is version 1; "Asked, then answered" is the other take', () => {
   for (const [t, want, flip] of [
-    ['basically SOL is the only chain that matters rn imo', 'SOL is the only chain that matters rn imo.', 'only chain that matters rn imo? SOL.'],
-    ["tbh ETH is the only L1 i'd hold for 5 years", "ETH is the only L1 i'd hold for 5 years.", "only L1 i'd hold for 5 years? ETH."],
-    ['honestly, patience is the only edge most traders never build', 'patience is the only edge most traders never build.', 'only edge most traders never build? patience.'],
-    ['you should really be tracking your protein if you want to build muscle', 'you should be tracking your protein if you want to build muscle.', 'want to build muscle? track your protein.']
+    ['basically SOL is the only chain that matters rn imo', 'SOL is the only chain that matters rn imo', 'only chain that matters rn imo? SOL.'],
+    ["tbh ETH is the only L1 i'd hold for 5 years", "ETH is the only L1 i'd hold for 5 years", "only L1 i'd hold for 5 years? ETH."],
+    ['honestly, patience is the only edge most traders never build', 'patience is the only edge most traders never build', 'only edge most traders never build? patience.'],
+    ['you should really be tracking your protein if you want to build muscle', 'you should be tracking your protein if you want to build muscle', 'want to build muscle? track your protein.']
   ]) {
     const r = S(t); assert.equal(r.line, want, t); assert.doesNotMatch(r.say, /Asked, then answered/, t);
     const a = r.alts.find(x => x.line === flip); assert.ok(a, `${t}: ${JSON.stringify(r.alts.map(x => x.line))}`); assert.match(a.say, /Asked, then answered/);
@@ -202,9 +202,9 @@ test('v4.8, founder-2/3 and marketing-2: true reasons, doubled intensifiers, and
   assert.equal(L('I really, really think you should write every day if you want to grow.'), 'I think you should write every day if you want to grow.');
   for (const t of ['I really, really needed this win.', "It's been a really, really hard year for me and my family.", "everyone says it's fine when it really, really isn't"]) assert.match(L(t), /really, really/, t);
   /* the run-ups */
-  assert.equal(L("i just want to say that if you're new to crypto please don't use leverage"), "if you're new to crypto please don't use leverage.");
+  assert.equal(L("i just want to say that if you're new to crypto please don't use leverage"), "if you're new to crypto please don't use leverage");
   assert.equal(L('This is huge: Solana just flipped Ethereum in daily active users'), 'Solana just flipped Ethereum in daily active users.');
-  assert.equal(L('gm frens, just a reminder that $BTC is still in a bull market'), 'gm frens, $BTC is still in a bull market.');
+  assert.equal(L('gm frens, just a reminder that $BTC is still in a bull market'), 'gm frens, $BTC is still in a bull market');
   assert.equal(L('My newsletter just crossed 10,000 subscribers and I am so grateful for each and every one of you'), 'My newsletter just crossed 10,000 subscribers. I’m so grateful for every one of you.');
   /* "Series A" ends on a name, not an article */
   assert.equal(L('I am really proud to announce that we closed our Series A'), 'We closed our Series A.');
@@ -214,7 +214,7 @@ test('v4.8, brand-4: the apostrophe the engine writes matches the draft, and the
   assert.equal(L('We are super excited to finally launch our new feature'), 'We’re finally launching our new feature.');
   assert.equal(L("We are super excited to finally launch our 'new' feature"), "We're finally launching our 'new' feature.");
   assert.equal(L('We’re so excited to unveil the new dashboard'), 'We’re unveiling the new dashboard.');
-  assert.equal(L("i think it is basically done and we are honestly so ready"), 'i think it is basically done. we’re so ready.');
+  assert.equal(L("i think it is basically done and we are honestly so ready"), 'i think it is basically done. we’re so ready');
   /* the writer's own characters are never changed: a mixed draft keeps each as typed */
   const mx = L("I'm so excited to finally launch my app and it’s free");
   assert.ok(mx.includes("I'm") && mx.includes('it’s'), mx);

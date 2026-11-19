@@ -150,7 +150,7 @@ test('v4.2, hook41-5 and round 7: the run-ups the demo called "Already tight"', 
     ['Just a thought, but maybe we should stop chasing every narrative', 'Maybe we should stop chasing every narrative.'],
     ['With that being said, most founders should write every day.', 'Most founders should write every day.'],
     ["As many of you know, I've been building in public for 2 years.", "I've been building in public for 2 years."],
-    ['gm everyone, just wanted to say we shipped dark mode today', 'gm everyone, we shipped dark mode today.']
+    ['gm everyone, just wanted to say we shipped dark mode today', 'gm everyone, we shipped dark mode today']
   ];
   for (const [t, want] of cases) assert.equal(L(t), want, t);
   /* a line the demo can't cut safely is marked, never "Already tight" */

@@ -10,7 +10,7 @@
    reference only ever keeps too much, never too little. Kept statements are copied byte for byte, in their order, so every
    kept function is the same code as in core.js. The exported subset is the one the homepage calls:
      window.HWCore = { sharpenLine, softMarks, softCut, SOFT, xLength,
-                       SHARPEN: { sharpenLine, softMarks, softCut, SOFT, warmSteps, warm, tooThin, factsOf, stanceKeep, guard, fragN } }
+                       SHARPEN: { sharpenLine, softMarks, softCut, SOFT, warmSteps, warm, tooThin, factsOf, stanceKeep, guard, fragN, callCut } }
    (in Node, module.exports is the same object). No dependencies. */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -20,7 +20,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CORE = path.join(ROOT, 'core.js'), OUT = path.join(ROOT, 'sharpen.js');
 /* what the bundle exports: top-level keys (name → expression in core's own top-level return) and SHARPEN's keys */
 const TOP = ['sharpenLine', 'softMarks', 'softCut', 'SOFT', 'xLength'];
-const SH = ['sharpenLine', 'softMarks', 'softCut', 'SOFT', 'warmSteps', 'warm', 'tooThin', 'factsOf', 'stanceKeep', 'guard', 'fragN'];
+const SH = ['sharpenLine', 'softMarks', 'softCut', 'SOFT', 'warmSteps', 'warm', 'tooThin', 'factsOf', 'stanceKeep', 'guard', 'fragN', 'callCut'];
 
 /* ---------- tokenizer: [{ t: 'id' | 'num' | 'str' | 'tpl' | 're' | 'p', v, a, b }] for one source string ---------- */
 const KW_RE = new Set(['return', 'typeof', 'instanceof', 'in', 'of', 'new', 'delete', 'void', 'throw', 'case', 'do', 'else', 'yield', 'await']);
