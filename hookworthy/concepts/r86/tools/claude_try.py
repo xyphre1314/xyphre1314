@@ -8,7 +8,7 @@ def patch(out):
         assert out_[0].count(a) == 1, a[:80]
         out_[0] = out_[0].replace(a, b)
     out_ = [out]
-    rep('<span class="tl2"> Nothing leaves your device.</span>', '<span class="tl2"> Here Claude sharpens it, as in the app.</span>')
+    rep('<span class="tl2"> On this page, nothing leaves your device.</span>', '<span class="tl2"> Here Claude sharpens it, as in the app.</span>')
     rep('The demo on this page is a quick check that runs on your device.', 'In this preview, the Try box asks Claude too, on your own Claude account, and the on-device line shows while it thinks.')
     rep('<p class="sr" id="try-status" role="status"></p>', '<p class="try-cl" id="try-claude" aria-live="polite" hidden></p>\n          <p class="sr" id="try-status" role="status"></p>')
     css = ('<style>.try-cl{margin:10px 0 0;font-size:13px;line-height:1.4;color:var(--ink-3);display:flex;gap:8px;align-items:center}'

@@ -9,8 +9,9 @@
 //   - the Try tile's pre-rendered default and the final's example card;
 //   - the Who tile's four mini posts (WHO): each persona's line and cuts, and the static list drawn by the page's whoHTML;
 //   - the Voice tile's never-say words: the demo must cut each one as an opener and as a closer (it can't rewrite these).
-// The hero shows the engine's own "why" and "say" verbatim (the say through the page's display-only sayTxt, which writes
-// "Split it into two beats" as "Split into 2 beats"), so they are checked (and rewritten by --write) like the line.
+// The hero shows the engine's own "why" and "say" verbatim (the say through the page's display-only sayTxt, which since pass 19
+// only keeps each part on one line: "Split it into two beats" stays the engine's words), so they are checked (and rewritten by
+// --write) like the line.
 // The Try default's counter must show its true length.
 // Every example must also pass the page's own output guard (its GUARD block, lifted the same way): no doubled verb, no stub,
 // no word from nowhere.
