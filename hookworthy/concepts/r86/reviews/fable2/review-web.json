@@ -1,0 +1,22 @@
+{
+ "key": "web",
+ "role": "Awwwards-level web designer and front-end craftsperson",
+ "score": 9.5,
+ "verdict": "Composition, rhythm and motion hold at 1440, 390 and 360 with every hard budget met (8.3 screens at 1440, 9.96 at 390, 10.50 at 360, CLS 0, no horizontal scroll, all headings two lines, ~480 KB total, zero console errors, reduced motion lands on a finished static layout with no running animations). I found no P0 or P1 in a time-boxed pass; what is left is small P2 polish, none of it in the first seconds of a section.",
+ "to_95": [],
+ "measured": {
+  "screens": {"1440x900": 8.32, "390x844": 9.96, "360x780": 10.50},
+  "cls": 0, "horizontal_scroll_390_360": false, "headings_over_two_lines": 0,
+  "payload_bytes": {"home.html": 300822, "Inter-Variable.woff2": 72812, "avatars.jpg": 91357, "you-dark.jpg": 14929},
+  "console_errors": 0, "reduced_motion_running_animations": 0, "infinite_animations_at_rest": 0,
+  "focus_ring": "2px solid soft white, skip link present",
+  "tap_targets_390": "visually small pills (24-36px) have extended hit areas; hit-tested +/-21px OK"
+ },
+ "issues": [
+  {"id": "web-1", "severity": "P2", "area": "signup sheet", "where": "390 and 360, 'Not live yet' state after submitting an email", "problem": "The primary pill 'Open the working app on claude.ai (demo data)' wraps to two lines and orphans 'data)' on its own line, so the one white button in the sheet looks unfinished.", "fix": "Shorten the label under 480px to 'Open the working app' and move '(demo data, on claude.ai)' to a 12px caption under the button, or set text-wrap:balance and reduce to 15px so it breaks as 'Open the working app / on claude.ai (demo data)'."},
+  {"id": "web-2", "severity": "P2", "area": "motion timing", "where": "Try card result post and Reply card drafted answer, 1440 and 390", "problem": "The Try result post sits at 35% opacity for about 900 ms after it enters the viewport, and the Reply card shows a 190px empty black panel for about 700 ms before the draft fades in. At normal scroll speed a visitor catches both mid-state, and the dimmed result reads as disabled rather than arriving.", "fix": "Cut the in-view delay to 200-250 ms and the fade to about 320 ms for both; start the Try result at 0 opacity with a 6px rise instead of holding at 0.35, so it reads as an entrance, not a disabled state."},
+  {"id": "web-3", "severity": "P2", "area": "layout", "where": "FAQ section, 1440", "problem": "The left column (heading, two lines of copy, email) ends about 150px above the bottom of the six-row list, and once a row is opened the gap grows; the column feels unanchored against the taller right side.", "fix": "Make the left column position:sticky; top:96px within the FAQ grid so it travels with open rows, or align-self:end the copy and email to the list's last hairline."},
+  {"id": "web-4", "severity": "P2", "area": "demo output", "where": "Try box, pasted lines", "problem": "Two of my five pasted lines gave results that look like glitches on a page selling precision: 'Excited to announce that we raised $2M!!! 🚀' became 'We raised $2M!! 🚀' (one exclamation mark silently dropped, not marked as a cut), and 'I just wanted to say that I think we really shipped the best release ever today' reported 'Cut 1 bit of fluff' while leaving 'I think' and 'really' untouched.", "fix": "Either keep punctuation runs exactly as typed or mark the trimmed '!' as a struck cut with its own count; mark 'I think' and 'really' as fluff when they follow a cut opener, or soften the count line to 'Cut the opener' so the claim matches what was done."},
+  {"id": "web-5", "severity": "P2", "area": "type", "where": "role badges (Trader, Newsletter, Founder, Ghostwriter, Pro), 390 and 360", "problem": "Badges render at 10.5px, the smallest text on the page and below the 12px floor used everywhere else; on a 360 phone they are the one element that looks shrunk rather than designed.", "fix": "Raise badges to 11.5-12px with letter-spacing .01em and reduce horizontal padding by 1px to hold the same width."}
+ ]
+}
