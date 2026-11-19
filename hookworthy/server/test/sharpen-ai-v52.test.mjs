@@ -59,8 +59,9 @@ test('selection v5.2: a version 1 that keeps a stacked opinion frame gives way t
   /* a scope word, "tend to" and "in my experience" count the same */
   assert.equal(F('In my experience, launch dates usually slip by a month', ['In my experience, launch dates usually slip by a month.', 'Launch dates usually slip by a month.']).r.pick, 1);
   assert.equal(F('I think founders tend to hire too fast', ['I think founders tend to hire too fast.', 'Founders tend to hire too fast.']).r.pick, 1);
-  /* the frame is the clause's only hedge: it stays first */
-  assert.equal(F('Honestly I think most standups are a waste of time', ['I think most standups are a waste of time.', 'Most standups are a waste of time.']).r.pick, 0);
+  /* v5.3 (Fable g-14, g-28, g-68): the frame is the clause's only hedge on a plain view: it is a run-up there, so the same line
+     without it goes first. On a call, a plan or a forecast it stays first (below) */
+  assert.equal(F('Honestly I think most standups are a waste of time', ['I think most standups are a waste of time.', 'Most standups are a waste of time.']).r.pick, 1);
   /* a doubt in another clause is not a stack ("though I could be wrong" stays where they put it) */
   assert.equal(F('Honestly I think cold email still works, though I could be wrong', ['I think cold email still works, though I could be wrong.', 'Cold email still works, though I could be wrong.']).r.pick, 0);
   /* a stated doubt is never the hedge to drop: a version without it is bare */

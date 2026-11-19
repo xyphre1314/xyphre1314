@@ -51,7 +51,9 @@ test('prompt v4.1: scope words, the writer\'s doubt, hard news and list headers 
   assert.equal(core.prompts.sharpen({ text: 'another line\nwith a rest' }).cached, sys, 'still one cached string');
   const ex = [...sys.matchAll(/<example>\n<line>([\s\S]*?)<\/line>\n(\{[\s\S]*?\})\n<\/example>/g)].map(m => [m[1], JSON.parse(m[2])]);
   assert.ok(ex.length >= 16, `${ex.length} examples`);
-  assert.ok(ex.some(([d, x]) => /\bI feel like\b/.test(d) && /\bI feel like\b/.test(x.versions[0].line) && x.versions[1] && !/feel like/i.test(x.versions[1].line)), 'the doubt kept in v1, the bare claim second');
+  /* v5.3 (Fable g-14, g-28): on a plain view the opinion frame is a run-up, so version 1 drops it and the light edit keeps it
+     (sharpen-ai-v53.test.mjs); a stated doubt and every hedge on a call still stay */
+  assert.ok(ex.some(([d, x]) => /\bI feel like\b/.test(d) && !/feel like/i.test(x.versions[0].line) && x.versions[1] && /\bI feel like\b/.test(x.versions[1].line)), 'a plain view: the frame goes in v1, the light edit keeps it');
   assert.ok(ex.some(([d, x]) => /diagnosed/.test(d) && /hard to write/.test(x.versions[0].line) && !/wanted to share/.test(x.versions[0].line)), 'hard news keeps its framing, padding cut');
   for (const [d, data] of ex) {
     for (const v of data.versions) { const { r, reject } = F(d, [v], {}, data.unchanged); assert.ok(r, `example rejected: ${d} (${reject})`); assert.equal(r.why, v.why, d); }
@@ -91,7 +93,8 @@ test('selection v4.1 (hook4-3): where the draft says how sure it is, a version t
   /* a run-up never wins back its place by dropping the writer's doubt */
   const r = F('So I wanted to share that I think we nailed onboarding', ['So, I think we nailed onboarding.', 'We nailed onboarding.']);
   assert.equal(r.r.line, 'So, I think we nailed onboarding.'); assert.equal(r.trace.promoted, undefined);
-  assert.equal(F('So I wanted to share that I think we nailed onboarding', ['So, I think we nailed onboarding.', 'We nailed onboarding.', 'I think we nailed onboarding.']).r.line, 'I think we nailed onboarding.');
+  /* v5.3 (Fable g-14): once the run-up went, a plain view's "I think" gives way to the same line without it */
+  assert.equal(F('So I wanted to share that I think we nailed onboarding', ['So, I think we nailed onboarding.', 'We nailed onboarding.', 'I think we nailed onboarding.']).r.line, 'We nailed onboarding.');
 });
 
 test('selection v4.1 (hook4-8): on hard news the writer\'s framing stays in version 1; a decision or good news is not hard news', () => {
