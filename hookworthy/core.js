@@ -319,7 +319,7 @@
     /* v4.1 (hook4-6): "fwiw" goes the way "ngl" does */
     { k: 'honest', re: /(?:^|(?<=[.!?]\s{1,3})|(?<=,\s))(?:fwiw|for what it['’]?s worth)\b,?(?=\s+\S)/gi,
       why: 'A modest run-up. It tells people to weigh the line less, so let it stand on its own.', short: 'tells people to weigh the line less', cw: 'Tells people to weigh the line less.' },
-    { k: 'intens', re: /(?<!\b(?:really|very|so|super),?\s)\b(?:really|very|quite|somewhat|pretty much|extremely|incredibly|totally|completely(?= (?:normal|fine|wrong|true|okay|ok|natural|valid|understandable|different)\b)|(?<=\b(?:is|are|was|were|['’]s|['’]re)\s)(?:genuinely|truly)(?= (?:the (?:most|best|worst|biggest|hardest|only)|one of|so|an? (?:great|good|bad|huge|big|real)|incredible|amazing|insane|wild|great|good|bad|terrible|awful|crazy|unbelievable|impressive|hilarious|embarrassing|useful|helpful|life[- ]changing)\b))\b(?!,?\s(?:really|very|so|super)\b)/gi,
+    { k: 'intens', re: /(?<!\b(?:really|very|so|super),?\s)\b(?:really|very|quite|somewhat|pretty much|extremely|incredibly|totally|completely(?= (?:normal|fine|wrong|true|okay|ok|natural|valid|understandable|different)\b)|(?<=\b(?:is|are|was|were|['’]s|['’]re)\s)(?:genuinely|truly)(?= (?:the (?:most|best|worst|biggest|hardest|only)|one of|so|an? (?:great|good|bad|huge|big|real)|incredible|amazing|insane|wild|great|good|bad|terrible|awful|crazy|unbelievable|impressive|hilarious|embarrassing|useful|helpful|life[- ]changing)\b))\b(?!,?\s(?:really|very|so|super)\b)(?!,?\s+(?:not\s+)?(?:un)?(?:likely|probable|certain(?:ly)?|sure|convinced|confident)\b)/gi,
       why: 'An intensifier propping up a weaker word. Cut it, or trade the pair for one sharp word: “very tired” → “exhausted”.', short: 'props up the word next to it' },
     /* v4.8 (round-11 founder-3): a doubled intensifier collapses to one: "Really really proud" → "Really proud", "Very very
        important:" → "Very important:". The first copy goes; the last stays, before the word it lifts ("so so" alone, "so-so", stays).
@@ -2056,10 +2056,12 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /(?:^|(?<=[\s(]))(?:honestly|tbh|ngl|imo|imho|basically|literally|kinda|sorta|personally(?=,?\s+i\b|,\s))\b(?!\?),?\s*/gi,
     new RegExp(String.raw`(?:^|(?<=[\s(]))(?<!\b(?:what|who|which|that|you['’]re|you are) )actually\b(?![^.!?\n]*\?)(?! (?:liked?|loved?|prefer(?:red|s)?|matters?|works?|worked|happened|need(?:ed|s)?|want(?:ed|s)?|read|use[ds]?|cares?|cared)\b),?\s*`, 'gi'),
     /(?<!\bsome )\b(?:kind|sort) of\s+(?=[a-z])(?!a (?:big deal|thing|mess|legend|genius|joke|vibe)\b)/gi,
-    /(?<!\b(?:really|very|so|super),?\s)\b(?:really|very|quite|somewhat|fairly|truly)\s+(?=[a-z$])(?!(?:really|very|so|super)\b)/gi,
+    /(?<!\b(?:really|very|so|super),?\s)\b(?:really|very|quite|somewhat|fairly|truly)\s+(?=[a-z$])(?!(?:really|very|so|super)\b)(?!(?:not\s+)?(?:un)?(?:likely|probable|certain(?:ly)?|sure|convinced|confident)\b)/gi,
     /* r86 pass 6 (hook-7): "pretty good" is the writer's degree, a softener the prompt keeps; only "pretty much good" pads */
     /\bpretty much (?=(?:good|bad|big|hard|easy|clear|wild|crazy|simple|obvious|quiet|weak|strong|boring)\b)/gi,
-    /\bpretty much\s+/gi,
+    /* v5.2 (Fable f-9): a degree word on a likelihood word is how sure the writer is: "very likely", "really not sure",
+       "pretty much convinced" stay */
+    /\bpretty much\s+(?!(?:not\s+)?(?:un)?(?:likely|probable|certain(?:ly)?|sure|convinced|confident)\b)/gi,
     /\b(?:probably|perhaps|maybe)\b(?! (?:i|i['’]m|i am|i['’]ll|we|we['’]re|you|you['’]re|it|it['’]s|not|nothing|none|nobody|no one|never|they|he|she|this|that|the real)\b),?\s*/gi,
     new RegExp(String.raw`(?<!,\s?)(?<!\b(?:not|only|is it|it['’]s|it is|that['’]s|that is|i['’]m|you['’]re) )(?<!(?:^|[.!?]\s{1,3}))\bjust\s+(?!(?:by|a|an|the|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|forty|fifty|sixty|half|under|over|\d|now|as|like|because|in case|about|enough|people|for|to|in|starting|getting|me|can['’]?t|cannot|couldn['’]?t|won['’]?t|don['’]?t|didn['’]?t|[a-z]+ing)\b|${JUST_PAST}|[a-z]{3,}ly ${JUST_PAST})`, 'gi')
   ];
