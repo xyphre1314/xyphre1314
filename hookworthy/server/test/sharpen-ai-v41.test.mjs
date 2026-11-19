@@ -41,7 +41,8 @@ const ON_DEVICE = /on-device/i;
 test('prompt v4.1: scope words, the writer\'s doubt, hard news and list headers are in the cached instructions; the examples pass and keep their order', () => {
   const sys = core.prompts.sharpen({ text: 'placeholder line' }).cached;
   for (const re of [/A scope word stays with its claim: "mostly", "largely", "partly", "often", "usually", "generally", "sometimes"/, /never a scope word/,
-    /where a sentence has one, version 1 keeps at least one/, /a degree word \("kind of", "a bit", "pretty"\) never stands in for it/, /The bare claim can be version 2/,
+    /* v5.2 (Fable): a degree word now carries the doubt under a stacked opinion frame (sharpen-ai-v52.test.mjs) */
+    /where a sentence has one, version 1 keeps at least one/, /A stacked opinion frame is what makes a line soft/, /a stated doubt \("I might be wrong", "I could be wrong"\) always stays/, /The bare claim can be version 2/,
     /On grief, illness, a layoff or other hard news/, /version 1 keeps it and cuts only the padding around it/, /on hard news, rule 4 keeps their framing in version 1/,
     /When the line introduces a list or thread, version 1 leads with what the list is; a version that only splits the header goes second/,
     /every negation and scope word kept/, /or the bare claim when version 1 keeps a hedge of theirs/,
