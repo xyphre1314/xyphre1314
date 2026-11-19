@@ -64,7 +64,7 @@ test('v4.1, hook4-1: every new hard guard rejects what it names and passes its c
 test('v4.1, hook4-1 and the round-6 jurors: the broken lines come back whole', () => {
   const W44 = "When we started this company three years ago, I honestly had absolutely no idea what I was doing, and I think if I'm being really honest with myself, the only reason we're still here today is because we were too stubborn to quit when every single sensible person around us was telling us that it was time to move on and get a real job.";
   assert.equal(L("So after a lot of back and forth, we've decided to shut down our consumer app and go all in on B2B."), "We're shutting down our consumer app and going all in on B2B.");
-  assert.match(L(W44), /, and I think the only reason we're still here today is because/);
+  assert.match(L(W44), /\. The only reason we're still here today is because/); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(L("Eight years into my career as a software engineer, and I'm honestly starting to think most code comments are kind of useless."), "Eight years into my career as a software engineer, and I'm starting to think most code comments are kind of useless.");
   /* founder-1: no conditional split off its main clause, no "?" after a that-clause, no clause left on "That" */
   assert.equal(L("If you're not using stop losses, you're basically gambling"), "If you're not using stop losses, you're gambling.");
@@ -230,11 +230,12 @@ test('v4.1, hook4-7 and founder-2: the engine keeps what the Claude prompt keeps
     for (const l of [r.line, ...versions(r)]) assert.match(l, new RegExp(`\\b${w}\\b`, 'i'), `${t} → ${l}`);
   }
   /* founder-2: "In my opinion" and "IMO" are kept the way "I think" is, one hedge per clause; IMHO is the delaying frame */
-  assert.equal(L('In my opinion, the best traders are the ones who sit on their hands most of the time.'), 'In my opinion, the best traders are the ones who sit on their hands most of the time.');
-  assert.equal(L('honestly IMO most landing pages are bloated'), 'IMO most landing pages are bloated');
-  assert.equal(L('the best traders do nothing most days imo'), 'the best traders do nothing most days imo');
+  /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L('In my opinion, the best traders are the ones who sit on their hands most of the time.'), 'The best traders are the ones who sit on their hands most of the time.');
+  assert.equal(L('honestly IMO most landing pages are bloated'), 'most landing pages are bloated');
+  assert.equal(L('the best traders do nothing most days imo'), 'the best traders do nothing most days'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* v4.2 (round-7 marketing-4): the opinion is the clause's one hedge, kept; the softener on top goes */
-  assert.equal(L('In my opinion, most landing pages are kind of bloated.'), 'In my opinion, most landing pages are bloated.');
+  assert.equal(L('In my opinion, most landing pages are kind of bloated.'), 'Most landing pages are bloated.'); /* v5.4 (step 3): on a plain view both go */
   assert.equal(L('Hot take: in my opinion most landing pages are bloated'), 'Hot take: most landing pages are bloated.');
   assert.equal(L('IMHO most landing pages are bloated.'), 'Most landing pages are bloated.');
 });

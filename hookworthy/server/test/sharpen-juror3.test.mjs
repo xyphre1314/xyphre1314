@@ -27,8 +27,9 @@ test('juror 3, hook-1: an opinion frame takes its "that"; "breaks" only when it 
   /* the cut lands (no bail-out); "just need" (= simply) and the closing "pretty much it" are the writer's voice and stay */
   /* r86 pass 6 (juror 5, hook-7): one hedge per clause, as the Claude prompt keeps it: a lone "I think" stays, its padding goes */
   /* v5.0 (round-13 uiux-2): and the spare "that" after the kept stance goes too */
-  assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "I think most people just need to sleep more and eat more protein, and that's pretty much it.");
-  assert.equal(L("I think that's pretty much it for today."), "I think that's pretty much it for today.");
+  /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "Most people just need to sleep more and eat more protein, and that's pretty much it.");
+  assert.equal(L("I think that's pretty much it for today."), "That's pretty much it for today.");
   /* an unsure line says "breaks" only when the cut version is broken or says something else */
   const { rows } = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-heldout.json'), 'utf8'));
   const D = core.SHARPEN._dbg;
@@ -110,7 +111,7 @@ test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are 
     const n = (r.line.match(/[.!?]+(?=\s|$)/g) || []).length; assert.equal(r.say.match(/Split it into (\w+) beats/)[1], ['', 'one', 'two', 'three'][n]); assert.match(r.line, /stop losses, and they chase/); }
   /* r86 pass 6 (juror 5, hook-7/12): a frame that says how to take the line stays, a lone "i think" stays, and so does the "!" */
   assert.equal(L('this might be controversial but i actually think dca is overrated for most people'), 'this might be controversial but i actually think dca is overrated for most people');
-  assert.equal(L('so i think the real reason most newsletters stall is that the first line is boring'), 'i think the real reason most newsletters stall is that the first line is boring');
+  assert.equal(L('so i think the real reason most newsletters stall is that the first line is boring'), 'the real reason most newsletters stall is that the first line is boring'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(L('Quick update: we shipped dark mode and the onboarding checklist this week'), 'We shipped dark mode and the onboarding checklist this week.');
   assert.equal(L("Thrilled to announce we've raised a $4M seed round led by @a16z!"), "We've raised a $4M seed round led by @a16z!");
   /* every quote over the held-out lines ends on a phrase: never on a small word, a verb before its particle, or a lone quote mark */
@@ -127,7 +128,8 @@ test('juror 3, hook-6/9 and uiux-1: strikes are every removed word, fluff was ma
     const R = S(r.t); if (R.state !== 'sharp') return;
     R.cut.filter(c => c.kind !== 'reshape').forEach(c => { if (!R.marks.some(m => c.at[0] < m[1] && c.at[1] > m[0])) bad.push(`${R.draft}: "${c.text}" struck as fluff but never marked`); });
     if (i % 5) return;
-    R.cut.forEach(c => { const R2 = S(r.t, { keep: [c.text] }); if (!n(R2.line).includes(n(c.text))) bad.push(`${R.draft}: put back "${c.text}" (${c.kind}) → ${R2.line}`); });
+    /* v5.4 (step 2): a put-back word may sit in post 2 of a thread */
+    R.cut.forEach(c => { const R2 = S(r.t, { keep: [c.text] }); if (!n(R2.post2 ? `${R2.line} ${R2.post2}` : R2.line).includes(n(c.text))) bad.push(`${R.draft}: put back "${c.text}" (${c.kind}) → ${R2.line}`); });
   });
   assert.deepEqual(bad, []);
   /* "We just hit" goes with the number move: struck, not vanished, and putting it back restores the opener */

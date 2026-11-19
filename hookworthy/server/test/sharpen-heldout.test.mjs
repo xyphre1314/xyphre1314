@@ -30,6 +30,8 @@ const composer = t => { S.draft.tweets = [{ text: t }]; UI.hkC = null; const r =
 const runs = rows.map(r => ({ ...r, R: core.sharpenLine(r.t), H: app.hgSharpen(r.t), C: composer(r.t) }));
 const label = x => `#${rows.indexOf(rows.find(r => r.t === x.t)) + 1} ${JSON.stringify(x.t.split('\n')[0])} → ${JSON.stringify(x.R.line)}`;
 const cnt = (s, re) => (String(s).match(re) || []).length;
+/* v5.4 (step 2): a line over 280 with its run-up in opens a thread: post 1 is R.line, the rest is R.post2; facts and meaning are read on both */
+const full = R => R.post2 ? `${R.line} ${R.post2}` : R.line;
 const outside = (s, marks) => { let o = '', at = 0; marks.forEach(m => { o += s.slice(at, m[0]) + ' '; at = m[1]; }); return o + s.slice(at); };
 
 test('held-out: the site and the app give the same first line', () => {
@@ -70,7 +72,8 @@ test('held-out: the result keeps its contract', () => {
   for (const t of ['gm', 'gn', 'wagmi', 'lol', 'just shipped']) { const R = core.sharpenLine(t); assert.equal(R.state, 'clean', t); assert.equal(R.why, 'Short and complete. Nothing to cut.', t); }
   for (const t of ['honestly most people overthink their first post', 'honestly i think most people overthink their first post\n\nhere is what i do instead: write the last line first.']) assert.equal(core.sharpenLine(t).state, 'sharp', t);
   /* r86 pass 6 (juror 5, hook-7): a lone "I think" is the clause's one hedge, kept as the Claude prompt keeps it: clean, never thin */
-  assert.equal(core.sharpenLine('I think most people overthink their first post').state, 'clean');
+  /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(core.sharpenLine('I think most people overthink their first post').line, 'Most people overthink their first post.');
 });
 
 test('held-out: no fact is lost', () => {
@@ -84,7 +87,7 @@ test('held-out: no fact is lost', () => {
     return [...new Set(out.filter(Boolean))];
   };
   const bad = [];
-  for (const x of runs) { const lost = facts(x.R.draft, x.R.marks).filter(f => !x.R.line.includes(f)); if (lost.length) bad.push(`${label(x)}: lost ${lost.join(', ')}`); }
+  for (const x of runs) { const lost = facts(x.R.draft, x.R.marks).filter(f => !full(x.R).includes(f)); if (lost.length) bad.push(`${label(x)}: lost ${lost.join(', ')}`); }
   assert.deepEqual(bad, []);
 });
 
@@ -93,7 +96,7 @@ test('held-out: no meaning flip', () => {
   const KEEP = [/\bnot just\b/i, /\bonly just\b/i, /\bjust (?:can['’]?t|cannot|won['’]?t|don['’]?t)\b/i, /\bis it just me\b/i, /\bkind of a big deal\b/i, /\bpretty much it\b/i, /^just \w+ it\b/i, /\bjust in case\b/i, /\b(really|very),? \1\b/i, /\bprobably nothing\b/i, /\bmaybe (?:i|i['’]m|we|it|not)\b/i, /\bhonestly\?/i];
   const bad = [];
   for (const x of runs) {
-    const R = x.R, d = R.draft, l = R.line, why = [];
+    const R = x.R, d = R.draft, l = full(R), why = [];
     /* "whether or not" is a choice, not a negation: "thinking about whether or not X is Y" → "Is X Y?" keeps the meaning */
     if (cnt(l, NEG) < cnt(outside(d, R.marks).replace(/\bwhether or not\b/gi, 'whether'), NEG)) why.push('a negation went');
     KEEP.forEach(re => { if (re.test(d) && !re.test(l)) why.push(`lost ${re}`); });

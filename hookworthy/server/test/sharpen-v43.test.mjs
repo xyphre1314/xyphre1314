@@ -94,7 +94,7 @@ test('v4.3, hook42-2: frames and list headers', () => {
 });
 
 test('v4.3, hook42-5: "Here\'s my honest take on X:" goes only when the claim is about X, here and in the Claude prompt', () => {
-  for (const [t, want] of [["Here's my honest take on paid newsletters: most of them probably shouldn't be paid.", "Paid newsletters: most of them probably shouldn't be paid."], ["Here's my honest take on glassmorphism: it's mostly a trend, and that's fine.", "Glassmorphism: it's mostly a trend, and that's fine."], ["Here's my honest take on cold plunges: I think they're mostly hype, but I still do them.", "Cold plunges: I think they're mostly hype. But I still do them."]]) assert.equal(L(t), want, t);
+  for (const [t, want] of [/* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */["Here's my honest take on paid newsletters: most of them probably shouldn't be paid.", "Paid newsletters: most of them shouldn't be paid."], ["Here's my honest take on glassmorphism: it's mostly a trend, and that's fine.", "Glassmorphism: it's mostly a trend, and that's fine."], ["Here's my honest take on cold plunges: I think they're mostly hype, but I still do them.", "Cold plunges: they're mostly hype. But I still do them."]]) assert.equal(L(t), want, t);
   /* a thread header, and a claim that isn't about X, keep it */
   for (const t of ["Here's my honest take on remote work after running a 40-person team for 3 years:", "Here's my honest take on hiring: never hire someone you wouldn't want to work for.", "Here's my honest take on SaaS pricing. Most founders charge too little."]) assert.equal(L(t), t, t);
   /* the run-up never takes X with it ("…on remote work. It's overrated." → "It's overrated." would lose what "it" is) */
@@ -150,9 +150,10 @@ test('v4.3, hook42-3 and round-8 receipts: true, plain, and said once', () => {
 
 test('v4.3, hook42-4 and uiux-5: a put-back opener keeps the question and pins only itself', () => {
   /* v4.4 (hook43-2): "like a week" is the writer's "about a week", so it stays */
-  assert.equal(L('ok but why does every productivity app basically turn into a second job after like a week', { keep: ['ok but'] }), 'ok but why does every productivity app turn into a second job after like a week?');
-  assert.equal(L('honestly what is the point of a pitch deck nobody reads'), 'what’s the point of a pitch deck nobody reads?'); /* v4.8 (brand-4): no apostrophe in the draft, so the page's ’ */
-  assert.equal(L('so like how are you all getting your first 100 subscribers'), 'how are you all getting your first 100 subscribers?');
+  /* v5.4 (step 1): never a "?" the writer didn't type */
+  assert.equal(L('ok but why does every productivity app basically turn into a second job after like a week', { keep: ['ok but'] }), 'ok but why does every productivity app turn into a second job after like a week');
+  assert.equal(L('honestly what is the point of a pitch deck nobody reads'), 'what’s the point of a pitch deck nobody reads'); /* v4.8 (brand-4): no apostrophe in the draft, so the page's ’ */
+  assert.equal(L('so like how are you all getting your first 100 subscribers'), 'how are you all getting your first 100 subscribers');
   /* the other cuts and reshapes stand around a pinned opener */
   assert.equal(L('Hey everyone, I wanted to share some thoughts on why most traders lose money', { keep: ['Hey everyone'] }), 'Hey everyone, some thoughts on why most traders lose money:');
   const p = S('ok but why does every productivity app basically turn into a second job after like a week', { keep: ['ok but'] });

@@ -59,13 +59,15 @@ test('juror 4, hook-3: a hedged plan or forecast keeps its hedge; "going to" nev
   assert.match(S("I think I'm going to quit X for a month.").why, /Kept “I think”: on a plan or a forecast/);
   /* r86 pass 6 (juror 5, hook-7): a hedge on a claim about now is the one hedge its clause keeps, as the Claude prompt keeps it;
      only a second hedge on the same clause goes */
-  assert.equal(L('I think most people overthink their first post'), 'I think most people overthink their first post');
+  /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L('I think most people overthink their first post'), 'Most people overthink their first post.');
+  /* (a take on a $ticker is a call: its stance stays) */
   assert.equal(L('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it'), '$ARB unlock is next week. i think everyone is way too relaxed about it');
   /* v4.2 (round-7 marketing-4): "I think" is the one hedge kept; "probably" is the second one */
   /* v5.3 (Fable g-74, step 2): on a view, "probably" is the clause's one hedge and the "I think" on top of it goes */
-  assert.equal(L('I think most people probably overthink their first post'), 'Most people probably overthink their first post.');
+  assert.equal(L('I think most people probably overthink their first post'), 'Most people overthink their first post.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* r86 pass 6 (juror 5, hook-7): "probably" is the clause's one hedge, so it stays; never "Probably talk to your users" */
-  assert.equal(L('This might sound obvious but you should probably talk to your users before you build'), 'You should probably talk to your users before you build.');
+  assert.equal(L('This might sound obvious but you should probably talk to your users before you build'), 'You should talk to your users before you build.'); /* v5.4 (Fable round 3, step 3): advice is a plain view, so its "probably" is cut */
   /* "then this might be for you" keeps its "might" */
   assert.match(L('If you are a founder who is struggling to find the time to post consistently on social media, then this might be for you'), /this might be for you\.$/);
 });
@@ -84,7 +86,8 @@ test('juror 4, hook-4/5: a cut between clauses keeps the comma; every emoji stay
     assert.doesNotMatch(R.line, /‍\s|\s‍/u, `${t} (${at}): a ZWJ next to a space`);
   });
   /* the ask move keeps a tail emoji at the very end (v4.8: as another take; the plain cut leads) */
-  { const w = S('Walking is honestly the most underrated habit 🙌🏽'); assert.equal(w.line, 'Walking is the most underrated habit 🙌🏽'); assert.ok(w.alts.some(a => /\? Walking\.? ?🙌🏽$/u.test(a.line)), JSON.stringify(w.alts)); }
+  /* v5.4 (step 1): never a "?" the writer didn't type, so no "Asked, then answered" take on a draft with no question mark */
+  { const w = S('Walking is honestly the most underrated habit 🙌🏽'); assert.equal(w.line, 'Walking is the most underrated habit 🙌🏽'); assert.ok(!w.alts.some(a => /\?/.test(a.line)), JSON.stringify(w.alts)); }
   /* r86 pass 6 (juror 5, hook-7): "Reminder" says how to take the line, so it stays (the prompt's rule 4); the emoji still stays whole */
   assert.equal(L('Reminder that walking 10k steps a day is literally one of the most underrated things you can do for your health 🚶‍♂️'), 'Reminder that walking 10k steps a day is one of the most underrated things you can do for your health 🚶‍♂️');
 });

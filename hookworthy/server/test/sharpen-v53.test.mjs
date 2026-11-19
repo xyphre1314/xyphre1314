@@ -73,7 +73,10 @@ test('v5.3 (2): the degree that is the claim stays, and "probably" stays on a he
   assert.match(L('So I finally tried the new Claude model and it\'s genuinely really good at refactoring.'), /It's really good at refactoring\.$/);
   assert.equal(L('I might be wrong about this, but I think zone 2 cardio is probably overrated for people who lift less than 3 days a week'), 'Zone 2 cardio is probably overrated for people who lift less than 3 days a week.');
   assert.match(S('I might be wrong about this, but I think zone 2 cardio is probably overrated for people who lift less than 3 days a week').why, /Three hedges became one\. Kept your “probably”/);
-  for (const t of ['I think most founders probably overvalue their ideas', 'I think that remote work is probably here to stay', 'I think it\'s probably the best book I\'ve read this year']) { const r = S(t); assert.match(r.line, /\bprobably\b/, t); assert.doesNotMatch(r.why, /talk, not the point/, t); }
+  /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  for (const t of ['I think most founders probably overvalue their ideas', 'I think that remote work is probably here to stay']) { const r = S(t); assert.doesNotMatch(r.line, /\b(?:probably|I think)\b/i, t); }
+  /* (a superlative is a guess: its "probably" stays) */
+  for (const t of ['I think it\'s probably the best book I\'ve read this year']) { const r = S(t); assert.match(r.line, /\bprobably\b/, t); assert.doesNotMatch(r.why, /talk, not the point/, t); }
   /* a plan keeps every hedge (juror 4); a price call collapses to its stance verb (step 5b) */
   assert.equal(L('I think we will probably launch in March'), 'I think we will probably launch in March');
   assert.equal(L('I think that maybe $SOL is probably going to break out soon, not financial advice'), 'I think $SOL is going to break out soon, not financial advice.');
@@ -109,7 +112,7 @@ test('v5.3 (4): the families Fable found missed', () => {
     ['The reality is that your ICP does not want another 10-step framework, they want proof that you\'ve done the thing', 'Your ICP doesn\'t want another 10-step framework. They want proof that you\'ve done the thing.'],
     ['Sales and marketing alignment is not really a strategy problem, it\'s actually a comp plan problem', 'Sales and marketing alignment is not a strategy problem. It\'s a comp plan problem.'],
     ['This is a thread about how we scaled Postgres to 1.2 billion rows without sharding. 1/', 'How we scaled Postgres to 1.2 billion rows without sharding 1/'],
-    ['I think good design is actually mostly about just removing things until it breaks, and then adding one thing back', 'I think good design is mostly about removing things until it breaks, and then adding one thing back.'],
+    ['I think good design is actually mostly about just removing things until it breaks, and then adding one thing back', 'Good design is mostly about removing things until it breaks, and then adding one thing back.'], /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
     ['I wasn\'t going to post this, but a few people asked, so here is the story of how I paid off $87,000 of debt in 26 months', 'I paid off $87,000 of debt in 26 months. Here\'s the story:'],
     ['So I\'ve been thinking a lot lately about why most people who buy the top never actually sell the bottom, they just stop checking the app', 'Most people who buy the top never actually sell the bottom. They just stop checking the app.'],
     ['At the end of the day, I think that the thing that I regret the most is not the failures, it\'s actually the years I spent waiting', 'The thing I regret the most is not the failures. It\'s the years I spent waiting.'],
@@ -127,12 +130,12 @@ test('v5.3 (4): the families Fable found missed', () => {
 test('v5.3 (5): soft run-ups go; a lowercase line gets no full stop it never had', () => {
   assert.equal(L('I would argue that thought leadership is essentially just having opinions and being willing to be wrong in public'), 'Thought leadership is just having opinions and being willing to be wrong in public.');
   assert.equal(L('i just feel like maybe we should all be posting less and making more stuff'), 'we should all be posting less and making more stuff');
-  assert.equal(L('In my opinion, I really think that most founders should probably raise less'), 'Most founders should probably raise less.');
+  assert.equal(L('In my opinion, I really think that most founders should probably raise less'), 'Most founders should raise less.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(L('I feel like you should read more fiction'), 'I feel like you should read more fiction');
   for (const t of ['honestly i think most people overthink their first post', 'so basically you should sell into strength, not into panic', 'gm. honestly feeling pretty bullish on sol right now ngl'])
     { const r = S(t); assert.equal(r.state, 'sharp', t); assert.doesNotMatch(r.line, /[^.]\.$/, `${t} → ${r.line}`); }
   /* a question keeps the question mark it earns */
-  assert.match(L('is anyone else kind of tired of pretending that hustle culture didn\'t work for them'), /\?$/);
+  assert.doesNotMatch(L('is anyone else kind of tired of pretending that hustle culture didn\'t work for them'), /\?$/); /* v5.4 (step 1): never a "?" the writer didn't type */
 });
 
 test('v5.3 (5b/5c): the Try-box lines the jurors pasted', () => {

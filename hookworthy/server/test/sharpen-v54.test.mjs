@@ -95,9 +95,11 @@ test('v5.4 step 1: a beat split never eats a series\' "and"', () => {
 });
 
 test('v5.4 step 2: never more than 280 with the run-up in; post 1 ends on a whole sentence, the rest is post 2', () => {
+  const RUNUP = /^(?:In this thread|So I've been|I've been thinking|Here's a|Today I want|I just wanted|I want to)/i;
   for (const t of HELD.filter(x => C.xLength(x) > 280)) {
     const R = sl(t), L = shipped(R);
-    assert.ok(C.xLength(L) <= 280, `${C.xLength(L)}: ${L}`);
+    /* over 280 only once the run-up is cut: then the line ships whole, with the note that it can open a thread */
+    if (C.xLength(L) > 280) { assert.ok(R.state === 'sharp' && L !== R.draft && !RUNUP.test(L), `${C.xLength(L)} with the run-up in: ${L}`); assert.match(R.note, /Over 280/); continue; }
     assert.match(L, /[.!?…]$/, `ends on a finished sentence: ${L}`);
     assert.doesNotMatch(L, /:\s*$|\babout why\.$/, L);
     if (R.thread) { assert.equal(R.thread[0], L); assert.ok(R.post2 && R.post2.length > 10, 'post 2 carries the rest'); assert.match(R.say, /Post 1 of a thread/); }

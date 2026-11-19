@@ -687,7 +687,7 @@
   /* (SL54_OLD runs the v5.3 policy, which kept one hedge per clause on a view: sharpenLine takes that version only where the v5.4 cut
      was refused, so a stance or a hedge that can't go safely stays the writer's call) */
   let SL54_OLD = false;
-  const SL54_THAT2 = /(?<![\p{L}\p{N}'’])(?:(?:wish|wished|knew|know|hope|hoped|swear|promised|meant)|(?:found|figured) out|told (?:me|us|him|her|them|you)|(?:i|we)\s+(?:don['’]t|do not|didn['’]t|never)\s+(?:really\s+|actually\s+)?(?:think|believe|feel|reckon))\s+that(?=\s+(?:i|you|we|they|he|she|there|the|a|an|my|our|your|their|his|her|most|many|some|every|no|nobody|everyone|everybody|people|cold|[\p{Lu}$]))(?![\p{L}'’])/gu;
+  const SL54_THAT2 = /(?<![\p{L}\p{N}'’])(?:(?:wish|wished|knew|know|hope|hoped|swear|promised|meant)|told (?:me|us|him|her|them|you)|(?:i|we)\s+(?:don['’]t|do not|didn['’]t|never)\s+(?:really\s+|actually\s+)?(?:think|believe|feel|reckon))\s+that(?=\s+(?:i|you|we|they|he|she|there|the|a|an|my|our|your|their|his|her|most|many|some|every|no|nobody|everyone|everybody|people|cold|[\p{Lu}$]))(?![\p{L}'’])/gu;
   const SL54_THATWHY = 'A spare “that”. The line reads the same without it.';
   /* a why that names the run-up a family took and the soft words that went with it, all of them or none */
   const sl54WentWhy = (d, L, lead, tail) => { const nz = z => lcw(z).replace(/[’‘]/g, "'"), LL = nz(L), gone = softMarks(d).filter(m => m[0] >= lead.length && !LL.includes(nz(d.slice(m[0], m[1])).trim())).map(m => d.slice(m[0], m[1]).trim().replace(/[,:;.!—-]+$/, '')); if (gone.length > 2) return ''; const w = `${slList([lead.trim(), ...gone].map(x => `“${x}”`))} went, ${tail}`; return w.length <= 160 ? w : ''; };
@@ -705,12 +705,15 @@
     const st = ms.some(([r]) => r[3] === 'opinion'), hg = ws.some(w => SL54_HG.test(w)), seg0 = ms.reduce((z, [r]) => z.slice(0, r[0] - c[0]) + ' '.repeat(r[1] - r[0]) + z.slice(r[1] - c[0]), seg);
     const modal = /\b(?:might|could|may|would|will|won['’]t|wouldn['’]t|['’]ll|['’]d)\b/i.test(seg0);
     if ((st || hg) && modal) return true;
-    if (st && /\bi\s+(?:(?:really|honestly|just|actually|still|also)\s+)*(?:think|believe|guess|reckon|suspect|feel like)\s+(?:that\s+)?i\b(?!['’]d\b)/i.test(seg)) return true;
+    if (st && /\bi\s+(?:(?:really|honestly|just|actually|still|also)\s+)*(?:think|believe|guess|reckon|suspect|feel like)\s+(?:that\s+)?(?:i\b(?!['’]d\b)|we(?:['’](?:ve|re|d))?\s+(?:(?:just|finally|really|actually|basically|all|both|totally)\s+)*(?:was|were|got|had|have|did|made|went|took|lost|missed|blew|picked|chose|built|priced|found|figured|hit|broke|won|sold|bought|felt|knew|saw|left|quit|cut|ran|grew|nailed|[a-z]+ed)\b)/i.test(seg)) return true;
     /* a hedge between "I"/"we" and what they did ("i [kind of] started buying", "I [sort of] quit my job") hedges a fact they report */
     if (ms.some(([r]) => sl54FactHedge(T, r))) return true;
     if (st && ms.some(([r]) => r[3] === 'opinion' && /(?<![\p{L}'’])(?:that|which|who|whom)\s+$/iu.test(T.slice(0, r[0])))) return true;
+    if ((st || hg) && /(?<![\p{L}\p{N}_$])\$[A-Za-z][A-Za-z0-9]{1,9}\b/.test(sent)) return true;
+    /* a stance that softens an order to the reader ("I feel like you should read more fiction") is the order's, not a view */
+    if (st && ms.some(([r]) => r[3] === 'opinion' && /^[\s,]*(?:that\s+)?you\s+(?:really\s+|probably\s+|just\s+)?(?:should|need to|have to|must|gotta|ought to)\b/i.test(T.slice(r[1])))) return true;
     if (st && /\b(?:i|we)\s+(?:don['’]t|do not|didn['’]t)\s+(?:really\s+)?(?:think|believe)\b/i.test(T) && !/\b(?:don['’]t|do not|didn['’]t)\s+(?:really\s+)?(?:think|believe)\b/i.test(seg)) return true;
-    if (hg && (/(?<![\p{L}])[$€£]?\d/u.test(seg0) || /\b(?:the|my|our|your|their)\s+(?:single\s+)?(?:most|best|worst|biggest|largest|fastest|easiest|hardest|highest|lowest|greatest|only|first|smartest|dumbest|cheapest|strongest)\b/i.test(seg0))) return true;
+    if (hg && (/(?<![\p{L}])[$€£]?\d/u.test(seg0) || /\b(?:the|my|our|your|their)\s+(?:single\s+)?(?:most|best|worst|biggest|largest|fastest|easiest|hardest|highest|lowest|greatest|only|smartest|dumbest|cheapest|strongest)\b/i.test(seg0))) return true;
     if (hg && (/\b(?:but|yet|though|although|while)\b[^.!?]*\b(?:definitely|certainly|surely|absolutely|for sure|clearly|obviously)\b/i.test(sent) || /\b(?:definitely|certainly|surely|absolutely|clearly|obviously)\b[^.!?]*\b(?:but|yet|though)\b/i.test(sent))) return true;
     return false;
   };
@@ -4580,7 +4583,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const slIfQ = (L, D) => { for (const m of String(D).matchAll(/(?:^|[.!?]\s+)\P{L}*(?:if|when|unless|whenever|once)\s+([^,?]{3,80}?),/giu)) { const b = lcw(m[1]).replace(/[’‘]/g, "'").trim(); if (new RegExp(`(?:^|[.!?]\\s+)\\P{L}*${slRxE(b)}\\?`, 'iu').test(lcw(L).replace(/[’‘]/g, "'")) && (/^(?:i|we)\b/.test(b) || /\b(?:had|were|was|did|would|could|might|should|'d)\b/.test(b))) return true; } return false; };
   /* "an U.S.", "an UX", "a MVP": an article that doesn't match how the next word is said */
   const slArtN = z => { let n = 0; String(z).replace(/(?<![\p{L}\p{N}&'’.-])\b(?:a|an|A|An)\s+[\p{L}\p{N}$][\p{L}\p{N}’'.-]*/gu, m => { if (fixArticles(m) !== m) n++; return m; }); return n; };
-  const slBroken = (line, draft) => SL_BROKEN.some(re => cnt(line, re) > cnt(draft, re)) || slCapsNew(line, draft) > 0 || slFragN(line) > slFragN(draft) || slVerblessN(line) > slVerblessN(draft) || slNotBut(line) > slNotBut(draft) || !slEmojiOK(line, draft) || slBackN(line, draft) || slRunOn(line, draft) || slFragsN(line, draft) > slFragsN(draft, draft) || !!slHard(line, draft);
+  /* v5.4 (step 1): a question the writer typed without its "?" is read as the question it is (the engine never adds one) */
+  const sl54Q = z => slSents(z).map(s => !/[?]["”’)]*\s*$/.test(s) && slAskEnd(s) ? s.replace(/[.!…]*\s*$/, '?') : s).join(' ');
+  const slBroken = (line, draft) => SL_BROKEN.some(re => cnt(line, re) > cnt(draft, re)) || slCapsNew(line, draft) > 0 || slFragN(sl54Q(line)) > slFragN(sl54Q(draft)) || slVerblessN(line) > slVerblessN(draft) || slNotBut(line) > slNotBut(draft) || !slEmojiOK(line, draft) || slBackN(line, draft) || slRunOn(line, draft) || slFragsN(line, draft) > slFragsN(draft, draft) || !!slHard(line, draft);
   /* r86 pass 2: every guarded span of the draft (a link, a quote, a meaning word) is in the line, as written */
   const slGuardOK = (line, draft) => { const d = String(draft), l = lcw(line); let dm = null; return slGuard(d).every(([a, b]) => l.includes(lcw(d.slice(a, b))) || (dm = dm || softMarks(d).filter(r => slWholeMk(d, r))).some(r => a >= r[0] && b <= r[1])); };
   /* the whole check a sharpened line passes: every fact verbatim, the meaning words kept, no broken template */
@@ -5300,8 +5305,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       if (ch.length === 2 && (SL54_INTRO.test(A) || (!aFin && wordsN(A) <= 2))) continue;
       /* a noun phrase, a verb phrase ("deleted…, spent…, and then had to…"), a clause the series repeats ("I run, I lift, and I…"), or
          a complement that opens on the same word as one before it ("thinking that…, that I'd…, and that I…") */
-      const op = (X.match(/^\P{L}*(that|to|who|which|how|why|what|where|when|if|whether)\b/iu) || [])[1], vp = !xFin && slVerbW(lcw(slTokW(X)[0] || ''));
-      const series = (op && new RegExp(`(?<![\\p{L}'’])${op}(?![\\p{L}'’])`, 'iu').test(A)) || vp || (!xFin ? wordsN(X) <= 6 : aFin && !SL54_INTRO.test(A) && !SL54_INTRO.test(X) && wordsN(X) <= 8);
+      const x0 = lcw(slTokW(X)[0] || ''), op = (X.match(/^\P{L}*(that|to|who|which|how|why|what|where|when|if|whether)\b/iu) || [])[1], vp = !/^(?:i|we|you|they|he|she|it|this|that|there|here|my|our|your|their|his|her|its|the|a|an|no|every|some|most|all)$/.test(x0) && (slVerbW(x0) || SL_PASTW.test(x0) || (/[^s]s$/.test(x0) && slVerbW(x0.replace(/e?s$/, ''))) || /^(?:doesn['’]t|don['’]t|didn['’]t|isn['’]t|wasn['’]t|never|always|still)$/.test(x0));
+      const series = (op && new RegExp(`(?<![\\p{L}'’])${op}(?![\\p{L}'’])`, 'iu').test(A)) || vp || (!xFin ? wordsN(X) <= 6 : aFin && !SL54_INTRO.test(A) && !SL54_INTRO.test(X) && wordsN(X) <= 4 && wordsN(A) <= 4 && lcw(slTokW(X)[0] || '') === lcw(slTokW(A)[0] || ''));
       if (!series) continue;
       const tail = nz(X).split(/\s+/).slice(-3).join(' ').replace(/^[^\p{L}\p{N}$]+|[^\p{L}\p{N}%]+$/gu, '');
       if (!tail) continue;
@@ -5320,6 +5325,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const L = String(line), D = String(draft), c = (z, re) => (String(z).match(re) || []).length;
     if (c(L, /\?/g) > c(D, /\?/g)) return 'a “?” the writer didn’t type';
     if (c(L, SL54_QSLOT) > c(D, SL54_QSLOT)) return 'a plainer word broke its slot';
+    if (/^\P{L}*[:;,]/u.test(L) && !/^\P{L}*[:;,]/u.test(D)) return 'opens on punctuation';
+    { const nz = z => lcw(z).replace(/[’‘]/g, "'"); for (const s of slSents(L)) { const w = slTokW(s)[0] || ''; if (!w || !slVerbW(w) || /^(?:is|are|was|were|do|does|did|have|has|had|can|could|will|would|should|must|may|might)$/.test(w)) continue; if (rx(`(?<![\\p{L}'])we\\s+(?:all\\s+)?(?:(?:really|honestly|probably|just|definitely|seriously)\\s+)*(?:should|need to|have to|must|gotta|ought to)\\s+(?:(?:really|honestly|probably|just|definitely|seriously|all)\\s+)*${slRxE(w)}(?![\\p{L}'])`, 'u').test(nz(D)) && !rx(`(?<![\\p{L}'])${slRxE(w)}(?![\\p{L}'])`, 'u').test(nz(D).replace(/^\P{L}+/u, '').split(/\s+/)[0] || '')) return 'an order the draft never gave'; } }
     { const beat = z => slSents(z).filter(s => { const w = s.replace(/[^\p{L}\s'’]/gu, ' ').replace(/\s+/g, ' ').trim(); return w && wordsN(w) <= 3 && (rx(SL_CALL_HG.source, SL_CALL_HG.flags.replace('g', '')).test(w) || rx(SL_CALL_ST.source, SL_CALL_ST.flags.replace('g', '')).test(w)) && rx(`^(?:${SL_CALL_HG.source}|${SL_CALL_ST.source})$`, 'iu').test(w); }).length; if (beat(L) < beat(D)) return 'a hedge said as its own beat went'; }
     { const m = L.match(/:\s+([\p{L}\p{N}$#@'’ -]{1,30}?)[.!?]?\s*$/u); if (m && !/:\s/.test(D) && wordsN(m[1]) <= 3 && rx(`(?<![\\p{L}])${slRxE(m[1].trim())}\\s+(?:is|are|was|were|has|have|had|feels?|looks?|seems?)\\b`, 'iu').test(D)) { const head = L.slice(0, m.index).replace(/^\P{L}+/u, ''); if (!/^(?:the|a|an|my|our|your|their|his|her|its|this|that|these|those|one|what|how|why|who|which|every|each|no|most|all|some|[$€£]?\d)\b/i.test(head)) return 'an inversion with no noun to label'; } }
     return sl54ListCut(L, D) || sl54Weld(L, D) || (sl54AndThatN(L) > sl54AndThatN(D) ? 'a “that” clause lost its verb' : '');
@@ -5333,7 +5340,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function sl54Fallback(R, alts, opts) {
     const d = R.draft, keep = (opts.keep || []).filter(w => typeof w === 'string' && w.trim());
     const cuts = (R.cut || []).filter(c => c.at && c.at[1] > c.at[0] && SL_FLUFF(c.kind));
-    const build = cs => { let l = d; [...cs].sort((x, y) => y.at[0] - x.at[0]).forEach(c => { l = slCallCut(l, c.at[0], c.at[1]); }); return slAposW(sl54End(l, d), d); };
+    const build = cs => { let l = d; [...cs].sort((x, y) => y.at[0] - x.at[0]).forEach(c => { l = slCallCut(l, c.at[0], c.at[1]); }); if (!/^\P{L}*[:;,]/u.test(d)) { const l2 = l.replace(/^(\P{L}*?)[:;,]\s*/u, '$1'); if (l2 !== l) l = /^\P{L}*\p{Ll}/u.test(d) ? l2 : capFirst(l2); } if (/^\P{L}*\p{Lu}/u.test(d) && /^\P{L}*\p{Ll}/u.test(l) && !/[.!?]["”’)]*\s+\p{Ll}/u.test(d)) l = capFirst(l); return slAposW(sl54End(l, d), d); };
     const ok = l => !!l && l !== d && sl54OK(l, d) && !slHard(l, d) && wordsN(l) >= 3 && !slThin(l) && !slTiny(l);
     if (cuts.length) {
       let used = cuts.slice(), l = build(used);
@@ -5349,7 +5356,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
      latest that leaves a whole sentence. Every cut is read whole (no series cut short, no clause cut off its verb, no ending on
      "about why"), and '' means no cut does. Never more than 280 with the run-up still in */
   const SL54_BRK = /;\s+|\s+[—–]\s+|,\s+(?=(?:and|but|so|because|which|though|although|then|yet|or|whereas)\b)|\s+(?=(?:but|because|although|though|whereas)\s)|\s+(?=(?:and|so)\s+(?:i|we|you|they|he|she|it|my|our|your|their|his|her|the|this|that|today|now|then)\b)/gi;
-  const SL54_ENDW = /^(?:about|why|how|what|who|whom|whose|of|to|for|with|the|a|an|and|but|so|that|which|when|where|in|on|at|by|from|into|onto|than|as|my|our|your|their|his|her|its|is|are|was|were|be|been|being|am|very|just|if|or|nor|like|such|this|these|those|every|each|any|some|no|not|i|we|you|they|he|she|it|me|us|them|can|could|will|would|should|must|might|may|do|does|did|have|has|had|get|got)$/;
+  const SL54_ENDW = /^(?:about|why|how|what|who|whom|whose|of|to|for|with|the|a|an|and|but|so|that|which|when|where|in|on|at|by|from|into|onto|than|as|my|our|your|their|his|her|its|is|are|was|were|be|been|being|am|very|just|if|or|nor|such|this|these|those|every|each|any|some|no|not|i|we|you|they|he|she|it|me|us|them|can|could|will|would|should|must|might|may|do|does|did|have|has|had|get|got)$/;
   const SL54_SUBLEAD = /^\P{L}*(?:when|whenever|if|because|since|after|before|while|once|although|though|unless|until|as|whether)\b/iu;
   function sl54PostOK(p, t, d) {
     const z = String(p).trim(); if (!z || xLength(z) > 280 || wordsN(z) < 5 || slThin(z) || /:\s*$/.test(z)) return false;
@@ -5390,12 +5397,13 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
          written, is post 2. Post 1 holds no word from that rest (a version that moved one up front is not cut this way) */
       const w1 = slToks(pb).slice(-3).map(x => x.w), dt = slToks(d); let k = -1; for (let j = 0; j + w1.length <= dt.length && w1.length; j++) if (w1.every((w, q) => dt[j + q].w === w)) { k = dt[j + w1.length - 1].b; break; }
       if (k < 0) continue;
-      const head = d.slice(0, k), post2 = capFirst(d.slice(k).replace(/^[\s.!?…]*(?:[;—–,]\s*)?/, '').trim()), hw = new Set(slToks(head).map(x => x.w));
+      const p2 = d.slice(k).replace(/^[\s.!?…]*(?:[;—–,]\s*)?/, '').trim(), head = d.slice(0, k), post2 = /^\P{L}*\p{Ll}/u.test(d) || /^(?:and|but|so|or|which|because|though|although|then|yet|whereas)\b/i.test(p2) ? p2 : capFirst(p2), hw = new Set(slToks(head).map(x => x.w));
       if (!post2 || slToks(p).some(x => x.w.length >= 4 && !hw.has(x.w))) continue;
       const kept = (R.kept || []).filter(v => p.includes(v));
       const E = slExplain(head, p, src === L0 && R.state === 'sharp' && (R.moves || []).length ? R.moves : ['soft'], softMarks(head, keep));
       const sp = String(E.say || '').split(' · ').filter(z => z && !/^(?:Gave it an end|Nothing to cut|Tightened it)$/.test(z)), say = [...sp.slice(0, 2), 'Post 1 of a thread'].join(' · ');
-      const why = sp.length && E.why && E.why.length <= 140 ? E.why : SL54_LONGW;
+      /* the why says only what is true of post 1: the fluff it lost, and that it ends where a sentence does */
+      const fq = (E.fluff || []).map(c => `“${c.text.trim().replace(/[,:;.!—-]+$/, '')}”`), w0 = fq.length ? `${slList(fq)} went, and post 1 ends on a whole sentence. The rest is post 2.` : '', why = sp.length && E.why && E.why.length <= 140 && !/\bstays?\b/.test(E.why) ? E.why : w0 && w0.length <= 140 ? w0 : SL54_LONGW;
       return { ...R, state: 'sharp', line: p, cut: sp.length ? E.cut : [], move: sp.length ? E.move : '', moves: sp.length ? E.moves : [], say, why, kept, alts: [], long: xLength(R.rest && R.rest.trim() ? `${p}\n${R.rest}` : p) > 280, note: SL54_LONGN, post2, thread: [p, post2] };
     }
     return R;
@@ -5422,12 +5430,13 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const R4 = sl54Line(text, opts); if (SL54_OLD || !R4 || typeof R4 !== 'object' || !R4.draft || /^(?:empty|thin)$/.test(R4.state)) return R4;
     /* the v5.3 reading runs only where the v5.4 rule changed what is kept, and its cut did not go through: the line came back
        unsharpened, or still carries a word the rule let go */
-    const d = String(R4.draft).replace(HK_VOICE, ''), k4 = slPolicy(d).keep; let R3; SL54_OLD = true;
+    const d = String(R4.draft).replace(HK_VOICE, ''), k4 = slPolicy(d).keep, ru = R => R.state === 'sharp' && R.line !== R.draft && (!!slStillRun(R.draft, R.line) || SL54_RUNUP.test(R.line)); let R3; SL54_OLD = true;
     try { const k3 = slPolicy(d).keep, gone = k3.filter(w => !k4.includes(w)); const has = w => new RegExp(`(?<![\\p{L}'’])${slRxE(lcw(w).replace(/[’‘]/g, "'"))}(?![\\p{L}'’])`, 'u').test(lcw(R4.line).replace(/[’‘]/g, "'"));
-      if (gone.length && (R4.state !== 'sharp' || gone.some(has))) R3 = sl54Line(text, opts); } finally { SL54_OLD = false; }
+      if (gone.length && (R4.state !== 'sharp' || gone.some(has) || ru(R4))) R3 = sl54Line(text, opts); } finally { SL54_OLD = false; }
     if (!R3) return R4;
     const fl = R => R.state === 'sharp' ? (R.cut || []).filter(c => SL_FLUFF(c.kind)).length : 0;
-    return (R4.state !== 'sharp' && R3.state === 'sharp') || (R4.state === 'sharp' && R3.state === 'sharp' && fl(R4) < fl(R3)) ? R3 : R4;
+    /* (a version that still opens on its run-up where the v5.3 one does not is the weaker edit) */
+    return (R4.state !== 'sharp' && R3.state === 'sharp') || (R4.state === 'sharp' && R3.state === 'sharp' && (fl(R4) < fl(R3) || (ru(R4) && !ru(R3)))) ? R3 : R4;
   }
   function sl54Line(text, opts = {}) {
     const R0 = slSharpenBang(text, opts); if (!R0 || typeof R0 !== 'object') return R0;

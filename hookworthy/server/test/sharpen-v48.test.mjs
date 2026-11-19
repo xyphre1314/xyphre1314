@@ -149,7 +149,8 @@ test('v4.8, marketing-1: a why/how topic keeps its question word, so the line st
     ["In this week's issue: why the 60/40 portfolio is back", 'Why the 60/40 portfolio is back:'],
     ['Let me explain why I think ETH is undervalued right now', 'Why I think ETH is undervalued right now:'],
     ['gm. so i\'ve been thinking a lot about how to price a newsletter sponsorship', 'gm. how to price a newsletter sponsorship:'],
-    ['I wanted to write about whether you should quit your job', 'Should you quit your job?']
+    /* v5.4 (step 1): never a "?" the writer didn't type, so the indirect question stays theirs */
+    ['I wanted to write about whether you should quit your job', 'I wanted to write about whether you should quit your job']
   ];
   for (const [t, want] of cases) for (const [m, o] of MODES.slice(0, 2)) assert.equal(L(t, o), want, `${m}: ${t}`);
   /* the receipt counts a cut, never "Said it straight" */
@@ -171,13 +172,14 @@ test('v4.8, marketing-1: a why/how topic keeps its question word, so the line st
 test('v4.8, founder-1: the plain cut is version 1; "Asked, then answered" is the other take', () => {
   /* (v5.3, Fable H9: a lowercase draft with no end stop gets none, in its alts too) */
   for (const [t, want, flip] of [
-    ['basically SOL is the only chain that matters rn imo', 'SOL is the only chain that matters rn imo', 'only chain that matters rn imo? SOL'],
-    ["tbh ETH is the only L1 i'd hold for 5 years", "ETH is the only L1 i'd hold for 5 years", "only L1 i'd hold for 5 years? ETH"],
-    ['honestly, patience is the only edge most traders never build', 'patience is the only edge most traders never build', 'only edge most traders never build? patience'],
-    ['you should really be tracking your protein if you want to build muscle', 'you should be tracking your protein if you want to build muscle', 'want to build muscle? track your protein']
+    /* v5.4: on a plain view "imo" is cut (step 3), and no take adds a "?" the writer didn't type (step 1): no flip is offered */
+    ['basically SOL is the only chain that matters rn imo', 'SOL is the only chain that matters rn', null],
+    ["tbh ETH is the only L1 i'd hold for 5 years", "ETH is the only L1 i'd hold for 5 years", null],
+    ['honestly, patience is the only edge most traders never build', 'patience is the only edge most traders never build', null],
+    ['you should really be tracking your protein if you want to build muscle', 'you should be tracking your protein if you want to build muscle', null]
   ]) {
     const r = S(t); assert.equal(r.line, want, t); assert.doesNotMatch(r.say, /Asked, then answered/, t);
-    const a = r.alts.find(x => x.line === flip); assert.ok(a, `${t}: ${JSON.stringify(r.alts.map(x => x.line))}`); assert.match(a.say, /Asked, then answered/);
+    assert.ok(!r.alts.some(x => /\?/.test(x.line)), `${t}: ${JSON.stringify(r.alts.map(x => x.line))}`);
   }
   /* with nothing to cut, the flip never overrides "Nothing to cut" */
   for (const t of ['SOL is the only chain that matters', 'Most B2B content fails because it is written for the company, not the customer.']) assert.equal(S(t).state, 'clean', t);
@@ -215,7 +217,7 @@ test('v4.8, brand-4: the apostrophe the engine writes matches the draft, and the
   assert.equal(L('We are super excited to finally launch our new feature'), 'We’re finally launching our new feature.');
   assert.equal(L("We are super excited to finally launch our 'new' feature"), "We're finally launching our 'new' feature.");
   assert.equal(L('We’re so excited to unveil the new dashboard'), 'We’re unveiling the new dashboard.');
-  assert.equal(L("i think it is basically done and we are honestly so ready"), 'i think it is basically done. we’re so ready');
+  assert.equal(L("i think it is basically done and we are honestly so ready"), 'it’s basically done and we’re so ready'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* the writer's own characters are never changed: a mixed draft keeps each as typed */
   const mx = L("I'm so excited to finally launch my app and it’s free");
   assert.ok(mx.includes("I'm") && mx.includes('it’s'), mx);

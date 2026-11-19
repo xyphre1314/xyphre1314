@@ -138,7 +138,7 @@ test('v4.2, hook41-4: the prompt keeps the doubt in place, "I don\'t really thin
 
 test('v4.2, hook41-5 and round 7: the run-ups the demo called "Already tight"', () => {
   const cases = [
-    ["Here's my honest take on why I think funding rates are often a pretty terrible timing signal:", 'Why I think funding rates are often a pretty terrible timing signal:'],
+    ["Here's my honest take on why I think funding rates are often a pretty terrible timing signal:", 'Why funding rates are often a pretty terrible timing signal:'], /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
     ["Can I share something that might be a little unpopular? I don't really believe in posting every single day.", "I don't really believe in posting every single day."],
     ["I think it's worth noting that BTC just broke 100k", 'BTC just broke 100k.'],
     ["It's worth noting that most newsletters die before issue 10", 'Most newsletters die before issue 10.'],
@@ -191,8 +191,9 @@ test('v4.2, round 7: no dangling header, no object left alone, "I think" kept as
   assert.equal(L('i think this is probably the most important chart in crypto right now'), 'this is probably the most important chart in crypto right now');
   /* v4.9 (round-12 uiux-4): the why says the cut word was the second hedge, under the kept "i think" (never that it went) */
   assert.match(S('i think this is probably the most important chart in crypto right now').why, /^Two hedges became one\. Kept your “probably”: it says how sure you are\.$/);
-  assert.match(S('I think one of the most underrated skills for a founder is writing').why, /^Kept “I think”: it’s how sure you are/);
-  assert.equal(L('I think most founders probably overthink their pitch decks.'), 'Most founders probably overthink their pitch decks.');
+  /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L('I think one of the most underrated skills for a founder is writing'), 'One of the most underrated skills for a founder is writing.');
+  assert.equal(L('I think most founders probably overthink their pitch decks.'), 'Most founders overthink their pitch decks.');
   assert.match(L('honestly i think SOL is going to flip ETH this cycle, not financial advice'), /^i think SOL/);
   /* "I really don't think" is a negated stance, kept (it was read as "I don't think" only after "don't") */
   assert.equal(L("Honestly, I really don't think 'personal branding' is the right goal for most B2B founders."), "I don't think 'personal branding' is the right goal for most B2B founders.");

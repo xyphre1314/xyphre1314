@@ -30,7 +30,7 @@ test('v5.2 (1): no fragment from "There are … who", no order from "we should a
   const t85 = "I'm just going to say it: I really think that TypeScript enums were a mistake and we should all probably stop using them";
   for (const [m, o] of MODES) {
     for (const r of versions(S(t11, o))) assert.ok(!relFrag(r.line), `${m}: ${r.line}`);
-    for (const r of versions(S(t85, o))) { assert.ok(!bareOrder(r.line), `${m}: ${r.line}`); assert.match(r.line, /\bwe should all probably stop using them\b/i, m); }
+    for (const r of versions(S(t85, o))) { assert.ok(!bareOrder(r.line), `${m}: ${r.line}`); assert.match(r.line, /\bwe should all (?:probably )?stop using them\b/i, m); } /* v5.4 (step 3): on advice, a plain view, the "probably" may go; never the "we should all" */
   }
   assert.equal(L(t11), "A lot of people think that staking yields of 4% are safe. They're not really safe at all.");
 });
@@ -44,7 +44,7 @@ test('v5.2 (3): a reflection keeps its clause; an announced topic may still be a
   const t18 = "so basically i've been thinking a lot lately about why i can't seem to finish anything i start";
   for (const [m, o] of MODES) for (const r of versions(S(t18, o))) { assert.ok(!lastColon(r.line), `${m}: ${r.line}`); assert.match(r.line, /been thinking a lot lately about why i can't/i, m); }
   assert.equal(L(t18), "i've been thinking a lot lately about why i can't seem to finish anything i start"); /* v5.3 (Fable H9): no end stop the draft never had */
-  assert.equal(L("In today's post I want to talk a little bit about why I think that most LinkedIn content from executives sounds like it was written by a committee"), 'Why I think most LinkedIn content from executives sounds like it was written by a committee:');
+  assert.equal(L("In today's post I want to talk a little bit about why I think that most LinkedIn content from executives sounds like it was written by a committee"), 'Most LinkedIn content from executives sounds like it was written by a committee.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* a topic the line goes on to answer heads its own answer */
   assert.equal(L("So I've been thinking a lot about why most side projects die and I think it's because people build in private for way too long"), "Why most side projects die: I think it's because people build in private for way too long.");
 });

@@ -36,7 +36,8 @@ test('truth: every removed word is struck, and the receipt counts exactly the st
     if (n !== fluff.length) bad.push(`${label(x)}: says ${n}, strikes ${fluff.length} bits of fluff`);
     if (/bit of fluff/.test(R.say) !== (fluff.length === 1)) bad.push(`${label(x)}: singular/plural`);
     if (R.cut.some(c => /^(?:move|tight|swap)$/.test(c.kind))) bad.push(`${label(x)}: an old kind`);
-    const d = bagOf(W(R.draft)), l = bagOf(W(R.line)), st = bagOf(R.cut.flatMap(c => W(c.text))), lw = [...l.keys()];
+    /* v5.4 (step 2): post 1 of a thread is read with its post 2 */
+    const d = bagOf(W(R.draft)), l = bagOf(W(R.post2 ? `${R.line} ${R.post2}` : R.line)), st = bagOf(R.cut.flatMap(c => W(c.text))), lw = [...l.keys()];
     for (const [w, k] of d) {
       const gone = k - (l.get(w) || 0); if (gone <= 0) continue;
       if (w.length > 3 && lw.some(z => z !== w && z.length > 3 && z.slice(0, 4) === w.slice(0, 4))) continue;
@@ -80,7 +81,8 @@ test('truth: no cut leaves an orphan, a stray colon or a broken comparison (foun
       if (/:[^.!?:]*:\s*$/.test(l) || /(?:https?:\/\/|\.\w{2,4}\/)\S*:$/.test(l) || /[!?]\.$/.test(l)) bad.push(`${t} → ${l}: stray punctuation`);
       if (/\bthan\s+(?:here|there|this|that)[.!]?$/i.test(l)) bad.push(`${t} → ${l}: broken comparison`);
       if (/^Pricing after/i.test(l) || /^Lesson: pricing\b/i.test(l)) bad.push(`${t} → ${l}: the main clause is gone`);
-      if (/^what if\b/i.test(l) && !/\?$/.test(l)) bad.push(`${t} → ${l}: a question lost its question mark`);
+      /* v5.4 (step 1): a question mark is the writer's: lost only when the draft had one */
+      if (/^what if\b/i.test(l) && !/\?$/.test(l) && /\?\s*$/.test(t)) bad.push(`${t} → ${l}: a question lost its question mark`);
     }
   }
   assert.deepEqual(bad, []);
@@ -151,7 +153,7 @@ test('truth: the round failures stay fixed', () => {
   assert.equal(S("I've been writing this newsletter for 200 weeks straight and I want to share what I learned").line.includes('200 weeks straight'), true);
   assert.equal(S('We hit $10k MRR today after 14 months').line, 'We hit $10k MRR today after 14 months');
   /* r86 pass 6 (juror 5, hook-7): the lone "I think" stays (one hedge per clause, as the Claude prompt keeps it) */
-  assert.equal(S('Honestly I think most people are really just overcomplicating their workouts way too much').line, 'I think most people are overcomplicating their workouts.');
+  assert.equal(S('Honestly I think most people are really just overcomplicating their workouts way too much').line, 'Most people are overcomplicating their workouts.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(S('Gonna be honest with you guys, I almost quit writing last month.').line, 'I almost quit writing last month.');
   assert.equal(S("I'd like to take a moment to thank everyone who joined our webinar on Tuesday").line, 'Thank you to everyone who joined our webinar on Tuesday.');
   assert.equal(S('honestly i just wanted to say that our churn dropped 20% this quarter').say, 'Cut 2 bits of fluff');

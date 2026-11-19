@@ -112,7 +112,7 @@ test('v4.5, hook44-3: "really" before the verb stays; a softener before a bare v
   for (const t of ['Do you really need to raise a seed round?', 'I really need a break']) { const c = S(t); assert.equal(c.state, 'clean', t); assert.match(c.why, /(?:Kept|Left) “[^”]*really/, t); }
   /* a stance verb's "really" and a degree on an adjective may still go */
   assert.equal(L('I really think stablecoins are basically the story of 2027.'), 'I think stablecoins are the story of 2027.');
-  assert.equal(L('I think a lot of designers really overthink their portfolios when they should just show 3 really good case studies.'), 'I think a lot of designers really overthink their portfolios when they should just show 3 good case studies.');
+  assert.equal(L('I think a lot of designers really overthink their portfolios when they should just show 3 really good case studies.'), 'A lot of designers really overthink their portfolios when they should just show 3 good case studies.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* a run-up's "really" goes with its run-up */
   assert.equal(L('I just wanted to take a moment to really thank everyone who has supported us over the past three years.'), 'Thank you to everyone who has supported us over the past three years.');
   assert.equal(L('I really want to emphasize how important it is to reply to every comment in the first hour'), 'Reply to every comment in the first hour.');

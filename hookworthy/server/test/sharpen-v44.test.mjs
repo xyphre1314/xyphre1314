@@ -71,7 +71,7 @@ test('v4.4, hook43-1: a cut between a joining word and a comma takes the comma, 
     /* v5.3 (Fable H9): a lowercase draft with no end stop gets none */
     assert.equal(L('we shipped it and to be honest, it went fine', o), 'we shipped it and it went fine', m);
     assert.equal(L('we shipped it but, honestly, it went fine', o), 'we shipped it but it went fine', m);
-    assert.equal(L('I think, honestly, the market is cooked.', o), 'I think the market is cooked.', m);
+    assert.equal(L('I think, honestly, the market is cooked.', o), 'The market is cooked.', m); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
     assert.equal(L('we shipped it, and honestly, it went fine', o), 'we shipped it, and it went fine', m);
     assert.equal(L('I read 40 books this year and tbh, only 5 of them were worth it.', o), 'I read 40 books this year and only 5 of them were worth it.', m);
   }
@@ -131,7 +131,8 @@ test('v4.4: coverage (z-54, z-72, z-107), long run-ons in beats, and true receip
   /* receipts: an ellipsis mid-sentence ends no beat; a word cut twice is named once */
   assert.equal(S('Spent 6 hours on this landing page and the conversion rate is... 0.4%').say, 'Split it into two beats');
   /* v4.5 (hook44-3): "really overthink" now keeps its degree, so the word cut twice is read on two adjectives */
-  assert.equal(S('I think the best designers make really simple things with really boring tools.').why, '“really” (twice) were talk, not the point. The line says the same without them.');
+  /* v5.4 (step 3): on a plain view the "I think" goes too, and the why names it */
+  assert.equal(S('I think the best designers make really simple things with really boring tools.').why, 'Without “I think” and “really” (twice), the claim stands on its own.');
 });
 
 test('v4.4: the 60-line hunt, every mode: no hard guard, no page guard, none of this file\'s break shapes', () => {

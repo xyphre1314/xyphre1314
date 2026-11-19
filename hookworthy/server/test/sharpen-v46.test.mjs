@@ -136,7 +136,7 @@ test('v4.6, hook45-2 and founder-6: "basically" near a value and "very few" stay
 
 test('v4.6, hook45-3: a hedge frame is cut, never its own sentence; "what they really think" keeps "really"', () => {
   for (const [m, o] of MODES) {
-    assert.equal(L('Not sure if this is controversial, but I think most LinkedIn advice is basically written for people who sell LinkedIn advice.', o), 'I think most LinkedIn advice is written for people who sell LinkedIn advice.', m);
+    assert.equal(L('Not sure if this is controversial, but I think most LinkedIn advice is basically written for people who sell LinkedIn advice.', o), 'Most LinkedIn advice is written for people who sell LinkedIn advice.', m); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
     /* v5.3 (Fable g-16, step 5): "I feel like" on a plain view is a run-up too, so both hedges go */
     assert.equal(L('Not sure if this is just me, but I feel like every new JavaScript tool has a 10-step setup process now.', o), 'Every new JavaScript tool has a 10-step setup process now.', m);
     assert.equal(L("Most B2B founders I talk to would honestly get way more inbound if they'd just say what they really think.", o), "Most B2B founders I talk to would get way more inbound if they'd just say what they really think.", m);

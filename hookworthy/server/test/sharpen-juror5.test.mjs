@@ -18,6 +18,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const core = createRequire(import.meta.url)('../../core.js');
 const S = (t, o) => core.sharpenLine(t, o), L = (t, o) => S(t, o).line;
 const hard = core.SHARPEN._dbg.hard;
+/* v5.4 (step 2): post 1 of a thread read with its post 2, joined the way the draft had them (the writer's full stop, or the clause break the cut took) */
+const full = R => !R.post2 ? R.line : R.draft.includes(R.line.slice(-12)) ? `${R.line} ${R.post2}` : `${R.line.replace(/\.$/, '')}, ${R.post2}`;
 
 test('juror 5, hook-1/6: every hard guard rejects what it names and passes its clean twin', () => {
   const cases = [
@@ -40,7 +42,8 @@ test('juror 5, hook-1/6: every hard guard rejects what it names and passes its c
     ['a hedge in front of an order', 'Probably talk to your users before you build.', 'You should probably talk to your users before you build.', 'This might sound obvious but you should probably talk to your users before you build'],
     ['an opinion verb left without its clause', 'Why I think @jessepollak. The Base team are building the next Coinbase inside of Coinbase:', 'Why I think @jessepollak and the Base team are building the next Coinbase inside of Coinbase:', 'Really quick thread on why I think @jessepollak and the Base team are basically building the next Coinbase inside of Coinbase'],
     ['a thread pointer lost', 'I think @jessepollak and the Base team are building the next Coinbase inside of Coinbase.', 'Why I think @jessepollak and the Base team are building the next Coinbase inside of Coinbase:', 'Really quick thread on why I think @jessepollak and the Base team are basically building the next Coinbase inside of Coinbase'],
-    ['a kept hedge dropped', 'Most people overthink their first post.', 'I think most people overthink their first post.', 'Honestly I think most people overthink their first post'],
+    /* v5.4 (step 3): the kept hedge is the forecast's; on a plain view it is cut */
+    ['a kept hedge dropped', 'Most people will overthink their first post.', 'I think most people will overthink their first post.', 'Honestly I think most people will overthink their first post'],
     ['a kept frame dropped', "Most apps don't need microservices.", "Hot take: most apps don't need microservices.", "Hot take: most apps don't need microservices."]
   ];
   for (const [what, bad, good, draft] of cases) {
@@ -54,9 +57,10 @@ test('juror 5, hook-1: no version the engine returns trips a guard, on the juror
   const bad = [];
   rows.forEach((r, i) => {
     const R = S(r.t); if (R.state !== 'sharp') { assert.equal(R.line, R.draft, r.t); return; }
-    [R.line, ...R.alts.map(a => a.line)].forEach(l => { const why = hard(l, R.draft); if (why) bad.push(`${R.draft} → ${l}: ${why}`); });
+    /* v5.4 (step 2): post 1 of a thread is read with its post 2 */
+    [full(R), ...R.alts.map(a => a.line)].forEach(l => { const why = hard(l, R.draft); if (why) bad.push(`${R.draft} → ${l}: ${why}`); });
     if (i % 7) return;
-    R.cut.forEach(c => { const R2 = S(r.t, { keep: [c.text] }); if (R2.state === 'sharp') [R2.line, ...R2.alts.map(a => a.line)].forEach(l => { const why = hard(l, R2.draft); if (why) bad.push(`put back "${c.text}": ${R2.draft} → ${l}: ${why}`); }); });
+    R.cut.forEach(c => { const R2 = S(r.t, { keep: [c.text] }); if (R2.state === 'sharp') [full(R2), ...R2.alts.map(a => a.line)].forEach(l => { const why = hard(l, R2.draft); if (why) bad.push(`put back "${c.text}": ${R2.draft} → ${l}: ${why}`); }); });
   });
   assert.deepEqual(bad, []);
 });
@@ -97,13 +101,13 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   /* the disclaimer stays where the writer put it: never moved to the end */
   for (const t of ["Not financial advice obviously but I've been slowly accumulating $LINK under 15 for the past month", 'nfa but i genuinely believe $HYPE is the most undervalued L1 right now']) { const l = L(t); assert.match(l, /^(?:not financial advice|nfa)\b/i, t); assert.doesNotMatch(l, /(?:not financial advice|nfa)[.!]?$/i, t); }
   /* one hedge per clause: a lone "I think" stays (its padding goes), a stacked one gives way to the modal */
-  assert.equal(L('I genuinely think AI agents are overhyped right now'), 'I think AI agents are overhyped right now.');
+  assert.equal(L('I genuinely think AI agents are overhyped right now'), 'AI agents are overhyped right now.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* v4.2 (round-7 marketing-4): "I think" stays as the one hedge, the second hedge goes */
   /* v5.3 (Fable g-28/g-74): an "I think" on the writer's own past goes, and the claim's own "probably" stays */
   assert.equal(L('I think one of the biggest mistakes I made as a first-time founder was probably hiring way too fast.'), 'One of the biggest mistakes I made as a first-time founder was probably hiring way too fast.');
   assert.equal(L('Honestly, I feel like dark mode is kind of overrated and most apps would probably be better without it.'), 'Dark mode is overrated. Most apps would probably be better without it.' /* v5.3 (Fable g-16, step 5): "I feel like" on a plain view is a run-up */);
   /* v5.0 (round-13 uiux-2): the spare "that" after the kept stance goes */
-  assert.equal(L("I've been coding for 10 years and I honestly think that most developers are kind of overcomplicating their side projects."), "I've been coding for 10 years. I think most developers are overcomplicating their side projects.");
+  assert.equal(L("I've been coding for 10 years and I honestly think that most developers are kind of overcomplicating their side projects."), "I've been coding for 10 years. Most developers are overcomplicating their side projects."); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* on a call every hedge stays; a doubled hedge is one hedge; "What could possibly go wrong" is the joke, not a doubled hedge */
   assert.equal(L('Not gonna lie, I really think $SOL could potentially hit $300 by Q2 if the ETF gets approved.'), 'I think $SOL could hit $300 by Q2 if the ETF gets approved.');
   /* v5.0 (round-13 uiux-2): the spare "that" goes; the call keeps its stance */

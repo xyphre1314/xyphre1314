@@ -19,7 +19,7 @@ test('soft words: a whole warm-up is one mark and one cut; idioms and real words
   /* r86 pass 6 (juror 5, hook-7): how they feel about it is the tone the Claude prompt keeps */
   assert.equal(core.softCut('Hey everyone! Quick reminder that my course launches tomorrow, really excited about this one').s, 'My course launches tomorrow, really excited about this one');
   /* words this voice put back stay (r86 pass 6: a stacked "i think", since a lone one is the clause's hedge and stays anyway) */
-  assert.equal(core.softMarks('honestly i think pricing is probably wrong', ['honestly']).length, 1);
+  assert.equal(core.softMarks('honestly i think pricing is probably wrong', ['honestly']).length, 2); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* every soft word says why, in a sentence, with no invented number */
   core.SOFT.forEach(s => { assert.ok(s.why.length > 30 && /\.$/.test(s.why), s.k); assert.doesNotMatch(s.why, /\b\d+(?:%|x)\b|\bstud(?:y|ies)\b|\bresearch\b/i, s.k); });
 });
@@ -39,8 +39,9 @@ test('one tap: the moves top first lines make, with the facts kept', () => {
   assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is just four words.', 'no colon with nothing after it');
   /* v4.8 (round-11 founder-1): the plain cut is version 1; "Asked, then answered" is another take */
   assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'you should be tracking your protein if you want to build muscle');
-  assert.ok(E.hgSharpen('you should really be tracking your protein if you want to build muscle').alts.includes('want to build muscle? track your protein'));
-  assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week has been kind of a big deal for my energy', 'a never-say word said plainly');
+  /* v5.4 (step 1): never a "?" the writer didn't type, so no "Asked, then answered" take here */
+  assert.ok(!E.hgSharpen('you should really be tracking your protein if you want to build muscle').alts.some(a => /\?/.test(a)));
+  assert.equal(S('honestly lifting 3 days a week has been kind of a game changer for my energy'), 'lifting 3 days a week changed my energy', 'a never-say word said plainly'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(S('honestly lifting 3 days a week has been a game changer for my energy'), 'lifting 3 days a week changed my energy', 'a never-say word said plainly');
   assert.equal(S('I wanted to talk about why our sales team stopped doing cold calls this quarter\nShort version: warm intros closed 4x more.'), 'Our sales team stopped doing cold calls this quarter. Here’s why:');
   /* v4.8 (round-11 marketing-1): with nothing under it, the topic keeps its "why": the pointer the draft made, not a claim */
@@ -53,7 +54,8 @@ test('the receipt: every sharpen says which move it made and why that move works
   const r = E.hgSharpen('honestly most design systems fail because nobody really owns them');
   /* v4.8 (round-11 founder-1): the plain cut leads; the "Asked, then answered" flip is the other take, and says why it works */
   assert.equal(r.first, 'most design systems fail because nobody really owns them'); assert.deepEqual(r.cuts, ['honestly']); /* v4.1 (hook4-7): "nobody really owns them" keeps its degree */
-  const ra = r.altP.find(a => a.main === 'ask'); assert.ok(ra, JSON.stringify(r.altP)); assert.match(ra.why, /question/i);
+  /* v5.4 (step 1): never a "?" the writer didn't type, so no "Asked, then answered" flip on a draft without one */
+  assert.ok(!r.altP.some(a => a.main === 'ask'), JSON.stringify(r.altP));
   const n = E.hgSharpen('I’ve been thinking a lot about pricing lately and I think we were really undercharging');
   assert.equal(n.first, 'Pricing: I think we were really undercharging.'); /* v4.5 (hook44-3): "really" before the verb is the writer's degree */ assert.ok(n.why.length > 20); /* r86 pass 6 (hook-7): the lone "I think" stays */
   Object.values(core.SHARPEN.MOVE_WHY).forEach(w => { assert.match(w, /\.$/); assert.doesNotMatch(w, /\b\d+(?:%|x)\b|algorithm|reach|viral|engag/i); });
