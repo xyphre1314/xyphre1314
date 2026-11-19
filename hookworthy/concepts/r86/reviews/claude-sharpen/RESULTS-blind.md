@@ -14,8 +14,9 @@ One independent juror (a senior X ghostwriter) wrote each set of 120 first lines
 | 8 | v4.6 | 9.6 (unchanged) | – | **9.5** | 96.7% / 94.6% | **0** |
 | F1 | v5.1 | 8.8 | 81.7% / 69.9% | 6.4 | 59.2% / 34.2% | 2 |
 | F2 | v5.2 | 8.7 | 82.5% / 72.0% | 7.0 | 65.8% / 45.3% | 2 |
+| F3 | v5.3 | 8.7 | 86.7% / 79.2% | 6.6 | 70.0% / 53.2% | 4 |
 
-Sets F1 and F2 were written and graded by a stricter second juror (Fable 5.2), so they are not comparable with sets 1–8. It grades light edits that keep a hedge or run-up as "soft", where the first juror often passed them. On F2, Claude changed no facts or meanings, and 1 of 120 lines was broken (an on-device fallback). The fixes for F2 are in v5.3 and C5.3.
+Sets F1 and F2 were written and graded by a stricter second juror (Fable 5.2), so they are not comparable with sets 1–8. It grades light edits that keep a hedge or run-up as "soft", where the first juror often passed them. On F2, Claude changed no facts or meanings, and 1 of 120 lines was broken (an on-device fallback). The fixes for F2 are in v5.3 and C5.3. On F3, Claude again changed no facts or meanings and broke no lines. Its one miss came from the validator wrongly rejecting a good line, and Fable found all 3 rejects that round wrong. The fixes for F3 are in v5.4 and C5.4.
 
 Sets 5–8 are ordinary everyday drafts (the juror's fairer baseline). Since v4.3 the app asks Claude first, and the engine's strict line is only the fallback. v4.6 adds a positive whole-sentence check on every split or reshape. On set 4, the juror said the Claude path "matches Typefully's AI rewrite on edit quality and beats it on safety and restraint".
 

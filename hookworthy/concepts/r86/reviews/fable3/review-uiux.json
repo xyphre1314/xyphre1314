@@ -1,0 +1,54 @@
+{
+ "key": "uiux",
+ "role": "senior UI/UX designer (Linear/Superhuman level)",
+ "score": 9.3,
+ "verdict": "The product moments are believable and every control I touched has a finished state: live Sharpen with put-back and undo, feed previews, reply send/undo, client approval, an honest signup sheet with a working focus trap, focus return, inline email errors and a reduced-motion static layout, with no console errors, CLS near zero and 9.98 screens at 390 (10.10 at 360). One touch-only flaw on the signature gesture keeps it just under 9.5: on a phone the first tap on a struck word in the Try box opens the keyboard and puts nothing back, directly under a hint that says tapping puts it back.",
+ "to_95": [
+  "On touch, make the first tap on a struck word in the untouched Try example toggle that word (as it does with a mouse); only taps outside a mark should focus the textarea.",
+  "Raise the smallest phone tap targets to at least 36px high with a 44px hit area: the three 'Try it' pills and 'Studio' pill in the writers card (24px), 'See it again' and the Replay buttons (28-32px).",
+  "Make the hero 'Schedule' button do the same thing for all four examples, or relabel it on the Ghostwriter example where it jumps to the Studio card instead of opening the schedule sheet.",
+  "Tighten the 'Kept ...' receipt so it never states something untrue or vague ('Kept your lowercase' on a line with 'HUGE NEWS'; 'Kept 3' instead of 'Kept 3 plans')."
+ ],
+ "issues": [
+  {
+   "id": "uiux-1",
+   "severity": "P1",
+   "area": "Try box, touch interaction",
+   "where": "390/360, 'Your facts stay' card, default example, struck words (#try-mirror mark.tog). Reproduced in Chromium touch emulation three times; a mouse click at 1440 toggles on the first click.",
+   "problem": "The hint reads 'Tap a struck word to put it back.' On touch, the first tap on a struck word focuses the textarea (keyboard opens on a real phone) and puts nothing back; only the second tap toggles. The click handler returns early when lastPT==='touch' and the example is untouched (ta.focus();return;). The signature gesture breaks its own instruction on the first try, on the device most of the audience uses.",
+   "fix": "Remove the early return for taps whose target is a .tog: a tap on a mark always toggles the word, and does not focus the textarea. Keep 'tap to start writing' for taps on the rest of the editor only (and the existing 'Write my own' button). Verify on a real iOS and Android device."
+  },
+  {
+   "id": "uiux-2",
+   "severity": "P2",
+   "area": "Tap targets, phone",
+   "where": "390: writers card 'Try it' x3 and 'Studio' pills (59-67 x 24px); hero 'See it again' (28px high); Try box Replay (44 x 28); day card Replay (30px); reply-draft replay icon (32px); 'See everything included' (32px).",
+   "problem": "These pass WCAG 2.5.8 (24px) but are well under the 44px comfortable touch size, and the 'Try it' pills sit right beside the card's scroll edge, so they are easy to miss with a thumb.",
+   "fix": "Give each a min-height of 36px on phones, or keep the visual size and add a ::before hit area of inset:-10px so the tappable area is at least 44px high."
+  },
+  {
+   "id": "uiux-3",
+   "severity": "P2",
+   "area": "Hero demo, consistency",
+   "where": "Hero, 'Schedule' button (#pf-sched) with the Ghostwriter example selected.",
+   "problem": "For Trader the button opens the 'Schedule your posts free' sheet with the example line. For Ghostwriter the same button scrolls the page down to the Studio card and moves focus to Approve. Same label, two different outcomes, and the second moves the visitor a long way without saying so.",
+   "fix": "On the Ghostwriter example, relabel the button to say where it goes (for example 'See client approval' with a down arrow), or open the same schedule sheet as the other three examples."
+  },
+  {
+   "id": "uiux-4",
+   "severity": "P2",
+   "area": "Demo output truthfulness",
+   "where": "Try box and final input, the 'Kept ...' receipt line under 'Why it hits'.",
+   "problem": "Pasting '🚀🚀 HUGE NEWS: we are so excited to announce our Series A!!!' returns '🚀🚀 HUGE NEWS: we’re announcing our Series A!!' with 'Kept your lowercase.' The hype opener stays (while 'huge news' is shown as a never-say phrase in the voice card), 'we are' is silently contracted, one '!' is dropped without a mark, and the lowercase claim does not fit a line that shouts in capitals. In the final input, 'cut it to 3 plans' reports 'Kept 3 and your lowercase', which reads as a fragment.",
+   "fix": "Show 'Kept your lowercase' only when the whole line is lowercase. Report numbers with their noun ('Kept 3 plans'). Either mark 'HUGE NEWS:' as a frame to cut (as 'Big news:' is in the Founder example) or leave punctuation and 'we are' as written so every change is a marked one."
+  },
+  {
+   "id": "uiux-5",
+   "severity": "P2",
+   "area": "Demo output, edge case",
+   "where": "Try box, a line containing a jargon word used on purpose.",
+   "problem": "'we don't use AI-powered tools, we leverage them (kidding)' becomes 'we don't use AI tools, we use them (kidding)', which removes the joke and leaves a sentence that contradicts itself, labelled 'Said it plainer'. The swap is not offered as a tappable 'your call'.",
+   "fix": "When a plain-word swap would repeat a word already in the same clause ('use ... use'), mark the word as 'your call' (dotted, tap to change) and leave the line as written."
+  }
+ ]
+}
