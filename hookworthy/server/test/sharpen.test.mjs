@@ -19,7 +19,7 @@ test('soft words: a whole warm-up is one mark and one cut; idioms and real words
   /* r86 pass 6 (juror 5, hook-7): how they feel about it is the tone the Claude prompt keeps */
   assert.equal(core.softCut('Hey everyone! Quick reminder that my course launches tomorrow, really excited about this one').s, 'My course launches tomorrow, really excited about this one');
   /* words this voice put back stay (r86 pass 6: a stacked "i think", since a lone one is the clause's hedge and stays anyway) */
-  assert.equal(core.softMarks('honestly i think pricing is probably wrong', ['honestly']).length, 2); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(core.softMarks('honestly i think pricing is probably wrong', ['honestly']).length, 1); /* v5.6 (Fable round 5, f5-2): one rule for the hedge words: "probably" is the clause's one hedge, kept as the writer's call; the "i think" on top of it is the mark */
   /* every soft word says why, in a sentence, with no invented number */
   core.SOFT.forEach(s => { assert.ok(s.why.length > 30 && /\.$/.test(s.why), s.k); assert.doesNotMatch(s.why, /\b\d+(?:%|x)\b|\bstud(?:y|ies)\b|\bresearch\b/i, s.k); });
 });

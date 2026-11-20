@@ -1,7 +1,7 @@
 /* r86 v5.3: the on-device Sharpen after the Fable round-2 review (engine items only).
    0. "your call" marks: a stance word, a hedge or a hype word the engine kept is a mark of kind 'call' ([a, b, reason, 'call'],
       offsets on the draft), never a cut; R.calls has each one on the shipped line with the line it leaves; say reads
-      "Nothing cut · 2 your call" or "Cut 1 bit of fluff · 1 your call"
+      "Nothing cut · 2 left to you" or "Cut 1 bit of fluff · 1 left to you"
    1. nothing broken ships: a frame is cut whole or not at all ("Just a quick note to say that"), a filler chain goes whole ("so
       um"), and no version opens on a dangling infinitive, a bare joining word or a hesitation the draft did not open on
    2. no meaning moved: a degree that is the claim stays ("really good at"), and "probably" stays on a hedged view
@@ -28,21 +28,21 @@ const callKinds = r => (r.marks || []).filter(m => m[3] === 'call').map(m => r.d
 
 test('v5.3 (0): a kept hedge or stance is a "your call" mark, never a cut, and the say counts it', () => {
   const t = 'i think $BTC might hit 120k by march, so you should probably watch it', r = S(t);
-  assert.equal(r.state, 'clean'); assert.equal(r.line, t); assert.equal(r.say, 'Nothing cut · 2 your call');
+  assert.equal(r.state, 'clean'); assert.equal(r.line, t); assert.equal(r.say, 'Nothing cut · 2 left to you');
   assert.deepEqual(callKinds(r), ['i think', 'probably']);
   assert.ok(r.marks.every(m => m[3] !== 'call' || /Tap to cut it/.test(m[2])), 'every call mark says what a tap does');
   assert.deepEqual(r.calls.map(c => c.line), ['$BTC might hit 120k by march, so you should probably watch it', 'i think $BTC might hit 120k by march, so you should watch it']);
   for (const c of r.calls) { assert.equal(r.line.slice(c.at[0], c.at[1]), c.text); assert.equal(r.draft.slice(c.draftAt[0], c.draftAt[1]), c.text); assert.ok(D.shipOK(c.line, t), c.line); }
   /* a sharp result that keeps a hedge: both counts, the call last */
   const g0 = S('I think $SOL could maybe hit $400 by Q2 if the ETF flows keep up, but honestly who knows');
-  assert.equal(g0.say, 'Cut 2 bits of fluff · 1 your call'); assert.deepEqual(callKinds(g0), ['I think']);
+  assert.equal(g0.say, 'Cut 2 bits of fluff · 1 left to you'); assert.deepEqual(callKinds(g0), ['I think']);
   assert.ok(!g0.cut.some(c => c.kind === 'call'), 'a call mark is never in the cut list');
   /* the founder's line: three your-call items, none of them struck */
   const f = S('I think the Fed is probably going to cut rates in September, so you should maybe buy bonds');
-  assert.match(f.say, / · 2 your call$/); assert.ok(callKinds(f).includes('maybe'));
+  assert.match(f.say, / · 2 left to you$/); assert.ok(callKinds(f).includes('maybe'));
   /* the helpers the Claude path uses */
-  assert.equal(core.SHARPEN.callSay('Nothing to cut', 2), 'Nothing cut · 2 your call');
-  assert.equal(core.SHARPEN.callSay('Cut 1 bit of fluff', 1), 'Cut 1 bit of fluff · 1 your call');
+  assert.equal(core.SHARPEN.callSay('Nothing to cut', 2), 'Nothing cut · 2 left to you');
+  assert.equal(core.SHARPEN.callSay('Cut 1 bit of fluff', 1), 'Cut 1 bit of fluff · 1 left to you');
   assert.equal(core.SHARPEN.callSay('Kept as written', 0), 'Kept as written');
   assert.equal(core.SHARPEN.callCut('I think eth goes to 5k this year', 0, 7), 'eth goes to 5k this year');
   { const z = 'We raised $4M led by an amazing group of investors', a = z.indexOf('amazing'); assert.equal(core.SHARPEN.callCut(z, a, a + 7), 'We raised $4M led by a group of investors'); }
@@ -54,7 +54,7 @@ test('v5.3 (1): a frame is cut whole, a filler chain goes whole, and no broken l
   assert.equal(L('Just a quick note to say that I\'m going to be moving the newsletter from Substack to @beehiiv next week #newsletter #creatoreconomy'), 'I\'m going to be moving the newsletter from Substack to @beehiiv next week #newsletter #creatoreconomy');
   assert.equal(L('Just a quick note to let you know that the webinar moved to Thursday'), 'The webinar moved to Thursday.');
   assert.equal(L('Just a quick note to self'), 'Just a quick note to self');
-  assert.equal(L('so um i wrote 100 essays in 100 days and here are some of the things that i learned along the way'), 'i wrote 100 essays in 100 days. here are some of the things i learned along the way');
+  assert.equal(L('so um i wrote 100 essays in 100 days and here are some of the things that i learned along the way'), 'i wrote 100 essays in 100 days. here’s what i learned along the way'); /* v5.6 (Fable round 5, f5-7): "some of the things I learned" is "what I learned", one rule */
   assert.equal(L('so uh we shipped the new app today'), 'we shipped the new app today');
   for (const [m, o] of MODES) for (const t of ['Just a quick note to say that I\'m going to be moving the newsletter next week', 'so um i wrote 100 essays in 100 days', 'ok so um yeah i quit my job', 'uhh so I think we got it wrong', 'The truth is that most newsletters die at issue 12', 'The truth is out there'])
     for (const v of versions(S(t, o))) assert.ok(!dangling(v.line, t) && !D.dangle(v.line, t), `${m}: ${t} → ${v.line}`);
@@ -74,7 +74,8 @@ test('v5.3 (2): the degree that is the claim stays, and "probably" stays on a he
   assert.equal(L('I might be wrong about this, but I think zone 2 cardio is probably overrated for people who lift less than 3 days a week'), 'Zone 2 cardio is probably overrated for people who lift less than 3 days a week.');
   assert.match(S('I might be wrong about this, but I think zone 2 cardio is probably overrated for people who lift less than 3 days a week').why, /Three hedges became one\. Kept your “probably”/);
   /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-  for (const t of ['I think most founders probably overvalue their ideas', 'I think that remote work is probably here to stay']) { const r = S(t); assert.doesNotMatch(r.line, /\b(?:probably|I think)\b/i, t); }
+  /* v5.6 (Fable round 5, f5-2): one rule for the hedge words: the lone "probably" stays as the call, the "I think" on top goes */
+  for (const t of ['I think most founders probably overvalue their ideas', 'I think that remote work is probably here to stay']) { const r = S(t); assert.doesNotMatch(r.line, /\bI think\b/i, t); assert.match(r.line, /\bprobably\b/, t); }
   /* (a superlative is a guess: its "probably" stays) */
   for (const t of ['I think it\'s probably the best book I\'ve read this year']) { const r = S(t); assert.match(r.line, /\bprobably\b/, t); assert.doesNotMatch(r.why, /talk, not the point/, t); }
   /* a plan keeps every hedge (juror 4); a price call collapses to its stance verb (step 5b) */
@@ -129,8 +130,8 @@ test('v5.3 (4): the families Fable found missed', () => {
 
 test('v5.3 (5): soft run-ups go; a lowercase line gets no full stop it never had', () => {
   assert.equal(L('I would argue that thought leadership is essentially just having opinions and being willing to be wrong in public'), 'Thought leadership is just having opinions and being willing to be wrong in public.');
-  assert.equal(L('i just feel like maybe we should all be posting less and making more stuff'), 'we should all be posting less and making more stuff');
-  assert.equal(L('In my opinion, I really think that most founders should probably raise less'), 'Most founders should raise less.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L('i just feel like maybe we should all be posting less and making more stuff'), 'maybe we should all be posting less and making more stuff'); /* v5.6 (Fable round 5, f5-2): the lone "maybe" is the call */
+  assert.equal(L('In my opinion, I really think that most founders should probably raise less'), 'Most founders should probably raise less.'); /* v5.6 (Fable round 5, f5-2): the stances go, the one "probably" stays as the call */ /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(L('I feel like you should read more fiction'), 'I feel like you should read more fiction');
   for (const t of ['honestly i think most people overthink their first post', 'so basically you should sell into strength, not into panic', 'gm. honestly feeling pretty bullish on sol right now ngl'])
     { const r = S(t); assert.equal(r.state, 'sharp', t); assert.doesNotMatch(r.line, /[^.]\.$/, `${t} → ${r.line}`); }

@@ -162,19 +162,19 @@ test('receipts v5.3: "Number first" only when a figure now leads; the beat count
 
 test('call marks v5.3: a hedge or stance Claude\'s line keeps is a "your call" mark, never a cut, and the say counts it', () => {
   const m = F('i think $BTC might hit 120k by march, so you should probably watch it', [{ line: 'i think $BTC might hit 120k by march, so you should probably watch it', why: 'Already sharp: a call with its hedges.' }], {}, true).r;
-  assert.equal(m.state, 'clean'); assert.equal(m.say, 'Nothing cut · 2 your call'); assert.deepEqual(calls(m), ['i think', 'probably']);
+  assert.equal(m.state, 'clean'); assert.equal(m.say, 'Nothing cut · 2 left to you'); assert.deepEqual(calls(m), ['i think', 'probably']);
   assert.ok(m.calls.every(c => c.line && c.line !== m.draft && c.draftAt));
   const s = F('ngl I think $SOL could maybe retest $150 next week', ['I think $SOL could retest $150 next week.']).r;
-  assert.match(s.say, / · 1 your call$/); assert.deepEqual(calls(s), ['I think']); assert.ok(s.cut.every(c => !/^I think$/i.test(c.text.trim())));
+  assert.match(s.say, / · 1 left to you$/); assert.deepEqual(calls(s), ['I think']); assert.ok(s.cut.every(c => !/^I think$/i.test(c.text.trim())));
   /* a stance Claude cut is not a call; a "think" that says how they think is not a stance */
   const b = F('Honestly I think most pitch decks are too long', ['Most pitch decks are too long.']).r;
-  assert.doesNotMatch(b.say, /your call/); assert.deepEqual(calls(b), []);
+  assert.doesNotMatch(b.say, /left to you/); assert.deepEqual(calls(b), []);
   const c = F('Here are 12 books that completely changed how I think about money:', ['12 books that completely changed how I think about money:']).r;
-  assert.doesNotMatch(c.say, /your call/); assert.deepEqual(calls(c), []);
+  assert.doesNotMatch(c.say, /left to you/); assert.deepEqual(calls(c), []);
   /* the top version and each alt count their own calls */
   const a = F('Honestly I think most hiring mistakes are probably made in the first call', ['Most hiring mistakes are probably made in the first call.', 'I think most hiring mistakes are probably made in the first call.']).r;
-  assert.deepEqual(calls(a), ['probably']); assert.match(a.say, / · 1 your call$/);
-  for (const x of a.alts) { const n = +((x.say.match(/ · (\d+) your call$/) || [0, 0])[1]); assert.equal(n, x.calls.length, x.line); }
+  assert.deepEqual(calls(a), ['probably']); assert.match(a.say, / · 1 left to you$/);
+  for (const x of a.alts) { const n = +((x.say.match(/ · (\d+) left to you$/) || [0, 0])[1]); assert.equal(n, x.calls.length, x.line); }
 });
 
 test('generalisation v5.3: 46 lines of the families above, each shipping (or refusing) as the rules say', () => {
@@ -226,5 +226,5 @@ test('the endpoint ships Claude\'s line where it used to fall back (a scheduled 
   const c = "I think AI is not going to replace programmers anytime soon, but it will most likely replace programmers who refuse to use it";
   answer = () => reply({ versions: [{ line: 'I think AI is not going to replace programmers anytime soon. But it will most likely replace programmers who refuse to use it.', why: 'The long line splits at “but”, so the turn lands on its own. “I think” and “most likely” stay: it’s a forecast.' }], unchanged: false });
   const s = await sharpen({ text: c });
-  assert.equal(s.source, 'claude'); assert.match(s.say, /^Split it into two beats · 2 your call$/); assert.equal(s.marks.filter(m => m[3] === 'call').length, 2);
+  assert.equal(s.source, 'claude'); assert.match(s.say, /^Split it into two beats · 2 left to you$/); assert.equal(s.marks.filter(m => m[3] === 'call').length, 2);
 });

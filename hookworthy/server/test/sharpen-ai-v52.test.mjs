@@ -40,7 +40,7 @@ test('prompt v5.2: stacked frames, hashtag piles, "!!!", lines over 280 and the 
   for (const re of [/A stacked opinion frame is what makes a line soft/, /that other hedge carries their doubt/, /A frame that is its clause's only hedge stays/,
     /a stated doubt \("I might be wrong", "I could be wrong"\) always stays where they put it/, /a "do you think" after it goes/, /A softener on an absolute stays/,
     /Three or more "!" become "!!"/, /a pile of three or more hashtags at the end keeps only the one or two most specific/, /never add or invent a tag/,
-    /"!!!" or a pile of three or more hashtags/, /6\. A line over 280 characters: version 1 fits in 280\. Cut padding first/, /the rest can be post 2/,
+    /"!!!" or a pile of three or more hashtags/, /6\. A line over 280 characters: version 1 fits in 280\. Cut padding first/, /Hookworthy splits the line into posts at your sentence ends and says where/,
     /When a stronger version passes every check below, it is version 1/, /On a forecast, plan or price call keep every hedge/]) assert.match(sys, re);
   assert.equal(core.prompts.sharpen({ text: 'another line\nwith a rest' }).cached, sys, 'still one cached string');
   const ex = new Map([...sys.matchAll(/<example>\n<line>([\s\S]*?)<\/line>\n(\{[\s\S]*?\})\n<\/example>/g)].map(m => [m[1], JSON.parse(m[2])]));
@@ -105,7 +105,8 @@ test('long lines v5.2: a version over 280 that keeps every fact ships its first 
   const [head, tail] = a.line.split('\n\n');
   assert.ok(core.xLength(head) <= 280, head); assert.ok(tail && tail.startsWith('I wanted to write down'), tail);
   assert.equal(a.post2, tail); assert.equal(`${head} ${tail}`, v, 'every word kept, in order');
-  assert.equal(a.why, '“So” and “honestly” went, and the run-on is four sentences. The rest can be post 2.');
+  /* v5.6 (f5-1): the why says where the shared splitter started post 2 */
+  assert.equal(a.why, '“So” and “honestly” went, and the run-on is four sentences. Post 2 starts at “I wanted to”.');
   assert.ok(a.long, 'the long note still offers the thread');
   /* a version that fits ships whole; a draft under 280 is never split */
   const fit = 'About two years ago I quit my job at a big bank to start a tiny design studio with my best friend. For the first eight months we made basically nothing. Last month we signed our biggest client yet. Here is every mistake we made along the way:';
@@ -154,5 +155,5 @@ test('the endpoint ships the stronger version over a stacked frame, and moves th
   const L = 'So about two years ago I quit my job at a big bank to start a tiny design studio with my best friend, and honestly for the first eight months we made basically nothing, but last month we signed our biggest client yet, and I wanted to write down every single mistake that we made along the way because I think it might save someone else a year';
   answer = () => reply({ versions: [{ line: 'About two years ago I quit my job at a big bank to start a tiny design studio with my best friend. For the first eight months we made basically nothing. Last month we signed our biggest client yet. I wanted to write down every single mistake we made along the way because I think it might save someone else a year.', why: '“So” and “honestly” went.' }], unchanged: false });
   const s = await sharpen({ text: L });
-  assert.equal(s.source, 'claude'); assert.ok(core.xLength(s.line.split('\n\n')[0]) <= 280); assert.match(s.why, /post 2/);
+  assert.equal(s.source, 'claude'); assert.ok(core.xLength(s.line.split('\n\n')[0]) <= 280); assert.match(s.why, /post 2/i);
 });

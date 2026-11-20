@@ -162,8 +162,9 @@ test('v4.9 round 12: "Big announcement:" is hype and goes; deadpan labels stay',
 test('v4.9 round 12 (uiux-4): one hedge per clause; a "maybe" stacked on "I think" is marked and may go', () => {
   /* v5.0 (round-13 uiux-2): the spare "that" goes with the second hedge */
   /* v5.4 (step 3): advice is a plain view, so the stance goes with the second hedge */
-  for (const [t, want] of [['i think that maybe we should raise prices', 'we should raise prices'], ['I think maybe we should raise prices', 'We should raise prices.'], ['I feel like maybe we should raise prices', 'We should raise prices.']]) {
-    const r = S(t); assert.equal(r.line, want, t); assert.ok(r.marks.some(m => t.slice(m[0], m[1]) === 'maybe'), t); assert.match(r.why, /second hedge|Without “I (?:think|feel like)(?: that)?” and “maybe”|“maybe”/, t); }
+  /* v5.6 (Fable round 5, f5-2): one rule for the hedge words: the "maybe" is the clause's one hedge, kept as the writer's call; the stance on top goes */
+  for (const [t, want] of [['i think that maybe we should raise prices', 'maybe we should raise prices'], ['I think maybe we should raise prices', 'Maybe we should raise prices.'], ['I feel like maybe we should raise prices', 'Maybe we should raise prices.']]) {
+    const r = S(t); assert.equal(r.line, want, t); assert.ok(r.marks.some(m => t.slice(m[0], m[1]) === 'maybe'), t); assert.match(r.why, /second hedge|Without “I (?:think|feel like)(?: that)?” and “maybe”|“maybe”|“[iI] (?:think|feel like)(?: that)?” was talk/, t); }
   /* a lone "maybe" is the stance; a call keeps every hedge */
   assert.equal(S('maybe we should raise prices').state, 'clean');
   /* v5.3 (step 5b): on a price call, a hedge stacked on the stance verb collapses to it */

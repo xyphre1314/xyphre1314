@@ -46,8 +46,9 @@ function broken(line, draft) {
 
 test('v4.4, hook43-1: a word the writer kept lowercase after an ellipsis stays lowercase, in every mode', () => {
   const z6 = "So I finally sat down and calculated my total trading P&L for the year and it's... not great.";
-  for (const [m, o] of MODES) assert.equal(L(z6, o), "I finally sat down and calculated my total trading P&L for the year and it's... not great.", m);
-  assert.match(S(z6).why, /opens on what you came to say/);
+  /* v5.6 (Fable round 5, f5-1): one sentence reader, so the line may now split at its "and"; the word after the ellipsis keeps its case either way */
+  for (const [m, o] of MODES) assert.ok(["I finally sat down and calculated my total trading P&L for the year and it's... not great.", "I finally sat down and calculated my total trading P&L for the year. It's... not great."].includes(L(z6, o)), m);
+  assert.match(S(z6).why, /opens on what you came to say|full stop|beat/);
   for (const [m, o] of MODES) {
     assert.equal(L("Well it's... just not great honestly.", o), "It's... just not great.", m);
     assert.equal(L('So basically I tried… honestly it was a mess.', o), 'I tried… it was a mess.', m);

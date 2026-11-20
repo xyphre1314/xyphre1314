@@ -158,7 +158,7 @@ test('whys and receipts v5.4: whole phrases or "N small words", counts from the 
   const sharp = F('I lost 25 pounds in 4 months without ever counting a single calorie', [{ line: 'I lost 25 pounds in 4 months without ever counting a single calorie', why: 'Already sharp: the 25 pounds and the 4 months lead, and the calorie lands it.' }], true).r;
   assert.match(sharp.why, /^Already sharp:/);
   const soft = F('In my opinion, most NFT projects are probably going to zero, and honestly that is fine', [{ line: 'In my opinion, most NFT projects are probably going to zero, and honestly that is fine', why: 'Already sharp: it\'s a forecast, so the hedges stay.' }], true).r;
-  assert.match(soft.why, /^Nothing cut: it's a forecast/); assert.match(soft.say, /^Nothing cut · \d your call$/);
+  assert.match(soft.why, /^Nothing cut: it's a forecast/); assert.match(soft.say, /^Nothing cut · \d left to you$/);
   /* held-out h-4's shape: a line that moved its words never gets the generic two-beats why */
   const r4 = F('Very excited to announce that we\'ve raised a $6M Series A led by @northzone', ["We've raised a $6M Series A led by @northzone. Very excited to announce it."]).r;
   assert.ok(r4); assert.doesNotMatch(r4.why, /Two short beats with a full stop between them/);

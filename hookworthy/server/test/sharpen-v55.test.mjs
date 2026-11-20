@@ -116,7 +116,7 @@ test('v5.5 H6: a labeled take keeps its hedge as a call; a hesitant opener is a 
   const u = sl('Unpopular opinion: I think cold showers are probably overrated'); assert.equal(u.line, 'Unpopular opinion: cold showers are probably overrated.'); assert.ok(u.calls.some(c => c.text === 'probably'));
   for (const [t, rest] of HESIT) {
     const R = sl(t); assert.equal(shipped(R), t, t); assert.equal(R.cut.length, 0, t);
-    const c = (R.calls || [])[0]; assert.ok(c && R.marks.some(m => m[3] === 'call' && m[0] === c.draftAt[0]), t); assert.equal(c.line, rest, t); assert.match(R.say, /your call/, t);
+    const c = (R.calls || [])[0]; assert.ok(c && R.marks.some(m => m[3] === 'call' && m[0] === c.draftAt[0]), t); assert.equal(c.line, rest, t); assert.match(R.say, /left to you/, t);
   }
   /* no hard news: the why says it is how they chose to say it */
   assert.match(sl('Honestly, I don\'t know how to start this post, so here it is: I\'m leaving my job.').why, /Your opener is how you chose to say it/);

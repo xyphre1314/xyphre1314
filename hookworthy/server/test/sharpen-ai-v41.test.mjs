@@ -122,18 +122,20 @@ test('selection v4.1 (hook4-8): a version that only splits a list header gives w
   assert.equal(F('Ten years of writing taught me a lot, so here are the rules I still follow', ['Ten years of writing taught me a lot. Here are the rules I still follow.', 'The rules I still follow after ten years of writing.']).r.pick, 0, 'not a header');
 });
 
+/* v5.6 (Fable n-15, f5-5): a clean verdict whose why isn't true gets one said from the line itself ("Nothing to cut: two beats, and it
+   ends on …"), never the generic "Claude kept it as written." and never the on-device text */
 test('receipts v4.1 (hook4-5): a Claude "clean" verdict has its own why, never the on-device text', () => {
   const d = "you're not behind. you're just comparing your chapter 3 to someone's chapter 20";
   const ok = F(d, [{ line: d, why: "Already sharp: “you're not behind” first, then “chapter 3” against “chapter 20” lands it." }], {}, true).r;
   assert.equal(ok.state, 'clean'); assert.equal(ok.why, "Already sharp: “you're not behind” first, then “chapter 3” against “chapter 20” lands it.");
   for (const why of ['Already sharp: “chapter 20” comes first.', '', "Already sharp: “someone else's chapter 40” lands it.", `Already sharp: ${'it works '.repeat(16)}`]) {
     const r = F(d, [{ line: d, why }], {}, true).r;
-    assert.equal(r.state, 'clean'); assert.equal(r.why, 'Claude kept it as written.', why); assert.doesNotMatch(r.why, ON_DEVICE);
+    assert.equal(r.state, 'clean'); assert.notEqual(r.why, 'Claude kept it as written.', why); assert.match(r.why, /^Nothing to cut: two beats, and it ends on “someone's chapter 20”\.$/, why); assert.doesNotMatch(r.why, ON_DEVICE);
   }
   /* a later copy of the draft that is the verdict (nothing before it passed) is held to the same rule */
   /* v5.5: no plain "basically" here (a Claude "unchanged" over one now ships the engine's cut of it) */
   const r2 = F('So we shipped v2 today and signups doubled', [{ line: 'We shipped v2 today and signups tripled.', why: '' }, { line: 'So we shipped v2 today and signups doubled', why: '' }], {}, true).r;
-  assert.equal(r2.state, 'clean'); assert.equal(r2.why, 'Claude kept it as written.');
+  assert.equal(r2.state, 'clean'); assert.notEqual(r2.why, 'Claude kept it as written.'); assert.match(r2.why, /^Nothing to cut: /);
 });
 
 test('receipts v4.1 (hook4-5): "Led with the claim" only for a claim from a later clause of the draft; the stance note says "plan or forecast" only when it is one', () => {
@@ -157,5 +159,5 @@ test('the endpoint ships Claude\'s hedged version over the bare claim, and a cle
   const s = 'Your tests passed. Your users still can’t log in.';
   answer = () => reply({ versions: [{ line: s, why: 'Already sharp: “log in” comes first.' }], unchanged: true });
   const c = await sharpen({ text: s });
-  assert.equal(c.source, 'claude'); assert.equal(c.state, 'clean'); assert.equal(c.line, s); assert.equal(c.why, 'Claude kept it as written.');
+  assert.equal(c.source, 'claude'); assert.equal(c.state, 'clean'); assert.equal(c.line, s); assert.equal(c.why, 'Nothing to cut: two beats, and it ends on “can’t log in”.');
 });

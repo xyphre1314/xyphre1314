@@ -186,7 +186,7 @@ test('v5.0 round 13: the spare "that" after a kept stance goes; "really need to"
     ['I believe that cold email is dead', 'Cold email is dead.'],
     /* v5.3 (step 5b): on a price call, a hedge stacked on the stance verb collapses to it */
     ['I think that BTC is probably going to break 100k this week', 'I think BTC is going to break 100k this week.'],
-    ['i think that maybe we should raise prices', 'we should raise prices'],
+    ['i think that maybe we should raise prices', 'maybe we should raise prices'], /* v5.6 (Fable round 5, f5-2): the lone "maybe" is the call */
     ['I think that basically what I learned this year is that consistency beats talent every single time', 'What I learned this year is that consistency beats talent every single time.'],
     ['honestly i basically just think that eth is going to 5k', 'i think eth is going to 5k'],
     ['If you are a creator you really need to start writing better hooks', 'If you’re a creator, you need to start writing better hooks.'],
@@ -206,7 +206,7 @@ test('v5.0 round 13: corporate run-ups and an issue run-up before a noun-phrase 
     ['We would like to inform you that pricing changes on May 1', 'Pricing changes on May 1.'],
     ["I'm writing to let you know that we moved offices", 'We moved offices.'],
     ["In this week's newsletter, I break down the 3 trades that made my month", 'The 3 trades that made my month:'],
-    ['i basically just want to say that you should never ever trade on margin', 'never ever trade on margin'],
+    ['i basically just want to say that you should never ever trade on margin', 'you should never trade on margin'], /* v5.6 (page pass 20): "never ever" is "never" */
   ]) assert.equal(L(t), want, t);
 });
 
@@ -214,7 +214,7 @@ test('v5.0 round 13: a why names the real edit and quotes whole phrases', () => 
   /* the default Try line: dropping "you should" is the edit, so the why says so (marketing-5) */
   assert.equal(S('so basically you should sell into strength, not into panic').why, 'Without “so”, “basically” and “you should”, it reads as your rule, not advice.');
   assert.equal(S('you should sell into strength, not into panic').why, 'Without “you should”, it reads as your rule, not advice.');
-  assert.match(S('i basically just want to say that you should never ever trade on margin').why, /Also dropped “you should”\./);
+  assert.match(S('i basically just want to say that you should never ever trade on margin').why, /“i basically just want to say that” and “ever” went/); /* v5.6: the why names both cuts */
   /* a kept word is quoted with its phrase, never a fragment (marketing-1: “just price”) */
   assert.equal(S('Unpopular opinion: most crypto newsletters are just price recaps').why, 'Kept “just price recaps”: here it’s part of what you mean, not filler.');
 });

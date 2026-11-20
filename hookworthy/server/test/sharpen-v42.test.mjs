@@ -193,7 +193,7 @@ test('v4.2, round 7: no dangling header, no object left alone, "I think" kept as
   assert.match(S('i think this is probably the most important chart in crypto right now').why, /^Two hedges became one\. Kept your “probably”: it says how sure you are\.$/);
   /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(L('I think one of the most underrated skills for a founder is writing'), 'One of the most underrated skills for a founder is writing.');
-  assert.equal(L('I think most founders probably overthink their pitch decks.'), 'Most founders overthink their pitch decks.');
+  assert.equal(L('I think most founders probably overthink their pitch decks.'), 'Most founders probably overthink their pitch decks.'); /* v5.6 (Fable round 5, f5-2): the lone "probably" stays as the call; the stacked "I think" goes */
   assert.match(L('honestly i think SOL is going to flip ETH this cycle, not financial advice'), /^i think SOL/);
   /* "I really don't think" is a negated stance, kept (it was read as "I don't think" only after "don't") */
   assert.equal(L("Honestly, I really don't think 'personal branding' is the right goal for most B2B founders."), "I don't think 'personal branding' is the right goal for most B2B founders.");

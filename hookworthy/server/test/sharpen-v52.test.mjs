@@ -99,6 +99,8 @@ test('v5.2 (8): whys that are true', () => {
   assert.match(l.note, /Still long for a first line\. Split it after “first 90 days”\./);
   /* and a long line gets the same cuts a short one does: the guarded "really" of "to really see" keeps only its own place */
   const f = S('honestly i think most people are really just overtrading and it is literally killing their accounts and they should probably stop and take a break and maybe journal every single trade they take because that is basically the only way to really see what is going on with your process over time and get better at it in the long run to be honest');
-  assert.doesNotMatch(f.line, /really just overtrading/);
-  assert.match(f.line, /to really see/);
+  /* v5.6 (Fable round 5, f5-6): over 280 it opens a thread, so the whole line is read across the posts */
+  const fl = (f.thread || [f.line]).join(' ');
+  assert.doesNotMatch(fl, /really just overtrading/);
+  assert.match(fl, /to really see/);
 });
