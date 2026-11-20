@@ -103,7 +103,7 @@ test('v5.4 step 2: never more than 280 with the run-up in; post 1 ends on a whol
     /* v5.5 (Fable round 4, H1): a run-up the line lost may leave a header that fits one post ("The time I deleted…:"); a thread's post 1 still ends on a whole sentence */
     assert.match(L, R.thread ? /[.!?…]$/ : /[.!?…:]$/, `ends on a finished sentence: ${L}`);
     assert.doesNotMatch(L, /\babout why\.$/, L);
-    if (R.thread) { assert.equal(R.thread[0], L); assert.ok(R.post2 && R.post2.length > 10, 'post 2 carries the rest'); assert.match(R.say, /Post 1 of a thread/); }
+    if (R.thread) { assert.equal(R.thread[0], L); assert.ok(R.post2 && R.post2.length > 10, 'post 2 carries the rest'); assert.match(R.say, /Opens a \d+-post thread/); /* v5.5: the say names the thread */ }
   }
   /* the same rule the page can call */
   const p = S.firstPost('Here\'s a really long story about the time I accidentally deleted our production database on a Friday night, spent the whole weekend restoring it from a two-day-old backup, and then had to explain to forty angry customers why their last two days of data were gone, and what I learned from the whole mess');

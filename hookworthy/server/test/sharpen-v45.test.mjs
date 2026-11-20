@@ -139,7 +139,7 @@ test('v4.5, hook44-4: the lesson keeps its label, the issue becomes the label, a
   const r = S(v114);
   /* v5.5 (Fable round 4, H1): over 280, the beats open a thread; the writer's "I don't usually share" frame stays where post 1 can carry it */
   assert.equal(r.thread.join(' '), "I don't usually share stuff like this, but a year ago I was completely burned out, barely sleeping, and pretty convinced that I'd made a huge mistake by leaving my job. Today I woke up rested, did work I actually care about, and had dinner with people I love. So if you're in the hard part right now, I promise it really does get better."); assert.equal(r.line, r.thread[0]); assert.ok(r.thread.every(p => core.xLength(p) <= 280));
-  assert.match(r.say, /Post 1 of a thread/);
+  assert.match(r.say, /Opens a 2-post thread/);
   /* a real series is still never split (v4.4) */
   assert.doesNotMatch(L("Most retail traders lose because they don't have a plan, they don't size their positions properly, and they chase whatever coin is pumping."), /properly\. And/);
   /* the hunt's first-contact break: a split that cut a condition off from its main clause */

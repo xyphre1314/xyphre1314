@@ -96,7 +96,8 @@ test('juror 4, hook-6/7: no repeated teaser, no fragment from a split, no broken
   const t81 = "Just redesigned our onboarding and activation went from 31% to 58%. Here's what changed 👇";
   holds(t81, (R, at) => { assert.ok((lc(R.line).match(/what changed/g) || []).length <= 1, `${at}: ${R.line}`); assert.doesNotMatch(R.line, /What changed:/, at); });
   /* a result-first version that only reorders is fine when there's no teaser, on a line that had a run-up to cut */
-  assert.equal(L('So basically we moved from Postgres to SQLite for our edge cache and reads got 9x faster'), 'Reads got 9x faster. What changed: we moved from Postgres to SQLite for our edge cache.');
+  /* v5.5 (Fable round 4, H3): the result-first reorder would add "What changed:", so the cut-only edit ships */
+  assert.equal(L('So basically we moved from Postgres to SQLite for our edge cache and reads got 9x faster'), 'We moved from Postgres to SQLite for our edge cache and reads got 9x faster.');
   /* v5.2 (Fable f-97): a draft with nothing soft that already says its action and its result stays as written */
   assert.equal(core.sharpenLine('We moved from Postgres to SQLite for our edge cache and reads got 9x faster').state, 'clean');
   const t41 = "Two years ago we had 3 customers, $900 in the bank, and a co-founder who was about to leave. Today we're at $1.2M ARR with 11 people. I want to share the honest version of what happened in between, because the polished version you see on LinkedIn really isn't the whole story and I think it does a lot of founders a disservice.";

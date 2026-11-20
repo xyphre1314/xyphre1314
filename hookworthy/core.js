@@ -5093,7 +5093,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* v5.5 (Fable round 4, H1/H2): "Here's a (really long) story about the time X…" and "Let me tell you about the time X…" → "The
        time X…:": the story is the header, and the run-up that announced it goes */
     { k: 'storyAbout', mv: 'warm', allow: /^$/, left: l => /^\P{L}*(?:(?:so|ok(?:ay)?)[,.]?\s+)*(?:here(?:['’]s| is)\s+(?:a|the|my)\s+(?:(?:really|very|super|quick|short|long|little|full|whole|true|funny|crazy|wild)\s+)*story\s+(?:about|of)|let me tell you (?:about|how|why))\b/iu.test(l),
-      f: (t, low) => { const m = t.match(/^(\P{L}*)(?:(?:so|ok(?:ay)?)[,.]?\s+)*(?:here(?:['’]s| is)\s+(?:a|the|my)\s+(?:(?:really|very|super|quick|short|long|little|full|whole|true|funny|crazy|wild)\s+)*story\s+(?:about|of)|let me tell you about)\s+((?:the time|the day|the night|the week|how|why|what|when|my|our|the|a|an)\s+[^]{12,}?)([.!:]*)$/iu); if (!m || /[.!?]\s/.test(m[2])) return null; return `${m[1]}${sl53Up(m[2], low)}:`; },
+      f: (t, low) => { if (xLength(t) <= 200) return null; const m = t.match(/^(\P{L}*)(?:(?:so|ok(?:ay)?)[,.]?\s+)*(?:here(?:['’]s| is)\s+(?:a|the|my)\s+(?:(?:really|very|super|quick|short|long|little|full|whole|true|funny|crazy|wild)\s+)*story\s+(?:about|of)|let me tell you about)\s+((?:the time|the day|the night|the week|how|why|what|when|my|our|the|a|an)\s+[^]{12,}?)([.!:]*)$/iu); if (!m || /[.!?]\s/.test(m[2])) return null; return `${m[1]}${sl53Up(m[2], low)}:`; },
       whyF: (d, L) => { const m = d.match(/^\P{L}*((?:(?:so|ok(?:ay)?)[,.]?\s+)*(?:here(?:['’]s| is)\s+(?:a|the|my)\s+(?:(?:really|very|super|quick|short|long|little|full|whole|true|funny|crazy|wild)\s+)*story\s+(?:about|of)|let me tell you about))/iu); return m ? sl54WentWhy(d, L, m[1], 'so the story itself is the header.') : ''; } },
     /* v5.5 (Fable round 4, H1/H2): "I want to talk about something that X, which is (the fact) that Y" → "Something that X: Y". The
        run-up goes and the thing it promised is the header; "the fact that" goes with it, "the idea that" stays, and a second "and that"
@@ -5297,7 +5297,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const t = m[0], a = m.index, b = a + t.length; if (out.some(o => o.at[0] < b && o.at[1] > a)) return;
       if (sl54Rep(L, a, b, t)) return;
       if (G.some(g => g[0] < b && g[1] > a) || quotes.some(q => a >= q[0] && b <= q[1])) return;
-      const cl = slCallCut(L, a, b); if (!cl || cl === L || !slShipOK(cl, d) || slFragN(cl) > slFragN(L) || slVerblessN(cl) > slVerblessN(L) || wordsN(cl) < 3) return;
+      const cl = slCallCut(L, a, b); if (!cl || cl === L || !slShipOK(cl, d) || slFragN(cl) > slFragN(L) || slVerblessN(cl) > slVerblessN(k === 'hy' ? `${L.slice(0, a)}big${L.slice(b)}` : L) || wordsN(cl) < 3) return;
       const why = k === 'hy' ? SL_CALL_WHY.hy : k === 'st' ? (callOf(a) ? SL_CALL_WHY.stc : SL_CALL_WHY.stv) : SL_CALL_DEG.test(t) ? SL_CALL_WHY.deg : callOf(a) ? SL_CALL_WHY.hgc : SL_CALL_WHY.hgv;
       out.push({ at: [a, b], text: t, why, line: cl, k });
     };
@@ -5568,7 +5568,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const sl55At = (d, z) => { const w = slToks(z).slice(0, 4).map(x => x.w), dt = slToks(d); if (!w.length) return -1; for (let j = 0; j + w.length <= dt.length; j++) if (w.every((x, q) => dt[j + q].w === x)) return dt[j].a; return -1; };
   const SL55_LONGW = 'Too long for one post, so it opens a thread: every post starts on a whole sentence and fits in 280.';
   const sl55Note = n => n <= 2 ? SL54_LONGN : `Long for one post, so it opens a thread. Post 1 is above; the rest becomes posts ${n === 3 ? '2 and 3' : `2 to ${n}`}.`;
-  const SL55_BEATS = /^(?:Split it(?: into (?:two|three|four|five|six|\d+) beats| up)|Gave it an end|Nothing to cut|Tightened it|Kept as written|Nothing cut|Post 1 of a thread)$/;
+  const SL55_BEATS = /^(?:Split it(?: into (?:two|three|four|five|six|\d+) beats| up)|Gave it an end|Nothing to cut|Tightened it|Kept as written|Nothing cut|Post 1 of a thread|Opens a \d+-post thread)$/;
   function sl55Long(R, opts) {
     if (!R || !R.draft || /^(?:empty|thin)$/.test(R.state)) return R;
     const d = R.draft, L0 = R.state === 'sharp' ? R.line : d; if (xLength(L0) <= 280) return R;
@@ -5584,10 +5584,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const h = slHard(J, d); if (h && h !== h0) continue;
       const E = slExplain(d, J, isPre ? ['warm', ...mv0.filter(k => k !== 'warm')] : mv0, marks);
       if (one) return { ...R, state: 'sharp', line: B, cut: E.cut, move: E.move, moves: E.moves, say: E.say, why: E.why, kept: (R.kept || []).filter(v => B.includes(v)), alts: [], long: xLength(rest0 ? `${B}\n${rest0}` : B) > 280, note: '' };
-      const sp = String(E.say || '').split(' · ').filter(z => z && !SL55_BEATS.test(z)), say = [...sp.slice(0, 2), 'Post 1 of a thread'].join(' · ');
-      const fq = (E.fluff || []).map(c => { const z = c.text.trim().replace(/[,:;.!—-]+$/, ''); return `“${z.length > 36 ? z.slice(0, 34).replace(/\s+\S*$/, '') + '…' : z}”`; });
+      const sp = String(E.say || '').split(' · ').filter(z => z && !SL55_BEATS.test(z)), say = [...sp.slice(0, 2), `Opens a ${P.length}-post thread`].join(' · ');
+      const fq = (E.fluff || []).map(c => `“${c.text.trim().replace(/[,:;.!—-]+$/, '')}”`);
       const w0 = fq.length && fq.length <= 3 ? `${slList(fq)} went. It opens a thread: every post starts on a whole sentence.` : fq.length ? 'The fluff went. It opens a thread: every post starts on a whole sentence.' : SL55_LONGW;
-      return { ...R, state: 'sharp', line: P[0], cut: E.cut, move: E.move, moves: E.moves, say, why: w0.length <= 160 ? w0 : SL55_LONGW, kept: (R.kept || []).filter(v => J.includes(v)), alts: [], long: xLength(rest0 ? `${P[0]}\n${rest0}` : P[0]) > 280, note: sl55Note(P.length), post2: P[1], thread: P };
+      return { ...R, state: 'sharp', line: P[0], cut: E.cut, move: E.move, moves: E.moves, say, why: w0.length <= 140 ? w0 : SL55_LONGW, kept: (R.kept || []).filter(v => P[0].includes(v)), alts: [], long: xLength(rest0 ? `${P[0]}\n${rest0}` : P[0]) > 280, note: sl55Note(P.length), post2: P[1], thread: P };
     }
     /* no thread keeps every post whole: the line ships as it is, and its say and why claim no beats a post can't show */
     if (R.state !== 'sharp') return { ...R, note: R.note || SL_LONG };

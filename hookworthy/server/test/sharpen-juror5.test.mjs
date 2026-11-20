@@ -91,7 +91,8 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   /* v5.3 (Fable g-35): "seem to" inside a why-question about what others think is padding */
   assert.equal(L('Honest question: why do so many founders seem to think they really need to raise money?'), 'Honest question: why do so many founders think they really need to raise money?');
   /* an opinion label stands in for "I think" and a softener, on a take that isn't a forecast */
-  assert.equal(L('Hot take: I genuinely think code reviews are kind of a waste of time for teams under 5 people.'), 'Hot take: code reviews are a waste of time for teams under 5 people.');
+  /* v5.5 (Fable round 4, H6): a labeled take is an opinion, so its one hedge is a call: "kind of" stays, marked; the stance verb goes */
+  assert.equal(L('Hot take: I genuinely think code reviews are kind of a waste of time for teams under 5 people.'), 'Hot take: code reviews are kind of a waste of time for teams under 5 people.');
   /* the tone: a closing "lol", a feeling, "kind of" on a feeling, a softener */
   assert.match(L('I think $BTC could maybe hit $120k by end of year, but who knows, I could be totally wrong lol'), /\blol$/);
   assert.equal(L('so we kind of made sync 38% faster in this release, pretty happy with it'), 'we kind of made sync 38% faster in this release, pretty happy with it');
