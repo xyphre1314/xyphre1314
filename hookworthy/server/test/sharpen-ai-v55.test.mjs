@@ -42,7 +42,7 @@ const sys = core.prompts.sharpen({ text: 'placeholder line' }).cached;
 test('prompt v5.5: asides and the announcement itself stay, no added intensifier, one of a stack, soft tails and plain "basically" go, the run-up about the post goes whole, no label on a why; the examples pass in order', () => {
   for (const re of [/What the writer chose to say is never padding/, /a self-aware aside or parenthetical/, /a sentence that is the announcement itself \("New issue is out!"\)/, /cut around them, never through them/,
     /A sentence that is the news itself \("New issue is out!", "Episode 40 is live\.", "Applications are open\."\) is no frame/, /- Add an intensifier they didn't type/, /never "LinkedIn has gotten so weird"/,
-    /Stacked intensifiers keep one at most/, /A softener in a closing comment on the point/, /"I had basically no idea" → "I had no idea"/, /before a quantity it is an approximator and stays/,
+    /Stacked intensifiers keep one at most/, /A softener in a closing comment on the point/, /"I had basically no idea" → "I had no idea"/, /* v5.7 (Fable round 6, H11): "basically" before a number goes; before an absolute it stays */ /before an absolute it is an approximator and stays/,
     /A correction of what people believe works the same way/, /A run-up about the post itself/, /its "I think" or "probably" with it/, /on hard news it is their framing: rule 4/, /Never open it with a label for the version/,
     /* what earlier passes rely on is still there */
     /An announcement frame is a run-up too/, /version 1 opens on the news itself/, /it never moves to the end/, /A stock phrase that is the writer's own/, /On a forecast, plan or price call keep every hedge/]) assert.match(sys, re);

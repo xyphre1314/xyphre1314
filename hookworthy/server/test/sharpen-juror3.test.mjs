@@ -97,9 +97,9 @@ test('juror 3, hook-7/9/12/13/15/16: tails, lists, idioms, salad, stance and dis
   /* a disclaimer is never fluff: alone it's complete, and r86 pass 6 (hook-7): up front it stays where the writer put it, never moved to the end */
   for (const t of ['This is not financial advice.', 'NFA. Not financial advice. DYOR.']) { const R = S(t); assert.equal(R.state, 'clean', t); assert.equal(R.why, 'A disclaimer. Nothing to cut.'); assert.deepEqual(R.marks, []); }
   const R = S('I just wanted to quickly say that I am not a financial advisor and this is not financial advice but I really think $LINK is very undervalued right now');
-  assert.equal(R.line, 'I am not a financial advisor and this is not financial advice but I think $LINK is undervalued right now.'); assert.doesNotMatch(R.say, /Moved the disclaimer to the end/);
+  assert.equal(R.line, 'I am not a financial advisor and this is not financial advice but I think $LINK is undervalued right now'); assert.doesNotMatch(R.say, /Moved the disclaimer to the end/);
   /* v5.3 (step 5b): on a call, a hedge stacked on the stance verb collapses to it */
-  assert.equal(L('I think we\'re probably in the boring middle of the cycle right now, nfa'), "I think we're in the boring middle of the cycle right now, nfa.");
+  assert.equal(L('I think we\'re probably in the boring middle of the cycle right now, nfa'), "I think we're in the boring middle of the cycle right now, nfa");
 });
 
 test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are counts, reorders are sentences', () => {
