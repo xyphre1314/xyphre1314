@@ -1,0 +1,90 @@
+{
+ "key": "hook",
+ "score": 9.1,
+ "score_ondevice": 7.4,
+ "verdict": "Claude path: 110 of 120 blind lines are postable as shipped (91.7% h; 85.5% on the 69 needs-work lines), with 0 fact or stance changes and every number, $, %, @handle, #tag and link intact. It holds hedged forecasts ('You probably don't need Kubernetes', 'probably run out of money') as tap-to-cut calls, leaves sarcasm and flip-risk lines alone, and its over-280 handling is good on three of four long lines. It misses 9.5 on one broken thread split (n-92, the break lands mid-sentence after the code token 'COPY . .') and four receipts that are generic, double-counted or untrue (n-15, n-76, n-79, n-92). Against Typefully's rewrite it is safer and more honest, and close on punch; it is still a cutter more than a rewriter, so platitudes stay platitudes (n-31, n-100), though it says so. On-device: 74.2% h (56.5% on needs-work), 5 m: one stance change (n-87 'probably' cut outright), one broken post 2 (n-92 'a COPY. Above the...'), one untrue reason (n-99) and two plain misses (n-34, n-100). The fallback is safe on facts but uneven, and its long-line handling is the weakest part.",
+ "to_95": [
+  "Fix the thread splitter so a code token or spaced dots ('COPY . .', '...', backticked code) never counts as a sentence end; never start a post on a lowercase continuation. Applies to the validator on the Claude path and to the on-device splitter.",
+  "Make receipts pass a truth check: the cut count must equal the spans actually removed, the why must name a change that happened (n-79), no double-counting (n-76), and never ship the fallback 'Claude kept it as written.' (n-15).",
+  "On-device: never cut a lone 'probably' on advice or a claim; offer it as a call (n-87).",
+  "On-device: fix the 'header with nothing under it' guard so 'It's worth noting that' + a full sentence gets cut (n-99), and cut 'Have you ever actually wondered why it is that' (n-34) and 'is going to really change the way that' (n-100).",
+  "On-device: one rule per word across lines: 'basically', 'personally', number-first for 'There are N', and 'some of the things that I've' -> 'What I've'.",
+  "On-device long lines: split every over-280 line the same way (n-40 stays a 373-character run-on) and put the payoff, not the throat-clear, in post 1 (n-66, n-112).",
+  "Homepage: show every post of a thread (post 3 of n-112 is missing), drop the doubled 'Opens a 3-post thread · Opens a 2-post thread' label and the repeated thread explanation, and make the counter count post 1 after a split.",
+  "Drop an alt that equals the shipped line (n-44)."
+ ],
+ "issues": [
+  {
+   "id": "hook-f5-1",
+   "severity": "high",
+   "area": "validator / thread split",
+   "where": "n-92, Claude path (SHARPEN.fromClaude) and on-device",
+   "problem": "A line containing 'COPY . .' is split at the dots. Claude path: post 1 ends 'Somebody had put a COPY . .' and post 2 starts 'above the dependency install step...'. On-device: 'a COPY. Above the dependency install step roughly two years ago.' The code token is damaged and a fragment ships.",
+   "fix": "Treat spaced dots, ellipses and code-like tokens as non-terminal; require the next post to start on a capital or a quote; reject any split that leaves a post without a finite verb."
+  },
+  {
+   "id": "hook-f5-2",
+   "severity": "high",
+   "area": "on-device / stance",
+   "where": "n-87",
+   "problem": "'You probably don't need Kubernetes.' ships as 'You don't need Kubernetes.' with the reason 'the claim stands on its own'. The hedge is the stance. 'probably' is kept as a call in n-35, n-49, n-82, n-118.",
+   "fix": "A sole hedge on a second-person claim or advice is a call mark, never an automatic cut."
+  },
+  {
+   "id": "hook-f5-3",
+   "severity": "medium",
+   "area": "on-device / explanation",
+   "where": "n-99",
+   "problem": "Says cutting 'It's worth noting that' would leave 'a header with nothing under it'. The remainder is a full sentence with a 70% fact. Line ships unchanged and the reason is untrue.",
+   "fix": "Run the header test on the remainder (finite verb present = sentence), then cut."
+  },
+  {
+   "id": "hook-f5-4",
+   "severity": "medium",
+   "area": "on-device / coverage",
+   "where": "n-34, n-100, n-11, n-41, n-23, n-42",
+   "problem": "Common run-ups survive: 'Have you ever actually wondered why it is that', 'is going to really change the way that', 'There are a lot of people out there who are saying that', 'The thing is that', 'really very', and 'So I thought I would share' promoted to its own sentence.",
+   "fix": "Add these frames to the throat/stock lists; after a split, re-run the throat pass on the new sentence opener."
+  },
+  {
+   "id": "hook-f5-5",
+   "severity": "medium",
+   "area": "receipts",
+   "where": "Claude path n-15, n-76, n-79; on-device n-18, n-60, n-88",
+   "problem": "Receipts that are generic ('Claude kept it as written.'), double-counted ('1 word lighter... \"definitely\" went too'), or wrong for the edit (n-79 '\"like 45 minutes\" promises the next line', 'Cut 1 bit' when three went; n-88 'a plan or a forecast' on a list header; n-60 'news like this' on an aphorism; n-18 'basically says nearly').",
+   "fix": "Derive say counts from the diff; reject a why that quotes words not changed; replace the generic fallback with a diff-derived sentence."
+  },
+  {
+   "id": "hook-f5-6",
+   "severity": "medium",
+   "area": "on-device / long lines",
+   "where": "n-40, n-66, n-112",
+   "problem": "n-40 is left as one 373-character sentence while the other long lines open threads. n-66 post 1 is 255 characters of run-up and n-112 post 1 is only 'I wasn't really planning on writing about this at all.'",
+   "fix": "Always split over 280 at clause joints (', and I think that was'), and prefer a post 1 that contains the first fact."
+  },
+  {
+   "id": "hook-f5-7",
+   "severity": "low",
+   "area": "on-device / consistency",
+   "where": "n-18 vs n-80, n-9/n-57 vs n-97, n-49 vs n-57, n-72 vs n-104",
+   "problem": "The same word gets different treatment: 'basically' kept where filler and cut where it can mean nearly; 'personally' cut twice and kept once; number-first on 'Here are' but not 'There are'.",
+   "fix": "One table per word with the context test, shared by every move."
+  },
+  {
+   "id": "hook-f5-8",
+   "severity": "low",
+   "area": "homepage Try box",
+   "where": "n-112, n-92, n-40",
+   "problem": "Header shows 'Opens a 3-post thread · Opens a 2-post thread', post 3 is not shown, the thread explanation appears twice, and the counter still reads 'N over 280' after a split.",
+   "fix": "Render result.thread in full, de-duplicate say parts, count post 1."
+  },
+  {
+   "id": "hook-f5-9",
+   "severity": "low",
+   "area": "alts",
+   "where": "n-44 Claude path",
+   "problem": "The alt is identical to the shipped line.",
+   "fix": "Filter alts equal to line after tidy."
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+{
+  "key": "marketing",
+  "role": "senior app marketing lead",
+  "score": 9.4,
+  "verdict": "The copy is tight, true and sounds like the timeline it is selling to: every headline is two lines, every claim is backed by a product moment, and the honesty lines (on-device demo, design preview, example accounts, nudge vs. post) read as confidence rather than disclaimers. What keeps it a hair under 9.5 is a handful of result-state strings a visitor hits on their own pasted line, where the voice slips from crisp to clumsy or the demo under-delivers on a wordy crypto-style opener.",
+  "to_95": [
+    "Rewrite the result summary '· 1 your call' so it reads as a sentence fragment a person would say, e.g. 'Cut 2 bits of fluff · Left 1 for you to decide'.",
+    "Make the two most likely visitor pastes land: a hedged long opener ('unpopular opinion but i really do believe that you should never ever...') and a listicle opener ('Here are 5 things I learned after...') currently return a near-unchanged line or 'Nothing to cut'. Either cut the hedge/run-up, or change the clean-state copy for these so it points to 'Get three takes, free' as the next move instead of implying the line is already sharp.",
+    "Replace the Free-plan footnote 'After a daily limit, a quicker check. Still free.' with a line that says what the visitor gets, e.g. 'Past the daily limit, Sharpen runs on your device. Still free.'"
+  ],
+  "issues": [
+    {
+      "id": "marketing-1",
+      "severity": "P2",
+      "area": "Try box result copy",
+      "where": "Try box summary line, when the engine leaves a hedge for the writer (e.g. 'gm, just wanted to say i think $SOL is going to 300 by march honestly')",
+      "problem": "'Cut 2 bits of fluff · 1 your call' is ungrammatical shorthand; it is the one string in the product moment that does not sound like a person, and it sits directly above the visitor's own sharpened line.",
+      "fix": "Change the summary fragment to 'Left 1 for you to decide' (plural: 'Left 2 for you to decide'). Keep the helper row 'Your call: i think' as is."
+    },
+    {
+      "id": "marketing-2",
+      "severity": "P2",
+      "area": "Demo output on visitor lines",
+      "where": "Try box and final input, long hedged opener: 'unpopular opinion but i really do believe that you should never ever average down ... literally just compounds ...'",
+      "problem": "Only 'literally' and 'just' are cut; 'i really do believe that you should never ever' survives, while the page's own preset strikes 'you should' as fluff. The headline promise 'The fluff goes' reads weaker on exactly the kind of line a crypto writer pastes. The note 'Still long for a first line. Split it after ...' is honest but is the only payoff.",
+      "fix": "Either extend the rule set to strike 'i really do believe that' / 'never ever' -> 'never' as your-call dotted marks, or lead the result with the split suggestion as the headline move ('Too long for one beat. Split it after \"anyone tells you\".') with a one-tap 'Split it' control, so the visitor sees a real change."
+    },
+    {
+      "id": "marketing-3",
+      "severity": "P2",
+      "area": "Clean-state copy",
+      "where": "Try box, listicle opener 'Here are 5 things I learned after losing $12k trading options: ...' (the page offers a 'List' chip, so this shape is invited)",
+      "problem": "Returns 'Nothing to cut' and 'Happy with it as it is? Schedule it free', which implies a textbook run-up opener is already sharp; 'Kept' also lists a stray '2' from the list numbering in the engine output.",
+      "fix": "For lines opening with 'Here are N things', show 'Nothing to cut. The number could go first.' and make 'Get three takes, free' the primary link; drop list-item numerals from the Kept line."
+    },
+    {
+      "id": "marketing-4",
+      "severity": "P2",
+      "area": "Pricing copy",
+      "where": "Free card, footnote under 'Sharpen every line you write'",
+      "problem": "'After a daily limit, a quicker check. Still free.' is vague next to the headline 'Sharpening is free. Forever.': 'a quicker check' does not say what changes, and a careful reader may suspect a catch.",
+      "fix": "Use 'Past the daily limit, Sharpen runs on your device. Still free.' (matches the FAQ's device/Claude distinction)."
+    },
+    {
+      "id": "marketing-5",
+      "severity": "P2",
+      "area": "Hero microcopy",
+      "where": "Hero demo, pill under the draft at 1440: 'Try this draft in the Sharpen box'",
+      "problem": "Seven words and an internal term ('the Sharpen box') in the first screen; the adjacent hero CTA already says 'Try it on your line', so the two compete and the pill is the wordiest control on the page.",
+      "fix": "Shorten to 'Edit this draft' (keep the down arrow), which also differentiates it from the hero CTA."
+    }
+  ]
+}
