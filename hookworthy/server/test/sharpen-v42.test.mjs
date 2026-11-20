@@ -146,7 +146,7 @@ test('v4.2, hook41-5 and round 7: the run-ups the demo called "Already tight"', 
     ["I've been meaning to write about this for a while, but here's how I grew to 50k followers", "Here's how I grew to 50k followers."],
     ["A lot of people have been asking me how I trade, so here's my process", "Here's how I trade."],
     ['Just a quick thread 🧵 on how I turned $2k into $40k (1/7)', 'How I turned $2k into $40k (1/7)'],
-    ['In this thread I will explain how I grew my newsletter to 10k', 'I grew my newsletter to 10k. Here’s how:'], /* v4.8 (brand-4): a draft with no apostrophe gets the page's ’ */
+    ['In this thread I will explain how I grew my newsletter to 10k', 'How I grew my newsletter to 10k:'], /* v5.5 (H2): the announce run-up goes, the topic is the header, no word added */ /* v4.8 (brand-4): a draft with no apostrophe gets the page's ’ */
     ['Just a thought, but maybe we should stop chasing every narrative', 'Maybe we should stop chasing every narrative.'],
     ['With that being said, most founders should write every day.', 'Most founders should write every day.'],
     ["As many of you know, I've been building in public for 2 years.", "I've been building in public for 2 years."],
@@ -182,7 +182,7 @@ test('v4.2, round 7: no dangling header, no object left alone, "I think" kept as
   for (const t of ["I've been thinking a lot lately about how important it is to ship fast", 'Today I want to share some lessons I learned from failing my first startup', 'I want to share something personal that I haven\'t told anyone yet']) assert.doesNotMatch(L(t), /:$/, t);
   /* with a thread pointer, a counted list or a body under it, a header is the format */
   assert.equal(L('In this week\'s edition I\'m going to break down the pricing pages of 10 SaaS companies'), 'The pricing pages of 10 SaaS companies:');
-  assert.match(L('In this thread I will explain why I sold all my ETH'), /^(?:Thread: why I sold all my ETH|I sold all my ETH\. Here’s why:)/); /* v4.8: ’ when the draft has none */
+  assert.match(L('In this thread I will explain why I sold all my ETH'), /^(?:Why I sold all my ETH:|Thread: why I sold all my ETH|I sold all my ETH\. Here’s why:)/); /* v5.5 (H2): the header */ /* v4.8: ’ when the draft has none */
   assert.equal(L('some thoughts on why most threads flop\nthe first line is a warm-up. the second line is where the post starts.'), 'most threads flop. here’s why:'); /* v4.8 (brand-4): no apostrophe in the draft, so the page's ’ */
   /* the object of a cut run-up is never a sentence of its own */
   for (const t of ['Let me tell you about the worst trade I ever made', 'I want to talk about something that nobody in crypto wants to admit']) assert.equal(L(t), t, t);

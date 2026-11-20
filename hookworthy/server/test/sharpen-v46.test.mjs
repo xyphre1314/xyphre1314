@@ -68,7 +68,8 @@ const V45_BROKEN = [
 test('v4.6, hook45-1: q-31 keeps "If X, Y" together, in every mode', () => {
   const q31 = "I've been building in public for about a year now, and if I'm being completely honest, I didn't expect it to change anything, but it's brought us our first 40 customers, two angel investors, and honestly some of the best friends I've made as an adult, so if you've been on the fence about sharing your journey, this is your sign.";
   for (const [m, o] of MODES) {
-    const l = L(q31, o);
+    /* v5.5 (Fable round 4, H1): over 280, the beats open a thread of whole sentences, in every mode */
+    const r = S(q31, o), l = (r.thread || [r.line]).join(' ');
     assert.equal(l, "I've been building in public for about a year now, and I didn't expect it to change anything. But it's brought us our first 40 customers, two angel investors, and some of the best friends I've made as an adult. So if you've been on the fence about sharing your journey, this is your sign.", m);
   }
   /* the v4.5 line is refused by the positive read, and by this file's own */

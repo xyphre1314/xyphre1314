@@ -183,7 +183,8 @@ test('v4.1, P0: no version the engine returns on 80 tempting lines trips a hard 
 test('v4.1, hook4-2: once Claude is rejected, the fallback ships only a plain cut, else the line as written with honest copy', () => {
   /* a reorder becomes its cut-only version */
   const P = 'I just wanted to share that our team shipped v2 and signups went up 31% this week\nHere is what changed.';
-  assert.notEqual(L(P), 'Our team shipped v2 and signups went up 31% this week.');
+  /* v5.5 (Fable round 4, H3): the result-first reorder adds "what changed", so the default mode ships the cut-only edit too */
+  assert.equal(L(P), 'Our team shipped v2 and signups went up 31% this week.');
   assert.equal(L(P, { strict: true }), 'Our team shipped v2 and signups went up 31% this week.');
   /* a tense swap with nothing else to cut stays as written, and says so */
   const D = "We've officially decided to rebuild the app from scratch and launch it in March.", s = S(D, { strict: true });

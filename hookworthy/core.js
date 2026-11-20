@@ -5025,7 +5025,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const SL53_N = String.raw`\d[\d,]*|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|fifty`;
   const SL53_TAIL = String.raw`((?:\s*(?:\(thread\)|\(a thread\)|🧵|👇|⬇️?|\(?\d{1,2}\/\d{0,2}\)?))*)`;
   const SL53_SOFTLEAD = String.raw`(?:(?:honestly|so|ok(?:ay)?|tbh|ngl|look|well|anyway|lately|looking back|in hindsight|in retrospect|at the end of the day)[,.]?\s+)*`;
-  const SL53_HY = /(?<![\p{L}\p{N}'’-])(amazing|incredible|awesome|insane|epic|unbelievable|phenomenal|fantastic|mind-?blowing|game-?changing|world-class|stellar|seamless|next-level|cutting-edge|best-in-class|revolutionary|groundbreaking|state-of-the-art)\s+(?=(?!(?:of|to|for|at|in|on|and|or|but|that|with|by|as|is|was|are|were|than)\b)[\p{L}\p{N}$])/giu;
+  const SL53_HY = /(?<![\p{L}\p{N}'’-])(amazing|incredible|awesome|insane|epic|unbelievable|phenomenal|fantastic|mind-?blowing|game-?changing|world-class|stellar|seamless|ai-powered|next-level|cutting-edge|best-in-class|revolutionary|groundbreaking|state-of-the-art)\s+(?=(?!(?:of|to|for|at|in|on|and|or|but|that|with|by|as|is|was|are|were|than)\b)[\p{L}\p{N}$])/giu;
   const sl53Up = (s, low) => low ? s : capFirst(s);
   const SL53_DISC = /(?<![\p{L}'’])(?:i (?:might|could|may) be (?:wrong|totally wrong|completely wrong)(?: (?:about|on) (?:this|it|that))?(?: (?:here|though))?|maybe i['’]m wrong(?: (?:about|on) (?:this|it|that))?|correct me if i['’]m wrong|(?:i['’]m )?not (?:100% )?sure(?: (?:about|on) (?:this|it))?)(?:[,.]?\s+but)?(?![\p{L}'’])/giu;
   const SL53 = [
@@ -5165,7 +5165,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* v5.3 (Fable round 2, step 5c): a hype word in an announcement goes, with its article fixed ("led by an amazing group of investors"
      → "led by a group of investors"); [start, end, why, kind] marks for the words, so the receipt counts them */
   const SL53_HYWHY = 'Hype on news that speaks for itself. The facts carry it.';
-  const sl53Hype = (draft, R) => { if (!R || !(R.cut || []).some(c => c.kind === 'announce') && !/^\P{L}*(?:(?:so|super|really)\s+)?(?:excited|thrilled|happy|proud|pleased|stoked)\s+to\s+(?:announce|share|say|introduce|reveal)\b/iu.test(draft)) return []; const s0 = (slSents(draft)[0] || '').length; return [...String(draft).matchAll(SL53_HY)].filter(m => m.index < s0 && !/\b(?:grateful|thankful|thanks|thank you|love|proud of|shout ?out|lucky)\b[^.!?]*$/i.test(draft.slice(0, m.index)) && (/\b(?:our|my|their|the|this|these|its|a|an)\s+(?:(?:new|latest|brand[- ]new|first|own)\s+)?$/i.test(draft.slice(0, m.index)) || /\b(?:led|backed|funded|joined)\s+by\s+(?:an?\s+)?$/i.test(draft.slice(0, m.index)) && /^\S+\s+(?:group|set|lineup|list|roster|team|batch|cohort|crew|bunch)\s+of\b/i.test(draft.slice(m.index)))).map(m => [m.index, m.index + m[1].length, SL53_HYWHY, 'stock']); };
+  const sl53Hype = (draft, R) => { if (!R || !(R.cut || []).some(c => c.kind === 'announce') && !/^\P{L}*(?:(?:so|super|really)\s+)?(?:excited|thrilled|happy|proud|pleased|stoked)\s+to\s+(?:announce|share|say|introduce|reveal)\b/iu.test(draft)) return []; const s0 = (slSents(draft)[0] || '').length; return [...String(draft).matchAll(SL53_HY)].filter(m => m.index < s0 && !/\b(?:grateful|thankful|thanks|thank you|love|proud of|shout ?out|lucky)\b[^.!?]*$/i.test(draft.slice(0, m.index)) && (/\b(?:our|my|their|the|this|these|its|a|an)\s+(?:(?:new|latest|brand[- ]new|first|own)\s+)?(?:(?:amazing|incredible|awesome|seamless|next-level|cutting-edge|best-in-class|revolutionary|groundbreaking|game-?changing|world-class|innovative),?\s+)?$/i.test(draft.slice(0, m.index)) || /\b(?:led|backed|funded|joined)\s+by\s+(?:an?\s+)?$/i.test(draft.slice(0, m.index)) && /^\S+\s+(?:group|set|lineup|list|roster|team|batch|cohort|crew|bunch)\s+of\b/i.test(draft.slice(m.index)))).map(m => [m.index, m.index + m[1].length, SL53_HYWHY, 'stock']); };
   /* the family version of a result: built on the draft, the soft words in it cut the strict way, checked whole, explained from the draft */
   function sl53Apply(R, text, opts) {
     if (!R || !R.draft || /^(?:empty|thin)$/.test(R.state)) return null;
@@ -5219,7 +5219,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (!R || R.state !== 'sharp' || !R.draft) return null;
     const d = R.draft, keep = (opts.keep || []).filter(w => typeof w === 'string' && w.trim()), kept = w => keep.some(k => lcw(k).trim() === lcw(w).trim());
     let L = R.line; const extra = [];
-    for (const m of sl53Hype(d, R)) { const w = d.slice(m[0], m[1]); if (kept(w)) continue; const re = new RegExp(`(?<![\\p{L}\\p{N}'’-])${slRxE(w)}\\s+`, 'iu'); if (re.test(L)) { L = L.replace(re, ''); extra.push(m); } }
+    for (const m of sl53Hype(d, R)) { const w = d.slice(m[0], m[1]); if (kept(w)) continue; const re = new RegExp(`(?<![\\p{L}\\p{N}'’-])${slRxE(w)}\\s+`, 'iu'); if (re.test(L)) { const L2 = L.replace(re, ''); if (!slHard(fixArticles(L2.replace(/\s{2,}/g, ' ').trim()), d)) { L = L2; extra.push(m); } } }
     const op = (R.cut || []).find(c => /^(?:throat|announce|label)$/.test(c.kind) && c.at[0] <= 3 && wordsN(c.text) >= 3);
     if (op && !isCall(d) && !slFutReal(d)) {
       const after = d.slice(op.at[1]), sm = after.match(/^[\s,:]*((?:i|we)\s+think(?:\s+that)?)\s+(?=(?:we|i|you|it|this|they|our|my|the|most|people)\b)/i);
@@ -5503,9 +5503,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
      - post 1 carries the point: a post 1 that would be only run-up ("I've been meaning to write this up for months, and I kept putting
        it off, but…") loses that run-up where the line pivots to its point, and when no thread passes, the line ships whole, with the
        over-280 note, and its say and why claim no beats a post can't show.
-     R.line is post 1, R.post2 post 2, R.thread every post, R.rest the posts after post 1 (then any lines the draft had after its first),
-     so R.rest === R.post2 on a two-post thread from a one-line draft */
-  const SL55_SUBJ = String.raw`(?:then\s+)?(?:i|we|you|they|he|she|it|there|today|now|tonight|yesterday|nobody|no one|everyone|everybody|after|before|by|in|since|within|during|instead|once|when|(?:this|that|last|next)\s+(?:morning|week|month|year|time|night|day|weekend|quarter|summer|spring|fall|winter))(?![\p{L}\p{N}-])`;
+     R.line is post 1, R.post2 post 2 and R.thread every post. R.rest keeps its contract: the lines the draft had after its first (''
+     for a one-line draft), never the thread's posts */
+  const SL55_SUBJ = String.raw`(?:then\s+)?(?:i|we|you|they|he|she|it|there|(?:that|this)(?=['’]s\b|\s+(?:is|was|means|meant|made|makes)\b)|today|now|tonight|yesterday|nobody|no one|everyone|everybody|after|before|by|in|since|within|during|instead|once|when|(?:this|that|last|next)\s+(?:morning|week|month|year|time|night|day|weekend|quarter|summer|spring|fall|winter))(?![\p{L}\p{N}-])`;
   /* after "because" any subject may start the clause ("…, because most founders spend…"): a reason is no series item */
   const SL55_SUBJW = String.raw`(?:i|we|you|they|he|she|it|my|our|your|their|his|her|its|the|this|that|these|those|there|today|now|everyone|everybody|nobody|no one|someone|most|many|some|people|when|every|each|none|nothing|everything|all)(?![\p{L}\p{N}-])`;
   const SL55_STARTBAD = /^\P{L}*(?:and|or|nor|which|who|whom|whose|because|cause|cuz|that|than|to|of|for|with)\b/iu;
@@ -5573,7 +5573,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (!R || !R.draft || /^(?:empty|thin)$/.test(R.state)) return R;
     const d = R.draft, L0 = R.state === 'sharp' ? R.line : d; if (xLength(L0) <= 280) return R;
     const keep = (opts.keep || []).filter(w => typeof w === 'string' && w.trim()), low = /^\P{L}*\p{Ll}/u.test(d) && !/[.!?]["”’)]*\s+\p{Lu}/u.test(d);
-    const pre = sl55Pre(L0, low), HN = !!slHardNews(d), cands = pre ? (HN ? [[L0, 0], [pre.text, 1]] : [[pre.text, 1], [L0, 0]]) : [[L0, 0]];
+    const pre = sl55Pre(L0, low), HN = !!slHardNews(d) || /^\P{L}*(?:i|we)\s+(?:don['’]t|do not)\s+(?:usually|normally|often)\b/iu.test(L0), cands = pre ? (HN ? [[L0, 0], [pre.text, 1]] : [[pre.text, 1], [L0, 0]]) : [[L0, 0]];
     const mk0 = softMarks(d, keep), mv0 = R.state === 'sharp' && (R.moves || []).length ? R.moves : ['soft'], h0 = slHard(L0, d), rest0 = R.rest && String(R.rest).trim() ? String(R.rest).trim() : '';
     for (const [B, isPre] of cands) {
       let marks = mk0;
@@ -5587,7 +5587,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const sp = String(E.say || '').split(' · ').filter(z => z && !SL55_BEATS.test(z)), say = [...sp.slice(0, 2), 'Post 1 of a thread'].join(' · ');
       const fq = (E.fluff || []).map(c => { const z = c.text.trim().replace(/[,:;.!—-]+$/, ''); return `“${z.length > 36 ? z.slice(0, 34).replace(/\s+\S*$/, '') + '…' : z}”`; });
       const w0 = fq.length && fq.length <= 3 ? `${slList(fq)} went. It opens a thread: every post starts on a whole sentence.` : fq.length ? 'The fluff went. It opens a thread: every post starts on a whole sentence.' : SL55_LONGW;
-      return { ...R, state: 'sharp', line: P[0], cut: E.cut, move: E.move, moves: E.moves, say, why: w0.length <= 160 ? w0 : SL55_LONGW, kept: (R.kept || []).filter(v => J.includes(v)), alts: [], long: false, note: sl55Note(P.length), post2: P[1], thread: P, rest: [...P.slice(1), rest0].filter(Boolean).join('\n\n') };
+      return { ...R, state: 'sharp', line: P[0], cut: E.cut, move: E.move, moves: E.moves, say, why: w0.length <= 160 ? w0 : SL55_LONGW, kept: (R.kept || []).filter(v => J.includes(v)), alts: [], long: xLength(rest0 ? `${P[0]}\n${rest0}` : P[0]) > 280, note: sl55Note(P.length), post2: P[1], thread: P };
     }
     /* no thread keeps every post whole: the line ships as it is, and its say and why claim no beats a post can't show */
     if (R.state !== 'sharp') return { ...R, note: R.note || SL_LONG };
@@ -5659,7 +5659,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     }
     /* v5.5 (Fable round 4, H3): a reorder that adds words or moves a sentence ahead of a later "that"/"it" that pointed back gives way
        to its cut-only edit (sl54Fallback), else to an alt that is neither */
-    if (R.state === 'sharp' && R.draft) { const ok = v => v && v.line && !sl55Reord(v.line, R.draft, v.moves && v.moves.length ? v.moves : [v.move]); const alts = (R.alts || []).filter(ok); if (!ok(R)) R = sl54Fallback(R, alts, opts); else if (alts.length !== (R.alts || []).length) R = { ...R, alts }; }
+    if (R.state === 'sharp' && R.draft) { const ok = v => v && v.line && !sl55Reord(v.line, R.draft, v.moves && v.moves.length ? v.moves : [v.move]); const alts = (R.alts || []).filter(ok); if (!ok(R)) { const n0 = R.note; R = sl54Fallback(R, alts, opts); if (!R.note && n0 && R.state === 'sharp' && !/Over 280/.test(n0)) R = { ...R, note: n0 }; } else if (alts.length !== (R.alts || []).length) R = { ...R, alts }; }
     R = sl55Long(R, opts);
     /* v5.3 (Fable H9, g-14/16/20/22): a lowercase line the writer left without an end stop gets none: the voice is theirs */
     if (R.state === 'sharp' && R.draft && /^\P{L}*\p{Ll}/u.test(R.draft) && !/[.!?…]["”’)]*\s*$/.test(R.draft)) {

@@ -189,7 +189,8 @@ test('v4.7, web juror: a figure lead keeps its verb, "just" (recently) stays, an
   const rr = S('I really really think you should start a newsletter');
   assert.equal(rr.line, 'I think you should start a newsletter.'); assert.doesNotMatch(rr.why, /breaks/); assert.match(rr.why, /twice/);
   const q = S('Just wanted to share a quick redesign I did of the @Spotify mobile app. Would love to hear your thoughts!');
-  assert.equal(q.why, 'Marked “Just wanted to share”, not cut: without it this line breaks. Your call.');
+  /* v5.5 (Fable round 4, H4): "breaks" is held to the whole-sentence read (slStruct); a noun phrase left behind is no break */
+  assert.equal(q.why, 'Marked “Just wanted to share”, not cut: this quick check wasn’t sure the line holds up without it. Your call.');
   assert.ok(hard('A quick redesign I did of the @Spotify mobile app. Would love to hear your thoughts!', q.draft));
 });
 

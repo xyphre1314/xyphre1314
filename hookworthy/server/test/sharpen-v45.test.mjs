@@ -86,7 +86,8 @@ test('v4.5, hook44-1: "is" contracts only onto a clause-opening subject, never a
 
 test('v4.5, hook44-2: a put-back opener stays in front of the words it introduced', () => {
   const v46 = 'So I finally cleaned my list and removed about 3,000 inactive subscribers and my open rate basically doubled.';
-  assert.equal(L(v46), 'My open rate basically doubled. What changed: I finally cleaned my list and removed about 3,000 inactive subscribers.');
+  /* v5.5 (Fable round 4, H3): a result-first reorder that adds "What changed:" gives way to the cut-only edit */
+  assert.equal(L(v46), 'I finally cleaned my list and removed about 3,000 inactive subscribers and my open rate basically doubled.');
   const r = S(v46, { keep: ['So'] });
   assert.equal(r.line, 'So I finally cleaned my list and removed about 3,000 inactive subscribers. My open rate basically doubled.');
   assert.match(r.why, /You kept “So”/);
@@ -136,8 +137,9 @@ test('v4.5, hook44-4: the lesson keeps its label, the issue becomes the label, a
   assert.equal(L('In my latest video I break down how I edit thumbnails in 10 minutes.'), 'My latest video: how I edit thumbnails in 10 minutes.');
   const v114 = "I don't usually share stuff like this, but a year ago I was completely burned out, barely sleeping, and honestly pretty convinced that I'd made a huge mistake by leaving my job, and today I woke up rested, did work I actually care about, and had dinner with people I love, so if you're in the hard part right now, I promise it really does get better.";
   const r = S(v114);
-  assert.equal(r.line, "I don't usually share stuff like this, but a year ago I was completely burned out, barely sleeping, and pretty convinced that I'd made a huge mistake by leaving my job. Today I woke up rested, did work I actually care about, and had dinner with people I love. So if you're in the hard part right now, I promise it really does get better.");
-  assert.match(r.say, /three beats/);
+  /* v5.5 (Fable round 4, H1): over 280, the beats open a thread; the writer's "I don't usually share" frame stays where post 1 can carry it */
+  assert.equal(r.thread.join(' '), "I don't usually share stuff like this, but a year ago I was completely burned out, barely sleeping, and pretty convinced that I'd made a huge mistake by leaving my job. Today I woke up rested, did work I actually care about, and had dinner with people I love. So if you're in the hard part right now, I promise it really does get better."); assert.equal(r.line, r.thread[0]); assert.ok(r.thread.every(p => core.xLength(p) <= 280));
+  assert.match(r.say, /Post 1 of a thread/);
   /* a real series is still never split (v4.4) */
   assert.doesNotMatch(L("Most retail traders lose because they don't have a plan, they don't size their positions properly, and they chase whatever coin is pumping."), /properly\. And/);
   /* the hunt's first-contact break: a split that cut a condition off from its main clause */
