@@ -57,7 +57,8 @@ test('a version that passes comes back as Claude’s, in the engine’s contract
   assert.equal(r.status, 200); assert.equal(r.json.source, 'claude'); assert.equal(r.json.reason, undefined);
   for (const k of CONTRACT) assert.ok(k in r.json, `contract field ${k}`);
   assert.equal(r.json.state, 'sharp'); assert.equal(r.json.line, LINE); assert.equal(r.json.rest, 'Here is what changed.');
-  assert.notEqual(r.json.line, core.sharpenLine(POST).line, 'Claude’s line, not the engine’s');
+  /* v5.5: the engine's own line is now this same cut (on-device H3: no reorder that adds "What changed:"), so the source says whose it is */
+  assert.equal(r.json.source, 'claude', 'Claude’s line, not the engine’s');
   /* the cut list is the engine's word diff, never the model's: the run-up, as written, with its kind and reason */
   assert.deepEqual(r.json.cut.map(c => [c.text, c.kind]), [['I just wanted to share that', 'announce']]);
   assert.deepEqual(r.json.cut[0].at, [0, 27]); assert.ok(r.json.cut[0].why);
@@ -77,8 +78,8 @@ test('the versions: the first that passes ships, the other passing ones are alts
   answer = () => say(['Our team shipped v2 and signups went up this week.', 'Our team shipped v2 and signups went up 31% this week. Insane.']);
   const n = await sharpen({ text: POST });
   assert.equal(n.json.source, 'rules'); assert.equal(n.json.reason, 'invalid'); assert.equal(n.json.line, strictFor(POST).line);
-  /* the engine's own answer here reorders the line, so the fallback is its cut-only version */
-  assert.equal(core.sharpenLine(POST).line, 'Signups went up 31% this week. What changed: our team shipped v2.'); assert.equal(n.json.line, 'Our team shipped v2 and signups went up 31% this week.'); assert.equal(n.json.state, 'sharp');
+  /* the fallback is the engine's cut-only version (v5.5: its own answer no longer reorders this line into "What changed:") */
+  assert.doesNotMatch(n.json.line, /What changed:/); assert.equal(n.json.line, 'Our team shipped v2 and signups went up 31% this week.'); assert.equal(n.json.state, 'sharp');
   const s = await sharpenClaude({ text: POST });
   assert.equal(s.reason, 'invalid'); assert.equal(s.reject, 'fact "31%" lost'); assert.deepEqual(s.rejects, ['fact "31%" lost', 'hype added'], 'one reason per version');
 });

@@ -13,8 +13,8 @@
 // only keeps each part on one line: "Split it into two beats" stays the engine's words), so they are checked (and rewritten by
 // --write) like the line.
 // The Try default's counter must show its true length.
-// Every example must also pass the page's own output guard (its GUARD block, lifted the same way): no doubled verb, no stub,
-// no word from nowhere.
+// Since pass 20 the page has no output guard of its own (the engine's v5.4 ship guard is the only one), so an example is what the
+// engine returns, and nothing more is checked of it here.
 // Sharpened lines are drawn with the page's own display helpers (nb, beats, xbeats), so a wrap falls between beats.
 // The Kept rows (one sentence since pass 14: "Kept $SOL, 40% and your lowercase.", with any kept word the engine's note names) come from the page's own keptLine, lifted the same way, and the Try
 // default's struck mirror and the final's struck draft are rebuilt by --write with the page's own markup helpers (MARKUP block).
@@ -41,12 +41,12 @@ const sharpenLine = (t, o) => { const R = H.sharpenLine(t, o); if (APP) { const 
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
-const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\n${between(src, '/* GUARD-START */', '/* GUARD-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole, gOpensMarked };`)(esc, list);
-const { EX, WHO, whoHTML, draftHTML, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML, gWhole, gOpensMarked } = lib;
+const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML };`)(esc, list);
+const { EX, WHO, whoHTML, draftHTML, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML } = lib;
 const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-/* every example must also pass the page's own output guard (GUARD block): a line it would refuse is never shown as sharpened */
-const whole = (where, R) => { const w = R.state === 'sharp' ? gWhole(R.line, R.draft) || gOpensMarked(R, R) : ''; if (w) bad.push(`${where}: the page guard refuses this line (${w}); pick another draft`); };
+/* pass 20: the page shows the engine's line as it comes (no page guard), so there is nothing more to check of a line here */
+const whole = () => {};
 const fromEngine = d => { const R = sharpenLine(d); return { R, after: R.line, cut: R.cut.map(c => [c.text, c.kind]), say: R.say, why: R.why, kept: R.state === 'sharp' ? keptLine(R.draft, R.line, R.kept, R.note) : '' }; };
 
 /* 1. the four hero examples */

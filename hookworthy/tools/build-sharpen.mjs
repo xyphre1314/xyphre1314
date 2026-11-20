@@ -28,8 +28,9 @@ function tokenize(src) {
   const out = []; let i = 0; const n = src.length;
   const prevSig = () => out.length ? out[out.length - 1] : null;
   const reOK = () => { const p = prevSig(); if (!p) return true; if (p.t === 'id') return KW_RE.has(p.v); if (p.t === 'num' || p.t === 'str' || p.t === 'tpl' || p.t === 're') return false; return !/^[)\]]$/.test(p.v); };
-  /* a template literal from its opening backtick; `${…}` parts are tokenized in place, so their identifiers count */
-  const tpl = () => { const a = i; i++; while (i < n) { const c = src[i]; if (c === '\\') { i += 2; continue; } if (c === '`') { i++; break; } if (c === '$' && src[i + 1] === '{') { i += 2; let d = 1; while (i < n && d > 0) { const before = out.length; step(); const last = out[out.length - 1]; if (out.length > before && last.t === 'p') { if (last.v === '{') d++; else if (last.v === '}') d--; } } if (out.length && out[out.length - 1].v === '}') out.pop(); continue; } i++; } out.push({ t: 'tpl', v: '`', a, b: i }); };
+  /* a template literal from its opening backtick; `${…}` parts are tokenized in place, so their identifiers count. A `${` mark
+     stands before each part while it is read, so a regex literal may open it (`${/:/.test(x) ? ':' : '.'}`); it is dropped after */
+  const tpl = () => { const a = i; i++; while (i < n) { const c = src[i]; if (c === '\\') { i += 2; continue; } if (c === '`') { i++; break; } if (c === '$' && src[i + 1] === '{') { i += 2; let d = 1; const mark = out.length; out.push({ t: 'p', v: '${', a: i - 2, b: i }); while (i < n && d > 0) { const before = out.length; step(); const last = out[out.length - 1]; if (out.length > before && last.t === 'p') { if (last.v === '{') d++; else if (last.v === '}') d--; } } if (out.length && out[out.length - 1].v === '}') out.pop(); out.splice(mark, 1); continue; } i++; } out.push({ t: 'tpl', v: '`', a, b: i }); };
   function step() {
     const c = src[i];
     if (/\s/.test(c)) { i++; return; }

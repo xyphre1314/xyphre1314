@@ -1071,3 +1071,42 @@ Page side only. The engine-text items (the kept "HUGE NEWS", the "AI-powered …
   - These pass at 1440 and 390: freezetest, trytest, p14test, p17test, calltest, sheettest and the new p19test (also at 360). p18m's Ghostwriter and FAQ checks were updated to pass 19's behaviour.
   - check.js home is ok.
 - **hero-sync** ran last, then build.py. It passed against sharpen.js of 17:34 (the page's engine; sharpen.min.js is current), so no `--write` was needed. It also warned that core.js, which the engineers were editing for v5.4 (18:35), now disagrees with sharpen.js on one hero draft's result, though line, why and say are the same. Once v5.4's sharpen.js lands, rerun hero-sync (`--write`) and build.py. The sources are copied to `src/`, and build_pub's check passes from a scratch copy.
+
+## Pass 20 (brief: `r86/FIX20.md`, Fable 5.2 round-4 reviews in `r86/fable4/`)
+
+- **Voice card (uiux-1, marketing-2, P1):** it starts untouched: 0 of 2 dots, "Put “ngl” back twice and it stays." The first tap reads "You put “ngl” back once. Once more and it stays for good."; the second, "Learned: “ngl” stays from now on."; cutting a learned word, "Unlearned. Put “ngl” back twice and it stays." From 390 to 760 the helper holds three rows from the start (text centred), so a tap never moves the card. Below 390 the `.kpx` words drop as before ("Once more and it stays for good."), so the line keeps to two rows beside the button.
+- **Over 280 (uiux-2, P1):** the page has no thread rule of its own now. It shows the engine's post 1 (`R.thread`/`R.line`), or, for a sharpened line the engine ships whole over 280 (`R.long`), `SHARPEN.firstPost(line, draft)`. Post 2 sits under the card in one dimmed line ("Post 2 · and then we rush…"), in Try and the final. The receipt reads e.g. "Cut 2 bits of fluff · Opens a 2-post thread", and "Why it hits" leads with "Too long for one post, so it opens a thread. Post 1 ends on a whole sentence, and post 2 picks up from there.", then the engine's why.
+  - **Page-side override, thread case only:** a receipt part or a why that claims beats or a split ("Split it into two beats", "Two short beats with a full stop…") is dropped, and so is the engine's own "Post 1 of a thread" part and its thread note, since the why now says it. The old page cut re-split lines the engine had already brought under 280: that was the "two beats over one sentence" bug. A 290-character draft that sharpens to 274 is now one post, and its two beats show on the card.
+  - **What I'd want from the engine:** in the thread case, a `say` of "… · Opens a 2-post thread" in place of "Post 1 of a thread", and a why that never mentions beats unless post 1 shows the split. The page could then drop its override.
+- **Page = core (Sharpen juror):** the page's duplicate guard is gone (`guard`, `guardWhole`, `gWhole`, `gOpensMarked`, `asWritten` and `LOCK`, about 4 KB). Try and the final now render `HWCore.sharpenLine` as it comes. "It goes without saying that your first line beats everything else combined." now shows "Your first line beats everything else combined." The launch line shows the engine's own result: v5.4 gave "We’re launching our new smooth AI dashboard.", and v5.5's sharpen.js, landed at 01:54, gives "We’re launching our new AI-powered dashboard." with "AI-powered" as a call.
+  - The new `fix20/paritytest.js` checks 34 varied lines in Try and the final at 1440 and 390: links, handles, $tickers, the 290- and 320-character lines, a 337-character thread, a multi-line paste, a list, a frame, calls and French. Every card is exactly the engine's line (or its post 1 and post 2). It passes against the v5.4 bundle and against the v5.5 bundle.
+  - hero-sync no longer lifts a GUARD block. claude_try.py's anchors were updated for the removed `guard(`.
+- **Marked, nothing cut (brand-1 page side, marketing-5):** the receipt reads "Marked N · your call", never "Kept as written". N is each marked span once, a call included, less the words the writer put back. No post card repeats the draft (`.mk`). The marked draft in the editor is the result, with the reason and the way on under it. The way on is either the writer's calls ("Cut “kind of”", or "Cut all 3"), or "Get three takes, free" with "Keeping it as written? Schedule it free" as the text link. The final behaves the same way and its count says "Marked N". The engine's stock-adjective calls ("AI-powered" in v5.5) render like any other call.
+- **Clean result (founder-4):** the pill is "Get three takes, free" (rewrite sheet). "Happy with it as it is? Schedule it free" is the text link (`[data-sch]`, schedule sheet). Both carry the line. A two-word post keeps "Schedule it free".
+- **Kept line (web-5):** a bare list marker ("1)", "2)") is never listed, nor is a digit found only inside another number. The reviewer's line now reads "Kept 5 things, 40% and your lowercase."
+- **Copy:**
+  - Studio: "Up to 8 client voices. Your own voice is free." (founder-2, marketing-1). This is true per index.html: `PRICES.studio` is per client voice.
+  - The phone's closed Free card: "15 scheduled posts and 20 rewrites a month" (founder-3). That matches index.html's `FREE_POSTS = 15` and 20 Claude rewrites; desktop keeps the full sentence.
+  - Scheduler FAQ in three sentences (founder-5).
+  - ChatGPT FAQ in 47 words (marketing-3): "It starts from what you wrote. … This demo runs on your device; in the app, Claude makes the edit. Nothing posts without you." It doesn't claim "it doesn't write for you", since reply drafts are writing. claude_try.py's anchor was updated.
+  - Sheet: "Open the working demo (sample data)" (marketing-4), with the same destination. build_pub doesn't depend on the old string.
+- **Brand:**
+  - "You" is a soft-white "Y" initial on #1A1B1E in the glass rim (brand-2). The h mark stays Hookworthy's own.
+  - Day heading (brand-3): a left-to-right scrim under it. "Post it at 8:40 AM." is now ≥6.3:1 against the brightest pixel behind its glyphs (6.49 at 1440, 6.33 at 1100; `fix20/daycon.js`).
+  - Text greys are three tokens (brand-5): `--ink-2` #A4A8AF body, `--ink-3` #8D929A meta, `--x-mute` #7D8288 faint. `--x-ink-2` (#B4B8BE) is gone, and the two "·" separators moved off `--ink-4`, which is decorative only. The previews keep their own skins.
+  - The phone bar's pill is capped at 240px on the frosted bar, 46px tall (brand-6).
+  - The nav and footer wordmark use `#wm-s`, which pulls "ookworthy" 2 units (0.02em) towards the hook tail (brand-4). The giant footer mark keeps `#wm`; both use the same paths, in `<defs>`.
+- **UI:**
+  - Sheet (uiux-3): on phones the close is a 44×44 box and the Sign in / Create links are 50×50 boxes (inline padding), not only hit areas.
+  - Previews (uiux-5): the network switcher and Example/Yours are `role=tablist` with roving tabindex. Left/Right/Home/End move and select, and the panels are `tabpanel`s labelled by their tabs.
+  - Day at 1440 (uiux-6): the timeline sits 44px under its heading at every two-column width; the spare room is below the last card.
+- **Layout:**
+  - web-1: the Try pill sits 19px under the card. From 1024 its foot is level with the Why column's last line (the Kept line drops to meet it).
+  - web-2: the pricing lede sits under the h2, left-aligned, 16px below.
+  - web-3: the Previews title drops 8px from 1100, so both first-row titles share a baseline (1129.3 = 1129.3).
+  - web-4: the "8:40 AM" chip sits on the phone's left edge, at Replay's top.
+- **Phone budget:** 9.985 screens at 390 (8427px) and 10.394 at 360×780 (8107px). Studio's new bullet takes two rows at 360, so the ≤374 cards run a hair tighter: padding 13px, list gap 6px, card gap 8px.
+- **Tests (in `fix20/`):**
+  - These pass at 1440 and 390: check.js home (ok:true, axe 0), gaptest, freezetest, tapscan (every visible control: 44px on phones, 24px at 1440), touchtest, trytest, p14test, paritytest, and the new p20test (also at 1024).
+  - trytest, touchtest and p14test were updated to pass 20's rules and to the v5.4 engine. A put-back "i think" now comes back as a call, and the touch line needs one.
+- **hero-sync** ran last, then build.py, and the final sources are in `src/`. hero-sync passed against v5.5 sharpen.js (01:54) with no `--write` needed: sharpen.min.js is current, and core.js (01:58) agrees on every hero draft. build_pub's check passes (scratch copy in `fix20/pub/`, with the updated claude_try.py). The engineers are still editing core.js, so rerun hero-sync (`--write`) and build.py once v5.5 settles.
