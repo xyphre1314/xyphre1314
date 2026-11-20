@@ -77,7 +77,8 @@ test('validator v4 (hook-10): a cut-off predicate and an "and" clause with no ve
 });
 
 test('validator v4 (hook-11): a later copy of the draft is "clean" only when no earlier version passed', () => {
-  const d = 'So basically we shipped v2 today and signups doubled';
+  /* v5.5: no plain "basically" here: a Claude "unchanged" over one now ships the engine's cut of it (sharpen-ai-v55) */
+  const d = 'So we shipped v2 today and signups doubled';
   const a = F(d, { versions: [{ line: 'We shipped v2 today and signups doubled.', why: '' }, { line: d, why: '' }], unchanged: true }).r;
   assert.equal(a.state, 'sharp'); assert.equal(a.line, 'We shipped v2 today and signups doubled.'); assert.equal(a.pick, 0);
   const b = F(d, { versions: [{ line: 'We shipped v2 today and signups tripled.', why: '' }, { line: d, why: 'Already sharp.' }], unchanged: true }).r;

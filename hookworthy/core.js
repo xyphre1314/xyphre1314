@@ -276,7 +276,7 @@
       why: 'Announcing the announcement. Lead with the news itself: what you did shows the excitement better than saying it.', short: 'announces the post instead of starting it' },
     { k: 'label', re: new RegExp(`${S0}(?:(?:just )?(?:a )?(?:quick |short |small )?update for (?:everyone|all of you|those|anyone|folks|people|you all|y['’]all)(?: (?:who(?:['’]s| has been| have been| is| are)? )?(?:following|been following|keeping up|asking|waiting)[^:.!?\\n]{0,50})?(?=:)|(?:(?:a |an |some |another |the |my |our )?(?:(?:quick|big|small|huge|major|short|exciting|personal|weekly|monthly|daily|final|little|life|product|team|startup|company) )?(?:update|thought|note|take|news) (?:on|about|from|for) (?:the |our |my |this |a |an )?(?<upd>[a-z][\\w-]*)(?: [\\w-]+){0,3}(?=:\\s+(?=[^]*?\\b\\k<upd>\\b)))|(?:just )?(?:a )?quick (?:tip|reminder|note|psa|question)(?= for (?:anyone|anybody|everyone|all|those|the|founders|creators|writers|devs|developers|designers|traders|people|you|new)\\b)|(?:just )?(?:a )?quick (?:[a-z]+ )?(?:thought|reminder|update|psa|take|question|one|tip|note)(?: to (?:say|share|tell (?:you|everyone|y['’]all|you all)|let (?:you|everyone|y['’]all|you all|you guys|folks) know|remind (?:you|everyone|y['’]all|you all|folks|people)|flag)(?: that)?(?= \\S)| that)?(?! (?:on|about|for|from|to)\\b)|(?:just )?(?:a )?(?:friendly |gentle |daily |weekly |monthly |quick |annual |yearly |little )?reminder that|psa|fun fact|real talk|food for thought|(?:hot take|unpopular opinion|controversial opinion|spicy take|story time|hear me out|okay hear me out|fun fact|friendly reminder|gentle reminder|life update|small win|quick story|random thought|random take|shower thought|serious question)(?:,?\\s+but(?=\\s))?|(?:reminder|update|note|question|tip|breaking|announcement|rant|thread|lesson|honest question|real question|genuine question|quick question|(?:huge|big|exciting|some|great|good) news|(?:a )?(?:quick|small|little|big|huge) win)(?=:\\s)|my (?:hot|honest|unpopular|controversial|spicy) take(?: is)?(?: that)?(?= \\S)|in case you missed it|icymi|pro tip|life hack|(?:just )?(?:a )?(?:quick )?heads[- ]up(?: that)?|(?:(?:some|a few) )?(?:quick |random |short )?(?:thoughts|notes) on(?= (?:why|how|what|when|whether)\\b)|(?:i (?:just )?(?:wanted|want) to (?:write|do|post|share) )?(?:just )?(?:here(?: is|['’]s) )?(?:a |my )?(?:(?:(?:really |super |very )?(?:quick|short)|mini|little|new|brief|small) )*thread (?:on|about|of(?= (?:\\d+|my|the|some|all|every)\\b))(?= \\S)|[a-z]+ (?:tip|hack|reminder|lesson)(?=:\\s)|(?:just )?(?:a )?(?:(?:quick|little|short|small|friendly|gentle) )*(?:tip|note|heads[- ]up|psa|pro tip|reminder)(?= (?:for|to) (?:anyone|anybody|everyone|everybody|those|all of you|you all)\\b)|new (?:post|issue|episode|video|essay|article|blog post|thread|drop|podcast(?: episode)?)(?=:\\s*\\S)|(?:in )?(?:this week['’]s|today['’]s|this|the latest|our latest|my latest) (?:issue|edition|newsletter|episode)(?=:)|our new (?:case study|post|guide|report|article|video|episode|podcast|course) is (?:live|out|up|here)(?=[:!—-])|(?:(?:ok(?:ay)?,? )?so )?(?:here['’]s|here is) my (?:honest |hot |quick |unpopular |real )?(?:take|thoughts?|two cents|read) on(?= [^.!?:\\n]{2,40}[a-z0-9][:.]\\s+${SL_TAKE_SUBJ}))\\b[:,.!—-]*`, 'gi'),
       why: 'A label, not a line. Delete it and the post starts where your point does.', short: 'is a label, not the point' },
-    { k: 'disclaim', re: new RegExp(`${S0}(?:(?:(?:this is |this might be |probably |maybe )?(?:a )?(?:dumb|stupid|silly|naive|basic|noob) question|not to (?:brag|complain|be dramatic|be that guy)|i hate to (?:say|admit) it|this (?:may|might|could) be (?:a |an )?(?:controversial|unpopular|hot|spicy|wild|weird) (?:take|opinion|one)(?:,)? but|this (?:may|might|will|is going to|is gonna)(?: probably)? sound (?:obvious|crazy|harsh|dumb|weird|controversial|insane|wild|strange|counterintuitive)|correct me if i['’]m wrong|no offen[cs]e|i almost didn['’]t (?:post|share|tweet|write) this(?! because\\b)|(?:i['’]m|i am) (?:(?:kind of|kinda|a (?:little|bit)|so|really|super|honestly) )?(?:nervous|scared|terrified|anxious|hesitant) (?:to|about) (?:share|sharing|post|posting|write|writing) this(?:,)? but|(?:just )?my (?:two cents|2 cents|humble opinion)(?:,? but\\b)|not sure if (?:anyone|anybody) else feels? (?:this|the same) way(?:,)? but|not sure if (?:this|it)(?:['’]s| is) (?:just me|controversial|a hot take|a spicy take|unpopular|an unpopular opinion|a popular opinion|obvious|common knowledge|a weird take|a dumb take|a dumb question|a stupid question|weird|normal|a thing)(?:,)? but|not to get (?:too )?personal(?: (?:on|in) here| here)?(?:,)? but|i know (?:this|it) (?:sounds?|might sound|may sound) (?:counterintuitive|crazy|obvious|dumb|weird|wrong|harsh|controversial|insane|backwards)(?:,)? but|this is (?:kind of |a bit of |sort of )?a (?:weird|strange|random|different|personal) one(?:,)? but|(?:i['’]m|i am) (?:(?:honestly|really|so|a little|a bit|kind of|kinda|pretty) ){0,2}(?:embarrassed|ashamed) to admit (?:this|it|that)(?:,)? but|(?:just )?thinking out loud(?: here)?(?:,)? but|i don['’]t usually do this(?:,)? but|maybe it['’]s just me(?:,)? but|i don['’]t (?:want|mean) to sound (?:\\w+ )?(?:\\w+ )?but|(?:a lot of|most) people don['’]t know this(?:,)? but|i know (?:this|it)(?:['’]s| is) (?:a hot take|controversial|unpopular|an unpopular opinion|a spicy take)|(?:i )?can['’]?t believe i['’]m (?:saying|admitting|posting|writing) this|(?:i['’]m |i am )?(?:probably |definitely )?(?:going to|gonna) regret (?:saying|posting|tweeting|writing) this|not sure who needs (?:to hear )?this|i (?:don['’]t|do not) (?:usually|normally|often|really|ever) (?:post|share|talk about|write about|tweet about)(?: (?:personal (?:stuff|things|posts|news)|this (?:kind of )?(?:stuff|thing)|about (?:this|my personal life|my private life)))(?: (?:here|on here|online))?|(?:i|we)(?:['’]ve| have) been going back and forth (?:on|about) (?:whether|if) (?:to|i should|we should) (?:post|share|write|tweet) (?:this|it)|(?:i|we)(?:['’]ve| have) been meaning to (?:post|share|write|say|tweet) (?:this|it|something)(?: (?:for a while|for ages|for weeks|for months|forever))?|(?:i['’]m |i am )?(?:really |honestly )?not sure how to (?:say|put) this|i (?:really |honestly |genuinely |just )?don['’]t (?:really |even )?know how to (?:say|put|write) this|with all due respect|at the risk of sounding [a-z]+(?: [a-z]+)?|i could be wrong(?: here)?|(?:i['’]m |i am )?(?:probably |maybe )?(?:in the minority|alone) (?:here|on this)|sorry (?:for|about) the (?:long|longer|rambling) (?:post|thread|rant|one)|(?:this is going to|this will|this might) be a (?:long|longer) (?:one|post|thread)(?:,? but (?:i think )?it['’]s worth it)?)\\b,?(?: but\\b)?[:,.!—-]*|(?:i['’]m|i am) not (?:a |your )?financial advis[oe]r(?:,? (?:and|so) (?:this is |this['’]s |it['’]s |it is )?not (?:financial|investment) advice)?|(?:this is )?not financial advice(?:,? obviously)?|nfa(?:,? obviously)?|(?:i['’]m|i am) (?:not an|no) expert|this (?:might|may|could|will) be (?:controversial|unpopular|a hot take)|(?:idk|i (?:genuinely |honestly |really |truly )?don['’]t know) who needs to hear this|not sure if (?:this makes sense|anyone cares|this is useful))\\b,?(?: but\\b)?[:,.!—-]*`, 'gi'),
+    { k: 'disclaim', re: new RegExp(`${S0}(?:(?:(?:this is |this might be |probably |maybe )?(?:a )?(?:dumb|stupid|silly|naive|basic|noob) question|not to (?:brag|complain|be dramatic|be that guy)|i hate to (?:say|admit) it|this (?:may|might|could) be (?:a |an )?(?:controversial|unpopular|hot|spicy|wild|weird) (?:take|opinion|one)(?:,)? but|this (?:may|might|will|is going to|is gonna)(?: probably)? sound (?:obvious|crazy|harsh|dumb|weird|controversial|insane|wild|strange|counterintuitive)|correct me if i['’]m wrong|no offen[cs]e|i almost didn['’]t (?:post|share|tweet|write) this(?! because\\b)|(?:i['’]m|i am) (?:(?:kind of|kinda|a (?:little|bit)|so|really|super|honestly) )?(?:nervous|scared|terrified|anxious|hesitant) (?:to|about) (?:share|sharing|post|posting|write|writing) this(?:,)? but|(?:just )?my (?:two cents|2 cents|humble opinion)(?:,? but\\b)|not sure if (?:anyone|anybody) else feels? (?:this|the same) way(?:,)? but|not sure if (?:this|it)(?:['’]s| is) (?:just me|controversial|a hot take|a spicy take|unpopular|an unpopular opinion|a popular opinion|obvious|common knowledge|a weird take|a dumb take|a dumb question|a stupid question|weird|normal|a thing)(?:,)? but|not to get (?:too )?personal(?: (?:on|in) here| here)?(?:,)? but|i know (?:this|it) (?:sounds?|might sound|may sound) (?:counterintuitive|crazy|obvious|dumb|weird|wrong|harsh|controversial|insane|backwards)(?:,)? but|this is (?:kind of |a bit of |sort of )?a (?:weird|strange|random|different|personal) one(?:,)? but|(?:i['’]m|i am) (?:(?:honestly|really|so|a little|a bit|kind of|kinda|pretty) ){0,2}(?:embarrassed|ashamed) to admit (?:this|it|that)(?:,)? but|(?:just )?thinking out loud(?: here)?(?:,)? but|i don['’]t usually do this(?:,)? but|maybe it['’]s just me(?:,)? but|i don['’]t (?:want|mean) to sound (?:\\w+ )?(?:\\w+ )?but|(?:a lot of|most) people don['’]t know this(?:,)? but|i know (?:this|it)(?:['’]s| is) (?:a hot take|controversial|unpopular|an unpopular opinion|a spicy take)|(?:i )?can['’]?t believe i['’]m (?:saying|admitting|posting|writing) this|(?:i['’]m |i am )?(?:probably |definitely )?(?:going to|gonna) regret (?:saying|posting|tweeting|writing) this|not sure (?:who|if anyone|if anybody) needs (?:to hear )?this|(?:idk|i (?:don['’]?t|do not) know) (?:if|whether) (?:anyone|anybody)(?: else)? needs to hear this(?:,? but)?|i (?:don['’]t|do not) (?:usually|normally|often|really|ever) (?:post|share|talk about|write about|tweet about)(?: (?:personal (?:stuff|things|posts|news)|this (?:kind of )?(?:stuff|thing)|about (?:this|my personal life|my private life)))(?: (?:here|on here|online))?|(?:i|we)(?:['’]ve| have) been going back and forth (?:on|about) (?:whether|if) (?:to|i should|we should) (?:post|share|write|tweet) (?:this|it)|(?:i|we)(?:['’]ve| have) been meaning to (?:post|share|write|say|tweet) (?:this|it|something)(?: up| out)?(?: (?:for a while|for ages|for weeks|for months|for years|forever|for a long time|for so long))?(?: now)?|(?:i['’]m |i am )?(?:really |honestly )?not sure how to (?:say|put) this|i (?:really |honestly |genuinely |just )?don['’]t (?:really |even )?know how to (?:say|put|write) this|with all due respect|at the risk of sounding [a-z]+(?: [a-z]+)?|i could be wrong(?: here)?|(?:i['’]m |i am )?(?:probably |maybe )?(?:in the minority|alone) (?:here|on this)|sorry (?:for|about) the (?:long|longer|rambling) (?:post|thread|rant|one)|(?:this is going to|this will|this might) be a (?:long|longer) (?:one|post|thread)(?:,? but (?:i think )?it['’]s worth it)?)\\b,?(?: but\\b)?[:,.!—-]*|(?:i['’]m|i am) not (?:a |your )?financial advis[oe]r(?:,? (?:and|so) (?:this is |this['’]s |it['’]s |it is )?not (?:financial|investment) advice)?|(?:this is )?not financial advice(?:,? obviously)?|nfa(?:,? obviously)?|(?:i['’]m|i am) (?:not an|no) expert|this (?:might|may|could|will) be (?:controversial|unpopular|a hot take)|(?:idk|i (?:genuinely |honestly |really |truly )?don['’]t know) who needs to hear this|not sure if (?:this makes sense|anyone cares|this is useful))\\b,?(?: but\\b)?[:,.!—-]*`, 'gi'),
       why: 'A disclaimer up front tells people to trust the next words less. If it has to be said, say it at the end.', short: 'tells people to trust what follows less' },
     /* v4.1 (round-6 marketing-2): "Can't believe it but my newsletter just crossed 5,000 readers": the surprise is the news's to show */
     { k: 'throat', re: new RegExp(String.raw`${S0}(?:(?:i|we) )?(?:still )?(?:can['’]?t|cannot|could(?:n['’]t| not)) believe (?:it|this)(?:,? but\b|,)(?=\s+\S)`, 'gi'),
@@ -754,7 +754,9 @@
         /* (Fable g-46) a belief before advice ("I believe that if you want X, you need to Y") is no stance on a forecast */
         const adv = ([r]) => r[3] === 'opinion' && SL53_STV.test(txt(r)) && /^[\s,]*(?:that\s+)?if\s+you\b[^.!?]*\byou\s+(?:need to|have to|should|must|gotta)\b/i.test(t.slice(r[1]));
         ms.forEach(x => { if (!adv(x)) kept.add(x[1]); }); return; }
-      if (lab) return;
+      /* v5.5 (Fable round 4, H6): a labeled take ("hot take:", "unpopular opinion:") is an opinion, so its one hedge is a call, kept and
+         marked as a forecast's is; the label already says the view is theirs, so a stance verb on top of it still goes */
+      if (lab) { const h1 = ms.find(([r]) => r[3] === 'hedge' && !pad(r)); if (h1) kept.add(h1[1]); return; }
       /* v5.4 (Fable round 3, step 3): one rule for "probably", "kind of", "sort of", "I think", "I'd argue": on a forecast or a call
          (above) they stay as the writer's call; on a plain view they go. What only looks like a plain view keeps its one hedge, as
          before: a question, a guess about yourself ("I think I finally…"), a hedge that is one side of a contrast ("probably not
@@ -914,7 +916,8 @@
     /* r86 pass 5 (hook-4): a cut between two clauses keeps the comma after it: "…getting started tbh, the chart looks…" */
     /* v4.1: not after a verb that takes the clause as its object ("and I think if I'm being honest, the only reason" → "and I think the only reason") */
     /* v4.4 (hook43-1): nor after a joining word, where no clause has ended ("…four years now and if I'm being honest, the thing" → "…now and the thing", never "now and, the thing") */
-    const keepC = (bf, af, sep) => /,/.test(sep) && /[\p{L}\p{N}%)$]\s+$/u.test(bf) && !/[,;:]\s*$/.test(bf) && !SL_JOINE.test(bf) && !/\b(?:think|thought|believe|believed|feel like|guess|know|knew|realize|realized|realise|realised|hope|bet|swear|mean|say|said|that|qk[a-z]q)\s*$/i.test(bf) && /^\S/.test(af) && wordsN(bf.split(/[,;:.!?—–]/).pop()) >= 2 && slFinite(bf.split(/[,;:.!?—–]/).pop()) && slFinite(af.split(/[,;:.!?—–]/)[0]);
+    /* v5.5: and the comma that opens an aside after the cut ("founders that I know [personally], including myself, have…") */
+    const keepC = (bf, af, sep) => (/,/.test(sep) && /[\p{L}\p{N}%)$]\s+$/u.test(bf) && !/[,;:]\s*$/.test(bf) && /^(?:including|especially|particularly|except|mostly|myself|yourself|ourselves|themselves)\b[^,.!?;:]{0,60},/i.test(af)) || /,/.test(sep) && /[\p{L}\p{N}%)$]\s+$/u.test(bf) && !/[,;:]\s*$/.test(bf) && !SL_JOINE.test(bf) && !/\b(?:think|thought|believe|believed|feel like|guess|know|knew|realize|realized|realise|realised|hope|bet|swear|mean|say|said|that|qk[a-z]q)\s*$/i.test(bf) && /^\S/.test(af) && wordsN(bf.split(/[,;:.!?—–]/).pop()) >= 2 && slFinite(bf.split(/[,;:.!?—–]/).pop()) && slFinite(af.split(/[,;:.!?—–]/)[0]);
     /* v4.9 (P0): a run-up stacked before an announcement frame ("Just wanted to say [that] I'm [excited to] announce…") goes in the
        same pass, so the frame's grammar reads the text left after the run-up is cut: "I'm announcing our new app.", never "I'm
        announce…" (slMkBlank blanks the marks before the frame for that read) */
@@ -1462,19 +1465,20 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "A sharp first line stops a fast scroller: it says the writer's most interesting thing plainly, in as few words as it needs, and ends on a beat that lands.",
     "",
     "# How to edit",
-    "1. Cut what delays the point: \"So\", \"ok so\", \"Hey friends\", \"First of all\", \"I just wanted to say\", \"I wanted to take a second to\", \"I had the privilege of\", \"I have come to the conclusion that\", \"One of the things I find myself thinking about is\", \"Let's talk about something that\", \"It's no secret that\", \"At the end of the day\", \"In today's fast-paced landscape\", \"Not sure if this will resonate but\", \"so let's dive right in\", \"feel free to\", and a sentence that only announces the next one (\"I have some news.\", \"Let's talk about pricing.\", \"Long post incoming.\", \"Story time.\"). Cut padding (\"honestly\", \"ngl\", \"not gonna lie\", \"tbh\", \"basically\", \"literally\", \"genuinely\" when it only pads, \"kind of just\", \"actually\" that contrasts with nothing), \"basically just\" and \"really just\" when the claim reads the same without them (\"growth hacks are basically just spam\" → \"growth hacks are spam\"), and an intensifier that only props up a verb (\"I really believe\", \"they really don't need\", \"every single\" before a plain noun, unless it is the streak: \"every single day for a year\"); \"really\" stays when the degree is the claim (\"really good at\", \"really proud\"). Cut weak openers (\"It's really important to remember that\", \"There are like 6…\", \"The importance of…\"): \"There are 3 things you need…\" and \"Here are 9 things I wish…\" lead with the count's subject (\"3 things you need…:\", \"9 things I wish…:\"). Three or more \"!\" become \"!!\". An announcement frame is a run-up too (\"We're so excited to announce that\", \"Thrilled to share\", \"Happy to say\", \"Big news!!\" or \"Exciting news!\" before real news, \"New episode is out now!\"): version 1 opens on the news itself. The frame goes; it never moves to the end (\"We raised $2M. Very excited to announce it.\" reads backwards), and a \"finally\" in it moves into the news (\"Our app is finally live\"). A \"why\" or \"how\" topic a run-up leaves (\"Today I want to talk about why we…\") is a header, so it ends on a colon (\"Why we…:\") or becomes a sentence; never a fragment with a full stop.",
-    "2. Fix the grammar of the hook. Split every comma splice, not only the first: each sentence must stand alone. In a correction (\"X is not really Y, it's actually Z\") \"really\" and \"actually\" are emphasis, not doubt: \"X isn't Y. It's Z.\" (\"I don't really think\" and \"didn't really train\" stay soft). A long line (20 words or more) that turns on \", but\" can end its first beat there: \"X, but Y\" → \"X. But Y.\" Turn passive into active when the doer is named (\"the decision was made by our founding team\" → \"our founding team decided\"; \"It is believed by many that\" → \"Many believe\"). Plain words beat AI-speak (leverage → use, utilize → use, supercharge, unlock, seamless). A stock phrase that is the writer's own (\"game changer\", \"next level\", \"hits different\", \"no-brainer\") stays or goes; never trade it for another (\"It changes everything\", \"made a huge difference\", \"transformed\").",
+    "1. Cut what delays the point: \"So\", \"ok so\", \"Hey friends\", \"First of all\", \"I just wanted to say\", \"I wanted to take a second to\", \"I had the privilege of\", \"I have come to the conclusion that\", \"One of the things I find myself thinking about is\", \"Let's talk about something that\", \"It's no secret that\", \"At the end of the day\", \"In today's fast-paced landscape\", \"Not sure if this will resonate but\", \"so let's dive right in\", \"feel free to\", and a sentence that only announces the next one (\"I have some news.\", \"Let's talk about pricing.\", \"Long post incoming.\", \"Story time.\"). Cut padding (\"honestly\", \"ngl\", \"not gonna lie\", \"tbh\", \"basically\" (before a verb, an adjective or \"no idea\": \"I had basically no idea\" → \"I had no idea\"; before a quantity it is an approximator and stays: \"basically zero\", \"basically always\"), \"literally\", \"genuinely\" when it only pads, \"kind of just\", \"actually\" that contrasts with nothing), \"basically just\" and \"really just\" when the claim reads the same without them (\"growth hacks are basically just spam\" → \"growth hacks are spam\"), and an intensifier that only props up a verb (\"I really believe\", \"they really don't need\", \"every single\" before a plain noun, unless it is the streak: \"every single day for a year\"); \"really\" stays when the degree is the claim (\"really good at\", \"really proud\"). Stacked intensifiers keep one at most (\"actually totally fine\" → \"totally fine\", \"really really hard\" → \"really hard\"). Cut weak openers (\"It's really important to remember that\", \"There are like 6…\", \"The importance of…\"): \"There are 3 things you need…\" and \"Here are 9 things I wish…\" lead with the count's subject (\"3 things you need…:\", \"9 things I wish…:\"). Three or more \"!\" become \"!!\". An announcement frame is a run-up too (\"We're so excited to announce that\", \"Thrilled to share\", \"Happy to say\", \"Big news!!\" or \"Exciting news!\" before real news): version 1 opens on the news itself. The frame goes; it never moves to the end (\"We raised $2M. Very excited to announce it.\" reads backwards), and a \"finally\" in it moves into the news (\"Our app is finally live\"). A sentence that is the news itself (\"New issue is out!\", \"Episode 40 is live.\", \"Applications are open.\") is no frame: it stays, and only the padding after it goes. A \"why\" or \"how\" topic a run-up leaves (\"Today I want to talk about why we…\") is a header, so it ends on a colon (\"Why we…:\") or becomes a sentence; never a fragment with a full stop.",
+    "2. Fix the grammar of the hook. Split every comma splice, not only the first: each sentence must stand alone. In a correction (\"X is not really Y, it's actually Z\") \"really\" and \"actually\" are emphasis, not doubt: \"X isn't Y. It's Z.\" (\"I don't really think\" and \"didn't really train\" stay soft). A correction of what people believe works the same way: \"Most people think X, but that's not really true\" → \"Most people think X. That's not true.\" A long line (20 words or more) that turns on \", but\" can end its first beat there: \"X, but Y\" → \"X. But Y.\" Turn passive into active when the doer is named (\"the decision was made by our founding team\" → \"our founding team decided\"; \"It is believed by many that\" → \"Many believe\"). Plain words beat AI-speak (leverage → use, utilize → use, supercharge, unlock, seamless). A stock phrase that is the writer's own (\"game changer\", \"next level\", \"hits different\", \"no-brainer\") stays or goes; never trade it for another (\"It changes everything\", \"made a huge difference\", \"transformed\").",
     "3. Keep the writer's order. Most great edits cut and split in place. Move a beat only to bring a buried number or result forward, and only if the line still ends on a beat that lands: a credential, a cost, the turn. Never end on a tag (\"Nobody tells you that.\", \"I need to vent about it.\", \"I put together a list.\", \"This week's newsletter is a little different.\"), an apology or a disclaimer. A setup and its reveal keep their order: \"the thing nobody tells you about raising: the money is the easy part\", \"revenue is up, churn is down, and I made a big mistake\", a story that builds to its payoff. A feeling that only walks up to the result goes when the result lands without it (\"We almost shut down in March. I'm so glad we didn't, because last week we hit $50k MRR\" → \"We almost shut down in March. Last week we hit $50k MRR.\"); an announcement frame goes whole (rule 1). Hard news keeps its framing (rule 4).",
     "4. Keep the frame when it tells the reader how to take the line: \"Hot take:\", \"Unpopular opinion:\", \"This might get me some hate, but\", \"Honest question:\", \"Agree?\", \"for anyone new\", \"gm everyone\", \"Reminder:\", \"PSA:\", \"Wrote up how…\", \"grab a coffee\", \"Not to be dramatic, but\". A deadpan frame is part of a sharp line, not padding: \"Announcing something:\", \"Big news:\" before a small thing, \"Update:\" before a joke. A label that names the line an opinion (\"Hot take:\", \"Unpopular opinion:\") already hedges it, so on a take that isn't a forecast it replaces \"I think\" and a softener on the claim (\"kind of\", \"sort of\"), never a scope word: \"Hot take: I think X is kind of Y\" → \"Hot take: X is Y\", but \"Hot take: I think X is mostly Y\" → \"Hot take: X is mostly Y\" (a negated \"I don't think\" stays unless its \"not\" moves onto the claim: \"Hot take: I don't really think you need X\" → \"Hot take: you don't need X\"). A softener on an absolute stays (\"kind of dead\", \"basically all\"). A question stays a question, with its own words (\"Why does nobody talk about X?\" keeps \"nobody talk about\" and its \"?\"): cut only the wrapper inside it (\"the fact that\" → \"how\"). Make it a statement only when the question is pure wrapper (\"Did you know that X?\" → \"X.\"), and say so in why. A question label (\"Quick question:\", \"Honest question:\") frames the ask the same way, so a \"do you think\" after it goes: \"Quick question: do you think X still works?\" → \"Quick question: does X still work?\". Cut a frame that only delays: \"ngl\", \"Not gonna lie\", \"Not sure who needs to hear this but\", \"Here's an unpopular opinion that might ruffle some feathers:\", and on an opinion that isn't a call \"IMHO\" and \"In my humble opinion\". On grief, illness, a layoff or other hard news, the writer's framing is how they chose to tell it (\"This is hard to write\", \"This one's personal\", their doubt about posting it): version 1 keeps it and cuts only the padding around it (\"So\", \"I wanted to share that\"); the stark news alone can be version 2. \"Here's my honest take on X:\" is a run-up when the claim after the colon is about X (\"Here's my honest take on cold plunges: they're mostly hype\" → \"Cold plunges: they're mostly hype.\"); a line that ends at the colon is a thread header, so it stays.",
     "5. If the clean line is still generic (no number, result or story), make it tight and say in why what would make it a hook; never write that for them.",
-    "6. A line over 280 characters: version 1 fits in 280. Cut padding first (\"back in\", \"actually\", \"honestly\", \"of the whole thing\", \"and so I wanted to\", a spare \"that\"), never a fact, and a meta opener (\"Long post incoming.\", \"Buckle up.\", \"This is a long one.\"): post 1 opens on the story. If it still won't fit, make the first sentence or two a hook that fits in 280 and stands alone, keep every other fact after it in full sentences, and say in why that the rest can be post 2: Hookworthy moves the sentences past 280 to post 2.",
+    "6. A line over 280 characters: version 1 fits in 280. Cut padding first (\"back in\", \"actually\", \"honestly\", \"of the whole thing\", \"and so I wanted to\", a spare \"that\"), never a fact, and a meta opener (\"Long post incoming.\", \"Buckle up.\", \"This is a long one.\"): post 1 opens on the story. A run-up about the post itself (wanting to write it, putting it off, not being sure whether to, \"so here goes\") goes whole, its \"I think\" or \"probably\" with it, whenever the rest fits in 280: version 1 never opens on it (on hard news it is their framing: rule 4). If it still won't fit, make the first sentence or two a hook that fits in 280 and stands alone, keep every other fact after it in full sentences, and say in why that the rest can be post 2: Hookworthy moves the sentences past 280 to post 2.",
     "",
     "# Never",
     "- Add a fact, number, name, result, time, emoji or hashtag, or a claim word the line doesn't make (best, only, huge, every, nailed, viral, just, still). Pull nothing up from the rest of the post.",
+    "- Add an intensifier they didn't type (\"so\", \"very\", \"really\", \"super\", \"such\", \"way\"): \"we need to talk about how weird LinkedIn has gotten\" keeps its words, never \"LinkedIn has gotten so weird\".",
     "- Change a number, $, %, ticker, @handle, #tag, link, `code` or name: copy each one exactly. One exception: a pile of three or more hashtags at the end keeps only the one or two most specific to what the line is about, as written, at the end; never add or invent a tag.",
     "- Drop a negation or flip one (\"not dead\" stays \"not dead\"; \"don't just write\" never becomes \"don't write\").",
     "- Drop a hedge below one per clause. Where a clause stacks hedges, keep one and cut the rest: \"I think it was probably\" → \"it was probably\"; \"I feel like it's probably too late\" → \"it's probably too late\"; \"I really, truly think\" → \"I think\". When you choose, keep the modal (\"probably\", \"might\", \"could\", \"maybe\") over \"I think\". The hedges that say how likely something is (\"probably\", \"maybe\", \"might\", \"could\", \"seems\", \"I might be wrong\") are their doubt: where a sentence has one, version 1 keeps at least one hedge. An opinion frame (\"I think\", \"I believe\", \"I personally think\", \"In my opinion\", \"I feel like\", \"I would argue\") on a plain view, a claim about how things are that isn't a forecast, plan or call, is a run-up, not doubt: version 1 drops it and says the claim (\"I personally think most diets fail on sleep\" → \"Most diets fail on sleep.\"), and the light edit that keeps it is version 2. A stacked opinion frame is what makes a line soft: \"I think\", \"I feel like\", \"I believe\", \"in my experience\", \"I'm starting to suspect\" or \"do you think\" on a clause that already has another hedge (a modal, a degree word like \"kind of\" or \"a little bit\", a scope word like \"usually\" or \"tend to\", a softened \"don't really\", or a label) goes in version 1, and that other hedge carries their doubt: \"I feel like the intro is a bit long\" → \"The intro is a bit long\"; \"In my experience, demos usually run long\" → \"Demos usually run long\". A frame that is its clause's only hedge stays on a forecast, plan or call (\"I think AI agents will replace most dashboards\" keeps it), and when the belief itself is the point (\"I don't think X. I actually think Y.\"); a stated doubt (\"I might be wrong\", \"I could be wrong\") always stays where they put it. An opinion label (rule 4) counts as a hedge. The bare claim can be version 2. On a plain view, a \"pretty much\" or \"kind of\" before the claim goes with the opinion tag (\"Cold plunges are kind of overrated, at least in my opinion\" → \"Cold plunges are overrated.\"); it stays before an absolute, a superlative or a number (\"pretty much always\", \"kind of the only\"), before a feeling, and when it is their only softener. On a forecast, plan or price call keep every hedge (\"I think\", \"I believe\", \"imo\", \"nfa\", \"probably\", \"might\", \"could\", \"I'd say 60%\", its \"if\"), so it stays exactly as sure as they wrote it; only a doubled word collapses: \"could maybe\" → \"could\", \"might possibly\" → \"might\". Never make a plan or forecast certain: a plan stays a plan, a guess stays a guess, the past stays past.",
-    "- Drop a softener or the tone: \"kind of okay\", \"kind of regretting\", \"a little nervous\", \"pretty impressed\", \"still kind of processing\", \"lol\", \"lmao\", \"haha\" all stay, and so does the strength of a feeling (\"really proud\"). \"kind of\" before a verb (\"it kind of just shows up\") is padding. \"finally\" carries the news when it says a wait is over (\"we finally hit $1M ARR\", \"to finally share\"): it stays unless the line says the wait another way (\"after two years of planning\"). An approximator stays with its absolute or number: \"basically always\", \"almost never\", \"pretty much every\", \"about 40%\". A scope word stays with its claim: \"mostly\", \"largely\", \"partly\", \"often\", \"usually\", \"generally\", \"sometimes\" (\"it's mostly hype\" never becomes \"it's hype\").",
+    "- Drop a softener or the tone: \"kind of okay\", \"kind of regretting\", \"a little nervous\", \"pretty impressed\", \"still kind of processing\", \"lol\", \"lmao\", \"haha\" all stay, and so does the strength of a feeling (\"really proud\"). \"kind of\" before a verb (\"it kind of just shows up\") is padding. \"finally\" carries the news when it says a wait is over (\"we finally hit $1M ARR\", \"to finally share\"): it stays unless the line says the wait another way (\"after two years of planning\"). An approximator stays with its absolute or number: \"basically always\", \"almost never\", \"pretty much every\", \"about 40%\". A scope word stays with its claim: \"mostly\", \"largely\", \"partly\", \"often\", \"usually\", \"generally\", \"sometimes\" (\"it's mostly hype\" never becomes \"it's hype\"). A softener in a closing comment on the point (\"which is kind of interesting\", \"a pretty good lesson in it\", \"which is sort of funny\") only apologises for it, so it goes even when it is their only one (\"which is interesting\", \"There's a good lesson in it\"), and a filler tail goes with it (\"if you think about it\"); on a feeling it stays.",
     "- Leave a verb without its object: \"it's something nobody teaches you\" → \"nobody teaches you this\", not \"Nobody teaches you.\"",
     "- Drop the pointer to the thread (\"Here's why\", \"Here's what happened:\", \"(thread)\", 🧵, 👇, \"a few thoughts on…:\") or what it promises. \"(thread)\" → \"Here are 9 lessons I learned:\" is fine.",
     "- Move an emoji off the end, or into the middle of a sentence.",
@@ -1482,13 +1486,13 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "- Use the author's never-say words. Fix spelling only if a word is clearly a typo, and say so in why.",
     "",
     "# Leave sharp lines alone",
-    "If the line opens on its point, nothing pads it and every soft-looking word is working, return it exactly as written: \"unchanged\": true, one version, the line itself, with a why that names what already works. Start that why with \"Already sharp:\" only when the line works as a hook as it stands; a clean line that is still generic starts \"Nothing to cut:\" and may say what would make it a hook. Never call a line unchanged while it has a delay, a splice, padding, a stacked hedge, a passive you could fix, \"!!!\" or a pile of three or more hashtags.",
+    "If the line opens on its point, nothing pads it and every soft-looking word is working, return it exactly as written: \"unchanged\": true, one version, the line itself, with a why that names what already works. Start that why with \"Already sharp:\" only when the line works as a hook as it stands; a clean line that is still generic starts \"Nothing to cut:\" and may say what would make it a hook. Never call a line unchanged while it has a delay, a splice, padding, a stacked hedge, a passive you could fix, \"!!!\" or a pile of three or more hashtags. What the writer chose to say is never padding: keep a self-aware aside or parenthetical (\"(I know, I know, you've heard it before.)\") and a sentence that is the announcement itself (\"New issue is out!\"). On a line that needs work, cut around them, never through them.",
     "",
     "# Return",
     "JSON only: {\"versions\":[{\"line\":\"...\",\"why\":\"...\"}],\"unchanged\":false}",
     "- Version 1 is the one line you would post for them: the edit a top ghostwriter would post. When a stronger version passes every check below, it is version 1: never put the light edit first while a stronger safe edit exists. When a frame or preamble only delays the point, version 1 drops it and the light edit goes second (on hard news, rule 4 keeps their framing in version 1). When the line opens on a run-up or an announcement, version 1 is the restructure that opens on the news, the claim or the header; a trim that keeps the run-up is never version 1. On a plain view, version 1 drops the opinion frame and the light edit that keeps it goes second. When the line introduces a list or thread, version 1 leads with what the list is; a version that only splits the header goes second. A list with no count or name (\"some of the things I learned\") is weaker than the feat before it, so the feat leads: \"I ran 50 marathons in 50 states. Here are some of the things I learned:\". When the only move would be a disclaimer or a doubt clause (\"though I could be wrong\", \"but I might be wrong here\") going to the other end of the line, the light edit is version 1 and the doubt stays where they put it. Before you write it, check it silently: every fact and name copied exactly, every negation and scope word kept, no hedged clause left bare (a plain view's opinion frame is not a hedge), their doubt still said where they said it and every hedge on a call kept, no stacked opinion frame left, nothing added, the writer's order unless a move clearly wins, every sentence complete, ends on a beat that lands, under 280 unless rule 6 says the rest is post 2, still sounds like them. If it fails a check, fix it before you answer.",
     "- Version 2 (optional) is a different honest move: the light edit (padding cut, frame kept, nothing moved) when version 1 cuts a frame or restructures, the restructure when version 1 kept the order, or the bare claim when version 1 keeps a hedge of theirs, or the light edit that keeps their opinion frame when version 1 drops it on a plain view. Give a third only if it is genuinely different. Never pad with a near-copy.",
-    "- \"why\": one plain sentence, at most 140 characters, true for that version: what went or moved, and why it reads better. Quote only words in their line or yours. Say only what this edit did: no \"the run-up is gone\" or \"X comes first\" unless it is so.",
+    "- \"why\": one plain sentence, at most 140 characters, true for that version: what went or moved, and why it reads better. Quote only words in their line or yours. Say only what this edit did: no \"the run-up is gone\" or \"X comes first\" unless it is so. Never open it with a label for the version (\"The light edit:\", \"The bare claim:\"): say what went or moved.",
     "",
     "# Examples",
     "<example>",
@@ -1497,7 +1501,7 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "</example>",
     "<example>",
     "<line>After much deliberation, the decision was made by our founding team to shut down the consumer app and focus entirely on enterprise</line>",
-    "{\"versions\":[{\"line\":\"Our founding team decided to shut down the consumer app and focus entirely on enterprise.\",\"why\":\"Active voice: the team decides, and “After much deliberation” went.\"},{\"line\":\"After much deliberation, our founding team decided to shut down the consumer app and focus entirely on enterprise.\",\"why\":\"The light edit: only the passive is fixed. The deliberation stays.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"Our founding team decided to shut down the consumer app and focus entirely on enterprise.\",\"why\":\"Active voice: the team decides, and “After much deliberation” went.\"},{\"line\":\"After much deliberation, our founding team decided to shut down the consumer app and focus entirely on enterprise.\",\"why\":\"Only the passive is fixed: the deliberation stays.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>So here's the thing nobody tells you about raising a seed round: the money is the easy part</line>",
@@ -1505,7 +1509,7 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "</example>",
     "<example>",
     "<line>This might get me some hate but I really think most people would be better off doing less cardio and more strength training</line>",
-    "{\"versions\":[{\"line\":\"This might get me some hate, but most people would be better off doing less cardio and more strength training.\",\"why\":\"The frame stays: it tells readers it’s a provocation, so “I really think” went.\"},{\"line\":\"I think most people would be better off doing less cardio and more strength training.\",\"why\":\"The claim alone, with your “I think”: the frame and “really” went.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"This might get me some hate, but most people would be better off doing less cardio and more strength training.\",\"why\":\"The frame stays: it tells readers it’s a provocation, so “I really think” went.\"},{\"line\":\"I think most people would be better off doing less cardio and more strength training.\",\"why\":\"The frame and “really” went, so the claim stands alone with your “I think”.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>gm everyone, hope you're all having a great week, wanted to share a quick update on my portfolio which is up 212% since january</line>",
@@ -1529,11 +1533,11 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "</example>",
     "<example>",
     "<line>Honestly I feel like most onboarding flows are way too long</line>",
-    "{\"versions\":[{\"line\":\"Most onboarding flows are way too long.\",\"why\":\"“Honestly” and “I feel like” went: it’s a plain view, so the claim says it.\"},{\"line\":\"I feel like most onboarding flows are way too long.\",\"why\":\"The light edit: only “Honestly” went, and “I feel like” stays.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"Most onboarding flows are way too long.\",\"why\":\"“Honestly” and “I feel like” went: it’s a plain view, so the claim says it.\"},{\"line\":\"I feel like most onboarding flows are way too long.\",\"why\":\"Only “Honestly” went, and “I feel like” stays.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>Honestly I feel like most pricing pages are a little bit too clever</line>",
-    "{\"versions\":[{\"line\":\"Most pricing pages are a little bit too clever.\",\"why\":\"“Honestly” and “I feel like” went: “a little bit” already softens it, so it still reads as your view.\"},{\"line\":\"I feel like most pricing pages are a little bit too clever.\",\"why\":\"The light edit: only “Honestly” went, and “I feel like” stays.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"Most pricing pages are a little bit too clever.\",\"why\":\"“Honestly” and “I feel like” went: “a little bit” already softens it, so it still reads as your view.\"},{\"line\":\"I feel like most pricing pages are a little bit too clever.\",\"why\":\"Only “Honestly” went, and “I feel like” stays.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>ngl i think we could maybe ship the beta by march</line>",
@@ -1545,7 +1549,7 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "</example>",
     "<example>",
     "<line>Not gonna lie, this might sound obvious, but most churn starts in the first week</line>",
-    "{\"versions\":[{\"line\":\"Most churn starts in the first week.\",\"why\":\"“Not gonna lie” and “this might sound obvious, but” went, so the claim comes first.\"},{\"line\":\"This might sound obvious, but most churn starts in the first week.\",\"why\":\"The light edit: only “Not gonna lie” went. The frame stays.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"Most churn starts in the first week.\",\"why\":\"“Not gonna lie” and “this might sound obvious, but” went, so the claim comes first.\"},{\"line\":\"This might sound obvious, but most churn starts in the first week.\",\"why\":\"Only “Not gonna lie” went, and the frame stays.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>Honestly I think most cold emails die in the subject line, though I could easily be wrong about that</line>",
@@ -1557,7 +1561,7 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "</example>",
     "<example>",
     "<line>I personally think that most cold emails really don't fail because of the copy, they fail because of the list</line>",
-    "{\"versions\":[{\"line\":\"Most cold emails don't fail because of the copy. They fail because of the list.\",\"why\":\"“I personally think that” and “really” went: it’s a plain view, not a call. The splice is two beats, so the list lands last.\"},{\"line\":\"I think most cold emails don't fail because of the copy. They fail because of the list.\",\"why\":\"The light edit: “personally”, “that” and “really” went, “I think” stays, and the splice is two beats.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"Most cold emails don't fail because of the copy. They fail because of the list.\",\"why\":\"“I personally think that” and “really” went: it’s a plain view, not a call. The splice is two beats, so the list lands last.\"},{\"line\":\"I think most cold emails don't fail because of the copy. They fail because of the list.\",\"why\":\"“personally”, “that” and “really” went, “I think” stays, and the splice is two beats.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>Honestly I think AI agents are going to replace most SaaS dashboards by 2027</line>",
@@ -1573,7 +1577,11 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "</example>",
     "<example>",
     "<line>Thrilled to finally announce that our Chrome extension is live in the Web Store 🎉</line>",
-    "{\"versions\":[{\"line\":\"Our Chrome extension is finally live in the Web Store 🎉\",\"why\":\"“Thrilled to … announce that” went and “finally” moved into the news, so the line opens on the launch.\"},{\"line\":\"Thrilled to finally announce our Chrome extension is live in the Web Store 🎉\",\"why\":\"The light edit: only “that” went, and your frame stays up front.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"Our Chrome extension is finally live in the Web Store 🎉\",\"why\":\"“Thrilled to … announce that” went and “finally” moved into the news, so the line opens on the launch.\"},{\"line\":\"Thrilled to finally announce our Chrome extension is live in the Web Store 🎉\",\"why\":\"Only “that” went, and your frame stays up front.\"}],\"unchanged\":false}",
+    "</example>",
+    "<example>",
+    "<line>New issue is out! It's about pricing pages, free trials and a few other things I've been thinking about. Link below 👇</line>",
+    "{\"versions\":[{\"line\":\"New issue is out! It's about pricing pages and free trials. Link below 👇\",\"why\":\"“a few other things I've been thinking about” went. “New issue is out!” stays: it's the news itself.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>In today's post I want to talk about why we moved off Kubernetes</line>",
@@ -1584,8 +1592,12 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "{\"versions\":[{\"line\":\"Moving all my notes into Obsidian was a game changer.\",\"why\":\"“Honestly” and “complete” went. “game changer” is your phrase, so it stays rather than becoming another one.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
+    "<line>Honestly it's actually really really hard to hire your first salesperson, which is a pretty good reason to do sales yourself first</line>",
+    "{\"versions\":[{\"line\":\"It's really hard to hire your first salesperson, which is a good reason to do sales yourself first.\",\"why\":\"“Honestly”, “actually” and the second “really” went, and so did “pretty”: the reason stands without the softener.\"}],\"unchanged\":false}",
+    "</example>",
+    "<example>",
     "<line>Cold plunges are kind of overrated for recovery, at least in my opinion</line>",
-    "{\"versions\":[{\"line\":\"Cold plunges are overrated for recovery.\",\"why\":\"“at least in my opinion” and “kind of” went: it’s a plain view, so the claim says it.\"},{\"line\":\"Cold plunges are kind of overrated for recovery.\",\"why\":\"The light edit: only “at least in my opinion” went, and “kind of” stays.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"Cold plunges are overrated for recovery.\",\"why\":\"“at least in my opinion” and “kind of” went: it’s a plain view, so the claim says it.\"},{\"line\":\"Cold plunges are kind of overrated for recovery.\",\"why\":\"Only “at least in my opinion” went, and “kind of” stays.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>Why does nobody talk about the fact that most churn is basically just bad onboarding?</line>",
@@ -1596,8 +1608,12 @@ Keep every fact, number, name and "not"; add none (no new number, result, person
     "{\"versions\":[{\"line\":\"Announcing something: we shipped dark mode and nobody noticed.\",\"why\":\"Already sharp: the deadpan “Announcing something:” sets up the joke, and “nobody noticed” lands it.\"}],\"unchanged\":true}",
     "</example>",
     "<example>",
+    "<line>Your landing page doesn't need a video. It needs a price. (Yes, I'm talking to past me.)</line>",
+    "{\"versions\":[{\"line\":\"Your landing page doesn't need a video. It needs a price. (Yes, I'm talking to past me.)\",\"why\":\"Already sharp: two short beats land it, and the aside is your voice, so it stays.\"}],\"unchanged\":true}",
+    "</example>",
+    "<example>",
     "<line>So this one is hard to write, but I wanted to share that my mom was diagnosed with cancer last month</line>",
-    "{\"versions\":[{\"line\":\"This one is hard to write, but my mom was diagnosed with cancer last month.\",\"why\":\"“So” and “I wanted to share that” went. “This one is hard to write” stays: it’s how you chose to tell it.\"},{\"line\":\"My mom was diagnosed with cancer last month.\",\"why\":\"The news alone: the framing went too.\"}],\"unchanged\":false}",
+    "{\"versions\":[{\"line\":\"This one is hard to write, but my mom was diagnosed with cancer last month.\",\"why\":\"“So” and “I wanted to share that” went. “This one is hard to write” stays: it’s how you chose to tell it.\"},{\"line\":\"My mom was diagnosed with cancer last month.\",\"why\":\"The framing went too, so it’s the news alone.\"}],\"unchanged\":false}",
     "</example>",
     "<example>",
     "<line>Reminder: file your 83(b) within 30 days. I didn't, and it cost me $186k.</line>",
@@ -2870,7 +2886,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const HK_SUBJ = s => /^we$/i.test(s) ? 'We' : 'I';
   /* bait and announcements a hook never needs */
   const HK_BAIT = /\s*(?:[,.!]?\s*\b(?:like|rt|retweet|repost|follow|bookmark)(?:\s*(?:\+|&|and|\/)\s*(?:rt|retweet|repost|follow|bookmark|like))*\s+(?:if|for)\b[^.!?]*|[,.!]?\s*\bcomment\s+["“']?\w+["”']?\s+(?:for|and i['’]ll|to get)\b[^.!?]*|[,.!]?\s*\b(?:agree|thoughts|am i wrong|change my mind)\s*\?|[,.!]?\s*\((?:a )?thread\)(?=(?:\s*(?:🧵|👇))*\s*$)(?:\s*(?:🧵|👇))*)\s*$/i;
-  const HK_OPEN = /^(?:(?:hey|hi|hello|yo)(?: (?:guys|everyone|all|fam|frens|friends|team|y['’]?all))?|(?:ok(?:ay)?,?\s+)?so(?! (?:what|far|much|many|long|good|bad|true|close|yeah|cool)\b)(?! (?:[a-z]+(?:ed|ful|ous|ive|less|able|ible|ic)|tired|done|sick|over|ready|happy|sad|glad|mad|proud|grateful|bored|sorry|real|hard|easy|weird|wild|crazy|dumb|funny|cute|nice|lucky|busy|broke|late|early|lost|stuck|hungry|fun|annoying|tiring|boring|exhausting|frustrating|confusing|amazing|interesting)\b)|well(?! (?:done|said|known|made|paid|played|over|worth|before|after)\b)|(?:look|listen)(?=[,.!:—]| (?:i|we|you|guys|people|man|y['’]all)\b)|anyway|alright|guys|quick (?:thought|one|reminder|take|question|tip|note)(?: that)?|(?:just )?a (?:quick )?(?:reminder|heads[- ]up|thought)(?: that)?|unpopular opinion,?(?: but)?|hot take,?(?: but)?|real talk|psa|(?:this is )?not financial advice(?:,? obviously)?,?(?: but)?|nfa,?(?: but)?|(?:idk|i (?:genuinely |honestly |really |truly )?don['’]t know) who needs to hear this,?(?: but)?|i['’]?m (?:not an|no) expert,?(?: but)?|this (?:might|may|could) be (?:controversial|unpopular),?(?: but)?|not sure if (?:this makes sense|anyone cares),?(?: but)?)\b[,.:!—-]*\s+(?=\S)/i;
+  const HK_OPEN = /^(?:(?:hey|hi|hello|yo)(?: (?:guys|everyone|all|fam|frens|friends|team|y['’]?all))?|(?:ok(?:ay)?,?\s+)?so(?! (?:what|far|much|many|long|good|bad|true|close|yeah|cool)\b)(?! (?:[a-z]+(?:ed|ful|ous|ive|less|able|ible|ic)|tired|done|sick|over|ready|happy|sad|glad|mad|proud|grateful|bored|sorry|real|hard|easy|weird|wild|crazy|dumb|funny|cute|nice|lucky|busy|broke|late|early|lost|stuck|hungry|fun|annoying|tiring|boring|exhausting|frustrating|confusing|amazing|interesting)\b)|well(?! (?:done|said|known|made|paid|played|over|worth|before|after)\b)|(?:look|listen)(?=[,.!:—]| (?:i|we|you|guys|people|man|y['’]all)\b)|anyway|alright|guys|quick (?:thought|one|reminder|take|question|tip|note)(?: that)?|(?:just )?a (?:quick )?(?:reminder|heads[- ]up|thought)(?: that)?|unpopular opinion,?(?: but)?|hot take,?(?: but)?|real talk|psa|(?:this is )?not financial advice(?:,? obviously)?,?(?: but)?|nfa,?(?: but)?|(?:idk|i (?:genuinely |honestly |really |truly )?don['’]?t know) (?:who|if anyone|if anybody|whether anyone) needs to hear this,?(?: but)?|i['’]?m (?:not an|no) expert,?(?: but)?|this (?:might|may|could) be (?:controversial|unpopular),?(?: but)?|not sure if (?:this makes sense|anyone cares),?(?: but)?)\b[,.:!—-]*\s+(?=\S)/i;
   /* r74: soft-word kinds that are a warm-up (said as "cut the warm-up"), not a hedge */
   const HK_WARMK = /^(announce|label|disclaim|stock|throat|open|feel)$/;
   /* words the app never writes (the never-say list every rewrite is checked against), said plainly instead */
@@ -2883,12 +2899,12 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* r86 pass 5 (hook-8): banned words go to plain verbs: "unlock seamless growth" → "grow", "brands leverage LinkedIn" → "brands use LinkedIn" */
     [/\b(unlock|supercharg)(e|es|ed|ing|s)? (?:(?:new|more|real|seamless|sustainable|massive|explosive|faster|predictable|your|their|our|the) ){0,2}growth\b/gi, (m, a, e) => ({ s: 'grows', es: 'grows', ed: 'grew', ing: 'growing' })[(e || '').toLowerCase()] || 'grow'],
     [/(?<!\b(?:on|with|of|using|no|max|high|low|more|less|the|their|our|your|my|financial|operating|real|some|any|\d+x)\s)\bleverage(?=\s+(?!(?:is|was|ratio|of|on|in|at|and|to|for|with|that|this)\b)[\p{Lu}$@#][\p{L}\p{N}]*)/gu, 'use'],
-    [/\bAI[- ]powered\b/g, 'AI'], [/\bai[- ]powered\b/g, 'AI'], [/(?<=\b(?:that|who|which|it|this|he|she|team|company)\s)leverages (?=(?:our|your|their|the|this|that|its|his|her|data|ai|it)\b)/gi, 'uses '],
+    [/(?<=\b(?:that|who|which|it|this|he|she|team|company)\s)leverages (?=(?:our|your|their|the|this|that|its|his|her|data|ai|it)\b)/gi, 'uses '],
     [/(?<!\b(?:the|an|a|token|this|that|next|big|cliff|its|their|our|my|vesting|team|investor|linear)\s)(?<!\$[A-Za-z][A-Za-z0-9]{0,9}\s)\bunlock(?:s|ed|ing)?\b(?!\s+(?:is|was|are|were|hits|happens|starts|lands|next|this|tomorrow|today|tonight|on|in|at|for)\b)(?!\s+(?:schedule|event|date|day|cliff))/gi, m => ({ unlock: 'open up', unlocks: 'opens up', unlocked: 'opened up', unlocking: 'opening up' })[m.toLowerCase()]],
     [/\bsupercharg(?:e|es|ed|ing)\b/gi, m => ({ supercharge: 'speed up', supercharges: 'speeds up', supercharged: 'sped up', supercharging: 'speeding up' })[m.toLowerCase()]],
     /* r86 pass 5 (hook-15): "funding is elevated", "elevated volatility": a trader's word for "high", never "improved" */
     [/\belevat(?:e|es|ed|ing)\b(?!\s+(?:funding|volatility|vol|rates?|oi|open interest|risk|levels?|readings?|premiums?|spreads?|fees|gas|demand|leverage|blood pressure|heart rate)\b)(?<!\b(?:funding|volatility|vol|rates?|oi|interest|risk|levels?|readings?|premiums?|spreads?|fees|gas|demand|leverage|pressure)\s+(?:(?:is|are|was|were|remains?|stays?|looks?|still|now|basically|very|quite|so|pretty|really|already|currently|insanely|extremely)\s+){0,2}elevat\w*)/gi, m => ({ elevate: 'improve', elevates: 'improves', elevated: 'improved', elevating: 'improving' })[m.toLowerCase()]],
-    [/\bseamless(ly)?\b/gi, (m, l) => l ? 'smoothly' : 'smooth'], [/\bdelv(?:e|es|ed|ing) (?:into|in)\b/gi, m => m.toLowerCase().replace(/^delv(e|es|ed|ing)/, (z, e) => ({ e: 'dig', es: 'digs', ed: 'dug', ing: 'digging' })[e])]
+    [/\bdelv(?:e|es|ed|ing) (?:into|in)\b/gi, m => m.toLowerCase().replace(/^delv(e|es|ed|ing)/, (z, e) => ({ e: 'dig', es: 'digs', ed: 'dug', ing: 'digging' })[e])]
   ];
   /* "after hiring 300 people" → "I've hired 300 people" */
   const HK_PP = { hiring: 'hired', talking: 'talked', interviewing: 'interviewed', building: 'built', writing: 'written', posting: 'posted', shipping: 'shipped', launching: 'launched', reading: 'read', trading: 'traded', testing: 'tested', coaching: 'coached', working: 'worked', reviewing: 'reviewed', sending: 'sent', making: 'made', doing: 'done', spending: 'spent', losing: 'lost', growing: 'grown', selling: 'sold', running: 'run', managing: 'managed', leading: 'led', teaching: 'taught', training: 'trained', publishing: 'published', studying: 'studied', analyzing: 'analyzed', analysing: 'analysed', mentoring: 'mentored', onboarding: 'onboarded', investing: 'invested', pitching: 'pitched', closing: 'closed', raising: 'raised', firing: 'fired', journaling: 'journaled', tracking: 'tracked', recording: 'recorded', emailing: 'emailed', calling: 'called', meeting: 'met', watching: 'watched', using: 'used', trying: 'tried', editing: 'edited', ghostwriting: 'ghostwritten', designing: 'designed', surveying: 'surveyed', hosting: 'hosted', answering: 'answered', screening: 'screened', auditing: 'audited', helping: 'helped', scaling: 'scaled', grading: 'graded', placing: 'placed', booking: 'booked', speaking: 'spoken' };
@@ -5003,7 +5019,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const SL53_N = String.raw`\d[\d,]*|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|fifty`;
   const SL53_TAIL = String.raw`((?:\s*(?:\(thread\)|\(a thread\)|🧵|👇|⬇️?|\(?\d{1,2}\/\d{0,2}\)?))*)`;
   const SL53_SOFTLEAD = String.raw`(?:(?:honestly|so|ok(?:ay)?|tbh|ngl|look|well|anyway|lately|looking back|in hindsight|in retrospect|at the end of the day)[,.]?\s+)*`;
-  const SL53_HY = /(?<![\p{L}\p{N}'’-])(amazing|incredible|awesome|insane|epic|unbelievable|phenomenal|fantastic|mind-?blowing|game-?changing|world-class|stellar)\s+(?=(?!(?:of|to|for|at|in|on|and|or|but|that|with|by|as|is|was|are|were|than)\b)[\p{L}\p{N}$])/giu;
+  const SL53_HY = /(?<![\p{L}\p{N}'’-])(amazing|incredible|awesome|insane|epic|unbelievable|phenomenal|fantastic|mind-?blowing|game-?changing|world-class|stellar|seamless|next-level|cutting-edge|best-in-class|revolutionary|groundbreaking|state-of-the-art)\s+(?=(?!(?:of|to|for|at|in|on|and|or|but|that|with|by|as|is|was|are|were|than)\b)[\p{L}\p{N}$])/giu;
   const sl53Up = (s, low) => low ? s : capFirst(s);
   const SL53_DISC = /(?<![\p{L}'’])(?:i (?:might|could|may) be (?:wrong|totally wrong|completely wrong)(?: (?:about|on) (?:this|it|that))?(?: (?:here|though))?|maybe i['’]m wrong(?: (?:about|on) (?:this|it|that))?|correct me if i['’]m wrong|(?:i['’]m )?not (?:100% )?sure(?: (?:about|on) (?:this|it))?)(?:[,.]?\s+but)?(?![\p{L}'’])/giu;
   const SL53 = [
@@ -5012,10 +5028,15 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     { k: 'count', mv: 'number', allow: /^$/, left: l => /^\P{L}*(?:there (?:are|is) (?:\d|two|three|four|five|six|seven|eight|nine|ten)|here(?:['’]s| is| are) (?:a (?:quick |short |little )?)?list of)/iu.test(l),
       f: (t, low) => { const m = t.match(new RegExp(String.raw`^(\P{L}*)(?:there (?:are|is)|here(?:['’]s| is| are) (?:a (?:quick |short |little )?list of|my list of)(?: the| my| our)?) (${SL53_N}) ((?:[\p{L}$&-]+ ){0,4}?(?:[\p{L}-]+s|people|men|women|children|feet))(?: (?:that|which))? ((?:i|we|you)(?![\p{L}'’])[^]{4,}?|(?<=(?:that|which) )(?!(?:i|we|you|is|are|was|were)\b)[a-z]+(?:ed|s)\b[^]{4,}?)[.!:]*${SL53_TAIL}\s*$`, 'iu')); if (!m) return null; const rel = /(?:that|which) $/i.test(t.slice(0, t.indexOf(m[4]))) && !/^(?:i|we|you)\b/i.test(m[4]) ? `${t.slice(0, t.indexOf(m[4])).match(/(that|which) $/i)[1]} ` : ''; return `${m[1]}${sl53Up(m[2], low)} ${m[3]} ${rel}${m[4].replace(/\bevery single\b(?! one\b)/gi, 'every')}${m[5] ? m[5] : ':'}`; } },
     /* "…in a thread / In this thread I will explain 7 reasons…" → "7 reasons…:"; "This is a thread about how we scaled X. 1/" → "How we scaled X. 1/" */
-    { k: 'thread', mv: 'warm', allow: /^$/, left: l => /^\P{L}*(?:(?:so,?\s+)?in this (?:thread|post)|this is a thread|this thread is about)\b/iu.test(l),
-      f: (t, low) => { const m = t.match(new RegExp(String.raw`^(\P{L}*)(?:(?:so,?\s+)?(?:in this (?:thread|post)|in today['’]s thread|today|here),?\s+(?:i(?:['’]ll| will| am going to| am gonna|['’]m going to|['’]m gonna)|we(?:['’]ll| will|['’]re going to|['’]re gonna))\s+(?:explain|share|break down|go over|walk (?:you )?through|cover|show you|tell you|list|give you|unpack|lay out)\s+(?:exactly\s+)?(?:you\s+)?|(?:so,?\s+)?(?:this is a|this) thread (?:is )?(?:about|on)\s+)((?:${SL53_N})\s+[^]{4,}?|(?:how|why|what|when)\s+[^]{6,}?)([.!:]*)${SL53_TAIL}\s*$`, 'iu')); if (!m) return null;
+    /* v5.5 (Fable round 4, H2): and "In today's thread/post", "I will be explaining", "I'll be breaking down", "I want to walk you
+       through", a topic said as a noun ("the exact template that…"), and the first sentence of a longer line, whose header then leads
+       the rest. A topic that runs into a second announcement ("…, and I'm also going to share…") is left to the thread split */
+    { k: 'thread', mv: 'warm', allow: /^(?:pointer lost)?$/, left: (l, d) => /^\P{L}*(?:(?:so,?\s+)?in (?:this|today['’]s) (?:thread|post)|this is a thread|this thread is about|today,?\s+(?:i|we)\s+(?:want|['’]d like|would like|am going|['’]m going|will|['’]ll)\b)/iu.test(l) || (/\bhere['’]s (?:how|why|what)\b/i.test(l) && !/\bhere\b/i.test(String(d || ''))),
+      f: (t, low) => { const S0 = slSents(t), m0 = S0.length > 1 ? t.slice(t.indexOf(S0[0]) + S0[0].length) : '', one = S0.length <= 1 || wordsN(m0) < 3, t1 = one ? t : S0[0], more = one ? '' : m0;
+        const m = t1.match(new RegExp(String.raw`^(\P{L}*)(?:(?:so,?\s+)?(?:in this (?:thread|post)|in today['’]s (?:thread|post)|today|here),?\s+(?:i(?:['’]ll| will| am going to| am gonna|['’]m going to|['’]m gonna| want to|['’]d like to| would like to)|we(?:['’]ll| will|['’]re going to|['’]re gonna| want to))(?:\s+be)?\s+(?:explain(?:ing)?|shar(?:e|ing)|break(?:ing)? down|go(?:ing)? over|walk(?:ing)? (?:you )?through|cover(?:ing)?|show(?:ing)? you|tell(?:ing)? you(?: about)?|list(?:ing)?|giv(?:e|ing) you|unpack(?:ing)?|lay(?:ing)? out)\s+(?:exactly\s+)?(?:you\s+)?|(?:so,?\s+)?(?:this is a|this) thread (?:is )?(?:about|on)\s+)((?:${SL53_N})\s+[^]{4,}?|(?:how|why|what|when)\s+[^]{6,}?|(?:the|my|our|every)\s+(?!(?:fact|thing)\b)[^]{8,}?)([.!:]*)${SL53_TAIL}\s*$`, 'iu')); if (!m) return null;
+        if (/,\s+and\s+(?:i|we)(?:['’](?:m|ll|re)|\s+(?:am|will|are))?\s+(?:also\s+)?(?:going to|gonna|will|want to)\b/i.test(m[2])) return null;
         /* a "How we…" title before a "1/" takes no full stop: alone it reads as a fragment, with the count it reads as the thread's title */
-        const tail = m[4] || '', end = tail ? (m[3] && !/[:]/.test(m[3]) && !/^(?:how|why|what|when)\b/i.test(m[2]) ? '.' : '') : ':'; return `${m[1]}${sl53Up(m[2], low)}${end}${tail}`; } },
+        const tail = m[4] || '', end = tail ? (m[3] && !/[:]/.test(m[3]) && !/^(?:how|why|what|when)\b/i.test(m[2]) ? '.' : '') : ':', h = `${m[1]}${sl53Up(m[2], low)}${end}${tail}`; return one ? h : `${h.replace(/[.]$/, ':')}${more}`; } },
     /* "A lot of people ask me how I find clients, so I figured I would put together a thread explaining my process" → "A lot of people
        ask me how I find clients. Here's my process:" */
     { k: 'asked', mv: 'loop', allow: /^$/, left: l => /\bso (?:i|we) (?:figured|thought|decided)\b/i.test(l),
@@ -5063,9 +5084,32 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
        call carries its own hedge, so it stands on its own sentence */
     { k: 'butSplit', mv: 'contrast', allow: /^$/, left: l => /,\s+but\s+(?:it|they|we|you|that|this)(?:['’](?:ll|re|s|d|ve))?\s/i.test(l),
       f: (t, low) => { const m = t.match(/^(\P{L}*(?:(?:i|we)\s+(?:think|believe|reckon|bet|expect)|(?:i['’]d|i would)\s+argue(?:\s+that)?)\s[^,.!?;]{10,140}?),\s+but\s+((?:it|they|we|you|that|this)(?:['’](?:ll|re|s|d|ve))?\s+[^,.!?;]*?\b(?:most likely|probably|likely|maybe|might|could|may)\b[^]{4,})$/iu); if (!m) return null; return `${m[1]}. ${low ? 'but' : 'But'} ${m[2]}`; } },
+    /* v5.5 (Fable round 4, H1/H2): "Here's a (really long) story about the time X…" and "Let me tell you about the time X…" → "The
+       time X…:": the story is the header, and the run-up that announced it goes */
+    { k: 'storyAbout', mv: 'warm', allow: /^$/, left: l => /^\P{L}*(?:(?:so|ok(?:ay)?)[,.]?\s+)*(?:here(?:['’]s| is)\s+(?:a|the|my)\s+(?:(?:really|very|super|quick|short|long|little|full|whole|true|funny|crazy|wild)\s+)*story\s+(?:about|of)|let me tell you (?:about|how|why))\b/iu.test(l),
+      f: (t, low) => { const m = t.match(/^(\P{L}*)(?:(?:so|ok(?:ay)?)[,.]?\s+)*(?:here(?:['’]s| is)\s+(?:a|the|my)\s+(?:(?:really|very|super|quick|short|long|little|full|whole|true|funny|crazy|wild)\s+)*story\s+(?:about|of)|let me tell you about)\s+((?:the time|the day|the night|the week|how|why|what|when|my|our|the|a|an)\s+[^]{12,}?)([.!:]*)$/iu); if (!m || /[.!?]\s/.test(m[2])) return null; return `${m[1]}${sl53Up(m[2], low)}:`; },
+      whyF: (d, L) => { const m = d.match(/^\P{L}*((?:(?:so|ok(?:ay)?)[,.]?\s+)*(?:here(?:['’]s| is)\s+(?:a|the|my)\s+(?:(?:really|very|super|quick|short|long|little|full|whole|true|funny|crazy|wild)\s+)*story\s+(?:about|of)|let me tell you about))/iu); return m ? sl54WentWhy(d, L, m[1], 'so the story itself is the header.') : ''; } },
+    /* v5.5 (Fable round 4, H1/H2): "I want to talk about something that X, which is (the fact) that Y" → "Something that X: Y". The
+       run-up goes and the thing it promised is the header; "the fact that" goes with it, "the idea that" stays, and a second "and that"
+       clause keeps its "and" */
+    { k: 'talkAbout', mv: 'warm', allow: /^$/, left: l => /^\P{L}*(?:(?:so|today|ok(?:ay)?)[,.]?\s+)*(?:i|we)\s+(?:just\s+)?(?:want|wanted|would like|['’]d like)\s+to\s+(?:talk|write|chat)\s+(?:a (?:little )?bit\s+)?about\s+(?:something|one thing|a thing)\b/iu.test(l),
+      f: (t, low) => { const m = t.match(/^(\P{L}*)(?:(?:so|today|ok(?:ay)?)[,.]?\s+)*(?:i|we)\s+(?:just\s+)?(?:want|wanted|would like|['’]d like)\s+to\s+(?:talk|write|chat)\s+(?:a (?:little )?bit\s+)?about\s+(something|one thing|a thing)\s+(that\s+[^,.!?;:]{6,160}?),\s+which\s+is\s+(?:(?:the fact|the reality|the truth)\s+that\s+|that\s+|(?=the (?:idea|belief|myth|assumption|notion)\b))([^]{8,})$/iu); if (!m) return null; const body = m[4].replace(/,\s+and\s+that\s+(?=(?:it|this|that|i|we|you|they|there|most|many|people|nobody|everyone)\b)/gi, ', and '); return `${m[1]}${sl53Up(m[2], low)} ${m[3]}: ${body}`; },
+      whyF: (d, L) => { const m = d.match(/^\P{L}*((?:(?:so|today|ok(?:ay)?)[,.]?\s+)*(?:i|we)\s+(?:just\s+)?(?:want|wanted|would like|['’]d like)\s+to\s+(?:talk|write|chat)\s+(?:a (?:little )?bit\s+)?about)/iu); return m ? sl54WentWhy(d, L, m[1], 'so what it promised is the header, and the line opens on it.') : ''; } },
+    /* v5.5 (Fable round 4, H2): "Here's a thing (that) I think X get wrong about Y:" → "X get Y wrong:"; "Here's something (that) I think X
+       overlook: Y" → "Something X overlook: Y". The pointer and the stance go; every word left is the writer's */
+    { k: 'hereThing', mv: 'warm', why: 'view', allow: /^(?:stance verb dropped|stance dropped|opinion lost its clause|frame moved)?$/, left: l => /^\P{L}*(?:so,?\s+)?here(?:['’]s| is)\s+(?:a\s+thing|one\s+thing|something)\b/iu.test(l),
+      f: (t, low) => { const ST = String.raw`(?:(?:i|we)\s+(?:really\s+|honestly\s+|personally\s+)?(?:think|believe|feel like)\s+)?`;
+        const a = t.match(new RegExp(String.raw`^(\P{L}*)(?:so,?\s+)?here(?:['’]s| is)\s+(?:a|one)\s+thing\s+(?:that\s+)?${ST}((?:a lot of|most|many|so many|some|all|too many|plenty of|the)\s+[^,.!?;:]{3,80}?)\s+(get|gets|got)\s+(wrong|backwards)\s+about\s+([^.!?;:]{3,120}?)([.!:]*)$`, 'iu'));
+        if (a && slFinite(`${a[2]} ${a[3]}`)) return `${a[1]}${sl53Up(a[2], low)} ${a[3]} ${a[5]} ${a[4]}${/:/.test(a[6]) ? ':' : low ? '' : '.'}`;
+        const b = t.match(new RegExp(String.raw`^(\P{L}*)(?:so,?\s+)?here(?:['’]s| is)\s+(something|one thing)\s+(?:that\s+)?${ST}([^:.!?]{6,100}):\s+([^]{3,})$`, 'iu'));
+        if (b) return `${b[1]}${sl53Up(b[2], low)} ${b[3]}: ${b[4]}`;
+        return null; },
+      whyF: (d, L) => { const m = d.match(/^\P{L}*((?:so,?\s+)?here(?:['’]s| is)\s+(?:a\s+thing|one\s+thing|something)(?:\s+that)?(?:\s+(?:i|we)\s+(?:really\s+|honestly\s+|personally\s+)?(?:think|believe|feel like))?)/iu); return m ? sl54WentWhy(d, L, m[1], 'so the line opens on what they get wrong.') : ''; } },
     /* "A few thoughts on why I think most case studies fail" → "Why most case studies fail:": the header is the writer's view already */
-    { k: 'thoughtsWhy', mv: 'warm', allow: /^$/, left: l => /^\P{L}*(?:(?:a few|some|my|quick) )?thoughts on (?:why|how)\b/iu.test(l),
-      f: (t, low) => { const m = t.match(new RegExp(String.raw`^(\P{L}*)${SL53_SOFTLEAD}(?:(?:i|we) (?:just )?(?:wanted|want) to (?:quickly )?(?:share|post|jot down) )?(?:(?:a few|some|my|quick|a couple of) )?thoughts on (why|how|what) ([^]{8,}?)[.!:]*$`, 'iu')); if (!m) return null; return `${m[1]}${sl53Up(m[2], low)} ${m[3]}:`; } },
+    /* v5.5 (Fable round 4, H2): with or without the "I" ("Just wanted to share a few quick thoughts on why…"), and on a topic said as a
+       noun ("…a few thoughts on the new App Store rules" → "The new App Store rules:") */
+    { k: 'thoughtsWhy', mv: 'warm', allow: /^$/, left: l => /^\P{L}*(?:(?:i|we)\s+)?(?:just\s+)?(?:(?:wanted|want) to (?:quickly )?(?:share|post|jot down)\s+)?(?:(?:a few|some|my|a couple of)\s+)?(?:(?:quick|short|random|little)\s+)?thoughts on\b/iu.test(l),
+      f: (t, low) => { const m = t.match(new RegExp(String.raw`^(\P{L}*)${SL53_SOFTLEAD}(?:(?:(?:i|we) )?(?:just )?(?:wanted|want) to (?:quickly )?(?:share|post|jot down) )?(?:(?:a few|some|my|a couple of) )?(?:(?:quick|short|random|little) )?thoughts on (?:(why|how|what) ([^]{8,}?)|((?:the|this|these|my|our|your)\s+[^]{8,}?))[.!:]*$`, 'iu')); if (!m) return null; return m[2] ? `${m[1]}${sl53Up(m[2], low)} ${m[3]}:` : `${m[1]}${sl53Up(m[4], low)}:`; } },
     /* "I really believe that if you want to grow X you need to just pick one channel" → "If you want to grow X, you need to pick one
        channel": advice said as advice; the belief frame and its "just" go */
     { k: 'believeIf', mv: 'straight', allow: /^$/, left: l => /^\P{L}*(?:i|we)\s+(?:\w+\s+)?(?:believe|think)\s+(?:that\s+)?if\b/iu.test(l) || /^\P{L}*if you\b[^,]{4,80}\s+you (?:need to|have to|should|must)\b/iu.test(l) || /\byou (?:need to|have to|should|must) just\b/i.test(l),
@@ -5115,7 +5159,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* v5.3 (Fable round 2, step 5c): a hype word in an announcement goes, with its article fixed ("led by an amazing group of investors"
      → "led by a group of investors"); [start, end, why, kind] marks for the words, so the receipt counts them */
   const SL53_HYWHY = 'Hype on news that speaks for itself. The facts carry it.';
-  const sl53Hype = (draft, R) => { if (!R || !(R.cut || []).some(c => c.kind === 'announce') && !/^\P{L}*(?:(?:so|super|really)\s+)?(?:excited|thrilled|happy|proud|pleased|stoked)\s+to\s+(?:announce|share|say|introduce|reveal)\b/iu.test(draft)) return []; const s0 = (slSents(draft)[0] || '').length; return [...String(draft).matchAll(SL53_HY)].filter(m => m.index < s0 && !/\b(?:grateful|thankful|thanks|thank you|love|proud of|shout ?out|lucky)\b[^.!?]*$/i.test(draft.slice(0, m.index)) && (/\b(?:our|my|their|the|this|these|its)\s+$/i.test(draft.slice(0, m.index)) || /\b(?:led|backed|funded|joined)\s+by\s+(?:an?\s+)?$/i.test(draft.slice(0, m.index)) && /^\S+\s+(?:group|set|lineup|list|roster|team|batch|cohort|crew|bunch)\s+of\b/i.test(draft.slice(m.index)))).map(m => [m.index, m.index + m[1].length, SL53_HYWHY, 'stock']); };
+  const sl53Hype = (draft, R) => { if (!R || !(R.cut || []).some(c => c.kind === 'announce') && !/^\P{L}*(?:(?:so|super|really)\s+)?(?:excited|thrilled|happy|proud|pleased|stoked)\s+to\s+(?:announce|share|say|introduce|reveal)\b/iu.test(draft)) return []; const s0 = (slSents(draft)[0] || '').length; return [...String(draft).matchAll(SL53_HY)].filter(m => m.index < s0 && !/\b(?:grateful|thankful|thanks|thank you|love|proud of|shout ?out|lucky)\b[^.!?]*$/i.test(draft.slice(0, m.index)) && (/\b(?:our|my|their|the|this|these|its|a|an)\s+(?:(?:new|latest|brand[- ]new|first|own)\s+)?$/i.test(draft.slice(0, m.index)) || /\b(?:led|backed|funded|joined)\s+by\s+(?:an?\s+)?$/i.test(draft.slice(0, m.index)) && /^\S+\s+(?:group|set|lineup|list|roster|team|batch|cohort|crew|bunch)\s+of\b/i.test(draft.slice(m.index)))).map(m => [m.index, m.index + m[1].length, SL53_HYWHY, 'stock']); };
   /* the family version of a result: built on the draft, the soft words in it cut the strict way, checked whole, explained from the draft */
   function sl53Apply(R, text, opts) {
     if (!R || !R.draft || /^(?:empty|thin)$/.test(R.state)) return null;
@@ -5126,7 +5170,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const src = String(text == null ? '' : text), nl = src.indexOf('\n'), rest = nl < 0 ? '' : src.slice(nl);
     const k53 = rw.used.some(F => F.k === 'hotTake') ? [(rw.t.match(SL53_FRAMEST) || [''])[0].replace(/^\P{L}+/u, '')].filter(Boolean) : [];
     /* a header a family made (a count, a thread title, a pointer) gets only the soft cuts; a family that rewrote a claim gets the engine's moves too */
-    const hdr53 = rw.used.some(F => /^(?:count|thread|asked|story|lessons|thoughtsWhy|wishKnew)$/.test(F.k));
+    const hdr53 = rw.used.some(F => /^(?:count|thread|asked|story|lessons|thoughtsWhy|wishKnew|talkAbout|hereThing|storyAbout)$/.test(F.k));
     let L = rw.t; { let S = null; try { S = slSharpenBang(rw.t + rest, { ...opts, keep: [...keep, ...k53], ...(hdr53 ? { strict: true } : {}) }); } catch (e) { S = null; } if (S && S.state === 'sharp' && S.line && slShipOK(S.line, rw.t) && !(S.moves || []).some(k => /^(?:ask|invert|invertQ|revealQ|isQ|condQ)$/.test(k))) L = S.line; }
     L = tidyT(L).replace(/\s+([,.!?:;])/g, '$1').trim();
     if (!rw.low && /[\p{L}\p{N}%)$]$/u.test(L) && !/(?:https?:\/\/\S+|#\w+|@\w+|\((?:a )?thread\)|\(?\d{1,2}\/\d{0,2}\)?)$/i.test(L)) L += slAskEnd(L) ? '' : '.';
@@ -5220,7 +5264,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* a stance verb that heads a claim: not "how I think about money", "what I believe in", "I think about it a lot" */
   const SL_CALL_ST = /(?<![\p{L}\p{N}'’])(?<!\b(?:how|what|why|when|where|the way|way|everything|all|who|whatever)\s+)(?:(?:i|we)(?:,?\s+(?:really|honestly|personally|genuinely|truly|just|still|also|actually|kinda|kind of|sort of))*\s+(?:think|believe|feel like|reckon|guess|suspect)(?!\s+(?:about|of|through|over|twice|again|differently|outside|in|so(?!\s+(?:too|much))|it\s+through|back|ahead|out|up|on|for|before|hard|big|small)\b)(?:\s+that(?=\s+(?!(?:is|was|are|were|will|would|can|could|has|had|might|must|should|isn['’]t|wasn['’]t)\b)[\p{L}\p{N}$@#]))?|(?:i['’]d|i would)\s+(?:even\s+)?argue(?:\s+that)?(?=\s+\S)|imo|imho|in my (?:humble |honest )?(?:opinion|view))(?![\p{L}\p{N}'’])/giu;
   const SL_CALL_HG = /(?<![\p{L}\p{N}'’-])(?:probably|maybe|perhaps|possibly|potentially|presumably|arguably|most likely|(?<=\b(?:will|would|could|['’]ll|won['’]t|wouldn['’]t)\s+)likely(?!\s+to\b)|(?<!\b(?:what|which|this|that|the|a|any|some|every|one|same|different|other|right|wrong|no|that['’]s the)\s)(?:kind of|sort of)|kinda|sorta|somewhat)(?![\p{L}\p{N}'’-])/giu;
-  const SL_CALL_HY = /(?<![\p{L}\p{N}'’-])(?:amazing|incredible|awesome|insane|epic|unbelievable|phenomenal|fantastic|mind-?blowing|game-?changing|groundbreaking|ground-breaking|revolutionary|world-class|stellar)(?=\s+(?!(?:of|to|for|at|in|on|and|or|but|that|with|by|as|is|was|are|were|than)\b)[\p{L}\p{N}$])/giu;
+  const SL_CALL_HY = /(?<![\p{L}\p{N}'’-])(?:amazing|incredible|awesome|insane|epic|unbelievable|phenomenal|fantastic|mind-?blowing|game-?changing|groundbreaking|ground-breaking|revolutionary|world-class|stellar|seamless|ai-powered|next-level|cutting-edge|best-in-class|state-of-the-art|innovative)(?:,(?=\s+\p{L}))?(?=\s+(?!(?:of|to|for|at|in|on|and|or|but|that|with|by|as|is|was|are|were|than)\b)[\p{L}\p{N}$])/giu;
   const SL_CALL_DEG = /^(?:kind of|sort of|kinda|sorta|somewhat)$/i;
   const SL_CALL_WHY = { stc: 'Your stance on a prediction. Tap to cut it if you’re sure.', stv: 'Marks this as your view. Tap to cut it if you’re sure.', hgc: 'How sure you are about the prediction. Tap to cut it if you’re sure.', hgv: 'How sure you are. Tap to cut it if you’re sure.', deg: 'Softens how strongly you say it. Tap to cut it if you mean it fully.', hy: 'A hype word. Tap to cut it if the news says it alone.' };
   /* the line with [a, b] cut: the comma that set it off goes with it, a sentence start keeps its capital, "a"/"an" fit the next word */
@@ -5282,7 +5326,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function slBreakTrue(why, base, draft) {
     const m = String(why || '').match(SL53_BRK); if (!m) return true;
     const q = m[1].replace(/…$/, ''), i = lcw(base).replace(/[’‘]/g, "'").indexOf(lcw(q).replace(/[’‘]/g, "'")); if (i < 0) return false;
-    const cut = slCallCut(base, i, i + q.length); return !cut || !slShipOK(cut, draft) || slFragN(cut) > slFragN(base) || slVerblessN(cut) > slVerblessN(base) || slNPSentN(cut) > slNPSentN(base) || slThin(cut) || slTiny(cut) || /^(?:fragment|not a whole sentence)/.test(slHard(cut, draft));
+    /* v5.5 (Fable round 4, H4): held to the whole-sentence read (slStruct, slDangle), so a cut that leaves a header or a noun phrase
+       is no break */
+    const cut = slCallCut(base, i, i + q.length); return !cut || !slShipOK(cut, draft) || slThin(cut) || slTiny(cut);
   }
   const slBreakFix = (why, base, draft) => slBreakTrue(why, base, draft) ? why : String(why).replace(SL53_BRK, (z, q, tail) => /stays/.test(tail) ? `“${q}” stays: this quick check wasn’t sure the line holds up without it.` : `“${q}”, not cut: this quick check wasn’t sure the line holds up without it.`);
   /* v5.4 (Fable round 3, step 1): reshape safety. A version that reshaped the draft (a plainer word, a beat split, a "?", a colon, a
@@ -5301,6 +5347,8 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       if (ch.length < 2) continue;
       const X = ch[ch.length - 1].trim(), A = ch[ch.length - 2].trim();
       if (!X || !A || /^(?:and|or|but|so|then|plus|nor)\b/i.test(X)) continue;
+      /* v5.5: an aside before the predicate ("the designers I've worked with, including a couple at…, have no formal training") is no item */
+      if (/^\P{L}*(?:including|especially|particularly|such as|except|mostly|even|unlike|apart from|myself|yourself|ourselves)\b/iu.test(A)) continue;
       const xFin = slFinite(X), aFin = slFinite(A);
       if (ch.length === 2 && (SL54_INTRO.test(A) || (!aFin && wordsN(A) <= 2))) continue;
       /* a noun phrase, a verb phrase ("deleted…, spent…, and then had to…"), a clause the series repeats ("I run, I lift, and I…"), or
@@ -5326,6 +5374,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (c(L, /\?/g) > c(D, /\?/g)) return 'a “?” the writer didn’t type';
     if (c(L, SL54_QSLOT) > c(D, SL54_QSLOT)) return 'a plainer word broke its slot';
     if (/^\P{L}*[:;,]/u.test(L) && !/^\P{L}*[:;,]/u.test(D)) return 'opens on punctuation';
+    /* v5.5: a particle a cut left at the front ("[I've been meaning to write this] up for months now"), and a "how" clause whose frame
+       went ("[Let me tell you about the time] we emailed…, and how that one mistake…") */
+    { const w0 = slTokW(L)[0] || ''; if (/^(?:up|out|off|away|down|together|apart|aside)$/.test(w0) && (slTokW(D)[0] || '') !== w0 && rx(`(?<![\\p{L}'’])(?:this|it|that|them|something)\\s+${w0}(?![\\p{L}'’])`, 'iu').test(D)) return 'a particle the cut left at the front'; }
+    { const s1 = slSents(L)[0] || '', k = s1.search(/,\s+and\s+(?:how|why|what)\s/i); if (k > 0 && !/^\P{L}*(?:how|why|what|the|a|an|this|my|our)\b/iu.test(s1) && /\babout\s/i.test(D) && !/\babout\s/i.test(s1.slice(0, k))) return 'a “how” clause lost its frame'; }
     { const nz = z => lcw(z).replace(/[’‘]/g, "'"); for (const s of slSents(L)) { const w = slTokW(s)[0] || ''; if (!w || !slVerbW(w) || /^(?:is|are|was|were|do|does|did|have|has|had|can|could|will|would|should|must|may|might)$/.test(w)) continue; if (rx(`(?<![\\p{L}'])we\\s+(?:all\\s+)?(?:(?:really|honestly|probably|just|definitely|seriously)\\s+)*(?:should|need to|have to|must|gotta|ought to)\\s+(?:(?:really|honestly|probably|just|definitely|seriously|all)\\s+)*${slRxE(w)}(?![\\p{L}'])`, 'u').test(nz(D)) && !rx(`(?<![\\p{L}'])${slRxE(w)}(?![\\p{L}'])`, 'u').test(nz(D).replace(/^\P{L}+/u, '').split(/\s+/)[0] || '')) return 'an order the draft never gave'; } }
     { const beat = z => slSents(z).filter(s => { const w = s.replace(/[^\p{L}\s'’]/gu, ' ').replace(/\s+/g, ' ').trim(); return w && wordsN(w) <= 3 && (rx(SL_CALL_HG.source, SL_CALL_HG.flags.replace('g', '')).test(w) || rx(SL_CALL_ST.source, SL_CALL_ST.flags.replace('g', '')).test(w)) && rx(`^(?:${SL_CALL_HG.source}|${SL_CALL_ST.source})$`, 'iu').test(w); }).length; if (beat(L) < beat(D)) return 'a hedge said as its own beat went'; }
     { const m = L.match(/:\s+([\p{L}\p{N}$#@'’ -]{1,30}?)[.!?]?\s*$/u); if (m && !/:\s/.test(D) && wordsN(m[1]) <= 3 && rx(`(?<![\\p{L}])${slRxE(m[1].trim())}\\s+(?:is|are|was|were|has|have|had|feels?|looks?|seems?)\\b`, 'iu').test(D)) { const head = L.slice(0, m.index).replace(/^\P{L}+/u, ''); if (!/^(?:the|a|an|my|our|your|their|his|her|its|this|that|these|those|one|what|how|why|who|which|every|each|no|most|all|some|[$€£]?\d)\b/i.test(head)) return 'an inversion with no noun to label'; } }
@@ -5367,7 +5419,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (slHardNews(d) && !slHardNews(z)) return false;
     return sl54OK(z, d) && slFragN(z) <= slFragN(t) && slVerblessN(z) <= slVerblessN(t);
   }
-  function slFirstPost(line, draft) {
+  function sl54FirstPost(line, draft) {
     const t = String(line).trim(), d = draft == null ? t : String(draft); if (xLength(t) <= 280) return t;
     const S = slSents(t); let base = '', i = 0;
     for (; i < S.length; i++) { const q = base ? `${base} ${S[i]}` : S[i]; if (xLength(q) > 280) break; base = q; }
@@ -5390,7 +5442,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (L0 !== d && !slStillRun(d, L0) && !SL54_RUNUP.test(L0)) return R;
     const keep = (opts.keep || []).filter(w => typeof w === 'string' && w.trim());
     for (const src of R.state === 'sharp' ? [L0, d] : [d]) {
-      const p = slFirstPost(src, d); if (!p || p === src) continue;
+      const p = sl54FirstPost(src, d); if (!p || p === src) continue;
       /* post 2 is the rest of that line; the draft's words up to where it starts are what post 1 was made from */
       const pb = p.replace(/[.]$/, ''); if (!src.startsWith(pb)) continue;
       /* where post 1's last words sit in the draft: the draft up to there is what post 1 was made from, and the rest of the draft, as
@@ -5424,9 +5476,154 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const sl54Rep = (L, a, b, t) => { const nz = z => lcw(z).replace(/[’‘]/g, "'"), w = nz(t).trim(); if (!w) return false; const n = (nz(L).match(new RegExp(`(?<![\\p{L}\\p{N}'])${slRxE(w)}(?![\\p{L}\\p{N}'])`, 'gu')) || []).length; if (n >= 2) return true; const s = slSents(L).find(x => { const i = L.indexOf(x); return i <= a && i + x.length >= b; }); return !!s && wordsN(s) === wordsN(t); };
   /* the next word after a quantifier swap: a pronoun or a determiner takes "of" ("most of them", "most of my clients") */
   const SL54_DETNX = /^\s+(?:us|them|you|it|my|our|your|his|her|their|its|these|those|this|that|the|whom|which|all)(?![\p{L}\p{N}'’])/iu;
+  /* v5.5 (Fable round 4, H3): a version that reorders the draft (result first, number first, a pointer made) never adds a word the
+     writer didn't type ("what changed:", "Here's how:"), and never puts a sentence ahead of a later "that", "it" or "this" that
+     pointed back at what came before it ("…to 95ms. i didn't expect that"). Such a version gives way to its cut-only edit */
+  const SL55_REORD = /^(?:news|result|payoff|moment|order|lead)$/;
+  const SL55_FNOK = /^(?:is|are|am|was|were|be|not|will|would|have|has|had|do|does|did|can|cannot|shall|should|could|let|here|there|what|how|why|this|that|it|me|my|our|us|i|we|the|a|an|of|to|so|story|process|reasoning|everything|taught|learned|lessons?|thread)$/;
+  const sl55Added = (line, draft) => { const D = new Set(slWords(draft).map(slStemC)), W = slSwapW(); return slWords(line).filter(w => !D.has(slStemC(w)) && (!W.has(w) || /^(?:changed|happened|worked)$/.test(w)) && !SL55_FNOK.test(w)); };
+  const SL55_BACK = /(?<![\p{L}'’])(?:that|this|it)(?=\s*(?:[.!?,…]|$)|\s+(?:coming|surprised|shocked|sounds|sounded|worked|works|happened|helped|mattered|stuck|blew|changed|made|was|is)\b)/iu;
+  function sl55Reord(line, draft, moves) {
+    if (!(moves || []).some(k => SL55_REORD.test(String(k || '')))) return false;
+    if (sl55Added(line, draft).length) return true;
+    return slSents(String(line)).length > 1 && slSents(String(draft)).slice(1).some(s => SL55_BACK.test(s)) && slStNorm(slSents(String(line))[0] || '') !== slStNorm(slSents(String(draft))[0] || '');
+  }
+  /* v5.5 (Fable round 4, H1): a line over 280 opens a thread, and every post in it is whole sentences. One rule, here, for the page
+     and the engine (SHARPEN.firstPost and R.thread):
+     - the posts are the sharpened line's sentences, packed in order, none over 280;
+     - a sentence too long for one post is split at a clause break whose right side is a sentence of its own: "; ", ", but …",
+       ", so …", ", and <subject> …" (the "and" goes), ", and that <subject> …", ", because <subject> …", " — <subject> …"; never inside a
+       quote or a parenthesis, never in a series (sl54Bad), never leaving a side without its verb or ending on a function word;
+     - post 1 carries the point: a post 1 that would be only run-up ("I've been meaning to write this up for months, and I kept putting
+       it off, but…") loses that run-up where the line pivots to its point, and when no thread passes, the line ships whole, with the
+       over-280 note, and its say and why claim no beats a post can't show.
+     R.line is post 1, R.post2 post 2, R.thread every post, R.rest the posts after post 1 (then any lines the draft had after its first),
+     so R.rest === R.post2 on a two-post thread from a one-line draft */
+  const SL55_SUBJ = String.raw`(?:then\s+)?(?:i|we|you|they|he|she|it|my|our|your|their|his|her|its|the|this|that|these|those|there|today|now|everyone|everybody|nobody|no one|someone|most|many|some|people|after|before|by|in|since|within|during|instead|once|when|last|every|each|none|nothing|everything|all)(?![\p{L}\p{N}-])`;
+  const SL55_STARTBAD = /^\P{L}*(?:and|or|nor|which|who|whom|whose|because|cause|cuz|that|than|to|of|for|with)\b/iu;
+  function sl55Whole(z, first, anyLen, made) {
+    const t = String(z).trim(); if (!t || wordsN(t) < 3 || (!anyLen && xLength(t) > 280)) return false;
+    if (!first && SL55_STARTBAD.test(t)) return false;
+    if (!/:\s*$/.test(t) && !slFinite(t)) return false;
+    if (made) { const lw = lcw((t.replace(/[:.!?…"”’)\s]+$/, '').match(/([\p{L}\p{N}'’$%]+)$/u) || ['', ''])[1]).replace(/’/g, "'"); if (SL54_ENDW.test(lw)) return false; }
+    return true;
+  }
+  function sl55Brk(s, low) {
+    const S = String(s), out = [], qs = [...S.matchAll(/["“][^"”]*["”]|\([^)]*\)/g)].map(q => [q.index, q.index + q[0].length]);
+    const re = rx(String.raw`(;\s+)|(,\s+and\s+that\s+)(?=${SL55_SUBJ})|(,\s+and\s+)(?=${SL55_SUBJ})|(,\s+(but|so|yet)\s+)(?=\S)|(,\s+because\s+)(?=${SL55_SUBJ})|(\s+[—–]\s+)(?=${SL55_SUBJ})`, 'giu');
+    for (const m of S.matchAll(re)) {
+      if (qs.some(q => m.index > q[0] && m.index < q[1])) continue;
+      const l0 = S.slice(0, m.index).replace(/[\s,:;—–-]+$/, ''), r0 = S.slice(m.index + m[0].length).trim(); if (!l0 || !r0) continue;
+      const cj = m[5] ? m[5].toLowerCase() : '', r1 = cj ? `${cj} ${r0}` : r0;
+      out.push({ at: m.index, left: /[.!?…]["”’)]*$/.test(l0) ? l0 : `${l0}.`, right: low ? r1 : capFirst(r1), rank: m[1] || cj === 'but' ? 0 : m[3] ? 1 : cj || m[2] ? 2 : 3 });
+    }
+    return out;
+  }
+  /* one sentence into pieces that each fit a post: its latest good break first, a break that leaves a scrap only when nothing else does */
+  function sl55Fit(s, low) {
+    if (xLength(s) <= 280) return [s];
+    const B = sl55Brk(s, low).filter(b => xLength(b.left) <= 280 && sl55Whole(b.left, true, false, true) && sl55Whole(b.right, false, true)).sort((x, y) => (x.rank > 2) - (y.rank > 2) || ((xLength(s) - xLength(x.left) < 40) - (xLength(s) - xLength(y.left) < 40)) || y.at - x.at);
+    for (const b of B) { const r = sl55Fit(b.right, low); if (r) return [b.left, ...r]; }
+    return null;
+  }
+  function sl55Posts(text, draft) {
+    const t = String(text).trim(), d = draft == null ? t : String(draft); if (xLength(t) <= 280) return [t];
+    const low = /^\P{L}*\p{Ll}/u.test(d) && !/[.!?]["”’)]*\s+\p{Lu}/u.test(d);
+    /* the units: sentences, and a header the line made ("…: " before a capital) when its sentence is too long for a post */
+    const U = slSents(t).flatMap(s => { const m = xLength(s) > 280 && s.match(/^([^:"“(]{12,}?:)\s+(?=\p{Lu})/u); return m ? [m[1], s.slice(m[0].length)] : [s]; });
+    const P = []; let cur = '';
+    for (const u of U) {
+      const q = cur ? `${cur} ${u}` : u; if (xLength(q) <= 280) { cur = q; continue; }
+      /* a unit too long for a post of its own may lend its first clause to the post before it, when the rest then fits one post */
+      if (cur && xLength(u) > 280) { const room = 279 - xLength(cur), b = sl55Brk(u, low).filter(x => xLength(x.left) <= room && xLength(x.left) >= 60 && xLength(x.right) <= 280 && sl55Whole(x.left, false, false, true) && sl55Whole(x.right, false)).sort((x, y) => y.at - x.at)[0]; if (b) { P.push(`${cur} ${b.left}`); cur = b.right; continue; } }
+      if (cur) P.push(cur); cur = '';
+      const F = sl55Fit(u, low); if (!F) return null;
+      for (const f of F) { const q2 = cur ? `${cur} ${f}` : f; if (xLength(q2) <= 280) cur = q2; else { P.push(cur); cur = f; } }
+    }
+    if (cur) P.push(cur);
+    return P.every((p, i) => sl55Whole(p, i === 0)) ? P : null;
+  }
+  /* a post 1 that is only run-up: a talk-about with no topic yet, a "been meaning to write this", a "don't usually post" */
+  const SL55_EMPTY = /^\P{L}*(?:(?:so|ok(?:ay)?|honestly|basically|today)[,.]?\s+)*(?:(?:i|we)\s+(?:just\s+)?(?:want|wanted|would like|['’]d like)\s+to\s+(?:talk|write|chat)\s+(?:a (?:little )?bit\s+)?about\s+(?:something|this|a thing|one thing)\b|(?:i|we)(?:['’]ve|\s+have)\s+been\s+(?:wanting|meaning|planning|trying|putting (?:this |it )?off|going back and forth)\b|(?:i|we)\s+(?:don['’]t|do not)\s+(?:usually|normally|often)\s+(?:post|share|write|talk)\b|(?:i|we)\s+(?:almost\s+)?(?:wasn['’]t|was not)\s+(?:going|planning)\s+to\s+(?:post|share|write)\b|(?:i|we)\s+(?:kept|have been|['’]ve been)\s+putting\s+(?:it|this)\s+off\b|(?:i|we)\s+(?:honestly\s+)?(?:wasn['’]t|was not|weren['’]t)\s+sure\s+(?:whether|if|that|anyone|anybody)\b)/iu;
+  const sl55RunOnly = p => SL55_EMPTY.test(String(p)) && !/(?:,|\.)\s+(?:but|so)\s+(?:\S+\s+){5,}/i.test(String(p));
+  /* the run-up of a long line, cut where the line pivots to its point: "I've been meaning to write this up for months, and I kept
+     putting it off because…, but [after the tenth person asked…]"; "I don't usually post things like this. But [I wanted to share that]…" */
+  const SL55_PRE = new RegExp(String.raw`^(\P{L}*)(?:(?:so|ok(?:ay)?|honestly|basically)[,.]?\s+)*(?:(?:i|we)(?:['’]ve|\s+have)\s+been\s+(?:wanting|meaning|planning|trying|putting off|going back and forth on whether)\s+(?:to\s+)?(?:write|writing|share|sharing|post|posting|tell|telling)\s+(?:this|it|about (?:this|it))(?![\p{L}'’])|(?:i|we)\s+(?:don['’]t|do not)\s+(?:usually|normally|often)\s+(?:post|share|write|talk about)(?![\p{L}'’])|(?:i|we)\s+(?:almost\s+)?(?:wasn['’]t|was not)\s+(?:going|planning)\s+to\s+(?:write|share|post)\s+(?:this|it)(?![\p{L}'’])|(?:i|we)\s+(?:kept|have been|['’]ve been)\s+putting\s+(?:it|this)\s+off(?![\p{L}'’])|(?:i|we)\s+(?:honestly\s+)?(?:wasn['’]t|was not|weren['’]t)\s+sure\s+(?:whether|if|that|anyone|anybody)(?![\p{L}'’]))([^.;!?]{0,200}?)(?:,\s+|\.\s+)(?:but|so)\s+(?:(?:i|we)\s+(?:just\s+)?(?:wanted|want)\s+to\s+(?:share|say|let (?:you|everyone) know)\s+(?:that\s+)?)?(?=\S)`, 'iu');
+  function sl55Pre(L, low) {
+    const m = String(L).match(SL55_PRE); if (!m) return null;
+    const mid = m[2] || ''; if (mid.trim() && !/\b(?:sure|know|certain|care|cared|putting (?:it|this) off|nervous|scared|afraid|whether|if (?:i|we) should|ready|time|now|while|ages|weeks|months|years|long|like this|things like|stuff like|here|publicly|online|personal)\b/i.test(mid)) return null;
+    const rest = String(L).slice(m[0].length); if (wordsN(rest) < 6 || !slFinite(rest)) return null;
+    return { text: m[1] + (low ? rest : capFirst(rest)), rest };
+  }
+  /* where a line's words start in the draft (its first four words, in order) */
+  const sl55At = (d, z) => { const w = slToks(z).slice(0, 4).map(x => x.w), dt = slToks(d); if (!w.length) return -1; for (let j = 0; j + w.length <= dt.length; j++) if (w.every((x, q) => dt[j + q].w === x)) return dt[j].a; return -1; };
+  const SL55_LONGW = 'Too long for one post, so it opens a thread: every post starts on a whole sentence and fits in 280.';
+  const sl55Note = n => n <= 2 ? SL54_LONGN : `Long for one post, so it opens a thread. Post 1 is above; the rest becomes posts ${n === 3 ? '2 and 3' : `2 to ${n}`}.`;
+  const SL55_BEATS = /^(?:Split it(?: into (?:two|three|four|five|six|\d+) beats| up)|Gave it an end|Nothing to cut|Tightened it|Kept as written|Nothing cut|Post 1 of a thread)$/;
+  function sl55Long(R, opts) {
+    if (!R || !R.draft || /^(?:empty|thin)$/.test(R.state)) return R;
+    const d = R.draft, L0 = R.state === 'sharp' ? R.line : d; if (xLength(L0) <= 280) return R;
+    const keep = (opts.keep || []).filter(w => typeof w === 'string' && w.trim()), low = /^\P{L}*\p{Ll}/u.test(d) && !/[.!?]["”’)]*\s+\p{Lu}/u.test(d);
+    const pre = sl55Pre(L0, low), HN = !!slHardNews(d), cands = pre ? (HN ? [[L0, 0], [pre.text, 1]] : [[pre.text, 1], [L0, 0]]) : [[L0, 0]];
+    const mk0 = softMarks(d, keep), mv0 = R.state === 'sharp' && (R.moves || []).length ? R.moves : ['soft'], h0 = slHard(L0, d), rest0 = R.rest && String(R.rest).trim() ? String(R.rest).trim() : '';
+    for (const [B, isPre] of cands) {
+      let marks = mk0;
+      if (isPre) { const dm = d.match(SL55_PRE), k = dm ? dm[0].length : sl55At(d, pre.rest), hz = d.match(/^\P{L}*/u)[0].length; if (k <= hz) continue; marks = [...mk0.filter(m => m[1] <= hz || m[0] >= k), [hz, k, 'A run-up to the story. Start on the story itself.', 'throat']].sort((x, y) => x[0] - y[0]); }
+      const one = xLength(B) <= 280, P = one ? [B] : sl55Posts(B, d);
+      if (!P || (!one && P.length < 2) || sl55RunOnly(P[0])) continue;
+      const J = P.join(' '); if (!sl54OK(J, d)) continue;
+      const h = slHard(J, d); if (h && h !== h0) continue;
+      const E = slExplain(d, J, isPre ? ['warm', ...mv0.filter(k => k !== 'warm')] : mv0, marks);
+      if (one) return { ...R, state: 'sharp', line: B, cut: E.cut, move: E.move, moves: E.moves, say: E.say, why: E.why, kept: (R.kept || []).filter(v => B.includes(v)), alts: [], long: xLength(rest0 ? `${B}\n${rest0}` : B) > 280, note: '' };
+      const sp = String(E.say || '').split(' · ').filter(z => z && !SL55_BEATS.test(z)), say = [...sp.slice(0, 2), 'Post 1 of a thread'].join(' · ');
+      const fq = (E.fluff || []).map(c => { const z = c.text.trim().replace(/[,:;.!—-]+$/, ''); return `“${z.length > 36 ? z.slice(0, 34).replace(/\s+\S*$/, '') + '…' : z}”`; });
+      const w0 = fq.length && fq.length <= 3 ? `${slList(fq)} went. It opens a thread: every post starts on a whole sentence.` : fq.length ? 'The fluff went. It opens a thread: every post starts on a whole sentence.' : SL55_LONGW;
+      return { ...R, state: 'sharp', line: P[0], cut: E.cut, move: E.move, moves: E.moves, say, why: w0.length <= 160 ? w0 : SL55_LONGW, kept: (R.kept || []).filter(v => J.includes(v)), alts: [], long: false, note: sl55Note(P.length), post2: P[1], thread: P, rest: [...P.slice(1), rest0].filter(Boolean).join('\n\n') };
+    }
+    /* no thread keeps every post whole: the line ships as it is, and its say and why claim no beats a post can't show */
+    if (R.state !== 'sharp') return { ...R, note: R.note || SL_LONG };
+    const sp = String(R.say || '').split(' · ').filter(z => z && !/^Split it/.test(z));
+    return { ...R, say: sp.length ? sp.join(' · ') : 'Tightened it', why: /\bbeats?\b|full stop|pause/i.test(R.why || '') ? 'Over 280 for one post, and no break here leaves every post a whole sentence, so it stays one post.' : R.why, note: SL_LONG, long: true };
+  }
+  /* SHARPEN.firstPost: the thread's post 1 (the line itself when it fits; '' when no thread keeps every post whole) */
+  function slFirstPost(line, draft) {
+    const t = String(line).trim(), d = draft == null ? t : String(draft); if (xLength(t) <= 280) return t;
+    const P = sl55Posts(t, d); return P && P.length > 1 && !sl55RunOnly(P[0]) ? P[0] : '';
+  }
+  /* v5.5 (Fable round 4, H4/H6): the last read on what ships */
+  const SL55_STQ = /^Kept (?:your )?“((?:i|we)(?:\s+(?:really|honestly|personally|just|still|actually))*\s+(?:think|believe|feel like|reckon|guess|suspect)(?:\s+that)?)”[^.]*\.\s*/iu;
+  const SL55_HESX = /^(?:,?\s+but\s+|[,.]?\s+(?:so\s+)?(?:(?:i['’]m|i am|i['’]ll|i will)\s+(?:just\s+)?(?:going to\s+|gonna\s+)?(?:say|put|write)\s+(?:it|this)(?:\s+(?:straight|plainly|simply))?|here\s+it\s+is|here\s+goes)[:,.]\s+)/iu;
+  function sl55Post(R) {
+    if (!R || typeof R !== 'object' || !R.draft || /^(?:empty|thin)$/.test(R.state)) return R;
+    let O = R; const d = O.draft, L = O.state === 'sharp' ? O.line : d;
+    /* a thread's post 1 is the line as it ships */
+    if (O.state === 'sharp' && Array.isArray(O.thread) && O.thread.length > 1 && O.thread[0] !== O.line) O = { ...O, thread: [O.line, ...O.thread.slice(1)] };
+    /* H4: "Kept “I think”" only where a stance mark sits on those words, never on "how I think about work" */
+    const hasSt = q => [...String(L).matchAll(rx(SL_CALL_ST.source, SL_CALL_ST.flags))].some(m => lcw(m[0]).replace(/’/g, "'").startsWith(lcw(q).replace(/’/g, "'").replace(/\s+that$/, '')));
+    { const m = String(O.why || '').match(SL55_STQ); if (m && !hasSt(m[1])) { const r = O.why.slice(m[0].length).trim(); O = { ...O, why: r || (O.state === 'sharp' ? O.why : HK_WHY_SL.clean) }; } }
+    { const m = String(O.note || '').match(SL55_STQ); if (m && !hasSt(m[1])) O = { ...O, note: O.note.slice(m[0].length).trim() }; }
+    /* H6: a hesitant opener kept as written ("To be honest, I don't really know how to say this, so I'm just going to say it:") is the
+       writer's call: one call mark over it, with the line as it reads without it, never a silent cut. With no hard news in the line,
+       the why says what is true: it is how they chose to say it */
+    if (O.state !== 'sharp' && /^Kept as written\. On news like this\b/.test(O.why || '')) {
+      const he = d.match(SL_HESIT), hard = (() => { let h = SL_HARDN().exec(d); return !!h; })();
+      if (!hard) O = { ...O, why: (O.marks || []).length ? 'Kept as written. Your opener is how you chose to say it. The marked words are your call.' : 'Kept as written. Your opener is how you chose to say it.' };
+      if (he && !(O.calls || []).some(c => c.draftAt && c.draftAt[0] <= he[0].length)) {
+        const a = d.match(/^\P{L}*/u)[0].length; let b = he.index + he[0].length; const x = d.slice(b).match(/^[^,.!?:;—–]{0,40}?(?=[,.!?:;—–]|\s+but\s)/u); if (x) b += x[0].length; const y = d.slice(b).match(SL55_HESX); if (y) b += y[0].length; else { const z = d.slice(b).match(/^[,.:;]\s+/); if (z) b += z[0].length; }
+        const restT = d.slice(b).trim(), cl = /^\P{L}*\p{Ll}/u.test(d) ? restT : capFirst(restT);
+        if (b > a && wordsN(cl) >= 3 && slShipOK(cl, d) && !slThin(cl)) {
+          const text = d.slice(a, b).trim().replace(/[\s,:;—–-]+$/, ''), why = 'Your opener: it’s how you chose to tell it. Tap to cut it if the line stands without it.', e = a + text.length;
+          const marks = [...(O.marks || []).filter(m => m[1] <= a || m[0] >= e), [a, e, why, 'call']].sort((p, q) => p[0] - q[0]), calls = [{ at: [a, e], text, why, line: cl, draftAt: [a, e] }, ...(O.calls || []).filter(c => !c.draftAt || c.draftAt[0] >= e)];
+          O = { ...O, marks, calls, say: slCallSay('Kept as written', calls.length) };
+        }
+      }
+    }
+    return O;
+  }
   /* v5.4 (step 3): the one rule's cut where it is safe. When cutting a stance or a hedge on a plain view was refused (the line came
      back unsharpened, or with less cut), the v5.3 reading ships: the word stays, as the writer's call */
-  function sharpenLine(text, opts = {}) {
+  function sharpenLine(text, opts = {}) { return sl55Post(sl54Pick(text, opts)); }
+  function sl54Pick(text, opts = {}) {
     const R4 = sl54Line(text, opts); if (SL54_OLD || !R4 || typeof R4 !== 'object' || !R4.draft || /^(?:empty|thin)$/.test(R4.state)) return R4;
     /* the v5.3 reading runs only where the v5.4 rule changed what is kept, and its cut did not go through: the line came back
        unsharpened, or still carries a word the rule let go */
@@ -5451,7 +5648,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       if (!sl54OK(R.line, R.draft)) R = sl54Fallback(R, alts, opts);
       else if (alts.length !== (R.alts || []).length) R = { ...R, alts };
     }
-    R = sl54Long(R, opts);
+    /* v5.5 (Fable round 4, H3): a reorder that adds words or moves a sentence ahead of a later "that"/"it" that pointed back gives way
+       to its cut-only edit (sl54Fallback), else to an alt that is neither */
+    if (R.state === 'sharp' && R.draft) { const ok = v => v && v.line && !sl55Reord(v.line, R.draft, v.moves && v.moves.length ? v.moves : [v.move]); const alts = (R.alts || []).filter(ok); if (!ok(R)) R = sl54Fallback(R, alts, opts); else if (alts.length !== (R.alts || []).length) R = { ...R, alts }; }
+    R = sl55Long(R, opts);
     /* v5.3 (Fable H9, g-14/16/20/22): a lowercase line the writer left without an end stop gets none: the voice is theirs */
     if (R.state === 'sharp' && R.draft && /^\P{L}*\p{Ll}/u.test(R.draft) && !/[.!?…]["”’)]*\s*$/.test(R.draft)) {
       const nd = l => typeof l === 'string' && /[^.\s]\.$/.test(l) ? l.slice(0, -1) : l;
@@ -5741,7 +5941,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const SL_HN_WHO = String.raw`(?:dad|father|mom|mother|mum|son|daughter|brother|sister|wife|husband|partner|fianc[eé]e?|baby|child|kid|friend|grand\w+|uncle|aunt|cousin|niece|nephew|dog|cat|pet|puppy|kitten|horse|mentor|co-?founder|colleague|coworker|co-worker|boss|teacher|neighbou?r|family|parent|grandpa|grandma)s?`;
   const SL_HN_LIFE = new RegExp(String.raw`\b(?:(?:my|our|his|her|their|a|the)\s+(?:[\w'’-]+\s+){0,2}${SL_HN_WHO}\b|(?<![\w'’])(?:he|she)\b)[^.!?;]{0,60}?\b(?:died|dying|is dead|was dead|passed(?= (?:away|on|last|this|yesterday|today|peacefully|in (?:his|her|their) sleep)\b|\s*[.!,]|$))|\bdeath of (?:my|our|his|her|their|a)\s+(?:[\w'’-]+\s+){0,2}${SL_HN_WHO}\b|\bi (?:almost|nearly) died\b`, 'i');
   const SL_HARDN = () => ({ exec: d => { const a = SL_HARDN_RE.exec(d), b = SL_HN_LIFE.exec(d); return !a ? b : !b ? a : a.index <= b.index ? a : b; } });
-  const SL_HESIT = /^\P{L}*(?:(?:i['’]m|i am) not (?:really |quite |even |totally )?sure how to (?:say|put|write|share|start) (?:this|it)|i (?:don['’]t|do not) (?:really |even )?know how to (?:say|put|write|share|start) (?:this|it)|(?:this|it)(?:['’]s| is) (?:really |so |very |incredibly |not )?(?:hard|difficult|tough|painful|easy) (?:for me )?to (?:write|share|post|say|put into words)(?: this)?|i never thought i['’]d (?:be )?(?:say|writ|post|shar)\w*(?: this)?|i['’]ve been (?:putting (?:this|it) off|dreading (?:this|writing this|this post))|there['’]s no easy way to (?:say|put|share) (?:this|it))/iu;
+  const SL_HESIT = /^\P{L}*(?:(?:to be (?:honest|real)|honestly|ok(?:ay)?|so|look),?\s+)?(?:(?:i['’]m|i am) not (?:really |quite |even |totally )?sure how to (?:say|put|write|share|start) (?:this|it)|i (?:don['’]t|do not) (?:really |even )?know how to (?:say|put|write|share|start) (?:this|it)|(?:this|it)(?:['’]s| is) (?:really |so |very |incredibly |not )?(?:hard|difficult|tough|painful|easy) (?:for me )?to (?:write|share|post|say|put into words)(?: this)?|i never thought i['’]d (?:be )?(?:say|writ|post|shar)\w*(?: this)?|i['’]ve been (?:putting (?:this|it) off|dreading (?:this|writing this|this post))|there['’]s no easy way to (?:say|put|share) (?:this|it))/iu;
   function slHardNews(text) {
     const d = String(text), hz = d.match(/^\P{L}*/u)[0].length, he = d.match(SL_HESIT); let h = SL_HARDN().exec(d);
     /* v5.3 (Fable g-35): a hard word in a question about other people ("Why do so many founders think a co-founder breakup is less
@@ -5749,7 +5949,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (h) { const a = Math.max(0, ...[...d.slice(0, h.index).matchAll(/[.!?]+["”’)]*\s+/g)].map(m => m.index + m[0].length)), e0 = d.slice(h.index).search(/[.!?]/), s = d.slice(a, e0 < 0 ? d.length : h.index + e0 + 1); if (/\?\s*$/.test(s) && !/(?<![\p{L}'’])(?:i|me|my|mine|we|us|our|ours)(?![\p{L}])|\b(?:i|we)['’](?:m|ve|d|ll|re)\b/iu.test(s)) h = null; }
     if (!h && !he) return null;
     const cut = at => { let b = 0; for (const m of d.matchAll(/(?:[.!?]+["”’)]*\s+|,\s+(?:but|and|so)\s+|\s+but\s+|[:;]\s+|\s[—–]\s+)/g)) { const e = m.index + m[0].length; if (e <= at) b = e; } return b; };
-    if (he && (!h || h.index > he.index + he[0].length)) { const m = d.slice(he.index + he[0].length).match(/^[^,.!?:;—–]*?(?:,\s+(?:but|and|so)\s+|[,.!?:;]+\s+|\s[—–]\s+)/); return { frame: m ? d.slice(0, he.index + he[0].length + m[0].length) : d.slice(0, he.index + he[0].length), hz }; }
+    if (he && (!h || h.index > he.index + he[0].length)) { const m = d.slice(he.index + he[0].length).match(/^[^,.!?:;—–]*?(?:,\s+(?:but|and|so)\s+|[,.!?:;]+\s+|\s[—–]\s+)/); let f = m ? d.slice(0, he.index + he[0].length + m[0].length) : d.slice(0, he.index + he[0].length); const x = d.slice(f.length).match(/^(?:(?:so\s+)?(?:i['’]m|i am|i['’]ll|i will)\s+(?:just\s+)?(?:going to\s+|gonna\s+)?(?:say|put|write)\s+(?:it|this)(?:\s+(?:straight|plainly|simply))?|here\s+it\s+is|here\s+goes)[:,.]\s+/iu); if (x) f += x[0]; return { frame: f, hz }; }
     return { frame: d.slice(0, cut(h.index)), hz };
   }
   /* a warm-up word in front of the framing ("So this is a little personal, but…") may still go; the framing itself may not */
@@ -5811,7 +6011,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const vm = draft.match(HK_VOICE), body = vm ? draft.slice(vm[0].length) : draft;
     return !body.trim() || slThin(body) || slTiny(body) || slSents(body).every(x => SL_DISC1.test(x.replace(/[.!\s]+$/, '')));
   }
-  const SL_BANV = /\b(?<!(?:\$[A-Za-z]{2,10}|\btoken|\bthe|\bnext|\bvesting|\bcliff|\blinear|\bbig)\s)unlock(?:s|ed|ing)?\b(?!\s+(?:schedule|event|date|day|cliff|is|was|hits|happens|next|this)\b)|\b(?:supercharg\w*|seamless\w*|game[- ]?changers?|delv(?:e|es|ed|ing)|ai-powered)\b|\belevat(?:e|es|ing)\b|\belevated\b(?!\s+(?:funding|volatility|vol|rates?|oi|open interest|risk|levels?|readings?|premiums?|spreads?|fees|gas|demand|leverage)\b)(?<!\b(?:funding|volatility|vol|rates?|oi|interest|risk|levels?|premiums?|fees|gas|demand)\s+(?:(?:is|are|was|were|remains?|stays?|looks?|still|now|very|quite|so|pretty|really|already|currently)\s+){0,2}elevated)|(?<!\b(?:on|with|of|using|no|max|high|low|more|less|\d+x)\s)\bleverag(?:e|es|ed|ing) (?:your|our|their|the|this|that|it|them|ai|data|my)\b/gi;
+  const SL_BANV = /\b(?<!(?:\$[A-Za-z]{2,10}|\btoken|\bthe|\bnext|\bvesting|\bcliff|\blinear|\bbig)\s)unlock(?:s|ed|ing)?\b(?!\s+(?:schedule|event|date|day|cliff|is|was|hits|happens|next|this)\b)|\b(?:supercharg\w*|game[- ]?changers?|delv(?:e|es|ed|ing))\b|\belevat(?:e|es|ing)\b|\belevated\b(?!\s+(?:funding|volatility|vol|rates?|oi|open interest|risk|levels?|readings?|premiums?|spreads?|fees|gas|demand|leverage)\b)(?<!\b(?:funding|volatility|vol|rates?|oi|interest|risk|levels?|premiums?|fees|gas|demand)\s+(?:(?:is|are|was|were|remains?|stays?|looks?|still|now|very|quite|so|pretty|really|already|currently)\s+){0,2}elevated)|(?<!\b(?:on|with|of|using|no|max|high|low|more|less|\d+x)\s)\bleverag(?:e|es|ed|ing) (?:your|our|their|the|this|that|it|them|ai|data|my)\b/gi;
   const SL_AIW = /(?<![\p{L}\p{N}])(?:unlock(?:s|ed|ing)?|supercharg(?:e|es|ed|ing)|elevat(?:e|es|ed|ing)|seamless(?:ly)?|game[- ]?changers?|delv(?:e|es|ed|ing)|ai[- ]powered)(?![\p{L}\p{N}])/iu;
   /* "leverage" the verb ("leverage your network", "we leveraged AI"), never the noun ("50x leverage") or a trader's "leveraged long" */
   const SL_LEVV = /\b(?:to|can|will|we|you|i|they|should|must|could|would|let['’]s|and|or)\s+leverage\b|\bleverag(?:e|es|ed|ing)\s+(?:our|your|their|the|this|that|these|those|it|them|my|his|her|its|ai|data|every|existing)\b|\bleveraging\b/i;
@@ -5884,7 +6084,11 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const gone = /\b(?:went|goes|gone|cut|cuts|dropped|drops|removed|out|deleted|trimmed|without)\b/i.test(part.replace(qRe, ' ')), stays = /\b(?:stays?|stayed|kept|keeps?|is still|remains?)\b/i.test(part.replace(qRe, ' ')), first = V53_FIRST.test(part.replace(qRe, ' '));
       /* v5.2 (Fable f-83): a word said to have gone went at least once: "that" went from "TIL that…" while "upset that" stays */
       const qn = (z, q) => (z.match(new RegExp(`(?<![\\p{L}\\p{N}])${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'gu')) || []).length;
-      if (gone && !stays && !qs.every(q => qn(L, q) < qn(D, q) && cuts.some(c => c.includes(q) || q.includes(c)))) return '';
+      /* v5.5 (C5.5 held-out): a quote that spans a kept word ("“I finally did it,” went" when "finally" moved into the news) went
+         when most of its words left the line and the cut list holds every one that did */
+      const cw = cuts.join(' ').match(/[\p{L}\p{N}$%'’]+/gu) || [], LW5 = new Set(L.match(/[\p{L}\p{N}$%'’]+/gu) || []);
+      const span = q => { const ws = q.match(/[\p{L}\p{N}$%'’]+/gu) || [], out = ws.filter(x => !LW5.has(x)); return ws.length >= 2 && out.length * 2 >= ws.length && out.every(x => cw.includes(x)); };
+      if (gone && !stays && !qs.every(q => qn(L, q) < qn(D, q) && (cuts.some(c => c.includes(q) || q.includes(c)) || span(q)))) return '';
       if (stays && !gone && !qs.every(q => L.includes(q))) return '';
       /* v5.2 (Fable f-91, f-101): "first" is said of the quotes beside it, up to a comma: "2.3s leads, the two “No” beats build" */
       if (first && !gone && part.split(/,\s+/).some(sp => { const sq = [...sp.matchAll(qRe)].map(m => m[1] || m[2] || m[3]).flatMap(q => q.split(/…|\.\.\./)).map(norm).filter(Boolean); return sq.length && V53_FIRST.test(sp.replace(qRe, ' ')) && !sq.every(q => head.includes(q.split(' ').slice(0, 3).join(' '))); })) return '';
@@ -5920,25 +6124,38 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* v5.3 (Fable g-63, Claude only: o.correction): in a correction ("X is not really Y, it's actually Z") the "really" is the
      contrast's emphasis, not doubt, so it may go with the "actually" while the "not" stays on its word */
   V3.CORR = /^\S*?(?:not|n['’]t)\s+really\s+[^.!?;,:—–]{1,80}?[,;.:—–]\s*(?:but\s+)?(?:it|they|that|this|he|she)(?:['’]s|['’]re|\s+(?:is|are|was|were))\s/i;
+  /* v5.5 (Fable m-38, H9): "whether or not X" and "whether X or not" say "whether X", and "like it or not" is an idiom: that
+     "not" negates nothing, so it may go, and a line that writes one adds no negation. A reject names the negation that went
+     and the word it negated ("negation "not" of "raising" lost"), never a pronoun or a possessive next to it */
+  const v55OrNot = (D, i, draft) => D[i].w === 'not' && i > 0 && D[i - 1].w === 'or' && ((i > 2 && /^(?:like|love|believe)$/.test(D[i - 3].w) && D[i - 2].w === 'it') || D.slice(Math.max(0, i - 14), i - 1).some(t => t.w === 'whether' && !/[.!?;:]/.test(String(draft).slice(t.i, D[i].i))));
+  const v55NegN = z => negsOf(String(z).replace(/\bwhether\b([^.!?;:]{0,90}?)\bor not\b/gi, 'whether$1').replace(/\b(?:like|love|believe) it or not\b/gi, ' '));
+  const V55_NHEAD = new Set('i me my we us our you your they them their he him his she her it its the a an to be this that these those'.split(' '));
+  const v55Head = (D, j) => { for (let k = j; k < Math.min(D.length, j + 4); k++) if (!V55_NHEAD.has(D[k].w) && !V3.NSKIP.has(D[k].w) && !V3.NEG.test(D[k].w)) return D[k].w; return D[j] ? D[j].w : ''; };
+  /* v5.5 (Fable m-44): a correction of what people believe ("Most people think X, but that's not really true") is a correction
+     too: its "really" is the emphasis and may go; the "not" stays */
+  V3.CORR2 = /^(?:not|n['’]t)\s+really\s+(?:true|the case|right|correct|accurate|how (?:it|this|that) works|necessary|needed|required)\b/i;
+  V3.BELIEF = /\b(?:people|everyone|everybody|most (?:people|founders|creators|of you)|a lot of (?:people|founders|you)|many(?: people)?|they|you(?:['’]ll)?)(?:\s+(?:who|that))?\s+(?:(?:still|often|usually|always|probably|will)\s+)?(?:think|believe|say|assume|tell you|claim|insist)\b/i;
   function v3NegOK(line, draft, o = {}) {
     const D = v3toks(draft), L = v3toks(line), isNeg = w => V3.NEG.test(w), stem = slStemC;
-    const lineNegHeads = new Set(); L.forEach((t, j) => { if (!isNeg(t.w)) return; if (j && /^(?:not|never)$/.test(t.w) && /^(?:has|have|had|is|are|was|were|do|does|did|can|could|will|would|should)$/.test(L[j - 1].w)) lineNegHeads.add(stem(L[j - 1].w)); for (let k = j + 1; k < Math.min(L.length, j + 6); k++) { if (isNeg(L[k].w)) break; lineNegHeads.add(stem(L[k].w)); } });
-    const lineStems = new Set(L.map(t => stem(t.w)));
+    /* v5.5: a word and its -s form are one head ("matter" / "matters" stem apart: "It doesn't matter" → "It matters" lost its "not") */
+    const stems = w => [stem(w), stem(w.replace(/(?<=[a-z]{3})s$/, ''))];
+    const lineNegHeads = new Set(); L.forEach((t, j) => { if (!isNeg(t.w)) return; if (j && /^(?:not|never)$/.test(t.w) && /^(?:has|have|had|is|are|was|were|do|does|did|can|could|will|would|should)$/.test(L[j - 1].w)) stems(L[j - 1].w).forEach(x => lineNegHeads.add(x)); for (let k = j + 1; k < Math.min(L.length, j + 6); k++) { if (isNeg(L[k].w)) break; stems(L[k].w).forEach(x => lineNegHeads.add(x)); } });
+    const lineStems = new Set(L.flatMap(t => stems(t.w)));
     for (let i = 0; i < D.length; i++) {
-      if (!isNeg(D[i].w)) continue;
+      if (!isNeg(D[i].w) || v55OrNot(D, i, draft)) continue;
       let j = i + 1; while (j < D.length && j < i + 5 && (V3.NSKIP.has(D[j].w) || V3.RESTRICT.has(D[j].w))) j++;
       const head = D[j] ? D[j].w : '';
       if (!head || isNeg(head)) continue;
-      if (!lineStems.has(stem(head))) continue;                 /* the negated phrase was cut whole ("It's no secret that", "Not sure if…") */
+      if (!stems(head).some(x => lineStems.has(x))) continue;   /* the negated phrase was cut whole ("It's no secret that", "Not sure if…") */
       /* v5.2 (Fable f-106): "It's not that minimalism is bad" → "Minimalism isn't bad": the "not" moved onto X's own verb */
-      if (!lineNegHeads.has(stem(head))) { const k = D[i + 1] && D[i + 1].w === 'that' ? L.findIndex(t => stem(t.w) === stem(head)) : -1;
-        if (!(k >= 0 && L.slice(k + 1, k + 4).some((t, n, a) => (/n['’]t$/.test(t.w) && /^(?:is|are|was|were|do|does|did)n/.test(t.w)) || (t.w === 'not' && n && /^(?:is|are|was|were|do|does|did)$/.test(a[n - 1].w))))) return `negation of "${head}" lost`; }
+      if (!stems(head).some(x => lineNegHeads.has(x))) { const k = D[i + 1] && D[i + 1].w === 'that' ? L.findIndex(t => stem(t.w) === stem(head)) : -1;
+        if (!(k >= 0 && L.slice(k + 1, k + 4).some((t, n, a) => (/n['’]t$/.test(t.w) && /^(?:is|are|was|were|do|does|did)n/.test(t.w)) || (t.w === 'not' && n && /^(?:is|are|was|were|do|does|did)$/.test(a[n - 1].w))))) return `negation "${D[i].w}" of "${v55Head(D, j)}" lost`; }
       /* "don't just write" ≠ "don't write"; "didn't really train" ≠ "didn't train"; "I don't think that's really…" is fine */
       const r = D[i + 1] && (V3.RESTRICT.has(D[i + 1].w) || (D[i + 1].w === 'really' && /n['’]t$|^not$|^never$/.test(D[i].w))) ? D[i + 1].w : '';
-      if (r === 'really' && o.correction && V3.CORR.test(String(draft).slice(D[i].i))) continue;
+      if (r === 'really' && o.correction && (V3.CORR.test(String(draft).slice(D[i].i)) || (V3.CORR2.test(String(draft).slice(D[i].i)) && V3.BELIEF.test(String(draft).slice(0, D[i].i))))) continue;
       if (r && !new RegExp(`(?:n['’]t|\\bnot|\\bnever|\\bno)\\s+(?:[\\w'’]+\\s+){0,2}${r}\\b`, 'i').test(lcw(line))) return `"${D[i].w} ${r}" lost`;
     }
-    if (negsOf(line) > negsOf(draft)) return 'negation added';
+    if (v55NegN(line) > v55NegN(draft)) return 'negation added';
     return '';
   }
 
@@ -5970,7 +6187,13 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   }
   /* v5.3 (Fable g-46, Claude only: o.ifDate): a year or month inside an "if" clause sets the advice, it does not date a plan */
   const v53IfDate = z => String(z).replace(/\bif\b[^.;:!?]*/gi, seg => seg.replace(/\b(?:(?:in|by|before|until|during|this|next|come|early|late|mid)[- ])?(?:20\d\d|q[1-4]|january|february|march|april|june|july|august|september|october|november|december)\b/gi, ' '));
-  function v3HedgeOK(line, draft, body, st, o = {}) {
+  /* v5.5 (Fable m-115): a hedge or stance on the post itself ("I've decided that it's probably time to finally tell the full
+     story", "I think I'm finally ready to talk about it") is the run-up's doubt about posting, not doubt about a claim: when
+     that run-up goes, its "probably" and "I think" go with it */
+  const V55_POSTTIME = /\b(?:(?:i|we)\s+(?:(?:really|honestly|kind of|just)\s+)?(?:think|feel like|guess|believe)\s+(?:that\s+)?)?(?:it['’]s|it is|it might be|it may be|it could be|this (?:is|might be|may be))\s+(?:(?:probably|maybe|perhaps|likely|possibly|finally|now|about|high|really|honestly|definitely)\s+)*time\s+(?:(?:i|we)\s+(?:finally\s+)?(?:told|shared|wrote|talked|posted|opened up|came clean)|to\s+(?:(?:finally|actually|really|just|properly|openly|publicly)\s+)*(?:tell|share|write|talk|post|open up|come clean|be honest|say|explain))\b|\b(?:i|we)\s+(?:(?:really|honestly|kind of|just)\s+)?(?:think|feel like|guess|believe)\s+(?:that\s+)?(?:i['’]m|we['’]re|i am|we are)\s+(?:(?:finally|now|really|probably|maybe)\s+)*ready\s+to\s+(?:(?:finally|actually|really|properly|openly)\s+)*(?:tell|share|write|talk|post|open up)\b/gi;
+  const v55PostMeta = z => String(z).replace(rx(V55_POSTTIME.source, 'gi'), m => m.replace(/\b(?:probably|maybe|perhaps|likely|possibly|might|may|could|(?:i|we)\s+(?:(?:really|honestly|kind of|just)\s+)?(?:think|feel like|guess|believe))\b/gi, ' '));
+  function v3HedgeOK(line, draft0, body, st, o = {}) {
+    const draft = v55PostMeta(draft0);
     const LS = v3stems(line), L = lcw(line), cl = v3clauses(draft), need = {}, have = {}, key = h => lcw(h).replace(/['’]/g, "'");
     for (const c of cl) { if (!v3survives(c, LS)) continue; (c.replace(rx(V3.DOUBLE.source, 'gi'), '$1').match(V3.HEDGE) || []).forEach(h => { need[key(h)] = (need[key(h)] || 0) + 1; }); }
     (line.match(V3.HEDGE) || []).forEach(h => { have[key(h)] = (have[key(h)] || 0) + 1; });
@@ -6162,6 +6385,16 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       if (/,/.test(m[1])) { const prev = s.slice(0, m.index).split(/[,.;:!?—–]/).pop(); if (!slFinite(prev)) continue; }
       n++; }
     return n; };
+  /* v5.5 (Fable m-16, H8): no intensifier the writer didn't type. "we need to talk about how weird linkedin has gotten" never
+     becomes "linkedin has gotten so weird"; a "so" counts mid-clause before a word that isn't a clause's start ("got so weird",
+     "so much"), never a "So" or ", so we" that joins clauses */
+  V3.INTENS = /\b(?:really|very|super|totally|extremely|incredibly|absolutely|completely|utterly|insanely|ridiculously|truly|seriously|highly|hugely|massively|wildly|deeply|entirely|unbelievably|crazy|such(?=\s+(?:a|an)\s)|way(?=\s+(?:too|more|less|better|worse|faster|slower|harder|easier|bigger|smaller|over|beyond)\b))\b/gi;
+  V3.SO_INT = /(?<!(?:^|[.!?,;:—–(]|\b(?:and|but|or|because|if|even|just|not|is that|or even))\s*)\bso\s+(?!(?:that|i|we|you|they|he|she|it|its|it['’]s|the|a|an|my|our|your|their|his|her|this|these|those|there|here|if|far|on|what|now|then|to|is|are|was|were|do|does|did|can|could|will|would|should|maybe|yeah|yes|no|not|let['’]s|let|i['’]m|we['’]re|you['’]re|called|forth|long as|as)\b)(?=[a-z])/gi;
+  function v55IntensOK(line, draft) {
+    const t = z => slTally(z, rx(V3.INTENS.source, 'gi')), l = t(line), d = t(draft), w = Object.keys(l).find(k => l[k] > (d[k] || 0));
+    if (w) return `intensifier "${w}" added`;
+    return cnt(lcw(line), rx(V3.SO_INT.source, 'gi')) > cnt(lcw(draft), rx(V3.SO_INT.source, 'gi')) ? 'intensifier "so" added' : '';
+  }
   function v3BrokenOK(line, draft) {
     for (const [re, k] of V3.BREAK) if (cnt(line, rx(re.source, gFlags(re.flags))) > cnt(draft, rx(re.source, gFlags(re.flags)))) return k;
     if (v3AndN(line) > v3AndN(draft)) return 'verbless clause';
@@ -6178,7 +6411,11 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   const v3ToneOK = (line, draft) => cnt(line, rx(V3.TONE.source, 'giu')) < cnt(draft, rx(V3.TONE.source, 'giu')) ? 'tone' : '';
   V3.PTR = /\bhere(?:['’]s| is)\s+(?:exactly\s+)?(?:why|how|what|my reasoning|the story|the breakdown|everything)\b|\bthread\b|[🧵👇⬇↓]|\(\s*\d+\/|\b\d{1,2}\/(?:\d{1,2}|n)?\s*$/iu;
   V3.PTR_LINE = /:\s*$|\bhere(?:['’]s| is| are)\b|[🧵👇⬇↓]|\bthread\b|\(\s*\d+\//iu;
-  const v3PointerOK = (line, draft) => V3.PTR.test(draft) && !V3.PTR.test(line) && !V3.PTR_LINE.test(line) ? 'pointer lost' : '';
+  /* v5.5 (C5.5 held-out): "I've wanted to write this thread for months" is the run-up's, not a pointer: in a clause the line
+     cut whole, "write/post/share this thread" points at nothing the line still promises */
+  V3.PTRMETA = /\b(?:writ(?:e|ing)|wrote|post(?:ing)?|shar(?:e|ing)|start(?:ing)?|put(?:ting)? together)\s+(?:this|a|the|my)\s+thread\b/gi;
+  const v3PointerOK = (line, draft0) => { const LS = v3stems(line), draft = v3clauses(draft0).map(c => v3survives(c, LS) ? c : c.replace(rx(V3.PTRMETA.source, 'gi'), ' ')).join(' ');
+    return V3.PTR.test(draft) && !V3.PTR.test(line) && !V3.PTR_LINE.test(line) ? 'pointer lost' : ''; };
   V3.FRAMEN = /\b(thoughts|take|opinions?|lessons|takeaways|reasons|notes|predictions|questions)\s+(?:on|about|from|for)\s+(?:the\s+|my\s+|our\s+|this\s+|today['’]s\s+)?([\p{L}$][\p{L}\p{N}'’-]+)/iu;
   /* v4.2 (hook41-5): "my honest take on why…" → "Why…": a frame before a wh-word goes whole, leaving a header, not a loose "on" */
   function v3FrameOK(line, draft) { const m = V3.FRAMEN.exec(draft); if (!m || /^(?:why|how|what|whether|when|where|who)$/i.test(m[2])) return ''; if (/^(?:take|thoughts?)$/i.test(m[1]) && SL_TAKE_RU.test(draft)) return ''; const L = lcw(line); return L.includes(lcw(m[2])) && !new RegExp(`\\b${m[1].replace(/s$/, '')}`, 'i').test(L) ? `frame "${m[1]}" lost` : ''; }
@@ -6272,9 +6509,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* the why when neither Claude's nor the engine's is true for this edit: only what the diff shows */
   /* v4.2 (hook41-3): "Same point" only when no stance or hedge word changed; otherwise the words that went are named */
   function v4SafeWhy(draft, line, E) {
-    const fl = ((E && E.fluff) || []).map(c => String(c.text).trim().replace(/[,:;.!—-]+$/, '')).filter(Boolean), d = wordsN(draft) - wordsN(line);
+    const fl = ((E && E.fluff) || []).map(c => String(c.text).trim().replace(/[,:;.!—-]+$/, '')).filter(t => t && !V55_CONJ.test(t)), d = wordsN(draft) - wordsN(line);
     /* v5.4 (Fable k-27): the glue a reshape dropped ("are", "that we") is never named as if it were a phrase that went */
-    const all = ((E && E.cut) || []).filter(c => c.kind !== 'reshape' || (lcw(c.text).replace(/’/g, "'").match(/[\p{L}\p{N}$%']+/gu) || []).some(x => !SL_FNW.has(x) && !V3_STOP.has(x))).map(c => String(c.text).trim().replace(/[,:;.!—-]+$/, '')).filter(t => wordsN(t) >= 1);
+    const all = ((E && E.cut) || []).filter(c => c.kind !== 'reshape' || (lcw(c.text).replace(/’/g, "'").match(/[\p{L}\p{N}$%']+/gu) || []).some(x => !SL_FNW.has(x) && !V3_STOP.has(x))).map(c => String(c.text).trim().replace(/[,:;.!—-]+$/, '')).filter(t => wordsN(t) >= 1 && !V55_CONJ.test(t));
     const q = fl.length && fl.length <= 3 && fl.every(t => [...t].length <= 40) ? slList(fl.map(t => `“${t}”`)) : '';
     const qa = all.length && all.length <= 3 && all.every(t => [...t].length <= 40) ? slList(all.map(t => `“${t}”`)) : '';
     const beats = slSents(line).length > slSents(draft).length ? ' It reads in short beats now.' : '';
@@ -6300,8 +6537,10 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     /* a word that moved is not a word that went: an unmatched draft word the line still has, unmatched, is kept */
     for (let i = 0; i < n; i++) if (!keep[i]) { const k = L.findIndex((w, j) => !used[j] && w === D[i].w); if (k >= 0) { keep[i] = true; used[k] = true; } }
     const shared = i => D.some((t, k) => k !== i && keep[k] && t.a === D[i].a);
-    const runs = []; let a = -1, last = -1; for (let i = 0; i <= n; i++) { const gone = i < n && !keep[i]; if (gone && !shared(i)) { if (a < 0) a = i; last = i; } else if (!gone && a >= 0) { runs.push({ text: String(draft).slice(D[a].a, D[last].b), n: last - a + 1, start: a === 0, end: i === n || D.slice(i).every((t, k) => !keep[i + k]) }); a = -1; } }
-    if (a >= 0) runs.push({ text: String(draft).slice(D[a].a, D[last].b), n: last - a + 1, start: a === 0, end: true });
+    /* v5.5: a run before the first word the line keeps is part of the opening the line cut (its run-up), wherever a stray shared word split it */
+    const k0 = keep.indexOf(true), lead = z => k0 < 0 || z < k0 || (D.slice(0, z).filter((t, k) => keep[k]).length <= 1 && k0 <= 2);
+    const runs = []; let a = -1, last = -1; for (let i = 0; i <= n; i++) { const gone = i < n && !keep[i]; if (gone && !shared(i)) { if (a < 0) a = i; last = i; } else if (!gone && a >= 0) { runs.push({ text: String(draft).slice(D[a].a, D[last].b), n: last - a + 1, start: a === 0, end: i === n || D.slice(i).every((t, k) => !keep[i + k]), lead: lead(last) }); a = -1; } }
+    if (a >= 0) runs.push({ text: String(draft).slice(D[a].a, D[last].b), n: last - a + 1, start: a === 0, end: true, lead: lead(last) });
     return runs;
   }
 
@@ -6324,9 +6563,11 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   function v42Spans(why, draft, line, E) {
     const w = String(why || ''), lw = lcw(w).replace(/’/g, "'"), qs = [...w.matchAll(/“([^”]{1,140})”|"([^"]{1,140})"/g)].map(m => lcw(m[1] || m[2]).replace(/’/g, "'"));
     const generic = V42_GENERIC.test(w), active = /\bactive\b|\bpassive\b/i.test(w);
-    const named = r => { const t = lcw(r.text).replace(/’/g, "'"), tw = t.match(/[\p{L}\p{N}$%']+/gu) || []; return lw.includes(t) || qs.some(q => { const qw = q.match(/[\p{L}\p{N}$%']+/gu) || []; return ((q.includes(t) || t.includes(q)) && qw.length * 5 >= tw.length * 3) || (tw.length && tw.filter(x => qw.includes(x)).length * 5 >= tw.length * 3) || v53Head(tw, qw, line); }) || (generic && (r.start || r.end || r.n <= 8)) || (active && /\b(?:was|were|is|are|been|being)\b[^,.;]*\bby\b/i.test(r.text)); };
+    /* v5.5 (C5.5 held-out): a quote that trails off ("“Not sure if anyone is actually interested…” went") names the whole run it opens */
+    const ell = [...w.matchAll(/“([^”]{1,140}?)(?:…|\.\.\.)”/g)].map(m => lcw(m[1]).replace(/’/g, "'").trim()).filter(q => wordsN(q) >= 3);
+    const named = r => { const t = lcw(r.text).replace(/’/g, "'"), tw = t.match(/[\p{L}\p{N}$%']+/gu) || []; return r.ell || lw.includes(t) || qs.some(q => { const qw = q.match(/[\p{L}\p{N}$%']+/gu) || []; return ((q.includes(t) || t.includes(q)) && qw.length * 5 >= tw.length * 3) || (tw.length && tw.filter(x => qw.includes(x)).length * 5 >= tw.length * 3) || v53Head(tw, qw, line); }) || (generic && (r.start || r.lead || r.end || r.n <= 8)) || (active && /\b(?:was|were|is|are|been|being)\b[^,.;]*\bby\b/i.test(r.text)); };
     /* a run is read piece by piece at its commas: "hope you're all having a great week, wanted to share a" is the well-wishing and the quoted "wanted to share" */
-    const pieces = slGone(draft, line).flatMap(r => { const ps = r.text.split(/(?<=[,;:])\s+/); if (ps.length < 2) return [r]; let at = 0; return ps.map((t, k) => ({ text: t, n: wordsN(t), start: r.start && k === 0, end: r.end && k === ps.length - 1, at: at++ })); });
+    const pieces = slGone(draft, line).map(r => ({ ...r, ell: ell.some(q => lcw(r.text).replace(/’/g, "'").startsWith(q)) })).flatMap(r => { const ps = r.text.split(/(?<=[,;:])\s+/); if (ps.length < 2) return [r]; let at = 0; return ps.map((t, k) => ({ text: t, n: wordsN(t), start: r.start && k === 0, end: r.end && k === ps.length - 1, lead: r.lead, at: at++, ell: r.ell })); });
     /* v5.2 (Fable f-83): a padding word that went is named too, alone or in a pair ("genuinely", "honestly just") */
     const pad = r => r.n <= 2 && /^(?:(?:honestly|genuinely|basically|literally|actually|really|truly|totally|seriously|just|tbh|ngl|lowkey|definitely|absolutely|kind of|sort of|kinda|sorta)[,.!]*\s*){1,2}$/i.test(r.text.trim());
     const qW = new Set(qs.flatMap(q => q.match(/[\p{L}\p{N}$%']+/gu) || [])), padN = r => (lcw(r.text).replace(/’/g, "'").match(/[\p{L}\p{N}$%']+/gu) || []).every(x => qW.has(x));
@@ -6357,7 +6598,9 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     if (more.length <= 140) return more;
     /* v5.3 (round-1 f-45): a span listed inside a longer one ("I believe" in "I really believe that") is said once */
     const qo = [...new Set([...w.matchAll(/“([^”]{1,60})”/g)].map(m => m[1]).filter(q => !lcw(line).includes(lcw(q))))], allQ = `${slList(v53Dedupe([...qo, ...big.filter(t => !qo.some(q => lcw(t).includes(lcw(q))))]).map(t => `“${t}”`))} went.`;
-    return allQ.length <= 140 ? allQ : add.length <= 140 ? add : w;
+    /* v5.5: never a lone "“X” went too." in place of the why it was meant to follow: the count goes after the why instead */
+    const nb = big.reduce((x, t) => x + wordsN(t), 0), cnt5 = `${w.replace(/\s+$/, '')} ${nb} more words went too.`;
+    return allQ.length <= 140 ? allQ : cnt5.length <= 140 && !/\b(?:small|more) words\b/.test(w) ? cnt5 : w;
   }
 
   /* "Already sharp" belongs to a line that is a hook as it stands; a why that goes on to say what would make it one is "Nothing to cut" */
@@ -6378,7 +6621,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
      ("I might be wrong", "I could be wrong") is never one to drop: a line without it is bare */
   V3.SOFTH = /\b(?:kind of|sort of|kinda|sorta|a (?:little )?bit|a little|somewhat|slightly|fairly|pretty|mostly|largely|partly|usually|often|generally|typically|sometimes|rarely|tends? to|tended to)\b|\b(?:not|never|don['’]t|doesn['’]t|isn['’]t|aren['’]t|wasn['’]t|didn['’]t)\s+really\b/gi;
   V3.DOUBT = /\b(?:i|we)\s+(?:might|could|may)\s+(?:(?:well|easily|totally|very well)\s+)?be\s+wrong\b|\bcorrect me if i['’]m wrong\b/gi;
-  const v41Bare = (draft, line) => { const LS = v3stems(line), dn = z => cnt(z, rx(V3.DOUBT.source, 'gi')); if (dn(line) < dn(draft)) return true; return v41EpiN(line) + cnt(line, rx(V3.SOFTH.source, 'gi')) < slSents(draft).filter(s => v41EpiN(s) && v3survives(s.replace(rx(V3.EPI.source, 'gi'), ' '), LS)).length; };
+  const v41Bare = (draft0, line) => { const draft = v55PostMeta(draft0), LS = v3stems(line), dn = z => cnt(z, rx(V3.DOUBT.source, 'gi')); if (dn(line) < dn(draft)) return true; return v41EpiN(line) + cnt(line, rx(V3.SOFTH.source, 'gi')) < slSents(draft).filter(s => v41EpiN(s) && v3survives(s.replace(rx(V3.EPI.source, 'gi'), ' '), LS)).length; };
   /* ---------------- r86 v5.2: the Claude path after the Fable 5.2 juror (pass C5.2) ----------------
      A stacked opinion frame (f-14, f-25, f-29, f-90, f-94, f-100, f-61): "I think", "I feel like", "in my experience", "I'm
      starting to suspect" or "do you think" in a clause that has another hedge (a modal, a degree or scope word, "tend to", a
@@ -6504,19 +6747,74 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const head = z => (String(z).replace(/^[^\p{L}\p{N}$€£~]+/u, '').replace(/^(?:a|an|the)\s+(?=[~$€£]?\d)/i, '').match(/^\S+/) || [''])[0], fig = z => /^[~$€£]?\d/.test(head(z));
     const numLead = fig(line) && !fig(draft) && slDigitRuns(head(line)).every(x => slDigitRuns(draft).includes(x));
     if (!numLead) { parts = parts.filter(p => p !== 'Number first'); moves = moves.filter(k => k !== 'number'); if (move === 'number') move = moves[0] || 'tight'; }
+    /* v5.5 (C5.5 held-out): "Led with the ticker" only for a line that now opens on a ticker ("$ETH", "BTC"), never on "AI" */
+    const tick = z => { const t = head(z).replace(/[^\p{L}\p{N}$]+$/u, ''); return /^\$[A-Za-z]{2,10}$/.test(t) || SL_TICKW.test(t); };
+    if (!(tick(line) && !tick(draft))) { parts = parts.filter(p => p !== 'Led with the ticker'); moves = moves.filter(k => k !== 'ticker'); if (move === 'ticker') move = moves[0] || 'tight'; }
     const si = parts.findIndex(p => /^Split it (?:into \w+ beats|up)$/.test(p));
     if (si >= 0) { const nb = v53Beats(v53Body(line)), all = v53Beats(line), n = v53Counts(w).find(x => x === nb || x === all) || nb; parts[si] = n === 2 ? 'Split it into two beats' : n === 3 ? 'Split it into three beats' : 'Split it up'; }
     const ci = parts.findIndex(p => /^Cut \d+ bits? of fluff$/.test(p));
     if (ci >= 0) {
-      const n = +parts[ci].match(/\d+/)[0], qs = v53Quotes(w), lab = x => `Cut ${x} bit${x === 1 ? '' : 's'} of fluff`;
-      const un = [...new Set((E.cut || []).filter(c => c.kind !== 'reshape').map(c => String(c.text).trim().replace(/^[,;:—–-]+\s*|[,:;.!?—–-]+$/g, '').trim()).filter(t => t && !qs.some(q => q.includes(lcw(t)) || lcw(t).includes(q))))];
-      if (un.length && v53Gone(w, draft, line) && !V42_GENERIC.test(w)) { const more = v53Too(w, un); if (more.length <= 140) w = more; }
+      const qs = v53Quotes(w), lab = x => `Cut ${x} bit${x === 1 ? '' : 's'} of fluff`;
+      /* v5.5 (Fable m-8, m-115, H10): a cut that is only a conjunction (", but" before "But") is no bit of fluff, and a frame said
+         in other words ("Just a reminder that" → "Reminder:") was reworded, not cut */
+      const items = [...new Set((E.cut || []).filter(c => c.kind !== 'reshape').map(c => String(c.text).trim().replace(/^[,;:—–-]+\s*|[,:;.!?—–-]+$/g, '').trim()).filter(t => t && !V55_CONJ.test(t) && !v55Reword(t, line)))];
+      const un = items.filter(t => !qs.some(q => q.includes(lcw(t)) || lcw(t).includes(q))), generic = V42_GENERIC.test(w);
+      if (un.length && v53Gone(w, draft, line) && !generic) { const more = v53Too(w, un); if (more.length <= 140) w = more; }
       /* the count is the spans the why names as gone, when it names any; else what the diff struck */
       /* v5.4 (Fable k-92): and never more than the runs the diff really took out */
-      const k = Math.min(v53Gone(w, draft, line), slGone(draft, line).reduce((x, r) => x + r.n, 0)); parts[ci] = lab(k || n);
+      /* v5.5 (Fable m-116, H10): beside a catch-all ("and padding went", "the run-up went"), the cuts it covers count too */
+      const qg = v53Gone(w, draft, line), k = Math.min(generic ? qg + un.filter(t => !v53Quotes(w).some(q => q.includes(lcw(t)) || lcw(t).includes(q))).length : qg || items.length, slGone(draft, line).reduce((x, r) => x + r.n, 0));
+      if (k) parts[ci] = lab(k); else parts.splice(ci, 1);
     }
     if (!parts.length) parts.push(wordsN(line) < wordsN(draft) ? 'Tightened it' : 'Reworded it');
     return { say: [...new Set(parts)].join(' · '), why: w, move, moves: moves.length ? moves : ['tight'] };
+  }
+  /* v5.5 (H10): a "cut" that is only a conjunction or punctuation; a cut span whose own words the line still says, elsewhere */
+  const V55_CONJ = /^\s*(?:[,;:—–-]+\s*(?:and|but|or|so|yet|then|because|nor|plus)?|(?:and|but|or|yet|nor|plus))[\s,;:.!?—–-]*$/i;
+  const v55Reword = (t, line) => { const c = v3content(t); if (!c.length) return false; const LS = v3stems(line); return c.filter(w => LS.has(slStemC(w))).length * 2 >= c.length; };
+  /* a why that quotes a conjunction as a thing that went ("“, but” … went") */
+  /* a quote cut off inside a bracket ("“I finally quit my job today (I know”") */
+  const v55OddQuote = w => v53Quotes(w).some(q => (q.match(/\(/g) || []).length !== (q.match(/\)/g) || []).length);
+  const v55ConjWhy = w => v54Parts(w).some(p => /\b(?:went|gone|cut|dropped|removed|trimmed)\b/i.test(p.replace(rx(V53_Q.source, 'g'), ' ')) && v53Quotes(p).some(q => V55_CONJ.test(q)));
+  /* v5.5 (Fable m-65, H10): a why never opens on a label for the version ("The light edit:", "The bare claim:"): an alt written
+     beside version 1 can ship first, and the label means nothing to the writer */
+  const V55_LABELW = /^\s*(?:the\s+)?(?:light(?:er)?\s+edit|bare\s+claim|plain\s+claim|claim\s+alone|news\s+alone|fact\s+alone|restructure|reorder|stronger\s+(?:edit|version)|safer\s+(?:edit|version)|alt(?:ernative)?|version\s+\d|v\d|option\s+\d)\b\s*(?:[:;,.—–-]\s*|$)/i;
+  const v55Unlabel = w => { const z = String(w || ''), m = z.match(V55_LABELW); if (!m) return z; const r = z.slice(m[0].length).trim(); return r ? r[0].toUpperCase() + r.slice(1) : ''; };
+  /* v5.5 (Fable m-91, m-46, H7): what the writer chose to say. The draft's sentences (when it has two or more) and its
+     parentheticals, each with the content words it carries. A sentence that only announces the next one or tags the line may
+     still go, and so may a thread pointer */
+  const V55_META = /^(?:(?:ok(?:ay)?|so|well|alright|anyway)[,!.]?\s+)*(?:i (?:have|got) (?:some |big |a bit of |personal )?news|(?:(?:some|big|exciting|personal|huge|quick|great|happy|sad|small)\s+){0,2}(?:news|announcement|update)(?: time| alert)?|let['’]s talk(?: about [^.!?]{1,40})?|we need to talk|(?:a )?long post(?: incoming)?|story time|buckle up|this is (?:a |going to be a )?long one|(?:a |quick )?thread|quick (?:update|story|thought)|hear me out|real talk|i need to (?:vent|rant)(?: about [^.!?]{1,30})?|nobody (?:tells|told) you (?:that|this)|(?:no one|nobody) talks about (?:this|it)|(?:i|we) put together a list|this week['’]s (?:newsletter|issue|episode|post) is (?:a (?:little|bit) )?different|that['’]s (?:it|all)|you['’]ve been warned|just saying)$/i;
+  function v55Units(d) {
+    const s = String(d), out = [], ss = slSents(s); let at = 0;
+    if (ss.length > 1) for (const x of ss) { const i = s.indexOf(x, at); if (i < 0) continue; at = i + x.length; if (wordsN(x) >= 2) out.push({ a: i, b: i + x.length, text: x.trim(), paren: false }); }
+    for (const m of s.matchAll(/\([^()]{2,200}\)/g)) out.push({ a: m.index, b: m.index + m[0].length, text: m[0], paren: true });
+    return out.filter(u => !V55_META.test(u.text.replace(/^\(|\)$/g, '').replace(/[.!?…]+$/, '').trim()) && !V3.PTR.test(u.text) && !/^\W*here(?:['’]s| is| are)\b/i.test(u.text) && v3content(u.text).length);
+  }
+  /* v5.5 (Fable m-105, m-8, H8): the Claude path is never behind the engine on plain filler. A "basically" or "literally" the
+     engine marks as filler, or one word of a stacked pair the draft has ("actually totally", "really truly", "really really"; never "just", a restrictor),
+     that Claude's line still says goes from it too, when what is left passes every check. Of a pair, the word the engine marks
+     goes (else the first; of a doubled word, the second) */
+  const V55_STACKW = 'actually|totally|really|truly|genuinely|honestly|literally|basically|absolutely|completely|super|very|extremely|seriously|definitely|incredibly';
+  function v55TopUp(draft, line, keep) {
+    const L = String(line), d = String(draft), dm = softMarks(d, keep), esc = z => z.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    for (const m of dm) {
+      if (m[3] !== 'filler') continue; const w = lcw(d.slice(m[0], m[1])).trim(); if (!/^(?:basically|literally)$/.test(w) || (keep || []).some(k => lcw(k) === w)) continue;
+      const nx = (d.slice(m[1]).match(/^\s+([\p{L}'’]+)/u) || [])[1]; if (!nx) continue;
+      /* an approximator before a number, a quantity or an absolute stays ("basically only 3", "basically zero", "basically no clients"); "basically no idea" is filler */
+      if (/^\s+(?:only|just|about|around|almost|nearly|zero|nothing|none|nobody|no one|all|every\w*|always|never|half|free|[$€£~]?\d|no\s+(?!(?:idea|clue|interest|sense)\b))/i.test(d.slice(m[1]))) continue;
+      /* or an absolute a few words on ("basically teaching me everything", "basically rewrote our entire API") */
+      if (/^\s+(?:[\p{L}'’]+\s+){0,3}?(?:everything|everyone|everybody|all|every|entire|whole|nothing|nobody|always|never|zero|completely|fully)\b/iu.test(d.slice(m[1]))) continue;
+      const re = new RegExp(`(?<![\\p{L}\\p{N}'’])${w}\\s+(?=${esc(nx)}(?![\\p{L}]))`, 'iu'), h = re.exec(L); if (!h) continue;
+      const rest = L.slice(h.index + h[0].length), cap = /^\p{Lu}/u.test(h[0]) ? rest.charAt(0).toUpperCase() + rest.slice(1) : rest; return L.slice(0, h.index) + cap;
+    }
+    for (const m of L.matchAll(new RegExp(`(?<![\\p{L}\\p{N}'’])(${V55_STACKW})\\s+(${V55_STACKW})(?![\\p{L}\\p{N}'’])`, 'giu'))) {
+      const a = lcw(m[1]), b = lcw(m[2]), at = lcw(d).search(new RegExp(`(?<![\\p{L}\\p{N}'’])${a}\\s+${b}(?![\\p{L}\\p{N}'’])`, 'u')); if (at < 0 || (keep || []).some(k => [a, b].includes(lcw(k)))) continue;
+      const mk = k => dm.some(x => /^(?:filler|intens|honest)$/.test(x[3]) && lcw(d.slice(x[0], x[1])).trim() === k && x[0] >= at && x[0] <= at + a.length + b.length + 2);
+      const second = a === b || (mk(b) && !mk(a));
+      if (second) return L.slice(0, m.index + m[1].length) + L.slice(m.index + m[0].length);
+      const rest = L.slice(m.index + m[1].length).replace(/^\s+/, ''); return L.slice(0, m.index) + (/^\p{Lu}/u.test(m[1]) ? rest.charAt(0).toUpperCase() + rest.slice(1) : rest);
+    }
+    return '';
   }
   function fromClaudeV3(text, data, opts = {}) {
     const trace = opts.trace && typeof opts.trace === 'object' ? opts.trace : {};
@@ -6535,7 +6833,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const vm = draft.match(HK_VOICE), body = vm ? draft.slice(vm[0].length) : draft;
       const marks = softMarks(draft, keep), facts = slFacts(draft, marks), kept = facts.filter(f => !f.link && slKeepW(f.v)).map(f => f.v);
       /* v5.3 (g-46): a date inside an "if" clause sets the advice; it doesn't make the stance before it a plan's */
-      const st = stanceKeep(v53IfDate(body)).filter(w => !keep.some(k => k.toLowerCase() === w.toLowerCase())), call = isCall(body);
+      const st = stanceKeep(v53IfDate(v55PostMeta(body))).filter(w => !keep.some(k => k.toLowerCase() === w.toLowerCase())), call = isCall(body);
       const longOf = l => xLength(rest.trim() ? `${l}\n${rest}` : l) > 280;
       /* v4.1 (hook4-5): "on a plan or a forecast" only when the sentence the stance sits in looks ahead */
       const stOf = k => slSents(body).find(s => lcw(s).includes(lcw(k))) || body;
@@ -6570,7 +6868,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
         line = line.replace(new RegExp(`(${SL_URL.source})\\.$`, 'iu'), '$1');
         /* v5.2 (Fable f-50): a pile of 3+ hashtags at the end may be trimmed to one or two of the writer's own; every other fact stays */
         const dropT = v52Tags(draft, line), fx = dropT.length ? facts.filter(f => !dropT.includes(f.v)) : facts;
-        for (const f of [() => v3NumOK(line, draft, fx, V3.C53), () => v3NegOK(line, draft, V3.C53), () => v3HedgeOK(line, draft, body, st, V3.C53), () => v3DegreeOK(line, draft, marks), () => v3FutureOK(line, draft, V3.C53), () => v3ClaimOK(line, draft), () => v41ScopeOK(line, draft),
+        for (const f of [() => v3NumOK(line, draft, fx, V3.C53), () => v3NegOK(line, draft, V3.C53), () => v55IntensOK(line, draft), () => v3HedgeOK(line, draft, body, st, V3.C53), () => v3DegreeOK(line, draft, marks), () => v3FutureOK(line, draft, V3.C53), () => v3ClaimOK(line, draft), () => v41ScopeOK(line, draft),
           () => (aiN(line) > aiN(draft) ? 'banned word' : ''), () => (keep.every(k => !lcw(draft).includes(lcw(k)) || lcw(line).includes(lcw(k))) ? '' : 'put-back'), () => v3BrokenOK(line, draft),
           () => (V3.opts.tone ? v3ToneOK(line, draft) : ''), () => (V3.opts.pointer ? v3PointerOK(line, draft) : ''), () => v3FrameOK(line, draft), () => v3ObjectOK(line, draft), () => v3DangleOK(line, draft),
           () => (V3.opts.added ? v3AddOK(line, draft) : '')]) { const r = f(); if (r) return [r]; }
@@ -6588,7 +6886,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
         const pw = v4Bare(line) === v4Bare(draft) ? v53PunctWhy(draft, line) : '';
         /* v5.4 (Fable k-27): the engine's generic two-beats why only on a line that split the draft in its own order */
         const gen2 = String(E0.why || '').includes(HK_WHY.contrast) && !(v53Beats(line) > v53Beats(draft) && !slReordered(draft, line));
-        const whyE = v42Spans(slAIWhy(why, draft, line, E, aiWord) || (v4WhyOK(E0.why, draft, line) && !gen2 && !(pw && V53_GENERIC.test(E0.why)) ? E0.why : pw || v4SafeWhy(draft, line, E0)), draft, line, E);
+        const whyE = v42Spans((!v55ConjWhy(why) && slAIWhy(why, draft, line, E, aiWord)) || (v4WhyOK(E0.why, draft, line) && !gen2 && !(pw && V53_GENERIC.test(E0.why)) && !v55ConjWhy(E0.why) && !v55OddQuote(E0.why) ? E0.why : pw || v4SafeWhy(draft, line, E0)), draft, line, E);
         /* v5.3 (Fable g-28, g-3, g-23, g-71): the count and move words agree with the diff and with the why they ship with */
         const RC = v53Receipt(draft, line, E, v4Say(draft, line, sayR), whyE);
         return [null, { ...R, state: 'sharp', line, cut: E.cut, marks, move: RC.move, say: RC.say, why: RC.why, long: longOf(line), note: noteOf(line), moves: RC.moves, ...(dropT.length ? { kept: kept.filter(v => !dropT.includes(v)) } : {}),
@@ -6603,19 +6901,29 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
         return { ...o, calls, marks: (o.marks || []).filter(m => !(m[3] === 'call' && drop.some(c => c.draftAt && c.draftAt[0] === m[0] && c.draftAt[1] === m[1]))), say: slCallSay(r.say, calls.length) }; } catch (e) { return r; } };
       const reasons = [], ok = [];
       for (let i = 0; i < vers.length; i++) {
-        const why = typeof vers[i].why === 'string' ? vers[i].why : '', [bad, res] = check(vers[i].line, why);
+        const why = v55Unlabel(typeof vers[i].why === 'string' ? vers[i].why : ''), [bad, res] = check(vers[i].line, why);
         /* a version that is the draft as written: version 1 (or a reply marked unchanged) is Claude saying it's already sharp.
            v4 (hook-11): a later copy of the draft is that verdict only when no earlier version passed. v4.1 (hook4-5): its why is
            Claude's, or "Claude kept it as written", never the on-device engine's */
         /* v5.4 (Fable k-5): "Already sharp" only on a line with nothing soft left in it; one that keeps a hedge, a stance or a soft
            word the writer may cut says "Nothing cut:", beside the "your call" count */
-        if (bad === 'same') { reasons.push('unchanged'); if (i === 0 || (data.unchanged && !ok.length)) { trace.rejects = reasons; trace.pick = i; const C0 = withC({ ...R, state: slSkip(draft) ? 'thin' : 'clean', say: 'Nothing to cut', why: v52Loud(draft) || v4Clean(slAIWhy(why, draft, draft, { cut: [] }, aiWord) || V41_KEPT), pick: i });
+        if (bad === 'same') { reasons.push('unchanged'); if (i === 0 || (data.unchanged && !ok.length)) { trace.rejects = reasons; trace.pick = i;
+          /* v5.5 (Fable m-105): "Nothing to cut" over a plain "basically" the engine cuts is behind the engine: that cut ships */
+          { const tu = v55TopUp(draft, draft, keep), [b2, r2] = tu ? check(tu, '') : ['none']; if (!b2 && r2) { (trace.promo = trace.promo || []).push('topup'); return withC({ ...r2, pick: i }); } }
+          const C0 = withC({ ...R, state: slSkip(draft) ? 'thin' : 'clean', say: 'Nothing to cut', why: v52Loud(draft) || v4Clean(slAIWhy(why, draft, draft, { cut: [] }, aiWord) || V41_KEPT), pick: i });
           const soft = (C0.calls && C0.calls.length) || softMarks(draft, keep).some(m => m[3] !== 'call' && (SL_FLUFF(m[3]) && !/^(?:label|voice|tone|keep)$/.test(m[3])));
           return soft && /^\s*already sharp\b/i.test(C0.why || '') ? { ...C0, why: String(C0.why).replace(/^\s*already sharp\b[:,.]?\s*/i, 'Nothing cut: ') } : C0; } continue; }
         reasons.push(bad || 'ok'); if (res && !ok.some(o => o.res.line === res.line)) ok.push({ i, res });
       }
       trace.rejects = reasons;
       if (!ok.length) return no(reasons.find(r => r !== 'unchanged') || reasons[0], reasons);
+      /* v5.5 (Fable m-91, m-46, H7): a whole sentence or parenthetical of the draft with none of the engine's soft marks in it (a
+         self-aware aside, the announcement itself) is what the writer chose to say: a version that drops one gives way to one that
+         keeps it. When the draft has no run-up or filler mark at all and every version drops one, the draft ships as written */
+      const dm5 = softMarks(draft, keep), units = xLength(draft) > 280 ? [] : v55Units(draft).filter(u => !dm5.some(m => m[3] !== 'call' && m[0] < u.b && m[1] > u.a));
+      /* dropped, not reworded: none of its words is in the line, and the line is shorter by about as many words */
+      const dropU = l => { const LS = v3stems(l), lost = wordsN(draft) - wordsN(l); return units.filter(u => !v3content(u.text).some(w => LS.has(slStemC(w))) && lost >= wordsN(u.text) - 1); };
+      const sharpD = !dm5.some(m => /^(?:stock|throat|filler|bait|tail|announce|disclaim|open|redund|wordy|intens|honest)$/.test(m[3]));
       /* v4 (hook-3): a first passing version that still opens on a run-up gives way to a later passing one that doesn't.
          v4.1: on hard news the writer's framing before the news stays in version 1 (hook4-8); where the draft says how sure
          it is, a version that still says so goes ahead of the bare claim (hook4-3); a version that only splits a list header
@@ -6623,6 +6931,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
       const runUp = l => { const p = Math.max(0, String(l).search(/\S/)), m = softMarks(l, keep).find(r => r[0] <= p); return !!m && V4_RUNK.test(m[3]) && !V4_FIN.test(String(l).slice(m[0], m[1])); };
       const frame = v41HardFrame(draft), framed = l => !!frame && v3survives(frame, v3stems(l)), bare = l => v41Bare(draft, l), hdr = V41_HDR.test(draft.trim());
       const promote = (k, worse, fine) => { if (ok.length < 2 || !worse(ok[0].res.line)) return; const cur = ok[0].res.line, j = ok.findIndex((o, n) => n > 0 && !worse(o.res.line) && fine(o.res.line, cur)); if (j > 0) { ok.unshift(ok.splice(j, 1)[0]); trace.promoted = ok[0].i; (trace.promo = trace.promo || []).push(k); } };
+      promote('kept', l => dropU(l).length > 0, () => true);
       promote('runup', l => runUp(l) && !framed(l), (l, cur) => !bare(l) || bare(cur));
       promote('hard', l => !!frame && !framed(l), () => true);
       /* v5.2 (Fable f-14, f-25, f-29, f-100): a version 1 that keeps a stacked opinion frame gives way to a passing one without
@@ -6646,6 +6955,11 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
         for (let k = ok.length - 1; k >= 0; k--) if (!fits(ok[k].res.line) && runIn(ok[k].res.line)) ok.splice(k, 1);
         if (!ok.length) return no('over 280 with its run-up', reasons);
       }
+      { const du = sharpD ? dropU(ok[0].res.line) : [];
+        if (du.length) { const u = du[0], q = u.paren ? u.text : u.text, nm = [...q].length <= 60 ? `“${q}”` : u.paren ? 'your aside' : 'that sentence';
+          trace.pick = ok[0].i; (trace.promo = trace.promo || []).push('kept');
+          return withC({ ...R, state: 'clean', say: 'Nothing to cut', why: `Kept as written: nothing pads it, and ${nm} is yours, so it stays.`, pick: ok[0].i }); } }
+      for (let n = 0; n < 2; n++) { const tu = v55TopUp(draft, ok[0].res.line, keep); if (!tu) break; const [b2, r2] = check(tu, v55Unlabel(typeof vers[ok[0].i].why === 'string' ? vers[ok[0].i].why : '')); if (b2 || !r2) break; ok[0] = { i: ok[0].i, res: r2 }; (trace.promo = trace.promo || []).push('topup'); }
       trace.pick = ok[0].i;
       /* alts carry what the app's receipt reads (line, why, say, move, moves, cut), so "Another" can show them */
       /* v5.2 (Fable f-40, f-93, f-117): over 280 with every fact kept, the sentences that fit are the hook and the rest is post 2 */

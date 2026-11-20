@@ -131,7 +131,8 @@ test('receipts v4.1 (hook4-5): a Claude "clean" verdict has its own why, never t
     assert.equal(r.state, 'clean'); assert.equal(r.why, 'Claude kept it as written.', why); assert.doesNotMatch(r.why, ON_DEVICE);
   }
   /* a later copy of the draft that is the verdict (nothing before it passed) is held to the same rule */
-  const r2 = F('So basically we shipped v2 today and signups doubled', [{ line: 'We shipped v2 today and signups tripled.', why: '' }, { line: 'So basically we shipped v2 today and signups doubled', why: '' }], {}, true).r;
+  /* v5.5: no plain "basically" here (a Claude "unchanged" over one now ships the engine's cut of it) */
+  const r2 = F('So we shipped v2 today and signups doubled', [{ line: 'We shipped v2 today and signups tripled.', why: '' }, { line: 'So we shipped v2 today and signups doubled', why: '' }], {}, true).r;
   assert.equal(r2.state, 'clean'); assert.equal(r2.why, 'Claude kept it as written.');
 });
 

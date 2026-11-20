@@ -59,7 +59,7 @@ const TABLE = [
   ['bad: a never-say word', 'I just wanted to share that our team shipped v2 and signups went up 31% this week', { line: 'Our team launched v2 and signups went up 31% this week.' }, 'banned word', { never: ['launched'] }],
   /* the rest of the engine's guards */
   ['bad: a lost fact', 'I just wanted to share that our team shipped v2 and signups went up 31% this week', { line: 'Our team shipped v2 and signups went up this week.' }, 'fact "31%" lost'],
-  ['bad: a lost negation', 'honestly we are not raising a round this year', { line: 'we are raising a round this year.' }, 'negation of "raising" lost'],
+  ['bad: a lost negation', 'honestly we are not raising a round this year', { line: 'we are raising a round this year.' }, 'negation "not" of "raising" lost'],
   ['v3 accepts (a style check v3 drops): a new capital in a lowercase line', 'ok so i finally figured out why my posts were not getting reach', { line: 'I finally figured out why my posts were not getting reach.' }, 'accept'],
   ['bad: longer than the draft', 'So we shipped v2 today', { line: 'We shipped v2 today, and it is a big one.' }, 'hype added'],
   ['v3 accepts (a style check v3 drops): a run-on where the draft had a comma', 'honestly i think $SOL is just getting started tbh, the chart looks really really bullish right now', { line: 'i think $SOL is just getting started the chart looks really really bullish right now.' }, 'accept'],
@@ -94,7 +94,7 @@ const TABLE3 = [
   ["bad: multiplier changed", "We basically doubled our revenue in 6 months by just raising prices.", { versions: [{ line: "We tripled our revenue in 6 months by raising prices.", why: '' }], unchanged: false }, "number word added"],
   ["bad: approximator on a number lost", "We lost our biggest customer last week, they were about 40% of revenue.", { versions: [{ line: "We lost our biggest customer last week. They were 40% of revenue.", why: '' }], unchanged: false }, "qualifier \"about 40%\" lost"],
   ["bad: 'like 6' made exact", "Beginner mistakes I see in the gym literally every day (there are like 6 of them)", { versions: [{ line: "6 beginner mistakes I see in the gym every day", why: '' }], unchanged: false }, "qualifier \"like 6\" lost"],
-  ["bad: negation flipped", "Here's an unpopular opinion: cold calling is not dead, it's just being done badly", { versions: [{ line: "Cold calling is dead. It's just being done badly.", why: '' }], unchanged: false }, "negation of \"dead\" lost"],
+  ["bad: negation flipped", "Here's an unpopular opinion: cold calling is not dead, it's just being done badly", { versions: [{ line: "Cold calling is dead. It's just being done badly.", why: '' }], unchanged: false }, "negation \"not\" of \"dead\" lost"],
   ["bad: 'don't just' lost", "We don't just write your posts, we learn your voice.", { versions: [{ line: "We don't write your posts. We learn your voice.", why: '' }], unchanged: false }, "\"don't just\" lost"],
   ["bad: 'didn't really' lost", "I didn't really train for this marathon and I still finished in 3:41.", { versions: [{ line: "I didn't train for this marathon. I still finished in 3:41.", why: '' }], unchanged: false }, "\"didn't really\" lost"],
   ["bad: negation added", "Hiring for attitude over skills is one of the best decisions a manager can make, honestly.", { versions: [{ line: "Hiring for skills is not one of the best decisions a manager can make.", why: '' }], unchanged: false }, "negation added"],
@@ -260,7 +260,7 @@ const TABLE4 = [
   ['good: "the vast majority" is still "most"', "I'm increasingly convinced that the vast majority of companies using it don't actually need it", { line: "I'm increasingly convinced the vast majority of companies using it don't actually need it." }, 'accept'],
   ['bad: a frame cut, but the real forecast lost too', "I'll be honest, we will ship v2 in May", { line: 'We ship v2 in May.' }, 'future lost'],
   ['bad: "there will be" a crash, made present', 'there will be a crash next year honestly', { line: 'A crash is coming next year.' }, 'future lost'],
-  ['bad: "has not" made positive', 'We have not shipped it yet', { line: 'We have shipped it.' }, 'negation of "shipped" lost'],
+  ['bad: "has not" made positive', 'We have not shipped it yet', { line: 'We have shipped it.' }, 'negation "not" of "shipped" lost'],
 ];
 test('v3.1: discourse frames ship, forecasts and negations still hold', () => {
   for (const [name, t, data, want] of TABLE4) { const { r, reject } = F(t, data); assert.equal(r ? 'accept' : reject, want, name); }

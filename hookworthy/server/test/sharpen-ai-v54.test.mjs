@@ -167,7 +167,7 @@ test('whys and receipts v5.4: whole phrases or "N small words", counts from the 
   assert.equal(r58.why, 'The comma splice is two sentences now, in your order.'); assert.match(r58.say, /Split it into two beats/);
   /* an alt's "went too", shipped first, says "went" */
   const r30 = F('Honestly I feel like most onboarding emails are a little bit too long', ['I feel like most onboarding emails are a little bit too long.', { line: 'Most onboarding emails are a little bit too long.', why: 'The bare claim: “I feel like” went too.' }]).r;
-  assert.equal(r30.line, 'Most onboarding emails are a little bit too long.'); assert.match(r30.why, /^The bare claim: “I feel like” went\b(?! too)/);
+  assert.equal(r30.line, 'Most onboarding emails are a little bit too long.'); assert.match(r30.why, /^“I feel like”(?: and “Honestly”)? went\b(?! too)/, 'v5.5: and no "The bare claim:" label');
 });
 
 test('held-out replay v5.4: the stand-in\'s post-change replies ship their version 1 through the endpoint', async () => {

@@ -136,7 +136,7 @@ test('receipts v5.3: "Number first" only when a figure now leads; the beat count
   for (const [d, v] of [
     ['so um i wrote 100 essays in 100 days and here are some of the things that i learned along the way', { line: 'some of the things i learned writing 100 essays in 100 days:', why: '“so um”, “along the way” and “and here are” went.' }],
     ['So I ran every single day for 365 days straight and these are the 6 things that nobody warned me about', { line: '6 things nobody warned me about after running every single day for 365 days straight:', why: '“So”, “that” and “and these are the” went.' }],
-    ['There are basically only 3 things that you really need to do in order to build muscle after the age of 40', { line: 'There are basically only 3 things you need to do to build muscle after the age of 40.', why: 'The light edit: only “that”, “really” and “in order” went. Your opener stays.' }]]) {
+    ['There are basically only 3 things that you really need to do in order to build muscle after the age of 40', { line: 'There are basically only 3 things you need to do to build muscle after the age of 40.', why: 'Only “that”, “really” and “in order” went. Your opener stays.' }]]) {
     /* the count is the spans the shipped why says went (a cut it left out is added to it), never fewer than Claude's three */
     const r = F(d, [v]).r, n = +(r.say.match(/Cut (\d+) bits? of fluff/) || [0, 0])[1], q = new Set([...r.why.matchAll(/“([^”]+)”/g)].map(m => m[1].toLowerCase()).filter(x => !/^(?:your opener)$/.test(x)));
     assert.ok(n >= 3, `${d}: ${r.say}`); assert.ok(r.why.startsWith(v.why), r.why);

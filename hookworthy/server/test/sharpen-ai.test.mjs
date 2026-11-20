@@ -301,7 +301,8 @@ test('a reply that changes a fact, the stance, the tense or adds a claim word is
 
 /* v3 changed this: "unchanged" is Claude's call even when the engine has fluff marked (225 of 225 such calls were graded h) */
 test('"unchanged" on a line the engine would cut is Claude’s answer, clean, with Claude’s why', async () => {
-  const text = 'So basically I just wanted to share that we finally launched the app today.';
+  /* v5.5: no plain "basically" in it (that one the engine's cut ships: sharpen-ai-v55) */
+  const text = 'So I just wanted to share that we finally launched the app today.';
   answer = () => say({ line: text, why: 'It already works.' }, true);
   const r = await sharpen({ text });
   assert.equal(r.json.source, 'claude'); assert.equal(r.json.state, 'clean'); assert.equal(r.json.line, text); assert.equal(r.json.say, 'Nothing to cut');
