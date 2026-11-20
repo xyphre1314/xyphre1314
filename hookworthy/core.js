@@ -2182,7 +2182,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
     const cta = sents.find(x => CTA.test(x));
     const ctx = sents[0] && !careful.includes(sents[0]) && sents[0] !== cta ? sents[0] : null;
     const key = [...facts.map(f => f.quote), ctx, story, ...sents.filter(x => !careful.includes(x) && x !== cta)].filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 6);
-    const lesson = sents.find(x => /(because|learn(ed|t)?|lesson|turns out|realised|realized|mistake|instead)/i.test(x) && !careful.includes(x));
+    const lesson = sents.find(x => /\b(because|learn(ed|t)?|lesson|turns out|realised|realized|mistake|instead)\b/i.test(x) && !careful.includes(x));
     const gaps = [];
     if (!facts.some(f => f.weight >= 2)) gaps.push('No hard numbers yet. One real result (a %, a $, a count) makes it believable.');
     if (/\b(launch|launching|release|shipping|going live)\b/i.test(t) && !/\b(today|tomorrow|tonight|next week|monday|tuesday|wednesday|thursday|friday|saturday|sunday|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b|\b\d{1,2}(st|nd|rd|th)\b/i.test(t)) gaps.push('It mentions a launch but not when. Add the date?');
@@ -4026,7 +4026,7 @@ Reply with only JSON: {"reason":"one plain sentence on the biggest issue or stre
   /* a reorder: every word of the version is a word of the draft, once the move's own label ("What changed:", "The move:") is set aside */
   const SL_TPL = [['what', 'changed'], ['the', 'move'], ['the', 'result'], ['the', 'fix'], ['then']];
   const slReorderOnly = (y, L) => { let w = slToks(y).map(z => z.w); SL_TPL.forEach(p => { for (let i = 0; i + p.length <= w.length; i++) if (p.every((x, j) => w[i + j] === x)) { w.splice(i, p.length); break; } }); const bag = new Map(); slToks(L).forEach(z => bag.set(z.w, (bag.get(z.w) || 0) + 1)); return w.every(x => { const k = bag.get(x) || 0; if (!k) return false; bag.set(x, k - 1); return true; }); };
-  const SL_TEASE = /here(?:['’]s| is| are) (?:what|how|why|the)|👇|🧵|⬇️?|(?:a )?thread/iu;
+  const SL_TEASE = /\bhere(?:['’]s| is| are) (?:what|how|why|the)\b|👇|🧵|⬇️?|\b(?:a )?thread\b/iu;
   /* r86 pass 5 (hook-5): every emoji is whole: a cluster in the line is one the draft has, and no ZWJ sits next to a space */
   const SL_SEG = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter('en', { granularity: 'grapheme' }) : null;
   const slEmo = z => { const s = String(z); if (!/\p{Extended_Pictographic}|\p{Regional_Indicator}|\u20E3|\u200D/u.test(s)) return []; return SL_SEG ? [...SL_SEG.segment(s)].map(x => x.segment).filter(g => /\p{Extended_Pictographic}|\p{Regional_Indicator}|\u20E3|\u200D|\p{Emoji_Modifier}/u.test(g)) : (s.match(new RegExp(EMO_SEQ, 'gu')) || []); };
