@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 pass 3: what the jury found on lines nobody tuned on, held as rules over every held-out line (fixtures/
    sharpen-heldout.json: the first juror's set, the second juror's 159 and the engine rounds) plus the exact cases the
    founder, marketing, web and UI/UX jurors reported. Written apart from the engine's own guards:
@@ -88,7 +89,7 @@ test('truth: no cut leaves an orphan, a stray colon or a broken comparison (foun
   assert.deepEqual(bad, []);
   assert.equal(S('Just shipped v2 of our app! Really excited to share it with you all 🚀').line, 'Just shipped v2 of our app! 🚀');
   assert.equal(S('Excited to share it with everyone: we hit 1,000 users.').line, 'We hit 1,000 users.');
-  assert.equal(S("I'm excited to share with you all that we're hiring our first engineer").line, "We're hiring our first engineer.");
+  assert.equal(S("I'm excited to share with you all that we're hiring our first engineer").line, "We're hiring our first engineer");
   assert.match(S('Thank you all for the kind words, it genuinely means more than I can say here').line, /more than I can say here/);
 });
 
@@ -141,20 +142,20 @@ test('truth: a put-back restores only that word, and every other cut stays cutta
   assert.match(R.line, /^Basically we finally launched our app/);
   assert.deepEqual(R.cut.filter(c => c.kind !== 'reshape').map(c => c.text), ['So', 'I just wanted to say that']);
   assert.doesNotMatch(R.why, /\bhits?\b/); assert.match(R.why, /You kept “basically”/);
-  assert.equal(core.sharpenLine(t, { keep: ['So'] }).line, 'So we finally launched our app.');
+  assert.equal(core.sharpenLine(t, { keep: ['So'] }).line, 'So we finally launched our app');
 });
 
 test('truth: the round failures stay fixed', () => {
   assert.match(S('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it').line, /\$ARB unlock is next week/);
-  assert.equal(S("Here's my honest take on memecoins: they're casinos with better branding").line, "Memecoins: they're casinos with better branding.");
-  assert.equal(S('Today\'s newsletter is basically a love letter to the humble bullet point').line, "Today's newsletter is a love letter to the humble bullet point.");
+  assert.equal(S("Here's my honest take on memecoins: they're casinos with better branding").line, "Memecoins: they're casinos with better branding");
+  assert.equal(S('Today\'s newsletter is basically a love letter to the humble bullet point').line, "Today's newsletter is a love letter to the humble bullet point");
   assert.doesNotMatch(S("I'm super happy to announce my first ebook is out now!").line, /\?/);
   assert.doesNotMatch(S('I think most newsletter writers are honestly undercharging for sponsorships').line, /\?/);
   assert.equal(S("I've been writing this newsletter for 200 weeks straight and I want to share what I learned").line.includes('200 weeks straight'), true);
   assert.equal(S('We hit $10k MRR today after 14 months').line, 'We hit $10k MRR today after 14 months');
   /* r86 pass 6 (juror 5, hook-7): the lone "I think" stays (one hedge per clause, as the Claude prompt keeps it) */
-  assert.equal(S('Honestly I think most people are really just overcomplicating their workouts way too much').line, 'Most people are overcomplicating their workouts.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(S('Honestly I think most people are really just overcomplicating their workouts way too much').line, 'Most people are overcomplicating their workouts'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(S('Gonna be honest with you guys, I almost quit writing last month.').line, 'I almost quit writing last month.');
-  assert.equal(S("I'd like to take a moment to thank everyone who joined our webinar on Tuesday").line, 'Thank you to everyone who joined our webinar on Tuesday.');
+  assert.equal(S("I'd like to take a moment to thank everyone who joined our webinar on Tuesday").line, 'Thank you to everyone who joined our webinar on Tuesday');
   assert.equal(S('honestly i just wanted to say that our churn dropped 20% this quarter').say, 'Cut 2 bits of fluff');
 });

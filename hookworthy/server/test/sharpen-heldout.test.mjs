@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86: Sharpen on first lines it was never tuned on (fixtures/sharpen-heldout.json: 132 lines a separate juror wrote in
    the way people really draft on X). Both paths run: HWCore.sharpenLine (what the homepage calls) and the composer's
    one tap, lifted out of index.html as it ships (hgSharpen and hookUpFor). The checks here are written independently of
@@ -73,7 +74,7 @@ test('held-out: the result keeps its contract', () => {
   for (const t of ['honestly most people overthink their first post', 'honestly i think most people overthink their first post\n\nhere is what i do instead: write the last line first.']) assert.equal(core.sharpenLine(t).state, 'sharp', t);
   /* r86 pass 6 (juror 5, hook-7): a lone "I think" is the clause's one hedge, kept as the Claude prompt keeps it: clean, never thin */
   /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-  assert.equal(core.sharpenLine('I think most people overthink their first post').line, 'Most people overthink their first post.');
+  assert.equal(core.sharpenLine('I think most people overthink their first post').line, 'Most people overthink their first post');
 });
 
 test('held-out: no fact is lost', () => {

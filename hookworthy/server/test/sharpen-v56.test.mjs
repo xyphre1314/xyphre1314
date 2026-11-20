@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* v5.6 (Fable round 5, on-device): one thread splitter (SHARPEN.splitPosts) that never breaks inside code or on a lowercase
    continuation, one rule for the hedge words, the run-up families, post 1 that carries the point, one rule per word ("basically",
    "personally", "There are N", "what I've learned"), receipts that name what changed, and the page-reported items (a greeting before
@@ -53,24 +54,24 @@ test('v5.6 f5-2: a lone hedge word on advice or a claim is a call, never a cut; 
     const R = sl(t); assert.match(shipped(R), /\bprobably\b/, t); assert.deepEqual((R.calls || []).map(c => c.text), ['probably'], t); assert.match(R.say, / · 1 left to you$/, t);
   }
   const a = sl('I think you probably need fewer features and more users');
-  assert.equal(a.line, 'You probably need fewer features and more users.'); assert.match(a.why, /Kept your “probably”/);
-  assert.equal(sl('You probably want to raise your prices, to be honest').line, 'You probably want to raise your prices.');
-  assert.equal(sl('Honestly you probably don\'t need microservices for a team of five').line, 'You probably don\'t need microservices for a team of five.');
+  assert.equal(a.line, 'You probably need fewer features and more users'); assert.match(a.why, /Kept your “probably”/);
+  assert.equal(sl('You probably want to raise your prices, to be honest').line, 'You probably want to raise your prices');
+  assert.equal(sl('Honestly you probably don\'t need microservices for a team of five').line, 'You probably don\'t need microservices for a team of five');
 });
 
 test('v5.6 f5-3, f5-4: "worth noting" and the run-up families go, grammar-safe', () => {
   for (const [t, want] of [
-    ['It\'s worth noting that 60% of churn happens in the first two weeks', '60% of churn happens in the first two weeks.'],
-    ['Also worth noting that the beta is free until March', 'The beta is free until March.'],
+    ['It\'s worth noting that 60% of churn happens in the first two weeks', '60% of churn happens in the first two weeks'],
+    ['Also worth noting that the beta is free until March', 'The beta is free until March'],
     ['Have you ever actually stopped to think about why it is that some newsletters just feel personal?', 'Have you ever stopped to think about why some newsletters feel personal?'],
     ['Have you ever wondered why it is that the best engineers ask the simplest questions?', 'Have you ever wondered why the best engineers ask the simplest questions?'],
-    ['This new pricing model is going to really change the way that agencies bill their clients', 'This new pricing model will change how agencies bill their clients.'],
-    ['AI agents are going to completely change the way that we write software', 'AI agents will completely change how we write software.'],
-    ['There are so many people out there who say that you need a cofounder to start a company', 'So many people say that you need a cofounder to start a company.'],
-    ['The thing is that most people quit right before it starts working', 'Most people quit right before it starts working.'],
+    ['This new pricing model is going to really change the way that agencies bill their clients', 'This new pricing model will change how agencies bill their clients'],
+    ['AI agents are going to completely change the way that we write software', 'AI agents will completely change how we write software'],
+    ['There are so many people out there who say that you need a cofounder to start a company', 'So many people say that you need a cofounder to start a company'],
+    ['The thing is that most people quit right before it starts working', 'Most people quit right before it starts working'],
     ['We just crossed $1M ARR, so I thought I would share the 6 mistakes that almost killed us along the way:', 'We just crossed $1M ARR. The 6 mistakes that almost killed us along the way:'],
     ['Got our first 100 customers last week so I figured I would share how we found them:', 'Got our first 100 customers last week. How we found them:'],
-    ['I\'m really very proud of what this team shipped in 2026', 'I\'m very proud of what this team shipped in 2026.'],
+    ['I\'m really very proud of what this team shipped in 2026', 'I\'m very proud of what this team shipped in 2026'],
   ]) assert.equal(sl(t).line, want, t);
   /* a header with nothing under it still stays, said so */
   const h = sl('It\'s worth noting the obvious:'); assert.equal(h.state, 'unsure'); assert.equal(shipped(h), 'It\'s worth noting the obvious:');
@@ -82,7 +83,7 @@ test('v5.6 f5-6: over 280 opens a thread whose post 1 carries the point, or post
   const b = sl('Not sure if this will resonate with anyone but I\'ve been thinking a lot lately about how most of the advice we give new managers is basically about controlling outcomes when the actual job is mostly about creating the conditions where other people can do their best work without you constantly hovering over them and checking in on them every hour');
   assert.match(b.line, /^Most of the advice we give new managers is about controlling outcomes/); assert.ok(xl(b.line) <= 280); assert.doesNotMatch(b.line, /:$/);
   const c = sl('So about two years ago I was working a job I hated, commuting ninety minutes each way, and spending every single evening on a side project that nobody was paying for, and I honestly thought I would be doing that forever until a stranger on this app bought the template I had posted as a joke, and that one sale turned into a business that now pays my rent');
-  assert.equal(c.thread.length, 2); assert.match(c.thread[0], /nobody was paying for\.$/); assert.match(c.thread[1], /^I thought I’d be doing that forever/);
+  assert.equal(c.thread.length, 2); assert.match(c.thread[0], /nobody was paying for\.$/); assert.match(c.thread[1], /^I thought I would be doing that forever/); /* v5.7: the writer's own "I would" */
   const d = sl('I\'ve been freelancing for about six years now, and if there\'s one thing that I\'ve learned in all of that time it\'s that the clients who negotiate the hardest on price at the start are almost always the ones who end up being the most difficult to work with later on, and the ones who just say yes to your rate are usually the ones who refer you to their friends');
   assert.doesNotMatch(posts(d).join(' '), /one thing that I've learned/); posts(d).forEach(p => assert.ok(xl(p) <= 280, p));
   const e = sl('I wasn\'t going to post about this but last week our team finally shipped the feature that customers had been asking for since 2022, and the response has been so overwhelming that our support inbox went from 20 emails a day to more than 600, and honestly I have never been more tired or more grateful in my entire life than I am right now sitting here at midnight answering every one of them myself');
@@ -94,8 +95,8 @@ test('v5.6 f5-7: one rule per word', () => {
   const n = sl('We basically doubled our revenue in 90 days by fixing one email'); assert.equal(shipped(n), 'We basically doubled our revenue in 90 days by fixing one email'); assert.deepEqual(n.calls.map(c => c.text), ['basically']);
   assert.deepEqual(sl('We were basically broke for the first two years').calls.map(c => c.text), ['basically']);
   assert.equal(sl('basically 4 things made our launch work: timing, a waitlist, one great demo and luck').line, '4 things made our launch work: timing, a waitlist, one great demo and luck');
-  assert.equal(sl('I basically wrote 3 drafts of this before posting it').line, 'I wrote 3 drafts of this before posting it.');
-  assert.equal(sl('So basically, we ran out of money and nobody told me').line, 'We ran out of money. Nobody told me.');
+  assert.equal(sl('I basically wrote 3 drafts of this before posting it').line, 'I wrote 3 drafts of this before posting it');
+  assert.equal(sl('So basically, we ran out of money and nobody told me').line, 'We ran out of money. Nobody told me');
   /* "personally": after "I" it restates the subject; "take it personally" is the idiom */
   assert.equal(sl('Here are 6 tools I personally pay for every month:').line, '6 tools I pay for every month:');
   assert.equal(shipped(sl('Don\'t take rejection personally. It\'s almost never about you.')), 'Don\'t take rejection personally. It\'s almost never about you.');
@@ -111,10 +112,10 @@ test('v5.6 f5-7: one rule per word', () => {
 test('v5.6 page items: a greeting before an announcement, an orphaned "here", "never ever", "Here are N", "· N left to you"', () => {
   for (const [t, want] of [
     ['GM fam, so excited to announce that our app just hit 50,000 downloads 🚀', 'Our app just hit 50,000 downloads 🚀'],
-    ['GM! Super excited to share that I\'m joining Stripe as a design lead', 'I\'m joining Stripe as a design lead.'],
+    ['GM! Super excited to share that I\'m joining Stripe as a design lead', 'I\'m joining Stripe as a design lead'],
     ['gm everyone! really excited to share that we\'re opening the beta tomorrow', 'we\'re opening the beta tomorrow'],
-    ['We hit 10k users without spending a dollar on ads, which nobody saw coming, not even our own team to be honest with you all here', 'We hit 10k users without spending a dollar on ads, which nobody saw coming, not even our own team.'],
-    ['It took me four years to figure this out, if I\'m being honest here', 'It took me four years to figure this out.'],
+    ['We hit 10k users without spending a dollar on ads, which nobody saw coming, not even our own team to be honest with you all here', 'We hit 10k users without spending a dollar on ads, which nobody saw coming, not even our own team'],
+    ['It took me four years to figure this out, if I\'m being honest here', 'It took me four years to figure this out'],
     ['Here are 5 things I learned after losing my first big client:', '5 things I learned after losing my first big client:'],
     ['Here are 3 lessons I learned from running a marathon with no training: 1. pace 2. shoes 3. pride', '3 lessons I learned from running a marathon with no training: 1. pace 2. shoes 3. pride'],
   ]) assert.equal(sl(t).line, want, t);
@@ -122,7 +123,7 @@ test('v5.6 page items: a greeting before an announcement, an orphaned "here", "n
   assert.match(shipped(sl('gm frens, just a reminder that $BTC is still up 40% this year')), /^gm frens, /);
   /* "i really do believe that" is a call; "never ever" is "never" */
   const b = sl('I really do believe that you should never ever hire someone you wouldn\'t want to work for');
-  assert.equal(b.line, 'I really do believe you should never hire someone you wouldn\'t want to work for.');
+  assert.equal(b.line, 'I really do believe you should never hire someone you wouldn\'t want to work for');
   assert.deepEqual(b.calls.map(c => c.text), ['I really do believe']); assert.equal(b.say, 'Cut 2 bits of fluff · 1 left to you');
   assert.equal(S.callSay('Nothing to cut', 1), 'Nothing cut · 1 left to you'); assert.equal(S.callSay('Cut 1 bit of fluff', 2), 'Cut 1 bit of fluff · 2 left to you');
 });

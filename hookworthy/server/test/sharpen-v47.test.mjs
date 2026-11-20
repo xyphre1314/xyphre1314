@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.7: the on-device Sharpen after blind set 8 (review-hook-v46: hook46-1 to hook46-3) and the round-10 page jurors
    (page, web and UI/UX: engine items only).
    1. page juror: no sentence ends on a word that needs what came after it. "Everyone says ETH is dead but here's my take" never
@@ -80,7 +81,7 @@ test('v4.7, page juror: "here\'s my take" at the end is kept whole, never cut to
     assert.equal(S("Everyone says ETH is dead but here's my take", o).state, 'clean', m);
   }
   /* a tail that stands on its own after the claim still goes */
-  assert.equal(L('ETH is about to rip, just my take'), 'ETH is about to rip.');
+  assert.equal(L('ETH is about to rip, just my take'), 'ETH is about to rip');
   assert.equal(L('ETH will rip. That\'s my take.'), 'ETH will rip.');
 });
 
@@ -111,7 +112,7 @@ test('v4.7, page juror: "just my take, but" is a hedge frame, marked and kept wi
     const r = S('just my take, but ETH is about to rip', o);
     assert.equal(r.state, 'unsure', m); assert.equal(r.line, r.draft, m);
     assert.deepEqual(r.marks.map(k => [r.draft.slice(k[0], k[1]), k[3]]), [['just my take, but', 'frame']], m);
-    assert.equal(L('Honestly just my take, but nobody needs a 12-step morning routine', o), 'Just my take, but nobody needs a 12-step morning routine.', m);
+    assert.equal(L('Honestly just my take, but nobody needs a 12-step morning routine', o), 'Just my take, but nobody needs a 12-step morning routine', m);
     assert.equal(S('Not financial advice, just my take, but ETH is about to rip', o).line, 'Not financial advice, just my take, but ETH is about to rip', m);
   }
   /* no path drops the "just" alone: not a cut, not an alt, not a put-back */
@@ -135,14 +136,14 @@ test('v4.7, page juror: a clean line says it is a quick check, never that nothin
 
 test('v4.7, page juror and hook46-3: the run-ups, as general forms', () => {
   for (const [m, o] of MODES) {
-    assert.equal(L('I wanted to take a moment to reflect on how far we have come this year', o), 'I wanted to reflect on how far we have come this year.', m);
+    assert.equal(L('I wanted to take a moment to reflect on how far we have come this year', o), 'I wanted to reflect on how far we have come this year', m);
     /* v4.8 (round-11 marketing-1): the whole run-up goes, and the topic keeps its "why" as the pointer */
     assert.equal(L('Let me take a minute to explain why we changed our pricing', o), 'Why we changed our pricing:', m);
     assert.match(L("I'd like to take a moment to thank all of our early customers who believed in us.", o), /^I'd like to thank all (?:of )?our early customers who believed in us\.$/, m);
     assert.equal(L('So thrilled that this newsletter just passed 20,000 readers, thank you all for being here 💛', o), 'This newsletter just passed 20,000 readers, thank you all for being here 💛', m);
-    assert.equal(L('So excited that our first hire starts on Monday', o), 'Our first hire starts on Monday.', m);
+    assert.equal(L('So excited that our first hire starts on Monday', o), 'Our first hire starts on Monday', m);
     assert.equal(L("If you've ever thought about writing online, my honest take is that a newsletter is the best place to start.", o), "If you've ever thought about writing online, a newsletter is the best place to start.", m);
-    assert.equal(L("If you're new to lifting, my honest take is that you don't need a program yet", o), "If you're new to lifting, you don't need a program yet.", m);
+    assert.equal(L("If you're new to lifting, my honest take is that you don't need a program yet", o), "If you're new to lifting, you don't need a program yet", m);
   }
   /* an order to the reader is no run-up, and a feeling that is the point stays */
   assert.equal(L('Take a moment to check in on your friends today'), 'Take a moment to check in on your friends today');
@@ -187,7 +188,7 @@ test('v4.7, web juror: a figure lead keeps its verb, "just" (recently) stays, an
   assert.equal(L('so basically my newsletter just hit 5,000 readers which is honestly wild'), 'my newsletter just hit 5,000 readers which is wild');
   /* v4.8 (round-11 founder-3): a doubled intensifier collapses or goes; "I think" stays as the one hedge, and the why says what went */
   const rr = S('I really really think you should start a newsletter');
-  assert.equal(rr.line, 'I think you should start a newsletter.'); assert.doesNotMatch(rr.why, /breaks/); assert.match(rr.why, /twice/);
+  assert.equal(rr.line, 'I think you should start a newsletter'); assert.doesNotMatch(rr.why, /breaks/); assert.match(rr.why, /twice/);
   const q = S('Just wanted to share a quick redesign I did of the @Spotify mobile app. Would love to hear your thoughts!');
   /* v5.5 (Fable round 4, H4): "breaks" is held to the whole-sentence read (slStruct); a noun phrase left behind is no break */
   assert.equal(q.why, 'Marked “Just wanted to share”, not cut: this quick check wasn’t sure the line holds up without it. Your call.');
@@ -202,7 +203,7 @@ test('v4.7, UI/UX juror: a long-line split keeps compound subjects whole; no poi
   assert.match(hard("i think this thread is the most useful thing i wrote. here's why:", 'honestly i think this thread is literally the most useful thing i wrote'), /pointer added/);
   /* a pointer the draft made stays allowed */
   assert.equal(L('Quick thread on how I size my trades'), 'I size my trades. Here’s how:'); /* v4.8 (brand-4): ’ when the draft has none */
-  assert.equal(L("I've been writing this newsletter for 200 weeks straight and I want to share what I learned"), "I've been writing this newsletter for 200 weeks straight. Here's what I learned.");
+  assert.equal(L("I've been writing this newsletter for 200 weeks straight and I want to share what I learned"), "I've been writing this newsletter for 200 weeks straight. Here's what I learned");
   assert.equal(hard("We doubled demo bookings. Here's how:", "Here's a thread on how we doubled demo bookings"), '');
   /* the news leads a post over 280, with its verb */
   assert.match(L("I've been building in public for almost two years now and I wanted to share something that I really think a lot of people get wrong, which is that they focus way too much on follower count and not nearly enough on whether the people following them actually care about what they're building. We just hit $20k MRR with 3,100 followers."), /^We just hit \$20k MRR with 3,100 followers\. /);

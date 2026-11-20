@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.2: Sharpen after the round-5 set-3 review (hook41-1, 2, 3, 4, 5) and the round-7 page jurors' engine items
    (founder-1, marketing-1/3/4, page pass 8), held as rules. Written apart from the engine's own picks:
    1. hook41-1, P0: the five set-3 breaks come back whole, and each new guard rejects its broken form and passes its clean twin
@@ -61,7 +62,8 @@ test('v4.2, hook41-1: each new guard rejects the broken form and passes its clea
   assert.equal(D.writerForm('I\'m officially an U.S. Citizen.', 'so happy to share that I\'m officially a U.S. citizen.'), 'I\'m officially a U.S. citizen.');
   for (const [t, w] of [['I am so proud to share that we are now a SOC 2 company', /\ba SOC 2\b/], ['So excited to share that we\'re an NYC team of 12', /\ban NYC\b/]]) assert.match(L(t), w, t);
   /* a contraction where it reads: "I'm now taking", never "how proud I'm of" */
-  assert.match(L('I am really excited to share that I am now taking on 2 new clients for Q3!'), /^I['’]m now taking/);
+  /* v5.7 (page pass 22, founder-5): no contraction the writer didn't make: their "I am now taking" stays */
+  assert.match(L('I am really excited to share that I am now taking on 2 new clients for Q3!'), /^I am now taking/);
 });
 
 test('v4.2, hook41-2: the default mode re-checks every reshape; v4.1 and strict stay available', () => {
@@ -140,14 +142,14 @@ test('v4.2, hook41-5 and round 7: the run-ups the demo called "Already tight"', 
   const cases = [
     ["Here's my honest take on why I think funding rates are often a pretty terrible timing signal:", 'Why funding rates are often a pretty terrible timing signal:'], /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
     ["Can I share something that might be a little unpopular? I don't really believe in posting every single day.", "I don't really believe in posting every single day."],
-    ["I think it's worth noting that BTC just broke 100k", 'BTC just broke 100k.'],
-    ["It's worth noting that most newsletters die before issue 10", 'Most newsletters die before issue 10.'],
-    ['I wanted to write a post about something that has been on my mind lately: burnout', 'Something that has been on my mind lately: burnout.'],
-    ["I've been meaning to write about this for a while, but here's how I grew to 50k followers", "Here's how I grew to 50k followers."],
-    ["A lot of people have been asking me how I trade, so here's my process", "Here's how I trade."],
+    ["I think it's worth noting that BTC just broke 100k", 'BTC just broke 100k'],
+    ["It's worth noting that most newsletters die before issue 10", 'Most newsletters die before issue 10'],
+    ['I wanted to write a post about something that has been on my mind lately: burnout', 'Something that has been on my mind lately: burnout'],
+    ["I've been meaning to write about this for a while, but here's how I grew to 50k followers", "Here's how I grew to 50k followers"],
+    ["A lot of people have been asking me how I trade, so here's my process", "Here's how I trade"],
     ['Just a quick thread 🧵 on how I turned $2k into $40k (1/7)', 'How I turned $2k into $40k (1/7)'],
     ['In this thread I will explain how I grew my newsletter to 10k', 'How I grew my newsletter to 10k:'], /* v5.5 (H2): the announce run-up goes, the topic is the header, no word added */ /* v4.8 (brand-4): a draft with no apostrophe gets the page's ’ */
-    ['Just a thought, but maybe we should stop chasing every narrative', 'Maybe we should stop chasing every narrative.'],
+    ['Just a thought, but maybe we should stop chasing every narrative', 'Maybe we should stop chasing every narrative'],
     ['With that being said, most founders should write every day.', 'Most founders should write every day.'],
     ["As many of you know, I've been building in public for 2 years.", "I've been building in public for 2 years."],
     ['gm everyone, just wanted to say we shipped dark mode today', 'gm everyone, we shipped dark mode today']
@@ -192,7 +194,7 @@ test('v4.2, round 7: no dangling header, no object left alone, "I think" kept as
   /* v4.9 (round-12 uiux-4): the why says the cut word was the second hedge, under the kept "i think" (never that it went) */
   assert.match(S('i think this is probably the most important chart in crypto right now').why, /^Two hedges became one\. Kept your “probably”: it says how sure you are\.$/);
   /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-  assert.equal(L('I think one of the most underrated skills for a founder is writing'), 'One of the most underrated skills for a founder is writing.');
+  assert.equal(L('I think one of the most underrated skills for a founder is writing'), 'One of the most underrated skills for a founder is writing');
   assert.equal(L('I think most founders probably overthink their pitch decks.'), 'Most founders probably overthink their pitch decks.'); /* v5.6 (Fable round 5, f5-2): the lone "probably" stays as the call; the stacked "I think" goes */
   assert.match(L('honestly i think SOL is going to flip ETH this cycle, not financial advice'), /^i think SOL/);
   /* "I really don't think" is a negated stance, kept (it was read as "I don't think" only after "don't") */

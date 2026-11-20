@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.3: the on-device Sharpen after blind set 4 (hook42-1 to hook42-5) and round 8 (founder-1, marketing-1/2/9,
    uiux-1/2/5/6, web-1), plus the page builder's pass-9 engine items.
    1. hook42-1: a deadpan or news label on one or two whole sentences is kept ("Your frame sets it up."); the hype openers go
@@ -48,21 +49,21 @@ test('v4.3, hook42-1: a deadpan or news label on a whole sentence is part of the
 test('v4.3, round-8 founder-1 and marketing-1: the hype openers go, or stay marked, never "Nothing to cut"', () => {
   const cut = [
     ['huge news, BTC just broke 100k', 'BTC just broke 100k'],
-    ['Big news! we just hit $10k MRR', 'We just hit $10k MRR.'],
-    ['Big news! We just launched our new feature after months of hard work', 'We just launched our new feature after months of hard work.'],
-    ['This is huge. Solana just flipped Ethereum in daily fees', 'Solana just flipped Ethereum in daily fees.'],
+    ['Big news! we just hit $10k MRR', 'We just hit $10k MRR'],
+    ['Big news! We just launched our new feature after months of hard work', 'We just launched our new feature after months of hard work'],
+    ['This is huge. Solana just flipped Ethereum in daily fees', 'Solana just flipped Ethereum in daily fees'],
     ['nobody is talking about this but the yield curve just un-inverted', 'the yield curve just un-inverted'],
     ['Why is nobody talking about this? The Fed just quietly ended QT.', 'The Fed just quietly ended QT.'],
-    ['Wow. Just wow. ETH just flipped 4k', 'ETH just flipped 4k.'],
+    ['Wow. Just wow. ETH just flipped 4k', 'ETH just flipped 4k'],
     ['wow just wow, the bull market is back', 'the bull market is back'],
-    ['Let that sink in: SOL flipped ETH in daily volume', 'SOL flipped ETH in daily volume.'],
+    ['Let that sink in: SOL flipped ETH in daily volume', 'SOL flipped ETH in daily volume'],
     ['We went from 0 to $40k MRR in 9 months. Let that sink in.', 'We went from 0 to $40k MRR in 9 months.'],
-    ['To the moon! $PEPE just did a 10x', '$PEPE just did a 10x.'],
-    ['To the moon: $PEPE just did a 10x', '$PEPE just did a 10x.'],
+    ['To the moon! $PEPE just did a 10x', '$PEPE just did a 10x'],
+    ['To the moon: $PEPE just did a 10x', '$PEPE just did a 10x'],
     ['We just hit 10,000 users. Huge news.', 'We just hit 10,000 users.'],
     ['Our app is finally live on the App Store. This is huge! 🎉', 'Our app is finally live on the App Store. 🎉'],
-    ["In today's thread I'm going to break down why most traders lose money", 'Thread: why most traders lose money.'],
-    ['Most people will scroll past this, but the best trade is often no trade', 'The best trade is often no trade.']
+    ["In today's thread I'm going to break down why most traders lose money", 'Thread: why most traders lose money'],
+    ['Most people will scroll past this, but the best trade is often no trade', 'The best trade is often no trade']
   ];
   for (const [t, want] of cut) { assert.equal(L(t), want, t); assert.equal(L(t, { strict: true }), want, `strict: ${t}`); }
   /* the claim's own "goes to the moon" is the claim, never marked */
@@ -128,7 +129,7 @@ test('v4.3, hook42-3 and round-8 receipts: true, plain, and said once', () => {
   assert.equal(r.line, 'Some thoughts on why most traders lose money:');
   assert.deepEqual(r.cut.map(c => c.text), ['Hey everyone,', 'I wanted to share']); /* v5.1 (web-5): the comma the line lost is struck with its word */
   assert.match(r.why, /“Some thoughts” stays/);
-  assert.equal(L('So basically I wanted to share a quick story about how I lost $4,000 in March by doubling my size to win it back, and honestly it was the worst week of my trading life'), 'I lost $4,000 in March by doubling my size to win it back. It was the worst week of my trading life.');
+  assert.equal(L('So basically I wanted to share a quick story about how I lost $4,000 in March by doubling my size to win it back, and honestly it was the worst week of my trading life'), 'I lost $4,000 in March by doubling my size to win it back. It was the worst week of my trading life');
   /* "the run-up is gone" only when the line no longer opens on one; a struck run-up is never still in the line */
   const warm = /^(?:announce|label|disclaim|stock|throat|open|feel|bait)$/;
   for (const t of [...HUNT, ...HUNT42]) for (const [m, o] of MODES) {
@@ -152,7 +153,7 @@ test('v4.3, hook42-4 and uiux-5: a put-back opener keeps the question and pins o
   /* v4.4 (hook43-2): "like a week" is the writer's "about a week", so it stays */
   /* v5.4 (step 1): never a "?" the writer didn't type */
   assert.equal(L('ok but why does every productivity app basically turn into a second job after like a week', { keep: ['ok but'] }), 'ok but why does every productivity app turn into a second job after like a week');
-  assert.equal(L('honestly what is the point of a pitch deck nobody reads'), 'what’s the point of a pitch deck nobody reads'); /* v4.8 (brand-4): no apostrophe in the draft, so the page's ’ */
+  assert.equal(L('honestly what is the point of a pitch deck nobody reads'), 'what is the point of a pitch deck nobody reads'); /* v4.8 (brand-4): no apostrophe in the draft, so the page's ’ */
   assert.equal(L('so like how are you all getting your first 100 subscribers'), 'how are you all getting your first 100 subscribers');
   /* the other cuts and reshapes stand around a pinned opener */
   assert.equal(L('Hey everyone, I wanted to share some thoughts on why most traders lose money', { keep: ['Hey everyone'] }), 'Hey everyone, some thoughts on why most traders lose money:');

@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.9: the on-device Sharpen after the P0 report (a run-up stacked before an announcement frame) and the round-12 page jurors
    (engine items only).
    1. P0: a run-up before an announcement frame ("Just wanted to say [that] I'm excited to announce our new app") is cut in the same
@@ -64,17 +65,17 @@ const failsOf = t => allVersions(t).flatMap(([m, l, d]) => [hard(l, d) && `${m}:
 /* ---------------- 1. P0 ---------------- */
 test('v4.9 P0: a run-up stacked before an announcement frame is cut with it, and the verb keeps its -ing', () => {
   for (const [t, want] of [
-    ["Just wanted to say I'm excited to announce our new app", "I'm announcing our new app."],
-    ["So I just wanted to say that I'm thrilled to announce our new course", "I'm announcing our new course."],
-    ["I wanted to share that I'm really excited to announce my new job", "I'm announcing my new job."],
-    ['I just wanted to say that I am really excited to announce our new feature', 'I’m announcing our new feature.'],
-    ["Today I'm excited to announce our new feature", "Today I'm announcing our new feature."],
-    ['Hey everyone, so thrilled to launch our new app', 'Launching our new app.'],
-    ['Ok so we are happy to introduce v2', 'We’re introducing v2.'],
-    ['Quick update: beyond happy to announce v2', 'Announcing v2.'],
-    ["I have to say I'm excited to announce that I'm joining X", "I'm joining X."],
-    ['Wanted to let you know I am thrilled to share our new app', 'I am thrilled to share our new app.'],
-    ["Today I'm excited to announce that we raised a seed round", 'Today we raised a seed round.'],
+    ["Just wanted to say I'm excited to announce our new app", "I'm announcing our new app"],
+    ["So I just wanted to say that I'm thrilled to announce our new course", "I'm announcing our new course"],
+    ["I wanted to share that I'm really excited to announce my new job", "I'm announcing my new job"],
+    ['I just wanted to say that I am really excited to announce our new feature', 'I’m announcing our new feature'],
+    ["Today I'm excited to announce our new feature", "Today I'm announcing our new feature"],
+    ['Hey everyone, so thrilled to launch our new app', 'Launching our new app'],
+    ['Ok so we are happy to introduce v2', 'We’re introducing v2'],
+    ['Quick update: beyond happy to announce v2', 'Announcing v2'],
+    ["I have to say I'm excited to announce that I'm joining X", "I'm joining X"],
+    ['Wanted to let you know I am thrilled to share our new app', 'I am thrilled to share our new app'],
+    ["Today I'm excited to announce that we raised a seed round", 'Today we raised a seed round'],
   ]) { const r = S(t); assert.equal(r.state, 'sharp', t); assert.equal(r.line, want, t); assert.doesNotMatch(r.why, /announce our|’m announce|'m announce/, t); }
   /* never "I'm announce…", in any mode, with alts and put-backs */
   for (const t of ["Just wanted to say I'm excited to announce our new app", "So I just wanted to say that I'm thrilled to announce our new course", "I wanted to share that I'm really excited to announce my new job", 'I just wanted to say that I am really excited to announce our new feature', "Today I'm excited to announce our new feature"])
@@ -131,8 +132,8 @@ test('v4.9 cross-product: 12 run-ups × 8 frames × 6 objects, 0 broken in every
   /* the objects: a clause after share/announce leads; a thing named keeps its verb; never a fragment or a bare object */
   for (const t of XP) { const r = S(t); if (r.state !== 'sharp') continue;
     assert.doesNotMatch(r.line, /^(?:Our new (?:app|course)|My new job|V2)[.:!]?$/, t);
-    if (/(?:announce|share) that we raised a seed round$/.test(t)) assert.match(r.line, /^(?:Today )?[Ww]e raised a seed round\.$/, t);
-    if (/(?:announce|share) that I'm joining X$/.test(t)) assert.match(r.line, /^(?:Today )?I'm joining X\.$/, t); }
+    if (/(?:announce|share) that we raised a seed round$/.test(t)) assert.match(r.line, /^(?:Today )?[Ww]e raised a seed round$/, t); /* v5.7: no end stop the writer didn't type */
+    if (/(?:announce|share) that I'm joining X$/.test(t)) assert.match(r.line, /^(?:Today )?I'm joining X$/, t); }
   /* the why quotes what the line now says, never a broken opening */
   for (const t of XP) { const r = S(t); if (r.state === 'sharp') assert.doesNotMatch(r.why, /(?:’m|'m|’re|'re| am| are) (?:announce|share|launch|introduce)\b/, t); }
 });
@@ -145,16 +146,16 @@ test('v4.9 round 12 (founder-1): a topic named after a talk-about or share run-u
   assert.equal(L('I want to share some thoughts on pricing'), 'Some thoughts on pricing:');
   assert.equal(L('Today I want to talk about the 3 habits that changed my writing'), 'The 3 habits that changed my writing:');
   /* a clause after "say" is a claim, never a header */
-  assert.equal(L('I wanted to say the team we hired last year quit'), 'The team we hired last year quit.');
+  assert.equal(L('I wanted to say the team we hired last year quit'), 'The team we hired last year quit');
   /* "breaks" only when no header would stand: an unnumbered header with nothing under it is the writer's call, said so */
   for (const t of ['Today I want to talk about the tools I use every day', 'Let me tell you a story about the worst trade I ever made']) { const r = S(t); assert.equal(r.state, 'unsure', t); assert.doesNotMatch(r.why, /breaks/, t); assert.match(r.why, /header with nothing under it/, t); }
   for (const t of ["In today's newsletter, I want to talk about the 5 mistakes every new trader makes", 'I want to share some thoughts on pricing']) for (const [m, l, d] of allVersions(t)) assert.equal(hard(l, d), '', `${m}: ${l}`);
 });
 
 test('v4.9 round 12: "Big announcement:" is hype and goes; deadpan labels stay', () => {
-  assert.equal(L('Big announcement: we just raised our seed round'), 'We just raised our seed round.');
-  assert.equal(L('Huge announcement! We are hiring'), 'We are hiring.');
-  assert.equal(L('Big announcement: our new app is live'), 'Our new app is live.');
+  assert.equal(L('Big announcement: we just raised our seed round'), 'We just raised our seed round');
+  assert.equal(L('Huge announcement! We are hiring'), 'We are hiring');
+  assert.equal(L('Big announcement: our new app is live'), 'Our new app is live');
   assert.match(S('Big announcement: our new app is live').why, /Big announcement|hype|first thing|opens/i);
   assert.equal(S('Update: our new app is live').state, 'clean');
 });
@@ -163,7 +164,7 @@ test('v4.9 round 12 (uiux-4): one hedge per clause; a "maybe" stacked on "I thin
   /* v5.0 (round-13 uiux-2): the spare "that" goes with the second hedge */
   /* v5.4 (step 3): advice is a plain view, so the stance goes with the second hedge */
   /* v5.6 (Fable round 5, f5-2): one rule for the hedge words: the "maybe" is the clause's one hedge, kept as the writer's call; the stance on top goes */
-  for (const [t, want] of [['i think that maybe we should raise prices', 'maybe we should raise prices'], ['I think maybe we should raise prices', 'Maybe we should raise prices.'], ['I feel like maybe we should raise prices', 'Maybe we should raise prices.']]) {
+  for (const [t, want] of [['i think that maybe we should raise prices', 'maybe we should raise prices'], ['I think maybe we should raise prices', 'Maybe we should raise prices'], ['I feel like maybe we should raise prices', 'Maybe we should raise prices']]) {
     const r = S(t); assert.equal(r.line, want, t); assert.ok(r.marks.some(m => t.slice(m[0], m[1]) === 'maybe'), t); assert.match(r.why, /second hedge|Without “I (?:think|feel like)(?: that)?” and “maybe”|“maybe”|“[iI] (?:think|feel like)(?: that)?” was talk/, t); }
   /* a lone "maybe" is the stance; a call keeps every hedge */
   assert.equal(S('maybe we should raise prices').state, 'clean');
@@ -174,7 +175,7 @@ test('v4.9 round 12 (uiux-4): one hedge per clause; a "maybe" stacked on "I thin
 });
 
 test('v4.9 round 12 (uiux-3): no word the draft never had: a round keeps the writer\'s verb, never "We raised"', () => {
-  for (const [t, want] of [['Really excited to announce our seed round', 'Announcing our seed round.'], ["We're super excited to announce our $2.5M pre-seed led by Hustle Fund!", "We're announcing our $2.5M pre-seed led by Hustle Fund!"], ["We're thrilled to finally announce our $3M seed round to help small teams ship faster! 🚀", "We're finally announcing our $3M seed round to help small teams ship faster! 🚀"], ['So excited to announce the availability of our app in Europe', 'Announcing the availability of our app in Europe.']]) {
+  for (const [t, want] of [['Really excited to announce our seed round', 'Announcing our seed round'], ["We're super excited to announce our $2.5M pre-seed led by Hustle Fund!", "We're announcing our $2.5M pre-seed led by Hustle Fund!"], ["We're thrilled to finally announce our $3M seed round to help small teams ship faster! 🚀", "We're finally announcing our $3M seed round to help small teams ship faster! 🚀"], ['So excited to announce the availability of our app in Europe', 'Announcing the availability of our app in Europe']]) {
     assert.equal(L(t), want, t);
     for (const [m, l] of allVersions(t)) { assert.doesNotMatch(l, /\braised\b/i, `${m}: ${l}`); assert.doesNotMatch(l, /\bis live\b/i, `${m}: ${l}`); }
   }

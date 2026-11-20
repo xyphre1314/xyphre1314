@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 pass 6: what the fifth hook juror found on the on-device engine (hook-1, 6, 7, 8, 12), held as rules. Written apart from
    the engine's own picks, on the juror's lines and fresh probes:
    1. hook-1/6, P0: the hard guards. Each one rejects the broken or changed version it names and passes its clean twin, and no
@@ -102,7 +103,7 @@ test('juror 5, hook-7: the engine keeps what the Claude prompt keeps', () => {
   /* the disclaimer stays where the writer put it: never moved to the end */
   for (const t of ["Not financial advice obviously but I've been slowly accumulating $LINK under 15 for the past month", 'nfa but i genuinely believe $HYPE is the most undervalued L1 right now']) { const l = L(t); assert.match(l, /^(?:not financial advice|nfa)\b/i, t); assert.doesNotMatch(l, /(?:not financial advice|nfa)[.!]?$/i, t); }
   /* one hedge per clause: a lone "I think" stays (its padding goes), a stacked one gives way to the modal */
-  assert.equal(L('I genuinely think AI agents are overhyped right now'), 'AI agents are overhyped right now.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L('I genuinely think AI agents are overhyped right now'), 'AI agents are overhyped right now'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* v4.2 (round-7 marketing-4): "I think" stays as the one hedge, the second hedge goes */
   /* v5.3 (Fable g-28/g-74): an "I think" on the writer's own past goes, and the claim's own "probably" stays */
   assert.equal(L('I think one of the biggest mistakes I made as a first-time founder was probably hiring way too fast.'), 'One of the biggest mistakes I made as a first-time founder was probably hiring way too fast.');

@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.8: the on-device Sharpen after the round-11 page jurors (UI/UX, marketing, founder, brand and web: engine items only).
    1. uiux-1: the announcement frame is one grammar. A subject (we/I + are/am/'re/'m, or none), any run of intensifiers ("so
       incredibly", "really really", "so, so"), a feeling (or two joined by "and"), "to", an optional finally/officially/now, and
@@ -65,46 +66,46 @@ function broken(line, draft) {
 
 /* 1. the announcement grammar, in any combination: the default line for each draft */
 const ANN40 = [
-  ["We are super excited to finally launch our new feature that lets you schedule posts", "We’re finally launching our new feature that lets you schedule posts."],
-  ["I'm so incredibly proud to share that our team just shipped v2", "Our team just shipped v2."],
-  ["We're thrilled to announce that we raised a $3M seed round", "We raised a $3M seed round."],
-  ["I am beyond grateful to say that I've been accepted into YC", "I've been accepted into YC."],
-  ["We’re so excited to unveil the new dashboard", "We’re unveiling the new dashboard."],
-  ["I am super excited to now launch our affiliate program", "I’m now launching our affiliate program."],
-  ["So excited to launch our app today", "Launching our app today."],
+  ["We are super excited to finally launch our new feature that lets you schedule posts", "We’re finally launching our new feature that lets you schedule posts"],
+  ["I'm so incredibly proud to share that our team just shipped v2", "Our team just shipped v2"],
+  ["We're thrilled to announce that we raised a $3M seed round", "We raised a $3M seed round"],
+  ["I am beyond grateful to say that I've been accepted into YC", "I've been accepted into YC"],
+  ["We’re so excited to unveil the new dashboard", "We’re unveiling the new dashboard"],
+  ["I am super excited to now launch our affiliate program", "I’m now launching our affiliate program"],
+  ["So excited to launch our app today", "Launching our app today"],
   ["Super excited to finally launch our new website!", "Finally launching our new website!"],
-  ["Thrilled to introduce Hookworthy, a writing tool for X", "Introducing Hookworthy, a writing tool for X."],
-  ["We are excited to introduce Hookworthy, a writing tool for X", "We’re introducing Hookworthy, a writing tool for X."],
-  ["We're pumped to finally reveal our new logo", "We're finally revealing our new logo."],
-  ["I'm stoked to let you know that the waitlist is open", "The waitlist is open."],
-  ["We are very happy to tell you that we hit 10k users", "We hit 10k users."],
-  ["I'm humbled to announce that I'm joining Stripe", "I'm joining Stripe."],
-  ["We're really really excited to finally launch the beta", "We're finally launching the beta."],
-  ["I'm so so proud to share that we closed our seed round", "We closed our seed round."],
+  ["Thrilled to introduce Hookworthy, a writing tool for X", "Introducing Hookworthy, a writing tool for X"],
+  ["We are excited to introduce Hookworthy, a writing tool for X", "We’re introducing Hookworthy, a writing tool for X"],
+  ["We're pumped to finally reveal our new logo", "We're finally revealing our new logo"],
+  ["I'm stoked to let you know that the waitlist is open", "The waitlist is open"],
+  ["We are very happy to tell you that we hit 10k users", "We hit 10k users"],
+  ["I'm humbled to announce that I'm joining Stripe", "I'm joining Stripe"],
+  ["We're really really excited to finally launch the beta", "We're finally launching the beta"],
+  ["I'm so so proud to share that we closed our seed round", "We closed our seed round"],
   ["we are thrilled to share that our app is live", "our app is live"],
   ["i'm so excited to finally launch my newsletter", "i'm finally launching my newsletter"],
   ["We're incredibly excited to launch Hookworthy on Product Hunt today!", "We're launching Hookworthy on Product Hunt today!"],
-  ["We're excited to now introduce dark mode", "We're now introducing dark mode."],
-  ["I am really proud to announce that we closed our Series A", "We closed our Series A."],
-  ["We are so proud to officially launch our new website", "We’re officially launching our new website."],
-  ["We're super stoked to finally unveil our new brand", "We're finally unveiling our new brand."],
-  ["Honored to share that I'll be speaking at SaaStr next month", "I'll be speaking at SaaStr next month."],
-  ["I'm genuinely so happy to say that our podcast is back", "Our podcast is back."],
-  ["We are so excited to officially announce that we're hiring", "We're hiring."],
-  ["I'm excited and honored to share that I joined Vercel", "I joined Vercel."],
-  ["We're thrilled and grateful to finally launch v3 today", "We're finally launching v3 today."],
-  ["So pumped to officially release our first course", "Officially releasing our first course."],
-  ["I am so very excited to share that my book is out today", "My book is out today."],
-  ["We're beyond excited to finally reveal that we're rebranding", "We're rebranding."],
-  ["I'm super super excited to launch my first product", "I'm launching my first product."],
-  ["We are absolutely thrilled to introduce our new pricing", "We’re introducing our new pricing."],
-  ["Excited to finally debut our new podcast this Friday", "Finally debuting our new podcast this Friday."],
-  ["I'm proud to let everyone know that we're profitable", "We're profitable."],
-  ["We are so excited to tell you all that the app is live", "The app is live."],
-  ["I'm happy to finally share that I passed the bar exam", "I passed the bar exam."],
-  ["We're so excited to announce our new podcast", "We're announcing our new podcast."],
-  ["I am really excited to be speaking at Token2049 next week", "I’m speaking at Token2049 next week."],
-  ["I am very excited and honored to be speaking at Token2049 next week in Singapore", "I’m speaking at Token2049 next week in Singapore."]
+  ["We're excited to now introduce dark mode", "We're now introducing dark mode"],
+  ["I am really proud to announce that we closed our Series A", "We closed our Series A"],
+  ["We are so proud to officially launch our new website", "We’re officially launching our new website"],
+  ["We're super stoked to finally unveil our new brand", "We're finally unveiling our new brand"],
+  ["Honored to share that I'll be speaking at SaaStr next month", "I'll be speaking at SaaStr next month"],
+  ["I'm genuinely so happy to say that our podcast is back", "Our podcast is back"],
+  ["We are so excited to officially announce that we're hiring", "We're hiring"],
+  ["I'm excited and honored to share that I joined Vercel", "I joined Vercel"],
+  ["We're thrilled and grateful to finally launch v3 today", "We're finally launching v3 today"],
+  ["So pumped to officially release our first course", "Officially releasing our first course"],
+  ["I am so very excited to share that my book is out today", "My book is out today"],
+  ["We're beyond excited to finally reveal that we're rebranding", "We're rebranding"],
+  ["I'm super super excited to launch my first product", "I'm launching my first product"],
+  ["We are absolutely thrilled to introduce our new pricing", "We’re introducing our new pricing"],
+  ["Excited to finally debut our new podcast this Friday", "Finally debuting our new podcast this Friday"],
+  ["I'm proud to let everyone know that we're profitable", "We're profitable"],
+  ["We are so excited to tell you all that the app is live", "The app is live"],
+  ["I'm happy to finally share that I passed the bar exam", "I passed the bar exam"],
+  ["We're so excited to announce our new podcast", "We're announcing our new podcast"],
+  ["I am really excited to be speaking at Token2049 next week", "I’m speaking at Token2049 next week"],
+  ["I am very excited and honored to be speaking at Token2049 next week in Singapore", "I’m speaking at Token2049 next week in Singapore"]
 ];
 
 test('v4.8, uiux-1: the announcement frame is one grammar (40 variants)', () => {
@@ -114,23 +115,23 @@ test('v4.8, uiux-1: the announcement frame is one grammar (40 variants)', () => 
     for (const [m, l, d] of allVersions(t)) { const h = hard(l, d), w = whole(l, d), b = broken(l, d); assert.ok(!h && !w && !b.length, `${m}: ${t} → ${l} (${h || w || b.join(', ')})`); }
   }
   /* the verb that is the news stays the writer's, in their order; nothing is said that they didn't say */
-  assert.equal(L('We are super excited to finally launch our new feature that lets you schedule posts'), 'We’re finally launching our new feature that lets you schedule posts.');
-  assert.equal(L("I'm so incredibly proud to share that our team just shipped v2"), 'Our team just shipped v2.');
+  assert.equal(L('We are super excited to finally launch our new feature that lets you schedule posts'), 'We’re finally launching our new feature that lets you schedule posts');
+  assert.equal(L("I'm so incredibly proud to share that our team just shipped v2"), 'Our team just shipped v2');
   for (const t of ['We are super excited to finally launch our new feature that lets you schedule posts', 'So excited to launch our app today', "We're excited to announce the launch of our new dashboard", 'Excited to announce the launch of our new dashboard next week'])
     for (const [m, l] of allVersions(t)) { assert.doesNotMatch(l, /\bis live\b/i, `${m}: ${t} → ${l}`); assert.match(l, /\blaunch/i, `${m}: ${t} → ${l}`); }
-  assert.equal(L('Excited to announce the launch of our new dashboard next week'), 'Launching our new dashboard next week.');
+  assert.equal(L('Excited to announce the launch of our new dashboard next week'), 'Launching our new dashboard next week');
   /* the frame is marked as the feeling alone, so what is struck is what went */
   const m = S('We are super excited to finally launch our new feature that lets you schedule posts').marks.map(x => x[3]);
   assert.deepEqual(m, ['announce']); assert.deepEqual(S('We are super excited to finally launch our new feature that lets you schedule posts').cut.filter(c => c.kind !== 'reshape').map(c => c.text), ['super excited to']);
   /* the reshapes the frame already had stay ("We're partnering…", "We raised…"), and a feeling with no verb after it stays */
-  assert.equal(L("We're thrilled to announce our partnership with Coinbase"), 'We’re partnering with Coinbase.'.replace('’', "'"));
+  assert.equal(L("We're thrilled to announce our partnership with Coinbase"), 'We’re partnering with Coinbase'.replace('’', "'")); /* v5.7: no end stop the writer didn't type */
   /* v4.9 (round-12 uiux-3): a round named keeps the writer's verb, never "We raised" (a word the draft never had) */
   assert.equal(L("We're super excited to announce our $2.5M pre-seed led by Hustle Fund!"), "We're announcing our $2.5M pre-seed led by Hustle Fund!");
   assert.equal(S("I'm so happy that my mom finally got to see the ocean").state, 'clean');
   /* "sharing" and "shipping" are words the page's own guard doesn't know, so a shared thing stays marked */
   assert.equal(S("I'm so excited to share our new newsletter with you all!").state, 'unsure');
   /* an announcement that leaves a whole two-word clause leaves a post */
-  assert.equal(L("We are so excited to officially announce that we're hiring"), "We're hiring.");
+  assert.equal(L("We are so excited to officially announce that we're hiring"), "We're hiring");
   /* strict ships only a plain cut: a verb in its -ing form is a reshape, so strict keeps the line as written */
   assert.equal(S('So excited to launch our app today', { strict: true }).state, 'unsure');
 });
@@ -158,7 +159,7 @@ test('v4.8, marketing-1: a why/how topic keeps its question word, so the line st
   /* with a body under it, the pointer is the loop it was */
   assert.equal(L("Let's talk about why your open rates are lying to you\n\n1. Apple MPP inflates opens\n2. Bots click everything"), "Your open rates are lying to you. Here's why:");
   /* a story and a "Can we talk about how…?" say what happened: they stay claims */
-  assert.equal(L('I wanted to share a quick story about how we lost our biggest customer'), 'We lost our biggest customer.');
+  assert.equal(L('I wanted to share a quick story about how we lost our biggest customer'), 'We lost our biggest customer');
   assert.equal(L('Can we talk about how nobody reads the terms of service?'), 'Nobody reads the terms of service.');
   /* an exclamative "how" is not a topic, and nothing promises what nobody wrote */
   assert.doesNotMatch(L("I've been thinking a lot lately about how important it is to ship fast"), /:$/);
@@ -191,33 +192,33 @@ test('v4.8, founder-1: the plain cut is version 1; "Asked, then answered" is the
 
 test('v4.8, founder-2/3 and marketing-2: true reasons, doubled intensifiers, and the run-ups the demo missed', () => {
   /* "Basically" before an "if" clause goes; "breaks" only when slHard refused that cut */
-  assert.equal(L('Basically if your landing page has more than one CTA you\'re losing signups'), "If your landing page has more than one CTA you're losing signups.");
+  assert.equal(L('Basically if your landing page has more than one CTA you\'re losing signups'), "If your landing page has more than one CTA you're losing signups");
   const sweep = [...HUNT, ...JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-v47-hunt.json'), 'utf8')).lines, ...ANN40.map(r => r[0])];
   for (const t of sweep) { const r = S(t); const q = (r.why.match(/^Marked “([^”]+)”, not cut: without it this line breaks/) || [])[1]; if (!q || q.endsWith('…')) continue;
     const others = r.marks.map(m => r.draft.slice(m[0], m[1])).filter(w => w !== q); let l = core.softCut(r.draft, others).s; if (/[\p{L}\p{N}%)$]$/u.test(l)) l += '.';
     assert.ok(hard(l, r.draft), `${t}: says "breaks", but slHard takes "${l}"`); }
   /* a doubled intensifier collapses or goes; on a hard feeling, a negation or a verb the doubling is the meaning */
-  assert.equal(L('Really really proud of the team for shipping this'), 'Really proud of the team for shipping this.');
+  assert.equal(L('Really really proud of the team for shipping this'), 'Really proud of the team for shipping this');
   assert.match(S('Really really proud of the team for shipping this').why, /twice/);
-  assert.equal(L('Very very important: never risk more than 1% on a trade'), 'Important: never risk more than 1% on a trade.');
-  assert.equal(L('This is so so good'), 'This is so good.');
-  assert.equal(L("We're really really excited to finally launch the beta"), "We're finally launching the beta.");
+  assert.equal(L('Very very important: never risk more than 1% on a trade'), 'Important: never risk more than 1% on a trade');
+  assert.equal(L('This is so so good'), 'This is so good');
+  assert.equal(L("We're really really excited to finally launch the beta"), "We're finally launching the beta");
   assert.equal(L('I really, really think you should write every day if you want to grow.'), 'I think you should write every day if you want to grow.');
   for (const t of ['I really, really needed this win.', "It's been a really, really hard year for me and my family.", "everyone says it's fine when it really, really isn't"]) assert.match(L(t), /really, really/, t);
   /* the run-ups */
   assert.equal(L("i just want to say that if you're new to crypto please don't use leverage"), "if you're new to crypto please don't use leverage");
-  assert.equal(L('This is huge: Solana just flipped Ethereum in daily active users'), 'Solana just flipped Ethereum in daily active users.');
+  assert.equal(L('This is huge: Solana just flipped Ethereum in daily active users'), 'Solana just flipped Ethereum in daily active users');
   assert.equal(L('gm frens, just a reminder that $BTC is still in a bull market'), 'gm frens, $BTC is still in a bull market');
-  assert.equal(L('My newsletter just crossed 10,000 subscribers and I am so grateful for each and every one of you'), 'My newsletter just crossed 10,000 subscribers. I’m so grateful for every one of you.');
+  assert.equal(L('My newsletter just crossed 10,000 subscribers and I am so grateful for each and every one of you'), 'My newsletter just crossed 10,000 subscribers. I am so grateful for every one of you');
   /* "Series A" ends on a name, not an article */
-  assert.equal(L('I am really proud to announce that we closed our Series A'), 'We closed our Series A.');
+  assert.equal(L('I am really proud to announce that we closed our Series A'), 'We closed our Series A');
 });
 
 test('v4.8, brand-4: the apostrophe the engine writes matches the draft, and the page when the draft has none', () => {
-  assert.equal(L('We are super excited to finally launch our new feature'), 'We’re finally launching our new feature.');
-  assert.equal(L("We are super excited to finally launch our 'new' feature"), "We're finally launching our 'new' feature.");
-  assert.equal(L('We’re so excited to unveil the new dashboard'), 'We’re unveiling the new dashboard.');
-  assert.equal(L("i think it is basically done and we are honestly so ready"), 'it’s basically done and we’re so ready'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L('We are super excited to finally launch our new feature'), 'We’re finally launching our new feature');
+  assert.equal(L("We are super excited to finally launch our 'new' feature"), "We're finally launching our 'new' feature");
+  assert.equal(L('We’re so excited to unveil the new dashboard'), 'We’re unveiling the new dashboard');
+  assert.equal(L("i think it is basically done and we are honestly so ready"), 'it is basically done and we are so ready'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* the writer's own characters are never changed: a mixed draft keeps each as typed */
   const mx = L("I'm so excited to finally launch my app and it’s free");
   assert.ok(mx.includes("I'm") && mx.includes('it’s'), mx);

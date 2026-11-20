@@ -243,6 +243,14 @@ p{margin:0}
 .mini.ghost:hover{background:var(--s2)}
 .mini:focus-visible{border-radius:999px}
 .mini .ico{width:13px;height:13px}
+/* pass 22 (brand-1): a button inside a mock-up ("Put it back", "Reply", "Approve with my edit") is a frosted pill: a glass fill, a
+   hairline and a soft-white label. The white pill is only ever the page's own action (Start free, Sharpen, Start with Pro, Sharpen
+   every post free), so each screen has one white target */
+.mini.frost,.btn.frost{color:var(--ink);background:rgba(255,255,255,.085);box-shadow:inset 0 0 0 1px rgba(255,255,255,.17),inset 0 1px 0 rgba(255,255,255,.1),0 6px 16px -10px rgba(0,0,0,.9);-webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%)}
+.mini.frost:hover,.btn.frost:hover{background:rgba(255,255,255,.13);box-shadow:inset 0 0 0 1px rgba(255,255,255,.24),inset 0 1px 0 rgba(255,255,255,.12),0 6px 16px -10px rgba(0,0,0,.9)}
+/* pass 22 (web-2): a receipt's parts, each unbreakable and carrying its own leading "·" */
+#out-st .rp,#pf-move .rp{display:inline-block;white-space:nowrap;font-weight:inherit;color:inherit}
+.rp i{font-style:normal}
 /* the quiet way to see an illustrative moment again */
 .replay{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;margin:-4px -10px;border-radius:999px;font-size:13px;font-weight:500;color:var(--ink-3);transition:color .2s,background-color .2s}
 .replay:hover{color:var(--ink);background:rgba(255,255,255,.06)}
@@ -283,6 +291,7 @@ html:not(.motion) .replay:not(.alt){display:none}
 .links a:focus-visible,.signin:focus-visible{border-radius:999px}
 .nav-r{display:flex;align-items:center;gap:6px;margin-left:auto}
 .nav-r .btn-sm{transition:opacity .2s,transform .35s var(--ease),box-shadow .35s var(--ease)}
+.nav-r .np{display:none}
 main{position:relative;overflow-x:clip}
 
 /* ================= the opening shot (Cinema) ================= */
@@ -526,11 +535,11 @@ html:not(.motion) #pf-go{display:none}
    layout covers the hero and the Try row, not the whole page. Each keeps its last rendered size, so nothing jumps */
 .js .t-try,.js .t-pv,.js .t-voi,.js .t-day,.js .t-rep,.js .t-res,.js .t-who,.js .t-st,.js .t-tru,.js #pricing,.js #faq,.js #start,.js footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
 /* the placeholders are each block's content height as rendered at that width (padding comes on top), so the scrollbar is right
-   before anything below the hero has rendered (measured: r86/fix13/cis3.js; pass 21: r86/fix21/cisw.py) */
-.js .t-try{contain-intrinsic-size:auto 605px}.js .t-pv{contain-intrinsic-size:auto 605px}.js .t-voi{contain-intrinsic-size:auto 515px}.js .t-day{contain-intrinsic-size:auto 548px}.js .t-rep{contain-intrinsic-size:auto 387px}.js .t-res{contain-intrinsic-size:auto 500px}.js .t-who{contain-intrinsic-size:auto 500px}.js .t-st{contain-intrinsic-size:auto 545px}.js .t-tru{contain-intrinsic-size:auto 387px}.js #pricing{contain-intrinsic-size:auto 942px}.js #faq{contain-intrinsic-size:auto 456px}.js #start{contain-intrinsic-size:auto 456px}.js footer{contain-intrinsic-size:auto 534px}
-@media (min-width:1100px) and (max-width:1199px){.js .t-try{contain-intrinsic-size:auto 638px}.js .t-pv{contain-intrinsic-size:auto 638px}.js .t-voi{contain-intrinsic-size:auto 515px}.js .t-day{contain-intrinsic-size:auto 548px}.js .t-rep{contain-intrinsic-size:auto 432px}.js .t-res{contain-intrinsic-size:auto 518px}.js .t-who{contain-intrinsic-size:auto 518px}.js .t-st{contain-intrinsic-size:auto 733px}.js .t-tru{contain-intrinsic-size:auto 432px}.js #pricing{contain-intrinsic-size:auto 918px}.js #faq{contain-intrinsic-size:auto 456px}.js #start{contain-intrinsic-size:auto 438px}.js footer{contain-intrinsic-size:auto 527px}}
-@media (min-width:901px) and (max-width:1099px){.js .t-try{contain-intrinsic-size:auto 605px}.js .t-pv{contain-intrinsic-size:auto 676px}.js .t-voi{contain-intrinsic-size:auto 610px}.js .t-day{contain-intrinsic-size:auto 548px}.js .t-rep{contain-intrinsic-size:auto 501px}.js .t-res{contain-intrinsic-size:auto 501px}.js .t-who{contain-intrinsic-size:auto 676px}.js .t-st{contain-intrinsic-size:auto 725px}.js .t-tru{contain-intrinsic-size:auto 359px}.js #pricing{contain-intrinsic-size:auto 916px}.js #faq{contain-intrinsic-size:auto 456px}.js #start{contain-intrinsic-size:auto 438px}.js footer{contain-intrinsic-size:auto 508px}}
-@media (min-width:761px) and (max-width:900px){.js .t-try{contain-intrinsic-size:auto 638px}.js .t-pv{contain-intrinsic-size:auto 714px}.js .t-voi{contain-intrinsic-size:auto 653px}.js .t-day{contain-intrinsic-size:auto 548px}.js .t-rep{contain-intrinsic-size:auto 509px}.js .t-res{contain-intrinsic-size:auto 509px}.js .t-who{contain-intrinsic-size:auto 714px}.js .t-st{contain-intrinsic-size:auto 886px}.js .t-tru{contain-intrinsic-size:auto 404px}.js #pricing{contain-intrinsic-size:auto 1464px}.js #faq{contain-intrinsic-size:auto 600px}.js #start{contain-intrinsic-size:auto 713px}.js footer{contain-intrinsic-size:auto 490px}}
+   before anything below the hero has rendered (measured: r86/fix13/cis3.js; pass 21: r86/fix21/cisw.py; pass 22: r86/fix22/cisw.py) */
+.js .t-try{contain-intrinsic-size:auto 605px}.js .t-pv{contain-intrinsic-size:auto 605px}.js .t-voi{contain-intrinsic-size:auto 515px}.js .t-day{contain-intrinsic-size:auto 548px}.js .t-rep{contain-intrinsic-size:auto 387px}.js .t-res{contain-intrinsic-size:auto 500px}.js .t-who{contain-intrinsic-size:auto 500px}.js .t-st{contain-intrinsic-size:auto 545px}.js .t-tru{contain-intrinsic-size:auto 387px}.js #pricing{contain-intrinsic-size:auto 960px}.js #faq{contain-intrinsic-size:auto 456px}.js #start{contain-intrinsic-size:auto 456px}.js footer{contain-intrinsic-size:auto 534px}
+@media (min-width:1100px) and (max-width:1199px){.js .t-try{contain-intrinsic-size:auto 638px}.js .t-pv{contain-intrinsic-size:auto 638px}.js .t-voi{contain-intrinsic-size:auto 515px}.js .t-day{contain-intrinsic-size:auto 548px}.js .t-rep{contain-intrinsic-size:auto 432px}.js .t-res{contain-intrinsic-size:auto 518px}.js .t-who{contain-intrinsic-size:auto 518px}.js .t-st{contain-intrinsic-size:auto 733px}.js .t-tru{contain-intrinsic-size:auto 432px}.js #pricing{contain-intrinsic-size:auto 958px}.js #faq{contain-intrinsic-size:auto 456px}.js #start{contain-intrinsic-size:auto 461px}.js footer{contain-intrinsic-size:auto 527px}}
+@media (min-width:901px) and (max-width:1099px){.js .t-try{contain-intrinsic-size:auto 605px}.js .t-pv{contain-intrinsic-size:auto 676px}.js .t-voi{contain-intrinsic-size:auto 610px}.js .t-day{contain-intrinsic-size:auto 548px}.js .t-rep{contain-intrinsic-size:auto 501px}.js .t-res{contain-intrinsic-size:auto 501px}.js .t-who{contain-intrinsic-size:auto 676px}.js .t-st{contain-intrinsic-size:auto 725px}.js .t-tru{contain-intrinsic-size:auto 359px}.js #pricing{contain-intrinsic-size:auto 978px}.js #faq{contain-intrinsic-size:auto 456px}.js #start{contain-intrinsic-size:auto 461px}.js footer{contain-intrinsic-size:auto 508px}}
+@media (min-width:761px) and (max-width:900px){.js .t-try{contain-intrinsic-size:auto 638px}.js .t-pv{contain-intrinsic-size:auto 714px}.js .t-voi{contain-intrinsic-size:auto 653px}.js .t-day{contain-intrinsic-size:auto 548px}.js .t-rep{contain-intrinsic-size:auto 509px}.js .t-res{contain-intrinsic-size:auto 509px}.js .t-who{contain-intrinsic-size:auto 714px}.js .t-st{contain-intrinsic-size:auto 886px}.js .t-tru{contain-intrinsic-size:auto 404px}.js #pricing{contain-intrinsic-size:auto 1501px}.js #faq{contain-intrinsic-size:auto 600px}.js #start{contain-intrinsic-size:auto 736px}.js footer{contain-intrinsic-size:auto 490px}}
 @media (max-width:760px){.js .t-try{contain-intrinsic-size:auto 705px}.js .t-pv{contain-intrinsic-size:auto 496px}.js .t-voi{contain-intrinsic-size:auto 509px}.js .t-day{contain-intrinsic-size:auto 685px}.js .t-rep{contain-intrinsic-size:auto 416px}.js .t-res{contain-intrinsic-size:auto 348px}.js .t-who{contain-intrinsic-size:auto 609px}.js .t-st{contain-intrinsic-size:auto 679px}.js .t-tru{contain-intrinsic-size:auto 307px}.js #pricing{contain-intrinsic-size:auto 1074px}.js #faq{contain-intrinsic-size:auto 424px}.js #start{contain-intrinsic-size:auto 468px}.js footer{contain-intrinsic-size:auto 237px}}
 /* pass 18 (founder-6): the narrowest phones get their own, so the page is its true height before anything below the hero renders */
 @media (max-width:374px){.js .t-try{contain-intrinsic-size:auto 675px}.js .t-pv{contain-intrinsic-size:auto 421px}.js .t-voi{contain-intrinsic-size:auto 470px}.js .t-day{contain-intrinsic-size:auto 562px}.js .t-rep{contain-intrinsic-size:auto 406px}.js .t-res{contain-intrinsic-size:auto 330px}.js .t-who{contain-intrinsic-size:auto 563px}.js .t-st{contain-intrinsic-size:auto 640px}.js .t-tru{contain-intrinsic-size:auto 286px}.js #pricing{contain-intrinsic-size:auto 1083px}.js #faq{contain-intrinsic-size:auto 395px}.js #start{contain-intrinsic-size:auto 419px}.js footer{contain-intrinsic-size:auto 219px}}
@@ -667,12 +676,25 @@ html:not(.motion) #pf-go{display:none}
 .p2 .k{flex:none;font-size:12px;font-weight:500;color:var(--ink-3)}
 .p2 .p2t{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .fpay .p2s{margin:10px 4px 0;padding:0}
+/* pass 22 (founder-1): one muted line under a result that leaves calls in, finds nothing to cut, or is a light edit */
+.odc{margin:8px 4px 0;font-size:13px;line-height:1.45;color:var(--ink-3);text-wrap:pretty}
+.fpay .odc{position:relative;z-index:1;margin:10px 4px 0}
+/* pass 22 (web-5): a result post shows four lines at most; past that the fourth fades and "Show all" opens the rest */
+#out-line,#fp-sharp,.pvw .pt.cap{max-height:calc(var(--lh,1.4em) * 4 + 1px);overflow:hidden}
+#out-line.capd:not(.open),#fp-sharp.capd:not(.open),.pvw .pt.capd:not(.open){-webkit-mask-image:linear-gradient(#000 calc(100% - var(--lh,1.4em) * .66),rgba(0,0,0,.45));mask-image:linear-gradient(#000 calc(100% - var(--lh,1.4em) * .66),rgba(0,0,0,.45))}
+#out-line.open,#fp-sharp.open,.pvw .pt.open{max-height:none}
+.pvw .sall{height:22px;margin:0;font-size:13px}
+.n-th .sall{color:var(--pf-th-ink)}.n-bs .sall{color:#1185FE}
+.sall{position:relative;display:inline-flex;align-items:center;height:24px;margin:2px 0 0;font-size:14px;font-weight:500;color:var(--x-link);border-radius:6px}
+.sall:hover{text-decoration:underline;text-underline-offset:3px}
+.sall::after{content:"";position:absolute;left:min(-6px,calc(50% - 22px));right:min(-6px,calc(50% - 22px));top:min(-6px,calc(50% - 22px));bottom:min(-6px,calc(50% - 22px))}
 /* pass 20 (brand-1): marked, nothing cut. The marked draft above is the result, so no post card repeats it: the receipt, the
    reason and the way on take its place */
-.try-out.mk #out-card{display:none}
-@media (max-width:760px){.try-out.mk{grid-template-areas:"h" "hits" "keep"}}
+/* pass 22 (founder-1): the on-device line stays, under the reason (it's the one line of the card's slot left) */
+.try-out.mk #out-card > :not(.odc){display:none}
+@media (max-width:760px){.try-out.mk{grid-template-areas:"h" "hits" "card" "keep"}}
 @media (min-width:761px){
-  .try-out.mk{grid-template-areas:"h h" "hits hits" "keep keep"}
+  .try-out.mk{grid-template-areas:"h h" "hits hits" "card card" "keep keep"}
   .try-out.mk #out-hits{max-width:36em}
   /* pass 20 (web-1): the pill sits 19px under the card (the rhythm of the starters row above), not stuck to it */
   #out-keep{margin-top:9px}
@@ -786,6 +808,9 @@ html:not(.motion) #pf-go{display:none}
 .t-voi{display:flex;flex-direction:column;gap:24px}
 .t-voi .vl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,22em);gap:12px 48px;align-items:end;width:100%}
 .t-voi .vl .tfoot{padding-bottom:4px}
+/* pass 22 (web-4): from 1100 the sentence starts on the third take's column: its left edge is "The story" card's (a take's width, plus
+   the card's 20px padding to the tile's inner edge, so it keeps to two rows) */
+@media (min-width:1100px){.t-voi .vl{grid-template-columns:minmax(0,1fr) calc((100% - 60px) / 3 + 20px);column-gap:20px}}
 .vcard{padding:18px 20px 8px;border-radius:18px}
 .vc-h{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--x-line)}
 .vc-h .av{width:32px;height:32px}
@@ -850,6 +875,14 @@ html:not(.motion) #pf-go{display:none}
   mask-image:linear-gradient(180deg,#000 52%,transparent),linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);mask-composite:intersect}
 .dn > .ph img,.morn > .ph img{width:500px;height:auto}
 .night > .ph{left:auto;right:0;transform:none}
+/* pass 22 (brand-2): the sunrise is drawn at 400px for its 800px frame (2x on a 2x screen, never upscaled), one frame tall (237px),
+   masked to the band behind the phone. It carries the hero's grain and a darker, warmer grade, so its softness reads as depth of
+   field, not resolution */
+.t-day .morn > .ph{width:min(100%,400px);height:237px}
+.t-day .morn > .ph img{width:400px;filter:blur(1.2px) saturate(.78) contrast(1.08) brightness(.7) sepia(.16)}
+.morn > .ph::after{background:linear-gradient(180deg,rgba(8,9,10,.34) 0%,rgba(8,9,10,.1) 34%,rgba(8,9,10,.72) 100%),radial-gradient(ellipse 70% 90% at 50% 30%,rgba(8,9,10,0) 40%,rgba(8,9,10,.45) 100%)}
+.morn > .ph::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.08;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 -.25'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .plab{position:absolute!important;top:20px;z-index:2;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;font-size:13px;color:var(--ink-2);background:rgba(8,9,10,.84);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .morn .plab{left:20px}
 .morn .replay.plab{left:auto;right:20px;margin:0;color:var(--ink-2)}
@@ -1222,6 +1255,10 @@ a.wtry:hover .ico{transform:translateX(2px)}
 .plans-fine .mf{user-select:text}
 /* wider screens: the cancel line, then the clients line under it */
 @media (min-width:761px){.plans-fine .mf,.plans-fine .fs{display:block}.plans-fine{max-width:84ch}}
+/* pass 22 (founder-6): the Free card's new row keeps to one line where the cards are widest, so the three lists end level */
+@media (min-width:1200px){#pl-free li.sy span{letter-spacing:-.012em}}
+/* pass 22 (marketing-6): the footnote's first sentence-set is longer now; from 1024 it keeps to one row */
+@media (min-width:1024px){.plans-fine{max-width:100ch}}
 @media (max-width:760px){.plan .for2{display:none}}
 /* pass 20 (web-2): the lede is the heading's second thought, so it sits under it, left-aligned, 16px below (as in the FAQ) */
 #pricing .head{grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
@@ -1240,6 +1277,11 @@ a.wtry:hover .ico{transform:translateX(2px)}
 #faq .faq-l a:hover{text-decoration-color:var(--ink)}
 #faq .faq-l a::after{content:"";position:absolute;inset:-6px -2px}
 @media (max-width:900px){#faq .faq-l{display:none}}
+/* pass 22 (brand-4): the motif under the FAQ's heading: a visitor's question with its run-up struck, the product's own mark at rest
+   (decorative: the questions themselves are the list) */
+#faq .faq-m{margin-top:44px;padding-top:22px;max-width:21em;font-size:19px;line-height:1.45;font-weight:500;letter-spacing:-.012em;color:var(--ink-2);border-top:1px solid var(--line)}
+#faq .faq-m .cut{color:var(--x-mute)}
+@media (max-width:900px){#faq .faq-m{display:none}}
 .qa{list-style:none;margin:0;padding:0;border-bottom:1px solid var(--line-2)}
 .qa li{border-top:1px solid var(--line-2)}
 .qa h3{margin:0;font:inherit}
@@ -1530,7 +1572,7 @@ footer .wrap{container-type:inline-size}
 @media (max-width:760px){
   :root{--pad:16px;--sec:48px;--mbar:calc(62px + env(safe-area-inset-bottom));--gap:12px}
   /* a focused control never sits under the sticky bar */
-  html{scroll-padding-top:60px;scroll-padding-bottom:calc(var(--mbar) + 12px)}
+  html{scroll-padding-top:60px;scroll-padding-bottom:calc(var(--mbar) + 28px)}
   body{padding-bottom:0}
   .btn kbd{display:none}
   /* 40px targets for the quiet buttons, without growing them */
@@ -1548,6 +1590,16 @@ footer .wrap{container-type:inline-size}
   body.bar-on .nav-r .btn-sm{opacity:0;pointer-events:none;visibility:hidden}
   .nav-r .signin{transition:transform .35s var(--ease),color .2s,background-color .2s}
   body.bar-on .nav-r .signin{transform:translateX(var(--nb,96px))}
+  /* pass 22 (uiux-5): a quiet Pricing link before Sign in from 360px. It slides with Sign in when the bar takes Start free */
+  .nav-r .np{display:inline-flex;align-items:center;position:relative;font-size:14px;color:var(--ink-3);padding:8px 8px;border-radius:999px;transition:transform .35s var(--ease),color .2s,background-color .2s}
+  .nav-r .np:hover{color:var(--ink);background:rgba(255,255,255,.05)}
+  .nav-r .np:focus-visible{border-radius:999px}
+  .nav-r .np::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+  body.bar-on .nav-r .np{transform:translateX(var(--nb,96px))}
+  /* below 390 the header keeps to one row: 13px links, tighter gaps (the hit areas stay 44px tall and never overlap); below 360,
+     Pricing steps out (the footer and the bar still reach it) */
+  @media (max-width:389px){.nav .wrap{gap:8px}.nav-r{gap:2px}.nav-r .np{font-size:13px;padding:8px 4px}.signin{font-size:13px;padding:8px 6px}.nav-r .btn-sm{padding:0 12px}}
+  @media (max-width:359px){.nav-r .np{display:none}}
   /* the opening shot on a phone (Cinema) */
   .tc{align-items:flex-start;text-align:left}
   .st{line-height:1;letter-spacing:-.045em}
@@ -1642,7 +1694,8 @@ footer .wrap{container-type:inline-size}
   .starters::-webkit-scrollbar{display:none}
   .starters span{flex:none;margin-right:2px;scroll-snap-align:start}
   /* the row fades out well inside the tile's edge, so a chip never reads as clipped mid-word (pass 16, web-4) */
-  .starters.sx{-webkit-mask-image:linear-gradient(90deg,var(--fl),#000 28px,#000 calc(100% - 104px),var(--fr) calc(100% - 22px));mask-image:linear-gradient(90deg,var(--fl),#000 28px,#000 calc(100% - 104px),var(--fr) calc(100% - 22px))}
+  /* pass 22 (brand-5): a 24px fade at the right edge, so the cut chip reads as a row that scrolls (it lifts at the row's end) */
+  .starters.sx{-webkit-mask-image:linear-gradient(90deg,var(--fl),#000 24px,#000 calc(100% - 24px),var(--fr));mask-image:linear-gradient(90deg,var(--fl),#000 24px,#000 calc(100% - 24px),var(--fr))}
   .starters button{flex:none;height:36px}
   .starters::after{content:"";flex:0 0 var(--tail,0px)}
   .try-out{grid-template-columns:minmax(0,1fr);grid-template-areas:"h" "card" "hits" "keep";gap:10px}
@@ -1797,7 +1850,8 @@ footer .wrap{container-type:inline-size}
   .js .plan:not(.open) .li-n.xc,.js .plan:not(.open) .fu-l{display:none}
   .js .plan:not(.open) .fu-s{display:inline}
   .js .plan:not(.open) li .li-n.mob2{display:block}
-  .plans-fine{margin:12px 0 0;font-size:13px;text-align:left;text-wrap:pretty}
+  /* pass 22: the footnote's new wording (marketing-6) keeps to three rows at 390 with a hair less tracking */
+  .plans-fine{margin:12px 0 0;font-size:13px;letter-spacing:-.01em;text-align:left;text-wrap:pretty}
   .plan ul{border-top:0;padding-top:4px}
   .js .incl{grid-area:incl;display:inline-flex;align-items:center;justify-self:start;height:32px;margin-top:2px;font-size:14px;font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(247,248,248,.35)}
 
@@ -1855,6 +1909,9 @@ footer .wrap{container-type:inline-size}
   .ft > div:first-child{display:none}
   .mbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:60;padding:8px 16px calc(8px + env(safe-area-inset-bottom));background:rgba(8,9,10,.8);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);box-shadow:0 -1px 0 var(--line);transform:translateY(110%);visibility:hidden;transition:transform .35s var(--ease),visibility 0s .35s}
   .mbar.on{transform:none;visibility:visible;transition:transform .35s var(--ease),visibility 0s}
+  /* pass 22 (web-3): a 24px fade above the bar, so what scrolls under it eases out rather than meeting a hard edge */
+  .mbar::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:24px;pointer-events:none;background:linear-gradient(rgba(8,9,10,0),rgba(8,9,10,.78))}
+  .mbar{box-shadow:none}
   .mbar .btn{display:flex;width:min(100%,240px);height:46px;margin-inline:auto;font-size:15px}
   .sheet{padding:0}
   .sheet[open]{place-items:end stretch;padding-top:0}
@@ -1963,6 +2020,8 @@ footer .wrap{container-type:inline-size}
   .nav .mark::after,.signin::after,.nav-r .btn-sm::after,.ex .pills button::after,.starters button::after,.st-pick button::after,.bill button::after,
   .t-pv .seg button:not(.m-ring)::after,.t-pv .seg .m-ring::before,#try-clear::after,#try-go::after,#try-keep::after,.ft ul a::after,#rv-ok::before{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
   .sx,#proof .ex .pills{padding-block:4px;margin-block:-4px}
+  /* pass 22 (uiux-1): the Who tile's "Try it" chips too (24px tall to see, 44px to tap) */
+  .wtry{position:relative}.wtry::after{inset:min(0px,calc(50% - 22px)) min(0px,calc(50% - 22px))}
   .replay::after,.js .incl::after{left:min(0px,calc(50% - 22px));right:min(0px,calc(50% - 22px));height:44px;margin-top:-22px}
   .mini::after{inset:min(-4px,calc(50% - 22px)) min(-4px,calc(50% - 22px))}
   .plans-fine a::after{inset:min(-6px,calc(50% - 22px)) -2px}
@@ -2045,6 +2104,17 @@ footer .wrap{container-type:inline-size}
 .fin-mirror{right:22px}
 .fin-n{top:auto;bottom:calc(100% + 7px);right:22px;transform:none;line-height:16px}
 @media (max-width:760px){.fin-in{padding:0 18px}.fin-field{--fpr:18px}.fin-mirror{right:18px}.fin-n{right:18px;bottom:calc(100% + 5px)}}
+/* pass 22 (uiux-3): one row of 56px (a pill), growing to three rows as a line wraps (a rounded box), never clipping a line. The
+   mirror wraps exactly as the box does, so the squiggles stay under their words; past three rows the box scrolls and fades */
+.fin-form{align-items:flex-start}
+.fin-field{height:auto;border-radius:28px}
+.fin-mirror,.fin-in{white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;line-height:24px;padding:16px 22px}
+.fin-in{position:relative;display:block;inset:auto;height:56px;min-height:56px;resize:none;overflow-y:auto;scrollbar-width:none;border-radius:28px}
+.fin-in::-webkit-scrollbar{display:none}
+.fin-mirror{inset:0;left:0;right:0;width:auto;overflow:hidden}
+.fin-mirror span{display:inline;white-space:pre-wrap}
+.fin-in,.fin-mirror{-webkit-mask-image:linear-gradient(180deg,var(--a0),#000 14px,#000 calc(100% - 14px),var(--a1));mask-image:linear-gradient(180deg,var(--a0),#000 14px,#000 calc(100% - 14px),var(--a1))}
+@media (max-width:760px){.fin-field{height:auto;border-radius:27px}.fin-mirror,.fin-in{line-height:22px;padding:16px 18px}.fin-mirror{left:0;right:0}.fin-in{height:54px;min-height:54px;border-radius:27px}}
 /* pass 19 (brand-5): on a phone the night card is never an empty blurred block while its steps stage in. The first step is there at
    once; the next two are there too, as dimmed shells, and light up in turn (quicker than before) */
 @keyframes stpin{from{opacity:.38}}
@@ -2151,6 +2221,7 @@ footer .wrap{container-type:inline-size}
       <a href="#sharpen">Try it</a><a href="#studio">For ghostwriters</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
     </nav>
     <div class="nav-r">
+      <a class="np" href="#pricing">Pricing</a>
       <button class="signin" type="button" data-sheet="signin">Sign in</button>
       <button class="btn btn-white btn-sm" type="button" data-sheet="free">Start free</button>
     </div>
@@ -2218,7 +2289,7 @@ footer .wrap{container-type:inline-size}
           </div>
         </div>
         <div class="pane sharp">
-          <div class="ph-h"><b>Sharpened</b><span class="move"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="pf-move">Cut 2 bits of fluff · Split it into two beats</span></span></div>
+          <div class="ph-h"><b>Sharpened</b><span class="move"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><span id="pf-move"><b class="rp">Cut 2 bits of fluff</b> <b class="rp"><i aria-hidden="true">·</i> Split it into two beats</b></span></span></div>
           <article class="post lit-card" aria-labelledby="pf-name">
             <div class="light pl" aria-hidden="true"><i class="beam"></i><i class="core"></i><i class="bloom"></i><i class="hot"></i></div>
             <div class="who">
@@ -2268,19 +2339,20 @@ footer .wrap{container-type:inline-size}
         </div>
         <p class="starters" id="try-starters"><span>No line handy? Try one:</span><button type="button" data-s="0">Wordy</button><button type="button" data-s="1">Announcement</button><button type="button" data-s="2">List</button><button type="button" data-s="3">Real talk</button><button type="button" data-s="4">Already sharp</button></p>
         <div class="try-out" id="try-out">
-          <p class="out-h"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><svg class="ico ok" aria-hidden="true"><use href="#i-tick"/></svg><span id="out-st">Cut 2 bits of fluff · Said it straight</span><button class="replay alt" type="button" id="try-alt" hidden><svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg><span id="try-alt-t">Another take · 1/2</span></button><button class="replay" type="button" id="try-replay" aria-label="Replay the sharpen"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg><span class="rl">Replay</span></button></p>
+          <p class="out-h"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg><svg class="ico ok" aria-hidden="true"><use href="#i-tick"/></svg><span id="out-st"><b class="rp">Cut 2 bits of fluff</b> <b class="rp"><i aria-hidden="true">·</i> Said it straight</b></span><button class="replay alt" type="button" id="try-alt" hidden><svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg><span id="try-alt-t">Another take · 1/2</span></button><button class="replay" type="button" id="try-replay" aria-label="Replay the sharpen"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg><span class="rl">Replay</span></button></p>
           <div id="out-card">
             <article class="xcard lit-card" aria-label="heycape’s post (example)">
               <div class="xrow">
                 <span class="av me xav" aria-hidden="true"></span>
                 <div>
                   <p class="xname"><b>heycape</b><span class="tag eg">Example</span><span class="hd">@heycape_</span></p>
-                  <p class="xtext" id="out-line">sell into strength, not into panic</p>
+                  <p class="xtext" id="out-line">sell into strength, not into panic</p><button class="sall" type="button" id="out-all" aria-expanded="false" aria-controls="out-line" hidden>Show all</button>
                   <div class="xacts" aria-hidden="true"><svg class="ico"><use href="#i-reply"/></svg><svg class="ico"><use href="#i-repost"/></svg><svg class="ico"><use href="#i-like"/></svg><svg class="ico"><use href="#i-views"/></svg><svg class="ico"><use href="#i-mark"/></svg></div>
                 </div>
               </div>
             </article>
             <div class="p2s" id="out-p2" hidden><p class="p2"><span class="k">Post 2</span><span class="p2t" id="out-p2t"></span></p><p class="p2" hidden><span class="k">Post 3</span><span class="p2t"></span></p><p class="p2 pm" hidden></p></div>
+            <p class="odc" id="out-odc" hidden>Quick on-device check. In the app, Claude edits it and goes further. Still free.</p>
             <p class="empty-c" id="out-empty" hidden></p>
             <div class="xcard ph-card" id="out-ph" aria-hidden="true" hidden><div class="xrow"><span class="av you xav"></span><div><p class="xname"><b>You</b><span>@you</span><span>·</span><span>now</span></p><p class="ph-bars"><i></i><i></i></p></div></div></div>
           </div>
@@ -2356,7 +2428,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <p class="kp-l"><span class="kp-w sqz" id="kp-w">ngl</span> eth looks strong here.</p>
           <p class="kp-n" id="kp-n" aria-live="polite">Put “ngl” back twice and it stays.</p>
           <div class="kp-c">
-            <button class="mini kp-b" type="button" id="kp-b" aria-describedby="kp-n">Put it back</button>
+            <button class="mini kp-b frost" type="button" id="kp-b" aria-describedby="kp-n">Put it back</button>
             <span class="kp-s" id="kp-s" aria-hidden="true"><i></i><i></i></span>
           </div>
         </div>
@@ -2421,7 +2493,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
           <div class="xrow m-pop" style="--md:.04s"><span class="av me xav" aria-hidden="true"></span><div class="mine lit-card" id="rp-box">
             <p class="lab"><span id="rp-lab"><svg class="ico" aria-hidden="true"><use href="#i-pen"/></svg>Drafted in your voice<span class="tag pro">Pro</span></span><button class="replay rp-rp" type="button" data-replay="rep" id="rp-replay" aria-label="Replay the drafted reply"><svg class="ico" aria-hidden="true"><use href="#i-replay"/></svg></button></p>
             <p class="xtext tw" id="rp-text">half, until i get a green day. then back to normal size. no hero trades in between.</p>
-            <div class="act" id="rp-act"><button class="mini ghost" type="button" id="rp-edit">Edit</button><button class="mini" type="button" id="rp-send">Reply</button></div>
+            <div class="act" id="rp-act"><button class="mini ghost" type="button" id="rp-edit">Edit</button><button class="mini frost" type="button" id="rp-send">Reply</button></div>
           </div></div>
           <div class="nexts" aria-hidden="true"><div class="xrow"><span class="av xav" style="--y:29.41%"></span><div><p class="xname"><b>Jun Park</b><span>@jun.example · now</span></p><p class="xtext">what made you finally stick to the rule?</p></div></div><div class="xrow"><span class="av xav" style="--y:88.24%"></span><div><p class="xname"><b>Sam Okafor</b><span>@sam.example · now</span></p><p class="xtext">half size after a red day is the one i keep breaking.</p></div></div><p class="more" hidden><span class="avs"><span class="av xav" style="--y:29.41%"></span><span class="av xav" style="--y:88.24%"></span></span><span class="mt">2 more replies</span></p></div>
         </div>
@@ -2486,7 +2558,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
             </div></div>
           </article>
           <div class="cmt"><span class="av v2" style="--y:20%" id="cm-av" aria-hidden="true"></span><div><p class="cw"><b id="cm-n">Priya</b> on “<span id="cm-on">down 34%</span>”<span class="cm-ok" id="cm-ok" hidden><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg>Applied</span></p><p id="cm-t">Add “since June”. Then it’s good to go.</p></div></div>
-          <div class="rv-act" id="rv-act" aria-live="polite"><span id="rv-st">Priya’s view</span><button class="btn btn-white m-ring" type="button" id="rv-ok" style="--md:1.1s"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg>Approve with my edit</button></div>
+          <div class="rv-act" id="rv-act" aria-live="polite"><span id="rv-st">Priya’s view</span><button class="btn frost m-ring" type="button" id="rv-ok" style="--md:1.1s"><svg class="ico b" aria-hidden="true"><use href="#i-tick"/></svg>Approve with my edit</button></div>
         </div>
         <div class="st-voice">
           <h3><span class="av v2" style="--y:20%" id="sv-av" aria-hidden="true"></span><span><span id="st-name">Priya</span> in her own voice</span></h3>
@@ -2827,13 +2899,24 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     .replace(/(^|\s)([aAiI])\s(?=\S)/g, '$1$2\u00a0').replace(/ (\S{1,7})$/, '\u00a0$1');
   /* display only: short sentences of a line are beats that wrap as units, so a line breaks at the full stop, never one word
      past it. A long paragraph wraps normally, with a short sentence opener ("it", "my") held to the word after it. f formats text */
-  /* the label over the engine's why: one label everywhere, "Why it hits" (pass 16, uiux-2); the engine's why names the change */
-  const hitK = () => 'Why it hits';
+  /* pass 22 (marketing-2): the label over a why, one rule everywhere. "Why it hits" only when the why names an effect on the reader:
+     a beat or a pause, the point or the number first ("opens on “…”", "comes first", the first words people read), a rule rather
+     than advice, how it reads or lands. Anything else says what was done ("“literally” was talk…", "Two hedges became one"):
+     "What changed". Quoted words never count */
+  const HITS = /\b(?:beats?|pause|lands?|opens on (?:“|what you came)|starts on “|comes first|first (?:thing|words) people read|people (?:know|stop)|rule, not advice|reads? (?:like|as|in)|snags the reader|in one (?:read|glance))/i;
+  const hitK = (say, why) => HITS.test(String(why || '').replace(/<[^>]+>/g, '').replace(/“[^”]*”/g, '“”')) ? 'Why it hits' : 'What changed';
   /* display only: each part of the receipt stays on one line, so a narrow receipt breaks at the "·", never inside "Said it straight".
      Pass 19 (marketing-4): the words are the engine's own ("Split it into two beats", "Said it plainer"), never rewritten here */
   /* pass 21 (founder-2, marketing-1): an engine count of the writer's calls reads "N left to you" (v5.6 says it so itself; the older
      "N your call" is read the same way, so neither is ever doubled) */
-  const sayTxt = say => String(say).split(' · ').map(x => x.replace(/^(\d+) your call$/, '$1 left to you').replace(/ /g, '\u00a0')).join(' · ');
+  /* pass 22 (marketing-4): the receipt holds three parts at most. When a fourth would show, "N left to you" goes (the note under the
+     result names the word), then the row stops at three */
+  const sayParts = say => { let p = String(say).split(' · ').map(x => x.replace(/\u00a0/g, ' ').trim().replace(/^(\d+) your call$/, '$1 left to you')).filter(Boolean);
+    if (p.length > 3) p = p.filter(x => !/^\d+ left to you$/.test(x)); return p.slice(0, 3); };
+  const sayTxt = say => sayParts(say).map(x => x.replace(/ /g, '\u00a0')).join(' · ');
+  /* pass 22 (web-2): on screen each part is an unbreakable inline block that carries its own leading "·", so a wrap never strands a
+     dot at the end of a row */
+  const sayHTML = say => sayParts(say).map((x, i) => `<b class="rp">${i ? '<i aria-hidden="true">·</i> ' : ''}${esc(x)}</b>`).join(' ');
   const beats = (t, f) => { t = String(t); const s = t.split(/(?<=[.!?…])\s+(?=\S)/);
     if (s.length < 2) return f(t);
     /* pass 21 (web-3): only when every sentence is over 18 characters ("gm. we're excited to announce v2" flows as one line) */
@@ -2875,11 +2958,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function paintEx(root, e) {
     const q = id => root.querySelector('#' + id), ps = q('pf-sharp');
     q('pf-draft').innerHTML = draftHTML(e); q('pf-kept').textContent = e.kept;
-    q('pf-name').textContent = e.who; q('pf-handle').textContent = e.handle; q('pf-move').textContent = sayTxt(e.say);
+    q('pf-name').textContent = e.who; q('pf-handle').textContent = e.handle; q('pf-move').innerHTML = sayHTML(e.say);
     /* the ghostwriter's example is a client's post, written for them */
     q('pf-tag').textContent = EX.indexOf(e) === GW.ex ? 'Example client' : 'Example';
     ps.innerHTML = '<span class="sr">Sharpened: </span>' + beats(e.after, x => nb(esc(x))); ps.classList.toggle('long', e.after.length > 62);
-    q('pf-why').textContent = e.why; q('pf-k').textContent = hitK(e.say);
+    q('pf-why').textContent = e.why; q('pf-k').textContent = hitK(e.say, e.why);
     /* a client's post isn't scheduled on your plan: it goes to the client's review link and waits for their yes (Studio) */
     const gw = EX.indexOf(e) === GW.ex;
     q('pf-when').innerHTML = gw ? `Waits for ${GW.f}’s yes<span class="fw-t"> · ${GW.when}</span>` : `${esc(e.who.split(' ')[0])}’s best time: ${BEST[EX.indexOf(e)] || BEST[0]}`;
@@ -3004,11 +3087,19 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
         : pvPosts(L, n, handle)) + next + rest;
     });
     $('#pv-big').textContent = mode === 'me' && L ? PV_ME[+$('.pvw.on').dataset.n](nl) : PV[+$('.pvw.on').dataset.n];
-    requestAnimationFrame(pvFade);
+    pvCap(); requestAnimationFrame(pvFade);
   }
+  /* pass 22 (web-5): the cap on your post in each feed: "Show all" only where it runs past four lines */
+  function pvCap() { $$('.pvw .pt.cap').forEach(t => { const b = t.nextElementSibling; if (!b || !b.classList.contains('sall')) return;
+    const hk = t.querySelector('.hk'), lh = Math.max(parseFloat(getComputedStyle(t).lineHeight) || 20, hk ? parseFloat(getComputedStyle(hk).lineHeight) || 0 : 0);
+    t.classList.toggle('open', false); b.textContent = 'Show all'; b.setAttribute('aria-expanded', 'false'); t.style.setProperty('--lh', lh + 'px');
+    const over = t.scrollHeight > t.clientHeight + 2; b.hidden = !over; t.classList.toggle('capd', over); }); }
+  $('#pv-screens').addEventListener('click', e => { const b = e.target.closest('.sall'); if (!b) return; const t = b.previousElementSibling, o = t.classList.toggle('open');
+    b.setAttribute('aria-expanded', String(o)); b.textContent = o ? 'Show less' : 'Show all'; requestAnimationFrame(pvFade); });
   /* your line as X or Bluesky would post it: one post, or two joined by the thread rail with the split marked */
   function pvPosts(L, n, handle) {
-    const post = (t, rail, hook) => `<div class="ppost"><span class="av you" aria-hidden="true"></span>${rail ? '<span class="tl" aria-hidden="true"></span>' : ''}<div><p class="pn"><b>You</b><span>${handle}</span></p><p class="pt">${hook ? `<span class="hk">${esc(t)}</span>` : esc(t)}</p></div></div>`;
+    /* pass 22 (web-5): your post shows four lines at most, its fourth fading, with "Show all" (X's own "Show more" pattern) */
+    const post = (t, rail, hook) => `<div class="ppost"><span class="av you" aria-hidden="true"></span>${rail ? '<span class="tl" aria-hidden="true"></span>' : ''}<div><p class="pn"><b>You</b><span>${handle}</span></p><p class="pt cap">${hook ? `<span class="hk">${esc(t)}</span>` : esc(t)}</p><button class="sall" type="button" aria-expanded="false" hidden>Show all</button></div></div>`;
     const sp = n === 0 ? pvSplit(L, 280) : n === 3 ? pvSplit(L, 300) : null;
     if (!sp) return post(L, false, true);
     return post(sp[0], true, true) + `<p class="split">${n === 0 ? 'Splits between sentences<span class="sx2">, so each post reads whole</span>.' : 'Split between sentences, as on X.'}</p>` + post(sp[1], false, false);
@@ -3033,7 +3124,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function pvFade() {
     $$('.pvw').forEach(w => {
       const top = w.getBoundingClientRect().top, H = w.clientHeight, ends = [];
-      w.querySelectorAll('.pt,.pn,.li-a,.li-h p').forEach(t => { const r = document.createRange(); r.selectNodeContents(t); [...r.getClientRects()].forEach(x => { if (x.height) ends.push(x.bottom - top); }); });
+      w.querySelectorAll('.pt,.pn,.li-a,.li-h p').forEach(t => { const r = document.createRange(), tb = t.getBoundingClientRect().bottom; r.selectNodeContents(t); [...r.getClientRects()].forEach(x => { if (x.height && x.bottom <= tb + 1) ends.push(x.bottom - top); }); });
       const fit = ends.filter(e => e <= H - 2); w.style.setProperty('--fe', (fit.length ? Math.min(H, Math.max(...fit) + 4) : H) + 'px');
     });
   }
@@ -3045,14 +3136,16 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the app's rule: put a word back twice and it's learned. Cut a learned word and it's unlearned, so the count starts over */
   const kpB = $('#kp-b'), kpW = $('#kp-w'), kpN = $('#kp-n'); let kpBack = 0;
   /* (the narrowest phones drop the .kpx words, so the line keeps to two rows beside the button) */
-  /* pass 20 (uiux-1, marketing-2): it starts untouched (0 of 2, the rule first), then names the word and who put it back */
-  const KP1 = '<span class="kpx">You put “ngl” back once. </span>Once more and it stays for good.';
-  const KP = { '1|1': KP1, '1|0': KP1, '2|1': 'Learned: “ngl” stays from now on.', '0|0': 'Unlearned. Put “ngl” back twice<span class="kpx"> and it stays</span>.' };
+  /* pass 20 (uiux-1, marketing-2): it starts untouched (0 of 2, the rule first), then names the word and who put it back.
+     Pass 22 (uiux-2): after the first put-back the one button reads "Cut it again" and the note says what that's for; once it's cut
+     again the note counts down ("Put it back once more…"), so no tap is a dead step */
+  const KP = { '1|1': '<span class="kpx">You put “ngl” back once. </span>Cut it again, then put it back: it stays.', '1|0': '<span class="kpx">Cut again. </span>Put it back once more and it stays.',
+    '2|1': 'Learned: “ngl” stays from now on.', '0|0': 'Unlearned. Put “ngl” back twice<span class="kpx"> and it stays</span>.' };
   kpB.addEventListener('click', () => {
     const on = !kpW.classList.contains('on'); kpW.classList.toggle('on', on);
     if (on) kpBack = Math.min(2, kpBack + 1); else if (kpBack >= 2) kpBack = 0;
-    kpB.textContent = on ? 'Cut it' : 'Put it back';
-    kpN.innerHTML = KP[`${kpBack}|${on ? 1 : 0}`];
+    kpB.textContent = on ? (kpBack === 1 ? 'Cut it again' : 'Cut it') : 'Put it back';
+    kpN.innerHTML = `<span>${KP[`${kpBack}|${on ? 1 : 0}`]}</span>`;
     $$('#kp-s i').forEach((d, j) => d.classList.toggle('on', j < kpBack));
   });
 
@@ -3075,7 +3168,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function rpDraft(focus) {
     rpState = 'draft'; rpBox.classList.remove('sent'); rpBox.classList.add('lit-card');
     rpLab.innerHTML = `${icn('pen')}Drafted in your voice<span class="tag pro">Pro</span>`; rpReplay.hidden = false;
-    rpAct.innerHTML = '<button class="mini ghost" type="button" id="rp-edit">Edit</button><button class="mini" type="button" id="rp-send">Reply</button>';
+    rpAct.innerHTML = '<button class="mini ghost" type="button" id="rp-edit">Edit</button><button class="mini frost" type="button" id="rp-send">Reply</button>';
     $('#rp-edit').addEventListener('click', rpEdit); $('#rp-send').addEventListener('click', rpSend);
     if (focus) $('#rp-send').focus();
   }
@@ -3182,7 +3275,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function doneAct(c) { $('#rv-act').innerHTML = doneRow(c); $('#rv-undo').addEventListener('click', () => { c.done = false; client(cur); $('#rv-ok').focus(); }); }
   function resetApprove() {
     const c = CL[cur];
-    $('#rv-act').innerHTML = `<span id="rv-st">${esc(c.f)}’s view</span><button class="btn btn-white" type="button" id="rv-ok">${icn('tick', 1)}${esc(approveLabel(c))}</button>`;
+    $('#rv-act').innerHTML = `<span id="rv-st">${esc(c.f)}’s view</span><button class="btn frost" type="button" id="rv-ok">${icn('tick', 1)}${esc(approveLabel(c))}</button>`;
     $('#rv-ok').addEventListener('click', approve);
   }
   /* the review link is the client's own screen: its button speaks as them (the visitor taps it, as the client) */
@@ -3307,7 +3400,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (on) { bar.removeAttribute('inert'); bar.removeAttribute('aria-hidden'); } else { bar.setAttribute('inert', ''); bar.setAttribute('aria-hidden', 'true'); }
   }
   /* how far Sign in slides when the bar takes over Start free: exactly the button and its gap */
-  const navSlide = () => nav.style.setProperty('--nb', (navBtn.offsetWidth + 6) + 'px');
+  const navSlide = () => nav.style.setProperty('--nb', (navBtn.offsetWidth + (parseFloat(getComputedStyle(navBtn.parentNode).columnGap) || 6)) + 'px');
   /* a jump (the logo, a footer link) can skip over the Try tile without the observer seeing it cross, so the scroll
      position says whether the bar belongs: back at the top, it steps away */
   const tryEl = $('#sharpen');
@@ -3434,6 +3527,12 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
      a line each, then "+N more posts"); and the thread is explained once: the engine's own thread sentence leads the why when it
      has one ("It opens a thread: every post starts on a whole sentence."), else the page's THREAD_WHY (for the one thread the page
      cuts itself, with SHARPEN.firstPost) */
+  /* pass 22 (uiux-4): the engine's long-line note ("Still long for a first line. Split it after “every single day”.") */
+  const LONG_RE = /Still long for a first line\.\s*(?:Split it after “([^”]+)”\.|The ones that land are under 100 characters\.)/;
+  const longAdv = n => { const m = String(n || '').match(LONG_RE); return m ? { say: m[1] ? `Still long: split after “${m[1]}”` : 'Still long for a first line' } : null; };
+  /* pass 22 (founder-1): under a result that leaves the writer's calls in, finds nothing to cut, or is a light edit, one muted line
+     says what this demo is and what the app does: true, since Claude makes the edit in the app (Fable grades it above this check) */
+  const ODC = 'Quick on-device check. In the app, Claude edits it and goes further. Still free.';
   const THREAD_N = /^(?:Post 1 of a thread|Opens an? \d+-post thread)$/, THREAD_WHY = 'Too long for one post, so it opens a thread. Post 1 ends on a whole sentence, and post 2 picks up from there.';
   const BEATS = /\b(?:beats?|full stop|split(?:s|ting)?)\b/i;
   function threadOf(R, line) {
@@ -3454,7 +3553,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const ss = String(V.why || '').split(/(?<=[.!?])\s+/).filter(x => x && !BEATS.test(x.replace(/<[^>]+>/g, ''))), th = ss.filter(x => /\bthread\b/i.test(x));
     const why = [...(th.length ? th : [esc(THREAD_WHY)]), ...ss.filter(x => !th.includes(x))].join(' ');
     const note = String(V.note || '').split(/(?<=[.!?])\s+/).filter(x => x && !/\bthread\b|\bposts? [123]\b|\bover 280\b/i.test(x)).join(' ');
-    return { ...V, line: T.post, posts: T.rest, post2: T.rest[0], say: sayTxt(say.join(' · ')), why, note,
+    return { ...V, line: T.post, posts: T.rest, post2: T.rest[0], say: sayTxt(say.join(' · ')), why, note, k: V.k ? hitK('', why) : '',
       status: `${say.join(' · ').replace(/\u00a0/g, ' ')}. Post 1: ${T.post} ${T.rest.map((x, i) => `Post ${i + 2}: ${x}`).join(' ')}` };
   }
   /* posts 2 and 3 of a thread, a line each under post 1 (dimmed); a longer thread ends on "+N more posts" */
@@ -3472,8 +3571,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     /* pass 19 (marketing-2): the how-to ("a dotted one to cut it") is said once, in the helper line; the why never repeats it */
     const still = '', shown = cv.on.length ? cv.line : '';
     /* a line that opens on a word the writer put back carries the engine's own "you kept it" why, with no label over it */
-    if (sharp) { const L = shown || v.line, k = keepL.length && opensOn(L, keepL) ? '' : MOVED(v.say) || !cv.calls.length ? hitK(v.say) : 'What changed';
-      return { line: shown, say: sayTxt(callSay(v.say, cv)), k, why: esc([dropKept(shortQ(wholeQ(v.why, v.line), L), cv.on), mine, still].filter(Boolean).join(' ')), kept: keptLine(R.draft, L, R.kept, dropKept(R.note, cv.on)), note: dropKept([noteRest(R.note), softNotes(R.note)].filter(Boolean).join(' '), cv.on), keep: true, cta: 'Keep it. Start free', status: `Sharpened: ${L}` }; }
+    if (sharp) { const L = shown || v.line, w0 = [dropKept(shortQ(wholeQ(dropCut(v.why, cv.on), v.line), L), cv.on), mine, still].filter(Boolean).join(' ');
+      const k = keepL.length && opensOn(L, keepL) ? '' : hitK(v.say, w0);
+      /* pass 22 (uiux-4): a line still over the long-line mark leads its receipt and its status with the engine's own split advice,
+         in place of "Tightened it", and the note doesn't say it a second time */
+      const lg = longAdv(R.note), say0 = lg ? [lg.say, ...String(callSay(v.say, cv)).split(' · ').filter(p => p && !/^Tightened it$/.test(p))].join(' · ') : callSay(v.say, cv);
+      const note = dropKept([noteRest(R.note), softNotes(R.note)].filter(Boolean).join(' '), cv.on);
+      return { line: shown, say: sayTxt(say0), k, why: esc(w0), kept: keptLine(R.draft, L, R.kept, dropKept(R.note, cv.on)), note: lg ? note.replace(LONG_RE, ' ').replace(/\s{2,}/g, ' ').trim() : note, keep: true, cta: 'Keep it. Start free',
+        status: `${lg ? lg.say + '. ' : ''}Sharpened: ${L}`, odc: left.length > 0 || k === 'What changed' }; }
     /* a line the engine marked but kept is "Kept as written", never "tight" */
     /* pass 20 (brand-1, marketing-5): marks and no cut read "Marked N · your call", never "Kept as written", and the marked draft
        above is the result: no post card repeats it (mk). Stock adjectives the engine marks ("seamless", "AI-powered") come as its
@@ -3486,20 +3591,20 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     /* nothing cut, and the writer's calls marked: the way on is a real button that cuts them (pass 18, uiux-2). Once they cut one,
        the line is theirs: "What changed", lit like a sharpened post */
     if (cv.calls.length) {
-      if (cv.on.length) return { line: shown, say, k: 'What changed', why: esc([mine, still].filter(Boolean).join(' ')), note: '', kept: '', keep: true, lit: true,
+      if (cv.on.length) return { line: shown, say, k: 'What changed', why: esc([mine, still].filter(Boolean).join(' ')), note: '', kept: '', keep: true, lit: true, odc: true,
         cta: left.length ? cutCta(left) : 'Keep it. Start free', act: left.length ? 'calls' : '', status: `${say}: ${shown}` };
     }
     /* the marked draft, nothing cut: the way on is the writer's calls (a real button that cuts them), else three takes in their
        voice (pass 20, brand-1: the rewrite leads), with "Schedule it free" as the text link. A two-word post isn't rewritten */
     if (mk) { const calls = cv.calls.length > 0, rw = !calls && !keepL.length && words >= 3;
-      return { say, k: '', why: esc(calls ? R.why || CALL_WHY : R.why) + (rw ? ` Keeping it as written? ${SCHED}` : ''), note: R.note, kept: '', keep: true, mk: true,
+      return { say, k: '', why: esc(calls ? R.why || CALL_WHY : R.why) + (rw ? ` Keeping it as written? ${SCHED}` : ''), note: R.note, kept: '', keep: true, mk: true, odc: true,
         cta: calls ? cutCta(left, true) : keepL.length ? 'Keep it. Start free' : rw ? TAKES : 'Schedule it free', act: calls ? 'calls' : '', intent: calls || keepL.length ? '' : rw ? 'rewrite' : 'schedule',
         status: `${say.replace(/\u00a0/g, ' ')}. ${R.draft}` }; }
     /* marked but kept, nothing put back: the way on is a rewrite in your voice (not for a two-word post like "gm"). A clean line
        is a pass: the post as written, lit like a sharpened one, under the engine's own honest why ("This quick check found
        nothing to cut…"), and the next steps every other result has: schedule it, or three other ways to open it (pass 15) */
     /* pass 20 (founder-4): a clean line's way on is three takes in your voice (the reason to sign up); scheduling it is the link */
-    if (st === 'clean' && !keepL.length) return { say, k: '', why: esc(R.why) + (words >= 3 ? `${R.why ? ' ' : ''}Happy with it as it is? ${SCHED}` : ''), note: R.note, kept: '', keep: true, pass: true, cta: words >= 3 ? TAKES : 'Schedule it free', intent: words >= 3 ? 'rewrite' : 'schedule', status: say };
+    if (st === 'clean' && !keepL.length) return { say, k: '', why: esc(R.why) + (words >= 3 ? `${R.why ? ' ' : ''}Happy with it as it is? ${SCHED}` : ''), note: R.note, kept: '', keep: true, pass: true, cta: words >= 3 ? TAKES : 'Schedule it free', intent: words >= 3 ? 'rewrite' : 'schedule', status: say, odc: true };
     return { say, k: '', why: esc(R.why), note: R.note, kept: '', keep: true, cta: keepL.length ? 'Keep it. Start free' : 'Start free', status: say };
   }
   /* ---- your call (pass 18): the engine's R.calls are on its shipped line ({ at, text, why, draftAt, line }). A guard that keeps the
@@ -3554,6 +3659,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const callOr = cs => { const q = cs.map(c => `“${c.text.replace(/ /g, '\u00a0')}”`); return q.length < 2 ? q.join('') : `${q.slice(0, -1).join(', ')} or ${q[q.length - 1]}`; };
   /* the engine's own "Kept “I think”: …" stops being true once the visitor cuts it: that sentence goes */
   const dropKept = (t, on) => on.reduce((s, c) => s.replace(new RegExp(`(?:^|\\s)(?:Kept|Left) (?:your )?“${c.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}”[^.]*\\.`, 'gi'), ''), String(t || '')).trim();
+  /* pass 22: once the visitor cuts a call, any sentence of the engine's why that still names it is no longer true; it goes */
+  const dropCut = (t, on) => !on.length ? String(t || '') : String(t || '').split(/(?<=[.!?])\s+/).filter(s => !on.some(c => s.toLowerCase().includes(`“${String(c.text).toLowerCase()}”`))).join(' ');
   const cutCta = (left, none) => left.length === 1 ? `Cut “${left[0].text}”${none ? '' : ' too'}` : none ? `Cut all ${left.length}` : 'Cut your calls too';
   /* pass 19 (marketing-3): the visitor cut a call, so the why says what the line does now. A cut that opened the line names its new
      first words (a whole phrase, never clipped); otherwise what the cut word was doing: a stance, a hedge, a softener or a hype word */
@@ -3562,12 +3669,15 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   function cutHits(cv, sharp) {
     const on = cv.on, L = String(cv.line || '').trim(), first = on.some(c => c.at[0] <= 1);
     let gain = '';
-    if (first && L) { const ws = L.split(/\s+/); let k = Math.min(ws.length, 6);
-      for (let j = 3; j < Math.min(7, ws.length); j++) if (/[,;:—–.!?]$/.test(ws[j - 1]) || Q_JOIN.test(ws[j].replace(/[^\p{L}]/gu, ''))) { k = j; break; }
-      const q = ws.slice(0, k).join(' ').replace(/[,;:—–.!?]+$/, ''); gain = k >= ws.length || q.length <= 48 ? `it now opens on “${q}”` : ''; }
+    if (first && L) gain = `it now opens on “${openQ(L)}”`;
     if (!gain) { const g = on.map(c => (CALL_GAIN.find(([re]) => re.test(c.why || '')) || [0, ''])[1]).filter(Boolean); gain = g.length && g.every(x => x === g[0]) ? g[0] : 'it says what you mean, without the cushion'; }
     return `You cut ${callQ(on)}${sharp ? ' too' : ''}, so ${gain}.`;
   }
+  /* pass 22 (marketing-3): the page's own quote of a line is its opening words only, up to the first number ("We just closed our
+     $2M") or else four words, and never past a sentence's end */
+  const openQ = L => { const ws = String(L).trim().split(/\s+/), n = ws.findIndex(w => /\d/.test(w)); let k = n >= 1 && n <= 5 ? n + 1 : Math.min(4, ws.length);
+    const e = ws.findIndex(w => /[.!?:;—–]$/.test(w)); if (e >= 0 && e + 1 < k) k = Math.max(1, e + 1);
+    return ws.slice(0, k).join(' ').replace(/[,;:—–.!?]+$/, ''); };
   const CALL_WHY = 'Nothing here is fluff. The dotted words are judgment calls, and they stay as you wrote them.';
   /* a call's reason, shown on its own: the engine ends each with the how-to ("Tap to cut it if you’re sure."), which the helper
      line already says once (pass 19, marketing-2). The reason itself is the engine's, verbatim */
@@ -3595,7 +3705,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
      mark that isn't on show (another take is) is drawn soft and stays put */
   function segments(R, v, keepL, cv) {
     const S = [], over = (a, b) => S.some(x => a < x.b && b > x.a), C = (cv && cv.calls) || [];
-    (v.cut || []).forEach(c => { const [a, b] = c.at; S.push({ a, b, cut: true, fl: FLUFF(c.kind) && flagged(R, a, b), w: c.text, sp: SPLIT(c.kind, v.say), pn: c.kind === 'punct' || !/[\p{L}\p{N}]/u.test(c.text) }); });
+    (v.cut || []).forEach(c => { const a = c.at[0], b = c.at[1] + punctAfter(R.draft, c.at[0], R.draft.slice(c.at[0], c.at[1])).length; S.push({ a, b, cut: true, fl: FLUFF(c.kind) && flagged(R, a, b), w: c.text, sp: SPLIT(c.kind, v.say), pn: c.kind === 'punct' || !/[\p{L}\p{N}]/u.test(c.text) }); });
     C.forEach(c => { const [a, b] = c.draftAt; if (!over(a, b)) S.push({ a, b, call: true, cut: cv.on.includes(c), fl: false, w: R.draft.slice(a, b), ck: a, why: c.why }); });
     (R.marks || []).forEach(m => { if (over(m[0], m[1])) return; if (m[3] === 'call') { S.push({ a: m[0], b: m[1], cut: false, fl: false, held: true }); return; }
       const h = held(R, m); S.push({ a: m[0], b: m[1], cut: false, fl: !h, held: h }); });
@@ -3649,8 +3759,17 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const sized = window.CSS && CSS.supports && CSS.supports('field-sizing', 'content');
   if (sized) ta.style.fieldSizing = 'content';
   const fit = () => { if (sized) return; ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
-  const outSt = s => { const el = $('#out-st'); if (el.textContent !== s) el.textContent = s; };
-  outSt.last = $('#out-st').textContent;
+  /* the receipt row takes markup: a receipt is drawn by sayHTML (pass 22, web-2); the plain prompts ("How it would post") are text */
+  const outSt = h => { const el = $('#out-st'); if (el.innerHTML !== h) el.innerHTML = h; };
+  outSt.last = $('#out-st').innerHTML;
+  /* pass 22 (web-5): a result post shows four lines at most: past that its last line fades and "Show all" opens the rest. The cap
+     bounds how far a long line can move the tiles under it */
+  function capLine(el, btn) { if (!el || !btn) return; el.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); btn.textContent = 'Show all';
+    el.style.setProperty('--lh', (parseFloat(getComputedStyle(el).lineHeight) || 24) + 'px');
+    const over = el.scrollHeight > el.clientHeight + 2; btn.hidden = !over; el.classList.toggle('capd', over); }
+  function capToggle(el, btn) { const o = el.classList.toggle('open'); btn.setAttribute('aria-expanded', String(o)); btn.textContent = o ? 'Show less' : 'Show all'; }
+  const outAll = $('#out-all'), outOdc = $('#out-odc');
+  outAll.addEventListener('click', () => capToggle(outLine, outAll));
   const tryPrimary = fresh => { goBtn.classList.toggle('btn-white', !fresh); goBtn.classList.toggle('btn-glass', fresh); };
   /* Keep says "Keep it" only when there's a sharpened line (or your own choices) to keep */
   /* under an example's sharpened line, the way on says what you get (pass 19, marketing-7) */
@@ -3689,14 +3808,14 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   }
   /* the calls left on show, as chips after a hint (a result that struck words, or one the visitor cut a call in) */
   const callChips = cv => { const L = cv.calls.filter(c => !cv.on.includes(c)); return L.length ? '<span class="k">Your call:</span>' + L.slice(0, 4).map((c, k) => `<button type="button" class="call" data-k="${k}" aria-pressed="false" data-why="${esc(c.why)}">${esc(c.text)}</button>`).join('') : ''; };
-  function showEmpty(msg) { pend = null; out.classList.remove('isph', 'pass', 'hold', 'mk'); outCard.hidden = true; outPh.hidden = true; outEmpty.hidden = false; outEmpty.textContent = msg; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; out.classList.remove('stale', 'hold'); tryLine = ''; pvYours(''); }
+  function showEmpty(msg) { pend = null; outOdc.hidden = true; out.classList.remove('isph', 'pass', 'hold', 'mk'); outCard.hidden = true; outPh.hidden = true; outEmpty.hidden = false; outEmpty.textContent = msg; outHits.hidden = true; outKeep.hidden = true; tryAlt.hidden = true; out.classList.remove('stale', 'hold'); tryLine = ''; pvYours(''); }
   /* the engine didn't load, even after one retry: said plainly where the result would land, never a spinner that never ends */
   const DOWN = 'The demo engine didn’t load. Reload to try again.';
   function tryDown() { showEmpty(DOWN); outSt.last = 'How it would post'; outSt(outSt.last); tryPrimary(false); const st = $('#try-status'); if (st.textContent !== DOWN) st.textContent = DOWN; }
   function engineDown() { if (ta.value.trim() && ta.value !== sharpenedFor) tryDown(); finDown(); }
   function showCard() { out.classList.remove('isph'); outCard.hidden = false; outPh.hidden = true; outEmpty.hidden = true; outHits.hidden = false; }
   /* a different line from the one on show: its result isn't here yet, so an empty post waits (never the last line's result) */
-  function showPh() { $('#try-status').textContent = ''; out.classList.add('isph'); out.classList.remove('pass', 'mk'); $('#out-k').textContent = 'Why it hits'; outCard.hidden = true; outEmpty.hidden = true; outPh.hidden = false; outHits.hidden = false; outKeep.hidden = true; tryAlt.hidden = true; tryLine = ''; pvYours(''); }
+  function showPh() { $('#try-status').textContent = ''; outOdc.hidden = true; out.classList.add('isph'); out.classList.remove('pass', 'mk'); $('#out-k').textContent = 'Why it hits'; outCard.hidden = true; outEmpty.hidden = true; outPh.hidden = false; outHits.hidden = false; outKeep.hidden = true; tryAlt.hidden = true; tryLine = ''; pvYours(''); }
   /* whose line it is: the visitor's ("You"), or the example's author, said quietly after the name, as everywhere on the page */
   const byWho = t => { if (!ours(t)) return null; const w = WHO.find(x => x.draft === t), e = EX.find(x => x.draft === t);
     if (w) return { n: w.n, h: w.h, av: w.av, tag: 'Example' }; if (e) return { n: e.who, h: e.handle, av: e.av, tag: EX.indexOf(e) === GW.ex ? 'Example client' : 'Example' };
@@ -3788,15 +3907,15 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
       tryPass = !!V.pass; out.classList.toggle('pass', tryPass);
       const shown = V.line || line, lit = sharp || tryPass || !!V.lit;
       outLine.className = 'xtext' + (lit ? '' : ' same') + (shown.length > 140 ? ' long' : ''); outCard.classList.toggle('lit-card', lit);
-      outLine.innerHTML = xbeats(shown);
-      out.classList.toggle('mk', !!V.mk); setPosts($('#out-p2'), V.posts);
+      outLine.innerHTML = xbeats(shown); capLine(outLine, outAll);
+      out.classList.toggle('mk', !!V.mk); setPosts($('#out-p2'), V.posts); outOdc.hidden = !V.odc;
       /* pass 21 (the Sharpen juror): after a split, the counter counts post 1, the post on the card */
       tryP1 = V.posts && V.posts.length ? shown : ''; setCount();
       const k = $('#out-k'), w = $('#out-why'), nt = $('#out-note'), kp = $('#out-kept');
       k.textContent = V.k; k.hidden = !V.k; w.innerHTML = V.why; w.hidden = !V.why;
       nt.textContent = [noteOnce(V.note, V.why), R.rest.trim() ? 'First line only. The rest stays as you wrote it.' : ''].filter(Boolean).join(' ');
       kp.textContent = V.kept; kp.hidden = !V.kept;
-      outSt.last = V.say; outSt(outSt.last);
+      outSt.last = sayHTML(V.say); outSt(outSt.last);
       /* an example's sharpened line is never "kept" as yours; a pass is scheduled as the example it is ("Example post:") */
       tryAct = V.act || ''; outKeep.hidden = !V.keep; tryCta = ex && !tryPass && !tryAct && !V.mk ? TRY_IDLE : V.cta; tryIntent = tryCta === TRY_IDLE ? '' : V.intent || ''; keepLabel();
       const n = R.alts.length + 1; tryAlt.hidden = !(sharp && touched && R.alts.length);
@@ -3987,7 +4106,8 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const fi = $('#fin-in'), fm = $('#fin-mtext'), fmir = $('#fin-mirror'), fn = $('#fin-n'), pay = $('#fpay'), finGo = $('#fin-go');
   const fpDraft = $('#fp-draft'), fpHead = $('#fp-head'), fpSharp = $('#fp-sharp'), fpWhy = $('#fp-why'), fpNote = $('#fp-note'), fpAv = $('#fp-av'), fpK = $('#fp-k'), fpTip = $('#fp-tip');
   const fpCard = $('#fp-card'), fpP2 = $('#fp-p2'), fpEmpty = $('#fp-empty'), fpHits = $('#fp-hits'), fpKeep = $('#fp-keep'), fpKept = $('#fp-kept'), finKeep = $('#fin-keep'), finField = $('.fin-field');
-  const fpAlt = $('#fp-alt'), fpAltT = $('#fp-alt-t');
+  const fpAlt = $('#fp-alt'), fpAltT = $('#fp-alt-t'), fpOdc = $('#fp-odc'), fpAll = $('#fp-all');
+  fpAll.addEventListener('click', () => capToggle(fpSharp, fpAll));
   const EX0 = { k: fpK.textContent, draft: fpDraft.innerHTML, head: fpHead.innerHTML, sharp: fpSharp.innerHTML, why: fpWhy.textContent, note: fpNote.textContent, kept: fpKept.hidden ? '' : fpKept.textContent, av: fpAv.className, y: fpAv.style.getPropertyValue('--y') };
   let live = false, lastKey = '', timer = 0, finLine = '', sayT = 0, keepF = [], FR = null, fver = 0, finIntent = '', callF = [], callFFor = '', finAct = '';
   /* the card lands once, when the example turns into your line. After that it changes in place while you type:
@@ -3995,9 +4115,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   const flash = () => { if (!RM) { pay.classList.remove('fresh', 'morph'); void pay.offsetWidth; pay.classList.add('fresh'); } };
   const morph = () => { if (!RM) { pay.classList.remove('fresh', 'morph'); void pay.offsetWidth; pay.classList.add('morph'); } };
   function keepFin(on, cta) { fpKeep.hidden = !on; if (cta) finKeep.textContent = cta; finGo.classList.toggle('btn-white', !on); finGo.classList.toggle('btn-glass', on); }
-  /* a line longer than the field fades at the edge it runs past, never clipped mid-letter under the counter */
-  const finEdge = () => { const o = fi.scrollWidth - fi.clientWidth > 1; finField.classList.toggle('ovr', o && fi.scrollLeft < fi.scrollWidth - fi.clientWidth - 1); finField.classList.toggle('ovl', o && fi.scrollLeft > 1);
-    const x0 = fmir.getBoundingClientRect().left + 24; fm.querySelectorAll('mark').forEach(m => m.classList.toggle('off', o && fi.scrollLeft > 1 && m.getBoundingClientRect().left < x0)); };
+  /* pass 22 (uiux-3): the field is a one-row text box that grows with the line, to three rows; past three it scrolls, and the edge it
+     runs past fades. The squiggles' mirror wraps the same way and follows its scroll. Enter sharpens, as before */
+  const finGrow = () => { fi.style.height = 'auto'; const cs = getComputedStyle(fi), lh = parseFloat(cs.lineHeight) || 24, pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    fi.style.height = Math.min(fi.scrollHeight, Math.round(lh * 3 + pad)) + 'px'; finField.classList.toggle('grown', fi.scrollHeight > lh + pad + 2); };
+  const finEdge = () => { const o = fi.scrollHeight - fi.clientHeight > 1; finField.classList.toggle('ovr', o && fi.scrollTop < fi.scrollHeight - fi.clientHeight - 1); finField.classList.toggle('ovl', o && fi.scrollTop > 1); fmir.scrollTop = fi.scrollTop; };
   /* the beam's hot spot on the panel's top hairline sits exactly where the beam crosses it */
   function finFx() {
     const pn = $('.fin-panel'), lv = $('#fp-live'); if (!pn || !lv || narrow() || lv.offsetParent === null) return;
@@ -4008,7 +4130,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   /* the final's error state: the visitor's line can't be sharpened here, so the example card steps aside for the message.
      An emptied field brings the example back */
   function finDown() {
-    const on = !!fi.value.trim(); fpDraft.hidden = on; fpCard.hidden = on; fpP2.hidden = true; fpHits.hidden = on; fpEmpty.hidden = !on; fpTip.hidden = true; fpAlt.hidden = true;
+    const on = !!fi.value.trim(); fpDraft.hidden = on; fpCard.hidden = on; fpP2.hidden = true; fpOdc.hidden = true; fpHits.hidden = on; fpEmpty.hidden = !on; fpTip.hidden = true; fpAlt.hidden = true;
     if (on) { fpEmpty.textContent = DOWN; keepFin(false); finLine = ''; $('#fin-status').textContent = DOWN; }
   }
   function payUpdate(force, tog, alt) {
@@ -4017,7 +4139,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (!tog || tog === true) fpTip.textContent = 'Tap a struck word to put it back.';
     if (!raw.trim()) {
       keepF = []; if (!live) return; live = false; lastKey = ''; pay.classList.remove('live', 'pass');
-      fpDraft.innerHTML = EX0.draft; fpHead.innerHTML = EX0.head; fpSharp.className = 'xtext'; fpSharp.innerHTML = EX0.sharp; fpCard.hidden = false; fpP2.hidden = true; pay.classList.remove('mk'); fpEmpty.hidden = true; fpHits.hidden = false; fpTip.hidden = true;
+      fpDraft.innerHTML = EX0.draft; fpHead.innerHTML = EX0.head; fpSharp.className = 'xtext'; fpSharp.innerHTML = EX0.sharp; capLine(fpSharp, fpAll); fpCard.hidden = false; fpP2.hidden = true; fpOdc.hidden = true; pay.classList.remove('mk'); fpEmpty.hidden = true; fpHits.hidden = false; fpTip.hidden = true;
       fpK.textContent = EX0.k; fpK.hidden = false; fpWhy.hidden = false; fpAlt.hidden = true; fpWhy.textContent = EX0.why; fpNote.textContent = EX0.note; fpKept.textContent = EX0.kept; fpKept.hidden = !EX0.kept; fpAv.className = EX0.av; fpAv.style.setProperty('--y', EX0.y); keepFin(false); finLine = ''; if (!sayT) fn.textContent = ''; flash(); finFx(); return;
     }
     const prevCut = new Set([...fpDraft.querySelectorAll('.cut')].map(x => x.dataset.w));
@@ -4042,13 +4164,13 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     if (!sayT) fn.textContent = nf ? `${nf} bit${nf === 1 ? '' : 's'} of fluff` : cvF.on.length ? `You cut ${cvF.on.length}` : cvF.left ? `${cvF.left} left to you` : nm ? `Marked ${nm}` : st === 'clean' && !keepF.length ? 'Nothing to cut' : '';
     if (key === lastKey && !force) return; lastKey = key;
     if (st === 'thin' || st === 'empty') {
-      fpCard.hidden = true; fpP2.hidden = true; fpHits.hidden = true; fpEmpty.hidden = false; fpEmpty.textContent = thinSay(FR); keepFin(false); finLine = ''; fpAlt.hidden = true; pay.classList.remove('pass');
+      fpCard.hidden = true; fpP2.hidden = true; fpOdc.hidden = true; fpHits.hidden = true; fpEmpty.hidden = false; fpEmpty.textContent = thinSay(FR); keepFin(false); finLine = ''; fpAlt.hidden = true; pay.classList.remove('pass');
     } else {
       fpCard.hidden = false; fpEmpty.hidden = true; fpHits.hidden = false;
       const V = viewOf(FR, fv, keepF, cvF);
       fpSharp.className = 'xtext' + (sharp || V.pass || V.lit ? '' : ' same');
       fpSharp.innerHTML = `<span class="sr">${sharp ? 'Sharpened: ' : V.lit ? 'Your edit: ' : 'As you wrote it: '}</span>` + xbeats(V.line || fv.line);
-      fpCard.hidden = !!V.mk; pay.classList.toggle('mk', !!V.mk); setPosts(fpP2, V.posts);
+      fpCard.hidden = !!V.mk; pay.classList.toggle('mk', !!V.mk); setPosts(fpP2, V.posts); fpOdc.hidden = !V.odc; if (!V.mk) capLine(fpSharp, fpAll);
       pay.classList.toggle('pass', !!V.pass); finIntent = V.intent || '';
       fpK.textContent = V.k; fpK.hidden = !V.k; fpWhy.innerHTML = V.why; fpWhy.hidden = !V.why;
       fpNote.textContent = noteOnce(V.note, V.why);
@@ -4063,7 +4185,7 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
     const H = E(), t = fi.value; if (!H) { fm.textContent = t; return; }
     const m = (t.trim() && H.softMarks(t.replace(/^\s+/, ''), keepF)) || [], off = lead(t);
     let h = '', last = 0; m.forEach(x => { h += esc(t.slice(last, x[0] + off)) + `<mark${x[3] === 'frame' ? ' class="held"' : ''}>${esc(t.slice(x[0] + off, x[1] + off))}</mark>`; last = x[1] + off; });
-    fm.innerHTML = h + esc(t.slice(last)); fmir.scrollLeft = fi.scrollLeft; finEdge();
+    fm.innerHTML = h + esc(t.slice(last)) + '\u200b'; finGrow(); finEdge();
     if (!sayT && !t.trim()) fn.textContent = '';
   };
   function say(msg) { clearTimeout(sayT); fn.textContent = msg; fn.classList.add('say'); sayT = setTimeout(() => { sayT = 0; fn.classList.remove('say'); fpaint(); }, 2500); }
@@ -4075,8 +4197,11 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   fi.addEventListener('input', () => { fi.removeAttribute('aria-invalid'); if (sayT) { clearTimeout(sayT); sayT = 0; fn.classList.remove('say'); }
     loadCore().then(H => { if (!H) { finDown(); return; } fpaint(); if (!fi.value.trim()) payUpdate(); else finStale(); }); });
   fi.addEventListener('focus', () => loadCore());
-  fi.addEventListener('scroll', () => { fmir.scrollLeft = fi.scrollLeft; finEdge(); });
-  ['keyup', 'click', 'select', 'input', 'focus', 'blur'].forEach(ev => fi.addEventListener(ev, () => { fmir.scrollLeft = fi.scrollLeft; requestAnimationFrame(finEdge); }));
+  fi.addEventListener('scroll', finEdge, { passive: true });
+  /* Enter sharpens (a new row comes only from the wrap); the box grows with the line as it's typed or pasted */
+  fi.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#fin-form').requestSubmit(); } });
+  ['input', 'focus'].forEach(ev => fi.addEventListener(ev, () => { finGrow(); requestAnimationFrame(finEdge); }));
+  addEventListener('resize', () => { if (fi.value) { finGrow(); finEdge(); } });
   $('#fin-form').addEventListener('submit', async e => {
     e.preventDefault(); clearTimeout(timer);
     if (!fi.value.trim()) { say('Paste a line first'); fi.setAttribute('aria-invalid', 'true'); const fs = $('#fin-status'); fs.textContent = ''; setTimeout(() => { fs.textContent = 'Paste a line first.'; }, 30); payUpdate(); fi.focus(); return; }
@@ -4120,15 +4245,16 @@ now i do the opposite. after any red day, i cut my size in half, no matter how s
   ['pointerdown', 'focusin'].forEach(ev => ['#sharpen', '#start', '#who'].forEach(s => $(s).addEventListener(ev, wake, { once: true, passive: true })));
   /* the visitor's own touch pauses the warm-up for a few seconds: what they asked for is worked out on demand */
   ['#sharpen', '#start', '#who'].forEach(s => $(s).addEventListener('pointerdown', () => { warmHold = performance.now() + 3000; }, { passive: true }));
-  /* the engine also loads on intent: a touch, a click or focus in Try, the final or Who, the mouse resting on the Try box, the final's
-     field or the Who posts, or the Try tile at least half in view (the visitor is reading the demo). Whichever comes first */
-  ['#sharpen .try', '.fin-form', '#who .wposts'].forEach(s => { const el = $(s); if (el) el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') wake(); }, { once: true, passive: true }); });
-  if ('IntersectionObserver' in window) { const eo = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting && x.intersectionRatio >= .5 * Math.min(1, innerHeight / Math.max(1, x.boundingClientRect.height)) - .01)) { eo.disconnect(); wake(); } },
-    { threshold: [0, .25, .5, .75, 1] }); eo.observe($('#sharpen')); }
-  /* pass 21 (web-1): and in idle time after load, never in the first 1.5 s: requestIdleCallback (a 4 s timeout), or where a browser
-     has none, the frame-and-timeout fallback in idle(). By the first tap the bundle is parsed, so the tap only runs the engine */
-  const idleLoad = () => setTimeout(() => idle(() => wake(), 4000), 1500);
-  if (document.readyState === 'complete') idleLoad(); else addEventListener('load', idleLoad, { once: true });
+  /* pass 22 (web-1): the bundle is fetched on the first sign of intent, never on idle alone: a touch, a click or focus in Try, the
+     final or Who (a chip or a field included), the mouse resting on the Try box, a chip, the final's field or the Who posts, or the
+     Try tile within one screen of the viewport. Whichever comes first. A touch, a click, focus or the mouse fetch at once; the Try
+     tile's nearness fetches in the first idle slot after load, so it never competes with the first paint and the first tap (even
+     one right after a scroll) finds the bundle parsed. A visitor who lands far from Try (a link to the FAQ) fetches nothing until
+     they come near it. Only a browser with no IntersectionObserver falls back to idle time after load */
+  ['#sharpen .try', '#try-starters', '.fin-form', '#who .wposts'].forEach(s => { const el = $(s); if (el) el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') wake(); }, { once: true, passive: true }); });
+  const afterLoad = f => { if (document.readyState === 'complete') f(); else addEventListener('load', f, { once: true }); };
+  if ('IntersectionObserver' in window) { const eo = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting)) { eo.disconnect(); afterLoad(() => idle(() => wake(), 1500)); } }, { rootMargin: '0px 0px 100% 0px' }); eo.observe($('#sharpen')); }
+  else afterLoad(() => setTimeout(() => idle(() => wake(), 4000), 1500));
 
   /* ---------- tile moments: an illustrative tile plays once as it arrives, then only from its Replay button ---------- */
   const MOMENT = {

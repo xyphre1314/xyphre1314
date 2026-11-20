@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 pass 5: the fourth juror's findings on the on-device engine (concepts/r86/reviews/rerate4/review-hook.json), as
    tests. Safety first: Sharpen never changes what a line means, the facts in it, or the writer's stance. Every P0 line is
    also put back word by word (the put-back re-run), and the meaning still holds there too */
@@ -44,7 +45,7 @@ test('juror 4, hook-2: an approximator in front of a value stays, with the why "
   /* on a sharpened line it says so in the note */
   assert.match(S('honestly it is basically free for most people').note, /Left “basically” in: it says nearly, not exactly\./);
   /* a "basically" that is only talk still goes */
-  assert.equal(L('So basically we raised a $2.5M seed round led by @a16z'), 'We raised a $2.5M seed round led by @a16z.');
+  assert.equal(L('So basically we raised a $2.5M seed round led by @a16z'), 'We raised a $2.5M seed round led by @a16z');
 });
 
 test('juror 4, hook-3: a hedged plan or forecast keeps its hedge; "going to" never becomes a promise', () => {
@@ -54,22 +55,22 @@ test('juror 4, hook-3: a hedged plan or forecast keeps its hedge; "going to" nev
     ['honestly i think we might raise prices next month', ['might']], ['I think that in 5 years nobody will remember this.', ['I think']],
     ["Maybe we'll open a waitlist next week, not sure yet", ['Maybe']]];
   for (const [t, ws] of lines) holds(t, (R, at) => { for (const w of ws) assert.ok(lc(R.line).includes(lc(w)), `${t} (${at}) → ${R.line}: lost "${w}"`); assert.ok(!/\bwill\b|['’]ll\b/i.test(R.line) || /\bwill\b|['’]ll\b/i.test(t), `${t} (${at}) → ${R.line}: made it a promise`); });
-  assert.equal(L("I think we're basically going to hit $50k MRR this month\n\nHere's the boring stuff that got us there:"), "I think we're going to hit $50k MRR this month.");
+  assert.equal(L("I think we're basically going to hit $50k MRR this month\n\nHere's the boring stuff that got us there:"), "I think we're going to hit $50k MRR this month");
   /* the note says why, on a plan as on a call */
   assert.match(S("I think I'm going to quit X for a month.").why, /Kept “I think”: on a plan or a forecast/);
   /* r86 pass 6 (juror 5, hook-7): a hedge on a claim about now is the one hedge its clause keeps, as the Claude prompt keeps it;
      only a second hedge on the same clause goes */
   /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-  assert.equal(L('I think most people overthink their first post'), 'Most people overthink their first post.');
+  assert.equal(L('I think most people overthink their first post'), 'Most people overthink their first post');
   /* (a take on a $ticker is a call: its stance stays) */
   assert.equal(L('so $ARB unlock is next week and honestly i think everyone is way too relaxed about it'), '$ARB unlock is next week. i think everyone is way too relaxed about it');
   /* v4.2 (round-7 marketing-4): "I think" is the one hedge kept; "probably" is the second one */
   /* v5.3 (Fable g-74, step 2): on a view, "probably" is the clause's one hedge and the "I think" on top of it goes */
-  assert.equal(L('I think most people probably overthink their first post'), 'Most people probably overthink their first post.'); /* v5.6 (Fable round 5, f5-2): the lone "probably" is the call; the stacked "I think" goes */ /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L('I think most people probably overthink their first post'), 'Most people probably overthink their first post'); /* v5.6 (Fable round 5, f5-2): the lone "probably" is the call; the stacked "I think" goes */ /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* r86 pass 6 (juror 5, hook-7): "probably" is the clause's one hedge, so it stays; never "Probably talk to your users" */
-  assert.equal(L('This might sound obvious but you should probably talk to your users before you build'), 'You should probably talk to your users before you build.'); /* v5.6 (Fable round 5, f5-2): a lone "probably" on advice is the writer's call, never a cut (it was cut in v5.4) */
+  assert.equal(L('This might sound obvious but you should probably talk to your users before you build'), 'You should probably talk to your users before you build'); /* v5.6 (Fable round 5, f5-2): a lone "probably" on advice is the writer's call, never a cut (it was cut in v5.4) */
   /* "then this might be for you" keeps its "might" */
-  assert.match(L('If you are a founder who is struggling to find the time to post consistently on social media, then this might be for you'), /this might be for you\.$/);
+  assert.match(L('If you are a founder who is struggling to find the time to post consistently on social media, then this might be for you'), /this might be for you$/); /* v5.7: no end stop the writer didn't type */
 });
 
 test('juror 4, hook-4/5: a cut between clauses keeps the comma; every emoji stays whole', () => {
@@ -97,7 +98,7 @@ test('juror 4, hook-6/7: no repeated teaser, no fragment from a split, no broken
   holds(t81, (R, at) => { assert.ok((lc(R.line).match(/what changed/g) || []).length <= 1, `${at}: ${R.line}`); assert.doesNotMatch(R.line, /What changed:/, at); });
   /* a result-first version that only reorders is fine when there's no teaser, on a line that had a run-up to cut */
   /* v5.5 (Fable round 4, H3): the result-first reorder would add "What changed:", so the cut-only edit ships */
-  assert.equal(L('So basically we moved from Postgres to SQLite for our edge cache and reads got 9x faster'), 'We moved from Postgres to SQLite for our edge cache and reads got 9x faster.');
+  assert.equal(L('So basically we moved from Postgres to SQLite for our edge cache and reads got 9x faster'), 'We moved from Postgres to SQLite for our edge cache and reads got 9x faster');
   /* v5.2 (Fable f-97): a draft with nothing soft that already says its action and its result stays as written */
   assert.equal(core.sharpenLine('We moved from Postgres to SQLite for our edge cache and reads got 9x faster').state, 'clean');
   const t41 = "Two years ago we had 3 customers, $900 in the bank, and a co-founder who was about to leave. Today we're at $1.2M ARR with 11 people. I want to share the honest version of what happened in between, because the polished version you see on LinkedIn really isn't the whole story and I think it does a lot of founders a disservice.";
@@ -116,7 +117,7 @@ test('juror 4, hook-8: the run-ups people really write are cut, and banned words
   assert.equal(L("Just a friendly reminder: if you don't hold your keys, you don't hold your coins.").startsWith('Just a friendly'), false);
   assert.equal(L("In today's fast-paced digital landscape, it's more important than ever to build thought leadership on social media."), "It's more important than ever to build thought leadership on social media.");
   assert.doesNotMatch(L('What if I told you that funding rates are actually the most underrated indicator in crypto?'), /what if i told you/i);
-  assert.equal(L('TIL that you can use git bisect to find exactly which commit broke your build'), 'TIL you can use git bisect to find exactly which commit broke your build.');
+  assert.equal(L('TIL that you can use git bisect to find exactly which commit broke your build'), 'TIL you can use git bisect to find exactly which commit broke your build');
   assert.equal(L("I'm currently in the process of migrating our entire backend from Express to Hono and so far it's been really smooth."), "I'm migrating our entire backend from Express to Hono and so far it's been smooth.");
   const ban = /\b(?:leverag\w*|supercharg\w*|unlock\w*|seamless\w*|elevat\w*|game[- ]?changer|delv\w*)\b/i;
   const b = S("Here's how we help B2B brands leverage LinkedIn to supercharge their pipeline and unlock seamless growth.");
@@ -129,7 +130,8 @@ test('juror 4, hook-8: the run-ups people really write are cut, and banned words
 test('juror 4, hook-9/12: receipts are true, thin lines say which kind of thin', () => {
   /* a decimal is not a beat */
   for (const t of ["I just wanted to share that I closed my $PEPE long for a 4.2x and I'm basically done trading memes for the year.", 'So basically BTC is at 24.1 dominance on alts and honestly that is wild', 'Honestly we just raised $2.5M and I am still in shock']) {
-    const R = S(t), n = (R.line.match(/[.!?]+(?=\s|$)/g) || []).length || 1, m = R.say.match(/Split it into (\w+) beats/);
+    /* v5.7 (page pass 22, founder-5): a last beat with no end stop (the writer typed none) is a beat too */
+    const R = S(t), n = (R.line.match(/[.!?]+(?=\s|$)/g) || []).length + (/[.!?…]["”’)]*\s*$/.test(R.line) ? 0 : 1), m = R.say.match(/Split it into (\w+) beats/);
     if (m) assert.equal(m[1], ['', 'one', 'two', 'three'][n], `${t}: ${R.say} on ${R.line}`);
   }
   for (const [t, w, k] of [['ok so', 'That’s all filler. Add the point.', 'filler'], ['Really really really', 'That’s all filler. Add the point.', 'filler'],
@@ -163,8 +165,8 @@ test('juror 4, hook-10/11: the joke and the feeling stay; a contraction alone is
      the same line without it is still no sharpen */
   /* v5.0 (round-13 uiux-2): the spare "that" after a kept stance is a real cut too, so the no-sharpen case is the line without it */
   assert.equal(S('I think the next big wave in crypto is going to be stablecoin payments').state, 'clean');
-  assert.equal(L('I think that the next big wave in crypto is going to be stablecoin payments'), 'I think the next big wave in crypto will be stablecoin payments.');
-  assert.equal(L('I really think that the next big wave in crypto is going to be stablecoin payments'), 'I think the next big wave in crypto will be stablecoin payments.');
+  assert.equal(L('I think that the next big wave in crypto is going to be stablecoin payments'), 'I think the next big wave in crypto will be stablecoin payments');
+  assert.equal(L('I really think that the next big wave in crypto is going to be stablecoin payments'), 'I think the next big wave in crypto will be stablecoin payments');
   const f = S('Most people miss the 83(b) election deadline and honestly it costs them');
   assert.ok(f.kept.includes('83(b)'), f.kept.join(', ')); assert.match(f.line, /83\(b\)/);
   assert.ok(S('Just a heads up: $ETH gas is currently at 0.4 gwei, which is basically the cheapest it has been since 2016.').kept.includes('0.4 gwei'));

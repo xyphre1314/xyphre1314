@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 pass 4: what the third juror (hook-1…16) and the UI/UX, marketing and web jurors found, held as rules. Written apart
    from the engine's guards, on the juror's own lines plus fresh probes:
    1. no false "would break" bail-out: an opinion frame takes its "that", and "Marked, not cut" only says "breaks" when it does
@@ -28,7 +29,7 @@ test('juror 3, hook-1: an opinion frame takes its "that"; "breaks" only when it 
   /* r86 pass 6 (juror 5, hook-7): one hedge per clause, as the Claude prompt keeps it: a lone "I think" stays, its padding goes */
   /* v5.0 (round-13 uiux-2): and the spare "that" after the kept stance goes too */
   /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-  assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "Most people just need to sleep more and eat more protein, and that's pretty much it.");
+  assert.equal(L("I really think that most people basically just need to sleep more and eat more protein, and that's pretty much it"), "Most people just need to sleep more and eat more protein, and that's pretty much it");
   assert.equal(L("I think that's pretty much it for today."), "That's pretty much it for today.");
   /* an unsure line says "breaks" only when the cut version is broken or says something else */
   const { rows } = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-heldout.json'), 'utf8'));
@@ -45,17 +46,17 @@ test('juror 3, hook-2: the run-ups people really write are marked and cut whole'
   assert.equal(L('Just a quick thread on why the halving is priced in 👇'), 'Why the halving is priced in 👇');
   assert.equal(L("A thread of 12 things I've learned from 12 years of investing 🧵👇"), "12 things I've learned from 12 years of investing 🧵👇");
   assert.equal(L('Fitness tip: Stop doing cardio on an empty stomach if you actually want to build muscle #fitness #gym'), 'Stop doing cardio on an empty stomach if you actually want to build muscle #fitness #gym');
-  assert.equal(L("It's kind of crazy to think that a year ago this was just an idea in my notes app and now 2,000 people use it every day"), 'A year ago this was just an idea in my notes app and now 2,000 people use it every day.');
+  assert.equal(L("It's kind of crazy to think that a year ago this was just an idea in my notes app and now 2,000 people use it every day"), 'A year ago this was just an idea in my notes app and now 2,000 people use it every day');
   assert.equal(L("Honestly I'm just curious, what does everyone here actually do for a living?"), 'What does everyone here actually do for a living?');
-  assert.equal(L("Just wanted to give a huge shoutout to @sarahwrites for the amazing feedback on my latest draft, she's honestly the best editor I know"), "Huge shoutout to @sarahwrites for the amazing feedback on my latest draft. She's the best editor I know.");
+  assert.equal(L("Just wanted to give a huge shoutout to @sarahwrites for the amazing feedback on my latest draft, she's honestly the best editor I know"), "Huge shoutout to @sarahwrites for the amazing feedback on my latest draft. She's the best editor I know");
   /* r86 pass 6 (juror 5, hook-7/12): "pretty impressed" is a softener the prompt keeps, a lone "I think" stays, and so does the writer's "!" */
-  assert.equal(L('So I finally got around to trying out Cursor for the first time and I have to say I\'m genuinely pretty impressed with how it handles large codebases'), "I finally tried Cursor for the first time. I'm pretty impressed with how it handles large codebases.");
+  assert.equal(L('So I finally got around to trying out Cursor for the first time and I have to say I\'m genuinely pretty impressed with how it handles large codebases'), "I finally tried Cursor for the first time. I'm pretty impressed with how it handles large codebases");
   assert.equal(L("So here's the thing. I've been thinking about this for a while now. And I think I've finally figured out why most creators burn out."), "I think I've finally figured out why most creators burn out.");
   assert.equal(L("In today's issue, I'm going to be talking about why I think most people are really doing email marketing wrong."), "Today's issue: why I think most people are doing email marketing wrong.");
   assert.equal(L('So basically we raised a $2.5M seed round led by @a16z and I wanted to share a few thoughts on the process'), 'We raised a $2.5M seed round led by @a16z. A few thoughts on the process:');
   assert.equal(L("I've lost 30 lbs in the last 4 months without giving up carbs, and I'm going to explain exactly how I did it in this thread"), "I've lost 30 lbs in the last 4 months without giving up carbs. Here's exactly how:");
   assert.equal(L("I'm super excited to announce that after a lot of hard work we've officially launched our new product on Product Hunt today!"), 'We launched our new product on Product Hunt today!');
-  assert.equal(L('I wanted to share a really interesting chart I came across this week that basically shows how much attention spans have dropped'), 'An interesting chart I came across this week shows how much attention spans have dropped.');
+  assert.equal(L('I wanted to share a really interesting chart I came across this week that basically shows how much attention spans have dropped'), 'An interesting chart I came across this week shows how much attention spans have dropped');
   /* v5.5 (Fable round 4, H1): over 280 it opens a thread; read as one, the news leads and the thanks follow */
   assert.match((r => (r.thread || [r.line]).join(' '))(S("I just wanted to take a moment to really thank everyone who has supported us over the past three years, from our very first beta users who put up with a ton of bugs, to our amazing team who basically worked nights and weekends, to our investors who believed in us when literally nobody else did. We're officially profitable as of this month.")), /^We're officially profitable as of this month\. Thank you to everyone who/);
   assert.equal(L('Why is it that every single productivity app eventually turns into a note-taking app?'), 'Why does every single productivity app eventually turn into a note-taking app?');
@@ -91,7 +92,8 @@ test('juror 3, hook-7/9/12/13/15/16: tails, lists, idioms, salad, stance and dis
   /* a market-structure claim is a call; a call that hedges itself drops the opinion frame */
   assert.equal(L('Just a quick thread on why I think the halving is already priced in 👇'), 'Why I think the halving is already priced in 👇');
   /* r86 pass 6 (juror 5, hook-7): on a forecast every hedge stays, "In my humble opinion" included, as the Claude prompt keeps it */
-  assert.equal(L('In my humble opinion, the vast majority of altcoins will probably never see their ATHs again.'), 'In my humble opinion, most altcoins will probably never see their ATHs again.');
+  /* v5.7 (Fable round 6, H12): "the vast majority" stays (it is more than "most"), so this call ships as written */
+  assert.equal(L('In my humble opinion, the vast majority of altcoins will probably never see their ATHs again.'), 'In my humble opinion, the vast majority of altcoins will probably never see their ATHs again.');
   /* a disclaimer is never fluff: alone it's complete, and r86 pass 6 (hook-7): up front it stays where the writer put it, never moved to the end */
   for (const t of ['This is not financial advice.', 'NFA. Not financial advice. DYOR.']) { const R = S(t); assert.equal(R.state, 'clean', t); assert.equal(R.why, 'A disclaimer. Nothing to cut.'); assert.deepEqual(R.marks, []); }
   const R = S('I just wanted to quickly say that I am not a financial advisor and this is not financial advice but I really think $LINK is very undervalued right now');
@@ -113,7 +115,7 @@ test('juror 3, hook-10/11 and marketing-1/3: quotes end on a phrase, counts are 
   /* r86 pass 6 (juror 5, hook-7/12): a frame that says how to take the line stays, a lone "i think" stays, and so does the "!" */
   assert.equal(L('this might be controversial but i actually think dca is overrated for most people'), 'this might be controversial but i actually think dca is overrated for most people');
   assert.equal(L('so i think the real reason most newsletters stall is that the first line is boring'), 'the real reason most newsletters stall is that the first line is boring'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-  assert.equal(L('Quick update: we shipped dark mode and the onboarding checklist this week'), 'We shipped dark mode and the onboarding checklist this week.');
+  assert.equal(L('Quick update: we shipped dark mode and the onboarding checklist this week'), 'We shipped dark mode and the onboarding checklist this week');
   assert.equal(L("Thrilled to announce we've raised a $4M seed round led by @a16z!"), "We've raised a $4M seed round led by @a16z!");
   /* every quote over the held-out lines ends on a phrase: never on a small word, a verb before its particle, or a lone quote mark */
   const { rows } = JSON.parse(readFileSync(path.join(here, 'fixtures/sharpen-heldout.json'), 'utf8'));
@@ -140,10 +142,10 @@ test('juror 3, hook-6/9 and uiux-1: strikes are every removed word, fluff was ma
 });
 
 test('rounds G-J: the misses found at first contact stay fixed', () => {
-  assert.equal(L("After a lot of thought, we've decided to sunset our free plan starting next month"), "We're sunsetting our free plan starting next month.");
+  assert.equal(L("After a lot of thought, we've decided to sunset our free plan starting next month"), "We're sunsetting our free plan starting next month");
   assert.equal(S("Cold email still works. Lazy cold email doesn't.").state, 'clean', 'a real 7-word post is never thin');
-  assert.equal(L("I'll be honest, I almost didn't post this because I thought nobody would care"), "I almost didn't post this because I thought nobody would care.");
-  assert.equal(L("I've said this before and I'll say it again: your first line is 80% of the work"), 'Your first line is 80% of the work.');
+  assert.equal(L("I'll be honest, I almost didn't post this because I thought nobody would care"), "I almost didn't post this because I thought nobody would care");
+  assert.equal(L("I've said this before and I'll say it again: your first line is 80% of the work"), 'Your first line is 80% of the work');
   assert.match(L('Not gonna lie, I was really nervous about raising prices but we lost basically zero customers'), /basically zero customers/);
   assert.doesNotMatch(L("If there's one thing I've learned from writing online for 4 years, it's that consistency beats virality"), /\?/);
   /* r86 pass 6 (juror 5, hook-7): the disclaimer stays where the writer put it, never moved to the end */

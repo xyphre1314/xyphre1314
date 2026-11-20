@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* v5.4 (Fable round 3, on-device): reshape safety, long lines, call marks, the one hedge rule, run-up families.
    Built from the round's own held-out lines (scratchpad engine/heldout54.json), never from a Fable line. */
 import { test } from 'node:test';
@@ -70,7 +71,8 @@ test('v5.4 step 1: every shipped version passes the positive whole-sentence read
 });
 
 test('v5.4 step 1: a plainer word keeps the grammar of its slot', () => {
-  assert.match(sl('The vast majority of us will never read the terms of service, and that\'s the whole business model').line, /^Most of us\b/);
+  /* v5.7 (Fable round 6, H12): "the vast majority" is a stronger quantity than "most": it stays, so its slot is never touched */
+  assert.match(shipped(sl('The vast majority of us will never read the terms of service, and that\'s the whole business model')), /^The vast majority of us\b/);
   assert.match(sl('The majority of my clients come from Twitter, not LinkedIn').line, /^Most of my clients\b/);
   for (const t of HELD) assert.doesNotMatch(shipped(sl(t)), /\b(?:most|some) (?:us|them|my|our|your|the)\b/i, t);
 });
@@ -78,8 +80,8 @@ test('v5.4 step 1: a plainer word keeps the grammar of its slot', () => {
 test('v5.4 step 1: never a "?" the writer didn\'t type; an "Anyone …:" address is a statement', () => {
   for (const t of HELD) { const L = shipped(sl(t)); assert.ok((L.match(/\?/g) || []).length <= (t.match(/\?/g) || []).length, `${t} → ${L}`); }
   const R = sl('A heads up for anyone who uses Gmail filters: they silently stop working past 1,000 rules');
-  assert.equal(R.state, 'sharp'); assert.match(R.line, /^Anyone who uses Gmail filters: they silently stop working past 1,000 rules\.$/);
-  assert.match(sl('Anyone who is learning to code: build something ugly that works before you learn the perfect framework').line, /framework\.$/);
+  assert.equal(R.state, 'sharp'); assert.match(R.line, /^Anyone who uses Gmail filters: they silently stop working past 1,000 rules$/); /* v5.7: no end stop the writer didn't type */
+  assert.match(sl('Anyone who is learning to code: build something ugly that works before you learn the perfect framework').line, /framework$/);
 });
 
 test('v5.4 step 1: a beat split never eats a series\' "and"', () => {
@@ -101,7 +103,8 @@ test('v5.4 step 2: never more than 280 with the run-up in; post 1 ends on a whol
     /* over 280 only once the run-up is cut: then the line ships whole, with the note that it can open a thread */
     if (C.xLength(L) > 280) { assert.ok(R.state === 'sharp' && L !== R.draft && !RUNUP.test(L), `${C.xLength(L)} with the run-up in: ${L}`); assert.match(R.note, /Over 280/); continue; }
     /* v5.5 (Fable round 4, H1): a run-up the line lost may leave a header that fits one post ("The time I deleted…:"); a thread's post 1 still ends on a whole sentence */
-    assert.match(L, R.thread ? /[.!?…]$/ : /[.!?…:]$/, `ends on a finished sentence: ${L}`);
+    /* v5.7 (page pass 22, founder-5): a draft with no end stop gets none, so a one-post line may end as the writer ended it */
+    assert.match(L, R.thread ? /[.!?…]$/ : /[.!?…]["”’)]*\s*$/.test(t) ? /[.!?…:]$/ : /[.!?…:]$|[^\s.,;]$/, `ends on a finished sentence: ${L}`);
     assert.doesNotMatch(L, /\babout why\.$/, L);
     if (R.thread) { assert.equal(R.thread[0], L); assert.ok(R.post2 && R.post2.length > 10, 'post 2 carries the rest'); assert.match(R.say, /Opens a \d+-post thread/); /* v5.5: the say names the thread */ }
   }
@@ -121,7 +124,7 @@ test('v5.4 step 3: no call marks on sarcasm or on a deliberate repeat; a hedge s
 
 test('v5.4 step 3: one rule for hedges and stance words: a call on a forecast, a cut on a plain view', () => {
   const view = sl('I think most onboarding emails are way too long');
-  assert.equal(view.state, 'sharp'); assert.match(view.line, /^Most onboarding emails are way too long\.$/); assert.equal((view.calls || []).length, 0);
+  assert.equal(view.state, 'sharp'); assert.match(view.line, /^Most onboarding emails are way too long$/); /* v5.7: no end stop the writer didn't type */ assert.equal((view.calls || []).length, 0);
   const fc = sl('I think $ETH will probably retest 2k next week');
   assert.ok((fc.calls || []).length >= 1, 'a forecast keeps its stance as a call'); assert.match(shipped(fc), /I think/);
   const arg = sl('I\'d argue that most teams will ship slower next year');
@@ -131,12 +134,12 @@ test('v5.4 step 3: one rule for hedges and stance words: a call on a forecast, a
 });
 
 test('v5.4 step 4: doubled "that" and stock run-ups, as families with grammar-safe cuts', () => {
-  assert.equal(sl('I wish that I knew that you could negotiate your rent').line, 'I wish I knew you could negotiate your rent.');
+  assert.equal(sl('I wish that I knew that you could negotiate your rent').line, 'I wish I knew you could negotiate your rent');
   assert.equal(sl('Here\'s a little something that I wish that I knew before I hired my first contractor').line, 'What I wish I knew before I hired my first contractor:');
-  assert.equal(sl('Something that I\'ve noticed is that the best managers ask more questions than they answer').line, 'The best managers ask more questions than they answer.');
+  assert.equal(sl('Something that I\'ve noticed is that the best managers ask more questions than they answer').line, 'The best managers ask more questions than they answer');
   assert.match(sl('I\'ve come to the realization that most meetings could be a two-line message').line, /^I['’]ve realized\b/);
   assert.match(sl('There are a lot of people who think you need a big audience to sell a course, and you really don\'t').line, /^A lot of people think\b/);
-  assert.match(sl('A quick little tip for anyone who writes cold emails: put the ask in the first line').line, /^Anyone who writes cold emails: put the ask in the first line\.$/);
+  assert.match(sl('A quick little tip for anyone who writes cold emails: put the ask in the first line').line, /^Anyone who writes cold emails: put the ask in the first line$/);
   /* a family's why names what it took */
   assert.match(sl('Something that I\'ve noticed is that the best managers ask more questions than they answer').why, /“Something that I've noticed is that” went/);
 });

@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.5: the on-device Sharpen after blind set 6 (review-hook-v44: hook44-1 to hook44-4, on-device) and the page marketing
    juror's round 9 (engine items only).
    1. hook44-1 (v-82, the one break): "it/that/there/here is" contracts only where the pronoun opens its clause as the subject,
@@ -68,12 +69,12 @@ test('v4.5, hook44-1: "is" contracts only onto a clause-opening subject, never a
   assert.equal(C('Let us know what you think'), 'Let us know what you think');
   assert.equal(C('Let us begin'), 'Let’s begin');
   /* never across a cut: "I honestly am" → "I am", not "I'm" */
-  assert.equal(L('I honestly am not sure we will make payroll next month.'), 'I am not sure we’ll make payroll next month.');
+  assert.equal(L('I honestly am not sure we will make payroll next month.'), 'I am not sure we will make payroll next month.');
   /* the writer's apostrophe: straight → straight; curly only → curly; v4.8 (brand-4): none → the page's ’ */
   assert.equal(L('After ghostwriting for 40+ SaaS founders, I can confidently say most of them are honestly way too scared to post their real opinions.'), 'I’ve ghostwritten for 40+ SaaS founders. Most of them are way too scared to post their real opinions.');
   assert.equal(L("After ghostwriting for 40+ SaaS founders, I can confidently say most of them are honestly way too scared to post their 'real' opinions."), "I've ghostwritten for 40+ SaaS founders. Most of them are way too scared to post their 'real' opinions.");
-  assert.equal(L("I'll be real with you guys, this launch did not go the way I planned."), "This launch didn't go the way I planned.");
-  assert.equal(L('I’ve been saying this for months and honestly it is finally happening.'), 'I’ve been saying this for months. It’s finally happening.');
+  assert.equal(L("I'll be real with you guys, this launch did not go the way I planned."), "This launch did not go the way I planned.");
+  assert.equal(L('I’ve been saying this for months and honestly it is finally happening.'), 'I’ve been saying this for months. It is finally happening.');
   /* the hard guard reads the class, whatever made it */
   assert.equal(hard('Reading the whole error message before googling it’s a skill that took me years to learn.', v82), 'contraction off its subject');
   assert.equal(hard("Getting there's half the fun.", 'Honestly getting there is half the fun.'), 'contraction off its subject');
@@ -116,7 +117,7 @@ test('v4.5, hook44-3: "really" before the verb stays; a softener before a bare v
   assert.equal(L('I think a lot of designers really overthink their portfolios when they should just show 3 really good case studies.'), 'A lot of designers really overthink their portfolios when they should just show 3 good case studies.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* a run-up's "really" goes with its run-up */
   assert.equal(L('I just wanted to take a moment to really thank everyone who has supported us over the past three years.'), 'Thank you to everyone who has supported us over the past three years.');
-  assert.equal(L('I really want to emphasize how important it is to reply to every comment in the first hour'), 'Reply to every comment in the first hour.');
+  assert.equal(L('I really want to emphasize how important it is to reply to every comment in the first hour'), 'Reply to every comment in the first hour');
   /* v-87 */
   const v87 = 'Kind of think most side projects would be better off as one HTML file and zero build steps tbh.';
   for (const [m, o] of MODES) assert.equal(L(v87, o), 'Kind of think most side projects would be better off as one HTML file and zero build steps.', m);
@@ -153,7 +154,7 @@ test('v4.5, round 9 marketing-1: thread intros and "Let\'s talk about why" are r
     const r = S(t); assert.equal(r.state, 'sharp', t); assert.notEqual(r.why, CLEAN, t);
   }
   assert.equal(L('This is a quick thread on why I stopped using Notion for everything 🧵'), 'Why I stopped using Notion for everything 🧵');
-  assert.equal(L('So this is a thread about what I learned shipping 12 apps in 12 months'), 'Thread: what I learned shipping 12 apps in 12 months.');
+  assert.equal(L('So this is a thread about what I learned shipping 12 apps in 12 months'), 'Thread: what I learned shipping 12 apps in 12 months');
   /* v4.8 (round-11 marketing-1): with nothing under it, the topic keeps its "why" and stays a pointer */
   assert.equal(L("Let's talk about why your open rates are lying to you"), 'Why your open rates are lying to you:');
   assert.equal(L("Let's talk about why your open rates are lying to you\n\n1. Apple MPP inflates opens\n2. Bots click everything"), "Your open rates are lying to you. Here's why:");

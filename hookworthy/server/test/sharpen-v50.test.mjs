@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v5.0: the on-device Sharpen after the round-13 P0 report (padding between the pronoun and the stance verb hid the stance)
    and the round-13 jurors (engine items only).
    1. P0: every stance read (stanceKeep, slPolicy, the opinion and hedge patterns, slHard's own reads) sees through any run of
@@ -146,15 +147,15 @@ test('v5.0 a "breaks" note only where slHard refused that cut and nothing else s
 /* ---------------- 5. round 13 ---------------- */
 test('v5.0 round 13: a "thinking about it" run-up goes whole, and never stays as its own sentence', () => {
   for (const [t, want] of [
-    ['So I was thinking about it and I realized that most launches fail because of the first tweet', 'Most launches fail because of the first tweet.'],
-    ['I was thinking about it and most launches fail because of the first tweet', 'Most launches fail because of the first tweet.'],
-    ['Was thinking about this last night and I realized most launches fail because of the first tweet', 'Most launches fail because of the first tweet.'],
-    ['I was thinking about it, and honestly most launches fail because of the first tweet', 'Most launches fail because of the first tweet.'],
+    ['So I was thinking about it and I realized that most launches fail because of the first tweet', 'Most launches fail because of the first tweet'],
+    ['I was thinking about it and most launches fail because of the first tweet', 'Most launches fail because of the first tweet'],
+    ['Was thinking about this last night and I realized most launches fail because of the first tweet', 'Most launches fail because of the first tweet'],
+    ['I was thinking about it, and honestly most launches fail because of the first tweet', 'Most launches fail because of the first tweet'],
     ['I was thinking about it. Most launches fail because of the first tweet.', 'Most launches fail because of the first tweet.'],
     ['so i was thinking the other day and i realised most people overtrade', 'most people overtrade'],
     /* v5.3 (step 5c): after a run-up that goes, on a line that is no forecast, its "I think" goes too */
     ["So I've been thinking, and I think we should all just stop chasing vanity metrics.", 'We should all stop chasing vanity metrics.'],
-    ['So I was thinking about it and I think we should raise prices next month', 'I think we should raise prices next month.'],
+    ['So I was thinking about it and I think we should raise prices next month', 'I think we should raise prices next month'],
   ]) { const r = S(t); assert.equal(r.line, want, t); for (const [m, o] of MODES) for (const l of versions(S(t, o))) assert.doesNotMatch(l, /\bthinking\b/i, `${m}: ${t} → ${l}`); }
   /* "thinking that…" is the stance, and a topic after "about" is the line's content */
   assert.equal(S('I was thinking that we should raise prices').line, 'I was thinking that we should raise prices');
@@ -165,8 +166,8 @@ test('v5.0 round 13: a "thinking about it" run-up goes whole, and never stays as
 });
 
 test('v5.0 round 13: a hedged "unpopular opinion but" frame stays, its stance stays, and the padding goes', () => {
-  assert.equal(L('This might be an unpopular opinion but I really think that most newsletters are too long'), 'This might be an unpopular opinion but most newsletters are too long.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-  assert.equal(L('Unpopular opinion but I genuinely believe that cold email still works in 2026'), 'Unpopular opinion but I believe cold email still works in 2026.');
+  assert.equal(L('This might be an unpopular opinion but I really think that most newsletters are too long'), 'This might be an unpopular opinion but most newsletters are too long'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L('Unpopular opinion but I genuinely believe that cold email still works in 2026'), 'Unpopular opinion but I believe cold email still works in 2026');
   /* a frame up front still says what it does */
   assert.equal(S('This might be an unpopular opinion, but DCA beats trading for most people').why, 'Your frame sets it up.');
 });
@@ -182,29 +183,29 @@ test('v5.0 round 13: "honestly" goes wherever it is the honesty marker, and stay
 test('v5.0 round 13: the spare "that" after a kept stance goes; "really need to" loses its "really"', () => {
   for (const [t, want] of [
     /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-    ['I think that most people overtrade', 'Most people overtrade.'],
-    ['I believe that cold email is dead', 'Cold email is dead.'],
+    ['I think that most people overtrade', 'Most people overtrade'],
+    ['I believe that cold email is dead', 'Cold email is dead'],
     /* v5.3 (step 5b): on a price call, a hedge stacked on the stance verb collapses to it */
-    ['I think that BTC is probably going to break 100k this week', 'I think BTC is going to break 100k this week.'],
+    ['I think that BTC is probably going to break 100k this week', 'I think BTC is going to break 100k this week'],
     ['i think that maybe we should raise prices', 'maybe we should raise prices'], /* v5.6 (Fable round 5, f5-2): the lone "maybe" is the call */
-    ['I think that basically what I learned this year is that consistency beats talent every single time', 'What I learned this year is that consistency beats talent every single time.'],
+    ['I think that basically what I learned this year is that consistency beats talent every single time', 'What I learned this year is that consistency beats talent every single time'],
     ['honestly i basically just think that eth is going to 5k', 'i think eth is going to 5k'],
-    ['If you are a creator you really need to start writing better hooks', 'If you’re a creator, you need to start writing better hooks.'],
-    ['I really need to ship this week', 'I need to ship this week.'],
+    ['If you are a creator you really need to start writing better hooks', 'If you are a creator, you need to start writing better hooks'],
+    ['I really need to ship this week', 'I need to ship this week'],
   ]) assert.equal(L(t), want, t);
   /* "that" as the subject, before a condition or an aside, stays */
   for (const t of ['I think that in 2026, the companies that will win are the ones that are actually willing to say something interesting.']) assert.match(L(t), /\bthink that\b/, t);
   /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
-  assert.equal(L('I think that is wrong'), 'That is wrong.'); assert.equal(L('I think that if you post daily you grow'), 'If you post daily, you grow.');
+  assert.equal(L('I think that is wrong'), 'That is wrong'); assert.equal(L('I think that if you post daily you grow'), 'If you post daily, you grow');
   /* the receipt says what the "that" was */
   assert.match(S('I think that most people overtrade').why, /“I think that”/); /* v5.4 (step 3): on a plain view the stance goes with its "that", and the why names both */
 });
 
 test('v5.0 round 13: corporate run-ups and an issue run-up before a noun-phrase topic go', () => {
   for (const [t, want] of [
-    ['We are pleased to inform you that our Q3 results exceeded expectations', 'Our Q3 results exceeded expectations.'],
-    ['We would like to inform you that pricing changes on May 1', 'Pricing changes on May 1.'],
-    ["I'm writing to let you know that we moved offices", 'We moved offices.'],
+    ['We are pleased to inform you that our Q3 results exceeded expectations', 'Our Q3 results exceeded expectations'],
+    ['We would like to inform you that pricing changes on May 1', 'Pricing changes on May 1'],
+    ["I'm writing to let you know that we moved offices", 'We moved offices'],
     ["In this week's newsletter, I break down the 3 trades that made my month", 'The 3 trades that made my month:'],
     ['i basically just want to say that you should never ever trade on margin', 'you should never trade on margin'], /* v5.6 (page pass 20): "never ever" is "never" */
   ]) assert.equal(L(t), want, t);

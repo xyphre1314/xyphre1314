@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* v5.5 (Fable round 4, on-device): whole-sentence threads, announce run-ups cut as a family, reorders that add no words, true whys,
    one rule for a labeled take's hedge, a hesitant opener as a call, stock adjectives marked.
    Built from the round's own held-out lines (scratchpad engine/heldout55.json), never from a Fable line. */
@@ -30,9 +31,9 @@ const ANNOUNCE = [
   ['Just wanted to share a few quick thoughts on why remote teams need fewer meetings, not more', 'Why remote teams need fewer meetings, not more:'],
   ['Just wanted to share a few thoughts on the new App Store rules and what they mean for indie devs', 'The new App Store rules and what they mean for indie devs:'],
   ['Here\'s a thing that I think most junior designers get wrong about whitespace:', 'Most junior designers get whitespace wrong:'],
-  ['Here\'s something that I think a lot of podcasters overlook: the first 30 seconds decide everything', 'Something a lot of podcasters overlook: the first 30 seconds decide everything.'],
+  ['Here\'s something that I think a lot of podcasters overlook: the first 30 seconds decide everything', 'Something a lot of podcasters overlook: the first 30 seconds decide everything'],
   ['i dont know if anyone needs to hear this but your side project doesn\'t need a logo yet', 'your side project doesn\'t need a logo yet'],
-  ['It goes without saying that a backup only counts if you\'ve actually tested the restore', 'A backup only counts if you\'ve actually tested the restore.'],
+  ['It goes without saying that a backup only counts if you\'ve actually tested the restore', 'A backup only counts if you\'ve actually tested the restore'],
   ['Today I\'m going to be explaining how we cut our AWS bill in half without touching the product', 'How we cut our AWS bill in half without touching the product:']
 ];
 const REORDER = [
@@ -113,7 +114,7 @@ test('v5.5 H4: the why is true: no "Kept “I think”" on "how I think about", 
 
 test('v5.5 H6: a labeled take keeps its hedge as a call; a hesitant opener is a call, never a silent cut', () => {
   for (const t of TAKES) { const R = sl(t); assert.match(shipped(R), /\bprobably\b/, t); assert.ok((R.calls || []).some(c => c.text === 'probably'), t); }
-  const u = sl('Unpopular opinion: I think cold showers are probably overrated'); assert.equal(u.line, 'Unpopular opinion: cold showers are probably overrated.'); assert.ok(u.calls.some(c => c.text === 'probably'));
+  const u = sl('Unpopular opinion: I think cold showers are probably overrated'); assert.equal(u.line, 'Unpopular opinion: cold showers are probably overrated'); assert.ok(u.calls.some(c => c.text === 'probably'));
   for (const [t, rest] of HESIT) {
     const R = sl(t); assert.equal(shipped(R), t, t); assert.equal(R.cut.length, 0, t);
     const c = (R.calls || [])[0]; assert.ok(c && R.marks.some(m => m[3] === 'call' && m[0] === c.draftAt[0]), t); assert.equal(c.line, rest, t); assert.match(R.say, /left to you/, t);
@@ -129,6 +130,6 @@ test('v5.5 page: stock adjectives are marked or cut, never kept unmarked; a trim
     for (const m of L.matchAll(STK)) assert.ok((R.calls || []).some(c => c.text.replace(/,$/, '').toLowerCase() === m[0].toLowerCase()), `${t}: “${m[0]}” unmarked`);
     if (L !== t) for (const m of t.matchAll(STK)) if (!new RegExp(m[0], 'i').test(L)) assert.ok(R.cut.some(c => c.text.toLowerCase() === m[0].toLowerCase()), `${t}: “${m[0]}” went uncounted`);
   }
-  assert.equal(shipped(sl('We\'re thrilled to launch our next-level analytics dashboard for small teams')), 'We\'re launching our analytics dashboard for small teams.');
+  assert.equal(shipped(sl('We\'re thrilled to launch our next-level analytics dashboard for small teams')), 'We\'re launching our analytics dashboard for small teams');
   for (const t of ['So excited to announce that we just hit 10,000 users today!!!', 'We\'re live on Product Hunt!!! Would love your support', 'WE DID IT!!! 1,000 paying customers']) { const R = sl(t); assert.ok(R.cut.some(c => c.kind === 'punct' && /^!+$/.test(c.text)), t); assert.match(R.say, /^Cut \d+ bits? of fluff/, t); }
 });

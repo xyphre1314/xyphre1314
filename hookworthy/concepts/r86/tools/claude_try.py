@@ -33,6 +33,8 @@ def patch(out):
       lab.className = 'try-cl';
       if (!C) { lab.textContent = 'Claude’s version didn’t pass the safety check, so this is the on-device line.'; return; }
       R = C; ver = 0; render(how === 'back' ? 'back' : 'alt', word);
+      /* pass 22: the line under the result says the on-device check made it; Claude's version replaces that, so it steps away */
+      $('#out-odc').hidden = true;
       lab.textContent = C.state === 'sharp' ? 'Sharpened with Claude, the way the app does it.' : 'Claude says it’s already sharp.';
     } catch (e) {
       if (g !== cGen) return;

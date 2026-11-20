@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.6: the on-device Sharpen after blind set 7 (review-hook-v45: hook45-1 to hook45-4, on-device) and the page pass 11
    engine items.
    1. hook45-1 (q-31, the one break): a positive whole-sentence read. Every sentence a version creates or changes needs its own
@@ -153,7 +154,7 @@ test('v4.6, hook45-4: the three set-7 run-ups', () => {
   assert.equal(L("So I've been doing 10,000 steps a day for the last 90 days and I wanted to share what changed:"), "I've been doing 10,000 steps a day for the last 90 days. Here's what changed:");
   assert.equal(L("Got asked what my newsletter stack is so I figured I'd just share everything I use, it's pretty simple:"), "Got asked what my newsletter stack is. Here's everything I use, it's pretty simple:");
   /* a one-line draft with no colon keeps its full stop */
-  assert.equal(L("I've been writing this newsletter for 200 weeks straight and I want to share what I learned"), "I've been writing this newsletter for 200 weeks straight. Here's what I learned.");
+  assert.equal(L("I've been writing this newsletter for 200 weeks straight and I want to share what I learned"), "I've been writing this newsletter for 200 weeks straight. Here's what I learned");
 });
 
 test('v4.6, page pass 11: a short two-beat why, and the homepage lines warmed first', () => {

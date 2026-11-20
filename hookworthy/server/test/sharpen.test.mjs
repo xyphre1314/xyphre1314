@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* round 74: one-tap Sharpen. The soft-word table, the moves top first lines make, the reasons it gives, the prompts,
    and the eval in sharpen-eval.mjs (48 real drafts across six niches) held to a floor so the engine can't quietly slip. */
 import { test } from 'node:test';
@@ -36,7 +37,7 @@ test('one tap: the moves top first lines make, with the facts kept', () => {
   assert.equal(S('Customer churn was reduced by 34% after the onboarding flow was redesigned by our team.'), 'Customer churn: down 34%. What changed: our team redesigned the onboarding flow.', 'passive made active');
   /* r86 pass 6 (juror 5, hook-7): the claim's one hedge ("I think", "kind of") stays through the move */
   assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words\n“What did you fix?”'), 'I’ve hired over 300 people. I think the best interview question is just four words:', 'a colon only because the post answers it'); /* v4.8 (brand-4): a draft with no apostrophe gets the page's ’ */ /* v4.1: "just four words" is "only four words" */
-  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is just four words.', 'no colon with nothing after it');
+  assert.equal(S('After hiring over 300 people, I think the best interview question is really just four words'), 'I’ve hired over 300 people. I think the best interview question is just four words', 'no colon with nothing after it');
   /* v4.8 (round-11 founder-1): the plain cut is version 1; "Asked, then answered" is another take */
   assert.equal(S('you should really be tracking your protein if you want to build muscle'), 'you should be tracking your protein if you want to build muscle');
   /* v5.4 (step 1): never a "?" the writer didn't type, so no "Asked, then answered" take here */
@@ -57,7 +58,7 @@ test('the receipt: every sharpen says which move it made and why that move works
   /* v5.4 (step 1): never a "?" the writer didn't type, so no "Asked, then answered" flip on a draft without one */
   assert.ok(!r.altP.some(a => a.main === 'ask'), JSON.stringify(r.altP));
   const n = E.hgSharpen('I’ve been thinking a lot about pricing lately and I think we were really undercharging');
-  assert.equal(n.first, 'Pricing: I think we were really undercharging.'); /* v4.5 (hook44-3): "really" before the verb is the writer's degree */ assert.ok(n.why.length > 20); /* r86 pass 6 (hook-7): the lone "I think" stays */
+  assert.equal(n.first, 'Pricing: I think we were really undercharging'); /* v4.5 (hook44-3): "really" before the verb is the writer's degree */ assert.ok(n.why.length > 20); /* r86 pass 6 (hook-7): the lone "I think" stays */
   Object.values(core.SHARPEN.MOVE_WHY).forEach(w => { assert.match(w, /\.$/); assert.doesNotMatch(w, /\b\d+(?:%|x)\b|algorithm|reach|viral|engag/i); });
 });
 
@@ -93,5 +94,7 @@ test('the eval: one tap gets most real drafts to Ready, with no fact lost or inv
      and hookScore still docks it, so that line lands under 70. Meaning over the score */
   /* v4.8 (round-11 founder-1): 28/48. The plain cut is version 1 and the "Asked, then answered" flip is the other take, and two
      flips scored over 70 where their plain cuts don't (the protein and design-systems lines). The writer's own shape over the score */
-  assert.ok(ready >= 28, `Ready after one tap: ${ready}/${EVAL.length}`);
+  /* v5.7 (page pass 22, founder-5): 26/48. The engine no longer adds a full stop the writer didn't type, and hookScore still credits
+     one (clarity and curiosity), so two lines land just under 70. The writer's own end over the score */
+  assert.ok(ready >= 26, `Ready after one tap: ${ready}/${EVAL.length}`);
 });

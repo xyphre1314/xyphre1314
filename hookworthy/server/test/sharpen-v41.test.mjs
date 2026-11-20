@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.1: the on-device engine after the round-5 v4 review (hook4-1, 2, 4, 5, 6, 7) and the round-6 page jurors' engine items
    (founder-1/2, marketing-2/3, uiux-1), held as rules. Written apart from the engine's own picks:
    1. hook4-1, P0: the new hard guards. Each rejects the broken or changed version it names and passes its clean twin
@@ -51,7 +52,7 @@ test('v4.1, hook4-1: every new hard guard rejects what it names and passes its c
   /* what the guards leave alone: a conditional with its main clause and no comma, an answer after a question, a closing
      "Anyone else?", the engine's own plain-word swaps and new word forms, a progressive with "to" + verb */
   for (const [l, d] of [
-    ["If you're not using a stop loss you're just gambling with extra steps.", "Basically if you're not using a stop loss you're really just gambling with extra steps, I'm sorry but it's true"],
+    ["If you're not using a stop loss you're just gambling with extra steps", "Basically if you're not using a stop loss you're really just gambling with extra steps, I'm sorry but it's true"],
     ['Most underrated thing you can do for your health? Walking 10k steps a day.', 'Walking 10k steps a day is honestly the most underrated thing you can do for your health.'],
     ['This market is really, really boring right now. Anyone else?', 'Does anyone else feel like this market is just really, really boring right now?'],
     ['Use your network to land your first ten customers.', 'Leverage your network to land your first ten customers.'],
@@ -67,12 +68,12 @@ test('v4.1, hook4-1 and the round-6 jurors: the broken lines come back whole', (
   assert.match(L(W44), /\. The only reason we're still here today is because/); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   assert.equal(L("Eight years into my career as a software engineer, and I'm honestly starting to think most code comments are kind of useless."), "Eight years into my career as a software engineer, and I'm starting to think most code comments are kind of useless.");
   /* founder-1: no conditional split off its main clause, no "?" after a that-clause, no clause left on "That" */
-  assert.equal(L("If you're not using stop losses, you're basically gambling"), "If you're not using stop losses, you're gambling.");
-  assert.equal(L("Most people don't realize that the first line is literally the whole tweet"), "Most people don't realize that the first line is the whole tweet.");
+  assert.equal(L("If you're not using stop losses, you're basically gambling"), "If you're not using stop losses, you're gambling");
+  assert.equal(L("Most people don't realize that the first line is literally the whole tweet"), "Most people don't realize that the first line is the whole tweet");
   /* v5.3 (Fable g-43/g-57): "The truth is that" goes whole now, with its "that", so nothing is left dangling */
-  assert.equal(L('The truth is that most newsletters are basically just link dumps'), 'Most newsletters are just link dumps.');
+  assert.equal(L('The truth is that most newsletters are basically just link dumps'), 'Most newsletters are just link dumps');
   /* uiux-1: the round swap reads its clause first; a pleasantry before the point is a warm-up */
-  assert.equal(L('Excited to share that our Series A is closed'), 'Our Series A is closed.');
+  assert.equal(L('Excited to share that our Series A is closed'), 'Our Series A is closed');
   assert.equal(L('Excited to share that our seed round is closed!'), 'Our seed round is closed!');
   assert.equal(L('Our seed round was oversubscribed in 48 hours.'), 'Our seed round was oversubscribed in 48 hours.');
   assert.equal(L('hey everyone, hope you are all having a great week! today I want to talk about pricing'), 'today I want to talk about pricing');
@@ -184,8 +185,8 @@ test('v4.1, hook4-2: once Claude is rejected, the fallback ships only a plain cu
   /* a reorder becomes its cut-only version */
   const P = 'I just wanted to share that our team shipped v2 and signups went up 31% this week\nHere is what changed.';
   /* v5.5 (Fable round 4, H3): the result-first reorder adds "what changed", so the default mode ships the cut-only edit too */
-  assert.equal(L(P), 'Our team shipped v2 and signups went up 31% this week.');
-  assert.equal(L(P, { strict: true }), 'Our team shipped v2 and signups went up 31% this week.');
+  assert.equal(L(P), 'Our team shipped v2 and signups went up 31% this week');
+  assert.equal(L(P, { strict: true }), 'Our team shipped v2 and signups went up 31% this week');
   /* a tense swap with nothing else to cut stays as written, and says so */
   const D = "We've officially decided to rebuild the app from scratch and launch it in March.", s = S(D, { strict: true });
   assert.equal(s.state, 'clean'); assert.equal(s.line, D); assert.equal(s.why, 'Couldn’t sharpen this one safely, so it stays as you wrote it.'); assert.deepEqual(s.alts, []);
@@ -211,14 +212,14 @@ test('v4.1, hook4-7 and founder-2: the engine keeps what the Claude prompt keeps
   /* v5.3 (Fable g-16, step 5): "i feel like" on a plain view is a run-up, and a lowercase line gets no full stop it never had */
   assert.equal(L('tbh i feel like nobody really reads threads anymore and we\'re all just posting into the void'), 'nobody really reads threads anymore. we\'re all just posting into the void');
   assert.equal(L("Real talk: if you're not sleeping 7 hours a night, I don't think your workout split really matters."), "If you're not sleeping 7 hours a night, I don't think your workout split really matters.");
-  assert.equal(L('Hiring is the hardest part of being a founder and nobody really prepares you for it'), 'Hiring is the hardest part of being a founder. Nobody really prepares you for it.');
+  assert.equal(L('Hiring is the hardest part of being a founder and nobody really prepares you for it'), 'Hiring is the hardest part of being a founder. Nobody really prepares you for it');
   /* …but not across a new clause: "not using a stop loss you're really just gambling" */
-  assert.equal(L("Basically if you're not using a stop loss you're really just gambling with extra steps, I'm sorry but it's true"), "If you're not using a stop loss you're just gambling with extra steps.");
+  assert.equal(L("Basically if you're not using a stop loss you're really just gambling with extra steps, I'm sorry but it's true"), "If you're not using a stop loss you're just gambling with extra steps");
   /* "really" on a feeling is its strength; on a frame it pads */
   assert.match(L("honestly just really grateful for everyone who's been reading my stuff lately 🙏"), /^really grateful/);
   assert.match(L('ngl i kind of hate how much i check my phone in the morning and i really want to stop'), /i really want to stop/);
   assert.equal(L('Before this year ends, I want to say a massive thank you to everyone who\'s supported me. It really means the world.'), 'Before this year ends, I want to say a massive thank you to everyone who\'s supported me. It really means the world.');
-  assert.equal(L('I really want to emphasize how important it is to reply to every comment in the first hour'), 'Reply to every comment in the first hour.');
+  assert.equal(L('I really want to emphasize how important it is to reply to every comment in the first hour'), 'Reply to every comment in the first hour');
   assert.equal(core.softCut('Hey everyone! Quick reminder that my course launches tomorrow, really excited about this one').s, 'My course launches tomorrow, really excited about this one');
   /* "actually" inside the sentence carries the surprise or the contrast; an opening "Actually," and "I actually think" don't */
   assert.equal(L('Write the newsletter you\'d actually pay for.'), 'Write the newsletter you\'d actually pay for.');
@@ -237,7 +238,7 @@ test('v4.1, hook4-7 and founder-2: the engine keeps what the Claude prompt keeps
   assert.equal(L('the best traders do nothing most days imo'), 'the best traders do nothing most days'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* v4.2 (round-7 marketing-4): the opinion is the clause's one hedge, kept; the softener on top goes */
   assert.equal(L('In my opinion, most landing pages are kind of bloated.'), 'Most landing pages are bloated.'); /* v5.4 (step 3): on a plain view both go */
-  assert.equal(L('Hot take: in my opinion most landing pages are bloated'), 'Hot take: most landing pages are bloated.');
+  assert.equal(L('Hot take: in my opinion most landing pages are bloated'), 'Hot take: most landing pages are bloated');
   assert.equal(L('IMHO most landing pages are bloated.'), 'Most landing pages are bloated.');
 });
 
@@ -260,11 +261,11 @@ test('v4.1, hook4-6 and marketing-2: the run-ups the engine missed', () => {
   assert.equal(L('fwiw I think the $TIA unlock is probably already priced in at this point.'), 'I think the $TIA unlock is probably already priced in at this point.');
   assert.equal(L("fwiw I don't think $SOL is done pumping yet."), "I don't think $SOL is done pumping yet.");
   /* newsletter openers lead with the topic, and keep its hedge */
-  assert.equal(L("In today's issue, I want to dive into why the Fed might cut rates in December"), "Today's issue: why the Fed might cut rates in December.");
+  assert.equal(L("In today's issue, I want to dive into why the Fed might cut rates in December"), "Today's issue: why the Fed might cut rates in December");
   assert.equal(L("In this week's issue, we're going to look at three charts that explain the housing market."), "This week's issue: three charts that explain the housing market.");
   assert.equal(L("In today's newsletter we'll cover the three AI tools I actually use every day."), "Today's newsletter: the three AI tools I actually use every day.");
   assert.equal(L("This week I'm writing about why most creators quit too early."), 'This week: why most creators quit too early.');
-  assert.equal(L("Can't believe it but my newsletter just crossed 5,000 readers"), 'My newsletter just crossed 5,000 readers.');
+  assert.equal(L("Can't believe it but my newsletter just crossed 5,000 readers"), 'My newsletter just crossed 5,000 readers');
 });
 
 test('v4.1, hook4-5 and marketing-3: the notes say what is true, and a clean line is one human sentence', () => {

@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v4.4: the on-device Sharpen after blind set 5 (review-hook-v43: hook43-1 to hook43-4, on-device).
    1. hook43-1: the two break shapes, as classes, in every mode. A word the writer kept lowercase after an ellipsis stays
       lowercase ("it's... not great", z-6), and a cut between a joining word and a comma takes the comma ("now and if I'm
@@ -121,12 +122,12 @@ test('v4.4: coverage (z-54, z-72, z-107), long run-ons in beats, and true receip
   assert.equal(L("I don't usually post stuff like this but I just wanted to say how grateful I am for my friends this year."), "I don't usually post stuff like this. But I'm so grateful for my friends this year.");
   /* v4.8 (round-11 uiux-1): the announcement grammar then takes the feeling too, and the writer's own verb leads; the draft has no
      apostrophe, so the page's ’ (brand-4) */
-  assert.equal(L('We just wanted to let you know how excited we are to finally launch this.'), 'We’re finally launching this.');
+  assert.equal(L('We just wanted to let you know how excited we are to finally launch this.'), 'We are finally launching this.');
   assert.equal(hard('Excited we are to finally launch this.', 'We just wanted to let you know how excited we are to finally launch this.'), 'exclamation lost its how');
   /* a line over 280 is said in beats where it can be */
   const z35 = "I've been building this company for almost four years now and if I'm being honest, the thing that I wish someone had told me at the very beginning is that you will basically never feel ready for any of the big moments, whether that's hiring your first employee, raising your first round, or firing someone who you really like, and that's completely okay because nobody actually does.";
   /* v5.5 (Fable round 4, H1): over 280, the beats are a thread of whole sentences: post 1 and post 2 read as the beats did */
-  { const r = S(z35); assert.equal((r.thread || [r.line]).join(' '), "I've been building this company for almost four years now. The thing I wish someone had told me at the beginning is that you'll basically never feel ready for any of the big moments, whether that's hiring your first employee, raising your first round, or firing someone who you really like. That's okay because nobody actually does."); assert.ok((r.thread || [r.line]).every(p => core.xLength(p) <= 280)); }
+  { const r = S(z35); assert.equal((r.thread || [r.line]).join(' '), "I've been building this company for almost four years now. The thing I wish someone had told me at the beginning is that you will basically never feel ready for any of the big moments, whether that's hiring your first employee, raising your first round, or firing someone who you really like. That's okay because nobody actually does."); assert.ok((r.thread || [r.line]).every(p => core.xLength(p) <= 280)); }
   /* a list of clauses is still a list: no full stop before its last item */
   assert.doesNotMatch(L("I believe that most retail traders are just gambling, because they don't have a plan. They don't size their positions properly, they don't use stop losses, and they chase whatever coin is pumping on their timeline that day, which is exactly why 90% of them lose money."), /stop losses\. They/);
   assert.equal(L('My mom, my dad, and I honestly went to the beach every summer for ten years.'), 'My mom, my dad, and I went to the beach every summer for ten years.');

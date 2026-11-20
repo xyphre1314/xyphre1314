@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v5.2: the on-device Sharpen after the Fable 5.2 juror (engine items only).
    1. nothing broken: "There are a lot of people who think X" never leaves "Lots of people who think X." (the "who" goes with it),
       and "we should all probably stop" never becomes the order "All probably stop."
@@ -44,9 +45,9 @@ test('v5.2 (3): a reflection keeps its clause; an announced topic may still be a
   const t18 = "so basically i've been thinking a lot lately about why i can't seem to finish anything i start";
   for (const [m, o] of MODES) for (const r of versions(S(t18, o))) { assert.ok(!lastColon(r.line), `${m}: ${r.line}`); assert.match(r.line, /been thinking a lot lately about why i can't/i, m); }
   assert.equal(L(t18), "i've been thinking a lot lately about why i can't seem to finish anything i start"); /* v5.3 (Fable H9): no end stop the draft never had */
-  assert.equal(L("In today's post I want to talk a little bit about why I think that most LinkedIn content from executives sounds like it was written by a committee"), 'Most LinkedIn content from executives sounds like it was written by a committee.'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
+  assert.equal(L("In today's post I want to talk a little bit about why I think that most LinkedIn content from executives sounds like it was written by a committee"), 'Most LinkedIn content from executives sounds like it was written by a committee'); /* v5.4 (Fable round 3, step 3): one rule: on a plain view a stance or a hedge is cut; on a forecast or a call it is the writer's call */
   /* a topic the line goes on to answer heads its own answer */
-  assert.equal(L("So I've been thinking a lot about why most side projects die and I think it's because people build in private for way too long"), "Why most side projects die: I think it's because people build in private for way too long.");
+  assert.equal(L("So I've been thinking a lot about why most side projects die and I think it's because people build in private for way too long"), "Why most side projects die: I think it's because people build in private for way too long");
 });
 
 test('v5.2 (4): a sharp action-and-result line is not reshaped; with a run-up it may lead with the result', () => {
@@ -56,18 +57,18 @@ test('v5.2 (4): a sharp action-and-result line is not reshaped; with a run-up it
 });
 
 test('v5.2 (5): the reminder frame goes with its audience, as "Friendly reminder that" does', () => {
-  assert.equal(L('Just a little reminder for all the designers out there that your portfolio really does not need a case study for every single project'), 'Your portfolio really doesn’t need a case study for every single project.');
-  assert.equal(L("Friendly reminder that you really don't need to be sore after every workout in order for it to have been a good workout"), "You don't need to be sore after every workout for it to have been a good workout.");
+  assert.equal(L('Just a little reminder for all the designers out there that your portfolio really does not need a case study for every single project'), 'Your portfolio really does not need a case study for every single project');
+  assert.equal(L("Friendly reminder that you really don't need to be sore after every workout in order for it to have been a good workout"), "You don't need to be sore after every workout for it to have been a good workout");
 });
 
 test('v5.2 (6): run-ups go whole', () => {
   assert.equal(L("gm. In today's thread I'm going to be talking about the 5 on-chain metrics that I personally use to time market tops"), 'gm. The 5 on-chain metrics I use to time market tops:'); /* v5.3: the spare "that" of an object relative goes */
-  assert.equal(L("It's actually pretty crazy to think that I started this newsletter with literally 12 subscribers and now there are 40,000 of you"), 'I started this newsletter with 12 subscribers. Now there are 40,000 of you.');
+  assert.equal(L("It's actually pretty crazy to think that I started this newsletter with literally 12 subscribers and now there are 40,000 of you"), 'I started this newsletter with 12 subscribers. Now there are 40,000 of you');
   assert.equal(L("My deadlift went from 315 to 495 in 14 months, and in this thread I'm going to break down exactly what I changed"), "My deadlift went from 315 to 495 in 14 months. Here's exactly what I changed:");
-  assert.equal(L("A lot of people have been asking me how I manage to write 3 issues a week while also working a full-time job, so I figured I'd explain"), "Here's how I manage to write 3 issues a week while also working a full-time job.");
-  assert.equal(L('So, a funny thing happened to me at the airport yesterday and I feel like I just have to tell you guys about it'), 'A funny thing happened to me at the airport yesterday.');
-  assert.equal(L("I've been using Cursor for about 3 months now and I have to say that I'm really not sure it has actually made me any faster"), "I've been using Cursor for about 3 months now. I'm really not sure it has actually made me any faster.");
-  assert.equal(L('I think one of the biggest mistakes that I see first-time founders make is that they tend to hire way too quickly'), 'One of the biggest mistakes that I see first-time founders make: they tend to hire way too quickly.');
+  assert.equal(L("A lot of people have been asking me how I manage to write 3 issues a week while also working a full-time job, so I figured I'd explain"), "Here's how I manage to write 3 issues a week while also working a full-time job");
+  assert.equal(L('So, a funny thing happened to me at the airport yesterday and I feel like I just have to tell you guys about it'), 'A funny thing happened to me at the airport yesterday');
+  assert.equal(L("I've been using Cursor for about 3 months now and I have to say that I'm really not sure it has actually made me any faster"), "I've been using Cursor for about 3 months now. I'm really not sure it has actually made me any faster");
+  assert.equal(L('I think one of the biggest mistakes that I see first-time founders make is that they tend to hire way too quickly'), 'One of the biggest mistakes that I see first-time founders make: they tend to hire way too quickly');
   /* the issue a run-up named stays as the label after "I'm going to be talking about" too */
   assert.equal(L("In today's issue, I'm going to be talking about why I think most people are really doing email marketing wrong."), "Today's issue: why I think most people are doing email marketing wrong.");
 });

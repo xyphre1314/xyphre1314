@@ -79,7 +79,7 @@ test('the versions: the first that passes ships, the other passing ones are alts
   const n = await sharpen({ text: POST });
   assert.equal(n.json.source, 'rules'); assert.equal(n.json.reason, 'invalid'); assert.equal(n.json.line, strictFor(POST).line);
   /* the fallback is the engine's cut-only version (v5.5: its own answer no longer reorders this line into "What changed:") */
-  assert.doesNotMatch(n.json.line, /What changed:/); assert.equal(n.json.line, 'Our team shipped v2 and signups went up 31% this week.'); assert.equal(n.json.state, 'sharp');
+  assert.doesNotMatch(n.json.line, /What changed:/); assert.equal(n.json.line, 'Our team shipped v2 and signups went up 31% this week'); assert.equal(n.json.state, 'sharp'); /* v5.7: the engine adds no end stop the writer didn't type */
   const s = await sharpenClaude({ text: POST });
   assert.equal(s.reason, 'invalid'); assert.equal(s.reject, 'fact "31%" lost'); assert.deepEqual(s.rejects, ['fact "31%" lost', 'hype added'], 'one reason per version');
 });

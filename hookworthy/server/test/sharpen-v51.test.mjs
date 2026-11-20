@@ -1,3 +1,4 @@
+/* v5.7 (page pass 22, founder-5): the engine adds no end stop and no contraction the writer didn't type, so expected lines here end as the draft ends and keep the draft's own "we are"/"I have". */
 /* r86 v5.1: the on-device Sharpen after the round-14 page jury (engine items only: web-1, web-5, uiux-3, marketing-2).
    1. "I've been thinking a lot lately about X" (and "So I've been thinking…", "been thinking about this a lot") is a run-up:
       it goes, and the line leads with X, or with "Why X:"/"How X:" when X is a why/how topic the draft announced
@@ -32,16 +33,16 @@ const commas = z => (String(z).match(/,/g) || []).length;
 /* ---------------- 1. the "been thinking" run-up ---------------- */
 test('v5.1 (1): "I\'ve been thinking a lot lately about X" is a run-up; the line leads with X or "Why/How X:"', () => {
   for (const [t, want] of [
-    ["So I've been thinking a lot lately about how we price our product, and I think we got it wrong", 'How we price our product: I think we got it wrong.'],
-    ["I've been thinking a lot lately about why most side projects die, and I think it's because people build in private for way too long", "Why most side projects die: I think it's because people build in private for way too long."],
+    ["So I've been thinking a lot lately about how we price our product, and I think we got it wrong", 'How we price our product: I think we got it wrong'],
+    ["I've been thinking a lot lately about why most side projects die, and I think it's because people build in private for way too long", "Why most side projects die: I think it's because people build in private for way too long"],
     ["I've been thinking a lot about why most startups fail", 'Why most startups fail:'],
-    ['So I’ve been thinking… most founders ship too slowly', 'Most founders ship too slowly.'],
-    ["So I've been thinking... most founders ship too slowly", 'Most founders ship too slowly.'],
+    ['So I’ve been thinking… most founders ship too slowly', 'Most founders ship too slowly'],
+    ["So I've been thinking... most founders ship too slowly", 'Most founders ship too slowly'],
     ['been thinking about this a lot. most founders ship too slowly', 'most founders ship too slowly'],
     ['been thinking about this a lot: most founders ship too slowly', 'most founders ship too slowly'],
-    ["I've been thinking about this a lot — the best founders ship daily", 'The best founders ship daily.'],
+    ["I've been thinking about this a lot — the best founders ship daily", 'The best founders ship daily'],
     /* v5.3 (step 5c): after a run-up that goes, on a line that is no forecast, its "I think" goes too */
-    ["So I've been thinking about this a lot lately, and I think most founders ship too slowly", 'Most founders ship too slowly.']
+    ["So I've been thinking about this a lot lately, and I think most founders ship too slowly", 'Most founders ship too slowly']
   ]) {
     const R = S(t); assert.equal(R.state, 'sharp', t); assert.equal(R.line, want, t);
     assert.doesNotMatch(R.line, /been thinking/i, t);
@@ -75,11 +76,11 @@ test('v5.1 (2): a filler word is never in R.kept or a "Kept" note; one left on p
 /* ---------------- 3. no dangling "How …:" teaser ---------------- */
 test('v5.1 (3): a plain claim never becomes a "How …:" teaser; a how-topic the draft announced still may', () => {
   for (const [t, want] of [
-    ["So I've been thinking a lot lately about how most founders actually ship too slowly", 'Most founders actually ship too slowly.'],
-    ['So I’ve been thinking a lot lately about how most founders hire too early', 'Most founders hire too early.'],
-    ["I've been thinking about how nobody reads past the first line", 'Nobody reads past the first line.'],
+    ["So I've been thinking a lot lately about how most founders actually ship too slowly", 'Most founders actually ship too slowly'],
+    ['So I’ve been thinking a lot lately about how most founders hire too early', 'Most founders hire too early'],
+    ["I've been thinking about how nobody reads past the first line", 'Nobody reads past the first line'],
     ['so i’ve been thinking a lot about how most traders never take profits', 'most traders never take profits'],
-    ["Let's talk about how most founders don't talk to users", "Most founders don't talk to users."]
+    ["Let's talk about how most founders don't talk to users", "Most founders don't talk to users"]
   ]) { const R = S(t); assert.equal(R.line, want, t); for (const [m, o] of MODES) for (const v of versions(S(t, o))) assert.ok(!teaser(v.line), `${m}: ${t} → ${v.line}`); }
   /* a manner "how" is a topic, and with an announcing "about" it stays the pointer */
   assert.equal(L("I've been thinking a lot about how we hire"), 'How we hire:');

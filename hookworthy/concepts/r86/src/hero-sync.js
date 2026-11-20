@@ -13,6 +13,9 @@
 // only keeps each part on one line: "Split it into two beats" stays the engine's words), so they are checked (and rewritten by
 // --write) like the line.
 // The Try default's counter must show its true length.
+// Pass 22: the label is the page's own hitK(say, why) ("Why it hits" only for a why that names an effect on the reader, else "What
+// changed"), the receipts are drawn by sayHTML (three parts at most, each an unbreakable block), and the final's example must be a
+// two-cut (or more) edit whose why names its effect on the reader (marketing-1).
 // Since pass 20 the page has no output guard of its own (the engine's v5.4 ship guard is the only one), so an example is what the
 // engine returns, and nothing more is checked of it here.
 // Sharpened lines are drawn with the page's own display helpers (nb, beats, xbeats), so a wrap falls between beats.
@@ -41,8 +44,8 @@ const sharpenLine = (t, o) => { const R = H.sharpenLine(t, o); if (APP) { const 
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return s.slice(i + a.length, j); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = arr => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
-const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML };`)(esc, list);
-const { EX, WHO, whoHTML, draftHTML, keptLine, nb, beats, xbeats, hitK, sayTxt, segments, mirrorHTML, fpDraftHTML } = lib;
+const lib = new Function('esc', 'list', `${between(src, '/* EX-START */', '/* EX-END */')}\n${between(src, '/* DRAFT-START */', '/* DRAFT-END */')}\n${between(src, '/* WHO-START */', '/* WHO-END */')}\n${between(src, '/* KEPT-START */', '/* KEPT-END */')}\n${between(src, '/* MARKUP-START */', '/* MARKUP-END */')}\nreturn { EX, WHO, whoHTML, draftHTML, keptLine, FLUFF, nb, beats, xbeats, hitK, sayTxt, sayHTML, segments, mirrorHTML, fpDraftHTML };`)(esc, list);
+const { EX, WHO, whoHTML, draftHTML, keptLine, nb, beats, xbeats, hitK, sayTxt, sayHTML, segments, mirrorHTML, fpDraftHTML } = lib;
 const bad = [];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 /* pass 20: the page shows the engine's line as it comes (no page guard), so there is nothing more to check of a line here */
@@ -66,10 +69,10 @@ const fixed = EX.map((e, i) => {
 const e0 = fixed[0];
 const STATIC = [
   ['pf-draft', /(<p class="dtext" id="pf-draft">)([\s\S]*?)(<\/p>)/, draftHTML(e0)],
-  ['pf-move', /(<span id="pf-move">)([\s\S]*?)(<\/span>)/, esc(sayTxt(e0.say))],
+  ['pf-move', /(<span id="pf-move">)([\s\S]*?)(<\/span>)/, sayHTML(e0.say)],
   ['pf-sharp', /(<p class="ptext(?: long)?" id="pf-sharp">)([\s\S]*?)(<\/p>)/, '<span class="sr">Sharpened: </span>' + beats(e0.after, x => nb(esc(x)))],
   ['pf-why', /(<p id="pf-why">)([\s\S]*?)(<\/p>)/, esc(e0.why)],
-  ['pf-k', /(<span class="k" id="pf-k">)([\s\S]*?)(<\/span>)/, hitK(e0.say)],
+  ['pf-k', /(<span class="k" id="pf-k">)([\s\S]*?)(<\/span>)/, hitK(e0.say, e0.why)],
   ['pf-kept', /(<p(?: class="[^"]*")? id="pf-kept">)([\s\S]*?)(<\/p>)/, esc(e0.kept)]
 ];
 /* pass 16 (uiux-5): the hero's Cut/Split chip row is gone; the strikes, the receipt and the Kept line say it */
@@ -91,36 +94,41 @@ if (ta) {
   const why = (src.match(/<p id="out-why">([\s\S]*?)<\/p>/) || [])[1];
   const fixSrc = (re, v) => { src = src.replace(re, (all, a, b, c) => a + v + c); };
   if (line !== xbeats(g.after)) { bad.push(`Try default line\n    page:   ${line}\n    engine: ${g.after}`); fixSrc(/(<p class="xtext" id="out-line">)([\s\S]*?)(<\/p>)/, xbeats(g.after)); }
-  if (!same(struck, g.cut.map(c => esc(c[0])))) bad.push(`Try default strikes\n    page:   ${JSON.stringify(struck)}\n    engine: ${JSON.stringify(g.cut)}`);
+  if (!same(struck.map(x => x.replace(/[:,]$/, '')), g.cut.map(c => esc(c[0])))) bad.push(`Try default strikes\n    page:   ${JSON.stringify(struck)}\n    engine: ${JSON.stringify(g.cut)}`);
   /* the struck mirror is exactly what the page's own mirrorHTML draws for the engine's result */
   const mir = (src.match(/<div class="ed-mirror struck" id="try-mirror"[^>]*>([\s\S]*?)<\/div>/) || [])[1], mirWant = mirrorHTML(ta, segments(g.R, { cut: g.R.cut }, []), true);
   if (mir !== mirWant) { bad.push(`Try default mirror markup\n    page:   ${mir}\n    wanted: ${mirWant}`); src = src.replace(/(<div class="ed-mirror struck" id="try-mirror"[^>]*>)([\s\S]*?)(<\/div>)/, (all, a, b, c) => a + mirWant + c); }
-  if (st !== esc(sayTxt(g.say))) { bad.push(`Try default receipt\n    page:   ${st}\n    engine: ${g.say}`); fixSrc(/(<span id="out-st">)([\s\S]*?)(<\/span>)/, esc(sayTxt(g.say))); }
+  if (st !== sayHTML(g.say)) { bad.push(`Try default receipt\n    page:   ${st}\n    engine: ${g.say}`); fixSrc(/(<span id="out-st">)([\s\S]*?)(<\/span>)/, sayHTML(g.say)); }
   /* the counter's first paint is the default's true length */
   const cnt = (src.match(/<span class="count tnum" id="try-count"[^>]*>([\s\S]*?)<\/span>/) || [])[1], cntWant = `${ta.length} / 280`;
   if (cnt !== cntWant) { bad.push(`Try default count\n    page:   ${cnt}\n    wanted: ${cntWant}`); src = src.replace(/(<span class="count tnum" id="try-count"[^>]*>)([\s\S]*?)(<\/span>)/, (all, a, b, c) => a + cntWant + c); }
   if (kept !== esc(g.kept)) { bad.push(`Try default kept\n    page:   ${kept}\n    engine: ${g.kept}`); fixSrc(/(<p(?: class="[^"]*")? id="out-kept">)([\s\S]*?)(<\/p>)/, esc(g.kept)); }
   const ok = (src.match(/<span class="k" id="out-k">([\s\S]*?)<\/span>/) || [])[1];
-  if (ok !== hitK(g.say)) { bad.push(`Try default label\n    page:   ${ok}\n    wanted: ${hitK(g.say)}`); fixSrc(/(<span class="k" id="out-k">)([\s\S]*?)(<\/span>)/, hitK(g.say)); }
+  if (ok !== hitK(g.say, g.R.why)) { bad.push(`Try default label\n    page:   ${ok}\n    wanted: ${hitK(g.say, g.R.why)}`); fixSrc(/(<span class="k" id="out-k">)([\s\S]*?)(<\/span>)/, hitK(g.say, g.R.why)); }
   if (why !== esc(g.R.why)) { bad.push(`Try default why\n    page:   ${why}\n    engine: ${g.R.why}`); fixSrc(/(<p id="out-why">)([\s\S]*?)(<\/p>)/, esc(g.R.why)); }
 }
 const fpD = (tail.match(/<p class="draft" id="fp-draft">([\s\S]*?)<\/p>/) || [])[1];
 if (fpD) {
   const draft = fpD.replace(/<span class="sr">[\s\S]*?<\/span>/, '').replace(/<[^>]+>/g, '').replace(/\u00a0/g, ' ');
   const g = fromEngine(draft); whole('Final example', g.R);
-  const struck = [...fpD.matchAll(/<span class="cut">([\s\S]*?)<\/span>/g)].map(m => m[1]);
+  const struck = [...fpD.matchAll(/<span class="cut(?: sp)?(?: pct)?">([\s\S]*?)<\/span>/g)].map(m => m[1]);
   const line = (tail.match(/<p class="xtext" id="fp-sharp"><span class="sr">Sharpened: <\/span>([\s\S]*?)<\/p>/) || [])[1];
   if (line !== xbeats(g.after)) { bad.push(`Final example line\n    page:   ${line}\n    engine: ${g.after}`); tail = tail.replace(/(<p class="xtext" id="fp-sharp"><span class="sr">Sharpened: <\/span>)([\s\S]*?)(<\/p>)/, (all, a, b, c) => a + xbeats(g.after) + c); }
-  if (!same(struck, g.cut.map(c => c[0]))) bad.push(`Final example strikes\n    page:   ${JSON.stringify(struck)}\n    engine: ${JSON.stringify(g.cut)}`);
+  if (!same(struck.map(x => x.replace(/[:,]$/, '')), g.cut.map(c => c[0]))) bad.push(`Final example strikes\n    page:   ${JSON.stringify(struck)}\n    engine: ${JSON.stringify(g.cut)}`);
   /* the example's draft is the page's own fpDraftHTML for the engine's result; its strikes aren't toggles (those are for your own line) */
-  const fpWant = fpDraftHTML(draft, segments(g.R, { cut: g.R.cut }, [])).replace(/<span class="cut tog"[^>]*>/g, '<span class="cut">');
+  /* (pass 22: a short word's toggle is "cut tog sm", a split point's "cut tog sp": the static draft keeps only "cut" and its look) */
+  const fpWant = fpDraftHTML(draft, segments(g.R, { cut: g.R.cut }, [])).replace(/<span class="cut tog(?: sm)?((?: sp)?(?: pct)?)"[^>]*>/g, '<span class="cut$1">');
   if (fpD !== fpWant) { bad.push(`Final example draft markup\n    page:   ${fpD}\n    wanted: ${fpWant}`); tail = tail.replace(/(<p class="draft" id="fp-draft">)([\s\S]*?)(<\/p>)/, (all, a, b, c) => a + fpWant + c); }
   const fw = (tail.match(/<p id="fp-why">([\s\S]*?)<\/p>/) || [])[1], fk = (tail.match(/<p(?: class="[^"]*")? id="fp-kept">([\s\S]*?)<\/p>/) || [])[1];
   const fixTail = (re, v) => { tail = tail.replace(re, (all, a, b, c) => a + v + c); };
   if (fw !== esc(g.why)) { bad.push(`Final example why\n    page:   ${fw}\n    engine: ${g.why}`); fixTail(/(<p id="fp-why">)([\s\S]*?)(<\/p>)/, esc(g.why)); }
   if (fk !== esc(g.kept)) { bad.push(`Final example kept\n    page:   ${fk}\n    engine: ${g.kept}`); fixTail(/(<p(?: class="[^"]*")? id="fp-kept">)([\s\S]*?)(<\/p>)/, esc(g.kept)); }
   const fkl = (tail.match(/<span class="k" id="fp-k">([\s\S]*?)<\/span>/) || [])[1];
-  if (fkl !== hitK(g.say)) { bad.push(`Final example label\n    page:   ${fkl}\n    wanted: ${hitK(g.say)}`); fixTail(/(<span class="k" id="fp-k">)([\s\S]*?)(<\/span>)/, hitK(g.say)); }
+  if (fkl !== hitK(g.say, g.why)) { bad.push(`Final example label\n    page:   ${fkl}\n    wanted: ${hitK(g.say, g.why)}`); fixTail(/(<span class="k" id="fp-k">)([\s\S]*?)(<\/span>)/, hitK(g.say, g.why)); }
+  /* pass 22 (marketing-1): the closing example is the page's strongest proof: two cuts or more, and a result whose why names its effect
+     on the reader ("Why it hits": the point first), never a one-word cut under a stock line */
+  if ((g.R.cut || []).filter(c => !/^(?:move|tight|swap|reshape)$/.test(c.kind)).length < 2) bad.push(`Final example: ${g.R.cut.length} cut(s); the closing example needs two or more (marketing-1)`);
+  if (hitK(g.say, g.why) !== 'Why it hits') bad.push('Final example: its why names no effect on the reader, so it reads "What changed" (marketing-1 wants a point-first result)');
   if (g.R.state !== 'sharp') bad.push(`Final example: engine says "${g.R.state}"`);
 }
 
