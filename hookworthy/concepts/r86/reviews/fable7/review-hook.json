@@ -1,0 +1,96 @@
+{
+ "key": "hook",
+ "score": 9.3,
+ "score_ondevice": 7.6,
+ "verdict": "Claude path: 107/120 h (89.2%), 83.3% h on the 78 needs-work lines, 0 m, 0 broken, 0 fact or meaning errors; every shipped post fits 280. It matches Typefully on restraint (48 already-sharp lines left alone with specific whys) and beats it on safety, but 13 lines stay soft: run-ups it declines to cut, and one flattened payoff. Just under the 90% h bar, so 9.3. On-device: 94/120 h (78.3%), 67.9% on needs-work, 5 m: one broken line that also changes meaning (q-87), one reorder that strands a verb (q-75), two over-280 lines shipped unthreaded (q-39, q-92), one pure hedge untouched (q-48), plus false receipts. Call marks help on both paths; one on-device call would break an idiom.",
+ "to_95": [
+  "Claude: cut hedge run-ups that carry no fact ('It might be worth considering whether', 'This is a bit of a personal one, but I feel like I need to share it', 'I think is worth talking about') or offer the cut as the alt; that alone lifts h past 90%.",
+  "Claude: keep payoff adverbs that carry the beat ('finally' in q-30); treat 'basically/pretty much' before a negated quantity as an approximator, as it already does in q-113.",
+  "Claude: make frame handling consistent (q-110/q-115 cut, q-111 kept) and stop calling soft announcements 'Already sharp' (q-46).",
+  "On-device: never cut pro-form 'so' after think/hope/say/guess (q-87); block reorders that put a verb before its only object (q-75).",
+  "On-device: when splitPosts finds a whole-sentence break, ship the thread from sharpenLine itself, and never label a thread whose post 2 is over 280 (homepage q-39).",
+  "On-device: flag pure hedge openers; make receipts true (no 'Number first' when no number moved; no 'forecast' note on non-forecasts)."
+ ],
+ "issues": [
+  {
+   "id": "H1",
+   "severity": "critical",
+   "area": "on-device engine",
+   "where": "q-87; reshape cut in sharpenLine",
+   "problem": "'I didn't use to think so.' became 'I didn't use to think.' Broken grammar and reversed sense on a draft that was already sharp; receipt says 'Same claim, 1 word lighter'.",
+   "fix": "Protect 'so' as a pro-form after think/hope/guess/say/believe/suppose (+ not); add to the broken-line guard."
+  },
+  {
+   "id": "H2",
+   "severity": "high",
+   "area": "on-device engine",
+   "where": "q-75; contrast/end reorder",
+   "problem": "Clauses swapped so 'I started at 52' precedes 'lifting'; 'started' loses its object. Receipt says only 'Split it into two beats'.",
+   "fix": "Reject a reorder when the moved clause has an elided object or pronoun whose antecedent is in the other clause; say 'reordered' when it happens."
+  },
+  {
+   "id": "H3",
+   "severity": "high",
+   "area": "on-device engine / homepage",
+   "where": "q-39, q-92; home.html Try box",
+   "problem": "Engine ships 374 and 354 chars with 'split it yourself' though splitPosts finds a clean break for q-39. Homepage then shows 'Opens a 2-post thread' with a 331-char post 2 and also 'Trim it to fit, or split it yourself': not identical to the engine and not true.",
+   "fix": "Use splitPosts inside sharpenLine whenever every post fits 280; on the homepage only show a thread when all posts fit, else show the over-280 note alone."
+  },
+  {
+   "id": "H4",
+   "severity": "medium",
+   "area": "on-device engine",
+   "where": "q-48 (also q-11, q-59, q-86, q-88, q-111)",
+   "problem": "Hedge and throat-clearing run-ups pass as 'nothing to cut' or survive whole; 17 of 78 needs-work lines come back unchanged.",
+   "fix": "Add run-up patterns ('It might be worth considering whether', 'There are a lot of reasons why', 'In order to', 'which is to') as marks at least, cuts where the remainder is a whole clause."
+  },
+  {
+   "id": "H5",
+   "severity": "medium",
+   "area": "receipts (on-device)",
+   "where": "q-35, q-7, q-42, q-76, q-1",
+   "problem": "'Number first' claimed though the number never moved; notes call observations 'a forecast/prediction'; 'basically' kept on an exact 62% as 'nearly, not exactly'.",
+   "fix": "Emit 'Number first' only when the first numeral's index decreased to the opening; gate the forecast note on a future/modal verb; drop the approximator note when an exact figure follows."
+  },
+  {
+   "id": "H6",
+   "severity": "medium",
+   "area": "both paths",
+   "where": "q-57",
+   "problem": "'I basically don't do any outreach' became 'I don't do any outreach': nearly-none stated as none, with 'says the same'.",
+   "fix": "Treat basically/pretty much/almost before a negation or 'no/any/never' as an approximator: keep it, or surface it as a call."
+  },
+  {
+   "id": "H7",
+   "severity": "medium",
+   "area": "Claude path",
+   "where": "q-48, q-86, q-111, q-117, q-76, q-7",
+   "problem": "Soft run-ups kept; the why admits 'still generic' but ships the line anyway. These are the lines that hold h under 90%.",
+   "fix": "Prompt: when the why would say 'still generic', ship the tighter version (e.g. a direct question for q-48) or put it in alts."
+  },
+  {
+   "id": "H8",
+   "severity": "low",
+   "area": "Claude path",
+   "where": "q-110, q-115 vs q-111; q-30; q-46",
+   "problem": "Surprise frames cut on some lines and defended on another; 'finally' cut flattens q-30; 'Already sharp' given to a soft announcement.",
+   "fix": "One rule for frames (cut when a fact follows, keep as a call otherwise); keep time-payoff adverbs; reserve 'Already sharp' for lines with a turn or a number."
+  },
+  {
+   "id": "H9",
+   "severity": "low",
+   "area": "receipts (Claude)",
+   "where": "q-13, q-119, q-0",
+   "problem": "Cut counts don't match the why (q-13 says 3, names 2; q-119 says 1, three words went); 'three beats' on a 2-post thread; 'doubled honestly'.",
+   "fix": "Derive the count and beat wording from the validator's diff, not the model's text."
+  },
+  {
+   "id": "H10",
+   "severity": "low",
+   "area": "call marks (on-device)",
+   "where": "q-9",
+   "problem": "Call on 'Probably' in 'Probably nothing, but…' offers 'Nothing, but BlackRock…', breaking the CT idiom the why itself (Claude path) recognises.",
+   "fix": "No call mark when the hedge is part of a fixed phrase ('probably nothing', 'not financial advice')."
+  }
+ ]
+}

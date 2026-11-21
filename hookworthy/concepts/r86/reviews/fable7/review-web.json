@@ -1,0 +1,61 @@
+{
+ "key": "web",
+ "role": "Awwwards-level web designer and front-end craftsperson",
+ "score": 9.3,
+ "verdict": "Composition, rhythm and motion hold at 1440 and 390: zero CLS (also while switching hero examples), no horizontal scroll, 9.99 phone screens at 390 and 9.70 at 360, every heading two lines or fewer, reduced motion lands on a finished static layout with no running animations, and every control I drove (hero examples, Try box with 8 of my own lines, previews, billing toggle, FAQ, final input, signup sheet with error and done states, Esc and focus return) behaved correctly with no console errors. One craft flaw sits inside the signature product moment: the ember fluff underline collides with the next line of text whenever a struck phrase wraps or sits above a second line, at both widths, and that alone keeps this just under best-in-class.",
+ "to_95": [
+  "Give the wavy fluff underline its own vertical room in every draft surface (Try textarea mirror, hero draft, final-section draft): raise the draft line-height from about 1.42 to about 1.6, or pull the underline up (text-underline-offset about 0.18em, or a shorter wave amplitude) so the wave never touches the ascenders of the following line at 1440 or 390.",
+  "On phone, lift the smallest controls to at least 32px tall hit areas (Try it and Studio pills 24px, See it again and Replay 28px, the Free forever link 16px) using padding or a pseudo-element so the visual size does not change.",
+  "In the final section on phone, show the marked draft once: after Sharpen, keep the struck mirror and collapse the textarea to its single-line state (or the reverse), so the result card arrives one screen sooner."
+ ],
+ "issues": [
+  {
+   "id": "web-1",
+   "severity": "P1",
+   "area": "Typography / signature detail",
+   "where": "Try box draft (#try-ta mirror) at 1440 and 390; same pattern in the hero draft at 390 and the final-section draft",
+   "problem": "The ember wavy underline under struck fluff runs into the next line of text. At 1440 (22px/31px) the wave grazes the ascenders of the line below; at 390 (17px/24px) it visibly overlaps letters such as t, k, b and d when the struck phrase wraps onto two lines. It is the one brand mark in the page's main product moment, and it reads as a rendering glitch in the first seconds after tapping Sharpen.",
+   "fix": "Raise line-height on draft text that can carry marks to about 1.6 (22px/35px desktop, 17px/27px phone) or reduce text-underline-offset and wave amplitude so the wave bottom stays at least 3px above the next line's cap height. Re-check the Try box minimum height so the change adds no layout shift, and confirm the 390 phone budget still holds (currently 9.99 of 11)."
+  },
+  {
+   "id": "web-2",
+   "severity": "P2",
+   "area": "Touch targets",
+   "where": "390: Try it / Studio pills in the 'Trades, launches, newsletters' card (59x24, 67x24), See it again (28px tall), Replay icon buttons (28 to 32px), 'Free forever' link under the hero CTAs (16px tall), 'Start with Studio' text link (30px)",
+   "problem": "These pass the 24px WCAG 2.2 AA minimum only narrowly or by the inline-link exception, and are below the 44px comfort size that the rest of the page meets; the 24px pills sit in a dense list where mis-taps are likely.",
+   "fix": "Keep the visuals; extend hit areas to at least 32px (ideally 44px) with vertical padding plus negative margin, or an ::after inset of -8px on each control."
+  },
+  {
+   "id": "web-3",
+   "severity": "P2",
+   "area": "Phone layout",
+   "where": "390 and 360: 'No line handy? Try one:' starter chip row in the Try card",
+   "problem": "The row scrolls sideways but the second chip ('Announcement') is hard-clipped at the card edge with no fade, so it looks cut off, not scrollable, and three of five starters are undiscoverable.",
+   "fix": "Add a 24px right-edge mask (mask-image linear-gradient to transparent) that disappears at scroll end, and add scroll-snap-type: x proximity with scroll-padding so chips settle on whole pills."
+  },
+  {
+   "id": "web-4",
+   "severity": "P2",
+   "area": "Phone layout / redundancy",
+   "where": "390: final section (#start) after Sharpen",
+   "problem": "The same draft is shown twice in a row: the textarea with fluff underlined, then a second box with the same text struck through, before the result card. It costs about 90px and pushes the sharpened post and its CTA down on the last screen of the page.",
+   "fix": "After a result, collapse the input to one line (or hide the mirror and draw the strikes in the input), so there is one draft and one result."
+  },
+  {
+   "id": "web-5",
+   "severity": "P2",
+   "area": "Composition at 1440",
+   "where": "FAQ left column and Pricing header",
+   "problem": "With an answer open, the FAQ left column is empty below the struck 'Quick question, but' line for about 250px, and the Pricing header leaves the right half empty with the billing toggle parked low on the far right, about 560px from the headline it belongs to. Both are calm but looser than the bento above them.",
+   "fix": "FAQ: keep the left column sticky as now and vertically centre the struck-line motif in the remaining space, or let it swap to the open question. Pricing: baseline-align the billing toggle with the 'Pay for volume' line (already close) and tighten the section's top padding by about 24px so headline, sub and toggle read as one block."
+  },
+  {
+   "id": "web-6",
+   "severity": "P2",
+   "area": "Phone hero line break",
+   "where": "390 hero product window, Trader draft",
+   "problem": "The draft wraps as 'half my $BTC at 98k |and' with the faded beat marker and 'and' stranded at the line end, then 'honestly' struck alone at the start of the next line; the split-into-two-beats idea is less legible than at 1440.",
+   "fix": "Keep the beat marker and the struck 'and honestly' together with white-space: nowrap on that span group so the cut reads as one unit on the third line."
+  }
+ ]
+}
