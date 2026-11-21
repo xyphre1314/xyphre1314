@@ -1,0 +1,170 @@
+{
+ "key": "founder",
+ "role": "startup co-founder (two creator/prosumer SaaS to millions in ARR; homepage, positioning, pricing)",
+ "score": 7.5,
+ "verdict": "The conversion path now works and is honest (one sheet, every CTA wired, Pro featured, trust and pricing rewritten, real FAQs), so this is a credible creator-SaaS homepage. It stops short of best-in-class because the live demo misfires at the aha moment (broken price calls, a cut list that says numbers were cut when they were only moved, 'Already sharp' on newsletter warm-ups, two hero examples it can't reproduce), a few claims overreach the app (Posts to Threads/Bluesky, Free's '15 scheduled posts'), and paid plans have no risk reversal.",
+ "to_95": [
+  "Make the demo safe on traders' lines: fix the 'going to' → 'will' and 'will:' moves in core.js, add the tested page guard so no ungrammatical line is ever shown, and use a 'why' only when it describes the edit (founder-1).",
+  "Use one Sharpen for both the app and the page (HWCore.sharpen in core.js), swap the Newsletter hero for the verified '5,000 readers' line, and run parity.js in the build so no curated example promises more than the engine returns (founder-2).",
+  "Fix the cut list so moved words and whole numbers count as kept: the drop-in from diff-fix.js (founder-3).",
+  "Replace 'Already sharp' with an honest 'Nothing to cut.' plus the rewrite offer, and teach the engine the newsletter/thread warm-up frames (founder-4).",
+  "Fix the claims that overreach the app: 'Posts to X · LinkedIn · Ready for Threads · Bluesky', and Free as 'Schedule all you like; 15 a month go out at your time' across pricing and FAQ (founder-5, founder-6).",
+  "Add a risk reversal ('Cancel anytime, in two clicks. Your drafts and ideas stay with you on Free.') under the plans and in the paid sheets, and on phones show the billing terms and two key lines per plan (founder-7, founder-8).",
+  "Add the FAQ 'Can I bring my old posts?' with the app's own answer (founder-9).",
+  "Prove 'You choose every change' in the demo: tap a struck word to put it back (founder-10)."
+ ],
+ "issues": [
+  {
+   "id": "founder-1",
+   "severity": "P0",
+   "area": "engine",
+   "where": "Try tile #try-go and final #fin-in → analyze() in home.html → HWCore.hookUp ('tight' and 'number' moves in core.js)",
+   "problem": "The lead audience's most typical line is a price call, and the live demo breaks it right under 'Your facts stay.' and 'Your ticker stays exact.' Tested on the page: 'i think $SOL is going to 300 this cycle' → 'i think $SOL will 300 this cycle.', labelled 'Same claim in fewer words'. 'Bitcoin is going to hit 100k by end of year, mark my words' → 'Bitcoin will: 100k by end of year, mark my words.', labelled 'Led with the number', with the why 'A real number up front reads as proof' (the number isn't up front). 'eth will 5k by december' comes back 'Already sharp'. The broken line then goes into the signup sheet as 'Your line:'. A trader's first paste reads like a bot wrote it, which is exactly when they decide whether this is for them. The app's own path (hgSharpen) is worse: it also drops the 'i think' ('$SOL will 300 this cycle.').",
+   "fix": "(1) core.js (with the hook juror): in the tight move, rewrite '(is|are|am|’s) going to' → 'will' only when the next word is a verb. When it's a number, $amount, ticker or 'the', that 'going to' means 'heading to': leave it, or use 'goes to'. The number move must never emit 'will:', and must actually put the number first. (2) Page guard now (tested, r86/work-founder/guard.js + guard-test.js): add sane() to the page script, and in analyze() insert `if (res && !sane(res.text, body)) res = null;` just before `else if (marks.length)`, so the plain softCut result (or 'Nothing to cut.') shows instead. BROKEN = [/\\bwill:/i, /\\bwill\\s+(?=[$\\d])/i, /\\b(?:a|an|the|to|of|and|but|so|because)\\s*[.?!]\\s*$/i, /\\s[,.;:]/, /[,;:]\\s*[.?!]/]. A pattern only counts if the input didn't already have it. (3) Use the 'Led with the number' label and its why only when the output's first token is a number or $amount; otherwise say 'Tightened it' with the tight why. (4) Done when r86/work-founder/try.js and try2.js (30 lead-audience lines) produce no ungrammatical output and every why describes the edit actually made."
+  },
+  {
+   "id": "founder-2",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Hero window EX[0] Trader and EX[2] Newsletter (#pf-sharp, #pf-move, #pf-why, #pf-kept), assets/og-afterglow.png, against the Try tile's live engine",
+   "problem": "The hero says these lines were 'sharpened in one tap' and carries a Sharpen button. 300px lower, the visitor can paste the same draft into the real engine, and a skeptic tests the demo with the demo's own example first. Two of the four don't match (r86/work-founder/parity.js). Trader: the hero shows 'my first $10k month trading took me 3 years.', the live result is 'i finally hit my first $10k month trading, took me 3 years.' Newsletter: the hero shows 'I almost quit writing this newsletter. This week: why.', the live result is 'In this week’s issue I wanted to talk a little bit about why I almost quit writing this newsletter.' (only 'just' cut, labelled 'Hedges ask the reader to doubt you'). Neither Sharpen path produces the Newsletter line at all. The root cause is two engines. The app runs hgSharpen (soft words out first, then hookUp), while the page calls HWCore.hookUp directly. So the Trader line is true for the app and false on the page that advertises it.",
+   "fix": "(1) One Sharpen: move hgSharpen, hgMarks, hgClean and hookUpPack out of index.html into core.js as HWCore.sharpen(text, {keep}). Fold in the page's guards (gm/gn kept, a hedge on a price call kept, founder-1's sanity guard, founder-17's hedge phrases). Call it from the app, the Try tile and the final. (2) Swap the Newsletter example for one that both paths already produce identically (verified): draft 'I just wanted to say thank you to everyone who subscribed, we just crossed 5,000 readers' → after 'We crossed 5,000 readers. Thank you to everyone who subscribed.'; soft ['I just wanted to say', 'just']; move 'Led with the number'; why '5,000 is the news, so it leads. The thank-you lands harder after it.'; kept 'Your 5,000 and your thank-you.'; cut 'Cut the warm-up.' This needs founder-3, or the note will claim 5,000 was cut. (3) Add r86/work-founder/parity.js to the check script (it exits 1 on any mismatch). It covers the four hero pills, the Try default, the final example and the Day/Replies/Previews line. Re-render og-afterglow.png only if the Trader output changes."
+  },
+  {
+   "id": "founder-3",
+   "severity": "P1",
+   "area": "trust",
+   "where": "analyze() → tokens()/removed() in home.html: the strikes in #try-mirror and #fp-draft, and the 'Cut …' list in #out-note and #fp-note",
+   "problem": "The cut list says words were cut when they were only moved, numbers and names included. 'I just wanted to say thank you to everyone who subscribed, we just crossed 5,000 readers' → 'We crossed 5,000 readers. Thank you to everyone who subscribed.', but the note reads 'Cut “I just wanted to say”, “we”, “just”, “crossed 5” and “000 readers”' and 'crossed 5,000 readers' is struck. Paste the hero's own Founder draft into Try and the note says 'Cut … “was redesigned by our team”' while the output still says 'our team'. Under 'Your facts stay.', the page tells the visitor it cut their number. There are two causes. The tokenizer splits '5,000' into '5' and '000'. And the in-order LCS treats every word the number-first or question moves reorder as removed.",
+   "fix": "Replace tokens()/removed() with tokens2()/removed2() from r86/work-founder/diff-fix.js (tested). Token regex /[\\p{L}\\p{N}$%](?:[\\p{L}\\p{N}$%'’]|[.,](?=\\p{N}))*/gu keeps 5,000, 2.5k and $1,200 whole, and nrm drops the inner comma. After the LCS, any input word the output still contains (a moved word) also counts as kept, matched by count. Result on that line: cut = “I just wanted to say” and “just”. spans(), mirrorHTML and struckHTML stay as they are."
+  },
+  {
+   "id": "founder-4",
+   "severity": "P1",
+   "area": "engine",
+   "where": "analyze() 'same' branch: #out-why / #fp-why 'Already sharp. Nothing to cut.'; the soft-word patterns in core.js",
+   "problem": "Newsletter writers are audience #2, and their most common openers come back 'Already sharp': 'In today’s issue I want to talk about why I stopped using Notion', 'In this week’s issue I want to share 3 tools I use every day', 'Today I want to talk about pricing', 'A lot of people have been asking me about my morning routine so here it is'. So does the most common thread opener on X, 'Here is a thread on 5 lessons I learned from losing $50k in crypto'. The claim is false, it contradicts the hero's Newsletter example ('Cut the warm-up.'), and it tells these visitors the product has nothing for them. Nothing reliable can earn 'sharp' either: HWCore.hookScore gives 'The Fed meets tomorrow.' 62 and 'Here is a thread on…' 77.",
+   "fix": "Page, now: never claim sharpness. In the 'same' result, why = 'Nothing to cut.' and note = 'Sharpen only cuts what’s soft. Want it to lead harder? A rewrite in your voice can, 20 free a month.' Rename the 'Already sharp' starter chip to 'A sharp one'. Engine (with the hook juror): mark warm-up frames as soft and lead with what follows them: /^(?:in )?(?:today’s|this week’s|this) (?:issue|newsletter|post|thread)[,:]?\\s+i (?:just )?(?:want|wanted) to (?:talk|share|write)(?: a little bit)? about\\s+/i; /^(?:today )?i (?:just )?want(?:ed)? to talk about\\s+/i; /^here(?: is|’s|'s) a thread (?:on|about)\\s+/i; /^a lot of (?:you|people) (?:have been )?ask(?:ing|ed) (?:me )?about (.+?),? so here (?:it is|you go)/i. Targets: 'Why I stopped using Notion.' · '3 tools I use every day:' · '5 lessons from losing $50k in crypto:' · 'My morning routine, since you asked:'. Never cut a frame down to a fragment with no claim: 'Some thoughts on the market today' → 'The market today.' (shipped now, labelled 'Got straight to it') is worse. Leave that line alone and say 'Nothing to cut.'"
+  },
+  {
+   "id": "founder-5",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Hero .hmeta p.posts ('Posts to X · Threads · LinkedIn · Bluesky'); FAQ #qa2",
+   "problem": "The app posts on time to X and LinkedIn only. For Threads and Bluesky it 'get[s] everything ready and a nudge to post by hand' (index.html FAQ 'Does it post for me?' and 'Which platforms?'; Threads and Bluesky open their intent composers). 'Posts to Threads, Bluesky' is a claim a first-week user disproves. It's also an unforced error: the honest version supports the 'nothing goes out without you' story.",
+   "fix": "p.posts: 'Posts to [X] [LinkedIn] · Ready for [Threads] [Bluesky]', with the same icon spans and 'Ready for' in --ink-3. The hero sub can stay, since 'schedules it for…' is true: Threads and Bluesky posts sit in the queue and nudge at their time. #qa2 answer: 'Only what you schedule, at the time you pick. X and LinkedIn go out then; Threads and Bluesky get a nudge and open ready to post. Plug replies and reruns stay off until you set a rule for them, and you can switch them off. It never sends DMs, deletes posts, follows or likes.'"
+  },
+  {
+   "id": "founder-6",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Pricing #pl-free li:nth-child(2), #pl-pro li:first-child, FAQ #qa5",
+   "problem": "Free is sold as '15 scheduled posts a month'. In the app, scheduling is unlimited. 15 a month go out on their own at your time, the rest 'wait on Week for your tap', and posting yourself never counts (index.html FREE_POSTS note and FAQ 'What happens when I hit my free usage?'). The page makes Free look more capped than it is, and it blurs the real upgrade trigger: you post most days and want every post to go out without a tap.",
+   "fix": "Free li 2: 'Schedule all you like. 15 a month go out at your time; the rest wait for one tap.' (phone one-liner: 'Schedule all you like; 15 a month go out on time'). Pro li 1: '<b>Up to 500 posts a month go out at your time</b>' (phone: '<b>500 posts a month go out on time</b>'). #qa5: 'Sharpen, as often as you like. Plus 20 rewrites in your voice a month, voice learning, previews for all four apps, and scheduling as much as you like: 15 posts a month go out at your time, and the rest wait for one tap. No card. Pro is $12 a month, billed yearly, when you post every day.'"
+  },
+  {
+   "id": "founder-7",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Pricing, right after .plans (new p.plans-fine); signup sheet PLAN.pro and PLAN.studio sub lines",
+   "problem": "There's no trial (correct), which makes 'cancel anytime' the only risk reversal a paid plan has. The page never says it, and neither do the Pro and Studio sheets, which go straight to 'Continue with X'. The app already makes the promise: 'Cancel anytime, your drafts stay yours.' and 'Yes, in two clicks. Your drafts and ideas stay with you on Free.'",
+   "fix": "Under .plans add <p class=\"plans-fine\">Cancel anytime, in two clicks. Your drafts and ideas stay with you on Free.</p>: 14px, --ink-3, centred; at ≤760px 13px and left-aligned, with a phone version 'Cancel anytime. Your drafts stay with you on Free.' (CSS in r86/work-founder/pricing-phone.css). In the sheet, append ' Cancel anytime.' to PLAN.pro.y/.m and PLAN.studio.y/.m, e.g. '$12 a month, billed yearly ($144). Or $16 month to month. Cancel anytime.'"
+  },
+  {
+   "id": "founder-8",
+   "severity": "P1",
+   "area": "mobile",
+   "where": "Pricing at ≤760px: `.js .plan:not(.open) .price-n{display:none}` and `.js .plan:not(.open) li:nth-child(n+2){display:none}`",
+   "problem": "On a phone, Pro reads '$12 a month' under a 'Yearly' toggle, and the $144 charged up front first appears inside the sheet. Each plan also shows only one line. That hides Free's posting limit, the thing Pro removes, so Pro's '500 scheduled posts' has nothing to be compared with. And Studio's only visible line is 'Everything in Pro', which says nothing about Studio.",
+   "fix": "At ≤760px: (a) Put the billing terms in the price unit. The price column sits beside two lines of text, so this adds no height. Pro: 'a month, yearly' (monthly: 'a month'). Studio: 'per client a month, yearly' / 'per client a month'. Free stays 'forever'. Use a phone-only span with data-y/data-m, swapped by the existing toggle code. (b) Show two key lines per plan: `.js .plan:not(.open) li:nth-child(2){display:flex}` and keep n+3 hidden. Free = Sharpen + the schedule line (founder-6). Pro = 500 posts + 250 rewrites. Studio = '<b>Each client: their voice, X account, review link</b>' + 'Their yes before anything posts'. (c) Hide #pricing .lede on phones, because the cards now carry its facts. Measured with every founder pricing and FAQ change injected (r86/work-founder/pricing-phone-lite.js, m-pricing-lite.png): 9.51 → 9.64 screens at 390, 10.50 → 10.64 at 360, no sideways scroll. If 10.5 at 360 must hold, win back ~110px elsewhere."
+  },
+  {
+   "id": "founder-9",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "FAQ ul.qa: new item 2, after 'Will it sound like me?'",
+   "problem": "Everyone this page targets already has an X history, and usually another scheduler. 'Do I start from zero?' is the biggest switching cost, and the page never answers it. The answer would also back up 'Learns your voice from your posts' and 'Your best time: 8:40 AM'. The app already has a true answer ready to use.",
+   "fix": "Add the disclosure 'Can I bring my old posts?' with this answer, verbatim from index.html's FAQ: 'Yes. Drop in your X archive, a Typefully or CSV export, or paste posts in. They’re read in your browser, and they teach Hookworthy how you open and when your people reply.' It costs ~51px on phones and is included in founder-8's measurement."
+  },
+  {
+   "id": "founder-10",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Try tile #try-mirror after Sharpen (and #fp-draft in the final); voice tile #vo-h 'You choose every change.' and its .tfoot",
+   "problem": "The differentiator against ChatGPT is that you choose every change (PRODUCT.md principle 2). The page claims it in a heading and in the FAQ but never shows it: the live demo strikes words and gives no way to put one back. The demo is where 'is this AI slop?' gets settled, and right now it behaves like a black box. The voice tile's 'Keeps “ngl”' is also undercut by the engine, which breaks lines when a word is kept: hookUp(…, {keep:['ngl']}) on 'ngl this is the best setup i have seen all year' → 'Best setup i’ve seen all year? ngl this.'",
+   "fix": "After Sharpen, render each struck span in #try-mirror as a button (aria-pressed=\"true\", aria-label 'Put back “honestly”'), and add a line under the note: 'Tap a struck word to put it back.' On tap, re-run analyze() with that word added to keep. hookUp honours keep: tested, keep 'honestly' → 'i stopped trading the open and honestly my pnl got better.' Then accept the result only if the kept words appear in the same relative order as in the input and it passes sane() (founder-1). Otherwise use the plain deletion: the raw line minus the spans that are still cut, tidied. Update #out-line, the note and tryLine so the sheet carries the edited line. Do the same on #fp-draft. Reduced motion: same behaviour, no animation. The hook juror fixes the keep path in core.js."
+  },
+  {
+   "id": "founder-11",
+   "severity": "P2",
+   "area": "copy",
+   "where": "FAQ #qa3 'Is it just AI writing?'",
+   "problem": "'the rest is your words' isn't quite true, because Sharpen adds connective words ('why do…?', 'Here’s how.'). The answer also leaves out the app's strongest anti-slop fact, and the one traders care about most: it never invents a number.",
+   "fix": "'No. Sharpen is an editor: it cuts the fluff and can reorder what’s left, and it never adds a fact or a number. Rewrites in your voice run on Claude, only when you ask, and show every changed word. If a line needs a number you didn’t give, it writes [your number] and waits for yours.'"
+  },
+  {
+   "id": "founder-12",
+   "severity": "P2",
+   "area": "conversion",
+   "where": "Pricing #pl-studio",
+   "problem": "With per-client pricing, the first thing an agency asks is whether they pay for their own account. They don't: in index.html, clientVoices() = workspaces − 1, with a minimum of 1. r85 skipped founder-24 as 'not confirmed', but the code confirms it. Separately, '500 rewrites a month for each client' misstates the app, where the 500 per client voice are 'shared across all your clients'.",
+   "fix": "#pl-studio order: '<b>Each client gets their own voice, X account and review link</b>' · 'Their yes before anything posts' · 'Your own voice is included' · li.x 'Everything in Pro' · li.x '500 rewrites a month per client, shared across your clients'."
+  },
+  {
+   "id": "founder-13",
+   "severity": "P2",
+   "area": "conversion",
+   "where": "Pricing #pl-pro li.x:last-child ('Your week drafted from your ideas')",
+   "problem": "The Replies tile dramatizes a Pro feature: the app drafts replies 'as posts come in' on Pro, and only 'when you ask' on Free. No plan names it. Meanwhile 'Your week drafted from your ideas' appears nowhere else on the page. A visitor who liked a tile can't tell which plan it comes with.",
+   "fix": "Replace it with 'Replies drafted as they come in'. Pro order: 500 posts · 250 rewrites · A ping when a post takes off · li.x 'Replies drafted as they come in' · li.x 'Results, in plain words'."
+  },
+  {
+   "id": "founder-14",
+   "severity": "P2",
+   "area": "copy",
+   "where": "#pricing .lede",
+   "problem": "'Sharpening is free. Forever.' is followed by 'Sharpen any line, free and unlimited.', so 'free' appears three times in two lines, and the section never gives the reason to pay.",
+   "fix": "'Sharpen every line you write, free. Pro is for posting every day: up to 500 posts a month at your time and 250 rewrites in your voice, on Claude.' Hidden on phones (founder-8)."
+  },
+  {
+   "id": "founder-15",
+   "severity": "P2",
+   "area": "trust",
+   "where": "#trust ul.nev li:nth-child(2) ('Auto-deletes'), #trust .tfoot, Studio #st-h line 2",
+   "problem": "No creator fears auto-deletes, so this item reads as filler in the one list whose job is to reassure. The list also never gives a reason, though the app has one. And Studio's 'Nothing posts without a yes.' sits right above Trust's 'Nothing goes out without your say-so.': the same promise twice in a row, so the second lands softer.",
+   "fix": "li 2 → 'Engagement pods' / 'Never.' (true: the app has none). .tfoot → 'Every post is one you wrote or approved, sent at the time you picked. On purpose: X pays only accounts in good standing.' This is the app's own reason: 'No auto-retweets or auto-DMs here, on purpose: X’s payouts need an account in good standing.' Studio #st-h line 2 → 'Their yes, then it posts.' (or the marketing juror's choice), so the promise belongs to Trust."
+  },
+  {
+   "id": "founder-16",
+   "severity": "P2",
+   "area": "trust",
+   "where": "Hero .hmeta .since",
+   "problem": "'X now pays creators for original posts, not replies.' is an unsourced claim about another company's payout policy. It sits right under the hero, in front of an audience that fact-checks for a living. If it's wrong or goes stale, it takes the page's credibility with it, and it edges toward a payout promise.",
+   "fix": "Link 'X now pays creators' to X's own help page or announcement (new tab, rel=\"noopener\"). If no source can be linked, use: '<b>On X, the first line decides if anyone reads the second.</b> It’s the part you control.'"
+  },
+  {
+   "id": "founder-17",
+   "severity": "P2",
+   "area": "engine",
+   "where": "home.html HEDGES and keepFor()",
+   "problem": "'gm. honestly i think btc is going to rip this week, just my opinion though' → 'gm. i think btc will rip this week, my opinion though.' Cutting 'just' out of 'just my opinion' leaves a tail that reads like a typo, on the lead audience's signature line.",
+   "fix": "HEDGES = ['just my opinion', 'not financial advice', 'in my opinion', 'my opinion', 'i think', 'imo', 'nfa', 'i feel like'], and keepFor drops any hedge that sits inside a longer matched one. Tested: hookUp(t, {keep:['i think','just my opinion']}) → '… btc will rip this week, just my opinion though.' The same rule goes into the shared core sharpen (founder-2)."
+  },
+  {
+   "id": "founder-18",
+   "severity": "P2",
+   "area": "conversion",
+   "where": "Try tile: `.motion .arm .try-out:not(.fresh){opacity:0}` and the 760ms delay in tryApi.play()",
+   "problem": "After 'Try it on your line', the result half of the Try tile stays blank for about 1.5s (r86/work-founder/jump-900.png shows the input, the chips, then nothing). The aha moment and the 'Keep it. Start free' button under it arrive late for exactly the visitors who asked to see them.",
+   "fix": "Keep the pre-sharpened result card visible on arrival. Animate only the squiggle → strike → fall on the mirror and the existing 'land' pulse on the card, starting 200ms (not 760ms) after the tile is 30% in view. Delete the opacity:0 rule so that `fresh` animates from a visible state."
+  },
+  {
+   "id": "founder-19",
+   "severity": "P2",
+   "area": "trust",
+   "where": "<head> og:image and twitter:image",
+   "problem": "Both point at the relative '../../assets/og-afterglow.png'. X's card crawler needs an absolute URL, so a link shared on X (this product's home channel) shows no image. The card also shows the Trader output that the page's own Try doesn't produce (founder-2).",
+   "fix": "At deploy, set both to content=\"https://hookworthy.com/assets/og-afterglow.png\" and add <meta property=\"og:url\" content=\"https://hookworthy.com/\">. Re-render the card if the Trader example changes."
+  }
+ ]
+}

@@ -1,0 +1,139 @@
+<title>Hookworthy Layout Pick</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: four stacked layout cards (desktop shot + phone shot), each with love/meh/no and a "this one" pick; notes; sticky status bar. Dark by choice: the drafts are all black. */
+@font-face{font-family:Inter;src:url(fonts/Inter-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{
+  --bg:#050506; --surface:#0E0F11; --fg:#F2F3F5; --fg-2:#B4B8BF; --fg-3:#8E929A; --line:#24262A;
+  --love:#5BD69A; --love-bg:#0F2A1C; --meh-bg:#202226; --no:#FF8A80; --no-bg:#33140F; --pick:#F2F3F5; --focus:#FFFFFF;
+  --ui:Inter,system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.55 var(--ui);margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:44px 140px}
+h1,h2{margin:0;letter-spacing:-.03em;text-wrap:balance;font-weight:700}
+h1{font-size:clamp(32px,4.6vw,52px);line-height:1.04}
+h2{font-size:clamp(24px,2.8vw,32px);line-height:1.1}
+p{margin:0}
+.lede{color:var(--fg-2);font-size:17px;max-width:64ch;margin-top:14px}
+.draft{margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.top a{color:var(--fg);font-weight:600;text-decoration:none;white-space:nowrap;border-bottom:1px solid var(--fg-3)}
+.top a:hover{border-color:var(--fg)}
+.idea{color:var(--fg-2);margin-top:8px;max-width:72ch}
+.shots{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:12px;margin-top:18px;align-items:start}
+.shots img{width:100%;display:block;border-radius:12px;border:1px solid var(--line);max-width:100%}
+.facts{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:12px;color:var(--fg-3);font-size:14px}
+.facts b{color:var(--fg-2);font-weight:600}
+.whole{margin-top:12px}.whole summary{cursor:pointer;color:var(--fg-2);font-size:14px;font-weight:600}.whole img{width:100%;display:block;border-radius:12px;border:1px solid var(--line);margin-top:10px;max-width:100%}
+.act{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px}
+.act button{font:600 14px/1 var(--ui);border:1px solid var(--line);background:transparent;color:var(--fg-2);border-radius:999px;padding:11px 16px;cursor:pointer;min-height:42px}
+.act button:hover{border-color:var(--fg-3);color:var(--fg)}
+.act button[aria-pressed="true"].l{background:var(--love-bg);border-color:var(--love);color:var(--love)}
+.act button[aria-pressed="true"].m{background:var(--meh-bg);border-color:var(--fg-3);color:var(--fg)}
+.act button[aria-pressed="true"].n{background:var(--no-bg);border-color:var(--no);color:var(--no)}
+.act .sp{flex:1}
+.act button.pk[aria-pressed="true"]{background:var(--pick);color:var(--bg);border-color:var(--pick)}
+button:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.note{margin-top:12px;display:grid;gap:6px}
+.note label{font-size:13.5px;color:var(--fg-3)}
+.note textarea{font:400 15px/1.45 var(--ui);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;resize:vertical;width:100%}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bar .in{max-width:1180px;margin:0 auto;padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--fg-2)}
+#pickout b{color:var(--fg)}
+@media (max-width:760px){.shots{grid-template-columns:minmax(0,1fr) 110px}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Pick a layout</h1>
+    <p class="lede">Same Afterglow look, same content, four different page structures. Open each one and scroll the whole thing (and try it on your phone), then rate it and pick the one to build on. Notes help most: “this, but with the Studio from Bento”.</p>
+  </header>
+  <div id="list"></div>
+</div>
+
+<div class="bar" role="region" aria-label="Your pick"><div class="in">
+  <span id="pickout">No pick yet.</span>
+  <span id="status" aria-live="polite">Your answers save as you go.</span>
+</div></div>
+
+<script>
+const DRAFTS = [
+  { id: 'story', name: 'Pinned Story', url: 'https://claude.ai/artifact/Pc5PxCJoZLnjSJ9vz4gV6W',
+    idea: 'One app window stays pinned while you scroll; it changes chapter by chapter: fluff → sharp post → each app → 8:40 AM slot → reply → results → client approves.',
+    font: 'Apple / Linear scroll story', colour: 'Phone: pinned window with a chapter tab bar', from: 'Apple product pages, Linear' },
+  { id: 'bento', name: 'Live Bento', url: 'https://claude.ai/artifact/F5nn6H91cZTf14fxQ4XALT',
+    idea: 'Hero, then one grid of small working demos: the Try box as the big tile, previews, your day, a reply, results, who, Studio, trust. Shortest page.',
+    font: 'Vercel / Apple bento', colour: 'Phone: two-column bento ordered by importance', from: 'Vercel, Apple, Linear' },
+  { id: 'feed', name: 'Timeline', url: 'https://claude.ai/artifact/PKGFs1mkp5BANW8FN6XYwU',
+    idea: 'The homepage is an X-style timeline: left rail, every section is a post or thread, the Try box is a compose box, sticky CTA on the right.',
+    font: 'X web app, Typefully', colour: 'Phone: feed with an X-app bottom tab bar', from: 'X, Typefully, Clay' },
+  { id: 'cinema', name: 'Cinema', url: 'https://claude.ai/artifact/6nuhZCS5yXwKBksuQtRroZ',
+    idea: 'A film in scenes: huge one-line title cards cut against full-width product shots, a side-by-side before/after, a swipeable strip of app previews.',
+    font: 'Superhuman / Cursor cinematic', colour: 'Phone: short title cards like vertical video cuts', from: 'Superhuman, Cursor, Apple' },
+];
+const $ = id => document.getElementById(id);
+$('list').innerHTML = DRAFTS.map(d => `
+<section class="draft" id="${d.id}" aria-labelledby="h-${d.id}">
+  <div class="top"><h2 id="h-${d.id}">${d.name}</h2><a href="${d.url}" target="_blank" rel="noopener">Open it live ↗</a></div>
+  <p class="idea">${d.idea}</p>
+  <div class="shots"><img src="img/${d.id}-d.jpg" alt="${d.name}, first screen at desktop width"><img src="img/${d.id}-m.jpg" alt="${d.name} on a phone"></div>
+  <p class="facts"><span><b>Style</b> ${d.font}</span><span>${d.colour}</span><span><b>Learns from</b> ${d.from}</span></p>
+  <details class="whole"><summary>See the whole page</summary><img src="img/${d.id}-sheet.jpg" alt="${d.name}, every screen of the desktop page" loading="lazy"></details>
+  <div class="act" role="group" aria-label="Rate ${d.name}">
+    <button type="button" class="l" data-id="${d.id}" data-v="love" aria-pressed="false">Love</button>
+    <button type="button" class="m" data-id="${d.id}" data-v="meh" aria-pressed="false">Meh</button>
+    <button type="button" class="n" data-id="${d.id}" data-v="no" aria-pressed="false">No</button>
+    <span class="sp"></span>
+    <button type="button" class="pk" data-pick="${d.id}" aria-pressed="false">Build this one</button>
+  </div>
+  <div class="note"><label for="n-${d.id}">What would make ${d.name} hit? (optional)</label><textarea id="n-${d.id}" data-note="${d.id}" rows="2" placeholder="e.g. this, but with the Studio from Bento"></textarea></div>
+</section>`).join('');
+
+const state = { votes: {}, pick: '', notes: {} };
+function paint() {
+  document.querySelectorAll('.act button[data-v]').forEach(b => b.setAttribute('aria-pressed', String(state.votes[b.dataset.id] === b.dataset.v)));
+  document.querySelectorAll('.act button[data-pick]').forEach(b => { const on = state.pick === b.dataset.pick; b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Building this one ✓' : 'Build this one'; });
+  const d = DRAFTS.find(x => x.id === state.pick);
+  $('pickout').innerHTML = d ? `Your pick: <b>${d.name}</b>` : 'No pick yet.';
+  Object.entries(state.notes).forEach(([k, v]) => { const t = document.querySelector(`textarea[data-note="${k}"]`); if (t && document.activeElement !== t && !t.value) t.value = v; });
+}
+function local(set) { try { if (set) localStorage.setItem('hw-layout', JSON.stringify(set)); else return JSON.parse(localStorage.getItem('hw-layout') || '{}'); } catch (e) { return {}; } }
+let db = null; const chains = {};
+function status(t) { $('status').textContent = t; }
+function save(path, body) {
+  local(state);
+  if (!db) return;
+  const prev = chains[path] || Promise.resolve();
+  chains[path] = prev.then(() => { status('Saving…'); return db.doc(path).set(body); })
+    .then(() => status('Saved. I can read your answers.'))
+    .catch(e => status(e && e.code === 'invalid_argument' ? 'View-only here: answers stay in this browser.' : 'Couldn’t save online: answers stay in this browser.'));
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.act button'); if (!b) return;
+  if (b.dataset.v) {
+    const id = b.dataset.id; state.votes[id] = state.votes[id] === b.dataset.v ? '' : b.dataset.v;
+    paint(); save('heroes/' + id, { id, vote: state.votes[id] || 'none', note: state.notes[id] || '', at: Date.now() });
+  } else if (b.dataset.pick) {
+    state.pick = state.pick === b.dataset.pick ? '' : b.dataset.pick;
+    paint(); save('meta/pick', { pick: state.pick, at: Date.now() });
+  }
+});
+const timers = {};
+document.querySelectorAll('textarea[data-note]').forEach(t => t.addEventListener('input', () => {
+  const id = t.dataset.note; state.notes[id] = t.value; clearTimeout(timers[id]);
+  timers[id] = setTimeout(() => save('heroes/' + id, { id, vote: state.votes[id] || 'none', note: t.value, at: Date.now() }), 700);
+}));
+Object.assign(state, local()); state.votes = state.votes || {}; state.notes = state.notes || {}; paint();
+(async () => {
+  try {
+    if (!window.claude || !window.claude.use) { status('Preview: answers stay in this browser.'); return; }
+    db = await window.claude.use('db');
+    if (!db) { status('Answers stay in this browser on this view.'); return; }
+    const [hs, pk] = await Promise.all([db.collection('heroes').get(), db.doc('meta/pick').get()]);
+    hs.docs.forEach(d => { const x = d.data(); if (!x) return; if (x.vote && x.vote !== 'none') state.votes[x.id] = x.vote; if (x.note) state.notes[x.id] = x.note; });
+    if (pk.exists && pk.data().pick) state.pick = pk.data().pick;
+    paint(); status('Your answers save as you go.');
+  } catch (e) { status('Couldn’t reach saved answers: they stay in this browser.'); }
+})();
+</script>

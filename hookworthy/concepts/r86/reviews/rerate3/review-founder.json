@@ -1,0 +1,111 @@
+{
+  "key": "founder",
+  "role": "startup co-founder who took two creator/prosumer SaaS products to millions in ARR (positioning, objections, pricing, conversion path, truthfulness)",
+  "score": 9.1,
+  "verdict": "The positioning is sharp and ownable (the first line, for X), the live Sharpen demo is the conversion engine, and your line follows you from the Try box or final input into an honest signup sheet. I checked the claims against index.html and core.js and they hold up, and the prices and limits are exact. It falls short of 9.5 because the paid story is weaker than the free one: the Pro card leads with scheduling volume, which X itself gives away, its real reasons are hidden on phones, and the page never answers the question every paying prospect has: why switch from the scheduler I already use?",
+  "to_95": [
+    "Rebuild the Pro card around the reasons only Hookworthy has. Lead with 'A ping when a post takes off, with the first replies drafted' and '250 rewrites in your voice a month', and move '500 posts a month sent at your time' to third. At ≤760px, stop the 'Everything in Free, plus:' row from using one of the two visible slots, so phones show two real reasons for each paid plan.",
+    "Answer the switcher. Add an FAQ item, 'Already use another scheduler?', with this answer: 'Bring your X archive or Typefully export; your posts, drafts and times move in a few minutes. Keep it if you only need scheduling; switch if you want the first line to do more.' The app's #switch page (SW_FROM) already has this honest positioning. Add a footer link to it ('Switching from another tool'). Name competitors only after re-checking the app's claims about Hypefury and Black Magic.",
+    "Label the Pro-only moments in the bento (the breakout ping in the Day phone, 'Replies drafted as they come in', 'Know what landed') with a small 'Pro' tag. People who sign up from 'Free forever' CTAs then won't expect those features on Free.",
+    "Make the default hero example (Trader) show more than a deletion. Pick a trader draft where core.js makes a second visible move (Number first, or a two-beat split), so the first 5 seconds of the hero show an edit people couldn't make themselves.",
+    "Fix the small truth gaps: the Founder hero 'why' says '“34%” comes first' but the line opens on 'Customer churn:'. The Schedule done text says 'at your best time' but the page promises 'You pick the time'. 'Cancel anytime' sits next to 'Billed yearly at $144' without saying what happens to the year already paid."
+  ],
+  "issues": [
+    {
+      "id": "founder-1",
+      "severity": "P1",
+      "area": "Pricing / monetisation",
+      "where": "#pricing .plan.feat (Pro), and every paid card at ≤760px (CSS line ~1305: .js .plan:not(.open) li:nth-child(n+3){display:none})",
+      "problem": "Pro's first real line is '500 posts a month sent at your time'. That is the most commoditised benefit in the category: X schedules natively for free, and Free already lets you tap to send past 15. The differentiated, emotional reasons (the takeoff ping, replies drafted as they come in, results in plain words) come 4th to 6th. On phones, where most X traffic is, they are hidden behind 'See everything included', because 'Everything in Free, plus:' uses one of the two visible rows. On a phone, Pro and Studio each show exactly one real reason to pay. The 'For posting every day.' blurb also sells volume, not outcome.",
+      "fix": "Reorder Pro to: 'A ping when a post takes off, replies already drafted' · '250 rewrites in your voice a month' · '500 posts a month sent at your time' · 'Results, in plain words'. Change the blurb to an outcome, for example 'For catching the post that takes off.' (or keep 'For posting every day.' if the founder prefers). In the ≤760px rule, exclude the 'Everything in…' row from the count, e.g. .js .plan:not(.open) li:nth-child(n+4){display:none} on Pro/Studio, so two real lines show. Do the same for Studio: 'Up to 8 client voices, plus your own' and 'Their yes before anything posts'."
+    },
+    {
+      "id": "founder-2",
+      "severity": "P1",
+      "area": "Positioning / objections",
+      "where": "#faq (no switcher item), footer",
+      "problem": "Paying prospects already use a scheduler (Typefully, X's native scheduler, or a tool that has left X). The page never says why to switch or how easy it is. The only hint is a clause in 'Can I bring my old posts?'. The app already has honest switch positioning (index.html SW_FROM / ROUTES.switch: 'Only need scheduling? Typefully’s Creator plan is cheaper. Switch if you want the first line to do more.' It also says Hypefury no longer supports X and Black Magic closed). The homepage doesn't use any of it, though catching displaced users is the cheapest acquisition this product has.",
+      "fix": "Add an FAQ item, 'Already use another scheduler?', with this answer: 'Bring your X archive or a Typefully export and your posts and best times come with you. Only need scheduling? Keep what you have. Switch when you want the first line to do more.' Add 'Switching from another tool' under the footer's Hookworthy column, linked to ../../index.html#switch. Re-check the competitor status claims before naming Hypefury or Black Magic on the homepage. Without them, the line still works."
+    },
+    {
+      "id": "founder-3",
+      "severity": "P2",
+      "area": "Expectation setting / activation",
+      "where": "#day phone notification ('Your 8:40 post is taking off'), #replies ('Your answer’s drafted'), #results ('Know what landed')",
+      "problem": "Three of the bento's most persuasive moments are Pro-only: the breakout ping, replies drafted as they come in (Free gets them only 'when you ask'), and results. Nothing on the page says so, while every CTA says 'Free forever'. People who sign up on Free and look for these will feel misled, and that hurts activation and trust.",
+      "fix": "Add a small 'Pro' tag (the same style as the existing 'Example' tag) next to the notification sender in the Day phone, the 'Drafted in your voice' label in Replies, and the first Hookworthy note in Results. It doubles as an upgrade cue."
+    },
+    {
+      "id": "founder-4",
+      "severity": "P2",
+      "area": "Hero proof",
+      "where": "EX[0] (Trader), the default hero example and the OG image",
+      "problem": "The first product proof a visitor sees is the smallest edit the engine makes: it deletes 'just wanted to share that' and adds a full stop. A skeptic thinks 'I could do that myself'. The stronger moves (Number first, Made it active, two-beat split) only appear if the visitor taps another pill or scrolls to the Try box.",
+      "fix": "Keep the trader persona, but pick a draft where core.js makes two visible moves (for example cut + Number first, or cut + Split it into two beats) and that stays under ~62 characters after sharpening. Run it through hero-sync so EX[0] stays verbatim engine output. Then regenerate assets/og-afterglow.png to match."
+    },
+    {
+      "id": "founder-5",
+      "severity": "P2",
+      "area": "Truthfulness",
+      "where": "EX[1] (Founder) hero 'Why it hits'",
+      "problem": "The why says '“34%” comes first', but the sharpened line opens 'Customer churn: down 34%.' It is close but not literally true, and it sits in the hero, the page's most-scrutinised spot.",
+      "fix": "Have core.js's number-first 'why' say what happened, e.g. '“down 34%” now comes before the explanation…', or have it name the actual first words. Regenerate EX[1] from the engine."
+    },
+    {
+      "id": "founder-6",
+      "severity": "P2",
+      "area": "Truthfulness / consistency",
+      "where": "DONE.schedule in the sheet script ('…schedules your line at your best time')",
+      "problem": "Everywhere else the page promises 'You pick the time. It goes out then.' The done text says Hookworthy schedules your line at your best time. That reads as acting for you, and a brand-new account has no posting history to work out a best time from.",
+      "fix": "Change it to '…this signs you in and puts your line on your queue, at the time you pick.'"
+    },
+    {
+      "id": "founder-7",
+      "severity": "P2",
+      "area": "Pricing clarity / risk reversal",
+      "where": ".plans-fine ('Cancel anytime…'), PLAN.pro.y / PLAN.studio.y sheet subs",
+      "problem": "Yearly is the default ($144 up front) and there is no trial. 'Cancel anytime' next to a yearly charge reads as 'I get money back'. The page doesn't say whether cancelling a yearly plan refunds anything or just stops the renewal. That ambiguity is the main objection to paying yearly with no trial.",
+      "fix": "State the policy the founder chooses, in plain words. For example: 'Cancel anytime. Yearly plans stop renewing and keep working to the end of the year you paid for.' If the founder adopts a refund window, say that instead. Say the same thing in the Pro and Studio sheet subs."
+    },
+    {
+      "id": "founder-8",
+      "severity": "P2",
+      "area": "Trust / objections (traders)",
+      "where": "#trust tile",
+      "problem": "The trust tile lists what Hookworthy never does, but not the two things that most calm a trader who is protective of their account and their alpha. First, posting goes through X's official API (the app's FREE_POSTS comment says auto-posts use X's paid API). Second, Sharpen runs in the browser (core.js is offline), so a draft never leaves the device until you ask for a rewrite.",
+      "fix": "Add one line to the trust tile's tfoot or rules row: 'Posts go through X’s official API. Sharpen runs in your browser; nothing leaves until you ask for a rewrite.'"
+    },
+    {
+      "id": "founder-9",
+      "severity": "P2",
+      "area": "Pricing consistency (homepage vs app)",
+      "where": "home.html plan cards vs index.html plansHTML()",
+      "problem": "The prices and limits match, but the plan copy differs between the two. Free in the app lists 'Quick rewrites on your device, unlimited' and 'Learns your voice as you write', where the homepage has 'Learns your voice (5 rewrites, once)'. The Pro blurb is 'For creators who want their posts to pay.' in the app and 'For posting every day.' on the homepage. Pro in the app adds 'What’s working in your niche'. Someone who taps 'Open the demo app' and compares the two sees two different offers.",
+      "fix": "Use one source for the plan copy. Copy the homepage's final card lists and blurbs into plansHTML() (or the reverse), keeping the app's extra rows behind its own 'more' if needed."
+    },
+    {
+      "id": "founder-10",
+      "severity": "P2",
+      "area": "Pricing clarity (Studio)",
+      "where": "#pricing Studio card",
+      "problem": "Studio's per-client price is the hardest one on the page to read. The worked total ('4 clients: $72 a month…') appears only in the Studio bento tile, far above the card, and not on the card where the buying decision happens, especially on phones.",
+      "fix": "Under the Studio price note, add 'e.g. 4 clients: $72 a month' (it switches to '$96 a month' on Monthly through the existing data-y/data-m pattern)."
+    },
+    {
+      "id": "founder-11",
+      "severity": "P2",
+      "area": "Conversion credibility (engine)",
+      "where": "Try box / final input with a typical founder line",
+      "problem": "Most outputs I spot-checked were clean and every fact survived (26 lines, no number or ticker lost). One typical founder line came out broken: 'I really think that most people don’t realize that 90% of startups fail because of cofounder fights' became 'Why don’t most people realize that 90% of startups fail? Of cofounder fights.' At the conversion moment, a broken result costs more trust than a skipped one. (The hook juror owns the engine score; this is flagged for its effect on conversion.)",
+      "fix": "In core.js, when the cause clause would start with a bare preposition ('Of …', 'Because of …' with 'because' dropped), refuse the ask-then-answer move and fall back to the cut-only line ('Most people don’t realize that 90% of startups fail because of cofounder fights.')."
+    },
+    {
+      "id": "founder-12",
+      "severity": "P2",
+      "area": "Conversion path (preview end state)",
+      "where": "#sh-done 'Open the demo app' (https://claude.ai/artifact/U91RtwmxGET54EqnSh3hSD)",
+      "problem": "This link is the only way forward at the honest end of every signup path. claude.ai artifacts are private by default, so if this one isn't shared publicly, every 'Start free' ends at a login wall.",
+      "fix": "Confirm the artifact is shared publicly ('anyone with the link') before the page is shown to anyone. If it can't be, change the button to 'Back to the page' only and drop the link."
+    }
+  ]
+}

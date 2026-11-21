@@ -1,0 +1,112 @@
+{
+ "key": "hook",
+ "score": 9,
+ "score_ondevice": 7.4,
+ "verdict": "Claude path: 85.8% h on 120 blind lines (78.2% on the 78 that needed work), 0 broken lines, 0 fact or meaning changes, every thread post under 280. It is close to Typefully on quality and ahead on safety and receipts, but short of the 90% h bar: 4 of the 17 non-h lines are h lines the validator threw away (5 of 6 rejects were false positives), and the rest are hedge stacks Claude left alone. On-device: 73.3% h (59.0% on needs-work), 11 m, 1 broken line (p-76), 2 meaning changes (p-39, p-81), and several explanations that are not true. Already-sharp lines are safe on both paths (42/42 h). Call marks help on real forecasts and opinions; they do not rescue a line shipped unchanged.",
+ "to_95": [
+  "Fix the 5 false validator rejects (p-30, p-44, p-48, p-60, p-74). Taking Claude's line on the four that cost a grade lifts the Claude path from 85.8% to 89.2% h.",
+  "Have the prompt collapse stacked hedges to one when the line is not a forecast (p-3, p-15, p-49, p-54, p-87) and cut 'basically' before a figure that already has 'about' (p-103). Two of those reach 90%+.",
+  "On-device: stop the 'Said it straight' reshape shipping a subjectless line (p-76); when it fails the guard, ship alts[0].",
+  "On-device: treat 'just' before a noun phrase as 'only' and 'really' after 'what is' as 'in fact'; never cut either (p-39, p-81).",
+  "On-device: cut the run-ups it currently only marks or keeps ('I just wanted to quickly share', 'It seems to me that', 'The truth is that', 'In my experience, X is something that', 'To be perfectly honest').",
+  "Make every why true: no 'without it the line breaks' or 'the line already lands' when neither holds; one why per line, no stitched duplicates."
+ ],
+ "issues": [
+  {
+   "id": "H1",
+   "severity": "high",
+   "area": "validator",
+   "where": "SHARPEN.fromClaude future check (p-30, p-44)",
+   "problem": "'I will be stepping down ... at the end of the month' -> 'I'm stepping down ... at the end of the month' is rejected as 'future lost'. Present progressive with a future date is still future. p-30 fell back to an o line.",
+   "fix": "Accept will/'ll -> present progressive when the line keeps an explicit future time (at the end of, on <date>, this/next <day>, tomorrow)."
+  },
+  {
+   "id": "H2",
+   "severity": "high",
+   "area": "validator",
+   "where": "hedge check (p-48)",
+   "problem": "'thinking about maybe starting' -> 'thinking about starting' is rejected as hedge 'maybe' lost. 'maybe' here pads a gerund inside an if-clause; it does not hedge a claim. The line shipped unchanged.",
+   "fix": "Only protect a hedge that scopes a main-clause claim or forecast; allow cutting maybe/kind of inside 'thinking about ...' and other non-claim phrases."
+  },
+  {
+   "id": "H3",
+   "severity": "high",
+   "area": "validator",
+   "where": "negation check (p-60, p-74)",
+   "problem": "'is probably not the reason that you think it is' -> 'is probably not what you think' and 'isn't really as complicated as' -> 'isn't as complicated as' are rejected though the negation survives.",
+   "fix": "Compare negation by polarity of the clause, not by the token the 'not' sat next to; allow 'really' to drop from 'isn't really as X as'. Keep the p-114 behaviour ('not really true' -> 'not true' rejected)."
+  },
+  {
+   "id": "H4",
+   "severity": "high",
+   "area": "on-device",
+   "where": "sharpenLine 'straight' reshape (p-76)",
+   "problem": "'I think that we should probably all just admit that...' ships as 'Probably all admit that most apps don't need Kubernetes.' Subject and verb are gone. The correct line is in alts[0]. The homepage shows the broken line.",
+   "fix": "Do not strip 'we should' when an adverb or 'all' sits between it and the verb; run the finite-subject guard on the reshaped line and fall back to the soft cut."
+  },
+  {
+   "id": "H5",
+   "severity": "high",
+   "area": "on-device",
+   "where": "filler list: 'just' (p-39)",
+   "problem": "'changed just my subject lines' lost 'just', which meant 'only' and is the control of the experiment. The result-first rewrite also reads 'What changed: I ran a little experiment where I changed...'.",
+   "fix": "Keep 'just' when the next word is a determiner or noun phrase (just my/the/one/3). Skip 'What changed:' when the clause already has 'changed'; prefer the two-beat alt."
+  },
+  {
+   "id": "H6",
+   "severity": "medium",
+   "area": "on-device",
+   "where": "intensifier list: 'really' (p-81)",
+   "problem": "'what is really an architecture problem' -> 'what's an architecture problem'. 'really' meant 'in fact' and carried the contrast; the result is awkward.",
+   "fix": "Keep 'really' after 'what is/what's' and before 'a/an' + noun."
+  },
+  {
+   "id": "H7",
+   "severity": "medium",
+   "area": "on-device",
+   "where": "unchanged needs-work lines (p-36, p-48, p-54, p-61, p-74, p-83, p-87)",
+   "problem": "Seven weak lines come back unchanged or only marked. Run-ups such as 'It seems to me that', 'The truth is that', 'In my experience, X is something that', 'I'm just saying that' are not in the cut set.",
+   "fix": "Add these frames to the run-up list with the same guards used for 'I think it's fair to say that'."
+  },
+  {
+   "id": "H8",
+   "severity": "medium",
+   "area": "on-device",
+   "where": "long lines (p-112, p-110)",
+   "problem": "p-112 ships as one 357-character post; the note says it can be split and the why says it cannot. The 'Okay so this is going to be a slightly longer one, but' opener is kept. p-110's post 1 is a throat-clear.",
+   "fix": "Cut a 'this is a longer one' opener, then re-run the splitter (Claude got p-112 to 262 characters). Drop an 'I've been thinking a lot lately about' first post when post 2 can open the thread. Make note and why agree."
+  },
+  {
+   "id": "H9",
+   "severity": "medium",
+   "area": "explanations",
+   "where": "on-device why and call text (p-32, p-61, p-48, p-117, p-95)",
+   "problem": "p-32 says the line breaks without 'I just wanted to quickly share' (it does not). p-61 says 'the line already lands'. p-48 calls 'maybe' a stance on a prediction. p-117 calls 'Basically' 'How sure you are' while the note says 'nearly, not exactly'. 'To be perfectly honest' is kept where 'To be honest' is cut.",
+   "fix": "Say what happened: 'kept: this check could not cut it safely'. Derive call text from the same class as the note. Match 'to be (perfectly|completely|totally) honest'."
+  },
+  {
+   "id": "H10",
+   "severity": "low",
+   "area": "explanations",
+   "where": "Claude-path why and say (p-98, p-36, p-61, p-2)",
+   "problem": "p-98: '3 words lighter ... 3 small words went too.' p-36: 'said more directly. Also dropped I believe.' p-61 leads with the generic two-beats text. p-2 says 'Cut 1 bit of fluff' for a longer cut.",
+   "fix": "When the validator appends its own receipt to Claude's why, drop the appended part if it repeats; count multi-word cuts consistently."
+  },
+  {
+   "id": "H11",
+   "severity": "low",
+   "area": "prompt",
+   "where": "prompts.sharpen (p-3, p-10, p-15, p-49, p-54, p-87, p-103, p-45)",
+   "problem": "Claude leaves two or three hedges on lines that are opinions, not forecasts, and keeps 'basically' beside 'about'.",
+   "fix": "State in the prompt: one hedge per claim unless the line is a dated forecast or a price call; an approximator next to another approximator is spare."
+  },
+  {
+   "id": "H12",
+   "severity": "low",
+   "area": "on-device",
+   "where": "quantity words (p-52)",
+   "problem": "'the vast majority of' becomes 'Most', a weaker quantity. Claude kept it.",
+   "fix": "Leave 'vast majority' alone."
+  }
+ ]
+}

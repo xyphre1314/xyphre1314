@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hookworthy: write it rough, post it sharp</title>
+<meta name="description" content="Hookworthy highlights the soft words and sharpens your first line in one tap. It still sounds like you.">
+<style>
+@font-face{font-family:"EB Garamond";src:url(../../fonts/EBGaramond-Regular.woff2) format("woff2");font-weight:400 800;font-style:normal;font-display:swap}
+@font-face{font-family:"EB Garamond";src:url(../../fonts/EBGaramond-Italic.woff2) format("woff2");font-weight:400 800;font-style:italic;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(../../fonts/GeistMono-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Caveat";src:url(../../fonts/Caveat-500.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Inter";src:url(../../fonts/Inter-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+
+:root{
+  --paper:#EFEAE0;--paper2:#E6E0D3;--sheet:#FBF8F1;--card:#F6F2E9;
+  --ink:#16130E;--ink2:#47423A;--ink3:#645E52;
+  --rule:rgba(22,19,14,.14);--rule2:rgba(22,19,14,.22);
+  --pencil:#2B52FF;--pencilT:#1E3BE3;--pencilD:#8FA8FF;
+  --hl:rgba(245,180,76,.58);--amberT:#8A4B06;
+  --green:#096A38;--red:#B3261E;
+  --night:#16130E;--nightInk:#EFEAE0;--nightInk2:#BDB6A8;
+  --serif:"EB Garamond",Garamond,"Iowan Old Style",Georgia,serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --hand:"Caveat","Bradley Hand","Segoe Print",cursive;
+  --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --gut:48px;--max:1344px;
+  --lift:0 1px 0 rgba(22,19,14,.05),0 2px 6px -2px rgba(22,19,14,.12),0 26px 50px -26px rgba(22,19,14,.38);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 19px/1.5 var(--serif);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-variant-numeric:oldstyle-nums proportional-nums}
+a{color:inherit}
+button{font:inherit;color:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--pencilT);outline-offset:3px;border-radius:4px}
+::selection{background:rgba(245,180,76,.5)}
+.wrap{width:100%;max-width:calc(var(--max) + 2*var(--gut));margin:0 auto;padding:0 var(--gut)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.01em}
+.lbl{font:500 12px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.hand{font-family:var(--hand);color:var(--pencilT);font-weight:500}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px;text-decoration:none;font:600 14px var(--sans)}
+.skip:focus{top:12px}
+section[id]{scroll-margin-top:60px}
+
+/* buttons: mono, pill */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;height:52px;padding:0 24px;border-radius:999px;border:0;background:var(--pencil);color:#fff;font:500 14px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color .18s ease,transform .18s ease,box-shadow .18s ease}
+.btn:hover{background:#3965FF}
+.btn:active{background:#1E3BE3;transform:scale(.98)}
+.btn svg{width:16px;height:16px;flex:none;transition:transform .2s ease}
+.btn:hover svg{transform:translateX(3px)}
+.btn.line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.line:hover{background:var(--ink);color:var(--paper)}
+.btn.sm{height:38px;padding:0 16px;font-size:12.5px}
+.btn.ink{background:var(--ink);color:var(--paper)}
+.btn.ink:hover{background:#2C271F}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:40;transition:background-color .3s,box-shadow .3s}
+.nav.on{background:rgba(239,234,224,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--rule)}
+.nav-in{display:flex;align-items:center;gap:28px;height:76px}
+.mark{display:inline-flex;align-items:baseline;gap:2px;font:600 27px/1 var(--serif);letter-spacing:-.02em;text-decoration:none}
+.mark i{font-style:italic;font-weight:500}
+.mark svg{width:22px;height:14px;margin-left:3px;color:var(--pencil);align-self:center}
+.links{display:flex;gap:2px;margin-right:auto}
+.links a,.txt{font:500 12.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);text-decoration:none;padding:10px 12px;border-radius:999px;transition:background-color .15s,color .15s}
+.links a:hover,.txt:hover{color:var(--ink);background:rgba(22,19,14,.06)}
+.nav-r{display:flex;align-items:center;gap:8px}
+
+/* hero */
+.hero{position:relative;overflow:clip;padding:24px 0 72px;min-height:calc(100svh - 76px);display:flex;align-items:center}
+.hero-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:center;width:100%}
+.hero-l{grid-column:1/span 7;position:relative;z-index:2}
+.h1{margin:0;font-weight:400}
+.h1 .r{font:300 clamp(34px,5.1vw,76px)/1.12 var(--mono);letter-spacing:-.06em;white-space:nowrap;color:var(--ink2)}
+.h1 .r b{font-weight:300;background:linear-gradient(100deg,transparent .06em,var(--hl) .1em,var(--hl) calc(100% - .08em),transparent calc(100% - .02em)) 0 62%/100% 58% no-repeat;padding:0 .06em;color:var(--ink)}
+.h1 .s{font:500 clamp(66px,11vw,166px)/.98 var(--serif);letter-spacing:-.035em;white-space:nowrap;position:relative}
+.h1 .s em{font-style:italic;font-weight:500;position:relative}
+.h1 .s em::after{content:"";position:absolute;left:-.03em;right:-.1em;bottom:-.1em;height:.17em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M4 12c40-6 92-9 140-7 18 1 34 3 52 6' fill='none' stroke='%232B52FF' stroke-width='4.5' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;animation:wipe .7s .25s cubic-bezier(.45,.05,.3,1) backwards}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.aside{position:absolute;font:500 clamp(22px,2vw,30px)/1 var(--hand);color:var(--pencilT);transform:rotate(-6deg);white-space:nowrap}
+.aside{opacity:0}.aside.on{opacity:1}
+.lede{font:400 clamp(19px,1.55vw,23px)/1.42 var(--serif);color:var(--ink2);margin:0;max-width:30ch}
+.hero .lede{margin-top:clamp(24px,3vw,40px);color:var(--ink);max-width:28ch}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:28px}
+.note{margin:18px 0 0;display:flex;flex-wrap:wrap;gap:6px 12px;font:500 11.5px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.note i{width:4px;height:4px;border-radius:50%;background:var(--ink3);align-self:center}
+
+.hero-r{grid-column:8/-1;position:relative;z-index:1}
+.sheet{position:relative;background:var(--sheet);box-shadow:var(--lift);border-radius:3px;padding:26px 28px 24px}
+.hero .sheet{transform:rotate(1.6deg);transform-origin:40% 50%}
+.sheet::before{content:"";position:absolute;left:50%;top:-14px;width:120px;height:28px;transform:translateX(-50%) rotate(-3deg);background:rgba(250,240,205,.72);box-shadow:0 1px 2px rgba(22,19,14,.12)}
+.pf-head{display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--rule)}
+.pf-head span{font:500 11px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.pf-body{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:10px;margin-top:14px;position:relative}
+.pf-text{position:relative}
+.draft{margin:0;font:400 var(--dfs,17px)/3 var(--mono);color:#2C2821;letter-spacing:-.02em;min-height:calc(3 * 3em)}
+.draft .tk{display:inline-block;line-height:1.3;position:relative;white-space:pre}
+.draft .tk.soft{background:linear-gradient(97deg,transparent 1px,var(--hl) 3px,var(--hl) calc(100% - 3px),transparent calc(100% - 1px)) 0 55%/100% 70% no-repeat}
+.marks{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.marks path{fill:none;stroke:var(--pencil);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;opacity:.92}
+.marks text{font-family:var(--hand);font-weight:500;fill:var(--pencilT)}
+.pf-margin{position:relative;border-left:1px dashed var(--rule2)}
+.pf-margin span{position:absolute;left:10px;right:0;font:500 21px/.92 var(--hand);color:var(--pencilT);transform:translateY(-55%) rotate(-3deg)}
+.set{margin:8px 0 0;padding-top:16px;border-top:1px solid var(--rule);font:500 var(--sfs,30px)/1.12 var(--serif);letter-spacing:-.015em;min-height:2.24em}
+.set span{display:inline-block;margin-right:.24em}
+.rnote{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:14px;min-height:56px}
+.rnote .mv{font:500 27px/1 var(--hand);color:var(--pencilT);display:block}
+.rnote .why{display:block;font:italic 400 16.5px/1.35 var(--serif);color:var(--ink2);margin-top:4px;max-width:36ch}
+.rnote .cc{font:500 11.5px/1 var(--mono);color:var(--ink3);white-space:nowrap}
+.pf-ctl{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px dashed var(--rule2)}
+.dots{display:flex;gap:6px}
+.dots button{width:26px;height:26px;border:0;padding:0;background:transparent;cursor:pointer;display:grid;place-items:center}
+.dots button i{width:8px;height:8px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink3);display:block;transition:background-color .2s}
+.dots button[aria-current="true"] i{background:var(--ink);box-shadow:none}
+.nextp{border:0;background:transparent;font:500 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:8px 4px;border-radius:6px}
+.nextp:hover{color:var(--pencilT)}
+.nextp svg{width:15px;height:15px}
+.fade-out{opacity:0;transition:opacity .35s ease}
+.pencil{position:absolute;width:min(420px,72%);right:-6%;bottom:-62px;transform:rotate(-24deg);filter:drop-shadow(0 10px 8px rgba(22,19,14,.22));z-index:3;pointer-events:none}
+
+/* sections */
+.sec{position:relative;padding:clamp(100px,11vw,160px) 0}
+.sec.tint{background:var(--paper2)}
+.head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:end;margin-bottom:clamp(44px,5.4vw,80px)}
+.head h2{grid-column:1/span 8;margin:0}
+.head .lede{grid-column:9/-1;margin:0 0 .4em}
+h2{font:500 clamp(42px,6vw,92px)/.96 var(--serif);letter-spacing:-.03em;margin:0}
+h2 .a,h2 .b{white-space:nowrap}
+h2 .b{font-style:italic;color:var(--ink2)}
+h3{margin:0;font:500 clamp(26px,2.3vw,34px)/1.05 var(--serif);letter-spacing:-.018em}
+.desc{margin:8px 0 0;font:italic 400 18px/1.4 var(--serif);color:var(--ink2);max-width:40ch}
+
+/* proofs */
+.proofs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 36px}
+.proofs .sheet{--dfs:15.5px;--sfs:26px}
+.proofs .sheet:nth-child(1){transform:rotate(-.7deg)}
+.proofs .sheet:nth-child(2){transform:rotate(.6deg);margin-top:28px}
+.proofs .sheet:nth-child(3){transform:rotate(.4deg)}
+.proofs .sheet:nth-child(4){transform:rotate(-.5deg);margin-top:28px}
+.proofs .sheet::before{width:90px;left:24%}
+.proofs .draft{min-height:0}
+.proofs .rnote .mv{font-size:25px}
+
+/* how: the desk */
+.desk{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:28px;align-items:start;position:relative;padding-bottom:150px}
+.card{background:var(--sheet);box-shadow:var(--lift);border-radius:3px;padding:24px;position:relative}
+.idx{grid-column:1/span 4;background:var(--sheet) repeating-linear-gradient(180deg,transparent 0 31px,rgba(43,82,255,.14) 31px 32px);background-position:0 56px;transform:rotate(-1.2deg)}
+.idx::after{content:"";position:absolute;left:0;right:0;top:56px;height:1.5px;background:rgba(179,38,30,.35)}
+.mid{grid-column:5/span 4;transform:rotate(.8deg);margin-top:96px}
+.cal{grid-column:9/span 4;transform:rotate(-.6deg);margin-top:16px}
+.clock{font:300 clamp(48px,4.4vw,66px)/1 var(--mono);letter-spacing:-.06em;margin:0}
+.clock small{font-size:.36em;letter-spacing:0;margin-left:.25em;font-weight:500;color:var(--ink3)}
+.idx .clock{margin-top:-4px}
+.wave{display:flex;align-items:center;gap:3px;height:40px;margin:22px 0 10px}
+.wave i{flex:1;background:var(--ink);border-radius:2px;min-height:3px;opacity:.85}
+.wave i.p{background:var(--pencil);opacity:1}
+.typed{margin:6px 0 0;font:400 15px/2 var(--mono);color:#2C2821;letter-spacing:-.02em}
+.vrow{display:flex;justify-content:space-between;align-items:center;font:500 11.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-top:22px}
+.polaroid{position:absolute;width:150px;background:#fff;padding:8px 8px 26px;box-shadow:var(--lift);z-index:2}
+.polaroid .ph{aspect-ratio:1/1;background-image:url(../../assets/people/photos.jpg);background-size:auto 600%;background-repeat:no-repeat}
+.polaroid small{position:absolute;left:0;right:0;bottom:6px;text-align:center;font:500 15px/1 var(--hand);color:var(--ink2)}
+.idx .polaroid{right:-24px;top:-58px;width:134px;transform:rotate(7deg)}
+.idx .polaroid .ph{background-position:38% 0%}
+.cal .polaroid{left:-64px;bottom:-150px;width:140px;transform:rotate(-6deg)}
+.cal .polaroid .ph{background-position:52% 40%}
+.mid .draft{--dfs:15.5px;min-height:0}
+.voice-note{margin:10px 0 0;font:500 21px/1.15 var(--hand);color:var(--pencilT)}
+.times{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
+.times li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--rule);font:400 15px/1 var(--mono);color:var(--ink2);position:relative}
+.times li em{font:italic 400 16px/1 var(--serif);color:var(--ink3)}
+.times li.pick{color:var(--ink);font-weight:600}
+.times li.pick svg{position:absolute;left:-12px;top:-6px;width:110px;height:46px;overflow:visible}
+.times li.pick svg path{fill:none;stroke:var(--pencil);stroke-width:2;stroke-linecap:round}
+.cal .go{margin-top:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cal .go .hand{font-size:21px;transform:rotate(-4deg)}
+.arrow-note{position:absolute;font:500 23px/1.05 var(--hand);color:var(--pencilT);display:flex;align-items:center;gap:6px;white-space:nowrap;z-index:3}
+.arrow-note svg{width:62px;height:30px;overflow:visible}
+.arrow-note svg path{fill:none;stroke:var(--pencil);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.an1{left:calc(33.3% + 22px);top:34px;transform:rotate(-4deg)}
+.an2{left:calc(66.6% - 96px);top:-44px;transform:rotate(3deg)}
+
+/* features: the desk */
+.feat{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:36px 28px;align-items:start}
+.fx{display:flex;flex-direction:column;min-width:0}
+.fx .obj{margin-top:22px}
+.f1{grid-column:1/span 7}.f2{grid-column:8/-1}
+.f3,.f4,.f5{grid-column:span 4}
+.f6{grid-column:1/-1}
+.fan{position:relative;height:250px}
+.print{position:absolute;width:44%;border-radius:12px;padding:12px 13px;font-family:var(--sans);box-shadow:var(--lift);display:flex;flex-direction:column;gap:7px;min-height:176px;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.print .ph{display:flex;align-items:center;gap:7px;font:600 12px/1.2 var(--sans)}
+.print .ph img{width:22px;height:22px;border-radius:50%}
+.print .ph span{font-weight:400;opacity:.8}
+.print p{margin:0;font-size:13px;line-height:1.42}
+.print .pf{margin-top:auto;display:flex;justify-content:space-between;font:500 11px/1 var(--mono)}
+.print .nn{position:absolute;top:-30px;left:2px;font:500 19px/1 var(--hand);color:var(--pencilT)}
+.p-x{background:#000;color:#E7E9EA;left:0;top:28px;transform:rotate(-5deg)}
+.p-x .pf{color:#8B9095}
+.p-th{background:#fff;color:#101010;left:19%;top:12px;transform:rotate(-1.5deg)}
+.p-th .pf{color:#5E5E5E}
+.p-li{background:#fff;color:#191919;left:38%;top:22px;transform:rotate(2deg);box-shadow:var(--lift),inset 0 0 0 1px #E0DFDC}
+.p-li .pf{color:#56687A}
+.p-bs{background:#fff;color:#0B0F14;left:56%;top:40px;transform:rotate(5deg)}
+.p-bs .pf{color:#42576C}
+.fan:hover .p-x{transform:rotate(-7deg) translate(-8px,-4px)}
+.fan:hover .p-bs{transform:rotate(7deg) translate(8px,-4px)}
+.thread{margin:14px 0 0;font:italic 400 17px/1.4 var(--serif);color:var(--ink2)}
+.thread b{font:500 12px/1 var(--mono);font-style:normal;color:var(--ink);background:var(--sheet);box-shadow:inset 0 0 0 1px var(--rule2);padding:4px 7px;border-radius:999px;margin-right:6px}
+.week{background:var(--sheet);box-shadow:var(--lift);padding:18px 18px 20px;transform:rotate(1deg)}
+.wk{display:grid;grid-template-columns:44px repeat(7,1fr);gap:0;border-top:1px solid var(--rule2);border-left:1px solid var(--rule2)}
+.wk span{height:44px;border-right:1px solid var(--rule2);border-bottom:1px solid var(--rule2);display:grid;place-items:center;font:500 11px/1 var(--mono);color:var(--ink3);position:relative}
+.wk .d{height:28px;letter-spacing:.04em;text-transform:uppercase;font-size:10px}
+.wk .best::after{content:"";position:absolute;inset:7px 5px;border:1.8px solid var(--pencil);border-radius:50%;transform:rotate(-8deg);opacity:.85}
+.wk .post{background:var(--pencil);color:#fff}
+.wk .wait{color:var(--amberT);background:rgba(245,180,76,.3)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;font:500 11px/1.2 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:12px;height:12px;display:inline-block}
+.letter{background:var(--sheet);box-shadow:var(--lift);padding:18px;transform:rotate(-1deg)}
+.msg{display:flex;gap:10px;align-items:flex-start;font-family:var(--sans)}
+.avs{display:block;border-radius:50%;background-image:url(../../assets/people/avatars.jpg);background-size:100% auto;background-position:0 calc(var(--i) * 100% / 17);flex:none;background-color:var(--paper2)}
+.msg .avs{width:30px;height:30px}
+.bub{background:var(--card);border-radius:4px 14px 14px 14px;padding:9px 12px;font-size:14px;line-height:1.45;color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule)}
+.bub small{display:block;font-size:12px;color:var(--ink3);margin-bottom:2px}
+.drafted{margin:12px 0 0 40px;padding:11px 13px;border:1.8px dashed var(--pencil);border-radius:14px;font-family:var(--sans)}
+.drafted small{display:block;font:500 19px/1 var(--hand);color:var(--pencilT);margin-bottom:5px}
+.drafted p{margin:0;font-size:14px;line-height:1.45}
+.row-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.memo{background:#FFF6C7;box-shadow:var(--lift);padding:20px 20px 22px;transform:rotate(1.2deg)}
+.memo .k{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#6E5A1B}
+.memo .big{margin:10px 0 0;font:500 24px/1.18 var(--serif);letter-spacing:-.01em}
+.memo .bars{display:grid;gap:8px;margin-top:14px}
+.memo .bar{display:grid;grid-template-columns:78px 1fr;gap:8px;align-items:center;font:500 11px/1 var(--mono);color:#5D4C17;text-transform:uppercase;letter-spacing:.04em}
+.memo .bar b{height:10px;display:block;background:rgba(22,19,14,.18);border-radius:999px}
+.memo .bar.hi b{background:var(--pencil)}
+.memo .nx{margin:14px 0 0;font:500 23px/1.1 var(--hand);color:var(--pencilT)}
+.memo .ping{margin:10px 0 0;font:500 11px/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:#5D4C17}
+.review{background:var(--sheet);box-shadow:var(--lift);padding:18px 18px 22px;position:relative;transform:rotate(-.8deg)}
+.url{display:inline-flex;font:500 11.5px/1 var(--mono);color:var(--ink2);padding:7px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--rule2)}
+.review .doc{margin:16px 0 0;font:500 22px/1.35 var(--serif)}
+.review mark{background:var(--hl);color:var(--ink);padding:0 2px}
+.sticky{margin:18px 0 0 auto;width:86%;background:#FFE680;padding:12px 14px 14px;box-shadow:0 10px 18px -10px rgba(22,19,14,.4);transform:rotate(2.4deg);font-family:var(--sans);position:relative}
+.sticky .who{display:flex;align-items:center;gap:8px;font-size:12px;color:#4A3E10}
+.sticky .who .avs{width:24px;height:24px}
+.sticky p{margin:6px 0 0;font:500 21px/1.1 var(--hand);color:#2A2306}
+.folders{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:36px;align-items:center}
+.folder{position:relative;padding-top:38px}
+.tabs-f{position:absolute;top:0;left:0;right:0;display:flex;gap:6px;padding-left:14px}
+.tabs-f button{height:40px;padding:0 16px 8px;border:0;border-radius:10px 10px 0 0;background:#D9C7A0;color:#3B3224;font:500 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:8px}
+.tabs-f button .avs{width:20px;height:20px}
+.tabs-f button[aria-selected="true"]{background:#E8D8B3;color:var(--ink)}
+.tabs-f button:hover{color:var(--ink)}
+.manila{background:#E8D8B3;border-radius:4px 10px 10px 10px;padding:22px;box-shadow:var(--lift);position:relative}
+.vcard{background:var(--sheet);padding:18px 20px;box-shadow:0 1px 2px rgba(22,19,14,.15);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.vcard dt{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.vcard dd{margin:0;font:400 17px/1.35 var(--serif)}
+.never{display:flex;flex-wrap:wrap;gap:4px 12px}
+.never s{text-decoration-color:var(--pencil);text-decoration-thickness:2px;color:var(--ink2)}
+.stamp{position:absolute;right:26px;bottom:-18px;transform:rotate(-7deg);font:600 13px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--amberT);border:2px solid currentColor;padding:8px 12px;border-radius:6px;background:rgba(251,248,241,.6)}
+.stamp.ok{color:var(--green)}
+
+/* ink block */
+.inkb{background:var(--night);color:var(--nightInk)}
+.inkb h2 .b{color:var(--nightInk2)}
+.inkb .lede{color:var(--nightInk2)}
+.xp{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:center}
+.xp h2{grid-column:1/span 6}
+.xp-r{grid-column:8/-1}
+.req{list-style:none;margin:24px 0 0;padding:0;border-top:1px solid rgba(239,234,224,.2)}
+.req li{display:flex;align-items:baseline;gap:18px;padding:16px 0;border-bottom:1px solid rgba(239,234,224,.2);font:400 18px/1.3 var(--serif);color:var(--nightInk2)}
+.req .n{font:300 clamp(30px,2.8vw,42px)/1 var(--mono);letter-spacing:-.05em;color:var(--nightInk);min-width:4.4ch}
+.req .w{font:500 clamp(30px,2.8vw,42px)/1 var(--serif);color:var(--nightInk);min-width:4.4ch}
+.fine{margin:14px 0 0;font:500 11.5px/1.3 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--nightInk2)}
+.promise{margin:24px 0 0;font:500 clamp(26px,2.4vw,34px)/1.1 var(--hand);color:var(--pencilD)}
+
+/* who */
+.who{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:36px 28px}
+.by{position:relative;padding-top:8px}
+.by .pol{width:122px;background:#fff;padding:7px 7px 24px;box-shadow:var(--lift);position:relative;margin-bottom:20px}
+.by:nth-child(odd) .pol{transform:rotate(-3deg)}
+.by:nth-child(even) .pol{transform:rotate(2.5deg)}
+.by .pol .avs,.by .pol img{width:108px;height:108px;border-radius:0}
+.by .pol small{position:absolute;left:0;right:0;bottom:4px;text-align:center;font:500 15px/1 var(--hand);color:var(--ink2)}
+.by .pol::before{content:"";position:absolute;top:-10px;left:30%;width:56px;height:20px;background:rgba(250,240,205,.75);transform:rotate(-4deg);box-shadow:0 1px 2px rgba(22,19,14,.1)}
+.by .role{font:500 11.5px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin:0 0 6px}
+.by h3{font-size:clamp(24px,2vw,30px)}
+.by .hook{margin:12px 0 0;font:italic 400 19px/1.35 var(--serif);color:var(--ink);padding-left:14px;border-left:2px solid var(--pencil)}
+.by .pain{margin:10px 0 0;font:400 16.5px/1.45 var(--serif);color:var(--ink2)}
+
+/* trust */
+.trust{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:center}
+.trust .tl{grid-column:1/span 5;position:relative}
+.trust .tl .lede{margin-top:24px}
+.sent{display:inline-block;margin-top:34px;transform:rotate(-6deg);font:600 clamp(18px,1.6vw,22px)/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--green);border:3px solid currentColor;border-radius:8px;padding:12px 18px;box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3.5px currentColor}
+.nevers{grid-column:7/-1;list-style:none;margin:0;padding:0}
+.nevers li{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--rule2)}
+.nevers li:first-child{border-top:1px solid var(--rule2)}
+.nevers .t{position:relative;font:500 clamp(34px,3.8vw,56px)/1.05 var(--serif);letter-spacing:-.025em;color:var(--ink2)}
+.nevers .t svg{position:absolute;left:-6px;top:40%;width:calc(100% + 18px);height:.5em;overflow:visible}
+.nevers .t svg path{fill:none;stroke:var(--pencil);stroke-width:3;stroke-linecap:round}
+.nevers .nv{font:500 clamp(26px,2.2vw,32px)/1 var(--hand);color:var(--pencilT);transform:rotate(-5deg)}
+
+/* pricing */
+.ptop{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(40px,4.4vw,64px)}
+.bill{display:inline-flex;padding:4px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink)}
+.bill button{height:38px;padding:0 16px;border-radius:999px;border:0;background:transparent;font:500 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);cursor:pointer}
+.bill button:hover{color:var(--ink)}
+.bill button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;align-items:stretch}
+.plan{background:var(--sheet);box-shadow:var(--lift);padding:30px 28px;display:flex;flex-direction:column;position:relative}
+.plan.pro{transform:translateY(-10px)}
+.plan h3{font-size:34px}
+.plan .for{margin:4px 0 0;font:italic 400 17px/1.35 var(--serif);color:var(--ink2)}
+.price{display:flex;align-items:baseline;gap:8px;margin:22px 0 2px;position:relative;width:max-content}
+.price b{font:500 76px/1 var(--serif);letter-spacing:-.04em;font-variant-numeric:lining-nums}
+.price span{font:500 12px/1.2 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
+.plan.pro .price svg{position:absolute;left:-14px;top:-8px;width:calc(100% + 28px);height:calc(100% + 18px);overflow:visible}
+.plan.pro .price svg path{fill:none;stroke:var(--pencil);stroke-width:2.2;stroke-linecap:round}
+.billnote{margin:6px 0 0;font:500 11.5px/1.4 var(--mono);letter-spacing:.03em;color:var(--ink3);min-height:2.8em}
+.plan ul{list-style:none;margin:20px 0 28px;padding:0;display:grid;gap:10px;font:400 17.5px/1.35 var(--serif);color:var(--ink2)}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--pencil)}
+.plan li b{color:var(--ink);font-weight:600}
+.plan .btn{margin-top:auto;width:100%}
+
+/* end */
+.end{position:relative;overflow:clip;padding:clamp(110px,12vw,180px) 0 clamp(120px,12vw,170px);text-align:left;border-top:1px solid var(--rule)}
+.end h2{font-size:clamp(52px,9vw,140px);line-height:.92}
+.end h2 .a{font:300 .58em/1.15 var(--mono);letter-spacing:-.06em;color:var(--ink2);font-style:normal}
+.end h2 .b{color:var(--ink);font-style:italic}
+.end-row{display:flex;justify-content:space-between;align-items:end;gap:28px;flex-wrap:wrap;margin-top:40px}
+.end-row .lede{max-width:30ch;color:var(--ink)}
+.end .ctas{margin-top:0}
+.end .pencil{right:4%;bottom:auto;top:18%;width:min(460px,46%);transform:rotate(-14deg)}
+footer{border-top:1px solid var(--rule2);padding:40px 0 56px;font:400 16px/1.5 var(--serif);color:var(--ink2)}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.foot nav{display:flex;flex-wrap:wrap;gap:4px 18px;font:500 12px/1.6 var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.foot a{text-decoration:none;color:var(--ink2)}
+.foot a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.foot p{margin:10px 0 0;max-width:46ch}
+
+.rv{opacity:0;transform:translateY(20px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.proofs .sheet.rv.in:nth-child(1){transform:rotate(-.7deg)}
+.proofs .sheet.rv.in:nth-child(2){transform:rotate(.6deg)}
+.proofs .sheet.rv.in:nth-child(3){transform:rotate(.4deg)}
+.proofs .sheet.rv.in:nth-child(4){transform:rotate(-.5deg)}
+
+@media (max-width:1100px){
+  .hero-l{grid-column:1/-1}
+  .hero-r{grid-column:2/span 10;margin-top:56px}
+  .hero{min-height:0;padding-top:40px}
+  .f1,.f2{grid-column:1/-1}
+  .f3,.f4{grid-column:span 6}.f5{grid-column:1/-1}
+  .who{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .idx,.mid,.cal{grid-column:span 6}
+  .cal{grid-column:4/span 6}
+  .an1,.an2{display:none}
+}
+@media (max-width:860px){
+  :root{--gut:20px}
+  .links,.txt{display:none}
+  .nav-in{height:62px;gap:12px}
+  .nav-r{margin-left:auto}
+  .mark{font-size:24px}
+  .hero{padding:20px 0 96px}
+  .h1 .r{font-size:clamp(28px,10.2vw,60px)}
+  .h1 .s{font-size:clamp(56px,18.6vw,120px)}
+  .aside{display:none}
+  .hero-r{grid-column:1/-1;margin-top:40px}
+  .hero .sheet{transform:rotate(.8deg)}
+  .sheet{padding:22px 18px 18px}
+  .pf-body{grid-template-columns:minmax(0,1fr) 64px;gap:8px}
+  .pf-margin span{font-size:18px;left:6px}
+  .draft{--dfs:14.5px}
+  .set{--sfs:24px}
+  .pencil{width:62%;right:-6%;bottom:-58px}
+  .head,.xp,.trust{display:block}
+  .head .lede{margin-top:18px}
+  .proofs{grid-template-columns:1fr;gap:40px}
+  .proofs .sheet:nth-child(2),.proofs .sheet:nth-child(4){margin-top:0}
+  .proofs .sheet{--dfs:14px;--sfs:23px}
+  .desk{grid-template-columns:1fr;gap:40px}
+  .idx,.mid,.cal{grid-column:1/-1;margin-top:0}
+  .idx .polaroid{right:-6px;top:-30px;width:120px}
+  .cal .polaroid{left:auto;right:-4px;bottom:-40px;width:120px}
+  .desk{padding-bottom:40px}
+  .cal{margin-bottom:40px}
+  .feat{grid-template-columns:1fr;gap:56px}
+  .f1,.f2,.f3,.f4,.f5,.f6{grid-column:1/-1}
+  .fan{height:auto;display:grid;grid-template-columns:1fr 1fr;gap:40px 14px;padding-top:26px}
+  .print{position:relative;width:auto;left:auto!important;top:auto!important;min-height:150px}
+  .print .nn{top:-26px}
+  .p-x{transform:rotate(-2deg)}.p-th{transform:rotate(1.5deg)}.p-li{transform:rotate(-1deg)}.p-bs{transform:rotate(2deg)}
+  .fan:hover .p-x,.fan:hover .p-bs{transform:none}
+  .folders{grid-template-columns:1fr;gap:24px}
+  .vcard{grid-template-columns:1fr}
+  .tabs-f button{padding:0 10px 8px;font-size:11px}
+  .tabs-f button .avs{display:none}
+  .xp-r{margin-top:28px}
+  .who{grid-template-columns:1fr 1fr;gap:40px 18px}
+  .nevers{margin-top:32px}
+  .plans{grid-template-columns:1fr}
+  .plan.pro{transform:none}
+  .end .pencil{position:relative;right:auto;top:auto;width:80%;margin:40px 0 0 10%;display:block;transform:rotate(-8deg)}
+}
+@media (max-width:480px){
+  .who{grid-template-columns:1fr}
+  .ctas .btn{flex:1 1 auto}
+  .wk{grid-template-columns:34px repeat(7,1fr)}
+  .wk span{height:38px}
+  .rnote{flex-direction:column;align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-arr" viewBox="0 0 16 16"><path d="M3 8h9.5M8.6 3.6 13 8l-4.4 4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-tick" viewBox="0 0 20 20"><path d="M3.5 10.8c1.6 1.2 3 2.6 4.2 4.4C10 10.6 13 6.6 16.8 3.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></symbol>
+  <symbol id="pencil" viewBox="0 0 420 34">
+    <rect x="2" y="5" width="30" height="24" rx="6" fill="#E9A49F"/>
+    <rect x="28" y="3.5" width="34" height="27" fill="#C9C6BE"/>
+    <path d="M33 3.5v27M39 3.5v27M51 3.5v27M57 3.5v27" stroke="#A9A59B" stroke-width="2"/>
+    <rect x="62" y="3" width="288" height="9.6" fill="#4A6CFF"/>
+    <rect x="62" y="12.6" width="288" height="9" fill="#2B52FF"/>
+    <rect x="62" y="21.6" width="288" height="9.4" fill="#1E3BE3"/>
+    <text x="96" y="20.6" font-family="Geist Mono, monospace" font-size="8.5" letter-spacing="1.6" fill="#F5D88A">HOOKWORTHY · BLUE PENCIL · 2B</text>
+    <path d="M350 3c4 3 4 25 0 28l48-11.6c2-.5 2-4.3 0-4.8z" fill="#EBCB9F"/>
+    <path d="M350 3c4 3 4 25 0 28" fill="none" stroke="#D7B07D" stroke-width="1.5"/>
+    <path d="M388 12.4l14 3.8c1.6.5 1.6 1.5 0 2l-14 3.6z" fill="#1E3BE3"/>
+  </symbol>
+</svg>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="#top" aria-label="Hookworthy, home">Hook<i>worthy</i><svg viewBox="0 0 22 14" aria-hidden="true"><path d="M2 8.5c2 1.2 3.6 2.6 5 4.4C10 7.8 14 3.6 20 1.4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></a>
+    <nav class="links" aria-label="Main"><a href="#edit">The edit</a><a href="#how">How it works</a><a href="#desk">The desk</a><a href="#pricing">Pricing</a></nav>
+    <div class="nav-r"><a class="txt" href="#signin">Sign in</a><a class="btn sm" href="#start">Start free</a></div>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" id="top" aria-labelledby="h1">
+  <div class="wrap hero-grid">
+    <div class="hero-l">
+      <h1 class="h1" id="h1"><span class="r">Write it <b>rough</b>.</span><br><span class="s">Post it <em>sharp.</em></span></h1>
+      <span class="aside a1" aria-hidden="true">that’s fine</span>
+      <p class="lede">Hookworthy highlights the soft words, then sharpens your first line in one tap. It still sounds like&nbsp;you.</p>
+      <div class="ctas">
+        <a class="btn" href="#start">Sharpen my first post <svg aria-hidden="true"><use href="#i-arr"/></svg></a>
+        <a class="btn line" href="#edit">See the edits</a>
+      </div>
+      <p class="note">Free plan <i></i> No card <i></i> Nothing posts without you</p>
+    </div>
+    <div class="hero-r">
+      <article class="sheet proof" id="hero-proof" aria-label="Live example: an editor marking up a draft first line">
+        <div class="pf-head"><span class="who-l">@heycape_ · X · 11:02 PM</span><span>Example</span></div>
+        <div class="pf-body"><div class="pf-text"><p class="draft"></p><svg class="marks" aria-hidden="true"></svg></div><div class="pf-margin" aria-hidden="true"></div></div>
+        <p class="set"></p>
+        <div class="rnote" aria-live="polite"></div>
+        <div class="pf-ctl">
+          <div class="dots" role="group" aria-label="Choose an example"></div>
+          <button class="nextp" type="button" id="nextp">Next proof <svg aria-hidden="true"><use href="#i-arr"/></svg></button>
+        </div>
+      </article>
+      <svg class="pencil" viewBox="0 0 420 34" aria-hidden="true"><use href="#pencil"/></svg>
+    </div>
+  </div>
+</section>
+
+<section class="sec tint" id="edit" aria-labelledby="ed-h">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 id="ed-h"><span class="a">Your facts stay.</span><br><span class="b">The fluff goes.</span></h2>
+      <p class="lede">Soft words get highlighted while you type. One tap rewrites the opener in your voice, and the margin says&nbsp;why.</p>
+    </div>
+    <div class="proofs">
+      <article class="sheet proof rv" data-ex="0" aria-label="Example: trading"><div class="pf-head"><span>@heycape_ · trader</span><span>Example</span></div><div class="pf-body"><div class="pf-text"><p class="draft"></p><svg class="marks" aria-hidden="true"></svg></div><div class="pf-margin" aria-hidden="true"></div></div><p class="set"></p><div class="rnote"></div></article>
+      <article class="sheet proof rv" data-ex="1" aria-label="Example: first $10k month"><div class="pf-head"><span>@heycape_ · trader</span><span>Example</span></div><div class="pf-body"><div class="pf-text"><p class="draft"></p><svg class="marks" aria-hidden="true"></svg></div><div class="pf-margin" aria-hidden="true"></div></div><p class="set"></p><div class="rnote"></div></article>
+      <article class="sheet proof rv" data-ex="2" aria-label="Example: customer churn"><div class="pf-head"><span>A founder · build in public</span><span>Example</span></div><div class="pf-body"><div class="pf-text"><p class="draft"></p><svg class="marks" aria-hidden="true"></svg></div><div class="pf-margin" aria-hidden="true"></div></div><p class="set"></p><div class="rnote"></div></article>
+      <article class="sheet proof rv" data-ex="3" aria-label="Example: design systems"><div class="pf-head"><span>A newsletter writer</span><span>Example</span></div><div class="pf-body"><div class="pf-text"><p class="draft"></p><svg class="marks" aria-hidden="true"></svg></div><div class="pf-margin" aria-hidden="true"></div></div><p class="set"></p><div class="rnote"></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 id="how-h"><span class="a">Jot it at 11 PM.</span><br><span class="b">Post it at 8:40 AM.</span></h2>
+      <p class="lede">The idea shows up late. Your people show up early. Hookworthy covers the&nbsp;gap.</p>
+    </div>
+    <div class="desk">
+      <span class="arrow-note an1" aria-hidden="true">drafts it in your voice<svg viewBox="0 0 62 30"><path d="M2 20c18-14 38-16 56-6M50 6l8 8-10 5"/></svg></span>
+      <span class="arrow-note an2" aria-hidden="true">you pick the time<svg viewBox="0 0 62 30"><path d="M2 8c16 14 36 16 56 8M48 10l10 6-9 7"/></svg></span>
+      <article class="card idx rv">
+        <div class="polaroid" role="img" aria-label="Example scene: desk lamp and laptop at night"><div class="ph"></div><small>example scene</small></div>
+        <p class="clock">11:02<small>PM</small></p>
+        <div class="wave" id="wave" aria-hidden="true"></div>
+        <div class="vrow"><span>Voice note</span><span>0:14</span></div>
+        <p class="typed">“the sizing thing. after a loss you size down. that’s the post.”</p>
+      </article>
+      <article class="card mid rv">
+        <div class="pf-head"><span>Drafted · 11:03 PM</span><span>In your voice</span></div>
+        <p class="draft" style="margin-top:10px"><span class="tk soft">so i think</span> the most underrated thing in trading is <span class="tk soft">honestly</span> <span class="tk soft">just</span> sizing down after a loss.</p>
+        <p class="voice-note">sounds like you: lowercase, short, no hashtags</p>
+      </article>
+      <article class="card cal rv">
+        <div class="pf-head"><span>Tuesday</span><span>Your best times</span></div>
+        <ul class="times">
+          <li><span>7:15 AM</span><em>quiet</em></li>
+          <li class="pick"><svg viewBox="0 0 110 46" aria-hidden="true"><path d="M8 26C4 12 30 4 60 5s50 8 46 22-40 16-66 14S6 34 10 22"/></svg><span>8:40 AM</span><em>your people scroll</em></li>
+          <li><span>12:10 PM</span><em>good</em></li>
+          <li><span>6:20 PM</span><em>good</em></li>
+        </ul>
+        <div class="go"><button class="btn sm" type="button" id="sched">Schedule 8:40 AM</button><span class="hand">you press this</span></div>
+        <div class="polaroid" role="img" aria-label="Example scene: a runner at sunrise by a river"><div class="ph"></div><small>example scene</small></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec tint" id="desk" aria-labelledby="dk-h">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 id="dk-h"><span class="a">Everything else</span><br><span class="b">fits on one desk.</span></h2>
+      <p class="lede">Previews, your week, replies, results, review links and client voices. Same paper, same&nbsp;pencil.</p>
+    </div>
+    <div class="feat">
+      <article class="fx f1 rv">
+        <h3>Four feeds, one draft.</h3>
+        <p class="desc">X, Threads, LinkedIn and Bluesky, live as you type, every limit counted.</p>
+        <div class="obj fan" aria-label="Previews of one post on four networks">
+          <div class="print p-x"><span class="nn">X</span><div class="ph"><img src="../../assets/people/you.jpg" alt="">heycape <span>@heycape_</span></div><p>Most underrated thing in trading? Sizing down after a loss.</p><div class="pf"><span>59/280</span><svg width="12" height="12" aria-hidden="true"><use href="#i-x"/></svg></div></div>
+          <div class="print p-th"><span class="nn">Threads</span><div class="ph"><img src="../../assets/people/you.jpg" alt="">heycape</div><p>Most underrated thing in trading? Sizing down after a loss.</p><div class="pf"><span>59/500</span><span>now</span></div></div>
+          <div class="print p-li"><span class="nn">LinkedIn</span><div class="ph"><img src="../../assets/people/you.jpg" alt="">heycape <span>· trader</span></div><p>Most underrated thing in trading? Sizing down after a loss.</p><div class="pf"><span>59/3,000</span><span>now</span></div></div>
+          <div class="print p-bs"><span class="nn">Bluesky</span><div class="ph"><img src="../../assets/people/you.jpg" alt="">heycape</div><p>Most underrated thing in trading? Sizing down after a loss.</p><div class="pf"><span>59/300</span><span>now</span></div></div>
+        </div>
+        <p class="thread"><b>1/3</b>Long post on a free X account? It turns into a thread for you.</p>
+      </article>
+      <article class="fx f2 rv">
+        <h3>Best times, already circled.</h3>
+        <p class="desc">Nothing goes out until you press schedule.</p>
+        <div class="obj week" aria-label="A week calendar with your best times circled">
+          <div class="wk" aria-hidden="true">
+            <span></span><span class="d">Mon</span><span class="d">Tue</span><span class="d">Wed</span><span class="d">Thu</span><span class="d">Fri</span><span class="d">Sat</span><span class="d">Sun</span>
+            <span>AM</span><span class="best"></span><span class="post">8:40</span><span class="best"></span><span></span><span class="best"></span><span></span><span></span>
+            <span>Noon</span><span></span><span></span><span></span><span class="wait">12:15</span><span></span><span class="best"></span><span></span>
+            <span>PM</span><span class="best"></span><span></span><span></span><span class="best"></span><span></span><span></span><span class="best"></span>
+          </div>
+          <div class="legend"><span><i style="background:var(--pencil)"></i>Scheduled by you</span><span><i style="background:rgba(245,180,76,.45)"></i>Waiting for you</span><span><i style="border:1.6px solid var(--pencil);border-radius:50%"></i>Best times</span></div>
+        </div>
+      </article>
+      <article class="fx f3 rv">
+        <h3>Replies, drafted in your voice.</h3>
+        <p class="desc">You read it. You send it.</p>
+        <div class="obj letter">
+          <div class="msg"><span class="avs" style="--i:6"></span><div class="bub"><small>Rae · example</small>ok but how much do you size down? half?</div></div>
+          <div class="drafted"><small>drafted, your voice</small><p>half. until i’ve had two green days in a row.</p></div>
+          <div class="row-btns"><button class="btn sm line" type="button">Edit</button><button class="btn sm" type="button">Send</button></div>
+        </div>
+      </article>
+      <article class="fx f4 rv">
+        <h3>Results in plain words.</h3>
+        <p class="desc">Against your own usual, then what to write next.</p>
+        <div class="obj memo">
+          <span class="k">Tue 8:40 AM post</span>
+          <p class="big">Better than your usual. Questions up top keep working for you.</p>
+          <div class="bars" aria-hidden="true"><div class="bar"><span>Your usual</span><b style="width:46%"></b></div><div class="bar hi"><span>This post</span><b style="width:84%"></b></div></div>
+          <p class="nx">write next: how you size back up</p>
+          <p class="ping">Pro pings you when a post takes off</p>
+        </div>
+      </article>
+      <article class="fx f5 rv">
+        <h3>One link. Notes on the words.</h3>
+        <p class="desc">Your editor or client comments on the exact line.</p>
+        <div class="obj review">
+          <span class="url">hookworthy.com/r/heycape-tue</span>
+          <p class="doc">Most underrated thing in trading? <mark>Sizing down</mark> after a loss.</p>
+          <div class="sticky"><div class="who"><span class="avs" style="--i:10"></span>Ana, editor · example</div><p>say how much in the reply, not here.</p></div>
+        </div>
+      </article>
+      <article class="fx f6 rv">
+        <div class="folders">
+          <div>
+            <h3>Every client keeps their own voice.</h3>
+            <p class="desc">Studio, for ghostwriters and agencies: a voice per client, their never-say list, their time zone, their ideas, and an approval before anything posts.</p>
+          </div>
+          <div class="folder">
+            <div class="tabs-f" role="tablist" aria-label="Client voices (examples)">
+              <button type="button" role="tab" aria-selected="true" data-c="0"><span class="avs" style="--i:0"></span>Priya</button>
+              <button type="button" role="tab" aria-selected="false" data-c="1"><span class="avs" style="--i:11"></span>Marcus</button>
+              <button type="button" role="tab" aria-selected="false" data-c="2"><span class="avs" style="--i:4"></span>Lena</button>
+            </div>
+            <div class="manila" role="tabpanel">
+              <dl class="vcard">
+                <div><dt>Voice</dt><dd id="c-voice">Warm, plain, first person. Ends on a question.</dd></div>
+                <div><dt>Never say</dt><dd class="never" id="c-never"><s>excited to announce</s><s>synergy</s><s>humbled</s></dd></div>
+                <div><dt>Time zone</dt><dd class="mono" id="c-tz" style="font-size:15px">Asia/Kolkata · 9:10 AM</dd></div>
+              </dl>
+              <span class="stamp" id="c-stamp">Waiting for Priya</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec inkb" id="x" aria-labelledby="x-h">
+  <div class="wrap xp">
+    <h2 id="x-h" class="rv"><span class="a">Replies don’t pay.</span><br><span class="b">Posts do.</span></h2>
+    <div class="xp-r rv">
+      <p class="lede">Since Sept 8, X pays creators for original posts, not replies. The bar to get paid:</p>
+      <ul class="req">
+        <li><span class="w">Premium</span>on your account</li>
+        <li><span class="n">500</span>verified followers</li>
+        <li><span class="n">500K</span>verified impressions in 90 days</li>
+      </ul>
+      <p class="fine">As of Oct 2026. X can change it.</p>
+      <p class="promise">Nobody can promise reach. We don’t. We make the first line worth the stop.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="who-for" aria-labelledby="who-h">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 id="who-h"><span class="a">Traders first.</span><br><span class="b">Anyone with a take.</span></h2>
+      <p class="lede">Different feeds, same problem: the good part shows up in line&nbsp;two.</p>
+    </div>
+    <div class="who">
+      <article class="by rv"><div class="pol"><img src="../../assets/people/you.jpg" alt="heycape, example trader avatar" width="108" height="108"><small>heycape · example</small></div><p class="role">Crypto and trading</p><h3>Charts and P&amp;L, minus the shill.</h3><p class="hook">my first $10k month trading took me 3 years.</p></article>
+      <article class="by rv"><div class="pol"><span class="avs" style="--i:8" role="img" aria-label="Noor, example newsletter writer"></span><small>Noor · example</small></div><p class="role">Newsletters and creators</p><h3>The issue, turned into a post.</h3><p class="hook">why do most design systems fail? nobody owns them.</p></article>
+      <article class="by rv"><div class="pol"><span class="avs" style="--i:1" role="img" aria-label="Dev, example founder"></span><small>Dev · example</small></div><p class="role">Founders in public</p><h3>Lead with the number.</h3><p class="hook">Customer churn: down 34%. What changed: our team redesigned the onboarding flow.</p></article>
+      <article class="by rv"><div class="pol"><span class="avs" style="--i:12" role="img" aria-label="Ines, example ghostwriter"></span><small>Ines · example</small></div><p class="role">Ghostwriters and agencies</p><h3>Six clients, six voices.</h3><p class="hook">An approval before every post, in every client’s time zone.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec tint" id="trust" aria-labelledby="tr-h">
+  <div class="wrap trust">
+    <div class="tl rv">
+      <h2 id="tr-h"><span class="a">It drafts.</span><br><span class="b">You press send.</span></h2>
+      <p class="lede">Every post that goes out is one you pressed send on. That’s the whole&nbsp;policy.</p>
+      <span class="sent" aria-hidden="true">Sent by you</span>
+    </div>
+    <ul class="nevers rv" aria-label="Things Hookworthy never does">
+      <li><span class="t">Auto-DMs<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 6c30-3 62-4 96-1" vector-effect="non-scaling-stroke"/></svg></span><span class="nv">never</span></li>
+      <li><span class="t">Auto-replies<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 4c34 2 64 3 96 0" vector-effect="non-scaling-stroke"/></svg></span><span class="nv">never</span></li>
+      <li><span class="t">Auto-deletes<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 7c28-4 66-5 96-2" vector-effect="non-scaling-stroke"/></svg></span><span class="nv">never</span></li>
+      <li><span class="t">Auto-reposts<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 5c32 1 60-1 96 1" vector-effect="non-scaling-stroke"/></svg></span><span class="nv">never</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec" id="pricing" aria-labelledby="pr-h">
+  <div class="wrap">
+    <div class="ptop rv">
+      <h2 id="pr-h"><span class="a">Start at $0.</span><br><span class="b">Stay for $12.</span></h2>
+      <div class="bill" role="group" aria-label="Billing period"><button type="button" aria-pressed="true" data-bill="y">Yearly</button><button type="button" aria-pressed="false" data-bill="m">Monthly</button></div>
+    </div>
+    <div class="plans">
+      <article class="plan rv">
+        <h3>Free</h3><p class="for">Forever. No card.</p>
+        <div class="price"><b>$0</b><span>a month</span></div>
+        <p class="billnote">Free forever</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span><b>Sharpen any line,</b> unlimited</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Claude rewrites: 20 a month, plus 50 touch-ups a day</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Learns your voice</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Live previews</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Schedule freely, 15 auto-posts a month</span></li>
+        </ul>
+        <a class="btn line" href="#start">Start free</a>
+      </article>
+      <article class="plan pro rv">
+        <h3>Pro</h3><p class="for">For people who post most days.</p>
+        <div class="price"><svg viewBox="0 0 120 60" preserveAspectRatio="none" aria-hidden="true"><path d="M14 36C8 18 34 6 64 6s54 10 50 28-38 22-64 20S6 40 16 22" vector-effect="non-scaling-stroke"/></svg><b data-y="$12" data-m="$16">$12</b><span>a month</span></div>
+        <p class="billnote" data-y="$144 billed yearly, or $16 monthly" data-m="Billed monthly, or $12 a month yearly">$144 billed yearly, or $16 monthly</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span><b>Claude rewrites: 250 a month,</b> add up to 1,750 more</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Results, in plain words</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>A ping when a post takes off</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Your week drafted from your ideas</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Up to 500 auto-posts a month</span></li>
+        </ul>
+        <a class="btn" href="#start">Go Pro</a>
+      </article>
+      <article class="plan rv">
+        <h3>Studio</h3><p class="for">For ghostwriters and agencies.</p>
+        <div class="price"><b data-y="$18" data-m="$24">$18</b><span>per client voice<br>a month</span></div>
+        <p class="billnote" data-y="Billed yearly, or $24 monthly" data-m="Billed monthly, or $18 a month yearly">Billed yearly, or $24 monthly</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span><b>Everything in Pro</b></span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Each client gets its own voice</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Approvals before anything posts</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>Review links per client</span></li>
+          <li><svg aria-hidden="true"><use href="#i-tick"/></svg><span>500 rewrites a month per client voice</span></li>
+        </ul>
+        <a class="btn line" href="#start">Start Studio</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="end" id="start" aria-labelledby="end-h">
+  <div class="wrap">
+    <h2 id="end-h" class="rv"><span class="a">Bring it rough.</span><br><span class="b">We’ll sharpen it.</span></h2>
+    <div class="end-row rv">
+      <p class="lede">Good ideas die in bad first lines. Yours don’t have&nbsp;to.</p>
+      <div>
+        <div class="ctas"><a class="btn" href="#start">Sharpen my first post <svg aria-hidden="true"><use href="#i-arr"/></svg></a><a class="btn line" href="#signin" id="signin">Sign in</a></div>
+        <p class="note">Free plan <i></i> No card <i></i> Nothing posts without you</p>
+      </div>
+    </div>
+  </div>
+  <svg class="pencil" viewBox="0 0 420 34" aria-hidden="true"><use href="#pencil"/></svg>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="mark" href="#top" aria-label="Hookworthy, back to top">Hook<i>worthy</i></a>
+      <p>heycape and every person shown here are examples. Prices in USD.</p>
+    </div>
+    <nav aria-label="Footer"><a href="#edit">The edit</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="mailto:hello@hookworthy.com">hello@hookworthy.com</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
+    <p class="mono" style="margin:0;font-size:12.5px">© 2026 Hookworthy</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+'use strict';
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const NS = 'http://www.w3.org/2000/svg';
+const sv = (tag, at) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); return e; };
+const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+
+/* The four real examples. d = draft tokens [text, soft tag]; f = final order:
+   number = keep that token, [n, text] = keep with new text, string = new words */
+const EX = [
+  { who: '@heycape_ · X · 11:02 PM',
+    d: [['so', 'warm-up'], ['i think', 'hedge'], ['the'], ['most'], ['underrated'], ['thing'], ['in'], ['trading'], ['is'], ['honestly', 'hedge'], ['just', 'filler'], ['sizing'], ['down'], ['after'], ['a'], ['loss.']],
+    f: [[3, 'Most'], 4, 5, 6, [7, 'trading?'], [11, 'Sizing'], 12, 13, 14, 15],
+    move: 'Led with the question.', why: 'Your claim became a question, and the same line answers it.' },
+  { who: '@heycape_ · X · 10:48 PM',
+    d: [['just', 'filler'], ['wanted to share that', 'warm-up'], ['i finally hit'], ['my'], ['first'], ['$10k'], ['month'], ['trading,'], ['took'], ['me'], ['3'], ['years'], ['lol', 'filler']],
+    f: [3, 4, 5, 6, [7, 'trading'], 8, 9, 10, [11, 'years.']],
+    move: 'Cut the warm-up.', why: '“Just wanted to share” was standing in front of $10k. Your lowercase stays.' },
+  { who: 'A founder · LinkedIn · 9:14 PM',
+    d: [['Customer'], ['churn'], ['was reduced by', 'passive'], ['34%'], ['after the'], ['onboarding'], ['flow'], ['was redesigned by', 'passive'], ['our'], ['team.']],
+    f: [0, [1, 'churn:'], 'down', [3, '34%.'], 'What changed:', 8, [9, 'team'], 'redesigned', 'the', 5, [6, 'flow.']],
+    move: 'Led with the number.', why: '34% is the news. Then who did it, in active voice.' },
+  { who: 'A newsletter writer · Threads · 11:40 PM',
+    d: [['honestly', 'hedge'], ['most'], ['design'], ['systems'], ['fail'], ['because'], ['nobody'], ['really', 'filler'], ['owns'], ['them']],
+    f: ['why do', 1, 2, 3, [4, 'fail?'], 6, 8, [9, 'them.']],
+    move: 'Asked, then answered.', why: 'The question opens the loop. Three words close it. Still lowercase.' }
+];
+const tokOf = (ex, x) => typeof x === 'string' ? x : Array.isArray(x) ? x[1] : ex.d[x][0];
+const idxOf = x => Array.isArray(x) ? x[0] : x;
+const draftStr = ex => ex.d.map(t => t[0]).join(' ');
+const finalStr = ex => ex.f.map(x => tokOf(ex, x)).join(' ');
+const keptSet = ex => new Set(ex.f.filter(x => typeof x !== 'string').map(idxOf));
+function lisSet(a) { // longest increasing subsequence (patience, smallest tails)
+  const tails = [], ti = [], prev = new Array(a.length).fill(-1);
+  a.forEach((v, i) => { let lo = 0, hi = tails.length; while (lo < hi) { const m = (lo + hi) >> 1; if (tails[m] < v) lo = m + 1; else hi = m; } tails[lo] = v; ti[lo] = i; prev[i] = lo ? ti[lo - 1] : -1; });
+  const out = new Set(); let k = ti[tails.length - 1]; while (k >= 0) { out.add(a[k]); k = prev[k]; } return out;
+}
+/* what the editor marks: cuts, case, inserts, suffix edits, and moved words */
+function plan(ex) {
+  const keep = keptSet(ex), order = ex.f.filter(x => typeof x !== 'string').map(idxOf), stay = lisSet(order);
+  const inserts = []; let prevK = null, prevA = null, buf = [];
+  const moves = []; let mrun = null;
+  ex.f.forEach(x => {
+    if (typeof x === 'string') { buf.push(x); return; }
+    const i = idxOf(x);
+    if (buf.length) { inserts.push({ text: buf.join(' '), after: prevA, before: i }); buf = []; }
+    if (!stay.has(i)) { if (mrun && mrun.last === i - 1) { mrun.ids.push(i); mrun.last = i; } else { mrun = { ids: [i], last: i, anchor: prevK }; moves.push(mrun); } }
+    prevK = stay.has(i) ? i : prevK; prevA = i;
+  });
+  if (buf.length) inserts.push({ text: buf.join(' '), after: prevA, before: null });
+  const morphs = ex.f.filter(Array.isArray).map(([i, t]) => {
+    const a = ex.d[i][0];
+    if (a.toLowerCase() === t.toLowerCase()) return { i, kind: 'cap' };
+    if (t.startsWith(a)) return { i, kind: 'ins', s: t.slice(a.length) };
+    if (a.startsWith(t)) return { i, kind: 'del', n: a.length - t.length };
+    return { i, kind: 'cap' };
+  });
+  const cuts = ex.d.map((t, i) => i).filter(i => !keep.has(i));
+  return { cuts, inserts, morphs, moves };
+}
+
+/* ---------- a proof sheet: draft, pencil marks, margin notes, set line ---------- */
+class Proof {
+  constructor(el, seed) { this.el = el; this.draft = $('.draft', el); this.svg = $('.marks', el); this.margin = $('.pf-margin', el); this.set = $('.set', el); this.note = $('.rnote', el); this.text = $('.pf-text', el); this.seed = seed; this.ex = null; }
+  load(ex) {
+    this.ex = ex;
+    this.draft.replaceChildren(...ex.d.flatMap((t, i) => { const s = mk('span', 'tk' + (t[1] ? ' soft' : ''), t[0]); s.dataset.i = i; return i ? [document.createTextNode(' '), s] : [s]; }));
+    this.draft.setAttribute('aria-label', 'Draft: ' + draftStr(ex));
+    this.set.replaceChildren(...ex.f.map(x => mk('span', '', tokOf(ex, x))));
+    this.set.setAttribute('aria-label', 'Sharpened: ' + finalStr(ex));
+    this.note.innerHTML = '<div><span class="mv"></span><span class="why"></span></div><span class="cc"></span>';
+    $('.mv', this.note).textContent = ex.move; $('.why', this.note).textContent = ex.why;
+    $('.cc', this.note).textContent = `${draftStr(ex).length} → ${finalStr(ex).length} chars`;
+    this.drawn = false;
+  }
+  marks() {
+    const ex = this.ex, r = rng(this.seed), j = (n = 1.2) => (r() - .5) * 2 * n;
+    const toks = $$('.tk', this.draft);
+    const R = toks.map(t => { let l = 0, tp = 0, e = t; while (e && e !== this.text) { l += e.offsetLeft; tp += e.offsetTop; e = e.offsetParent; } const w = t.offsetWidth, h = t.offsetHeight; return { l, r: l + w, t: tp, b: tp + h, h, w, n: t.textContent.length }; });
+    const fs = parseFloat(getComputedStyle(this.draft).fontSize), cw = R[0].w / R[0].n;
+    const mid = q => q.t + q.h * .54, bl = q => q.t + q.h * .8;
+    const out = []; // [{el, k(order), type}]
+    const P = (d, k) => out.push({ el: sv('path', { d }), k });
+    const T = (x, y, s, k, size) => { const t = sv('text', { x, y, 'text-anchor': 'middle', 'font-size': size || Math.round(fs * 1.3) }); t.textContent = s; out.push({ el: t, k, text: 1 }); };
+    const pl = plan(ex);
+    // cut runs: consecutive cut tokens on one line share one stroke, ending in a delete loop
+    const runs = []; pl.cuts.forEach(i => { const last = runs[runs.length - 1]; if (last && last.e === i - 1 && Math.abs(R[i].t - R[last.e].t) < 3) last.e = i; else runs.push({ s: i, e: i }); });
+    runs.forEach(({ s, e }) => {
+      const a = R[s], b = R[e], y = mid(a), x0 = a.l - 3, x1 = b.r + 2;
+      P(`M${x0} ${y + j()} C${x0 + (x1 - x0) * .3} ${y - 2 + j()} ${x0 + (x1 - x0) * .7} ${y + 2 + j()} ${x1} ${y - 1 + j()} c4 -1 8 -6 5 -9 c-3 -3 -8 1 -5 5 c2 3 7 5 12 2`, s);
+    });
+    pl.morphs.forEach(m => {
+      const q = R[m.i];
+      if (m.kind === 'cap') { const y = bl(q) + 4; for (let k = 0; k < 3; k++) P(`M${q.l + cw * .05 + j(.6)} ${y + k * 3.4} l${cw * .9} ${j(.6)}`, m.i); }
+      else if (m.kind === 'ins') {
+        const x = q.r + cw * .45, y = bl(q);
+        if (m.s === '.') { P(`M${x + 6} ${y - 3} a6 6 0 1 1 -.1 0`, m.i); P(`M${x} ${y - 3.4} l.1 .1`, m.i); }
+        else { P(`M${x - 5} ${y + 7} L${x} ${y - 2} L${x + 5} ${y + 7}`, m.i); T(x, q.t + 1, m.s, m.i); }
+      } else { const x0 = q.r - cw * m.n - 1, y = mid(q); P(`M${x0 - 1} ${y + 7} L${q.r + 2} ${y - 8} c5 -3 8 3 3 6 c-4 2 -5 -4 1 -6`, m.i); }
+    });
+    pl.inserts.forEach(ins => {
+      const q = ins.after != null ? R[ins.after] : R[ins.before], x = ins.after != null ? q.r + cw * .55 : q.l - cw * .55, y = bl(q);
+      P(`M${x - 6} ${y + 8} L${x + j(.5)} ${y - 3} L${x + 6} ${y + 8}`, ins.after != null ? ins.after + .5 : ins.before - .5);
+      T(x, q.t + 1, ins.text, ins.after != null ? ins.after + .6 : ins.before - .4);
+    });
+    pl.moves.forEach(mv => {
+      const a = R[mv.ids[0]], b = R[mv.ids[mv.ids.length - 1]];
+      const x0 = a.l - 6, x1 = b.r + 6, cy = (a.t + a.b) / 2, ry = a.h * .62, cx = (x0 + x1) / 2, rx = (x1 - x0) / 2;
+      P(`M${cx + rx * .2} ${cy - ry} C${x1 + 4} ${cy - ry} ${x1 + 4} ${cy + ry} ${cx} ${cy + ry} S${x0 - 4} ${cy - ry * .9} ${cx + rx * .35} ${cy - ry - 2}`, mv.ids[0]);
+      if (mv.anchor != null) {
+        const t = R[mv.anchor], tx = t.r + cw * 1.2, ty = t.b + 2, sx = cx - rx * .4, sy = cy - ry - 1;
+        const c1y = Math.min(sy, ty) - 26;
+        P(`M${sx} ${sy} C${sx - 30} ${c1y} ${tx + 40} ${ty + 34} ${tx} ${ty} M${tx - 2} ${ty + 11} L${tx} ${ty} L${tx + 10} ${ty + 6}`, mv.ids[0] + .2);
+      }
+    });
+    // margin notes: one per line, from the soft words cut on it
+    const lines = new Map(), lineOf = t => { for (const k of lines.keys()) if (Math.abs(k - t) < 6) return k; lines.set(t, new Set()); return t; };
+    pl.cuts.forEach(i => { const tag = ex.d[i][1]; if (!tag) return; lines.get(lineOf(R[i].t)).add(tag); });
+    if (pl.moves.length) lines.get(lineOf(R[pl.moves[0].ids[0]].t)).add('move up');
+    this.margin.replaceChildren(...[...lines].map(([top, s]) => { const n = mk('span', '', [...s].join(', ')); n.style.top = (top + R[0].h * .5) + 'px'; return n; }));
+    out.sort((a, b) => a.k - b.k);
+    this.svg.replaceChildren(...out.map(o => o.el));
+    this.items = out;
+  }
+  draw(animate, delay = 0) {
+    this.marks(); this.drawn = true;
+    const notes = $$('span', this.margin), setw = $$('span', this.set);
+    if (!animate) { [this.set, this.note].forEach(e => e.style.opacity = 1); return 0; }
+    let t = delay;
+    this.items.forEach(o => {
+      if (o.text) { o.el.animate([{ opacity: 0, transform: 'translateY(3px)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: t + 120, fill: 'backwards', easing: 'ease-out' }); return; }
+      const L = o.el.getTotalLength(); o.el.style.strokeDasharray = L; const D = Math.max(160, Math.min(380, L * 2.2));
+      o.el.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], { duration: D, delay: t, fill: 'backwards', easing: 'cubic-bezier(.45,.05,.3,1)' });
+      t += Math.min(D * .55, 150);
+    });
+    notes.forEach((n, k) => n.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: delay + 200 + k * 140, fill: 'backwards' }));
+    setw.forEach((w, k) => w.animate([{ opacity: 0, transform: 'translateY(.3em)' }, { opacity: 1, transform: 'none' }], { duration: 420, delay: t + 60 + k * 32, fill: 'backwards', easing: 'cubic-bezier(.2,.7,.2,1)' }));
+    this.note.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 380, delay: t + 240, fill: 'backwards', easing: 'ease-out' });
+    return t + 600;
+  }
+  redraw() { if (this.drawn) this.draw(false); }
+}
+
+/* ---------- hero proof: cycles through the four ---------- */
+const heroEl = $('#hero-proof'), hp = new Proof(heroEl, 3), dots = $('.dots', heroEl), who = $('.who-l', heroEl);
+let cur = 0, timer = 0, hold = 0, vis = true, seenAt = 0, busy = false;
+const ORDER = [0, 2, 1, 3];
+ORDER.forEach((ei, k) => { const b = mk('button'); b.type = 'button'; b.setAttribute('aria-label', 'Example ' + (k + 1)); b.append(mk('i')); b.addEventListener('click', () => { hold = Date.now() + 10000; show(k, true); }); dots.append(b); });
+function show(k, anim) {
+  if (busy) return; cur = k; const ex = EX[ORDER[k]];
+  $$('button', dots).forEach((b, i) => b.setAttribute('aria-current', i === k));
+  const go = () => {
+    hp.load(ex); who.textContent = ex.who;
+    if (anim && !RM) {
+      const toks = $$('.tk', hp.draft);
+      toks.forEach((t, i) => t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 160, delay: i * 38, fill: 'backwards' }));
+      [hp.set, hp.note].forEach(e => e.style.opacity = '');
+      hp.draw(true, toks.length * 38 + 260);
+    } else hp.draw(false);
+    heroEl.querySelectorAll('.fade-out').forEach(e => e.classList.remove('fade-out'));
+    busy = false;
+  };
+  if (anim && !RM && hp.ex) { busy = true; [hp.svg, hp.margin, hp.set, hp.note].forEach(e => e.classList.add('fade-out')); setTimeout(go, 360); }
+  else go();
+}
+function loop(d) {
+  clearTimeout(timer); if (RM) return;
+  timer = setTimeout(() => {
+    if (!vis || document.hidden || Date.now() < hold || Date.now() - seenAt < 3500) return loop(900);
+    show((cur + 1) % ORDER.length, true); loop(7000);
+  }, d);
+}
+$('#nextp').addEventListener('click', () => { hold = Date.now() + 10000; show((cur + 1) % ORDER.length, true); });
+
+/* ---------- proofs grid: marks draw when each sheet arrives ---------- */
+const proofs = $$('.proofs .proof').map((el, k) => { const p = new Proof(el, 20 + k); p.load(EX[+el.dataset.ex]); return p; });
+
+/* ---------- small things ---------- */
+const wave = $('#wave'), wr = rng(5);
+for (let k = 0; k < 44; k++) { const i = mk('i', k < 17 ? 'p' : ''); i.style.height = Math.min(100, (.2 + Math.abs(Math.sin(k * .6)) * .55 + wr() * .28) * 100) + '%'; wave.append(i); }
+$$('.bill button').forEach(b => b.addEventListener('click', () => {
+  const m = b.dataset.bill; $$('.bill button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $$('[data-y]').forEach(el => { el.textContent = el.dataset[m]; });
+}));
+const sched = $('#sched'); sched.addEventListener('click', () => { sched.textContent = 'Scheduled by you'; setTimeout(() => { sched.textContent = 'Schedule 8:40 AM'; }, 1800); });
+const CL = [
+  ['Warm, plain, first person. Ends on a question.', ['excited to announce', 'synergy', 'humbled'], 'Asia/Kolkata · 9:10 AM', 'Waiting for Priya'],
+  ['Short, numbers first, a little contrarian.', ['to the moon', 'disrupt', 'thought leader'], 'America/New_York · 7:45 AM', 'Approved by Marcus'],
+  ['Curious, long sentences, one link at the end.', ['hustle', 'grind', 'thread below'], 'Europe/Berlin · 8:20 AM', 'Waiting for Lena']
+];
+$$('.tabs-f button').forEach(b => b.addEventListener('click', () => {
+  const c = CL[+b.dataset.c]; $$('.tabs-f button').forEach(x => x.setAttribute('aria-selected', x === b));
+  $('#c-voice').textContent = c[0]; $('#c-never').replaceChildren(...c[1].map(w => mk('s', '', w))); $('#c-tz').textContent = c[2];
+  const st = $('#c-stamp'); st.textContent = c[3]; st.classList.toggle('ok', c[3].startsWith('Approved'));
+}));
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#"]'); if (!a) return;
+  const t = document.getElementById(a.getAttribute('href').slice(1)); if (!t) return;
+  e.preventDefault(); t.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' });
+});
+const nav = $('#nav');
+new IntersectionObserver(([e]) => nav.classList.toggle('on', !e.isIntersecting), { rootMargin: '-80px 0px 0px 0px' }).observe($('#h1'));
+
+/* hand-drawn strokes in the page draw themselves once */
+function strokeIn(paths, delay) { if (RM) return; paths.forEach((p, k) => {
+  const o = { duration: 560, delay: delay + k * 120, fill: 'backwards', easing: 'cubic-bezier(.45,.05,.3,1)' };
+  if (p.hasAttribute('vector-effect')) { p.ownerSVGElement.animate([{ clipPath: 'inset(-20% 100% -20% -2%)' }, { clipPath: 'inset(-20% -2% -20% -2%)' }], o); return; }
+  const L = p.getTotalLength(); p.style.strokeDasharray = L; p.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], o); }); }
+
+const aside = $('.aside'), heroL = $('.hero-l');
+function placeAside() { const r = $('.h1 .r').getBoundingClientRect(), b = heroL.getBoundingClientRect(); aside.style.left = (r.right - b.left + 6) + 'px'; aside.style.top = (r.top - b.top - 6) + 'px'; aside.classList.add('on'); }
+const boot = () => {
+  placeAside();
+  show(0, false);
+  proofs.forEach(p => p.draw(false));
+  if (!RM) { hp.load(EX[ORDER[0]]); hp.draw(true, 220); }
+  loop(7200);
+  new IntersectionObserver(([e]) => { if (e.isIntersecting && !vis) seenAt = Date.now(); vis = e.isIntersecting; }, { threshold: .35 }).observe($('.hero'));
+  if (!RM && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return; const el = e.target; el.classList.add('in'); io.unobserve(el);
+      const p = proofs.find(p => p.el === el); if (p) p.draw(true, 260);
+      $$('.nevers .t path, .pick path, .plan.pro .price path, .arrow-note path', el).forEach((pth, k) => strokeIn([pth], 300 + k * 140));
+    }), { rootMargin: '0px 0px -10% 0px' });
+    $$('.rv').forEach(el => io.observe(el));
+    $$('.desk .arrow-note').forEach(el => io.observe(el));
+  } else { $$('.rv').forEach(el => el.classList.add('in')); proofs.forEach(p => p.draw(false)); }
+  let rt = 0; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { placeAside(); hp.redraw(); proofs.forEach(p => p.redraw()); }, 120); });
+};
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(boot);
+})();
+</script>
+</body>
+</html>

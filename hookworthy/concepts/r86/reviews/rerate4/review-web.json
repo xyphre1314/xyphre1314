@@ -1,0 +1,97 @@
+{
+ "key": "web",
+ "role": "Awwwards-level web designer and front-end craftsperson: layout, composition at every width, rhythm, motion timing, performance, polish",
+ "score": 9.0,
+ "verdict": "This is a very well-built page. CLS is 0 at all seven widths, nothing scrolls sideways, every heading fits in two lines, reduced motion shows a clean finished layout, the focus rings are complete, and each breakpoint has its own designed layout rather than a stretched one. The hero still has two visible flaws: the sharpened line breaks one word after the full stop that its own caption praises, and on three of the four examples the 'Why it hits' text sits on the footer hairline. With smaller P2s in pricing alignment, Studio wrapping, motion length and paint cost, it falls just short of best-in-class.",
+ "to_95": [
+  "Make every sharpened line break at its full stop, not one word after it. In nb() (display only), put the last sentence in a nowrap span when it is 24 characters or fewer, or at minimum glue a 1–3 letter word that opens a sentence to the next word with a no-break space. Apply this to #pf-sharp, #out-line (xfmt), #fp-sharp and the feed previews. Today it reads '…$10k month. it / took 3 years.' at 1100–1365, 1024, 390 and 360, and 'i stopped chasing $SOL. my / pnl is up 40%…' in the Try result at 1440, 1280 and 390.",
+  "Keep at least 20px between the hero's 'Why it hits' and the footer hairline for every example at every width. Add margin-bottom:20px to .window .hits (or padding-top on .foot) so sizeHero() includes it in the floor it measures. The measured gap is 0–7px for 3 of the 4 examples at 1440, 1536 and 1920, and for the default example at 1100–1366.",
+  "Shorten the opening sequence so it settles by about 1.3s. Today it ends at about 2.1s: the post wakes at 0.95–1.5s, the cut chips at 1.65s, the glint at 2.0s and the falling words at about 2.1s, and the sharpened post sits at 35% opacity for the first 0.95s. Set --l to about .25s and wake to .4s, finish the glint by 1.4s, and start the word fall with the strike rather than after it.",
+  "Line up the plan cards with grid-template-rows:subgrid, or give .for two lines of min-height from 901 to 1099px. At 960, Pro's 'For catching the post that takes / off.' wraps and pushes $12 and its list 22px below Free and Studio.",
+  "Let the Studio highlight wrap. Remove .st-post mark{white-space:nowrap} and keep box-decoration-break:clone, so 'Customer churn:' no longer sits alone on the first line in the approved state at 1440 or makes a ragged four-line paragraph at 390.",
+  "Make the FAQ answer open with a height animation (grid-template-rows 0fr→1fr, about 250ms on --ease, instant under reduced motion). Today the rows below jump 150–250px in one frame.",
+  "Cut paint and main-thread cost on phones. Animate only opacity and transform in the land, defocus and fall keyframes, without filter: blur(). Split the core.js warm-up into idle chunks under 50ms, or move it to a worker. On phones, load core.js on intent (pointerenter or focus on the Try tile) instead of on idle."
+ ],
+ "issues": [
+  {
+   "id": "web-1",
+   "severity": "P1",
+   "area": "Typography / hero product moment",
+   "where": "#pf-sharp at 1100–1365, 1024, 390 and 360; #out-line (Try default result) at 1440, 1280 and 390; also live results in Try and the final",
+   "problem": "text-wrap:pretty avoids a short last line by moving a word across the sentence boundary. The hero's sharpened post reads 'i finally hit my first $10k month. it / took 3 years.' while its caption says 'The full stop before \"it took 3 years\" is the pause that makes the second beat land.' The line break contradicts the product's own point, in the first screen on phones and on 1280–1366 laptops.",
+   "fix": "In nb(), add a display-only rule that puts the final sentence in a nowrap span when it is 24 characters or fewer: h.replace(/([.!?]) ([^.!?]{1,24})$/, '$1 <span class=\"nw\">$2</span>') with .nw{white-space:nowrap}. At minimum, glue sentence openers of 1–3 letters to the next word: .replace(/([.!?]) (\\S{1,3}) /g, '$1 $2\\u00a0'). Run it through xfmt for #out-line and #fp-sharp as well."
+  },
+  {
+   "id": "web-2",
+   "severity": "P1",
+   "area": "Hero window spacing",
+   "where": "#proof .pane.sharp. 'Why it hits' to .foot hairline: Founder, Newsletter and Ghostwriter at every desktop width; all four examples at 1100–1366",
+   "problem": "sizeHero() sets the body floor to the tallest example, and .foot has margin-top:auto, so the tallest example has no space under its reasons. The measured gap from 'Why it hits' to the foot rule is 0px (Newsletter at 1440 and 1920; Trader at 1280) and 7px (Founder, Ghostwriter). The second line of the reason rests on the hairline in the hero, and every pill pick shows it.",
+   "fix": "Add .window .hits{margin-bottom:20px} for ≥901, or .foot{margin-top:auto;padding-top:0} with .pane.sharp{row-gap} and a 20px spacer, so the measured floor includes the gap. Re-measure the 1200+, 1100–1199 and 901–1099 min-heights."
+  },
+  {
+   "id": "web-3",
+   "severity": "P2",
+   "area": "Motion timing",
+   "where": "Hero opening (document.getAnimations timeline at 1440)",
+   "problem": "The sequence settles at about 2.1–2.35s. The stage lifts at 0.1–1.0s, the strike runs at 0.87–1.19s, the post wakes at 0.95–1.5s from 35% opacity, the cut chips and Kept fade in until 1.65s, the glint runs until 2.0s, and the falling words end at about 2.1s. Best-in-class heroes resolve their payoff by about 1.2s. Here the post that is the point stays dimmed for the first second.",
+   "fix": "Set .window{--l:.25s}, wake .4s, glint .6s, and fade the note and Kept at l+.45s. Fire heroFall at the end of the strike, not 60ms after it. Target the last animation ending by 1.3s."
+  },
+  {
+   "id": "web-4",
+   "severity": "P2",
+   "area": "Pricing alignment",
+   "where": "#pricing .plans at 901–~990px (seen at 960)",
+   "problem": "Pro's .for wraps to two lines ('…takes / off.'), so $12 sits 22px lower than $0 and $18, and the Pro list starts 23px lower than its neighbours. The CTAs still line up, which makes the drift more noticeable.",
+   "fix": "Use .plans{grid-template-rows:auto} with .plan{display:grid;grid-row:span 6;grid-template-rows:subgrid} at ≥901 so name, for, price, note, list and CTA share rows. Otherwise give .for a min-height of 2.9em from 901 to 1099px."
+  },
+  {
+   "id": "web-5",
+   "severity": "P2",
+   "area": "Studio text wrap",
+   "where": ".st-post .xtext with mark{white-space:nowrap}: approved state at 1440 and 1024, default at 390 and 360",
+   "problem": "After Approve, the nowrap highlight 'down 34% since June' forces 'Customer churn:' onto its own first line ('Customer churn: / down 34% since June. What / changed…'). At 390 the default reads 'Customer churn: down 34%. / What changed: our / team redesigned the / onboarding flow.', a ragged four-line block in a 5.8em min-height box.",
+   "fix": "Remove .st-post mark{white-space:nowrap} and keep -webkit-box-decoration-break:clone so a wrapped highlight keeps its pill ends. Use text-wrap:balance on .st-post .xtext at ≤760."
+  },
+  {
+   "id": "web-6",
+   "severity": "P2",
+   "area": "Interaction feel",
+   "where": "#faq .qa",
+   "problem": "An answer appears with a 6px fade-up while the questions below it jump 150–250px in one frame. That is the only layout jump left on a page that is otherwise shift-free and carefully choreographed.",
+   "fix": "Wrap .a in a grid: .a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s var(--ease)}, .a.open{grid-template-rows:1fr}, inner{overflow:hidden}. Or use interpolate-size:allow-keywords with a height transition. Keep it instant under reduced motion."
+  },
+  {
+   "id": "web-7",
+   "severity": "P2",
+   "area": "Performance (paint and main thread)",
+   "where": "Whole page on phones; core.js warm-up; land, defocus and fall keyframes",
+   "problem": "With 4× CPU throttle at 390, taps measured 88–240ms event duration and the sheet opened in 360ms. Try typing keystrokes measured p75 64ms and max 152ms. Long tasks of 100–400ms ran from 2.5 to 5s after load while core.js (438KB raw, 151KB gzip) parsed and warmed. Unthrottled desktop taps ran 40–160ms against a 16ms baseline on a trivial page. Traces are raster-dominated (software raster here, so the absolute numbers are inflated) because filter: blur() is animated on text (defocus 6px, land 4px, fall 3px) over plus-lighter, blurred beams.",
+   "fix": "Remove filter from the land, defocus and fall keyframes; use opacity and transform with a slightly larger translate. Chunk SHARPEN.warm() into idle slices under 50ms or run it in a Worker. On phones, load core.js on pointerenter or focus of #sharpen or #fin-in rather than on idle. Add contain:paint to .tile."
+  },
+  {
+   "id": "web-8",
+   "severity": "P2",
+   "area": "Phone screen budget",
+   "where": "360×780",
+   "problem": "The page measures 10.52 screens against the ≤10.5 target. 390×844 is 9.74, which passes.",
+   "fix": "Recover about 20px at ≤374, for example the Try label at one line ('Paste the line you were about to post.'), --sec 46→44px, or .tile gap 14→12px."
+  },
+  {
+   "id": "web-9",
+   "severity": "P2",
+   "area": "Composition",
+   "where": ".t-who at ≥1200 (shares a row with Trust)",
+   "problem": "align-content:space-between stretches the 2×2 faces to Trust's 554px height. That leaves a void of about 60px between the face rows, so the tile reads sparse next to the dense Trust list.",
+   "fix": "Use align-content:start with a 28px row gap and let the tile end where its content ends (align-self:start), or give each face a one-line example hook in X style to fill the height with product."
+  },
+  {
+   "id": "web-10",
+   "severity": "P2",
+   "area": "Typography widows",
+   "where": "Footer .ft p at 960 ('…sent at the time you / pick.'); hero 'Sharpened' receipt at 360 ('…Split it into two / beats')",
+   "problem": "Single-word last lines in short copy. .ft p and .ph-h .move are not covered by the page's no-widow rule.",
+   "fix": "Add .ft p and #pf-move to the text-wrap:pretty list (or balance for .ft p). At ≤379, put a no-break space in 'two beats' or let #pf-move wrap as a balanced block."
+  }
+ ]
+}

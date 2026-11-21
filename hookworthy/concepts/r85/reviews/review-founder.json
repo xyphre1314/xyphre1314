@@ -1,0 +1,229 @@
+{
+ "key": "founder",
+ "role": "Startup co-founder (two creator/prosumer SaaS to millions in ARR; ran homepage, positioning and pricing)",
+ "score": 6,
+ "verdict": "The craft and the best lines ('Your facts stay. The fluff goes.', 'Good ideas die in bad first lines.') are already better than anything else in this category. But a stranger still can't tell in 5 seconds that it's an X writing and scheduling app, there's no path to sign up, and the page's core 'nothing posts without you' promise is contradicted by its own pricing, by features the app already ships, and by a live demo that turns a trader's 'i think' into a price call.",
+ "top3": [
+  "Build a real signup path: hero 'Start free' + 'Try it on a line'; nav, mbar, Free, Pro ('Try Pro free for 7 days') and Studio all go to /signup with plan/billing; the final button becomes signup carrying the pasted line.",
+  "Make the trust promise true and consistent: 'go out on their own' → 'sent at the time you pick', and rewrite the Never strip so it lists only what the app never does (it ships Auto-plug and weekly reruns), plus 'on purpose: X’s payouts need an account in good standing'.",
+  "Say what it is and why it's different: sub 'Write and schedule your X posts, with an editor built in. One tap sharpens your first line. It still sounds like you.', then reorder Try → Voice (new, replaces Who) → Day → Trust → Previews/Replies/Results → Studio → Pricing → FAQ."
+ ],
+ "issues": [
+  {
+   "id": "founder-1",
+   "severity": "P0",
+   "area": "conversion",
+   "where": "Every commitment CTA: nav .nav-r a.btn ('Start free' → #start), hero #hero-cta a.btn-white ('Sharpen my first line' → #start), .mbar a (→ #start), pricing .plan a.btn ('Start free' / 'Go Pro' / 'Start Studio', all → #start), final #fp-go ('Start free to keep it' → #signup, which does not exist), .signin (→ #signin, missing)",
+   "problem": "There's no way to sign up from this page. Every high-intent click, even Go Pro and Start Studio, scrolls the reader down to a demo box at the bottom, and the only 'keep it' link points at an anchor that doesn't exist. Someone ready to pay gets sent to another demo instead of checkout. This is the biggest conversion leak on the page.",
+   "fix": "Add one signup destination: a /signup page, or in the concept a #signup sheet whose first button is 'Continue with X'. Route the CTAs like this. Nav 'Start free' → /signup. Hero primary → /signup. .mbar → /signup. Free card → /signup?plan=free. Pro card → /signup?plan=pro&trial=1&billing=<y|m from the toggle>. Studio card → /signup?plan=studio&billing=<y|m>. The final form's submit → /signup?line=<encoded input> (plain /signup when the input is empty). 'Sign in' → /signin. Nothing labelled Start, Go or Try should ever land on #start again."
+  },
+  {
+   "id": "founder-2",
+   "severity": "P0",
+   "area": "conversion",
+   "where": "Hero #hero-cta (both buttons) and the phone .mbar",
+   "problem": "'Sharpen my first line' and 'Try it on your line' say the same thing, so a stranger can't tell which to press. The white primary skips the whole story and drops them at the final section. On a phone the two buttons sit side by side and read as duplicates.",
+   "fix": "Primary .btn-white: 'Start free' → /signup. Secondary .btn-glass: 'Try it on a line' → #sharpen. On click, also focus #try-ta and select its text so a paste replaces the sample. Keep the micro line. Change the .mbar button to 'Start free' → /signup."
+  },
+  {
+   "id": "founder-3",
+   "severity": "P0",
+   "area": "brand",
+   "where": "Hero .tc-sub (the line under the h1)",
+   "problem": "Five-second test: the h1 is a mood, and the sub ('sharpens your first line in one tap') could describe a grammar plugin. The category (writing + scheduling), the platform (X) and the difference from Typefully, Buffer or ChatGPT are never said above the fold. 'Writing and scheduling…' appears only in the footer.",
+   "fix": "Keep the h1. Replace the sub with: 'Write and schedule your X posts, with an editor built in.<br> One tap sharpens your first line. It still sounds like you.' Set max-width to about 34em so each sentence takes one line at 1440. This gives the job, the platform, the wedge (an editor, not a text box) and the voice objection in two lines."
+  },
+  {
+   "id": "founder-4",
+   "severity": "P0",
+   "area": "trust",
+   "where": "Pricing #pl-free li.x:last-child ('15 posts a month go out on their own'), #pl-pro li.x:last-child ('Up to 500 posts a month go out on their own'), Day tile .slots em ('You pick it; it waits.'), Day figure.phone aria-label ('You hit post at 8:40 AM'), Trust .tfoot",
+   "problem": "The page's core promise ('Nothing posts without you', said three times, and 'We never post for you') is contradicted by its own pricing ('go out on their own'). The Day tile says the post 'waits' while the phone says you hit post. A skeptic finds the contradiction exactly where they're deciding to pay.",
+   "fix": "Use one rule, worded the same everywhere: you pick the time, it goes out then, and nothing else goes out. Free li: 'Schedule freely. 15 posts a month go out at the time you pick; past that, they wait for your tap.' Pro li: 'Up to 500 posts a month, sent at the time you pick'. Day .slots em: 'You pick the time.' Phone aria-label: 'Posted at 8:40 AM, the time you picked: heycape’s post in a feed (example)'. Trust .tfoot: '<b>Every post is one you sent,</b> or scheduled for a time you picked.'"
+  },
+  {
+   "id": "founder-5",
+   "severity": "P0",
+   "area": "trust",
+   "where": "Trust tile #trust: h2 #t-h and ul.nev (Auto-replies, Auto-reposts, Auto-deletes)",
+   "problem": "The Never strip promises things the app doesn't keep. The app ships Auto-plug ('One reply under a post once it takes off') and Weekly reruns ('one of your best posts from 2+ months ago gets a new first line and a slot in your queue'). So striking out 'Auto-replies' and 'Auto-reposts' will read as a lie to the first Pro user who opens Settings. 'Auto-deletes' is also not something anyone fears; people choose it on purpose. Separately, the app already has the best trust line, and the homepage doesn't use it.",
+   "fix": "Heading #t-h: 'Your post. Your time.<br><span class=\"d\">Nothing else goes out.</span>' .nev items, keeping the strike treatment and changing only the words: 'Auto-DMs / Not a setting. Not ever.' · 'Auto-retweets / Your reposts are your call.' · 'Auto-follows / No follow-back tricks.' · 'Bought reach / No pods. No boosts.' Under the heading, add the app’s own line: 'No auto-DMs or auto-retweets, on purpose: X’s payouts need an account in good standing.' This ties trust to the Sept 8 why-now. Product rule so the heading stays true: weekly reruns land in the queue as 'Waiting on your yes', not pre-scheduled, and Auto-plug stays opt-in per post with text you wrote."
+  },
+  {
+   "id": "founder-6",
+   "severity": "P0",
+   "area": "trust",
+   "where": "Try tile engine (#try-go → HWCore.hookUp) and the final field, both live",
+   "problem": "Under the headline 'Your facts stay.', the live engine changes meaning on the lead audience's most typical line. Tested: 'gm. honestly i think btc is going to rip this week, just my opinion though' → 'btc will rip this week, my opinion though.' A hedged opinion becomes a certain price call with a dangling tail, and the cut 'gm' was never marked. For traders this is both a credibility problem and a 'sounds like a shill' problem, and it's the first thing many of them will paste.",
+   "fix": "In core.js hookUp: never drop a stance hedge ('i think', 'imo', 'my opinion', 'nfa') from a forecast clause (will / going to / rip / pump / dump / a price target). Move it to the front as a stance instead, so the target output is 'my call: btc rips this week.' Drop orphaned tails ('though', 'lol' after a full stop). Add these lines to server/test/sharpen-eval.mjs: the btc line above; 'Here is a thread on 5 lessons I learned from losing $50k in crypto'; 'I’ve been thinking a lot about why most newsletters fail and I think it’s because they don’t have a clear point of view'. The Try tile keeps 'Your facts stay.' only once these pass."
+  },
+  {
+   "id": "founder-7",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Try tile #try-mirror after Sharpen, final #fp-draft, and the notes #out-note / #fp-note",
+   "problem": "The marks show only the flagged fluff, but the output cuts more. 'I’ve been thinking a lot about … and' disappears while only 'I think' is struck, and 'gm' is cut without being marked. Words that vanish unmarked are exactly how 'is it AI slop / will it change what I said' doubts start. It also undersells the product's real feature, a word-by-word diff you accept.",
+   "fix": "After Sharpen, strike every word that's in the input but not in the output (a word-level diff), not only H.softMarks. List every cut in the note, using the existing quoted() so long lists collapse. Default copy stays the same."
+  },
+  {
+   "id": "founder-8",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Try tile output #out-why / #out-note when the change is trivial",
+   "problem": "'Here is a thread on 5 lessons I learned from losing $50k in crypto' → 'Here’s a thread on…', labelled 'Sharpened it. Every word you wrote is still there.' and 'Why it hits: It gets to the point before the thumb moves.' This claims a hit for a contraction and misses the most common thread opener on X. Overclaiming is what makes people call a tool slop.",
+   "fix": "Engine: flag 'Here is/Here’s a thread (on|about)' as fluff, with the why 'Announcing the thread delays the point. Lead with what happened.' and the move 'Put the payoff first' (target 'I lost $50k in crypto. 5 lessons:'). Page: if the output differs from the input only by contractions or punctuation, show 'Already close. Nothing worth cutting.' Change the label from 'Why it hits' to 'What changed' for live outputs whose move is soft or tight. Keep 'Why it hits' on the curated hero examples."
+  },
+  {
+   "id": "founder-9",
+   "severity": "P1",
+   "area": "flow",
+   "where": "section.grid-sec .bento DOM order (sets both the desktop grid and the phone order)",
+   "problem": "Table stakes (Previews: Typefully and Buffer do this too) take slot 2. The differentiators come late (Trust is 9th, after Studio) or are missing entirely (how it learns your voice, the fact that you approve every change). 'Who it's for' arrives 7th, after the visitor has already decided. Each section should answer the doubt the previous one raised, and right now they don't.",
+   "fix": "New order. Try (2/3) + Voice (new, 1/3, takes Previews' slot). Then Day (full). Then Trust (full, right after scheduling raises 'will it post without me?'). Then Previews | Replies | Results (3-up; Previews takes Who's slot). Then Studio (full). Then Pricing, FAQ (new) and Final. The chain this creates: it works on my line → will it sound like me → then it's scheduled → will it post on its own → the rest of the kit → if you write for clients → price → leftover doubts → close."
+  },
+  {
+   "id": "founder-10",
+   "severity": "P1",
+   "area": "brand",
+   "where": "Who tile #who (t-who): replace it with a Voice tile",
+   "problem": "'Will it sound like me?' is the main objection to any AI writing tool, and the page answers it only with a sub-line and 'Learns your voice' in pricing. Meanwhile #who spends a tile on four persona faces with '(example)' tags that restate the audience after the reader has decided, and its ghostwriter card duplicates Studio.",
+   "fix": "Replace with article.tile.glass.t-voice#voice. h2.cap: 'It learns how you write.<br><span class=\"d\">You choose every change.</span>' Inside, an X-style card for heycape (Example) reading 'Learned from 8 of your posts'. Habit chips: lowercase · numbers first · no emoji · short lines. 'Never says' with struck chips: to the moon · huge news · in today’s fast-paced world. One diff line: '<s>so i think</s> most underrated thing in trading<s> is honestly just</s>? sizing down after a loss.' Each struck span is a button with aria-pressed; tapping it brings the words back. Caption: 'Tap a cut to undo it.' Moment: the strikes draw in once on arrival. Reduced motion shows the final state. Remove the Footer 'For' column, since all of its links point at #who."
+  },
+  {
+   "id": "founder-11",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Hero .hmeta .since",
+   "problem": "The only 'why now' sits below the fold (y≈1168 at 1440×900) in 13.5px #8D929A, and it never says why it matters. It also over-claims: X pays only eligible creators, not everyone who posts originals.",
+   "fix": "Copy: '<b>Since Sept 8, 2026,</b> X pays eligible creators for original posts, not replies. The first line is the part you control.' Size 15px; the bold in --ink, the rest in --ink-2. Keep the position and the dot."
+  },
+  {
+   "id": "founder-12",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Try tile #try-out (after #out-hits)",
+   "problem": "The live demo is the page's aha moment, and it ends with no next step. Someone who just watched their own line get sharper has to scroll back up or all the way down to act. It also never connects to the main point of the pricing section, that Sharpen is free forever.",
+   "fix": "Add a row after #out-hits: '<b>That was free Sharpen.</b> Unlimited, forever.' plus a.btn.btn-white.btn-x 'Start free' → /signup?line=<encoded #try-ta value>. It shows in the static state too, and reduced motion is unaffected."
+  },
+  {
+   "id": "founder-13",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Final section #fin-form button[type=submit], .fin-sub and #fp-note links",
+   "problem": "The final field already sharpens live as you type (debounced payUpdate), so the 'Sharpen my first line' button does nothing new. It just focuses a text link. The last screen is the best place to sign up, and its main button is wasted.",
+   "fix": "Button label: 'Start free'. On submit, go to /signup?line=<encoded value> (empty input → /signup). .fin-sub: 'Yours don’t have to. Paste one in and watch it sharpen as you type.' Remove the inline 'Start free to keep it' / 'Start free and post it as it is' links from #fp-note, since the button now does that job."
+  },
+  {
+   "id": "founder-14",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Pricing .plans: .plan.feat and its .btn-white on Studio",
+   "problem": "Studio, the agency plan, is the featured card with the page's only white plan button. The lead audience is daily posters, so a solo trader reads the highlight as 'this is built for agencies'. Pro is the plan most visitors should buy, and round 27 featured it.",
+   "fix": "Move .feat and .btn-white to the Pro card. Studio's button becomes .btn-glass. Keep the order Free, Pro, Studio."
+  },
+  {
+   "id": "founder-15",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Pro card CTA ('Go Pro') and .price-n",
+   "problem": "The app already has a 7-day Pro trial that needs no card and goes back to Free on its own ('Try Pro free for 7 days'). The homepage hides it, so 'Go Pro' reads as 'pay now'. It's the lowest-risk upgrade available and it isn't offered.",
+   "fix": "Pro button: 'Try Pro free for 7 days'. Directly under the button, in 13px --ink-3: 'No card. Goes back to Free on its own.' (the app's own wording)."
+  },
+  {
+   "id": "founder-16",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Pricing billing toggle .bill button[data-b=\"y\"]",
+   "problem": "The yearly default shows the low price but never names the saving, so the toggle does nothing to persuade. The saving is real and simple: $12 vs $16 and $18 vs $24 are both 25%.",
+   "fix": "Label: 'Yearly · save 25%'. Put '· save 25%' in --ink-3 when not pressed and --ink when pressed. Monthly stays 'Monthly'."
+  },
+  {
+   "id": "founder-17",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Pricing .lede, #pl-free li:nth-child(2), #pl-pro li:first-child",
+   "problem": "Three units in two lines: 'Free Sharpen', 'Claude rewrites' and 'touch-ups'. A stranger can't tell which one the demo used or what Pro adds. 'Add up to 1,750 more' turns the plan into a meter and invites usage anxiety.",
+   "fix": ".lede: 'Sharpen marks the fluff and fixes the line, as often as you like. Rewrites in your voice run on Claude: 20 a month free, 250 on Pro.' Free li 2: '20 rewrites in your voice a month'. Drop 'plus 50 touch-ups a day' from the homepage and keep it on a plan-details page. Pro li 1: '<b>250 rewrites in your voice a month</b>'. Drop ', add up to 1,750 more'."
+  },
+  {
+   "id": "founder-18",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Studio tile .facts p:first-child and p:nth-child(2)",
+   "problem": "The first bold line an agency reads is 'Anyone with the link can comment.' To someone holding a client's unreleased numbers ('churn down 34%') that sounds like a leak. It also clashes with the next line about signing in. The 'what about my clients?' objection gets answered with a worry.",
+   "fix": "p1: '<b>Clients comment on the exact words. Only you can post.</b>' p2: 'Reviewers sign in with X or Google, so you see who said what. A client’s post goes out only from their own connected X account, never yours.'"
+  },
+  {
+   "id": "founder-19",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "New section after #pricing: section.sec#faq",
+   "problem": "There's no objection block, so the questions that actually block a creator (paid on X? Typefully? the trial? what's a client voice?) go unanswered. Previous rounds had these answers and r84 dropped them.",
+   "fix": "h2.h2: 'Fair questions.<br><span class=\"d\">Straight answers.</span>' Six <details>, all collapsed, each a 17px summary with a 15px answer in --ink-2. (1) 'Will it sound like me?' – 'It learns from your own posts. Bring 8, or write them here, and it keeps your lowercase, your numbers and your words. Every change is marked, and you choose which to keep.' (2) 'Does anything post without me?' – 'Only what you schedule, at the time you pick. No auto-DMs and no auto-retweets, on purpose: X’s payouts need an account in good standing.' (3) 'Will this get me paid on X?' – 'Nobody can promise reach or payouts, and we don’t. X sets its own bar. We work on the part you control: the post.' (4) 'Coming from Typefully?' – 'Bring your Typefully export or your X archive. Your best posts teach it how you write.' (5) 'What’s a client voice?' – 'One client you write for, with their own voice, their own X account and their own review link. $18 a month each, billed yearly.' (6) 'What happens when the Pro trial ends?' – 'It goes back to Free on its own. No card, nothing to cancel.' Cutting #who pays for most of the phone height this adds (budget stays ≤ 11 screens)."
+  },
+  {
+   "id": "founder-20",
+   "severity": "P1",
+   "area": "brand",
+   "where": "<head>: <title>, meta description, and the missing og:/twitter: tags",
+   "problem": "For an X-first product, the link card when someone shares hookworthy.com is literally the 'one line' people read, and there isn't one. The title 'Hookworthy: They read one line' doesn't say what the product is.",
+   "fix": "<title>: 'Hookworthy: write and schedule X posts with sharper first lines'. meta description and og:description: 'Write and schedule your X posts with an editor built in. One tap sharpens your first line, in your voice. Free forever, no card.' Add og:title (same as the title), og:type website, twitter:card summary_large_image, and an og:image (1200×630) of the hero window's Draft → Sharpened panes."
+  },
+  {
+   "id": "founder-21",
+   "severity": "P1",
+   "area": "trust",
+   "where": "Hero window #ex-l ('Watch another real one')",
+   "problem": "'Real' sits right above posts tagged 'Example' by accounts the footer calls example accounts. A skeptic sees 'real' next to 'Example' and starts doubting everything else on the page.",
+   "fix": "#ex-l: 'More examples'."
+  },
+  {
+   "id": "founder-22",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Replies tile h2 #rp-h",
+   "problem": "Ten lines earlier the page says X now pays for posts, not replies. Then a tile opens with 'Answer every reply.' The two read as conflicting advice.",
+   "fix": "#rp-h: 'Reply while it’s hot.<br><span class=\"d\">Drafted. You send it.</span>' This also ties to the 'taking off' ping in the Day tile."
+  },
+  {
+   "id": "founder-23",
+   "severity": "P2",
+   "area": "mobile",
+   "where": "Pricing on phone: .js .plan:not(.open) li.x hides items 4–5",
+   "problem": "On a phone, Free's scheduling and Pro's 500 posts are hidden behind 'See everything included'. Free then looks like just a rewriter, and Pro's main upgrade reason for a daily poster is invisible.",
+   "fix": "Reorder so the first three are what matter. Free: 1 'Sharpen any line, as often as you like' (bold) · 2 the schedule line (founder-4) · 3 '20 rewrites in your voice a month' · li.x 'Learns your voice from your posts' · li.x 'Previews for X, Threads, LinkedIn and Bluesky'. Pro: 1 '<b>Up to 500 posts a month</b>, sent at the time you pick' · 2 '250 rewrites in your voice a month' · 3 'A ping when a post takes off' · li.x 'Results, in plain words' · li.x 'Your week drafted from your ideas'."
+  },
+  {
+   "id": "founder-24",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Studio card .price span and .facts p:last-child",
+   "problem": "'Per client voice, a month' is the app's internal term. The worked example '8 client voices: $144 a month' collides with Pro's 'Billed yearly at $144', so the same number means two different things. Whether your own account costs extra is never said.",
+   "fix": "Price unit: 'per client, a month'. Studio li 2: 'Each client gets their own voice, X account and review link'. .facts last line: '<b>5 clients: $90 a month</b> billed yearly ($120 month to month).' State the own-account rule as one li. If it's included: 'Your own account included'. If not: 'Your own account is one voice'."
+  },
+  {
+   "id": "founder-25",
+   "severity": "P2",
+   "area": "interaction",
+   "where": "Try tile, under .cbar (inside .try-c)",
+   "problem": "The strongest anti-slop proof the engine has is saying no ('Already sharp. Nothing to cut.'), and visitors only see that by accident. A tool that rewrites everything feels like AI. A tool that leaves good lines alone feels like an editor.",
+   "fix": "Add a quiet row of three text buttons (13px, --ink-3, underline on hover) before Sharpen: 'Try: a hot take · a launch · one that’s already sharp'. They fill #try-ta with 'Unpopular opinion: most founders should not raise money.', 'Just shipped v2 of our app. Took 6 months. Very proud of the team.' and 'The Fed meets tomorrow.', then run go(true). No auto-cycling."
+  },
+  {
+   "id": "founder-26",
+   "severity": "P2",
+   "area": "flow",
+   "where": "Nav .links",
+   "problem": "'Previews', a feature every competitor has, gets a nav slot. Meanwhile there's no route to the trust promise or the FAQ, which are what a hesitant visitor wants.",
+   "fix": "Links: 'How it works' (#sharpen) · 'For ghostwriters' (#studio) · 'Pricing' (#pricing) · 'FAQ' (#faq)."
+  },
+  {
+   "id": "founder-27",
+   "severity": "P2",
+   "area": "trust",
+   "where": "Footer .ft > div:first-child p",
+   "problem": "With no testimonials or logos allowed (correctly), the cheapest credibility that isn't fake is a real human behind the product. Right now the page is anonymous.",
+   "fix": "Only if the details are real, add under the description: 'Made by <real name>, who posts on X as <a href=\"https://x.com/<handle>\">@<handle></a>.' With no real name and handle, skip it. Never use a placeholder."
+  }
+ ]
+}

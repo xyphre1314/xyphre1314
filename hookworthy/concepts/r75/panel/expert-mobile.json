@@ -1,0 +1,94 @@
+{
+ "key": "mobile",
+ "expert": "Mobile UX lead and front-end performance engineer (owned Core Web Vitals for a large consumer site)",
+ "field": "Mobile UX and web performance",
+ "method": "390x844 @3x, isMobile+touch. Lab: CDP Slow-4G (150ms RTT, 1.6Mbps down), Emulation.setCPUThrottlingRate 4, cache off, local server (no TLS/DNS, HTML not gzipped; gz sizes computed separately). PerformanceObserver for LCP, layout-shift (session windows), longtask, rAF frame gaps over 9s of hero idle plus a full 600px-step scroll. CLS attributed by re-running with .woff2 blocked and with reduced motion. Tap targets: every visible interactive under 44px. Times are relative, not field numbers.",
+ "criteria": ["Phone first screen", "Phone flow and pacing", "Touch and thumb reach", "Performance (weight, LCP, long tasks)", "Visual stability (CLS, font swap)"],
+ "scores": {
+  "arc-a": {
+   "criteria": {"Phone first screen": 8, "Phone flow and pacing": 5, "Touch and thumb reach": 6.5, "Performance (weight, LCP, long tasks)": 5.5, "Visual stability (CLS, font swap)": 3},
+   "overall": 5.9,
+   "verdict": "The best phone hero in the set, but the peel animation physically shoves the page around, and that alone fails CLS.",
+   "loved": "At 390 the before (amber stickers) and the after (sharpened line plus peeled tray) both land above the fold by about 3s. The demo's Sharpen button sits at y=663, right in the thumb zone, so the 'one tap' claim is literally under your thumb.",
+   "problems": [
+    "CLS 0.17, the worst in the set. About 0.08 to 0.10 comes from the hero animation reflowing #cline: the line collapses and the card bottom jumps 30-40px on every cycle. Another 0.062 comes from the Newsreader/Inter swap at about 2.5s. With prefers-reduced-motion it is still 0.10.",
+    "On Slow 4G the Newsreader headline and draft render in the fallback serif until about 3.1s, then swap. No font preload, and 270KB of fonts across 3 files.",
+    "photos.jpg is an 800x2844, 314KB sprite set as a CSS background. It downloads eagerly during load and competes with the fonts for bandwidth, yet the photos only appear around screens 5 and 10-12.",
+    "16.4 phone screens. Pricing starts at screen 12.8, and the only signup control for 13 screens is a 104x40 pill in the top-right corner, the hardest thumb zone."
+   ],
+   "fix": "Give the hero card a fixed min-height and run the peel/collapse with transforms (absolute-positioned stickers and tray, a height that never changes) so the animation causes zero layout shift. Then preload Newsreader roman with a size-adjusted fallback."
+  },
+  "arc-b": {
+   "criteria": {"Phone first screen": 8.5, "Phone flow and pacing": 4.5, "Touch and thumb reach": 6, "Performance (weight, LCP, long tasks)": 4.5, "Visual stability (CLS, font swap)": 8},
+   "overall": 6.6,
+   "verdict": "The most legible before-to-after on a phone and the steadiest page, held back by 300KB of inlined fonts that block first paint.",
+   "loved": "By 2s on a 390 screen you see the struck italic soft line, an arrow, and the bold lime sharp line, with no animation needed to read it. The display faces are inlined, so the poster headline paints in its real font on first paint, with no swap flash, and CLS is 0.04.",
+   "problems": [
+    "The HTML is 298KB (196KB gzipped) because about 150KB of base64 woff2 sits inside 260KB of inline CSS. Lab FCP/LCP is 1.52s against 0.40-0.63s for the other four, about 3x slower, and the whole page is render-blocked behind it.",
+    "17.4 phone screens, the longest page. Pricing starts at screen 13.6, and the receipt stack (screens 2-4) repeats the same four rewrites the hero already shows.",
+    "Small targets sit in the hero's thumb zone: the Real examples / Try yours toggle is 31px tall, and the rewrite chips are 33px tall at y=842, right on the fold.",
+    "The 314KB photo sprite loads eagerly, as on arc-a."
+   ],
+   "fix": "Subset Bricolage Grotesque and Instrument Serif to Latin glyphs, serve them as external woff2 with <link rel=preload> and size-adjusted fallbacks, and take them out of the HTML. That brings FCP back to about 0.5s while keeping the no-flash headline."
+  },
+  "awwwards-b": {
+   "criteria": {"Phone first screen": 5.5, "Phone flow and pacing": 4.5, "Touch and thumb reach": 5, "Performance (weight, LCP, long tasks)": 3.5, "Visual stability (CLS, font swap)": 7},
+   "overall": 4.6,
+   "verdict": "Beautiful on a desk, heavy in the hand: the main-thread cost here is the kind that turns into bad INP on mid-range Android.",
+   "loved": "The proofreader marks read clearly at 390: strikes, carets and the blue margin notes ('warm-up, hedge') explain why a word is soft without any copy.",
+   "problems": [
+    "TBT 786ms at 4x CPU with a 326ms long task, the worst in the set. The proof marks are laid out with offsetTop/offsetParent walks and getTotalLength per mark. It is also the only design with scroll jank: a 143ms task around 4800px and 9 frames over 50ms.",
+    "Five font files (282KB), including Caveat (50KB) for margin notes and Inter (71KB). The Garamond headline swaps at about 1.9s.",
+    "The payoff never fully makes the first screen. The mono draft runs at about 2x line-height, so the set line is cut off at y≈830 and the receipt is on screen 2.",
+    "Example switching uses four 26x26 dots plus a 33px-tall NEXT PROOF button. 16.7 screens, with long stretches of empty paper between the stacked proofs."
+   ],
+   "fix": "Precompute the mark geometry: lay the proof out once, cache the rects, and draw the paths with a CSS stroke-dashoffset transition instead of per-frame JS measuring. Tighten the mono draft's line-height so the set line lands above the fold."
+  },
+  "apple-b": {
+   "criteria": {"Phone first screen": 7.5, "Phone flow and pacing": 6, "Touch and thumb reach": 5.5, "Performance (weight, LCP, long tasks)": 7.5, "Visual stability (CLS, font swap)": 4.5},
+   "overall": 6.3,
+   "verdict": "Engineered like a mobile page should be, lightest by 3x and shortest by 2-3 screens, but it drops its CTA after the hero and the headline jumps under your thumb.",
+   "loved": "About 302KB total (about 262KB gzipped): two fonts with Inter preloaded, no photo sprite, a text LCP at 0.63s, and fonts done by 1.6s while the others finish at 2.5-3.8s. Pricing arrives at screen 10, against 12.7-13.6 everywhere else.",
+   "problems": [
+    "CLS 0.103 from a single shift at about 1.4s, when the Inter swap re-wraps the display h1. The headline moves 53px and the subhead plus CTAs move about 104px, right when a thumb is heading for Start free. With fonts blocked, CLS is 0.",
+    "The header is position:absolute, not sticky. After the hero there is no signup control on screen for 10.5 screens, until pricing at about 8,500px.",
+    "The 'before' line is truncated to one line with an ellipsis and struck through at about 13px, so the transformation is not readable on a phone. The hero shows a result rather than the tap.",
+    "The DOM is the largest in the set at 1,182 nodes: the drift feed is 8 columns of duplicated cards with 8 infinite animations behind the hero. TBT is 344ms, and recurring 55-64ms tasks were still firing at about 10s idle."
+   ],
+   "fix": "Add a metric-matched fallback (@font-face local('Arial') with size-adjust/ascent-override tuned to Inter Display) so the h1 cannot reflow, and make the header sticky with Start free. Two small changes that would make this the strongest mobile page here."
+  },
+  "typefully-a": {
+   "criteria": {"Phone first screen": 6.5, "Phone flow and pacing": 5, "Touch and thumb reach": 4.5, "Performance (weight, LCP, long tasks)": 4, "Visual stability (CLS, font swap)": 6.5},
+   "overall": 5.3,
+   "verdict": "The heaviest page in the set, and its stacked hero doesn't have room for the receipt above the fold on a 390 screen.",
+   "loved": "The draft card's amber squiggles and '3 soft words' count read instantly at 390. The demo's Sharpen button (110x40 at y=678) sits where the thumb already is.",
+   "problems": [
+    "About 940KB transferred (about 883KB gzipped), the heaviest page. Fonts alone are 414KB, including Newsreader roman plus italic (273KB). The italic punchline 'hookworthy.' shows in the fallback font until about 3.7s on Slow 4G, then swaps with a 0.026 shift.",
+    "The stack is too tall for the phone: the sharpened X post shows only its first two lines at the bottom edge, and the receipt is on screen 2. At about 0.9s the preview card is shoved 110px down as the draft footer renders (0.039).",
+    "Most undersized targets in the set (32 under 44px, 17 under 24px). The four example switchers are 36x36 avatar-only buttons, and their labels are hidden at phone width, so they have no visible or accessible name.",
+    "16.6 screens, pricing at 12.7, plus the eager 314KB photo sprite."
+   ],
+   "fix": "Drop Newsreader Italic (set the punchline in roman with an underline, or subset the italic to the 11 glyphs it uses), and on phones show the receipt as a one-line chip on the sharp card so before, after and receipt all fit in 844px."
+  }
+ },
+ "ranking": ["arc-b", "apple-b", "arc-a", "typefully-a", "awwwards-b"],
+ "pick": "arc-b",
+ "pickWhy": "On a 390 screen it is the only hero where before and after are both legible within 2s without depending on a reflowing animation, and it is already stable (CLS 0.04, no headline flash). Its one big flaw, about 150KB of base64 fonts blocking first paint, is a mechanical subset-and-preload fix, not a design change.",
+ "combo": "Use arc-b's static-first proof card (struck italic, then the lime sharp line) on apple-b's chassis: two preloaded fonts, no photo sprite, 14 screens with pricing at screen 10. Add a sticky header plus a bottom-anchored 'Sharpen my first post' bar that appears once the hero scrolls away.",
+ "mustNotIgnore": "Every finalist is 14-17 phone screens, with a 10.5-14-screen stretch where the only signup control is a 36-42px pill in the top-right corner (apple-b has none at all). Four of the five also eagerly load a 314KB photo sprite during the critical font window.",
+ "data": {
+  "transferKB_raw": {"arc-a": 789, "arc-b": 817, "awwwards-b": 770, "apple-b": 302, "typefully-a": 940},
+  "html_gzipKB": {"arc-a": 18, "arc-b": 196, "awwwards-b": 20, "apple-b": 16, "typefully-a": 20},
+  "fontsKB": {"arc-a": 270, "arc-b": "150 inline + 70", "awwwards-b": 282, "apple-b": 141, "typefully-a": 414},
+  "lab_LCP_ms": {"arc-a": 404, "arc-b": 1524, "awwwards-b": 516, "apple-b": 628, "typefully-a": 432},
+  "LCP_element": {"arc-a": "div.stage text", "arc-b": "h1", "awwwards-b": "p.lede", "apple-b": "h1", "typefully-a": "p#d-text (draft)"},
+  "fonts_done_ms": {"arc-a": 3162, "arc-b": 3024, "awwwards-b": 2519, "apple-b": 1573, "typefully-a": 3774},
+  "CLS": {"arc-a": 0.17, "arc-b": 0.04, "awwwards-b": 0.03, "apple-b": 0.103, "typefully-a": 0.04},
+  "TBT_4xCPU_ms": {"arc-a": 225, "arc-b": 118, "awwwards-b": 786, "apple-b": 344, "typefully-a": 403},
+  "max_long_task_ms": {"arc-a": 133, "arc-b": 123, "awwwards-b": 326, "apple-b": 206, "typefully-a": 182},
+  "phone_screens": {"arc-a": 16.4, "arc-b": 17.4, "awwwards-b": 16.7, "apple-b": 14.3, "typefully-a": 16.6},
+  "pricing_at_screen": {"arc-a": 12.8, "arc-b": 13.6, "awwwards-b": 13.1, "apple-b": 10.0, "typefully-a": 12.7},
+  "sticky_nav_px": {"arc-a": 69, "arc-b": 71, "awwwards-b": 62, "apple-b": "none (absolute)", "typefully-a": 65},
+  "targets_under_44": {"arc-a": 20, "arc-b": 25, "awwwards-b": 23, "apple-b": 21, "typefully-a": 32}
+ }
+}

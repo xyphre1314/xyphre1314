@@ -1,0 +1,80 @@
+{
+  "key": "brand",
+  "role": "senior brand designer: identity systems for software companies",
+  "score": 9.2,
+  "verdict": "Afterglow is now a real identity system: the hook-h wordmark carries cleanly from nav to app icon, notification, sheet, OG card and giant footer, ember is used only as light, warm rim and fluff squiggle, and the cinema hero plus X-native bento would sit next to Linear's work without embarrassment. What keeps it under 9.5 is type and imagery discipline you can see in the first seconds of a section: two-beat posts wrap mid-beat in the hero, Try and final card, the bento headings change size and tone by tile and by breakpoint, and the Who tile puts a cartoon PFP in a row of photo portraits.",
+  "to_95": [
+    "Keep each beat whole in every two-beat post (hero #pf-sharp, Try #out-line, final #fp-sharp). At 1280, 1024 and 390 the hero reads 'i finally hit my first $10k month. it / took 3 years.', which splits the very beat the 'Why it hits' line describes.",
+    "Lock the bento heading system to two sizes and one tone rule, applied the same way at every width. Today the tile heads use 22 / 23.6 / 26 / 28px on a phone, and #w-h and #t-h switch from two-tone to mono depending on breakpoint.",
+    "Rebuild the Who tile as four mini X posts, each persona's own sharpened first line. That fixes the cartoon-vs-photo avatar clash, delivers the 'one hook each' the tile promises, and stops it reading as a features grid.",
+    "Stop the plan cards' drop shadows painting over the pricing fine print.",
+    "Make the wordmark an outlined SVG (the asset already exists) and lift the hook-h shoulder to Inter's x-height.",
+    "Bring legal.html into line with the homepage: the same words for the two engines, no 'hook score' the homepage never shows, the same nav and sheet, and an h1 on the type scale."
+  ],
+  "issues": [
+    {
+      "id": "brand-1",
+      "severity": "P2",
+      "area": "Typography: product moments",
+      "where": "Hero sharpened post .ptext #pf-sharp at 1280/1024/390/360; Try output #out-line at 1440 ('i stopped chasing $SOL. my / pnl is up 40% since june.'); final card #fp-sharp ('i held $BTC through a 30% / drawdown. it paid off.')",
+      "problem": "The whole pitch of these cards is 'two short beats, the pause makes the second land', yet the line breaks inside the second beat ('…month. it / took 3 years.'). text-wrap:pretty only prevents orphans; it doesn't keep sentences together. It shows in the first 5 seconds of the hero at the most common laptop width and on phones.",
+      "fix": "When rendering a split result, wrap each sentence in <span class=\"beat\"> with .beat{display:inline-block} (a single beat wider than the line still wraps normally). Two beats that fit stay on one line; otherwise the break falls between beats. Alternatively, render split posts with a real line break between beats, the way X creators format them. Apply the same treatment to the OG image's post."
+    },
+    {
+      "id": "brand-2",
+      "severity": "P2",
+      "area": "Type system: bento headings",
+      "where": ".cap rules (lines ~433-435, 635-642, 783, 1105, 1275-1277, 1473, 1487)",
+      "problem": "The signature heading (statement line in ink, payoff line in grey) is applied inconsistently. At 1440, Previews/Replies/Results are all-ink 26px while their neighbours are two-tone 40px. #w-h is two-tone at 1440 but mono at 1024. #t-h is two-tone on desktop but mono on a phone. On a 390 phone the tile heads come in four sizes (22, 23.6, 26, 28px) that sit too close together to read as deliberate steps. It looks like accretion, not a system.",
+      "fix": "Define exactly two tile steps: Lead (40px desktop / 28px phone) for full-width tiles (Try, Voice, Day, Studio, Trust), and Standard (26px / 22px) for half and third tiles (Previews, Replies, Results, Who). Pick one tone rule per step (recommended: two-tone everywhere, since it is the hero's voice) and apply it at every breakpoint. Delete the per-tile and per-breakpoint .d colour overrides and the container-query 23.6/21.4px sizes."
+    },
+    {
+      "id": "brand-3",
+      "severity": "P2",
+      "area": "Imagery: people",
+      "where": "Who tile (.t-who .faces), most visible at 1440 (80px avatars) and 390",
+      "problem": "heycape's avatar is an illustrated cartoon PFP (glasses, bubble gum) shown next to three photographic portraits. As heycape's X PFP elsewhere it reads as authentic crypto-X. In a set of four 'you are…' personas it breaks the set. The grid of avatar, bold line and description is also the most generic, least X-native tile on the page, and it shows descriptors rather than the 'one hook each' the markup comment promises.",
+      "fix": "Turn the four personas into four compact X post rows (PFP, name, handle, then that persona's sharpened first line, with the struck fluff shown faintly above it), reusing the .xrow/.xtext components. Mixed PFP styles are native to a feed, so heycape's cartoon stays. If the grid stays instead, use a photographic face from avatars.jpg for 'You post your trades' and keep the cartoon only where heycape appears as an account."
+    },
+    {
+      "id": "brand-4",
+      "severity": "P2",
+      "area": "Craft: pricing",
+      "where": ".plans-fine under the three plan cards (1440/1280/1024)",
+      "problem": "The plan cards are positioned (.glass{position:relative}), so their 0 50px 100px -40px black shadow paints over the non-positioned fine-print line. Text under each card renders at about rgb(115,119,126) and text in the gaps at about rgb(133,138,144), so 'stops renewing' and 'for ends, and' look randomly bolded. The dimmed parts sit at about 4.5:1, right on the AA line.",
+      "fix": "Give .plans-fine position:relative; z-index:1 (or add margin-top so it clears the shadow) so the line renders evenly in --ink-3."
+    },
+    {
+      "id": "brand-5",
+      "severity": "P2",
+      "area": "Identity: wordmark",
+      "where": ".mark in nav and footer, .giant in footer (homepage and legal)",
+      "problem": "The wordmark is a drawn hook-h followed by live Inter text 'ookworthy'. On a slow first visit it renders in the metric-matched Arial fallback beside the drawn h, and its spacing depends on the text engine. The hook-h shoulder also tops out at about 0.52em, against Inter's ~0.556em round x-height. That is invisible at 20px, but at the 224px footer mark the h visibly slumps below the o's.",
+      "fix": "Inline assets/brand/afterglow-wordmark.svg as a <symbol> and use it for .mark and .giant (keep aria-label 'Hookworthy'). In the hk-h path, raise the shoulder about 0.6 units (arc top from y=13.0 to ~12.4 in the 20x23 box) so it meets the o's overshoot, and let the hook bowl dip about 0.3 units below the baseline to match Inter's round overshoot. Re-export the icon, favicon, 180px PNG and OG image from the same path."
+    },
+    {
+      "id": "brand-6",
+      "severity": "P2",
+      "area": "Voice consistency: legal page",
+      "where": "concepts/r86/legal.html: 'What leaves, and when' and 'Scores are a guide'",
+      "problem": "The legal page names things the homepage never uses. It says 'Quick mode' where the homepage says 'on-device engine', and 'your Hookworthy server is connected; without one, it runs on your device' where the homepage says 'In the app, Claude sharpens your line' (self-host framing against the homepage's consumer framing). It also talks about 'The hook score is five checks', a score the homepage never shows. A brand reads as one voice only if the nouns match.",
+      "fix": "Use the homepage's nouns: 'Sharpen runs on Claude in the app, with the on-device engine as the instant fallback; this page's demo runs on your device'. Drop 'Quick mode' and 'your Hookworthy server' in favour of 'sync' or whatever the homepage FAQ will say. Either remove 'Scores are a guide' or rename it to something the homepage shows."
+    },
+    {
+      "id": "brand-7",
+      "severity": "P2",
+      "area": "Consistency: legal page chrome",
+      "where": "legal.html nav, footer and .h1",
+      "problem": "The legal nav drops 'Sign in', and its 'Start free' jumps to home.html#start instead of opening the same sheet. Its footer keeps 'heycape and everyone shown are example accounts' on a page that shows no one. The h1 is 88px, a size that isn't on the homepage's display scale (104 / 72 / 40 / 26).",
+      "fix": "Reuse the homepage nav markup (Sign in + Start free; link both to home.html with a ?sheet=free / ?sheet=signin hash the homepage opens on load). Drop the example-accounts line from the legal footer. Set .h1 to the D2 72px step (clamp(40px,10.4vw,72px)) so the two pages share one scale."
+    },
+    {
+      "id": "brand-8",
+      "severity": "P2",
+      "area": "Layout polish: hero window header at 360",
+      "where": ".pane.sharp .ph-h at 360px",
+      "problem": "'Cut 2 bits of fluff · Split it into two beats' wraps to a second line ('…into two / beats') beside 'Sharpened', so the header row grows and the move label reads as broken.",
+      "fix": "At ≤380px show only the first move ('Cut 2 bits of fluff'), or let the move label sit on its own line under 'Sharpened' with white-space:nowrap."
+    }
+  ]
+}

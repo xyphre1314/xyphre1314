@@ -1,0 +1,73 @@
+{
+  "key": "brand",
+  "role": "senior brand designer: identity systems for software companies",
+  "score": 9.2,
+  "verdict": "Afterglow is applied with real discipline: every colour comes from tokens, Inter 4 Display is the only face, ember appears only as the beam, the warm rim and the fluff squiggle, and the squiggle-then-strike mark carries the brand from hero to Studio to the final card, while the cast (heycape, Jun Park, Priya) and the dark-graded photos hold together across all six widths. It falls just short of 9.5 on craft details: a pill breaks at 768, the hook-h sits loose from the rest of the word, numbers split from their units at 360, and the brand files outside the page have drifted from the mark on it.",
+  "to_95": [
+    "Fix the Voice tile's 'lowercase stays lowercase' chip at 761-780px, where its text spills out of a fixed 28px pill (768 is a required width).",
+    "Kern the hook-h into the word in the nav, footer and giant sign-off so the logotype reads as one word, not 'h ookworthy'.",
+    "Keep numbers with their units at every width ('8:40 AM' and '3 years' break at 360).",
+    "In Studio, stop reusing heycape's photos and the Day tile's backgrounds as other clients' post media.",
+    "Bring assets/wordmark.svg, assets/icon.svg and assets/app-icon.* (the PWA icon) in line with the page's lowercase hook-h lockup.",
+    "Stop the Studio review card from truncating client handles ('@lenafi…', '@marco…').",
+    "Use the white-plus-grey heading pair less often in the small bento tiles, so it stays a signature rather than a template."
+  ],
+  "issues": [
+    {
+      "id": "brand-1",
+      "severity": "P1",
+      "area": "Component craft / type",
+      "where": "#voice .vrow 'Habits' chips, viewport 761-780px (seen at 768)",
+      "problem": "At this width the first voice column is about 200px wide. 'lowercase stays lowercase' wraps onto two lines inside .chip, which is fixed at height:28px, so the second line hangs outside the pill and the first line rides above it. A broken pill in the brand's own chip component is visible as soon as the tile appears. Checked: scrollHeight 34 vs clientHeight 28 at 761, 768 and 776; fine from 784 up and at every other tested width.",
+      "fix": "Add white-space:nowrap to .chip, and let the dd wrap whole chips (it already has flex-wrap). If the chip is then wider than the column at 761-780, give that range its own column split, for example @media (min-width:761px) and (max-width:800px){.vlist{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr)} .vrow{padding-inline:14px}}. Re-run the overflow check from 761 to 900."
+    },
+    {
+      "id": "brand-2",
+      "severity": "P2",
+      "area": "Wordmark",
+      "where": ".mark .mk-h (nav and footer), .giant svg (footer sign-off)",
+      "problem": "The hook-h's hook is drawn low, and the glyph also gets margin-right:.06em. That leaves roughly a 0.3em gap at x-height between the h's shoulder and the first 'o', against about 0.08em between the other letters. The logotype reads as 'h ookworthy': visible at 1x and 2x in the nav, and plain in the 224px sign-off. The hook should feel like part of the word, not a separate symbol.",
+      "fix": "Change margin-right on .mark .mk-h and .giant svg from .06em to about -.02em, so the hook tucks under the left side of the o's bowl with about .04em of clearance. Use one value at every size, check it at 19px, 20px and 224px, and apply the same spacing to the OG image and any exported lockup."
+    },
+    {
+      "id": "brand-3",
+      "severity": "P2",
+      "area": "Identity system consistency",
+      "where": "assets/wordmark.svg, assets/icon.svg, assets/app-icon.png/.svg (manifest.webmanifest), favicon rect colour",
+      "problem": "The page's mark (#hk-h, #hw, favicon, apple-touch-icon) is a lowercase lockup: a 3.9-weight hook-h with a butt-capped stem that IS the word's h. The repo's master files have drifted from it. wordmark.svg is an old symbol-plus-'Hookworthy' lockup with a capital H, and icon.svg and app-icon.* draw a 3.2-weight hook-h with a round-capped stem. app-icon.png is the installed-app (PWA) icon, so the home-screen icon will not match the favicon. The icon tile also uses #0D0D0D, which is not one of the tokens (ground is #08090A, s1 is #0B0C0E).",
+      "fix": "Regenerate wordmark.svg from the page's lockup: #hk-h plus 'ookworthy' in Inter 600 at -.03em, with the brand-2 spacing and light and dark variants. Rebuild icon.svg, app-icon.svg and app-icon.png from the #hw symbol (3.9 stroke, butt stem). Use one tile colour from the tokens for the favicon, apple-touch-icon and app icon."
+    },
+    {
+      "id": "brand-4",
+      "severity": "P2",
+      "area": "Typography: line breaks",
+      "where": "360px: Day tile '.nt-h b' (Your best time: 8:40 AM); hero draft #pf-draft (… took me 3 years lol)",
+      "problem": "At 360, '8:40 AM' breaks into '8:40' and an orphaned 'AM', and the hero draft breaks '3' from 'years'. A time or a number cut away from its unit is exactly the detail a typographically careful brand avoids, and the second one is in the first product moment on a phone.",
+      "fix": "In static copy write times as '8:40&nbsp;AM' (also '11:04&nbsp;PM', '8:15&nbsp;AM' and so on). In draftHTML and anywhere engine text is printed, do a display-only pass after esc() that replaces /(\\d)\\s(AM|PM|years?|months?|days?|readers|posts)\\b/g with '$1\\u00A0$2'. Re-run the split scan at 360 to 414."
+    },
+    {
+      "id": "brand-5",
+      "severity": "P2",
+      "area": "Imagery",
+      "where": "Studio tile client states: Rafael (--i:3 cafe), Marco (desk at night), Lena (run)",
+      "problem": "heycape's post is the cafe shot in the phone, the reply thread and the results thumbnail, which is good continuity. But picking Rafael shows the same coffee cup as his post, Marco's post is the Day tile's night background, and Lena's is a crop of the morning background. Within one scroll the same few photos stand in for different people, which makes the library look thin and the cast look staged.",
+      "fix": "Keep the cafe crop for heycape only. Make Rafael's and Marco's drafts text-only (natural for a VC take and a trader's mea culpa); if a visual is wanted, use a tight detail crop such as the laptop-screen glow for Marco (--fx and a 3:1 aspect) that can't be read as the night background. Keep the team shot for Priya and the run shot only for Lena, and give the morning background a crop that shows less of the path."
+    },
+    {
+      "id": "brand-6",
+      "severity": "P2",
+      "area": "Product-moment polish",
+      "where": "#studio .st-post .xname at ≥901px (Lena, Rafael, Marco)",
+      "problem": "The review-link card's name row truncates the handles ('@lenafi…', '@rafaelo…', '@marco…') and leaves a loose gap before '· draft'. On the biggest X-card in the Studio moment, an ellipsised handle reads as a layout bug rather than a real post.",
+      "fix": "Use handles that fit (for example @lenaf, @rortiz, @marcov), or hide the handle span in the review card at ≥901 and keep name, Example and draft. Check all four clients at 901, 1024, 1280 and 1440."
+    },
+    {
+      "id": "brand-7",
+      "severity": "P2",
+      "area": "Type system / personality",
+      "where": "All 13 h1/h2 headings, especially the 26px .cap tiles (Previews, Reply, Results, Who, Trust)",
+      "problem": "Every heading on the page uses the same pattern: a white statement, a line break, then a grey second statement, at the same weight and tracking. It is a strong signature in the hero, the lead tiles and the section heads. Repeated in every small tile, it starts to read as a template, which flattens the page's personality where the founder asked for more.",
+      "fix": "Keep the white-plus-grey pair for the H1, Pricing, FAQ, the final card and the three lead tiles (Try, Day, Studio). In the small tiles, set both lines in --ink, or make the second line a product fragment (for example a struck, squiggled word, as the Try tile and the final heading already do), still within two lines at 1440 and 390."
+    }
+  ]
+}

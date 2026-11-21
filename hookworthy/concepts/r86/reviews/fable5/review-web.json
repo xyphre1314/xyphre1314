@@ -1,0 +1,19 @@
+{
+ "key": "web",
+ "role": "Awwwards-level web designer and front-end craftsperson",
+ "score": 9.4,
+ "verdict": "Composition, rhythm and motion hold at 1440, 390 and 360 with every hard rule met (CLS 0.000, no horizontal scroll, 9.98 screens at 390 and 10.39 at 360, all headings two lines, reduced motion fully static, no console errors, clean focus rings and sheet states). What keeps it a hair under 9.5 is front-end weight: the first Sharpen tap takes about 540 ms to paint under 4x CPU throttle, plus a few loose compositions at 1440.",
+ "to_95": [
+  "Make the Sharpen tap paint inside 200 ms on a mid-tier phone: paint the pressed/working state first, then run the engine and the result build in the next task (and load/compile sharpen.min.js on idle, not on the load path).",
+  "Tighten the Say-it/Post-it cell at 1440 so the three step cards and the phone fill the cell without the dead band in the middle and under the third card.",
+  "Stop the result post-card from over-breaking short sharpened lines into three stacked lines at 1440."
+ ],
+ "issues": [
+  {"id": "web-1", "severity": "P1", "area": "performance / interaction latency", "where": "Try box, Sharpen button (390, CPU throttled 4x, first tap)", "problem": "Click-to-next-frame measured 541 ms under 4x CPU throttle (mid-tier Android stand-in); INP would rate poor on those phones although desktop feels instant. The engine bundle is 553 KB raw / 183 KB gzip and load produces two ~125 ms long tasks (TBT about 150 ms throttled).", "fix": "On tap, set the button's pressed/working state and yield (requestAnimationFrame then setTimeout 0 or scheduler.yield) before calling HWCore.sharpenLine and building the result DOM; split result rendering from the preview-feed update into a second task. Inject sharpen.min.js from requestIdleCallback after load and keep it out of the first 1.5 s."},
+  {"id": "web-2", "severity": "P2", "area": "composition", "where": "Say it at 11 PM cell, 1440", "problem": "Step cards are 440 px wide in a ~650 px column, leaving a ~180 px empty band before the phone and ~110 px of dead space under the third card; it is the loosest cell in an otherwise tight bento.", "fix": "Widen the step stack to about 520 px (or move the phone 60 px left) and vertically centre the stack against the phone, or trim the cell height by ~80 px."},
+  {"id": "web-3", "severity": "P2", "area": "typesetting", "where": "Try box result post card, 1440 (e.g. 'gm. / we're excited to / announce v2')", "problem": "A short sharpened line breaks into three stacked lines in a 440 px card that fits it in two; the sentence split plus balanced wrapping reads as a layout glitch.", "fix": "Only force a per-sentence line break when each sentence is over about 18 characters; otherwise let the line flow with text-wrap: pretty."},
+  {"id": "web-4", "severity": "P2", "area": "layout", "where": "Pricing header, 1440", "problem": "Heading, subline and billing toggle are stacked on the left with the right ~600 px empty, so the toggle sits detached from the cards it controls.", "fix": "Keep the heading left and move the Yearly/Monthly toggle to the right edge, baseline-aligned with the subline, above the Studio card."},
+  {"id": "web-5", "severity": "P2", "area": "type scale", "where": "FAQ questions, 1440", "problem": "16 px questions beside a 72 px heading look undersized; the right column reads lighter than the left.", "fix": "Set questions to 18 px/500 at widths of 1024 and up, keeping 16 px on phones."},
+  {"id": "web-6", "severity": "P2", "area": "pricing cards", "where": "Pricing, 1440 after 'See everything included'", "problem": "Expanding one plan expands all three, leaving the Studio card with a tall empty block above 'Show less'.", "fix": "Keep the linked expand, but align the card footers with the lists top-aligned and add Studio's remaining inclusions, or let each card expand on its own with footers pinned by grid rows."}
+ ]
+}

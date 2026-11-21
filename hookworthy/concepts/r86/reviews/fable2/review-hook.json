@@ -1,0 +1,87 @@
+{
+ "key": "hook",
+ "score": 8.7,
+ "score_ondevice": 7,
+ "verdict": "Claude path: 99 of 120 lines are post-as-is (82.5%; 72.0% on the 75 that needed work), with no fact or meaning changed and hedges, sarcasm and negations handled correctly. That is safer than Typefully's rewrite and close on craft for cuts and splits, but it stops short of 9.5: one broken line still ships through the fallback (g-51), about a quarter of the needs-work lines get only a light trim, and a few receipts are off (g-28 says 'Number first' when no number moved). On-device: 65.8% h (45.3% on needs-work), 2 broken lines, 1 meaning change and 3 untrue explanations, so it is a safe-ish fallback rather than a rewrite.",
+ "to_95": [
+  "Never ship a fallback line that opens on a dangling infinitive or filler: when Claude's line is rejected and the on-device line fails a whole-sentence check, ship the draft unchanged (g-51).",
+  "Cut the remaining stance-free run-ups on the Claude path: 'In my opinion' plus a second hedge, 'I think' on plain views, 'basically just', 'There are', 'Here are N' (g-5, 11, 14, 17, 28, 36, 68, 77, 112).",
+  "Make 'say' derive from the actual edit: no 'Number first' unless a number moved to the front, and cut counts that match the why (g-28, 23, 71, 3).",
+  "On over-280 lines, drop throat-clearing openers such as 'Long post incoming.' so post 1 opens on the story (g-114).",
+  "On-device: stop cutting intensifiers that set degree ('really good'), stop cutting 'probably' as fluff, cut a filler chain whole ('so um'), and remove the 'without it this line breaks' and 'On news like this' reasons where they are not true (g-22, 74, 23, 43, 89, 35)."
+ ],
+ "issues": [
+  {
+   "id": "H1",
+   "severity": "high",
+   "area": "validator/fallback",
+   "where": "g-51 (source: rules)",
+   "problem": "Claude's line was rejected and the on-device fallback shipped 'To say that I'm going to be moving the newsletter...', a broken sentence, with a why that claims it opens on what the writer came to say.",
+   "fix": "Run the fallback through the same broken-opener guard (line may not start with 'To say that', 'um', a bare conjunction); if it fails, return the draft as 'clean'. In the frame cut, extend 'Just a quick note' to swallow 'to say that'."
+  },
+  {
+   "id": "H2",
+   "severity": "high",
+   "area": "on-device engine",
+   "where": "g-23",
+   "problem": "Cut 'so' from 'so um i wrote' and left 'um' as the first word.",
+   "fix": "Treat leading filler as a chain: strip every SL_FILLW token at the head, not just the first."
+  },
+  {
+   "id": "H3",
+   "severity": "high",
+   "area": "on-device engine",
+   "where": "g-22, g-74",
+   "problem": "'really good' became 'good' (the degree was the claim) and 'probably' was cut from a hedged opinion and called fluff.",
+   "fix": "Keep 'really/very' before an adjective that is the subject's defining quality in a 'people who are X' clause; never cut 'probably/likely' on the Claude or rules path, only flag it."
+  },
+  {
+   "id": "H4",
+   "severity": "medium",
+   "area": "on-device explanations",
+   "where": "g-43, g-89, g-35",
+   "problem": "Reasons are untrue: 'without it this line breaks' on 'The truth is' and 'This is a thread about' (both lines stand without them), and 'On news like this' on a rhetorical question.",
+   "fix": "Only use the 'line breaks' reason after the cut was tried and failed a named guard; let 'How we...' stand as a complete title line; restrict the news reason to announcements."
+  },
+  {
+   "id": "H5",
+   "severity": "medium",
+   "area": "on-device engine",
+   "where": "g-9, 17, 28, 56, 57, 63, 92, 114, 116",
+   "problem": "12 needs-work lines came back unchanged, including 'The reality is that' (not even flagged), 'A lot of people ask me...so I figured I would' and 'I think that one of the biggest mistakes that I made'.",
+   "fix": "Add 'The reality is that', spare 'that', 'There are N ... that I', and 'so I figured I would put together a thread' to the safe moves; apply the not-X-it's-Y split that already works on g-101 to g-63."
+  },
+  {
+   "id": "H6",
+   "severity": "medium",
+   "area": "Claude prompt",
+   "where": "g-5, 11, 14, 17, 28, 36, 68, 77, 112",
+   "problem": "About a quarter of needs-work lines get the 'light edit': one hedge is kept by rule even when the line is plainly a view, and 'basically just', 'really' and 'There are' survive.",
+   "fix": "In prompts.sharpen, say that 'I think/In my opinion' stays only on forecasts and contested claims, and that a second softener next to a kept hedge goes; ask for number-first on 'Here are N' and 'There are N'."
+  },
+  {
+   "id": "H7",
+   "severity": "medium",
+   "area": "receipts",
+   "where": "g-28, g-36, g-3, g-23, g-71",
+   "problem": "'Number first' on a line where no number moved; a why that says the 9 leads when the line opens 'Here are'; cut counts in 'say' that disagree with the why.",
+   "fix": "Compute 'say' from the diff: award 'Number first' only if the output starts with a digit and the draft did not; count cut spans from the diff, not from the model's label."
+  },
+  {
+   "id": "H8",
+   "severity": "low",
+   "area": "Claude prompt",
+   "where": "g-85, g-39, g-114, g-23",
+   "problem": "A question became a statement and lost 'nobody talks about'; 'finally' dropped from an announcement; 'Long post incoming.' kept as the opener of post 1; g-23 opens on 'some of the things'.",
+   "fix": "Keep the sentence kind unless the writer's question is pure wrapper and say so in the why; treat 'finally' as content; drop meta openers on long posts; lead with the feat, then the pointer."
+  },
+  {
+   "id": "H9",
+   "severity": "low",
+   "area": "on-device voice",
+   "where": "g-14, 16, 20, 22",
+   "problem": "A full stop is added to lowercase lines that had none, which shifts the writer's voice; the Claude path leaves them alone.",
+   "fix": "Only add terminal punctuation when the draft had it or the line was split into beats."
+  }
+ ]
+}

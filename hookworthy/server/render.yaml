@@ -1,0 +1,28 @@
+# One-click deploy on Render (render.com → New → Blueprint → this repo).
+services:
+  - type: web
+    name: hookworthy
+    runtime: docker
+    dockerfilePath: hookworthy/server/Dockerfile
+    dockerContext: hookworthy
+    plan: starter
+    disk: { name: data, mountPath: /data, sizeGB: 1 }
+    envVars:
+      - key: PUBLIC_URL
+        sync: false
+      - key: HOOKWORTHY_TOKEN
+        generateValue: true
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: X_BEARER_TOKEN
+        sync: false
+      - key: X_CLIENT_ID
+        sync: false
+      - key: X_CLIENT_SECRET
+        sync: false
+      - key: LINKEDIN_CLIENT_ID
+        sync: false
+      - key: LINKEDIN_CLIENT_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false

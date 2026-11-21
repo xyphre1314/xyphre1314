@@ -1,0 +1,129 @@
+{
+  "key": "founder",
+  "role": "startup co-founder (creator/prosumer SaaS to millions in ARR): positioning, objections, pricing, conversion path, truthfulness",
+  "score": 9.1,
+  "verdict": "The positioning is sharp and ownable: a free first-line editor that keeps your facts and your voice, with a scheduler attached. The conversion path is the best part. A real engine sharpens the visitor's own line, that line carries into signup, a clean line gets offered a rewrite, the preview ends honestly, and every price, save-25% figure and quota matches the app. It falls short of 9.5 on truthfulness details. The page oversells Threads/Bluesky posting (worst on mobile and in the footer), the hero's 'Why it hits' is hand-written and more specific than what the product actually returns, and a cluster of small demo inconsistencies (3 clients priced vs 4 shown, the put-it-back rule, the approved queue item) chips at the 'straight answers' promise.",
+  "to_95": [
+    "Stop implying Threads and Bluesky auto-post. Show the hero's 'Posts to' row at 390/360 too (it is display:none on phones today) and change 'Ready for' to 'A nudge for' (Posts to X · LinkedIn · A nudge for Threads · Bluesky). Change the footer line to 'Sharper first lines, sent at the time you pick on X and LinkedIn. Threads and Bluesky get a nudge.'",
+    "Make the demos say what the product says. Either use sharpenLine's own `why` in the hero examples and the final's default card, or make the engine return the specific why the hero shows ('It opens on the news now. $10k and 3 years do the rest.'). Today a visitor who reruns the Trader or Designer example gets a different, more generic explanation than the hero promised.",
+    "Studio math and state: change the line to '4 clients: $72 a month, billed yearly ($96 month to month)' to match the four clients in the picker. After 'Approve with Priya's edit', the approved queue item should show the edited text ('Customer churn: down 34% since June…'), not the pre-edit line.",
+    "Voice tile 'Put it back': the first tap currently says 'Kept. Sharpen leaves “ngl” alone from now on.', which contradicts the hint ('Put it back a second time…') and core.js (memKeepList needs 2). First tap: 'Kept this time. Put it back once more and Sharpen leaves “ngl” alone.' Second tap: the current 'from now on' line.",
+    "Disclose the cost of voice learning on Free. In the app, 'Learn my voice' costs 5 of Free's 20 monthly rewrites (CR_ACTS.voice c:5), but the Free card and the 'What's free?' answer list voice learning as a separate free item. Add 'learning your voice once uses 5 of them' to the 'What's free?' answer.",
+    "Fix the Kept row picking up numbers from links. The status-link test line shows 'Your $BTC, your 58k and your 1.' Ignore numbers inside URLs and @handles when building the Kept list, so the trust device never lists junk.",
+    "Pricing parity: start the Pro list with 'Everything in Free, plus:', as Studio starts with 'Everything in Pro'. On mobile, change '15 a month go out on time' to '15 a month auto-post, the rest wait for your tap'. 'On time' suggests the rest go out late."
+  ],
+  "issues": [
+    {
+      "id": "founder-1",
+      "severity": "P1",
+      "area": "Truthfulness / positioning",
+      "where": "Hero sub ('Schedule it for X, Threads, LinkedIn and Bluesky') at 390/360, where .hmeta .posts is hidden; footer tagline; hero meta row 'Ready for'",
+      "problem": "In the app only X and LinkedIn post at the scheduled time. Threads and Bluesky get a nudge and you post them yourself, as the FAQ correctly says. On phones the only qualifier (the 'Posts to … · Ready for …' row) is hidden, so the first-5-seconds claim reads as auto-posting to all four. The footer says outright 'sent at the time you pick. For X, Threads, LinkedIn and Bluesky'. 'Ready for' also reads as 'compatible with', not 'you'll get a nudge'. This is the claim most likely to come back as a support ticket or refund request.",
+      "fix": "Show .hmeta .posts on phones (one line under the window, wrapping allowed) and relabel it 'Posts to X · LinkedIn · A nudge for Threads · Bluesky'. Change the footer to 'Sharper first lines, sent at the time you pick on X and LinkedIn. Threads and Bluesky get a nudge.' Leave the hero sub as is; with the qualifier visible it is fair."
+    },
+    {
+      "id": "founder-2",
+      "severity": "P2",
+      "area": "Truthfulness (demo vs product)",
+      "where": "Hero EX[].why (all four examples) and the final's default 'Why it hits'",
+      "problem": "The lines, cuts and receipts match HWCore.sharpenLine exactly. The 'Why it hits' text does not: it is hand-written and specific ('It opens on the news now. $10k and 3 years do the rest.'), while the engine returns a generic reason for the same draft ('The line now starts where your point does…'). A visitor who reruns the example in Try or the final box gets a weaker explanation than the hero showed, a small but real expectation gap.",
+      "fix": "Render sharpenLine(draft).why in the hero and the final's default card, or extend the engine so `why` can cite the kept facts the way the hero copy does. Then run hero-sync.js so it checks `why` too."
+    },
+    {
+      "id": "founder-3",
+      "severity": "P2",
+      "area": "Pricing / Studio",
+      "where": "#studio .facts: '3 clients: $54 a month, billed yearly ($72 month to month)'",
+      "problem": "The picker directly above shows four clients (Priya, Rafael, Lena, Marco), so an agency buyer has to redo the math for the setup they are looking at.",
+      "fix": "'4 clients: $72 a month, billed yearly ($96 month to month).'"
+    },
+    {
+      "id": "founder-4",
+      "severity": "P2",
+      "area": "Truthfulness (demo state)",
+      "where": "Studio: after tapping 'Approve with Priya's edit'",
+      "problem": "The post becomes 'down 34% since June', but the item that moves into '4 approved and scheduled' still reads 'Customer churn: down 34%. What changed…', the pre-edit text. The demo's whole promise is that the client's edit is what gets scheduled.",
+      "fix": "Write the edited text into the queue item when approved ('Customer churn: down 34% since June…')."
+    },
+    {
+      "id": "founder-5",
+      "severity": "P2",
+      "area": "Truthfulness (voice memory)",
+      "where": "#voice Keeps row, #kp-b",
+      "problem": "The hint says 'Put it back a second time, and Sharpen leaves it alone.' (true: memKeepList needs a count of 2), but one tap already says 'Kept. Sharpen leaves “ngl” alone from now on.'",
+      "fix": "First tap: 'Kept this time. Put it back once more and Sharpen leaves “ngl” alone.' Second tap: 'Kept. Sharpen leaves “ngl” alone from now on.'"
+    },
+    {
+      "id": "founder-6",
+      "severity": "P2",
+      "area": "Pricing disclosure",
+      "where": "Free card 'Learns your voice from your posts'; FAQ 'What’s free?'; voice tile 'Paste 8 of your posts'",
+      "problem": "In the app, 'Learn my voice' (the 8-post action) is a Claude job that costs 5 rewrites, a quarter of Free's 20. The page lists voice learning as its own free item next to '20 rewrites'.",
+      "fix": "Add to the 'What’s free?' answer: '…20 rewrites in your voice a month (learning your voice once uses 5)…'. Keep the Free card bullet short."
+    },
+    {
+      "id": "founder-7",
+      "severity": "P2",
+      "area": "Trust device",
+      "where": "Try / final Kept row (engine `kept`)",
+      "problem": "'Honestly? I think I was wrong about $BTC at 58k and here is why 🧵 https://x.com/a/status/1' returns 'Kept: Your $BTC, your 58k and your 1.' The '1' comes from the URL. The Kept row is the page's proof that your facts stay, so junk in it undercuts the claim.",
+      "fix": "Leave tokens inside URLs and @handles out of `kept`, in core.js or in the page's Kept formatter."
+    },
+    {
+      "id": "founder-8",
+      "severity": "P2",
+      "area": "Positioning (sounds like you)",
+      "where": "The heycape anchor post repeated across Previews, Day, phone feed, Replies and Results; the final's default; the Trader and Newsletter starters",
+      "problem": "The page's signature output is one template, 'most underrated thing in X? Y.' / 'why do …? …'. It appears in about eight places. Seasoned X creators read 'most underrated thing in…?' as a growth-account formula, which works against 'It still sounds like you' and 'Is it just AI writing? No.'",
+      "fix": "Keep one ask-then-answer example. Lead the heycape thread with a number- or story-first line built from text it already contains (e.g. 'i lost $4,000 in march doubling my size to win it back.'), and use it across the Previews/Day/Replies/Results tiles, so the visitor sees range, not a template."
+    },
+    {
+      "id": "founder-9",
+      "severity": "P2",
+      "area": "Pricing clarity",
+      "where": "Pro card list; mobile Free bullet",
+      "problem": "Studio says 'Everything in Pro' but Pro never says it includes Free, so a scanner may wonder whether Pro drops previews or voice learning. On phones, 'Schedule all you like; 15 a month go out on time' suggests the rest go out late, not that they wait for your tap.",
+      "fix": "Make the first Pro bullet 'Everything in Free, plus:'. Change the mobile Free bullet to '15 auto-posts a month; the rest wait for your tap'."
+    },
+    {
+      "id": "founder-10",
+      "severity": "P2",
+      "area": "Objections",
+      "where": "FAQ",
+      "problem": "The primary audience already pays for a scheduler (Typefully, Hypefury and the like). 'Do I have to switch?' is the top objection for a new X scheduler, and it is only hinted at inside 'Can I bring my old posts?'.",
+      "fix": "Add a seventh FAQ, 'I already use a scheduler.', answered with true facts only: 'Bring your Typefully or CSV export, and your past posts teach it how you open. Sharpen is free whatever you post with.'"
+    },
+    {
+      "id": "founder-11",
+      "severity": "P2",
+      "area": "Objections / trust",
+      "where": "#trust tile",
+      "problem": "'Never' ×3 says what the product won't do, but not why a creator should care. The app has the true, creator-specific reason ('No auto-retweets or auto-DMs here, on purpose: X’s payouts need an account in good standing.'), and it is the strongest argument for crypto creators who have seen automation tools get accounts limited.",
+      "fix": "Change the tile's sub to 'Every post is one you wrote or approved, sent at the time you picked. No auto-DMs or auto-follows, on purpose: X payouts need an account in good standing.' This is the app's own line. Make no claims beyond it."
+    },
+    {
+      "id": "founder-12",
+      "severity": "P2",
+      "area": "Conversion path",
+      "where": "Hero window foot: 'Schedule' pill next to 'Your best time: 8:40 AM'",
+      "problem": "On desktop it looks like the window's primary button but it is an inert span, so a visitor clicking the most action-looking control in the hero gets nothing.",
+      "fix": "Make it a real button that opens the Start-free sheet carrying the example line (sheet title 'Schedule it free'). Or restyle it as a quiet chip that doesn't read as a button."
+    },
+    {
+      "id": "founder-13",
+      "severity": "P2",
+      "area": "Funnel consistency (app side)",
+      "where": "The sheet's 'Open the demo app' → app (index.html): 'Try Pro free for 7 days', 'New to Pro? Try it free for 7 days', referral 'They try Pro: 7 days free'; CR_PLANS.trial in core.js",
+      "problem": "Pricing has no trial, and the homepage correctly offers none. The app it hands visitors to still pitches a 7-day Pro trial, so the pricing story changes one click after signup.",
+      "fix": "In the app, remove the trial CTA, the Plans fine print and the referral 'They try Pro' copy (or hide them behind PRICED() off). No change to the homepage."
+    },
+    {
+      "id": "founder-14",
+      "severity": "P2",
+      "area": "Pricing (agency segment)",
+      "where": "Studio card / plans fine print",
+      "problem": "Per-client pricing is linear, with no word for larger agencies. The app's own pricing says 'More than 8 clients? Talk to us.' A 15-client agency sees $270/mo with no path to ask.",
+      "fix": "Add to .plans-fine: 'More than 8 clients? Talk to us.', matching the app's existing line and mailto. No new pricing."
+    }
+  ]
+}

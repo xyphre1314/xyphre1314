@@ -1,0 +1,42 @@
+{{#voice}}How this author writes (for their voice only; the line below is what you edit):
+{{voice}}
+
+{{/voice}}{{#never}}Their never-say words: {{never}}
+
+{{/never}}{{#keep}}Words they put back after an earlier edit cut them. Keep each one the line has: {{keep}}
+
+{{/keep}}<line>
+{{line}}
+</line>
+
+{{#rest}}The rest of the post follows, for context only. Use it to see what the line sets up or points at, so you keep that setup. Don't edit it, quote it, or move any of its words, facts or numbers into the line.
+<rest_of_post>
+{{rest}}
+</rest_of_post>
+{{/rest}}{{^rest}}{{#more}}The post goes on after this line.{{/more}}{{^more}}This line is the whole post.{{/more}}{{/rest}}
+
+Sharpen the line in <line>. Put the one version you would post first. Reply with the JSON only.
+
+=============================== NOTES FOR THE IMPLEMENTER (not sent) ===============================
+Unchanged from v2 except the last instruction line ("Put the one version you would post first") and the
+"so you keep that setup" clause in the context block. Sent as the second user text block, after
+prompt-v3.txt (the first block, with cache_control: ephemeral), as sharpenAI() and lib/ai.mjs complete()
+do today: quick tier, claude-sonnet-5-5, effort "low", output_config.format = schema-v3.json.
+
+Placeholders ({{#x}}…{{/x}} = only when x is non-empty; {{^x}}…{{/x}} = only when x is empty):
+  voice  voiceBlock({ ...voice, never: null }), as in v1. Omit the block when there is no voice profile.
+  never  the never-say list, deduped, trimmed, each <= 60 chars, at most 40, joined with ", ".
+  keep   the put-back list, deduped, trimmed, each <= 60 chars, at most 20, joined with ", ".
+  line   the first line: leading whitespace dropped, cut at the first "\n", trailing whitespace dropped,
+         runs of spaces/tabs collapsed, every <line>, </line>, <rest_of_post> and </rest_of_post> tag
+         removed (case-insensitive, spaces allowed inside the brackets), capped at SHARPEN.AI_MAX (1000)
+         code points. A longer line goes to the engine (reason 'long'), as in v1.
+  rest   everything after the first "\n", only when it has non-space text: same tag stripping, 3+
+         newlines collapsed to 2, trimmed, capped at 1200 code points (cut back to the last space, then
+         "…"). Context only: fromClaudeV3 rejects any number, name, link or claim word in the line that
+         the line itself didn't have ('fact … added', 'claim added').
+  more   true when the client says the post goes on but didn't send its text.
+
+Server-side, as in v2:
+  1. Skip Claude when SHARPEN.tooThin(text) is true and answer with sharpenLine().
+  2. Pass the same `text` (line + rest) to fromClaudeV3 so the 280 note sees the whole post.

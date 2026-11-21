@@ -1,0 +1,99 @@
+{
+ "key": "hook",
+ "score": 8.7,
+ "score_ondevice": 6.6,
+ "verdict": "Claude path: 104/120 h (86.7%), 61/77 on needs-work lines (79.2%), 1 m, 0 broken, 0 facts or meanings changed. It is safe and close to Typefully on taste, and safer than Typefully on hedges, sarcasm and sensitive lines. It misses 9.5 on three things: the validator rejected 3 good Claude lines (all 3 false positives, one of which shipped a 380-char unchanged fallback), about 15 lines got a one-word trim where a restructure was needed, and 4 whys/receipts are garbled or overclaim. On-device: 84/120 h (70%), 41/77 on needs-work (53.2%), 5 m, 4 broken, 1 statement turned into a question. It never damages a sharp line, but three broken lines ship in the homepage Try box as is. Call marks help on forecasts and personal lines; they misfire on sarcasm and on a repeated-word joke, and cut-versus-call is inconsistent on-device.",
+ "to_95": [
+  "Fix the three validator false positives: a number with a dropped modifier ('over 40 different B2B founders' -> 'over 40 B2B founders'), a shortened age ('43 years old' -> '43'), and 'future lost' on a thread pointer that keeps 'In this thread:'.",
+  "When a line over 280 falls back, never ship it still over 280 with its run-up intact; prefer a Claude alt, or the homepage's post-1 cut.",
+  "Fix the three on-device grammar breaks: 'vast majority of them' -> 'Most them'; a '?' appended to a statement after a colon; a beat split that eats the 'and' of a list.",
+  "Prompt: on lines that lead with a run-up ('Big news!!', 'Why we decided to basically…', 'New issue is out now') pick the restructure, not the one-word trim; don't park the cut announcement at the end ('Very excited to announce it').",
+  "Prompt: don't swap one cliché for another ('game changer' -> 'It changes everything'); keep the writer's phrase or cut it.",
+  "Whys: stop appending fragments ('“but i really” went too', '“honestly a game” went too'), make the receipt count match the edits, and don't say 'Already sharp' on a line carrying three soft words.",
+  "Call marks: no call on sarcasm ('Really groundbreaking') or on a deliberate repeat ('probably. probably.'); one rule for 'probably', 'sort of' and 'I'd argue' so the same word is not cut in one line and a call in the next.",
+  "On-device: flag doubled 'that' and stock run-ups ('Here's a little something that I wish that I knew', 'Something that I've noticed is that') instead of 'Nothing to cut'.",
+  "Homepage: don't say 'The marked words are your call' when the line shows no call marks."
+ ],
+ "issues": [
+  {
+   "id": "hook-f3-1",
+   "severity": "high",
+   "area": "validator",
+   "where": "SHARPEN.fromClaude fact/tense checks; k-38, k-55, k-76",
+   "problem": "3 of 3 rejects were false positives. k-38 'future lost' shipped a 380-char fallback opening 'In this thread, I am going to break down exactly' in place of two clean sub-280 Claude versions. k-55 called 'over 40 B2B founders' an added fact. k-76 called '43' a lost '43 years old'.",
+   "fix": "Compare numbers with their head noun after dropping modifiers; treat 'N years old' and 'N' after 'I'm' as the same fact; don't apply the future-tense check when the thread pointer survives."
+  },
+  {
+   "id": "hook-f3-2",
+   "severity": "high",
+   "area": "on-device grammar",
+   "where": "core.js sharpenLine; k-55",
+   "problem": "'the vast majority of them make' ships as 'Most them make the same mistake.' The plain-word swap drops 'of'. Ships on the homepage.",
+   "fix": "Map 'the vast majority of' -> 'most of' before a pronoun, 'most' before a noun; add 'most them/us/you' to the broken patterns."
+  },
+  {
+   "id": "hook-f3-3",
+   "severity": "high",
+   "area": "on-device meaning",
+   "where": "core.js sharpenLine; k-82",
+   "problem": "A statement became a question: 'Anyone using Postgres: you probably don't actually need Redis for your job queue?' The line now opens on 'Anyone' and gets a '?'. Ships on the homepage.",
+   "fix": "Only add '?' when the main clause is interrogative; 'Anyone …:' followed by a declarative clause is an address, not a question."
+  },
+  {
+   "id": "hook-f3-4",
+   "severity": "high",
+   "area": "on-device grammar",
+   "where": "core.js beat split; k-89",
+   "problem": "'supports plugins, config files, and it's also…' ships as 'supports plugins, config files. It's also…': the split takes the list's 'and'.",
+   "fix": "Don't split at ', and' when the text before it is an unclosed comma list; or restore 'and' before the last item."
+  },
+  {
+   "id": "hook-f3-5",
+   "severity": "medium",
+   "area": "on-device long lines",
+   "where": "core.js; k-38",
+   "problem": "The 390-char line ships as a 'How we…' fragment welded to 'and I'm also going to share…', ending in a colon. The homepage shows a cleaner post-1 cut, so the two paths disagree.",
+   "fix": "Use the homepage's first-sentence cut in core too, or keep the line as written with the over-280 note."
+  },
+  {
+   "id": "hook-f3-6",
+   "severity": "medium",
+   "area": "Claude taste",
+   "where": "prompts.sharpen; k-27, k-30, k-42, k-48, k-78, k-79, k-80, k-92",
+   "problem": "About 15 lines are better but soft: one-word trims on lines that needed a restructure, 'Very excited to announce it' parked after the news, a 'Why…' fragment with a full stop, and 'game changer' swapped for 'It changes everything'.",
+   "fix": "Tell the prompt to prefer the version that opens on the news or number when the draft opens on a run-up, to drop (not move) announce-the-announcement phrases, and never to trade one stock phrase for another."
+  },
+  {
+   "id": "hook-f3-7",
+   "severity": "medium",
+   "area": "explanations",
+   "where": "fromClaude why/say assembly; k-20, k-92, k-89, k-5",
+   "problem": "Whys end on appended fragments ('“but i really” went too', '“honestly a game” went too'); k-92's receipt says 5 cuts; k-89 says three beats; k-5 says 'Already sharp' on an unchanged line with three soft words.",
+   "fix": "Drop the auto-appended 'went too' when it overlaps a phrase the why already names; count receipts from the final diff; reserve 'Already sharp' for lines with no flagged words."
+  },
+  {
+   "id": "hook-f3-8",
+   "severity": "medium",
+   "area": "call marks",
+   "where": "slCallMarks; k-61, k-24, k-41, k-17, k-91",
+   "problem": "Sarcastic 'Really groundbreaking' is marked 'A hype word'; both halves of 'probably. probably.' are marked; on-device cuts 'probably' in k-41 and 'sort of' in k-17 outright but offers the same words as calls elsewhere.",
+   "fix": "Skip call marks inside lines the engine already recognises as sarcasm or deliberate repetition; decide cut-vs-call by word class, not by line."
+  },
+  {
+   "id": "hook-f3-9",
+   "severity": "low",
+   "area": "on-device coverage",
+   "where": "core.js; k-54, k-62, k-40, k-104",
+   "problem": "'Here's a little something that I wish that I knew' returns 'Nothing to cut' with no marks; run-ups like 'Something that I've noticed is that' and 'A quick little thread on the reasons why I think' survive.",
+   "fix": "Add these run-ups and the doubled 'that' to the throat-clearing patterns."
+  },
+  {
+   "id": "hook-f3-10",
+   "severity": "low",
+   "area": "homepage",
+   "where": "concepts/r86/home.html guard/asWritten; k-92, k-38",
+   "problem": "Homepage output differs from core on 2 of 15 lines, and on k-92 it says 'The marked words are your call' with no call marks shown.",
+   "fix": "Use KEPT_WHY only when a call mark is rendered; otherwise the plain 'nothing it could cut safely' text."
+  }
+ ]
+}

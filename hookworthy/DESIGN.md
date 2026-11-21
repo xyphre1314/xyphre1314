@@ -1,0 +1,1822 @@
+---
+name: Hookworthy
+description: Sound like you. Show up every day.
+colors:
+  desk: "#08090B"
+  desk-raised: "#0E0F12"
+  page: "#0C0D10"
+  card: "#15161A"
+  card-2: "#1A1C21"
+  card-3: "#24262D"
+  menu: "#15161A"
+  hairline: "rgba(200,215,255,.075)"
+  hairline-strong: "rgba(200,215,255,.13)"
+  ink: "#EDEEF2"
+  ink-2: "#B5B9C2"
+  ink-3: "#8F939D"
+  blue: "#2B52FF"
+  blue-hover: "#3965FF"
+  blue-hover-light: "#2242F4"
+  blue-press: "#1E3BE3"
+  blue-ink: "#FFFFFF"
+  accent: "#6293FF"
+  accent-hover: "#7FA9FF"
+  accent-text: "#75A2FF"
+  accent-light: "#2445F5"
+  accent-hover-light: "#1C37DB"
+  selection: "rgba(43,82,255,.42)"
+  selection-light: "rgba(43,82,255,.18)"
+  highlighter: "rgba(43,82,255,.55)"
+  highlighter-light: "rgba(43,82,255,.24)"
+  soft-band: "rgba(245,180,76,.2)"
+  soft-band-light: "rgba(245,180,76,.34)"
+  soft-word: "#F5B44C"
+  better: "#55DB95"
+  wrong: "#FB7570"
+  desk-light: "#EEF0F4"
+  desk-raised-light: "#F5F6F9"
+  page-light: "#FBFBFD"
+  card-light: "#FFFFFF"
+  card-2-light: "#F2F4F8"
+  card-3-light: "#E6E9F0"
+  hairline-light: "rgba(14,24,56,.08)"
+  hairline-strong-light: "rgba(14,24,56,.14)"
+  ink-light: "#0F131F"
+  ink-2-light: "#434956"
+  ink-3-light: "#5D6474"
+  soft-word-light: "#9B570E"
+  better-light: "#0B773F"
+  wrong-light: "#C12629"
+  paper: "#F2F4F8"
+  paper-ink-2: "#434956"
+  paper-ink-3: "#5D6474"
+  night: "#101215"
+  night-card: "#18191E"
+  night-ink-2: "#B5B9C2"
+  night-ink-3: "#8F939D"
+  finale-top: "#03082B"
+  finale-mid: "#0D1A7E"
+  finale-end: "#1E3BE3"
+  finale-hi: "#B4CAFD"
+  glass-ink-2: "#B5B9C2"
+  glass-ink-3: "#9A9EA8"
+  tile-ink: "#1E1E1E"
+  tile-ink-light: "#0A0A0A"
+  # legacy values: still hard-coded by Round 55-era components; the tokens above supersede them in new work
+  legacy-desk: "#0A0A0A"
+  legacy-desk-raised: "#101010"
+  legacy-page: "#0D0D0D"
+  legacy-card: "#171717"
+  legacy-card-2: "#1C1C1C"
+  legacy-card-3: "#262626"
+  legacy-menu: "#141414"
+  legacy-hairline: "rgba(255,255,255,.07)"
+  legacy-hairline-strong: "rgba(255,255,255,.12)"
+  legacy-ink: "#EDEDED"
+  legacy-ink-2: "#A3A3A3"
+  legacy-ink-3: "#8C8C8C"
+  legacy-pill: "#E5E5E5"
+  legacy-pill-ink: "#0D0D0D"
+  legacy-better: "#4ADE80"
+  legacy-wrong: "#FF7A7A"
+  legacy-desk-light: "#F2F2F1"
+  legacy-desk-raised-light: "#F7F7F6"
+  legacy-page-light: "#FAFAFA"
+  legacy-card-2-light: "#F3F3F2"
+  legacy-card-3-light: "#E9E9E7"
+  legacy-hairline-light: "rgba(10,10,10,.08)"
+  legacy-hairline-strong-light: "rgba(10,10,10,.14)"
+  legacy-ink-light: "#111111"
+  legacy-ink-2-light: "#545454"
+  legacy-ink-3-light: "#6B6B6B"
+  legacy-pill-hover-light: "#000000"
+  legacy-soft-word-light: "#A35A00"
+  legacy-better-light: "#15803D"
+  legacy-wrong-light: "#C0262D"
+  legacy-paper: "#EFEFED"
+  legacy-paper-ink-2: "#4F4F4F"
+  legacy-paper-ink-3: "#666666"
+  legacy-night-card: "#1A1A1A"
+  legacy-night-ink-2: "#A8A8A8"
+  legacy-night-ink-3: "#8F8F8F"
+  comment-0: "#F59E5B"
+  comment-1: "#2EC4B0"
+  comment-2: "#F27AAE"
+  comment-3: "#6AA8F7"
+  comment-4: "#9BD15A"
+  comment-5: "#F2C14E"
+  comment-6: "#4FC8E0"
+  comment-7: "#D9A57A"
+  comment-0-light: "#C2410C"
+  comment-1-light: "#0F766E"
+  comment-2-light: "#BE185D"
+  comment-3-light: "#1D4ED8"
+  comment-4-light: "#4D7C0F"
+  comment-5-light: "#A16207"
+  comment-6-light: "#0E7490"
+  comment-7-light: "#8B5E34"
+  x-text: "#0F1419"
+  x-text-dark: "#E7E9EA"
+  x-secondary: "#536471"
+  x-secondary-dark: "#71767B"
+  x-divider: "#EFF3F4"
+  x-divider-dark: "#2F3336"
+  x-blue: "#1D9BF0"
+  x-like: "#F91880"
+  x-repost: "#00BA7C"
+  threads-dark: "#101010"
+  linkedin-blue: "#0A66C2"
+  linkedin-page: "#F4F2EE"
+  linkedin-card-dark: "#1B1F23"
+  bluesky-blue: "#1185FE"
+  bluesky-secondary: "#405168"
+typography:
+  display-line:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(44px, min(9.4vw, 13.4svh), 156px)"
+    fontWeight: 400
+    lineHeight: 0.94
+    letterSpacing: "-0.04em"
+  display-line-phone:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(36px, 13.4vw, 64px)"
+    fontWeight: 400
+    lineHeight: 0.94
+    letterSpacing: "-0.032em"
+  display:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(44px, 6.9vw, 96px)"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "-0.039em"
+  headline-close:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(44px, 6.4vw, 92px)"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "-0.038em"
+  headline:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(42px, 5.8vw, 86px)"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "-0.037em"
+  headline-quiet:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(40px, 4.8vw, 72px)"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "-0.036em"
+  headline-sm:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(30px, 3vw, 42px)"
+    fontWeight: 400
+    lineHeight: 1.08
+    letterSpacing: "-0.028em"
+  headline-card:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(30px, 2.4vw, 34px)"
+    fontWeight: 400
+    lineHeight: 1.06
+    letterSpacing: "-0.028em"
+  page-title:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "clamp(30px, 3.2vw, 40px)"
+    fontWeight: 400
+    lineHeight: 1.06
+    letterSpacing: "-0.027em"
+  write:
+    fontFamily: "Newsreader, Iowan Old Style, Palatino Linotype, Georgia, serif"
+    fontSize: "20px"
+    fontWeight: 400
+    lineHeight: 1.55
+    letterSpacing: "0.002em"
+  title:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "19px"
+    fontWeight: 600
+    lineHeight: 1.35
+    letterSpacing: "-0.015em"
+  lede:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "clamp(16.5px, 1.25vw, 18px)"
+    fontWeight: 400
+    lineHeight: 1.55
+  body:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "16px"
+    fontWeight: 400
+    lineHeight: 1.55
+  button:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "15px"
+    fontWeight: 500
+    lineHeight: 1
+    letterSpacing: "-0.005em"
+  ui:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "14px"
+    fontWeight: 500
+    lineHeight: 1.35
+  ui-sm:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.45
+  label:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "12.5px"
+    fontWeight: 500
+    lineHeight: 1.2
+  caption:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "12px"
+    fontWeight: 500
+    lineHeight: 1.3
+  micro:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "11px"
+    fontWeight: 500
+    lineHeight: 1.2
+  mono:
+    fontFamily: "Geist Mono, ui-monospace, SF Mono, Menlo, Consolas, monospace"
+    fontSize: "12.5px"
+    fontWeight: 500
+    lineHeight: 1
+    fontFeature: "tnum"
+  number:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "24px"
+    fontWeight: 600
+    lineHeight: 1
+    fontFeature: "tnum"
+  stat:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "32px"
+    fontWeight: 300
+    lineHeight: 1
+    letterSpacing: "-0.024em"
+    fontFeature: "tnum"
+  plan-name:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "32px"
+    fontWeight: 600
+    lineHeight: 1.05
+    letterSpacing: "-0.024em"
+  price:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "54px"
+    fontWeight: 300
+    lineHeight: 1
+    letterSpacing: "-0.031em"
+    fontFeature: "tnum"
+  wordmark:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "18px"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.03em"
+  wordmark-giant:
+    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+    fontSize: "clamp(56px, 17.4vw, 280px)"
+    fontWeight: 600
+    lineHeight: 0.8
+    letterSpacing: "-0.04em"
+rounded:
+  tag: "6px"
+  control-sm: "8px"
+  control: "10px"
+  bubble: "12px"
+  post: "14px"
+  card: "16px"
+  window: "18px"
+  field: "20px"
+  slice: "24px"
+  plan: "26px"
+  sheet: "32px"
+  chapter: "clamp(24px, 3vw, 36px)"
+  tile: "0.22em"
+  pill: "999px"
+spacing:
+  "1": "4px"
+  "2": "8px"
+  "3": "12px"
+  "4": "16px"
+  "5": "20px"
+  "6": "24px"
+  "8": "32px"
+  "10": "40px"
+  "12": "48px"
+  "16": "64px"
+  "24": "96px"
+  "32": "128px"
+  gutter: "clamp(16px, 4vw, 40px)"
+  section: "clamp(104px, 15vh, 168px)"
+components:
+  button-primary:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.blue-ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: "0 18px"
+    height: "40px"
+  button-primary-hover:
+    backgroundColor: "{colors.blue-hover}"
+  button-primary-lg:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.blue-ink}"
+    rounded: "{rounded.pill}"
+    padding: "0 24px"
+    height: "50px"
+  button-ghost:
+    backgroundColor: "rgba(237,237,237,.07)"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: "0 18px"
+    height: "40px"
+  button-line:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: "0 18px"
+    height: "40px"
+  app-button:
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.ink}"
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+    padding: "0 14px"
+    height: "34px"
+  app-button-hover:
+    backgroundColor: "{colors.card-2}"
+  app-button-primary:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.blue-ink}"
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+    padding: "0 14px"
+    height: "34px"
+  input:
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.control}"
+    padding: "0 12px"
+    height: "38px"
+  nav-capsule:
+    backgroundColor: "rgba(23,23,23,.72)"
+    textColor: "{colors.ink-2}"
+    rounded: "{rounded.pill}"
+    padding: "0 8px 0 18px"
+    height: "56px"
+  tab-track:
+    backgroundColor: "{colors.card}"
+    rounded: "{rounded.pill}"
+    padding: "4px"
+  tab-active:
+    backgroundColor: "{colors.card-3}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    padding: "0 16px"
+    height: "36px"
+  app-card:
+    backgroundColor: "{colors.card}"
+    rounded: "{rounded.card}"
+  slice-card:
+    backgroundColor: "{colors.card}"
+    rounded: "{rounded.slice}"
+    padding: "32px 32px 0"
+  plan-card:
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.plan}"
+    padding: "30px 30px 32px"
+  plan-card-pro:
+    backgroundColor: "{colors.card-light}"
+    textColor: "{colors.ink-light}"
+    rounded: "{rounded.plan}"
+    padding: "30px 30px 32px"
+  status-word:
+    textColor: "{colors.ink-2}"
+    typography: "{typography.label}"
+  clock-chip:
+    backgroundColor: "rgba(16,16,16,.55)"
+    textColor: "#F2F2F2"
+    typography: "{typography.mono}"
+    rounded: "{rounded.pill}"
+    padding: "0 13px 0 11px"
+    height: "32px"
+  toast:
+    backgroundColor: "{colors.card-2}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.bubble}"
+    height: "40px"
+  paste-field:
+    backgroundColor: "{colors.page}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.field}"
+    padding: "22px 24px 10px"
+---
+
+# Design System: Hookworthy
+
+## Overview
+
+**Creative North Star: "The Night Desk"**
+
+Hookworthy is a writer's desk at 11 PM. The ground is near-black, the page sits a step lighter on it, cards are quiet greys edged with hairlines, and one light pill does the asking. Newsreader sets the one big line on a page; Inter carries everything you read and press; Geist Mono only keeps time, counts and addresses. There is no brand hue. Colour is spent on meaning: an amber wavy line under soft words, green for better, red for wrong. Dark is the default theme, and light is the same system inverted (white cards on a soft grey desk, an ink pill).
+
+Personality comes from people and from the product, never from decoration. Real portraits and platform marks sit inside the headlines as small tilted tiles that turn over; the app itself works in a window under the hero; photographs carry the story. Each page gets exactly one sheet of the other theme: on the homepage, the "11 PM thought" chapter is paper on a dark page (and night on a light one), and the Pro plan card wears the same sheet. Two-tone heads (ink, then grey) are saved for that chapter, pricing and the close.
+
+The site is generous (sections open with clamp(104px, 15vh, 168px) of air and a 1200px measure); the app is compact (13.5–14px UI, 34px controls, an inset panel on a darker desk). Confirmed rejections from the brief: eyebrows and kickers, logo walls, testimonials, icon-card grids, and any promise of reach.
+
+**Key Characteristics:**
+- Near-black desk and page, grey cards with 1px inset hairlines, ink #EDEDED; no pure white text, no hue for its own sake.
+- One light pill per view; everything else is a hairline outline or a 7% ink tint.
+- Newsreader 400 for the one big line, Inter for the rest, Geist Mono only for times, counts and URLs.
+- Faces and platform marks set inside headlines as tilted tiles.
+- One inverted sheet per page; the Pro card wears it too.
+- Amber wavy line for soft words, green only for better, status as plain words with neutral dots.
+- The product shown working, in a window, with an example account named as such.
+
+## Colors
+
+A near-black, all-grey world in which colour only ever means something.
+
+### Primary
+- **The Light Pill** (`pill`, hover `pill-hover`, label `pill-ink`; light theme `pill-light` with `pill-ink-light`): the one filled button: Start free, Post now, Start with Pro, the app's New post. It is the brightest thing on a dark page and the darkest on a light one. Inside the inverted sheet it flips with the sheet.
+
+### Secondary
+- **Soft-Word Amber** (`soft-word` #F5B44C; light `soft-word-light` #A35A00): the wavy underline under hedges and filler (drawn at 88% strength), the small dot beside "3 soft words in your first line", the count badge on Sharpen, and Wait states in the app. It never fills anything larger than a badge.
+
+### Tertiary
+- **Better Green** (`better` #4ADE80; light `better-light` #15803D): only for "better". The wash behind a sharpened line (11%), the "Sharper" chip, the check in "Scheduled for Tue, 8:40 AM", results deltas, Resolved, the yearly saving and the "No soft words. Clean line." dot.
+
+### Neutral
+- **Night Desk** (`desk` #0A0A0A, `desk-raised` #101010): the app's desk around the panel and behind the sidebar.
+- **Page** (`page` #0D0D0D): the site's page and the app's writing panel.
+- **Card greys** (`card` #171717, `card-2` #1C1C1C, `card-3` #262626): cards and slices; hover, toasts and quiet fields; selected states, the active tab thumb and tile fallbacks. Menus, modals and the command bar sit on `menu` #141414.
+- **Hairlines** (`hairline`, `hairline-strong`): every edge, drawn as a 1px inset box-shadow; the strong one for controls, the active thumb and floating things.
+- **Ink** (`ink` #EDEDED, `ink-2` #A3A3A3, `ink-3` #8C8C8C): text, ledes and secondary copy, then labels, captions and the grey half of a two-tone head.
+- **Light theme** (`desk-light` … `ink-3-light`): the same roles inverted: soft grey desk, near-white page, white cards, ink #111111.
+
+### The inverted sheet
+- **Paper** (`paper` #EFEFED, white cards, `ink-light`, `paper-ink-2`, `paper-ink-3`): the chapter and the Pro card on a dark page.
+- **Night** (`night` #111111, `night-card`, `night-ink-2`, `night-ink-3`): the same chapter and card on a light page.
+- The sheet is a token swap (`.inv`), so the pill, hairlines, green and amber inside it follow the sheet's own theme.
+
+### Semantic
+- **Wrong** (`wrong` #FF7A7A; light `wrong-light` #C0262D): errors and failed sends only.
+- **Commenters** (`comment-0` … `comment-7`, with a `-light` family): each reviewer gets one, in order of their first comment. Highlights are a 22% tint of that colour with a 2px underline; a quoted excerpt carries a 2px bar in it.
+
+### Platform replicas
+Not Hookworthy colours. They exist so a replica matches the real app and appear only inside a post, a feed, a phone or a platform tile.
+- **X**: `x-text` / `x-text-dark`, `x-secondary` / `x-secondary-dark`, `x-divider` / `x-divider-dark`, `x-blue`, `x-like`, `x-repost`.
+- **Threads**: `threads-dark`. **LinkedIn**: `linkedin-blue`, `linkedin-page`, `linkedin-card-dark`. **Bluesky**: `bluesky-blue`, `bluesky-secondary`.
+- **Tiles**: X and Threads tiles sit on `tile-ink` (`tile-ink-light` in light), LinkedIn on `linkedin-blue`, Bluesky on `bluesky-blue`.
+
+### Named Rules
+**The One Lamp Rule.** One light pill per view carries the main action. Every other button is a hairline outline or a 7% ink tint. If two solid pills compete on one screen, one of them is wrong.
+**The Meaning-Only Rule.** Amber means "soft, look again", green means "better", red means "wrong". Nothing is coloured to decorate, and status reads as a word and a neutral dot.
+**The One Sheet Rule.** A page gets one inverted chapter, and the Pro plan card wears the same sheet. Never two chapters, never a coloured block.
+**The Replica Rule.** Platform colours never leave a replica or a platform tile, and Hookworthy greys never recolour one.
+
+## Typography
+
+**Display Font:** Newsreader (variable, self-hosted; with Iowan Old Style, Palatino Linotype, Georgia)
+**Body Font:** Inter (variable, self-hosted; with the system UI stack)
+**Label/Mono Font:** Geist Mono (variable, self-hosted), for times, counts and URLs only
+
+**Character:** A bookish serif for the one line that matters, set roman and tight, beside a plain, precise sans that never draws attention to itself. The serif gives the page a voice; Inter keeps the product honest.
+
+### Hierarchy
+- **Display** (Newsreader 400, clamp(44px, 6.9vw, 96px), 1.0, -0.038em): the hero, two lines that never wrap on their own, with tiles inside. On phones min(9.7vw, 58px).
+- **Headline** (Newsreader 400, clamp(38px, 4.6vw, 64px), 1.03, -0.032em): one per section, balanced. Trust and Questions run a step smaller (clamp(36px, 3.9vw, 56px)), the paste box clamp(34px, 4vw, 54px). The close is larger (`headline-close`, clamp(44px, 6.4vw, 92px), -0.04em).
+- **Headline small** (Newsreader 400, clamp(30px, 3vw, 42px), 1.08, -0.025em): the persona heads in "For anyone with a take"; the quote beside sign-in runs clamp(30px, 2.8vw, 42px) and sign-in's "Welcome back." clamp(38px, 3.6vw, 50px).
+- **Page title** (Newsreader 400, clamp(30px, 3.2vw, 40px), 1.06, -0.022em): app page titles (`.display`).
+- **Title** (Inter 600, 19px, 1.35, -0.015em): story step titles and plan names. App section heads are Inter 600 at 17px and 14px.
+- **Body** (Inter 400, 16px, 1.55): site body; ledes clamp(16.5px, 1.25vw, 18px) in ink-2, max about 31rem; the hero sub clamp(17px, 1.35vw, 19.5px), max 40rem.
+- **UI** (Inter 500, 13–15px): buttons (15px on the site, 14px in the app), nav links (14.5px), tabs, list rows. The app window inside the site runs at 13.5px.
+- **Label** (Inter 500, 12.5px): small labels, captions, status words. Sentence case; never uppercase, never letter-spaced.
+- **Mono** (Geist Mono 500, 11–13px, tabular): the URL bar, character counts, clock chips, calendar times, step numbers, shortcut chips.
+- **Price** (Inter 600, 54px, -0.045em, tabular): plan prices, which roll over in place when billing changes.
+
+### Named Rules
+**The One Big Line Rule.** Newsreader appears only at 30px and up, at weight 400, roman. Below that, everything is Inter. A serif at body size or in bold is a mistake.
+**The Two-Tone Rule.** A head may turn from ink to grey (`ink-3`) partway only in three places: the story chapter ("From an 11 PM thought / to Tuesday morning."), pricing ("Free to start. / Pro when you post daily.") and the close ("End of the page. / Start of the post."). Everywhere else a head is one colour.
+**The Clock Rule.** Mono is for times, counts, URLs, keys and step numbers, always with tabular figures; never a sentence.
+
+## Layout
+
+**Site.** A 1200px measure (`.hx-w`) with a clamp(16px, 4vw, 40px) gutter. The nav is a floating capsule (max 1100px, 56px tall), sticky 12px from the top. Sections open with clamp(104px, 15vh, 168px) of space. Section heads sit in a 1.35fr / 1fr grid with the lede bottom-right, aligned to the head's last line; the "For anyone" head runs wide (the head takes the row, the lede at most 22rem beside it). Below 980px they stack.
+- **Hero:** centred. Headline, one-line sub, two pills, then the app window (max 1120px, 560px tall: a 208px sidebar and the screen) whose tab row and top edge rise into the bottom of the first screen.
+- **Chapter:** a rounded sheet inset 8–14px from the page edges, 80–128px of inner padding; steps .82fr beside a 1.18fr photographic stage (aspect 1.18).
+- **Slices:** a 6-column grid with 16px gaps, paired 4+2, 3+3, 2+4, so no two rows share a rhythm.
+- **Personas** .9fr / 1.1fr; **trust** 1.1fr / .9fr; **pricing** three equal cards; **questions** .85fr / 1.3fr with the head sticky at 110px; **paste box** a 920px card, centred; **close** left-aligned; **footer** brand plus four link columns, then the giant wordmark bleeding off the bottom.
+- **Breakpoints:** 980px stacks every two-column grid, makes every slice full width, single-columns pricing (max 520px) and hides the window's sidebar; 760px swaps the nav links for a menu button, shrinks the window to 420px, drops the preview, the thread and the side panels, moves the toast to sit over the tool row, and lets the week grid scroll sideways; 900px drops sign-in's photo side.
+
+**App.** A 232px sidebar on the desk, and the page as one inset panel (14px radius, hairline edge). Five places: Week, Write, Ideas, Inbox, Results, plus Settings. Pages centre beside the sidebar with auto margins. On phones: a top bar (mark, search, avatar) and a tab bar of Week · Ideas · ＋ · Inbox · Results.
+
+**Rhythm.** A 4px base (`spacing.1` … `spacing.32`): 8–16px inside controls and lists, 24–32px inside cards, 48–72px between a head and its content.
+
+## Elevation & Depth
+
+Depth is tonal first: desk, page, card and card-3 step up in lightness, and every edge is a 1px inset hairline rather than a border. Shadows appear only on things that float (the app window, the nav capsule, toasts, menus, cards over photographs, the Pro sheet). Frosted surfaces exist, but only over something: the nav capsule over scrolling content, and the stage cards and clock chip over photographs. Two neutral pools of light, tinted with ink, sit behind the hero and under the window so the window rests on the page; there is no coloured glow anywhere on the site.
+
+### Shadow Vocabulary
+- **Hairline** (`box-shadow: inset 0 0 0 1px var(--border)`): every card, slice, list, tab track and field; `--border-strong` for controls and the active thumb.
+- **Window** (`box-shadow: 0 0 0 1px var(--border-strong), inset 0 1px 0 color-mix(in srgb,var(--text-1) 10%,transparent), 0 60px 140px -60px rgba(0,0,0,.9), 0 30px 60px -40px rgba(0,0,0,.6)`): the app window only (light theme drops to .35 / .18).
+- **Capsule** (`box-shadow: inset 0 0 0 1px var(--border), 0 12px 34px -22px rgba(0,0,0,.7)`): the nav; once scrolled, the strong hairline and `0 18px 44px -20px rgba(0,0,0,.8)`.
+- **Floating card** (`box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 30px 60px -24px rgba(0,0,0,.7)`): stage and persona cards over photographs.
+- **Toast** (`box-shadow: 0 0 0 1px var(--border-strong), 0 18px 40px -14px rgba(0,0,0,.7)`): the scheduled toast and app toasts.
+- **Sheet** (`box-shadow: 0 40px 80px -40px rgba(0,0,0,.6)`): the Pro card.
+- **App menus and modals** (`--sh-3`, `--sh-4`; dark: `0 18px 44px -10px rgba(0,0,0,.75), 0 0 0 1px var(--border-strong)`): popovers, sheets, the command bar.
+
+### Named Rules
+**The Hairline-First Rule.** Edges are 1px inset hairlines. A shadow means the thing floats; a resting card has none.
+**The Frost-Over-Something Rule.** Backdrop blur (18–20px) is only for a surface over a photograph or scrolling content. Nothing is frosted for looks.
+**The Neutral Light Rule.** The only light effects are the two ink-tinted pools behind the hero and under the window. No coloured glow, no glow on hover.
+
+## Shapes
+
+Round, and rounder the bigger it gets. Every site button, tab track, switch, chip and the nav are full pills. App controls are 10px rounded rectangles (8px for nav items and buttons inside the window, 6px for tags). Then: 12px for comments, toasts and list boxes, 14px for posts and the app panel, 16px for app cards, 18px for the window and floating cards, 20px for the paste field, 24px for slices, the stage and persona photos, 26px for plan cards, 32px for the paste section, and clamp(24px, 3vw, 36px) for the chapter sheet. Slice cards clip their UI at the bottom edge (16px top corners, square bottom), so the product runs off the card.
+
+Headline tiles are near-squares (.84em, radius .22em) tilted −4° (faces) or +4–5° (platforms), with an inner 1px light edge. Platform tiles in UI are 40 / 26 / 22px with 11 / 7 / 6px corners. Status dots are 6–7px circles: filled for done, a 1.5px ring for open. The soft-word mark is a 1.5px wavy underline offset 4–5px.
+
+## Components
+
+### Buttons
+- **Shape:** full pills on the site (999px); 10px rounded rectangles in the app.
+- **Primary:** the light pill (`button-primary`): 40px tall, 18px sides, Inter 500 15px; `sm` 34px, `lg` 50px for the hero and close, `full` 46px in plan cards. An arrow icon nudges 2px right on hover.
+- **Hover / Focus / Press:** background brightens to `pill-hover` over .2s; press scales to .97 with cubic-bezier(.22,1,.36,1); focus is a 2px ink outline offset 3px.
+- **Ghost** (`button-ghost`): a 7% ink tint, 12% on hover. "See how it works", "Sign in" at the close.
+- **Line** (`button-line`): transparent with a strong inset hairline. Free and Studio plan buttons, Copy.
+- **App:** `app-button` is the card grey with a strong hairline, `card-2` on hover, a .965 press; `app-button-primary` is the pill colour with no hairline.
+
+### Tabs and switches
+- **Style:** a pill track (card grey, inset hairline, 4px padding) with a sliding thumb (`card-3` plus a strong hairline) that moves and resizes with .5s cubic-bezier(.22,1,.36,1). Used for the window's Write · Week · Review · Results, the persona tabs, Monthly · Yearly and the footer theme switch. Arrow keys, Home and End move between tabs.
+- **App segmented control:** `card-2` track at 10px radius, `card-3` thumb.
+
+### Cards / Containers
+- **Corner Style:** 16px app cards, 24px slices, 26px plan cards (see Shapes).
+- **Background:** `card` on the page; `card-2` / `card-3` for nested or selected surfaces; frames inside slices use a mix of card and page (`--hx-ui`).
+- **Shadow Strategy:** hairline only at rest (see Elevation).
+- **Border:** never a CSS border on a card; a 1px inset hairline.
+- **Internal Padding:** 32px on slices (26px / 20px on phones), 30px on plan cards, 14–18px inside framed UI.
+
+### Inputs / Fields
+- **Style:** the card grey with a strong hairline, 38px tall at 10px radius in the app; 48px pills on sign-in.
+- **Focus:** the hairline turns `ink-2` and a 4px ring at 7% ink appears around it.
+- **Error:** `aria-invalid` plus a plain sentence under the field ("That doesn’t look like an email yet.").
+- **Paste field:** a 20px-radius well on `page` inside its card, 19px Inter 500 text, with a mirror layer under the textarea that draws the soft-word marks live.
+
+### Navigation
+- **Site:** the floating capsule (`nav-capsule`): logo, How it works · Features · Pricing · Questions · Developers in Inter 500 14.5px `ink-2` (ink on hover and current), then Sign in (Open the app once onboarded) and a small Start free pill. It frosts at 72% (84% once scrolled). Below 760px the links fold into a round menu button that opens a 22px-radius sheet.
+- **App:** sidebar items are 32px with 8px corners, `ink-2` with `ink-3` icons; the current place is `card-3` with ink text and icon. Phones get the top bar and tab bar.
+
+### Headline tiles (signature)
+Faces and platforms set inside a line of type. A tile is .84em square, tilted, with an inner light edge; inside it, pictures turn over (the old one leaves upward, the new one rises in, .45s opacity and .7s transform) every 2.8s while the line is on screen, 200ms apart between tiles. The hero has a face tile before "you" (five portraits) and a platform tile after "Show up" (X, Threads, LinkedIn, Bluesky on their own colours); "For anyone [face] with a take" turns every 2.6s. Tiles enter with the only spring on the page, cubic-bezier(.34,1.45,.5,1), from scale .35. Reduced motion: the first picture, still.
+
+### The app window (signature)
+A browser frame (traffic-light dots, a mono URL that changes with the screen) around a miniature of the real app: sidebar with Week, Write, Ideas, Inbox, Results, and four screens. **Write** plays the whole move, at fixed beats: the three soft words get the amber wavy line one by one (from 0.65s, 360ms apart); "3 soft words in your first line" and the count badge on Sharpen appear (1.8s); a cursor glides over (cubic-bezier(.65,0,.35,1), .95s) and presses Sharpen (3.3s, scale .93 with a ring); the first line resolves from a 5px blur into the sharp version under a green wash while the count rolls down (3.46s); the X preview follows (3.9s); the cursor presses Schedule (5.8s); the toast "Scheduled for Tue, 8:40 AM" lands and the tag reads Scheduled (5.96s). After 8.6s it moves on to **Week** (the post chip lands on Tuesday 8:40 with a spring, beside a best-time heat grid), **Review** (two comments rise in, one Resolved) and **Results** (a KPI strip with green deltas and a line that draws itself), 6.6s each. It pauses off screen, stops for good once you pick a tab, and under reduced motion shows the finished frame. Caption: "The app, with an example account."
+
+### The paper chapter (signature)
+The inverted sheet, holding "From an 11 PM thought / to Tuesday morning." Five numbered steps (Catch it, Draft it in your voice, Sharpen the first line, Out when they’re scrolling, See what landed) open one at a time with a 2px progress hairline (5.8s each); the step in play sets a photographic stage: a night desk that cross-fades into a sunrise run, slowly settling from 1.06 scale. A frosted clock chip keeps time (Mon 11:47 PM → Tue 9:41 AM) and a dark frosted card shows the product at that moment (Ideas with a voice note, the draft typing itself, before / after with the wavy line, the week with the post landing, the result an hour in). Stage cards stay dark in both themes because they float over a photograph. Caption: "heycape is an example account; the photos are illustrations."
+
+### Product slices
+Six cards, one frame each: a sentence with a bold lead ("**Sharpen any line.** …") over one framed piece of real UI that runs off the bottom edge. Sharpen any line (three versions of the selected words turning over every 2.4s), One draft, every network (platform tiles with character bars and checks), Review links, Client voices (a radio list with keys), Ideas from anywhere, Replies, drafted.
+
+### Status words and dots
+Status is a plain word with a 6px dot in `ink-2`: Drafted, Resolved (filled); Open, Saved (a hollow 1.5px ring); unselected rows mute to `ink-3`. Never a coloured pill; the one green status is Resolved inside the window's Review screen, because there it means better.
+
+### Soft-word mark
+`text-decoration: underline wavy` in `soft-word` at 88%, 1.5px thick, offset 4–5px, skip-ink off. It marks hedges and filler ("so i think", "honestly", "just") in the window, the chapter, the persona before-lines and the paste box. In the window the marks arrive one by one; in the paste box they follow your typing.
+
+### Pricing cards
+Three cards (Free, Pro, Studio) with a pill Monthly · Yearly switch; prices are Inter 600 54px and roll over in place (old number up and out, new one up from below, .45s). Pro wears the inverted sheet with the solid pill; Free and Studio use line pills. Includes are a hairline-topped list with ink-2 checks.
+
+### Footer and giant wordmark
+A hairline, the logo with one line about the product, four columns (Product, App, Legal, Contact), then © and the theme switch. Under it, "Hookworthy" in Inter 600 at clamp(56px, 17.4vw, 280px), solid, at 12% ink on the page, cut off by the bottom edge. It is decorative and hidden from screen readers.
+
+### Section reveals
+Sections rise once, the first time they come into view: 22px up, from a 6px blur, opacity .9s and transform 1s on cubic-bezier(.22,1,.36,1), with even slices 80ms behind odd ones. The hero's lines rise from .22em and an 8px blur, 90ms apart. Reduced motion: everything is simply there.
+
+### App shell
+The desk (`desk`) with the sidebar on it, and the page as one inset panel. Sidebar: the logo, a "Writing as" switcher for client voices, New post, Search (⌘K / Ctrl K), the five places, one drafts list, and the account. Toasts sit on `card-2` with a strong hairline; menus, modals and the command bar on `menu`.
+
+### Platform posts (signature)
+`xPost`, `thPost`, `liPost` and `bsPost` render one post object (person, text, media, counts, age) exactly as each app does, in light or dark:
+- **X**: 40px avatar, 15/20 text, actions for reply, repost, like and views plus bookmark and share, and count formats `1,204` / `12.4K` / `124K` / `1.2M`.
+- **Threads**: 36px avatar in a 48px column, and a rail for thread replies.
+- **LinkedIn**: 48px avatar, a "· You" or "· 2nd" degree, clamped at three lines with the "…more" button and no ellipsis of its own.
+- **Bluesky**: Inter, 42px avatar, and a `.bsky.social` handle.
+
+Fictional accounts never carry a verified badge. The site's own post card (`.hx-post`) is a simplified X post on `card` with a 14px radius.
+
+### Portraits and photos
+Generated portraits and photos, served as sprite sheets (`.avp` / `--spr-av`, `--spr-av2`, and `--spr-ph` for the desk, run, whiteboard, cafe, team and notes photos). If a sprite fails to load, the post shows initials on a neutral disc and a photo stage falls back to #1A1A1A.
+
+### Phone
+True 390pt frame with the island, status bar, app header, tabs and tab bar, scaled with `zoom` so type stays crisp.
+
+### Character ring (composer)
+It follows X, but stays hidden until you're near the limit: it appears at 20 remaining, turns to warning then error, shows the count, and hides the circle at 10 over.
+
+### Sharpen (selection rewrite)
+Select a few words in a post and a pill appears above the selection, offering Punchier, Shorter, Clearer, Bolder and More human (⌥1–5 / Alt 1–5), plus Custom… for a note, and Comment. Picking one previews the first of up to three versions in place on the marker tint; flip with ‹ › or the arrow keys, keep with ↵, cancel with Esc. Sharpen is free and unlimited, because it only touches the words you chose.
+- **One engine, one set of checks** (`HWCore.SHARPEN` in core.js): the selection snaps to whole words; every version must change something real, keep every number, ticker, name and "not", add no number, hype word, emoji or AI tell, and differ from the other versions. Anything that fails is dropped and Basic versions stand in.
+- **Nothing passes?** An honest note says what was checked and what's already working. Never "already good".
+- **Motion** (under 400ms, transform and opacity, typing cuts it short): words that go strike through and fade (110ms), then new words resolve from a 4px blur one after another. It is the same move the homepage window plays. Reduced motion: an instant swap.
+
+### Comments and review links
+Each commenter keeps one colour (`comment-*`) everywhere they appear. Highlights are a tint of that colour with an underline; dots pass 4.5:1 on the writing surface and text stays 7:1+ over tints. In Write, the right column has Comments and Preview tabs; each thread is a card with its quoted words, replies and Resolve. Reviewers on a shared link sign in with X or Google. Select words and the selection bar starts with Comment (⌘⌥M / Ctrl Alt M).
+
+### Client voices
+Each voice (you plus up to eight clients) keeps its own drafts, counts, default platforms and half-written post. Writing as a client with approvals, Schedule reads "Send to <Client> for approval", and cards wait with a readable **To approve** tag.
+
+### Honest states
+- **Practice mode.** With no account connected, nothing posts from Hookworthy. **Post now** still works in one click: the first time, a small sheet offers **Open in X** (x.com's own compose box, prefilled), **Mark as posted**, and **Connect X to post from here**. The card reads **Marked**, never Live.
+- **No predictions.** Your own post never shows predicted likes or views. Sample numbers appear only on seeded demo posts, and the site's mock screens say they use an example account.
+- **Queue status.** Sent, Sending…, Marked, Post by hand and didn't go out; on narrow cards the status becomes a 6px dot (`better`, `ink-3`, `soft-word`, `wrong`).
+
+### Link cards
+A post with a link shows the card each platform would draw, under that post in the composer and in every preview, from the last link in the post and only when the post has no pictures or poll. With Hookworthy's server, `GET /api/unfurl` reads Open Graph tags; without it, the card is read from the link itself, with a plain block where the picture would go. Never a made-up image. **×** removes it (`nocard`), with **Show card** to bring it back.
+
+### Filled examples
+A formula or post idea never shows a bare [blank] when an honest example fits. Examples are marked (`mark.fill`: the accent-soft tint with a 1.5px underline); blanks only the writer knows stay dashed outlines in `ink-2`. In Write, Tab / Shift+Tab move between them, and a [blank] never posts.
+
+### Before you post (checks)
+Leftover blanks, a link in the first post on X or LinkedIn, a word used three times, more than two hashtags, images without a description, thread numbering that doesn't match, a thread ending on a colon or ellipsis, a post starting with @ on X, a first line that repeats something already queued, double spaces, and a quoted BTC/ETH/SOL price that has moved more than 3%. Shown in the schedule sheet and the top-bar pill. Checks never block posting.
+
+### Focus mode
+⌘. (or the target button) hides the sidebar, preview and chrome, centres the editor and keeps the line you're on at eye height (typewriter scrolling). Esc or ⌘. brings everything back. Desktop only.
+
+### Sound
+Synthesized in Web Audio, never samples, each under 350 ms and very quiet: **tick** (toggles and tabs), **tap** (primary actions), **pop**, **hook** (a rising two-note cue for a strong opener), **swap** (a rewrite is kept), **done** (scheduled or published). On in the app by default; Settings › Sound and look turns them off.
+
+### Keyboard
+Hints follow the computer (⌘ ⌥ ⇧ ↵ on a Mac, Ctrl Alt Shift Enter on a PC) and hide on touch. ⌘↵ in Write schedules for the next good open time, ⇧⌘↵ posts now, ⌘O finds a draft, ⇧T walks the themes, Alt+T jumps to the newest toast, Esc closes panels.
+
+### Demo account
+Every demo, mockup and empty state is **heycape (@heycape_)** with his own picture (`assets/people/you.jpg`), labelled as an example account on the site. Other people in feeds are the cast in `PEOPLE`.
+
+## Do's and Don'ts
+
+### Do:
+- **Do** set the one big line on a page in Newsreader 400, roman, tracked -0.022em to -0.04em; set everything else in Inter.
+- **Do** put people and platforms inside the headline as tilted tiles (.84em, ±4°) that turn over while the line is on screen.
+- **Do** show the product working in a frame, with heycape named as the example account in a caption.
+- **Do** keep one light pill per view; make every other button a hairline outline or a 7% ink tint.
+- **Do** mark soft words with the amber wavy underline (1.5px, offset 4–5px) and use amber for nothing larger than a badge.
+- **Do** keep green for "better": a sharper line, a positive delta, Resolved, a scheduled check.
+- **Do** write status as a plain word with a 6px neutral dot (filled done, hollow open).
+- **Do** give a page exactly one inverted sheet, and let the Pro plan card wear it.
+- **Do** ease UI with cubic-bezier(.22,1,.36,1), and keep the spring (cubic-bezier(.34,1.45,.5,1)) for things that land: tiles, the post chip, the count badge.
+- **Do** pause every loop when it's off screen or the tab is hidden, and show the finished frame under reduced motion.
+- **Do** render every post as its platform does, with a portrait, name, handle, time and counts.
+
+### Don't:
+- **Don't** put eyebrows or kickers above headings, on the site or in the app.
+- **Don't** add logo walls, testimonials, icon-card grids, or any promise of reach or followers.
+- **Don't** split a head into ink and grey outside the story chapter, pricing and the close.
+- **Don't** introduce a brand hue, a coloured block or a gradient fill; there is no accent colour.
+- **Don't** use gradient text or coloured glows; the only light is the two ink-tinted pools behind the hero and under the window.
+- **Don't** frost a surface unless it sits over a photograph or scrolling content.
+- **Don't** use side-stripe accents on cards or callouts; the one side rule is the 2px commenter-colour bar on a quoted excerpt.
+- **Don't** set sentences in mono, or Newsreader below 30px or in bold.
+- **Don't** use real people's names, faces or posts without permission, or put verified badges on fictional accounts.
+- **Don't** auto-scroll content (no marquees).
+
+## Brand and Voice
+
+- **Name:** Hookworthy. **Promise:** Good ideas die in bad first lines.
+- **Logo** (since round 55): the hook-h glyph, bare, in the ink colour, beside "Hookworthy" in Inter 600. App icons put the glyph on a near-black tile. Files: `assets/wordmark.svg` (outlined), `assets/icon.svg`, `assets/app-icon.svg` / `.png`, `assets/og.png`.
+- **Glossary (say it this way):**
+
+  | Say | Don't say |
+  |---|---|
+  | **Hook** (the first line), **Hook score** (the feature); the four steps **Getting there**, **Almost**, **Ready**, **Outstanding**; **the next step to Ready** (the bar); **Stronger** / **A bit softer** (a change within a step) | grade (as a noun); "Hook 72", "/100", "70 is the bar"; Flat, Warming, Sharp, Honed (retired); Hooked, Scroll-stopper (they forecast readers) |
+  | **Rewrite** (the whole post), **Sharpen** (selected words), **version** | riff, take, option, "applied", AI edit |
+  | **Formula** (a fill-in first line or post shape) | shape, structure, pattern (as a template), hook library |
+  | Post kinds: **Hot take**, **List**, **Teaser**, **Story**, **How-to**, **Question**, **Results**, **News**, **Lesson**, **Thought**; in sentences “hot takes”, “lists”, “teasers” | Contrarian, Listicle, Curiosity / Open loop (as a kind), Proof, Announcement, Take (as a kind) |
+  | **Didn’t land** (a post well under your usual) / **Try again** | Quietest posts, flops |
+  | **Write about it**, **Quote it**, **Reply to it** (a saved link) | Write a take on this |
+  | **Example** (a filled-in part of a formula, marked) / **blank** (only you know it) | placeholder |
+  | **Pattern** (only what What's working finds) | |
+  | **Post ideas** | starters, engine, fresh angles |
+  | **What's working** | In your niche (as a name), Niche radar |
+  | **Reply radar** (others' fresh posts) / **Replies to your post** (your own) | desk, reply desk |
+  | **Saved** | Inbox, Archive |
+  | **Your voice**, **never-say list** | voice profile, voice model, full profile, banned words, Ban it |
+  | **Say it** (dictation) | voice typing, Talk it through |
+  | **Your people** = your audience; **Accounts you learn from** | your people (meaning sources) |
+  | **Best time**, **Next open slot**, **Scheduled for** | golden slot, Add to queue, Queued for |
+  | **Hook vote** (friends) / **Compare two lines** (your past posts or friends) | Hook shootout as a title |
+  | **Delete** (drafts, ideas) | Archive, let it go, bin |
+  | **Link card** (the preview under a post with a link), **Show card** | embed, unfurl, rich preview |
+  | **Claude** / **Basic mode** | your Claude, the AI |
+  | **Bring your posts** | Import it, Add posts |
+  | **Breakout alert** | Follow-up reply |
+  | **Plans** (the page), **Your plan** (paid), **Upgrade to Pro** (free users only) | Pricing (preview), Hookworthy Pro, Manage plan |
+  | **Credits** / **Claude credits**, **Plenty left**, **Back at midnight**, **Refills Nov 4**, **Try Pro free for 7 days**, **Use the Basic version**, **Plans & credits** (phone menu) | tokens, words left, AI points, quota, unlimited (for Claude), Start free trial |
+  | **Tension** (the fourth check) | Friction, Stakes |
+  | **Keep** (accepts a version) / **version** (one result of Rewrite or Sharpen) | Accept, take, angle (for rewrites) |
+  | **Add an open loop** (the rewrite) | Curiosity gap |
+  | **Save an idea** | Capture an idea |
+  | **Write from a picture** (feature) / **From a picture** (button) | Picture to post |
+  | **Weekly reruns** | Evergreen reruns, Repost |
+  | **Fix spacing** / **Swap it out** (one-click fixes) | Tidy up, Rewrite it (for these) |
+  | **Use this pattern** (What's working card) | Write your take (that name is for market events only) |
+  | **Auto-plug** (one reply you write ahead, per post, off by default, sent once at a like count you pick) | follow-up, CTA bot, auto-reply |
+  | **Who can reply** (per post: Everyone, People you follow, Only people you mention) | reply settings, audience |
+  | **Your posting times** (the weekly grid Schedule fills first) | golden slots, time slots |
+  | **Post by hand** (a post whose time came with nothing to send it) | Published (unless something sent it) |
+  | **Open the app** (the link into the app from the light-world pages) | Open the demo |
+  | **Reset sample data** | Reset demo data |
+  | **Post now** (the main button) / **Schedule** (secondary) | Publish, Send now |
+  | **Share**, **Share for review**, **Public link**, **Internal link** | Get a second opinion, review link (as a button) |
+  | **Comment**, **Reply**, **Resolve** / **Reopen**, “on text that changed” | Feedback, annotate, mark done |
+  | **Open in X** / **Mark as posted** (nothing connected) | Post manually, Publish elsewhere |
+
+- **Slots in sentences:** "Scheduled for tomorrow at 8:40 AM", never "Scheduled for Tomorrow · 8:40 AM". The "·" form is for labels and lists only.
+
+- **Time format:** 8:40 AM, with a space and capitals, as on X.
+- **Voice:** a coworker who writes too: warm, plain, a little dry. Say what happened and what to do next (“Gone from the queue.”, “Added on top. Your old line is right below it.”), never “Operation successful”. Creator to creator; short sentences; numbers beat adjectives; no "unlock / supercharge / leverage / elevate / seamless / AI-powered".
+
+## Round 49: hook tag, post sheet, balanced pages
+
+- **Hook state is a tag, not a ring.** It sits at the right of the post header: signal bars, the state word and a chevron, tinted by state. Outstanding (renamed from Standout) gets a gold edge and a slow sheen. The gutter keeps only the avatar.
+- **The post sits on a sheet.** On desktop the thread is a white card with a hairline border and soft shadow; the tools row stays visible inside it at reduced opacity.
+- **Pages centre beside the sidebar.** Every `.page` uses auto margins, so left and right gaps match (Queue included).
+- **Insights rhythm.** One 16px gap between every block; side-by-side charts end on the same line; insight cards put the body under the title and the button on the bottom edge.
+
+## Round 50: a coach, not a grade
+
+- The composer never shows a score or a state word while you write. The header tag is gone.
+- One quiet line sits in the post's tools row: **One tweak to try** (only after you pause), **Strong opener** (green check) or **Outstanding opener** (gold, one sheen when you get there). It opens the tips panel.
+- The tips panel leads with what to do ("Try this: …"), headers read A few quick wins / Nearly there / Strong opener / Outstanding opener, and no signal bars.
+- Schedule and Post now: a strong opener gets "Strong opener. Good to go."; a middling one says nothing; a weak one gets an optional "One tweak to try" with stronger lines to tap. No chips or grades.
+- Today's quick composer only speaks up to say an opener is strong.
+
+## Round 51: no grades anywhere
+
+- `tierChip()` is positive-only: strong openers get a small check chip (Strong / Outstanding); anything else renders nothing. No line is ever labelled weak.
+- Removed: the Hook column in the Insights posts table, every dial on the homepage and tools page, the four-step grade scale, and the "Show scores as numbers" setting.
+- Change labels read Stronger / Now strong / About the same / A different angle; sentences talk about "strong openers", never tier words.
+- The homepage try box is a sharpener: a tip and a Sharpen button, no score.
+
+## Round 52: trust fixes + Teams
+
+**Trust fixes**
+- Schedule says what happens at the time you pick: "Posts by itself" when an account is connected, otherwise "You'll press Post… it waits on Today", with Connect. Threads and Bluesky start off.
+- Toasts move to the top while a modal is open, so they never cover its main button.
+- A modal on a scrolled page no longer blanks the app (`body{overflow-x:clip}` instead of `hidden`, which turned body into its own scroll box when html was locked).
+- Editing a scheduled post: no false "same first line" warning against itself; Change time · Post now · Save changes.
+- Command palette: commands that send something sink unless typed by name; groups stay in one block; New thread added; novelty commands trimmed.
+- Sample numbers are seeded from the post text, so they hold still across loads.
+
+**Teams** (`S.team`, route `#team`, sidebar item with a badge)
+- Four roles: Admin (everything + people), Editor (write, post, approve), Writer (write, comment; posts need a yes), Reviewer (comment, approve; read-only composer). A permissions table shows it at a glance.
+- Invites by email with a role; pending rows have Copy link and Revoke. Roles change inline; Remove has Undo.
+- "View as" previews any teammate's seat, with a bar to get back.
+- Comments on drafts and queued posts: a side panel with threads, replies, @mentions, quotes from selected text, resolve/reopen. They travel with the post from draft to queue and back.
+- Approvals: a Writer's Schedule becomes "Send for approval"; approvers get Approve / Ask for changes (with a note) on the Team page and in the queue menu. "Changes asked" goes back to the writer. Activity logs it all.
+- App classes use the `tmx-` prefix (the marketing Teams page owns `tm-`).
+
+## Round 53: comments beside the draft, automatic X format, no Teams
+
+- **Teams is gone** (people, roles, View as, Writer approvals). What stays: client voices (Write as) with their own approvals, and review links. Saved team data and its sample post are cleaned up on load.
+- **Comments sit beside the draft.** The right column has two tabs, Comments and Preview; Comments opens by itself when there are open threads, even if the preview was hidden. Each thread is a card with its quoted words, replies and Resolve; a box at the bottom adds a note or a comment on the selected words.
+- **Highlight to comment.** Select words in a post: the selection bar now starts with Comment (or press Mod Alt M). The words stay highlighted in the post in the commenter's colour.
+- **Review links: sign in with X or Google.** Reviewers pick Continue with X (their @handle) or Continue with Google (their email) instead of typing a name; the chip shows which. No `prompt()` anywhere on the review page.
+- **X format is automatic.** The plan comes from the connected X account only. Free (or not connected): 280 a post, longer text becomes a thread as you type. Premium: any post can run long. A thread is only posts you add. The format menu, the pill and the "I have Premium / I'm on free X" switches are removed.
+- **Today's composer is light**: a normal card with a bordered field, like everything else.
+
+## Round 55: one system, dark first, five places
+
+The brand, the site and the app were rebuilt in the style of mailcheap.ai: a near-black ground, quiet grey cards with hairlines, a light primary button, a serif for the one big line on a page and a clean sans for everything else. Claims are plain and checkable.
+
+**Colour** (bare `:root` light; `[data-theme="dark"]` and the dark media query dark; dark is the default)
+- Dark: desk `#0A0A0A`, page `#0D0D0D` (`--panel`), cards `#171717` (`--surface`), raised `#1C1C1C` / `#262626`, hairlines `rgba(255,255,255,.07)` and `.12`, text `#EDEDED` / `#A3A3A3` / `#8C8C8C`.
+- Light is the same system inverted: desk `#F2F2F1`, page `#FAFAFA`, cards white, ink `#111111`.
+- The primary button is the only filled control: `#E5E5E5` on near-black text in dark, `#111111` with white text in light. Everything else is a hairline outline.
+- Colour is spent on meaning only: green `#4ADE80` for good (deltas, Active, Resolved), amber for wait, red for wrong. Comment highlights keep their eight colours.
+- A faint dot grid (`.dotgrid`, 22px, fading at the edges) sits behind the hero, the principles panel and nowhere else.
+
+**Type**
+- Newsreader (variable, self-hosted) for display: hero, section heads, page titles (`.display`), sign-in. Weight 400, tracking about -0.03em.
+- Inter (variable, self-hosted) for the interface and body. Geist Mono for URLs, keys, times and API chips.
+- The old grey second half of headings is retired; a headline is one colour. The hero's key phrase sits on a soft highlight block instead.
+
+**Logo**
+- The mark is the h whose right leg curls into a hook, drawn as a bare glyph in the ink colour. The wordmark is "Hookworthy" in Inter 600, one colour. App icons put the glyph on a near-black tile.
+
+**Theme**
+- `S.theme` defaults to `'dark'`; saves from before the redesign start dark once (`S.r55`). Light and Auto stay in Settings, the footer switch and Shift T. A tiny script in `<head>` applies the saved theme before the first paint. The site follows the theme like the app (no more forced-light homepage).
+
+**The site** (`hx-` classes; `hxPage` gives every marketing page the same nav and footer)
+- Nav: logo, Features · Pricing · Questions · Developers, Sign in, Get started.
+- Hero: "A week of posts for [X], written in your voice." The platform tile and name turn over (X, Threads, LinkedIn, Bluesky); the line never jumps because the slot's width eases.
+- The product in a browser frame with four tabs (Write, Week, Review, Results). It moves on by itself while on screen and stops when you pick a tab. Each screen has one small moment: the soft words get underlined and the first line is sharpened; a post lands on Tuesday 8:40 with an Undo toast; review comments slide in; the followers line draws itself.
+- "Everything you need to post every day": a bento of eight real UI slices (Write, Schedule with working day and time pills, Sharpen, Review links, Ideas, Results, Every network, Client voices).
+- "Nothing goes out that you didn't approve": no auto-DMs, auto-retweets, auto-deletes or bought reach.
+- Pricing: pick Free, Pro or Studio on the left, read it on the right; Monthly or Yearly.
+- Questions, the final call ("Bring your ideas. Keep your voice."), a toy (throw a note you never posted), and the footer with the theme switch.
+- Sign in (`#signin`): the form on the left (Continue with X, Continue with Google, or an email code), the product on the right. In this demo every way in opens heycape's account.
+
+**The app: five places**
+- Week (`#week`, was Today + Queue): the greeting, what goes out next, then the week grid and the drafts tray. One nudge at most.
+- Write (`#write`), Ideas (`#ideas`, now with a Formulas tab that replaces the Hooks page), Inbox (`#inbox`, was Replies), Results (`#results`, was Insights; numbers sit in one strip with green deltas).
+- Settings is one page (`#settings`): Accounts, Voices, Posting, Sound and look, Alerts, Your data.
+- Old addresses (`#today`, `#queue`, `#replies`, `#insights`, `#hooks`, `#teams`) land on their new homes.
+- Sidebar: the logo, a "Writing as" switcher for client voices, New post, Search, the five places, one drafts list, and the account. The theme switch and the AI pill left the sidebar.
+- Phones: a top bar (mark, search, your avatar for the account menu) and a tab bar of Week · Ideas · ＋ · Inbox · Results.
+- Keys: G then H (Week), W, I, N (Inbox), R (Results), V (Your voice), S (Settings).
+
+**Cut**
+- The hook tournament, Hook of the week, Compare two lines, Hook vote, the thumbnail maker (one "Make an image" remains), the Hooks page and its grader, the market calendar outside trading niches, and Earn in the account menu.
+
+**Fixed along the way**
+- Leaving a page while something on it was still animating (Results' bars, for one) held the page transition's snapshot for about 4 seconds. Finite animations on the old page now jump to their end before the transition starts; leaving Results takes about 0.2 s.
+- ⌘↵ in Write schedules for the next good open time (or the time you were writing for) in one keystroke, with Undo. The Schedule button still opens the picker; ⇧⌘↵ is still Post now.
+- Plans speak in plain limits: 10 AI rewrites a day on Free, 1,000 a month on Pro, 4,000 shared on Studio. The usage tiers and the credit table are gone.
+
+## Round 57: round 55's world, the original homepage's personality
+
+The owner found round 56 weaker than round 55 and asked for the two to be combined: round 55's dark system (near-black, Newsreader + Inter, the product in a window, slices of the app) with the original homepage's personality (faces inside the headline, the "11 PM thought" chapter, persona tabs, pricing cards, the paste tool, the giant wordmark). Round 56's red-pen layer is gone: no `--pen`, no writing-paper rules, no struck words, no section keys, no ledger pricing. The owner picked the first screen, "Photo headline + live app". Image generation was offline, so the build is code-led and reuses the round-12 photo and portrait sprites.
+
+**What came back from the original**
+- Portrait and platform tiles inside headlines, turning over while on screen.
+- Two-tone heads (ink, then grey), now only in the story chapter, pricing and the close.
+- One inverted chapter (`.inv`, the other theme's tokens), worn by the Pro plan card too.
+- The amber wavy line as the soft-word signal; green only for better.
+- The giant wordmark at the foot.
+
+**The site, top to bottom** (`hx-` / `hz-` classes; `hxPage` gives every marketing page the same nav and footer)
+- **Nav:** a floating capsule. How it works · Features · Pricing · Questions · Developers, Sign in (Open the app once onboarded), Start free.
+- **Hero:** "Sound like [face] you. / Show up [platform] every day." in Newsreader up to 96px, two lines; the face tile turns through five portraits, the platform tile through X, Threads, LinkedIn and Bluesky. Sub: "Your ideas, turned into a week of posts in your voice, out on time." Start free (the light pill) and See how it works (ghost). No eyebrow, no stats.
+- **The window:** Write · Week · Review · Results tabs over a browser frame of the app. Write plays the signature: wavy lines arrive one by one, a cursor presses Sharpen, the first line resolves from a blur, the X preview follows, a cursor presses Schedule and "Scheduled for Tue, 8:40 AM" lands; then it moves on to Week by itself until a tab is picked.
+- **"From an 11 PM thought / to Tuesday morning."** The inverted sheet: five steps over a night-desk photo that turns into a sunrise run, a clock chip from Mon 11:47 PM to Tue 9:41 AM, and a frosted card per step.
+- **"Built around the first line."** Six slices, one frame each: Sharpen any line, One draft every network, Review links, Client voices, Ideas from anywhere, Replies drafted. Status in plain words and dots.
+- **"For anyone [face] with a take / and a post to make."** Creators · Founders · Ghostwriters · Traders tabs; each an example writer, a Newsreader head, three checks, and a photo with a first-lines card, before (wavy) and after (green check).
+- **"Nothing goes out that you didn't approve."** The never list (no auto-DMs, auto-retweets, auto-deletes, bought reach, or anything you haven't seen) and three links.
+- **"Free to start. / Pro when you post daily."** Monthly · Yearly, three cards, Pro on the inverted sheet.
+- **"Good questions, plain answers."** Eight questions, the head sticky beside them.
+- **"Paste the post you almost didn't send."** A paste box with live soft-word marks, three sample lines, Sharpen it, then Open it in Hookworthy or Copy. Nothing typed leaves the page.
+- **"End of the page. / Start of the post."** Start free and Sign in, then the footer and the giant wordmark.
+
+**Sign in** (`#signin`): the form on the left ("Welcome back.", Continue with X, Continue with Google, or an email code as a pill field); on the right, the run photo with the clock chip at Tue 8:40 AM, "Your week is right where you left it." and a Next out card with three posts. Below 900px only the form remains. In this demo every way in opens heycape's account.
+
+**Review fixes (same round):** the first screen, quieter status and calmer slices.
+
+## Round 58: everything earns its place
+
+The owner asked for another hard critique of the app, not the site: cut anything that is only there to be there, promote features in positive words (a little rhyme where it lands), make the demo content relatable, and make every flow land somewhere real. Two assessments ran separately: design, copy and flow from screenshots, and a detector plus scripted flows in a browser.
+
+**Identity:** a new user can set their name and @handle from the account menu or Settings › Accounts (`openProfile()`); previews use "You" until they do. Sign out keeps drafts on the device.
+
+**No dead ends:** Connect, Turn on, Email Sundays, Breakout alerts and Self-hosting show only when the server can do them. Without a server, a post "waits on Week; one tap and it's out". Names are now consistent: Claude (rewrites) and Quick mode (on your device).
+
+**Write carries the homepage's signature:** soft words in the first line get the amber wavy line in the composer mirror (`.tw-mirror .sw`, from `hgMarks`), and the coach button becomes "Sharpen · N". One tap cuts them in place (`sharpenFirst()`, shared `hgClean()`), keeps the writer's case, and offers Undo. With no soft words, the button opens Improve as before. The Improve › First line panel drops the "N of 5" count and the grade words, ticks instead of strikethrough, "Do it for me" instead of "Fix it", and one note: "It reads your line, not your likes." It no longer shows a voice match against the sample voice.
+
+**Week:** one positive line ("A clear week ahead. Plan it once, post all week."), one header action (Draft my week), past days dimmed, no handwritten note, no zero counts. Draft my week says what its button does: "Save for Tue" when a post has [blanks], "Schedule" once they're filled. Saved drafts show on their time as dashed cards (`.qcard.draftc`) that open the draft. Starter topics read as actions (e.g. "trading after a loss", "pacing a solo build"), and formula fills read as English in every template that uses them.
+
+**Results, Voice, Inbox for a new user:** Results leads with your own week ("A clean slate. First post, first lesson.", Write your first post, Already posting? Bring your posts); the sample account folds behind "See an example account" with no Remix. Voice shows "Your starting voice" from the tone sliders (it follows them live) and a progress bar toward 8 posts, never a stranger's words. Inbox: "Your replies first", a sample radar button that says Copy reply, keys behind a "?" that opens the shortcuts sheet, and "2 replies so far: room for yours".
+
+**Clients:** Week greets "Morning. Writing as Ledgerly." and Next out skips posts still waiting on a yes.
+
+**Plans:** "Sound like you. Show up every day.", one trial button (on the Pro card), no Soon rows, "Claude rewrites" everywhere, and the trial headline counts the days left.
+
+**Drift and phone:** eyebrows are sentence case (no uppercase labels in the app), the Upgrade FAQ head is Newsreader, the ⌘K list hides Tidy and Recently deleted when there's nothing to tidy or restore, Design system is a developer extra, the Ideas save icon is a bookmark, and "Saved" drops its zero. On phone, Schedule keeps its label beside a send arrow, the Ideas tabs sit on one row, and the agenda skips past empty days.
+
+**Second assessment fixes (same round):** Reset sample data can be undone. Ctrl O opens the drafts list from any page. "Shuffle post ideas" lands on a fresh batch in Ideas. A sample radar card says Copied, not Replied. The "View week" toast steps aside on Week. Ideas row actions sit at half strength until hover instead of hiding. "Your plan" is a disabled state, not a dead button. The phone Week header keeps its next-post line inside the screen. The old `.plan` pricing-card rules, which leaked onto the Draft my week modal and the sidebar clock, are gone, and the phone tab bar is opaque enough to pass contrast.
+
+## Round 59: the writer in your corner
+
+The owner asked for stronger words that rhyme only where it lands, a consistent voice that stays positive, a less plain and more interactive app window, and a positioning that reads as more than another scheduler. Their picks: **"The writer in your corner."** and **"Free to start. Pay when it pays."** The best lines from rounds 41–42 came back.
+
+**The words, top to bottom**
+- Hero sub: "The writer in your corner. Your ideas in, your best posts out, right on time."
+- Story: "Thought up at night, posted just right." The steps read as moves: catch it before it's gone, draft it in your voice, sharpen the first line, "Write when you can, post when they're up."
+- Features: "Nail the first line. / The rest falls in line." "Every tool aims at one spot: the line that makes thumbs stop." The slices: Sharpen any line · Peek at every feed before they read · Notes on the exact words · A voice for every client · Fresh ideas every day · Be first to reply.
+- Who: same win every day; founders "Ship it. Share it. Same day."; ghostwriters "Six clients. Six voices. Zero mix-ups."; traders "Your trade log, posted before the open."
+- Trust: "Everything comes in. / Nothing goes out without you." The never-list is said as what you keep: You send every DM · You pick every repost · Your posts stay put · Reach you earned · You see it first (check marks, not crosses).
+- Pricing: "Free to start. / Pay when it pays." Free "Your next post, on us." · Pro "For showing up most days." · Studio "For writing as your clients." The app's plans read the same.
+- FAQ: "Ask away. / Here's what we'd say." Footer: "The writer in your corner…" and "One good line a day keeps the void away." The page title and social cards say "the writer in your corner".
+- A two-tone head's second line balances on its own (`.hz-h2 br + .mute`), so no word is stranded.
+
+**The window is yours after one run.** It plays the move once (soft words, Sharpen, preview, Schedule), then waits with a "Your turn: edit the first line" pill instead of moving on by itself. In your turn everything works on the page:
+- **Write:** type over the first line (live wavy marks from `hgMarks`), Sharpen cuts the soft words with Undo, a ring counts against the network's limit, and the header switches the preview between real X, Threads, LinkedIn and Bluesky cards (`PF_RENDER`). Schedule and Post answer in a toast.
+- **Week:** drag a post to another time (or move it with the arrow keys); Draft my week drops the drafts into the open best times as dashed cards.
+- **Review:** Resolve and Reopen, select words in the draft to quote them, type a comment and press Enter.
+- **Results:** 7 or 30 days, and hover the chart for the day's count.
+The sidebar gained a Drafts list, and screens out of view are `inert`.
+
+**The story is walkable.** Every scene has a next button (Draft it in my voice → Sharpen the first line → Line it up → See how it landed → Start again / Start free). Catch rows can be picked, Sharpen waits for your tap once you've taken over, and tapping a day moves the post with a note on your best hour. Clicking anything holds the chapter on your step.
+
+**Finish review (same round):** a fresh reviewer scored the round "fix" with eight items, then "ship" after three passes. What it changed:
+- Your turn survives scrolling away and back.
+- The preview shows the whole thread: joined on X and Threads, stacked on Bluesky, one post on LinkedIn.
+- On phones the network buttons open the preview in place of the draft, with a Draft button back.
+- The story stage grows with its scene on phones, and the 7-day scene shows times only.
+- The hero sub breaks after "The writer in your corner."
+- Trust reads "Your ideas come in." and "Every post stays where you put it".
+- The features lede is "Every tool here serves one line: the one that stops the scroll."
+- The audience tabs fit at 390px, and the Sharpen slice keeps its full stop with its words.
+
+
+## Round 60: every Sharpen lands, one set of numbers, nothing in the way
+
+**Sharpen is one engine (`HWCore.hookUp` in core.js).** The composer's coach button, the selection pill (Punchier and Bolder on a whole sentence), onboarding, hook ideas and every homepage demo use the same engine. It tries all of these moves at once:
+- cut the warm-up, the hedges and the bait;
+- ask then answer ("Most underrated thing in trading? Sizing down after a loss.");
+- lead with the number or the result ("200 → 4,000 followers in 90 days. The move: …", "Trials up 22% in a week. What changed: …");
+- say the contrast in two beats;
+- say advice as an instruction ("Stop chasing green candles.");
+- open a loop, only when more of the post follows and the line still needs a push.
+
+It keeps every number, ticker, name and "not". It adds no number and no claim. It keeps the writer's casing: a lowercase writer stays lowercase, and with a body the body decides. Each version is scored and the best one wins. A full stop on its own never counts as a sharpen. The toast names the move ("Almost → Ready. Cut 3 soft words · Asked, then answered."). **Another** cycles through the other strong versions, and **Undo** puts your line back. The coach says "Sharpen" whenever a move would lift the line, not only when there are soft words. Benchmark: 30 real creator and trader lines, 30 of 30 lifted, average +13, 25 Ready (was 7 of 30, +2.6, 11 Ready).
+
+**The hook score credits structure.** It now counts each of these once, and only in a short line: ask-then-answer, a two-beat contrast, the number up front, a turn ("Then I…"), and a reveal after a colon.
+
+**One account, one set of numbers.** heycape: 4,812 followers, a usual post about 4.4K views and 75 likes. Likes run 1.6–2.2% of views, replies 1 in 8 likes, reposts 1 in 12.
+- The example week is anchored to today: the last six days went out, the next four are planned.
+- The hero post is the homepage's own line, word for word. 18.4K views and 402 likes, 4.2× usual. At one hour in: 3.1K and 74.
+- The homepage, Results, Inbox, the radar and the Sunday note all agree.
+- No dated calendars on the homepage.
+- No [blanks] in seeded drafts.
+- Each person has one follower count.
+- Ledgerly is voiced by Tobi.
+- CPI and FOMC never contradict the market calendar.
+
+**Nothing in the way.**
+- On phones, the tool row keeps its place, so "Add to thread" is one tap.
+- Week opens on a week that has time left.
+- The phone sheet is opaque, and Comments has Hide.
+- Sharpen keeps the caret.
+- The selection pill comes up after 650ms. It sits in one row above the words, never on them, and dims options that can't change the selection.
+- A toast's buttons leave with their screen and never cover a menu.
+- Draft my week shows on phones.
+- "Add yours" replaces "Do it for me" where only you know the number.
+- Formula examples score as blanks until they're yours.
+- "Write another like it" starts from a fresh formula of the same kind.
+- Marking as posted takes 3 seconds, not 8.
+- The top bar stays clickable while you type.
+
+**New, for traders.**
+- **Receipts** (Results): every price call you post is tracked. You mark it hit or missed, since nothing watches prices. The honest follow-up is one tap, misses too.
+- **Promise check** (Before you post): flags a guaranteed return, "NFA" doing a plan's job, and a paid or referral link without the Paid Partnership label.
+
+## Round 61: an editor's inks, a Sharpen you can watch, and the scroll test
+
+**Three inks, each with one meaning.**
+- Highlighter yellow marks the words that soften a line. It's a marker swipe under the word, not an error squiggle.
+- Red ink strikes what gets cut.
+- Green marks what's new, and what's ready.
+
+The tokens are `--ink-soft`, `--ink-cut` and `--ink-ready`, plus their bands. Each has light and dark values. Everything else stays quiet.
+
+**Type.**
+- Drafts are set in Newsreader at 20px (19px on phones), so the composer reads like a page.
+- Numbers and tickers read in Geist Mono, tabular: the KPI chips, the homepage KPIs, Receipts and the per-kind bars.
+- The platform previews keep each network's own type.
+
+**A Sharpen you can watch** (`watchEdit`). The edit plays out on the line before it lands, in about a second:
+- the cut words take a red stroke and lift away;
+- the words that stay glide to their new places, even across lines, so "Risk management is the most important thing" visibly becomes "Most important thing? Risk management.";
+- the new words arrive with a green swipe;
+- a small chip names the move.
+
+You can keep typing during it, and your keys land in the new text. Reduced motion skips straight to the result. The composer and the homepage window both use it.
+
+**Scroll test** (in the preview header, in the hook checklist, and in ⌘K). A fast thumb runs through an X-like feed with your post in it:
+- **Ready:** the feed brakes, stops on your post and stamps it "Stopped".
+- **Almost:** it slows, then lets go, stamped "Slowed".
+- **Getting there:** it's flicked past, stamped "Scrolled past".
+
+The result is read from the hook score and says so ("not a forecast"). When the line isn't ready yet, Sharpen is one tap from the result.
+
+## Round 62: copy that sells (pain, then promise)
+
+The homepage now sells instead of rhyming. It was studied against Descript, Wispr Flow, Grammarly, Notion, Linktree and Superhuman on Mobbin. The best of them name a real pain or outcome and show the product doing it. The owner picked "pain → promise".
+
+- **Hero:** "Most posts die in the first line. / Yours won't." The problem is set in grey and the promise in full ink. "first line" gets the editor's highlighter.
+  - Sub: "Hookworthy turns your rough idea into a post people stop for. In your voice, sharpened in one tap, out when your people scroll."
+  - CTA: "Sharpen my first post" and "Watch it work", with "Free plan · No card · Nothing posts without you" under them.
+- **Proof strip** under the demo. These are facts about the product, not invented stats:
+  - 1 tap · 4 networks · 0 posts without you · $0 to start.
+- **Section heads:**
+  - "Write it at 11 PM. Land it at 8:40 AM."
+  - "People decide in one second. Make it count."
+  - "Made for people with something to say."
+  - "It does the work. You press the button."
+  - "Start free. Upgrade when it's working."
+  - "Questions, answered."
+  - "Paste a post you almost didn't send."
+  - Close: "Your next post could be the one. Make it hookworthy."
+- **Feature slices lead with the benefit:**
+  - One tap. A sharper first line.
+  - See it in their feed first.
+  - Feedback on the exact words.
+  - Every client, in their own voice.
+  - Never start from a blank page.
+  - Answer while it's hot.
+- **Title, meta and social cards:** "Hookworthy: posts people stop for".
+
+## Round 63: stronger hooks, less on screen
+
+### Hooks that sound like a person
+- **Sharpen cuts more of the warm-ups people actually write:**
+  - "hot take", "unpopular opinion";
+  - "excited / thrilled / humbled to share";
+  - "idk who needs to hear this";
+  - "I'm not an expert";
+  - "this might be controversial";
+  - doubled hedges ("really really").
+- **New moves:**
+  - result first ("Got 10k followers. Took 2 years.");
+  - "Here's what it taught me:";
+  - "X. Not anymore.";
+  - a year up front ("2021: …");
+  - "X isn't Y".
+- **Fixes:**
+  - A question mark is added only when the line reads as a question.
+  - Personal lines are never forced into a "Stat: …" shape.
+  - Disclaimers like "not financial advice" no longer block a version.
+- **One shared brief for the AI writers.** The brief is: use the one move that fits; sound like a person talking to a friend; keep every fact; no bait, no hype words, no new emoji. The Room's six agents get the same rule.
+- **Benchmarks:**
+  - 45 fresh realistic lines: 40 clearly lifted, 42 with the extra-strength version.
+  - The round 60 set: still 30/30.
+
+### Less on screen for a first-timer
+These come from a first-session audit: four walks from the homepage to a scheduled post, on desktop and phone. Every feature is still reachable from More, Search (Ctrl K) or Settings.
+
+- **Scheduling confirms itself.** The "Scheduled for tomorrow at 8:40 AM · View week" toast used to be removed by the re-render a moment later. It now stays.
+- **Onboarding:**
+  - **Step 1** asks what you write about first, with nothing preselected, so nobody gets crypto ideas by not tapping. Then it asks for your handle.
+  - "No posts yet?" is gone; it did the same as Continue. "Skip setup" is now "See an example first".
+  - **After setup** the page says "Your first post." Your voice is one quiet line (Direct · Casual · Brief · Tune), followed by the try box and three starter ideas instead of five. The only other way out is "Skip for now".
+- **Write:**
+  - **One helper for the first line.** "Improve" merged into the first-line button: "Sharpen: 3 soft words" when there's something to cut, otherwise the tips, rewrites and formulas panel. Later posts in a thread keep Improve.
+  - **Top bar:** Share and Focus moved into More, and Focus shows only while it's on. Schedule is now the primary button, since it's the everyday move and ⌘↵; Post now sits beside it.
+  - **Networks:** with one network on, the four toggles become one "X ▾" pill that opens the list. Turn on a second network and the toggles come back.
+  - **Preview:** the Comments tab appears only once there's a review link or a comment. X / All appears only when you post to two networks.
+  - **Phone:** the Sharpen button gets its own line under the tools.
+  - **"From a chart"** shows only for trading accounts.
+- **Schedule sheet:** reply settings and auto-plug sit under one closed "More options" row, and the rotating tip is gone. That's 8 controls instead of 12.
+- **Sidebar:** "Writing as" appears once there's a second voice. Add a client lives in the account menu.
+- **Week:**
+  - The banner that repeated the line above it is gone.
+  - The empty Drafts card is hidden until there's a draft.
+- **Results:**
+  - The sample $BTC price calls show only to trading accounts.
+  - "Write my note" and copy wait until a post has gone out.
+- **One name for the planner:** "Plan my week" everywhere.
+- **One score vocabulary:** toasts say "Now strong" or "Stronger", the same words as the chips, not "Almost → Ready".
+
+## Round 64: it learns from each person, per voice
+
+The more someone uses Hookworthy, the more it writes like them. Each voice keeps its own memory: you, and each client you write for. A client's habits never leak into yours.
+
+- **What it learns from:**
+  - **Posts you schedule or send.** These are the strongest signal.
+  - **Suggestions you change before posting.** If you edit a Sharpen or rewrite before it ships, it records which words you took out and put in. A word cut from suggestions twice goes on that voice's avoid list. A full rewrite is not counted as an edit.
+  - **Cuts you undo.** If Sharpen cuts a word like "honestly" and you put it back twice, it becomes yours to keep. Sharpen stops cutting it and stops flagging it.
+  - **Moves you keep or undo.** First-line moves (ask then answer, number first, contrast…) and rewrite kinds are counted kept or undone.
+- **Where it's used:**
+  - **Every AI prompt.** The voice block now carries:
+    - the habits seen in your own posts (lowercase, sentence length, emoji, hashtags, line breaks, questions, numbers first, exclamation marks, em dashes, words and phrases you repeat);
+    - words to avoid and words to keep;
+    - moves you keep and moves you undo;
+    - your three latest "suggested → you posted" edits, so Claude learns the direction of your changes, not their content.
+  - **Example posts are always your own.** That means your imported best posts plus what you've written here. A real person never gets the demo account's posts as "theirs"; that fallback existed before and is gone.
+  - **The local Sharpen.** Moves you keep get a small ranking nudge (bounded at ±3), and kept words are protected from every cut. When that happens, the toast says so: "Kept 'honestly': you put it back before."
+  - **Client voices.** Each client uses its own memory plus the "how they sound" note from the client form, which wasn't reaching prompts before.
+  - **Learn my voice.** It now also counts posts written in the app, not only imports. "Write or bring 8 posts" turns it on.
+- **What you see:**
+  - **Voice page:** a new "Learning from you" card (or "Learning from Acme" for a client). It shows the counts, the habits, words cut, words kept, and the latest edit. Every item can be forgotten, and "Forget all" can be undone.
+  - **Milestones:** at 3, 10, 25 and 50 posts a toast says "Learned from N of your posts" with "See what it learned". It appears after the Scheduled confirmation has had its moment.
+  - **Onboarding:** the voice line reads "Starting voice · learns as you write".
+- **Privacy:** the memory lives with the rest of your data on the device. It reaches Claude only as part of a prompt you trigger.
+
+## Round 65: who we're for, pricing that pays for itself
+
+### Who it speaks to
+The owner chose the lead audience: **stuck creators and monetisers**. These are people with some audience whose reach has flattened and who want their posts to pay. The timing is X's change of 8 September 2026: "Original Content Rewards" pays for original posts seen on the Home timeline, and replies no longer count. The qualifying bar is X Premium, 500 verified followers, and 500K verified Home-timeline impressions in 90 days. The first line is now literally where the money is.
+
+- **Homepage:**
+  - A "New on X: Original posts earn now. Replies don't." pill over the hero.
+  - The sub now speaks to the plateau: "Stuck at the same reach?…"
+  - **New section, "Replies don't pay anymore. Your posts do.":**
+    - the bar to qualify, with a dated fine print that points to Creator Studio;
+    - make the first line count;
+    - find what works for you;
+    - stay in good standing (no auto-DMs or replies, no bought reach).
+  - Nothing promises reach or payouts.
+- **The Creators tab:** now "Posting every day, reach stuck? Start with the first line."
+- **FAQ:**
+  - "Will this get me paid on X?" gets an honest answer.
+  - "Coming from Typefully, Hypefury or Black Magic?" links to the switching page.
+- **Switching page (#switch, linked from the footer):**
+  - Black Magic closed on 1 July 2026, and Hypefury no longer supports X.
+  - One card per tool: what comes with you, what you get here, and one honest line. For Typefully that line is "Only need scheduling? Typefully's Creator plan is cheaper."
+  - Four steps built around the X archive.
+- **First 100 followers plan (Week, new accounts, first 30 days):**
+  - Every day: one post, three replies, one idea. Replies sit in the middle, because small accounts grow mostly from replies.
+  - "Write it" opens today's idea; "Find posts" goes to the reply radar; "Add an idea" goes to Ideas.
+  - A 30-square strip marks the days where all three were done.
+  - It never shows a follower number it can't see. It can be hidden, and it's in Settings.
+
+### Pricing, after Typefully and SuperX
+- **What we took from Typefully:** free covers the habit and paid covers what costs money; per-account pricing for agencies; plan names that say who each plan is for.
+- **What we took from SuperX:** mostly a counter-position. They sell auto-DMs and lead agents; we sell good standing.
+
+| Plan | Price | Claude rewrites | Posts |
+|---|---|---|---|
+| **Free** | $0 | 20 a month | 15 a month |
+| **Pro** | $12/mo billed yearly, $16 monthly | 500 a month (first month rolls over once); 250 from round 66 | up to 500 a month |
+| **Studio** | $18 per client voice/mo billed yearly, $24 monthly | 500 per client voice, shared | up to 500 per client voice |
+
+- **Free:** Sharpen, quick rewrites and voice learning are unlimited. The 7-day Pro trial now comes with 100 rewrites.
+- **Pro:** "For creators who want their posts to pay."
+- **Studio:** "For ghostwriters and agencies". Adding a client tops up the shared allowance.
+- **How it's enforced:**
+  - Every plan now refills monthly.
+  - The 16th post of the month on Free is stopped with a plain message saying when the allowance comes back.
+  - Editing an already-queued post never counts against the limit.
+
+### Models: the smallest that does the job
+- **Haiku 5.5 (quick):** grammar, sharpening a phrase, comparing two lines, tidying a dictation, picking a visual. About 0.1¢ a call. It has no server-side refusal fallback, so those calls go without one.
+- **Sonnet 5.5 (writing):** everything that writes in the author's voice. Three stronger first lines moved up to this tier, because they're the product's core.
+- **Opus 5.5 (voice study):** the one deep read every later rewrite depends on. Roughly 13¢, once per user.
+- **What a user costs us (estimate):** a maxed-out Pro user about $7–9 a month against $12–16; a typical one $2–4; a free user under $0.50.
+
+## Round 66: Pro at 250 rewrites, more as an add-on
+
+The owner set Pro at **250 Claude rewrites a month**. Anyone who needs more adds them by the month, up to 2,000 in all.
+
+| Add-on | Price a month | Pro total | Works out to |
+|---|---|---|---|
+| None | $0 | 250 | included |
+| +250 | $8 | 500 | about 3.2¢ a rewrite |
+| +750 | $22 | 1,000 | about 2.9¢ a rewrite |
+| +1,750 | $45 | 2,000 | about 2.6¢ a rewrite |
+
+- **Why these prices:** a Sonnet rewrite costs us roughly 1.5–2.5¢, so every add-on stays above cost even when it's fully used. The biggest one is the cheapest per rewrite, so heavy users have a reason to commit.
+- **Studio** stays at 500 per client voice. The same add-ons go on top, shared by every voice.
+- **Free and the trial** never take add-ons. Picking one there explains that add-ons go on top of Pro, and offers to start Pro with that add-on in one step.
+- **How it behaves (core.js `CREDITS.BOOSTS`, `setBoost`):**
+  - Adding one mid-month lands the difference now. Dropping one takes it back out, never below zero.
+  - Every later refill includes the add-on, and the first month's rollover cap grows with it.
+  - Switching between Pro and Studio keeps it.
+- **Where it shows:**
+  - The Pro card: "250 Claude rewrites a month. Need more? Add up to 1,750 a month."
+  - An add-on picker on Plans, under the cards. It's a radio group of four, works with the arrow keys, and shows the total and the per-rewrite price on each option.
+  - When a paid plan runs out, the sheet offers the next add-on in one click ("Add 250 a month · $8/mo") and finishes the job that was waiting.
+  - A new FAQ: "Can I get more than 250 rewrites?"
+  - The homepage Pro card, the trial-low toast and the plan-changed modal all say 250.
+- **Still demo:** nothing is billed. A real server would set the add-on on the saved ledger from its billing.
+
+### Models: Sonnet and Opus only
+The owner chose two models. Haiku is out.
+- **Sonnet 5.5** does everything except the voice study:
+  - **Small jobs at low effort:** grammar, sharpening a phrase, comparing two lines, tidying a dictation, picking a visual.
+  - **Writing at medium effort:** rewrites, first lines, replies, the week plan.
+- **Opus 5.5, high effort:** Learn my voice, once per user.
+- **Why:** small jobs now sound as much like the author as rewrites do, and every call gets the server-side refusal fallback.
+- **The cost:** a small job is now roughly 0.2–0.5¢ instead of about 0.02¢. So the free daily helper allowance dropped from 300 to 50 (below).
+- **Haiku still works if wanted:** `HW_MODEL_QUICK` can point the small jobs back at Haiku, and those calls skip the fallback, which Haiku doesn't offer.
+
+### Claude touch-ups: 50 a day
+"Touch-ups" is the user-facing name for the small Claude jobs: Sharpen, tidying what you said, and picking a visual.
+- **Every plan:** 50 free a day, back at local midnight. The limit lives in core.js (`CREDITS.HELPERS`), so the server and the app share it.
+- **Free, at 50:** Claude stops for the day and nothing is taken from the 20 rewrites.
+  - One toast says it straight: "That's today's 50 free Claude touch-ups. They're back at midnight, in 5 h. Until then Sharpen runs on your device, or go Pro for more."
+  - The toast has "Try Pro free" (or "See plans" once the trial is used).
+  - After that, at most a short note every ten minutes: "Sharpen is on your device until midnight."
+  - On-device Sharpen keeps working the whole time, and the 51st call is refused before anything is sent.
+- **Paid plans, past 50:** each touch-up uses 1 rewrite. A single toast says so the first time each day.
+- **Server:** a `402` with `code: "helpers_out"` and the time they're back. `credits.helpers` reports `{left, max, next}` for the app.
+- **Copy:**
+  - Plans now says "50 Claude touch-ups a day, and Sharpen on your device is unlimited".
+  - The FAQ and the usage meter say the same.
+- **Fixed in passing:** a refunded credit was capped at the bare plan amount. It now counts client voices and add-ons.
+
+## Round 67: electric blue
+
+The owner looked at a Mobbin study and chose three things:
+- **Accent:** electric blue.
+- **Artwork:** glowing line art.
+- **Scope:** all three phases.
+
+The world stays near-black, with a soft white light theme. It now has one colour of its own, art of its own, and motion that draws things in.
+
+### Phase A: the system
+- **Tokens:**
+  - Cool neutrals. Dark: `#08090B` desk, `#0C0D10` page, `#15161A` cards. Light: `#EEF0F4` desk, `#FBFBFD` page, white cards.
+  - Electric blue `#1F5BFF` for the primary button, with white ink at 5.25:1.
+  - Accent text `#5B9BFF` on dark (7:1) and `#1E56F0` on light (5.8:1).
+  - Blue also marks focus, the current place in the sidebar, and selection.
+  - Colour for meaning is unchanged: green good, amber wait, red wrong.
+- **Shape:**
+  - Controls are pills, like X itself.
+  - Cards 14px, popovers 12px, modals 20px. Phone sheets keep their 22px top.
+- **Light:**
+  - A faint blue glow lights the page from above.
+  - The primary button carries a soft blue glow under it.
+- **Type:**
+  - Newsreader for the one big line and Inter for the rest, as before.
+  - Prices and times are in Geist Mono. Big numbers are Inter Light.
+- **Line art** (`art()`):
+  - One blue gradient drawn twice: a blurred glow behind, a crisp 1.6px line on top, with a few twinkling dots.
+  - Pieces: pen, week, ideas, inbox, chart, reading, voice, streak, peak and moon, plus nine niche marks.
+  - Each piece draws itself in the first time it shows in a session, and is still for anyone who prefers less motion.
+  - The gradient runs in user space, so perfectly straight strokes render.
+- **Empty pages:**
+  - Write's empty draft gets the pen: "One line at a time. The first one decides who stops."
+  - Results' clean slate gets the chart. Ideas with nothing saved gets the bulb. A quiet reply radar gets the speech bubbles.
+- **Toasts:** dark glass, the icon in a tinted disc, the action as a blue pill.
+- **Homepage:** the highlighter on "first line" is blue.
+
+### Phase B: first run and the editor
+- **Onboarding:**
+  - A three-segment story bar: about you, reading, your first post.
+  - Niches are cards, each with its own line-art mark and a blue tick.
+  - "Reading the room" gets the reading art, a violet-to-blue bar that fills as each step lands, and a shimmer on the active step.
+- **Tune your voice, three taps:**
+  - Shown only when there's nothing of yours to read yet.
+  - Each pair is one thought written two ways. The one you'd post sets a tone slider (spice, polish, length), and the traits update as you tap.
+  - It ends on "Voice matched." with the waveform art.
+  - It never blocks the first post.
+- **Write:**
+  - Under the preview, the first line is broken down into three bars (Curiosity, Specific, Short) plus its one next step.
+  - The existing over-limit tint and split ring already cover overflow.
+- **Sharpen:** once Free's 50 touch-ups for the day are used, the toolbar offers "More touch-ups".
+
+### Phase C: Week, Results, Plans, wins
+- **Week:**
+  - Posts are tinted blocks by state: blue lined up, green out, amber yours to post, red didn't go. A left-edge stripe was tried and dropped as a cliché.
+  - Open good times get soft stripes.
+  - The next time today that hasn't passed gets a thin blue "now" line.
+  - Days you posted join into one amber streak capsule under the date.
+- **First 100 followers:** the plan's heading is "Day 1 of 30" in the display face.
+- **Wins, only when they're real:**
+  - Your first post out, with the peak art and a burst.
+  - 10, 50 or 100 followers, while the first-100 plan runs and only when X reported the number.
+  - Each offers "Write about it", which opens a draft in Write and never posts by itself, or "Thanks".
+- **Results:**
+  - The sentence that matters has its key words in blue with a faint glow.
+  - Numbers in the stat tiles are big and light.
+- **Plans:**
+  - "What uses rewrites?" is one accordion under the meter.
+  - Yearly billing shows a "−25%" pill.
+  - When you're out, the sheet carries art: the moon when you're out, the chart when a job is too big for what's left.
+  - The words are true for a monthly allowance now: "You wrote a lot this month. Your post isn't stuck."
+- **Phones:** scheduling was already a bottom sheet, so it stays.
+
+## Round 68: phones, and fewer words
+
+The owner checked the preview on a phone and raised three problems: odd spacing, missing pictures, and copy that ran long without landing.
+
+- **Onboarding overflowed:**
+  - Round 67's progress bar made the top row wider than a phone. The whole page stretched and slid to the right.
+  - Fix: on phones the bar drops to its own full-width row under the logo, and `.onb` has a `minmax(0,1fr)` column so no child can widen it again.
+- **Missing pictures in the preview:**
+  - The hosted copy didn't ship `assets/people/*`, and the browser blocks the backup copy of those images, so portraits fell back to initials and the face tile in "For anyone…" sat empty.
+  - Fix: the images are now published alongside the page. If they still fail, the face tile steps out instead of showing an empty box.
+- **Odd spacing:**
+  - Each feature card's demo frame was open at the bottom and bled off the card. On a phone that read as stray vertical lines. Phones now get a closed, rounded frame with padding under it.
+  - Section gaps are tighter on phones.
+  - The footer wordmark fits the width.
+- **Copy, cut to what lands:**
+  - Hero: "Sharpen your first line in one tap. It still sounds like you."
+  - Demo caption: "Try it. Edit the line, tap Sharpen."
+  - The four facts are two to four words each.
+  - "Replies don't pay" leads with one line, and each of its points is one short sentence.
+  - The 11 PM story steps are one line each.
+  - Every feature card is a bold line plus about six words.
+  - Personas are one sentence each, and the trust lede is one sentence.
+  - The pricing note is short, and Yearly reads "−25%".
+  - The FAQ answers that ran long are halved.
+  - The footer's duplicate tagline is gone.
+  - On a phone the homepage went from 14,649px to about 13,000px.
+
+## Round 69: four critics, one pass
+
+Four critics reviewed the same 31 screenshots and the code:
+- a solo creator chasing X payouts;
+- a ghostwriter with six clients;
+- a senior UX designer;
+- a visual panel channelling Apple, Airbnb, Linear, Arc and Wispr Flow.
+
+Where they overlapped, the overlap decided the order. The fixes below run from harm to polish.
+
+### Trust (things that were wrong, not just rough)
+- **A client's post could go out from your own account.**
+  - `syncToServer` sends to X only when the connected X account *is* the client's, and never sends a client's post to LinkedIn.
+  - Otherwise the post waits on Week for you to post it from the client's account.
+  - The Schedule sheet says so: "Yours to post from @ledgerlyhq… Hookworthy is connected as @heycape_, so Ledgerly's posts never go out through it."
+- **"Scheduled" promised posting that doesn't happen when nothing is connected.** `autoFor()` decides the words:
+  - "Next up … · you post it";
+  - "At that time it waits on Week for your tap";
+  - "Once they nod, it waits here for you to post".
+  - When connected, the old words stay.
+  - A post that's due gets "Open in X to post": X's own composer with the first post filled in and the rest of the thread on the clipboard. You still press Post.
+- **"Best" sat on generic times.** It reads "Suggested" unless the times come from your own posts, in which case it reads "Best for you".
+- **Practice replies to sample posts counted toward the daily plan.** They don't anymore.
+- **Pro's "a ping when a post takes off" didn't say it needs X connected.** It says so now.
+
+### Flow
+- **Schedule:**
+  - The time choices lead.
+  - The one-tweak rewrite and the "posted something close" check follow.
+  - The delivery note sits as a caption by the button.
+  - The selected time is a calm 1px accent with a tint; the focus ring shows only for the keyboard.
+- **One coach:**
+  - The chip never says a bare "Sharpen" on an opener that's already strong.
+  - The chip and the "to check" pill are neutral. Colour stays on the soft words themselves.
+- **Fewer duplicates:**
+  - Week no longer lists drafts twice; the sidebar list hides there, because Week's rail has them.
+  - Nav badges are to-dos, not totals: Week counts posts due for your tap or waiting on a client. Ideas has no badge.
+- **Phone:** the middle tab is **Write**. It brings back the draft you were on, or starts one.
+- **Week:**
+  - One status line.
+  - "Nothing out today yet. 5:30 PM is open." comes with "Write for 5:30 PM".
+  - The count and Plan my week moved into the calendar toolbar.
+  - Open good times are a 5% tint, not hatching (hatching reads as blocked).
+  - The time gutter is mono and 76px wide, and posting times are chips.
+- **First run:**
+  - "Go to my week" replaces the ghost "Skip for now".
+  - The archive option admits X takes a day: "No archive yet? Request it. X emails it within a day."
+
+### Agency
+- **Approvals are records:**
+  - "Mark approved…" asks who said yes and how (Review link, Slack, Email, DM, Call).
+  - It keeps `{by, via, at}`, and the post's menu shows "Approved by Tobi · Email · …".
+  - A late yes gets "Approve for <next good time>" in one tap.
+- **The ask is ready to paste:**
+  - "Copy for Ledgerly" sits on the send toast and in the post's menu.
+  - It copies: "Hi Tobi, here's the next post for Wed 12:15 PM on X and LinkedIn: … Reply YES to approve, or tell me what to change."
+- **The approval rail says how long is left:** "needs a yes in 3 h", in amber under a day and red under three hours.
+- **Adding a client shows the cost:** "On Studio this adds $18/mo. With this one, 3 client voices: $54/mo, billed yearly."
+- **The Voice page says whose voice it is:** "Ledgerly's voice".
+
+### Creator
+- **Payout path on Results:**
+  - Premium, verified followers out of 500, and verified impressions in 90 days out of 500K, as bars with what's left.
+  - You copy the numbers from Creator Studio, and it says "You told us on Oct 19". We never guess them.
+- **The first-100-followers plan steps aside** once X or you report 500 followers.
+
+### Visual
+- **Shapes:** small buttons are pills too; an older 8px rule had won.
+- **Page anchoring:** every page starts at Week's left edge, so the title doesn't jump between places. Plans stays centred.
+- **Surfaces:** menus, modals and the palette share the cool surface family.
+- **The Sharpen bar** is dark glass with a short rise, instead of a white slab in dark mode. Custom uses the icon set instead of a pencil glyph.
+- **Plans prices** are big and light (Inter 300), not monospaced.
+- **Tab bar:** labels sit on one baseline.
+- **Empty-draft art** is quieter next to the cursor.
+
+### Left as decisions for the owner
+- **Free's 15 posts.** The creator critic argued the limit should count only posts Hookworthy sends through X's paid API, since a post you copy and send yourself costs nothing.
+- **A self-reported Premium switch for long posts.** It was removed in round 53 in favour of verifying through the connection.
+- **Per-client never-say lists, time zones and idea lists.**
+
+## Round 70: Free counts auto-posts, and each client gets its own clock, words and ideas
+
+The owner settled two of round 69's open decisions: Free's limit counts only what the app posts for you, and client voices get their own settings.
+
+### Free: 15 auto-posts a month
+- **What counts:** only posts Hookworthy sends for you through X's paid API. Scheduling is unlimited. A post you send yourself (Open in X, copy, mark posted) never counts.
+- **Each post records it:** `q.auto` when the app will send it; `q.hand` when Free's 15 were already used. A post scheduled before anything was connected is counted when it is handed to the server.
+- **Past 15, nothing is blocked:**
+  - The post schedules as usual and waits on Week for your tap.
+  - The schedule sheet says "Yours to post. Free's 15 auto-posts are used till Nov 1…" with a Go Pro button.
+  - The send toast says the same, with "See plans".
+  - Post now opens the post-it-yourself sheet: "Posting it yourself never counts."
+- **Under the cap**, the sheet counts down: "9 of 15 auto-posts left this month."
+- **Copy everywhere** says "auto-posts": "Schedule freely, 15 auto-posts a month" (Free), "Up to 500 auto-posts a month" (Pro), the compare table, the FAQs and the trial-ended toast.
+
+### Each client keeps its own clock
+- **The setting:** "Their time zone" on Add/Edit client, default "Same as yours".
+- **How times read:**
+  - A client's `q.day`/`q.time` are their wall time, so 8:40 AM means 8:40 AM where their audience is.
+  - `slotDate(day, time, voice)` turns that into the real moment, DST included; `qAt(q)` does it for a post.
+  - `vNow()` is the voice's own "now", used for today, the week's columns and the 1 AM guard.
+- **What you see:**
+  - Week shows a "London · 9:55 AM" chip by the dates. Its tip reads "8:40 AM there is 7:40 AM for you".
+  - The schedule sheet says "times in London (GMT+1)" and adds "· 7:40 AM for you" under each time.
+  - "All voices" tags another clock's cards with the city.
+  - Move-to-a-time uses the post's own clock.
+- **Changing a client's zone moves nothing:** each scheduled post keeps its real moment, re-read on the new clock.
+- **Your own voice** always runs on this device's clock.
+
+### Each client keeps its own words and tone
+- **Never-say:** `NEVER()` gives each voice its own list. A new client starts with the usual AI tells; you keep yours. Prompts, voice match, the pre-post check and "Swap it out" all use the voice you're writing as.
+- **Tone:** `TONE()` gives each client its own Calm/Spicy, Casual/Polished and Short/Rich dials, and prompts now send tone for clients too.
+- **The client's Voice page is theirs:**
+  - Their one-line note, traits from their tone, and facts: topic, networks, clock, approval.
+  - Their tone dials and their never-say list.
+  - "Edit Ledgerly" opens the client form.
+  - Your stats, imports and "most you" post no longer show there.
+- **Demo seeds:** Ledgerly (London, warm and plain) and Northwind (confident and precise) each have their own note, tone and list.
+
+### Each client keeps its own ideas
+- **Saved ideas carry the voice** they were parked under (`ws`).
+- **Scoped to the voice you're writing as:** the Ideas page ("Ideas for Ledgerly"), Saved counts, the search palette, Claude's idea prompts, Plan my week and Today's nudges. Seed ideas for Ledgerly and Northwind.
+
+### Removed: the payout path
+- **Why:** the owner's rule is that if it can't track itself, it doesn't ship.
+- **What X's API can and can't give:**
+  - Premium is readable.
+  - Total followers are readable. Verified followers need a paged, paid read of the whole follower list.
+  - Impressions from verified accounts over 90 days aren't exposed at all, only in X's Creator Studio.
+- **So the card is gone:** the Results card, its saved numbers and styles, and the hook into the first-100 plan. The first-100 plan still steps aside at 500 followers.
+
+### Fixed in passing
+- **Client topic on edit:** editing a client whose topic wasn't in the topic list silently switched it to "Crypto & trading". The current topic now stays as an option.
+
+## Round 71: a homepage that grabs in the first second
+
+The owner said the top and bottom of the homepage felt plain and didn't capture anyone. Both were rebuilt around one idea from the product itself: **the feed moves fast, and a sharp first line stops it.**
+
+### Top: the feed that stops
+- **Split hero.** The copy sits on the left: the same headline and highlighted "first line", left-aligned. The sub-line is new: "The feed moves fast. Hookworthy sharpens your first line in one tap, in your own voice, so the scroll stops on you."
+- **The stage.** On the right is a feed with no frame, fading into the page on all four edges.
+  - Two columns of example posts stream upward fast with a vertical motion blur (an SVG `feGaussianBlur` of `0 6`).
+  - One post sits pinned over them and plays the sequence below.
+- **Each loop (~7.5s):**
+  1. The soft first line shows: "so i think… honestly just…".
+  2. Its soft words get the wavy marks, with a chip: "4 soft words in the first line".
+  3. A Sharpen chip presses.
+  4. The soft words strike through, and the sharp line resolves out of a blur.
+  5. The card takes the blue ring, and the feed eases to a full stop: "Sharper. Same facts, same voice."
+  6. The card closes the gap the longer soft line left, and the next example follows: heycape, then Hannah, then Maya.
+- **Restraint:**
+  - It runs only while the hero is on screen, and a pause button sits under the stage.
+  - Under reduced motion it rests on the sharp line.
+  - The feed is marked "Example accounts", with no counts on any post.
+  - There is no colored glow behind it; the card's own ring does the focusing.
+- **Phone:** the copy stacks above the stage. The CTA goes full width, "Watch it work" drops (the page is right there), and the "New on X" pill stays on one line.
+
+### Bottom: one finale
+- **The paste-your-line box and the last call are one section:** an electric-blue stage inset from the page edges.
+  - Its contents: "Your turn", then "Your next post could be the one. / Make it hookworthy." in white and pale blue, then the composer.
+  - The composer is a white card (`force-light`) on the blue, with sample lines as glass pills and the white primary CTA.
+- **Example posts drift slowly** at both sides behind it; they hide on phones and under reduced motion.
+- **Same look in both themes.** The tokens (`--fin-*`) are fixed for the blue stage, because it's a brand moment, not a surface.
+- **The footer wordmark is lit:** a blue gradient fading out, instead of a grey slab.
+
+### Kept
+- **All the try-it behaviour:** the IDs, live soft-word marks, Sharpen, "Open it in Hookworthy" carrying the line into sign-up, and Copy.
+- **The app demo window and the facts row** now sit right under the hero.
+
+## Round 72: The Line
+
+The owner asked for an Awwwards-level homepage and picked "The Line" from three directions (the others were a 3D post wall and a flickable feed). **The first screen is one real soft first line, set huge, and your scroll edits it.**
+
+### The sequence (pinned for 140% of a screen; 110% on phones)
+- **At rest**, it reads "so i think / most posts / honestly kind of / die in / the first line".
+  - The type is Newsreader at up to 150px (`display-line`), centred.
+  - The warm-up and the hedges draw their amber wavy marks a moment after load, with small margin notes: "— warm-up", "— hedges".
+  - Behind it, four columns of example posts stream upward with a vertical motion blur.
+  - A thin line under the fold says "Scroll to edit the line".
+- **As you scroll, the edit happens in order:**
+  1. "so i think" is struck through and folds away.
+  2. "most" takes its capital.
+  3. "honestly kind of" is struck and folds.
+  4. The blue band fills under "first line" and the full stop drops in.
+  5. "Yours won't." rises.
+  6. The settled words step back to the secondary grey, leaving "first line." and "Yours won't." bright.
+- **The feed behind slows with the edit** and stops when the line is sharp, then sits faint and soft-focused behind the type.
+- **The way in stays put** under a hairline the whole time: "Sharpen your first line in one tap. It still sounds like you.", Sharpen my first post, Watch it work, and Free plan / No card / Nothing posts without you.
+
+### How it's built
+- **The heading stays the sharp line.** The soft words, the lowercase "m" and the margin notes live in attributes drawn by pseudo-elements, so the h1's text and its accessible name are "Most posts die in the first line. Yours won't."
+- **Scroll drives it.** One passive scroll listener sets eight custom properties per frame (`--k1`, `--c1`, `--cap`, `--k2`, `--c2`, `--mkp`, `--dot`, `--yw`), eased in-out. CSS does the rest: strike bars scale, rows fold via height and a vertical squash, capitals cross-blur, the stop drops, the last row rises.
+- **The feed loop runs only while the hero is on screen.** Its speed follows the edit.
+- **Reduced motion:** no pin, the sharp line at rest, no stream.
+- **Fit:** the hero tucks under the floating nav, and the type scales by the smaller of width and height (`min(8.4vw, 11.4svh)`). The way in stays above the fold from 360×640 to 1440×900.
+
+### Also, from the craft floor
+- **No label over the finale heading:** "Your turn" is gone.
+- **The footer wordmark is solid deep blue,** not gradient text.
+- **The "New on X" pill left the hero.** The payouts section right below still makes that case.
+
+## Round 73: two lines, fewer words, a sharper punchline
+
+The owner said the page still felt off: too many three-line headings, too wordy, and a weak punchline. Mobbin references set the bar:
+- **Resend:** "Email reimagined. / Available today."
+- **The Leap:** "Dream big. / Start small."
+- **Grok:** two lines and a lot of air.
+- **Frontify:** a big serif two-liner, small text off to the side.
+- **Descript:** strikes filler words on screen.
+
+### The rule now
+- **Every heading is two short lines,** the second dimmed, at 42–86px (`headline`, was 38–64px). The heading column is wider (1.6fr) so no line wraps.
+- **Every lede is one short sentence.**
+
+### The punchline
+- **The hero lands on "Good ideas die / in bad first lines."**, the brand promise from PRODUCT.md.
+- **The scroll still edits it:** "so i think" (warm-up) and the trailing "just saying" (filler) are struck and fold away, "g" takes its capital, the full stop drops, and the band fills under "first lines".
+- **The line under it:** "Hookworthy sharpens yours in one tap. It still sounds like you."
+
+### Headings
+| Section | Was | Now |
+|---|---|---|
+| Payouts | Replies don't pay anymore. / Your posts do. | Replies don't pay. / Posts do. |
+| Story | Write it at 11 PM. / Land it at 8:40 AM. | Write at 11 PM. / Post at 8:40 AM. |
+| Features | People decide in one second. / Make it count. | One second. / Make it count. |
+| Audience | For anyone with something / to say. | For anyone (face) / with a take. |
+| Trust | It does the work. / You press the button. | It does the work. / You press send. |
+| Pricing | Start free. Upgrade when it's working. | Start free. / Pay when it works. |
+| Finale | Your next post could be the one. / Make it hookworthy. | Your turn. / Make it hookworthy. |
+
+### Ledes and cards
+- **Ledes:**
+  - "Since Sept 8, X pays for original posts, not replies."
+  - "Catch it late. It lands when your people are up."
+  - "Every tool here works on the first line."
+  - "Different feeds. Same fix."
+  - "Nothing goes out until you do."
+  - "Paste a line you almost didn't send. Nothing leaves this page."
+- **Payout cards:** they lose their 01–04 numbers (not a sequence) and two of their side notes.
+
+## Round 74 (app)
+
+A hard pass over every app surface, held to the bar of Airbnb, Apple, Linear, Arc, Notion and Wispr Flow. The app was already strong (8.5). What kept it from 10 was seams, places where one step of the loop (capture, write, sharpen, preview, schedule, see results) didn't hand off to the next, plus two layout bugs.
+
+### Scores, before and after
+| Surface | Before | After | What moved it |
+|---|---|---|---|
+| Shell and sidebar | 8.5 | 9 | On phones, Post now is a true circle and Save is never pushed off-screen. The save dot waits for a word. |
+| Write | 8.5 | 9.5 | Saved ideas wait on the empty draft. The time a draft is for stays in sight. |
+| Week | 8 | 9.5 | The status line no longer breaks into columns. "View week" lands on the card you placed. The phone toolbar is two even rows. |
+| Ideas | 8 | 9 | Drafted ideas are marked and leave Write's list. Saved posts show the author's portrait. |
+| Inbox | 8.5 | 9 | A one-line lede. |
+| Results | 8.5 | 9 | The best post is measured against your own week. |
+| Voice | 7.5 | 9 | No empty "Nothing yet" card next to "6 so far". Traits stack cleanly on phones. |
+| Settings | 8 | 8.5 | The lede says what the page is for, not a list of its sections. |
+| Plans | 8.5 | 8.5 | Untouched (pricing is fixed). |
+
+### Bugs fixed
+- **Week's status line broke into a four-column grid** on desktop once anything was "Next up" ("Next / up · today at / 8:40 AM · you / post it").
+  - Each branch is now one dot plus one sentence span.
+  - The when stays whole and the quote ellipsizes.
+- **On a phone, editing a queued post hid Save changes** past the right edge (the bar was 439px wide at 360).
+  - The chip above the draft already changes the time, so on phones Change time steps out.
+  - Post now is the send circle, and Save keeps its word.
+- **The phone's Post now was a 34×44 oval**, not a circle.
+  - It's 44×44 now.
+  - At 400px and under, Schedule keeps its word and drops the clock, so nothing runs past the edge.
+- **The save dot kept "New draft"** after a draft loaded from an idea, a template or Week. It now syncs on every render.
+
+### Capture → write: your ideas on the empty draft
+- **Where:** under "Need a start?". It shows the three newest saved ideas for the voice you're writing as, each one tap from a draft.
+- **What a tap does:** a note starts from your own words. A link starts the "write about it" post, with the link in a reply.
+- **The pen art** steps aside when there's something of yours to start from. It stays for a clean slate.
+- **Drafted ideas:** an idea you've drafted is marked (`it.used`) and drops out of this list. On Saved it reads "drafted". It's never deleted.
+- **"All N"** opens Saved.
+
+### Write → schedule: the time stays in sight
+- **One chip above the draft** for "Write for 8:40 AM" on Week, a planned draft, or a queued post you opened to edit:
+  - "For today at 8:40 AM ×"
+  - "Goes out tomorrow at 8:40 AM · Change"
+- **What it does:** the chip opens Schedule. × lets go of a planned time, with Undo.
+- **No more "Writing for…" toast.** The chip says it and stays. Screen readers still hear it once.
+
+### Schedule → Week: land on the card
+- **"View week"** on the schedule toast (and on the client-approval toast):
+  - turns the calendar to the post's week;
+  - brings the card into view and focuses it;
+  - gives it a short accent ring. The ring is a class, not an animation, so reduced motion still shows it.
+- **Empty days on a phone:** a future day with nothing on it says "Nothing planned yet." instead of a bare heading.
+- **Phone toolbar:** dates on the first row; whose week and Plan my week share the second.
+
+### Results: against your own usual
+- Before there's a history, the best post is compared with this week's middle post. The best is left out, and it needs four or more posts with numbers.
+- It reads: "4.2× your typical post this week. Same week, same people: the post made the difference."
+- Sample numbers stay labelled Sample.
+
+### Voice
+- **Nothing learned yet:**
+  - for clients and imported posts, it's one quiet line;
+  - for your starting voice, it's nothing at all, because the status line already says it learns as you write.
+- **Traits on phones:** each word sits over its description, left-aligned, instead of a staggered right column.
+
+### Copy
+- Settings: "How it posts, how it looks, and what it keeps."
+- Inbox: "Answer yours first. Then be early where your people read."
+
+### Rules kept
+- **One CSS block** (`ROUND 74 APP`), tokens only: no new colours, sizes or radii. Lint stays at 117.
+- **Every new control** is a real button with a visible focus ring and an accessible name, and works from the keyboard.
+- **Not touched:** the Sharpen engine and bar, the landing page, theme tokens, pricing.
+## Round 74 (landing)
+
+A design review scored the homepage section by section (hero 8, app 8.5, payouts 6, story 8.5, features 6.5, audience 8, trust 7, pricing 8, questions 8, finale 8.5, footer 7.5). The fixes went to the lowest scores and to the hero's first second.
+
+### The hero moves before you do
+- **The first second is authored.** The four rows rise into place from a blur (70ms apart), the feed fades up under them, and then the pen draws a wavy amber mark left to right under "so i think" and "just saying" (`.hzl-wv`, a masked stroke, so it draws instead of fading in). The margin notes follow, then the score.
+- **The score** (`#hzl-score`) sits under the line, frosted over the feed. It says "2 soft words · Scroll to sharpen", counts to "1 soft word left" as the first row is struck, and turns green with a check at "Sharper. Same idea, 5 words lighter." once both are gone. Amber means soft and green means better, exactly as in the app. It eases to the width of each message. It is decorative (`aria-hidden`); the h1 still reads as the sharp line.
+- **The hint is gone.** "Scroll to edit the line" was a grey whisper in the middle of the foot row; the score says it where you're already looking.
+- **Reduced motion** keeps the same composition: the sharp line centred on the first screen, no score. The resting hero used to collapse to the top of the screen.
+
+### Payouts: one sentence, not four cards
+- The four text cards (with Newsreader at 24px, under the 30px rule) repeated the hero, Results and trust.
+- Now X's bar is one `headline-sm` sentence in grey with its three thresholds in ink: "The bar to qualify: **Premium**, **500 verified followers** and **500K verified impressions** in 90 days."
+- On reveal, the three thresholds get the same blue band as "first lines" in the hero, one after another.
+- Two footnotes: "As of Oct 2026. X's Creator Studio has the latest." and "We work on the part you control: the post itself. Nobody can promise reach. We don't."
+
+### Features: real titles
+- **Head:** "Fewer tabs. / More posts." with the lede "From the idea to the reply, in one place." The old lede, "Every tool here works on the first line", wasn't true of client voices, ideas, previews or the inbox.
+- **Every card** has a two-line title in Newsreader (`headline-card`, 30–34px, an `h3`), then one line of Inter saying how it works:
+
+| Card | Title | How |
+|---|---|---|
+| Sharpen | One tap. / A sharper first line. | Three versions to pick from. Your facts stay put. |
+| Previews | See it in / their feed first. | Each network gets its own fit and a live preview. |
+| Review | Feedback on / the exact words. | One link. They comment on the line, not the vibe. |
+| Voices | Every client, / their own voice. | Each voice learns on its own. Switch with one key. |
+| Ideas | Never start / from blank. | Voice notes, links and screenshots become drafts. |
+| Inbox | Answer replies / while they're hot. | Each reply arrives with a draft in your voice. You press send. |
+
+- The review card no longer opens on "Sign in with X / Google" chips. It starts with the link.
+
+### Trust, rhythm, wordmark
+- **Each note now adds something:**
+  - "None go out on their own"
+  - "No bots in your replies"
+  - "We never edit or delete one"
+  - "None bought, none promised"
+  - "Esc takes any send back"
+- **Trust loses its top rule and padding,** so every section opens on the same rhythm.
+- **The footer wordmark** gets a 1px horizontal text-shadow in its own colour. That closes the anti-aliased seam where "r" touches "t" at −0.04em.
+## Round 74 (brand)
+
+The owner asked for brand designers who specialise in colour and type pairing: everything consistent, and a site that stuns. This round audited colour and type across the homepage and the app, then tuned the system rather than replacing it. The electric blue, the line art, Newsreader + Inter and the dark-first world all stay. Where this section and the older Colors / Typography prose above disagree, this section and the frontmatter win.
+
+### What the audit found
+- **Five colour layers, two worlds.** Tokens were redefined in rounds 34, 55, 61, 67 and 71. The app had moved to round 67's cool neutrals, but the inverted sheet (the 11 PM chapter, the Pro card) still used round 55's warm greys (`#EFEFED`, `#111111`, `#4F4F4F`), and so did the legacy palette names (`--pa`, `--pl`, `--lilac`, `--plum-900`, `--ppro`) that some components still read. The app's Pro plan card was a warm `#191918`.
+- **Two ambers, two reds, a yellow.** The homepage's soft-word line and the editor's highlighter used `#FACC15`, a yellow (the owner turned yellow down in rounds 7–9), while the app's Wait states used amber `#F5B44C`. Cut marks were `#FF6B5E`, errors `#FF7A7A`.
+- **The Pro card asked in black and white.** Inside the inverted sheet the primary button fell back to round 55's grey / black pill, so the one plan the page recommends was the only CTA that wasn't blue.
+- **Coloured glow.** The primary button, the "now" line on Week, onboarding bars, niche cards, Results' key words (a blue `text-shadow`) and the app panel's top light all glowed blue.
+- **Gradient text.** The "thinking" shimmer swept a gradient through the letters.
+- **A flat grey hierarchy.** Secondary and tertiary text were only 0.06–0.07 apart in OKLCH lightness in both themes (`#A4A7B0` vs `#8F939D` on dark), so ledes and captions read as one grey.
+- **Contrast.** Two real misses that axe can't see, because they sit on a gradient or a photo: the note under the blue finale ("Free plan · No card…", 2.6:1) and the times on the 11 PM photo cards (`#8C8C8C` on dark glass, as low as 4.2:1 over the photo).
+- **Type.** 128 distinct font sizes in the CSS (most of them half-pixel component sizes); weights 650 and 700 left over from the Figtree years; serif tracking anywhere from −0.02em to −0.04em with no relation to size (page titles −0.022em at 44px, plan prices −0.045em); prices in Geist Mono on the homepage but Inter Light in Plans; Upgrade's add-on head in bold Inter at 42px; digits that tick or sit in columns without tabular figures.
+
+### The palette
+All values are OKLCH-derived and checked for WCAG 2.2 AA in both themes. One source of truth: the Round 67 token block in `index.html` (its header now says so).
+
+**Hookworthy blue** sits at hue 266 in OKLCH, the neutrals' own hue, so the blue and the greys read as one family. It leans ultramarine, away from the cyan-leaning SaaS blues, and it is a step deeper than round 67's `#1F5BFF`.
+
+| Role | Dark | Light | Check |
+|---|---|---|---|
+| Fill (`--cta`) | `#2B52FF` | `#2B52FF` | white 5.6:1 |
+| Hover (`--cta-hover`) | `#3965FF` (lifts) | `#2242F4` (deepens) | white 4.7 / 6.7:1 |
+| Pressed (`--cta-press`) | `#1E3BE3` | `#1E3BE3` | white 7.5:1 |
+| UI accent, focus ring (`--accent`, `--ring`) | `#6293FF` | `#2445F5` | 6.6 / 6.3:1 on the page |
+| Text and links (`--accent-text`) | `#75A2FF` | `#2445F5` | 6.0:1 on dark card-3, 5.3:1 on light card-3 |
+| Soft tint (`--accent-soft`) | blue 14% | blue 9% | |
+| Selection (`--marker`) | blue 42%, white ink | blue 18%, ink | 12.9 / 14.2:1 |
+| Highlighter band (`--mk-band`) | blue 55% | blue 24% | ink 9.3 / 13:1 on it |
+
+**Neutrals** (cool, chroma under 0.03):
+- Dark: desk `#08090B`, page `#0C0D10`, cards `#15161A`, `#1A1C21`, `#24262D`; ink `#EDEEF2`, ink-2 `#B5B9C2` (was `#A4A7B0`), ink-3 `#8F939D`. Three clear steps (OKLCH lightness 0.95 / 0.79 / 0.66); ink-3 still passes 4.9:1 on the lightest card.
+- Light: desk `#EEF0F4`, page `#FBFBFD`, cards white, `#F2F4F8`, `#E6E9F0`; ink `#0F131F`, ink-2 `#434956` (was `#4D5363`), ink-3 `#5D6474`.
+- The inverted sheet uses the same ramps: paper `#F2F4F8` on a dark page, night `#101215` on a light one, each with the full token set of its theme (accent, ring, selection, amber, green, red), so anything placed inside it is right by default. The Pro card's button is the blue.
+- The older palette names (`--pa`, `--pl`, `--lilac`, `--plum-*`, `--apricot`, `--pb2`, `--ppro`) map onto these cool values.
+
+**Meaning** (one value per theme, text-safe on every surface of that theme):
+
+| Meaning | Dark | Light |
+|---|---|---|
+| Soft, look again (amber) | `#F5B44C` | `#9B570E` |
+| Better (green, a touch cooler so it sits with the blue) | `#55DB95` | `#0B773F` |
+| Wrong (red) | `#FB7570` | `#C12629` |
+
+The editor's inks (`--ink-soft`, `--ink-cut`, `--ink-ready`) are aliases of these three. The soft-word highlighter is amber at 20% (dark) / 34% (light), never yellow.
+
+**The finale** keeps its blue stage, now ultramarine end to end: `#03082B` → `#0D1A7E` → `#1E3BE3`. The bottom is a step deeper so its small print (80% white) passes AA at about 5:1.
+
+**No coloured glow.** `--accent-glow`, `--toast-glow` and `--halo` are neutral (a plain shadow, a faint ink lift). Buttons keep their inner top highlight and a soft drop shadow; nothing blooms blue. The line art keeps its own stroke glow (the owner's pick in round 67), a little softer on dark (`--art-glow` .5).
+
+### Type
+**The pairing stays: Newsreader + Inter + Geist Mono.** A study set the hero line in Instrument Serif, Fraunces, Source Serif 4 Display, and Newsreader with Geist and with Hanken Grotesk:
+- **Newsreader** was drawn for headlines on screens, with an optical-size axis (6–72). The product is about first lines, and first lines are headlines. It is calm and journalistic, and it holds 150px without turning into a fashion masthead.
+- **Instrument Serif** is the 2024 startup default: condensed, one weight, no optical sizes. Trendy noise.
+- **Fraunces** reads warm and bookish even with Soft and Wonk at 0; the wrong voice for a sharp editor.
+- **Source Serif 4 Display** is fine, and anonymous next to Newsreader.
+- **Inter** (v4, self-hosted, with its optical-size axis) switches to its Display cut on its own at large sizes, the Linear-style refinement. Geist reads more developer tool, Hanken Grotesk softer, and neither beats Inter at 13px in the app.
+- **Geist Mono** stays for times, counts, keys, step numbers and URLs only.
+
+**Rules shipped:**
+- **One tracking curve for every serif size:** `--track-serif: max(-.04em, calc(.8px - .047em))`. About −0.01em at 20px, −0.03em at 44px, −0.037em at 86px, −0.04em from 120px up, never tighter. Inter's big figures use `--track-sans-xl: max(-.04em, calc(.5px - .04em))`.
+- **Newsreader is a touch lighter on dark** (`--serif-wght`: 380 on dark, 400 on light). White type on near-black blooms, so this keeps the same line the same weight in both themes.
+- **Display steps are tokens:** `--t-d1` the Line (44–156px), `--t-d2` headline (42–86px, now the finale too), `--t-d3` quiet headline (40–72px), `--t-d4` small headline (30–42px), `--t-d5` page title (30–40px). UI steps stay `--t-11` to `--t-24`, with `--t-16` added.
+- **Weights:** Newsreader 400 (380 on dark). Inter 400 / 500 / 600, and 300 for big figures. The leftover 650s on Upgrade (plan names, credit counts, add-on sizes) are 600. Stat tiles are Inter Light, as round 67 intended (an old `!important` had kept them bold).
+- **Prices are Inter, not mono:** Light 300 with tabular figures on the homepage, the same as Plans in the app; add-on prices too.
+- **Tabular figures** on week dates, prices, plan counts, stat tiles, deltas, the time gutter, posting-time chips and counts.
+- **Upgrade's add-on head** ("Need more rewrites? / Add them by the month.") is Newsreader, like the questions under it, with the second line in ink-3.
+
+### The browser's own chrome
+- **Selection:** the blue tint everywhere (site, app, inverted sheet, forced themes); white on the blue finale.
+- **Focus:** one 2px ring in `--ring` with a 2px gap, on the site and in the app (the site's ring used to be white / ink). White on the blue finale, blue again inside its white composer.
+- **Caret** is the blue; **checkboxes, radios and sliders** take it through `accent-color`.
+- **Scrollbars** are themed through `scrollbar-color` (a cool 18–22% thumb on a clear track). Scrollers that hide their bars keep `scrollbar-width: none`.
+- **Pressed:** primaries go to `--cta-press` under the finger, on top of the existing scale.
+
+### Where it lives
+- Tokens: the Round 67 block (the one source of truth), the Round 61 ink aliases and the `.hx .inv` sheet.
+- Everything else is one block at the end of the stylesheet, `/* ROUND 74 BRAND */`: chrome theming, the serif selectors that take the tracking curve and weight, prices and tabular figures, the pressed state, the glow removals, the "thinking" pulse (it fades instead of sweeping a gradient through the letters) and the photo-card greys.
+- The frontmatter lists the shipped palette first. The old greys stay as `legacy-*` because older components still hard-code them; new work uses the tokens.
+
+### Left for later
+- 128 font sizes in component CSS (12.5px, 13.5px, 14.5px and friends). They should collapse onto the ramp, section by section, by whoever owns each section.
+- The canvas images (hook cards, LinkedIn carousels) still draw in Figtree and old hex colours; they should move to Newsreader + Inter and these tokens.
+- The Upgrade page's Pro card stays dark in both themes (a cool `#1E2026` on dark now), while the homepage's Pro card inverts. One of them should change so the One Sheet Rule holds everywhere.
+## Round 74 (sharpen)
+
+The owner's brief: one tap should give a really good first line without a second tap, the reasons it shows should be things a creator would screenshot, and it should not feel like a Typefully clone.
+
+### What was wrong
+- **The cut ran before the moves and broke the start of the line.** "just wanted to share that i finally hit…" became "that i finally hit…"; "Hey everyone! Quick reminder…" became "Everyone! Quick reminder…"; "I believe that the most important…" became "That the most important…".
+- **One meaning flip.** "the biggest mistake was not taking profits" was contracted to "wasn't taking profits", which says the opposite.
+- **Buried numbers stayed buried.** Win rate, activation, latency, MRR and reader counts all sat at the end of the line.
+- **Corporate drafts got nothing.** "I am thrilled to share…", "In today's competitive landscape…", passive voice and "we are going to be hosting" came back unchanged, so the button did nothing.
+- **Awkward winners.** "because nobody owns them, most design systems fail." and "Best interview question? Four words after hiring over 300 people." won on score.
+- **A banned phrase survived.** "game changer" made it through.
+- **The reasons were generic.** Five stock lines covered every soft word. The move labels named mechanics ("Said the contrast", "Put the payoff last"), not why the move works. The composer never showed a word's reason.
+- **A mirror bug.** With soft words marked and the caret mid-line, the composer painted the post twice under the field, so the wavy lines drifted.
+
+### The engine (core.js, shared by the homepage, the composer and the Stronger hook rewrite)
+- **One soft-word table, `HWCore.SOFT`.** It marks, cuts and explains every soft word, longest phrase first, so a whole warm-up goes as one piece:
+  - announcements, labels and disclaimers
+  - stock phrases and backstory
+  - warm-up words and opinion hedges
+  - "honestly", intensifiers, talking filler and hedges
+  - "like" before a number, nervous laughs, "pretty happy with it"
+- **Idioms stay.** "look at this chart", "so what?", "so far", "well done", "what kind of" and "just 3 people" are not soft.
+- **Moves top posts make, added to `hookUp`:**
+  - result first, with "What changed:"
+  - passive made active
+  - "After hiring 300 people" → "I've hired 300 people."
+  - "for a year … and noticed" → "A year of …"
+  - "took me 3 years"
+  - "one year since"
+  - "decided to" → "We're removing"
+  - "if you want to" → "Want to …? …"
+  - "because" → "Why do …? …"
+  - "it is essential for X to" → "X: …"
+  - "named one of the top 50" → "Top 50 … Our team made the list."
+  - the webinar payoff first
+  - "figured out why … for 5 years" → "5 years of not …"
+  - "What 10 years of … taught me:"
+  - "thinking a lot about pricing" → "Pricing:"
+  - comma splices split into two beats
+  - "Why X" holds the reason for the next line
+- **Never-say words are said plainly.** "a game changer for my energy" → "changed my energy".
+- **A "not" before an -ing word is never contracted.**
+- **Ranking:**
+  - A number that moved from deep in the line to its first few words wins a close call.
+  - A stray "that", a vocative or a "Because…" start loses.
+  - "Put the payoff last" left the first-line moves.
+- **Open loops only when the post goes on.** A colon too: "four words:" only when the next line answers it. A lone "Why X." is scored as a promise with no payoff.
+
+### The reasons
+- **Every soft word has its own reason,** and the score's reason quotes the exact words: "“tbh” hints the rest might not be honest. Cut it and the claim stands on its own."
+- **New score reasons:**
+  - a buried number: "Your sharpest detail, “9%”, shows up 16 words in. Lead with it: people stop for a result, not for the setup."
+  - passive voice: "“…was redesigned by…” hides who did it. Put the doer first: “we redesigned…”."
+  - a vague quantity: "“a lot of” is a number you haven’t said yet."
+  - an announcement, label or disclaimer up front counts as a warm-up
+- **Every move teaches in one sentence (`MOVE_WHY`).** Ask then answer: "A question opens a gap and your answer closes it in the same line, so the payoff lands before the thumb moves." No invented numbers, and nothing about reach.
+- **When Sharpen can't do better, it says what would.** Example: "Cut the soft words and “our series A” is what’s left: too thin to stop anyone yet. Add what only you know." It no longer says "Nothing soft to cut" while soft words are marked.
+
+### The feel (composer)
+- **The edit is a pen.** Cut words strike left to right, 45ms apart, before the line moves. With two "i"s or two "the"s, the right one is struck: kept words pair up in order first, and only moved words travel.
+- **A number that moved to the front lights for a beat** as it lands.
+- **The receipt arrives as the line settles.** It names the move, gives the one-sentence why, shows the cut words struck, and offers Another and Undo. On a phone the struck words drop to make room.
+- **Soft words explain themselves.** Hover one, or put the caret in one with the arrows or a click, and a tooltip says why. The field is `aria-describedby` it while it shows, and arrowing into one reads the reason aloud. A keystroke, Esc or leaving the field puts it away.
+- **Reduced motion:** no replay. The receipt and the tooltips stay.
+
+### Elsewhere
+- **The homepage paste box and the grader** show the move and its why under a sharper line.
+- **Onboarding's first-run line** shows the same.
+
+### Claude
+- **One playbook (`HOOK_CRAFT`)** of eight moves with worked examples. The Stronger hook rewrite asks for a different move per option and names it in "why".
+- **Selection Sharpen on the opener** gets the hook moves inside the selected words.
+- **The critique** asks for three different moves, strongest first, and at least two that need no blank.
+- **Unchanged:** the JSON shapes and schemas.
+
+### Eval
+`server/test/sharpen-eval.mjs` holds 48 real-style drafts across crypto, founders, creators, ghostwritten B2B, fitness and design/eng, with round 73's output and round 74's, each hand-graded. `sharpen.test.mjs` holds it to a floor on every `npm test`.
+
+| | Hit | OK | Miss | Ready after one tap |
+|---|---|---|---|---|
+| Round 73 | 14 (29%) | 14 | 20 | 31/48 |
+| Round 74 | 43 (90%) | 5 | 0 | 42/48 |
+
+Round 74 has no number lost or added and no banned word, hedge or empty loop left.

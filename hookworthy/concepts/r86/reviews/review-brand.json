@@ -1,0 +1,137 @@
+{
+ "key": "brand",
+ "role": "Senior brand designer (identity systems for software companies)",
+ "score": 8.5,
+ "verdict": "The identity is now real and disciplined. The hook-h wordmark matches Inter's weight exactly, ember appears only as light and the fluff mark, the squiggle runs through the middle, and the type ramp and photo grade hold together, so the opening shot could sit next to Linear's. What's left for 9.5 is mostly at the edges: the closing wordmark is cut through its hook, the final's 'second light' reads as a stain, the X link card's logo sits under X's own overlay, and two full-width tiles break the type ramp.",
+ "to_95": [
+  "Fix the footer wordmark: set it on the baseline so the hook stays whole, spanning the content width (work-brand/giant-fix.css).",
+  "Give the final a real second beam that lands on the sharpened card, with the draft stepped aside (work-brand/final-beam.css plus 4 lines of JS).",
+  "Re-render the OG card: mark top-left, no sub, bottom-left left clear for X's domain overlay, dark avatar; use absolute og/twitter image URLs (work-brand/og/).",
+  "Set full-width tiles at D3 40px: Voice as a band with a three-column voice card, Trust at 40 (work-brand/voice.css; 2 lines at every width, phone budget unchanged).",
+  "Grade heycape's PFP onto the brand ground (work-brand/you-dark.jpg) and draw the icon, favicon, notification glyph and apple-touch icon from the wordmark's h (icon-r86.svg).",
+  "Make the lit rim visible with a glint, add the 9:31 lock-screen clock in Results, grain the photo tiles, and pull the X-card media into the grade.",
+  "Polish: the squiggle on 'fluff' in the Try heading, the hook tip and spacing at 20px, drawn ⌘/↵ glyphs, the phone nav Sign in, colour tokens and the radius scale."
+ ],
+ "issues": [
+  {
+   "id": "brand-1",
+   "severity": "P1",
+   "area": "brand",
+   "where": "footer .giant (the closing wordmark), all widths ≥761px",
+   "problem": "The giant wordmark is pushed down with transform:translateY(.14em) and cut by the footer's overflow:hidden at the last pixel of the page. The cut runs straight through the bottom of the hook, so the hook-h's one distinctive feature shows up as an 'h' with a loose dot after it. At 768, 1024 and 1440 it reads 'h.ookworthy' (see work-brand/footer-1440.png and fw-1024-4.png). The brand's sign-off shows the mark broken. It also covers only about 80% of the content width at 768 and 1024.",
+   "fix": "Replace the .giant rule's sizing and offset with: .giant{font-size:min(224px,calc((100vw - 2 * var(--pad)) / 5.13));transform:none;line-height:.74;margin:64px 0 0;opacity:.07} .giant svg{flex:none}. With line-height .74, the baseline sits on the footer's bottom edge. The hook stays whole, only the y's tail sinks, and the word runs the full content width at 1440, 1280, 1024 and 768 (measured; file work-brand/giant-fix.css, renders giant-fix-1440.png and giant-fix-768.png)."
+  },
+  {
+   "id": "brand-2",
+   "severity": "P1",
+   "area": "colour",
+   "where": ".fin-panel::before / .fglow / .fpay .lit-card::before (the final's 'second light')",
+   "problem": "The hero has a cinematic beam, but the final, where people convert, gets a 260px warm smudge on the top hairline and a separate spec line on the card's top edge, with about 150px of nothing between them. A low-alpha warm glow on near-black with no hot core reads as a brown stain, not as light (work-brand/fin-2x.png). The 'light lands on the sharpened card' idea from the brand doc isn't visible, so the page's bookend falls flat. The full-width draft card also sits between the light and the card, so a beam would have to pass through the fluff.",
+   "fix": "Use a smaller copy of the hero beam (same .light component and gradients). Add <div class=\"light\" aria-hidden=\"true\"><i class=\"beam\"></i><i class=\"core\"></i><i class=\"bloom\"></i><i class=\"hot\"></i></div> as the first child of #fp-live. CSS: .fpay .draft{margin-right:26%}, so the draft steps left and the light has a clear path. #fp-live{position:relative} #fp-live > .xcard,#fp-live > .empty-c,#fp-live > .hits{position:relative;z-index:1}. .fin .light{--lx:88%;--ly:0;--a:20deg;--bw:96px;--bl:380px;--sink:56px;--k:.75}. Shrink the bloom and hot spot. Move the panel hairline's hot spot to var(--fx), set by four lines of JS on load and resize to where the beam crosses the top edge. Move the card's spec line to land under the beam. Hide the beam on phones and when #fp-card is hidden. Every rule and the JS are in work-brand/final-beam.css; tested at 1440 and 1024 (final-beam-1440.png, final-beam-1024.png)."
+  },
+  {
+   "id": "brand-3",
+   "severity": "P1",
+   "area": "brand",
+   "where": "<head> og:image / twitter:image, and assets/og-afterglow.png",
+   "problem": "On a product for X, the link card is the most-seen brand surface, and it has three defects. (1) X now shows large cards as the image alone, with the domain laid over the image's bottom-left corner. That is exactly where the card's wordmark sits, so the logo is covered. (2) At timeline size (about 506px wide on desktop, about 350px on a phone), the 25px sub shrinks to 8–10px and can't be read, so it only adds noise. (3) og:image and twitter:image are relative paths (../../assets/og-afterglow.png). Crawlers need absolute URLs, so the card won't unfurl at all. The card also uses the cream-background PFP, the brightest object on it.",
+   "fix": "Re-render the card from work-brand/og/card-r86.html with work-brand/og/render.js (it loads the page origin first so Inter loads). Save it as assets/og-afterglow.png. The changes: wordmark top-left at 34px; headline 88px at top:132; no sub; draft (396px wide, stepped left) and sharpened card at the bottom-right; the beam lands on the card's top-right; the bottom-left 560×130 is left empty for X's domain overlay; dark-ground avatar. Preview with the overlay drawn in: og-r86-with-x-overlay.png and og-r86-timeline-506.png. In the head, write absolute URLs at deploy (https://<live domain>/assets/og-afterglow.png, a build-time substitution with a TODO comment until the domain exists). Add <meta property=\"og:url\"> and <meta name=\"twitter:image:alt\" content=\"They read one line. Make it hookworthy. A draft with its fluff struck out, and the sharper post it became.\">."
+  },
+  {
+   "id": "brand-4",
+   "severity": "P1",
+   "area": "type",
+   "where": "#voice h2#vo-h and #trust h2#t-h (full-width tiles set at D4 26px)",
+   "problem": "The ramp says lead tiles are D3 40px, and the other two full-width tiles (Day, Studio) follow it. Voice and Trust are full-width too but use the 26px small-tile size. Voice reads as a thin filler band with a small heading floating in a big tile. In Trust, the 24px struck words outweigh the 26px heading, so the hierarchy flips. Simply bumping Voice to 40px breaks it to 3–4 lines between 901 and 1440 (measured).",
+   "fix": "At ≥761px: Voice becomes a band. The heading and sub share the top row (.vl as grid minmax(0,1fr) minmax(0,22em), align-items:end), with the heading at 40px/1.04/-.036em. The learned-voice card below lays its three rows out as three columns (Habits | Never says | Keeps, 1px x-line dividers). Trust heading: 40px/1.04/-.036em. Phones keep their 22px tile size, unchanged. Measured: both headings 2 lines at 1440, 1280, 1100, 1024, 901 and 768; phones still 9.51 screens at 390 and 10.50 at 360. CSS in work-brand/voice.css; renders voice-1440.png and trust-1440.png."
+  },
+  {
+   "id": "brand-5",
+   "severity": "P2",
+   "area": "brand",
+   "where": ".av.me (assets/people/you.jpg), used about 12 times: hero draft and post, previews, voice card, Day phone, replies, Who, OG",
+   "problem": "heycape's PFP sits on a flat cream ground (#E9E4DE). On #08090A it is the brightest non-text object everywhere it appears, from 40px in the hero window to 72px in Who. Every other avatar and photo has been graded into the dark. Last round this was skipped as an asset edit, but it's a background recolour, not a new photo.",
+   "fix": "Use work-brand/you-dark.jpg (already built): the same 256px PFP, with the cream ground flood-filled to a soft warm-charcoal radial (#4A443E centre to #242324 rim) and 1px feathered edges. The pink gum stays the one pop. Copy it to assets/people/you-dark.jpg (leave you.jpg for the app) and set .av.me{background-image:url(../../assets/people/you-dark.jpg)}. Comparison: work-brand/you-compare.png."
+  },
+  {
+   "id": "brand-6",
+   "severity": "P2",
+   "area": "brand",
+   "where": "#hw symbol (Results/phone notifications, sheet icon), the <link rel=icon> data URI, assets/icon.svg, assets/app-icon.png",
+   "problem": "The letter is drawn two ways. The wordmark's h has a flat-ended stem matched to Inter 600 (stroke 3.9, measured identical to Inter's stem at 300px). The icon, favicon and in-page notification glyph use a rounder monoline with round caps on the stem, stroke 3.2 and a different hook. In the Results tile, the icon and the 'Hookworthy' sender name sit together, and they don't match. The apple-touch icon is also a 512px PNG with transparent rounded corners, where iOS wants a full-bleed 180px square.",
+   "fix": "Draw the icon from the wordmark's h. Use work-brand/icon-r86.svg: rect rx 8 #0D0D0D, plus <g transform=\"translate(8.1 6.8) scale(.8) translate(-8 -4.5)\" fill=\"none\" stroke=\"#F7F8F8\" stroke-width=\"3.9\" stroke-linejoin=\"round\"> holding the two #hk-h paths. Use the same <g> inside the #hw symbol (viewBox 0 0 32 32, no rect) and the same SVG URL-encoded as the favicon data URI. Make the apple-touch icon the 180×180 full-bleed render work-brand/apple-touch-icon-180.png. Comparison at 16/32/64/128 on light and dark tab bars: icon-compare.png."
+  },
+  {
+   "id": "brand-7",
+   "severity": "P2",
+   "area": "brand",
+   "where": "#results .well (blurred 8:40 sunrise behind the two notifications)",
+   "problem": "At 1440 the top 100px of the well is an unreadable tan and grey blur, which looks like a loading placeholder rather than a picture. That weakens the tile's 'morning after' story, and the founder has asked for more visuals and more creator feel.",
+   "fix": "Make the well a lock screen. Add <p class=\"lock tnum\" aria-hidden=\"true\">9:31</p> before .nstack (9:31 is the latest notification). Style it: .well .lock{align-self:center;margin:-34px 0 18px;font-size:64px;line-height:1;font-weight:600;letter-spacing:-.04em;color:rgba(247,248,248,.9);text-shadow:0 2px 24px rgba(0,0,0,.35)}. Set .well{justify-content:space-between} and blur 16px → 10px. Hide the clock at ≤1099px. Measured: the tile height doesn't change at 1440. CSS in work-brand/lock.css; render lock-1440.png."
+  },
+  {
+   "id": "brand-8",
+   "severity": "P2",
+   "area": "brand",
+   "where": ".ph photographs: #day night and morning, .well, and .media inside X cards",
+   "problem": "The hero has film grain, but the photo tiles don't. The sprite crops are upscaled 1.3–2.5× and look smooth and soft next to the grained hero. The cafe shot (used three times as heycape's post media) is the only high-key daylight image, and its white notebook is the brightest rectangle in the Replies/Results/Who row.",
+   "fix": "Give every photograph the hero's own noise: .t-day::after,.well::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.045;border-radius:inherit;background-image:<the hero's feTurbulence data URI>}. Pull X-card media into the grade: .media .ph img{filter:saturate(.86) contrast(1.04) brightness(.86)}. Both rules are in work-brand/misc.css (items 1–2)."
+  },
+  {
+   "id": "brand-9",
+   "severity": "P2",
+   "area": "colour",
+   "where": "the light rim on .lit-card (hero .post, Try result, final card, phone feed post, drafted reply, sheet line)",
+   "problem": "'Ember means one thing' is a good rule, but the rim that carries it is inset 0 1px 0 rgba(255,236,224,.16): a #29 grey line instead of #12, and not warm to the eye. The sharpened card in Try looks the same as any unlit X card, so the rule exists only in the CSS.",
+   "fix": "Add a soft glint to every lit card, in the same recipe as the hero spec at lower power: .lit-card::after{content:'';position:absolute;top:0;left:14%;right:14%;height:1px;pointer-events:none;background:linear-gradient(90deg,rgba(var(--hot)/0),rgba(var(--hot)/.42) 62%,rgba(var(--hot)/0));box-shadow:0 0 8px rgba(var(--glow)/.18)}. Set .post.lit-card,.mine.lit-card{position:relative}. The final keeps its brighter ::before spec. Render: work-brand/glint-2x.png; CSS in misc.css item 8."
+  },
+  {
+   "id": "brand-10",
+   "severity": "P2",
+   "area": "brand",
+   "where": "#sh-h 'Your facts stay. / The fluff goes.' and .sq on the final heading",
+   "problem": "All 13 section headings use the same white/grey two-beat device. Only the final carries the product's own mark ('bad first lines'). The Try heading names the brand's whole idea, 'fluff', and doesn't wear the mark, a free piece of personality left unused. The final's display squiggle (max(2.5px,.034em), offset .18em) is also a one-off spec.",
+   "fix": "Change the markup to: Your facts stay.<br><span class=\"d\">The <span class=\"sq\">fluff</span> goes.</span>. No strike, so it stays readable. Use one display squiggle for both: .sq{text-decoration:underline wavy var(--ember);text-decoration-thickness:max(2px,.034em);text-underline-offset:.18em;text-decoration-skip-ink:none}. Measured at 2 lines at 1440, 1024, 390 and 360. Render: work-brand/all-1440-try.png; misc.css item 4."
+  },
+  {
+   "id": "brand-11",
+   "severity": "P2",
+   "area": "brand",
+   "where": "#hk-h symbol and .mark .mk-h / .giant svg margin",
+   "problem": "At 20px on 1× screens, the hook's upturned tip rises to half the x-height and sits about 1.4px from the 'o'. It renders as a comma-like stub, so the nav reads 'h,ookworthy' at a glance (work-brand/nav-1x-zoom.png). The drawing is otherwise right: stem weight is identical to Inter 600 and the arch meets the x-height.",
+   "fix": "In #hk-h, end the hook at 20.6 instead of 19.2: d=\"M10 17.9a4.9 4.9 0 0 1 9.8 0V22.4a3.1 3.1 0 0 0 6.2 0V20.6\". Set .mark .mk-h,.giant svg{margin-right:.06em}. Use the same tip in icon-r86.svg and the OG. Compared at 20, 40 and 96px in work-brand/hook-variants.png (variant A)."
+  },
+  {
+   "id": "brand-12",
+   "severity": "P2",
+   "area": "type",
+   "where": ".btn kbd in #try-go ('⌘↵' / 'Ctrl ↵')",
+   "problem": "The Inter subset (230 glyphs) has no U+2318 ⌘ or U+21B5 ↵ (checked against the font's cmap). The one keyboard hint on the page's main control falls back to a system font, so its weight and size don't match the button label beside it.",
+   "fix": "Draw the glyphs. Add <symbol id=\"i-cmd\"> and <symbol id=\"i-enter\"> to the sprite (paths in work-brand/misc.css item 6). Use kbd = <svg class=\"ico\"><use href=\"#i-cmd\"/></svg><svg class=\"ico\"><use href=\"#i-enter\"/></svg> on Mac, and Ctrl plus the enter icon elsewhere. Style: .btn kbd{display:inline-flex;align-items:center;gap:1px} .btn kbd .ico{width:12px;height:12px}. Alternatively, re-subset Inter with U+2318 and U+21B5."
+  },
+  {
+   "id": "brand-13",
+   "severity": "P2",
+   "area": "mobile",
+   "where": "phone nav while body.bar-on (every screen after the hero at 390 and 360)",
+   "problem": "When the sticky bar takes over 'Start free', the nav button is hidden with visibility:hidden but keeps its width. 'Sign in' then floats about 100px in from the right edge on every phone screen past the hero (slices m-02 to m-06), and the lockup looks broken.",
+   "fix": "@media (max-width:760px){.signin{transition:transform .35s var(--ease)} body.bar-on .signin{transform:translateX(var(--nb,96px))}}. On load and resize, run nav.style.setProperty('--nb', btn.offsetWidth + 6 + 'px'). It's a transform, so CLS is untouched. Render: work-brand/all-390-nav.png; misc.css item 5."
+  },
+  {
+   "id": "brand-14",
+   "severity": "P2",
+   "area": "colour",
+   "where": ":root tokens versus about 50 literal hex values in the CSS",
+   "problem": "The palette is disciplined on screen but not in the system. There are four near-whites (#F7F8F8, #F2F3F4, #F2F2F2, #E3E5E8) besides --x-ink, ten mid-greys (#B4B8BE ×14, #9EA3AA, #A9ADB1, #8B9097, #7D8288, #71767E, #6C7179, #5C6068, #C9CCD1, #D5D8DC) and about 12 surface darks. The next build will drift, and these are the values a design-system handoff would carry.",
+   "fix": "Add tokens and map the literals to them. Inks: --ink #F7F8F8, --ink-2 #A4A8AF, --ink-3 #8D929A, --ink-4 #6C7179 (decorative only: rail icons, separators, queue rings; replaces #5C6068). X inks: --x-ink #E7E9EA (also replaces #F2F3F4, #E3E5E8, #D5D8DC, #D9DCE0), --x-ink-2 #B4B8BE (also #C9CCD1, #A9ADB1 outside .n-li, #9EA3AA), --x-mute #7D8288 (also #71767E, #8B9097 placeholders → --ink-3). Surfaces: --s0 #000 (X), --s1 #0B0C0E (also #0E0F11, #0D0D0D), --s2 #141518 (also #121315, #16181C, #151619), --s3 #1A1B1E (also #1E1F22). Keep the platform colours inside .n-th/.n-li/.n-bs as they are."
+  },
+  {
+   "id": "brand-15",
+   "severity": "P2",
+   "area": "brand",
+   "where": "border-radius values (15 different ones: 2, 3, 4, 6, 8, 10, 11, 12, 14, 16, 18, 20, 22, 24, 28, 38, 48, 999)",
+   "problem": "Nested surfaces don't step in a fixed rhythm. The final panel is 28 while tiles and plans are 24. The phone final is 22 while phone tiles are 20. .mine and the phone .post are 14, between the 12 and 16 steps. The sheet icon is 11.",
+   "fix": "Scale: 24 for tiles, plans, final panel and sheet; 20 for phone tiles and the phone final panel; 18 for X cards and the window; 16 for media and inner panels (.mine, the phone .post); 12 for small cards, queue rows and qpost; 10 for small icon tiles (.sh-icon, .hw); 8 for thumbnails; 999 for pills. Change .fin-panel 28→24, phone .fin-panel 22→20, .mine and the phone .post 14→16, .sh-icon 11→10. The device radii (48/38) and .cmt's 4px speech corner stay as they are."
+  }
+ ]
+}

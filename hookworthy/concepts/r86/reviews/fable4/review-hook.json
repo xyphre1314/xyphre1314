@@ -1,0 +1,99 @@
+{
+ "key": "hook",
+ "score": 9.1,
+ "score_ondevice": 7.1,
+ "verdict": "Claude path: 106/120 h (88.3%), needs-work 53/66 (80.3%), 0 m, 0 broken, 0 fact or meaning changes; every number, handle, tag, link, code tick and negation survived, sarcasm and meaning-flip lines were left alone, and stance hedges on forecasts were kept with honest receipts. It matches or beats Typefully on safety and on explaining itself; it trails slightly on punch because it only cuts and splits. Short of 9.5 on h% (88 vs 90) and on two voice/content losses (m-46, m-91). On-device: 93/120 h (77.5%), needs-work 41/66 (62.1%), 7 m, 2 broken (both over-280 lines: post 2 still over 280 and starts mid-sentence), 1 referent shift (m-90), 3 false explanations, and the homepage Try box disagrees with the engine on m-61. Call marks help where the hedge is real stance (m-0, m-25, m-34, m-72, m-113, m-118) and distract where they sit on \"I think\" next to an uncut run-up (m-62, m-116 on-device). The one validator reject (m-38) was a false positive, harmless here.",
+ "to_95": [
+  "Claude: leave already-sharp lines fully alone - no dropping a parenthetical aside (m-91) or an announcement sentence (m-46).",
+  "Claude: when two intensifiers stack (\"actually totally\", m-8) or a soft tail remains (m-9, m-44, m-110), cut one or call-mark it, and never add an intensifier the writer did not write (m-16 \"so weird\").",
+  "Claude: catch plain \"basically\" (m-105) so the model path is never behind the fallback.",
+  "Validator: treat \"whether or not X\" -> \"whether X\" as meaning-preserving and fix the reject message so it names \"not\".",
+  "On-device: fix the long-line split - post 2 must be <=280 and a whole sentence; trim marked fluff from post 1.",
+  "On-device: cut announce run-ups (\"In today's thread, I'm going to walk you through\", \"In this thread I will be explaining\", \"Just wanted to share a few quick thoughts on\", \"Here's a thing that\") the way it already cuts \"I wanted to share\".",
+  "On-device: prefer the cut-only alt over the result-first reorder when the line has a trailing pronoun reference (m-90).",
+  "On-device: fix false whys (m-114 \"I think\" inside \"how I think about work\"; m-19 \"news like this\"; m-96 \"without it the line breaks\").",
+  "Homepage: make the Try box show what sharpenLine returns (m-61)."
+ ],
+ "issues": [
+  {
+   "id": "H1",
+   "severity": "high",
+   "area": "on-device",
+   "where": "sharpenLine long-line thread split (m-115, m-116)",
+   "problem": "Post 2 is 327 / 288 chars (over 280) and starts mid-sentence (\"and I honestly...\", \"which is the fact that...\"); post 1 is pure run-up with marked fluff (So, really) left in; top-level rest is empty while the note says the rest becomes post 2.",
+   "fix": "Split on real sentence ends only, re-split until every post is <=280, apply cuts to post 1, and fall back to cut-only if no clean split exists."
+  },
+  {
+   "id": "H2",
+   "severity": "high",
+   "area": "on-device",
+   "where": "announce run-ups (m-29, m-62, m-92, m-96)",
+   "problem": "Run-ups are marked or missed but kept, so the weakest lines ship unchanged; m-92 gets no mark at all.",
+   "fix": "Cut the run-up and promote the \"how/why/what\" clause to a header with a colon, as the Claude path does."
+  },
+  {
+   "id": "H3",
+   "severity": "high",
+   "area": "on-device",
+   "where": "result-first reorder (m-90)",
+   "problem": "Adds \"what changed:\" and moves \"i didn't expect that\" so it points at the rewrite, not the latency drop.",
+   "fix": "Block the reorder when a later sentence has a bare this/that/it pointing back; ship the cut-only alt."
+  },
+  {
+   "id": "H4",
+   "severity": "medium",
+   "area": "explanations",
+   "where": "on-device why (m-114, m-19, m-96)",
+   "problem": "False receipts: \"Kept I think\" where the words are \"how I think about work\"; \"news like this\" on an opinion; \"without it the line breaks\" when it does not.",
+   "fix": "Only emit the stance note when the hedge mark exists at that span; gate the news note on the news detector; test the break claim by actually removing the phrase."
+  },
+  {
+   "id": "H5",
+   "severity": "medium",
+   "area": "homepage",
+   "where": "Try box, m-61",
+   "problem": "HWCore.sharpenLine returns \"Your first line beats everything else combined.\" in the page, but the Try box shows \"Kept as written\" with \"It goes without saying that\" intact.",
+   "fix": "Render the engine result, or if the UI vetoes word swaps, fall back to the cut-only version instead of the draft."
+  },
+  {
+   "id": "H6",
+   "severity": "medium",
+   "area": "on-device",
+   "where": "stance consistency (m-21 vs m-34), voice (m-112)",
+   "problem": "\"probably\" is cut from a hot take but kept on an unpopular opinion; a deliberate vulnerable preamble is deleted as 4 bits of fluff with no call mark.",
+   "fix": "One rule for probably on opinions (call mark, not cut); route personal-news preambles through the keep-as-written guard or offer the trimmed line as an alt."
+  },
+  {
+   "id": "H7",
+   "severity": "medium",
+   "area": "claude",
+   "where": "m-91, m-46",
+   "problem": "Content the writer chose is dropped from lines that did not need work: the self-aware aside and the \"New issue is out!\" announcement.",
+   "fix": "Validator: reject removal of a whole sentence or parenthetical unless it matches a known fluff pattern."
+  },
+  {
+   "id": "H8",
+   "severity": "low",
+   "area": "claude",
+   "where": "m-16, m-8, m-9, m-105",
+   "problem": "An intensifier added (\"so weird\"), stacked intensifiers and soft tails kept, \"basically\" missed.",
+   "fix": "Validator: reject added words outside a small function-word list; prompt: one intensifier per claim."
+  },
+  {
+   "id": "H9",
+   "severity": "low",
+   "area": "validator",
+   "where": "fromClaude negation guard, core.js ~line 5935 (m-38)",
+   "problem": "False positive: \"whether or not your customers renew\" -> \"whether your customers renew\" rejected as negation of \"your\" lost; message names the wrong word.",
+   "fix": "Exempt \"whether or not\" / \"or not\" after whether; report the negation token itself."
+  },
+  {
+   "id": "H10",
+   "severity": "low",
+   "area": "receipts",
+   "where": "Claude say/why (m-8, m-116, m-115, m-65)",
+   "problem": "Counts in say do not match the why; odd receipts (\", but\" listed as cut; \"The light edit:\").",
+   "fix": "Derive the count from the actual diff and drop internal phrasing."
+  }
+ ]
+}

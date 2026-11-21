@@ -1,0 +1,128 @@
+{
+ "key": "web",
+ "role": "Awwwards-level web designer and front-end craftsperson: layout and composition at every width, rhythm, motion timing, performance, polish",
+ "score": 9.0,
+ "verdict": "This is a very finished front end. Nothing overflows from 360 to 1920 and CLS is 0 at every width. Every heading is two lines or fewer, it measures 9.61 phone screens at 390 and 10.43 at 360, and the hero window, Studio and Previews hold one height through every pick. The hero settles about 1.75 s after first paint in a clean order: words, window, squiggle, strike, post, receipt, dissolve. Reduced motion gives a finished static page. What keeps it below 9.5 is mainly one performance P1: the very first Sharpen tap runs the engine cold (INP 312 ms on desktop and about 1.1–1.3 s on a 4x-throttled phone). On top of that come a handful of visible P2s in composition and layout stability at desktop, tablet and phone.",
+ "to_95": [
+  "Warm the engine off the interaction path. Once core.js loads, call HWCore.sharpenLine(EX[0].draft,{keep:[]}) and softMarks once inside requestIdleCallback. In go() and the starter handler, wait one requestAnimationFrame before calling sharpenLine so the pressed state paints first. Target: the first Sharpen tap under 200 ms INP at 4x CPU (it measures 1072–1272 ms now, and 312 ms unthrottled on desktop).",
+  "Re-run pvFade from a ResizeObserver on .t-pv .screens. When the Try result grows, the Previews tile stretches with it, but the feed's fade end (--fe) stays at the old height and leaves an empty strip (38 px for a two-line draft, about 200 px for a long one).",
+  "Make interactions keep heights the way Studio and the hero already do. Give #kp-n a two-line min-height and the Keeps button a fixed width (the Voice tile jumps 17 px on desktop and 30 px on phone). On phone (≤760), give .try-out a min-height so starters stop resizing the Try tile (750→587 px).",
+  "Give tablet portrait (761–900) its own layout instead of a stretched phone. Studio is a 1346 px single column with the facts above the demo: reuse the 901–1199 arrangement (picker and never-says band, review full width, voice and queue beside it or trimmed). Show the three plans as compact columns (or 2+1) instead of a 1623 px stack.",
+  "Tidy the desktop details you see in the first glance. Keep the hero's .hmeta on one row at ≥1200 (it wraps into two left-aligned rows, so space-between never happens). Stop the narrow ≥1100 X preview from truncating the handle to “@heycape_ …”, and fix its lone widow “in.” at the fade. Use one cap size across the 768–1099 half-tile rows (Previews and Replies are 26 px, Results and Who 21–23 px).",
+  "Break the run of thin full-width bands at ≥1100. Who (225 px tall) and Trust (263 px) read as strips rather than bento tiles. Pair Who with a neighbour in a 5/7 or 6/6 row, or give Who larger faces, so the grid keeps its bento rhythm."
+ ],
+ "issues": [
+  {
+   "id": "web-1",
+   "severity": "P1",
+   "area": "Performance / INP",
+   "where": "Try tile starters and Sharpen; final input on first live update (home.html go(), starter click handler, payUpdate)",
+   "problem": "The first HWCore.sharpenLine call is cold: 175 ms on desktop against 4–20 ms when warm. The page loads core.js on idle but never calls it, so the visitor's first tap pays that cost. Measured: the first starter click takes 312 ms (215 ms processing) unthrottled at 1440, and 1072–1272 ms at 4x CPU on a 390 phone. Warm taps then take about 190–225 ms at 4x. This is the page's main product moment, and on a mid-range phone it freezes for over a second on first use.",
+   "fix": "In loadCore's onload (or the idle wake), schedule requestIdleCallback(() => { H.sharpenLine(EX[0].draft, {keep: []}); H.softMarks(EX[0].draft, []); }, {timeout: 3000}). In go(), toggleWord() and the starter handler, add await new Promise(requestAnimationFrame) before sharpenLine so the button's pressed state paints first. Re-measure until the first tap's INP is under 200 ms at 4x CPU."
+  },
+  {
+   "id": "web-2",
+   "severity": "P2",
+   "area": "Layout bug",
+   "where": "Previews tile (≥761, beside Try), pvFade()",
+   "problem": "--fe (where the feed's fade ends) is measured only on load, font load and window resize. When the Try result grows (a two-line custom draft: tile 698→732 px; a long draft: 871 px), the Previews tile stretches, but the mask still ends at the old 429 px. The feed card visibly stops short and an empty band opens above the note (38 px, and about 200 px for long drafts).",
+   "fix": "new ResizeObserver(() => requestAnimationFrame(pvFade)).observe(document.querySelector('.t-pv .screens')). That way the dimmed next post fills the new height, as the comment intends."
+  },
+  {
+   "id": "web-3",
+   "severity": "P2",
+   "area": "Layout stability on interaction",
+   "where": "Voice tile, Keeps column (#kp-b / #kp-n)",
+   "problem": "Tapping Put it back swaps the note between two-line and one-line messages and the button label between “Put it back” and “Cut it”. The whole tile changes height (369→352 px at 1440, 519→489 px at 390), and everything below jumps by 17–30 px on a tap.",
+   "fix": "Give #kp-n min-height:2.9em (two lines at 15px/1.45) and #kp-b a min-width that fits the longer label (or keep both labels the same width), so the tile never changes height."
+  },
+  {
+   "id": "web-4",
+   "severity": "P2",
+   "area": "Layout stability on interaction (phone)",
+   "where": "Try tile at ≤760, starters",
+   "problem": "Desktop keeps the Try/Previews row at 698 px for every starter, but the phone has no floor. Tile heights per starter at 390 are 750, 728, 724, 692, 717 and 587 px (A sharp one drops 163 px), so every tile below jumps on each tap. This is the page's own rule (“a pick never moves the page”) broken on its most-used width.",
+   "fix": "At ≤760, give .try-out a min-height equal to the tallest starter result measured at that width (the way sizeHero does it for the hero: a hidden clone, measured once per width). Alternatively, reserve the keep row and two why lines with min-heights."
+  },
+  {
+   "id": "web-5",
+   "severity": "P2",
+   "area": "Composition (tablet portrait)",
+   "where": "761–900: #studio and #pricing",
+   "problem": "At 768, Studio is one 1346 px column (1.3 screens). Its text facts sit above the product demo, the photo takes almost the full width, and the queue lists stack under it. Pricing stacks three full-width phone-style cards (1623 px). Tablet portrait reads as a stretched phone, not a designed layout.",
+   "fix": "Reuse the 901–1199 Studio grid at 761–900 (pick | never-says band; review box full width with the voice column beside it, or with the queue hidden; facts last). Keep .plans as three compact columns (or Free+Pro over a full-width Studio) at 761–900, with the price and list in the desktop arrangement."
+  },
+  {
+   "id": "web-6",
+   "severity": "P2",
+   "area": "Composition (hero)",
+   "where": ".hmeta under the hero window, ≥1200",
+   "problem": "The trust line and the “Posts to … Ready to paste on …” row together need about 1194 px, but the row has 1152 px. It wraps into two left-aligned caption lines, so the intended justify-content:space-between split never happens, and the block looks like an afterthought under the wide window.",
+   "fix": "At ≥1200, either let .since take flex:1 and min-width:0 with the posts group on the right edge (shorten the sentence to fit, e.g. drop “That’s the line Sharpen works on.” there), or stack both lines on purpose and centre them under the window."
+  },
+  {
+   "id": "web-7",
+   "severity": "P2",
+   "area": "Polish (desktop)",
+   "where": "Previews tile at ≥1100 (373 px wide): X preview",
+   "problem": "In a 373 px tile the name row truncates the handle to “@heycape_ …”, which is visible as soon as the tile arrives. The second post's last line is a lone “in.” right at the fade, also at 1024.",
+   "fix": "In .t-pv at ≥1100, drop the “Example” tag from the second post's name row only, or the “· 1m”, so the handle fits. Add .pt to the text-wrap:pretty list, or end the second post on a shorter last word, so no one-word line lands at the fade."
+  },
+  {
+   "id": "web-8",
+   "severity": "P2",
+   "area": "Type scale consistency",
+   "where": "761–1099 half-tile rows; .h2.xl",
+   "problem": "In the Previews/Replies row the caps are 26 px, while in the Results/Who row below they shrink to 21–23 px (container-fit for “Trades, launches, newsletters.”). The final .h2.xl is 72 px at 768 but 56 px at 901–1099 and 60 px for the other h2s, so the scale runs backwards as the width grows.",
+   "fix": "At 761–1099, set all four half-tile caps to the same size (e.g. 22–23 px, the fit size, or shorten the Who head). Cap .h2.xl at 60 px for ≤1199 so it matches the other section heads."
+  },
+  {
+   "id": "web-9",
+   "severity": "P2",
+   "area": "Bento rhythm (≥1100)",
+   "where": "Who (#who, 225 px) and Trust (#trust, 263 px) bands",
+   "problem": "Five of the nine tiles are full-width bands, and Who and Trust are thin strips of small avatars or text. Below Replies/Results the grid stops reading as a bento and becomes a stack of panels. Who is also the quietest visual on the page at desktop (56 px faces, a lot of empty header space).",
+   "fix": "Within the same layout family, pair Who with a neighbour (e.g. Who 5 cols + Trust 7 cols, with Who moved after Studio). Or keep the band but give it presence: 72–88 px faces and each kind of writer's sharpened first line set as a large quote under its face."
+  },
+  {
+   "id": "web-10",
+   "severity": "P2",
+   "area": "Phone scrollers",
+   "where": ".ex .pills (hero examples) at ≤379; .starters and .st-pick after scrolling",
+   "problem": "At 360 the hero pill row cuts “Ghostwriter” hard at the right edge, with no fade mask (the starters row has one). Once the starters or client picker are scrolled, their left edge cuts pills mid-word (“under”) because the mask only fades the right edge.",
+   "fix": "Apply the same edge mask to .ex .pills, and on scroll toggle a class that switches the mask to fade both edges when scrollLeft > 0 (linear-gradient(90deg, transparent, #000 24px, #000 82%, transparent))."
+  },
+  {
+   "id": "web-11",
+   "severity": "P2",
+   "area": "Motion trigger timing",
+   "where": "Armed tiles (data-m), IntersectionObserver threshold .3",
+   "problem": "Before a tile plays, its content stays hidden until 30% of the tile is visible. The Day tile (703 px at 390, 600 px at desktop) scrolls in as a bare photo for about 180–210 px. Fast scrollers see empty tiles, and the Try result sits at 35% opacity until then.",
+   "fix": "Start the moment earlier: threshold ~.12, or rootMargin '0px 0px -12% 0px' with threshold 0. The moment then begins as the tile's top edge clears the bottom ~12% of the viewport and finishes while it is still entering."
+  },
+  {
+   "id": "web-12",
+   "severity": "P2",
+   "area": "Image quality",
+   "where": "Day tile photos (night: 1013 px wide, morning skyline: 1418 px wide, from the 800 px sprite)",
+   "problem": "At 2x DPR the night photo is upscaled 2.5x and the morning skyline 3.5x. The skyline edges look soft rather than deliberately out of focus. Replies and Results also show the journal crop about 2x up.",
+   "fix": "There is no higher-resolution source, so make the softness read as intended. Add filter: blur(1.5px) brightness(.9) to .morn > .ph img (the phone carries the focus), and show more of the frame there (height 840% → about 640%, which lowers the upscale to about 2.7x). Keep the night crop as it is, under its existing gradient."
+  },
+  {
+   "id": "web-13",
+   "severity": "P2",
+   "area": "Startup cost",
+   "where": "Inline CSS/HTML (235 KB, 62 KB gzipped), sizeHero(), pvFade() at load",
+   "problem": "At 4x CPU on a phone there is a 300–320 ms long task at load and a 145 ms one right after. sizeHero clones the window body and forces four synchronous layouts, and pvFade measures every line range of all four previews, both before first interaction. The CSS min-heights already cover the common widths.",
+   "fix": "Run sizeHero and pvFade inside requestIdleCallback (the CSS min-heights hold the layout until then), and measure only the visible preview pane until a pill is pressed."
+  },
+  {
+   "id": "web-14",
+   "severity": "P2",
+   "area": "Touch targets (phone)",
+   "where": ".ed-mirror .tog::after{inset:-10px -4px} at ≤760",
+   "problem": "In the 17 px textarea (24 px line height), the 10 px vertical expansion on each struck word covers about 40% of the lines above and below. A tap meant to put the caret near a struck word puts the word back instead.",
+   "fix": "Keep the expansion horizontal only (inset:-2px -6px). The 24 px line already meets the 24 px target minimum."
+  }
+ ]
+}

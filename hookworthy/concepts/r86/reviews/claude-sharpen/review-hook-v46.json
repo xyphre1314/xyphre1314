@@ -1,0 +1,21 @@
+{
+ "key": "hook",
+ "role": "Sharpen engine juror (senior X ghostwriter and copy chief)",
+ "score": 9.6,
+ "score_ondevice": 9.5,
+ "score_note": "'score' (the app's Claude path) is carried over from set 5; the Claude path is unchanged in v4.6.",
+ "verdict": "On an eighth blind set of everyday drafts, the v4.6 on-device engine scored 96.7% postable (94.6% on lines that need work). Its default output had 0 broken lines and 0 fact or meaning changes, it left 46/46 sharp lines alone, and it fixed every set-7 issue; sharpen.js gives an identical result on all 120 lines in every mode, and the homepage matches the engine 15/15. The whole-sentence check closed the class of breaks that recurred through sets 3-7: a scan of all 960 lines in both modes finds none. What's left is P2 polish off the main path: one strict-mode fragment the app may flash, one put-back that loses a capital, and a few hype or 'honest take' openers left in place.",
+ "to_95": [],
+ "to_95_ondevice": [],
+ "polish_ondevice": [
+  "Strict mode: when a hype opener is cut ahead of 'our X', fall back to the default's verb form ('We raised a $3M seed round…') or leave the line as written, never the verbless 'Our $3M seed round to help small teams ship faster!' (p-26). The app's instant line and fallback use strict mode.",
+  "Put-back onto a split line: re-capitalise the start of the second sentence ('So we rewrote our backend in Rust. our AWS bill…' -> '… Our AWS bill…', p-81).",
+  "Coverage: 'So thrilled that' (p-40), 'my honest take is that' (p-45, the sibling of the 'my honest advice would be to' cut), and 'So proud to finally share the X' -> 'The X …' (p-92)."
+ ],
+ "issues": [
+  {"id": "hook46-1", "severity": "P2", "area": "Strict mode (app instant line and fallback)", "where": "core.js announce cut + reshape under {strict:true}", "problem": "p-26 'We're thrilled to finally announce our $3M seed round to help small teams ship faster! 🚀': the default gives 'We raised a $3M seed round…' (good), but strict mode gives 'Our $3M seed round to help small teams ship faster! 🚀', a fragment with no verb and the receipt 'It now opens on what you came to say'. The app flashes it before Claude's line arrives and ships it on timeout or cap.", "fix": "Run the new whole-sentence check on strict output too. When the announce cut leaves an 'our/my/the + noun phrase' with no finite verb, use the default's verb template or keep the line as written."},
+  {"id": "hook46-2", "severity": "P2", "area": "Homepage put-back", "where": "sharpenLine with keep on a result-first reshape", "problem": "p-81: putting back 'So' switches to the split light edit but lowercases the second sentence: 'So we rewrote our backend in Rust. our AWS bill basically dropped by 60%.'", "fix": "After any split, capitalise the first letter of each new sentence unless the draft is lowercase-styled."},
+  {"id": "hook46-3", "severity": "P2", "area": "On-device coverage", "where": "core.js SOFT patterns", "problem": "Three ordinary openers survive: 'So thrilled that this newsletter just passed 20,000 readers' (p-40), 'my honest take is that a newsletter is the best place to start' (p-45), and 'So proud to finally share the brand refresh…' (p-92, marked but kept). A 308-char hard-news line (p-113) is kept whole, which is right by policy, with no trim.", "fix": "Add 'So (thrilled|happy|proud|excited) that' to the announce cut. Treat 'my honest take is that' like 'my honest advice would be to'. For 'So proud to finally share the X', reshape to 'The X …' when the X phrase has its own verb."},
+  {"id": "hook46-4", "severity": "P2", "area": "Eval validity", "where": "score provenance", "problem": "The Claude-path 9.6 is still set 5's, graded from a stand-in at default effort; production runs Opus 5.5 at low effort.", "fix": "Before launch, re-run all 960 lines from sets 1-8 through sharpenClaude at production settings and report postable %, timeout, cap and rules rates."}
+ ]
+}

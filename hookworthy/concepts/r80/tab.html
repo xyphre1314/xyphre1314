@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hookworthy · They read one line</title>
+<meta name="description" content="Hookworthy sharpens your first line in one tap. It still sounds like you. Write and schedule for X, Threads, LinkedIn and Bluesky.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<link rel="preload" href="../../fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+@font-face{font-family:"Geist";src:url(../../fonts/Geist-Variable.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(../../fonts/GeistMono-Variable.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+
+:root{
+  --bg:#000;
+  --card:#0A0A0A;          /* compose + post surfaces */
+  --ink:#EDEDED;           /* primary text */
+  --ink2:#A1A1A1;          /* secondary text, 8.1:1 on black */
+  --ink3:#8F8F8F;          /* tertiary text, 6.4:1 on black */
+  --cut:#858585;           /* struck words, 5.1:1 on --card */
+  --line:#1A1A1A;          /* grid hairlines */
+  --line2:#2A2A2A;         /* component borders */
+  --cross:#5C5C5C;         /* crosshair marks */
+  --fluff:#FFB224;         /* the one colour: the fluff squiggle */
+  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --frame:min(1320px, calc(100vw - 64px));
+  --ease:cubic-bezier(.16,1,.3,1);
+  --sq:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'%3E%3Cpath d='M0 2.6Q2 .4 4 2.6T8 2.6' fill='none' stroke='%23FFB224' stroke-width='1.2'/%3E%3C/svg%3E");
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+p,h1{margin:0}
+a{color:inherit;text-decoration:none}
+img{display:block}
+del,ins{text-decoration:none}
+::selection{background:#EDEDED;color:#000}
+:focus-visible{outline:2px solid #EDEDED;outline-offset:3px;border-radius:999px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-48px;z-index:20;background:#EDEDED;color:#000;padding:8px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.skip:focus{top:12px}
+
+/* ---------- the frame: hairlines + crosshairs ---------- */
+.page{position:relative;overflow-x:clip;min-height:100vh;
+  background:
+    radial-gradient(1200px 520px at 74% -140px, rgba(255,255,255,.075), transparent 70%),
+    var(--bg)}
+.shell{position:relative;width:var(--frame);margin:0 auto}
+.rule{position:absolute;display:block;background:var(--line);pointer-events:none}
+.rule.v{top:0;bottom:0;width:1px}
+.rule.v.l{left:0}.rule.v.r{right:0}
+.rule.h{height:1px;left:calc(50% - 50vw);width:100vw}
+.x{position:absolute;width:11px;height:11px;pointer-events:none;z-index:3}
+.x::before,.x::after{content:"";position:absolute;background:var(--cross)}
+.x::before{left:0;top:5px;width:11px;height:1px}
+.x::after{left:5px;top:0;width:1px;height:11px}
+
+/* ---------- nav ---------- */
+.nav{position:relative;height:64px;display:flex;align-items:center;padding:0 30px 0 40px;gap:36px}
+.nav .rule.h{bottom:0}
+.brand{display:inline-flex;align-items:center;gap:9px;font:600 18px/1 var(--sans);letter-spacing:-.035em;color:#fff;border-radius:6px}
+.brand svg{width:22px;height:22px;flex:none}
+.links{display:flex;gap:26px}
+.links a{font-size:14px;color:var(--ink2);transition:color .15s}
+.links a:hover{color:#fff}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:20px}
+.nav-r .login{font-size:14px;color:var(--ink2);transition:color .15s}
+.nav-r .login:hover{color:#fff}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 24px;border-radius:999px;font:500 15px/1 var(--sans);letter-spacing:-.01em;white-space:nowrap;transition:background-color .15s,box-shadow .15s,color .15s,transform .15s}
+.btn.pri{background:#fff;color:#000;font-weight:600;box-shadow:0 0 0 1px #fff,0 8px 30px -8px rgba(255,255,255,.28)}
+.btn.pri:hover{background:#E6E6E6;box-shadow:0 0 0 1px #E6E6E6,0 8px 30px -8px rgba(255,255,255,.34)}
+.btn.pri:active{transform:translateY(1px)}
+.btn.pri .k{font:500 11px/1 var(--mono);color:#555;border:1px solid #CFCFCF;border-bottom-width:2px;border-radius:5px;padding:3px 5px 2px;margin-right:-8px}
+.btn.gho{color:var(--ink);box-shadow:inset 0 0 0 1px #333;background:rgba(255,255,255,.015)}
+.btn.gho:hover{box-shadow:inset 0 0 0 1px #5A5A5A;background:rgba(255,255,255,.05)}
+.btn.sm{height:32px;padding:0 14px;font-size:14px;font-weight:600}
+.btn:focus-visible{outline-offset:4px}
+
+/* ---------- hero ---------- */
+.hero{--top:clamp(64px, calc((100svh - 64px - 76px - 380px) / 2 - 16px), 200px);--dy:12px;position:relative;display:grid;grid-template-columns:3fr 2fr;min-height:max(620px, calc(100svh - 64px - 76px))}
+.hero > .rule.h{bottom:0}
+.hero .rule.mid{left:60%;top:0;bottom:0;width:1px}
+.copy{display:flex;flex-direction:column;justify-content:flex-start;padding:var(--top) 40px 64px 40px}
+h1{font:600 min(76px, calc((60vw - 142px) / 8.95))/1.02 var(--sans);letter-spacing:-.045em;color:#fff;font-feature-settings:"ss01"}
+h1 .l1{color:var(--ink3)}
+.sub{margin-top:34px;max-width:30em;font-size:20px;line-height:1.5;letter-spacing:-.012em;color:var(--ink2)}
+.sub .s2{display:block}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:48px}
+.micro{margin-top:28px;font-size:13px;letter-spacing:-.005em;color:var(--ink3)}
+.micro i{font-style:normal;margin:0 7px;color:#4A4A4A}
+
+/* product cell */
+.demo{position:relative;display:flex;align-items:flex-start;justify-content:center;padding:calc(var(--top) + var(--dy)) 30px 64px;isolation:isolate}
+.demo::before{content:"";position:absolute;inset:0;z-index:-1;
+  background-image:linear-gradient(to right, rgba(255,255,255,.045) 1px, transparent 1px),linear-gradient(to bottom, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size:32px 32px;background-position:-1px -1px;
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 46%, #000 20%, transparent 80%);mask-image:radial-gradient(ellipse 70% 60% at 50% 46%, #000 20%, transparent 80%)}
+.demo::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(60% 46% at 50% 38%, rgba(255,255,255,.06), transparent 72%)}
+.demo-rule{display:none}
+.demo > .rule.h{top:0}
+.stack{position:relative;width:100%;max-width:468px;--lift:96px}
+
+/* compose (X-style, dark) */
+.compose{position:relative;z-index:1;background:var(--card);border-radius:16px;
+  box-shadow:inset 0 0 0 1px var(--line2), inset 0 1px 0 rgba(255,255,255,.06), 0 24px 48px -24px rgba(0,0,0,.9);
+  transform-origin:50% 0;transform:translateY(0) scale(.955);filter:brightness(.82)}
+.c-body{display:grid;grid-template-columns:36px 1fr;gap:12px;padding:16px 20px 14px 16px}
+.av{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#222}
+.draft{font-size:18px;line-height:1.6;letter-spacing:-.01em;color:var(--ink);padding-top:4px}
+.cut{color:var(--cut);text-decoration-line:line-through;text-decoration-color:rgba(160,160,160,.9);text-decoration-thickness:1px}
+.fluff{padding-bottom:3px;
+  background:linear-gradient(var(--card),var(--card)) right bottom / 0% 6px no-repeat, var(--sq) left bottom / 8px 4px repeat-x}
+.add{color:var(--ink)}
+.hint{display:flex;align-items:center;gap:8px;margin-top:10px;white-space:nowrap;font-size:13px;color:var(--ink3);line-height:1}
+kbd{display:inline-flex;align-items:center;gap:5px;font:500 11.5px/1 var(--mono);color:var(--ink);background:#161616;border:1px solid #363636;border-bottom-width:2px;border-radius:6px;padding:4px 6px 3px}
+kbd b{font-weight:500;font-size:13px;line-height:.8;transform:translateY(.5px)}
+.c-bar{display:flex;align-items:center;gap:14px;margin:0 16px 0 64px;padding:12px 0 14px;border-top:1px solid var(--line2)}
+.tools{display:flex;gap:14px;color:var(--ink3)}
+.tools svg{width:18px;height:18px}
+.when{white-space:nowrap;margin-left:auto;font:500 12px/1 var(--mono);color:var(--ink2);display:inline-flex;align-items:center;gap:6px}
+.postbtn{height:32px;padding:0 16px;border-radius:999px;background:#EDEDED;color:#000;font:600 14px/32px var(--sans)}
+
+/* post card (lands in front) */
+.post{position:relative;z-index:2;margin-top:-14px;border-radius:18px;
+  background:linear-gradient(#0B0B0B,#0B0B0B) padding-box, linear-gradient(180deg, rgba(255,255,255,.26), rgba(255,255,255,.07) 40%, rgba(255,255,255,.05)) border-box;
+  border:1px solid transparent;
+  box-shadow:0 -1px 0 rgba(255,255,255,.04), 0 40px 80px -28px rgba(0,0,0,1), 0 0 0 9px rgba(255,255,255,.012), 0 30px 90px -40px rgba(255,255,255,.10)}
+.p-main{display:grid;grid-template-columns:40px 1fr;gap:12px;padding:18px 20px 12px 16px}
+.p-main .av{width:40px;height:40px}
+.p-head{display:flex;align-items:center;gap:6px;font-size:15px;line-height:20px;min-width:0}
+.p-head b{font-weight:600;color:#fff;letter-spacing:-.01em}
+.p-head .handle{color:var(--ink3)}
+.tag{margin-left:auto;font-size:12px;line-height:1;color:var(--ink2);padding:4px 8px;border-radius:999px;box-shadow:inset 0 0 0 1px #333}
+.p-text{margin-top:4px;font-size:21px;line-height:1.42;letter-spacing:-.018em;color:#fff;font-weight:450}
+.fact{text-decoration:none;padding-bottom:1px;background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55)) left bottom / 100% 1px no-repeat}
+.acts{display:flex;justify-content:space-between;max-width:330px;margin-top:8px;color:#777}
+.acts svg{width:18px;height:18px}
+.why{display:flex;flex-direction:column;gap:2px;margin:2px 0 0;padding:10px 20px 12px 68px;border-top:1px solid #1E1E1E;font-size:13.5px;line-height:1.45;color:var(--ink2)}
+.why b{flex:none;font-weight:500;color:var(--ink)}
+.why .w{display:inline-block}
+
+/* ---------- the sliver of what's next ---------- */
+.next{position:relative;display:grid;grid-template-columns:repeat(5,1fr)}
+.next .cell{position:relative;padding:22px 40px 28px}
+.next .cell + .cell::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--line)}
+.next h2{margin:0;font:500 14px/1.4 var(--sans);letter-spacing:-.01em;color:var(--ink)}
+.next p{margin-top:4px;font-size:14px;line-height:1.5;letter-spacing:-.01em;color:var(--ink3)}
+
+/* ---------- motion: one sharpen, then still ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .js .fluff{animation:squig .36s cubic-bezier(.45,0,.55,1) .14s both}
+  .js .fluff.f2{animation-duration:.12s;animation-delay:.52s}
+  .js .cut{animation:strike .22s ease-out .74s both}
+  .js .add{animation:ghost .5s linear .76s both}
+  .js .hint{animation:hintin .32s var(--ease) .8s both}
+  .js kbd{animation:press .2s ease-in-out 1.24s both}
+  .js .compose{animation:recede .5s var(--ease) 1.3s both}
+  .js .post{animation:land .5s var(--ease) 1.3s both}
+  .js .fact{animation:fact .26s ease-out 1.52s both}
+  .js .fact + .fact{animation-delay:1.6s}
+  .js:not(.play) .fluff, .js:not(.play) .cut, .js:not(.play) .add, .js:not(.play) .hint, .js:not(.play) kbd, .js:not(.play) .compose, .js:not(.play) .post, .js:not(.play) .fact{animation-play-state:paused}
+}
+@keyframes squig{from{background-size:100% 6px, 8px 4px}to{background-size:0% 6px, 8px 4px}}
+@keyframes strike{from{color:var(--ink);text-decoration-color:rgba(160,160,160,0)}to{color:var(--cut);text-decoration-color:rgba(160,160,160,.9)}}
+@keyframes ghost{0%{color:transparent}20%,89%{color:#5E5E5E}100%{color:var(--ink)}}
+@keyframes hintin{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+@keyframes press{0%,100%{transform:none;border-bottom-width:2px;background:#161616}40%,60%{transform:translateY(1px);border-bottom-width:1px;background:#262626;border-color:#4a4a4a}}
+@keyframes recede{from{transform:translateY(var(--lift)) scale(1);filter:brightness(1)}to{transform:translateY(0) scale(.955);filter:brightness(.82)}}
+@keyframes land{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes fact{from{background-size:0% 1px}to{background-size:100% 1px}}
+
+/* ---------- stacked layout ---------- */
+@media (max-width:1200px){ .tools svg:nth-child(n+3){display:none} }
+@media (max-width:980px){
+  :root{--frame:calc(100vw - 32px)}
+  .links{display:none}
+  .nav{height:56px;padding:0 12px 0 18px}
+  .sub .s2{display:inline}
+  .sub{text-wrap:balance}
+  .hero{grid-template-columns:1fr;min-height:0}
+  .hero .rule.mid{display:none}
+  .copy{padding:40px 18px 36px}
+  h1{font-size:min(72px, calc((100vw - 68px) / 8.95))}
+  .sub{font-size:16.5px;margin-top:16px}
+  .ctas{margin-top:26px}
+  .demo{padding:28px 12px 40px}
+  .xm{display:none}
+  .demo-rule{display:block}
+  .next{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .brand{font-size:17px}
+  .nav-r{gap:16px}
+  .ctas{flex-direction:column;gap:10px}
+  .ctas .btn{width:100%}
+  .micro{font-size:12.5px}
+  .micro i{margin:0 5px}
+  .stack{--lift:70px}
+  .c-body{grid-template-columns:30px 1fr;gap:10px;padding:14px 14px 12px 12px}
+  .c-body .av{width:30px;height:30px}
+  .draft{font-size:15px;line-height:1.55;padding-top:3px}
+  .hint{font-size:12px;margin-top:8px}
+  .c-bar{display:none}
+  .c-body{padding-bottom:14px}
+  .tools{gap:11px}
+  .tools svg{width:16px;height:16px}
+  .tools svg:nth-child(n+4){display:none}
+  .post{margin-top:-10px;border-radius:16px}
+  .p-main{grid-template-columns:34px 1fr;gap:10px;padding:14px 14px 10px 12px}
+  .p-main .av{width:34px;height:34px}
+  .p-head{font-size:14px}
+  .p-text{font-size:17px}
+  .acts{margin-top:10px}
+  .acts svg{width:16px;height:16px}
+  .why{padding:11px 14px 12px 56px;font-size:12.5px;flex-direction:column;gap:1px}
+  .next{grid-template-columns:1fr}
+}
+@media (max-width:379px){ .nav-r .login{display:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="page">
+  <div class="shell">
+    <i class="rule v l"></i><i class="rule v r"></i>
+
+    <header class="nav">
+      <a class="brand" href="#" aria-label="Hookworthy home">
+        <svg viewBox="0 0 22 22" fill="none" aria-hidden="true"><rect width="22" height="22" rx="6" fill="#fff"/><path d="M4.6 11.4c1.1-2.2 2.2-2.2 3.3 0s2.2 2.2 3.3 0c.4-.8.9-1.1 1.4-1.1h4.8" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        hookworthy
+      </a>
+      <nav class="links" aria-label="Primary">
+        <a href="#">Sharpen</a><a href="#">Schedule</a><a href="#">Pricing</a>
+      </nav>
+      <div class="nav-r">
+        <a class="login" href="#">Log in</a>
+        <a class="btn pri sm" href="#">Start free</a>
+      </div>
+      <i class="rule h"></i>
+      <i class="x" style="left:-5px;bottom:-5px"></i>
+      <i class="x" style="right:-5px;bottom:-5px"></i>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="h1">
+        <div class="copy">
+          <h1 id="h1"><span class="l1">They read one line.</span><br>Make it hookworthy.</h1>
+          <p class="sub">Hookworthy sharpens your first line in one tap. <span class="s2">It still sounds like you.</span></p>
+          <div class="ctas">
+            <a class="btn pri" href="#">Sharpen my first line</a>
+            <a class="btn gho" href="#">Try it on your line</a>
+          </div>
+          <p class="micro">Free forever<i aria-hidden="true">·</i>No card<i aria-hidden="true">·</i>Nothing posts without you</p>
+        </div>
+
+        <div class="demo" role="group" aria-label="Example: a draft first line, sharpened">
+          <i class="rule h demo-rule"></i><i class="x demo-rule" style="left:-5px;top:-5px"></i><i class="x demo-rule" style="right:-5px;top:-5px"></i>
+          <div class="stack" id="stack">
+            <div class="compose">
+              <div class="c-body">
+                <img class="av" src="../../assets/people/you.jpg" alt="" width="36" height="36">
+                <p class="draft"><span class="sr">Draft, with suggested cuts: </span><del class="cut"><span class="fluff">just wanted to share that i finally</span> hit</del> my first $10k month trading<del class="cut">,</del> took me 3 years<del class="cut"> <span class="fluff f2">lol</span></del><ins class="add">.</ins><span class="hint"><kbd>Tab <b aria-hidden="true">⇥</b></kbd>to sharpen</span></p>
+              </div>
+              <div class="c-bar" aria-hidden="true">
+                <span class="tools">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 2.5-2 4.5 3.5"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M8.8 14.2c1.6 1.8 4.8 1.8 6.4 0"/><path d="M9.3 9.6v.4M14.7 9.6v.4" stroke-width="2"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 1 0-13 0c0 5.4 6.5 11 6.5 11Z"/><circle cx="12" cy="10" r="2.2"/></svg>
+                </span>
+                <span class="when"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke-linecap="round"/></svg>Tue 8:40 AM</span>
+                <span class="postbtn">Post</span>
+              </div>
+            </div>
+
+            <article class="post" aria-label="Sharpened post preview">
+              <div class="p-main">
+                <img class="av" src="../../assets/people/you.jpg" alt="heycape" width="40" height="40">
+                <div>
+                  <div class="p-head"><b>heycape</b><span class="handle">@heycape_</span><span class="tag">Example</span></div>
+                  <p class="p-text">my first <u class="fact">$10k</u> month trading took me <u class="fact">3&nbsp;years</u>.</p>
+                  <div class="acts" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4.5 11.5a7.5 7 0 0 1 7.5-7h.6a7 7 0 0 1 0 14H8.5l-4 3v-10Z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 4 7l3 3"/><path d="M4 7h11a3 3 0 0 1 3 3v2"/><path d="m17 20 3-3-3-3"/><path d="M20 17H9a3 3 0 0 1-3-3v-2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10.1A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 20V12M10 20V5M15 20v-9M20 20V8"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M6.5 4.5h11v16l-5.5-4-5.5 4v-16Z"/></svg>
+                  </div>
+                </div>
+              </div>
+              <p class="why"><b>Why it hits</b><span><span class="w">$10k stops the scroll.</span> <span class="w">3&nbsp;years makes it believable.</span></span></p>
+            </article>
+          </div>
+        </div>
+
+        <i class="rule mid"></i>
+        <i class="rule h"></i>
+        <i class="x xm" style="left:calc(60% - 5px);top:-6px"></i>
+        <i class="x" style="left:-5px;bottom:-5px"></i>
+        <i class="x xm" style="left:calc(60% - 5px);bottom:-5px"></i>
+        <i class="x" style="right:-5px;bottom:-5px"></i>
+      </section>
+
+      <section class="next" aria-label="What Hookworthy does">
+        <div class="cell"><h2>Sharpen</h2><p>One tap fixes the first line.</p></div>
+        <div class="cell"><h2>Your voice</h2><p>Sounds like you. Facts stay.</p></div>
+        <div class="cell"><h2>Schedule</h2><p>Pick a time. It waits.</p></div>
+        <div class="cell"><h2>Four networks</h2><p>X, Threads, LinkedIn, Bluesky</p></div>
+        <div class="cell"><h2>Your call</h2><p>You approve every post.</p></div>
+      </section>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  var d=document.documentElement, s=document.getElementById('stack');
+  function lift(){
+    var c=s.querySelector('.compose'), p=s.querySelector('.post');
+    // centre the lone compose box in the stack before the post lands
+    s.style.setProperty('--lift', Math.round((s.offsetHeight - c.offsetHeight)/2) + 'px');
+  }
+  var go=function(){ if(d.classList.contains('play')) return; lift(); d.classList.add('play'); };
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(go); setTimeout(go, 600); } else go();
+})();
+</script>
+</body>
+</html>

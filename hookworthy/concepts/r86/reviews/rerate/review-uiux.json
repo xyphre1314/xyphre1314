@@ -1,0 +1,120 @@
+{
+  "key": "uiux",
+  "role": "senior UI/UX designer (Linear/Superhuman level): product believability, interaction, motion, hierarchy, states, the signup sheet, a11y",
+  "score": 9.0,
+  "verdict": "This is a real product moment on a landing page. The Try box and the final run the real engine and handle empty, thin, sharp, clean and unsure states plus put-back, alt takes, a primary-button hand-off and keyboard submit; the sheet is honest, traps focus and returns it; axe is clean in every dynamic state, reduced motion is a finished static page, and CLS is 0 with no horizontal scroll at 360–1440. It falls short of 9.5 on two P1s and some P2s. Sharpen silently edits inside links (P1, from the engine), and the Voice chip breaks at 768 (P1). The signature put-back interaction also has gaps: a kept word shows no affordance, a 'why' can contradict the word you just put back, and some side effects go unexplained. 'Use my line' is ambiguous, and once the box holds your own text it wipes it.",
+  "to_95": [
+    "Protect URLs, @handles, #tags and $tickers in Sharpen: no marks, cuts or rewrites inside them. Add a page-side guard: drop any mark or cut whose range intersects a URL match, and fall back to 'clean' if any URL from the draft is missing from R.line verbatim.",
+    "Fix the Voice tile chip that overflows at 761–779px (768 included). Add `.vlist .chip{white-space:nowrap}`, and at ≤900px give the Habits column more room (`grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr)`).",
+    "Make put-back trustworthy. Restore the dotted underline on kept words in Try; the CSS specificity bug is described in uiux-3. When put-back undoes another edit, say so in the hint, e.g. '“honestly” is back, so it stays one sentence.' Never show a 'why' that argues for cutting a word kind the visitor just put back.",
+    "Relabel 'Use my line' once the box holds the visitor's own text: use an in-field × 'Clear' with a 5s 'Undo' toast. Keep 'Use my line' (or 'Paste mine') only while the example is showing.",
+    "Keep the fallen-word copies inside the line gap: drift ≤ 6–8px, or fade and blur in place. Skip the Try arrival moment when the visitor arrives via 'Try it on your line', since the text is select-all'd for pasting.",
+    "Fix a11y semantics. On struck words, use stable labels ('basically, cut') with aria-pressed reflecting the cut, or plain buttons with no aria-pressed. Make the sheet's email error specific and announced (role=alert)."
+  ],
+  "issues": [
+    {
+      "id": "uiux-1",
+      "severity": "P1",
+      "area": "Sharpen truth: links (engine-driven, visible in Try and the final)",
+      "where": "Try box, final input. core.js sharpenLine/softMarks; the page renders marks and cuts with no guard.",
+      "problem": "Sharpen cuts and marks inside URLs. Input: '🚀 honestly we just shipped v2 of @hookworthy — basically 3x faster https://example.com/a/very/long/path lol'. Output: '…https://example.com/a//long/path'. 'very' was silently removed from the link path. It is not in `cut`, the mirror shows only a squiggle and no strike, and the receipt says 'Cut 3 filler words'. Separately, 'https://mysite.com/really-good-stuff honestly' returns the unsure state: '“really” is marked, but cutting it would change what you mean.' This breaks a link, breaks the 'Your facts stay' promise, and makes the strikes and receipt untrue for that edit.",
+      "fix": "Engine: tokenize URLs (and @handles, #tags, $tickers) as atomic protected spans, and never put softMarks, cuts or intensifier rewrites inside them. Page guard in render() and payUpdate(): (a) filter out R.marks and v.cut entries whose [a,b] intersects any /https?:\\/\\/\\S+/ match in the draft; (b) if any URL in the draft is not found verbatim in R.line, render the 'clean' state instead."
+    },
+    {
+      "id": "uiux-2",
+      "severity": "P1",
+      "area": "Layout: Voice tile",
+      "where": "#voice .vlist .chip 'lowercase stays lowercase', viewport 761–779px (iPad portrait 768)",
+      "problem": "The chip text wraps to two lines inside a fixed 28px pill, so the text spills above and below the pill border. It reads as a broken component in the first glance of the section at a tested width. A sweep of every width from 320 to 1600 finds no other wrapping pill.",
+      "fix": "Add `.vlist .chip{white-space:nowrap}`. In the 761–900 band, widen the Habits column (`.vlist{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr)}`) or let the chip grow (`height:auto;min-height:28px;padding-block:4px`)."
+    },
+    {
+      "id": "uiux-3",
+      "severity": "P2",
+      "area": "Put-back affordance",
+      "where": "Try mirror after tapping a struck word (mark.x.tog.kept)",
+      "problem": "`.ed-mirror mark.x{text-decoration:none}` (specificity 0,2,1) overrides `.tog.kept{text-decoration:underline dotted …}` (0,2,0). A word the visitor put back looks like plain text once focus leaves it, while the hint says 'Tap it to cut it again'. The final's draft card does show the dotted underline, so the two boxes are inconsistent.",
+      "fix": "Add `.try-c.done .ed-mirror mark.tog.kept{text-decoration:underline dotted rgba(247,248,248,.45);text-decoration-thickness:1px;text-underline-offset:.3em}` after line 400."
+    },
+    {
+      "id": "uiux-4",
+      "severity": "P2",
+      "area": "Put-back: side effects and explanations",
+      "where": "Try and the final: hint, 'Why it hits', result card",
+      "problem": "(a) In the default $SOL line, putting back 'honestly' also un-strikes 'and' (the two-beat split is undone), and the hint mentions only 'honestly'. (b) After putting back 'honestly' in 'honestly i think the best trade…', the why reads 'Hedges ask the reader to doubt you. Without them the claim stands on its own.' while the hedge is back in the post. (c) Edits that aren't cuts reach the post unmarked: cannot→can’t, are→They’re, recasing, a period after 'lol'. That works against 'You choose every change' and 'Every cut is marked'.",
+      "fix": "(a) When the new cut set loses a word other than the toggled one, append it to the hint: '“honestly” is back, so “and” stays too.' (b) When keep includes a word of kind K, choose the why from the remaining cuts' kinds, never K. (c) In the result card, add a subtle dotted underline under tokens that differ from the draft and aren't cuts, or add a one-line note: 'Also: can’t for cannot.'"
+    },
+    {
+      "id": "uiux-5",
+      "severity": "P2",
+      "area": "Try controls: labeling",
+      "where": "#try-clear 'Use my line'",
+      "problem": "On first read the label is ambiguous: does it pull my line from X, or use what I typed? Once the visitor has typed and sharpened their own line, the same 'Use my line' button wipes it, and since the value is set programmatically, Ctrl+Z can't undo it.",
+      "fix": "While the example is showing: 'Paste mine' (or keep 'Use my line'). Once ta.value differs from the example: an in-field × button labelled 'Clear', plus a 5s 'Cleared · Undo' inline action that restores the value and keepT."
+    },
+    {
+      "id": "uiux-6",
+      "severity": "P2",
+      "area": "Motion: falling words",
+      "where": "dropWords() in Try (multi-line drafts, every phone) and the hero; the 'Try it on your line' arrival",
+      "problem": "The fallen copies drift 22px. That is about a full line at 17px×1.42, so on wrapped drafts they pass over the next line's glyphs and read as doubled, ghosted text for about 0.5s. At 390, 'Try it on your line' scrolls in, select-all's the textarea and plays the arrival moment, so the ghosts render on top of the selection highlight. The fall also contradicts 'Fallen words dissolve within 22px, inside the line gap'.",
+      "fix": "Cap the drift at the line gap: translateY ≤ max(6px, (line-height − font-size)/2), or dissolve in place with blur(3px) and opacity only. In #try-jump, call tryApi.finish() before focusing, so a visitor who came to paste gets a still, selected example."
+    },
+    {
+      "id": "uiux-7",
+      "severity": "P2",
+      "area": "A11y semantics",
+      "where": "Struck-word toggles in Try and the final; hero example pills",
+      "problem": "A struck word is `role=button aria-pressed=true aria-label='Put back “basically”'`. A screen reader hears 'Put back basically, toggle button, pressed', which says it is already put back. A kept word switches to the label 'Cut “x” again' with no aria-pressed, so the pattern isn't consistent. Changing the hero example updates the draft, post, why and Kept rows with no announcement.",
+      "fix": "Either drop aria-pressed and keep the action labels ('Put back basically' / 'Cut basically again'), or use a stable name ('basically') with aria-pressed=true meaning 'cut', grouped under aria-label='Words Sharpen cut'. For the hero, write '<Name> example: <sharpened line>' to a polite sr-only status on pill click."
+    },
+    {
+      "id": "uiux-8",
+      "severity": "P2",
+      "area": "Signup sheet: email error",
+      "where": "#sh-form / #sh-err",
+      "problem": "Entering 'foo@bar' shows 'Add your email, like you@example.com.', but the visitor did add one. Focus is already in the field, so em.focus() triggers no re-announcement, and #sh-err has no live role, so screen-reader users get no feedback.",
+      "fix": "Use two messages: empty → 'Add your email.'; invalid → 'That email looks incomplete, like you@example.com.' Give #sh-err role=\"alert\", or toggle its text content so a live region fires."
+    },
+    {
+      "id": "uiux-9",
+      "severity": "P2",
+      "area": "Signup sheet: intent and mode",
+      "where": "openSheet() from [data-rw] 'Get a rewrite in your voice, free'; sign-in mode",
+      "problem": "Clicking 'Get a rewrite in your voice, free' opens a generic 'Start free / Free forever. No card.' sheet, and the done copy never mentions the rewrite. In Sign in mode ('Welcome back') the 'Your line:' card still shows, but the sign-in done copy doesn't mention the line.",
+      "fix": "Pass intent:'rewrite'. Use the title 'Get your rewrite' with the sub 'Three takes in your voice. Free, no card.' and the done copy '…this signs you in and writes three takes of your line.' In signin mode, hide #sh-line or add 'Your line comes with you.' to DONE.signin."
+    },
+    {
+      "id": "uiux-10",
+      "severity": "P2",
+      "area": "Dead-looking controls",
+      "where": "Hero window '.foot .pill' Schedule; hero #pf-go under reduced motion",
+      "problem": "In the hero window, a real button ('Sharpen') sits next to a 'Schedule' pill that looks like a button and does nothing on click. Under prefers-reduced-motion, the hero 'Sharpen' button stays visible, but replay() returns early and the DOM doesn't change, so it is a dead button (the Try, Day and Replies Replay buttons are correctly hidden under reduced motion).",
+      "fix": "Either make Schedule open the sheet with the example line (data-sheet=\"free\", line = EX[curEx].after), or restyle it as a non-interactive label with no pill border. Under reduced motion, hide #pf-go, or make it toggle draft ↔ sharpened instantly."
+    },
+    {
+      "id": "uiux-11",
+      "severity": "P2",
+      "area": "Phone: horizontal scrollers",
+      "where": "#try-starters and .st-pick at 360–390",
+      "problem": "Both rows scroll sideways (scrollWidth 623/601 vs clientWidth 358) and are hard-clipped at the tile edge mid-chip ('Nev…', 'Le…'), with no fade or snap. They read as overflow rather than as a scroller.",
+      "fix": "Wrap the starters into two rows (five short chips fit). For the client pills, add `mask-image:linear-gradient(90deg,#000 85%,transparent)`, `scroll-snap-type:x mandatory` and `scroll-padding-inline:16px`, or use a 2×2 grid as on desktop."
+    },
+    {
+      "id": "uiux-12",
+      "severity": "P2",
+      "area": "Try details",
+      "where": "#try-flags chips; #try-alt",
+      "problem": "Fluff chips aren't de-duplicated: a long line produced 12 chips that alternated 'honestly' and 'very'. 'Another take' doesn't show its position; '(2 of 2)' exists only in aria-label.",
+      "fix": "Render one chip per word with a count ('honestly ×6'), and cap the row at about 6 chips plus '+3'. Label the button visibly as 'Another take · 2/2', or add two small dots."
+    },
+    {
+      "id": "uiux-13",
+      "severity": "P2",
+      "area": "Stale state",
+      "where": "Try result after editing a line whose result was 'clean'",
+      "problem": "When the result goes stale, Keep is hidden but the clean state's inline 'Get a rewrite in your voice, free' stays active. Clicking it carries the old line (R.line) into the sheet, not the line now in the box.",
+      "fix": "In paint(), when stale, also disable or hide #out-why [data-rw] (or give it pointer-events:none with reduced opacity) until the visitor taps Sharpen again."
+    }
+  ]
+}

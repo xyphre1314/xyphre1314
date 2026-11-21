@@ -1,0 +1,185 @@
+{
+ "key": "marketing",
+ "role": "Senior app marketing lead (growth, lifecycle and copy for consumer/prosumer apps)",
+ "score": 7.8,
+ "verdict": "The static copy is close to best-in-class: the headline, the creator-voice examples, the Kept/Why rows, and the honest trust and pricing lines all read like a creator talking to a creator, and every CTA now goes somewhere. What holds it below 9.5 is the copy the visitor creates at the aha moment: result notes that call moved words \"cut\", list \"the\" and \"was\", contradict an unchanged line, and never name the facts that stayed, plus a flat default example, a duplicated Studio/Trust promise and an undefined \"rewrite\" on the pricing table.",
+ "to_95": [
+  "Make every result note true and short: apply r86/work-marketing/analyze-patch.js (moved words aren’t “cut”, small words unlisted, repeats merged, swaps named).",
+  "Add the hero’s “Kept” row to the Try and final results (keptLine), so “Your facts stay.” is proven on the visitor’s own line; phones show Why + Kept.",
+  "Swap the Try default to “basically i stopped chasing $SOL and honestly my pnl is up 40% since june” → “i stopped chasing $SOL. my pnl is up 40% since june.” (no meaning lost, a cashtag kept).",
+  "Fix the unchanged-line state: “Verdict” label, honest wording when fluff is marked but kept, and “Want a different angle anyway?” instead of “Want a stronger opener?”.",
+  "Studio heading line 2 → “Approved from one link.” so it stops repeating Trust’s promise one tile earlier.",
+  "Define a rewrite where it’s priced: lede “Every line, as often as you like. A rewrite gives you three takes in your voice: 20 a month free, 250 on Pro.”",
+  "P2 sweep, all measured to keep line counts: starters, Trust rules + plug definition, final counter, sheet strings, plan button parallelism, voice tile, Results, FAQ #qa3/#qa5, hmeta, hero sub, “Designer” pill, Studio facts, footer line."
+ ],
+ "issues": [
+  {
+   "id": "marketing-1",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Try tile #out-note and final #fp-note: page script analyze() → removed() (LCS diff) + quoted(), lines ~1915-1969",
+   "problem": "The note under every sharpened result is the copy a visitor reads at the activation moment, and it is often false or reads like a diff log. Tested: (a) a clause that MOVED is reported as cut: \"so basically i stopped trading the open and my win rate went from 38% to 61%\" → note \"Led with the result. Cut “so”, “basically” and “i stopped trading the open and”.\" while that clause is still in the result, and it is struck in the draft. Same for \"…my pnl basically doubled\" → \"Cut … “and my pnl” … “doubled”\". (b) Words still in the result are listed as cut: Founder starter → \"Cut “We’re really excited to announce that”, “we”, …\" over a result that starts \"We hit\". (c) Small words are listed as edits: \"Cut “honestly”, “the” and “was”.\"; \"Cut “so”, “i”, “just”, “wanted to say that” and 2 more.\" (d) Repeats: \"Cut “basically”, “and” and “basically”.\" (e) A swap is called a cut: \"Cut “honestly” and “is going to”.\" when \"is going to\" became \"will\". The tile’s promise is \"Every cut is marked\"; a note that is wrong once costs the trust the whole page builds.",
+   "fix": "Apply the tested drop-in in r86/work-marketing/analyze-patch.js (test: node analyze-patch.test.js). It adds SMALL, removed2(), added2() and sayCuts() after removed(), and swaps them into analyze(): removed2 starts from the same LCS but (1) a fluff mark whose phrase is not in the result is cut whole and its words go back to the pool, (2) a word the LCS calls cut that still appears in the result (it moved) is not cut. sayCuts lists flagged fluff verbatim, lists unflagged cuts only if they carry meaning (never “and”, “the”, “was”, “i”), merges repeats as “basically” (twice), names a one-span replacement as a swap, and on real moves (question, result-first, two beats, said who did it) lists at most two unflagged cuts. Small words are still struck in the draft. Resulting notes (verbatim, from the test): \"Led with the result. Cut “so” and “basically”.\" / \"Turned it into a question. Cut “honestly”.\" / \"Got straight to it. Cut “We’re really excited to announce that”, “basically” and “just”.\" / \"Split it into two beats. Cut “basically” (twice).\" / \"Tightened it. Cut “honestly”. Swapped “is going to” for “will”.\" / \"Said who did it.\" (Priya’s passive line). No core.js change."
+  },
+  {
+   "id": "marketing-2",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Try tile #out-hits and final #fp-hits (new “Kept” row); analyze() return value",
+   "problem": "The Try tile’s heading is \"Your facts stay. / The fluff goes.\" and the hero proves it with a \"Kept\" row (\"Your $10k, your 3 years and your lowercase.\"), but the visitor’s own result never names a single fact that stayed. That is the proof moment for the whole positioning (\"Your facts stay\", \"Your ticker stays exact\"), and it is missing exactly where the visitor is paying attention. Meanwhile \"Kept your gm.\" and the hedge line are bolted onto the cut note, making it four sentences (tested: \"Tightened it. Cut “honestly” and “is going to”. Kept your gm. Kept your “i think”: on a call, it’s your stance, not filler.\").",
+   "fix": "Use keptLine() from r86/work-marketing/analyze-patch.js (already wired in analyzeV2 as a.kept). It returns the hero’s exact format from the visitor’s line: $tickers, numbers with their unit, @handles, #tags (max 3, years skipped), then gm, a kept hedge, and lowercase. Tested outputs: \"Your $SOL and your 40%.\" / \"Your $ETH, your 3.8k and your 40%.\" / \"Your $10k and your 14 months.\" / \"Your 34%.\" / \"Your gm, your “i think”, your 5k and your lowercase. On a call, “i think” is your stance, not filler.\" HTML: in #out-hits after #out-note add <span class=\"k\" id=\"out-kk\">Kept</span><p id=\"out-kept\">Your $SOL and your 40%.</p>; in #fp-hits after #fp-note add <span class=\"k\" id=\"fp-kk\">Kept</span><p id=\"fp-kept\">Your claim and your lowercase.</p> (the Jun Park example’s own kept line, restored on reset). render(): $('#out-kept').textContent = a.kept || ''; $('#out-kk').hidden = $('#out-kept').hidden = !a.kept; same in payUpdate() for #fp-kept. CSS: #out-kk,#fp-kk{margin-top:10px}. Phones: @media (max-width:640px){#out-note,#fp-note{display:none}} so the phone shows Why + Kept (the cuts are already struck in the draft) and the budget stays flat. The \"Kept your gm\" / hedge sentences leave the note (they now live in Kept)."
+  },
+  {
+   "id": "marketing-3",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Try tile default (pre-rendered): #try-ta value, #try-mirror, #try-flags, #try-count, #out-line, #out-why, #out-note",
+   "problem": "The first sharpened line a visitor sees in the Try tile is \"i stopped trading the open. my pnl got better.\" It is flatter than the draft: \"my pnl got way better\" lost \"way\", so the showcase itself drops meaning, which is the one thing the tile’s heading promises never happens. It also misses the audience: crypto/trading writers come first, yet no $cashtag appears anywhere on the page, and the Who tile promises \"Your ticker stays exact.\" with nothing that shows it.",
+   "fix": "Swap the default for this line (tested through the page’s own analyze(); same structure as now, so only strings change): textarea \"basically i stopped chasing $SOL and honestly my pnl is up 40% since june\". Mirror: <mark style=\"--k:0\">basically</mark> i stopped chasing $SOL <mark class=\"x\" style=\"--k:1\">and</mark> <mark style=\"--k:2\">honestly</mark> my pnl is up 40% since june&#8203;. Flags: same two chips (basically pressed, honestly), same #try-why. Count \"73 / 280\". #out-line \"i stopped chasing $SOL. my pnl is up 40% since june.\" #out-k \"Why it hits\". #out-why \"Two short beats with a full stop between them. The pause makes the second one land.\" #out-note \"Split it into two beats. Cut “basically” and “honestly”.\" #out-kept \"Your $SOL and your 40%.\" Measured: no height change at 390 (9.51 screens); +24px at 360 (the result wraps to 3 lines), paid back by marketing-13’s shorter voice-tile line (−23px at 360)."
+  },
+  {
+   "id": "marketing-4",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Try + final, unchanged result (analyze() kind \"same\"): #out-k / #fp-k, #out-why, #out-note",
+   "problem": "Tested with the \"Already sharp\" starter (\"The Fed meets tomorrow.\") and \"I quit my job today.\": the label reads \"What changed\" over \"Already sharp. Nothing to cut.\" (nothing changed), and the note then asks \"Want a stronger opener?\", which undercuts the verdict it just gave. When fluff IS flagged but nothing could be cut, the same \"Already sharp. Nothing to cut.\" sits under visible Fluff chips, contradicting them.",
+   "fix": "In analyze()’s same branch (already in analyzeV2): label \"Verdict\"; why = marks.length ? \"“{first flagged word}” is marked, but there’s no clean cut here. Your call.\" : \"Already sharp. Nothing to cut.\"; note = \"Want a different angle anyway? A rewrite gives you three takes in your voice, 20 free a month.\" (+ the existing over-280 sentence when it applies); kept = \"\" (row hidden). Keep the \"Keep it. Start free\" button."
+  },
+  {
+   "id": "marketing-5",
+   "severity": "P1",
+   "area": "copy",
+   "where": "Studio tile heading #st-h (directly above Trust #t-h)",
+   "problem": "Two tiles in a row lead with the same promise: Studio \"Every client, their voice. / Nothing posts without a yes.\" and, one tile later, Trust \"Nothing goes out / without your say-so.\" The repeat blunts both and spends Studio’s second line on something Trust already owns, instead of on the agency hook (one link the client approves from).",
+   "fix": "#st-h: Every client, their voice.<br><span class=\"d\">Approved from one link.</span>  Measured: 2 lines at 1440, 1280, 1024, 390 and 360 (same height as now). Trust keeps \"Nothing goes out / without your say-so.\""
+  },
+  {
+   "id": "marketing-6",
+   "severity": "P1",
+   "area": "conversion",
+   "where": "Pricing lede #pricing .lede; Free/Pro/Studio rewrite bullets; FAQ #qa3",
+   "problem": "The only metered thing on the page, \"rewrites in your voice\", is never defined. Sharpen is free and unlimited; the hero says it already writes \"in one tap\" and \"still sounds like you\"; Day and Replies say \"Drafted in your voice\". So a visitor cannot tell what the 20 / 250 are counting, which is the exact question that decides Free vs Pro. The lede also repeats the heading (\"Sharpening is free. Forever.\" → \"Sharpen any line, free and unlimited.\").",
+   "fix": "Lede: \"Every line, as often as you like. A rewrite gives you three takes in your voice: 20 a month free, 250 on Pro.\" (true to core.js CREDITS: a rewrite is three versions in your voice that keep every number and name). Measured: same line count as now at 1440, 1280, 1024, 390 and 360. Keep the bullets as they are (\"20 rewrites in your voice a month\", \"250 rewrites in your voice a month\", \"500 rewrites a month for each client\"); the same-state note (marketing-4) uses the same definition."
+  },
+  {
+   "id": "marketing-7",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Try starters (STARTERS array, #try-starters)",
+   "problem": "The Newsletter starter (\"just wanted to share that i finally hit 10,000 subscribers on my newsletter, took me 2 years lol\") is the hero’s Trader example with the nouns swapped, so it reads as a template, and it comes back as \"i finally hit 10,000 subscribers on my newsletter, took me 2 years.\" keeping \"finally\", which the hero window strikes as fluff on the same page. The \"Already sharp\" starter is generic for a crypto-first audience.",
+   "fix": "STARTERS[2] (Newsletter) → 'Unpopular opinion: open rates are honestly a vanity metric' (tested → \"Open rates? They’re a vanity metric.\", \"Turned it into a question. Cut “Unpopular opinion” and “honestly”.\"). STARTERS[4] (Already sharp) → '$ETH reclaimed 3k. shorts are trapped.' (tested: left untouched, shows a cashtag kept exactly). Keep Trader, Founder and Ghostwriter as they are."
+  },
+  {
+   "id": "marketing-8",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Trust tile .rules span; FAQ #qa2",
+   "problem": "\"Plug replies and reruns run only on rules you set, and you can switch them off.\" has a \"reruns run\" stumble, and \"plug replies\" is app jargon that is never explained on the page, inside the tile whose job is to remove doubt.",
+   "fix": ".rules: \"Plug replies and reruns go out only on rules you set. Switch them off anytime.\" (measured: same line count at every width). FAQ #qa2: \"Only what you schedule, at the time you pick. Plug replies and reruns stay off until you set a rule, and you can switch them off anytime. A plug is one reply you write ahead, sent once when your post reaches the likes you pick. It never sends DMs, deletes posts, follows or likes.\" (matches DESIGN.md: one reply written ahead, off by default, sent once at a like count you pick)."
+  },
+  {
+   "id": "marketing-9",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Final input counter #fin-n (fpaint())",
+   "problem": "The counter says \"No fluff\" while the card beside it rewrites the line (tested: \"Customer churn was reduced by 34%…\" shows \"No fluff\" next to \"Said who did it…\"), and it also says \"No fluff\" for \"asdf\". Two parts of one panel disagree.",
+   "fix": "In fpaint(): fn.textContent = t.trim() && m.length ? `${m.length} bit${m.length === 1 ? '' : 's'} of fluff` : ''; (never print \"No fluff\"; Sharpen may still rework a line with no flagged words, and the card says what it did)."
+  },
+  {
+   "id": "marketing-10",
+   "severity": "P2",
+   "area": "trust",
+   "where": "Signup sheet #sh-done first <p>",
+   "problem": "\"This preview doesn't create accounts yet. The live site signs you in here and keeps your line.\" uses a straight apostrophe (curly everywhere else), and \"The live site\" implies a live Hookworthy already exists somewhere else, which is the one thing a design preview must not imply.",
+   "fix": "\"This is a design preview, so no account was made. Once Hookworthy is live, this signs you in and keeps your line.\" Keep \"Open the demo app\"."
+  },
+  {
+   "id": "marketing-11",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Sheet price lines PLAN.pro.m / PLAN.studio.m (script)",
+   "problem": "\"$16 a month, month to month.\" and \"$24 a month per client, month to month.\" say \"month\" three times in five words.",
+   "fix": "PLAN.pro.m: \"$16 a month, billed monthly. Or $12 a month, billed yearly.\" PLAN.studio.m: \"$24 a month per client, billed monthly. Or $18, billed yearly.\" Card data-m strings stay."
+  },
+  {
+   "id": "marketing-12",
+   "severity": "P2",
+   "area": "conversion",
+   "where": "Plan buttons (.plan .btn) and PLAN.studio.t",
+   "problem": "\"Start free\" / \"Start with Pro\" / \"Start Studio\": three buttons in one row, two grammars.",
+   "fix": "Studio button and PLAN.studio.t: \"Start with Studio\". Free stays \"Start free\", Pro stays \"Start with Pro\"."
+  },
+  {
+   "id": "marketing-13",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Voice tile .t-voi .tfoot and .lrn; FAQ #qa1",
+   "problem": "\"Bring 8 posts, or write them here.\" is unclear (write 8 posts here?). The card is titled \"heycape’s voice\" but says \"Learned from 8 of your posts\", mixing third and second person.",
+   "fix": ".tfoot: \"Paste 8 of your posts. Every cut is marked, so you can put any word back.\" (measured: 2 lines at 1440 and 390; saves a line at 360, −23px). .lrn: \"Learned from 8 posts\". FAQ #qa1 second sentence: \"It learns from your own posts: paste 8, or import your X archive.\" (core.js parseXArchive)."
+  },
+  {
+   "id": "marketing-14",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Results tile .nc .nb and .nc .ns",
+   "problem": "\"…more replies than your usual.\" is not how anyone talks; \"Compared with you, not with someone with ten times the followers.\" has a with/with stumble and runs 3 lines.",
+   "fix": ".nb: \"Your 8:40 post got more replies than usual.\" .ns: \"Measured against your own posts, not bigger accounts.\" (measured: 3 lines → 2 at 1440 and 390)."
+  },
+  {
+   "id": "marketing-15",
+   "severity": "P2",
+   "area": "trust",
+   "where": "FAQ #qa3 and #qa5",
+   "problem": "#qa3 says Sharpen \"cuts it, and the rest is your words\", but the hero’s own examples add words (\"why do most design systems fail?\", \"What changed:\"). #qa5 ends \"Pro is $12 a month, billed yearly, when you post every day\", which reads as if the price depends on posting daily.",
+   "fix": "#qa3: \"No. Sharpen is an editor: it cuts the fluff and can reorder what’s left, but it never adds a fact. Rewrites in your voice run on Claude, only when you ask for one, and you choose what to keep.\" #qa5 last sentence: \"Posting every day? Pro is $12 a month, billed yearly.\""
+  },
+  {
+   "id": "marketing-16",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Hero .hmeta .since",
+   "problem": "\"The first line is the part you control.\" doesn’t follow from the bold claim; you control the whole post. The why-now line deserves a sharper second beat.",
+   "fix": "<b>X now pays creators for original posts, not replies.</b> Originals live or die on the first line.  (measured: 1 line at 1440, 2 at 390, as now)."
+  },
+  {
+   "id": "marketing-17",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Hero sub .tc-sub, meta description, og:description",
+   "problem": "\"Make it hookworthy.\" is followed straight away by \"Hookworthy sharpens…\", so the brand word lands twice in a row, and \"sharpens\" is product jargon at first contact; the mechanism (it cuts the fluff) only appears a screen later. The OG card already uses the stronger imperative form.",
+   "fix": ".tc-sub: \"Cut the fluff from your first line in one tap. Schedule it for X, Threads, LinkedIn and Bluesky. It still sounds like you.\" Keeps what + where + voice (decision D). Measured: 2 lines at 1440, 1280 and 1024, 3 at 390 and 360 (as now). Same text in og:description; meta description adds \" Free forever, no card.\""
+  },
+  {
+   "id": "marketing-18",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Hero example pills .ex button[data-ex=\"3\"]",
+   "problem": "\"Builder\" labels Jun Park’s design-systems line, while the Who tile’s \"You build in public.\" belongs to Priya, who is the hero’s \"Founder\". Two labels point at the wrong people.",
+   "fix": "Rename the pill to \"Designer\"."
+  },
+  {
+   "id": "marketing-19",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Studio .facts second <p>",
+   "problem": "\"They sign in with X or Google to comment.\" while the tile’s button is \"Approve as Priya\" and FAQ #qa4 says \"to comment and approve\". Agencies will read it as \"clients can’t approve without a login hand-off\".",
+   "fix": "\"They sign in with X or Google to comment and approve. Posts go out from the client’s own X account, never yours.\" (desktop only; hidden on phones)."
+  },
+  {
+   "id": "marketing-20",
+   "severity": "P2",
+   "area": "copy",
+   "where": "Footer brand line footer .ft > div:first-child p",
+   "problem": "\"Writing and scheduling for people who post on X, Threads, LinkedIn and Bluesky.\" is the one category-generic line on a page with a sharp voice.",
+   "fix": "\"Sharper first lines, sent at the time you pick. For X, Threads, LinkedIn and Bluesky.\" (measured: 2 lines at 1440; hidden on phones)."
+  },
+  {
+   "id": "marketing-21",
+   "severity": "P2",
+   "area": "engine",
+   "where": "core.js HK_WHY.soft and HK_WHY.ask (shown as \"Why it hits\" / \"What changed\" on the page); for the engine owner",
+   "problem": "HK_WHY.soft (\"Hedges ask the reader to doubt you…\") is shown when the cut words aren’t hedges (tested: \"just shipped dark mode lol\", \"This week I basically wanted to write about…\", \"honestly i just closed my $ETH long… lol\"), so the explanation is untrue for that edit. HK_WHY.ask is 22 words, the longest line in the result panel.",
+   "fix": "HK_WHY.soft → \"Same point without the padding, so the claim stands on its own.\" HK_WHY.ask → \"A question opens a gap, and your answer closes it before the thumb moves.\" (Engine juror owns the change and the eval run.)"
+  }
+ ]
+}

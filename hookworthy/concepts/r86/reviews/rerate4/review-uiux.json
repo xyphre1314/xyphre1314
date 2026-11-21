@@ -1,0 +1,71 @@
+{
+  "key": "uiux",
+  "role": "senior UI/UX designer (Linear/Superhuman level): product believability, interaction, motion, hierarchy, states, the signup sheet, a11y",
+  "score": 9.1,
+  "verdict": "The interaction design is close to best-in-class: Try and the final both run the real engine, with put-back, cut-again, alternative versions, clear with undo, starters, Ctrl/Cmd+Enter, honest sheet copy for every intent and plan, a working focus trap with focus returned to the opener, CLS 0, no horizontal scroll and 9.7 phone screens. It stays at 9 because reduced motion removes a real feature (Another version) and the demo sometimes shows a broken sharpened line under a confident 'Why it hits'. The sheet's preview notice, which collapsed to one word per line over the buttons when this review started, is fixed and re-verified at 1440, 390 and 360.",
+  "to_95": [
+    "Stop reduced motion from removing 'Another version'. #try-alt shares the .replay class, and html:not(.motion) .replay{display:none} hides it. Give it its own class (for example .alt) or scope the rule to html:not(.motion) .replay:not(#try-alt).",
+    "Never show a broken sharpened line with 'Why it hits' above it. The engine owns the root fix. On the page, when the best line fails a sanity check (it starts with a bare subordinator such as 'That after…', or a split leaves a fragment such as 'If you're a founder and you're not posting on X.'), show the engine's own clean alternative first or fall back to 'Kept as written'. Also give the final card the same 'Another version' control the Try box has.",
+    "Add role=\"alert\" (or aria-live=\"assertive\") to #sh-err, so 'Add your email.' and 'That email looks incomplete…' are announced when the visitor submits with Enter while the field already has focus.",
+    "Turn the phone CTA bar off after a jump back to the top (logo tap, scroll-to-top). Work out pastTry from #sharpen's position on scroll (or watch a sentinel at the top of the page) instead of relying only on IntersectionObserver crossings.",
+    "Change the sheet's end state so it doesn't send people to '(it still wears the old look)'. Either restyle that demo, or make 'Back to the page' the primary button and the demo link a quiet text link."
+  ],
+  "issues": [
+    {
+      "id": "uiux-1",
+      "severity": "P1",
+      "area": "a11y / reduced motion",
+      "where": "Try tile result header, #try-alt ('Another version · 1/2'); CSS line 219 html:not(.motion) .replay{display:none}",
+      "problem": "Under prefers-reduced-motion the 'Another version' button is display:none because it carries the .replay class. Reduced-motion visitors can't cycle alternatives, for example on the '$10k MRR' starter, whose engine alt is 'We just hit $10k MRR after 14 months.'. Reduced motion should remove movement, not features. Verified: computed display is 'none' with reducedMotion: 'reduce' and 'flex' without it.",
+      "fix": "Rename the class on #try-alt (for example class=\"replay-like alt\") or change the rule to html:not(.motion) .replay:not(#try-alt){display:none}. Keep hiding the true Replay buttons (#pf-go, #try-replay, [data-replay])."
+    },
+    {
+      "id": "uiux-2",
+      "severity": "P1",
+      "area": "product believability (engine output surfaced by the UI)",
+      "where": "Try box and final card result panels",
+      "problem": "Realistic drafts sometimes come back broken while the panel presents them confidently. 'So I just wanted to take a moment to say that after literally three years…' becomes 'That after three years of building in public…' with 'Why it hits: Two short beats…' (they are two long sentences). 'If you are a founder and you are not posting on X, you are basically leaving money on the table' becomes 'If you're a founder and you're not posting on X. You're leaving money on the table.' On the final, 'honestly i think that $NVDA is basically the only chip stock…' becomes 'only chip stock that matters right now? $NVDA.' The engine's own alt ('$NVDA is the only chip stock that matters right now.') is cleaner, and the final has no way to reach it. These are the moments a skeptical visitor tests, and one bad line undoes the demo's credibility.",
+      "fix": "Root fix belongs to the engine (hook juror). On the page: when the best line starts with a bare subordinator or relative ('That ', 'Which ', 'If … .') or a split leaves a clause with no main verb, prefer R.alts[0] if it passes, otherwise show the 'Kept as written' state. Only say 'Two short beats' when both beats are short (each under about 60 characters). Add the Try box's 'Another version' control to the final card."
+    },
+    {
+      "id": "uiux-3",
+      "severity": "P2",
+      "area": "a11y / signup sheet",
+      "where": "#sh-err ('Add your email.' / 'That email looks incomplete. Try name@example.com.')",
+      "problem": "The error has no live region. When the visitor submits with Enter, focus is already on the email field, so em.focus() does nothing and screen readers don't announce the new aria-describedby text. aria-invalid is set correctly.",
+      "fix": "Add role=\"alert\" to #sh-err (it is unhidden at the moment of the error, so it will be announced)."
+    },
+    {
+      "id": "uiux-4",
+      "severity": "P2",
+      "area": "states / phone CTA bar",
+      "where": "#mbar at 390/360 after tapping the logo (href=#top) or any instant jump back to the top",
+      "problem": "pastTry only updates on IntersectionObserver crossings. A jump from below the Try tile to the top never crosses #sharpen, so the white 'Start free' bar stays up over the hero, right under the hero's own 'Start free', and the nav's Start free stays slid away. Reproduced: logo tap from pricing gives scrollY 0 with the bar on.",
+      "fix": "In onScroll (already passive), also set pastTry = $('#sharpen').getBoundingClientRect().top < 0 and call syncBar() when it changes, or observe a 1px sentinel at the top of #sharpen with a scroll-position check."
+    },
+    {
+      "id": "uiux-5",
+      "severity": "P2",
+      "area": "signup sheet end state",
+      "where": "#sh-done: 'Open the working demo (it still wears the old look)'",
+      "problem": "The honest end of the preview is good, but its primary white button sends visitors to a product that looks different, and the parenthetical apologises for it. It breaks the polish right at the conversion moment.",
+      "fix": "Make 'Back to the page' the primary action and turn the demo into a quiet text link ('See the working demo, older design'), or retheme the demo before linking it."
+    },
+    {
+      "id": "uiux-6",
+      "severity": "P2",
+      "area": "previews 'Yours' state",
+      "where": "#previews after 'Yours' with a short sharpened line (390 X and Bluesky panes)",
+      "problem": "A one-line post leaves roughly 140px of dead space between the dimmed next post and the caption, because the pane keeps the example's height. It reads as if something failed to load.",
+      "fix": "In 'Yours' mode keep the example's following feed posts below the visitor's post (dimmed) so the pane is full, or let the pane shrink to its content with a min-height of only the example's first post."
+    },
+    {
+      "id": "uiux-7",
+      "severity": "P2",
+      "area": "interaction consistency",
+      "where": "Who tile (#who): four identical-looking rows, only 'You ghostwrite. →' is a link",
+      "problem": "Three rows look tappable but aren't, and the founder keeps asking for more interaction. This is an easy product moment going unused.",
+      "fix": "Make each of the other three rows load its niche starter into the Try box via jumpToTry(STARTERS[n]), with an arrow like the ghostwrite row ('You post your trades. →' loads the Trader line)."
+    }
+  ]
+}

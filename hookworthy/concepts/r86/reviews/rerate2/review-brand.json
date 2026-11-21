@@ -1,0 +1,70 @@
+{
+  "key": "brand",
+  "role": "senior brand designer: identity systems for software companies",
+  "score": 9.2,
+  "verdict": "Afterglow is now a real identity system. The h-hook wordmark holds from the nav to the giant footer, app icon, notifications and OG card. Ember stays true to its rule (light plus the fluff squiggle, never a fill), Inter Display with optical sizing carries every head, and the squiggle-to-strike mark is an ownable device that runs from the headline to the final CTA, all inside one recurring cast and story. What keeps it under 9.5 is imagery and a few visible composition gaps: the trader's flagship $4,000-loss post wears a latte flat-lay in three places, the hero draft pane has a visible void at desktop, and the Example tagging and some tile fills aren't applied as one rule.",
+  "to_95": [
+    "Recrop the trader post's media in all three places it appears (Day tile phone feed, Replies thread, Results thumbnail). Use the same sprite frame (--i:3), scaled about 1.8x and centred near 45% x / 68% y of the frame, so the 16:9 window shows only the open notebook's handwritten pages and pen. It then reads as a trading journal, not a café flat-lay. Alternatively, drop the media from the Replies thread and keep the journal crop in the other two.",
+    "Close the void in the hero Draft pane at 1024 to 1440: pull 'Everyone can reply' and the tool row up to about 24px under the Cut note, or let the pane end at the content, so the lead product moment looks full in the first viewport.",
+    "Apply one rule for the Example tag. Tag the first appearance of each example identity in every tile, including heycape and Dan Ridge in the X, Threads and Bluesky previews (LinkedIn already has 'Trader · Example') and the phone-feed posts. Or tag only the protagonist per tile and let the footer line cover the rest. Either way, apply the rule everywhere.",
+    "Fill the visible dead space: anchor the Who tile's second row of faces to the tile bottom at 1280 and above, and let the Trust tile's never-list span the full tile width (or sit beside the heading) at 761 to 1100px."
+  ],
+  "issues": [
+    {
+      "id": "brand-1",
+      "severity": "P1",
+      "area": "Imagery / narrative",
+      "where": "#day .fp.yp .media (phone feed), #replies first post .media, #results .qpost thumbnail (sprite --i:3)",
+      "problem": "The page's protagonist post, 'i lost $4,000 in march doubling my size to win it back', carries a latte-and-phone café flat-lay in all three places it appears. It reads as Instagram lifestyle, not trader-on-X, and undercuts the X/creator feel the founder asked for. Because it is the most-repeated photograph on the page, it is visible in the first seconds of three sections.",
+      "fix": "Keep the sprite but recrop frame 3: add a crop modifier that scales the image about 1.8x inside .media and offsets it so the 16:9 window shows only the open notebook (the handwritten lists and diagram) and the pen, cutting out the cup, saucer, plant and phone. Use that crop in all three places so the post reads as 'my trading journal'. If one placement must go, remove the media from the Replies thread, since a reply-thread opener is usually text-only on X."
+    },
+    {
+      "id": "brand-2",
+      "severity": "P2",
+      "area": "Hero composition",
+      "where": "#proof .pane.draft at 1024–1440 (largest with the Founder and Designer examples)",
+      "problem": "Between the Cut note and 'Everyone can reply' sits a gap of about 150–180px. It is visible in the first viewport, so the left half of the lead product moment looks under-filled next to the dense Sharpened pane.",
+      "fix": "Move the reply setting and tool row to about 24px below the draft and Cut note (X's own compose spacing) and let the window's height come from the Sharpened pane. Alternatively, centre the compose block vertically in the pane. Do not add new content."
+    },
+    {
+      "id": "brand-3",
+      "severity": "P2",
+      "area": "System consistency: honesty tag",
+      "where": "#previews (X, Threads and Bluesky untagged, LinkedIn tagged), #day phone feed (Jun Park and Sam Okafor untagged), #replies (Dan Ridge tagged)",
+      "problem": "Example identities are tagged in some scenes and not in others. Within the Previews tile the four platforms disagree, and Dan Ridge is tagged in Replies but not in Previews. The honesty device reads as ad hoc instead of systematic.",
+      "fix": "Pick one rule and apply it everywhere. Either tag the first appearance of each example identity per tile on the name line, or tag only the protagonist per tile and rely on the footer line ('heycape and everyone shown are example accounts') for supporting cast."
+    },
+    {
+      "id": "brand-4",
+      "severity": "P2",
+      "area": "Bento composition",
+      "where": "#who at 1280 and 1440",
+      "problem": "The 2×2 faces grid ends with about 120px of empty tile below it, because the tile matches the height of the Replies and Results tiles. The tile looks unfinished next to its denser neighbours.",
+      "fix": "Make .faces a column that fills the tile and anchor the second row to the bottom (align-content:space-between), or size the avatars up from 72 to about 88px so the grid fills the height. Add no copy."
+    },
+    {
+      "id": "brand-5",
+      "severity": "P2",
+      "area": "Bento composition",
+      "where": "#trust at 768–1024",
+      "problem": "In a full-width tile, the 'Never' list and its rules stop at about 60–75% of the width, which leaves a dead right column under a confident heading.",
+      "fix": "At 761–1100px, let .nev and .rules span the full content width (so 'Never.' sits on the tile's right edge), or switch to the desktop two-column layout (heading left, list right) from 900px."
+    },
+    {
+      "id": "brand-6",
+      "severity": "P2",
+      "area": "Colour system: the warm rim",
+      "where": ".lit-card::after (hero post, Try output card, drafted reply, final card)",
+      "problem": "The rule 'Ember touches only what Hookworthy sharpened' is not perceivable. At normal viewing the rim glint reads as a generic neutral top highlight, so nobody can map it to 'this was sharpened'.",
+      "fix": "On output cards only, raise the glint slightly (hot alpha .42 to about .6, glow shadow .18 to about .28). Under motion, fade it in once at the moment a line is sharpened, so cause and effect are seen. Keep it a 1px light edge, never a fill or border colour."
+    },
+    {
+      "id": "brand-7",
+      "severity": "P2",
+      "area": "Token hygiene",
+      "where": "<style>: about 30 hard-coded hex values outside :root (e.g. #9A9A9A, #A9ADB1, #C0C4C8, #2A2A2A, #101010, #33383E, plus the Threads/LinkedIn/Bluesky colours)",
+      "problem": "The stylesheet says every colour comes from the token block, but stray greys bypass --ink-* and --s*. That invites drift when the system is reused in the app or OG templates. Visitors can't see it.",
+      "fix": "Map each stray neutral to the nearest --ink-*/--s*/--x-* token, and gather the platform-preview colours into a named group (--pf-threads-*, --pf-li-*, --pf-bsky-*) in :root."
+    }
+  ]
+}

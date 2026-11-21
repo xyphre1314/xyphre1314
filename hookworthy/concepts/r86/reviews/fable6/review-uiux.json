@@ -1,0 +1,25 @@
+{
+ "key": "uiux",
+ "role": "Senior UI/UX designer (Linear/Superhuman level): product believability, interaction, motion, hierarchy, states, signup sheet, a11y",
+ "score": 9.5,
+ "verdict": "Every interactive surface I exercised (hero examples, Try box with 10 of my own lines, put-back marks, previews, voice, reply, Studio review, pricing toggle, FAQ, final input, signup sheet at 1440 and 390) behaves like a real product with considered empty, nothing-to-cut, undo, error and done states, a trapped and restored focus, visible focus rings, a finished reduced-motion layout, zero console errors and CLS 0.00. No P0 or P1 found; what remains is small P2 polish that is not visible in the first five seconds of any section.",
+ "to_95": [],
+ "measured": {
+  "phone_screens_390": 9.99,
+  "phone_screens_360": 9.19,
+  "horizontal_scroll_360_390": false,
+  "cls_1440_full_interaction_pass": 0.0,
+  "console_errors": 0,
+  "headings_over_two_lines_1440_390": 0,
+  "duplicate_ids": 0,
+  "contrast_failures_real": "none on live text; only the dimmed neighbour-post handles in the feed previews (2.05:1, decorative context)",
+  "sheet": "focus moves in, Tab trapped (5 stops), Esc closes, focus returns to trigger, invalid email gets aria-invalid + inline message, done state says no account was made and email not saved"
+ },
+ "issues": [
+  { "id": "uiux-1", "severity": "P2", "area": "a11y / touch targets", "where": "390: 'Try it' chips in the Trades/launches tile (59x24), Try-box replay (36x28), hero 'See it again' (111x28), reply replay (32x32), voice 'Put it back' (109x32), 'See everything included' (162x32)", "problem": "They pass WCAG 2.2 AA (24px) but sit well under the 44px comfortable thumb target that the rest of the page honours; the 24px-high 'Try it' chips are the smallest and are stacked next to post text.", "fix": "Keep the visual size but extend the hit area to at least 44x44 with padding or a ::after inset of -10px on those controls at <=760px; make 'Try it' chips min-height 32px visually." },
+  { "id": "uiux-2", "severity": "P2", "area": "interaction / voice demo", "where": "'It learns how you write' tile, Put it back button", "problem": "Copy says 'Put ngl back twice and it stays', but after the first tap the button turns into 'Cut it', so the visitor has to cut the word again before they can put it back a second time; the counter note does not change on that middle tap, so the step reads as a dead end.", "fix": "After the first put-back, keep one primary action that advances the story: label it 'Cut it again' and change the note to 'Cut it and put it back once more: it stays for good', or let the second tap on the same button go straight to the 'stays for good' state." },
+  { "id": "uiux-3", "severity": "P2", "area": "states / final CTA", "where": "'Good ideas die in bad first lines' input, 1440 and 390", "problem": "The single-line field clips a pasted line of more than about 45 characters (fades out at the right), and when the engine cuts a lead-in frame the mirror leaves an orphan colon after the struck words ('just a quick update: we' shows the colon unstruck).", "fix": "Let the field grow to two lines (auto-growing textarea, max 3 rows) once the text overflows, and include the trailing colon/comma of a cut frame inside the struck mark in the mirror." },
+  { "id": "uiux-4", "severity": "P2", "area": "demo output truthfulness", "where": "Try box, long or shouty lines", "problem": "A 271-character line reports 'Cut 5 bits of fluff · Tightened it' while 'actually', 'really' and 'and I really mean that' stay unmarked in the result, and 'subscribers!!!' is trimmed to '!!' rather than one mark; a sharp-eyed writer will see fluff the demo missed right under a claim that it tightened the line.", "fix": "When the result still exceeds the long-line threshold, lead the status with the split advice ('Still long: split after every single day') instead of 'Tightened it', offer the remaining intensifiers as dotted 'your call' marks, and collapse repeated '!' to a single one." },
+  { "id": "uiux-5", "severity": "P2", "area": "navigation", "where": "390/360 header", "problem": "The phone header carries only Sign in and Start free; there is no route to Pricing or FAQ until the footer, ten screens down, and the header Start free pill swaps in and out with the bottom bar as sections pass.", "fix": "Add a compact 'Pricing' text link beside Sign in at >=360px (it fits: logo 116 + 65 + 91 leaves room at 13px), and keep the header pill hidden for the whole range where the bottom bar is present so the two never trade places mid-scroll." }
+ ]
+}

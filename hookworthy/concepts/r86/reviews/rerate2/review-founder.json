@@ -1,0 +1,118 @@
+{
+  "key": "founder",
+  "role": "startup co-founder (creator/prosumer SaaS to millions in ARR): positioning, objections, pricing, conversion path, truthfulness",
+  "score": 8.9,
+  "verdict": "This is a sharply positioned and honest homepage: the wedge (\"your facts stay, the fluff goes\"), the anti-AI-slop trust story, and the pricing are consistent everywhere I checked (cards in both billing modes, sheet subtitles, Studio maths, FAQ), and the conversion path carrying your line into the sheet is best-in-class. One P1 holds it back: the live Try box, the page's main conversion moment, gives broken or meaning-losing output on very common founder launch lines and then explains it with a confident \"Why it hits\". Smaller truth and conversion gaps (a fluff counter that doesn't match its explanation, X not named in the hero, a trial offer in the linked demo app) keep it from 9.5.",
+  "to_95": [
+    "Fix the Try-box output on common build-in-public lines, and make the page's guard demote anything that fails a basic grammar check to \"Your call.\" instead of showing it as sharpened. Repro (core.js sharpenLine): \"Just shipped v2 of our app! Really excited to share it with you all 🚀\" gives \"Just shipped v2 of our app! It with you all 🚀\". \"So excited to share our new feature with you all\" gives \"Our new feature with you all.\" \"Super excited to share this with you guys, our first hire starts monday\" gives \"This with you guys, …\". \"Today I want to talk about something important: burnout\" gives \"Something important: burnout:\". The \"Another cut\" for \"So I think we finally figured out pricing after like 6 months of testing\" is \"Pricing after 6 months of testing.\", which drops the actual fact. Cut the whole \"share X with you\" clause (or return unsure), never end on a stray colon, never offer an alternative that drops the main verb clause, and add these as regression lines.",
+    "Make every explanation the page shows fully true: \"Why it hits\" and the final's \"N bits of fluff\" counter must name every fluff word that was cut. Today the final says \"3 bits of fluff\" but the why names only \"honestly\" and \"i think\" (\"single\" was cut too). The long-line why names only \"honestly\" when \"So basically I wanted to share\" was the main cut. For the course line, the why quotes \"So excited to finally\" when \"share\" was also cut.",
+    "Name X in the hero subhead. The <title> already says \"sharpen and schedule your X posts\", but the H1 and subhead say only \"first line\" and \"schedule\", so a visitor coming from search or Product Hunt has to infer the platform from the mock window.",
+    "Make the path out of the sheet match the pricing: the demo app the sheet links to (index.html #upgrade) offers \"Try Pro free for 7 days\" and has an FAQ \"Is the trial really free?\". There is no trial, so remove it there (this fix is in index.html, not the page), or link somewhere that doesn't show it."
+  ],
+  "issues": [
+    {
+      "id": "founder-1",
+      "severity": "P1",
+      "area": "Truthfulness / conversion (live Try box)",
+      "where": "#sharpen Try tile and #start final input (both render HWCore.sharpenLine)",
+      "problem": "On a very common founder/launch pattern (\"excited to share it/this/X with you\"), Sharpen cuts \"excited to share\" and leaves an orphan object: \"Just shipped v2 of our app! It with you all 🚀\", \"Our new feature with you all.\", \"It with everyone: we hit 1,000 users.\", \"This with you guys, our first hire starts monday.\", \"Just launched my course! It with you.\" (5 of 5 tested). The page labels these \"Cut 1 bit of fluff\" and says \"Why it hits… The rest stands on its own\", which is untrue. Also: \"Today I want to talk about something important: burnout\" gives \"Something important: burnout:\", and the long (>280) line ends in a stray colon. \"Another cut\" offers \"Pricing after 6 months of testing.\" for a pricing-milestone line, which drops the fact the line was about, and the sheet then carries that as \"Your line\". Founders building in public are a core segment, and this is the moment that's supposed to convert them.",
+      "fix": "In core.js, cut the whole \"(really|so|super)? excited to (finally )?share [obj] with (you|you all|everyone|you guys)\" clause together. If what's left has no verb, return unsure. Never end a line on \":\" unless more text follows. Drop any alternative that removes the draft's main verb clause. In the page's guard(), add a sanity check (the line can't start with a bare object pronoun plus a preposition, e.g. /^(It|This|That) (with|to|for)\\b/i, and can't end with \":\") that demotes the result to unsure/\"Your call.\". Add all the lines above to the regression set."
+    },
+    {
+      "id": "founder-2",
+      "severity": "P2",
+      "area": "Truthfulness (explanations)",
+      "where": "#fin-n counter vs #fp-why; #out-why on long and multi-cut lines",
+      "problem": "The receipt and the explanation disagree. The final input shows \"3 bits of fluff\" while the why reads \"Without “honestly” and “i think”…\" (\"single\" was also cut). The 300-character line's why names only \"honestly\" though \"So basically I wanted to share\" was the main cut. The course line's why quotes \"So excited to finally\" while \"share\" was cut as well. A product whose promise is \"every cut is marked\" can't have explanations that leave cuts out.",
+      "fix": "Build the why's word list from the same cut list (FLUFF kinds) the counter uses, and name all of them, or say \"and 1 more\" past two. Quote the exact cut text."
+    },
+    {
+      "id": "founder-3",
+      "severity": "P2",
+      "area": "Positioning",
+      "where": "Hero .tc-sub (all widths)",
+      "problem": "The platform isn't named in the hero copy. \"Cut the fluff from your first line in one tap, then schedule it\" could describe emails or newsletters. X only shows up in the mock window's styling and in the \"On X, the first line decides…\" line under the window, which is below the fold at 1440×900. The page title already says \"your X posts\".",
+      "fix": "Change the subhead to: \"Cut the fluff from the first line of your X post in one tap, then schedule it. It still sounds like you.\" (or \"…your post's first line, for X and LinkedIn…\"). Keep it to two lines at 390."
+    },
+    {
+      "id": "founder-4",
+      "severity": "P2",
+      "area": "Conversion path consistency (cross-surface)",
+      "where": "Sheet done state → \"Open the demo app\" → app Plans (#upgrade)",
+      "problem": "The demo app's Plans page shows \"Try Pro free for 7 days\", \"or start with Pro\" and an FAQ \"Is the trial really free?\". The settled pricing has no trial, and the homepage, correctly, never mentions one. A visitor who picked \"Start with Pro\" and follows the sheet's only way on sees contradictory pricing.",
+      "fix": "In index.html, remove the trial from plansHTML and the plans FAQ (and the CR trial plan from the showcase), or point the sheet's link to a view without Plans. This fix is not in home.html."
+    },
+    {
+      "id": "founder-5",
+      "severity": "P2",
+      "area": "Objections (account safety)",
+      "where": "#trust tile",
+      "problem": "\"Never\" auto-DMs, auto-deletes or auto-follows is stated without the reason that matters most to the lead segment (trading/crypto creators who earn X payouts). The app already has the honest reason: \"No auto-retweets or auto-DMs here, on purpose: X’s payouts need an account in good standing.\" Without it, the list reads like missing features rather than a stance.",
+      "fix": "Add one short line under the heading: \"On purpose: X payouts need an account in good standing.\" It's a reason, not a reach promise."
+    },
+    {
+      "id": "founder-6",
+      "severity": "P2",
+      "area": "Truthfulness (Studio wording)",
+      "where": "Studio plan list \"Each client gets their own voice, X account and review link\"; FAQ \"What about my clients’ accounts?\"",
+      "problem": "\"Gets their own X account\" reads as if Hookworthy provides an X account. In the app, a client's post goes out by itself only when the connected X account is the client's own; otherwise it waits for you to post it from theirs.",
+      "fix": "Change it to \"Each client gets their own voice and review link, and posts from their own X account\". In the FAQ: \"…connects their own X account…\"."
+    },
+    {
+      "id": "founder-7",
+      "severity": "P2",
+      "area": "Conversion (agency lead path)",
+      "where": ".plans-fine \"More than 8 clients? Talk to us: hello@hookworthy.com\"",
+      "problem": "The highest-value lead (agencies with more than 8 clients) is offered a plain-text address with no link. The app uses a mailto link for the same line.",
+      "fix": "Wrap the address in <a href=\"mailto:hello@hookworthy.com?subject=Studio%20for%20more%20than%208%20clients\">."
+    },
+    {
+      "id": "founder-8",
+      "severity": "P2",
+      "area": "Truthfulness (button label)",
+      "where": "#try-clear \"Paste mine\"",
+      "problem": "\"Paste mine\" doesn't paste. It empties the box and focuses it, so a visitor with a line on the clipboard taps it and gets an empty field.",
+      "fix": "Either call navigator.clipboard.readText() inside the click (fall back to clear-and-focus if it's denied) and then Sharpen, or rename it \"Use my line\" or \"Clear\"."
+    },
+    {
+      "id": "founder-9",
+      "severity": "P2",
+      "area": "Conversion (hero)",
+      "where": "#proof draft pane",
+      "problem": "The hero draft looks like a live compose box (avatar, Sharpen button, toolbar), but clicking or tapping the text does nothing. The most natural first action on the page gets no response, and the real input is one scroll away.",
+      "fix": "Make a click or tap on #pf-draft (and the empty compose area) do the same as \"Try it on your line\": jump to #sharpen and focus the textarea with the example selected."
+    },
+    {
+      "id": "founder-10",
+      "severity": "P2",
+      "area": "Conversion (paid-plan sheet)",
+      "where": "Sheet done state after \"Start with Pro\" or \"Start with Studio\"",
+      "problem": "After choosing Pro yearly, the done text is the generic \"…this signs you in.\", so the plan and price the visitor just picked are lost at the step where a paying intent should be acknowledged.",
+      "fix": "In DONE.start, when plan≠free, append the plan: \"…this signs you in and starts Pro at $12 a month, billed yearly.\" (Studio: \"…$18 per client a month…\"). Keep the honest preview sentence first."
+    },
+    {
+      "id": "founder-11",
+      "severity": "P2",
+      "area": "Pricing clarity",
+      "where": "Studio card \"Everything in Pro\"",
+      "problem": "Pro's headline allowance is \"500 posts a month sent at your time\". On Studio it isn't clear whether that's per client or shared, and that's an agency's first question.",
+      "fix": "Add a line to Studio's expanded list: \"500 posts a month sent at your time, per client\" (or \"shared\"), matching whatever the app enforces."
+    },
+    {
+      "id": "founder-12",
+      "severity": "P2",
+      "area": "Positioning (segment consistency)",
+      "where": "Hero example pills: Trader · Founder · Newsletter · Designer",
+      "problem": "The hero's fourth example is \"Designer\", which isn't a target segment. The Try starters, the \"who\" tile and the nav all use Ghostwriter (Studio), the segment that pays the most.",
+      "fix": "Swap \"Designer\" for a ghostwriter example: a client draft sharpened in the client's voice, labelled \"Ghostwriter\" (it can reuse Lena or Rafael from Studio). Keep it as an exact sharpenLine result, checked by hero-sync."
+    },
+    {
+      "id": "founder-13",
+      "severity": "P2",
+      "area": "Distribution (share card)",
+      "where": "<head> og:image / twitter:image",
+      "problem": "og:image and twitter:image are relative (\"../../assets/og-afterglow.png\") and there is no og:url. X's card scraper won't resolve a relative image, so links shared on X (the product's main channel) render without the card.",
+      "fix": "At deploy time, use absolute URLs for og:image and twitter:image, and add og:url and a canonical link."
+    }
+  ]
+}

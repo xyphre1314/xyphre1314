@@ -1,0 +1,39 @@
+{
+ "key": "uiux",
+ "role": "senior UI/UX designer, Linear/Superhuman level",
+ "score": 9.5,
+ "verdict": "Every interactive surface I exercised (Try box with 10 of my own lines, struck-word toggles, hero examples, four feed previews, voice, reply, Studio approval, pricing toggle, FAQ, final input, and the signup sheet in start/plan/sign-in/error/done states) behaved like a shipped product, with honest preview copy, correct focus handling, 0 CLS, no console errors and a finished reduced-motion layout. What is left is small P2 polish in edge cases, none of it visible in the first five seconds of any section.",
+ "to_95": [],
+ "issues": [
+  {
+   "id": "uiux-1", "severity": "P2", "area": "Sharpen demo output",
+   "where": "Try box, a 300-character line ending '...not even me to be honest with you all here'",
+   "problem": "Cutting 'to be honest with you all' leaves an orphaned tail: the posted card reads '...at all, not even me here'. The demo shows a slightly broken sentence as the sharpened result.",
+   "fix": "When a cut phrase is followed only by a trailing filler adverb (here/now/too) at the end of the line, cut that word with it, or do not cut the phrase and list it as 'your call'."
+  },
+  {
+   "id": "uiux-2", "severity": "P2", "area": "Sharpen demo output",
+   "where": "Try box, 'Very excited to share that basically 3 things changed my writing...'",
+   "problem": "The note says: Left 'basically' in: it says nearly, not exactly. Here 'basically' in front of an exact count is filler, so the explanation is untrue and the result opens on 'Basically 3 things'.",
+   "fix": "Treat 'basically' directly before a number or at the start of the resulting line as fluff (cut it), or make it a dotted 'your call' word instead of asserting a reason."
+  },
+  {
+   "id": "uiux-3", "severity": "P2", "area": "Try box layout",
+   "where": "#sharpen composer in example state, 1440 and 390",
+   "problem": "With a one-line example there is an empty band of roughly 40 px between the draft line and the 'Tap a struck word to put it back' hint, so the hint looks detached from the words it refers to.",
+   "fix": "Keep the reserved height (for CLS) but anchor the hint directly under the last text line and let the spare space fall below the hint, above the divider."
+  },
+  {
+   "id": "uiux-4", "severity": "P2", "area": "Touch targets",
+   "where": "390: starter chips (Wordy, Announcement...), hero example chips (36 px tall), nav Sign in (65x37)",
+   "problem": "These sit under the 44 px comfortable minimum, while the smaller controls (struck words, Try it, Replay) already have extended 44-52 px hit areas. The chips are the inconsistent ones.",
+   "fix": "Give .starters buttons, the hero example buttons and .signin the same ::after hit-area extension to 44 px tall; no visual change."
+  },
+  {
+   "id": "uiux-5", "severity": "P2", "area": "Phone budget",
+   "where": "360 wide",
+   "problem": "Page is 8107 px tall at 360: 10.96 screens on a 360x740 viewport (10.1 on 360x800), so on short phones it is above the 10.5 target. 390x844 is 9.98, within budget.",
+   "fix": "Trim about 340 px at 360 only: reduce the Day card phone crop height and the bento card vertical padding by 4-6 px each at max-width 374 px."
+  }
+ ]
+}

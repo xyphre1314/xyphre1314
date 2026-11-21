@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hookworthy: they read one line</title>
+<meta name="description" content="Hookworthy sharpens your first line in one tap. It still sounds like you.">
+<meta name="theme-color" content="#000000">
+<link rel="preload" href="../../fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Inter Night";src:url(../../fonts/Inter-Variable.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+:root{
+  color-scheme:dark;
+  --bg:#000;
+  --ink:#F5F5F7;          /* punchline, primary text */
+  --ink-2:#A1A1A6;        /* sub copy */
+  --ink-3:#86868B;        /* set-up line, micro, captions */
+  --x-ink:#E7E9EA;        /* X dark text */
+  --x-mute:#7D8287;       /* X dark secondary, nudged for AA on the lit card */
+  --x-line:#2F3336;       /* X dark hairline */
+  --card:#050506;
+  --fluff:#FF9F0A;        /* the only colour on the page */
+  --struck:#8A8A8F;
+  --pill:#F5F5F7;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-io:cubic-bezier(.65,0,.35,1);
+  --gutter:clamp(16px,5.6vw,100px);
+  --wrap:min(1240px,100% - 2 * var(--gutter));
+  --ui:"Inter Night",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-optical-sizing:auto;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+main{overflow-x:clip}
+:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:999px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- nav ---------- */
+.nav{position:relative;z-index:3;width:var(--wrap);margin:0 auto;height:72px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-size:21px;font-weight:720;letter-spacing:-.04em;line-height:1;padding:6px 0;font-variation-settings:"opsz" 32}
+.links{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:34px}
+.links a,.signin{font-size:14px;font-weight:500;letter-spacing:-.005em;color:var(--ink-2);transition:color .2s}
+.links a:hover,.signin:hover{color:var(--ink)}
+.navr{display:flex;align-items:center;gap:22px}
+.pill-sm{display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;background:var(--pill);color:#000;
+  font-size:14px;font-weight:600;letter-spacing:-.01em;transition:background-color .2s}
+.pill-sm:hover{background:#fff}
+
+/* ---------- hero ---------- */
+.hero{position:relative;width:var(--wrap);margin:0 auto;padding:clamp(28px,9.4vh,88px) 0 56px}
+h1{position:relative;z-index:2;margin:0;font-weight:740;font-variation-settings:"opsz" 32;
+  font-size:clamp(30px,7.35vw,108px);line-height:1;letter-spacing:-.047em;word-spacing:.03em}
+h1 .set{color:var(--ink-3)}
+h1 .punch{color:var(--ink)}
+
+.row{display:grid;grid-template-columns:minmax(0,470px) minmax(0,700px);justify-content:space-between;align-items:start;margin-top:clamp(32px,6.6vh,62px)}
+.copy{position:relative;z-index:2;padding-top:4px}
+.sub{margin:0;font-size:21px;line-height:1.46;letter-spacing:-.016em;color:var(--ink-2)}
+.sub span{display:block}
+.sub b{font-weight:500;color:var(--ink)}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 26px;border-radius:999px;
+  font-size:16px;font-weight:600;letter-spacing:-.012em;white-space:nowrap;
+  transition:background-color .2s,box-shadow .2s,transform .2s var(--ease-out)}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--pill);color:#000;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 8px 30px -8px rgba(255,255,255,.18)}
+.btn-primary:hover{background:#fff}
+.btn-ghost{color:var(--ink);background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%)}
+.btn-ghost:hover{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.32)}
+.micro{margin:18px 0 0;font-size:13.5px;letter-spacing:-.003em;color:var(--ink-3)}
+.micro i{font-style:normal;padding:0 .45em;color:#56565B}
+
+/* ---------- stage: the product under a spotlight ---------- */
+.stage{position:relative;z-index:1;margin:0;isolation:isolate}
+.beam{position:absolute;z-index:-2;pointer-events:none;left:50%;bottom:-40px;width:1180px;height:1240px;transform:translateX(-50%);
+  background:
+    radial-gradient(30% 17% at 50% 66%,rgba(255,255,255,.085),rgba(255,255,255,0) 100%),
+    conic-gradient(from 160deg at 50% 0%,rgba(255,255,255,0) 0deg,rgba(255,255,255,.03) 12deg,rgba(255,255,255,.05) 20deg,rgba(255,255,255,.03) 28deg,rgba(255,255,255,0) 40deg);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,transparent 26%,#000 60%,#000 80%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,transparent 26%,#000 60%,#000 80%,transparent 100%);
+  filter:blur(18px)}
+.grain{position:absolute;z-index:-1;pointer-events:none;inset:-120px -160px -60px;opacity:.07;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-mask-image:radial-gradient(50% 50% at 50% 55%,#000,transparent 75%);mask-image:radial-gradient(50% 50% at 50% 55%,#000,transparent 75%)}
+.pool{position:absolute;z-index:-1;pointer-events:none;left:2%;right:-10%;bottom:-10px;height:170px;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(255,255,255,.1),rgba(255,255,255,.035) 45%,rgba(255,255,255,0) 72%)}
+
+.demo{position:relative}
+.card{position:relative;border:1px solid transparent;border-radius:22px;
+  background:linear-gradient(var(--card),var(--card)) padding-box,
+             linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,.15) 34%,rgba(255,255,255,.12)) border-box}
+.av{width:44px;height:44px;border-radius:50%;object-fit:cover;display:block;background:#1A1A1A}
+
+/* compose */
+.compose{width:calc(100% - 64px);display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:14px;padding:20px 20px 28px;
+  background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.12) 34%,rgba(255,255,255,.1)) border-box;
+  transform:translateY(-6px) scale(.975);transform-origin:50% 0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 24px 60px -20px rgba(0,0,0,.9)}
+.draft{margin:8px 0 0;font-size:21px;line-height:1.45;letter-spacing:-.008em;color:var(--x-ink)}
+.f{padding-bottom:4px;
+  background-image:linear-gradient(currentColor,currentColor),
+    linear-gradient(var(--card),var(--card)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M0 3Q2 .9 4 3T8 3' fill='none' stroke='%23FF9F0A' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat,no-repeat,repeat-x;
+  background-position:0 .66em,100% 100%,0 calc(100% + 1px);
+  background-size:100% 1.5px,0% 8px,8px 6px;
+  color:var(--struck)}
+.f0.f{background:none;padding:0}
+.ins{color:var(--ink)}
+.reply{display:flex;align-items:center;gap:6px;margin-top:14px;padding-bottom:13px;border-bottom:1px solid var(--x-line);
+  font-size:14px;font-weight:600;letter-spacing:-.005em;color:var(--x-mute)}
+.reply svg{width:16px;height:16px}
+.tools{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:13px}
+.icons{display:flex;gap:16px;color:var(--x-mute)}
+.icons svg{width:20px;height:20px;display:block}
+.acts{display:flex;align-items:center;gap:8px}
+.k{display:inline-flex;align-items:center;height:38px;padding:0 17px;border-radius:999px;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.k-sharpen{font-weight:600;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.k-post{font-weight:700;background:#EFF3F4;color:#0F1419;padding:0 19px}
+
+/* post */
+.post{z-index:2;width:calc(100% - 64px);margin:-32px 0 0 64px;display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:14px;padding:18px 20px 14px;
+  background:linear-gradient(180deg,#0B0B0C,#030303 46%) padding-box,
+             linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.17) 26%,rgba(255,255,255,.13)) border-box;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),
+    0 1px 2px rgba(0,0,0,.7),0 6px 12px rgba(0,0,0,.55),0 18px 36px -6px rgba(0,0,0,.75),0 46px 90px -18px rgba(0,0,0,.95)}
+.post::before{content:"";position:absolute;top:-1px;left:18%;right:18%;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0))}
+.phead{display:flex;align-items:center;gap:5px;min-width:0;font-size:15.5px;line-height:20px;white-space:nowrap}
+.phead b{font-weight:700;color:var(--x-ink);letter-spacing:-.01em}
+.phead .m{color:var(--x-mute)}
+.phead .h{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ex{margin-left:8px;padding:2px 8px;border:1px solid var(--x-line);border-radius:999px;font-size:11.5px;line-height:15px;font-weight:600;letter-spacing:.01em;color:var(--ink-2)}
+.more{margin-left:auto;color:var(--x-mute);width:18px;height:18px;flex:none}
+.ptext{margin:6px 0 0;font-size:21px;line-height:1.42;letter-spacing:-.012em;color:#F7F9F9}
+.pacts{display:flex;justify-content:space-between;max-width:470px;margin-top:15px;color:var(--x-mute)}
+.pacts svg{width:18px;height:18px;display:block}
+
+figcaption{display:flex;align-items:center;gap:12px;margin:28px 0 0 64px;font-size:14px;line-height:1.4;letter-spacing:-.005em;color:var(--ink-3)}
+figcaption::before{content:"";flex:none;width:20px;height:1.5px;border-radius:1px;background:var(--ink)}
+figcaption b{font-weight:600;color:var(--ink)}
+
+/* ---------- the one motion moment (2s, then still) ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .beam{animation:lights 2s linear both}
+  .pool,.grain{animation:pool 2s linear both}
+  .compose{animation:compose 2s linear both}
+  .f1{animation:f1 2s linear both}
+  .f2{animation:f2 2s linear both}
+  .f0{animation:f0 2s linear both}
+  .ins{animation:ins 2s linear both}
+  .k-sharpen{animation:press 2s linear both}
+  .k-post{animation:post 2s linear both}
+  .post{animation:land 2s linear both}
+  figcaption{animation:cap 2s linear both}
+}
+@keyframes lights{0%{opacity:0;animation-timing-function:cubic-bezier(.3,0,.2,1)}45%,100%{opacity:1}}
+@keyframes pool{0%,62%{opacity:0;animation-timing-function:var(--ease-out)}95%,100%{opacity:1}}
+@keyframes compose{
+  0%,5%{opacity:0;transform:translateY(18px) scale(.985);filter:blur(6px);animation-timing-function:var(--ease-out)}
+  36%,62%{opacity:1;transform:translateY(0) scale(1);filter:blur(0);animation-timing-function:var(--ease-io)}
+  92%,100%{opacity:1;transform:translateY(-6px) scale(.975);filter:blur(0)}}
+@keyframes f1{
+  0%,22%{background-size:0% 1.5px,100% 8px,8px 6px;color:var(--x-ink);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  42%{background-size:0% 1.5px,0% 8px,8px 6px}
+  52%{background-size:0% 1.5px,0% 8px,8px 6px;color:var(--x-ink);animation-timing-function:cubic-bezier(.5,0,.2,1)}
+  68%,100%{background-size:100% 1.5px,0% 8px,8px 6px;color:var(--struck)}}
+@keyframes f2{
+  0%,31%{background-size:0% 1.5px,100% 8px,8px 6px;color:var(--x-ink);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  40%{background-size:0% 1.5px,0% 8px,8px 6px}
+  57%{background-size:0% 1.5px,0% 8px,8px 6px;color:var(--x-ink);animation-timing-function:cubic-bezier(.5,0,.2,1)}
+  66%,100%{background-size:100% 1.5px,0% 8px,8px 6px;color:var(--struck)}}
+@keyframes f0{0%,54%{color:var(--x-ink)}62%,100%{color:var(--struck)}}
+@keyframes ins{0%,58%{opacity:0}66%,100%{opacity:1}}
+@keyframes press{
+  0%,46%{transform:scale(1);background-color:rgba(255,255,255,0);animation-timing-function:cubic-bezier(.3,0,.5,1)}
+  50%{transform:scale(.93);background-color:rgba(255,255,255,.18);animation-timing-function:var(--ease-out)}
+  60%,100%{transform:scale(1);background-color:rgba(255,255,255,0)}}
+@keyframes post{
+  0%,60%{transform:scale(1);background-color:#EFF3F4;animation-timing-function:cubic-bezier(.3,0,.5,1)}
+  63.5%{transform:scale(.93);background-color:#C9CDCF;animation-timing-function:var(--ease-out)}
+  72%,100%{transform:scale(1);background-color:#EFF3F4}}
+@keyframes land{
+  0%,63%{opacity:0;transform:translateY(34px) scale(.96);filter:blur(7px);animation-timing-function:var(--ease-out)}
+  70%{opacity:1}
+  96%,100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes cap{0%,80%{opacity:0;transform:translateY(6px);animation-timing-function:var(--ease-out)}100%{opacity:1;transform:translateY(0)}}
+
+/* ---------- smaller screens ---------- */
+@media (max-width:1080px){
+  .links{display:none}
+  .row{grid-template-columns:minmax(0,1fr);row-gap:44px}
+  .stage{width:min(100%,620px)}
+}
+@media (max-width:640px){
+  .nav{height:60px}
+  .brand{font-size:19px}
+  .navr{gap:16px}
+  .pill-sm{height:34px;padding:0 14px}
+  .hero{padding:22px 0 40px}
+  h1{font-size:calc((100vw - 2 * var(--gutter)) / 9.62);letter-spacing:-.045em;line-height:1.02}
+  .row{margin-top:18px;row-gap:34px}
+  .sub{font-size:17px;line-height:1.47;max-width:none}
+  .ctas{flex-direction:column;gap:10px;margin-top:24px}
+  .btn{height:50px;width:100%;font-size:16px}
+  .micro{text-align:center;margin-top:14px;font-size:13px}
+  .compose,.post{width:calc(100% - 18px);border-radius:18px}
+  .sub span{display:inline}
+  .sub{text-wrap:balance}
+  .post{margin-left:18px}
+  .compose{padding:14px 14px 18px;column-gap:10px}
+  .post{margin-top:-14px}
+  .post{padding:12px 14px 10px;column-gap:10px}
+  .av{width:36px;height:36px}
+  .compose,.post{grid-template-columns:36px minmax(0,1fr)}
+  .draft{font-size:16px;line-height:1.45;margin-top:5px}
+  .k{height:32px}
+  .ptext{font-size:16.5px;margin-top:3px}
+  .reply{display:none}
+  .tools{padding-top:12px;margin-top:12px;border-top:1px solid var(--x-line)}
+  .icons{gap:12px}.icons svg{width:18px;height:18px}
+  .icons .opt{display:none}
+  .k{height:32px;padding:0 13px;font-size:14px}
+  .k-post{padding:0 15px}
+  .phead{font-size:14px}
+  .phead .t{display:none}
+  .ex{margin-left:6px}
+  .pacts{margin-top:10px}
+  .pacts .opt{display:none}
+  figcaption{margin:20px 0 0 18px;font-size:13px;gap:10px}
+  .beam{width:600px;height:900px;bottom:-20px;background:radial-gradient(40% 17% at 50% 74%,rgba(255,255,255,.075),rgba(255,255,255,0) 100%)}
+  .grain{inset:-20px -40px -40px}
+  .f{background-size:100% 1.25px,0% 8px,8px 6px}
+}
+@media (max-width:370px){
+  .navr .signin{display:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m20.5 15.5-4.6-4.6-8.6 8.6"/></symbol>
+    <symbol id="i-poll" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 7h9M5 12h14M5 17h6"/></symbol>
+    <symbol id="i-emoji" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M8.6 14.2c.9 1.3 2 1.9 3.4 1.9s2.5-.6 3.4-1.9"/><circle cx="9.2" cy="10" r=".6" fill="currentColor"/><circle cx="14.8" cy="10" r=".6" fill="currentColor"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5s1.1-6.1 3.4-8.5z"/></symbol>
+    <symbol id="i-reply" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 11.5C4 7.6 7.6 4.5 12 4.5s8 3.1 8 7-3.6 7-8 7c-1 0-2-.1-2.9-.4L5 20l1.1-3.6C4.8 15.1 4 13.4 4 11.5z"/></symbol>
+    <symbol id="i-rt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 11V9a3 3 0 0 1 3-3h11"/><path d="m15.5 3 3 3-3 3"/><path d="M19.5 13v2a3 3 0 0 1-3 3h-11"/><path d="m8.5 21-3-3 3-3"/></symbol>
+    <symbol id="i-like" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20s-7.5-4.5-7.5-10.1A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3C19.5 15.5 12 20 12 20z"/></symbol>
+    <symbol id="i-views" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 20v-8M10 20V5M15 20v-6M20 20V9"/></symbol>
+    <symbol id="i-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M6.5 4.5h11v16L12 16.6l-5.5 3.9z"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7.8 7.7 12 3.5l4.2 4.2M5 13.5v5a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-5"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <a class="brand" href="#" aria-label="Hookworthy home">hookworthy</a>
+  <nav class="links" aria-label="Primary">
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#questions">Questions</a>
+  </nav>
+  <div class="navr">
+    <a class="signin" href="#signin">Sign in</a>
+    <a class="pill-sm" href="#start">Start free</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="h">
+    <h1 id="h"><span class="set">They read one line.</span><br><span class="punch">Make it hookworthy.</span></h1>
+
+    <div class="row">
+      <div class="copy">
+        <p class="sub"><span>Hookworthy sharpens your first line in one tap.</span> <span>It still sounds like you.</span></p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="#start">Sharpen my first line</a>
+          <a class="btn btn-ghost" href="#try">Try it on your line</a>
+        </div>
+        <p class="micro">Free forever<i aria-hidden="true">·</i>No card<i aria-hidden="true">·</i>Nothing posts without you</p>
+      </div>
+
+      <figure class="stage">
+        <div class="beam" aria-hidden="true"></div>
+        <div class="grain" aria-hidden="true"></div>
+        <div class="pool" aria-hidden="true"></div>
+
+        <div class="demo" role="img" aria-label="Example. A draft in an X compose box reads: just wanted to share that i finally hit my first $10k month trading, took me 3 years lol. The fluff is underlined, then struck after one tap on Sharpen. The post that lands reads: my first $10k month trading took me 3 years.">
+          <div class="card compose" aria-hidden="true">
+            <img class="av" src="../../assets/people/you.jpg" alt="" width="40" height="40">
+            <div>
+              <p class="draft"><span class="f f1">just wanted to share that i finally hit</span> my first $10k month trading<span class="f f0">,</span> took me 3 years<span class="ins">.</span> <span class="f f2">lol</span></p>
+              <div class="reply"><svg><use href="#i-globe"/></svg>Everyone can reply</div>
+              <div class="tools">
+                <div class="icons">
+                  <svg><use href="#i-img"/></svg>
+                  <svg><use href="#i-poll"/></svg>
+                  <svg><use href="#i-emoji"/></svg>
+                  <svg class="opt"><use href="#i-cal"/></svg>
+                  <svg class="opt"><use href="#i-pin"/></svg>
+                </div>
+                <div class="acts">
+                  <span class="k k-sharpen">Sharpen</span>
+                  <span class="k k-post">Post</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card post" aria-hidden="true">
+            <img class="av" src="../../assets/people/you.jpg" alt="" width="40" height="40">
+            <div>
+              <div class="phead"><b>heycape</b><span class="m h">@heycape_</span><span class="m t">·</span><span class="m t">now</span><span class="ex">Example</span><svg class="more"><use href="#i-more"/></svg></div>
+              <p class="ptext">my first $10k month trading took me 3 years.</p>
+              <div class="pacts">
+                <svg><use href="#i-reply"/></svg>
+                <svg><use href="#i-rt"/></svg>
+                <svg><use href="#i-like"/></svg>
+                <svg class="opt"><use href="#i-views"/></svg>
+                <svg><use href="#i-mark"/></svg>
+                <svg><use href="#i-share"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <figcaption><span><b>Why it hits.</b> $10k stops the scroll. 3 years makes it believable.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+</body>
+</html>
